@@ -8,8 +8,6 @@ copy ..\..\..\HeuristicLab.AdvancedOptimizationFrontend\bin\%1\WeifenLuo.WinForm
 copy ..\..\..\HeuristicLab.BitVector\bin\%1\HeuristicLab.BitVector.dll .\plugins
 copy ..\..\..\HeuristicLab.Charting\bin\%1\HeuristicLab.Charting.dll .\plugins
 copy ..\..\..\HeuristicLab.Charting.Data\bin\%1\HeuristicLab.Charting.Data.dll .\plugins
-copy ..\..\..\HeuristicLab.Charting.Gantt\bin\%1\HeuristicLab.Charting.Gantt.dll .\plugins
-copy ..\..\..\HeuristicLab.Charting.Grid\bin\%1\HeuristicLab.Charting.Grid.dll .\plugins
 copy ..\..\..\HeuristicLab.Core\bin\%1\HeuristicLab.Core.dll .\plugins
 copy ..\..\..\HeuristicLab.Constraints\bin\%1\HeuristicLab.Constraints.dll .\plugins
 copy ..\..\..\HeuristicLab.Data\bin\%1\HeuristicLab.Data.dll .\plugins

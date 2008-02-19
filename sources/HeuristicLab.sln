@@ -50,11 +50,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA", "Heurist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.StructureIdentification", "HeuristicLab.StructureIdentification\HeuristicLab.StructureIdentification.csproj", "{5948F299-0A5E-43B9-8F17-2D15298EEC34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Charting.Gantt", "HeuristicLab.Charting.Gantt\HeuristicLab.Charting.Gantt.csproj", "{5D2521D9-AD86-4B3F-9532-06F4C0F49D1B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Constraints", "HeuristicLab.Constraints\HeuristicLab.Constraints.csproj", "{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Charting.Grid", "HeuristicLab.Charting.Grid\HeuristicLab.Charting.Grid.csproj", "{36BADE08-A7C2-42C1-A57B-5EE31C431C36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DataAnalysis", "HeuristicLab.DataAnalysis\HeuristicLab.DataAnalysis.csproj", "{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}"
 EndProject
@@ -166,18 +162,10 @@ Global
 		{5948F299-0A5E-43B9-8F17-2D15298EEC34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5948F299-0A5E-43B9-8F17-2D15298EEC34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5948F299-0A5E-43B9-8F17-2D15298EEC34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D2521D9-AD86-4B3F-9532-06F4C0F49D1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D2521D9-AD86-4B3F-9532-06F4C0F49D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D2521D9-AD86-4B3F-9532-06F4C0F49D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D2521D9-AD86-4B3F-9532-06F4C0F49D1B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36BADE08-A7C2-42C1-A57B-5EE31C431C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BADE08-A7C2-42C1-A57B-5EE31C431C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36BADE08-A7C2-42C1-A57B-5EE31C431C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36BADE08-A7C2-42C1-A57B-5EE31C431C36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
