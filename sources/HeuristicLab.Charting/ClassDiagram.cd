@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="HeuristicLab.Charting.Chart" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="36.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Chart.cs</FileName>
+      <HashCode>IAQAhGIABIACwAKAFAAAAAAiEAMBAgCEABgYARGAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="HeuristicLab.Charting.ChartControl" Collapsed="true">
+    <Position X="38.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ChartControl.cs</FileName>
+      <HashCode>AgLgCIQBECBAogCCDCCACgBuEKAAAgAEASAAAACAAiA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.Ellipse">
+    <Position X="6.5" Y="14.5" Width="5.25" />
+    <TypeIdentifier>
+      <FileName>Primitives\Ellipse.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.FixedSizeCircle">
+    <Position X="25" Y="13.75" Width="5" />
+    <TypeIdentifier>
+      <FileName>Primitives\FixedSizeCircle.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.FixedSizePrimitiveBase">
+    <Position X="27.75" Y="9.5" Width="5.25" />
+    <TypeIdentifier>
+      <FileName>Primitives\FixedSizePrimitiveBase.cs</FileName>
+      <HashCode>AAAAABAAAIAAgAAAAAAAAAAAAIAAAgAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.FixedSizeRectangle">
+    <Position X="30.75" Y="13.75" Width="5" />
+    <TypeIdentifier>
+      <FileName>Primitives\FixedSizeRectangle.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.Group">
+    <Position X="2" Y="9.5" Width="3.75" />
+    <TypeIdentifier>
+      <FileName>Primitives\Group.cs</FileName>
+      <HashCode>AAIAAAAAAIAABgAAAAAABBACAAIACEAAgAIQAABWABo=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HeuristicLab.Charting.Line">
+    <Position X="19.25" Y="14.75" Width="4.25" />
+    <TypeIdentifier>
+      <FileName>Primitives\Line.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.LinearPrimitiveBase">
+    <Position X="18.5" Y="9.5" Width="5.75" />
+    <TypeIdentifier>
+      <FileName>Primitives\LinearPrimitiveBase.cs</FileName>
+      <HashCode>AAIAEAAAAKAEggIAAAAAAABAAACAAgAAAAAQAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.PrimitiveBase">
+    <Position X="16.5" Y="0.5" Width="5" />
+    <TypeIdentifier>
+      <FileName>Primitives\PrimitiveBase.cs</FileName>
+      <HashCode>AAQADEIAAIAiiiJAAAAAABAAEAIASgAAAAoYAAGCARI=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HeuristicLab.Charting.Rectangle">
+    <Position X="12.5" Y="14.5" Width="5.25" />
+    <TypeIdentifier>
+      <FileName>Primitives\Rectangle.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.RectangularPrimitiveBase">
+    <Position X="9" Y="9.5" Width="6.25" />
+    <TypeIdentifier>
+      <FileName>Primitives\RectangularPrimitiveBase.cs</FileName>
+      <HashCode>AAAAECAABIAAggKAAAAAAAAAAAAAAgAAAAAQAQAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.SelectionRectangle">
+    <Position X="31.25" Y="16.25" Width="4" />
+    <TypeIdentifier>
+      <FileName>Primitives\SelectionRectangle.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAEAAIAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeuristicLab.Charting.PropertiesDialog" Collapsed="true">
+    <Position X="36.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>PropertiesDialog.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACGAAAEAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="HeuristicLab.Charting.Offset" Collapsed="true">
+    <Position X="36.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Structs\Offset.cs</FileName>
+      <HashCode>AAJABAAAAAAAQAAEwAMCAABAAAAYAIgAAAAAAAAAAiA=</HashCode>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeuristicLab.Charting.PointD" Collapsed="true">
+    <Position X="38.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Structs\PointD.cs</FileName>
+      <HashCode>AAJABAAAAAAAAgAEwBMCAAAAAAAAAIAAAAAAAAAAYiA=</HashCode>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="HeuristicLab.Charting.SizeD" Collapsed="true">
+    <Position X="36.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Structs\SizeD.cs</FileName>
+      <HashCode>AAJABAAABAAAAkAEwAMCAEAAAAAAAIAAAgAAAAAAAiA=</HashCode>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="HeuristicLab.Charting.IChart" Collapsed="true">
+    <Position X="36.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Interfaces\IChart.cs</FileName>
+      <HashCode>IAQABEIAAIAAgAKAEAAAAAAiEAIBAgCEABAYAQCAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HeuristicLab.Charting.IGroup">
+    <Position X="1.25" Y="24.5" Width="3.75" />
+    <TypeIdentifier>
+      <FileName>Interfaces\IGroup.cs</FileName>
+      <HashCode>AAIAAAAAAAAABAAAAAAABBACAAAACEAAAAIAAABWAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HeuristicLab.Charting.IPrimitive">
+    <Position X="0.5" Y="17.5" Width="5" />
+    <TypeIdentifier>
+      <FileName>Interfaces\IPrimitive.cs</FileName>
+      <HashCode>AAQABEIAAIAgiiIAAAAAABAAEAIACAAAAAIYAACCABI=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="HeuristicLab.Charting.ChartMode" Collapsed="true">
+    <Position X="36.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ChartMode.cs</FileName>
+      <HashCode>AAAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>

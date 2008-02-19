@@ -1,0 +1,82 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+
+namespace HeuristicLab.Permutation {
+  public class OrderBasedCrossover : PermutationCrossoverBase {
+    public override string Description {
+      get { return @"TODO\r\nOperator description still missing ..."; }
+    }
+
+    public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
+      int length = parent1.Length;
+      int[] result = new int[length];
+      int[] selectedNumbers = new int[random.Next(length + 1)];
+      bool[] numberSelected = new bool[length];
+      int index, selectedIndex, currentIndex;
+
+      for (int i = 0; i < selectedNumbers.Length; i++) {  // select numbers for array
+        index = 0;
+        while (numberSelected[parent1[index]]) {  // find first valid index
+          index++;
+        }
+
+        selectedIndex = random.Next(length - i);
+        currentIndex = 0;
+        while ((index < parent1.Length) && (currentIndex != selectedIndex)) {  // find selected number
+          index++;
+          if (!numberSelected[parent1[index]]) {
+            currentIndex++;
+          }
+        }
+        numberSelected[parent1[index]] = true;
+      }
+
+      index = 0;
+      for (int i = 0; i < parent1.Length; i++) {  // copy selected numbers in array
+        if (numberSelected[parent1[i]]) {
+          selectedNumbers[index] = parent1[i];
+          index++;
+        }
+      }
+
+      index = 0;
+      for (int i = 0; i < result.Length; i++) {  // copy rest of second permutation and selected numbers in order of first permutation
+        if (numberSelected[parent2[i]]) {
+          result[i] = selectedNumbers[index];
+          index++;
+        } else {
+          result[i] = parent2[i];
+        }
+      }
+      return result;
+    }
+
+    protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
+      return Apply(random, parent1, parent2);
+    }
+  }
+}
