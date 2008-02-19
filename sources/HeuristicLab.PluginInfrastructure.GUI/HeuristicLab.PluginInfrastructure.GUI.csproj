@@ -141,6 +141,7 @@
     <None Include="Resources\HeuristicLab.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ICSharpCode.SharpZipLib License.txt" />
     <Content Include="ICSharpCode.SharpZipLib.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

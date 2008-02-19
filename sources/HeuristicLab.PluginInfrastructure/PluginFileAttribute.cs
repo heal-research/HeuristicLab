@@ -24,8 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
-  public enum PluginFileType { Assembly, Executable, Data };
-  
+  public enum PluginFileType {
+    Assembly,
+    Executable,
+    Data,
+    License
+  };
+
   [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
   public class PluginFileAttribute : System.Attribute {
     private string filename;

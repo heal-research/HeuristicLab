@@ -102,6 +102,7 @@
     <Content Include="Resources\Save.png" />
     <Content Include="Resources\SaveAll.png" />
     <Content Include="Resources\Tools.ico" />
+    <Content Include="WeifenLuo.WinFormsUI.Docking License.txt" />
     <Content Include="WeifenLuo.WinFormsUI.Docking.dll" />
   </ItemGroup>
   <ItemGroup>

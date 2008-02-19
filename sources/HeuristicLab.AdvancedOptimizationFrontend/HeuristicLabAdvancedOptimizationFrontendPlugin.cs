@@ -29,6 +29,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
   [ClassInfo(Name = "HeuristicLab.AdvancedOptimizationFrontend")]
   [PluginFile(Filename = "HeuristicLab.AdvancedOptimizationFrontend.dll", Filetype = PluginFileType.Assembly)]
   [PluginFile(Filename = "WeifenLuo.WinFormsUI.Docking.dll", Filetype = PluginFileType.Assembly)]
+  [PluginFile(Filename = "WeifenLuo.WinFormsUI.Docking License.txt", Filetype = PluginFileType.License)]
   [Dependency(Dependency = "HeuristicLab.Core")]
   public class HeuristicLabAdvancedOptimizationFrontendPlugin : PluginBase {
   }
