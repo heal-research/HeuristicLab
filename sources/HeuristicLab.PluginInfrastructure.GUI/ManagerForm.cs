@@ -138,6 +138,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         currentPlugin.PluginDescription = overridingPlugin;
       });
       RebuildActionHulls();
+      pluginTreeView.Sort();
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {

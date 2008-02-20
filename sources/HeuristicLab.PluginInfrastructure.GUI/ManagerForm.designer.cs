@@ -60,6 +60,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.pluginTreeView = new System.Windows.Forms.TreeView();
+      this.pluginIcons = new System.Windows.Forms.ImageList(this.components);
       this.infoTextBox = new System.Windows.Forms.RichTextBox();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.updateButton = new System.Windows.Forms.ToolStripButton();
@@ -73,7 +74,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.installMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.removeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.publishMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.pluginIcons = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -111,52 +111,52 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // managePluginSourcesToolStripMenuItem
       // 
       this.managePluginSourcesToolStripMenuItem.Name = "managePluginSourcesToolStripMenuItem";
-      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.managePluginSourcesToolStripMenuItem.Text = "Edit plugin sources...";
       this.managePluginSourcesToolStripMenuItem.Click += new System.EventHandler(this.managePluginSourcesToolStripMenuItem_Click);
       // 
       // installPluginFromFileToolStripMenuItem
       // 
       this.installPluginFromFileToolStripMenuItem.Name = "installPluginFromFileToolStripMenuItem";
-      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.installPluginFromFileToolStripMenuItem.Text = "Install plugin from file...";
       this.installPluginFromFileToolStripMenuItem.Click += new System.EventHandler(this.installPluginFromFileToolStripMenuItem_Click);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(200, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(211, 6);
       // 
       // installedPluginsToolStripMenuItem
       // 
       this.installedPluginsToolStripMenuItem.Name = "installedPluginsToolStripMenuItem";
-      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.installedPluginsToolStripMenuItem.Text = "Update";
       this.installedPluginsToolStripMenuItem.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // installNewPluginsToolStripMenuItem
       // 
       this.installNewPluginsToolStripMenuItem.Name = "installNewPluginsToolStripMenuItem";
-      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.installNewPluginsToolStripMenuItem.Text = "Remove/Upgrade/Install...";
       this.installNewPluginsToolStripMenuItem.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(211, 6);
       // 
       // refreshPluginListToolStripMenuItem
       // 
       this.refreshPluginListToolStripMenuItem.Name = "refreshPluginListToolStripMenuItem";
-      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.refreshPluginListToolStripMenuItem.Text = "Refresh plugin list";
       this.refreshPluginListToolStripMenuItem.Click += new System.EventHandler(this.refreshPluginListToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
       this.exitToolStripMenuItem.Text = "Close";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
       // 
@@ -171,7 +171,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
       this.aboutToolStripMenuItem.Text = "About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
       // 
@@ -208,6 +208,16 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.pluginTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.pluginTreeView_NodeMouseClick);
       this.pluginTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.pluginTreeView_BeforeSelect);
       // 
+      // pluginIcons
+      // 
+      this.pluginIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("pluginIcons.ImageStream")));
+      this.pluginIcons.TransparentColor = System.Drawing.Color.Magenta;
+      this.pluginIcons.Images.SetKeyName(0, "VSObject_Module.bmp");
+      this.pluginIcons.Images.SetKeyName(1, "VSObject_Namespace.bmp");
+      this.pluginIcons.Images.SetKeyName(2, "install.bmp");
+      this.pluginIcons.Images.SetKeyName(3, "delete.bmp");
+      this.pluginIcons.Images.SetKeyName(4, "genericInternet.bmp");
+      // 
       // infoTextBox
       // 
       this.infoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -240,7 +250,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.updateButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.updateButton.Name = "updateButton";
       this.updateButton.Size = new System.Drawing.Size(46, 22);
-      this.updateButton.Text = "Update";
+      this.updateButton.Text = "U&pdate";
       this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // upgradeButton
@@ -250,7 +260,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.upgradeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.upgradeButton.Name = "upgradeButton";
       this.upgradeButton.Size = new System.Drawing.Size(140, 22);
-      this.upgradeButton.Text = "Remove/Upgrade/Install...";
+      this.upgradeButton.Text = "Remove/&Upgrade/Install...";
       this.upgradeButton.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator
@@ -266,7 +276,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.installButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.installButton.Name = "installButton";
       this.installButton.Size = new System.Drawing.Size(40, 22);
-      this.installButton.Text = "Install";
+      this.installButton.Text = "&Install";
       this.installButton.Click += new System.EventHandler(this.installButton_Clicked);
       // 
       // removeButton
@@ -277,7 +287,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.removeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(50, 22);
-      this.removeButton.Text = "Remove";
+      this.removeButton.Text = "&Remove";
       this.removeButton.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // toolStripSeparator1
@@ -302,38 +312,28 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
             this.removeMenuItem,
             this.publishMenuItem});
       this.pluginContextMenuStrip.Name = "pluginContextMenuStrip";
-      this.pluginContextMenuStrip.Size = new System.Drawing.Size(114, 70);
+      this.pluginContextMenuStrip.Size = new System.Drawing.Size(125, 70);
       // 
       // installMenuItem
       // 
       this.installMenuItem.Name = "installMenuItem";
-      this.installMenuItem.Size = new System.Drawing.Size(113, 22);
+      this.installMenuItem.Size = new System.Drawing.Size(124, 22);
       this.installMenuItem.Text = "Install";
       this.installMenuItem.Click += new System.EventHandler(this.installButton_Clicked);
       // 
       // removeMenuItem
       // 
       this.removeMenuItem.Name = "removeMenuItem";
-      this.removeMenuItem.Size = new System.Drawing.Size(113, 22);
+      this.removeMenuItem.Size = new System.Drawing.Size(124, 22);
       this.removeMenuItem.Text = "Remove";
       this.removeMenuItem.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // publishMenuItem
       // 
       this.publishMenuItem.Name = "publishMenuItem";
-      this.publishMenuItem.Size = new System.Drawing.Size(113, 22);
+      this.publishMenuItem.Size = new System.Drawing.Size(124, 22);
       this.publishMenuItem.Text = "Publish";
       this.publishMenuItem.Click += new System.EventHandler(this.publishButton_Click);
-      // 
-      // pluginIcons
-      // 
-      this.pluginIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("pluginIcons.ImageStream")));
-      this.pluginIcons.TransparentColor = System.Drawing.Color.Magenta;
-      this.pluginIcons.Images.SetKeyName(0, "VSObject_Module.bmp");
-      this.pluginIcons.Images.SetKeyName(1, "VSObject_Namespace.bmp");
-      this.pluginIcons.Images.SetKeyName(2, "install.bmp");
-      this.pluginIcons.Images.SetKeyName(3, "delete.bmp");
-      this.pluginIcons.Images.SetKeyName(4, "genericInternet.bmp");
       // 
       // ManagerForm
       // 
