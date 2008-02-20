@@ -56,6 +56,8 @@ namespace HeuristicLab {
     }
 
     private void RefreshApplicationsList() {
+      applicationsListView.Clear();
+
       pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
       pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
       pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "-"));
@@ -82,6 +84,7 @@ namespace HeuristicLab {
           ManagerForm form = new ManagerForm();
           this.Visible = false;
           form.ShowDialog();
+          RefreshApplicationsList();
           this.Visible = true;
         } else {
           ApplicationInfo app = (ApplicationInfo)applicationsListView.SelectedItems[0].Tag;
