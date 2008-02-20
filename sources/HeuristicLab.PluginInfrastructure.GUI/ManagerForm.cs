@@ -649,34 +649,24 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private void upgradeButton_Click(object sender, EventArgs args) {
       try {
         ClearTemporaryFiles();
-
         if(!DownloadFiles()) {
           return;
         }
-
         OnDeletePlugins();
         OnPreUpgradePlugins();
-
         PluginManager.Manager.UnloadAllPlugins();
-
         BackupOldFiles();
         DeleteOldFiles();
         InstallNewFiles();
-
         PluginManager.Manager.LoadAllPlugins();
-
+        InitializePlugins();
         OnPostUpgradePlugins();
         OnInstallPlugins();
-
-        InitializePlugins();
-
         ClearTemporaryFiles();
       } catch(Exception e) {
         ShowErrorDialog(e + "");
       }
-
     }
-
     private void OnDeletePlugins() {
       allTags.ForEach(delegate(PluginTag tag) {
         if(tag.State == PluginState.Installed) {
@@ -687,7 +677,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         }
       });
     }
-
     private void OnInstallPlugins() {
       allTags.ForEach(delegate(PluginTag tag) {
         if(tag.State == PluginState.Available) {
@@ -838,11 +827,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         foreach(string fs in copiedFiles) {
           filesString += fs + "\n";
         }
-        DialogResult result = MessageBox.Show("Deleting: " + filesString, "Warning: deleting files", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-        if(result == DialogResult.OK) {
-          foreach(string copiedFile in copiedFiles) {
-            File.Delete(copiedFile);
-          }
+        foreach(string copiedFile in copiedFiles) {
+          File.Delete(copiedFile);
         }
         throw e;
       }

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using ICSharpCode.SharpZipLib.Core;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.GUI {
   /// <summary>
@@ -31,7 +32,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
   /// </summary>
   class PluginNameTransform : INameTransform{
 
-    private string pluginDir = HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir+"\\";    
+    private string pluginDir = Application.StartupPath + "\\" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir + "\\";    
     #region INameTransform Members
 
     public string TransformDirectory(string name) {
