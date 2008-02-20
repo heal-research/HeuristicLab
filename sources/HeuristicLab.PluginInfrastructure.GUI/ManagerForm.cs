@@ -40,7 +40,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private List<PluginTag> allTags = new List<PluginTag>();
     private Dictionary<PluginTag, PluginAction> actions = new Dictionary<PluginTag, PluginAction>();
 
-    private string pluginDir = Application.StartupPath +"/"+ HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir;
+    private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir;
     private string cacheDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
     private string backupDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.BackupDir;
     private string tempDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.TempDir;
@@ -121,7 +121,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
         infoTextBox.Text = "Publishing plugin:\nCreating " + packageFileName + "...\n";
         foreach(string filename in plugin.Files) {
-          infoTextBox.Text += "Adding " + filename + "\n";          
+          infoTextBox.Text += "Adding " + filename + "\n";
           zipFile.Add(filename);
         }
 
@@ -704,7 +704,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private void OnPreUpgradePlugins() {
       upgradedPlugins.Clear();
       allTags.ForEach(delegate(PluginTag tag) {
-        if(tag.State==PluginState.Upgradeable) {
+        if(tag.State == PluginState.Upgradeable) {
           PluginManager.Manager.OnPreUpdate(tag.Plugin);
 
           // save the name of the plugin in  a list that is used later to call OnPostUpdate for all plugins
@@ -796,10 +796,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
           if(tag.State == PluginState.Upgradeable || (involvingActions.Count > 0 && involvingActions[0].Action == ManagerAction.Remove)) {
             tag.Plugin.Files.ForEach(delegate(string filename) {
-              DialogResult result = MessageBox.Show("Deleting: " + filename, "Warning: deleting file", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-              if(result == DialogResult.OK) {
-                File.Delete(filename);
-              }
+              File.Delete(filename);
             });
           }
         });
@@ -941,7 +938,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // get the tag of the selected treeNode
       PluginTag actionTag = (PluginTag)pluginTreeView.SelectedNode.Tag;
       List<PluginAction> rootActions = GetActionsInvolving(actionTag);
-      if(rootActions.Count>0) {
+      if(rootActions.Count > 0) {
         UnmarkRemove(actionTag);
       } else {
         MarkRemove(actionTag);
@@ -1029,7 +1026,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           // check if none of the files exist
           foreach(string filename in Directory.GetFiles(cacheDir)) {
             if(File.Exists(pluginDir + filename.Remove(0, cacheDir.Length))) {
-              ShowErrorDialog("Sorry can't install the plugin "+packageName+"\nThe file: "+filename.Remove(0, cacheDir.Length)+" already exist in "+pluginDir+"\nIt seems the plugin is already installed.");
+              ShowErrorDialog("Sorry can't install the plugin " + packageName + "\nThe file: " + filename.Remove(0, cacheDir.Length) + " already exist in " + pluginDir + "\nIt seems the plugin is already installed.");
               ClearTemporaryFiles();
               return;
             }
