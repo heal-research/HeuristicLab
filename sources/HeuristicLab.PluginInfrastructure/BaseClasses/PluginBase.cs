@@ -43,7 +43,9 @@ namespace HeuristicLab.PluginInfrastructure {
       object[] pluginAttributes = this.GetType().GetCustomAttributes(typeof(ClassInfoAttribute), false);
 
       // exactly one attribute of the type ClassInfoAttribute must be given
-      Trace.Assert(pluginAttributes.Length == 1);
+      if(pluginAttributes.Length != 1) {
+        throw new InvalidPluginException();
+      }
 
       // after the assertion we are sure that the array access will not fail
       ClassInfoAttribute pluginAttribute = (ClassInfoAttribute)pluginAttributes[0];

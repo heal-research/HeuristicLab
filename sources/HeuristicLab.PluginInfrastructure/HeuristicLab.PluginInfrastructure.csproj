@@ -54,6 +54,7 @@
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="Interfaces\IControl.cs" />
     <Compile Include="Interfaces\IControlManager.cs" />
+    <Compile Include="InvalidPluginException.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="PluginManagerActionEventArgs.cs" />
     <Compile Include="DependencyAttribute.cs" />

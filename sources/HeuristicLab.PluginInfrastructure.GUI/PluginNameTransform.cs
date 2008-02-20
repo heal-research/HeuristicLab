@@ -43,7 +43,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     public string TransformFile(string name) {
-      //Trace.Assert(name.StartsWith(pluginDir));
       if(name.StartsWith(pluginDir)) {
         return name.Remove(0, pluginDir.Length);
       } else {

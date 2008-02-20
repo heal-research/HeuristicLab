@@ -216,7 +216,7 @@ namespace HeuristicLab.PluginInfrastructure {
         this.pluginDependencies[pluginName] = pluginDependencies;
         this.pluginAssemblies[pluginName] = pluginAssemblies;
       } else {
-        Trace.Assert(false);
+        throw new InvalidPluginException();
       }
     }
 

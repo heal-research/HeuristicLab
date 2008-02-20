@@ -76,8 +76,7 @@ namespace HeuristicLab {
     }
 
     private void applicationsListView_ItemActivate(object sender, EventArgs e) {
-      if(applicationsListView.SelectedItems.Count > 0) {
-        Trace.Assert(applicationsListView.SelectedItems.Count == 1);
+      if(applicationsListView.SelectedItems.Count > 0) {        
         ListViewItem selected = applicationsListView.SelectedItems[0];
         if(selected == pluginManagerListViewItem) {
           ManagerForm form = new ManagerForm();

@@ -63,7 +63,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           return "Keep";
         default:
           // this method is not defined for actions other than "Install" and "Remove"
-          Trace.Assert(false);
+          throw new InvalidOperationException();
           return "";
       }
     }

@@ -110,7 +110,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void publishButton_Click(object sender, EventArgs args) {
-      Trace.Assert(pluginTreeView.SelectedNode.Tag is PluginTag);
 
       PluginInfo plugin = ((PluginTag)pluginTreeView.SelectedNode.Tag).Plugin;
 
@@ -234,14 +233,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
             List<PluginTag> oldPlugins = allTags.FindAll(delegate(PluginTag tag) {
               return tag.PluginName == upgrade.Name;
             });
-            // only one plugin must be found
-            Trace.Assert(oldPlugins.Count == 1);
             PluginTag oldPlugin = oldPlugins[0];
-
-            // the plugin must be installed already
-            Trace.Assert(oldPlugin.State == PluginState.Installed);
-            // the old plugin has to have an older version than the upgrade
-            Trace.Assert(oldPlugin.PluginVersion < upgrade.Version);
 
             // store the upgrade in the old plugin
             oldPlugin.UpgradePluginDescription = upgrade;
@@ -254,14 +246,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
               return tag.PluginName == overridingPlugin.Name;
             });
 
-            // only one plugin must be found
-            Trace.Assert(currentPlugins.Count == 1);
             PluginTag currentPlugin = currentPlugins[0];
-
-            // the plugin must be available already
-            Trace.Assert(currentPlugin.State == PluginState.Available);
-            // the old plugin has to have an older version than the overriding plugin
-            Trace.Assert(currentPlugin.PluginVersion < overridingPlugin.Version);
 
             // replace the plugin description of the available plugin to point to the overriding plugin
             currentPlugin.PluginDescription = overridingPlugin;
@@ -332,8 +317,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           return currentPlugin.PluginName == availablePlugin.Name && currentPlugin.State == PluginState.Installed;
         });
 
-        // either none or exactly one plugin to upgrade can be found
-        Trace.Assert(oldPlugins.Count <= 1);
         if(oldPlugins.Count == 1) {
           if(oldPlugins[0].PluginVersion < availablePlugin.Version) {
             upgrades.Add(availablePlugin);
@@ -351,8 +334,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           return currentPlugin.PluginName == availablePlugin.Name && currentPlugin.State == PluginState.Available;
         });
 
-        // either none or exactly one plugin to override can be found
-        Trace.Assert(currentPlugins.Count <= 1);
         if(currentPlugins.Count == 1) {
           if(currentPlugins[0].PluginVersion < availablePlugin.Version) {
             overrides.Add(availablePlugin);
@@ -373,7 +354,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         } else if(action.Action == ManagerAction.Remove) {
           MarkRemove(action.Plugin);
         } else
-          Trace.Assert(false); // is not allowed to happen
+          throw new InvalidOperationException();
       }
 
       // update the GUI to represent new state of the selected plugin
@@ -386,9 +367,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
 
     private void MarkInstall(PluginTag actionTag) {
-
-      Trace.Assert(actionTag.State == PluginState.Available);
-
       if(!CheckInstallConflicts(actionTag)) {
         CreateNewInstallAction(actionTag);
       } else {
@@ -397,16 +375,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void UnmarkInstall(PluginTag actionTag) {
-      Trace.Assert(actionTag.State == PluginState.Available);
-
-      Trace.Assert(GetOverlappingActions(actionTag, ManagerAction.Any).TrueForAll(delegate(PluginAction fixedPoint) {
-        return fixedPoint.Action == ManagerAction.Install;
-      }));
-
       if(!CheckNoActionConflict(actionTag)) {
         List<PluginAction> rootActions = GetActionsInvolving(actionTag);
-        // if there is no conflict then there can only be one action connected to the pluginTag
-        Trace.Assert(rootActions.Count == 1);
         PluginAction rootAction = rootActions[0];
         actions.Remove(rootAction.Plugin);
         UpdateTreeNodes(rootAction.Hull);
@@ -417,16 +387,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
     private void HandleNoActionConflict(PluginTag actionTag) {
       List<PluginAction> conflictingActions = GetOverlappingActions(actionTag, ManagerAction.Any);
-
-      Trace.Assert(conflictingActions.Count > 1);
       PluginAction theAction = GetSmallestActionInvolving(actionTag, conflictingActions);
       conflictingActions.Remove(theAction);
-
-
       string action = theAction.GetInverseActionString();
-
       DialogResult userResult = ShowGenericConflictDialog(action, theAction, conflictingActions);
-
       if(userResult == DialogResult.OK) {
         conflictingActions.ForEach(delegate(PluginAction conflictingAction) {
           actions.Remove(conflictingAction.Plugin);
@@ -444,9 +408,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void MarkRemove(PluginTag actionTag) {
-
-      Trace.Assert((actionTag.State & (PluginState.Installed | PluginState.Upgradeable)) != 0);
-
       if(!CheckRemoveConflicts(actionTag)) {
         CreateNewRemoveAction(actionTag);
       } else {
@@ -455,20 +416,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void UnmarkRemove(PluginTag pluginTag) {
-
-      Trace.Assert(pluginTag.State == PluginState.Installed);
-
-      Trace.Assert(GetOverlappingActions(pluginTag, ManagerAction.Any).TrueForAll(delegate(PluginAction action) {
-        return action.Action == ManagerAction.Remove;
-      }));
-
       if(!CheckNoActionConflict(pluginTag)) {
-        Trace.Assert(GetOverlappingActions(pluginTag, ManagerAction.Remove).Count == 1);
         List<PluginAction> rootActions = GetActionsInvolving(pluginTag);
         // if there is no conflict then there can only be one action connected to the pluginTag
-        Trace.Assert(rootActions.Count == 1);
         PluginAction rootAction = rootActions[0];
-
         // kill the root action
         actions.Remove(rootAction.Plugin);
         UpdateTreeNodes(rootAction.Hull);
@@ -546,9 +497,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private DialogResult ShowGenericConflictDialog(string action, PluginAction theAction, List<PluginAction> conflictingActions) {
-
-      Trace.Assert(conflictingActions.Count > 0);
-
       string message = "The actions:\n\n";
       conflictingActions.ForEach(delegate(PluginAction conflictingAction) {
         message += " - " + conflictingAction.Action + " " + conflictingAction.Plugin.PluginName + "\n";
@@ -576,7 +524,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private PluginAction GetSmallestActionInvolving(PluginTag actionTag, List<PluginAction> actions) {
-      Trace.Assert(actions.Count > 0);
       PluginAction smallestAction;
       // if there is an action defined for which actionTag is the root then us it as root tag
       // otherwise use the root of the action that contains pluginTag in its hull and has the smallest hull of all actions
@@ -813,7 +760,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // copy extracted files to plugin dir
         string[] extractedFiles = Directory.GetFiles(tempDir, "*", SearchOption.AllDirectories);
         foreach(string extractedFile in extractedFiles) {
-          Trace.Assert(extractedFile.StartsWith(tempDir));
           File.Copy(extractedFile, pluginDir + extractedFile.Remove(0, tempDir.Length));
         }
       } catch(Exception e) {
@@ -821,7 +767,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // remove already copied files
         string[] extractedFiles = Directory.GetFiles(tempDir, "*", SearchOption.AllDirectories);
         foreach(string extractedFile in extractedFiles) {
-          Trace.Assert(extractedFile.StartsWith(tempDir));
           string filename = pluginDir + extractedFile.Remove(0, tempDir.Length);
           if(File.Exists(filename)) {
             File.Delete(filename);
@@ -831,7 +776,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // restore files from backup
         string[] backupFiles = Directory.GetFiles(backupDir, "*", SearchOption.AllDirectories);
         foreach(string backupFile in backupFiles) {
-          Trace.Assert(backupFile.StartsWith(backupDir));
           File.Copy(backupFile, pluginDir + backupFile.Remove(0, backupDir.Length));
         }
 
@@ -852,7 +796,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
           if(tag.State == PluginState.Upgradeable || (involvingActions.Count > 0 && involvingActions[0].Action == ManagerAction.Remove)) {
             tag.Plugin.Files.ForEach(delegate(string filename) {
-              Trace.Assert(filename.StartsWith(pluginDir));
               DialogResult result = MessageBox.Show("Deleting: " + filename, "Warning: deleting file", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
               if(result == DialogResult.OK) {
                 File.Delete(filename);
@@ -865,7 +808,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // restore deleted files from backup
         string[] backupFiles = Directory.GetFiles(backupDir, "*", SearchOption.AllDirectories);
         foreach(string backupFile in backupFiles) {
-          Trace.Assert(backupFile.StartsWith(backupDir));
           string oldFileName = pluginDir + backupFile.Remove(0, backupDir.Length);
           if(!File.Exists(oldFileName)) {
             File.Move(backupFile, oldFileName);
@@ -887,7 +829,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
           if(tag.State == PluginState.Upgradeable || (actionsInvolving.Count > 0 && actionsInvolving[0].Action == ManagerAction.Remove)) {
             tag.Plugin.Files.ForEach(delegate(string filename) {
-              Trace.Assert(filename.StartsWith(pluginDir));
               File.Copy(filename, backupDir + filename.Remove(0, pluginDir.Length));
             });
           }
@@ -997,14 +938,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void removeButton_Clicked(object sender, EventArgs e) {
-      AssertAction();
       // get the tag of the selected treeNode
       PluginTag actionTag = (PluginTag)pluginTreeView.SelectedNode.Tag;
       List<PluginAction> rootActions = GetActionsInvolving(actionTag);
       if(rootActions.Count>0) {
-        Trace.Assert(rootActions.TrueForAll(delegate(PluginAction rootAction) {
-          return rootAction.Action == ManagerAction.Remove;
-        }));
         UnmarkRemove(actionTag);
       } else {
         MarkRemove(actionTag);
@@ -1017,15 +954,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void installButton_Clicked(object sender, EventArgs e) {
-      AssertAction();
       // get the tag of the selected treeNode
       PluginTag actionTag = (PluginTag)pluginTreeView.SelectedNode.Tag;
       List<PluginAction> rootActions = GetActionsInvolving(actionTag);
 
       if(rootActions.Count > 0) {
-        Trace.Assert(rootActions.TrueForAll(delegate(PluginAction rootAction) {
-          return rootAction.Action == ManagerAction.Install;
-        }));
         UnmarkInstall(actionTag);
       } else {
         MarkInstall(actionTag);
@@ -1035,11 +968,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       UpdateActionButtons(actionTag);
       // update the plugin detail information of the selected plugin
       DisplayPluginInfo(actionTag.GetPluginDetails());
-    }
-
-    private void AssertAction() {
-      Trace.Assert(pluginTreeView.SelectedNode != null);
-      Trace.Assert(pluginTreeView.SelectedNode.Tag is PluginTag);
     }
 
     private void ShowErrorDialog(string message) {
@@ -1100,7 +1028,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
           // check if none of the files exist
           foreach(string filename in Directory.GetFiles(cacheDir)) {
-            Trace.Assert(filename.StartsWith(cacheDir));
             if(File.Exists(pluginDir + filename.Remove(0, cacheDir.Length))) {
               ShowErrorDialog("Sorry can't install the plugin "+packageName+"\nThe file: "+filename.Remove(0, cacheDir.Length)+" already exist in "+pluginDir+"\nIt seems the plugin is already installed.");
               ClearTemporaryFiles();
