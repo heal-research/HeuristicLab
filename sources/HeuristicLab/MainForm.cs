@@ -91,10 +91,12 @@ namespace HeuristicLab {
           SplashScreen splashScreen = new SplashScreen(1000, "Loading " + app.Name);
           splashScreen.Owner = this;
           splashScreen.Show();
-          this.Visible = false;
           PluginManager.Manager.Action += new PluginManagerActionEventHandler(splashScreen.Manager_Action);
-          PluginManager.Manager.Run(app);
-          this.Visible = true;
+          Thread t = new Thread(delegate() {
+            PluginManager.Manager.Run(app);
+          });
+          t.SetApartmentState(ApartmentState.STA);
+          t.Start();
         }
       }
     }

@@ -117,14 +117,28 @@ namespace HeuristicLab {
     }
 
     private void fadeTimer_Tick(object sender, EventArgs e) {
-      if(Opacity > 0.9) {
-        Opacity = 0.9;
-      } else if(this.Opacity > 0) {
-        Opacity -= 0.1;
+      if(InvokeRequired) {
+        Invoke((MethodInvoker)delegate() {
+          if(Opacity > 0.9) {
+            Opacity = 0.9;
+          } else if(this.Opacity > 0) {
+            Opacity -= 0.1;
+          } else {
+            Opacity = 0;
+            fadeTimer.Stop();
+            Close();
+          }
+        });
       } else {
-        Opacity = 0;
-        fadeTimer.Stop();
-        Close();
+        if(Opacity > 0.9) {
+          Opacity = 0.9;
+        } else if(this.Opacity > 0) {
+          Opacity -= 0.1;
+        } else {
+          Opacity = 0;
+          fadeTimer.Stop();
+          Close();
+        }
       }
     }
 
