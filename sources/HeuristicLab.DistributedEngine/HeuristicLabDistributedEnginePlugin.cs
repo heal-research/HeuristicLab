@@ -29,7 +29,7 @@ namespace HeuristicLab.DistributedEngine {
   [PluginFile(Filename = "HeuristicLab.DistributedEngine.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.Grid")]
-  [Dependency(Dependency = "HeuristicLab.ThreadParallelEngine.dll")]
+  [Dependency(Dependency = "HeuristicLab.ThreadParallelEngine")]
   public class HeuristicLabDistributedEnginePlugin : PluginBase {
   }
 }
