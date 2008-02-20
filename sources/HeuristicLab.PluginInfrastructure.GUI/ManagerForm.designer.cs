@@ -67,12 +67,12 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.upgradeButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.installButton = new System.Windows.Forms.ToolStripButton();
-      this.removeButton = new System.Windows.Forms.ToolStripButton();
+      this.deleteButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.publishButton = new System.Windows.Forms.ToolStripButton();
       this.pluginContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.installMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.removeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.deleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.publishMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -137,8 +137,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // installNewPluginsToolStripMenuItem
       // 
       this.installNewPluginsToolStripMenuItem.Name = "installNewPluginsToolStripMenuItem";
-      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-      this.installNewPluginsToolStripMenuItem.Text = "Remove/Upgrade/Install...";
+      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+      this.installNewPluginsToolStripMenuItem.Text = "Delete/Upgrade/Install...";
       this.installNewPluginsToolStripMenuItem.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator3
@@ -205,6 +205,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.pluginTreeView.SelectedImageIndex = 0;
       this.pluginTreeView.Size = new System.Drawing.Size(828, 220);
       this.pluginTreeView.TabIndex = 0;
+      this.pluginTreeView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pluginTreeView_KeyPress);
       this.pluginTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.pluginTreeView_NodeMouseClick);
       this.pluginTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.pluginTreeView_BeforeSelect);
       // 
@@ -234,7 +235,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
             this.upgradeButton,
             this.toolStripSeparator,
             this.installButton,
-            this.removeButton,
+            this.deleteButton,
             this.toolStripSeparator1,
             this.publishButton});
       this.toolStrip.Location = new System.Drawing.Point(0, 24);
@@ -250,7 +251,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.updateButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.updateButton.Name = "updateButton";
       this.updateButton.Size = new System.Drawing.Size(46, 22);
-      this.updateButton.Text = "U&pdate";
+      this.updateButton.Text = "Update";
       this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // upgradeButton
@@ -259,8 +260,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.upgradeButton.Image = ((System.Drawing.Image)(resources.GetObject("upgradeButton.Image")));
       this.upgradeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.upgradeButton.Name = "upgradeButton";
-      this.upgradeButton.Size = new System.Drawing.Size(140, 22);
-      this.upgradeButton.Text = "Remove/&Upgrade/Install...";
+      this.upgradeButton.Size = new System.Drawing.Size(132, 22);
+      this.upgradeButton.Text = "Delete/Upgrade/Install...";
       this.upgradeButton.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator
@@ -279,16 +280,16 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.installButton.Text = "&Install";
       this.installButton.Click += new System.EventHandler(this.installButton_Clicked);
       // 
-      // removeButton
+      // deleteButton
       // 
-      this.removeButton.CheckOnClick = true;
-      this.removeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.removeButton.Image = ((System.Drawing.Image)(resources.GetObject("removeButton.Image")));
-      this.removeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.removeButton.Name = "removeButton";
-      this.removeButton.Size = new System.Drawing.Size(50, 22);
-      this.removeButton.Text = "&Remove";
-      this.removeButton.Click += new System.EventHandler(this.removeButton_Clicked);
+      this.deleteButton.CheckOnClick = true;
+      this.deleteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.deleteButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteButton.Image")));
+      this.deleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.deleteButton.Name = "deleteButton";
+      this.deleteButton.Size = new System.Drawing.Size(42, 22);
+      this.deleteButton.Text = "&Delete";
+      this.deleteButton.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // toolStripSeparator1
       // 
@@ -309,29 +310,29 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // 
       this.pluginContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.installMenuItem,
-            this.removeMenuItem,
+            this.deleteMenuItem,
             this.publishMenuItem});
       this.pluginContextMenuStrip.Name = "pluginContextMenuStrip";
-      this.pluginContextMenuStrip.Size = new System.Drawing.Size(125, 70);
+      this.pluginContextMenuStrip.Size = new System.Drawing.Size(119, 70);
       // 
       // installMenuItem
       // 
       this.installMenuItem.Name = "installMenuItem";
-      this.installMenuItem.Size = new System.Drawing.Size(124, 22);
+      this.installMenuItem.Size = new System.Drawing.Size(152, 22);
       this.installMenuItem.Text = "Install";
       this.installMenuItem.Click += new System.EventHandler(this.installButton_Clicked);
       // 
-      // removeMenuItem
+      // deleteMenuItem
       // 
-      this.removeMenuItem.Name = "removeMenuItem";
-      this.removeMenuItem.Size = new System.Drawing.Size(124, 22);
-      this.removeMenuItem.Text = "Remove";
-      this.removeMenuItem.Click += new System.EventHandler(this.removeButton_Clicked);
+      this.deleteMenuItem.Name = "deleteMenuItem";
+      this.deleteMenuItem.Size = new System.Drawing.Size(118, 22);
+      this.deleteMenuItem.Text = "Delete";
+      this.deleteMenuItem.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // publishMenuItem
       // 
       this.publishMenuItem.Name = "publishMenuItem";
-      this.publishMenuItem.Size = new System.Drawing.Size(124, 22);
+      this.publishMenuItem.Size = new System.Drawing.Size(152, 22);
       this.publishMenuItem.Text = "Publish";
       this.publishMenuItem.Click += new System.EventHandler(this.publishButton_Click);
       // 
@@ -378,13 +379,13 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private System.Windows.Forms.ToolStripButton upgradeButton;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
     private System.Windows.Forms.ToolStripButton installButton;
-    private System.Windows.Forms.ToolStripButton removeButton;
+    private System.Windows.Forms.ToolStripButton deleteButton;
     private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     private System.Windows.Forms.ToolStripButton publishButton;
     private System.Windows.Forms.ContextMenuStrip pluginContextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem installMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem removeMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem deleteMenuItem;
     private System.Windows.Forms.ToolStripMenuItem publishMenuItem;
     private System.Windows.Forms.ToolStripMenuItem installPluginFromFileToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

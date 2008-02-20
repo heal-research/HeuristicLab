@@ -60,10 +60,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       installButton.Checked = false;
       installMenuItem.Enabled = false;
       installMenuItem.Checked = false;
-      removeButton.Enabled = false;
-      removeButton.Checked = false;
-      removeMenuItem.Enabled = false;
-      removeMenuItem.Checked = false;
+      deleteButton.Enabled = false;
+      deleteButton.Checked = false;
+      deleteMenuItem.Enabled = false;
+      deleteMenuItem.Checked = false;
 
       installedPlugins = new TreeNode("Installed plugins");
       installedPlugins.ImageIndex = 1;
@@ -566,16 +566,16 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
       publishButton.Enabled = (tag.State & PluginState.Installed) == PluginState.Installed;
       installButton.Enabled = (tag.State & PluginState.Available) == PluginState.Available;
-      removeButton.Enabled = (tag.State & (PluginState.Installed | PluginState.Upgradeable)) != 0;
+      deleteButton.Enabled = (tag.State & (PluginState.Installed | PluginState.Upgradeable)) != 0;
 
       installButton.Checked = GetAction(tag) == ManagerAction.Install;
-      removeButton.Checked = GetAction(tag) == ManagerAction.Remove;
+      deleteButton.Checked = GetAction(tag) == ManagerAction.Remove;
 
       publishMenuItem.Enabled = publishButton.Enabled;
       installMenuItem.Enabled = installButton.Enabled;
-      removeMenuItem.Enabled = removeButton.Enabled;
+      deleteMenuItem.Enabled = deleteButton.Enabled;
       installMenuItem.Checked = installButton.Checked;
-      removeMenuItem.Checked = removeButton.Checked;
+      deleteMenuItem.Checked = deleteButton.Checked;
 
     }
 
@@ -956,7 +956,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // when a node was selected that doesn't represent a plugin (root node) then install and remove are not possible
         publishButton.Enabled = false;
         installButton.Enabled = false;
-        removeButton.Enabled = false;
+        deleteButton.Enabled = false;
       }
     }
 
@@ -1009,5 +1009,13 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
     }
 
+    private void pluginTreeView_KeyPress(object sender, KeyPressEventArgs e) {
+      e.Handled = true;
+      if(e.KeyChar == 'i' && installButton.Enabled) {
+        installButton_Clicked(sender, e);
+      } else if(e.KeyChar == 'd' && deleteButton.Enabled) {
+        removeButton_Clicked(sender, e);
+      }
+    }
   }
 }
