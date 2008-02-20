@@ -61,6 +61,7 @@ namespace HeuristicLab.Core {
       }
     }
     public static void Save(IStorable instance, string filename) {
+      if (File.Exists(filename)) File.WriteAllText(filename, "");
       Save(instance, File.OpenWrite(filename));
     }
     public static void Save(IStorable instance, Stream stream) {
