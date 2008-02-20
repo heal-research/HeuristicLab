@@ -36,10 +36,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private TreeNode installedPlugins;
     private TreeNode availablePlugins;
     private TreeNode allPlugins;
-
     private List<PluginTag> allTags = new List<PluginTag>();
     private Dictionary<PluginTag, PluginAction> actions = new Dictionary<PluginTag, PluginAction>();
-
+    private List<PluginDescription> allAvailablePlugins = new List<PluginDescription>();
     private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir;
     private string cacheDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
     private string backupDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.BackupDir;
@@ -47,12 +46,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
     public ManagerForm() {
       InitializeComponent();
-
       InitializePlugins();
     }
 
     private void InitializePlugins() {
-
       pluginTreeView.Nodes.Clear();
       allTags.Clear();
       actions.Clear();
@@ -101,7 +98,46 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         allPlugins.Nodes.Add(allPluginsNode);
       }
 
-      // TASK populate the "inactive plugins" node by reading a list of inactive plugins from the PluginManager
+      allAvailablePlugins = FilterMostRecentPluginVersions(allAvailablePlugins);
+      // find all plugins that are installed for which a new version is available
+      List<PluginDescription> upgrades = FindUpgrades(allTags, allAvailablePlugins);
+      // find all available plugins that are not installed and new (= new name not new version) since the last update
+      List<PluginDescription> newPlugins = FindNewPlugins(allTags, allAvailablePlugins);
+      // find all plugins that are available (not installed) for which a new version has been released since the last update
+      List<PluginDescription> overridingPlugins = FindOverridingPlugins(allTags, allAvailablePlugins);
+      newPlugins.ForEach(delegate(PluginDescription plugin) {
+        PluginTag tag = new PluginTag(allTags, plugin, PluginState.Available);
+        allTags.Add(tag);
+        TreeNode node = new TreeNode(plugin.Name);
+        node.ContextMenuStrip = pluginContextMenuStrip;
+        node.Tag = tag;
+        node.ImageIndex = 0;
+        allPlugins.Nodes.Add(node);
+        TreeNode availableNode = new TreeNode(plugin.Name);
+        availableNode.ContextMenuStrip = pluginContextMenuStrip;
+        availableNode.Tag = tag;
+        availablePlugins.Nodes.Add(availableNode);
+
+      });
+      upgrades.ForEach(delegate(PluginDescription upgrade) {
+        // find the installed plugins that have the same name
+        List<PluginTag> oldPlugins = allTags.FindAll(delegate(PluginTag tag) {
+          return tag.PluginName == upgrade.Name;
+        });
+        PluginTag oldPlugin = oldPlugins[0];
+        // store the upgrade in the old plugin
+        oldPlugin.UpgradePluginDescription = upgrade;
+        UpdateTreeNodes(oldPlugins);
+      });
+      overridingPlugins.ForEach(delegate(PluginDescription overridingPlugin) {
+        List<PluginTag> currentPlugins = allTags.FindAll(delegate(PluginTag tag) {
+          return tag.PluginName == overridingPlugin.Name;
+        });
+        PluginTag currentPlugin = currentPlugins[0];
+        // replace the plugin description of the available plugin to point to the overriding plugin
+        currentPlugin.PluginDescription = overridingPlugin;
+      });
+      RebuildActionHulls();
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -110,9 +146,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void publishButton_Click(object sender, EventArgs args) {
-
       PluginInfo plugin = ((PluginTag)pluginTreeView.SelectedNode.Tag).Plugin;
-
       try {
         string packageFileName = plugin.Name + "-" + plugin.Version + ".zip";
         ZipFile zipFile = ZipFile.Create(packageFileName);
@@ -127,9 +161,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
         zipFile.CommitUpdate();
         zipFile.Close();
-
         FileInfo fileInfo = new FileInfo(packageFileName);
-
         infoTextBox.Text += "\nCreated " + packageFileName + " (" + fileInfo.Length + " bytes)\n";
         infoTextBox.Text += "Upload this file to your plugin source and add the following entry to" +
 " the file plugins.xml residing in the base directory of your plugin source.\n\n";
@@ -144,7 +176,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void updateButton_Click(object sender, EventArgs e) {
-
       // connect to all plugin sources and get a list of available plugins
       // log progress in the infoPane
       BackgroundWorker worker = new BackgroundWorker();
@@ -161,14 +192,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       };
 
       worker.DoWork += delegate(object doWorkSender, DoWorkEventArgs args) {
-        List<PluginDescription> allAvailablePlugins = new List<PluginDescription>();
-
-        //infoTextBox.Text = "Updating available plugins...\n";
+        allAvailablePlugins.Clear();
         dialog.SetDownloadDescription("Updating available plugins...");
-
         int i = 0;
         int n = HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginSources.Count;
-
         foreach(string pluginSourceUrl in HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginSources) {
           if(!worker.CancellationPending) {
             dialog.SetDownloadDescription("Connecting to " + pluginSourceUrl + "...");
@@ -199,60 +226,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
       worker.RunWorkerCompleted += delegate(object runWorkerCompletedSender, RunWorkerCompletedEventArgs args) {
         if(!args.Cancelled && args.Error == null) {
-          List<PluginDescription> allAvailablePlugins = (List<PluginDescription>)args.Result;
-          allAvailablePlugins = FilterMostRecentPluginVersions(allAvailablePlugins);
-
-          // find all plugins that are installed for which a new version is available
-          List<PluginDescription> upgrades = FindUpgrades(allTags, allAvailablePlugins);
-
-          // find all available plugins that are not installed and new (= new name not new version) since the last update
-          List<PluginDescription> newPlugins = FindNewPlugins(allTags, allAvailablePlugins);
-
-          // find all plugins that are available (not installed) for which a new version has been released since the last update
-          List<PluginDescription> overridingPlugins = FindOverridingPlugins(allTags, allAvailablePlugins);
-
-          newPlugins.ForEach(delegate(PluginDescription plugin) {
-            PluginTag tag = new PluginTag(allTags, plugin, PluginState.Available);
-            allTags.Add(tag);
-
-            TreeNode node = new TreeNode(plugin.Name);
-            node.ContextMenuStrip = pluginContextMenuStrip;
-            node.Tag = tag;
-            node.ImageIndex = 0;
-            allPlugins.Nodes.Add(node);
-
-            TreeNode availableNode = new TreeNode(plugin.Name);
-            availableNode.ContextMenuStrip = pluginContextMenuStrip;
-            availableNode.Tag = tag;
-            availablePlugins.Nodes.Add(availableNode);
-
-          });
-
-          upgrades.ForEach(delegate(PluginDescription upgrade) {
-            // find the installed plugins that have the same name
-            List<PluginTag> oldPlugins = allTags.FindAll(delegate(PluginTag tag) {
-              return tag.PluginName == upgrade.Name;
-            });
-            PluginTag oldPlugin = oldPlugins[0];
-
-            // store the upgrade in the old plugin
-            oldPlugin.UpgradePluginDescription = upgrade;
-
-            UpdateTreeNodes(oldPlugins);
-          });
-
-          overridingPlugins.ForEach(delegate(PluginDescription overridingPlugin) {
-            List<PluginTag> currentPlugins = allTags.FindAll(delegate(PluginTag tag) {
-              return tag.PluginName == overridingPlugin.Name;
-            });
-
-            PluginTag currentPlugin = currentPlugins[0];
-
-            // replace the plugin description of the available plugin to point to the overriding plugin
-            currentPlugin.PluginDescription = overridingPlugin;
-          });
-
-          RebuildActionHulls();
+          InitializePlugins();
         }
         dialog.Close();
       };

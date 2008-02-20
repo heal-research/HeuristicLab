@@ -40,7 +40,7 @@ namespace HeuristicLab.PluginInfrastructure {
     private Dictionary<string, List<string>> pluginAssemblies = new Dictionary<string, List<string>>();
 
     private List<string> loadablePlugins = new List<string>();
-    private string pluginDir = Application.StartupPath+"/"+ HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
+    private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
 
     internal event PluginLoadFailedEventHandler MissingPluginFile;
 
@@ -206,7 +206,7 @@ namespace HeuristicLab.PluginInfrastructure {
         });
         if(filenameArg.MemberInfo != null && filetypeArg.MemberInfo != null) {
           if((PluginFileType)filetypeArg.TypedValue.Value == PluginFileType.Assembly) {
-            pluginAssemblies.Add(pluginDir +"/"+ (string)filenameArg.TypedValue.Value);
+            pluginAssemblies.Add(pluginDir + "/" + (string)filenameArg.TypedValue.Value);
           }
         }
       }
@@ -295,7 +295,7 @@ namespace HeuristicLab.PluginInfrastructure {
       Array.ForEach<string>(plugin.Files, delegate(string file) {
         string filename = pluginDir + "/" + file;
         // always use \ as the directory separator
-        pluginInfo.Files.Add(filename.Replace('/','\\')); 
+        pluginInfo.Files.Add(filename.Replace('/', '\\'));
       });
 
       // each plugin can have multiple assemlies associated
