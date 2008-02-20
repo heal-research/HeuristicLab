@@ -83,7 +83,7 @@ namespace HeuristicLab {
         if(selected == pluginManagerListViewItem) {
           ManagerForm form = new ManagerForm();
           this.Visible = false;
-          form.ShowDialog();
+          form.ShowDialog(this);
           RefreshApplicationsList();
           this.Visible = true;
         } else {
