@@ -40,7 +40,7 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("BalanceTrees", "Determines if the trees should be balanced", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorTree", "The tree to manipulate", typeof(IOperator), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In));
@@ -53,7 +53,7 @@ namespace HeuristicLab.StructureIdentification {
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
-      bool balanceTrees = GetVariableValue<BoolData>("BalanceTrees", scope, true).Data;
+      double balancedTreesRate = GetVariableValue<DoubleData>("BalancedTreesRate", scope, true).Data;
       int treeSize = GetVariableValue<IntData>("TreeSize", scope, true).Data;
       int treeHeight = GetVariableValue<IntData>("TreeHeight", scope, true).Data;
 
@@ -65,7 +65,13 @@ namespace HeuristicLab.StructureIdentification {
         // => create a new random tree
 
         // create a new random operator tree
-        IOperator newOperatorTree = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, balanceTrees);
+
+        IOperator newOperatorTree;
+        if(random.NextDouble() <= balancedTreesRate) {
+          newOperatorTree = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, true);
+        } else {
+          newOperatorTree = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, false);
+        }
 
         if(!gardener.IsValidTree(newOperatorTree)) {
           throw new InvalidProgramException();
@@ -99,7 +105,12 @@ namespace HeuristicLab.StructureIdentification {
         int maxSubTreeSize = maxTreeSize - (treeSize - gardener.GetTreeSize(parent.SubOperators[childIndex]));
 
         // get a random operatorTree
-        IOperator newOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, balanceTrees);
+        IOperator newOperatorTree;
+        if(random.NextDouble() <= balancedTreesRate) {
+          newOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, true);
+        } else {
+          newOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, false);
+        }
 
         IOperator oldChild = parent.SubOperators[childIndex];
         parent.RemoveSubOperator(childIndex);

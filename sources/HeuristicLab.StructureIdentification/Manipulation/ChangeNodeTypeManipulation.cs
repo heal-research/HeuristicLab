@@ -37,7 +37,7 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("BalanceTrees", "Determines if the trees should be balanced", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorTree", "The tree to mutate", typeof(IOperator), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In));
@@ -48,7 +48,7 @@ namespace HeuristicLab.StructureIdentification {
       IOperator rootOperator = GetVariableValue<IOperator>("OperatorTree", scope, false);
       MersenneTwister random = GetVariableValue<MersenneTwister>("Random", scope, true);
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
-      bool balanceTrees = GetVariableValue<BoolData>("BalanceTrees", scope, true).Data;
+      double balancedTreesRate = GetVariableValue<DoubleData>("BalancedTreesRate", scope, true).Data;
       IntData treeSize = GetVariableValue<IntData>("TreeSize", scope, false);
       IntData treeHeight = GetVariableValue<IntData>("TreeHeight", scope, false);
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
@@ -86,7 +86,7 @@ namespace HeuristicLab.StructureIdentification {
         return gardener.CreateInitializationOperation(gardener.GetAllOperators(newTerminal), scope);
       } else {
         List<IOperator> uninitializedOperators;
-        IOperator newFunction = ChangeFunctionType(parent, selectedChild, selectedChildIndex, gardener, random, balanceTrees, out uninitializedOperators);
+        IOperator newFunction = ChangeFunctionType(parent, selectedChild, selectedChildIndex, gardener, random, balancedTreesRate, out uninitializedOperators);
 
         if (parent == null) {
           // no parent means the new function is the initial operator
@@ -138,7 +138,7 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     private IOperator ChangeFunctionType(IOperator parent, IOperator child, int childIndex, TreeGardener gardener, MersenneTwister random,
-      bool balanceTrees, out List<IOperator> uninitializedOperators) {
+      double balancedTreesRate, out List<IOperator> uninitializedOperators) {
       // since there are suboperators, we have to check which 
       // and how many of the existing suboperators we can reuse
 
@@ -196,7 +196,12 @@ namespace HeuristicLab.StructureIdentification {
           newOperator.AddSubOperator(selectedSubOperator, i);
           availableSubOperators.Remove(selectedSubOperator); // the operator shouldn't be available for the following slots
         } else {
-          IOperator freshOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, balanceTrees);
+          IOperator freshOperatorTree;
+          if(random.NextDouble() <= balancedTreesRate) {
+            freshOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, true);
+          } else {
+            freshOperatorTree = gardener.CreateRandomTree(allowedOperators, maxSubTreeSize, maxSubTreeHeight, false);
+          }
           freshSubTrees.AddRange(gardener.GetAllOperators(freshOperatorTree));
 
           newOperator.AddSubOperator(freshOperatorTree, i);

@@ -51,7 +51,7 @@ of that node with one of the childs of the selected child.
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("BalanceTrees", "Determines if the trees should be balanced", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorTree", "The tree to mutate", typeof(IOperator), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In));
@@ -64,7 +64,7 @@ of that node with one of the childs of the selected child.
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
-      bool balanceTrees = GetVariableValue<BoolData>("BalanceTrees", scope, true).Data;
+      double balancedTreesRate = GetVariableValue<DoubleData>("BalancedTreesRate", scope, true).Data;
 
       TreeGardener gardener = new TreeGardener(random, library);
       IOperator parent = gardener.GetRandomParentNode(rootOperator);
@@ -94,7 +94,12 @@ of that node with one of the childs of the selected child.
           return null;
         } else {
           // create a new random tree
-          IOperator newOperator = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, balanceTrees);
+          IOperator newOperator;
+          if(random.NextDouble() <= balancedTreesRate) {
+            newOperator = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, true);
+          } else {
+            newOperator = gardener.CreateRandomTree(gardener.AllOperators, maxTreeSize, maxTreeHeight, false);
+          }
 
           GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newOperator);
           GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newOperator);

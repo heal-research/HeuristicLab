@@ -95,7 +95,7 @@ namespace HeuristicLab.StructureIdentification {
 
     internal IOperator CreateRandomTree(int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
       if (balanceTrees) {
-        if (maxTreeHeight == 1) {
+        if (maxTreeHeight == 1 || maxTreeSize==1) {
           IOperator selectedTerminal = (IOperator)terminals[random.Next(terminals.Count())].Clone();
           return selectedTerminal;
         } else {
