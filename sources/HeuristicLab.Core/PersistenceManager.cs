@@ -61,8 +61,9 @@ namespace HeuristicLab.Core {
       }
     }
     public static void Save(IStorable instance, string filename) {
-      if (File.Exists(filename)) File.WriteAllText(filename, "");
-      Save(instance, File.OpenWrite(filename));
+      FileStream stream = File.Create(filename);
+      Save(instance, stream);
+      stream.Close();
     }
     public static void Save(IStorable instance, Stream stream) {
       XmlDocument document = PersistenceManager.CreateXmlDocument();
@@ -70,7 +71,10 @@ namespace HeuristicLab.Core {
       document.Save(stream);
     }
     public static IStorable Load(string filename) {
-      return Load(File.OpenRead(filename));
+      FileStream stream = File.OpenRead(filename);
+      IStorable storable = Load(stream);
+      stream.Close();
+      return storable;
     }
     public static IStorable Load(Stream stream) {
       XmlDocument doc = new XmlDocument();
