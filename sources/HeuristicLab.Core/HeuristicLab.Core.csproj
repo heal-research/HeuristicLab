@@ -228,6 +228,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
@@ -341,4 +342,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>SubWCRev ..\..\ ..\..\Properties\AssemblyInfo.frame ..\..\Properties\AssemblyInfo.cs</PreBuildEvent>
+  </PropertyGroup>
 </Project>
