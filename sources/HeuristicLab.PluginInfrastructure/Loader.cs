@@ -155,6 +155,7 @@ namespace HeuristicLab.PluginInfrastructure {
       }
 
       foreach(string pluginName in this.pluginDependencies.Keys) {
+        allDependencies.Clear();
         CheckPluginDependencies(pluginName);
       }
     }
@@ -220,16 +221,18 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
+    private List<string> allDependencies = new List<string>();
     private bool CheckPluginDependencies(string pluginName) {
       // when we already checked the dependencies of this plugin earlier then just return true
       if(loadablePlugins.Contains(pluginName)) {
         return true;
-      } else if(!pluginAssemblies.ContainsKey(pluginName)) {
+      } else if(!pluginAssemblies.ContainsKey(pluginName) || allDependencies.Contains(pluginName)) {
         // when the plugin is not available return false;
         return false;
       } else {
         // otherwise check if all dependencies of the plugin are OK 
         // if yes then this plugin is also ok and we store it in the list of loadable plugins
+        allDependencies.Add(pluginName);
         foreach(string dependency in pluginDependencies[pluginName]) {
           if(CheckPluginDependencies(dependency) == false) {
             // if only one dependency is not available that means that the current plugin also is unloadable
