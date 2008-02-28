@@ -32,7 +32,9 @@ namespace HeuristicLab.PluginInfrastructure {
 
     public PluginInfo[] Plugins {
       get {
-        return PluginManager.Manager.LoadedPlugins;
+        PluginInfo[] plugins = new PluginInfo[PluginManager.Manager.LoadedPlugins.Count];
+        PluginManager.Manager.LoadedPlugins.CopyTo(plugins, 0);
+        return plugins;
       }
     }
 

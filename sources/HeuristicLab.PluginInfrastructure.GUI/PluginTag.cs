@@ -30,6 +30,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     Installed = 1,
     Available = 2,
     Upgradeable = 4,
+    Disabled = 8,
   };
 
   class PluginTag {
@@ -217,7 +218,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     public override int GetHashCode() {
-      return pluginName.GetHashCode() + pluginVersion.GetHashCode();
+      if(pluginVersion != null) {
+        return pluginName.GetHashCode() + pluginVersion.GetHashCode();
+      } else return pluginName.GetHashCode();
     }
   }
 }

@@ -52,16 +52,24 @@ namespace HeuristicLab.PluginInfrastructure {
       this.pluginDir = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
     }
 
-    public List<PluginInfo> InstalledPlugins {
+    public ICollection<PluginInfo> InstalledPlugins {
       get { return remoteLoader.InstalledPlugins; }
     }
 
-    public ApplicationInfo[] InstalledApplications {
+    public ICollection<PluginInfo> DisabledPlugins {
+      get { return remoteLoader.DisabledPlugins; }
+    }
+
+    public ICollection<PluginInfo> ActivePlugins {
+      get { return remoteLoader.ActivePlugins; }
+    }
+
+    public ICollection<ApplicationInfo> InstalledApplications {
       get { return remoteLoader.InstalledApplications; }
     }
 
-    private PluginInfo[] loadedPlugins;
-    public PluginInfo[] LoadedPlugins {
+    private ICollection<PluginInfo> loadedPlugins;
+    public ICollection<PluginInfo> LoadedPlugins {
       get { return loadedPlugins; }
       internal set { loadedPlugins = value; }
     }
@@ -71,16 +79,12 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     public void Initialize() {
       NotifyListeners(PluginManagerAction.Initializing, "-");
-
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
       pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
-
       remoteLoader = (Loader)pluginDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfraStructure", "HeuristicLab.PluginInfrastructure.Loader");
-
       remoteLoader.PluginAction += delegate(object sender, PluginManagerActionEventArgs args) { if(Action != null) Action(this, args); };
       remoteLoader.Init();
-
       NotifyListeners(PluginManagerAction.Initialized, "-");
     }
 
@@ -98,7 +102,7 @@ namespace HeuristicLab.PluginInfrastructure {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
       AppDomain applicationDomain = AppDomain.CreateDomain(appInfo.Name + " AppDomain", null, setup);
-      
+
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfrastructure", "HeuristicLab.PluginInfrastructure.Runner");
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
       remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
@@ -115,7 +119,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>a list of plugins that are directly of transitively dependent.</returns>
     public List<PluginInfo> GetDependentPlugins(PluginInfo pluginInfo) {
       List<PluginInfo> mergedList = new List<PluginInfo>();
-      InstalledPlugins.ForEach(delegate(PluginInfo plugin) {
+      foreach(PluginInfo plugin in InstalledPlugins) {
         if(plugin.Dependencies.Contains(pluginInfo)) {
           if(!mergedList.Contains(plugin)) {
             mergedList.Add(plugin);
@@ -124,12 +128,11 @@ namespace HeuristicLab.PluginInfrastructure {
           // make sure that only one entry for each plugin is added to the merged list
           GetDependentPlugins(plugin).ForEach(delegate(PluginInfo dependentPlugin) {
             if(!mergedList.Contains(dependentPlugin)) {
-              mergedList.Add(dependentPlugin);              
+              mergedList.Add(dependentPlugin);
             }
           });
         }
-      });
-      
+      }
       return mergedList;
     }
 

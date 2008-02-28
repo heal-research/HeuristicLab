@@ -82,7 +82,9 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     public override int GetHashCode() {
-      return name.GetHashCode() + version.GetHashCode();
+      if(version != null) {
+        return name.GetHashCode() + version.GetHashCode();
+      } else return name.GetHashCode();
     }
   }
 }

@@ -27,13 +27,12 @@ using System.Reflection;
 namespace HeuristicLab.PluginInfrastructure {
   internal class Runner : MarshalByRefObject {
 
-    public void LoadPlugins(PluginInfo[] plugins) {
+    public void LoadPlugins(ICollection<PluginInfo> plugins) {
       foreach(PluginInfo pluginInfo in plugins) {
         foreach(string assemblyName in pluginInfo.Assemblies) {
           Assembly.LoadFrom(assemblyName);
         }
       }
-
       PluginManager.Manager.LoadedPlugins = plugins;
     }
 

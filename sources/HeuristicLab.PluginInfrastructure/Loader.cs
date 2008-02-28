@@ -32,43 +32,49 @@ namespace HeuristicLab.PluginInfrastructure {
     public delegate void PluginLoadedEventHandler(string pluginName);
     public delegate void PluginLoadFailedEventHandler(string pluginName, string args);
 
-    private Dictionary<PluginInfo, IPlugin> activePlugins = new Dictionary<PluginInfo, IPlugin>();
-    private Dictionary<PluginInfo, IPlugin> allPlugins = new Dictionary<PluginInfo, IPlugin>();
+    private Dictionary<PluginInfo, List<string>> pluginDependencies = new Dictionary<PluginInfo, List<string>>();
+    private List<PluginInfo> preloadedPluginInfos = new List<PluginInfo>();
     private Dictionary<IPlugin, PluginInfo> pluginInfos = new Dictionary<IPlugin, PluginInfo>();
-
-    private Dictionary<string, List<string>> pluginDependencies = new Dictionary<string, List<string>>();
-    private Dictionary<string, List<string>> pluginAssemblies = new Dictionary<string, List<string>>();
-
-    private List<string> loadablePlugins = new List<string>();
+    private Dictionary<PluginInfo, IPlugin> allPlugins = new Dictionary<PluginInfo, IPlugin>();
+    private List<PluginInfo> disabledPlugins = new List<PluginInfo>();
     private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
 
     internal event PluginLoadFailedEventHandler MissingPluginFile;
-
     internal event PluginManagerActionEventHandler PluginAction;
 
-    internal PluginInfo[] ActivePlugins {
+    internal ICollection<PluginInfo> ActivePlugins {
       get {
-        PluginInfo[] plugins = new PluginInfo[activePlugins.Count];
-        activePlugins.Keys.CopyTo(plugins, 0);
-        return plugins;
+        List<PluginInfo> list = new List<PluginInfo>();
+        foreach(PluginInfo info in allPlugins.Keys) {
+          if(!disabledPlugins.Exists(delegate(PluginInfo disabledInfo) { return info.Name == disabledInfo.Name; })) {
+            list.Add(info);
+          }
+        }
+        return list;
       }
     }
 
-    internal List<PluginInfo> InstalledPlugins {
+    internal ICollection<PluginInfo> InstalledPlugins {
       get {
         return new List<PluginInfo>(allPlugins.Keys);
       }
     }
 
-    private ApplicationInfo[] applications;
-    internal ApplicationInfo[] InstalledApplications {
+    internal ICollection<PluginInfo> DisabledPlugins {
+      get {
+        return disabledPlugins;
+      }
+    }
+
+    private ICollection<ApplicationInfo> applications;
+    internal ICollection<ApplicationInfo> InstalledApplications {
       get {
         return applications;
       }
     }
 
     private IPlugin FindPlugin(PluginInfo plugin) {
-      return activePlugins[plugin];
+      return allPlugins[plugin];
     }
 
 
@@ -84,24 +90,22 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     internal void Init() {
       AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += delegate(object sender, ResolveEventArgs args) { return Assembly.ReflectionOnlyLoad(args.Name); };
-      activePlugins.Clear();
       allPlugins.Clear();
+      disabledPlugins.Clear();
       pluginInfos.Clear();
       pluginsByName.Clear();
-      loadablePlugins.Clear();
       pluginDependencies.Clear();
-      pluginAssemblies.Clear();
 
       List<Assembly> assemblies = ReflectionOnlyLoadDlls();
       CheckAssemblyDependencies(assemblies);
-      LoadPlugins();
       CheckPluginFiles();
+      CheckPluginDependencies();
+      LoadPlugins();
 
       DiscoveryService service = new DiscoveryService();
       IApplication[] apps = service.GetInstances<IApplication>();
-      applications = new ApplicationInfo[apps.Length];
+      applications = new List<ApplicationInfo>();
 
-      int i = 0;
       foreach(IApplication application in apps) {
         ApplicationInfo info = new ApplicationInfo();
         info.Name = application.Name;
@@ -110,7 +114,7 @@ namespace HeuristicLab.PluginInfrastructure {
         info.PluginAssembly = application.GetType().Assembly.GetName().Name;
         info.PluginType = application.GetType().Namespace + "." + application.GetType().Name;
 
-        applications[i++] = info;
+        applications.Add(info);
       }
     }
 
@@ -128,35 +132,26 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private void CheckAssemblyDependencies(List<Assembly> assemblies) {
-
       foreach(Assembly assembly in assemblies) {
-
         // GetExportedTypes throws FileNotFoundException when a referenced assembly
         // of the current assembly is missing.
         try {
           Type[] exported = assembly.GetExportedTypes();
 
           foreach(Type t in exported) {
-            // if the type implements IPlugin
+            // if there is a type that implements IPlugin
             if(Array.Exists<Type>(t.GetInterfaces(), delegate(Type iface) {
               // use AssemblyQualifiedName to compare the types because we can't directly 
               // compare ReflectionOnly types and Execution types
               return iface.AssemblyQualifiedName == typeof(IPlugin).AssemblyQualifiedName;
             })) {
+              // fetch the attributes of the IPlugin type
               GetPluginAttributeData(t);
             }
-
           }
         } catch(FileNotFoundException) {
           // when a referenced assembly cannot be loaded then ignore this assembly in the plugin discovery
-          // TASK: add the assembly to some kind of unloadable assemblies list
-          // this list could be displayed to the user for diagnosis          
         }
-      }
-
-      foreach(string pluginName in this.pluginDependencies.Keys) {
-        allDependencies.Clear();
-        CheckPluginDependencies(pluginName);
       }
     }
 
@@ -169,16 +164,13 @@ namespace HeuristicLab.PluginInfrastructure {
     private void GetPluginAttributeData(Type t) {
       // get all attributes of that type
       IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(t);
-
       List<string> pluginAssemblies = new List<string>();
       List<string> pluginDependencies = new List<string>();
+      List<string> pluginFiles = new List<string>();
       string pluginName = "";
-
-      // extract relevant parameters
       // iterate through all custom attributes and search for named arguments that we are interested in 
       foreach(CustomAttributeData attributeData in attributes) {
         List<CustomAttributeNamedArgument> namedArguments = new List<CustomAttributeNamedArgument>(attributeData.NamedArguments);
-
         // if the current attribute contains a named argument with the name "Name" then extract the plugin name
         CustomAttributeNamedArgument pluginNameArgument = namedArguments.Find(delegate(CustomAttributeNamedArgument arg) {
           return arg.MemberInfo.Name == "Name";
@@ -186,17 +178,14 @@ namespace HeuristicLab.PluginInfrastructure {
         if(pluginNameArgument.MemberInfo != null) {
           pluginName = (string)pluginNameArgument.TypedValue.Value;
         }
-
         // if the current attribute contains a named argument with the name "Dependency" then extract the dependency
         // and store it in the list of all dependencies
         CustomAttributeNamedArgument dependencyNameArgument = namedArguments.Find(delegate(CustomAttributeNamedArgument arg) {
           return arg.MemberInfo.Name == "Dependency";
         });
-
         if(dependencyNameArgument.MemberInfo != null) {
           pluginDependencies.Add((string)dependencyNameArgument.TypedValue.Value);
         }
-
         // if the current attribute has a named argument "Filename" then find if the argument "Filetype" is also supplied
         // and if the filetype is Assembly then store the name of the assembly in the list of assemblies
         CustomAttributeNamedArgument filenameArg = namedArguments.Find(delegate(CustomAttributeNamedArgument arg) {
@@ -206,53 +195,74 @@ namespace HeuristicLab.PluginInfrastructure {
           return arg.MemberInfo.Name == "Filetype";
         });
         if(filenameArg.MemberInfo != null && filetypeArg.MemberInfo != null) {
+          pluginFiles.Add(pluginDir + "/" + (string)filenameArg.TypedValue.Value);
           if((PluginFileType)filetypeArg.TypedValue.Value == PluginFileType.Assembly) {
             pluginAssemblies.Add(pluginDir + "/" + (string)filenameArg.TypedValue.Value);
           }
         }
       }
 
-      // make sure that we found reasonable values
+      // minimal sanity check of the attribute values
       if(pluginName != "" && pluginAssemblies.Count > 0) {
-        this.pluginDependencies[pluginName] = pluginDependencies;
-        this.pluginAssemblies[pluginName] = pluginAssemblies;
+        // create a temporary PluginInfo that contains the attribute values
+        PluginInfo info = new PluginInfo();
+        info.Name = pluginName;
+        info.Assemblies = pluginAssemblies;
+        info.Files.AddRange(pluginFiles);
+        info.Assemblies.AddRange(pluginAssemblies);
+        this.pluginDependencies[info] = pluginDependencies;
+        preloadedPluginInfos.Add(info);
       } else {
         throw new InvalidPluginException();
       }
     }
 
-    private List<string> allDependencies = new List<string>();
+    private void CheckPluginDependencies() {
+      foreach(PluginInfo pluginInfo in preloadedPluginInfos) {
+        // don't need to check plugins that are already disabled
+        if(disabledPlugins.Contains(pluginInfo)) {
+          continue;
+        }
+        visitedDependencies.Clear();
+        if(!CheckPluginDependencies(pluginInfo.Name)) {
+          disabledPlugins.Add(pluginInfo);
+        }
+      }
+    }
+
+    private List<string> visitedDependencies = new List<string>();
     private bool CheckPluginDependencies(string pluginName) {
-      // when we already checked the dependencies of this plugin earlier then just return true
-      if(loadablePlugins.Contains(pluginName)) {
-        return true;
-      } else if(!pluginAssemblies.ContainsKey(pluginName) || allDependencies.Contains(pluginName)) {
+      if(!preloadedPluginInfos.Exists(delegate(PluginInfo info) { return pluginName == info.Name; }) ||
+        disabledPlugins.Exists(delegate(PluginInfo info) { return pluginName == info.Name; }) ||
+        visitedDependencies.Contains(pluginName)) {
         // when the plugin is not available return false;
         return false;
       } else {
         // otherwise check if all dependencies of the plugin are OK 
         // if yes then this plugin is also ok and we store it in the list of loadable plugins
-        allDependencies.Add(pluginName);
-        foreach(string dependency in pluginDependencies[pluginName]) {
+
+        PluginInfo matchingInfo = preloadedPluginInfos.Find(delegate(PluginInfo info) { return info.Name == pluginName; });
+        if(matchingInfo == null) throw new InvalidProgramException(); // shouldn't happen
+        foreach(string dependency in pluginDependencies[matchingInfo]) {
+          visitedDependencies.Add(pluginName);
           if(CheckPluginDependencies(dependency) == false) {
             // if only one dependency is not available that means that the current plugin also is unloadable
             return false;
           }
+          visitedDependencies.Remove(pluginName);
         }
-        // all dependencies OK -> add to loadable list and return true
-        loadablePlugins.Add(pluginName);
+        // all dependencies OK
         return true;
       }
     }
 
 
     private Dictionary<string, IPlugin> pluginsByName = new Dictionary<string, IPlugin>();
-
     private void LoadPlugins() {
       // load all loadable plugins (all dependencies available) into the execution context
-      foreach(string plugin in loadablePlugins) {
-        {
-          foreach(string assembly in pluginAssemblies[plugin]) {
+      foreach(PluginInfo pluginInfo in preloadedPluginInfos) {
+        if(!disabledPlugins.Contains(pluginInfo)) {
+          foreach(string assembly in pluginInfo.Assemblies) {
             Assembly.LoadFrom(assembly);
           }
         }
@@ -265,30 +275,25 @@ namespace HeuristicLab.PluginInfrastructure {
         if(assembly == this.GetType().Assembly)
           continue;
         Type[] availablePluginTypes = service.GetTypes(typeof(IPlugin), assembly);
-
-
         foreach(Type pluginType in availablePluginTypes) {
           if(!pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
             IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
             PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializingPlugin));
-
             pluginsByName.Add(plugin.Name, plugin);
-            PluginInfo pluginInfo = GetPluginInfo(plugin);
-
-
-            allPlugins.Add(pluginInfo, plugin);
-            PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializedPlugin));
           }
         }
       }
+
+      foreach(IPlugin plugin in pluginsByName.Values) {
+        PluginInfo pluginInfo = GetPluginInfo(plugin);
+        allPlugins.Add(pluginInfo, plugin);
+        PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializedPlugin));
+      }
     }
-
-
     private PluginInfo GetPluginInfo(IPlugin plugin) {
       if(pluginInfos.ContainsKey(plugin)) {
         return pluginInfos[plugin];
       }
-
       // store the data of the plugin in a description file which can be used without loading the plugin assemblies
       PluginInfo pluginInfo = new PluginInfo();
       pluginInfo.Name = plugin.Name;
@@ -301,49 +306,38 @@ namespace HeuristicLab.PluginInfrastructure {
         pluginInfo.Files.Add(filename.Replace('/', '\\'));
       });
 
-      // each plugin can have multiple assemlies associated
-      // for each assembly of the plugin find the dependencies
-      // and get the pluginDescriptions for all dependencies
-      foreach(string assembly in pluginAssemblies[plugin.Name]) {
+      PluginInfo preloadedInfo = preloadedPluginInfos.Find(delegate(PluginInfo info) { return info.Name == plugin.Name; });
+      foreach(string assembly in preloadedInfo.Assemblies) {
         // always use \ as directory separator (this is necessary for discovery of types in 
         // plugins see DiscoveryService.GetTypes() 
         pluginInfo.Assemblies.Add(assembly.Replace('/', '\\'));
-
       }
-      foreach(string dependency in pluginDependencies[plugin.Name]) {
+      foreach(string dependency in pluginDependencies[preloadedInfo]) {
         // accumulate the dependencies of each assembly into the dependencies of the whole plugin
         PluginInfo dependencyInfo = GetPluginInfo(pluginsByName[dependency]);
         pluginInfo.Dependencies.Add(dependencyInfo);
       }
-
       pluginInfos[plugin] = pluginInfo;
-
       return pluginInfo;
     }
 
     private void CheckPluginFiles() {
-      foreach(PluginInfo plugin in allPlugins.Keys) {
-        CheckPluginFiles(plugin);
+      foreach(PluginInfo plugin in preloadedPluginInfos) {
+        if(!CheckPluginFiles(plugin)) {
+          disabledPlugins.Add(plugin);
+        }
       }
     }
 
     private bool CheckPluginFiles(PluginInfo pluginInfo) {
-      if(activePlugins.ContainsKey(pluginInfo)) {
-        return true;
-      }
-      foreach(PluginInfo dependency in pluginInfo.Dependencies) {
-        if(!CheckPluginFiles(dependency)) {
-          return false;
-        }
-      }
       foreach(string filename in pluginInfo.Files) {
         if(!File.Exists(filename)) {
-          MissingPluginFile(pluginInfo.Name, filename);
+          if(MissingPluginFile != null) {
+            MissingPluginFile(pluginInfo.Name, filename);
+          }
           return false;
         }
       }
-
-      activePlugins.Add(pluginInfo, allPlugins[pluginInfo]);
       return true;
     }
 
