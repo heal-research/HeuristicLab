@@ -25,10 +25,10 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
+using System.Threading;
 
 namespace HeuristicLab.Grid {
-  public class ProcessingEngine : ThreadParallelEngine.ThreadParallelEngine {
-
+  public class ProcessingEngine : EngineBase {
     private AtomicOperation initialOperation;
     public AtomicOperation InitialOperation {
       get { return initialOperation; }
@@ -54,6 +54,30 @@ namespace HeuristicLab.Grid {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       initialOperation = (AtomicOperation)PersistenceManager.Restore(node.SelectSingleNode("InitialOperation"), restoredObjects);
+    }
+
+    protected override void ProcessNextOperation() {
+      IOperation operation = myExecutionStack.Pop();
+      if(operation is AtomicOperation) {
+        AtomicOperation atomicOperation = (AtomicOperation)operation;
+        IOperation next = null;
+        try {
+          next = atomicOperation.Operator.Execute(atomicOperation.Scope);
+        } catch(Exception ex) {
+          // push operation on stack again
+          myExecutionStack.Push(atomicOperation);
+          Abort();
+          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
+        }
+        if(next != null)
+          myExecutionStack.Push(next);
+        OnOperationExecuted(atomicOperation);
+        if(atomicOperation.Operator.Breakpoint) Abort();
+      } else if(operation is CompositeOperation) {
+        CompositeOperation compositeOperation = (CompositeOperation)operation;
+        for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
+          myExecutionStack.Push(compositeOperation.Operations[i]);
+      }
     }
   }
 }

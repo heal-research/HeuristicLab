@@ -29,7 +29,6 @@ namespace HeuristicLab.Grid {
   [ClassInfo(Name = "HeuristicLab.Grid")]
   [PluginFile(Filename = "HeuristicLab.Grid.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.ThreadParallelEngine")]
   public class HeuristicLabGridPlugin : PluginBase {
   }
 }
