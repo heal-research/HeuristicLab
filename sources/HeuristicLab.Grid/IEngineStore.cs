@@ -28,9 +28,8 @@ namespace HeuristicLab.Grid {
 
   [ServiceContract(Namespace = "http://HeuristicLab.Grid")]
   interface IEngineStore {
-
     [OperationContract]
-    bool TryTakeEngine(out Guid guid, out byte[] engine);
+    bool TryTakeEngine(string clientUrl, out Guid guid, out byte[] engine);
 
     [OperationContract]
     void StoreResult(Guid guid, byte[] result);

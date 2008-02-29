@@ -33,13 +33,18 @@ using System.Xml;
 using System.Threading;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 
 namespace HeuristicLab.Grid {
-  public partial class ClientForm : Form {
-
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+  public partial class ClientForm : Form, IClient {
     private ChannelFactory<IEngineStore> factory;
+    private ServiceHost clientHost;
     private System.Timers.Timer fetchOperationTimer;
     private IEngineStore engineStore;
+    private Guid currentGuid;
+    private ProcessingEngine currentEngine;
+    private string clientUrl;
 
     public ClientForm() {
       InitializeComponent();
@@ -47,15 +52,22 @@ namespace HeuristicLab.Grid {
       fetchOperationTimer.Interval = 200;
       fetchOperationTimer.Elapsed += new System.Timers.ElapsedEventHandler(fetchOperationTimer_Elapsed);
       statusTextBox.Text = "Stopped";
+      currentGuid = Guid.Empty;
     }
 
     private void startButton_Click(object sender, EventArgs e) {
+      clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/Grid/Client";
+      clientHost = new ServiceHost(this, new Uri(clientUrl));
       try {
         NetTcpBinding binding = new NetTcpBinding();
         binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
         binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
         binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-        binding.Security.Mode = SecurityMode.None;        
+        binding.Security.Mode = SecurityMode.None;
+
+        clientHost.AddServiceEndpoint(typeof(IClient), binding, clientUrl);
+        clientHost.Open();
+
         factory = new ChannelFactory<IEngineStore>(binding);
         engineStore = factory.CreateChannel(new EndpointAddress(addressTextBox.Text));
 
@@ -64,8 +76,9 @@ namespace HeuristicLab.Grid {
         stopButton.Enabled = true;
         statusTextBox.Text = "Waiting for engine";
 
-      } catch (Exception ex) {
+      } catch (CommunicationException ex) {
         MessageBox.Show("Exception while connecting to the server: " + ex.Message);
+        clientHost.Abort();
         startButton.Enabled = true;
         stopButton.Enabled = false;
         fetchOperationTimer.Stop();
@@ -75,6 +88,7 @@ namespace HeuristicLab.Grid {
     private void stopButton_Click(object sender, EventArgs e) {
       fetchOperationTimer.Stop();
       factory.Abort();
+      clientHost.Close();
       statusTextBox.Text = "Stopped";
       stopButton.Enabled = false;
       startButton.Enabled = true;
@@ -82,23 +96,31 @@ namespace HeuristicLab.Grid {
 
     private void fetchOperationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       byte[] engineXml;
-      Guid guid;
       fetchOperationTimer.Stop();
-      if (engineStore.TryTakeEngine(out guid, out engineXml)) {
-        ProcessingEngine engine = RestoreEngine(engineXml);
+      if (engineStore.TryTakeEngine(clientUrl, out currentGuid, out engineXml)) {
+        currentEngine = RestoreEngine(engineXml);
         if (InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
-        engine.Finished += delegate(object src, EventArgs args) {
-          byte[] resultScopeXml = SaveScope(engine.InitialOperation.Scope);
-          engineStore.StoreResult(guid, resultScopeXml);
+        currentEngine.Finished += delegate(object src, EventArgs args) {
+          byte[] resultScopeXml = SaveScope(currentEngine.InitialOperation.Scope);
+          engineStore.StoreResult(currentGuid, resultScopeXml);
+          currentGuid = Guid.Empty;
+          currentEngine = null;
           fetchOperationTimer.Interval = 100;
           fetchOperationTimer.Start();
         };
-        engine.Execute();
+        currentEngine.Execute();
       } else {
         if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
         fetchOperationTimer.Interval = 5000;
         fetchOperationTimer.Start();
       }
+    }
+    public void Abort(Guid guid) {
+      if(!IsRunningEngine(guid)) return;
+      currentEngine.Abort();
+    }
+    public bool IsRunningEngine(Guid guid) {
+      return currentGuid == guid;
     }
     private ProcessingEngine RestoreEngine(byte[] engine) {
       GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);

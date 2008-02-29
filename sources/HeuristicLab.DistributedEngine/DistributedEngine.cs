@@ -32,10 +32,8 @@ using System.IO.Compression;
 
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
-    // currently executed operators
-    private IOperator[] currentOperators;
-    private int operatorIndex;
     private IGridServer server;
+    private Dictionary<Guid, AtomicOperation> runningEngines = new Dictionary<Guid, AtomicOperation>();
 
     private string serverAddress;
     public string ServerAddress {
@@ -46,11 +44,6 @@ namespace HeuristicLab.DistributedEngine {
         }
       }
     }
-
-    public DistributedEngine() {
-      currentOperators = new IOperator[1000];
-    }
-
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       DistributedEngine clone = (DistributedEngine)base.Clone(clonedObjects);
@@ -83,14 +76,12 @@ namespace HeuristicLab.DistributedEngine {
 
     public override void Abort() {
       base.Abort();
-      for(int i = 0; i < currentOperators.Length; i++) {
-        if(currentOperators[i] != null)
-          currentOperators[i].Abort();
+      foreach(Guid engineGuid in runningEngines.Keys) {
+        server.AbortEngine(engineGuid);
       }
     }
 
     protected override void ProcessNextOperation() {
-      operatorIndex = 1;
       ProcessNextOperation(myExecutionStack, 0);
     }
     private void ProcessNextOperation(Stack<IOperation> stack, int currentOperatorIndex) {
@@ -99,7 +90,6 @@ namespace HeuristicLab.DistributedEngine {
         AtomicOperation atomicOperation = (AtomicOperation)operation;
         IOperation next = null;
         try {
-          currentOperators[currentOperatorIndex] = atomicOperation.Operator;
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
         } catch(Exception ex) {
           // push operation on stack again
@@ -114,7 +104,6 @@ namespace HeuristicLab.DistributedEngine {
       } else if(operation is CompositeOperation) {
         CompositeOperation compositeOperation = (CompositeOperation)operation;
         if(compositeOperation.ExecuteInParallel) {
-          Dictionary<Guid, AtomicOperation> runningEngines = new Dictionary<Guid, AtomicOperation>();
           foreach(AtomicOperation parOperation in compositeOperation.Operations) {
             ProcessingEngine engine = new ProcessingEngine(OperatorGraph, GlobalScope, parOperation); // OperatorGraph not needed?
             MemoryStream memStream = new MemoryStream();

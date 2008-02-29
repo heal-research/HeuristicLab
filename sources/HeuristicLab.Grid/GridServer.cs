@@ -45,7 +45,7 @@ namespace HeuristicLab.Grid {
     }
 
     public void AbortEngine(Guid engine) {
-      throw new NotImplementedException();
+      engineStore.AbortEngine(engine);
     }
   }
 }

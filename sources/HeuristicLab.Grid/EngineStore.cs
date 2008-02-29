@@ -26,13 +26,15 @@ using System.Threading;
 using System.ServiceModel;
 
 namespace HeuristicLab.Grid {
-  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext=false)]
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public class EngineStore : IEngineStore {
     private Queue<Guid> engineQueue;
     private Dictionary<Guid, byte[]> waitingEngines;
     private Dictionary<Guid, byte[]> runningEngines;
     private Dictionary<Guid, byte[]> results;
+    private Dictionary<Guid, string> runningClients;
     private object bigLock;
+    private ChannelFactory<IClient> clientChannelFactory;
 
     private event EventHandler ResultRecieved;
 
@@ -58,13 +60,22 @@ namespace HeuristicLab.Grid {
       engineQueue = new Queue<Guid>();
       waitingEngines = new Dictionary<Guid, byte[]>();
       runningEngines = new Dictionary<Guid, byte[]>();
+      runningClients = new Dictionary<Guid, string>();
       results = new Dictionary<Guid, byte[]>();
       bigLock = new object();
+
+      NetTcpBinding binding = new NetTcpBinding();
+      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
+      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
+      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
+      binding.Security.Mode = SecurityMode.None;
+
+      clientChannelFactory = new ChannelFactory<IClient>(binding);
     }
 
-    public bool TryTakeEngine(out Guid guid, out byte[] engine) {
-      lock (bigLock) {
-        if (engineQueue.Count == 0) {
+    public bool TryTakeEngine(string clientUrl, out Guid guid, out byte[] engine) {
+      lock(bigLock) {
+        if(engineQueue.Count == 0) {
           guid = Guid.Empty;
           engine = null;
           return false;
@@ -73,30 +84,32 @@ namespace HeuristicLab.Grid {
           engine = waitingEngines[guid];
           waitingEngines.Remove(guid);
           runningEngines[guid] = engine;
+          runningClients[guid] = clientUrl;
           return true;
         }
       }
     }
 
     public void StoreResult(Guid guid, byte[] result) {
-      lock (bigLock) {
-        if (!runningEngines.ContainsKey(guid)) return; // ignore result when the engine is not known to be running
+      lock(bigLock) {
+        if(!runningEngines.ContainsKey(guid)) return; // ignore result when the engine is not known to be running
 
         runningEngines.Remove(guid);
+        runningClients.Remove(guid);
         results[guid] = result;
         OnResultRecieved(guid);
       }
     }
 
     internal void AddEngine(Guid guid, byte[] engine) {
-      lock (bigLock) {
+      lock(bigLock) {
         engineQueue.Enqueue(guid);
         waitingEngines.Add(guid, engine);
       }
     }
 
     internal byte[] RemoveResult(Guid guid) {
-      lock (bigLock) {
+      lock(bigLock) {
         byte[] result = results[guid];
         results.Remove(guid);
         return result;
@@ -105,15 +118,15 @@ namespace HeuristicLab.Grid {
 
     internal byte[] GetResult(Guid guid) {
       ManualResetEvent waitHandle = new ManualResetEvent(false);
-      lock (bigLock) {
-        if (results.ContainsKey(guid)) {
+      lock(bigLock) {
+        if(results.ContainsKey(guid)) {
           byte[] result = results[guid];
           results.Remove(guid);
           return result;
         } else {
           ResultRecieved += delegate(object source, EventArgs args) {
             ResultRecievedEventArgs resultArgs = (ResultRecievedEventArgs)args;
-            if (resultArgs.resultGuid == guid) {
+            if(resultArgs.resultGuid == guid) {
               waitHandle.Set();
             }
           };
@@ -123,17 +136,31 @@ namespace HeuristicLab.Grid {
       waitHandle.WaitOne();
       waitHandle.Close();
 
-      lock (bigLock) {
+      lock(bigLock) {
         byte[] result = results[guid];
         results.Remove(guid);
         return result;
       }
     }
 
+    internal void AbortEngine(Guid guid) {
+      string clientUrl = "";
+      lock(bigLock) {
+        if(runningClients.ContainsKey(guid)) {
+          clientUrl = runningClients[guid];
+        }
+
+        if(clientUrl != "") {
+          IClient client = clientChannelFactory.CreateChannel(new EndpointAddress(clientUrl));
+          client.Abort(guid);
+        }
+      }
+    }
+
     private void OnResultRecieved(Guid guid) {
       ResultRecievedEventArgs args = new ResultRecievedEventArgs();
       args.resultGuid = guid;
-      if (ResultRecieved != null) {
+      if(ResultRecieved != null) {
         ResultRecieved(this, args);
       }
     }
