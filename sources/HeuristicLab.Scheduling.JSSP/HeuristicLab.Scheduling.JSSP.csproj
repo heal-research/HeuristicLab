@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="JSSPInjectorView.resx">
@@ -160,4 +161,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>

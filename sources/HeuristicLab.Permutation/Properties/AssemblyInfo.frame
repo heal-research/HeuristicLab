@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.AdvancedOptimizationFrontend")]
-[assembly: AssemblyDescription("HeuristicLab advanced user interface for heuristic optimization")]
+[assembly: AssemblyTitle("HeuristicLab.Permutation")]
+[assembly: AssemblyDescription("HeuristicLab permutation operators")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9e8c630f-f39d-42ae-97fd-2184b680db31")]
+[assembly: Guid("8819e533-c557-42e0-8cee-09dda7686cd2")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -50,8 +50,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.$WCREV$")]
+[assembly: AssemblyFileVersion("3.0.0.$WCREV$")]

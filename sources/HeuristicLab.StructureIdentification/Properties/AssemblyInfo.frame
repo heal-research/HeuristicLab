@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.SGA")]
-[assembly: AssemblyDescription("HeuristicLab Standard Genetic Algorithm (SGA)")]
+[assembly: AssemblyTitle("HeuristicLab.StructureIdentification")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ec039d68-07a5-43cf-ba26-34f41c2d470a")]
+[assembly: Guid("ca7d6d59-76a3-4dc3-8a90-dafadec08959")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -52,5 +52,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.$WCREV$")]
+[assembly: AssemblyFileVersion("3.0.0.$WCREV$")]

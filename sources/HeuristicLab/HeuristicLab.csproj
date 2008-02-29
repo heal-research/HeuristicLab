@@ -103,6 +103,7 @@
     <Content Include="HeuristicLab.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="app.config" />
+    <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Resources\LargeIcons.gif" />
     <None Include="Resources\Details.gif" />
     <None Include="Resources\List.gif" />
@@ -118,5 +119,6 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>cmd /c ..\..\UpdateAssemblies.cmd $(ConfigurationName)</PostBuildEvent>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -343,6 +343,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>SubWCRev ..\..\ ..\..\Properties\AssemblyInfo.frame ..\..\Properties\AssemblyInfo.cs</PreBuildEvent>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
 </Project>

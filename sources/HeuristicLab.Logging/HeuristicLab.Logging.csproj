@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Charting.Data\HeuristicLab.Charting.Data.csproj">
@@ -111,4 +112,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GPOperatorLibraryEditor.resx">
@@ -140,4 +141,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>

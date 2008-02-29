@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E0740131-AA3E-4A3F-BA03-C9FF8327F4EE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DataChartControl.resx">
@@ -83,4 +84,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>
