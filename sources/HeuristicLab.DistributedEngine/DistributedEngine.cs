@@ -37,6 +37,7 @@ namespace HeuristicLab.DistributedEngine {
     private List<Guid> runningEngines = new List<Guid>();
     private string serverAddress;
     private bool cancelRequested;
+    private CompositeOperation waitingOperations;
     public string ServerAddress {
       get { return serverAddress; }
       set {
@@ -47,7 +48,7 @@ namespace HeuristicLab.DistributedEngine {
     }
     public override bool Terminated {
       get {
-        return myExecutionStack.Count == 0 && runningEngines.Count == 0;
+        return myExecutionStack.Count == 0 && runningEngines.Count == 0 && waitingOperations==null;
       }
     }
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
@@ -99,6 +100,10 @@ namespace HeuristicLab.DistributedEngine {
         if(runningEngines.Count == 0 && cancelRequested) {
           base.Abort();
           cancelRequested = false;
+          if(waitingOperations != null && waitingOperations.Operations.Count != 0) {
+            myExecutionStack.Push(waitingOperations);
+            waitingOperations = null;
+          }
           return;
         }
         if(runningEngines.Count != 0) {
@@ -116,10 +121,21 @@ namespace HeuristicLab.DistributedEngine {
               oldScope.AddSubScope(subScope);
             }
             OnOperationExecuted(engineOperations[engineGuid]);
-            if(resultEngine.ExecutionStack.Count != 0) {
-              foreach(IOperation op in resultEngine.ExecutionStack) {
-                myExecutionStack.Push(op);
+
+            if(cancelRequested & resultEngine.ExecutionStack.Count != 0) {
+              if(waitingOperations == null) {
+                waitingOperations = new CompositeOperation();
+                waitingOperations.ExecuteInParallel = false;
               }
+              CompositeOperation task = new CompositeOperation();
+              while(resultEngine.ExecutionStack.Count > 0) {
+                AtomicOperation oldOperation = (AtomicOperation)resultEngine.ExecutionStack.Pop();
+                if(oldOperation.Scope == resultEngine.InitialOperation.Scope) {
+                  oldOperation = new AtomicOperation(oldOperation.Operator, oldScope);
+                }
+                task.AddOperation(oldOperation);
+              }
+              waitingOperations.AddOperation(task);
             }
             runningEngines.Remove(engineGuid);
             engineOperations.Remove(engineGuid);
