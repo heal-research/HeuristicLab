@@ -31,13 +31,11 @@ namespace HeuristicLab.Grid {
     private Queue<Guid> engineQueue;
     private Dictionary<Guid, byte[]> waitingEngines;
     private Dictionary<Guid, byte[]> runningEngines;
+    private Dictionary<Guid, ManualResetEvent> waitHandles;
     private Dictionary<Guid, byte[]> results;
     private Dictionary<Guid, string> runningClients;
     private object bigLock;
     private ChannelFactory<IClient> clientChannelFactory;
-
-    private event EventHandler ResultRecieved;
-
     public int WaitingJobs {
       get {
         return waitingEngines.Count;
@@ -61,6 +59,7 @@ namespace HeuristicLab.Grid {
       waitingEngines = new Dictionary<Guid, byte[]>();
       runningEngines = new Dictionary<Guid, byte[]>();
       runningClients = new Dictionary<Guid, string>();
+      waitHandles = new Dictionary<Guid, ManualResetEvent>();
       results = new Dictionary<Guid, byte[]>();
       bigLock = new object();
 
@@ -97,7 +96,7 @@ namespace HeuristicLab.Grid {
         runningEngines.Remove(guid);
         runningClients.Remove(guid);
         results[guid] = result;
-        OnResultRecieved(guid);
+        waitHandles[guid].Set();
       }
     }
 
@@ -105,6 +104,7 @@ namespace HeuristicLab.Grid {
       lock(bigLock) {
         engineQueue.Enqueue(guid);
         waitingEngines.Add(guid, engine);
+        waitHandles.Add(guid, new ManualResetEvent(false));
       }
     }
 
@@ -117,29 +117,24 @@ namespace HeuristicLab.Grid {
     }
 
     internal byte[] GetResult(Guid guid) {
-      ManualResetEvent waitHandle = new ManualResetEvent(false);
+      return GetResult(guid, System.Threading.Timeout.Infinite);
+    }
+    internal byte[] GetResult(Guid guid, int timeout) {
       lock(bigLock) {
-        if(results.ContainsKey(guid)) {
-          byte[] result = results[guid];
-          results.Remove(guid);
-          return result;
+        if(waitHandles.ContainsKey(guid)) {
+          ManualResetEvent waitHandle = waitHandles[guid];
+          if(waitHandle.WaitOne(timeout, false)) {
+            waitHandle.Close();
+            waitHandles.Remove(guid);
+            byte[] result = results[guid];
+            results.Remove(guid);
+            return result;
+          } else {
+            return null;
+          }
         } else {
-          ResultRecieved += delegate(object source, EventArgs args) {
-            ResultRecievedEventArgs resultArgs = (ResultRecievedEventArgs)args;
-            if(resultArgs.resultGuid == guid) {
-              waitHandle.Set();
-            }
-          };
+          return null;
         }
-      }
-
-      waitHandle.WaitOne();
-      waitHandle.Close();
-
-      lock(bigLock) {
-        byte[] result = results[guid];
-        results.Remove(guid);
-        return result;
       }
     }
 
@@ -155,18 +150,6 @@ namespace HeuristicLab.Grid {
           client.Abort(guid);
         }
       }
-    }
-
-    private void OnResultRecieved(Guid guid) {
-      ResultRecievedEventArgs args = new ResultRecievedEventArgs();
-      args.resultGuid = guid;
-      if(ResultRecieved != null) {
-        ResultRecieved(this, args);
-      }
-    }
-
-    private class ResultRecievedEventArgs : EventArgs {
-      public Guid resultGuid;
     }
   }
 }

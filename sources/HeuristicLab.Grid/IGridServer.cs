@@ -29,10 +29,10 @@ namespace HeuristicLab.Grid {
   public interface IGridServer {
     [OperationContract]
     Guid BeginExecuteEngine(byte[] engine);
-    
     [OperationContract]
     byte[] EndExecuteEngine(Guid engineGuid);
-
+    [OperationContract]
+    byte[] TryEndExecuteEngine(Guid engineGuid, int timeout);
     [OperationContract]
     void AbortEngine(Guid engineGuid);
   }

@@ -33,8 +33,8 @@ using System.IO.Compression;
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
     private IGridServer server;
-    private Dictionary<Guid, AtomicOperation> runningEngines = new Dictionary<Guid, AtomicOperation>();
-
+    private Dictionary<Guid, AtomicOperation> engineOperations = new Dictionary<Guid, AtomicOperation>();
+    private List<Guid> runningEngines = new List<Guid>();
     private string serverAddress;
     public string ServerAddress {
       get { return serverAddress; }
@@ -42,6 +42,11 @@ namespace HeuristicLab.DistributedEngine {
         if(value != serverAddress) {
           serverAddress = value;
         }
+      }
+    }
+    public override bool Terminated {
+      get {
+        return myExecutionStack.Count == 0 && runningEngines.Count == 0;
       }
     }
 
@@ -76,16 +81,48 @@ namespace HeuristicLab.DistributedEngine {
 
     public override void Abort() {
       base.Abort();
-      foreach(Guid engineGuid in runningEngines.Keys) {
+      foreach(Guid engineGuid in runningEngines) {
         server.AbortEngine(engineGuid);
       }
     }
 
     protected override void ProcessNextOperation() {
-      ProcessNextOperation(myExecutionStack, 0);
-    }
-    private void ProcessNextOperation(Stack<IOperation> stack, int currentOperatorIndex) {
-      IOperation operation = stack.Pop();
+      if(runningEngines.Count != 0) {
+        Guid engineGuid = runningEngines[0];
+        byte[] scopeXml = server.TryEndExecuteEngine(engineGuid,100);
+        if(scopeXml != null) {
+          GZipStream stream = new GZipStream(new MemoryStream(scopeXml), CompressionMode.Decompress);
+          IScope newScope = (IScope)PersistenceManager.Load(stream);
+          IScope oldScope = engineOperations[engineGuid].Scope;
+          oldScope.Clear();
+          foreach(IVariable variable in newScope.Variables) {
+            oldScope.AddVariable(variable);
+          }
+          foreach(IScope subScope in newScope.SubScopes) {
+            oldScope.AddSubScope(subScope);
+          }
+          runningEngines.Remove(engineGuid);
+          engineOperations.Remove(engineGuid);
+        }
+
+        if(Canceled) {
+          // write back not finished tasks
+          //CompositeOperation remaining = new CompositeOperation();
+          //remaining.ExecuteInParallel = true;
+          //for(int i = 0; i < list.tasks.Length; i++) {
+          //  if(list.tasks[i].Count > 0) {
+          //    CompositeOperation task = new CompositeOperation();
+          //    while(list.tasks[i].Count > 0)
+          //      task.AddOperation(list.tasks[i].Pop());
+          //    remaining.AddOperation(task);
+          //  }
+          //}
+          //if(remaining.Operations.Count > 0)
+          //  stack.Push(remaining);
+        }
+        return;
+      }
+      IOperation operation = myExecutionStack.Pop();
       if(operation is AtomicOperation) {
         AtomicOperation atomicOperation = (AtomicOperation)operation;
         IOperation next = null;
@@ -93,12 +130,12 @@ namespace HeuristicLab.DistributedEngine {
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
         } catch(Exception ex) {
           // push operation on stack again
-          stack.Push(atomicOperation);
+          myExecutionStack.Push(atomicOperation);
           Abort();
           ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
         }
         if(next != null)
-          stack.Push(next);
+          myExecutionStack.Push(next);
         OnOperationExecuted(atomicOperation);
         if(atomicOperation.Operator.Breakpoint) Abort();
       } else if(operation is CompositeOperation) {
@@ -111,41 +148,12 @@ namespace HeuristicLab.DistributedEngine {
             PersistenceManager.Save(engine, stream);
             stream.Close();
             Guid currentEngineGuid = server.BeginExecuteEngine(memStream.ToArray());
-            runningEngines[currentEngineGuid] = parOperation;
+            runningEngines.Add(currentEngineGuid);
+            engineOperations[currentEngineGuid] = parOperation;
           }
-          foreach(Guid engineGuid in runningEngines.Keys) {
-            byte[] scopeXml = server.EndExecuteEngine(engineGuid);
-            GZipStream stream = new GZipStream(new MemoryStream(scopeXml), CompressionMode.Decompress);
-            IScope newScope = (IScope)PersistenceManager.Load(stream);
-            IScope oldScope = runningEngines[engineGuid].Scope;
-            oldScope.Clear();
-            foreach(IVariable variable in newScope.Variables) {
-              oldScope.AddVariable(variable);
-            }
-            foreach(IScope subScope in newScope.SubScopes) {
-              oldScope.AddSubScope(subScope);
-            }
-          }
-
-          // TASK (gkronber 12.2.08)
-          //if (Canceled) {
-          //  // write back not finished tasks
-          //  CompositeOperation remaining = new CompositeOperation();
-          //  remaining.ExecuteInParallel = true;
-          //  for (int i = 0; i < list.tasks.Length; i++) {
-          //    if (list.tasks[i].Count > 0) {
-          //      CompositeOperation task = new CompositeOperation();
-          //      while (list.tasks[i].Count > 0)
-          //        task.AddOperation(list.tasks[i].Pop());
-          //      remaining.AddOperation(task);
-          //    }
-          //  }
-          //  if (remaining.Operations.Count > 0)
-          //    stack.Push(remaining);
-          //}
         } else {
           for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
-            stack.Push(compositeOperation.Operations[i]);
+            myExecutionStack.Push(compositeOperation.Operations[i]);
         }
       }
     }

@@ -43,6 +43,9 @@ namespace HeuristicLab.Grid {
     public byte[] EndExecuteEngine(Guid guid) {
       return engineStore.GetResult(guid);
     }
+    public byte[] TryEndExecuteEngine(Guid guid, int timeout) {
+      return engineStore.GetResult(guid, timeout);
+    }
 
     public void AbortEngine(Guid engine) {
       engineStore.AbortEngine(engine);
