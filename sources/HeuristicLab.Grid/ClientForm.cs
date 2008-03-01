@@ -45,6 +45,7 @@ namespace HeuristicLab.Grid {
     private Guid currentGuid;
     private ProcessingEngine currentEngine;
     private string clientUrl;
+    private object locker = new object();
 
     public ClientForm() {
       InitializeComponent();
@@ -95,29 +96,33 @@ namespace HeuristicLab.Grid {
     }
 
     private void fetchOperationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      byte[] engineXml;
-      fetchOperationTimer.Stop();
-      if (engineStore.TryTakeEngine(clientUrl, out currentGuid, out engineXml)) {
-        currentEngine = RestoreEngine(engineXml);
-        if (InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
-        currentEngine.Finished += delegate(object src, EventArgs args) {
-          byte[] resultXml = SaveEngine(currentEngine);
-          engineStore.StoreResult(currentGuid, resultXml);
-          currentGuid = Guid.Empty;
-          currentEngine = null;
-          fetchOperationTimer.Interval = 100;
+      lock(locker) {
+        byte[] engineXml;
+        fetchOperationTimer.Stop();
+        if(engineStore.TryTakeEngine(clientUrl, out currentGuid, out engineXml)) {
+          currentEngine = RestoreEngine(engineXml);
+          if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
+          currentEngine.Finished += delegate(object src, EventArgs args) {
+            byte[] resultXml = SaveEngine(currentEngine);
+            engineStore.StoreResult(currentGuid, resultXml);
+            currentGuid = Guid.Empty;
+            currentEngine = null;
+            fetchOperationTimer.Interval = 100;
+            fetchOperationTimer.Start();
+          };
+          currentEngine.Execute();
+        } else {
+          if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
+          fetchOperationTimer.Interval = 5000;
           fetchOperationTimer.Start();
-        };
-        currentEngine.Execute();
-      } else {
-        if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
-        fetchOperationTimer.Interval = 5000;
-        fetchOperationTimer.Start();
+        }
       }
     }
     public void Abort(Guid guid) {
-      if(!IsRunningEngine(guid)) return;
-      currentEngine.Abort();
+      lock(locker) {
+        if(!IsRunningEngine(guid)) return;
+        currentEngine.Abort();
+      }
     }
     public bool IsRunningEngine(Guid guid) {
       return currentGuid == guid;

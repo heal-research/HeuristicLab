@@ -116,7 +116,7 @@ namespace HeuristicLab.Grid {
       lock(bigLock) {
         if(waitHandles.ContainsKey(guid)) {
           ManualResetEvent waitHandle = waitHandles[guid];
-          if(waitHandle.WaitOne(timeout, false)) {
+          if(waitHandle.WaitOne(timeout, true)) {
             waitHandle.Close();
             waitHandles.Remove(guid);
             byte[] result = results[guid];
@@ -142,6 +142,7 @@ namespace HeuristicLab.Grid {
           byte[] engine = waitingEngines[guid];
           waitingEngines.Remove(guid);
           engineList.Remove(guid);
+          waitHandles[guid].Set();
           results.Add(guid, engine);
         }
       }
