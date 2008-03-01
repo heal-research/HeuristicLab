@@ -28,7 +28,7 @@ using System.ServiceModel;
 namespace HeuristicLab.Grid {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public class EngineStore : IEngineStore {
-    private Queue<Guid> engineQueue;
+    private List<Guid> engineList;
     private Dictionary<Guid, byte[]> waitingEngines;
     private Dictionary<Guid, byte[]> runningEngines;
     private Dictionary<Guid, ManualResetEvent> waitHandles;
@@ -55,7 +55,7 @@ namespace HeuristicLab.Grid {
     }
 
     public EngineStore() {
-      engineQueue = new Queue<Guid>();
+      engineList = new List<Guid>();
       waitingEngines = new Dictionary<Guid, byte[]>();
       runningEngines = new Dictionary<Guid, byte[]>();
       runningClients = new Dictionary<Guid, string>();
@@ -74,12 +74,13 @@ namespace HeuristicLab.Grid {
 
     public bool TryTakeEngine(string clientUrl, out Guid guid, out byte[] engine) {
       lock(bigLock) {
-        if(engineQueue.Count == 0) {
+        if(engineList.Count == 0) {
           guid = Guid.Empty;
           engine = null;
           return false;
         } else {
-          guid = engineQueue.Dequeue();
+          guid = engineList[0];
+          engineList.RemoveAt(0);
           engine = waitingEngines[guid];
           waitingEngines.Remove(guid);
           runningEngines[guid] = engine;
@@ -102,17 +103,9 @@ namespace HeuristicLab.Grid {
 
     internal void AddEngine(Guid guid, byte[] engine) {
       lock(bigLock) {
-        engineQueue.Enqueue(guid);
+        engineList.Add(guid);
         waitingEngines.Add(guid, engine);
         waitHandles.Add(guid, new ManualResetEvent(false));
-      }
-    }
-
-    internal byte[] RemoveResult(Guid guid) {
-      lock(bigLock) {
-        byte[] result = results[guid];
-        results.Remove(guid);
-        return result;
       }
     }
 
@@ -143,11 +136,13 @@ namespace HeuristicLab.Grid {
       lock(bigLock) {
         if(runningClients.ContainsKey(guid)) {
           clientUrl = runningClients[guid];
-        }
-
-        if(clientUrl != "") {
           IClient client = clientChannelFactory.CreateChannel(new EndpointAddress(clientUrl));
           client.Abort(guid);
+        } else if(waitingEngines.ContainsKey(guid)) {
+          byte[] engine = waitingEngines[guid];
+          waitingEngines.Remove(guid);
+          engineList.Remove(guid);
+          results.Add(guid, engine);
         }
       }
     }

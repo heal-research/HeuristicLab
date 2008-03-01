@@ -89,16 +89,16 @@ namespace HeuristicLab.DistributedEngine {
     protected override void ProcessNextOperation() {
       if(runningEngines.Count != 0) {
         Guid engineGuid = runningEngines[0];
-        byte[] scopeXml = server.TryEndExecuteEngine(engineGuid,100);
-        if(scopeXml != null) {
-          GZipStream stream = new GZipStream(new MemoryStream(scopeXml), CompressionMode.Decompress);
-          IScope newScope = (IScope)PersistenceManager.Load(stream);
+        byte[] resultXml = server.TryEndExecuteEngine(engineGuid,100);
+        if(resultXml != null) {
+          GZipStream stream = new GZipStream(new MemoryStream(resultXml), CompressionMode.Decompress);
+          ProcessingEngine resultEngine = (ProcessingEngine)PersistenceManager.Load(stream);
           IScope oldScope = engineOperations[engineGuid].Scope;
           oldScope.Clear();
-          foreach(IVariable variable in newScope.Variables) {
+          foreach(IVariable variable in resultEngine.InitialOperation.Scope.Variables) {
             oldScope.AddVariable(variable);
           }
-          foreach(IScope subScope in newScope.SubScopes) {
+          foreach(IScope subScope in resultEngine.InitialOperation.Scope.SubScopes) {
             oldScope.AddSubScope(subScope);
           }
           runningEngines.Remove(engineGuid);

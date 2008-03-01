@@ -101,8 +101,8 @@ namespace HeuristicLab.Grid {
         currentEngine = RestoreEngine(engineXml);
         if (InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
         currentEngine.Finished += delegate(object src, EventArgs args) {
-          byte[] resultScopeXml = SaveScope(currentEngine.InitialOperation.Scope);
-          engineStore.StoreResult(currentGuid, resultScopeXml);
+          byte[] resultXml = SaveEngine(currentEngine);
+          engineStore.StoreResult(currentGuid, resultXml);
           currentGuid = Guid.Empty;
           currentEngine = null;
           fetchOperationTimer.Interval = 100;
@@ -126,10 +126,10 @@ namespace HeuristicLab.Grid {
       GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);
       return (ProcessingEngine)PersistenceManager.Load(stream);
     }
-    private byte[] SaveScope(IScope scope) {
+    private byte[] SaveEngine(IEngine engine) {
       MemoryStream memStream = new MemoryStream();
       GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      PersistenceManager.Save(scope, stream);
+      PersistenceManager.Save(engine, stream);
       stream.Close();
       return memStream.ToArray();
     }
