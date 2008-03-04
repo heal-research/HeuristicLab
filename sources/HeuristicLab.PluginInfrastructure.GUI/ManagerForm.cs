@@ -35,7 +35,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
   public partial class ManagerForm : Form {
     private TreeNode installedPlugins;
     private TreeNode availablePlugins;
-    private TreeNode allPlugins;
     private TreeNode disabledPlugins;
     private List<PluginTag> allTags = new List<PluginTag>();
     private Dictionary<PluginTag, PluginAction> actions = new Dictionary<PluginTag, PluginAction>();
@@ -72,9 +71,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       availablePlugins = new TreeNode("Available plugins");
       availablePlugins.ImageIndex = 1;
       availablePlugins.SelectedImageIndex = 1;
-      allPlugins = new TreeNode("All plugins");
-      allPlugins.ImageIndex = 1;
-      allPlugins.SelectedImageIndex = 1;
       disabledPlugins = new TreeNode("Disabled plugins");
       disabledPlugins.ImageIndex = 1;
       disabledPlugins.SelectedImageIndex = 1;
@@ -82,7 +78,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       pluginTreeView.Nodes.Add(installedPlugins);
       pluginTreeView.Nodes.Add(availablePlugins);
       pluginTreeView.Nodes.Add(disabledPlugins);
-      pluginTreeView.Nodes.Add(allPlugins);
 
       foreach(PluginInfo pluginInfo in PluginManager.Manager.ActivePlugins) {
         // create a new PluginAction tag for the plugin
@@ -94,13 +89,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         installedPluginsNode.Tag = tag;
         installedPluginsNode.ImageIndex = 0;
         installedPlugins.Nodes.Add(installedPluginsNode);
-
-        // add to all "plugins node"
-        TreeNode allPluginsNode = new TreeNode(pluginInfo.Name);
-        allPluginsNode.ContextMenuStrip = pluginContextMenuStrip;
-        allPluginsNode.Tag = tag;
-        allPluginsNode.ImageIndex = 0;
-        allPlugins.Nodes.Add(allPluginsNode);
       }
       foreach(PluginInfo pluginInfo in PluginManager.Manager.DisabledPlugins) {
         PluginTag tag = new PluginTag(allTags, pluginInfo, PluginState.Disabled);
@@ -110,12 +98,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         disabledPluginsNode.Tag = tag;
         disabledPluginsNode.ImageIndex = 0;
         disabledPlugins.Nodes.Add(disabledPluginsNode);
-        // add to all "plugins node"
-        TreeNode allPluginsNode = new TreeNode(pluginInfo.Name);
-        allPluginsNode.ContextMenuStrip = pluginContextMenuStrip;
-        allPluginsNode.Tag = tag;
-        allPluginsNode.ImageIndex = 0;
-        allPlugins.Nodes.Add(allPluginsNode);
       }
 
       allAvailablePlugins = FilterMostRecentPluginVersions(allAvailablePlugins);
@@ -128,14 +110,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       newPlugins.ForEach(delegate(PluginDescription plugin) {
         PluginTag tag = new PluginTag(allTags, plugin, PluginState.Available);
         allTags.Add(tag);
-        TreeNode node = new TreeNode(plugin.Name);
-        node.ContextMenuStrip = pluginContextMenuStrip;
-        node.Tag = tag;
-        node.ImageIndex = 0;
-        allPlugins.Nodes.Add(node);
         TreeNode availableNode = new TreeNode(plugin.Name);
         availableNode.ContextMenuStrip = pluginContextMenuStrip;
         availableNode.Tag = tag;
+        availableNode.ImageIndex = 0;
         availablePlugins.Nodes.Add(availableNode);
 
       });
@@ -621,7 +599,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
     private List<TreeNode> FindPluginNodes(PluginTag pluginTag) {
       List<TreeNode> nodes = new List<TreeNode>();
-      foreach(TreeNode rootNode in new TreeNode[] { installedPlugins, availablePlugins, allPlugins, disabledPlugins }) {
+      foreach(TreeNode rootNode in new TreeNode[] { installedPlugins, availablePlugins, disabledPlugins }) {
         foreach(TreeNode node in rootNode.Nodes) {
           if(pluginTag.Equals(node.Tag)) {
             nodes.Add(node);
