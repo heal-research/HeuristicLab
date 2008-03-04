@@ -67,6 +67,13 @@ namespace HeuristicLab.PluginInfrastructure {
       set { assemblies = value; }
     }
 
+
+    private string message;
+    public string Message {
+      get { return message; }
+      set { message = value; }
+    }
+
     public override string ToString() {
       return Name;
     }

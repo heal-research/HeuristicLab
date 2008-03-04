@@ -74,7 +74,9 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private IPlugin FindPlugin(PluginInfo plugin) {
-      return allPlugins[plugin];
+      if(allPlugins.ContainsKey(plugin)) {
+        return allPlugins[plugin];
+      } else return null;
     }
 
 
@@ -89,7 +91,13 @@ namespace HeuristicLab.PluginInfrastructure {
     /// list of assemblies of an plugin and the list of dependencies for each of those assemblies
     /// </summary>
     internal void Init() {
-      AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += delegate(object sender, ResolveEventArgs args) { return Assembly.ReflectionOnlyLoad(args.Name); };
+      AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += delegate(object sender, ResolveEventArgs args) {
+        try {
+          return Assembly.ReflectionOnlyLoad(args.Name);
+        } catch(FileLoadException ex) {
+          return null;
+        }
+        };
       allPlugins.Clear();
       disabledPlugins.Clear();
       pluginInfos.Clear();
@@ -149,8 +157,24 @@ namespace HeuristicLab.PluginInfrastructure {
               GetPluginAttributeData(t);
             }
           }
-        } catch(FileNotFoundException) {
-          // when a referenced assembly cannot be loaded then ignore this assembly in the plugin discovery
+        } catch(FileNotFoundException ex) {
+          PluginInfo info = new PluginInfo();
+          AssemblyName name = assembly.GetName();
+          info.Name = name.Name;
+          info.Version = name.Version;
+          info.Assemblies.Add(assembly.FullName);
+          info.Files.Add(assembly.Location);
+          info.Message = "File not found: " + ex.FileName;
+          disabledPlugins.Add(info);
+        } catch(FileLoadException ex) {
+          PluginInfo info = new PluginInfo();
+          AssemblyName name = assembly.GetName();
+          info.Name = name.Name;
+          info.Version = name.Version;
+          info.Files.Add(assembly.Location);
+          info.Assemblies.Add(assembly.FullName);
+          info.Message = "Couldn't load file: " + ex.FileName;
+          disabledPlugins.Add(info);
         }
       }
     }
@@ -207,6 +231,7 @@ namespace HeuristicLab.PluginInfrastructure {
         // create a temporary PluginInfo that contains the attribute values
         PluginInfo info = new PluginInfo();
         info.Name = pluginName;
+        info.Version = t.Assembly.GetName().Version;
         info.Assemblies = pluginAssemblies;
         info.Files.AddRange(pluginFiles);
         info.Assemblies.AddRange(pluginAssemblies);
@@ -225,6 +250,15 @@ namespace HeuristicLab.PluginInfrastructure {
         }
         visitedDependencies.Clear();
         if(!CheckPluginDependencies(pluginInfo.Name)) {
+          PluginInfo matchingInfo = preloadedPluginInfos.Find(delegate(PluginInfo info) { return info.Name == pluginInfo.Name; });
+          if(matchingInfo == null) throw new InvalidProgramException(); // shouldn't happen
+          foreach(string dependency in pluginDependencies[matchingInfo]) {
+            PluginInfo dependencyInfo = new PluginInfo();
+            dependencyInfo.Name = dependency;
+            pluginInfo.Dependencies.Add(dependencyInfo);
+          }
+
+          pluginInfo.Message = "Disabled: missing plugin dependency.";
           disabledPlugins.Add(pluginInfo);
         }
       }
@@ -324,6 +358,7 @@ namespace HeuristicLab.PluginInfrastructure {
     private void CheckPluginFiles() {
       foreach(PluginInfo plugin in preloadedPluginInfos) {
         if(!CheckPluginFiles(plugin)) {
+          plugin.Message = "Disabled: missing plugin file.";
           disabledPlugins.Add(plugin);
         }
       }
@@ -347,19 +382,23 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     internal void OnDelete(PluginInfo pluginInfo) {
-      FindPlugin(pluginInfo).OnDelete();
+      IPlugin plugin = FindPlugin(pluginInfo);
+      if(plugin!=null) plugin.OnDelete();
     }
 
     internal void OnInstall(PluginInfo pluginInfo) {
-      FindPlugin(pluginInfo).OnInstall();
+      IPlugin plugin = FindPlugin(pluginInfo);
+      if(plugin != null) plugin.OnInstall();
     }
 
     internal void OnPreUpdate(PluginInfo pluginInfo) {
-      FindPlugin(pluginInfo).OnPreUpdate();
+      IPlugin plugin = FindPlugin(pluginInfo);
+      if(plugin != null) plugin.OnPreUpdate();
     }
 
     internal void OnPostUpdate(PluginInfo pluginInfo) {
-      FindPlugin(pluginInfo).OnPostUpdate();
+      IPlugin plugin = FindPlugin(pluginInfo);
+      if(plugin != null) plugin.OnPostUpdate();
     }
   }
 }

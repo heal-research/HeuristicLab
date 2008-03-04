@@ -309,7 +309,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // NOTE: make sure to keep only the most recent entry of a plugin in the allAvailablePlugins list
       allAvailablePlugins.ForEach(delegate(PluginDescription availablePlugin) {
         List<PluginTag> oldPlugins = allTags.FindAll(delegate(PluginTag currentPlugin) {
-          return currentPlugin.PluginName == availablePlugin.Name && currentPlugin.State == (PluginState.Installed | PluginState.Disabled);
+          return currentPlugin.PluginName == availablePlugin.Name && 
+            (currentPlugin.State & (PluginState.Installed | PluginState.Disabled)) !=0;
         });
 
         if(oldPlugins.Count == 1) {
@@ -329,10 +330,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           return currentPlugin.PluginName == availablePlugin.Name && currentPlugin.State == PluginState.Available;
         });
 
-        if(currentPlugins.Count == 1) {
-          if(currentPlugins[0].PluginVersion < availablePlugin.Version) {
-            overrides.Add(availablePlugin);
-          }
+        if(currentPlugins.Count == 1 && currentPlugins[0].PluginVersion < availablePlugin.Version) {
+          overrides.Add(availablePlugin);
         }
       });
 
@@ -583,7 +582,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void UpdateActionButtons(PluginTag tag) {
-
       publishButton.Enabled = (tag.State & PluginState.Installed) == PluginState.Installed;
       installButton.Enabled = (tag.State & PluginState.Available) == PluginState.Available;
       deleteButton.Enabled = (tag.State & (PluginState.Installed | PluginState.Upgradeable | PluginState.Disabled)) != 0;
@@ -596,7 +594,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       deleteMenuItem.Enabled = deleteButton.Enabled;
       installMenuItem.Checked = installButton.Checked;
       deleteMenuItem.Checked = deleteButton.Checked;
-
     }
 
     private ManagerAction GetAction(PluginTag tag) {
@@ -633,14 +630,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
       return nodes;
     }
-
-
-
     private void DisplayPluginInfo(string pluginInformation) {
       infoTextBox.Text = pluginInformation;
     }
-
-
     private void upgradeButton_Click(object sender, EventArgs args) {
       try {
         ClearTemporaryFiles();
@@ -682,8 +674,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         }
       });
     }
-
-
     private List<string> upgradedPlugins = new List<string>();
     private void OnPreUpgradePlugins() {
       upgradedPlugins.Clear();
@@ -696,7 +686,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         }
       });
     }
-
     private void OnPostUpgradePlugins() {
       allTags.ForEach(delegate(PluginTag tag) {
         if(upgradedPlugins.Contains(tag.PluginName)) {
@@ -705,7 +694,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       });
       upgradedPlugins.Clear();
     }
-
     /// <summary>
     /// Deletes all files in the directories cacheDir, backupDir, tempDir
     /// </summary>

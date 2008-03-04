@@ -84,6 +84,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       set { state = value; }
     }
 
+    private string message;
+    public string Message {
+      get { return message; }
+    }
+
     public List<PluginTag> hull = new List<PluginTag>();
 
     public PluginTag(List<PluginTag> allTags, PluginInfo plugin, PluginState state) {
@@ -93,6 +98,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
       this.pluginName = plugin.Name;
       this.pluginVersion = plugin.Version;
+      this.message = plugin.Message;
       pluginDetails = GeneratePluginDetails(plugin);
       pluginDependencies = GeneratePluginDependencies(plugin);
     }
@@ -124,11 +130,12 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       PluginManager.Manager.GetDependentPlugins(plugin).ForEach(delegate(PluginInfo dependentPlugin) {
         dependents += dependentPlugin.Name + " (" + dependentPlugin.Version + ")\n";
       });
-      return "plugin: " + plugin.Name + "\n" +
+      return "Plugin: " + plugin.Name + "\n" +
       "Version: " + plugin.Version + "\n\n" +
-      "Requires: \n" + dependencies + "\n" +
-      "Used by:\n" + dependents + "\n" +
-      "Files:\n" + filenames + "\n";
+      (dependencies.Length != 0 ? "Requires: \n" + dependencies + "\n" : "") +
+      (dependents.Length != 0 ? "Used by:\n" + dependents + "\n" : "") +
+      (filenames.Length != 0 ? "Files:\n" + filenames + "\n" : "") + message;
+      ;
     }
 
     private string GeneratePluginDetails(PluginDescription plugin) {
