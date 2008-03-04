@@ -76,7 +76,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="UpdateAssemblies.cmd" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -103,11 +102,13 @@
     <Content Include="HeuristicLab.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="app.config" />
+    <None Include="CopyAssemblies.cmd" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Resources\LargeIcons.gif" />
     <None Include="Resources\Details.gif" />
     <None Include="Resources\List.gif" />
     <None Include="Resources\Logo_white.gif" />
+    <None Include="UpdateLocalInstallation.cmd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -118,7 +119,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>cmd /c ..\..\UpdateAssemblies.cmd $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>cmd /c ..\..\CopyAssemblies.cmd $(ConfigurationName)
+cmd /c ..\..\UpdateLocalInstallation.cmd $(ConfigurationName)</PostBuildEvent>
     <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
 </Project>
