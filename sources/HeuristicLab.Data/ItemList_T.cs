@@ -154,13 +154,4 @@ namespace HeuristicLab.Data {
       OnChanged();
     }
   }
-
-  public class ItemList : ItemList<IItem> { }
-  public class ItemListView : ItemListView<IItem> {
-    public ItemListView() { }
-    public ItemListView(ItemList itemList)
-      : this() {
-      ItemList = itemList;
-    }
-  }
 }

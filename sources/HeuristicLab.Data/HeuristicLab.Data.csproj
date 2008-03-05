@@ -149,6 +149,10 @@
     </Compile>
     <Compile Include="IObjectData.cs" />
     <Compile Include="IObjectDataVisitor.cs" />
+    <Compile Include="ItemList.cs" />
+    <Compile Include="ItemListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ItemListView_T.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -156,7 +160,6 @@
       <DependentUpon>ItemListView_T.cs</DependentUpon>
     </Compile>
     <Compile Include="ItemList_T.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MatrixDataBaseView.cs">
       <SubType>UserControl</SubType>
