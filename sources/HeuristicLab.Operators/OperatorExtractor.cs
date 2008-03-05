@@ -28,31 +28,17 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Operators {
   public class OperatorExtractor : OperatorBase {
     public override string Description {
-      get { return @"TODO\r\nOperator description still missing ..."; }
+      get { return @"An operator extractor retrievs an operator from the scope it is applied on and returns a successor operation containing this operator and the current scope. Lookup for the operator is done recursively.
+
+Operator extractors can be used to get those operators again that have been injected by combined operators."; }
     }
 
     public OperatorExtractor()
       : base() {
-      AddVariableInfo(new VariableInfo("Name", "Variable name of the operator to extract and execute from the scope", typeof(StringData), VariableKind.In));
-      GetVariableInfo("Name").Local = true;
-      AddVariable(new Variable("Name", new StringData("Name")));
-      AddVariableInfo(new VariableInfo("ReplaceSubOperators", "True if the sub-operators of the extracted operator should be replaced with the sub-operators of the operator extractor", typeof(BoolData), VariableKind.In));
-      GetVariableInfo("ReplaceSubOperators").Local = true;
-      AddVariable(new Variable("ReplaceSubOperators", new BoolData(false)));
     }
 
     public override IOperation Apply(IScope scope) {
-      string name = GetVariableValue<StringData>("Name", scope, false).Data;
-      bool replace = GetVariableValue<BoolData>("ReplaceSubOperators", scope, false).Data;
-      IOperator op = scope.GetVariableValue<IOperator>(name, true);
-
-      if (replace) {
-        while (op.SubOperators.Count > 0)
-          op.RemoveSubOperator(0);
-        foreach (IOperator subOperator in SubOperators)
-          op.AddSubOperator(subOperator);
-      }
-
+      IOperator op = scope.GetVariableValue<IOperator>(Name, true, true);
       return new AtomicOperation(op, scope);
     }
   }

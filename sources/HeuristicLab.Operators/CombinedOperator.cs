@@ -40,16 +40,10 @@ namespace HeuristicLab.Operators {
     public CombinedOperator()
       : base() {
       myDescription =
-        "A combined operator contains a whole operator graph. It is useful for modularization to assemble complex operators out of simpler ones.\r\n\r\n" +
-        "A combined operator can automatically inject its sub-operators into the scope it is applied on. Those operators can be extracted again in the contained operator graph by using an OperatorExtractor. So it is possible to parameterize a combined operator with custom operators. To activate sub-operator injection take a look at the local variables InjectSubOperators and SubOperatorNames.";
+        @"A combined operator contains a whole operator graph. It is useful for modularization to assemble complex operators out of simpler ones.
+
+A combined operator automatically inject its sub-operators into the scope it is applied on. Thereby the names of the sub-operators are used as variable names. Those operators can be extracted again in the contained operator graph by using an OperatorExtractor. So it is possible to parameterize a combined operator with custom operators.";
       myOperatorGraph = new OperatorGraph();
-      AddVariableInfo(new VariableInfo("InjectSubOperators", "true if the sub-operators of this combined operator should be injected into the scope", typeof(BoolData), VariableKind.In));
-      GetVariableInfo("InjectSubOperators").Local = true;
-      AddVariable(new Variable("InjectSubOperators", new BoolData(false)));
-      AddVariableInfo(new VariableInfo("SubOperatorNames", "Variable names for injecting the sub-operators", typeof(ItemList<StringData>), VariableKind.In));
-      GetVariableInfo("SubOperatorNames").Local = true;
-      ItemList<StringData> subOperatorNames = new ItemList<StringData>();
-      AddVariable(new Variable("SubOperatorNames", subOperatorNames));
     }
 
     public void SetDescription(string description) {
@@ -71,14 +65,10 @@ namespace HeuristicLab.Operators {
 
     public override IOperation Apply(IScope scope) {
       if (OperatorGraph.InitialOperator != null) {
-        bool inject = GetVariableValue<BoolData>("InjectSubOperators", scope, false).Data;
-        if (inject) {
-          ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("SubOperatorNames", scope, false);
-          for (int i = 0; i < SubOperators.Count; i++) {
-            if (scope.GetVariable(names[i].Data) != null)
-              scope.RemoveVariable(names[i].Data);
-            scope.AddVariable(new Variable(names[i].Data, SubOperators[i]));
-          }
+        for (int i = 0; i < SubOperators.Count; i++) {
+          if (scope.GetVariable(SubOperators[i].Name) != null)
+            scope.RemoveVariable(SubOperators[i].Name);
+          scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
         }
         return new AtomicOperation(OperatorGraph.InitialOperator, scope);
       } else {
