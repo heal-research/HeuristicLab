@@ -104,6 +104,21 @@ namespace HeuristicLab.Core {
     private void okButton_Click(object sender, EventArgs e) {
       Type type = (Type)treeView.SelectedNode.Tag;
 
+      if (type.ContainsGenericParameters) {
+        type = type.GetGenericTypeDefinition();
+        Type[] args = new Type[type.GetGenericArguments().Length];
+        ChooseTypeDialog dialog = new ChooseTypeDialog();
+        for (int i = 0; i < args.Length; i++) {
+          dialog.Caption = "Choose type of generic parameter " + (i + 1).ToString();
+          if (dialog.ShowDialog(this) == DialogResult.OK)
+            args[i] = dialog.Type;
+          else
+            args[i] = null;
+        }
+        dialog.Dispose();
+        type = type.MakeGenericType(args);
+      }
+
       myItem = (IItem)Activator.CreateInstance(type);
       this.DialogResult = DialogResult.OK;
       this.Close();
@@ -113,6 +128,22 @@ namespace HeuristicLab.Core {
       // plugin groups have a null-tag
       if ((treeView.SelectedNode != null) && (treeView.SelectedNode.Tag != null)) {
         Type type = (Type)treeView.SelectedNode.Tag;
+
+        if (type.ContainsGenericParameters) {
+          type = type.GetGenericTypeDefinition();
+          Type[] args = new Type[type.GetGenericArguments().Length];
+          ChooseTypeDialog dialog = new ChooseTypeDialog();
+          for (int i = 0; i < args.Length; i++) {
+            dialog.Caption = "Choose type of generic parameter " + (i + 1).ToString();
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+              args[i] = dialog.Type;
+            else
+              args[i] = null;
+          }
+          dialog.Dispose();
+          type = type.MakeGenericType(args);
+        }
+
         myItem = (IItem)Activator.CreateInstance(type);
         this.DialogResult = DialogResult.OK;
         this.Close();
@@ -129,9 +160,11 @@ namespace HeuristicLab.Core {
       myItem = null;
       if (treeView.Nodes.Count == 1) {
         Type type = (Type)treeView.Nodes[0].Tag;
-        myItem = (IItem)Activator.CreateInstance(type);
-        this.DialogResult = DialogResult.OK;
-        this.Close();
+        if (!type.ContainsGenericParameters) {
+          myItem = (IItem)Activator.CreateInstance(type);
+          this.DialogResult = DialogResult.OK;
+          this.Close();
+        }
       }
     }
   }
