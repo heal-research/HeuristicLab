@@ -27,66 +27,35 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public class ItemList : ItemBase, IList<IItem> {
-    private List<IItem> list;
-
-    private Type myItemType;
-    public Type ItemType {
-      get { return myItemType; }
-      set {
-        if (value == null) value = typeof(IItem);
-        if (value != myItemType) {
-          if (!typeof(IItem).IsAssignableFrom(value))
-            throw new InvalidOperationException("Cannot set item type. Only types compatible to IItem are allowed.");
-          foreach (IItem item in list) {
-            if (!value.IsAssignableFrom(item.GetType()))
-              throw new InvalidOperationException("Cannot set item type. Items are incompatible.");
-          }
-          myItemType = value;
-          OnItemTypeChanged();
-        }
-      }
-    }
+  public class ItemList<T> : ItemBase, IList<T> where T : IItem {
+    private List<T> list;
 
     public ItemList() {
-      list = new List<IItem>();
-      myItemType = typeof(IItem);
+      list = new List<T>();
     }
 
     public override IView CreateView() {
-      return new ItemListView(this);
+      return new ItemListView<T>(this);
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ItemList clone = new ItemList();
+      ItemList<T> clone = new ItemList<T>();
       clonedObjects.Add(Guid, clone);
-      clone.myItemType = ItemType;
       for (int i = 0; i < list.Count; i++)
-        clone.list.Add((IItem)Auxiliary.Clone(list[i], clonedObjects));
+        clone.list.Add((T)Auxiliary.Clone(list[i], clonedObjects));
       return clone;
     }
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      if (ItemType != null) {
-        XmlAttribute itemTypeAttribute = document.CreateAttribute("ItemType");
-        string typeString = ItemType.AssemblyQualifiedName;
-        string[] tokens = typeString.Split(new string[] { ", " }, StringSplitOptions.None);
-        typeString = tokens[0] + ", " + tokens[1];
-        itemTypeAttribute.Value = typeString;
-        node.Attributes.Append(itemTypeAttribute);
-      }
       for (int i = 0; i < list.Count; i++)
         node.AppendChild(PersistenceManager.Persist(list[i], document, persistedObjects));
       return node;
     }
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      XmlAttribute itemTypeAttribute = node.Attributes["ItemType"];
-      if (itemTypeAttribute != null)
-        myItemType = Type.GetType(itemTypeAttribute.Value);
       for (int i = 0; i < node.ChildNodes.Count; i++)
-        list.Add((IItem)PersistenceManager.Restore(node.ChildNodes[i], restoredObjects));
+        list.Add((T)PersistenceManager.Restore(node.ChildNodes[i], restoredObjects));
     }
 
     public override string ToString() {
@@ -103,13 +72,11 @@ namespace HeuristicLab.Data {
       }
     }
 
-    #region IList<IItem> Members
-    public int IndexOf(IItem item) {
+    #region IList<T> Members
+    public int IndexOf(T item) {
       return list.IndexOf(item);
     }
-    public void Insert(int index, IItem item) {
-      if ((ItemType != null) && (!ItemType.IsAssignableFrom(item.GetType())))
-        throw new InvalidOperationException("item type is incompatible to required item type");
+    public void Insert(int index, T item) {
       list.Insert(index, item);
       OnItemAdded(item, index);
     }
@@ -118,20 +85,14 @@ namespace HeuristicLab.Data {
       list.RemoveAt(index);
       OnItemRemoved(item, index);
     }
-    public IItem this[int index] {
+    public T this[int index] {
       get { return list[index]; }
-      set {
-        if ((ItemType != null) && (!ItemType.IsAssignableFrom(value.GetType())))
-          throw new InvalidOperationException("item type is incompatible to required item type");
-        list[index] = value;
-      }
+      set { list[index] = value; }
     }
     #endregion
 
-    #region ICollection<IItem> Members
-    public void Add(IItem item) {
-      if ((ItemType != null) && (!ItemType.IsAssignableFrom(item.GetType())))
-        throw new InvalidOperationException("item type is incompatible to required item type");
+    #region ICollection<T> Members
+    public void Add(T item) {
       list.Add(item);
       OnItemAdded(item, list.Count - 1);
     }
@@ -139,10 +100,10 @@ namespace HeuristicLab.Data {
       list.Clear();
       OnCleared();
     }
-    public bool Contains(IItem item) {
+    public bool Contains(T item) {
       return list.Contains(item);
     }
-    public void CopyTo(IItem[] array, int arrayIndex) {
+    public void CopyTo(T[] array, int arrayIndex) {
       list.CopyTo(array, arrayIndex);
     }
     public int Count {
@@ -151,7 +112,7 @@ namespace HeuristicLab.Data {
     public bool IsReadOnly {
       get { return false; }
     }
-    public bool Remove(IItem item) {
+    public bool Remove(T item) {
       int index = list.IndexOf(item);
       if (list.Remove(item)) {
         OnItemRemoved(item, index);
@@ -162,8 +123,8 @@ namespace HeuristicLab.Data {
     }
     #endregion
 
-    #region IEnumerable<IItem> Members
-    public IEnumerator<IItem> GetEnumerator() {
+    #region IEnumerable<T> Members
+    public IEnumerator<T> GetEnumerator() {
       return list.GetEnumerator();
     }
     #endregion
@@ -174,12 +135,6 @@ namespace HeuristicLab.Data {
     }
     #endregion
 
-    public event EventHandler ItemTypeChanged;
-    protected virtual void OnItemTypeChanged() {
-      if (ItemTypeChanged != null)
-        ItemTypeChanged(this, new EventArgs());
-      OnChanged();
-    }
     public event EventHandler<ItemIndexEventArgs> ItemAdded;
     protected virtual void OnItemAdded(IItem item, int index) {
       if (ItemAdded != null)
@@ -197,6 +152,15 @@ namespace HeuristicLab.Data {
       if (Cleared != null)
         Cleared(this, new EventArgs());
       OnChanged();
+    }
+  }
+
+  public class ItemList : ItemList<IItem> { }
+  public class ItemListView : ItemListView<IItem> {
+    public ItemListView() { }
+    public ItemListView(ItemList itemList)
+      : this() {
+      ItemList = itemList;
     }
   }
 }

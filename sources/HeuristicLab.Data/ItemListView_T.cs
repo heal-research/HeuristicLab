@@ -26,15 +26,14 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public partial class ItemListView : ViewBase {
+  public partial class ItemListView<T> : ViewBase where T : IItem {
     private ChooseItemDialog chooseItemDialog;
 
-    public ItemList ItemList {
-      get { return (ItemList)Item; }
+    public ItemList<T> ItemList {
+      get { return (ItemList<T>)Item; }
       set { base.Item = value; }
     }
 
@@ -42,13 +41,12 @@ namespace HeuristicLab.Data {
       InitializeComponent();
       itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
-    public ItemListView(ItemList itemList)
+    public ItemListView(ItemList<T> itemList)
       : this() {
       ItemList = itemList;
     }
 
     protected override void RemoveItemEvents() {
-      ItemList.ItemTypeChanged -= new EventHandler(ItemList_ItemTypeChanged);
       ItemList.ItemAdded -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
       ItemList.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved);
       ItemList.Cleared -= new EventHandler(ItemList_Cleared);
@@ -56,7 +54,6 @@ namespace HeuristicLab.Data {
     }
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      ItemList.ItemTypeChanged += new EventHandler(ItemList_ItemTypeChanged);
       ItemList.ItemAdded += new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
       ItemList.ItemRemoved += new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved);
       ItemList.Cleared += new EventHandler(ItemList_Cleared);
@@ -69,11 +66,9 @@ namespace HeuristicLab.Data {
       removeButton.Enabled = false;
       if (ItemList == null) {
         typeTextBox.Text = "";
-        setTypeButton.Enabled = false;
         splitContainer.Enabled = false;
       } else {
-        typeTextBox.Text = ItemList.ItemType.FullName;
-        setTypeButton.Enabled = true;
+        typeTextBox.Text = typeof(T).FullName;
         splitContainer.Enabled = true;
         foreach (ListViewItem item in itemsListView.Items) {
           ((IItem)item.Tag).Changed -= new EventHandler(Item_Changed);
@@ -124,27 +119,14 @@ namespace HeuristicLab.Data {
     #endregion
 
     #region Button Events
-    private void setTypeButton_Click(object sender, EventArgs e) {
-      ChooseTypeDialog dialog = new ChooseTypeDialog();
-      dialog.Caption = "Set Item Type";
-      if (dialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          ItemList.ItemType = dialog.Type;
-        }
-        catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
-        }
-      }
-      dialog.Dispose();
-    }
     private void addButton_Click(object sender, EventArgs e) {
       if (chooseItemDialog == null) {
-        chooseItemDialog = new ChooseItemDialog(ItemList.ItemType);
+        chooseItemDialog = new ChooseItemDialog(typeof(T));
         chooseItemDialog.Caption = "Add Item";
       }
       if (chooseItemDialog.ShowDialog(this) == DialogResult.OK) {
         try {
-          ItemList.Add(chooseItemDialog.Item);
+          ItemList.Add((T)chooseItemDialog.Item);
         }
         catch (Exception ex) {
           Auxiliary.ShowErrorMessageBox(ex);
@@ -192,8 +174,8 @@ namespace HeuristicLab.Data {
           ListViewItem item = itemsListView.GetItemAt(p.X, p.Y);
           if (item != null) {
             int index = item.Index;
-            ItemList.Remove(data);
-            ItemList.Insert(index, data);
+            ItemList.Remove((T)data);
+            ItemList.Insert(index, (T)data);
             itemsListView.SelectedIndices.Clear();
             itemsListView.SelectedIndices.Add(index);
           }
@@ -203,16 +185,6 @@ namespace HeuristicLab.Data {
     #endregion
 
     #region Item and Item List Events
-    private void ItemList_ItemTypeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(ItemList_ItemTypeChanged), sender, e);
-      else {
-        typeTextBox.Text = ItemList.ItemType.FullName;
-        if (chooseItemDialog != null) chooseItemDialog.Dispose();
-        chooseItemDialog = new ChooseItemDialog(ItemList.ItemType);
-        chooseItemDialog.Caption = "Add Item";
-      }
-    }
     private void ItemList_ItemInserted(object sender, ItemIndexEventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted), sender, e);

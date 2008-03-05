@@ -80,10 +80,7 @@ If the item is a ConstrainedItemList, any containing elements are limited to the
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute itemTypeAttribute = document.CreateAttribute("ItemType");
-      string typeString = Type.AssemblyQualifiedName;
-      string[] tokens = typeString.Split(new string[] { ", " }, StringSplitOptions.None);
-      typeString = tokens[0] + ", " + tokens[1];
-      itemTypeAttribute.Value = typeString;
+      itemTypeAttribute.Value = PersistenceManager.BuildTypeString(Type);
       node.Attributes.Append(itemTypeAttribute);
       return node;
     }

@@ -35,16 +35,15 @@ namespace HeuristicLab.Evolutionary {
     public SubScopesStorer()
       : base() {
       AddVariableInfo(new VariableInfo("SubScopes", "Number of sub-scopes that should be available", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SubScopesStore", "Temporarily stored sub-scopes", typeof(ItemList), VariableKind.New | VariableKind.In | VariableKind.Out | VariableKind.Deleted));
+      AddVariableInfo(new VariableInfo("SubScopesStore", "Temporarily stored sub-scopes", typeof(ItemList<IScope>), VariableKind.New | VariableKind.In | VariableKind.Out | VariableKind.Deleted));
     }
 
     public override IOperation Apply(IScope scope) {
       IntData subScopes = GetVariableValue<IntData>("SubScopes", scope, true);
-      ItemList subScopesStore = GetVariableValue<ItemList>("SubScopesStore", scope, false);
+      ItemList<IScope> subScopesStore = GetVariableValue<ItemList<IScope>>("SubScopesStore", scope, false);
 
       if (subScopesStore == null) {
-        subScopesStore = new ItemList();
-        subScopesStore.ItemType = typeof(IScope);
+        subScopesStore = new ItemList<IScope>();
         IVariableInfo info = GetVariableInfo("SubScopesStore");
         if (info.Local)
           AddVariable(new Variable(info.ActualName, subScopesStore));
@@ -59,7 +58,7 @@ namespace HeuristicLab.Evolutionary {
           >= subScopes.Data) {  // enough sub-scopes available
         // restore sub-scopes
         for (int i = 0; i < subScopesStore.Count; i++) {
-          right.AddSubScope((IScope)subScopesStore[i]);
+          right.AddSubScope(subScopesStore[i]);
           IVariableInfo info = GetVariableInfo("SubScopesStore");
           if (info.Local)
             RemoveVariable(info.ActualName);

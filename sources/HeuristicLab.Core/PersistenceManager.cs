@@ -81,5 +81,30 @@ namespace HeuristicLab.Core {
       doc.Load(stream);
       return PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
     }
+
+    public static string BuildTypeString(Type type) {
+      string assembly = type.Assembly.FullName;
+      assembly = assembly.Split(new string[] { ", " }, StringSplitOptions.None)[0];
+
+      StringBuilder builder = new StringBuilder();
+      builder.Append(type.Namespace);
+      builder.Append(".");
+      builder.Append(type.Name);
+      Type[] args = type.GetGenericArguments();
+      if (args.Length > 0) {
+        builder.Append("[[");
+        builder.Append(BuildTypeString(args[0]));
+        builder.Append("]");
+        for (int i = 1; i < args.Length; i++) {
+          builder.Append(",[");
+          builder.Append(BuildTypeString(args[i]));
+          builder.Append("]");
+        }
+        builder.Append("]");
+      }
+      builder.Append(", ");
+      builder.Append(assembly);
+      return builder.ToString();
+    }
   }
 }

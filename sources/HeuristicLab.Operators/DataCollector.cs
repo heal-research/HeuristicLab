@@ -32,17 +32,16 @@ namespace HeuristicLab.Operators {
     }
 
     public DataCollector() {
-      IVariableInfo variableNamesVariableInfo = new VariableInfo("VariableNames", "Names of variables whose values should be collected", typeof(ItemList), VariableKind.In);
+      IVariableInfo variableNamesVariableInfo = new VariableInfo("VariableNames", "Names of variables whose values should be collected", typeof(ItemList<StringData>), VariableKind.In);
       variableNamesVariableInfo.Local = true;
       AddVariableInfo(variableNamesVariableInfo);
-      ItemList variableNames = new ItemList();
-      variableNames.ItemType = typeof(StringData);
+      ItemList<StringData> variableNames = new ItemList<StringData>();
       AddVariable(new Variable("VariableNames", variableNames));
       AddVariableInfo(new VariableInfo("Values", "Collected values", typeof(ItemList), VariableKind.New | VariableKind.In | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      ItemList names = GetVariableValue<ItemList>("VariableNames", scope, false);
+      ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("VariableNames", scope, false);
       ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
       if (values == null) {
         values = new ItemList();
@@ -55,7 +54,7 @@ namespace HeuristicLab.Operators {
 
       ItemList currentValues = new ItemList();
       for (int i = 0; i < names.Count; i++)
-        currentValues.Add((IItem)scope.GetVariableValue(((StringData)names[i]).Data, true).Clone());
+        currentValues.Add((IItem)scope.GetVariableValue(names[i].Data, true).Clone());
       values.Add(currentValues);
       return null;
     }

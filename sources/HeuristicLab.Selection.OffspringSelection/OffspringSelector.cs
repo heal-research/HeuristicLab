@@ -37,8 +37,8 @@ namespace HeuristicLab.Selection.OffspringSelection {
       AddVariableInfo(new VariableInfo("SuccessRatioLimit", "Maximum success ratio", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SelectionPressure", "Current selection pressure", typeof(DoubleData), VariableKind.New | VariableKind.Out));
       AddVariableInfo(new VariableInfo("SuccessRatio", "Current success ratio", typeof(DoubleData), VariableKind.New | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("GoodChildren", "Temporarily store successful children", typeof(ItemList), VariableKind.New | VariableKind.Out | VariableKind.In | VariableKind.Deleted));
-      AddVariableInfo(new VariableInfo("BadChildren", "Temporarily store unsuccessful children", typeof(ItemList), VariableKind.New | VariableKind.Out | VariableKind.In | VariableKind.Deleted));
+      AddVariableInfo(new VariableInfo("GoodChildren", "Temporarily store successful children", typeof(ItemList<IScope>), VariableKind.New | VariableKind.Out | VariableKind.In | VariableKind.Deleted));
+      AddVariableInfo(new VariableInfo("BadChildren", "Temporarily store unsuccessful children", typeof(ItemList<IScope>), VariableKind.New | VariableKind.Out | VariableKind.In | VariableKind.Deleted));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -49,20 +49,18 @@ namespace HeuristicLab.Selection.OffspringSelection {
       IScope children = scope.SubScopes[1];
 
       // retrieve good and bad children
-      ItemList goodChildren = GetVariableValue<ItemList>("GoodChildren", scope, false, false);
+      ItemList<IScope> goodChildren = GetVariableValue<ItemList<IScope>>("GoodChildren", scope, false, false);
       if (goodChildren == null) {
-        goodChildren = new ItemList();
-        goodChildren.ItemType = typeof(IScope);
+        goodChildren = new ItemList<IScope>();
         IVariableInfo goodChildrenInfo = GetVariableInfo("GoodChildren");
         if (goodChildrenInfo.Local)
           AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
         else
           scope.AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
       }
-      ItemList badChildren = GetVariableValue<ItemList>("BadChildren", scope, false, false);
+      ItemList<IScope> badChildren = GetVariableValue<ItemList<IScope>>("BadChildren", scope, false, false);
       if (badChildren == null) {
-        badChildren = new ItemList();
-        badChildren.ItemType = typeof(IScope);
+        badChildren = new ItemList<IScope>();
         IVariableInfo badChildrenInfo = GetVariableInfo("BadChildren");
         if (badChildrenInfo.Local)
           AddVariable(new Variable(badChildrenInfo.ActualName, badChildren));

@@ -28,8 +28,8 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
   public class OrConstraint : ConstraintBase, IViewable {
-    private ItemList clauses;
-    public ItemList Clauses {
+    private ItemList<IConstraint> clauses;
+    public ItemList<IConstraint> Clauses {
       get { return clauses; }
       set {
         clauses = value;
@@ -44,14 +44,13 @@ namespace HeuristicLab.Constraints {
     }
 
     public OrConstraint() {
-      clauses = new ItemList();
-      clauses.ItemType = typeof(IConstraint);
+      clauses = new ItemList<IConstraint>();
     }
 
     public override bool Check(IItem data) {
       bool result = false;
       for (int i = 0 ; i < clauses.Count ; i++) {
-        result = ((IConstraint)clauses[i]).Check(data);
+        result = clauses[i].Check(data);
         if (result) return true;
       }
       return result;
@@ -64,7 +63,7 @@ namespace HeuristicLab.Constraints {
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       OrConstraint clone = new OrConstraint();
       clonedObjects.Add(Guid, clone);
-      clone.Clauses = (ItemList)Auxiliary.Clone(Clauses, clonedObjects);
+      clone.Clauses = (ItemList<IConstraint>)Auxiliary.Clone(Clauses, clonedObjects);
       return clone;
     }
 
@@ -84,7 +83,7 @@ namespace HeuristicLab.Constraints {
 
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      clauses = (ItemList)PersistenceManager.Restore(node.SelectSingleNode("Clauses"), restoredObjects);
+      clauses = (ItemList<IConstraint>)PersistenceManager.Restore(node.SelectSingleNode("Clauses"), restoredObjects);
     }
     #endregion persistence
   }

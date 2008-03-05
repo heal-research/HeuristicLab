@@ -46,10 +46,9 @@ namespace HeuristicLab.Operators {
       AddVariableInfo(new VariableInfo("InjectSubOperators", "true if the sub-operators of this combined operator should be injected into the scope", typeof(BoolData), VariableKind.In));
       GetVariableInfo("InjectSubOperators").Local = true;
       AddVariable(new Variable("InjectSubOperators", new BoolData(false)));
-      AddVariableInfo(new VariableInfo("SubOperatorNames", "Variable names for injecting the sub-operators", typeof(ItemList), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SubOperatorNames", "Variable names for injecting the sub-operators", typeof(ItemList<StringData>), VariableKind.In));
       GetVariableInfo("SubOperatorNames").Local = true;
-      ItemList subOperatorNames = new ItemList();
-      subOperatorNames.ItemType = typeof(StringData);
+      ItemList<StringData> subOperatorNames = new ItemList<StringData>();
       AddVariable(new Variable("SubOperatorNames", subOperatorNames));
     }
 
@@ -74,11 +73,11 @@ namespace HeuristicLab.Operators {
       if (OperatorGraph.InitialOperator != null) {
         bool inject = GetVariableValue<BoolData>("InjectSubOperators", scope, false).Data;
         if (inject) {
-          ItemList names = GetVariableValue<ItemList>("SubOperatorNames", scope, false);
+          ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("SubOperatorNames", scope, false);
           for (int i = 0; i < SubOperators.Count; i++) {
-            if (scope.GetVariable(names[i].ToString()) != null)
-              scope.RemoveVariable(names[i].ToString());
-            scope.AddVariable(new Variable(names[i].ToString(), SubOperators[i]));
+            if (scope.GetVariable(names[i].Data) != null)
+              scope.RemoveVariable(names[i].Data);
+            scope.AddVariable(new Variable(names[i].Data, SubOperators[i]));
           }
         }
         return new AtomicOperation(OperatorGraph.InitialOperator, scope);

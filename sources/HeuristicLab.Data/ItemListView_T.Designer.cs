@@ -24,7 +24,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  partial class ItemListView {
+  partial class ItemListView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -59,7 +59,6 @@ namespace HeuristicLab.Data {
       this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.itemTypeLabel = new System.Windows.Forms.Label();
-      this.setTypeButton = new System.Windows.Forms.Button();
       this.typeTextBox = new System.Windows.Forms.TextBox();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -85,7 +84,7 @@ namespace HeuristicLab.Data {
       this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
       this.splitContainer.Size = new System.Drawing.Size(423, 246);
       this.splitContainer.SplitterDistance = 198;
-      this.splitContainer.TabIndex = 3;
+      this.splitContainer.TabIndex = 2;
       // 
       // itemsGroupBox
       // 
@@ -166,17 +165,6 @@ namespace HeuristicLab.Data {
       this.itemTypeLabel.TabIndex = 0;
       this.itemTypeLabel.Text = "&Item Type:";
       // 
-      // setTypeButton
-      // 
-      this.setTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.setTypeButton.Location = new System.Drawing.Point(380, 0);
-      this.setTypeButton.Name = "setTypeButton";
-      this.setTypeButton.Size = new System.Drawing.Size(43, 20);
-      this.setTypeButton.TabIndex = 1;
-      this.setTypeButton.Text = "&Set...";
-      this.setTypeButton.UseVisualStyleBackColor = true;
-      this.setTypeButton.Click += new System.EventHandler(this.setTypeButton_Click);
-      // 
       // typeTextBox
       // 
       this.typeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -184,15 +172,14 @@ namespace HeuristicLab.Data {
       this.typeTextBox.Location = new System.Drawing.Point(66, 0);
       this.typeTextBox.Name = "typeTextBox";
       this.typeTextBox.ReadOnly = true;
-      this.typeTextBox.Size = new System.Drawing.Size(308, 20);
-      this.typeTextBox.TabIndex = 2;
+      this.typeTextBox.Size = new System.Drawing.Size(357, 20);
+      this.typeTextBox.TabIndex = 1;
       // 
       // ItemListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.typeTextBox);
-      this.Controls.Add(this.setTypeButton);
       this.Controls.Add(this.itemTypeLabel);
       this.Controls.Add(this.splitContainer);
       this.Name = "ItemListView";
@@ -216,7 +203,6 @@ namespace HeuristicLab.Data {
     private System.Windows.Forms.ListView itemsListView;
     private System.Windows.Forms.ColumnHeader columnHeader1;
     private Label itemTypeLabel;
-    private Button setTypeButton;
     private TextBox typeTextBox;
 
   }

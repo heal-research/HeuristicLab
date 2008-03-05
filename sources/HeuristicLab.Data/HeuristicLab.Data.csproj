@@ -149,12 +149,14 @@
     </Compile>
     <Compile Include="IObjectData.cs" />
     <Compile Include="IObjectDataVisitor.cs" />
-    <Compile Include="ItemList.cs" />
-    <Compile Include="ItemListView.cs">
+    <Compile Include="ItemListView_T.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ItemListView.Designer.cs">
-      <DependentUpon>ItemListView.cs</DependentUpon>
+    <Compile Include="ItemListView_T.Designer.cs">
+      <DependentUpon>ItemListView_T.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemList_T.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MatrixDataBaseView.cs">
       <SubType>UserControl</SubType>
@@ -222,8 +224,8 @@
       <DependentUpon>IntDataView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ItemListView.resx">
-      <DependentUpon>ItemListView.cs</DependentUpon>
+    <EmbeddedResource Include="ItemListView_T.resx">
+      <DependentUpon>ItemListView_T.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MatrixDataBaseView.resx">

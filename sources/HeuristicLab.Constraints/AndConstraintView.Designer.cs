@@ -45,7 +45,7 @@ namespace HeuristicLab.Constraints {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.clausesItemListView = new HeuristicLab.Data.ItemListView();
+      this.clausesItemListView = new HeuristicLab.Data.ItemListView<HeuristicLab.Core.IConstraint>();
       this.SuspendLayout();
       // 
       // clausesItemListView
@@ -72,7 +72,7 @@ namespace HeuristicLab.Constraints {
 
     #endregion
 
-    private HeuristicLab.Data.ItemListView clausesItemListView;
+    private HeuristicLab.Data.ItemListView<HeuristicLab.Core.IConstraint> clausesItemListView;
 
   }
 }

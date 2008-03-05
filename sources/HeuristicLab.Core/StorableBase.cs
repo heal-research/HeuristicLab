@@ -46,12 +46,8 @@ namespace HeuristicLab.Core {
 
     public virtual XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = document.CreateNode(XmlNodeType.Element, name, null);
-      Type type = this.GetType();
-      string typeString = type.AssemblyQualifiedName;
-      string[] tokens = typeString.Split(new string[] { ", " }, StringSplitOptions.None);
-      typeString = tokens[0] + ", " + tokens[1];
       XmlAttribute typeAttribute = document.CreateAttribute("Type");
-      typeAttribute.Value = typeString;
+      typeAttribute.Value = PersistenceManager.BuildTypeString(this.GetType());
       node.Attributes.Append(typeAttribute);
       XmlAttribute guidAttribute = document.CreateAttribute("GUID");
       guidAttribute.Value = Guid.ToString();

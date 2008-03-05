@@ -123,10 +123,7 @@ namespace HeuristicLab.Core {
       node.Attributes.Append(descriptionAttribute);
 
       XmlAttribute dataTypeAttribute = document.CreateAttribute("DataType");
-      string typeString = DataType.AssemblyQualifiedName;
-      string[] tokens = typeString.Split(new string[] { ", " }, StringSplitOptions.None);
-      typeString = tokens[0] + ", " + tokens[1];
-      dataTypeAttribute.Value = typeString;
+      dataTypeAttribute.Value = PersistenceManager.BuildTypeString(DataType);
       node.Attributes.Append(dataTypeAttribute);
 
       XmlAttribute kindAttribute = document.CreateAttribute("Kind");
