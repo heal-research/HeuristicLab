@@ -28,9 +28,10 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Operators {
   public class ConditionalBranch : OperatorBase {
     public override string Description {
-      get { return @"ConditionalBranch expects to have 1 or 2 sub operators.\r\n
-It will return the 1st sub operator if ""Condition"" is true and the 2nd sub operator if ""Condition"" equals to false.\r\n
-\r\nIn case a 2nd sub operator does not exist and ""Condition"" would equal to false, Conditional Branch will not return a new operation."; }
+      get { return @"ConditionalBranch expects to have 1 or 2 sub-operators.
+It will return the 1st sub-operator if ""Condition"" is true and the 2nd sub-operator if ""Condition"" equals to false.
+
+In case a 2nd sub-operator does not exist and ""Condition"" would equal to false, Conditional Branch will not return a new operation."; }
     }
 
     public ConditionalBranch()
