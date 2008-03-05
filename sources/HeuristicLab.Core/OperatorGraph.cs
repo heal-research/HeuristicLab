@@ -93,10 +93,6 @@ namespace HeuristicLab.Core {
       else
         return null;
     }
-    public void Reset() {
-      foreach (IOperator op in Operators)
-        op.Reset();
-    }
     public void Clear() {
       Guid[] guids = new Guid[Operators.Count];
       int i = 0;

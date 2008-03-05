@@ -67,7 +67,6 @@ namespace HeuristicLab.Core {
 
     IOperation Execute(IScope scope);
     void Abort();
-    void Reset();
 
     event EventHandler NameChanged;
     event EventHandler BreakpointChanged;
@@ -77,7 +76,6 @@ namespace HeuristicLab.Core {
     event EventHandler<VariableInfoEventArgs> VariableInfoRemoved;
     event EventHandler<VariableEventArgs> VariableAdded;
     event EventHandler<VariableEventArgs> VariableRemoved;
-    event EventHandler Initialized;
     event EventHandler Executed;
   }
 }

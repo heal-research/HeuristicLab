@@ -32,7 +32,6 @@ namespace HeuristicLab.Core {
     void AddOperator(IOperator op);
     void RemoveOperator(Guid guid);
     IOperator GetOperator(Guid guid);
-    void Reset();
     void Clear();
 
     event EventHandler<OperatorEventArgs> OperatorAdded;

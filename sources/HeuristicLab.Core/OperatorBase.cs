@@ -373,9 +373,6 @@ namespace HeuristicLab.Core {
     public virtual void Abort() {
       myCanceled = true;
     }
-    public virtual void Reset() {
-      OnInitialized();
-    }
 
     public virtual IOperation Apply(IScope scope) {
       return null;
@@ -422,12 +419,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnVariableRemoved(IVariable variable) {
       if (VariableRemoved != null)
         VariableRemoved(this, new VariableEventArgs(variable));
-    }
-    public event EventHandler Initialized;
-    protected virtual void OnInitialized() {
-      if (Initialized != null) {
-        Initialized(this, new EventArgs());
-      }
     }
     public event EventHandler Executed;
     protected virtual void OnExecuted() {

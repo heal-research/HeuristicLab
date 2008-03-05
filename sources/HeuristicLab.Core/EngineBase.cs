@@ -102,7 +102,6 @@ namespace HeuristicLab.Core {
     public virtual void Reset() {
       myCanceled = false;
       myRunning = false;
-      OperatorGraph.Reset();
       GlobalScope.Clear();
       ExecutionTime = new TimeSpan();
       myExecutionStack.Clear();

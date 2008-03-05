@@ -85,10 +85,6 @@ namespace HeuristicLab.Operators {
         return null;
       }
     }
-    public override void Reset() {
-      OperatorGraph.Reset();
-      base.Reset();
-    }
 
     public override IView CreateView() {
       return new CombinedOperatorView(this);
