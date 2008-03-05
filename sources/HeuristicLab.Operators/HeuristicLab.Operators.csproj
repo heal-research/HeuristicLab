@@ -57,7 +57,7 @@
     <Compile Include="ConditionalBranch.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MultiHeuristicBranch.cs" />
+    <Compile Include="StochasticMultiBranch.cs" />
     <Compile Include="SubScopesMixer.cs" />
     <Compile Include="DataCollector.cs" />
     <Compile Include="EqualToComparator.cs" />
