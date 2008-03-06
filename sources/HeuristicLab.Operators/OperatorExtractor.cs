@@ -35,10 +35,11 @@ Operator extractors can be used to get those operators again that have been inje
 
     public OperatorExtractor()
       : base() {
+      AddVariableInfo(new VariableInfo("Operator", "Extracted operator", typeof(IOperator), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
-      IOperator op = scope.GetVariableValue<IOperator>(Name, true, true);
+      IOperator op = GetVariableValue<IOperator>("Operator", scope, true, true);
       return new AtomicOperation(op, scope);
     }
   }
