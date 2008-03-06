@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.Operators.Programmable {
   public partial class ProgrammableOperatorView : ViewBase {

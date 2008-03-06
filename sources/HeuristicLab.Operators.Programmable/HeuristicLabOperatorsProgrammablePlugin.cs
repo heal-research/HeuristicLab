@@ -29,6 +29,7 @@ namespace HeuristicLab.Operators {
   [PluginFile(Filename = "HeuristicLab.Operators.Programmable.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.Data")]
+  [Dependency(Dependency = "HeuristicLab.Operators")]
   public class HeuristicLabOperatorsProgrammablePlugin : PluginBase {
   }
 }

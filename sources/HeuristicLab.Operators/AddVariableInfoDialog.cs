@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Operators.Programmable {
+namespace HeuristicLab.Operators {
   public partial class AddVariableInfoDialog : Form {
     private IVariableInfo myVariableInfo;
     public IVariableInfo VariableInfo {

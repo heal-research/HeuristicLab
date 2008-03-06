@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Operators.Programmable {
+namespace HeuristicLab.Operators {
   partial class AddVariableInfoDialog {
     /// <summary>
     /// Required designer variable.

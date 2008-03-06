@@ -43,12 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddVariableInfoDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AddVariableInfoDialog.Designer.cs">
-      <DependentUpon>AddVariableInfoDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="HeuristicLabOperatorsProgrammablePlugin.cs" />
     <Compile Include="ProgrammableOperator.cs" />
     <Compile Include="ProgrammableOperatorView.cs">
@@ -72,16 +66,16 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
+      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
+      <Name>HeuristicLab.Operators</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AddVariableInfoDialog.resx">
-      <DependentUpon>AddVariableInfoDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ProgrammableOperatorView.resx">
       <DependentUpon>ProgrammableOperatorView.cs</DependentUpon>
       <SubType>Designer</SubType>

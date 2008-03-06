@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddVariableInfoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddVariableInfoDialog.Designer.cs">
+      <DependentUpon>AddVariableInfoDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="CombinedOperator.cs" />
     <Compile Include="CombinedOperatorView.cs">
       <SubType>UserControl</SubType>
@@ -112,6 +118,9 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AddVariableInfoDialog.resx">
+      <DependentUpon>AddVariableInfoDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CombinedOperatorView.resx">
       <DependentUpon>CombinedOperatorView.cs</DependentUpon>
       <SubType>Designer</SubType>
