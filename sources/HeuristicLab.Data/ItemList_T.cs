@@ -42,20 +42,20 @@ namespace HeuristicLab.Data {
       ItemList<T> clone = new ItemList<T>();
       clonedObjects.Add(Guid, clone);
       for (int i = 0; i < list.Count; i++)
-        clone.list.Add((T)Auxiliary.Clone(list[i], clonedObjects));
+        clone.list.Add((T) Auxiliary.Clone(list[i], clonedObjects));
       return clone;
     }
 
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       for (int i = 0; i < list.Count; i++)
         node.AppendChild(PersistenceManager.Persist(list[i], document, persistedObjects));
       return node;
     }
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       for (int i = 0; i < node.ChildNodes.Count; i++)
-        list.Add((T)PersistenceManager.Restore(node.ChildNodes[i], restoredObjects));
+        list.Add((T) PersistenceManager.Restore(node.ChildNodes[i], restoredObjects));
     }
 
     public override string ToString() {
@@ -132,6 +132,22 @@ namespace HeuristicLab.Data {
     #region IEnumerable Members
     IEnumerator IEnumerable.GetEnumerator() {
       return list.GetEnumerator();
+    }
+    #endregion
+
+    #region List<T> Methods
+    public void AddRange(IEnumerable<T> collection) {
+      foreach (T obj in collection) {
+        this.Add(obj);
+      }
+    }
+
+    public bool Exists(Predicate<T> match) {
+      return list.Exists(match);
+    }
+
+    public List<T> FindAll(Predicate<T> match) {
+      return list.FindAll(match);
     }
     #endregion
 
