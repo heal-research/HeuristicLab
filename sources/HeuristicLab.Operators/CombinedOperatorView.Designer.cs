@@ -55,6 +55,8 @@ namespace HeuristicLab.Operators {
       this.constrainedItemBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
+      this.removeVariableInfoButton = new System.Windows.Forms.Button();
+      this.addVariableInfoButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.operatorGraphTabPage.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
@@ -100,6 +102,8 @@ namespace HeuristicLab.Operators {
       // 
       // variableInfosTabPage
       // 
+      this.variableInfosTabPage.Controls.Add(this.removeVariableInfoButton);
+      this.variableInfosTabPage.Controls.Add(this.addVariableInfoButton);
       this.variableInfosTabPage.Controls.Add(this.operatorBaseVariableInfosView);
       this.variableInfosTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableInfosTabPage.Name = "variableInfosTabPage";
@@ -111,13 +115,16 @@ namespace HeuristicLab.Operators {
       // 
       // operatorBaseVariableInfosView
       // 
+      this.operatorBaseVariableInfosView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorBaseVariableInfosView.Caption = "Operator";
-      this.operatorBaseVariableInfosView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.operatorBaseVariableInfosView.Location = new System.Drawing.Point(3, 3);
       this.operatorBaseVariableInfosView.Name = "operatorBaseVariableInfosView";
       this.operatorBaseVariableInfosView.Operator = null;
-      this.operatorBaseVariableInfosView.Size = new System.Drawing.Size(383, 303);
+      this.operatorBaseVariableInfosView.Size = new System.Drawing.Size(383, 274);
       this.operatorBaseVariableInfosView.TabIndex = 0;
+      this.operatorBaseVariableInfosView.SelectedVariableInfosChanged += new System.EventHandler(this.operatorBaseVariableInfosView_SelectedVariableInfosChanged);
       // 
       // variablesTabPage
       // 
@@ -184,6 +191,29 @@ namespace HeuristicLab.Operators {
       this.descriptionTextBox.TabIndex = 0;
       this.descriptionTextBox.Validated += new System.EventHandler(this.descriptionTextBox_Validated);
       // 
+      // removeVariableInfoButton
+      // 
+      this.removeVariableInfoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.removeVariableInfoButton.Enabled = false;
+      this.removeVariableInfoButton.Location = new System.Drawing.Point(84, 283);
+      this.removeVariableInfoButton.Name = "removeVariableInfoButton";
+      this.removeVariableInfoButton.Size = new System.Drawing.Size(75, 23);
+      this.removeVariableInfoButton.TabIndex = 2;
+      this.removeVariableInfoButton.Text = "&Remove";
+      this.removeVariableInfoButton.UseVisualStyleBackColor = true;
+      this.removeVariableInfoButton.Click += new System.EventHandler(this.removeVariableInfoButton_Click);
+      // 
+      // addVariableInfoButton
+      // 
+      this.addVariableInfoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.addVariableInfoButton.Location = new System.Drawing.Point(3, 283);
+      this.addVariableInfoButton.Name = "addVariableInfoButton";
+      this.addVariableInfoButton.Size = new System.Drawing.Size(75, 23);
+      this.addVariableInfoButton.TabIndex = 1;
+      this.addVariableInfoButton.Text = "&Add...";
+      this.addVariableInfoButton.UseVisualStyleBackColor = true;
+      this.addVariableInfoButton.Click += new System.EventHandler(this.addVariableInfoButton_Click);
+      // 
       // CombinedOperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -215,6 +245,8 @@ namespace HeuristicLab.Operators {
     private HeuristicLab.Core.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
     private HeuristicLab.Core.OperatorBaseVariablesView operatorBaseVariablesView;
     private HeuristicLab.Core.ConstrainedItemBaseView constrainedItemBaseView;
+    private System.Windows.Forms.Button removeVariableInfoButton;
+    private System.Windows.Forms.Button addVariableInfoButton;
 
   }
 }

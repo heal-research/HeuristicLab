@@ -70,6 +70,14 @@ A combined operator automatically inject its sub-operators into the scope it is 
             scope.RemoveVariable(SubOperators[i].Name);
           scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
         }
+
+        foreach (IVariableInfo variableInfo in VariableInfos) {
+          IItem value = GetVariableValue(variableInfo.FormalName, scope, true, true);
+          if (scope.GetVariable(variableInfo.FormalName) != null)
+            scope.RemoveVariable(variableInfo.FormalName);
+          scope.AddVariable(new Variable(variableInfo.FormalName, value));
+        }
+
         return new AtomicOperation(OperatorGraph.InitialOperator, scope);
       } else {
         return null;

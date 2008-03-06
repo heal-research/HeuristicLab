@@ -78,5 +78,28 @@ namespace HeuristicLab.Operators {
     private void descriptionTextBox_Validated(object sender, EventArgs e) {
       CombinedOperator.SetDescription(descriptionTextBox.Text);
     }
+
+    private void operatorBaseVariableInfosView_SelectedVariableInfosChanged(object sender, EventArgs e) {
+      removeVariableInfoButton.Enabled = operatorBaseVariableInfosView.SelectedVariableInfos.Count > 0;
+    }
+
+    #region Click Events
+    private void addVariableInfoButton_Click(object sender, EventArgs e) {
+      AddVariableInfoDialog dialog = new AddVariableInfoDialog();
+      if (dialog.ShowDialog(this) == DialogResult.OK) {
+        if (CombinedOperator.GetVariableInfo(dialog.VariableInfo.FormalName) != null)
+          Auxiliary.ShowErrorMessageBox("A variable info with the same formal name already exists.");
+        else
+          CombinedOperator.AddVariableInfo(dialog.VariableInfo);
+      }
+      dialog.Dispose();
+    }
+    private void removeVariableInfoButton_Click(object sender, EventArgs e) {
+      IVariableInfo[] selected = new IVariableInfo[operatorBaseVariableInfosView.SelectedVariableInfos.Count];
+      operatorBaseVariableInfosView.SelectedVariableInfos.CopyTo(selected, 0);
+      for (int i = 0; i < selected.Length; i++)
+        CombinedOperator.RemoveVariableInfo(selected[i].FormalName);
+    }
+    #endregion
   }
 }
