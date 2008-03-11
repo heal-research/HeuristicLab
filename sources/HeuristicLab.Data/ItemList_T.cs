@@ -146,8 +146,32 @@ namespace HeuristicLab.Data {
       return list.Exists(match);
     }
 
+    public T Find(Predicate<T> match) {
+      return list.Find(match);
+    }
+
     public List<T> FindAll(Predicate<T> match) {
       return list.FindAll(match);
+    }
+
+    public int FindIndex(Predicate<T> match) {
+      return list.FindIndex(match); 
+    }
+
+    public void Sort() {
+      list.Sort(); 
+    }
+
+    public void Sort(IComparer<T> comparer) {
+      list.Sort(comparer); 
+    }
+
+    public void Sort(Comparison<T> comparison) {
+      list.Sort(comparison); 
+    }    
+
+    public void Reverse() {
+     list.Reverse(); 
     }
     #endregion
 
