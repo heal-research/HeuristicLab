@@ -90,6 +90,7 @@
     <Compile Include="ChooseTypeDialog.Designer.cs">
       <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="AliasEventArgs.cs" />
     <Compile Include="OperatorBaseDescriptionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

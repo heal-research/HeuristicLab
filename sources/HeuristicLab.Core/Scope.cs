@@ -37,6 +37,10 @@ namespace HeuristicLab.Core {
     public ICollection<IVariable> Variables {
       get { return myVariables.Values; }
     }
+    private IDictionary<string, string> myAliases;
+    public ICollection<string> Aliases {
+      get { return myAliases.Values; }
+    }
     private List<IScope> mySubScopes;
     public IList<IScope> SubScopes {
       get { return mySubScopes.AsReadOnly(); }
@@ -45,6 +49,7 @@ namespace HeuristicLab.Core {
     public Scope() {
       myName = "Anonymous";
       myVariables = new Dictionary<string, IVariable>();
+      myAliases = new Dictionary<string, string>();
       mySubScopes = new List<IScope>();
     }
     public Scope(string name)
@@ -107,6 +112,7 @@ namespace HeuristicLab.Core {
     }
     public IItem GetVariableValue(string name, bool recursiveLookup, bool throwOnError) {
       IVariable variable;
+      name = TranslateName(name);
       if (myVariables.TryGetValue(name, out variable)) {
         return variable.Value;
       } else {
@@ -118,6 +124,27 @@ namespace HeuristicLab.Core {
           else
             return null;
         }
+      }
+    }
+
+    public string TranslateName(string name) {
+      while (myAliases.ContainsKey(name))
+        name = myAliases[name];
+      if (parent != null)
+        name = parent.TranslateName(name);
+      return name;
+    }
+    public void AddAlias(string alias, string name) {
+      RemoveAlias(alias);
+      if (alias != name) {
+        myAliases.Add(alias, name);
+        OnAliasAdded(alias);
+      }
+    }
+    public void RemoveAlias(string alias) {
+      if (myAliases.ContainsKey(alias)) {
+        myAliases.Remove(alias);
+        OnAliasRemoved(alias);
       }
     }
 
@@ -171,6 +198,15 @@ namespace HeuristicLab.Core {
       for (int j = 0; j < variableNames.Length; j++)
         RemoveVariable(variableNames[j]);
 
+      string[] aliases = new string[Aliases.Count];
+      i = 0;
+      foreach (string alias in myAliases.Keys) {
+        aliases[i] = alias;
+        i++;
+      }
+      for (int j = 0; j < aliases.Length; j++)
+        RemoveAlias(aliases[j]);
+
       while (SubScopes.Count > 0)
         RemoveSubScope(SubScopes[0]);
     }
@@ -181,6 +217,8 @@ namespace HeuristicLab.Core {
 
       foreach (IVariable variable in myVariables.Values)
         clone.AddVariable((IVariable)Auxiliary.Clone(variable, clonedObjects));
+      foreach (KeyValuePair<string, string> alias in myAliases)
+        clone.AddAlias(alias.Key, alias.Value);
       for (int i = 0; i < SubScopes.Count; i++)
         clone.AddSubScope((IScope)Auxiliary.Clone(SubScopes[i], clonedObjects));
 
@@ -196,6 +234,16 @@ namespace HeuristicLab.Core {
     protected virtual void OnVariableRemoved(IVariable variable) {
       if (VariableRemoved != null)
         VariableRemoved(this, new VariableEventArgs(variable));
+    }
+    public event EventHandler<AliasEventArgs> AliasAdded;
+    protected virtual void OnAliasAdded(string alias) {
+      if (AliasAdded != null)
+        AliasAdded(this, new AliasEventArgs(alias));
+    }
+    public event EventHandler<AliasEventArgs> AliasRemoved;
+    protected virtual void OnAliasRemoved(string alias) {
+      if (AliasRemoved != null)
+        AliasRemoved(this, new AliasEventArgs(alias));
     }
     public event EventHandler<ScopeIndexEventArgs> SubScopeAdded;
     protected virtual void OnSubScopeAdded(IScope scope, int index) {
@@ -225,6 +273,19 @@ namespace HeuristicLab.Core {
         variables.AppendChild(PersistenceManager.Persist(variable, document, persistedObjects));
       node.AppendChild(variables);
 
+      XmlNode aliases = document.CreateNode(XmlNodeType.Element, "Aliases", null);
+      foreach (KeyValuePair<string, string> alias in myAliases) {
+        XmlNode aliasNode = document.CreateNode(XmlNodeType.Element, "Alias", null);
+        XmlAttribute keyAttribute = document.CreateAttribute("Alias");
+        keyAttribute.Value = alias.Key;
+        aliasNode.Attributes.Append(keyAttribute);
+        XmlAttribute valueAttribute = document.CreateAttribute("Name");
+        valueAttribute.Value = alias.Value;
+        aliasNode.Attributes.Append(valueAttribute);
+        aliases.AppendChild(aliasNode);
+      }
+      node.AppendChild(aliases);
+
       XmlNode subScopes = document.CreateNode(XmlNodeType.Element, "SubScopes", null);
       for (int i = 0; i < SubScopes.Count; i++)
         subScopes.AppendChild(PersistenceManager.Persist(SubScopes[i], document, persistedObjects));
@@ -240,6 +301,12 @@ namespace HeuristicLab.Core {
       foreach (XmlNode variableNode in variables.ChildNodes) {
         IVariable variable = (IVariable)PersistenceManager.Restore(variableNode, restoredObjects);
         AddVariable(variable);
+      }
+
+      XmlNode aliases = node.SelectSingleNode("Aliases");
+      if (aliases != null) {
+        foreach (XmlNode aliasNode in aliases.ChildNodes)
+          AddAlias(aliasNode.Attributes["Alias"].Value, aliasNode.Attributes["Name"].Value);
       }
 
       XmlNode subScopes = node.SelectSingleNode("SubScopes");

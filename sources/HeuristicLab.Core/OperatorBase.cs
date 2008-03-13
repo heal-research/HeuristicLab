@@ -359,13 +359,17 @@ namespace HeuristicLab.Core {
             return null;
         }
       } else {
-        return scope.GetVariableValue(info.ActualName, recursiveLookup, throwOnError);
+        return scope.GetVariableValue(formalName, recursiveLookup, throwOnError);
       }
     }
     #endregion
 
     public virtual IOperation Execute(IScope scope) {
       myCanceled = false;
+
+      foreach (IVariableInfo variableInfo in VariableInfos)
+        scope.AddAlias(variableInfo.FormalName, variableInfo.ActualName);
+
       IOperation next = Apply(scope);
       OnExecuted();
       return next;

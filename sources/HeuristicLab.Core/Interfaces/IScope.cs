@@ -29,6 +29,7 @@ namespace HeuristicLab.Core {
     string Name { get; }
 
     ICollection<IVariable> Variables { get; }
+    ICollection<string> Aliases { get; }
     IList<IScope> SubScopes { get; }
 
     void SetParent(IScope scope);
@@ -41,6 +42,10 @@ namespace HeuristicLab.Core {
     IItem GetVariableValue(string name, bool recursiveLookup);
     IItem GetVariableValue(string name, bool recursiveLookup, bool throwOnError);
 
+    string TranslateName(string name);
+    void AddAlias(string alias, string name);
+    void RemoveAlias(string alias);
+
     void AddSubScope(IScope scope);
     void RemoveSubScope(IScope scope);
     void ReorderSubScopes(int[] sequence);
@@ -51,6 +56,8 @@ namespace HeuristicLab.Core {
 
     event EventHandler<VariableEventArgs> VariableAdded;
     event EventHandler<VariableEventArgs> VariableRemoved;
+    event EventHandler<AliasEventArgs> AliasAdded;
+    event EventHandler<AliasEventArgs> AliasRemoved;
     event EventHandler<ScopeIndexEventArgs> SubScopeAdded;
     event EventHandler<ScopeIndexEventArgs> SubScopeRemoved;
     event EventHandler SubScopesReordered;
