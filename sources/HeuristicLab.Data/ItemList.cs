@@ -27,5 +27,13 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public class ItemList : ItemList<IItem> { }
+  public class ItemList : ItemList<IItem> {
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      ItemList clone = new ItemList();
+      clonedObjects.Add(Guid, clone);
+      for (int i = 0; i < list.Count; i++)
+        clone.list.Add((IItem)Auxiliary.Clone(list[i], clonedObjects));
+      return clone;
+    }
+  }
 }

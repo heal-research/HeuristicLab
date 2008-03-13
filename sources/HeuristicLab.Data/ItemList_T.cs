@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
   public class ItemList<T> : ItemBase, IList<T> where T : IItem {
-    private List<T> list;
+    protected List<T> list;
 
     public ItemList() {
       list = new List<T>();
