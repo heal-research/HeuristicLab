@@ -29,7 +29,7 @@ namespace HeuristicLab.Core {
     string Name { get; }
 
     ICollection<IVariable> Variables { get; }
-    ICollection<string> Aliases { get; }
+    IEnumerable<KeyValuePair<string, string>> Aliases { get; }
     IList<IScope> SubScopes { get; }
 
     void SetParent(IScope scope);

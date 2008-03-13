@@ -38,8 +38,8 @@ namespace HeuristicLab.Core {
       get { return myVariables.Values; }
     }
     private IDictionary<string, string> myAliases;
-    public ICollection<string> Aliases {
-      get { return myAliases.Values; }
+    public IEnumerable<KeyValuePair<string, string>> Aliases {
+      get { return myAliases; }
     }
     private List<IScope> mySubScopes;
     public IList<IScope> SubScopes {
@@ -198,14 +198,10 @@ namespace HeuristicLab.Core {
       for (int j = 0; j < variableNames.Length; j++)
         RemoveVariable(variableNames[j]);
 
-      string[] aliases = new string[Aliases.Count];
-      i = 0;
-      foreach (string alias in myAliases.Keys) {
-        aliases[i] = alias;
-        i++;
-      }
+      KeyValuePair<string, string>[] aliases = new KeyValuePair<string,string>[myAliases.Count];
+      myAliases.CopyTo(aliases, 0);
       for (int j = 0; j < aliases.Length; j++)
-        RemoveAlias(aliases[j]);
+        RemoveAlias(aliases[j].Key);
 
       while (SubScopes.Count > 0)
         RemoveSubScope(SubScopes[0]);
