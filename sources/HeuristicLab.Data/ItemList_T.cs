@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
   public class ItemList<T> : ItemBase, IList<T> where T : IItem {
-    protected List<T> list;
+    private List<T> list;
 
     public ItemList() {
       list = new List<T>();
@@ -41,9 +41,12 @@ namespace HeuristicLab.Data {
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ItemList<T> clone = new ItemList<T>();
       clonedObjects.Add(Guid, clone);
-      for (int i = 0; i < list.Count; i++)
-        clone.list.Add((T) Auxiliary.Clone(list[i], clonedObjects));
+      CloneElements(clone, clonedObjects);
       return clone;
+    }
+    protected void CloneElements(ItemList<T> destination, IDictionary<Guid, object> clonedObjects) {
+      for (int i = 0; i < list.Count; i++)
+        destination.list.Add((T)Auxiliary.Clone(list[i],clonedObjects));
     }
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {

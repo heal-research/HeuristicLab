@@ -31,8 +31,7 @@ namespace HeuristicLab.Data {
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ItemList clone = new ItemList();
       clonedObjects.Add(Guid, clone);
-      for (int i = 0; i < list.Count; i++)
-        clone.list.Add((IItem)Auxiliary.Clone(list[i], clonedObjects));
+      base.CloneElements(clone, clonedObjects);
       return clone;
     }
   }
