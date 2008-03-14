@@ -66,12 +66,12 @@ namespace HeuristicLab.SGA {
         tabControl.Enabled = false;
       } else {
         tabControl.Enabled = true;
-        problemInitializationTextBox.Text = SGA.ProblemInitializer.Name;
-        solutionGenerationTextBox.Text = SGA.SolutionGenerator.Name;
-        selectionTextBox.Text = SGA.Selector.Name;
-        crossoverTextBox.Text = SGA.Crossover.Name;
-        mutationTextBox.Text = SGA.Mutator.Name;
-        evaluationTextBox.Text = SGA.Evaluator.Name;
+        problemInitializationTextBox.Text = SGA.ProblemInjector.GetType().Name;
+        solutionGenerationTextBox.Text = SGA.SolutionGenerator.GetType().Name;
+        selectionTextBox.Text = SGA.Selector.GetType().Name;
+        crossoverTextBox.Text = SGA.Crossover.GetType().Name;
+        mutationTextBox.Text = SGA.Mutator.GetType().Name;
+        evaluationTextBox.Text = SGA.Evaluator.GetType().Name;
       }
     }
 
@@ -86,7 +86,7 @@ namespace HeuristicLab.SGA {
 
     #region Button Events
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
-      IView view = SGA.ProblemInitializer.CreateView();
+      IView view = SGA.ProblemInjector.CreateView();
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
@@ -118,43 +118,43 @@ namespace HeuristicLab.SGA {
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        SGA.ProblemInitializer = chooseOperatorDialog.Operator;
-        problemInitializationTextBox.Text = SGA.ProblemInitializer.Name;
+        SGA.ProblemInjector = chooseOperatorDialog.Operator;
+        problemInitializationTextBox.Text = SGA.ProblemInjector.GetType().Name;
       }
     }
     private void setSolutionGenerationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         SGA.SolutionGenerator= chooseOperatorDialog.Operator;
-        solutionGenerationTextBox.Text = SGA.SolutionGenerator.Name;
+        solutionGenerationTextBox.Text = SGA.SolutionGenerator.GetType().Name;
       }
     }
     private void setSelectionButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         SGA.Selector = chooseOperatorDialog.Operator;
-        selectionTextBox.Text = SGA.Selector.Name;
+        selectionTextBox.Text = SGA.Selector.GetType().Name;
       }
     }
     private void setCrossoverButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         SGA.Crossover = chooseOperatorDialog.Operator;
-        crossoverTextBox.Text = SGA.Crossover.Name;
+        crossoverTextBox.Text = SGA.Crossover.GetType().Name;
       }
     }
     private void setMutationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         SGA.Mutator = chooseOperatorDialog.Operator;
-        mutationTextBox.Text = SGA.Mutator.Name;
+        mutationTextBox.Text = SGA.Mutator.GetType().Name;
       }
     }
     private void setEvaluationButton_Click(object sender, EventArgs e) {
       if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         SGA.Evaluator = chooseOperatorDialog.Operator;
-        evaluationTextBox.Text = SGA.Evaluator.Name;
+        evaluationTextBox.Text = SGA.Evaluator.GetType().Name;
       }
     }
     private void executeButton_Click(object sender, EventArgs e) {

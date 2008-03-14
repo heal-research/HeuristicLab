@@ -55,8 +55,9 @@ namespace HeuristicLab.SGA {
       op.OperatorGraph.AddOperator(co1);
       sp.AddSubOperator(co1);
 
-      // place holder for Problem Initializer
+      // place holder for ProblemInjector
       EmptyOperator eo1 = new EmptyOperator();
+      eo1.Name = "ProblemInjector";
       op.OperatorGraph.AddOperator(eo1);
       co1.AddSubOperator(eo1);
 
@@ -65,13 +66,15 @@ namespace HeuristicLab.SGA {
       op.OperatorGraph.AddOperator(co2);
       sp.AddSubOperator(co2);
 
-      // place holder for Solution Generator
+      // place holder for SolutionGenerator
       EmptyOperator eo2 = new EmptyOperator();
+      eo2.Name = "SolutionGenerator";
       op.OperatorGraph.AddOperator(eo2);
       co2.AddSubOperator(eo2);
 
       // place holder for Evaluator
       EmptyOperator eo3 = new EmptyOperator();
+      eo3.Name = "Evaluator";
       op.OperatorGraph.AddOperator(eo3);
       co2.AddSubOperator(eo3);
 
@@ -82,16 +85,19 @@ namespace HeuristicLab.SGA {
 
       // place holder for Selector
       EmptyOperator eo4 = new EmptyOperator();
+      eo4.Name = "Selector";
       op.OperatorGraph.AddOperator(eo4);
       co3.AddSubOperator(eo4);
 
       // place holder for Crossover
       EmptyOperator eo5 = new EmptyOperator();
+      eo5.Name = "Crossover";
       op.OperatorGraph.AddOperator(eo5);
       co3.AddSubOperator(eo5);
 
       // place holder for Mutator
       EmptyOperator eo6 = new EmptyOperator();
+      eo6.Name = "Mutator";
       op.OperatorGraph.AddOperator(eo6);
       co3.AddSubOperator(eo6);
 
@@ -111,8 +117,8 @@ namespace HeuristicLab.SGA {
       sp.AddSubOperator(ri);
 
       OperatorExtractor oe = new OperatorExtractor();
-      oe.Name = "Problem Initializer";
-      oe.GetVariable("Name").GetValue<StringData>().Data = "ProblemInitializer";
+      oe.Name = "ProblemInjector";
+      oe.GetVariableInfo("Operator").ActualName = "ProblemInjector";
       op.OperatorGraph.AddOperator(oe);
       sp.AddSubOperator(oe);
 
@@ -126,9 +132,6 @@ namespace HeuristicLab.SGA {
       vi.AddVariable(new Variable("MaximumGenerations", new IntData(1000)));
       op.OperatorGraph.AddOperator(vi);
       sp.AddSubOperator(vi);
-
-      op.GetVariable("InjectSubOperators").GetValue<BoolData>().Data = true;
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("ProblemInitializer"));
 
       return op;
     }
@@ -152,14 +155,14 @@ namespace HeuristicLab.SGA {
       ussp.AddSubOperator(sp2);
 
       OperatorExtractor oe1 = new OperatorExtractor();
-      oe1.Name = "Solution Generator";
-      oe1.GetVariable("Name").GetValue<StringData>().Data = "SolutionGenerator";
+      oe1.Name = "SolutionGenerator";
+      oe1.GetVariableInfo("Operator").ActualName = "SolutionGenerator";
       op.OperatorGraph.AddOperator(oe1);
       sp2.AddSubOperator(oe1);
 
       OperatorExtractor oe2 = new OperatorExtractor();
       oe2.Name = "Evaluator";
-      oe2.GetVariable("Name").GetValue<StringData>().Data = "Evaluator";
+      oe2.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe2);
       sp2.AddSubOperator(oe2);
 
@@ -174,10 +177,6 @@ namespace HeuristicLab.SGA {
       op.OperatorGraph.AddOperator(s);
       sp1.AddSubOperator(s);
 
-      op.GetVariable("InjectSubOperators").GetValue<BoolData>().Data = true;
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("SolutionGenerator"));
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("Evaluator"));
-
       return op;
     }
     private static CombinedOperator CreateSGAMain() {
@@ -188,7 +187,7 @@ namespace HeuristicLab.SGA {
 
       OperatorExtractor oe = new OperatorExtractor();
       oe.Name = "Selector";
-      oe.GetVariable("Name").GetValue<StringData>().Data = "Selector";
+      oe.GetVariableInfo("Operator").ActualName = "Selector";
       op.OperatorGraph.AddOperator(oe);
       sp.AddSubOperator(oe);
 
@@ -219,7 +218,7 @@ namespace HeuristicLab.SGA {
       sp.AddSubOperator(bawqc);
 
       DataCollector dc = new DataCollector();
-      ItemList names = dc.GetVariable("VariableNames").GetValue<ItemList>();
+      ItemList<StringData> names = dc.GetVariable("VariableNames").GetValue<ItemList<StringData>>();
       names.Add(new StringData("BestQuality"));
       names.Add(new StringData("AverageQuality"));
       names.Add(new StringData("WorstQuality"));
@@ -251,12 +250,6 @@ namespace HeuristicLab.SGA {
 
       cb.AddSubOperator(sp);
 
-      op.GetVariable("InjectSubOperators").GetValue<BoolData>().Data = true;
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("Selector"));
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("Crossover"));
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("Mutator"));
-      op.GetVariable("SubOperatorNames").GetValue<ItemList>().Add(new StringData("Evaluator"));
-
       return op;
     }
     private static CombinedOperator CreateCreateChildren() {
@@ -267,7 +260,7 @@ namespace HeuristicLab.SGA {
 
       OperatorExtractor oe1 = new OperatorExtractor();
       oe1.Name = "Crossover";
-      oe1.GetVariable("Name").GetValue<StringData>().Data = "Crossover";
+      oe1.GetVariableInfo("Operator").ActualName = "Crossover";
       op.OperatorGraph.AddOperator(oe1);
       sp1.AddSubOperator(oe1);
 
@@ -286,13 +279,13 @@ namespace HeuristicLab.SGA {
 
       OperatorExtractor oe2 = new OperatorExtractor();
       oe2.Name = "Mutator";
-      oe2.GetVariable("Name").GetValue<StringData>().Data = "Mutator";
+      oe2.GetVariableInfo("Operator").ActualName = "Mutator";
       op.OperatorGraph.AddOperator(oe2);
       hb.AddSubOperator(oe2);
 
       OperatorExtractor oe3 = new OperatorExtractor();
       oe3.Name = "Evaluator";
-      oe3.GetVariable("Name").GetValue<StringData>().Data = "Evaluator";
+      oe3.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe3);
       sp2.AddSubOperator(oe3);
 
@@ -400,10 +393,11 @@ namespace HeuristicLab.SGA {
     }
     private CombinedOperator mySGA;
     private IOperator myVariableInjection;
-    public IOperator ProblemInitializer {
+    public IOperator ProblemInjector {
       get { return myVariableInjection.SubOperators[0]; }
       set {
-        mySGA.OperatorGraph.RemoveOperator(ProblemInitializer.Guid);
+        value.Name = "ProblemInjector";
+        mySGA.OperatorGraph.RemoveOperator(ProblemInjector.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         myVariableInjection.AddSubOperator(value, 0);
       }
@@ -412,6 +406,7 @@ namespace HeuristicLab.SGA {
     public IOperator SolutionGenerator {
       get { return myPopulationInitialization.SubOperators[0]; }
       set {
+        value.Name = "SolutionGenerator";
         mySGA.OperatorGraph.RemoveOperator(SolutionGenerator.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 0);
@@ -420,6 +415,7 @@ namespace HeuristicLab.SGA {
     public IOperator Evaluator {
       get { return myPopulationInitialization.SubOperators[1]; }
       set {
+        value.Name = "Evaluator";
         mySGA.OperatorGraph.RemoveOperator(Evaluator.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 1);
@@ -430,6 +426,7 @@ namespace HeuristicLab.SGA {
     public IOperator Selector {
       get { return mySGAMain.SubOperators[0]; }
       set {
+        value.Name = "Selector";
         mySGA.OperatorGraph.RemoveOperator(Selector.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 0);
@@ -438,6 +435,7 @@ namespace HeuristicLab.SGA {
     public IOperator Crossover {
       get { return mySGAMain.SubOperators[1]; }
       set {
+        value.Name = "Crossover";
         mySGA.OperatorGraph.RemoveOperator(Crossover.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 1);
@@ -446,6 +444,7 @@ namespace HeuristicLab.SGA {
     public IOperator Mutator {
       get { return mySGAMain.SubOperators[2]; }
       set {
+        value.Name = "Mutator";
         mySGA.OperatorGraph.RemoveOperator(Mutator.Guid);
         mySGA.OperatorGraph.AddOperator(value);
         mySGAMain.AddSubOperator(value, 2);
