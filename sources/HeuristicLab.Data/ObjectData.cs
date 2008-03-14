@@ -49,6 +49,18 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    public override bool Equals(object obj) {
+      IObjectData other = obj as IObjectData;
+      if (other != null)
+        return Data.Equals(other);
+      else
+        return Data.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return Data.GetHashCode();
+    }
+
     public int CompareTo(object obj) {
       IComparable comparable = Data as IComparable;
       if (comparable != null) {
