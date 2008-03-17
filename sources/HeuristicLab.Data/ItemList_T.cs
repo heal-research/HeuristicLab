@@ -46,7 +46,7 @@ namespace HeuristicLab.Data {
     }
     protected void CloneElements(ItemList<T> destination, IDictionary<Guid, object> clonedObjects) {
       for (int i = 0; i < list.Count; i++)
-        destination.list.Add((T)Auxiliary.Clone(list[i],clonedObjects));
+        destination.list.Add((T) Auxiliary.Clone(list[i], clonedObjects));
     }
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
@@ -139,6 +139,26 @@ namespace HeuristicLab.Data {
     #endregion
 
     #region List<T> Methods
+    public int LastIndexOf(T item) {
+      return list.LastIndexOf(item);
+    }
+
+    public int LastIndexOf(T item, int index) {
+      return list.LastIndexOf(item, index);
+    }
+
+    public int LastIndexOf(T item, int index, int count) {
+      return list.LastIndexOf(item, index, count);
+    }
+
+    public int IndexOf(T item, int index) {
+      return list.IndexOf(item, index);
+    }
+
+    public int IndexOf(T item, int index, int count) {
+      return list.IndexOf(item, index, count);
+    }
+
     public void AddRange(IEnumerable<T> collection) {
       foreach (T obj in collection) {
         this.Add(obj);
@@ -147,6 +167,18 @@ namespace HeuristicLab.Data {
 
     public bool Exists(Predicate<T> match) {
       return list.Exists(match);
+    }
+
+    public int BinarySearch(T item) {
+      return list.BinarySearch(item);
+    }
+
+    public int BinarySearch(T item, IComparer<T> comparer) {
+      return list.BinarySearch(item, comparer);
+    }
+
+    public int BinarySearch(int index, int count, T item, IComparer<T> comparer) {
+      return list.BinarySearch(index, count, item, comparer);
     }
 
     public T Find(Predicate<T> match) {
@@ -158,24 +190,45 @@ namespace HeuristicLab.Data {
     }
 
     public int FindIndex(Predicate<T> match) {
-      return list.FindIndex(match); 
+      return list.FindIndex(match);
+    }
+
+    public T FindLast(Predicate<T> match) {
+      return list.FindLast(match);
+    }
+
+    public int FindLastIndex(Predicate<T> match) {
+      return list.FindLastIndex(match);
     }
 
     public void Sort() {
-      list.Sort(); 
+      list.Sort();
     }
 
     public void Sort(IComparer<T> comparer) {
-      list.Sort(comparer); 
+      list.Sort(comparer);
     }
 
     public void Sort(Comparison<T> comparison) {
-      list.Sort(comparison); 
-    }    
+      list.Sort(comparison);
+    }
 
     public void Reverse() {
-     list.Reverse(); 
+      list.Reverse();
     }
+
+    public ItemList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter) where TOutput : IItem {
+      ItemList<TOutput> targetList = new ItemList<TOutput>();
+      foreach (T item in list) {
+        targetList.Add(converter.Invoke(item));
+      }
+      return targetList;
+    }
+
+    public bool TrueForAll(Predicate<T> match) {
+      return list.TrueForAll(match);
+    }
+
     #endregion
 
     public event EventHandler<ItemIndexEventArgs> ItemAdded;
