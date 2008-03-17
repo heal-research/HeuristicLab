@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
-namespace HeuristicLab.Evolutionary {                
+namespace HeuristicLab.Evolutionary {
   public abstract class CrossoverBase : OperatorBase {
     public CrossoverBase()
       : base() {
