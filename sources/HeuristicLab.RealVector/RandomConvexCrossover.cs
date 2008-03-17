@@ -10,28 +10,18 @@ namespace HeuristicLab.RealVector {
       get { return "Random convex crossover for real vectors."; }
     }
 
-    public static double[] Apply(IScope scope, IRandom random, double[] parent1, double[] parent2) {
-      double factor;
+    public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
       int length = parent1.Length;
       double[] result = new double[length];
-      double min = scope.GetVariableValue<DoubleData>("Minimum", true).Data;
-      double max = scope.GetVariableValue<DoubleData>("Maximum", true).Data;
+      double factor = random.NextDouble();
 
-      factor = random.NextDouble();
-
-      for (int i = 0; i < length; i++) {
+      for (int i = 0; i < length; i++)
         result[i] = (factor * parent1[i]) + ((1 - factor) * parent2[i]);
-
-        // check borders
-        if (result[i] < min) { result[i] = min; }
-        if (result[i] > max) { result[i] = max; }
-      }
-
       return result;
     }
 
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
-      return Apply(scope, random, parent1, parent2);
+      return Apply(random, parent1, parent2);
     }
   }
 }

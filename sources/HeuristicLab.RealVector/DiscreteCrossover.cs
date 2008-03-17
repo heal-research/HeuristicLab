@@ -14,13 +14,11 @@ namespace HeuristicLab.RealVector {
       double[] result = new double[length];
 
       for (int i = 0; i < length; i++) {
-        if (random.NextDouble() < 0.5) {
+        if (random.NextDouble() < 0.5)
           result[i] = parent1[i];
-        } else {
+        else
           result[i] = parent2[i];
-        }
       }
-
       return result;
     }
 
