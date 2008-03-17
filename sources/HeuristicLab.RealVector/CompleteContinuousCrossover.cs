@@ -5,9 +5,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class CompleteAverageCrossover : RealVectorCrossoverBase {
+  class CompleteContinuousCrossover : RealVectorCrossoverBase {
     public override string Description {
-      get { return "Complete average (complete continuous) crossover for real vectors."; }
+      get { return "Complete continuous crossover for real vectors."; }
     }
 
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {

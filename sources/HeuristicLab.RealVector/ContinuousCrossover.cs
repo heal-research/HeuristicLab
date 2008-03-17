@@ -5,19 +5,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class RandomLocalCrossover : RealVectorCrossoverBase {
+  class ContinuousCrossover : RealVectorCrossoverBase {
     public override string Description {
-      get { return "Random local crossover for real vectors."; }
+      get { return "Continuous crossover for real vectors."; }
     }
 
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
-      double factor;
       int length = parent1.Length;
       double[] result = new double[length];
 
       for (int i = 0; i < length; i++) {
-        factor = random.NextDouble();
-        result[i] = (factor * parent1[i]) + ((1 - factor) * parent2[i]);
+        if (random.NextDouble() < 0.5) {
+          result[i] = (parent1[i] + parent2[i]) / 2;
+        } else {
+          result[i] = parent1[i];
+        }
       }
       return result;
     }
