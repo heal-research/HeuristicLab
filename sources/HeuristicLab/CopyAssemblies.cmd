@@ -35,3 +35,4 @@ copy "..\..\..\HeuristicLab.SGA\bin\%1\HeuristicLab.SGA.dll" .\plugins
 copy "..\..\..\HeuristicLab.StructureIdentification\bin\%1\HeuristicLab.StructureIdentification.dll" .\plugins
 copy "..\..\..\HeuristicLab.TestFunctions\bin\%1\HeuristicLab.TestFunctions.dll" .\plugins
 copy "..\..\..\HeuristicLab.ThreadParallelEngine\bin\%1\HeuristicLab.ThreadParallelEngine.dll" .\plugins
+copy "..\..\..\HeuristicLab.ES\bin\%1\HeuristicLab.ES.dll" .\plugins
