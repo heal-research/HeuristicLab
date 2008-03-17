@@ -39,6 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AverageCrossover.cs" />
+    <Compile Include="CompleteAverageCrossover.cs" />
+    <Compile Include="DiscreteCrossover.cs" />
+    <Compile Include="HeuristicCrossover.cs" />
+    <Compile Include="RandomConvexCrossover.cs" />
+    <Compile Include="RandomLocalCrossover.cs" />
+    <Compile Include="UniformAllPositionsManipulator.cs" />
     <Compile Include="UniformRandomRealVectorGenerator.cs" />
     <Compile Include="UniformOnePositionManipulator.cs" />
     <Compile Include="RealVectorCrossoverBase.cs" />
