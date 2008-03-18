@@ -51,7 +51,7 @@ namespace HeuristicLab.Logging {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, linechart));
         else
-          scope.AddVariable(new Variable(info.ActualName, linechart));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), linechart));
       } else
         linechart.Values = values;
       return null;

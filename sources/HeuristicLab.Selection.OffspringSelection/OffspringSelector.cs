@@ -56,7 +56,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (goodChildrenInfo.Local)
           AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
         else
-          scope.AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
+          scope.AddVariable(new Variable(scope.TranslateName(goodChildrenInfo.FormalName), goodChildren));
       }
       ItemList<IScope> badChildren = GetVariableValue<ItemList<IScope>>("BadChildren", scope, false, false);
       if (badChildren == null) {
@@ -65,14 +65,14 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (badChildrenInfo.Local)
           AddVariable(new Variable(badChildrenInfo.ActualName, badChildren));
         else
-          scope.AddVariable(new Variable(badChildrenInfo.ActualName, badChildren));
+          scope.AddVariable(new Variable(scope.TranslateName(badChildrenInfo.FormalName), badChildren));
       }
 
       // separate new children in good and bad children
       IVariableInfo successfulInfo = GetVariableInfo("SuccessfulChild");
       while (children.SubScopes.Count > 0) {
         IScope child = children.SubScopes[0];
-        bool successful = child.GetVariableValue<BoolData>(successfulInfo.ActualName, false).Data;
+        bool successful = child.GetVariableValue<BoolData>(successfulInfo.FormalName, false).Data;
         if (successful) goodChildren.Add(child);
         else badChildren.Add(child);
         children.RemoveSubScope(child);
@@ -86,7 +86,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (selectionPressureInfo.Local)
           AddVariable(new Variable(selectionPressureInfo.ActualName, selectionPressure));
         else
-          scope.AddVariable(new Variable(selectionPressureInfo.ActualName, selectionPressure));
+          scope.AddVariable(new Variable(scope.TranslateName(selectionPressureInfo.FormalName), selectionPressure));
       }
       DoubleData successRatio = GetVariableValue<DoubleData>("SuccessRatio", scope, false, false);
       if (successRatio == null) {
@@ -95,7 +95,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (successRatioInfo.Local)
           AddVariable(new Variable(successRatioInfo.ActualName, successRatio));
         else
-          scope.AddVariable(new Variable(successRatioInfo.ActualName, successRatio));
+          scope.AddVariable(new Variable(scope.TranslateName(successRatioInfo.FormalName), successRatio));
       }
       int goodCount = goodChildren.Count;
       int badCount = badChildren.Count;
@@ -129,12 +129,12 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (goodChildrenInfo.Local)
           RemoveVariable(goodChildrenInfo.ActualName);
         else
-          scope.RemoveVariable(goodChildrenInfo.ActualName);
+          scope.RemoveVariable(scope.TranslateName(goodChildrenInfo.FormalName));
         IVariableInfo badChildrenInfo = GetVariableInfo("BadChildren");
         if (badChildrenInfo.Local)
           RemoveVariable(badChildrenInfo.ActualName);
         else
-          scope.RemoveVariable(badChildrenInfo.ActualName);
+          scope.RemoveVariable(scope.TranslateName(badChildrenInfo.FormalName));
 
         return null;
       }

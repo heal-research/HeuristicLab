@@ -35,13 +35,13 @@ namespace HeuristicLab.BitVector {
 
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
       IVariableInfo bitVectorInfo = GetVariableInfo("BitVector");
-      BoolArrayData vector1 = parent1.GetVariableValue<BoolArrayData>(bitVectorInfo.ActualName, false);
-      BoolArrayData vector2 = parent2.GetVariableValue<BoolArrayData>(bitVectorInfo.ActualName, false);
+      BoolArrayData vector1 = parent1.GetVariableValue<BoolArrayData>(bitVectorInfo.FormalName, false);
+      BoolArrayData vector2 = parent2.GetVariableValue<BoolArrayData>(bitVectorInfo.FormalName, false);
 
       if (vector1.Data.Length != vector2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to bit vectors of different length.");
 
       bool[] result = Cross(scope, random, vector1.Data, vector2.Data);
-      child.AddVariable(new Variable(bitVectorInfo.ActualName, new BoolArrayData(result)));
+      child.AddVariable(new Variable(child.TranslateName(bitVectorInfo.FormalName), new BoolArrayData(result)));
     }
 
     protected abstract bool[] Cross(IScope scope, IRandom random, bool[] parent1, bool[] parent2);

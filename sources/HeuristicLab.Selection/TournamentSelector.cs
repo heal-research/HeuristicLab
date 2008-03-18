@@ -51,7 +51,7 @@ namespace HeuristicLab.Selection {
         IScope selectedScope = null;
         for (int j = 0; j < groupSize; j++) {
           IScope scope = source.SubScopes[random.Next(source.SubScopes.Count)];
-          double quality = scope.GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
+          double quality = scope.GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
           if (((maximization) && (quality > best)) ||
               ((!maximization) && (quality < best))) {
             best = quality;

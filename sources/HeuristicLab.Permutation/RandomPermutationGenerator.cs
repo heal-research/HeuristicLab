@@ -60,7 +60,7 @@ namespace HeuristicLab.Permutation {
       IntData length = GetVariableValue<IntData>("Length", scope, true);
 
       int[] perm = Apply(random, length.Data);
-      scope.AddVariable(new Variable(GetVariableInfo("Permutation").ActualName, new Permutation(perm)));
+      scope.AddVariable(new Variable(scope.TranslateName("Permutation"), new Permutation(perm)));
 
       return null;
     }

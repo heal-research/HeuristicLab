@@ -46,11 +46,14 @@ namespace HeuristicLab.Evolutionary {
       DoubleData successProb = GetVariableValue<DoubleData>("SuccessProbability", scope, true);
       if (successProb == null) {
         IVariableInfo successProbInfo = GetVariableInfo("SuccessProbability");
-        Variable successProbVar = new Variable(successProbInfo.ActualName, new DoubleData(targetSuccessProb.Data));
-        if (successProbInfo.Local)
+        IVariable successProbVar;
+        if (successProbInfo.Local) {
+          successProbVar = new Variable(successProbInfo.ActualName, new DoubleData(targetSuccessProb.Data));
           AddVariable(successProbVar);
-        else
+        } else {
+          successProbVar = new Variable(scope.TranslateName(successProbInfo.FormalName), new DoubleData(targetSuccessProb.Data));
           scope.AddVariable(successProbVar);
+        }
         successProb = (DoubleData)successProbVar.Value;
       }
       DoubleData learningRate = GetVariableValue<DoubleData>("LearningRate", scope, true);
@@ -58,10 +61,10 @@ namespace HeuristicLab.Evolutionary {
 
       double success = 0.0;
       for (int i = 0 ; i < scope.SubScopes.Count ; i++) {
-        if (scope.SubScopes[i].GetVariableValue<BoolData>(GetVariableInfo("SuccessfulChild").ActualName, false).Data) {
+        if (scope.SubScopes[i].GetVariableValue<BoolData>("SuccessfulChild", false).Data) {
           success++;
         }
-        scope.SubScopes[i].RemoveVariable(GetVariableInfo("SuccessfulChild").ActualName);
+        scope.SubScopes[i].RemoveVariable(scope.SubScopes[i].TranslateName("SuccessfulChild"));
       }
       if (scope.SubScopes.Count > 0) success /= scope.SubScopes.Count;
 

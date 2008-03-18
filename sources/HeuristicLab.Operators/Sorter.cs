@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
       int[] sequence = new int[keys.Length];
 
       for (int i = 0; i < keys.Length; i++) {
-        keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>(GetVariableInfo("Value").ActualName, false).Data;
+        keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Value", false).Data;
         sequence[i] = i;
       }
 

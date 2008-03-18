@@ -41,7 +41,7 @@ namespace HeuristicLab.Operators {
         if (qualityInfo.Local)
           AddVariable(new Variable(qualityInfo.ActualName, quality));
         else
-          scope.AddVariable(new Variable(qualityInfo.ActualName, quality));
+          scope.AddVariable(new Variable(scope.TranslateName(qualityInfo.FormalName), quality));
       } else {
         quality.Data = qualityValue;
       }

@@ -55,7 +55,7 @@ namespace HeuristicLab.BitVector
             int length = GetVariableValue<IntData>("Length", scope, true).Data;
 
             bool[] vector = Apply(random, length);
-            scope.AddVariable(new Variable(GetVariableInfo("BitVector").ActualName, new BoolArrayData(vector)));
+            scope.AddVariable(new Variable(scope.TranslateName("BitVector"), new BoolArrayData(vector)));
 
             return null;
         }

@@ -59,13 +59,13 @@ namespace HeuristicLab.Selection.OffspringSelection {
         IVariableInfo qualityInfo = GetVariableInfo("Quality");
         double[] qualitiesArray = new double[scope.SubScopes.Count];
         for (int i = 0; i < qualitiesArray.Length; i++)
-          qualitiesArray[i] = scope.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
+          qualitiesArray[i] = scope.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
         qualities = new DoubleArrayData(qualitiesArray);
         IVariableInfo parentQualitiesInfo = GetVariableInfo("ParentQualities");
         if (parentQualitiesInfo.Local)
           AddVariable(new Variable(parentQualitiesInfo.ActualName, qualities));
         else
-          scope.AddVariable(new Variable(parentQualitiesInfo.ActualName, qualities));
+          scope.AddVariable(new Variable(scope.TranslateName(parentQualitiesInfo.FormalName), qualities));
 
         CompositeOperation next = new CompositeOperation();
         next.AddOperation(new AtomicOperation(SubOperators[0], scope));
@@ -81,7 +81,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
             if (qualities.Data[parentsCount * i + y] > parent2) parent2 = qualities.Data[parentsCount * i + y];
           }
           IVariableInfo qualityInfo = GetVariableInfo("Quality");
-          double child = scope.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
+          double child = scope.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
           double threshold;
 
           if (!maximize)
@@ -96,7 +96,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
             successful = new BoolData(true);
           else
             successful = new BoolData(false);
-          scope.SubScopes[i].AddVariable(new Variable(successfulInfo.ActualName, successful));
+          scope.SubScopes[i].AddVariable(new Variable(scope.TranslateName(successfulInfo.FormalName), successful));
         }
 
         // remove parent qualities again
@@ -104,7 +104,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
         if (parentQualitiesInfo.Local)
           RemoveVariable(parentQualitiesInfo.ActualName);
         else
-          scope.RemoveVariable(parentQualitiesInfo.ActualName);
+          scope.RemoveVariable(scope.TranslateName(parentQualitiesInfo.FormalName));
 
         return null;
       }

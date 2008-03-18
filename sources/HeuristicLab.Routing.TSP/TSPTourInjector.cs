@@ -49,7 +49,7 @@ namespace HeuristicLab.Routing.TSP {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, tour));
         else
-          scope.AddVariable(new Variable(info.ActualName, tour));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), tour));
       } else {
         tour.Coordinates = coordinates;
         tour.Tour = permutation;

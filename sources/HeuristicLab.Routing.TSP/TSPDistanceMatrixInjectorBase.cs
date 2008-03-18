@@ -48,7 +48,7 @@ namespace HeuristicLab.Routing.TSP {
                                                    coordinates[j, 1]);
         }
       }
-      scope.AddVariable(new Variable(GetVariableInfo("DistanceMatrix").ActualName, new DoubleMatrixData(distanceMatrix)));
+      scope.AddVariable(new Variable(scope.TranslateName("DistanceMatrix"), new DoubleMatrixData(distanceMatrix)));
 
       return null;
     }

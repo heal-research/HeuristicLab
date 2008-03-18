@@ -162,7 +162,7 @@ namespace HeuristicLab.Operators.Programmable {
             if (info.Local) {
               AddVariable(new Variable(info.ActualName, value));
             } else {
-              scope.AddVariable(new Variable(info.ActualName, value));
+              scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), value));
             }
             parameters[i] = value;
           }

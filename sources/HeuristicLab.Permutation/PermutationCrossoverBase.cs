@@ -33,14 +33,13 @@ namespace HeuristicLab.Permutation {
     }
 
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
-      IVariableInfo permutationInfo = GetVariableInfo("Permutation");
-      Permutation perm1 = parent1.GetVariableValue<Permutation>(permutationInfo.ActualName, false);
-      Permutation perm2 = parent2.GetVariableValue<Permutation>(permutationInfo.ActualName, false);
+      Permutation perm1 = parent1.GetVariableValue<Permutation>("Permutation", false);
+      Permutation perm2 = parent2.GetVariableValue<Permutation>("Permutation", false);
 
       if (perm1.Data.Length != perm2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to permutations of different length.");
 
       int[] result = Cross(scope, random, perm1.Data, perm2.Data);
-      child.AddVariable(new Variable(permutationInfo.ActualName, new Permutation(result)));
+      child.AddVariable(new Variable(scope.TranslateName("Permutation"), new Permutation(result)));
     }
 
     protected abstract int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2);

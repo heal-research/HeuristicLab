@@ -48,7 +48,7 @@ namespace HeuristicLab.Evolutionary {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, subScopesStore));
         else
-          scope.AddVariable(new Variable(info.ActualName, subScopesStore));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), subScopesStore));
       }
 
       IScope left = scope.SubScopes[0];
@@ -63,7 +63,7 @@ namespace HeuristicLab.Evolutionary {
           if (info.Local)
             RemoveVariable(info.ActualName);
           else
-            scope.RemoveVariable(info.ActualName);
+            scope.RemoveVariable(scope.TranslateName(info.FormalName));
         }
         return null;
       } else {  // not enough sub-scopes available

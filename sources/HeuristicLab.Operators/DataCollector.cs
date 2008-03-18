@@ -49,7 +49,7 @@ namespace HeuristicLab.Operators {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, values));
         else
-          scope.AddVariable(new Variable(info.ActualName, values));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), values));
       }
 
       ItemList currentValues = new ItemList();

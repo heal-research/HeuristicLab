@@ -34,17 +34,15 @@ namespace HeuristicLab.RealVector {
 
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
       bool maximization = GetVariableValue<BoolData>("Maximization", scope, true).Data;
-      IVariableInfo realVectorInfo = GetVariableInfo("RealVector");
-      IVariableInfo qualityInfo = GetVariableInfo("Quality");
-      DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>(realVectorInfo.ActualName, false);
-      DoubleData quality1 = parent1.GetVariableValue<DoubleData>(qualityInfo.ActualName, false);
-      DoubleArrayData vector2 = parent2.GetVariableValue<DoubleArrayData>(realVectorInfo.ActualName, false);
-      DoubleData quality2 = parent2.GetVariableValue<DoubleData>(qualityInfo.ActualName, false);
+      DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>("RealVector", false);
+      DoubleData quality1 = parent1.GetVariableValue<DoubleData>("Quality", false);
+      DoubleArrayData vector2 = parent2.GetVariableValue<DoubleArrayData>("RealVector", false);
+      DoubleData quality2 = parent2.GetVariableValue<DoubleData>("Quality", false);
 
       if (vector1.Data.Length != vector2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to real vectors of different length.");
 
       double[] result = Apply(random, maximization, vector1.Data, quality1.Data, vector2.Data, quality2.Data);
-      child.AddVariable(new Variable(realVectorInfo.ActualName, new DoubleArrayData(result)));
+      child.AddVariable(new Variable(child.TranslateName("RealVector"), new DoubleArrayData(result)));
     }
   }
 }

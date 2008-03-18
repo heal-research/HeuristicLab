@@ -44,11 +44,11 @@ namespace HeuristicLab.Scheduling.JSSP {
     public override IOperation Apply(IScope scope) {
       ItemList list = GetVariableValue<ItemList>("List", scope, true);
       int index = GetVariableValue<IntData>("Index", scope, true).Data;
-      if(scope.GetVariable(GetVariableInfo("Object").ActualName) != null) {
-        scope.RemoveVariable(GetVariableInfo("Object").ActualName);
+      if(scope.GetVariable(scope.TranslateName("Object")) != null) {
+        scope.RemoveVariable(scope.TranslateName("Object"));
       }
       if((list != null) && (index < list.Count)) {
-        scope.AddVariable(new Variable(GetVariableInfo("Object").ActualName, (IItem)list[index].Clone()));
+        scope.AddVariable(new Variable(scope.TranslateName("Object"), (IItem)list[index].Clone()));
       }
       return null;
     }

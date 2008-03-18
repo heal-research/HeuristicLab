@@ -80,8 +80,8 @@ namespace HeuristicLab.Selection {
 
       if (subScopes < 1) throw new InvalidOperationException("No source scopes to select available.");
 
-      double best = source.SubScopes[0].GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
-      double worst = source.SubScopes[subScopes - 1].GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
+      double best = source.SubScopes[0].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
+      double worst = source.SubScopes[subScopes - 1].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
       double limit = Math.Min(worst * 2, double.MaxValue);
       double min = Math.Min(best, worst);
       double max = Math.Max(best, worst);
@@ -89,7 +89,7 @@ namespace HeuristicLab.Selection {
 
       // preprocess fitness values, apply windowing if desired
       for (int i = 0; i < qualities.Length; i++) {
-        solutionQuality = source.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
+        solutionQuality = source.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
         if (solutionQuality < min || solutionQuality > max) {
           // something has obviously gone wrong here
           string errorMessage = "There is a problem with the ordering of the source sub-scopes in " + Name + ".\r\n" +

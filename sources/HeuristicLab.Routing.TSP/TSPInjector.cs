@@ -50,11 +50,11 @@ namespace HeuristicLab.Routing.TSP {
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new Variable(GetVariableInfo("Maximization").ActualName, new BoolData(false)));
-      scope.AddVariable(new Variable(GetVariableInfo("Cities").ActualName, (IItem)GetVariable("Cities").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("Coordinates").ActualName, (IItem)GetVariable("Coordinates").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("Maximization"), new BoolData(false)));
+      scope.AddVariable(new Variable(scope.TranslateName("Cities"), (IItem)GetVariable("Cities").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("Coordinates"), (IItem)GetVariable("Coordinates").Value.Clone()));
       if (GetVariable("InjectBestKnownQuality").GetValue<BoolData>().Data)
-        scope.AddVariable(new Variable(GetVariableInfo("BestKnownQuality").ActualName, (IItem)GetVariable("BestKnownQuality").Value.Clone()));
+        scope.AddVariable(new Variable(scope.TranslateName("BestKnownQuality"), (IItem)GetVariable("BestKnownQuality").Value.Clone()));
       return null;
     }
   }

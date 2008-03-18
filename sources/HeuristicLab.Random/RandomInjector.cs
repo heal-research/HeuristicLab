@@ -55,7 +55,8 @@ namespace HeuristicLab.Random {
         seed.Data = random.Next();
       }
       MersenneTwister mersenneTwister = new MersenneTwister((uint)seed.Data);
-      scope.AddVariable(new Variable(GetVariableInfo("Random").ActualName, mersenneTwister));
+
+      scope.AddVariable(new Variable(scope.TranslateName("Random"), mersenneTwister));
       return null;
     }
   }

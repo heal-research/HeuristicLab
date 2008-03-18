@@ -41,12 +41,12 @@ namespace HeuristicLab.Evolutionary {
       int children = scope.SubScopes.Count / 2;
       for (int i = 0; i < children; i++) {
         IScope parent1 = scope.SubScopes[0];
-        scope.RemoveSubScope(parent1);
-        IScope parent2 = scope.SubScopes[0];
-        scope.RemoveSubScope(parent2);
+        IScope parent2 = scope.SubScopes[1];
         IScope child = new Scope(i.ToString());
-        Cross(scope, random, parent1, parent2, child);
         scope.AddSubScope(child);
+        Cross(scope, random, parent1, parent2, child);
+        scope.RemoveSubScope(parent1);
+        scope.RemoveSubScope(parent2);
       }
 
       return null;

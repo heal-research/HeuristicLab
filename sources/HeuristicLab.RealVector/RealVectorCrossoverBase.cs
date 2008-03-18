@@ -34,14 +34,13 @@ namespace HeuristicLab.RealVector {
     }
 
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
-      IVariableInfo realVectorInfo = GetVariableInfo("RealVector");
-      DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>(realVectorInfo.ActualName, false);
-      DoubleArrayData vector2 = parent2.GetVariableValue<DoubleArrayData>(realVectorInfo.ActualName, false);
+      DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>("RealVector", false);
+      DoubleArrayData vector2 = parent2.GetVariableValue<DoubleArrayData>("RealVector", false);
 
       if (vector1.Data.Length != vector2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to real vectors of different length.");
 
       double[] result = Cross(scope, random, vector1.Data, vector2.Data);
-      child.AddVariable(new Variable(realVectorInfo.ActualName, new DoubleArrayData(result)));
+      child.AddVariable(new Variable(child.TranslateName("RealVector"), new DoubleArrayData(result)));
     }
 
     protected abstract double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2);

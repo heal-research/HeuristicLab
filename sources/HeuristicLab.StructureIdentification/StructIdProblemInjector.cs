@@ -56,13 +56,13 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new Variable(GetVariableInfo("Maximization").ActualName, new BoolData(false)));
-      scope.AddVariable(new Variable(GetVariableInfo("Dataset").ActualName, (IItem)GetVariable("Dataset").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("TargetVariable").ActualName, (IItem)GetVariable("TargetVariable").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("MaxTreeHeight").ActualName, (IItem)GetVariable("MaxTreeHeight").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("MaxTreeSize").ActualName, (IItem)GetVariable("MaxTreeSize").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("TrainingSamplesStart").ActualName, (IItem)GetVariable("TrainingSamplesStart").Value.Clone()));
-      scope.AddVariable(new Variable(GetVariableInfo("TrainingSamplesEnd").ActualName, (IItem)GetVariable("TrainingSamplesEnd").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("Maximization"), new BoolData(false)));
+      scope.AddVariable(new Variable(scope.TranslateName("Dataset"), (IItem)GetVariable("Dataset").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), (IItem)GetVariable("TargetVariable").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("MaxTreeHeight"), (IItem)GetVariable("MaxTreeHeight").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("MaxTreeSize"), (IItem)GetVariable("MaxTreeSize").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesStart"), (IItem)GetVariable("TrainingSamplesStart").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesEnd"), (IItem)GetVariable("TrainingSamplesEnd").Value.Clone()));
       return null;
     }
   }

@@ -39,11 +39,11 @@ namespace HeuristicLab.Scheduling.JSSP {
 
     public override IOperation Apply(IScope scope) {
       Operation op = GetVariableValue<Operation>("Operation", scope, true);
-      if(scope.GetVariable(GetVariableInfo("Schedulable").ActualName) != null) {
+      if(scope.GetVariable(scope.TranslateName("Schedulable")) != null) {
         BoolData isSchedulable = GetVariableValue<BoolData>("Schedulable", scope, false);
         isSchedulable.Data = (op.Predecessors.Count == 0);
       } else {
-        scope.AddVariable(new Variable(GetVariableInfo("Schedulable").ActualName, new BoolData((op.Predecessors.Count == 0))));
+        scope.AddVariable(new Variable(scope.TranslateName("Schedulable"), new BoolData((op.Predecessors.Count == 0))));
       }
       return null;
     }

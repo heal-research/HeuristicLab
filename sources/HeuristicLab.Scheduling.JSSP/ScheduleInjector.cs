@@ -50,7 +50,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       IntData machines = GetVariableValue<IntData>("Machines", scope, true);
       IntData timespan = GetVariableValue<IntData>("Timespan", scope, true);
       schedule = new Schedule(machines.Data, timespan.Data);
-      scope.AddVariable(new Variable(GetVariableInfo("Schedule").ActualName, schedule));
+      scope.AddVariable(new Variable(scope.TranslateName("Schedule"), schedule));
       return null;
     }
 

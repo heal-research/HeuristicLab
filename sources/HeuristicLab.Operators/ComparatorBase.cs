@@ -41,7 +41,7 @@ namespace HeuristicLab.Operators {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, result));
         else
-          scope.AddVariable(new Variable(info.ActualName, result));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), result));
       }
       IItem leftSide = GetVariableValue<IItem>("LeftSide", scope, true);
       if (!(leftSide is IComparable)) throw new InvalidOperationException("Comparator: Left side needs to be of type IComparable");

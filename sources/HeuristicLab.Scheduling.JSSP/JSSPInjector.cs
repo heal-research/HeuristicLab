@@ -65,9 +65,9 @@ namespace HeuristicLab.Scheduling.JSSP {
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new Variable(GetVariableInfo("Machines").ActualName, machines.Clone() as IntData));
-      scope.AddVariable(new Variable(GetVariableInfo("Jobs").ActualName, jobs.Clone() as IntData));
-      scope.AddVariable(new Variable(GetVariableInfo("Operations").ActualName, (ItemList)operations.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("Machines"), machines.Clone() as IntData));
+      scope.AddVariable(new Variable(scope.TranslateName("Jobs"), jobs.Clone() as IntData));
+      scope.AddVariable(new Variable(scope.TranslateName("Operations"), (ItemList)operations.Clone()));
       return base.Apply(scope);
     }
 

@@ -53,7 +53,7 @@ namespace HeuristicLab.RealVector {
       double max = GetVariableValue<DoubleData>("Maximum", scope, true).Data;
 
       double[] vector = Apply(random, length, min, max);
-      scope.AddVariable(new Variable(GetVariableInfo("RealVector").ActualName, new DoubleArrayData(vector)));
+      scope.AddVariable(new Variable(scope.TranslateName("RealVector"), new DoubleArrayData(vector)));
 
       return null;
     }

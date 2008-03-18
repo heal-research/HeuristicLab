@@ -45,10 +45,10 @@ namespace HeuristicLab.Scheduling.JSSP {
         IScope s = scope.SubScopes[scopeIndex];
         IItem var = GetVariableValue<IItem>("Variable", s, false);
         if(var != null) {
-          if(scope.GetVariable(GetVariableInfo("Variable").ActualName) != null) {
-            scope.RemoveVariable(GetVariableInfo("Variable").ActualName);
+          if(scope.GetVariable(scope.TranslateName("Variable")) != null) {
+            scope.RemoveVariable(scope.TranslateName("Variable"));
           }
-          scope.AddVariable(new Variable(GetVariableInfo("Variable").ActualName, var));
+          scope.AddVariable(new Variable(scope.TranslateName("Variable"), var));
           return null;
         }
       }

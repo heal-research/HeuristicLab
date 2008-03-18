@@ -42,7 +42,7 @@ namespace HeuristicLab.Logging {
       double[] qualities = new double[scope.SubScopes.Count];
 
       for (int i = 0; i < scope.SubScopes.Count; i++)
-        qualities[i] = scope.SubScopes[i].GetVariableValue<DoubleData>(GetVariableInfo("Quality").ActualName, false).Data;
+        qualities[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
 
       double min = qualities[0];
       double max = qualities[0];
@@ -61,7 +61,7 @@ namespace HeuristicLab.Logging {
         if (info.Local)
           AddVariable(new Variable(info.ActualName, log));
         else
-          scope.AddVariable(new Variable(info.ActualName, log));
+          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), log));
       }
       log.Items.Add(new DoubleArrayData(new double[] { min, average, max } ));
 
