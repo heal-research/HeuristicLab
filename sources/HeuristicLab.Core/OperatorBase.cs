@@ -40,7 +40,7 @@ namespace HeuristicLab.Core {
       get { return "No operator description available."; }
     }
 
-    private bool myCanceled;
+    protected bool myCanceled;
     public bool Canceled {
       get { return myCanceled; }
     }
@@ -371,6 +371,10 @@ namespace HeuristicLab.Core {
         scope.AddAlias(variableInfo.FormalName, variableInfo.ActualName);
 
       IOperation next = Apply(scope);
+
+      foreach (IVariableInfo variableInfo in VariableInfos)
+        scope.RemoveAlias(variableInfo.FormalName);
+
       OnExecuted();
       return next;
     }

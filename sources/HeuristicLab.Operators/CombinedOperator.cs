@@ -63,6 +63,37 @@ A combined operator automatically inject its sub-operators into the scope it is 
       return clone;
     }
 
+    public override IOperation Execute(IScope scope) {
+      myCanceled = false;
+
+      if (scope.GetVariable(Guid.ToString()) == null) { // contained operator not yet executed
+        // add marker
+        scope.AddVariable(new Variable(Guid.ToString(), null));
+
+        // add aliases
+        foreach (IVariableInfo variableInfo in VariableInfos)
+          scope.AddAlias(variableInfo.FormalName, variableInfo.ActualName);
+
+        CompositeOperation next = new CompositeOperation();
+        next.AddOperation(Apply(scope));
+        // execute combined operator again after contained operators have been executed
+        next.AddOperation(new AtomicOperation(this, scope));
+
+        OnExecuted();
+        return next;
+      } else {  // contained operator already executed
+        // remove marker
+        scope.RemoveVariable(Guid.ToString());
+
+        // remove aliases
+        foreach (IVariableInfo variableInfo in VariableInfos)
+          scope.RemoveAlias(variableInfo.FormalName);
+
+        OnExecuted();
+        return null;
+      }
+    }
+
     public override IOperation Apply(IScope scope) {
       if (OperatorGraph.InitialOperator != null) {
         for (int i = 0; i < SubOperators.Count; i++) {
