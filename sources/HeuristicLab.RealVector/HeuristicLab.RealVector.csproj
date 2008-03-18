@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="ContinuousCrossover.cs" />
     <Compile Include="CompleteContinuousCrossover.cs" />
+    <Compile Include="BoundsChecker.cs" />
     <Compile Include="DiscreteCrossover.cs" />
     <Compile Include="HeuristicCrossover.cs" />
     <Compile Include="RandomConvexCrossover.cs" />
