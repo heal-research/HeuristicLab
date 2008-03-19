@@ -48,6 +48,10 @@ namespace HeuristicLab.ES {
       this.executeButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.targetSuccessRateTextBox = new System.Windows.Forms.TextBox();
+      this.targetSuccessRateLabel = new System.Windows.Forms.Label();
+      this.plusNotationButton = new System.Windows.Forms.Button();
+      this.plusNotationLabel = new System.Windows.Forms.Label();
       this.setEvaluationButton = new System.Windows.Forms.Button();
       this.setMutationButton = new System.Windows.Forms.Button();
       this.setSolutionGenerationButton = new System.Windows.Forms.Button();
@@ -67,7 +71,6 @@ namespace HeuristicLab.ES {
       this.solutionGenerationLabel = new System.Windows.Forms.Label();
       this.problemInitializationLabel = new System.Windows.Forms.Label();
       this.initialMutationStrengthLabel = new System.Windows.Forms.Label();
-      this.lambdaTextBox = new System.Windows.Forms.TextBox();
       this.mutationRateLabel = new System.Windows.Forms.Label();
       this.maximumGenerationsTextBox = new System.Windows.Forms.TextBox();
       this.maximumGenerationsLabel = new System.Windows.Forms.Label();
@@ -76,15 +79,12 @@ namespace HeuristicLab.ES {
       this.setRandomSeedRandomlyLabel = new System.Windows.Forms.Label();
       this.randomSeedLabel = new System.Windows.Forms.Label();
       this.populationSizeLabel = new System.Windows.Forms.Label();
+      this.lambdaTextBox = new System.Windows.Forms.TextBox();
       this.scopesTabPage = new System.Windows.Forms.TabPage();
       this.scopeView = new HeuristicLab.Core.ScopeView();
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
-      this.plusNotationLabel = new System.Windows.Forms.Label();
-      this.plusNotationButton = new System.Windows.Forms.Button();
-      this.targetSuccessRateLabel = new System.Windows.Forms.Label();
-      this.targetSuccessRateTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
@@ -155,6 +155,46 @@ namespace HeuristicLab.ES {
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
+      // 
+      // targetSuccessRateTextBox
+      // 
+      this.targetSuccessRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.targetSuccessRateTextBox.Location = new System.Drawing.Point(218, 182);
+      this.targetSuccessRateTextBox.Name = "targetSuccessRateTextBox";
+      this.targetSuccessRateTextBox.Size = new System.Drawing.Size(186, 20);
+      this.targetSuccessRateTextBox.TabIndex = 39;
+      // 
+      // targetSuccessRateLabel
+      // 
+      this.targetSuccessRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.targetSuccessRateLabel.AutoSize = true;
+      this.targetSuccessRateLabel.Location = new System.Drawing.Point(65, 185);
+      this.targetSuccessRateLabel.Name = "targetSuccessRateLabel";
+      this.targetSuccessRateLabel.Size = new System.Drawing.Size(111, 13);
+      this.targetSuccessRateLabel.TabIndex = 38;
+      this.targetSuccessRateLabel.Text = "Target Success Rate:";
+      // 
+      // plusNotationButton
+      // 
+      this.plusNotationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.plusNotationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.plusNotationButton.Location = new System.Drawing.Point(218, 208);
+      this.plusNotationButton.Name = "plusNotationButton";
+      this.plusNotationButton.Size = new System.Drawing.Size(78, 24);
+      this.plusNotationButton.TabIndex = 37;
+      this.plusNotationButton.Text = "Plus";
+      this.plusNotationButton.UseVisualStyleBackColor = true;
+      this.plusNotationButton.Click += new System.EventHandler(this.plusNotationButton_Click);
+      // 
+      // plusNotationLabel
+      // 
+      this.plusNotationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.plusNotationLabel.AutoSize = true;
+      this.plusNotationLabel.Location = new System.Drawing.Point(65, 214);
+      this.plusNotationLabel.Name = "plusNotationLabel";
+      this.plusNotationLabel.Size = new System.Drawing.Size(102, 13);
+      this.plusNotationLabel.TabIndex = 36;
+      this.plusNotationLabel.Text = "Plus/Point Notation:";
       // 
       // setEvaluationButton
       // 
@@ -348,14 +388,6 @@ namespace HeuristicLab.ES {
       this.initialMutationStrengthLabel.TabIndex = 10;
       this.initialMutationStrengthLabel.Text = "Initial Mutation Strength:";
       // 
-      // lambdaTextBox
-      // 
-      this.lambdaTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.lambdaTextBox.Location = new System.Drawing.Point(218, 104);
-      this.lambdaTextBox.Name = "lambdaTextBox";
-      this.lambdaTextBox.Size = new System.Drawing.Size(186, 20);
-      this.lambdaTextBox.TabIndex = 9;
-      // 
       // mutationRateLabel
       // 
       this.mutationRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -430,6 +462,14 @@ namespace HeuristicLab.ES {
       this.populationSizeLabel.TabIndex = 4;
       this.populationSizeLabel.Text = "Mu:";
       // 
+      // lambdaTextBox
+      // 
+      this.lambdaTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.lambdaTextBox.Location = new System.Drawing.Point(218, 104);
+      this.lambdaTextBox.Name = "lambdaTextBox";
+      this.lambdaTextBox.Size = new System.Drawing.Size(186, 20);
+      this.lambdaTextBox.TabIndex = 9;
+      // 
       // scopesTabPage
       // 
       this.scopesTabPage.Controls.Add(this.scopeView);
@@ -484,46 +524,6 @@ namespace HeuristicLab.ES {
       this.cloneEngineButton.Text = "&Clone Engine...";
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
-      // 
-      // plusNotationLabel
-      // 
-      this.plusNotationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.plusNotationLabel.AutoSize = true;
-      this.plusNotationLabel.Location = new System.Drawing.Point(65, 214);
-      this.plusNotationLabel.Name = "plusNotationLabel";
-      this.plusNotationLabel.Size = new System.Drawing.Size(102, 13);
-      this.plusNotationLabel.TabIndex = 36;
-      this.plusNotationLabel.Text = "Plus/Point Notation:";
-      // 
-      // plusNotationButton
-      // 
-      this.plusNotationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.plusNotationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.plusNotationButton.Location = new System.Drawing.Point(218, 208);
-      this.plusNotationButton.Name = "plusNotationButton";
-      this.plusNotationButton.Size = new System.Drawing.Size(78, 24);
-      this.plusNotationButton.TabIndex = 37;
-      this.plusNotationButton.Text = "Plus";
-      this.plusNotationButton.UseVisualStyleBackColor = true;
-      this.plusNotationButton.Click += new System.EventHandler(this.plusNotationButton_Click);
-      // 
-      // targetSuccessRateLabel
-      // 
-      this.targetSuccessRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.targetSuccessRateLabel.AutoSize = true;
-      this.targetSuccessRateLabel.Location = new System.Drawing.Point(65, 185);
-      this.targetSuccessRateLabel.Name = "targetSuccessRateLabel";
-      this.targetSuccessRateLabel.Size = new System.Drawing.Size(111, 13);
-      this.targetSuccessRateLabel.TabIndex = 38;
-      this.targetSuccessRateLabel.Text = "Target Success Rate:";
-      // 
-      // targetSuccessRateTextBox
-      // 
-      this.targetSuccessRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.targetSuccessRateTextBox.Location = new System.Drawing.Point(218, 182);
-      this.targetSuccessRateTextBox.Name = "targetSuccessRateTextBox";
-      this.targetSuccessRateTextBox.Size = new System.Drawing.Size(186, 20);
-      this.targetSuccessRateTextBox.TabIndex = 39;
       // 
       // ESEditor
       // 

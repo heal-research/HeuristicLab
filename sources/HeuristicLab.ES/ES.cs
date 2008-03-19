@@ -158,12 +158,12 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(sp);
       op.OperatorGraph.InitialOperator = sp;
 
-      LeftSelector ls = new LeftSelector();
-      ls.Name = "Child Selector";
-      ls.GetVariableInfo("Selected").ActualName = "ESlambda";
-      ls.GetVariable("CopySelected").Value = new BoolData(true);
-      op.OperatorGraph.AddOperator(ls);
-      sp.AddSubOperator(ls);
+      RandomSelector rs = new RandomSelector();
+      rs.Name = "Child Selector";
+      rs.GetVariableInfo("Selected").ActualName = "ESlambda";
+      rs.GetVariable("CopySelected").Value = new BoolData(true);
+      op.OperatorGraph.AddOperator(rs);
+      sp.AddSubOperator(rs);
 
       SequentialSubScopesProcessor ssp = new SequentialSubScopesProcessor();
       op.OperatorGraph.AddOperator(ssp);
@@ -333,17 +333,45 @@ namespace HeuristicLab.ES {
     private IntData myMu;
     public int Mu {
       get { return myMu.Data; }
-      set { myMu.Data = value; }
+      set {
+        myMu.Data = value;
+        if (!PlusNotation && value >= Lambda) myLambda.Data = value + 1;
+        OnChanged();
+      }
     }
     private IntData myLambda;
     public int Lambda {
       get { return myLambda.Data; }
-      set { myLambda.Data = value; }
+      set {
+        if (value > 0) {
+          if (PlusNotation) myLambda.Data = value;
+          else {
+            if (value > 1 && value < Mu) {
+              myLambda.Data = value;
+              myMu.Data = value - 1;
+            } else if (value == 1) {
+              myMu.Data = 1;
+              myLambda.Data = 2;
+            } else if (value > Mu) {
+              myLambda.Data = value;
+            }
+          }
+          OnChanged();
+        }
+      }
     }
     private BoolData myPlusNotation;
     public bool PlusNotation {
       get { return myPlusNotation.Data; }
-      set { myPlusNotation.Data = value; }
+      set {
+        if (!value && myPlusNotation.Data) { // from plus to point
+          if (Lambda <= Mu) {
+            myLambda.Data = Mu + 1;
+          }
+        }
+        myPlusNotation.Data = value;
+        OnChanged();
+      }
     }
     private DoubleData myShakingFactor;
     public double ShakingFactor {

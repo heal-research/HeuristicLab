@@ -49,6 +49,7 @@ namespace HeuristicLab.ES {
     protected override void RemoveItemEvents() {
       ES.Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
       ES.Engine.Finished -= new EventHandler(Engine_Finished);
+      ES.Changed -= new EventHandler(ES_Changed);
       scopeView.Scope = null;
       base.RemoveItemEvents();
     }
@@ -56,8 +57,15 @@ namespace HeuristicLab.ES {
       base.AddItemEvents();
       ES.Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
       ES.Engine.Finished += new EventHandler(Engine_Finished);
+      ES.Changed += new EventHandler(ES_Changed);
       SetDataBinding();
       scopeView.Scope = ES.Engine.GlobalScope;
+    }
+
+    void ES_Changed(object sender, EventArgs e) {
+      // neither Refresh() nor Update() work
+      muTextBox.Text = ES.Mu.ToString();
+      lambdaTextBox.Text = ES.Lambda.ToString();
     }
 
     protected override void UpdateControls() {
