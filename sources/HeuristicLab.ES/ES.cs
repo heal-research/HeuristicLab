@@ -379,9 +379,13 @@ namespace HeuristicLab.ES {
       set { myShakingFactor.Data = value; }
     }
     private DoubleData mySuccessProbability;
+    private DoubleData myTargetSuccessProbability;
     public double SuccessProbability {
-      get { return mySuccessProbability.Data; }
-      set { mySuccessProbability.Data = value; }
+      get { return myTargetSuccessProbability.Data; }
+      set {
+        myTargetSuccessProbability.Data = value;
+        mySuccessProbability.Data = value;
+      }
     }
     private IntData myMaximumGenerations;
     public int MaximumGenerations {
@@ -474,7 +478,8 @@ namespace HeuristicLab.ES {
       myMaximumGenerations = vi.GetVariable("MaximumGenerations").GetValue<IntData>();
       myPlusNotation = vi.GetVariable("PlusNotation").GetValue<BoolData>();
       myShakingFactor = vi.GetVariable("ShakingFactor").GetValue<DoubleData>();
-      mySuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
+      myTargetSuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
+      mySuccessProbability = vi.GetVariable("SuccessProbability").GetValue<DoubleData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
       myPopulationInitialization = co3;
