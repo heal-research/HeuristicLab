@@ -111,6 +111,7 @@
     <Compile Include="ConstrainedDoubleDataView.Designer.cs">
       <DependentUpon>ConstrainedDoubleDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="NullData.cs" />
     <Compile Include="IntMatrixDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>

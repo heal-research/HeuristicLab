@@ -68,7 +68,7 @@ A combined operator automatically inject its sub-operators into the scope it is 
 
       if (scope.GetVariable(Guid.ToString()) == null) { // contained operator not yet executed
         // add marker
-        scope.AddVariable(new Variable(Guid.ToString(), null));
+        scope.AddVariable(new Variable(Guid.ToString(), new NullData()));
 
         // add aliases
         foreach (IVariableInfo variableInfo in VariableInfos)
