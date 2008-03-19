@@ -80,6 +80,9 @@
     <Compile Include="Swap3Manipulator.cs" />
     <Compile Include="TranslocationInversionManipulator.cs" />
     <Compile Include="TranslocationManipulator.cs" />
+    <Compile Include="VariableStrengthInversionManipulator.cs" />
+    <Compile Include="VariableStrengthPermutationManipulatorBase.cs" />
+    <Compile Include="VariableStrengthSwap2Manipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
