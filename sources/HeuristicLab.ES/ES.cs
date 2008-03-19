@@ -103,6 +103,7 @@ namespace HeuristicLab.ES {
       vi.AddVariable(new Variable("ShakingFactor", new DoubleData(5.0)));
       vi.AddVariable(new Variable("TargetSuccessProbability", new DoubleData(0.2)));
       vi.AddVariable(new Variable("SuccessProbability", new DoubleData(0.2)));
+      vi.AddVariable(new Variable("UseSuccessRule", new BoolData(true)));
       op.OperatorGraph.AddOperator(vi);
       sp.AddSubOperator(vi);
 
@@ -248,42 +249,52 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(sp1);
       op.OperatorGraph.InitialOperator = sp1;
 
+      ConditionalBranch cb = new ConditionalBranch();
+      cb.GetVariableInfo("Condition").ActualName = "UseSuccessRule";
+      op.OperatorGraph.AddOperator(cb);
+      sp1.AddSubOperator(cb);
+
+      SequentialProcessor sp2 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp2);
+      cb.AddSubOperator(sp2);
+
       OffspringAnalyzer oa = new OffspringAnalyzer();
       oa.Name = "Offspring Analyzer";
       oa.GetVariable("ParentsCount").Value = new IntData(1);
       oa.GetVariable("ComparisonFactor").Value = new DoubleData(0.0);
       op.OperatorGraph.AddOperator(oa);
-      sp1.AddSubOperator(oa);
+      sp2.AddSubOperator(oa);
 
       UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
       op.OperatorGraph.AddOperator(ussp);
       oa.AddSubOperator(ussp);
+      cb.AddSubOperator(ussp);
 
-      SequentialProcessor sp2 = new SequentialProcessor();
-      op.OperatorGraph.AddOperator(sp2);
-      ussp.AddSubOperator(sp2);
+      SequentialProcessor sp3 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp3);
+      ussp.AddSubOperator(sp3);
 
       OperatorExtractor oe1 = new OperatorExtractor();
       oe1.Name = "Mutator";
       oe1.GetVariableInfo("Operator").ActualName = "Mutator";
       op.OperatorGraph.AddOperator(oe1);
-      sp2.AddSubOperator(oe1);
+      sp3.AddSubOperator(oe1);
 
       OperatorExtractor oe2 = new OperatorExtractor();
       oe2.Name = "Evaluator";
       oe2.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe2);
-      sp2.AddSubOperator(oe2);
+      sp3.AddSubOperator(oe2);
 
       Counter c = new Counter();
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
       op.OperatorGraph.AddOperator(c);
-      sp2.AddSubOperator(c);
+      sp3.AddSubOperator(c);
 
       SuccessRuleMutationStrengthAdjuster srmsa = new SuccessRuleMutationStrengthAdjuster();
       srmsa.Name = "SuccessRuleMutationStrengthAdjuster";
       op.OperatorGraph.AddOperator(srmsa);
-      sp1.AddSubOperator(srmsa);
+      sp2.AddSubOperator(srmsa);
 
       return op;
     }
@@ -392,6 +403,11 @@ namespace HeuristicLab.ES {
       get { return myMaximumGenerations.Data; }
       set { myMaximumGenerations.Data = value; }
     }
+    private BoolData myUseSuccessRule;
+    public bool UseSuccessRule {
+      get { return myUseSuccessRule.Data; }
+      set { myUseSuccessRule.Data = value; }
+    }
     private CombinedOperator myES;
     private IOperator myESMain;
     private IOperator myVariableInjection;
@@ -480,6 +496,7 @@ namespace HeuristicLab.ES {
       myShakingFactor = vi.GetVariable("ShakingFactor").GetValue<DoubleData>();
       myTargetSuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
       mySuccessProbability = vi.GetVariable("SuccessProbability").GetValue<DoubleData>();
+      myUseSuccessRule = vi.GetVariable("UseSuccessRule").GetValue<BoolData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
       myPopulationInitialization = co3;

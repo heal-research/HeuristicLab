@@ -89,6 +89,7 @@ namespace HeuristicLab.ES {
       maximumGenerationsTextBox.DataBindings.Add("Text", ES, "MaximumGenerations");
       initialMutationStrengthTextBox.DataBindings.Add("Text", ES, "ShakingFactor");
       targetSuccessRateTextBox.DataBindings.Add("Text", ES, "SuccessProbability");
+      useSuccessRuleCheckBox.DataBindings.Add("Checked", ES, "UseSuccessRule");
     }
 
     #region Button Events
@@ -176,8 +177,22 @@ namespace HeuristicLab.ES {
     }
     private void Engine_Finished(object sender, EventArgs e) {
       scopeView.Refresh();
+      if (executeButton.InvokeRequired) {
+        executeButton.Invoke(new MethodInvoker(EnableExecute));
+      } else {
+        executeButton.Enabled = true;
+        abortButton.Enabled = false;
+      }
+    }
+    private void EnableExecute() {
       executeButton.Enabled = true;
       abortButton.Enabled = false;
+    }
+    #endregion
+
+    #region CheckBox Events
+    private void useSuccessRuleCheckBox_CheckedChanged(object sender, EventArgs e) {
+      targetSuccessRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
     }
     #endregion
   }

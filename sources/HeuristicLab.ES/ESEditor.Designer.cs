@@ -85,6 +85,7 @@ namespace HeuristicLab.ES {
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
+      this.useSuccessRuleCheckBox = new System.Windows.Forms.CheckBox();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
@@ -116,6 +117,7 @@ namespace HeuristicLab.ES {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.Controls.Add(this.useSuccessRuleCheckBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateTextBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateLabel);
       this.parametersTabPage.Controls.Add(this.plusNotationButton);
@@ -525,6 +527,20 @@ namespace HeuristicLab.ES {
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
       // 
+      // useSuccessRuleMutationStrengthAdjustmentCheckBox
+      // 
+      this.useSuccessRuleCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.useSuccessRuleCheckBox.AutoSize = true;
+      this.useSuccessRuleCheckBox.Checked = true;
+      this.useSuccessRuleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.useSuccessRuleCheckBox.Location = new System.Drawing.Point(411, 184);
+      this.useSuccessRuleCheckBox.Name = "useSuccessRuleMutationStrengthAdjustmentCheckBox";
+      this.useSuccessRuleCheckBox.Size = new System.Drawing.Size(51, 17);
+      this.useSuccessRuleCheckBox.TabIndex = 40;
+      this.useSuccessRuleCheckBox.Text = "Use?";
+      this.useSuccessRuleCheckBox.UseVisualStyleBackColor = true;
+      this.useSuccessRuleCheckBox.CheckedChanged += new System.EventHandler(this.useSuccessRuleCheckBox_CheckedChanged);
+      // 
       // ESEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -586,5 +602,6 @@ namespace HeuristicLab.ES {
     private System.Windows.Forms.Label plusNotationLabel;
     private System.Windows.Forms.TextBox targetSuccessRateTextBox;
     private System.Windows.Forms.Label targetSuccessRateLabel;
+    private System.Windows.Forms.CheckBox useSuccessRuleCheckBox;
   }
 }
