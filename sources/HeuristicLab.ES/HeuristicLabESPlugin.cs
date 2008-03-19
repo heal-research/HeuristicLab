@@ -9,10 +9,11 @@ namespace HeuristicLab.ES {
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.Data")]
   [Dependency(Dependency = "HeuristicLab.Evolutionary")]
+  [Dependency(Dependency = "HeuristicLab.Logging")]
   [Dependency(Dependency = "HeuristicLab.Operators")]
   [Dependency(Dependency = "HeuristicLab.Random")]
   [Dependency(Dependency = "HeuristicLab.Selection")]
-  [Dependency(Dependency = "HeuristicLab.Logging")]
+  [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine")]
   public class HeuristicLabESPlugin : PluginBase {
   }
