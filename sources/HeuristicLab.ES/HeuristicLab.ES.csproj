@@ -58,6 +58,7 @@
     <Compile Include="ESEditor.Designer.cs">
       <DependentUpon>ESEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="VariableStrengthRepeatingManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
