@@ -48,6 +48,7 @@ namespace HeuristicLab.ES {
       this.executeButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.useSuccessRuleCheckBox = new System.Windows.Forms.CheckBox();
       this.targetSuccessRateTextBox = new System.Windows.Forms.TextBox();
       this.targetSuccessRateLabel = new System.Windows.Forms.Label();
       this.plusNotationButton = new System.Windows.Forms.Button();
@@ -85,7 +86,12 @@ namespace HeuristicLab.ES {
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
-      this.useSuccessRuleCheckBox = new System.Windows.Forms.CheckBox();
+      this.rhoLabel = new System.Windows.Forms.Label();
+      this.rhoTextBox = new System.Windows.Forms.TextBox();
+      this.recombinationLabel = new System.Windows.Forms.Label();
+      this.recombinationTextBox = new System.Windows.Forms.TextBox();
+      this.setRecombinationButton = new System.Windows.Forms.Button();
+      this.viewRecombinationButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
@@ -94,7 +100,7 @@ namespace HeuristicLab.ES {
       // executeButton
       // 
       this.executeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.executeButton.Location = new System.Drawing.Point(0, 396);
+      this.executeButton.Location = new System.Drawing.Point(0, 459);
       this.executeButton.Name = "executeButton";
       this.executeButton.Size = new System.Drawing.Size(75, 23);
       this.executeButton.TabIndex = 1;
@@ -112,11 +118,17 @@ namespace HeuristicLab.ES {
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(526, 390);
+      this.tabControl.Size = new System.Drawing.Size(526, 453);
       this.tabControl.TabIndex = 0;
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.Controls.Add(this.setRecombinationButton);
+      this.parametersTabPage.Controls.Add(this.viewRecombinationButton);
+      this.parametersTabPage.Controls.Add(this.recombinationTextBox);
+      this.parametersTabPage.Controls.Add(this.recombinationLabel);
+      this.parametersTabPage.Controls.Add(this.rhoTextBox);
+      this.parametersTabPage.Controls.Add(this.rhoLabel);
       this.parametersTabPage.Controls.Add(this.useSuccessRuleCheckBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateTextBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateLabel);
@@ -153,37 +165,51 @@ namespace HeuristicLab.ES {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(518, 364);
+      this.parametersTabPage.Size = new System.Drawing.Size(518, 427);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
+      // useSuccessRuleCheckBox
+      // 
+      this.useSuccessRuleCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.useSuccessRuleCheckBox.AutoSize = true;
+      this.useSuccessRuleCheckBox.Checked = true;
+      this.useSuccessRuleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.useSuccessRuleCheckBox.Location = new System.Drawing.Point(411, 215);
+      this.useSuccessRuleCheckBox.Name = "useSuccessRuleCheckBox";
+      this.useSuccessRuleCheckBox.Size = new System.Drawing.Size(51, 17);
+      this.useSuccessRuleCheckBox.TabIndex = 16;
+      this.useSuccessRuleCheckBox.Text = "Use?";
+      this.useSuccessRuleCheckBox.UseVisualStyleBackColor = true;
+      this.useSuccessRuleCheckBox.CheckedChanged += new System.EventHandler(this.useSuccessRuleCheckBox_CheckedChanged);
+      // 
       // targetSuccessRateTextBox
       // 
       this.targetSuccessRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.targetSuccessRateTextBox.Location = new System.Drawing.Point(218, 182);
+      this.targetSuccessRateTextBox.Location = new System.Drawing.Point(218, 213);
       this.targetSuccessRateTextBox.Name = "targetSuccessRateTextBox";
       this.targetSuccessRateTextBox.Size = new System.Drawing.Size(186, 20);
-      this.targetSuccessRateTextBox.TabIndex = 39;
+      this.targetSuccessRateTextBox.TabIndex = 15;
       // 
       // targetSuccessRateLabel
       // 
       this.targetSuccessRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.targetSuccessRateLabel.AutoSize = true;
-      this.targetSuccessRateLabel.Location = new System.Drawing.Point(65, 185);
+      this.targetSuccessRateLabel.Location = new System.Drawing.Point(65, 216);
       this.targetSuccessRateLabel.Name = "targetSuccessRateLabel";
       this.targetSuccessRateLabel.Size = new System.Drawing.Size(111, 13);
-      this.targetSuccessRateLabel.TabIndex = 38;
+      this.targetSuccessRateLabel.TabIndex = 14;
       this.targetSuccessRateLabel.Text = "Target Success Rate:";
       // 
       // plusNotationButton
       // 
       this.plusNotationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.plusNotationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.plusNotationButton.Location = new System.Drawing.Point(218, 208);
+      this.plusNotationButton.Location = new System.Drawing.Point(218, 239);
       this.plusNotationButton.Name = "plusNotationButton";
       this.plusNotationButton.Size = new System.Drawing.Size(78, 24);
-      this.plusNotationButton.TabIndex = 37;
+      this.plusNotationButton.TabIndex = 18;
       this.plusNotationButton.Text = "Plus";
       this.plusNotationButton.UseVisualStyleBackColor = true;
       this.plusNotationButton.Click += new System.EventHandler(this.plusNotationButton_Click);
@@ -192,19 +218,19 @@ namespace HeuristicLab.ES {
       // 
       this.plusNotationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.plusNotationLabel.AutoSize = true;
-      this.plusNotationLabel.Location = new System.Drawing.Point(65, 214);
+      this.plusNotationLabel.Location = new System.Drawing.Point(65, 245);
       this.plusNotationLabel.Name = "plusNotationLabel";
-      this.plusNotationLabel.Size = new System.Drawing.Size(102, 13);
-      this.plusNotationLabel.TabIndex = 36;
-      this.plusNotationLabel.Text = "Plus/Point Notation:";
+      this.plusNotationLabel.Size = new System.Drawing.Size(113, 13);
+      this.plusNotationLabel.TabIndex = 17;
+      this.plusNotationLabel.Text = "Plus/Comma Notation:";
       // 
       // setEvaluationButton
       // 
       this.setEvaluationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setEvaluationButton.Location = new System.Drawing.Point(469, 338);
+      this.setEvaluationButton.Location = new System.Drawing.Point(469, 361);
       this.setEvaluationButton.Name = "setEvaluationButton";
       this.setEvaluationButton.Size = new System.Drawing.Size(43, 20);
-      this.setEvaluationButton.TabIndex = 35;
+      this.setEvaluationButton.TabIndex = 34;
       this.setEvaluationButton.Text = "Set...";
       this.setEvaluationButton.UseVisualStyleBackColor = true;
       this.setEvaluationButton.Click += new System.EventHandler(this.setEvaluationButton_Click);
@@ -212,10 +238,10 @@ namespace HeuristicLab.ES {
       // setMutationButton
       // 
       this.setMutationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setMutationButton.Location = new System.Drawing.Point(469, 312);
+      this.setMutationButton.Location = new System.Drawing.Point(469, 335);
       this.setMutationButton.Name = "setMutationButton";
       this.setMutationButton.Size = new System.Drawing.Size(43, 20);
-      this.setMutationButton.TabIndex = 31;
+      this.setMutationButton.TabIndex = 30;
       this.setMutationButton.Text = "Set...";
       this.setMutationButton.UseVisualStyleBackColor = true;
       this.setMutationButton.Click += new System.EventHandler(this.setMutationButton_Click);
@@ -223,10 +249,10 @@ namespace HeuristicLab.ES {
       // setSolutionGenerationButton
       // 
       this.setSolutionGenerationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setSolutionGenerationButton.Location = new System.Drawing.Point(469, 286);
+      this.setSolutionGenerationButton.Location = new System.Drawing.Point(469, 309);
       this.setSolutionGenerationButton.Name = "setSolutionGenerationButton";
       this.setSolutionGenerationButton.Size = new System.Drawing.Size(43, 20);
-      this.setSolutionGenerationButton.TabIndex = 19;
+      this.setSolutionGenerationButton.TabIndex = 26;
       this.setSolutionGenerationButton.Text = "Set...";
       this.setSolutionGenerationButton.UseVisualStyleBackColor = true;
       this.setSolutionGenerationButton.Click += new System.EventHandler(this.setSolutionGenerationButton_Click);
@@ -234,10 +260,10 @@ namespace HeuristicLab.ES {
       // viewEvaluationButton
       // 
       this.viewEvaluationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewEvaluationButton.Location = new System.Drawing.Point(410, 338);
+      this.viewEvaluationButton.Location = new System.Drawing.Point(410, 361);
       this.viewEvaluationButton.Name = "viewEvaluationButton";
       this.viewEvaluationButton.Size = new System.Drawing.Size(53, 20);
-      this.viewEvaluationButton.TabIndex = 34;
+      this.viewEvaluationButton.TabIndex = 33;
       this.viewEvaluationButton.Text = "View...";
       this.viewEvaluationButton.UseVisualStyleBackColor = true;
       this.viewEvaluationButton.Click += new System.EventHandler(this.viewEvaluationButton_Click);
@@ -245,10 +271,10 @@ namespace HeuristicLab.ES {
       // viewMutationButton
       // 
       this.viewMutationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewMutationButton.Location = new System.Drawing.Point(410, 312);
+      this.viewMutationButton.Location = new System.Drawing.Point(410, 335);
       this.viewMutationButton.Name = "viewMutationButton";
       this.viewMutationButton.Size = new System.Drawing.Size(53, 20);
-      this.viewMutationButton.TabIndex = 30;
+      this.viewMutationButton.TabIndex = 29;
       this.viewMutationButton.Text = "View...";
       this.viewMutationButton.UseVisualStyleBackColor = true;
       this.viewMutationButton.Click += new System.EventHandler(this.viewMutationButton_Click);
@@ -256,10 +282,10 @@ namespace HeuristicLab.ES {
       // viewSolutionGenerationButton
       // 
       this.viewSolutionGenerationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewSolutionGenerationButton.Location = new System.Drawing.Point(410, 286);
+      this.viewSolutionGenerationButton.Location = new System.Drawing.Point(410, 309);
       this.viewSolutionGenerationButton.Name = "viewSolutionGenerationButton";
       this.viewSolutionGenerationButton.Size = new System.Drawing.Size(53, 20);
-      this.viewSolutionGenerationButton.TabIndex = 18;
+      this.viewSolutionGenerationButton.TabIndex = 25;
       this.viewSolutionGenerationButton.Text = "View...";
       this.viewSolutionGenerationButton.UseVisualStyleBackColor = true;
       this.viewSolutionGenerationButton.Click += new System.EventHandler(this.viewSolutionGenerationButton_Click);
@@ -267,10 +293,10 @@ namespace HeuristicLab.ES {
       // viewProblemInitializationButton
       // 
       this.viewProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 260);
+      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 283);
       this.viewProblemInitializationButton.Name = "viewProblemInitializationButton";
       this.viewProblemInitializationButton.Size = new System.Drawing.Size(53, 20);
-      this.viewProblemInitializationButton.TabIndex = 14;
+      this.viewProblemInitializationButton.TabIndex = 21;
       this.viewProblemInitializationButton.Text = "View...";
       this.viewProblemInitializationButton.UseVisualStyleBackColor = true;
       this.viewProblemInitializationButton.Click += new System.EventHandler(this.viewProblemInitializationButton_Click);
@@ -278,10 +304,10 @@ namespace HeuristicLab.ES {
       // setProblemInitializationButton
       // 
       this.setProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 260);
+      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 283);
       this.setProblemInitializationButton.Name = "setProblemInitializationButton";
       this.setProblemInitializationButton.Size = new System.Drawing.Size(43, 20);
-      this.setProblemInitializationButton.TabIndex = 15;
+      this.setProblemInitializationButton.TabIndex = 22;
       this.setProblemInitializationButton.Text = "Set...";
       this.setProblemInitializationButton.UseVisualStyleBackColor = true;
       this.setProblemInitializationButton.Click += new System.EventHandler(this.setProblemInitializationButton_Click);
@@ -289,44 +315,44 @@ namespace HeuristicLab.ES {
       // evaluationTextBox
       // 
       this.evaluationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.evaluationTextBox.Location = new System.Drawing.Point(218, 338);
+      this.evaluationTextBox.Location = new System.Drawing.Point(218, 361);
       this.evaluationTextBox.Name = "evaluationTextBox";
       this.evaluationTextBox.ReadOnly = true;
       this.evaluationTextBox.Size = new System.Drawing.Size(186, 20);
-      this.evaluationTextBox.TabIndex = 33;
+      this.evaluationTextBox.TabIndex = 32;
       // 
       // mutationTextBox
       // 
       this.mutationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.mutationTextBox.Location = new System.Drawing.Point(218, 312);
+      this.mutationTextBox.Location = new System.Drawing.Point(218, 335);
       this.mutationTextBox.Name = "mutationTextBox";
       this.mutationTextBox.ReadOnly = true;
       this.mutationTextBox.Size = new System.Drawing.Size(186, 20);
-      this.mutationTextBox.TabIndex = 29;
+      this.mutationTextBox.TabIndex = 28;
       // 
       // solutionGenerationTextBox
       // 
       this.solutionGenerationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.solutionGenerationTextBox.Location = new System.Drawing.Point(218, 286);
+      this.solutionGenerationTextBox.Location = new System.Drawing.Point(218, 309);
       this.solutionGenerationTextBox.Name = "solutionGenerationTextBox";
       this.solutionGenerationTextBox.ReadOnly = true;
       this.solutionGenerationTextBox.Size = new System.Drawing.Size(186, 20);
-      this.solutionGenerationTextBox.TabIndex = 17;
+      this.solutionGenerationTextBox.TabIndex = 24;
       // 
       // problemInitializationTextBox
       // 
       this.problemInitializationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 260);
+      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 283);
       this.problemInitializationTextBox.Name = "problemInitializationTextBox";
       this.problemInitializationTextBox.ReadOnly = true;
       this.problemInitializationTextBox.Size = new System.Drawing.Size(186, 20);
-      this.problemInitializationTextBox.TabIndex = 13;
+      this.problemInitializationTextBox.TabIndex = 20;
       // 
       // setRandomSeedRandomlyCheckBox
       // 
       this.setRandomSeedRandomlyCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.setRandomSeedRandomlyCheckBox.AutoSize = true;
-      this.setRandomSeedRandomlyCheckBox.Location = new System.Drawing.Point(218, 6);
+      this.setRandomSeedRandomlyCheckBox.Location = new System.Drawing.Point(218, 15);
       this.setRandomSeedRandomlyCheckBox.Name = "setRandomSeedRandomlyCheckBox";
       this.setRandomSeedRandomlyCheckBox.Size = new System.Drawing.Size(15, 14);
       this.setRandomSeedRandomlyCheckBox.TabIndex = 1;
@@ -335,66 +361,66 @@ namespace HeuristicLab.ES {
       // initialMutationStrengthTextBox
       // 
       this.initialMutationStrengthTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.initialMutationStrengthTextBox.Location = new System.Drawing.Point(218, 156);
+      this.initialMutationStrengthTextBox.Location = new System.Drawing.Point(218, 187);
       this.initialMutationStrengthTextBox.Name = "initialMutationStrengthTextBox";
       this.initialMutationStrengthTextBox.Size = new System.Drawing.Size(186, 20);
-      this.initialMutationStrengthTextBox.TabIndex = 11;
+      this.initialMutationStrengthTextBox.TabIndex = 13;
       // 
       // evaluationLabel
       // 
       this.evaluationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.evaluationLabel.AutoSize = true;
-      this.evaluationLabel.Location = new System.Drawing.Point(65, 341);
+      this.evaluationLabel.Location = new System.Drawing.Point(65, 364);
       this.evaluationLabel.Name = "evaluationLabel";
       this.evaluationLabel.Size = new System.Drawing.Size(60, 13);
-      this.evaluationLabel.TabIndex = 32;
+      this.evaluationLabel.TabIndex = 31;
       this.evaluationLabel.Text = "&Evaluation:";
       // 
       // mutationLabel
       // 
       this.mutationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.mutationLabel.AutoSize = true;
-      this.mutationLabel.Location = new System.Drawing.Point(65, 315);
+      this.mutationLabel.Location = new System.Drawing.Point(65, 338);
       this.mutationLabel.Name = "mutationLabel";
       this.mutationLabel.Size = new System.Drawing.Size(51, 13);
-      this.mutationLabel.TabIndex = 28;
+      this.mutationLabel.TabIndex = 27;
       this.mutationLabel.Text = "&Mutation:";
       // 
       // solutionGenerationLabel
       // 
       this.solutionGenerationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.solutionGenerationLabel.AutoSize = true;
-      this.solutionGenerationLabel.Location = new System.Drawing.Point(65, 289);
+      this.solutionGenerationLabel.Location = new System.Drawing.Point(65, 312);
       this.solutionGenerationLabel.Name = "solutionGenerationLabel";
       this.solutionGenerationLabel.Size = new System.Drawing.Size(103, 13);
-      this.solutionGenerationLabel.TabIndex = 16;
+      this.solutionGenerationLabel.TabIndex = 23;
       this.solutionGenerationLabel.Text = "&Solution Generation:";
       // 
       // problemInitializationLabel
       // 
       this.problemInitializationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.problemInitializationLabel.AutoSize = true;
-      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 263);
+      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 286);
       this.problemInitializationLabel.Name = "problemInitializationLabel";
       this.problemInitializationLabel.Size = new System.Drawing.Size(105, 13);
-      this.problemInitializationLabel.TabIndex = 12;
+      this.problemInitializationLabel.TabIndex = 19;
       this.problemInitializationLabel.Text = "&Problem Initialization:";
       // 
       // initialMutationStrengthLabel
       // 
       this.initialMutationStrengthLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.initialMutationStrengthLabel.AutoSize = true;
-      this.initialMutationStrengthLabel.Location = new System.Drawing.Point(65, 159);
+      this.initialMutationStrengthLabel.Location = new System.Drawing.Point(65, 190);
       this.initialMutationStrengthLabel.Name = "initialMutationStrengthLabel";
       this.initialMutationStrengthLabel.Size = new System.Drawing.Size(121, 13);
-      this.initialMutationStrengthLabel.TabIndex = 10;
+      this.initialMutationStrengthLabel.TabIndex = 12;
       this.initialMutationStrengthLabel.Text = "Initial Mutation Strength:";
       // 
       // mutationRateLabel
       // 
       this.mutationRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.mutationRateLabel.AutoSize = true;
-      this.mutationRateLabel.Location = new System.Drawing.Point(65, 107);
+      this.mutationRateLabel.Location = new System.Drawing.Point(65, 138);
       this.mutationRateLabel.Name = "mutationRateLabel";
       this.mutationRateLabel.Size = new System.Drawing.Size(48, 13);
       this.mutationRateLabel.TabIndex = 8;
@@ -403,25 +429,25 @@ namespace HeuristicLab.ES {
       // maximumGenerationsTextBox
       // 
       this.maximumGenerationsTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maximumGenerationsTextBox.Location = new System.Drawing.Point(218, 130);
+      this.maximumGenerationsTextBox.Location = new System.Drawing.Point(218, 161);
       this.maximumGenerationsTextBox.Name = "maximumGenerationsTextBox";
       this.maximumGenerationsTextBox.Size = new System.Drawing.Size(186, 20);
-      this.maximumGenerationsTextBox.TabIndex = 7;
+      this.maximumGenerationsTextBox.TabIndex = 11;
       // 
       // maximumGenerationsLabel
       // 
       this.maximumGenerationsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.maximumGenerationsLabel.AutoSize = true;
-      this.maximumGenerationsLabel.Location = new System.Drawing.Point(65, 133);
+      this.maximumGenerationsLabel.Location = new System.Drawing.Point(65, 164);
       this.maximumGenerationsLabel.Name = "maximumGenerationsLabel";
       this.maximumGenerationsLabel.Size = new System.Drawing.Size(114, 13);
-      this.maximumGenerationsLabel.TabIndex = 6;
+      this.maximumGenerationsLabel.TabIndex = 10;
       this.maximumGenerationsLabel.Text = "Maximum &Generations:";
       // 
       // randomSeedTextBox
       // 
       this.randomSeedTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.randomSeedTextBox.Location = new System.Drawing.Point(218, 26);
+      this.randomSeedTextBox.Location = new System.Drawing.Point(218, 35);
       this.randomSeedTextBox.Name = "randomSeedTextBox";
       this.randomSeedTextBox.Size = new System.Drawing.Size(186, 20);
       this.randomSeedTextBox.TabIndex = 3;
@@ -429,7 +455,7 @@ namespace HeuristicLab.ES {
       // muTextBox
       // 
       this.muTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.muTextBox.Location = new System.Drawing.Point(218, 78);
+      this.muTextBox.Location = new System.Drawing.Point(218, 83);
       this.muTextBox.Name = "muTextBox";
       this.muTextBox.Size = new System.Drawing.Size(186, 20);
       this.muTextBox.TabIndex = 5;
@@ -438,7 +464,7 @@ namespace HeuristicLab.ES {
       // 
       this.setRandomSeedRandomlyLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.setRandomSeedRandomlyLabel.AutoSize = true;
-      this.setRandomSeedRandomlyLabel.Location = new System.Drawing.Point(65, 6);
+      this.setRandomSeedRandomlyLabel.Location = new System.Drawing.Point(65, 15);
       this.setRandomSeedRandomlyLabel.Name = "setRandomSeedRandomlyLabel";
       this.setRandomSeedRandomlyLabel.Size = new System.Drawing.Size(147, 13);
       this.setRandomSeedRandomlyLabel.TabIndex = 0;
@@ -448,7 +474,7 @@ namespace HeuristicLab.ES {
       // 
       this.randomSeedLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.randomSeedLabel.AutoSize = true;
-      this.randomSeedLabel.Location = new System.Drawing.Point(65, 29);
+      this.randomSeedLabel.Location = new System.Drawing.Point(65, 38);
       this.randomSeedLabel.Name = "randomSeedLabel";
       this.randomSeedLabel.Size = new System.Drawing.Size(78, 13);
       this.randomSeedLabel.TabIndex = 2;
@@ -458,7 +484,7 @@ namespace HeuristicLab.ES {
       // 
       this.populationSizeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.populationSizeLabel.AutoSize = true;
-      this.populationSizeLabel.Location = new System.Drawing.Point(65, 81);
+      this.populationSizeLabel.Location = new System.Drawing.Point(65, 86);
       this.populationSizeLabel.Name = "populationSizeLabel";
       this.populationSizeLabel.Size = new System.Drawing.Size(25, 13);
       this.populationSizeLabel.TabIndex = 4;
@@ -467,7 +493,7 @@ namespace HeuristicLab.ES {
       // lambdaTextBox
       // 
       this.lambdaTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.lambdaTextBox.Location = new System.Drawing.Point(218, 104);
+      this.lambdaTextBox.Location = new System.Drawing.Point(218, 135);
       this.lambdaTextBox.Name = "lambdaTextBox";
       this.lambdaTextBox.Size = new System.Drawing.Size(186, 20);
       this.lambdaTextBox.TabIndex = 9;
@@ -497,7 +523,7 @@ namespace HeuristicLab.ES {
       // 
       this.abortButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.abortButton.Enabled = false;
-      this.abortButton.Location = new System.Drawing.Point(81, 396);
+      this.abortButton.Location = new System.Drawing.Point(81, 459);
       this.abortButton.Name = "abortButton";
       this.abortButton.Size = new System.Drawing.Size(75, 23);
       this.abortButton.TabIndex = 2;
@@ -508,7 +534,7 @@ namespace HeuristicLab.ES {
       // resetButton
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Location = new System.Drawing.Point(162, 396);
+      this.resetButton.Location = new System.Drawing.Point(162, 459);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(75, 23);
       this.resetButton.TabIndex = 3;
@@ -519,7 +545,7 @@ namespace HeuristicLab.ES {
       // cloneEngineButton
       // 
       this.cloneEngineButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cloneEngineButton.Location = new System.Drawing.Point(420, 396);
+      this.cloneEngineButton.Location = new System.Drawing.Point(420, 459);
       this.cloneEngineButton.Name = "cloneEngineButton";
       this.cloneEngineButton.Size = new System.Drawing.Size(106, 23);
       this.cloneEngineButton.TabIndex = 4;
@@ -527,19 +553,64 @@ namespace HeuristicLab.ES {
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
       // 
-      // useSuccessRuleMutationStrengthAdjustmentCheckBox
+      // rhoLabel
       // 
-      this.useSuccessRuleCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.useSuccessRuleCheckBox.AutoSize = true;
-      this.useSuccessRuleCheckBox.Checked = true;
-      this.useSuccessRuleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.useSuccessRuleCheckBox.Location = new System.Drawing.Point(411, 184);
-      this.useSuccessRuleCheckBox.Name = "useSuccessRuleMutationStrengthAdjustmentCheckBox";
-      this.useSuccessRuleCheckBox.Size = new System.Drawing.Size(51, 17);
-      this.useSuccessRuleCheckBox.TabIndex = 40;
-      this.useSuccessRuleCheckBox.Text = "Use?";
-      this.useSuccessRuleCheckBox.UseVisualStyleBackColor = true;
-      this.useSuccessRuleCheckBox.CheckedChanged += new System.EventHandler(this.useSuccessRuleCheckBox_CheckedChanged);
+      this.rhoLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.rhoLabel.AutoSize = true;
+      this.rhoLabel.Location = new System.Drawing.Point(65, 112);
+      this.rhoLabel.Name = "rhoLabel";
+      this.rhoLabel.Size = new System.Drawing.Size(30, 13);
+      this.rhoLabel.TabIndex = 6;
+      this.rhoLabel.Text = "Rho:";
+      // 
+      // rhoTextBox
+      // 
+      this.rhoTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.rhoTextBox.Location = new System.Drawing.Point(218, 109);
+      this.rhoTextBox.Name = "rhoTextBox";
+      this.rhoTextBox.Size = new System.Drawing.Size(186, 20);
+      this.rhoTextBox.TabIndex = 7;
+      // 
+      // recombinationLabel
+      // 
+      this.recombinationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.recombinationLabel.AutoSize = true;
+      this.recombinationLabel.Location = new System.Drawing.Point(65, 390);
+      this.recombinationLabel.Name = "recombinationLabel";
+      this.recombinationLabel.Size = new System.Drawing.Size(81, 13);
+      this.recombinationLabel.TabIndex = 35;
+      this.recombinationLabel.Text = "Recombination:";
+      // 
+      // recombinationTextBox
+      // 
+      this.recombinationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.recombinationTextBox.Location = new System.Drawing.Point(218, 387);
+      this.recombinationTextBox.Name = "recombinationTextBox";
+      this.recombinationTextBox.ReadOnly = true;
+      this.recombinationTextBox.Size = new System.Drawing.Size(186, 20);
+      this.recombinationTextBox.TabIndex = 36;
+      // 
+      // setRecombinationButton
+      // 
+      this.setRecombinationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.setRecombinationButton.Location = new System.Drawing.Point(469, 387);
+      this.setRecombinationButton.Name = "setRecombinationButton";
+      this.setRecombinationButton.Size = new System.Drawing.Size(43, 20);
+      this.setRecombinationButton.TabIndex = 38;
+      this.setRecombinationButton.Text = "Set...";
+      this.setRecombinationButton.UseVisualStyleBackColor = true;
+      this.setRecombinationButton.Click += new System.EventHandler(this.setRecombinationButton_Click);
+      // 
+      // viewRecombinationButton
+      // 
+      this.viewRecombinationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.viewRecombinationButton.Location = new System.Drawing.Point(410, 387);
+      this.viewRecombinationButton.Name = "viewRecombinationButton";
+      this.viewRecombinationButton.Size = new System.Drawing.Size(53, 20);
+      this.viewRecombinationButton.TabIndex = 37;
+      this.viewRecombinationButton.Text = "View...";
+      this.viewRecombinationButton.UseVisualStyleBackColor = true;
+      this.viewRecombinationButton.Click += new System.EventHandler(this.viewRecombinationButton_Click);
       // 
       // ESEditor
       // 
@@ -551,7 +622,7 @@ namespace HeuristicLab.ES {
       this.Controls.Add(this.abortButton);
       this.Controls.Add(this.executeButton);
       this.Name = "ESEditor";
-      this.Size = new System.Drawing.Size(526, 419);
+      this.Size = new System.Drawing.Size(526, 482);
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.parametersTabPage.PerformLayout();
@@ -603,5 +674,11 @@ namespace HeuristicLab.ES {
     private System.Windows.Forms.TextBox targetSuccessRateTextBox;
     private System.Windows.Forms.Label targetSuccessRateLabel;
     private System.Windows.Forms.CheckBox useSuccessRuleCheckBox;
+    private System.Windows.Forms.Button setRecombinationButton;
+    private System.Windows.Forms.Button viewRecombinationButton;
+    private System.Windows.Forms.TextBox recombinationTextBox;
+    private System.Windows.Forms.Label recombinationLabel;
+    private System.Windows.Forms.TextBox rhoTextBox;
+    private System.Windows.Forms.Label rhoLabel;
   }
 }

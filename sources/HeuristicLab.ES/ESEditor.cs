@@ -65,6 +65,7 @@ namespace HeuristicLab.ES {
     void ES_Changed(object sender, EventArgs e) {
       // neither Refresh() nor Update() work
       muTextBox.Text = ES.Mu.ToString();
+      rhoTextBox.Text = ES.Rho.ToString();
       lambdaTextBox.Text = ES.Lambda.ToString();
     }
 
@@ -78,6 +79,7 @@ namespace HeuristicLab.ES {
         solutionGenerationTextBox.Text = ES.SolutionGenerator.GetType().Name;
         mutationTextBox.Text = ES.Mutator.GetType().Name;
         evaluationTextBox.Text = ES.Evaluator.GetType().Name;
+        recombinationTextBox.Text = ES.Recombinator.GetType().Name;
       }
     }
 
@@ -85,6 +87,7 @@ namespace HeuristicLab.ES {
       setRandomSeedRandomlyCheckBox.DataBindings.Add("Checked", ES, "SetSeedRandomly");
       randomSeedTextBox.DataBindings.Add("Text", ES, "Seed");
       muTextBox.DataBindings.Add("Text", ES, "Mu");
+      rhoTextBox.DataBindings.Add("Text", ES, "Rho");
       lambdaTextBox.DataBindings.Add("Text", ES, "Lambda");
       maximumGenerationsTextBox.DataBindings.Add("Text", ES, "MaximumGenerations");
       initialMutationStrengthTextBox.DataBindings.Add("Text", ES, "ShakingFactor");
@@ -95,7 +98,7 @@ namespace HeuristicLab.ES {
     #region Button Events
     private void plusNotationButton_Click(object sender, EventArgs e) {
       if (plusNotationButton.Text.Equals("Plus")) {
-        plusNotationButton.Text = "Point";
+        plusNotationButton.Text = "Comma";
       } else {
         plusNotationButton.Text = "Plus";
       }
@@ -118,6 +121,11 @@ namespace HeuristicLab.ES {
     }
     private void viewEvaluationButton_Click(object sender, EventArgs e) {
       IView view = ES.Evaluator.CreateView();
+      if (view != null)
+        PluginManager.ControlManager.ShowControl(view);
+    }
+    private void viewRecombinationButton_Click(object sender, EventArgs e) {
+      IView view = ES.Recombinator.CreateView();
       if (view != null)
         PluginManager.ControlManager.ShowControl(view);
     }
@@ -147,6 +155,13 @@ namespace HeuristicLab.ES {
       if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         ES.Evaluator = chooseOperatorDialog.Operator;
         evaluationTextBox.Text = ES.Evaluator.GetType().Name;
+      }
+    }
+    private void setRecombinationButton_Click(object sender, EventArgs e) {
+      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+        ES.Recombinator = chooseOperatorDialog.Operator;
+        recombinationTextBox.Text = ES.Recombinator.GetType().Name;
       }
     }
     private void executeButton_Click(object sender, EventArgs e) {

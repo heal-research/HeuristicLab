@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ES.cs" />
+    <Compile Include="ESRandomSelector.cs" />
     <Compile Include="HeuristicLabESPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ESEditor.cs">

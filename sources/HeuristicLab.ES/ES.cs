@@ -73,6 +73,12 @@ namespace HeuristicLab.ES {
       // place holder for Evaluator
       co3.AddSubOperator(eo3);
 
+      // place holder for Recombinator
+      EmptyOperator eo5 = new EmptyOperator();
+      eo5.Name = "Recombinator";
+      op.OperatorGraph.AddOperator(eo5);
+      co3.AddSubOperator(eo5);
+
       return op;
     }
     private static CombinedOperator CreateVariableInjection() {
@@ -93,6 +99,7 @@ namespace HeuristicLab.ES {
 
       VariableInjector vi = new VariableInjector();
       vi.AddVariable(new Variable("ESmu", new IntData(1)));
+      vi.AddVariable(new Variable("ESrho", new IntData(1)));
       vi.AddVariable(new Variable("ESlambda", new IntData(1)));
       vi.AddVariable(new Variable("EvaluatedSolutions", new IntData()));
       vi.AddVariable(new Variable("PlusNotation", new BoolData(true)));
@@ -159,10 +166,10 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(sp);
       op.OperatorGraph.InitialOperator = sp;
 
-      RandomSelector rs = new RandomSelector();
+      ESRandomSelector rs = new ESRandomSelector();
       rs.Name = "Child Selector";
-      rs.GetVariableInfo("Selected").ActualName = "ESlambda";
-      rs.GetVariable("CopySelected").Value = new BoolData(true);
+      rs.GetVariableInfo("Lambda").ActualName = "ESlambda";
+      rs.GetVariableInfo("Rho").ActualName = "ESrho";
       op.OperatorGraph.AddOperator(rs);
       sp.AddSubOperator(rs);
 
@@ -180,7 +187,7 @@ namespace HeuristicLab.ES {
       ssp.AddSubOperator(co1);
 
       ConditionalBranch cb1 = new ConditionalBranch();
-      cb1.Name = "Point or Plus Replacement";
+      cb1.Name = "Plus or Comma Replacement";
       cb1.GetVariableInfo("Condition").ActualName = "PlusNotation";
       op.OperatorGraph.AddOperator(cb1);
       sp.AddSubOperator(cb1);
@@ -191,7 +198,7 @@ namespace HeuristicLab.ES {
       cb1.AddSubOperator(mr);
 
       RightReducer rr = new RightReducer();
-      rr.Name = "Point Replacement";
+      rr.Name = "Comma Replacement";
       op.OperatorGraph.AddOperator(rr);
       cb1.AddSubOperator(rr);
 
@@ -265,31 +272,41 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(oa);
       sp2.AddSubOperator(oa);
 
-      UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
-      op.OperatorGraph.AddOperator(ussp);
-      oa.AddSubOperator(ussp);
-      cb.AddSubOperator(ussp);
-
       SequentialProcessor sp3 = new SequentialProcessor();
       op.OperatorGraph.AddOperator(sp3);
-      ussp.AddSubOperator(sp3);
+      oa.AddSubOperator(sp3);
+      cb.AddSubOperator(sp3);
 
       OperatorExtractor oe1 = new OperatorExtractor();
-      oe1.Name = "Mutator";
-      oe1.GetVariableInfo("Operator").ActualName = "Mutator";
+      oe1.Name = "Recombinator";
+      oe1.GetVariableInfo("Operator").ActualName = "Recombinator";
       op.OperatorGraph.AddOperator(oe1);
       sp3.AddSubOperator(oe1);
 
+      UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
+      op.OperatorGraph.AddOperator(ussp);
+      sp3.AddSubOperator(ussp);
+
+      SequentialProcessor sp4 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp4);
+      ussp.AddSubOperator(sp4);
+
       OperatorExtractor oe2 = new OperatorExtractor();
-      oe2.Name = "Evaluator";
-      oe2.GetVariableInfo("Operator").ActualName = "Evaluator";
+      oe2.Name = "Mutator";
+      oe2.GetVariableInfo("Operator").ActualName = "Mutator";
       op.OperatorGraph.AddOperator(oe2);
-      sp3.AddSubOperator(oe2);
+      sp4.AddSubOperator(oe2);
+
+      OperatorExtractor oe3 = new OperatorExtractor();
+      oe3.Name = "Evaluator";
+      oe3.GetVariableInfo("Operator").ActualName = "Evaluator";
+      op.OperatorGraph.AddOperator(oe3);
+      sp4.AddSubOperator(oe3);
 
       Counter c = new Counter();
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
       op.OperatorGraph.AddOperator(c);
-      sp3.AddSubOperator(c);
+      sp4.AddSubOperator(c);
 
       SuccessRuleMutationStrengthAdjuster srmsa = new SuccessRuleMutationStrengthAdjuster();
       srmsa.Name = "SuccessRuleMutationStrengthAdjuster";
@@ -345,9 +362,23 @@ namespace HeuristicLab.ES {
     public int Mu {
       get { return myMu.Data; }
       set {
-        myMu.Data = value;
-        if (!PlusNotation && value >= Lambda) myLambda.Data = value + 1;
-        OnChanged();
+        if (value > 0) {
+          myMu.Data = value;
+          if (!PlusNotation && value >= Lambda) myLambda.Data = value + 1;
+          if (value < Rho) myRho.Data = value;
+          OnChanged();
+        }
+      }
+    }
+    private IntData myRho;
+    public int Rho {
+      get { return myRho.Data; }
+      set {
+        if (value > 0) {
+          myRho.Data = value;
+          if (value > Mu) Mu = value;
+          OnChanged();
+        }
       }
     }
     private IntData myLambda;
@@ -449,6 +480,15 @@ namespace HeuristicLab.ES {
         myESMain.AddSubOperator(value, 0);
       }
     }
+    public IOperator Recombinator {
+      get { return myESMain.SubOperators[2]; }
+      set {
+        value.Name = "Recombinator";
+        myES.OperatorGraph.RemoveOperator(Recombinator.Guid);
+        myES.OperatorGraph.AddOperator(value);
+        myESMain.AddSubOperator(value, 2);
+      }
+    }
     #endregion
 
     public ES() {
@@ -490,6 +530,7 @@ namespace HeuristicLab.ES {
       // VariableInjector
       VariableInjector vi = (VariableInjector)sp2.SubOperators[2];
       myMu = vi.GetVariable("ESmu").GetValue<IntData>();
+      myRho = vi.GetVariable("ESrho").GetValue<IntData>();
       myLambda = vi.GetVariable("ESlambda").GetValue<IntData>();
       myMaximumGenerations = vi.GetVariable("MaximumGenerations").GetValue<IntData>();
       myPlusNotation = vi.GetVariable("PlusNotation").GetValue<BoolData>();
