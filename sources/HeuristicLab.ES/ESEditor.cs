@@ -96,14 +96,6 @@ namespace HeuristicLab.ES {
     }
 
     #region Button Events
-    private void plusNotationButton_Click(object sender, EventArgs e) {
-      if (plusNotationButton.Text.Equals("Plus")) {
-        plusNotationButton.Text = "Comma";
-      } else {
-        plusNotationButton.Text = "Plus";
-      }
-      ES.PlusNotation = !ES.PlusNotation;
-    }
     private void viewProblemInitializationButton_Click(object sender, EventArgs e) {
       IView view = ES.ProblemInjector.CreateView();
       if (view != null)
@@ -208,6 +200,16 @@ namespace HeuristicLab.ES {
     #region CheckBox Events
     private void useSuccessRuleCheckBox_CheckedChanged(object sender, EventArgs e) {
       targetSuccessRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
+    }
+    #endregion
+
+    #region RadioButton Events
+    private void plusRadioButton_CheckedChanged(object sender, EventArgs e) {
+      if (plusRadioButton.Checked) ES.PlusNotation = true;
+    }
+
+    private void commaRadioButton_CheckedChanged(object sender, EventArgs e) {
+      if (commaRadioButton.Checked) ES.PlusNotation = false;
     }
     #endregion
   }

@@ -51,8 +51,6 @@ namespace HeuristicLab.ES {
       this.useSuccessRuleCheckBox = new System.Windows.Forms.CheckBox();
       this.targetSuccessRateTextBox = new System.Windows.Forms.TextBox();
       this.targetSuccessRateLabel = new System.Windows.Forms.Label();
-      this.plusNotationButton = new System.Windows.Forms.Button();
-      this.plusNotationLabel = new System.Windows.Forms.Label();
       this.setEvaluationButton = new System.Windows.Forms.Button();
       this.setMutationButton = new System.Windows.Forms.Button();
       this.setSolutionGenerationButton = new System.Windows.Forms.Button();
@@ -92,9 +90,13 @@ namespace HeuristicLab.ES {
       this.recombinationTextBox = new System.Windows.Forms.TextBox();
       this.setRecombinationButton = new System.Windows.Forms.Button();
       this.viewRecombinationButton = new System.Windows.Forms.Button();
+      this.parentSelectionGroupBox = new System.Windows.Forms.GroupBox();
+      this.plusRadioButton = new System.Windows.Forms.RadioButton();
+      this.commaRadioButton = new System.Windows.Forms.RadioButton();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
+      this.parentSelectionGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // executeButton
@@ -123,6 +125,7 @@ namespace HeuristicLab.ES {
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.Controls.Add(this.parentSelectionGroupBox);
       this.parametersTabPage.Controls.Add(this.setRecombinationButton);
       this.parametersTabPage.Controls.Add(this.viewRecombinationButton);
       this.parametersTabPage.Controls.Add(this.recombinationTextBox);
@@ -132,8 +135,6 @@ namespace HeuristicLab.ES {
       this.parametersTabPage.Controls.Add(this.useSuccessRuleCheckBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateTextBox);
       this.parametersTabPage.Controls.Add(this.targetSuccessRateLabel);
-      this.parametersTabPage.Controls.Add(this.plusNotationButton);
-      this.parametersTabPage.Controls.Add(this.plusNotationLabel);
       this.parametersTabPage.Controls.Add(this.setEvaluationButton);
       this.parametersTabPage.Controls.Add(this.setMutationButton);
       this.parametersTabPage.Controls.Add(this.setSolutionGenerationButton);
@@ -201,28 +202,6 @@ namespace HeuristicLab.ES {
       this.targetSuccessRateLabel.Size = new System.Drawing.Size(111, 13);
       this.targetSuccessRateLabel.TabIndex = 14;
       this.targetSuccessRateLabel.Text = "Target Success Rate:";
-      // 
-      // plusNotationButton
-      // 
-      this.plusNotationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.plusNotationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.plusNotationButton.Location = new System.Drawing.Point(218, 239);
-      this.plusNotationButton.Name = "plusNotationButton";
-      this.plusNotationButton.Size = new System.Drawing.Size(78, 24);
-      this.plusNotationButton.TabIndex = 18;
-      this.plusNotationButton.Text = "Plus";
-      this.plusNotationButton.UseVisualStyleBackColor = true;
-      this.plusNotationButton.Click += new System.EventHandler(this.plusNotationButton_Click);
-      // 
-      // plusNotationLabel
-      // 
-      this.plusNotationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.plusNotationLabel.AutoSize = true;
-      this.plusNotationLabel.Location = new System.Drawing.Point(65, 245);
-      this.plusNotationLabel.Name = "plusNotationLabel";
-      this.plusNotationLabel.Size = new System.Drawing.Size(113, 13);
-      this.plusNotationLabel.TabIndex = 17;
-      this.plusNotationLabel.Text = "Plus/Comma Notation:";
       // 
       // setEvaluationButton
       // 
@@ -612,6 +591,42 @@ namespace HeuristicLab.ES {
       this.viewRecombinationButton.UseVisualStyleBackColor = true;
       this.viewRecombinationButton.Click += new System.EventHandler(this.viewRecombinationButton_Click);
       // 
+      // parentSelectionGroupBox
+      // 
+      this.parentSelectionGroupBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.parentSelectionGroupBox.Controls.Add(this.commaRadioButton);
+      this.parentSelectionGroupBox.Controls.Add(this.plusRadioButton);
+      this.parentSelectionGroupBox.Location = new System.Drawing.Point(218, 239);
+      this.parentSelectionGroupBox.Name = "parentSelectionGroupBox";
+      this.parentSelectionGroupBox.Size = new System.Drawing.Size(186, 38);
+      this.parentSelectionGroupBox.TabIndex = 39;
+      this.parentSelectionGroupBox.TabStop = false;
+      this.parentSelectionGroupBox.Text = "Parent Selection";
+      // 
+      // plusRadioButton
+      // 
+      this.plusRadioButton.AutoSize = true;
+      this.plusRadioButton.Checked = true;
+      this.plusRadioButton.Location = new System.Drawing.Point(6, 15);
+      this.plusRadioButton.Name = "plusRadioButton";
+      this.plusRadioButton.Size = new System.Drawing.Size(45, 17);
+      this.plusRadioButton.TabIndex = 0;
+      this.plusRadioButton.TabStop = true;
+      this.plusRadioButton.Text = "Plus";
+      this.plusRadioButton.UseVisualStyleBackColor = true;
+      this.plusRadioButton.CheckedChanged += new System.EventHandler(this.plusRadioButton_CheckedChanged);
+      // 
+      // commaRadioButton
+      // 
+      this.commaRadioButton.AutoSize = true;
+      this.commaRadioButton.Location = new System.Drawing.Point(57, 15);
+      this.commaRadioButton.Name = "commaRadioButton";
+      this.commaRadioButton.Size = new System.Drawing.Size(60, 17);
+      this.commaRadioButton.TabIndex = 1;
+      this.commaRadioButton.Text = "Comma";
+      this.commaRadioButton.UseVisualStyleBackColor = true;
+      this.commaRadioButton.CheckedChanged += new System.EventHandler(this.commaRadioButton_CheckedChanged);
+      // 
       // ESEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -627,6 +642,8 @@ namespace HeuristicLab.ES {
       this.parametersTabPage.ResumeLayout(false);
       this.parametersTabPage.PerformLayout();
       this.scopesTabPage.ResumeLayout(false);
+      this.parentSelectionGroupBox.ResumeLayout(false);
+      this.parentSelectionGroupBox.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -669,8 +686,6 @@ namespace HeuristicLab.ES {
     private System.Windows.Forms.Button viewMutationButton;
     private System.Windows.Forms.Button viewSolutionGenerationButton;
     private System.Windows.Forms.Button viewProblemInitializationButton;
-    private System.Windows.Forms.Button plusNotationButton;
-    private System.Windows.Forms.Label plusNotationLabel;
     private System.Windows.Forms.TextBox targetSuccessRateTextBox;
     private System.Windows.Forms.Label targetSuccessRateLabel;
     private System.Windows.Forms.CheckBox useSuccessRuleCheckBox;
@@ -680,5 +695,8 @@ namespace HeuristicLab.ES {
     private System.Windows.Forms.Label recombinationLabel;
     private System.Windows.Forms.TextBox rhoTextBox;
     private System.Windows.Forms.Label rhoLabel;
+    private System.Windows.Forms.GroupBox parentSelectionGroupBox;
+    private System.Windows.Forms.RadioButton commaRadioButton;
+    private System.Windows.Forms.RadioButton plusRadioButton;
   }
 }
