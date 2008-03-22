@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationInfo.cs" />
+    <Compile Include="AssemblyBuildDateAttribute.cs" />
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
     <Compile Include="ClassInfoAttribute.cs" />

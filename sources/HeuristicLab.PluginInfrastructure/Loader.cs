@@ -332,6 +332,12 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginInfo pluginInfo = new PluginInfo();
       pluginInfo.Name = plugin.Name;
       pluginInfo.Version = plugin.Version;
+
+      object[] customAttributes = plugin.GetType().Assembly.GetCustomAttributes(typeof(AssemblyBuildDateAttribute), false);
+      if(customAttributes.Length > 0) {
+        pluginInfo.BuildDate = ((AssemblyBuildDateAttribute)customAttributes[0]).BuildDate;
+      }
+
       string baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
       Array.ForEach<string>(plugin.Files, delegate(string file) {

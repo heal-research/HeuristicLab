@@ -146,6 +146,10 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
     private void publishButton_Click(object sender, EventArgs args) {
       PluginInfo plugin = ((PluginTag)pluginTreeView.SelectedNode.Tag).Plugin;
+      publishPlugin(plugin);
+    }
+
+    private void publishPlugin(PluginInfo plugin) {
       try {
         string packageFileName = plugin.Name + "-" + plugin.Version + ".zip";
         ZipFile zipFile = ZipFile.Create(packageFileName);
@@ -164,7 +168,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         infoTextBox.Text += "\nCreated " + packageFileName + " (" + fileInfo.Length + " bytes)\n";
         infoTextBox.Text += "Upload this file to your plugin source and add the following entry to" +
 " the file plugins.xml residing in the base directory of your plugin source.\n\n";
-        infoTextBox.Text += "  <Plugin Name=\"" + plugin.Name + "\" Version=\"" + plugin.Version + "\">\n";
+        infoTextBox.Text += "  <Plugin Name=\"" + plugin.Name + "\" Version=\""
+          + plugin.Version + "\" Build=\"" + plugin.BuildDate.ToUniversalTime().ToString(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat) + "\">\n";
         foreach(PluginInfo dependency in plugin.Dependencies) {
           infoTextBox.Text += "    <Dependency Name=\"" + dependency.Name + "\" />\n";
         }
@@ -250,7 +255,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         PluginDescription mostRecentVersion = samePlugins[0];
         if(samePlugins.Count > 1) {
           samePlugins.ForEach(delegate(PluginDescription tag2) {
-            if(tag2.Version > mostRecentVersion.Version) {
+            if(tag2.Version > mostRecentVersion.Version || 
+              (tag2.Version == mostRecentVersion.Version && tag2.BuildDate>mostRecentVersion.BuildDate)) {
               mostRecentVersion = tag2;
             }
           });
@@ -287,12 +293,13 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // NOTE: make sure to keep only the most recent entry of a plugin in the allAvailablePlugins list
       allAvailablePlugins.ForEach(delegate(PluginDescription availablePlugin) {
         List<PluginTag> oldPlugins = allTags.FindAll(delegate(PluginTag currentPlugin) {
-          return currentPlugin.PluginName == availablePlugin.Name && 
-            (currentPlugin.State & (PluginState.Installed | PluginState.Disabled)) !=0;
+          return currentPlugin.PluginName == availablePlugin.Name &&
+            (currentPlugin.State & (PluginState.Installed | PluginState.Disabled)) != 0;
         });
 
         if(oldPlugins.Count == 1) {
-          if(oldPlugins[0].PluginVersion < availablePlugin.Version) {
+          if(oldPlugins[0].PluginVersion < availablePlugin.Version ||
+            (oldPlugins[0].PluginVersion == availablePlugin.Version && oldPlugins[0].PluginBuildDate<availablePlugin.BuildDate)) {
             upgrades.Add(availablePlugin);
           }
         }
@@ -308,7 +315,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
           return currentPlugin.PluginName == availablePlugin.Name && currentPlugin.State == PluginState.Available;
         });
 
-        if(currentPlugins.Count == 1 && currentPlugins[0].PluginVersion < availablePlugin.Version) {
+        if(currentPlugins.Count == 1 && (currentPlugins[0].PluginVersion < availablePlugin.Version ||
+          (currentPlugins[0].PluginVersion==availablePlugin.Version && currentPlugins[0].PluginBuildDate<availablePlugin.BuildDate))) {
           overrides.Add(availablePlugin);
         }
       });

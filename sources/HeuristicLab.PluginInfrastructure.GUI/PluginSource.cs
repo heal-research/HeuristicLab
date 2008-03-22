@@ -76,7 +76,14 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         string name = child.Attributes["Name"].Value;
         string version = child.Attributes["Version"].Value;
 
-        PluginDescription description = new PluginDescription(name, new Version(version), this);
+        DateTime buildDate;
+        if(child.Attributes["Build"] != null) {
+          string build = child.Attributes["Build"].Value;
+          DateTime.TryParse(build, System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat, System.Globalization.DateTimeStyles.AssumeUniversal, out buildDate);
+        } else {
+          buildDate = DateTime.MinValue;
+        }
+        PluginDescription description = new PluginDescription(name, new Version(version), buildDate, this);
         availablePlugins.Add(description);
 
         // retrieve the list of dependencies

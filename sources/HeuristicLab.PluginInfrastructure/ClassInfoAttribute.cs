@@ -31,7 +31,6 @@ namespace HeuristicLab.PluginInfrastructure {
   [AttributeUsage(AttributeTargets.Class)]
   public class ClassInfoAttribute : System.Attribute {
     private string name;
-
     /// <summary>
     /// Name of the plugin to which the assembly belongs to.
     /// </summary>
@@ -41,15 +40,12 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private string version;
-
     public string Version {
       get { return version; }
       set { version = value; }
     }
 
-
     private string description;
-
     public string Description {
       get { return description; }
       set { description = value; }

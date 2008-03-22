@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -22,41 +22,22 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
+using System.Globalization;
 
-namespace HeuristicLab.PluginInfrastructure.GUI {
-  class PluginDescription {
-    private string name;
-    public string Name {
-      get { return name; }
-      set { name = value; }
-    }
-    private Version version;
-    public Version Version {
-      get { return version; }
-      set { version = value; }
-    }
+namespace HeuristicLab.PluginInfrastructure {
+  [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
+  public class AssemblyBuildDateAttribute : Attribute {
     private DateTime buildDate;
     public DateTime BuildDate {
       get { return buildDate; }
       set { buildDate = value; }
     }
+    public AssemblyBuildDateAttribute(string timeStamp)
+      : base() {
 
-    private List<string> dependencies = new List<string>();
-    public List<string> Dependencies {
-      get { return dependencies; }
-    }
-
-    private PluginSource source;
-    public PluginSource Source {
-      get { return source; }
-    }
-
-    public PluginDescription(string name, Version version, DateTime buildDate, PluginSource source) {
-      this.name = name;
-      this.version = version;
-      this.source = source;
-      this.buildDate = buildDate;
+      if(!DateTime.TryParse(timeStamp, out buildDate)) {
+        throw new FormatException("Can't parse AssemblyBuildDate " + timeStamp);
+      }
     }
   }
 }

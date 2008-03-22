@@ -35,7 +35,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
   class PluginTag {
     private PluginInfo plugin;
-
     public PluginInfo Plugin {
       get { return plugin; }
     }
@@ -49,7 +48,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         pluginDetails = GeneratePluginDetails(pluginDescription);
       }
     }
-
 
     private PluginDescription upgradePluginDescription;
     public PluginDescription UpgradePluginDescription {
@@ -73,6 +71,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       get { return pluginVersion; }
       set { pluginVersion = value; }
     }
+    private DateTime pluginBuildDate;
+    public DateTime PluginBuildDate {
+      get { return pluginBuildDate; }
+      set { pluginBuildDate = value; }
+    }
 
     private string pluginDetails;
     private List<string> pluginDependencies;
@@ -95,9 +98,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.plugin = plugin;
       this.state = state;
       this.allTags = allTags;
-
       this.pluginName = plugin.Name;
       this.pluginVersion = plugin.Version;
+      this.pluginBuildDate = plugin.BuildDate;
       this.message = plugin.Message;
       pluginDetails = GeneratePluginDetails(plugin);
       pluginDependencies = GeneratePluginDependencies(plugin);
@@ -107,10 +110,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.pluginDescription = plugin;
       this.state = state;
       this.allTags = allTags;
-
       this.pluginName = plugin.Name;
       this.pluginVersion = plugin.Version;
-
+      this.pluginBuildDate = plugin.BuildDate;
       pluginDetails = GeneratePluginDetails(plugin);
       pluginDependencies = GeneratePluginDependencies(plugin);
     }
@@ -131,7 +133,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         dependents += dependentPlugin.Name + " (" + dependentPlugin.Version + ")\n";
       });
       return "Plugin: " + plugin.Name + "\n" +
-      "Version: " + plugin.Version + "\n\n" +
+      "Version: " + plugin.Version + "\n" +
+      "Build: " +plugin.BuildDate + "\n\n" +
       (dependencies.Length != 0 ? "Requires: \n" + dependencies + "\n" : "") +
       (dependents.Length != 0 ? "Used by:\n" + dependents + "\n" : "") +
       (filenames.Length != 0 ? "Files:\n" + filenames + "\n" : "") + message;
@@ -145,6 +148,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
       return "plugin: " + plugin.Name + "\n" +
       "Version: " + plugin.Version + "\n" +
+      "Build: "+plugin.BuildDate +"\n" +
       "Installed from: " + plugin.Source + "\n" +
       "Requires: \n" + dependencies;
     }
@@ -155,18 +159,16 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         dependencies += dependency + "\n";
       }
       return "plugin: " + upgrade.Name + "\n" +
-      "Current version: " + plugin.Version + " will be upgraded to new version: " + upgrade.Version + "\n"+
+      "Current version: " + plugin.Version + " ("+plugin.BuildDate+") will be upgraded to new version: " + upgrade.Version + " ("+upgrade.BuildDate+")\n"+
       "Upgraded from: " + upgrade.Source + "\n" +
       "Requires: \n" + dependencies;
     }
 
     private List<string> GeneratePluginDependencies(PluginInfo plugin) {
       List<string> dependencies = new List<string>();
-
       plugin.Dependencies.ForEach(delegate(PluginInfo dependency) {
         dependencies.Add(dependency.Name);
       });
-
       return dependencies;
     }
 

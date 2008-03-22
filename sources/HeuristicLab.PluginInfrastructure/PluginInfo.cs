@@ -31,20 +31,21 @@ namespace HeuristicLab.PluginInfrastructure {
   [Serializable]
   public class PluginInfo {
     private string name;
-
     public string Name {
       get { return name; }
       set { name = value; }
     }
-
     private Version version;
-
     public Version Version {
       get { return version; }
       set { version = value; }
     }
-
-    private List<string> files = new List<string> ();
+    private DateTime buildDate;
+    public DateTime BuildDate {
+      get { return buildDate; }
+      set { buildDate = value; }
+    }
+    private List<string> files = new List<string>();
     /// <summary>
     /// Names of all files that belong to this plugin.
     /// These files are deleted when the plugin is removed or updated.
@@ -53,12 +54,11 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return files; }
     }
 
-    private List<PluginInfo> dependencies = new List<PluginInfo> ();
+    private List<PluginInfo> dependencies = new List<PluginInfo>();
     public List<PluginInfo> Dependencies {
       get { return dependencies; }
     }
     private List<string> assemblies = new List<string>();
-
     /// <summary>
     /// Names of the assemblies that belong to this plugin.
     /// </summary>
@@ -66,18 +66,14 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return assemblies; }
       set { assemblies = value; }
     }
-
-
     private string message;
     public string Message {
       get { return message; }
       set { message = value; }
     }
-
     public override string ToString() {
       return Name;
     }
-
     // equals and hashcode have to be implemented because we want to compare PluginDescriptions from 
     // different AppDomains and serialization destroys reference equality
     public override bool Equals(object obj) {
@@ -87,7 +83,6 @@ namespace HeuristicLab.PluginInfrastructure {
 
       return other.Name == this.Name && other.Version == this.Version;
     }
-
     public override int GetHashCode() {
       if(version != null) {
         return name.GetHashCode() + version.GetHashCode();
