@@ -47,7 +47,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelegatingOperator.cs" />
     <Compile Include="Evaluation\CoefficientOfDeterminationEvaluator.cs" />
     <Compile Include="Evaluation\FunctionEvaluator.cs">
       <SubType>Code</SubType>

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.StructureIdentification {
+namespace HeuristicLab.Operators {
   public abstract class DelegatingOperator : OperatorBase {
     public override IOperation Execute(IScope scope) {
       myCanceled = false;
 
-      // copied from CombinedOperator (gkronber 22.3.08)
       if(scope.GetVariable(Guid.ToString()) == null) { // contained operator not yet executed
         // add marker
         scope.AddVariable(new Variable(Guid.ToString(), new NullData()));

@@ -63,6 +63,7 @@
     <Compile Include="ConditionalBranch.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DelegatingOperator.cs" />
     <Compile Include="StochasticMultiBranch.cs" />
     <Compile Include="SubScopesMixer.cs" />
     <Compile Include="DataCollector.cs" />
