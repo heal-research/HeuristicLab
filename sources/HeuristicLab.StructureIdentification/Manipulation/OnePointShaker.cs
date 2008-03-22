@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.StructureIdentification {
-  public class OnePointShaker : OperatorBase {
+  public class OnePointShaker : DelegatingOperator {
     public override string Description {
       get { return "Selects a random node of all tree-nodes that have a '"+GPOperatorLibrary.MANIPULATION+"' variable defined and manipulates the selected node."; }
     }
@@ -59,6 +59,9 @@ namespace HeuristicLab.StructureIdentification {
 
       // store all local variables into a temporary scope
       Scope tempScope = new Scope("Temp. manipulation scope");
+      // add aliases
+      foreach(IVariableInfo variableInfo in VariableInfos)
+        tempScope.AddAlias(variableInfo.FormalName, variableInfo.ActualName);
 
       foreach(IVariableInfo info in selectedOp.VariableInfos) {
         if(info.Local) {

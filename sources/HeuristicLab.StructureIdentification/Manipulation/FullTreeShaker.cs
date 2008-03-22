@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.StructureIdentification {
-  public class FullTreeShaker : OperatorBase {
+  public class FullTreeShaker : DelegatingOperator {
     public override string Description {
       get { return "Manipulates all tree nodes for which a '"+GPOperatorLibrary.MANIPULATION+"' variable is defined."; }
     }
