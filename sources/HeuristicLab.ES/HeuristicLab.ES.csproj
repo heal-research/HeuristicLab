@@ -52,13 +52,13 @@
     <Compile Include="ES.cs" />
     <Compile Include="ESRandomSelector.cs" />
     <Compile Include="HeuristicLabESPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ESEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ESEditor.Designer.cs">
       <DependentUpon>ESEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VariableStrengthRepeatingManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ESEditor.resx">
