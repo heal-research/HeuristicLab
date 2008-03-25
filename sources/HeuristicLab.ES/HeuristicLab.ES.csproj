@@ -59,6 +59,7 @@
       <DependentUpon>ESEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelfAdaptiveMutationStrengthAdjuster.cs" />
     <Compile Include="VariableStrengthRepeatingManipulator.cs" />
   </ItemGroup>
   <ItemGroup>

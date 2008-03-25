@@ -48,6 +48,8 @@
     <Compile Include="RandomConvexCrossover.cs" />
     <Compile Include="LocalCrossover.cs" />
     <Compile Include="DiscreteRecombination.cs" />
+    <Compile Include="SelfAdaptiveDiscreteRecombination.cs" />
+    <Compile Include="SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="UniformAllPositionsManipulator.cs" />
     <Compile Include="UniformRandomRealVectorGenerator.cs" />
     <Compile Include="UniformOnePositionManipulator.cs" />
