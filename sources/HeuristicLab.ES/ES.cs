@@ -383,7 +383,10 @@ namespace HeuristicLab.ES {
     private IntData mySeed;
     public int Seed {
       get { return mySeed.Data; }
-      set { mySeed.Data = value; }
+      set {
+        mySeed.Data = value;
+        OnChanged();
+      }
     }
     private IntData myMu;
     public int Mu {
@@ -585,6 +588,7 @@ namespace HeuristicLab.ES {
       myTargetSuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
       mySuccessProbability = vi.GetVariable("SuccessProbability").GetValue<DoubleData>();
       myLearningRate = vi.GetVariable("LearningRate").GetValue<DoubleData>();
+      myDampeningFactor = vi.GetVariable("DampeningFactor").GetValue<DoubleData>();
       myUseSuccessRule = vi.GetVariable("UseSuccessRule").GetValue<BoolData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];

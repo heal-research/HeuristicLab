@@ -49,6 +49,8 @@ namespace HeuristicLab.ES {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.successRuleGroupBox = new System.Windows.Forms.GroupBox();
+      this.dampeningFactorTextBox = new System.Windows.Forms.TextBox();
+      this.dampeningFactorLabel = new System.Windows.Forms.Label();
       this.learningRateTextBox = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.targetSuccessRateTextBox = new System.Windows.Forms.TextBox();
@@ -96,8 +98,6 @@ namespace HeuristicLab.ES {
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
-      this.dampeningFactorLabel = new System.Windows.Forms.Label();
-      this.dampeningFactorTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.successRuleGroupBox.SuspendLayout();
@@ -191,6 +191,24 @@ namespace HeuristicLab.ES {
       this.successRuleGroupBox.TabIndex = 40;
       this.successRuleGroupBox.TabStop = false;
       this.successRuleGroupBox.Text = "Success Rule Mutation Strength Adjustment";
+      // 
+      // dampeningFactorTextBox
+      // 
+      this.dampeningFactorTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.dampeningFactorTextBox.Location = new System.Drawing.Point(150, 71);
+      this.dampeningFactorTextBox.Name = "dampeningFactorTextBox";
+      this.dampeningFactorTextBox.Size = new System.Drawing.Size(180, 20);
+      this.dampeningFactorTextBox.TabIndex = 19;
+      // 
+      // dampeningFactorLabel
+      // 
+      this.dampeningFactorLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+      this.dampeningFactorLabel.AutoSize = true;
+      this.dampeningFactorLabel.Location = new System.Drawing.Point(7, 74);
+      this.dampeningFactorLabel.Name = "dampeningFactorLabel";
+      this.dampeningFactorLabel.Size = new System.Drawing.Size(97, 13);
+      this.dampeningFactorLabel.TabIndex = 18;
+      this.dampeningFactorLabel.Text = "Dampening Factor:";
       // 
       // learningRateTextBox
       // 
@@ -329,7 +347,7 @@ namespace HeuristicLab.ES {
       this.useSuccessRuleCheckBox.AutoSize = true;
       this.useSuccessRuleCheckBox.Checked = true;
       this.useSuccessRuleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.useSuccessRuleCheckBox.Location = new System.Drawing.Point(410, 235);
+      this.useSuccessRuleCheckBox.Location = new System.Drawing.Point(410, 248);
       this.useSuccessRuleCheckBox.Name = "useSuccessRuleCheckBox";
       this.useSuccessRuleCheckBox.Size = new System.Drawing.Size(51, 17);
       this.useSuccessRuleCheckBox.TabIndex = 16;
@@ -617,7 +635,7 @@ namespace HeuristicLab.ES {
       this.scopesTabPage.Location = new System.Drawing.Point(4, 22);
       this.scopesTabPage.Name = "scopesTabPage";
       this.scopesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.scopesTabPage.Size = new System.Drawing.Size(518, 477);
+      this.scopesTabPage.Size = new System.Drawing.Size(518, 497);
       this.scopesTabPage.TabIndex = 2;
       this.scopesTabPage.Text = "Scopes";
       this.scopesTabPage.UseVisualStyleBackColor = true;
@@ -629,7 +647,7 @@ namespace HeuristicLab.ES {
       this.scopeView.Location = new System.Drawing.Point(3, 3);
       this.scopeView.Name = "scopeView";
       this.scopeView.Scope = null;
-      this.scopeView.Size = new System.Drawing.Size(512, 471);
+      this.scopeView.Size = new System.Drawing.Size(512, 491);
       this.scopeView.TabIndex = 0;
       // 
       // abortButton
@@ -665,24 +683,6 @@ namespace HeuristicLab.ES {
       this.cloneEngineButton.Text = "&Clone Engine...";
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
-      // 
-      // dampeningFactorLabel
-      // 
-      this.dampeningFactorLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.dampeningFactorLabel.AutoSize = true;
-      this.dampeningFactorLabel.Location = new System.Drawing.Point(7, 74);
-      this.dampeningFactorLabel.Name = "dampeningFactorLabel";
-      this.dampeningFactorLabel.Size = new System.Drawing.Size(97, 13);
-      this.dampeningFactorLabel.TabIndex = 18;
-      this.dampeningFactorLabel.Text = "Dampening Factor:";
-      // 
-      // dampeningFactorTextBox
-      // 
-      this.dampeningFactorTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
-      this.dampeningFactorTextBox.Location = new System.Drawing.Point(150, 71);
-      this.dampeningFactorTextBox.Name = "dampeningFactorTextBox";
-      this.dampeningFactorTextBox.Size = new System.Drawing.Size(180, 20);
-      this.dampeningFactorTextBox.TabIndex = 19;
       // 
       // ESEditor
       // 

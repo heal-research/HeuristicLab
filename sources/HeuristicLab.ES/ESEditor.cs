@@ -64,6 +64,7 @@ namespace HeuristicLab.ES {
 
     void ES_Changed(object sender, EventArgs e) {
       // neither Refresh() nor Update() work
+      randomSeedTextBox.Text = ES.Seed.ToString();
       muTextBox.Text = ES.Mu.ToString();
       rhoTextBox.Text = ES.Rho.ToString();
       lambdaTextBox.Text = ES.Lambda.ToString();
@@ -94,6 +95,7 @@ namespace HeuristicLab.ES {
       initialMutationStrengthTextBox.DataBindings.Add("Text", ES, "ShakingFactor");
       targetSuccessRateTextBox.DataBindings.Add("Text", ES, "SuccessProbability");
       learningRateTextBox.DataBindings.Add("Text", ES, "LearningRate");
+      dampeningFactorTextBox.DataBindings.Add("Text", ES, "DampeningFactor");
       useSuccessRuleCheckBox.DataBindings.Add("Checked", ES, "UseSuccessRule");
     }
 
@@ -203,6 +205,7 @@ namespace HeuristicLab.ES {
     private void useSuccessRuleCheckBox_CheckedChanged(object sender, EventArgs e) {
       targetSuccessRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
       learningRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
+      dampeningFactorTextBox.Enabled = useSuccessRuleCheckBox.Checked;
     }
     #endregion
 
