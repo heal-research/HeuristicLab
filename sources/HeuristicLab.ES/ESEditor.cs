@@ -67,6 +67,7 @@ namespace HeuristicLab.ES {
       muTextBox.Text = ES.Mu.ToString();
       rhoTextBox.Text = ES.Rho.ToString();
       lambdaTextBox.Text = ES.Lambda.ToString();
+      learningRateTextBox.Text = ES.LearningRate.ToString();
     }
 
     protected override void UpdateControls() {
@@ -92,6 +93,7 @@ namespace HeuristicLab.ES {
       maximumGenerationsTextBox.DataBindings.Add("Text", ES, "MaximumGenerations");
       initialMutationStrengthTextBox.DataBindings.Add("Text", ES, "ShakingFactor");
       targetSuccessRateTextBox.DataBindings.Add("Text", ES, "SuccessProbability");
+      learningRateTextBox.DataBindings.Add("Text", ES, "LearningRate");
       useSuccessRuleCheckBox.DataBindings.Add("Checked", ES, "UseSuccessRule");
     }
 
@@ -200,6 +202,7 @@ namespace HeuristicLab.ES {
     #region CheckBox Events
     private void useSuccessRuleCheckBox_CheckedChanged(object sender, EventArgs e) {
       targetSuccessRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
+      learningRateTextBox.Enabled = useSuccessRuleCheckBox.Checked;
     }
     #endregion
 

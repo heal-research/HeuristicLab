@@ -334,6 +334,12 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(srmsa);
       sp2.AddSubOperator(srmsa);
 
+      Sorter s = new Sorter();
+      s.GetVariableInfo("Value").ActualName = "Quality";
+      s.GetVariableInfo("Descending").ActualName = "Maximization";
+      op.OperatorGraph.AddOperator(s);
+      sp1.AddSubOperator(s);
+
       return op;
     }
     private static CombinedOperator CreateReplacement() {
@@ -450,6 +456,26 @@ namespace HeuristicLab.ES {
         mySuccessProbability.Data = value;
       }
     }
+    private DoubleData myLearningRate;
+    public double LearningRate {
+      get { return myLearningRate.Data; }
+      set {
+        if (value > 0.0 && value <= 1.0) {
+          myLearningRate.Data = value;
+          OnChanged();
+        }
+      }
+    }
+    private DoubleData myDampeningFactor;
+    public double DampeningFactor {
+      get { return myDampeningFactor.Data; }
+      set {
+        if (value >= 1.0) {
+          myDampeningFactor.Data = value;
+          OnChanged();
+        }
+      }
+    }
     private IntData myMaximumGenerations;
     public int MaximumGenerations {
       get { return myMaximumGenerations.Data; }
@@ -558,6 +584,7 @@ namespace HeuristicLab.ES {
       myShakingFactor = vi.GetVariable("ShakingFactor").GetValue<DoubleData>();
       myTargetSuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
       mySuccessProbability = vi.GetVariable("SuccessProbability").GetValue<DoubleData>();
+      myLearningRate = vi.GetVariable("LearningRate").GetValue<DoubleData>();
       myUseSuccessRule = vi.GetVariable("UseSuccessRule").GetValue<BoolData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
