@@ -32,12 +32,7 @@ namespace HeuristicLab.Operators {
     }
 
     public override IOperation Apply(IScope scope) {
-      // remove all subscopes
-      while (scope.SubScopes.Count > 0)
-        scope.RemoveSubScope(scope.SubScopes[0]);
-      // remove all variables
-      foreach (IVariable var in scope.Variables)
-        scope.RemoveVariable(var.Name);
+      scope.Clear();
       return null;
     }
   }
