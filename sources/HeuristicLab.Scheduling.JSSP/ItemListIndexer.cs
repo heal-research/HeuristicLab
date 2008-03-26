@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Scheduling.JSSP {
-  class ItemListIndexer : OperatorBase {
+  public class ItemListIndexer : OperatorBase {
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }

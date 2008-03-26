@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class LocalCrossover : RealVectorCrossoverBase {
+  public class LocalCrossover : RealVectorCrossoverBase {
     public override string Description {
       get { return "Local crossover for real vectors."; }
     }

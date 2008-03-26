@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class BoundsChecker : OperatorBase {
+  public class BoundsChecker : OperatorBase {
     public override string Description {
       get { return "Checks if all elements of a real vector are inside a given minimum and maximum value. If not, elements are corrected."; }
     }

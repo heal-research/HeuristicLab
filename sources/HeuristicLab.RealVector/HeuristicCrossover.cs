@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.RealVector {
-  class HeuristicCrossover : CrossoverBase {
+  public class HeuristicCrossover : CrossoverBase {
     public HeuristicCrossover()
       : base() {
       AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));

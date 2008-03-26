@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class ContinuousCrossover : RealVectorCrossoverBase {
+  public class ContinuousCrossover : RealVectorCrossoverBase {
     public override string Description {
       get { return "Continuous crossover for real vectors."; }
     }

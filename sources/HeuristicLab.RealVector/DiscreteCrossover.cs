@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.RealVector {
-  class DiscreteCrossover : RealVectorCrossoverBase {
+  public class DiscreteCrossover : RealVectorCrossoverBase {
     public override string Description {
       get { return "Discrete crossover for real vectors."; }
     }

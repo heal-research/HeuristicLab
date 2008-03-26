@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class RandomConvexCrossover : RealVectorCrossoverBase {
+  public class RandomConvexCrossover : RealVectorCrossoverBase {
     public override string Description {
       get { return "Random convex crossover for real vectors."; }
     }

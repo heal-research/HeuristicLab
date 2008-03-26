@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
-  class UniformAllPositionsManipulator : RealVectorManipulatorBase {
+  public class UniformAllPositionsManipulator : RealVectorManipulatorBase {
     public override string Description {
       get { return "Uniformly distributed change of all positions of a real vector."; }
     }
