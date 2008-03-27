@@ -54,6 +54,7 @@
     <Compile Include="LocalCrossover.cs" />
     <Compile Include="DiscreteRecombination.cs" />
     <Compile Include="SelfAdaptiveDiscreteRecombination.cs" />
+    <Compile Include="SelfAdaptiveIntermediateRecombination.cs" />
     <Compile Include="SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="UniformAllPositionsManipulator.cs" />
     <Compile Include="UniformRandomRealVectorGenerator.cs" />
