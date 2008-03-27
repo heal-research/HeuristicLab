@@ -39,12 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlendAlphaBetaCrossover.cs" />
+    <Compile Include="BlendAlphaCrossover.cs" />
+    <Compile Include="BreederGeneticAlgorithmManipulator.cs" />
     <Compile Include="ContinuousCrossover.cs" />
     <Compile Include="CompleteContinuousCrossover.cs" />
     <Compile Include="BoundsChecker.cs" />
     <Compile Include="DiscreteCrossover.cs" />
     <Compile Include="HeuristicCrossover.cs" />
     <Compile Include="IntermediateRecombination.cs" />
+    <Compile Include="MichalewiczNonUniformAllPositionsManipulator.cs" />
+    <Compile Include="MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="RandomConvexCrossover.cs" />
     <Compile Include="LocalCrossover.cs" />
     <Compile Include="DiscreteRecombination.cs" />
