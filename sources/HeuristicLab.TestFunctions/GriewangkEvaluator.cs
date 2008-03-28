@@ -37,7 +37,7 @@ Optimum: 0.0 at (0, 0, ..., 0)";
           }
     }
 
-    protected override double EvaluateFunction(double[] point) {
+    public static double Apply(double[] point) {
       double result = 0;
       double val = 0;
 
@@ -51,6 +51,10 @@ Optimum: 0.0 at (0, 0, ..., 0)";
 
       result = result - val + 1;
       return (result);
+    }
+
+    protected override double EvaluateFunction(double[] point) {
+      return Apply(point);
     }
   }
 }

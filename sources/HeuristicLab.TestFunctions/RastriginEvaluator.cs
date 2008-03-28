@@ -37,13 +37,17 @@ Optimum: 0.0 at (0, 0, ..., 0)";
           }
     }
 
-    protected override double EvaluateFunction(double[] point) {
+    public static double Apply(double[] point) {
       double result = 10 * point.Length;
       for (int i = 0; i < point.Length; i++) {
         result += point[i] * point[i];
         result -= 10 * Math.Cos(2 * Math.PI * point[i]);
       }
       return (result);
+    }
+
+    protected override double EvaluateFunction(double[] point) {
+      return Apply(point);
     }
   }
 }

@@ -37,11 +37,15 @@ Optimum: 0.0 at (420.968746453712, 420.968746453712, ..., 420.968746453712)";
           }
     }
 
-    protected override double EvaluateFunction(double[] point) {
+    public static double Apply(double[] point) {
       double result = 418.982887272433 * point.Length;
       for (int i = 0; i < point.Length; i++)
         result -= point[i] * Math.Sin(Math.Sqrt(Math.Abs(point[i])));
       return (result);
+    }
+
+    protected override double EvaluateFunction(double[] point) {
+      return Apply(point);
     }
   }
 }

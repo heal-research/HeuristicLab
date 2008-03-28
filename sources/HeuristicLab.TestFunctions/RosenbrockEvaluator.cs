@@ -37,13 +37,17 @@ Optimum: 0.0 at (1, 1, ..., 1)";
           }
     }
 
-    protected override double EvaluateFunction(double[] point) {
+    public static double Apply(double[] point) {
       double result = 0;
       for (int i = 0; i < point.Length - 1; i++) {
         result += 100 * (point[i + 1] - point[i] * point[i]) * (point[i + 1] - point[i] * point[i]);
         result += (1 - point[i]) * (1 - point[i]);
       }
       return result;
+    }
+
+    protected override double EvaluateFunction(double[] point) {
+      return Apply(point);
     }
   }
 }

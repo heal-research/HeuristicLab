@@ -37,7 +37,7 @@ Optimum: 0.0 at (0, 0, ..., 0)";
           }
     }
 
-    protected override double EvaluateFunction(double[] point) {
+    public static double Apply(double[] point) {
       double result = 20 + Math.E;
       double val;
 
@@ -55,6 +55,10 @@ Optimum: 0.0 at (0, 0, ..., 0)";
       val *= 1.0 / point.Length;
       result -= Math.Exp(val);
       return (result);
+    }
+
+    protected override double EvaluateFunction(double[] point) {
+      return Apply(point);
     }
   }
 }
