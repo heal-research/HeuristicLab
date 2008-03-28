@@ -56,8 +56,8 @@ namespace HeuristicLab.TestFunctions {
     public TestFunctionInjector()
       : base() {
       AddVariable(new Variable("Maximization", new BoolData(false)));
-      AddVariable(new Variable("Minimum", new DoubleData(-32.76)));
-      AddVariable(new Variable("Maximum", new DoubleData(32.76)));
+      AddVariable(new Variable("LowerBound", new DoubleData(-32.76)));
+      AddVariable(new Variable("UpperBound", new DoubleData(32.76)));
       AddVariable(new Variable("Dimension", new IntData(2)));
     }
 
