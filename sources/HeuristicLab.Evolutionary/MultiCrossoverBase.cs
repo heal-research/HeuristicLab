@@ -23,35 +23,40 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
-  public abstract class CrossoverBase : OperatorBase {
-    public CrossoverBase()
+  public abstract class MultiCrossoverBase : OperatorBase {
+    public MultiCrossoverBase()
       : base() {
+      AddVariableInfo(new VariableInfo("Parents", "Number of parents that should be crossed", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
+      int parents = GetVariableValue<IntData>("Parents", scope, true).Data;
 
-      if ((scope.SubScopes.Count % 2) != 0)
-        throw new InvalidOperationException("Size of mating pool is not even");
+      if ((scope.SubScopes.Count % parents) != 0)
+        throw new InvalidOperationException("Size of mating pool and number of parents don't match");
 
-      int children = scope.SubScopes.Count / 2;
+      int children = scope.SubScopes.Count / parents;
       for (int i = 0; i < children; i++) {
-        IScope parent1 = scope.SubScopes[0];
-        IScope parent2 = scope.SubScopes[1];
+        IScope[] parentScopes = new IScope[parents];
+        for (int j = 0; j < parentScopes.Length; j++)
+          parentScopes[j] = scope.SubScopes[j];
+
         IScope child = new Scope(i.ToString());
         scope.AddSubScope(child);
-        Cross(scope, random, parent1, parent2, child);
-        scope.RemoveSubScope(parent1);
-        scope.RemoveSubScope(parent2);
-      }
+        Cross(scope, random, parentScopes, child);
 
+        for (int j = 0; j < parentScopes.Length; j++)
+          scope.RemoveSubScope(parentScopes[j]);
+      }
       return null;
     }
 
-    protected abstract void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child);
+    protected abstract void Cross(IScope scope, IRandom random, IScope[] parents, IScope child);
   }
 }

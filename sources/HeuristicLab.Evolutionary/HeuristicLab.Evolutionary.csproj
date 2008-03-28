@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiCrossoverBase.cs" />
     <Compile Include="SASEGASAReunificator.cs" />
     <Compile Include="CrossoverBase.cs" />
     <Compile Include="HeuristicLabEvolutionaryPlugin.cs" />
