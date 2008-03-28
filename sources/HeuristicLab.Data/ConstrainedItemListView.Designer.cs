@@ -46,6 +46,7 @@ namespace HeuristicLab.Data {
     private void InitializeComponent() {
       this.itemsSplitContainer = new System.Windows.Forms.SplitContainer();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
+      this.itemsListView = new System.Windows.Forms.ListView();
       this.removeItemButton = new System.Windows.Forms.Button();
       this.addItemButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
@@ -53,7 +54,6 @@ namespace HeuristicLab.Data {
       this.itemsTabPage = new System.Windows.Forms.TabPage();
       this.constraintsTabPage = new System.Windows.Forms.TabPage();
       this.constraintsConstrainedItemBaseView = new HeuristicLab.Core.ConstrainedItemBaseView();
-      this.itemsListView = new System.Windows.Forms.ListView();
       this.itemsSplitContainer.Panel1.SuspendLayout();
       this.itemsSplitContainer.Panel2.SuspendLayout();
       this.itemsSplitContainer.SuspendLayout();
@@ -92,6 +92,22 @@ namespace HeuristicLab.Data {
       this.itemsGroupBox.TabIndex = 0;
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
+      // 
+      // itemsListView
+      // 
+      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.itemsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.itemsListView.Location = new System.Drawing.Point(6, 19);
+      this.itemsListView.Name = "itemsListView";
+      this.itemsListView.ShowGroups = false;
+      this.itemsListView.Size = new System.Drawing.Size(153, 324);
+      this.itemsListView.TabIndex = 0;
+      this.itemsListView.UseCompatibleStateImageBehavior = false;
+      this.itemsListView.View = System.Windows.Forms.View.List;
+      this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
+      this.itemsListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyUp);
       // 
       // removeItemButton
       // 
@@ -167,19 +183,6 @@ namespace HeuristicLab.Data {
       this.constraintsConstrainedItemBaseView.Name = "constraintsConstrainedItemBaseView";
       this.constraintsConstrainedItemBaseView.Size = new System.Drawing.Size(367, 378);
       this.constraintsConstrainedItemBaseView.TabIndex = 0;
-      // 
-      // itemsListView
-      // 
-      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.itemsListView.Location = new System.Drawing.Point(6, 19);
-      this.itemsListView.Name = "itemsListView";
-      this.itemsListView.Size = new System.Drawing.Size(153, 324);
-      this.itemsListView.TabIndex = 0;
-      this.itemsListView.UseCompatibleStateImageBehavior = false;
-      this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
-      this.itemsListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyUp);
       // 
       // ConstrainedItemListView
       // 
