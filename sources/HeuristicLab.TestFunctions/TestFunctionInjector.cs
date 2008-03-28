@@ -38,19 +38,19 @@ namespace HeuristicLab.TestFunctions {
       set { GetVariable("Maximization").Value = new BoolData(value); }
     }
 
-    public double Minimum {
-      get { return GetVariable("Minimum").GetValue<DoubleData>().Data; }
-      set { GetVariable("Minimum").Value = new DoubleData(value); }
+    public double LowerBound {
+      get { return GetVariable("LowerBound").GetValue<DoubleData>().Data; }
+      set { GetVariable("LowerBound").Value = new DoubleData(value); }
     }
 
-    public double Maximum {
-      get { return GetVariable("Maximum").GetValue<DoubleData>().Data; }
-      set { GetVariable("Maximum").Value = new DoubleData(value); }
+    public double UpperBound {
+      get { return GetVariable("UpperBound").GetValue<DoubleData>().Data; }
+      set { GetVariable("UpperBound").Value = new DoubleData(value); }
     }
 
-    public int Length {
-      get { return GetVariable("Length").GetValue<IntData>().Data; }
-      set { GetVariable("Length").Value = new IntData(value); }
+    public int Dimension {
+      get { return GetVariable("Dimension").GetValue<IntData>().Data; }
+      set { GetVariable("Dimension").Value = new IntData(value); }
     }
 
     public TestFunctionInjector()
@@ -58,14 +58,14 @@ namespace HeuristicLab.TestFunctions {
       AddVariable(new Variable("Maximization", new BoolData(false)));
       AddVariable(new Variable("Minimum", new DoubleData(-32.76)));
       AddVariable(new Variable("Maximum", new DoubleData(32.76)));
-      AddVariable(new Variable("Length", new IntData(2)));
+      AddVariable(new Variable("Dimension", new IntData(2)));
     }
 
     public override IOperation Apply(IScope scope) {
       scope.AddVariable((IVariable)GetVariable("Maximization").Clone());
-      scope.AddVariable((IVariable)GetVariable("Minimum").Clone());
-      scope.AddVariable((IVariable)GetVariable("Maximum").Clone());
-      scope.AddVariable((IVariable)GetVariable("Length").Clone());
+      scope.AddVariable((IVariable)GetVariable("LowerBound").Clone());
+      scope.AddVariable((IVariable)GetVariable("UpperBound").Clone());
+      scope.AddVariable((IVariable)GetVariable("Dimension").Clone());
       return null;
     }
 

@@ -49,17 +49,17 @@ namespace HeuristicLab.TestFunctions {
     protected override void RemoveItemEvents() {
       maximizationCheckBox.DataBindings.Clear();
       dimensionTextBox.DataBindings.Clear();
-      minimumTextBox.DataBindings.Clear();
-      maximumTextBox.DataBindings.Clear();
+      lowerBoundTextBox.DataBindings.Clear();
+      upperBoundTextBox.DataBindings.Clear();
       base.RemoveItemEvents();
     }
 
     protected override void AddItemEvents() {
       base.AddItemEvents();
       maximizationCheckBox.DataBindings.Add("Checked", TestFunctionInjector, "Maximization");
-      dimensionTextBox.DataBindings.Add("Text", TestFunctionInjector, "Length");
-      minimumTextBox.DataBindings.Add("Text", TestFunctionInjector, "Minimum");
-      maximumTextBox.DataBindings.Add("Text", TestFunctionInjector, "Maximum");
+      dimensionTextBox.DataBindings.Add("Text", TestFunctionInjector, "Dimension");
+      lowerBoundTextBox.DataBindings.Add("Text", TestFunctionInjector, "LowerBound");
+      upperBoundTextBox.DataBindings.Add("Text", TestFunctionInjector, "UpperBound");
     }
 
     protected override void UpdateControls() {
@@ -69,19 +69,15 @@ namespace HeuristicLab.TestFunctions {
         maximizationCheckBox.Checked = false;
         dimensionTextBox.Enabled = false;
         dimensionTextBox.Text = "-";
-        minimumTextBox.Enabled = false;
-        minimumTextBox.Text = "-";
-        maximumTextBox.Enabled = false;
-        maximumTextBox.Text = "-";
+        lowerBoundTextBox.Enabled = false;
+        lowerBoundTextBox.Text = "-";
+        upperBoundTextBox.Enabled = false;
+        upperBoundTextBox.Text = "-";
       } else {
-        /*maximizationCheckBox.Checked = TestFunctionInjector.Maximization;
-        dimensionTextBox.Text = TestFunctionInjector.Length.ToString();
-        minimumTextBox.Text = TestFunctionInjector.Minimum.ToString();
-        maximumTextBox.Text = TestFunctionInjector.Maximum.ToString();*/
         maximizationCheckBox.Enabled = true;
         dimensionTextBox.Enabled = true;
-        minimumTextBox.Enabled = true;
-        maximumTextBox.Enabled = true;
+        lowerBoundTextBox.Enabled = true;
+        upperBoundTextBox.Enabled = true;
       }
     }
   }
