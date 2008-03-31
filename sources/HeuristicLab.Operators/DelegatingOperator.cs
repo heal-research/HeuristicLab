@@ -34,9 +34,12 @@ namespace HeuristicLab.Operators {
         // add marker
         scope.AddVariable(new Variable(Guid.ToString(), new NullData()));
 
-        // add aliases
-        foreach(IVariableInfo variableInfo in VariableInfos)
+        // add aliases and local variables
+        foreach (IVariableInfo variableInfo in VariableInfos) {
           scope.AddAlias(variableInfo.FormalName, variableInfo.ActualName);
+          if (variableInfo.Local)
+            scope.AddVariable(GetVariable(variableInfo.ActualName));
+        }
 
         CompositeOperation next = new CompositeOperation();
         next.AddOperation(Apply(scope));
@@ -49,9 +52,12 @@ namespace HeuristicLab.Operators {
         // remove marker
         scope.RemoveVariable(Guid.ToString());
 
-        // remove aliases
-        foreach(IVariableInfo variableInfo in VariableInfos)
+        // remove aliases and local variables
+        foreach (IVariableInfo variableInfo in VariableInfos) {
           scope.RemoveAlias(variableInfo.FormalName);
+          if (variableInfo.Local)
+            scope.RemoveVariable(variableInfo.ActualName);
+        }
 
         OnExecuted();
         return null;
