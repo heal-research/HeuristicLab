@@ -57,11 +57,10 @@ namespace HeuristicLab.Grid {
     }
 
     private void startButton_Click(object sender, EventArgs e) {
-      //clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/Grid/Client";
       string hostname = Dns.GetHostName();
       IPAddress[] addresses = Dns.GetHostAddresses(hostname);
 
-      // Thanks to Microsoft
+      // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
       if (System.Environment.OSVersion.Version.Major >= 6) {
         clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":" + clientPort.Text +"/Grid/Client";
       } else {
