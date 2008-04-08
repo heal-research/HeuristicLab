@@ -57,7 +57,7 @@ namespace HeuristicLab.Operators.Programmable {
       myDescription = "An operator that can be programmed for arbitrary needs.";
 
       AddVariableInfo(new VariableInfo("Result", "A computed variable", typeof(BoolData), VariableKind.New | VariableKind.Out));
-      Compile();
+      executeMethod = null;
     }
 
     public void SetDescription(string description) {
@@ -146,8 +146,9 @@ namespace HeuristicLab.Operators.Programmable {
     }
 
     public override IOperation Apply(IScope scope) {
-      if (executeMethod == null)
-        throw new InvalidOperationException("No compiled code available.");
+      if (executeMethod == null) {
+        Compile();
+      }
 
       // collect parameters
       object[] parameters = new object[VariableInfos.Count + 2];
