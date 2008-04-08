@@ -50,6 +50,8 @@ namespace HeuristicLab.Grid {
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.statusLabel = new System.Windows.Forms.Label();
       this.statusTextBox = new System.Windows.Forms.TextBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.clientPort = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // label1
@@ -65,7 +67,7 @@ namespace HeuristicLab.Grid {
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.stopButton.Enabled = false;
-      this.stopButton.Location = new System.Drawing.Point(99, 74);
+      this.stopButton.Location = new System.Drawing.Point(99, 87);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(75, 23);
       this.stopButton.TabIndex = 6;
@@ -76,7 +78,7 @@ namespace HeuristicLab.Grid {
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Location = new System.Drawing.Point(15, 74);
+      this.startButton.Location = new System.Drawing.Point(15, 87);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(75, 23);
       this.startButton.TabIndex = 5;
@@ -94,7 +96,7 @@ namespace HeuristicLab.Grid {
       // statusLabel
       // 
       this.statusLabel.AutoSize = true;
-      this.statusLabel.Location = new System.Drawing.Point(9, 36);
+      this.statusLabel.Location = new System.Drawing.Point(9, 56);
       this.statusLabel.Name = "statusLabel";
       this.statusLabel.Size = new System.Drawing.Size(67, 13);
       this.statusLabel.TabIndex = 8;
@@ -102,17 +104,36 @@ namespace HeuristicLab.Grid {
       // 
       // statusTextBox
       // 
-      this.statusTextBox.Location = new System.Drawing.Point(96, 33);
+      this.statusTextBox.Location = new System.Drawing.Point(96, 53);
       this.statusTextBox.Name = "statusTextBox";
       this.statusTextBox.ReadOnly = true;
       this.statusTextBox.Size = new System.Drawing.Size(222, 20);
       this.statusTextBox.TabIndex = 9;
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(9, 32);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(57, 13);
+      this.label2.TabIndex = 10;
+      this.label2.Text = "Client port:";
+      // 
+      // clientPort
+      // 
+      this.clientPort.Location = new System.Drawing.Point(96, 29);
+      this.clientPort.Name = "clientPort";
+      this.clientPort.Size = new System.Drawing.Size(222, 20);
+      this.clientPort.TabIndex = 11;
+      this.clientPort.Text = "8002";
+      // 
       // ClientForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(330, 109);
+      this.ClientSize = new System.Drawing.Size(330, 122);
+      this.Controls.Add(this.clientPort);
+      this.Controls.Add(this.label2);
       this.Controls.Add(this.statusTextBox);
       this.Controls.Add(this.statusLabel);
       this.Controls.Add(this.label1);
@@ -134,5 +155,7 @@ namespace HeuristicLab.Grid {
     private System.Windows.Forms.TextBox addressTextBox;
     private System.Windows.Forms.Label statusLabel;
     private System.Windows.Forms.TextBox statusTextBox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.TextBox clientPort;
   }
 }

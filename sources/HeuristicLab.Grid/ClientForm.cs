@@ -57,7 +57,17 @@ namespace HeuristicLab.Grid {
     }
 
     private void startButton_Click(object sender, EventArgs e) {
-      clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/Grid/Client";
+      //clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/Grid/Client";
+      string hostname = Dns.GetHostName();
+      IPAddress[] addresses = Dns.GetHostAddresses(hostname);
+
+      // Thanks to Microsoft
+      if (System.Environment.OSVersion.Version.Major >= 6) {
+        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":" + clientPort.Text +"/Grid/Client";
+      } else {
+        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":" + clientPort.Text +"/Grid/Client";
+      }
+
       clientHost = new ServiceHost(this, new Uri(clientUrl));
       try {
         NetTcpBinding binding = new NetTcpBinding();

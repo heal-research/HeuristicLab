@@ -42,8 +42,19 @@ namespace HeuristicLab.Grid {
 
     public ServerForm() {
       InitializeComponent();
-      externalAddressTextBox.Text = "net.tcp://"+Dns.GetHostAddresses(Dns.GetHostName())[0]+":8000/Grid/Service";
-      internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8001/Grid/JobStore";
+
+      // Thanks to Microsoft
+      if (System.Environment.OSVersion.Version.Major >= 6) {
+        externalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8000/Grid/Service";
+      } else {
+        externalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8000/Grid/Service";
+      }
+      if (System.Environment.OSVersion.Version.Major >= 6) {
+        internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8001/Grid/JobStore";
+      } else {
+        internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8001/Grid/JobStore";
+      }
+
       jobStore = new EngineStore();
       server = new GridServer(jobStore);
       
