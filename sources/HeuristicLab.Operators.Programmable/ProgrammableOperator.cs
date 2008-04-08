@@ -207,7 +207,6 @@ namespace HeuristicLab.Operators.Programmable {
       myDescription = descriptionNode.InnerText;
       XmlNode codeNode = node.SelectSingleNode("Code");
       myCode = codeNode.InnerText;
-      Compile();
     }
     #endregion
   }
