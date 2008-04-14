@@ -26,13 +26,14 @@ using System.Net;
 using System.IO;
 using System.Xml;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.GUI {
   class PluginSource {
 
     private string url;
     private WebClient client;
-    private string cacheDir = HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
+    private string cacheDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
 
     private PluginSource(string url) {
       this.url = url;
@@ -114,6 +115,5 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     public override string ToString() {
       return url;
     }
-
   }
 }
