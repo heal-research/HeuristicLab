@@ -82,7 +82,7 @@ namespace HeuristicLab.Scheduling.JSSP {
     #region IStorable Members
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Machings", machines, document, persistedObjects));
+      node.AppendChild(PersistenceManager.Persist("Machines", machines, document, persistedObjects));
       node.AppendChild(PersistenceManager.Persist("Jobs", jobs, document, persistedObjects));
       node.AppendChild(PersistenceManager.Persist("Operations", operations, document, persistedObjects));
       return node;
