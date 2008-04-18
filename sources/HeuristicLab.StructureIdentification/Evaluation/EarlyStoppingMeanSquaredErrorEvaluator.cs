@@ -41,7 +41,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
 
     public EarlyStoppingMeanSquaredErrorEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.In));
     }
 
     public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
