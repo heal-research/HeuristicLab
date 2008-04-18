@@ -108,6 +108,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
       double w = weight.Data;
       int offset = sampleOffset.Data;
 
+      if(sampleIndex+offset<0 || sampleIndex+offset>=dataset.Rows) return double.NaN;
       return w * dataset.GetValue(sampleIndex + offset, v);
     }
 
