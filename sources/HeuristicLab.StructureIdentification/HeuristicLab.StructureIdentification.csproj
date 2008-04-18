@@ -48,9 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Evaluation\CoefficientOfDeterminationEvaluator.cs" />
-    <Compile Include="Evaluation\FunctionEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Evaluation\GPEvaluatorBase.cs" />
+    <Compile Include="Evaluation\EarlyStoppingMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluation\MeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluation\VarianceAccountedForEvaluator.cs" />
     <Compile Include="GPOperatorGroup.cs" />

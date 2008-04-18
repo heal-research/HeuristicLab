@@ -30,14 +30,16 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
-  public class VarianceAccountedForEvaluator : OperatorBase {
+  public class VarianceAccountedForEvaluator : GPEvaluatorBase {
     public override string Description {
-      get { return @"Evaluates 'OperatorTree' for samples 'FirstSampleIndex' - 'LastSampleIndex' (inclusive) and calculates 
+      get {
+        return @"Evaluates 'OperatorTree' for all samples of 'DataSet' and calculates 
 the variance-accounted-for quality measure for the estimated values vs. the real values of 'TargetVariable'.
 
 The Variance Accounted For (VAF) function is computed as
 VAF(y,y') = ( 1 - var(y-y')/var(y) )
-where y' denotes the predicted / modelled values for y and var(x) the variance of a signal x."; }
+where y' denotes the predicted / modelled values for y and var(x) the variance of a signal x.";
+      }
     }
 
     /// <summary>
@@ -47,53 +49,16 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
     /// </summary>
     public VarianceAccountedForEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("OperatorTree", "The function tree that should be evaluated", typeof(IFunction), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the target variable in the dataset", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FirstSampleIndex", "Index of the first row of the dataset on which the function should be evaluated", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("LastSampleIndex", "Index of the last row of the dataset on which the function should be evaluated (inclusive)", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("UseEstimatedTargetValues", "When the function tree contains the target variable this variable determines " +
-      "if we should use the estimated or the original values of the target variable in the evaluation", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Quality", "Variance accounted for quality of the model", typeof(DoubleData), VariableKind.New));
-
     }
 
 
-    private double[] originalTargetVariableValues = new double[1];
-    private double[] errors = new double[1];
-
-    public override IOperation Apply(IScope scope) {
-
-      int firstSampleIndex = GetVariableValue<IntData>("FirstSampleIndex", scope, true).Data;
-      int lastSampleIndex = GetVariableValue<IntData>("LastSampleIndex", scope, true).Data;
-
-      if(lastSampleIndex < firstSampleIndex) {
-        throw new InvalidProgramException();
-      }
-
-      IFunction function = GetVariableValue<IFunction>("OperatorTree", scope, true);
-
-      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
-      bool useEstimatedTargetValues = GetVariableValue<BoolData>("UseEstimatedTargetValues", scope, true).Data;
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-
-      if(originalTargetVariableValues.Length != lastSampleIndex - firstSampleIndex + 1) {
-        originalTargetVariableValues = new double[lastSampleIndex - firstSampleIndex + 1];
-        errors = new double[lastSampleIndex - firstSampleIndex + 1];
-      }
-
-      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, firstSampleIndex, lastSampleIndex);
-
-      double targetMean = dataset.GetMean(targetVariable, firstSampleIndex, lastSampleIndex);
-
-      for(int sample = firstSampleIndex; sample <= lastSampleIndex; sample++) {
-
+    public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
+      double[] errors = new double[dataset.Rows];
+      double[] originalTargetVariableValues = new double[dataset.Rows];
+      double targetMean = dataset.GetMean(targetVariable);
+      for(int sample = 0; sample < dataset.Rows; sample++) {
         double estimated = function.Evaluate(dataset, sample);
-        double original =  dataset.GetValue(sample, targetVariable);
-
+        double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))
             estimated = targetMean + maximumPunishment;
@@ -103,11 +68,8 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
             estimated = targetMean - maximumPunishment;
         }
 
-        errors[sample-firstSampleIndex] = original - estimated;
-        originalTargetVariableValues[sample-firstSampleIndex] = original;
-        if(useEstimatedTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
+        errors[sample] = original - estimated;
+        originalTargetVariableValues[sample] = original;
       }
 
       double errorsVariance = Statistics.Variance(errors);
@@ -117,16 +79,7 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       if(double.IsNaN(quality) || double.IsInfinity(quality)) {
         quality = double.MaxValue;
       }
-
-      if(useEstimatedTargetValues) {
-        // restore original values of the target variable
-        for(int sample = firstSampleIndex; sample <= lastSampleIndex; sample++) {
-          dataset.SetValue(sample, targetVariable, originalTargetVariableValues[sample - firstSampleIndex]);
-        }
-      }
-
-      scope.AddVariable(new HeuristicLab.Core.Variable("Quality", new DoubleData(quality)));
-      return null;
+      return quality;
     }
   }
 }

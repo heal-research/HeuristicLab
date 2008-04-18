@@ -30,63 +30,25 @@ using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
-  public class CoefficientOfDeterminationEvaluator : OperatorBase {
+  public class CoefficientOfDeterminationEvaluator : GPEvaluatorBase {
     public override string Description {
-      get { return @"Applies 'OperatorTree' to samples 'FirstSampleIndex' - 'LastSampleIndex' (inclusive) of 'Dataset' and calculates
-the 'coefficient of determination' of estimated values vs. real values of 'TargetVariable'."; }
+      get {
+        return @"Applies 'OperatorTree' to all samples of 'Dataset' and calculates
+the 'coefficient of determination' of estimated values vs. real values of 'TargetVariable'.";
+      }
     }
 
     public CoefficientOfDeterminationEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("OperatorTree", "The function tree that should be evaluated", typeof(IFunction), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the target variable in the dataset", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FirstSampleIndex", "Index of the first row of the dataset on which the function should be evaluated", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("LastSampleIndex", "Index of the last row of the dataset on which the function should be evaluated (inclusive)", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("UseEstimatedTargetValues", "When the function tree contains the target variable this variable determines " +
-      "if we should use the estimated or the original values of the target variable in the evaluation", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Quality", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
-
     }
 
-
-    private double[] savedTargetVariable = new double[1];
-    public override IOperation Apply(IScope scope) {
-      int firstSampleIndex = GetVariableValue<IntData>("FirstSampleIndex", scope, true).Data;
-      int lastSampleIndex = GetVariableValue<IntData>("LastSampleIndex", scope, true).Data;
-
-      if(lastSampleIndex < firstSampleIndex) {
-        throw new InvalidProgramException();
-      }
-
-      IFunction function = GetVariableValue<IFunction>("OperatorTree", scope, true);
-
-      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
-      bool useEstimatedTargetValues = GetVariableValue<BoolData>("UseEstimatedTargetValues", scope, true).Data;
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-
-      if(useEstimatedTargetValues && savedTargetVariable.Length != lastSampleIndex - firstSampleIndex + 1) {
-        savedTargetVariable = new double[lastSampleIndex - firstSampleIndex + 1];
-      }
-
-      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, firstSampleIndex, lastSampleIndex);
-
+    public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
       double errorsSquaredSum = 0.0;
-      double originalsSum = 0.0;
-      double targetMean = dataset.GetMean(targetVariable, firstSampleIndex, lastSampleIndex);
-
-      for(int sample = firstSampleIndex; sample <= lastSampleIndex; sample++) {
+      double originalDeviationTotalSumOfSquares = 0.0;
+      double targetMean = dataset.GetMean(targetVariable);
+      for(int sample = 0; sample < dataset.Rows; sample++) {
         double estimated = function.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
-
-        if(useEstimatedTargetValues) {
-          savedTargetVariable[sample - firstSampleIndex] = original;
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
-
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))
             estimated = targetMean + maximumPunishment;
@@ -97,42 +59,17 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
 
           double error = estimated - original;
           errorsSquaredSum += error * error;
-          originalsSum += original;
+
+          double origDeviation = original - targetMean;
+          originalDeviationTotalSumOfSquares += origDeviation * origDeviation;
         }
       }
-
-      double originalsMean = originalsSum / (lastSampleIndex - firstSampleIndex +1);
-      
-      double originalTotalSumOfSquares = 0.0;
-
-      for(int sample=0; sample <savedTargetVariable.Length; sample++) {
-        double original = savedTargetVariable[sample];
-
-        if(!double.IsInfinity(original) && !double.IsNaN(original)) {
-          original = original - originalsMean;
-          originalTotalSumOfSquares += original * original;
-        }
-      }
-
-      double quality = 1 - errorsSquaredSum / originalTotalSumOfSquares;
-
-      if(quality > 1) {
+      double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
+      if(quality > 1) 
         throw new InvalidProgramException();
-      }
-
-      if(double.IsNaN(quality) || double.IsInfinity(quality)) {
+      if(double.IsNaN(quality) || double.IsInfinity(quality)) 
         quality = double.MaxValue;
-      }
-
-      if(useEstimatedTargetValues) {
-        // restore original values of the target variable
-        for(int sample = firstSampleIndex; sample <= lastSampleIndex; sample++) {
-          dataset.SetValue(sample, targetVariable, savedTargetVariable[sample - firstSampleIndex]);
-        }
-      }
-
-      scope.AddVariable(new HeuristicLab.Core.Variable("Quality", new DoubleData(quality)));
-      return null;
+      return quality;
     }
   }
 }

@@ -30,19 +30,22 @@ using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
-  public class MeanSquaredErrorEvaluator : GPEvaluatorBase {
+  public class EarlyStoppingMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
     public override string Description {
       get {
-        return @"Evaluates 'OperatorTree' for all samples of 'DataSet' and calculates the mean-squared-error
-for the estimated values vs. the real values of 'TargetVariable'.";
+        return @"Evaluates 'OperatorTree' for samples 'FirstSampleIndex' - 'LastSampleIndex' (inclusive) and calculates the mean-squared-error
+for the estimated values vs. the real values of 'TargetVariable'.
+This operator stops the computation as soon as an upper limit for the mean-squared-error is reached.";
       }
     }
 
-    public MeanSquaredErrorEvaluator()
+    public EarlyStoppingMeanSquaredErrorEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.New));
     }
 
     public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
+      double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, true).Data;
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
       for(int sample = 0; sample < dataset.Rows; sample++) {
@@ -57,6 +60,12 @@ for the estimated values vs. the real values of 'TargetVariable'.";
         }
         double error = estimated - original;
         errorsSquaredSum += error * error;
+
+        // check the limit every 10 samples and stop as soon as we hit the limit
+        if(sample % 10 == 9)
+          if(qualityLimit < errorsSquaredSum / dataset.Rows ||
+            double.IsNaN(errorsSquaredSum) ||
+            double.IsInfinity(errorsSquaredSum)) return errorsSquaredSum;
       }
       errorsSquaredSum /= dataset.Rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
