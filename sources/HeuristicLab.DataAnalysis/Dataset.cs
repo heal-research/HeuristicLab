@@ -195,6 +195,9 @@ namespace HeuristicLab.DataAnalysis {
       return tokens;
     }
 
+    public double GetMean(int column) {
+      return GetMean(column, 0, Rows-1);
+    }
 
     // return value of GetMean should be memoized because it is called repeatedly in Evaluators
     public double GetMean(int column, int from, int to) {
@@ -229,6 +232,10 @@ namespace HeuristicLab.DataAnalysis {
       }
 
       return Statistics.Mean(values);
+    }
+
+    public double GetRange(int column) {
+      return GetRange(column, 0, Rows-1);
     }
 
     // return value of GetRange should be memoized because it is called repeatedly in Evaluators
