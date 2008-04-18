@@ -45,10 +45,6 @@ namespace HeuristicLab.StructureIdentification {
       AddVariable(new Variable("MaxTreeHeight", new IntData(1)));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "MaxTreeSize", typeof(IntData), VariableKind.New));
       AddVariable(new Variable("MaxTreeSize", new IntData(1)));
-      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "First sample to evaluate in training", typeof(IntData), VariableKind.New));
-      AddVariable(new Variable("TrainingSamplesStart", new IntData(0)));
-      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "Last sample to evaluate in training", typeof(IntData), VariableKind.New));
-      AddVariable(new Variable("TrainingSamplesEnd", new IntData(0)));
     }
 
     public override IView CreateView() {
@@ -61,8 +57,6 @@ namespace HeuristicLab.StructureIdentification {
       scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), (IItem)GetVariable("TargetVariable").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("MaxTreeHeight"), (IItem)GetVariable("MaxTreeHeight").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("MaxTreeSize"), (IItem)GetVariable("MaxTreeSize").Value.Clone()));
-      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesStart"), (IItem)GetVariable("TrainingSamplesStart").Value.Clone()));
-      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesEnd"), (IItem)GetVariable("TrainingSamplesEnd").Value.Clone()));
       return null;
     }
   }

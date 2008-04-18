@@ -87,17 +87,16 @@ namespace HeuristicLab.StructureIdentification {
         }
         if (success) {
           Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
-          dataset.Rows = parser.Rows;
+          dataset.Rows = parser.TrainingSamplesEnd - parser.TrainingSamplesStart;
           dataset.Columns = parser.Columns;
           dataset.VariableNames = parser.VariableNames;
           dataset.Name = parser.ProblemName;
-          dataset.Samples = parser.Samples;
+          dataset.Samples = new double[dataset.Rows * dataset.Columns];
+          Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
 
           ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
           ((IntData)StructIdProblemInjector.GetVariable("MaxTreeHeight").Value).Data = parser.MaxTreeHeight;
           ((IntData)StructIdProblemInjector.GetVariable("MaxTreeSize").Value).Data = parser.MaxTreeSize;
-          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesStart").Value).Data = parser.TrainingSamplesStart;
-          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesEnd").Value).Data = parser.TrainingSamplesEnd;
           Refresh();
         }
       }
