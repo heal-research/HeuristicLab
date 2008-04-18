@@ -65,7 +65,8 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         if(sample % 10 == 9)
           if(qualityLimit < errorsSquaredSum / dataset.Rows ||
             double.IsNaN(errorsSquaredSum) ||
-            double.IsInfinity(errorsSquaredSum)) return errorsSquaredSum;
+            double.IsInfinity(errorsSquaredSum)) 
+            return errorsSquaredSum / sample; // return estimated MSE (when the remaining errors are on average the same)
       }
       errorsSquaredSum /= dataset.Rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
