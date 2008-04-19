@@ -49,7 +49,7 @@ namespace HeuristicLab.StructureIdentification {
       this.maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
 
       double result = Evaluate(scope, function, targetVariable, dataset);
-      scope.AddVariable(new HeuristicLab.Core.Variable("Quality", new DoubleData(result)));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Quality"), new DoubleData(result)));
       return null;
     }
 
