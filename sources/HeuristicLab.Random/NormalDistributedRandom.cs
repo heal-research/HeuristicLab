@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
+using System.Globalization;
 
 namespace HeuristicLab.Random {
 
@@ -509,18 +510,16 @@ namespace HeuristicLab.Random {
 
     #endregion
 
-    #region IStorable Members
-
-
+    #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
       XmlNode muNode = document.CreateNode(XmlNodeType.Element, "Mu", null);
-      muNode.InnerText = mu.ToString();
+      muNode.InnerText = mu.ToString(CultureInfo.InvariantCulture);
       node.AppendChild(muNode);
 
       XmlNode sigmaNode = document.CreateNode(XmlNodeType.Element, "Sigma", null);
-      sigmaNode.InnerText = sigma.ToString();
+      sigmaNode.InnerText = sigma.ToString(CultureInfo.InvariantCulture);
       node.AppendChild(sigmaNode);
 
       node.AppendChild(PersistenceManager.Persist("UniformRandom", uniform, document, persistedObjects));
@@ -531,8 +530,8 @@ namespace HeuristicLab.Random {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
 
-      mu = double.Parse(node.SelectSingleNode("Mu").InnerText);
-      sigma = double.Parse(node.SelectSingleNode("Sigma").InnerText);
+      mu = double.Parse(node.SelectSingleNode("Mu").InnerText, CultureInfo.InvariantCulture);
+      sigma = double.Parse(node.SelectSingleNode("Sigma").InnerText, CultureInfo.InvariantCulture);
       uniform = (IRandom)PersistenceManager.Restore(node.SelectSingleNode("UniformRandom"), restoredObjects);
     }
 

@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using System.Globalization;
 
 namespace HeuristicLab.Constraints {
   public class DoubleBoundedConstraint : ConstraintBase {
@@ -134,17 +135,17 @@ namespace HeuristicLab.Constraints {
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute lb = document.CreateAttribute("LowerBound");
-      lb.Value = LowerBound+"";
+      lb.Value = LowerBound.ToString(CultureInfo.InvariantCulture);
       XmlAttribute lbi = document.CreateAttribute("LowerBoundIncluded");
-      lbi.Value = lowerBoundIncluded+"";
+      lbi.Value = lowerBoundIncluded.ToString();
       XmlAttribute lbe = document.CreateAttribute("LowerBoundEnabled");
-      lbe.Value = lowerBoundEnabled + "";
+      lbe.Value = lowerBoundEnabled.ToString();
       XmlAttribute ub = document.CreateAttribute("UpperBound");
-      ub.Value = upperBound + "";
+      ub.Value = upperBound.ToString(CultureInfo.InvariantCulture);
       XmlAttribute ubi = document.CreateAttribute("UpperBoundIncluded");
-      ubi.Value = upperBoundIncluded + "";
+      ubi.Value = upperBoundIncluded.ToString();
       XmlAttribute ube = document.CreateAttribute("UpperBoundEnabled");
-      ube.Value = upperBoundEnabled + "";
+      ube.Value = upperBoundEnabled.ToString();
       node.Attributes.Append(lb);
       if (!lowerBoundIncluded) node.Attributes.Append(lbi);
       if (!lowerBoundEnabled) node.Attributes.Append(lbe);
@@ -156,7 +157,7 @@ namespace HeuristicLab.Constraints {
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      lowerBound = double.Parse(node.Attributes["LowerBound"].Value);
+      lowerBound = double.Parse(node.Attributes["LowerBound"].Value, CultureInfo.InvariantCulture);
       if (node.Attributes["LowerBoundIncluded"] != null) {
         lowerBoundIncluded = bool.Parse(node.Attributes["LowerBoundIncluded"].Value);
       } else {
@@ -168,7 +169,7 @@ namespace HeuristicLab.Constraints {
         lowerBoundEnabled = true;
       }
 
-      upperBound = double.Parse(node.Attributes["UpperBound"].Value);
+      upperBound = double.Parse(node.Attributes["UpperBound"].Value, CultureInfo.InvariantCulture);
       if (node.Attributes["UpperBoundIncluded"] != null) {
         upperBoundIncluded = bool.Parse(node.Attributes["UpperBoundIncluded"].Value);
       } else {
