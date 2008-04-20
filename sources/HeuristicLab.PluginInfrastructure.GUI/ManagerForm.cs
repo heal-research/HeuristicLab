@@ -115,7 +115,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         availableNode.Tag = tag;
         availableNode.ImageIndex = 0;
         availablePlugins.Nodes.Add(availableNode);
-
       });
       upgrades.ForEach(delegate(PluginDescription upgrade) {
         // find the installed plugins that have the same name
@@ -135,6 +134,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // replace the plugin description of the available plugin to point to the overriding plugin
         currentPlugin.PluginDescription = overridingPlugin;
       });
+      toolStripStatusLabel.Text = "Installed: " + installedPlugins.Nodes.Count + " Updates: " + upgrades.Count + " Available: " + availablePlugins.Nodes.Count;
       RebuildActionHulls();
       pluginTreeView.Sort();
     }
@@ -237,8 +237,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
       dialog.Show();
       worker.RunWorkerAsync();
-
-      // NOTE: ignore version conflicts
     }
 
 

@@ -74,12 +74,15 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.installMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.publishMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+      this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.menuStrip.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.toolStrip.SuspendLayout();
       this.pluginContextMenuStrip.SuspendLayout();
+      this.statusStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip
@@ -111,52 +114,52 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // managePluginSourcesToolStripMenuItem
       // 
       this.managePluginSourcesToolStripMenuItem.Name = "managePluginSourcesToolStripMenuItem";
-      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.managePluginSourcesToolStripMenuItem.Text = "Edit plugin sources...";
       this.managePluginSourcesToolStripMenuItem.Click += new System.EventHandler(this.managePluginSourcesToolStripMenuItem_Click);
       // 
       // installPluginFromFileToolStripMenuItem
       // 
       this.installPluginFromFileToolStripMenuItem.Name = "installPluginFromFileToolStripMenuItem";
-      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.installPluginFromFileToolStripMenuItem.Text = "Install plugin from file...";
       this.installPluginFromFileToolStripMenuItem.Click += new System.EventHandler(this.installPluginFromFileToolStripMenuItem_Click);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(211, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
       // 
       // installedPluginsToolStripMenuItem
       // 
       this.installedPluginsToolStripMenuItem.Name = "installedPluginsToolStripMenuItem";
-      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.installedPluginsToolStripMenuItem.Text = "Update";
       this.installedPluginsToolStripMenuItem.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // installNewPluginsToolStripMenuItem
       // 
       this.installNewPluginsToolStripMenuItem.Name = "installNewPluginsToolStripMenuItem";
-      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.installNewPluginsToolStripMenuItem.Text = "Delete/Upgrade/Install...";
       this.installNewPluginsToolStripMenuItem.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(211, 6);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(192, 6);
       // 
       // refreshPluginListToolStripMenuItem
       // 
       this.refreshPluginListToolStripMenuItem.Name = "refreshPluginListToolStripMenuItem";
-      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.refreshPluginListToolStripMenuItem.Text = "Refresh plugin list";
       this.refreshPluginListToolStripMenuItem.Click += new System.EventHandler(this.refreshPluginListToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.exitToolStripMenuItem.Text = "Close";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
       // 
@@ -171,7 +174,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
       this.aboutToolStripMenuItem.Text = "About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
       // 
@@ -313,34 +316,51 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
             this.deleteMenuItem,
             this.publishMenuItem});
       this.pluginContextMenuStrip.Name = "pluginContextMenuStrip";
-      this.pluginContextMenuStrip.Size = new System.Drawing.Size(119, 70);
+      this.pluginContextMenuStrip.Size = new System.Drawing.Size(108, 70);
       // 
       // installMenuItem
       // 
       this.installMenuItem.Name = "installMenuItem";
-      this.installMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.installMenuItem.Size = new System.Drawing.Size(107, 22);
       this.installMenuItem.Text = "Install";
       this.installMenuItem.Click += new System.EventHandler(this.installButton_Clicked);
       // 
       // deleteMenuItem
       // 
       this.deleteMenuItem.Name = "deleteMenuItem";
-      this.deleteMenuItem.Size = new System.Drawing.Size(118, 22);
+      this.deleteMenuItem.Size = new System.Drawing.Size(107, 22);
       this.deleteMenuItem.Text = "Delete";
       this.deleteMenuItem.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // publishMenuItem
       // 
       this.publishMenuItem.Name = "publishMenuItem";
-      this.publishMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.publishMenuItem.Size = new System.Drawing.Size(107, 22);
       this.publishMenuItem.Text = "Publish";
       this.publishMenuItem.Click += new System.EventHandler(this.publishButton_Click);
+      // 
+      // statusStrip1
+      // 
+      this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+      this.statusStrip1.Location = new System.Drawing.Point(0, 515);
+      this.statusStrip1.Name = "statusStrip1";
+      this.statusStrip1.Size = new System.Drawing.Size(828, 22);
+      this.statusStrip1.TabIndex = 3;
+      this.statusStrip1.Text = "statusStrip1";
+      // 
+      // toolStripStatusLabel
+      // 
+      this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+      this.toolStripStatusLabel.Size = new System.Drawing.Size(103, 17);
+      this.toolStripStatusLabel.Text = "toolStripStatusLabel";
       // 
       // ManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(828, 537);
+      this.Controls.Add(this.statusStrip1);
       this.Controls.Add(this.toolStrip);
       this.Controls.Add(this.splitContainer);
       this.Controls.Add(this.menuStrip);
@@ -356,6 +376,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.toolStrip.ResumeLayout(false);
       this.toolStrip.PerformLayout();
       this.pluginContextMenuStrip.ResumeLayout(false);
+      this.statusStrip1.ResumeLayout(false);
+      this.statusStrip1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -391,6 +413,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     private System.Windows.Forms.ImageList pluginIcons;
+    private System.Windows.Forms.StatusStrip statusStrip1;
+    private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
   }
 }
 
