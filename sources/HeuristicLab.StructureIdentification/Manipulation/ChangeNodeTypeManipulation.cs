@@ -32,6 +32,15 @@ using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class ChangeNodeTypeManipulation : OperatorBase {
+
+    public override string Description {
+      get {
+        return @"This manipulation operator selects a random tree-node and changes the function type.
+If this leads to a constraint-violation (wrong number or type of sub-trees) the sub-trees are repaired
+resulting in a valid tree again.";
+      }
+    }
+
     public ChangeNodeTypeManipulation()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Uniform random number generator", typeof(MersenneTwister), VariableKind.In));
