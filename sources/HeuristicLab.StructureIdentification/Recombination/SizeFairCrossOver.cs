@@ -31,14 +31,14 @@ using HeuristicLab.Constraints;
 using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
-  public class SinglePointCrossOver : OperatorBase {
+  public class SizeFairCrossOver : OperatorBase {
 
     public override string Description {
       get {
         return "TASK";
       }
     }
-    public SinglePointCrossOver()
+    public SizeFairCrossOver()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(MersenneTwister), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));

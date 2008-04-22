@@ -69,7 +69,7 @@
     <Compile Include="HeuristicLabStructureIdentificationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomTreeCreator.cs" />
-    <Compile Include="Recombination\SinglePointCrossOver.cs" />
+    <Compile Include="Recombination\SizeFairCrossOver.cs" />
     <Compile Include="TreeGardener.cs" />
     <Compile Include="StructIdProblemInjector.cs" />
     <Compile Include="StructIdProblemInjectorView.cs">
