@@ -36,7 +36,7 @@ namespace HeuristicLab.StructureIdentification {
 
     public StructIdProblemInjector()
       : base() {
-      AddVariableInfo(new VariableInfo("Maximization", "Set to false as structure identification is a minimization problem", typeof(BoolData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("Maximization", "Set to false as default (for MSE)", typeof(BoolData), VariableKind.New));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.New));
       AddVariable(new Variable("Dataset", new Dataset()));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.New));
