@@ -60,15 +60,10 @@ namespace HeuristicLab.StructureIdentification {
     protected override void UpdateControls() {
       base.UpdateControls();
       if (StructIdProblemInjector == null) {
-        nameTextBox.Text = "-";
-        variablesTextBox.Text = "-";
-        samplesTextBox.Text = "-";
         importInstanceButton.Enabled = false;
       } else {
         Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
-        nameTextBox.Text = dataset.Name;
-        samplesTextBox.Text = dataset.Rows+"";
-        variablesTextBox.Text = dataset.Columns+"";
+        datasetView.Dataset = dataset;
         importInstanceButton.Enabled = true;
       }
     }

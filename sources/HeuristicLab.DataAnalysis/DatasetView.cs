@@ -32,36 +32,33 @@ namespace HeuristicLab.DataAnalysis {
       get { return (Dataset)Item; }
       set {
         Item = value;
-        Item.Changed += new EventHandler(Item_Changed);
+        Refresh();
       }
     }
 
-    void Item_Changed(object sender, EventArgs e) {
-      Refresh();
-    }
-
-    public DatasetView() : base() {
+    public DatasetView()
+      : base() {
       InitializeComponent();
       openFileDialog = new OpenFileDialog();
     }
 
-    public DatasetView(Dataset dataset) :this() {
+    public DatasetView(Dataset dataset)
+      : this() {
       this.Dataset = dataset;
     }
 
     protected override void UpdateControls() {
       base.UpdateControls();
-      if(Dataset != null) {
+      if (Dataset != null) {
         int rows = Dataset.Rows;
         int columns = Dataset.Columns;
-
         nameTextBox.Text = Dataset.Name;
         rowsTextBox.Text = rows + "";
         columnsTextBox.Text = columns + "";
         dataGridView.ColumnCount = columns;
         dataGridView.RowCount = rows;
-        for(int i = 0; i < rows; i++) {
-          for(int j = 0; j < columns; j++) {
+        for (int i = 0; i < rows; i++) {
+          for (int j = 0; j < columns; j++) {
             dataGridView.Rows[i].Cells[j].Value = Dataset.GetValue(i, j);
           }
         }
@@ -84,7 +81,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
-      if(ValidateData((string)e.FormattedValue)) {
+      if (ValidateData((string)e.FormattedValue)) {
         SetArrayElement(e.RowIndex, e.ColumnIndex, (string)e.FormattedValue);
         e.Cancel = false;
       } else {
@@ -96,7 +93,7 @@ namespace HeuristicLab.DataAnalysis {
     private void SetArrayElement(int row, int column, string element) {
       double result;
       double.TryParse(element, out result);
-      if(result != Dataset.GetValue(row, column)) {
+      if (result != Dataset.GetValue(row, column)) {
         Dataset.SetValue(row, column, result);
         Dataset.FireChanged();
       }
