@@ -70,7 +70,7 @@ namespace HeuristicLab.Operators.Programmable {
       }
     }
 
-    public void Compile() {
+    public virtual void Compile() {
       CodeNamespace ns = new CodeNamespace("HeuristicLab.Operators.Programmable.CustomOperators");
       CodeTypeDeclaration typeDecl = new CodeTypeDeclaration("Operator");
       typeDecl.IsClass = true;
