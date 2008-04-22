@@ -73,6 +73,10 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     #region random initialization
+    internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight) {
+      // default is non-balanced trees
+      return CreateRandomTree(allowedFunctions, maxTreeSize, maxTreeHeight, false); 
+    }
     internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
 
       int minTreeHeight = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data).Min();

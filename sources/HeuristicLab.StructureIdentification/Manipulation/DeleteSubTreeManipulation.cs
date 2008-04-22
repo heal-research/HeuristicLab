@@ -59,12 +59,10 @@ the operator tries to fix the tree by generating random subtrees where necessary
       // => return a new minimal random tree
       if(parent == null) {
         IFunctionTree newTree = gardener.CreateRandomTree(1, 1, false);
-
         // check if the tree is ok
         if(!gardener.IsValidTree(newTree)) {
           throw new InvalidOperationException();
         }
-
         // update sizes to match the new tree
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
@@ -90,7 +88,6 @@ the operator tries to fix the tree by generating random subtrees where necessary
         if(!gardener.IsValidTree(root)) {
           throw new InvalidOperationException();
         }
-
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
         // root hasn't changed so don't need to update 'FunctionTree' variable
@@ -98,16 +95,12 @@ the operator tries to fix the tree by generating random subtrees where necessary
       } else {
         // replace with a minimal random seedling
         parent.RemoveSubTree(childIndex);
-
         ICollection<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
-        IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, 1, 1, true);
-
+        IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, 1, 1);
         parent.InsertSubTree(childIndex, newFunctionTree);
-
         if(!gardener.IsValidTree(root)) {
           throw new InvalidProgramException();
         }
-
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
         // again the root hasn't changed so we don't need to update the 'FunctionTree' variable

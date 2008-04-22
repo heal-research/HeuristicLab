@@ -41,7 +41,6 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The tree to manipulate", typeof(IFunctionTree), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In | VariableKind.Out));
@@ -53,25 +52,14 @@ namespace HeuristicLab.StructureIdentification {
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
-      double balancedTreesRate = GetVariableValue<DoubleData>("BalancedTreesRate", scope, true).Data;
       int treeSize = GetVariableValue<IntData>("TreeSize", scope, true).Data;
       int treeHeight = GetVariableValue<IntData>("TreeHeight", scope, true).Data;
-
       TreeGardener gardener = new TreeGardener(random, library);
-
       IFunctionTree parent = gardener.GetRandomParentNode(root);
       if(parent == null) {
         // parent == null means we should subsitute the whole tree
         // => create a new random tree
-
-        // create a new random function tree
-        IFunctionTree newTree;
-        if(random.NextDouble() <= balancedTreesRate) {
-          newTree = gardener.CreateRandomTree(gardener.AllFunctions, maxTreeSize, maxTreeHeight, true);
-        } else {
-          newTree = gardener.CreateRandomTree(gardener.AllFunctions, maxTreeSize, maxTreeHeight, false);
-        }
-
+        IFunctionTree newTree = gardener.CreateRandomTree(gardener.AllFunctions, maxTreeSize, maxTreeHeight);
         if(!gardener.IsValidTree(newTree)) {
           throw new InvalidProgramException();
         }
@@ -97,18 +85,11 @@ namespace HeuristicLab.StructureIdentification {
         // calculate the maximum size and height of the new sub-tree based on the location where
         // it will be inserted
         int parentLevel = gardener.GetBranchLevel(root, parent);
-
         int maxSubTreeHeight = maxTreeHeight - parentLevel;
         int maxSubTreeSize = maxTreeSize - (treeSize - gardener.GetTreeSize(parent.SubTrees[childIndex]));
 
         // create a random function tree
-        IFunctionTree newTree;
-        if(random.NextDouble() <= balancedTreesRate) {
-          newTree = gardener.CreateRandomTree(allowedFunctions, maxSubTreeSize, maxSubTreeHeight, true);
-        } else {
-          newTree = gardener.CreateRandomTree(allowedFunctions, maxSubTreeSize, maxSubTreeHeight, false);
-        }
-
+        IFunctionTree newTree = gardener.CreateRandomTree(allowedFunctions, maxSubTreeSize, maxSubTreeHeight);
         parent.RemoveSubTree(childIndex);
         parent.InsertSubTree(childIndex, newTree);
 
