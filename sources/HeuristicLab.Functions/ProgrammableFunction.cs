@@ -32,59 +32,34 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.IO;
+using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.Functions {
-  public class ProgrammableFunction : FunctionBase {
-    private MethodInfo evaluateMethod;
-
-    private string myDescription;
-    public override string Description {
-      get { return myDescription; }
-    }
-    private string myCode;
-    public string Code {
-      get { return myCode; }
-      set {
-        if(value != myCode) {
-          myCode = value;
-          evaluateMethod = null;
-          OnCodeChanged();
-        }
-      }
+  public class ProgrammableFunction : ProgrammableOperator, IFunction {
+    private MethodInfo applyMethod;
+    public ProgrammableFunction()
+      : base() {
+      Code = "return 0.0;";
+      SetDescription("A function that can be programmed for arbitrary needs.");
+      applyMethod = null;
     }
 
-    public ProgrammableFunction() : base() {
-      myCode = "return 0.0;";
-      myDescription = "A function that can be programmed for arbitrary needs.";
-      evaluateMethod = null;
-    }
-
-    public void SetDescription(string description) {
-      if(description == null)
-        throw new NullReferenceException("description must not be null");
-
-      if(description != myDescription) {
-        myDescription = description;
-        OnDescriptionChanged();
-      }
-    }
-
-    public void Compile() {
+    public override void Compile() {
       CodeNamespace ns = new CodeNamespace("HeuristicLab.Functions.CustomFunctions");
       CodeTypeDeclaration typeDecl = new CodeTypeDeclaration("Function");
       typeDecl.IsClass = true;
       typeDecl.TypeAttributes = TypeAttributes.Public;
 
       CodeMemberMethod method = new CodeMemberMethod();
-      method.Name = "Evaluate";
+      method.Name = "Apply";
       method.ReturnType = new CodeTypeReference(typeof(double));
       method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IFunction), "function"));
       method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Dataset), "dataset"));
       method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
       foreach(IVariableInfo info in VariableInfos)
         method.Parameters.Add(new CodeParameterDeclarationExpression(info.DataType, info.FormalName));
-      string code = myCode;
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(double[]), "args"));
+      string code = Code;
       method.Statements.Add(new CodeSnippetStatement(code));
       typeDecl.Members.Add(method);
 
@@ -109,7 +84,7 @@ namespace HeuristicLab.Functions {
       CodeDomProvider provider = new CSharpCodeProvider();
       CompilerResults results = provider.CompileAssemblyFromDom(parameters, unit);
 
-      evaluateMethod = null;
+      applyMethod = null;
       if(results.Errors.HasErrors) {
         StringWriter writer = new StringWriter();
         CodeGeneratorOptions options = new CodeGeneratorOptions();
@@ -134,72 +109,92 @@ namespace HeuristicLab.Functions {
       } else {
         Assembly assembly = results.CompiledAssembly;
         Type[] types = assembly.GetTypes();
-        evaluateMethod = types[0].GetMethod("Evaluate");
+        applyMethod = types[0].GetMethod("Apply");
       }
     }
 
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      //if(evaluateMethod == null) {
-      //  Compile();
-      //}
-
-      //// collect parameters
-      //object[] parameters = new object[VariableInfos.Count + 3];
-      //parameters[0] = this;
-      //parameters[1] = dataset;
-      //parameters[2] = sampleIndex;
-      //int i = 3;
-      //// all local variables are available in the custom function
-      //foreach(IVariableInfo info in VariableInfos) {
-      //  if(info.Local) {
-      //    parameters[i] = this.GetVariable(info.ActualName);
-      //    i++;
-      //  }
-      //}
-      //return (double)evaluateMethod.Invoke(null, parameters);
-      return 0.0;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ProgrammableFunction clone = (ProgrammableFunction)base.Clone(clonedObjects);
-      clone.myDescription = Description;
-      clone.myCode = Code;
-      clone.evaluateMethod = evaluateMethod;
-      return clone;
-    }
-
-    public override void Accept(IFunctionVisitor visitor) {
+    #region IFunction Members
+    public void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
     }
 
-    public event EventHandler DescriptionChanged;
-    protected virtual void OnDescriptionChanged() {
-      if(DescriptionChanged != null)
-        DescriptionChanged(this, new EventArgs());
-    }
-    public event EventHandler CodeChanged;
-    protected virtual void OnCodeChanged() {
-      if(CodeChanged != null)
-        CodeChanged(this, new EventArgs());
+    public double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
+      // evaluate sub-trees
+      double[] evaluationResults = new double[tree.SubTrees.Count];
+      for(int subTree=0; subTree < tree.SubTrees.Count; subTree++) {
+        evaluationResults[subTree] = tree.SubTrees[subTree].Evaluate(dataset, sampleIndex);
+      }
+      // lazy activation of the user-programmed code
+      if(applyMethod == null) {
+        Compile();
+      }
+
+      // collect parameters
+      object[] parameters = new object[VariableInfos.Count + 3];
+      parameters[0] = dataset;
+      parameters[1] = sampleIndex;
+      int i = 2;
+      // all local variables are available in the custom function
+      foreach(IVariable variable in tree.LocalVariables) {
+        parameters[i] = variable;
+        i++;
+      }
+      parameters[i] = evaluationResults;
+      return (double)applyMethod.Invoke(null, parameters);
     }
 
-    #region Persistence Methods
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode descriptionNode = document.CreateNode(XmlNodeType.Element, "Description", null);
-      descriptionNode.InnerText = myDescription;
-      node.AppendChild(descriptionNode);
-      XmlNode codeNode = document.CreateNode(XmlNodeType.Element, "Code", null);
-      codeNode.InnerText = myCode;
-      node.AppendChild(codeNode);
-      return node;
+    // application of programmable-function is not possible
+    public double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotSupportedException();
     }
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode descriptionNode = node.SelectSingleNode("Description");
-      myDescription = descriptionNode.InnerText;
-      XmlNode codeNode = node.SelectSingleNode("Code");
-      myCode = codeNode.InnerText;
+
+    #endregion
+
+    #region disabled operator functionality
+    // operator-tree style evaluation is not supported for functions.
+    public override IOperation Apply(IScope scope) {
+      throw new NotSupportedException();
+    }
+
+    private static readonly List<IOperator> emptySubOperatorList = new List<IOperator>();
+    public override IList<IOperator> SubOperators {
+      get { return emptySubOperatorList; }
+    }
+
+    public override void AddSubOperator(IOperator subOperator) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryAddSubOperator(IOperator subOperator) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryAddSubOperator(IOperator subOperator, int index) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryAddSubOperator(IOperator subOperator, int index, out ICollection<IConstraint> violatedConstraints) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryAddSubOperator(IOperator subOperator, out ICollection<IConstraint> violatedConstraints) {
+      throw new NotSupportedException();
+    }
+
+    public override void AddSubOperator(IOperator subOperator, int index) {
+      throw new NotSupportedException();
+    }
+
+    public override void RemoveSubOperator(int index) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryRemoveSubOperator(int index) {
+      throw new NotSupportedException();
+    }
+
+    public override bool TryRemoveSubOperator(int index, out ICollection<IConstraint> violatedConstraints) {
+      throw new NotSupportedException();
     }
     #endregion
   }

@@ -31,6 +31,7 @@ namespace HeuristicLab.Functions {
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.Data")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis")]
+  [Dependency(Dependency = "HeuristicLab.Operators.Programmable")]
   public class HeuristicLabFunctionsPlugin : PluginBase {
   }
 }

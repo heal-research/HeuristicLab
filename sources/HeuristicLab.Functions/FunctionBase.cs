@@ -48,12 +48,13 @@ namespace HeuristicLab.Functions {
 
     public abstract double Apply(Dataset dataset, int sampleIndex, double[] args);
 
+    public virtual void Accept(IFunctionVisitor visitor) {
+      visitor.Visit(this);
+    }
+
     // operator-tree style evaluation is not supported for functions.
     public override IOperation Apply(IScope scope) {
       throw new NotSupportedException();
-    }
-    public virtual void Accept(IFunctionVisitor visitor) {
-      visitor.Visit(this);
     }
 
     private static readonly List<IOperator> emptySubOperatorList = new List<IOperator>();
