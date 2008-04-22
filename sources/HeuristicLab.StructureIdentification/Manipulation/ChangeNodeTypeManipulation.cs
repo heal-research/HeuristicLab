@@ -65,7 +65,7 @@ resulting in a valid tree again.";
       IFunctionTree parent = gardener.GetRandomParentNode(root);
       IFunctionTree selectedChild;
       int selectedChildIndex;
-      if (parent == null) {
+      if(parent == null) {
         selectedChildIndex = 0;
         selectedChild = root;
       } else {
@@ -73,9 +73,9 @@ resulting in a valid tree again.";
         selectedChild = parent.SubTrees[selectedChildIndex];
       }
 
-      if (selectedChild.SubTrees.Count == 0) {
+      if(selectedChild.SubTrees.Count == 0) {
         IFunctionTree newTerminal = ChangeTerminalType(parent, selectedChild, selectedChildIndex, gardener, random);
-        if (parent == null) {
+        if(parent == null) {
           // no parent means the new child is the initial operator
           // and we have to update the value in the variable
           scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTerminal;
@@ -90,32 +90,41 @@ resulting in a valid tree again.";
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newTerminal), scope);
       } else {
         List<IFunctionTree> uninitializedBranches;
-        IFunctionTree newFunction = ChangeFunctionType(parent, selectedChild, selectedChildIndex, gardener, random, out uninitializedBranches);
-        if (parent == null) {
+        IFunctionTree newFunctionTree = ChangeFunctionType(parent, selectedChild, selectedChildIndex, gardener, random, out uninitializedBranches);
+        // in rare cases the function creates a tree that breaks the size limits
+        // calculate the height and size difference and 
+        // check if the size of the new tree is still in the allowed bounds
+        int oldChildSize = gardener.GetTreeSize(selectedChild);
+        int oldChildHeight = gardener.GetTreeSize(selectedChild);
+        int newChildSize = gardener.GetTreeSize(newFunctionTree);
+        int newChildHeight = gardener.GetTreeHeight(newFunctionTree);
+        if((treeHeight.Data - oldChildHeight) + newChildHeight > maxTreeHeight ||
+          (treeSize.Data - oldChildSize) + newChildSize > maxTreeSize) {
+          // if size-constraints are violated don't change anything
+          return null;
+        }
+        if(parent == null) {
           // no parent means the new function is the initial operator
           // and we have to update the value in the variable
-          scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newFunction;
-          root = newFunction;
+          scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newFunctionTree;
+          root = newFunctionTree;
         } else {
           // remove the old child
           parent.RemoveSubTree(selectedChildIndex);
           // add the new child as sub-tree of parent
-          parent.InsertSubTree(selectedChildIndex, newFunction);
+          parent.InsertSubTree(selectedChildIndex, newFunctionTree);
         }
-        // recalculate size and height
-        treeSize.Data = gardener.GetTreeSize(root);
-        treeHeight.Data = gardener.GetTreeHeight(root);
+        // update size and height
+        treeSize.Data = (treeSize.Data - oldChildSize) + newChildSize;
+        treeHeight.Data = gardener.GetTreeHeight(root); // must recalculate height because we can't know wether the manipulated branch was the deepest branch
         // check if whole tree is ok
-        // check if the size of the new tree is still in the allowed bounds
-        if (!gardener.IsValidTree(root) ||
-          treeHeight.Data > maxTreeHeight ||
-          treeSize.Data > maxTreeSize) {
+        if(!gardener.IsValidTree(root))
           throw new InvalidProgramException();
-        }
         // return a composite operation that initializes all created sub-trees
         return gardener.CreateInitializationOperation(uninitializedBranches, scope);
       }
     }
+  
 
     private IFunctionTree ChangeTerminalType(IFunctionTree parent, IFunctionTree child, int childIndex, TreeGardener gardener, MersenneTwister random) {
       IList<IFunction> allowedChildren;
@@ -145,24 +154,14 @@ resulting in a valid tree again.";
       // arity of the selected operator
       int minArity;
       int maxArity;
-      // only allow functions where we can keep all existing sub-trees
-      // we don't want to create new sub-trees here 
-      // this restriction can be removed if we add code that creates sub-trees where necessary (gkronber 22.04.08)
-      allowedFunctions = allowedFunctions.Where(f => {
-        gardener.GetMinMaxArity(f, out minArity, out maxArity);
-        return minArity <= actualArity;
-      }).ToList();
       // create a new tree-node for a randomly selected function
       IFunctionTree newTree = new FunctionTree(allowedFunctions[random.Next(allowedFunctions.Count)]);
       gardener.GetMinMaxArity(newTree.Function, out minArity, out maxArity);
       // if the old child had too many sub-trees then the new child should keep as many sub-trees as possible
       if (actualArity > maxArity)
         actualArity = maxArity;
-      // get the allowed size and height for new sub-trees
-      // use the size of the smallest subtree as the maximal allowed size for new subtrees to
-      // prevent that we ever create trees over the MaxTreeSize limit
-      int maxSubTreeSize = child.SubTrees.Select(subTree => gardener.GetTreeSize(subTree)).Min();
-      int maxSubTreeHeight = gardener.GetTreeHeight(child) - 1;
+      if(actualArity < minArity)
+        actualArity = minArity;
       // create a list that holds old sub-trees that we can reuse in the new tree
       List<IFunctionTree> availableSubTrees = new List<IFunctionTree>(child.SubTrees);
       List<IFunctionTree> freshSubTrees = new List<IFunctionTree>() { newTree };
@@ -180,8 +179,8 @@ resulting in a valid tree again.";
           newTree.InsertSubTree(i, selectedSubTree);
           availableSubTrees.Remove(selectedSubTree); // the branch shouldn't be available for the following slots
         } else {
-          // no existing matching tree found => create a new one
-          IFunctionTree freshTree = gardener.CreateRandomTree(allowedSubFunctions, maxSubTreeSize, maxSubTreeHeight);
+          // no existing matching tree found => create a new tree of minimal size
+          IFunctionTree freshTree = gardener.CreateRandomTree(allowedSubFunctions, 1, 1);
           freshSubTrees.AddRange(gardener.GetAllSubTrees(freshTree));
           newTree.InsertSubTree(i, freshTree);
         }

@@ -52,11 +52,9 @@ namespace HeuristicLab.StructureIdentification {
     internal TreeGardener(IRandom random, GPOperatorLibrary funLibrary) {
       this.random = random;
       this.funLibrary = funLibrary;
-
       this.allFunctions = new List<IFunction>();
       terminals = new List<IFunction>();
       functions = new List<IFunction>();
-
       // init functions and terminals based on constraints
       foreach (IFunction fun in funLibrary.Group.Operators) {
         int maxA, minA;
@@ -67,7 +65,6 @@ namespace HeuristicLab.StructureIdentification {
           functions.Add(fun);
         }
       }
-
       allFunctions.AddRange(functions);
       allFunctions.AddRange(terminals);
     }
