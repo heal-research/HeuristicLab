@@ -35,7 +35,10 @@ namespace HeuristicLab.StructureIdentification {
 
     public override string Description {
       get {
-        return "TASK";
+        return @"Takes two parent individuals P0 and P1 each. Selects a random node N0 of P0 and a random node N1 of P1.
+And replaces the branch with root N0 in P0 with N1 from P1 if the tree-size limits are not violated.
+When recombination with N0 and N1 would create a tree that is too large the operator randomly either goes
+up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configuration is found.";
       }
     }
     public SizeFairCrossOver()
