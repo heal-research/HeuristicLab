@@ -51,6 +51,7 @@
     <Compile Include="And.cs" />
     <Compile Include="Average.cs" />
     <Compile Include="Constant.cs" />
+    <Compile Include="GreaterThan.cs" />
     <Compile Include="FunctionTree.cs" />
     <Compile Include="IFunctionTree.cs" />
     <Compile Include="ProgrammableFunction.cs" />
