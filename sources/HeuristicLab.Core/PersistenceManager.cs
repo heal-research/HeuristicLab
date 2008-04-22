@@ -33,7 +33,9 @@ namespace HeuristicLab.Core {
       return document;
     }
     public static XmlNode Persist(IStorable instance, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      return Persist(instance.GetType().Name, instance, document, persistedObjects);
+      string name = instance.GetType().Name;
+      name = name.Replace('`', '_');
+      return Persist(name, instance, document, persistedObjects);
     }
     public static XmlNode Persist(string name, IStorable instance, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       if (persistedObjects.ContainsKey(instance.Guid)) {
@@ -67,6 +69,7 @@ namespace HeuristicLab.Core {
     }
     public static void Save(IStorable instance, Stream stream) {
       XmlDocument document = PersistenceManager.CreateXmlDocument();
+
       document.AppendChild(Persist(instance, document, new Dictionary<Guid, IStorable>()));
       document.Save(stream);
     }
