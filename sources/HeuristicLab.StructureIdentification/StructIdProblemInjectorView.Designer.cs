@@ -50,14 +50,14 @@ namespace HeuristicLab.StructureIdentification {
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.dataTabPage = new System.Windows.Forms.TabPage();
+      this.variablesLabel = new System.Windows.Forms.Label();
+      this.variablesTextBox = new System.Windows.Forms.TextBox();
+      this.samplesLabel = new System.Windows.Forms.Label();
+      this.samplesTextBox = new System.Windows.Forms.TextBox();
       this.variableInfosTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseVariableInfosView = new HeuristicLab.Core.OperatorBaseVariableInfosView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseDescriptionView = new HeuristicLab.Core.OperatorBaseDescriptionView();
-      this.samplesLabel = new System.Windows.Forms.Label();
-      this.samplesTextBox = new System.Windows.Forms.TextBox();
-      this.variablesLabel = new System.Windows.Forms.Label();
-      this.variablesTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.dataTabPage.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
@@ -127,8 +127,46 @@ namespace HeuristicLab.StructureIdentification {
       this.dataTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.dataTabPage.Size = new System.Drawing.Size(268, 158);
       this.dataTabPage.TabIndex = 0;
-      this.dataTabPage.Text = "TSP Data";
+      this.dataTabPage.Text = "Data";
       this.dataTabPage.UseVisualStyleBackColor = true;
+      // 
+      // variablesLabel
+      // 
+      this.variablesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.variablesLabel.AutoSize = true;
+      this.variablesLabel.Location = new System.Drawing.Point(6, 61);
+      this.variablesLabel.Name = "variablesLabel";
+      this.variablesLabel.Size = new System.Drawing.Size(53, 13);
+      this.variablesLabel.TabIndex = 9;
+      this.variablesLabel.Text = "Variables:";
+      // 
+      // variablesTextBox
+      // 
+      this.variablesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.variablesTextBox.Location = new System.Drawing.Point(62, 58);
+      this.variablesTextBox.Name = "variablesTextBox";
+      this.variablesTextBox.ReadOnly = true;
+      this.variablesTextBox.Size = new System.Drawing.Size(81, 20);
+      this.variablesTextBox.TabIndex = 10;
+      // 
+      // samplesLabel
+      // 
+      this.samplesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.samplesLabel.AutoSize = true;
+      this.samplesLabel.Location = new System.Drawing.Point(6, 35);
+      this.samplesLabel.Name = "samplesLabel";
+      this.samplesLabel.Size = new System.Drawing.Size(50, 13);
+      this.samplesLabel.TabIndex = 7;
+      this.samplesLabel.Text = "Samples:";
+      // 
+      // samplesTextBox
+      // 
+      this.samplesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.samplesTextBox.Location = new System.Drawing.Point(62, 32);
+      this.samplesTextBox.Name = "samplesTextBox";
+      this.samplesTextBox.ReadOnly = true;
+      this.samplesTextBox.Size = new System.Drawing.Size(81, 20);
+      this.samplesTextBox.TabIndex = 8;
       // 
       // variableInfosTabPage
       // 
@@ -171,44 +209,6 @@ namespace HeuristicLab.StructureIdentification {
       this.operatorBaseDescriptionView.Operator = null;
       this.operatorBaseDescriptionView.Size = new System.Drawing.Size(262, 152);
       this.operatorBaseDescriptionView.TabIndex = 0;
-      // 
-      // samplesLabel
-      // 
-      this.samplesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.samplesLabel.AutoSize = true;
-      this.samplesLabel.Location = new System.Drawing.Point(6, 35);
-      this.samplesLabel.Name = "samplesLabel";
-      this.samplesLabel.Size = new System.Drawing.Size(50, 13);
-      this.samplesLabel.TabIndex = 7;
-      this.samplesLabel.Text = "Samples:";
-      // 
-      // samplesTextBox
-      // 
-      this.samplesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.samplesTextBox.Location = new System.Drawing.Point(62, 32);
-      this.samplesTextBox.Name = "samplesTextBox";
-      this.samplesTextBox.ReadOnly = true;
-      this.samplesTextBox.Size = new System.Drawing.Size(81, 20);
-      this.samplesTextBox.TabIndex = 8;
-      // 
-      // variablesLabel
-      // 
-      this.variablesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.variablesLabel.AutoSize = true;
-      this.variablesLabel.Location = new System.Drawing.Point(6, 61);
-      this.variablesLabel.Name = "variablesLabel";
-      this.variablesLabel.Size = new System.Drawing.Size(53, 13);
-      this.variablesLabel.TabIndex = 9;
-      this.variablesLabel.Text = "Variables:";
-      // 
-      // variablesTextBox
-      // 
-      this.variablesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.variablesTextBox.Location = new System.Drawing.Point(62, 58);
-      this.variablesTextBox.Name = "variablesTextBox";
-      this.variablesTextBox.ReadOnly = true;
-      this.variablesTextBox.Size = new System.Drawing.Size(81, 20);
-      this.variablesTextBox.TabIndex = 10;
       // 
       // StructIdProblemInjectorView
       // 
