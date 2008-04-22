@@ -30,56 +30,35 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
   public class Constant : FunctionBase {
-
-    private IVariable value;
+    public static readonly string VALUE = "Value";
 
     public override string Description {
       get { return "Returns the value of local variable 'Value'."; }
     }
 
-    public ConstrainedDoubleData Value {
-      get {
-        return (ConstrainedDoubleData)value.Value;
-      }
-    }
-
     public Constant()
       : base() {
-      AddVariableInfo(new VariableInfo("Value", "The constant value", typeof(ConstrainedDoubleData), VariableKind.None));
-      GetVariableInfo("Value").Local = true;
+      AddVariableInfo(new VariableInfo(VALUE, "The constant value", typeof(ConstrainedDoubleData), VariableKind.None));
+      GetVariableInfo(VALUE).Local = true;
 
       ConstrainedDoubleData valueData = new ConstrainedDoubleData();
       // initialize a default range for the contant value
       valueData.AddConstraint(new DoubleBoundedConstraint(-20.0, 20.0));
-
-      // create the local variable
-      value = new HeuristicLab.Core.Variable("Value", valueData);
-      AddLocalVariable(value);
+      HeuristicLab.Core.Variable value = new HeuristicLab.Core.Variable(VALUE, valueData);
+      AddVariable(value);
 
       // constant can't have suboperators
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
 
-    public Constant(Constant source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-      value = GetVariable("Value");
+    // constant is evaluated directly. Evaluation reads the local variable value from the tree and returns
+    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
+      return ((ConstrainedDoubleData)tree.GetLocalVariable(VALUE).Value).Data;
     }
 
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Constant clone = new Constant(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
-
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-
-      value = GetVariable("Value");
-    }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return ((ConstrainedDoubleData)value.Value).Data;
+    // can't apply a constant
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotSupportedException();
     }
 
     public override void Accept(IFunctionVisitor visitor) {

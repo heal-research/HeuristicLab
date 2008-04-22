@@ -33,7 +33,7 @@ namespace HeuristicLab.StructureIdentification {
   public class EarlyStoppingMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
     public override string Description {
       get {
-        return @"Evaluates 'OperatorTree' for all samples of the dataset and calculates the mean-squared-error
+        return @"Evaluates 'FunctionTree' for all samples of the dataset and calculates the mean-squared-error
 for the estimated values vs. the real values of 'TargetVariable'.
 This operator stops the computation as soon as an upper limit for the mean-squared-error is reached.";
       }
@@ -44,12 +44,12 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.In));
     }
 
-    public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
+    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
       for(int sample = 0; sample < dataset.Rows; sample++) {
-        double estimated = function.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
           estimated = targetMean + maximumPunishment;

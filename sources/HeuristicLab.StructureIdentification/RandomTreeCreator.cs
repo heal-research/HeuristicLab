@@ -25,6 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using System;
 using HeuristicLab.Random;
+using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class RandomTreeCreator : OperatorBase {
@@ -39,9 +40,9 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorTree", "The tree to mutate", typeof(IOperator), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The created tree", typeof(IFunctionTree), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -55,28 +56,28 @@ namespace HeuristicLab.StructureIdentification {
 
       int treeHeight = random.Next(1, maxTreeHeight + 1);
       int treeSize = random.Next(1, maxTreeSize + 1);
-      IOperator rootOperator;
+      IFunctionTree root;
       if(random.NextDouble() <= balancedTreesRate) {
-        rootOperator = gardener.CreateRandomTree(treeSize, treeHeight, true);
+        root = gardener.CreateRandomTree(treeSize, treeHeight, true);
       } else {
-        rootOperator = gardener.CreateRandomTree(treeSize, treeHeight, false);
+        root = gardener.CreateRandomTree(treeSize, treeHeight, false);
       }
 
-      int actualTreeSize = gardener.GetTreeSize(rootOperator);
-      int actualTreeHeight = gardener.GetTreeHeight(rootOperator);
+      int actualTreeSize = gardener.GetTreeSize(root);
+      int actualTreeHeight = gardener.GetTreeHeight(root);
 
-      scope.AddVariable(new Variable("OperatorTree", rootOperator));
-      scope.AddVariable(new Variable("TreeSize", new IntData(actualTreeSize)));
-      scope.AddVariable(new Variable("TreeHeight", new IntData(actualTreeHeight)));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), root));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(actualTreeSize)));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(actualTreeHeight)));
 
-      if(!gardener.IsValidTree(rootOperator)) { throw new InvalidProgramException(); }
+      if(!gardener.IsValidTree(root)) { throw new InvalidProgramException(); }
 
       if(actualTreeSize > maxTreeSize ||
         actualTreeHeight > maxTreeHeight) {
         throw new InvalidProgramException();
       }
 
-      return gardener.CreateInitializationOperation(gardener.GetAllOperators(rootOperator), scope);
+      return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(root), scope);
     }
   }
 }

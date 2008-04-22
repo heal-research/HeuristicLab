@@ -31,7 +31,6 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.StructureIdentification {
   public class GPOperatorGroup : OperatorGroup {
-
     public GPOperatorGroup()
       : base() {
     }
@@ -117,7 +116,7 @@ namespace HeuristicLab.StructureIdentification {
       int minArity;
       int maxArity;
       GetMinMaxArity(op, out minArity, out maxArity);
-      ItemList slotsList = (ItemList)op.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
+      var slotsList = (ItemList)op.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
       slotsList.Clear();
       for(int i = 0; i < maxArity; i++) {
         ItemList slotList = new ItemList();
@@ -274,7 +273,6 @@ namespace HeuristicLab.StructureIdentification {
       shaker.Name = variableInfo.FormalName + " initialization";
       return shaker;
     }
-
 
     public override void AddSubGroup(IOperatorGroup group) {
       throw new NotSupportedException();

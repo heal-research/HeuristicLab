@@ -30,7 +30,7 @@ namespace HeuristicLab.Functions {
   public class Equal : FunctionBase {
     public override string Description {
       get {
-        return @"Equal condition. Returns 1.0 if both sub-functions evaluate to the same value and 0.0 if they differ.";
+        return @"Equal condition. Returns 1.0 if both sub-trees evaluate to the same value and 0.0 if they differ.";
       }
     }
 
@@ -39,20 +39,9 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
     }
 
-    public Equal(Equal source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      if(SubFunctions[0].Evaluate(dataset, sampleIndex) == SubFunctions[1].Evaluate(dataset, sampleIndex)) return 1.0;
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      if(args[0] == args[1]) return 1.0;
       else return 0.0;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Equal clone = new Equal(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

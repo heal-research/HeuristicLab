@@ -33,7 +33,7 @@ namespace HeuristicLab.StructureIdentification {
   public class CoefficientOfDeterminationEvaluator : GPEvaluatorBase {
     public override string Description {
       get {
-        return @"Applies 'OperatorTree' to all samples of 'Dataset' and calculates
+        return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
 the 'coefficient of determination' of estimated values vs. real values of 'TargetVariable'.";
       }
     }
@@ -42,12 +42,12 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       : base() {
     }
 
-    public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
+    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       double targetMean = dataset.GetMean(targetVariable);
       for(int sample = 0; sample < dataset.Rows; sample++) {
-        double estimated = function.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))

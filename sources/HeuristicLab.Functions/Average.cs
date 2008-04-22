@@ -30,7 +30,7 @@ namespace HeuristicLab.Functions {
   public class Average : FunctionBase {
     public override string Description {
       get {
-        return @"Returns the average (arithmetic mean) of all sub-operator results.";
+        return @"Returns the average (arithmetic mean) of all sub-tree results.";
       }
     }
 
@@ -39,23 +39,12 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public Average(Average source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
       double sum = 0.0;
-      for(int i = 0; i < SubFunctions.Count; i++) {
-        sum += SubFunctions[i].Evaluate(dataset, sampleIndex);
+      for(int i = 0; i < args.Length; i++) {
+        sum += args[i];
       }
-      return sum / SubFunctions.Count;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Average clone = new Average(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
+      return sum / args.Length;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

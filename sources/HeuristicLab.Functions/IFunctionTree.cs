@@ -23,28 +23,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
-using System.Diagnostics;
-using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Logarithm : FunctionBase {
-    public override string Description {
-      get { return "Returns the natural (base e) logarithm of the first sub-tree."; }
-    }
+  public interface IFunctionTree : IItem {
+    IList<IFunctionTree> SubTrees { get; }
+    ICollection<IVariable> LocalVariables { get; }
+    IFunction Function { get; }
+    IVariable GetLocalVariable(string name);
+    void AddVariable(IVariable variable);
+    void RemoveVariable(string name);
+    void AddSubTree(IFunctionTree tree);
+    void InsertSubTree(int index, IFunctionTree tree);
+    void RemoveSubTree(int index);
 
-    public Logarithm()
-      : base() {
-      // must have exactly 1 suboperator
-      AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      return Math.Log(args[0]);
-    }
-
-    public override void Accept(IFunctionVisitor visitor) {
-      visitor.Visit(this);
-    }
+    double Evaluate(Dataset dataset, int sampleIndex);
   }
 }

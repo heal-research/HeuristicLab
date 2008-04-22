@@ -1,0 +1,206 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Core;
+using System.Diagnostics;
+using HeuristicLab.Constraints;
+using HeuristicLab.DataAnalysis;
+using System.Xml;
+using System.Reflection;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+using Microsoft.CSharp;
+using System.IO;
+
+namespace HeuristicLab.Functions {
+  public class ProgrammableFunction : FunctionBase {
+    private MethodInfo evaluateMethod;
+
+    private string myDescription;
+    public override string Description {
+      get { return myDescription; }
+    }
+    private string myCode;
+    public string Code {
+      get { return myCode; }
+      set {
+        if(value != myCode) {
+          myCode = value;
+          evaluateMethod = null;
+          OnCodeChanged();
+        }
+      }
+    }
+
+    public ProgrammableFunction() : base() {
+      myCode = "return 0.0;";
+      myDescription = "A function that can be programmed for arbitrary needs.";
+      evaluateMethod = null;
+    }
+
+    public void SetDescription(string description) {
+      if(description == null)
+        throw new NullReferenceException("description must not be null");
+
+      if(description != myDescription) {
+        myDescription = description;
+        OnDescriptionChanged();
+      }
+    }
+
+    public void Compile() {
+      CodeNamespace ns = new CodeNamespace("HeuristicLab.Functions.CustomFunctions");
+      CodeTypeDeclaration typeDecl = new CodeTypeDeclaration("Function");
+      typeDecl.IsClass = true;
+      typeDecl.TypeAttributes = TypeAttributes.Public;
+
+      CodeMemberMethod method = new CodeMemberMethod();
+      method.Name = "Evaluate";
+      method.ReturnType = new CodeTypeReference(typeof(double));
+      method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IFunction), "function"));
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Dataset), "dataset"));
+      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
+      foreach(IVariableInfo info in VariableInfos)
+        method.Parameters.Add(new CodeParameterDeclarationExpression(info.DataType, info.FormalName));
+      string code = myCode;
+      method.Statements.Add(new CodeSnippetStatement(code));
+      typeDecl.Members.Add(method);
+
+      ns.Types.Add(typeDecl);
+      ns.Imports.Add(new CodeNamespaceImport("System"));
+      ns.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
+      ns.Imports.Add(new CodeNamespaceImport("System.Text"));
+      ns.Imports.Add(new CodeNamespaceImport("HeuristicLab.Core"));
+      ns.Imports.Add(new CodeNamespaceImport("HeuristicLab.Functions"));
+      foreach(IVariableInfo variableInfo in VariableInfos)
+        ns.Imports.Add(new CodeNamespaceImport(variableInfo.DataType.Namespace));
+
+      CodeCompileUnit unit = new CodeCompileUnit();
+      unit.Namespaces.Add(ns);
+      CompilerParameters parameters = new CompilerParameters();
+      parameters.GenerateExecutable = false;
+      parameters.GenerateInMemory = true;
+      parameters.IncludeDebugInformation = false;
+      Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+      foreach(Assembly loadedAssembly in loadedAssemblies)
+        parameters.ReferencedAssemblies.Add(loadedAssembly.Location);
+      CodeDomProvider provider = new CSharpCodeProvider();
+      CompilerResults results = provider.CompileAssemblyFromDom(parameters, unit);
+
+      evaluateMethod = null;
+      if(results.Errors.HasErrors) {
+        StringWriter writer = new StringWriter();
+        CodeGeneratorOptions options = new CodeGeneratorOptions();
+        options.BlankLinesBetweenMembers = false;
+        options.ElseOnClosing = true;
+        options.IndentString = "  ";
+        provider.GenerateCodeFromCompileUnit(unit, writer, options);
+        writer.Flush();
+        string[] source = writer.ToString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < source.Length; i++)
+          builder.AppendLine((i + 1).ToString("###") + "     " + source[i]);
+        builder.AppendLine();
+        builder.AppendLine();
+        builder.AppendLine();
+        foreach(CompilerError error in results.Errors) {
+          builder.Append("Line " + error.Line.ToString());
+          builder.Append(", Column " + error.Column.ToString());
+          builder.AppendLine(": " + error.ErrorText);
+        }
+        throw new Exception("Compile Errors:\n\n" + builder.ToString());
+      } else {
+        Assembly assembly = results.CompiledAssembly;
+        Type[] types = assembly.GetTypes();
+        evaluateMethod = types[0].GetMethod("Evaluate");
+      }
+    }
+
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      //if(evaluateMethod == null) {
+      //  Compile();
+      //}
+
+      //// collect parameters
+      //object[] parameters = new object[VariableInfos.Count + 3];
+      //parameters[0] = this;
+      //parameters[1] = dataset;
+      //parameters[2] = sampleIndex;
+      //int i = 3;
+      //// all local variables are available in the custom function
+      //foreach(IVariableInfo info in VariableInfos) {
+      //  if(info.Local) {
+      //    parameters[i] = this.GetVariable(info.ActualName);
+      //    i++;
+      //  }
+      //}
+      //return (double)evaluateMethod.Invoke(null, parameters);
+      return 0.0;
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      ProgrammableFunction clone = (ProgrammableFunction)base.Clone(clonedObjects);
+      clone.myDescription = Description;
+      clone.myCode = Code;
+      clone.evaluateMethod = evaluateMethod;
+      return clone;
+    }
+
+    public override void Accept(IFunctionVisitor visitor) {
+      visitor.Visit(this);
+    }
+
+    public event EventHandler DescriptionChanged;
+    protected virtual void OnDescriptionChanged() {
+      if(DescriptionChanged != null)
+        DescriptionChanged(this, new EventArgs());
+    }
+    public event EventHandler CodeChanged;
+    protected virtual void OnCodeChanged() {
+      if(CodeChanged != null)
+        CodeChanged(this, new EventArgs());
+    }
+
+    #region Persistence Methods
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlNode descriptionNode = document.CreateNode(XmlNodeType.Element, "Description", null);
+      descriptionNode.InnerText = myDescription;
+      node.AppendChild(descriptionNode);
+      XmlNode codeNode = document.CreateNode(XmlNodeType.Element, "Code", null);
+      codeNode.InnerText = myCode;
+      node.AppendChild(codeNode);
+      return node;
+    }
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      XmlNode descriptionNode = node.SelectSingleNode("Description");
+      myDescription = descriptionNode.InnerText;
+      XmlNode codeNode = node.SelectSingleNode("Code");
+      myCode = codeNode.InnerText;
+    }
+    #endregion
+  }
+}

@@ -30,8 +30,8 @@ namespace HeuristicLab.Functions {
   public class IfThenElse : FunctionBase {
     public override string Description {
       get {
-        return @"Returns the result of the second branch if the first branch evaluates to a value >= 0.5 and the result
-of the third branch if the first branch evaluates to < 0.5.";
+        return @"Returns the result of the second sub-tree if the first sub-tree evaluates to a value < 0.5 and the result
+of the third sub-tree if the first sub-tree evaluates to >= 0.5.";
       }
     }
 
@@ -40,22 +40,16 @@ of the third branch if the first branch evaluates to < 0.5.";
       AddConstraint(new NumberOfSubOperatorsConstraint(3, 3));
     }
 
-    public IfThenElse(IfThenElse source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      double condition = Math.Round(SubFunctions[0].Evaluate(dataset, sampleIndex));
-      if(condition >= .5) return SubFunctions[2].Evaluate(dataset, sampleIndex);
-      else if(condition < .5) return SubFunctions[1].Evaluate(dataset, sampleIndex);
+    // special form
+    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
+      double condition = Math.Round(tree.SubTrees[0].Evaluate(dataset, sampleIndex));
+      if(condition < .5) return tree.SubTrees[1].Evaluate(dataset, sampleIndex);
+      else if(condition >= .5) return tree.SubTrees[2].Evaluate(dataset, sampleIndex);
       else return double.NaN;
     }
 
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      IfThenElse clone = new IfThenElse(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotImplementedException();
     }
 
     public override void Accept(IFunctionVisitor visitor) {

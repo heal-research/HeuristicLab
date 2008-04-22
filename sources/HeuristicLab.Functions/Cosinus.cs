@@ -30,30 +30,18 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Cosinus : FunctionBase {
     public override string Description {
-      get { return "Returns the cosinus of the first sub-operator."; }
+      get { return "Returns the cosinus of the first sub-tree."; }
     }
 
     public Cosinus()
       : base() {
-
       // must have exactly one subfunction
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
     }
 
-    public Cosinus(Cosinus source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      return Math.Cos(args[0]);
     }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return Math.Cos(SubFunctions[0].Evaluate(dataset, sampleIndex));
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Cosinus clone = new Cosinus(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);

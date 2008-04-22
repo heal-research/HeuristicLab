@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
+using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class SinglePointCrossOver : OperatorBase {
@@ -43,9 +44,9 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorTree", "The tree to mutate", typeof(IOperator), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The tree to mutate", typeof(IFunctionTree), VariableKind.In | VariableKind.New));
+      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -76,103 +77,97 @@ namespace HeuristicLab.StructureIdentification {
       return initOperations;
     }
 
-
     private IOperation Cross(TreeGardener gardener, int maxTreeSize, int maxTreeHeight,
       IScope scope, MersenneTwister random, IScope parent1, IScope parent2, IScope child) {
-      List<IOperator> newOperators;
-      IOperator newTree = Cross(gardener, parent1, parent2,
-        random, maxTreeSize, maxTreeHeight, out newOperators);
+      List<IFunctionTree> newBranches;
+      IFunctionTree newTree = Cross(gardener, parent1, parent2,
+        random, maxTreeSize, maxTreeHeight, out newBranches);
 
-      if(!gardener.IsValidTree(newTree)) {
-        throw new InvalidProgramException();
-      }
 
       int newTreeSize = gardener.GetTreeSize(newTree);
       int newTreeHeight = gardener.GetTreeHeight(newTree);
-      child.AddVariable(new Variable("OperatorTree", newTree));
-      child.AddVariable(new Variable("TreeSize", new IntData(newTreeSize)));
-      child.AddVariable(new Variable("TreeHeight", new IntData(newTreeHeight)));
+      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), newTree));
+      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(newTreeSize)));
+      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
 
-      // check if the size of the new tree is still in the allowed bounds
-      if (newTreeHeight > maxTreeHeight ||
+      // check if the new tree is valid and if the size of is still in the allowed bounds
+      if(!gardener.IsValidTree(newTree) ||
+        newTreeHeight > maxTreeHeight ||
         newTreeSize > maxTreeSize) {
         throw new InvalidProgramException();
       }
-
-
-      return gardener.CreateInitializationOperation(newOperators, child);
+      return gardener.CreateInitializationOperation(newBranches, child);
     }
 
 
-    private IOperator Cross(TreeGardener gardener, IScope f, IScope g, MersenneTwister random, int maxTreeSize, int maxTreeHeight, out List<IOperator> newOperators) {
-      IOperator tree0 = f.GetVariableValue<IOperator>("OperatorTree", false);
+    private IFunctionTree Cross(TreeGardener gardener, IScope f, IScope g, MersenneTwister random, int maxTreeSize, int maxTreeHeight, out List<IFunctionTree> newBranches) {
+      IFunctionTree tree0 = f.GetVariableValue<IFunctionTree>("FunctionTree", false);
       int tree0Height = f.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree0Size = f.GetVariableValue<IntData>("TreeSize", false).Data;
 
-      IOperator tree1 = g.GetVariableValue<IOperator>("OperatorTree", false);
+      IFunctionTree tree1 = g.GetVariableValue<IFunctionTree>("FunctionTree", false);
       int tree1Height = g.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree1Size = g.GetVariableValue<IntData>("TreeSize", false).Data;
 
       if(tree0Size == 1 && tree1Size == 1) {
-        return CombineTerminals(gardener, tree0, tree1, random, maxTreeHeight, out newOperators);
+        return CombineTerminals(gardener, tree0, tree1, random, maxTreeHeight, out newBranches);
       } else {
         // we are going to insert tree1 into tree0 at a random place so we have to make sure that tree0 is not a terminal
         // in case both trees are higher than 1 we swap the trees with probability 50%
         if(tree0Height == 1 || (tree1Height > 1 && random.Next(2) == 0)) {
-          IOperator tmp = tree0; tree0 = tree1; tree1 = tmp;
+          IFunctionTree tmp = tree0; tree0 = tree1; tree1 = tmp;
           int tmpHeight = tree0Height; tree0Height = tree1Height; tree1Height = tmpHeight;
           int tmpSize = tree0Size; tree0Size = tree1Size; tree1Size = tmpSize;
         }
 
         // save the root because later on we change tree0 and tree1 while searching a valid tree configuration
-        IOperator root = tree0;
+        IFunctionTree root = tree0;
         int rootSize = tree0Size;
 
         // select a random suboperators of the two trees at a random level
         int tree0Level = random.Next(tree0Height - 1); // since we checked before that the height of tree0 is > 1 this is OK
         int tree1Level = random.Next(tree1Height);
-        tree0 = gardener.GetRandomNode(tree0, tree0Level);
-        tree1 = gardener.GetRandomNode(tree1, tree1Level);
+        tree0 = gardener.GetRandomBranch(tree0, tree0Level);
+        tree1 = gardener.GetRandomBranch(tree1, tree1Level);
 
         // recalculate the size and height of tree1 (the one that we want to insert) because we need to check constraints later on
         tree1Size = gardener.GetTreeSize(tree1);
         tree1Height = gardener.GetTreeHeight(tree1);
 
         List<int> possibleChildIndices = new List<int>();
-        TreeGardener.OperatorEqualityComparer comparer = new TreeGardener.OperatorEqualityComparer();
 
         // Now tree0 is supposed to take tree1 as one if its children. If this is not possible,
         // then go down in either of the two trees as far as possible. If even then it is not possible
         // to merge the trees then throw an exception
-        // find the list of allowed indices (regarding allowed sub-operators, maxTreeSize and maxTreeHeight)
-        for(int i = 0; i < tree0.SubOperators.Count; i++) {
-          int subOperatorSize = gardener.GetTreeSize(tree0.SubOperators[i]);
+        // find the list of allowed indices (regarding allowed sub-trees, maxTreeSize and maxTreeHeight)
+        for(int i = 0; i < tree0.SubTrees.Count; i++) {
+          int subTreeSize = gardener.GetTreeSize(tree0.SubTrees[i]);
 
-          // the index is ok when the operator is allowed as sub-operator and we don't violate the maxSize and maxHeight constraints
-          if(GetAllowedOperators(tree0, i).Contains(tree1, comparer) &&
-            rootSize - subOperatorSize + tree1Size < maxTreeSize &&
+          // the index is ok when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
+          if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.Function) &&
+            rootSize - subTreeSize + tree1Size < maxTreeSize &&
             tree0Level + tree1Height < maxTreeHeight) {
             possibleChildIndices.Add(i);
           }
         }
 
         while(possibleChildIndices.Count == 0) {
-          // ok we couln't find a possible configuration given the current tree0 and tree1
+          // we couln't find a possible configuration given the current tree0 and tree1
           // possible reasons for this are: 
-          //  - tree1 is not allowed as sub-operator of tree0
+          //  - tree1 is not allowed as sub-tree of tree0
           //  - appending tree1 as child of tree0 would create a tree that exceedes the maxTreeHeight
           //  - replacing any child of tree0 with tree1 woulde create a tree that exceedes the maxTeeSize
           // thus we have to either:
           //  - go up in tree0 => the insert position allows larger trees
           //  - go down in tree1 => the tree that is inserted becomes smaller
-          //  - however we have to get lucky to solve the 'allowed sub-operators' problem
+          //  - however we have to get lucky to solve the 'allowed sub-trees' problem
           if(tree1Height == 1 || (tree0Level>0 && random.Next(2) == 0)) {
             // go up in tree0 
             tree0Level--;
-            tree0 = gardener.GetRandomNode(root, tree0Level);
-          } else if(tree1.SubOperators.Count > 0) {
+            tree0 = gardener.GetRandomBranch(root, tree0Level);
+          } else if(tree1.SubTrees.Count > 0) {
             // go down in node2:
-            tree1 = tree1.SubOperators[random.Next(tree1.SubOperators.Count)];
+            tree1 = tree1.SubTrees[random.Next(tree1.SubTrees.Count)];
             tree1Size = gardener.GetTreeSize(tree1);
             tree1Height = gardener.GetTreeHeight(tree1);
           } else {
@@ -182,13 +177,13 @@ namespace HeuristicLab.StructureIdentification {
 
           // recalculate the list of possible indices 
           possibleChildIndices.Clear();
-          for(int i = 0; i < tree0.SubOperators.Count; i++) {
-            int subOperatorSize = gardener.GetTreeSize(tree0.SubOperators[i]);
+          for(int i = 0; i < tree0.SubTrees.Count; i++) {
+            int subTreeSize = gardener.GetTreeSize(tree0.SubTrees[i]);
 
-            // when the operator is allowed as sub-operator and we don't violate the maxSize and maxHeight constraints
+            // when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
             // the index is ok
-            if(GetAllowedOperators(tree0, i).Contains(tree1, comparer) &&
-              rootSize - subOperatorSize + tree1Size < maxTreeSize &&
+            if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.Function) &&
+              rootSize - subTreeSize + tree1Size < maxTreeSize &&
               tree0Level + tree1Height < maxTreeHeight) {
               possibleChildIndices.Add(i);
             }
@@ -202,64 +197,72 @@ namespace HeuristicLab.StructureIdentification {
 
         // replace the existing sub-tree at a random index in tree0 with tree1
         int selectedIndex = possibleChildIndices[random.Next(possibleChildIndices.Count)];
-        tree0.RemoveSubOperator(selectedIndex);
-        tree0.AddSubOperator(tree1, selectedIndex);
+        tree0.RemoveSubTree(selectedIndex);
+        tree0.InsertSubTree(selectedIndex, tree1);
 
         // no new operators where needed
-        newOperators = new List<IOperator>();
+        newBranches = new List<IFunctionTree>();
         return root;
       }
     }
 
-    private ICollection<IOperator> GetAllowedOperators(IOperator tree0, int i) {
-      ItemList slotList = (ItemList)tree0.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
-      return ((ItemList)slotList[i]).OfType<IOperator>().ToArray();
-    }
 
-    private IOperator CombineTerminals(TreeGardener gardener, IOperator f, IOperator g, MersenneTwister random, int maxTreeHeight, out List<IOperator> newOperators) {
-      newOperators = new List<IOperator>();
-      ICollection<IOperator> possibleParents = gardener.GetPossibleParents(new List<IOperator>() { f, g });
+    // take f and g and create a tree that has f and g as sub-trees 
+    // example
+    //       O
+    //      /|\
+    //     g 2 f 
+    //
+    private IFunctionTree CombineTerminals(TreeGardener gardener, IFunctionTree f, IFunctionTree g, MersenneTwister random, int maxTreeHeight, out List<IFunctionTree> newBranches) {
+      newBranches = new List<IFunctionTree>();
+      // determine the set of possible parent functions
+      ICollection<IFunction> possibleParents = gardener.GetPossibleParents(new List<IFunction>() { f.Function, g.Function });
       if(possibleParents.Count == 0) throw new InvalidProgramException();
-
-      IOperator parent = (IOperator)possibleParents.ElementAt(random.Next(possibleParents.Count())).Clone();
+      // and select a random one
+      IFunctionTree parent = new FunctionTree(possibleParents.ElementAt(random.Next(possibleParents.Count())));
 
       int minArity;
       int maxArity;
-      gardener.GetMinMaxArity(parent, out minArity, out maxArity);
-
+      gardener.GetMinMaxArity(parent.Function, out minArity, out maxArity);
       int nSlots = Math.Max(2, minArity);
-
-      HashSet<IOperator>[] slotSets = new HashSet<IOperator>[nSlots];
-
-      SubOperatorsConstraintAnalyser analyser = new SubOperatorsConstraintAnalyser();
-      analyser.AllPossibleOperators = new List<IOperator>() { g, f };
+      // determine which slot can take which sub-trees
+      List<IFunctionTree>[] slots = new List<IFunctionTree>[nSlots];
       for(int slot = 0; slot < nSlots; slot++) {
-        HashSet<IOperator> slotSet = new HashSet<IOperator>(analyser.GetAllowedOperators(parent, slot));
-        slotSets[slot] = slotSet;
+        ICollection<IFunction> allowedSubFunctions = gardener.GetAllowedSubFunctions(parent.Function, slot);
+        List<IFunctionTree> allowedTrees = new List<IFunctionTree>();
+        if(allowedSubFunctions.Contains(f.Function)) allowedTrees.Add(f);
+        if(allowedSubFunctions.Contains(g.Function)) allowedTrees.Add(g);
+        slots[slot] = allowedTrees;
       }
+      // fill the slots in the order of degrees of freedom
+      int[] slotSequence = Enumerable.Range(0, slots.Count()).OrderBy(slot => slots[slot].Count()).ToArray();
 
-      int[] slotSequence = Enumerable.Range(0, slotSets.Count()).OrderBy(slot => slotSets[slot].Count()).ToArray();
+      // tmp arry to store the tree for each sub-tree slot of the parent
+      IFunctionTree[] selectedFunctionTrees = new IFunctionTree[nSlots];
 
-      IOperator[] selectedOperators = new IOperator[nSlots];
+      // fill the sub-tree slots of the parent starting with the slots that can take potentially both functions (f and g)
       for(int i = 0; i < slotSequence.Length; i++) {
         int slot = slotSequence[i];
-        HashSet<IOperator> slotSet = slotSets[slot];
-        if(slotSet.Count() == 0) {
-          var allowedOperators = GetAllowedOperators(parent, slot);
-          selectedOperators[slot] = gardener.CreateRandomTree(allowedOperators, 1, 1, true);
-          newOperators.AddRange(gardener.GetAllOperators(selectedOperators[slot]));
+        List<IFunctionTree> allowedTrees = slots[slot];
+        // when neither f nor g fit into the slot => create a new random tree
+        if(allowedTrees.Count() == 0) {
+          var allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, slot);
+          selectedFunctionTrees[slot] = gardener.CreateRandomTree(allowedFunctions, 1, 1, true);
+          newBranches.AddRange(gardener.GetAllSubTrees(selectedFunctionTrees[slot]));
         } else {
-          IOperator selectedOperator = slotSet.ElementAt(random.Next(slotSet.Count()));
-          selectedOperators[slot] = selectedOperator;
+          // select randomly which tree to insert into this slot
+          IFunctionTree selectedTree = allowedTrees[random.Next(allowedTrees.Count())];
+          selectedFunctionTrees[slot] = selectedTree;
+          // remove the tree that we used in this slot from following function-sets
           for(int j = i + 1; j < slotSequence.Length; j++) {
             int otherSlot = slotSequence[j];
-            slotSets[otherSlot].Remove(selectedOperator);
+            slots[otherSlot].Remove(selectedTree);
           }
         }
       }
-
-      for(int i = 0; i < selectedOperators.Length; i++) {
-        parent.AddSubOperator(selectedOperators[i], i);
+      // actually append the sub-trees to the parent tree
+      for(int i = 0; i < selectedFunctionTrees.Length; i++) {
+        parent.InsertSubTree(i, selectedFunctionTrees[i]);
       }
 
       return parent;

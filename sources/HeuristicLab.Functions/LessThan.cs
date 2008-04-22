@@ -30,7 +30,7 @@ namespace HeuristicLab.Functions {
   public class LessThan : FunctionBase {
     public override string Description {
       get {
-        return @"Less-than condition. Returns 1.0 if the value of the first sub-function is less than the value of the second sub-function and 0.0 otherwise.";
+        return @"Less-than condition. Returns 1.0 if the value of the first sub-tree is less than the value of the second sub-tree and 0.0 otherwise.";
       }
     }
 
@@ -39,20 +39,9 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
     }
 
-    public LessThan(LessThan source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      if(SubFunctions[0].Evaluate(dataset, sampleIndex) < SubFunctions[1].Evaluate(dataset, sampleIndex)) return 1.0;
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      if(args[0] < args[1]) return 1.0;
       else return 0.0;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      LessThan clone = new LessThan(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

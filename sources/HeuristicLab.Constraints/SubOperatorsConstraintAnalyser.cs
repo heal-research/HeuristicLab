@@ -90,7 +90,8 @@ namespace HeuristicLab.Constraints {
 
     private static bool InSet(IOperator op, ICollection<IOperator> set) {
       foreach(IOperator element in set) {
-        if(((StringData)element.GetVariable("TypeId").Value).Data ==
+        if(element==op ||
+          ((StringData)element.GetVariable("TypeId").Value).Data ==
           ((StringData)op.GetVariable("TypeId").Value).Data) {
           return true;
         }

@@ -30,7 +30,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Sqrt : FunctionBase {
     public override string Description {
-      get { return "Returns the square root of the first sub-operator."; }
+      get { return "Returns the square root of the first sub-tree."; }
     }
 
     public Sqrt()
@@ -39,21 +39,10 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
     }
 
-    public Sqrt(Sqrt source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      return Math.Sqrt(args[0]);
     }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return Math.Sqrt(SubFunctions[0].Evaluate(dataset, sampleIndex));
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Sqrt clone = new Sqrt(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);

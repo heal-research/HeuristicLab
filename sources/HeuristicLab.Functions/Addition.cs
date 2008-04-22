@@ -32,7 +32,7 @@ namespace HeuristicLab.Functions {
   public class Addition : FunctionBase {
     public override string Description {
       get {
-        return @"Returns the sum of all sub-operator results.
+        return @"Returns the sum of all sub-tree results.
     (+ 3) => 3
     (+ 2 3) => 5
     (+ 3 4 5) => 12";
@@ -45,26 +45,15 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public Addition(Addition source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
       // (+ 3) => 3
       // (+ 2 3) => 5
       // (+ 3 4 5) => 12
       double sum = 0.0;
-      for (int i = SubFunctions.Count - 1; i >= 0; i--) {
-        sum += SubFunctions[i].Evaluate(dataset, sampleIndex);
+      for (int i = 0; i < args.Length; i++) {
+        sum += args[i];
       }
       return sum;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Addition clone = new Addition(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

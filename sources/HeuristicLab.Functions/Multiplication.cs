@@ -32,7 +32,7 @@ namespace HeuristicLab.Functions {
   public class Multiplication : FunctionBase {
     public override string Description {
       get {
-        return @"Returns the product of the results of all sub-operators.
+        return @"Returns the product of the results of all sub-tree.
   (* 3) => 3
   (* 2 3) => 6
   (* 3 4 5) => 60";
@@ -45,26 +45,15 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public Multiplication(Multiplication source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
       // (* 3) => 3
       // (* 2 3) => 6
       // (* 3 4 5) => 60
       double result = 1.0;
-      for(int i = SubFunctions.Count - 1; i >= 0; i--) {
-        result *= SubFunctions[i].Evaluate(dataset, sampleIndex);
+      for(int i = 0; i < args.Length; i++) {
+        result *= args[i];
       }
       return result;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Multiplication clone = new Multiplication(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

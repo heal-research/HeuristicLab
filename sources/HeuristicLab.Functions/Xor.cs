@@ -30,7 +30,7 @@ namespace HeuristicLab.Functions {
   public class Xor : FunctionBase {
     public override string Description {
       get {
-        return @"Logical XOR operation. Only defined for sub-operator-results 0.0 and 1.0.";
+        return @"Logical XOR operation. Only defined for sub-tree-results 0.0 and 1.0.";
       }
     }
 
@@ -39,25 +39,10 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
     }
 
-    public Xor(Xor source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      double r0 = Math.Round(SubFunctions[0].Evaluate(dataset, sampleIndex));
-      double r1 = Math.Round(SubFunctions[1].Evaluate(dataset, sampleIndex));
-      if((r0 == 0.0 && r1 == 0.0) ||
-        (r0 == 1.0 && r1 == 1.0)) return 0.0;
-      else if((r0 == 0.0 && r1 == 1.0) ||
-        (r0 == 1.0 && r1 == 0.0)) return 1.0;
-      else return double.NaN;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Xor clone = new Xor(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      if(args[0] == 0.0 && args[1] == 0.0) return 0.0;
+      if(args[0] * args[1] == 0.0) return 1.0;
+      return 0.0;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

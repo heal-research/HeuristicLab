@@ -29,52 +29,53 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Functions {
-  public partial class FunctionView : ViewBase {
-    private IFunction function;
+  public partial class FunctionTreeView : ViewBase {
+    private IFunctionTree functionTree;
 
-    private IFunction selectedFunction;
+    private IFunctionTree selectedBranch;
     private IVariable selectedVariable;
 
     private FunctionNameVisitor functionNameVisitor;
-    public FunctionView() {
+    public FunctionTreeView() {
       InitializeComponent();
       functionNameVisitor = new FunctionNameVisitor();
     }
 
-    public FunctionView(IFunction function)
+    public FunctionTreeView(IFunctionTree functionTree)
       : this() {
-      this.function = function;
+      this.functionTree = functionTree;
       Refresh();
     }
 
     protected override void UpdateControls() {
       functionTreeView.Nodes.Clear();
-      function.Accept(functionNameVisitor);
+      functionNameVisitor.Visit(functionTree);
       TreeNode rootNode = new TreeNode();
-      rootNode.Name = function.Name;
+      rootNode.Name = functionTree.Function.Name;
       rootNode.Text = functionNameVisitor.Name;
-      rootNode.Tag = function;
+      rootNode.Tag = functionTree;
       rootNode.ContextMenuStrip = treeNodeContextMenu;
       functionTreeView.Nodes.Add(rootNode);
 
-      foreach(IFunction subFunction in function.SubFunctions) {
-        CreateTree(rootNode, subFunction);
+      foreach(IFunctionTree subTree in functionTree.SubTrees) {
+        CreateTree(rootNode, subTree);
       }
       functionTreeView.ExpandAll();
     }
 
-    private void CreateTree(TreeNode rootNode, IFunction function) {
+    private void CreateTree(TreeNode rootNode, IFunctionTree functionTree) {
       TreeNode node = new TreeNode();
-      function.Accept(functionNameVisitor);
-      node.Tag = function;
-      node.Name = function.Name;
+      functionNameVisitor.Visit(functionTree);
+      node.Name = functionTree.Function.Name;
       node.Text = functionNameVisitor.Name;
+      node.Tag = functionTree;
       node.ContextMenuStrip = treeNodeContextMenu;
       rootNode.Nodes.Add(node);
-      foreach(IFunction subFunction in function.SubFunctions) {
-        CreateTree(node, subFunction);
+      foreach(IFunctionTree subTree in functionTree.SubTrees) {
+        CreateTree(node, subTree);
       }
     }
 
@@ -84,16 +85,16 @@ namespace HeuristicLab.Functions {
       templateTextBox.Clear();
       editButton.Enabled = false;
       if(functionTreeView.SelectedNode != null && functionTreeView.SelectedNode.Tag != null) {
-        IFunction selectedFunction = (IFunction)functionTreeView.SelectedNode.Tag;
-        UpdateVariablesList(selectedFunction);
-        templateTextBox.Text = selectedFunction.MetaObject.Name;
-        this.selectedFunction = selectedFunction;
+        IFunctionTree selectedBranch = (IFunctionTree)functionTreeView.SelectedNode.Tag;
+        UpdateVariablesList(selectedBranch);
+        templateTextBox.Text = selectedBranch.Function.Name;
+        this.selectedBranch = selectedBranch;
         editButton.Enabled = true;
       }
     }
 
-    private void UpdateVariablesList(IFunction function) {
-      foreach(IVariable variable in function.LocalVariables) {
+    private void UpdateVariablesList(IFunctionTree functionTree) {
+      foreach(IVariable variable in functionTree.LocalVariables) {
         variablesListBox.Items.Add(variable.Name);
       }
     }
@@ -105,7 +106,7 @@ namespace HeuristicLab.Functions {
       }
       if(variablesListBox.SelectedItem != null) {
         string selectedVariableName = (string)variablesListBox.SelectedItem;
-        selectedVariable = selectedFunction.GetVariable(selectedVariableName);
+        selectedVariable = selectedBranch.GetLocalVariable(selectedVariableName);
         variablesSplitContainer.Panel2.Controls.Clear();
         Control editor = (Control)selectedVariable.CreateView();
         variablesSplitContainer.Panel2.Controls.Add(editor);
@@ -120,14 +121,13 @@ namespace HeuristicLab.Functions {
     void selectedVariable_ValueChanged(object sender, EventArgs e) {
       if(functionTreeView.SelectedNode != null && functionTreeView.SelectedNode.Tag != null) {
         TreeNode node = functionTreeView.SelectedNode;
-        selectedFunction.Accept(functionNameVisitor);
+        functionNameVisitor.Visit(selectedBranch);
         node.Text = functionNameVisitor.Name;
       }
     }
 
-    private void editButton_Click(object sender, EventArgs e) {
-      OperatorBaseView operatorView = new OperatorBaseView(selectedFunction.MetaObject);
-      PluginManager.ControlManager.ShowControl(operatorView);
+    protected virtual void editButton_Click(object sender, EventArgs e) {
+      PluginManager.ControlManager.ShowControl(selectedBranch.Function.CreateView());
     }
 
     private void copyToClipboardMenuItem_Click(object sender, EventArgs e) {
@@ -135,19 +135,24 @@ namespace HeuristicLab.Functions {
       if(node == null || node.Tag == null) return;
 
       ModelAnalyzerExportVisitor visitor = new ModelAnalyzerExportVisitor();
-      ((IFunction)node.Tag).Accept(visitor);
+      visitor.Visit((IFunctionTree)node.Tag);
       Clipboard.SetText(visitor.ModelAnalyzerPrefix);
     }
 
     private class FunctionNameVisitor : IFunctionVisitor {
       string name;
+      IFunctionTree currentBranch;
 
       public string Name {
         get { return name; }
       }
 
-      #region IFunctionVisitor Members
+      public void Visit(IFunctionTree tree) {
+        currentBranch = tree;
+        tree.Function.Accept(this);
+      }
 
+      #region IFunctionVisitor Members
       public void Visit(IFunction function) {
         name = function.Name;
       }
@@ -157,7 +162,7 @@ namespace HeuristicLab.Functions {
       }
 
       public void Visit(Constant constant) {
-        name = constant.Value + "";
+        name = ((ConstrainedDoubleData)(currentBranch.GetLocalVariable(HeuristicLab.Functions.Constant.VALUE).Value)).Data + "";
       }
 
       public void Visit(Cosinus cosinus) {
@@ -206,14 +211,17 @@ namespace HeuristicLab.Functions {
 
       public void Visit(Variable variable) {
         string timeOffset = "";
-        if(variable.SampleOffset < 0) {
-          timeOffset = "(t" + variable.SampleOffset + ")";
-        } else if(variable.SampleOffset > 0) {
-          timeOffset = "(t+" + variable.SampleOffset + ")";
+        int sampleOffset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.OFFSET).Value).Data;
+        int variableIndex = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.INDEX).Value).Data;
+        double weight = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.WEIGHT).Value).Data;
+        if(sampleOffset < 0) {
+          timeOffset = "(t" + sampleOffset + ")";
+        } else if(sampleOffset > 0) {
+          timeOffset = "(t+" + sampleOffset + ")";
         } else {
           timeOffset = "";
         }
-        name = "Var" + variable.VariableIndex + timeOffset + " * " + variable.Weight;
+        name = "Var" + variableIndex + timeOffset + " * " + weight;
       }
 
       public void Visit(And and) {
@@ -254,6 +262,7 @@ namespace HeuristicLab.Functions {
     private class ModelAnalyzerExportVisitor : IFunctionVisitor {
       private string prefix;
       private string currentIndend = "";
+      private IFunctionTree currentBranch;
       public string ModelAnalyzerPrefix {
         get { return prefix; }
       }
@@ -262,15 +271,7 @@ namespace HeuristicLab.Functions {
       }
 
       private void VisitFunction(string name, IFunction f) {
-        prefix += currentIndend + "[F]"+name+"(\n";
-        currentIndend += "  ";
-        foreach(IFunction subFunction in f.SubFunctions) {
-          subFunction.Accept(this);
-          prefix += ";\n";
-        }
-        prefix = prefix.TrimEnd(';','\n');
-        prefix += ")";
-        currentIndend = currentIndend.Remove(0, 2);
+        prefix += currentIndend + "[F]" + name + "(\n";
       }
 
       #region IFunctionVisitor Members
@@ -284,7 +285,8 @@ namespace HeuristicLab.Functions {
       }
 
       public void Visit(Constant constant) {
-        prefix += currentIndend + "[T]Constant(" + constant.Value.Data.ToString() + ";0;0)";
+        double value = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Constant.VALUE).Value).Data;
+        prefix += currentIndend + "[T]Constant(" + value + ";0;0)";
       }
 
       public void Visit(Cosinus cosinus) {
@@ -332,7 +334,11 @@ namespace HeuristicLab.Functions {
       }
 
       public void Visit(HeuristicLab.Functions.Variable variable) {
-        prefix += currentIndend + "[T]Variable(" + variable.Weight + ";" + variable.VariableIndex + ";" + -variable.SampleOffset + ")";
+        double weight = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.WEIGHT).Value).Data;
+        double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.INDEX).Value).Data;
+        double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.OFFSET).Value).Data;
+
+        prefix += currentIndend + "[T]Variable(" + weight + ";" + index + ";" + -offset + ")";
       }
 
       public void Visit(And and) {
@@ -366,9 +372,20 @@ namespace HeuristicLab.Functions {
       public void Visit(LessThan lessThan) {
         VisitFunction("Boolean[0]", lessThan);
       }
-
       #endregion
-    }
 
+      public void Visit(IFunctionTree functionTree) {
+        currentBranch = functionTree;
+        functionTree.Function.Accept(this);
+        currentIndend += "  ";
+        foreach(IFunctionTree subTree in functionTree.SubTrees) {
+          Visit(subTree);
+          prefix += ";\n";
+        }
+        prefix = prefix.TrimEnd(';', '\n');
+        prefix += ")";
+        currentIndend = currentIndend.Remove(0, 2);
+      }
+    }
   }
 }

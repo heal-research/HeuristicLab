@@ -33,7 +33,7 @@ namespace HeuristicLab.StructureIdentification {
   public class VarianceAccountedForEvaluator : GPEvaluatorBase {
     public override string Description {
       get {
-        return @"Evaluates 'OperatorTree' for all samples of 'DataSet' and calculates 
+        return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates 
 the variance-accounted-for quality measure for the estimated values vs. the real values of 'TargetVariable'.
 
 The Variance Accounted For (VAF) function is computed as
@@ -52,12 +52,12 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
     }
 
 
-    public override double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset) {
+    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double[] errors = new double[dataset.Rows];
       double[] originalTargetVariableValues = new double[dataset.Rows];
       double targetMean = dataset.GetMean(targetVariable);
       for(int sample = 0; sample < dataset.Rows; sample++) {
-        double estimated = function.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))

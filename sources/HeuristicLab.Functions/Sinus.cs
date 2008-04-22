@@ -30,7 +30,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Sinus : FunctionBase {
     public override string Description {
-      get { return "Returns the sinus of the first sub-operator."; }
+      get { return "Returns the sinus of the first sub-tree."; }
     }
 
     public Sinus()
@@ -39,21 +39,9 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
     }
 
-    public Sinus(Sinus source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      return Math.Sin(args[0]);
     }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return Math.Sin(SubFunctions[0].Evaluate(dataset, sampleIndex));
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Sinus clone = new Sinus(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);

@@ -25,6 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
+using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class DeleteSubTreeManipulation : OperatorBase {
@@ -41,25 +42,23 @@ the operator tries to fix the tree by generating random subtrees where necessary
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorTree", "The tree to mutate", typeof(IOperator), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The tree to mutate", typeof(IFunctionTree), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In | VariableKind.Out));
     }
 
 
     public override IOperation Apply(IScope scope) {
-      IOperator rootOperator = GetVariableValue<IOperator>("OperatorTree", scope, true);
+      IFunctionTree root = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
       MersenneTwister random = GetVariableValue<MersenneTwister>("Random", scope, true);
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
-
       TreeGardener gardener = new TreeGardener(random, library);
-
-      IOperator parent = gardener.GetRandomParentNode(rootOperator);
+      IFunctionTree parent = gardener.GetRandomParentNode(root);
 
       // parent==null means the whole tree should be deleted.
       // => return a new minimal random tree
       if(parent == null) {
-        IOperator newTree = gardener.CreateRandomTree(1, 1, true);
+        IFunctionTree newTree = gardener.CreateRandomTree(1, 1, false);
 
         // check if the tree is ok
         if(!gardener.IsValidTree(newTree)) {
@@ -69,52 +68,51 @@ the operator tries to fix the tree by generating random subtrees where necessary
         // update sizes to match the new tree
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
-        scope.GetVariable("OperatorTree").Value = newTree;
+        scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTree;
 
         // schedule an operation to initialize the newly created operator
-        return gardener.CreateInitializationOperation(gardener.GetAllOperators(newTree), scope);
+        return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newTree), scope);
       }
 
-      int childIndex = random.Next(parent.SubOperators.Count);
-
+      // select a branch to prune
+      int childIndex = random.Next(parent.SubTrees.Count);
       int min;
       int max;
-      gardener.GetMinMaxArity(parent, out min, out max);
-      if(parent.SubOperators.Count > min) {
-        parent.RemoveSubOperator(childIndex);
-        // actually since the next suboperators are shifted in the place of the removed operator
-        // it might be possible that these suboperators are not allowed in the place of the old operator
+      gardener.GetMinMaxArity(parent.Function, out min, out max);
+      if(parent.SubTrees.Count > min) {
+        parent.RemoveSubTree(childIndex);
+        // actually since the next sub-trees are shifted in the place of the removed branch
+        // it might be possible that these sub-trees are not allowed in the place of the old branch
         // we ignore this problem for now.
-        // when this starts to become a problem a possible solution is to go through the shifted operators from the place of the shifted
+        // when this starts to become a problem a possible solution is to go through the shifted branches from the place of the shifted
         // and find the first one that doesn't fit. At this position we insert a new randomly initialized subtree of matching type (gkronber 25.12.07)
 
-        if(!gardener.IsValidTree(rootOperator)) {
+        if(!gardener.IsValidTree(root)) {
           throw new InvalidOperationException();
         }
 
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(rootOperator);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(rootOperator);
-        // root hasn't changed so don't need to update 'OperatorTree' variable
-
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        // root hasn't changed so don't need to update 'FunctionTree' variable
         return null;
       } else {
         // replace with a minimal random seedling
-        parent.RemoveSubOperator(childIndex);
+        parent.RemoveSubTree(childIndex);
 
-        IList<IOperator> allowedOperators = gardener.GetAllowedSubOperators(parent, childIndex);
-        IOperator newOperatorTree = gardener.CreateRandomTree(allowedOperators, 1, 1, true);
+        ICollection<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
+        IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, 1, 1, true);
 
-        parent.AddSubOperator(newOperatorTree, childIndex);
+        parent.InsertSubTree(childIndex, newFunctionTree);
 
-        if(!gardener.IsValidTree(rootOperator)) {
+        if(!gardener.IsValidTree(root)) {
           throw new InvalidProgramException();
         }
 
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(rootOperator);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(rootOperator);
-        // again the root hasn't changed so we don't need to update the 'OperatorTree' variable
-
-        return gardener.CreateInitializationOperation(gardener.GetAllOperators(newOperatorTree), scope);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        // again the root hasn't changed so we don't need to update the 'FunctionTree' variable
+        // but we have to return an initialization operation for the newly created tree
+        return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newFunctionTree), scope);
       }
     }
   }

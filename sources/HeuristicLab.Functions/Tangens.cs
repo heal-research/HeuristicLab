@@ -30,7 +30,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Tangens : FunctionBase {
     public override string Description {
-      get { return "Returns the tangens of the first sub-operator."; }
+      get { return "Returns the tangens of the first sub-tree."; }
     }
 
     public Tangens()
@@ -39,20 +39,9 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
     }
 
-    public Tangens(Tangens source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      return Math.Tan(args[0]);
     }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return Math.Tan(SubFunctions[0].Evaluate(dataset, sampleIndex));
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Tangens clone = new Tangens(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);

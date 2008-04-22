@@ -31,21 +31,9 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Variable : FunctionBase {
 
-    private ConstrainedIntData variable;
-    private ConstrainedDoubleData weight;
-    private ConstrainedIntData sampleOffset;
-
-    public double SampleOffset {
-      get { return sampleOffset.Data; }
-    }
-
-    public int VariableIndex {
-      get { return variable.Data; }
-    }
-
-    public double Weight {
-      get { return weight.Data; }
-    }
+    public static readonly string WEIGHT = "Weight";
+    public static readonly string OFFSET = "SampleOffset";
+    public static readonly string INDEX = "Variable";
 
     public override string Description {
       get { return @"Variable reads a value from a dataset, multiplies that value with a given factor and returns the result.
@@ -55,61 +43,44 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
 
     public Variable()
       : base() {
-      AddVariableInfo(new VariableInfo("Variable", "Index of the variable in the dataset representing this feature", typeof(ConstrainedIntData), VariableKind.None));
-      GetVariableInfo("Variable").Local = true;
-      AddVariableInfo(new VariableInfo("Weight", "Weight is multiplied to the feature value", typeof(ConstrainedDoubleData), VariableKind.None));
-      GetVariableInfo("Weight").Local = true;
-      AddVariableInfo(new VariableInfo("SampleOffset", "SampleOffset is added to the sample index", typeof(ConstrainedIntData), VariableKind.None));
-      GetVariableInfo("SampleOffset").Local = true;
+      AddVariableInfo(new VariableInfo(INDEX, "Index of the variable in the dataset representing this feature", typeof(ConstrainedIntData), VariableKind.None));
+      GetVariableInfo(INDEX).Local = true;
+      AddVariableInfo(new VariableInfo(WEIGHT, "Weight is multiplied to the feature value", typeof(ConstrainedDoubleData), VariableKind.None));
+      GetVariableInfo(WEIGHT).Local = true;
+      AddVariableInfo(new VariableInfo(OFFSET, "SampleOffset is added to the sample index", typeof(ConstrainedIntData), VariableKind.None));
+      GetVariableInfo(OFFSET).Local = true;
 
-      variable = new ConstrainedIntData();
-      AddLocalVariable(new HeuristicLab.Core.Variable("Variable", variable));
-
-      weight = new ConstrainedDoubleData();
+      ConstrainedDoubleData weight = new ConstrainedDoubleData();
       // initialize a totally arbitrary range for the weight = [-20.0, 20.0]
       weight.AddConstraint(new DoubleBoundedConstraint(-20.0, 20.0));
-      AddLocalVariable(new HeuristicLab.Core.Variable("Weight", weight));
+      AddVariable(new HeuristicLab.Core.Variable(WEIGHT, weight));
 
-      sampleOffset = new ConstrainedIntData();
+      ConstrainedIntData variable = new ConstrainedIntData();
+      AddVariable(new HeuristicLab.Core.Variable(INDEX, variable));
+
+      ConstrainedIntData sampleOffset = new ConstrainedIntData();
       // initialize a totally arbitrary default range for sampleoffset = [-10, 10]
       sampleOffset.AddConstraint(new IntBoundedConstraint(0, 0));
-      AddLocalVariable(new HeuristicLab.Core.Variable("SampleOffset", sampleOffset));
+      AddVariable(new HeuristicLab.Core.Variable(OFFSET, sampleOffset));
 
-      // samplefeature can't have suboperators
+      // variable can't have suboperators
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
 
-    public Variable(Variable source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+    // variable can be evaluated directly
+    // evaluation reads local variables weight, index, offset from function-tree and returns the variable-value * weight
+    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
+      double w = ((ConstrainedDoubleData)tree.GetLocalVariable(WEIGHT).Value).Data;
+      int v = ((ConstrainedIntData)tree.GetLocalVariable(INDEX).Value).Data;
+      int offset = ((ConstrainedIntData)tree.GetLocalVariable(OFFSET).Value).Data;
 
-      variable = (ConstrainedIntData)GetVariable("Variable").Value;
-      weight = (ConstrainedDoubleData)GetVariable("Weight").Value;
-      sampleOffset = (ConstrainedIntData)GetVariable("SampleOffset").Value;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Variable clone = new Variable(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
-    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-
-      variable = (ConstrainedIntData)GetVariable("Variable").Value;
-      weight = (ConstrainedDoubleData)GetVariable("Weight").Value;
-      sampleOffset = (ConstrainedIntData)GetVariable("SampleOffset").Value;
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      // local variables
-      int v = variable.Data;
-      double w = weight.Data;
-      int offset = sampleOffset.Data;
-
-      if(sampleIndex+offset<0 || sampleIndex+offset>=dataset.Rows) return double.NaN;
+      if(sampleIndex + offset < 0 || sampleIndex + offset >= dataset.Rows) return double.NaN;
       return w * dataset.GetValue(sampleIndex + offset, v);
+    }
+
+    // can't apply a variable
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotSupportedException();
     }
 
     public override void Accept(IFunctionVisitor visitor) {

@@ -30,7 +30,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Power : FunctionBase {
     public override string Description {
-      get { return "Returns the result of the first sub-operator to the power of the second sub-operator (power(x, y))."; }
+      get { return "Returns the result of the first sub-tree to the power of the second sub-tree (power(x, y))."; }
     }
 
     public Power()
@@ -39,21 +39,9 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
     }
 
-    public Power(Power source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      return Math.Pow(args[0], args[1]);
     }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return Math.Pow(SubFunctions[0].Evaluate(dataset, sampleIndex), SubFunctions[1].Evaluate(dataset, sampleIndex));
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Power clone = new Power(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
-    }
-
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);

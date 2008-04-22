@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Selection;
+using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class FullTreeShaker : DelegatingOperator {
@@ -37,15 +38,15 @@ namespace HeuristicLab.StructureIdentification {
 
     public FullTreeShaker()
       : base() {
-      AddVariableInfo(new VariableInfo("OperatorLibrary", "Operator library that defines operator mutations", typeof(GPOperatorLibrary), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorTree", "The operator tree that should be mutated", typeof(IOperator), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "A random generator (uniform)", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ShakingFactor", "Variable that determines the force of the shakeing operation", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("OperatorLibrary", "Operator library that defines operator mutations", typeof(GPOperatorLibrary), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ShakingFactor", "Variable that determines the force of the shaking operation", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be mutated", typeof(IFunctionTree), VariableKind.In | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
       GPOperatorLibrary library = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
-      IOperator op = GetVariableValue<IOperator>("OperatorTree", scope, false);
+      IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
 
       // enqueue all mutation operations as parallel operations
@@ -55,16 +56,14 @@ namespace HeuristicLab.StructureIdentification {
       Scope tempScope = new Scope("Temp. manipulation scope");
 
       TreeGardener gardener = new TreeGardener(mt, library);
-      var parametricNodes = gardener.GetAllOperators(op).Where(o => o.GetVariable(GPOperatorLibrary.MANIPULATION) != null);
-      foreach(IOperator subOperator in parametricNodes) {
-        IOperator mutation =(IOperator)subOperator.GetVariable(GPOperatorLibrary.MANIPULATION).Value;
+      var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(GPOperatorLibrary.MANIPULATION) != null);
+      foreach(IFunctionTree subTree in parametricBranches) {
+        IOperator mutation =(IOperator)subTree.Function.GetVariable(GPOperatorLibrary.MANIPULATION).Value;
 
         // store all local variables into a temporary scope
         Scope mutationScope = new Scope();
-        foreach(IVariableInfo info in subOperator.VariableInfos) {
-          if(info.Local) {
-            mutationScope.AddVariable(subOperator.GetVariable(info.FormalName));
-          }
+        foreach(IVariable variable in subTree.LocalVariables) {
+          mutationScope.AddVariable(variable);
         }
 
         tempScope.AddSubScope(mutationScope);

@@ -27,10 +27,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
   public interface IFunction : IOperator {
-    IList<IFunction> SubFunctions { get;}
-    ICollection<IVariable> LocalVariables { get; }
-    IFunction MetaObject { get; }
-    double Evaluate(Dataset dataset, int sampleIndex);
+    double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree);
+    double Apply(Dataset dataset, int sampleIndex, double[] args);
     void Accept(IFunctionVisitor visitor);
   }
 }

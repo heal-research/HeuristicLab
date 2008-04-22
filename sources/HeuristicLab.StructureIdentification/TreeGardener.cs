@@ -30,92 +30,95 @@ using System.Linq;
 using HeuristicLab.Random;
 using HeuristicLab.Operators;
 using HeuristicLab.Selection;
+using HeuristicLab.Functions;
+using System.Collections;
 
 namespace HeuristicLab.StructureIdentification {
   internal class TreeGardener {
     private IRandom random;
-    private IOperatorLibrary opLibrary;
-    private List<IOperator> functions;
-    private List<IOperator> terminals;
+    private GPOperatorLibrary funLibrary;
+    private List<IFunction> functions;
+    private List<IFunction> terminals;
 
-    internal IList<IOperator> Terminals {
+    internal IList<IFunction> Terminals {
       get { return terminals.AsReadOnly(); }
     }
-    private List<IOperator> allOperators;
+    private List<IFunction> allFunctions;
 
-    internal IList<IOperator> AllOperators {
-      get { return allOperators.AsReadOnly(); }
+    internal IList<IFunction> AllFunctions {
+      get { return allFunctions.AsReadOnly(); }
     }
 
-    internal TreeGardener(IRandom random, IOperatorLibrary opLibrary) {
+    internal TreeGardener(IRandom random, GPOperatorLibrary funLibrary) {
       this.random = random;
-      this.opLibrary = opLibrary;
+      this.funLibrary = funLibrary;
 
-      this.allOperators = new List<IOperator>();
-      terminals = new List<IOperator>();
-      functions = new List<IOperator>();
+      this.allFunctions = new List<IFunction>();
+      terminals = new List<IFunction>();
+      functions = new List<IFunction>();
 
       // init functions and terminals based on constraints
-      foreach (IOperator op in opLibrary.Group.Operators) {
+      foreach (IFunction fun in funLibrary.Group.Operators) {
         int maxA, minA;
-        GetMinMaxArity(op, out minA, out maxA);
+        GetMinMaxArity(fun, out minA, out maxA);
         if (maxA == 0) {
-          terminals.Add(op);
+          terminals.Add(fun);
         } else {
-          functions.Add(op);
+          functions.Add(fun);
         }
       }
 
-      allOperators.AddRange(functions);
-      allOperators.AddRange(terminals);
+      allFunctions.AddRange(functions);
+      allFunctions.AddRange(terminals);
     }
 
     #region random initialization
-    internal IOperator CreateRandomTree(ICollection<IOperator> allowedOperators, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
+    internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
 
-      int minTreeHeight = allowedOperators.Select(op => ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data).Min();
+      int minTreeHeight = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data).Min();
       if (minTreeHeight > maxTreeHeight)
         maxTreeHeight = minTreeHeight;
 
-      int minTreeSize = allowedOperators.Select(op => ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data).Min();
+      int minTreeSize = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data).Min();
       if (minTreeSize > maxTreeSize)
         maxTreeSize = minTreeSize;
 
       int treeHeight = random.Next(minTreeHeight, maxTreeHeight + 1);
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
 
-      IOperator[] possibleOperators = allowedOperators.Where(op => ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data <= treeHeight &&
-        ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data <= treeSize).ToArray();
-      IOperator selectedOperator = (IOperator)possibleOperators[random.Next(possibleOperators.Length)].Clone();
+      IFunction[] possibleFunctions = allowedFunctions.Where(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data <= treeHeight &&
+        ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data <= treeSize).ToArray();
+      IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
 
-      IOperator rootOperator = CreateRandomTree(selectedOperator, treeSize, treeHeight, balanceTrees);
-
-      return rootOperator;
+      return CreateRandomTree(selectedFunction, treeSize, treeHeight, balanceTrees);
     }
 
-    internal IOperator CreateRandomTree(int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
+    internal IFunctionTree CreateRandomTree(int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
       if (balanceTrees) {
         if (maxTreeHeight == 1 || maxTreeSize==1) {
-          IOperator selectedTerminal = (IOperator)terminals[random.Next(terminals.Count())].Clone();
-          return selectedTerminal;
+          IFunction selectedTerminal = terminals[random.Next(terminals.Count())];
+          return new FunctionTree(selectedTerminal);
         } else {
-          IOperator[] possibleFunctions = functions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+          IFunction[] possibleFunctions = functions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
             GetMinimalTreeSize(f) <= maxTreeSize).ToArray();
-          IOperator selectedFunction = (IOperator)possibleFunctions[random.Next(possibleFunctions.Length)].Clone();
-          MakeBalancedTree(selectedFunction, maxTreeSize - 1, maxTreeHeight - 1);
-          return selectedFunction;
+          IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+          FunctionTree root = new FunctionTree(selectedFunction);
+          MakeBalancedTree(root, maxTreeSize - 1, maxTreeHeight - 1);
+          return root;
         }
 
       } else {
-        IOperator[] possibleOperators = allOperators.Where(op => GetMinimalTreeHeight(op) <= maxTreeHeight &&
-          GetMinimalTreeSize(op) <= maxTreeSize).ToArray();
-        IOperator selectedOperator = (IOperator)possibleOperators[random.Next(possibleOperators.Length)].Clone();
-        MakeUnbalancedTree(selectedOperator, maxTreeSize - 1, maxTreeHeight - 1);
-        return selectedOperator;
+        IFunction[] possibleFunctions = allFunctions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+          GetMinimalTreeSize(f) <= maxTreeSize).ToArray();
+        IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+        FunctionTree root = new FunctionTree(selectedFunction);
+        MakeUnbalancedTree(root, maxTreeSize - 1, maxTreeHeight - 1);
+        return root;
       }
     }
 
-    internal IOperator CreateRandomTree(IOperator root, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
+    internal IFunctionTree CreateRandomTree(IFunction rootFunction, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
+      IFunctionTree root = new FunctionTree(rootFunction);
       if (balanceTrees) {
         MakeBalancedTree(root, maxTreeSize - 1, maxTreeHeight - 1);
       } else {
@@ -129,11 +132,11 @@ namespace HeuristicLab.StructureIdentification {
     }
 
 
-    private void MakeUnbalancedTree(IOperator parent, int maxTreeSize, int maxTreeHeight) {
+    private void MakeUnbalancedTree(IFunctionTree parent, int maxTreeSize, int maxTreeHeight) {
       if (maxTreeHeight == 0 || maxTreeSize == 0) return;
       int minArity;
       int maxArity;
-      GetMinMaxArity(parent, out minArity, out maxArity);
+      GetMinMaxArity(parent.Function, out minArity, out maxArity);
       if (maxArity >= maxTreeSize) {
         maxArity = maxTreeSize;
       }
@@ -141,22 +144,23 @@ namespace HeuristicLab.StructureIdentification {
       if (actualArity > 0) {
         int maxSubTreeSize = maxTreeSize / actualArity;
         for (int i = 0; i < actualArity; i++) {
-          IOperator[] possibleOperators = GetAllowedSubOperators(parent, i).Where(op => GetMinimalTreeHeight(op) <= maxTreeHeight &&
-            GetMinimalTreeSize(op) <= maxSubTreeSize).ToArray();
-          IOperator selectedOperator = (IOperator)possibleOperators[random.Next(possibleOperators.Length)].Clone();
-          parent.AddSubOperator(selectedOperator, i);
-          MakeUnbalancedTree(selectedOperator, maxSubTreeSize - 1, maxTreeHeight - 1);
+          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+            GetMinimalTreeSize(f) <= maxSubTreeSize).ToArray();
+          IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+          FunctionTree newSubTree = new FunctionTree(selectedFunction);
+          MakeUnbalancedTree(newSubTree, maxSubTreeSize - 1, maxTreeHeight - 1);
+          parent.InsertSubTree(i, newSubTree);
         }
       }
     }
 
     // NOTE: this method doesn't build fully balanced trees because we have constraints on the
-    // types of possible suboperators which can indirectly impose a limit for the depth of a given suboperator
-    private void MakeBalancedTree(IOperator parent, int maxTreeSize, int maxTreeHeight) {
+    // types of possible sub-functions which can indirectly impose a limit for the depth of a given sub-tree
+    private void MakeBalancedTree(IFunctionTree parent, int maxTreeSize, int maxTreeHeight) {
       if (maxTreeHeight == 0 || maxTreeSize == 0) return; // should never happen anyway
       int minArity;
       int maxArity;
-      GetMinMaxArity(parent, out minArity, out maxArity);
+      GetMinMaxArity(parent.Function, out minArity, out maxArity);
       if (maxArity >= maxTreeSize) {
         maxArity = maxTreeSize;
       }
@@ -165,42 +169,42 @@ namespace HeuristicLab.StructureIdentification {
         int maxSubTreeSize = maxTreeSize / actualArity;
         for (int i = 0; i < actualArity; i++) {
           if (maxTreeHeight == 1 || maxSubTreeSize == 1) {
-            IOperator[] possibleTerminals = GetAllowedSubOperators(parent, i).Where(
-              op => GetMinimalTreeHeight(op) <= maxTreeHeight &&
-              GetMinimalTreeSize(op) <= maxSubTreeSize &&
-              IsTerminal(op)).ToArray();
-            IOperator selectedTerminal = (IOperator)possibleTerminals[random.Next(possibleTerminals.Length)].Clone();
-            parent.AddSubOperator(selectedTerminal, i);
+            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(
+              f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+              GetMinimalTreeSize(f) <= maxSubTreeSize &&
+              IsTerminal(f)).ToArray();
+            IFunction selectedTerminal = possibleTerminals[random.Next(possibleTerminals.Length)];
+            IFunctionTree newTree = new FunctionTree(selectedTerminal);
+            parent.InsertSubTree(i, newTree);
           } else {
-            IOperator[] possibleFunctions = GetAllowedSubOperators(parent, i).Where(
-              op => GetMinimalTreeHeight(op) <= maxTreeHeight &&
-              GetMinimalTreeSize(op) <= maxSubTreeSize &&
-              !IsTerminal(op)).ToArray();
-            IOperator selectedFunction = (IOperator)possibleFunctions[random.Next(possibleFunctions.Length)].Clone();
-            parent.AddSubOperator(selectedFunction, i);
-            MakeBalancedTree(selectedFunction, maxSubTreeSize - 1, maxTreeHeight - 1);
+            IFunction[] possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(
+              f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+              GetMinimalTreeSize(f) <= maxSubTreeSize &&
+              !IsTerminal(f)).ToArray();
+            IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+            FunctionTree newTree = new FunctionTree(selectedFunction);
+            parent.InsertSubTree(i, newTree);
+            MakeBalancedTree(newTree, maxSubTreeSize - 1, maxTreeHeight - 1);
           }
         }
       }
     }
 
-    internal CompositeOperation CreateInitializationOperation(ICollection<IOperator> operators, IScope scope) {
+    internal CompositeOperation CreateInitializationOperation(ICollection<IFunctionTree> trees, IScope scope) {
       // needed for the parameter shaking operation
       CompositeOperation initializationOperation = new CompositeOperation();
       Scope tempScope = new Scope("Temp. initialization scope");
 
-      var parametricOperators = operators.Where(o => o.GetVariable(GPOperatorLibrary.INITIALIZATION) != null);
+      var parametricTrees = trees.Where(t => t.Function.GetVariable(GPOperatorLibrary.INITIALIZATION) != null);
 
-      foreach (IOperator op in parametricOperators) {
+      foreach (IFunctionTree tree in parametricTrees) {
         // enqueue an initialization operation for each operator with local variables 
-        IOperator initialization = (IOperator)op.GetVariable(GPOperatorLibrary.INITIALIZATION).Value;
+        IOperator initialization = (IOperator)tree.Function.GetVariable(GPOperatorLibrary.INITIALIZATION).Value;
         Scope initScope = new Scope();
 
         // copy the local variables into a temporary scope used for initialization
-        foreach (VariableInfo info in op.VariableInfos) {
-          if (info.Local) {
-            initScope.AddVariable(op.GetVariable(info.FormalName));
-          }
+        foreach (IVariable variable in tree.LocalVariables) {
+          initScope.AddVariable(variable);
         }
 
         tempScope.AddSubScope(initScope);
@@ -222,43 +226,44 @@ namespace HeuristicLab.StructureIdentification {
     #endregion
 
     #region tree information gathering
-    internal int GetTreeSize(IOperator tree) {
-      return 1 + tree.SubOperators.Sum(f => GetTreeSize(f));
+    internal int GetTreeSize(IFunctionTree tree) {
+      return 1 + tree.SubTrees.Sum(f => GetTreeSize(f));
     }
 
-    internal int GetTreeHeight(IOperator tree) {
-      if (tree.SubOperators.Count == 0) return 1;
-      return 1 + tree.SubOperators.Max(f => GetTreeHeight(f));
+    internal int GetTreeHeight(IFunctionTree tree) {
+      if (tree.SubTrees.Count == 0) return 1;
+      return 1 + tree.SubTrees.Max(f => GetTreeHeight(f));
     }
 
-    internal IOperator GetRandomParentNode(IOperator tree) {
-      List<IOperator> parentNodes = new List<IOperator>();
+    internal IFunctionTree GetRandomParentNode(IFunctionTree tree) {
+      List<IFunctionTree> parentNodes = new List<IFunctionTree>();
 
       // add null for the parent of the root node
       parentNodes.Add(null);
 
-      TreeForEach(tree, delegate(IOperator op) {
-        if (op.SubOperators.Count > 0) {
-          parentNodes.Add(op);
+      TreeForEach(tree, delegate(IFunctionTree possibleParentNode) {
+        if (possibleParentNode.SubTrees.Count > 0) {
+          parentNodes.Add(possibleParentNode);
         }
       });
 
       return parentNodes[random.Next(parentNodes.Count)];
     }
 
-    internal IList<IOperator> GetAllowedSubOperators(IOperator op, int index) {
-      if (op == null) {
-        return allOperators;
+    internal IList<IFunction> GetAllowedSubFunctions(IFunction f, int index) {
+      if (f == null) {
+        return allFunctions;
       } else {
-
-        SubOperatorsConstraintAnalyser analyser = new SubOperatorsConstraintAnalyser();
-        analyser.AllPossibleOperators = allOperators;
-
-        return analyser.GetAllowedOperators(op, index);
+        ItemList slotList = (ItemList)f.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
+        List<IFunction> result = new List<IFunction>();
+        foreach(IFunction function in (ItemList)slotList[index]) {
+          result.Add(function);
+        }
+        return result;
       }
     }
-    internal void GetMinMaxArity(IOperator root, out int minArity, out int maxArity) {
-      foreach (IConstraint constraint in root.Constraints) {
+    internal void GetMinMaxArity(IFunction f, out int minArity, out int maxArity) {
+      foreach (IConstraint constraint in f.Constraints) {
         NumberOfSubOperatorsConstraint theConstraint = constraint as NumberOfSubOperatorsConstraint;
         if (theConstraint != null) {
           minArity = theConstraint.MinOperators.Data;
@@ -270,71 +275,76 @@ namespace HeuristicLab.StructureIdentification {
       minArity = 2;
       maxArity = 2;
     }
-    internal bool IsTerminal(IOperator f) {
+    internal bool IsTerminal(IFunction f) {
       int minArity;
       int maxArity;
       GetMinMaxArity(f, out minArity, out maxArity);
       return minArity == 0 && maxArity == 0;
     }
 
-    internal IList<IOperator> GetAllowedParents(IOperator child, int childIndex) {
-      List<IOperator> parents = new List<IOperator>();
-      foreach (IOperator function in functions) {
-        IList<IOperator> allowedSubOperators = GetAllowedSubOperators(function, childIndex);
-        if (allowedSubOperators.Contains(child, new OperatorEqualityComparer())) {
+    internal IList<IFunction> GetAllowedParents(IFunction child, int childIndex) {
+      List<IFunction> parents = new List<IFunction>();
+      foreach (IFunction function in functions) {
+        ICollection<IFunction> allowedSubFunctions = GetAllowedSubFunctions(function, childIndex);
+        if (allowedSubFunctions.Contains(child)) {
           parents.Add(function);
         }
       }
       return parents;
     }
 
-    internal ICollection<IOperator> GetAllOperators(IOperator root) {
-      List<IOperator> allOps = new List<IOperator>();
-      TreeForEach(root, t => { allOps.Add(t); });
-      return allOps;
+    internal ICollection<IFunctionTree> GetAllSubTrees(IFunctionTree root) {
+      List<IFunctionTree> allTrees = new List<IFunctionTree>();
+      TreeForEach(root, t => { allTrees.Add(t); });
+      return allTrees;
     }
 
     /// <summary>
-    /// returns the height level of op in the tree
-    /// if the op == tree => 1
-    /// if op is in the suboperators of tree => 2
+    /// returns the height level of branch in the tree
+    /// if the branch == tree => 1
+    /// if branch is in the sub-trees of tree => 2
     /// ...
-    /// if op is not found => -1
+    /// if branch is not found => -1
     /// </summary>
-    /// <param name="tree">operator tree to process</param>
-    /// <param name="op">operater that is searched in the tree</param>
+    /// <param name="tree">root of the function tree to process</param>
+    /// <param name="branch">branch that is searched in the tree</param>
     /// <returns></returns>
-    internal int GetNodeLevel(IOperator tree, IOperator op) {
-      return GetNodeLevelHelper(tree, op, 1);
+    internal int GetBranchLevel(IFunctionTree tree, IFunctionTree branch) {
+      return GetBranchLevelHelper(tree, branch, 1);
     }
 
-    private int GetNodeLevelHelper(IOperator tree, IOperator op, int level) {
-      if (op == tree) return level;
+    // 'tail-recursive' helper
+    private int GetBranchLevelHelper(IFunctionTree tree, IFunctionTree branch, int level) {
+      if (branch == tree) return level;
 
-      foreach (IOperator subTree in tree.SubOperators) {
-        int result = GetNodeLevelHelper(subTree, op, level + 1);
+      foreach (IFunctionTree subTree in tree.SubTrees) {
+        int result = GetBranchLevelHelper(subTree, branch, level + 1);
         if (result != -1) return result;
       }
 
       return -1;
     }
 
-    internal bool IsValidTree(IOperator tree) {
-      if (!tree.IsValid())
-        return false;
-      foreach (IOperator subTree in tree.SubOperators) {
-        if (!subTree.IsValid())
-          return false;
+    internal bool IsValidTree(IFunctionTree tree) {
+      foreach(IConstraint constraint in tree.Function.Constraints) {
+        if(constraint is NumberOfSubOperatorsConstraint) {
+          int max = ((NumberOfSubOperatorsConstraint)constraint).MaxOperators.Data;
+          int min = ((NumberOfSubOperatorsConstraint)constraint).MinOperators.Data;
+          if(tree.SubTrees.Count < min || tree.SubTrees.Count > max) 
+            return false;
+        }
       }
-
+      foreach(IFunctionTree subTree in tree.SubTrees) {
+        if(!IsValidTree(subTree)) return false;
+      }
       return true;
     }
 
-    // returns a random node from the specified level in the tree
-    internal IOperator GetRandomNode(IOperator tree, int level) {
+    // returns a random branch from the specified level in the tree
+    internal IFunctionTree GetRandomBranch(IFunctionTree tree, int level) {
       if (level == 0) return tree;
-      List<IOperator> nodes = GetOperatorsAtLevel(tree, level);
-      return nodes[random.Next(nodes.Count)];
+      List<IFunctionTree> branches = GetBranchesAtLevel(tree, level);
+      return branches[random.Next(branches.Count)];
     }
     #endregion
 
@@ -348,55 +358,40 @@ namespace HeuristicLab.StructureIdentification {
       return ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data;
     }
 
-    private void TreeForEach(IOperator tree, Action<IOperator> action) {
+    private void TreeForEach(IFunctionTree tree, Action<IFunctionTree> action) {
       action(tree);
-      foreach (IOperator child in tree.SubOperators) {
-        TreeForEach(child, action);
+      foreach (IFunctionTree subTree in tree.SubTrees) {
+        TreeForEach(subTree, action);
       }
     }
 
-    private List<IOperator> GetOperatorsAtLevel(IOperator tree, int level) {
-      if (level == 1) return new List<IOperator>(tree.SubOperators);
+    private List<IFunctionTree> GetBranchesAtLevel(IFunctionTree tree, int level) {
+      if (level == 1) return new List<IFunctionTree>(tree.SubTrees);
 
-      List<IOperator> result = new List<IOperator>();
-      foreach (IOperator subOperator in tree.SubOperators) {
-        result.AddRange(GetOperatorsAtLevel(subOperator, level - 1));
+      List<IFunctionTree> branches = new List<IFunctionTree>();
+      foreach (IFunctionTree subTree in tree.SubTrees) {
+        branches.AddRange(GetBranchesAtLevel(subTree, level - 1));
       }
-      return result;
+      return branches;
     }
 
 
     #endregion
 
-    internal class OperatorEqualityComparer : IEqualityComparer<IOperator> {
-      #region IEqualityComparer<IOperator> Members
-
-      public bool Equals(IOperator x, IOperator y) {
-        return ((StringData)x.GetVariable(GPOperatorLibrary.TYPE_ID).Value).Data ==
-          ((StringData)y.GetVariable(GPOperatorLibrary.TYPE_ID).Value).Data;
-      }
-
-      public int GetHashCode(IOperator obj) {
-        return ((StringData)obj.GetVariable(GPOperatorLibrary.TYPE_ID).Value).Data.GetHashCode();
-      }
-
-      #endregion
-    }
-
-    internal ICollection<IOperator> GetPossibleParents(List<IOperator> list) {
-      List<IOperator> result = new List<IOperator>();
-      foreach (IOperator op in functions) {
-        if (IsPossibleParent(op, list)) {
-          result.Add(op);
+    internal ICollection<IFunction> GetPossibleParents(List<IFunction> list) {
+      List<IFunction> result = new List<IFunction>();
+      foreach (IFunction f in functions) {
+        if (IsPossibleParent(f, list)) {
+          result.Add(f);
         }
       }
       return result;
     }
 
-    private bool IsPossibleParent(IOperator op, List<IOperator> children) {
+    private bool IsPossibleParent(IFunction f, List<IFunction> children) {
       int minArity;
       int maxArity;
-      GetMinMaxArity(op, out minArity, out maxArity);
+      GetMinMaxArity(f, out minArity, out maxArity);
 
       // note: we can't assume that the operators in the children list have different types!
 
@@ -408,39 +403,39 @@ namespace HeuristicLab.StructureIdentification {
       int nSlots = Math.Max(minArity, children.Count);
 
       SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
-      analyzer.AllPossibleOperators = children;
+      analyzer.AllPossibleOperators = children.Cast<IOperator>().ToArray<IOperator>();
 
-      List<HashSet<IOperator>> slotSets = new List<HashSet<IOperator>>();
+      List<HashSet<IFunction>> slotSets = new List<HashSet<IFunction>>();
 
-      // we iterate through all slots for sub-operators and calculate the set of 
-      // allowed sub-operators for this slot.
+      // we iterate through all slots for sub-trees and calculate the set of 
+      // allowed functions for this slot.
       // we only count those slots that can hold at least one of the children that we should combine
       for (int slot = 0; slot < nSlots; slot++) {
-        HashSet<IOperator> operatorSet = new HashSet<IOperator>(analyzer.GetAllowedOperators(op, slot));
-        if (operatorSet.Count() > 0) {
-          slotSets.Add(operatorSet);
+        HashSet<IFunction> functionSet = new HashSet<IFunction>(analyzer.GetAllowedOperators(f, slot).Cast<IFunction>());
+        if (functionSet.Count() > 0) {
+          slotSets.Add(functionSet);
         }
       }
 
       // ok at the end of this operation we know how many slots of the parent can actually
       // hold one of our children.
       // if the number of slots is smaller than the number of children we can be sure that
-      // we can never combine all children as sub-operators of the operator and thus the operator
+      // we can never combine all children as sub-trees of the function and thus the function
       // can't be a parent.
       if (slotSets.Count() < children.Count()) {
         return false;
       }
 
       // finally we sort the sets by size and beginning from the first set select one
-      // operator for the slot and thus remove it as possible sub-operator from the remaining sets.
-      // when we can successfully assign all available children to a slot the operator is a valid parent
-      // when only a subset of all children can be assigned to slots the operator is no valid parent
+      // function for the slot and thus remove it as possible sub-tree from the remaining sets.
+      // when we can successfully assign all available children to a slot the function is a valid parent
+      // when only a subset of all children can be assigned to slots the function is no valid parent
       slotSets.Sort((p, q) => p.Count() - q.Count());
 
       int assignments = 0;
       for (int i = 0; i < slotSets.Count() - 1; i++) {
         if (slotSets[i].Count > 0) {
-          IOperator selected = slotSets[i].ElementAt(0);
+          IFunction selected = slotSets[i].ElementAt(0);
           assignments++;
           for (int j = i + 1; j < slotSets.Count(); j++) {
             slotSets[j].Remove(selected);

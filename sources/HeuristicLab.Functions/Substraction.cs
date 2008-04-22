@@ -32,7 +32,7 @@ namespace HeuristicLab.Functions {
   public class Substraction : FunctionBase {
     public override string Description {
       get {
-        return @"Substracts the results of sub-operators 2..n from the result of the first sub-operator.
+        return @"Substracts the results of sub-tree 2..n from the result of the first sub-tree.
     (- 3) => -3
     (- 2 3) => -1
     (- 3 4 5) => -6";
@@ -45,28 +45,17 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public Substraction(Substraction source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
 
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-
-      if(SubFunctions.Count == 1) {
-        return -SubFunctions[0].Evaluate(dataset, sampleIndex);
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      if(args.Length == 1) {
+        return -args[0];
       } else {
-        double result = SubFunctions[0].Evaluate(dataset, sampleIndex);
-        for(int i = 1; i < SubFunctions.Count; i++) {
-          result -= SubFunctions[i].Evaluate(dataset, sampleIndex);
+        double result = args[0];
+        for(int i = 1; i < args.Length; i++) {
+          result -= args[i];
         }
         return result;
       }
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Substraction clone = new Substraction(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

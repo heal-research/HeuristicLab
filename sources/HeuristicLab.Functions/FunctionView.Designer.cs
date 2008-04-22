@@ -21,7 +21,7 @@
 
 using System;
 namespace HeuristicLab.Functions {
-  partial class FunctionView {
+  partial class FunctionTreeView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -166,12 +166,12 @@ namespace HeuristicLab.Functions {
       this.treeNodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToClipboardMenuItem});
       this.treeNodeContextMenu.Name = "treeNodeContextMenu";
-      this.treeNodeContextMenu.Size = new System.Drawing.Size(259, 26);
+      this.treeNodeContextMenu.Size = new System.Drawing.Size(248, 26);
       // 
       // copyToClipboardMenuItem
       // 
       this.copyToClipboardMenuItem.Name = "copyToClipboardMenuItem";
-      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(258, 22);
+      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(247, 22);
       this.copyToClipboardMenuItem.Text = "Copy to clip-board (Model-Analyzer)";
       this.copyToClipboardMenuItem.Click += new System.EventHandler(this.copyToClipboardMenuItem_Click);
       // 

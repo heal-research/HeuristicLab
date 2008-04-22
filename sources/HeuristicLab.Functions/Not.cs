@@ -30,7 +30,7 @@ namespace HeuristicLab.Functions {
   public class Not : FunctionBase {
     public override string Description {
       get {
-        return @"Logical NOT operation. Only defined for sub-operator-results 0.0 and 1.0.";
+        return @"Logical NOT operation. Only defined for sub-tree-results 0.0 and 1.0.";
       }
     }
 
@@ -39,22 +39,11 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
     }
 
-    public Not(Not source, IDictionary<Guid, object> clonedObjects)
-      : base(source, clonedObjects) {
-    }
-
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      double result = Math.Round(SubFunctions[0].Evaluate(dataset, sampleIndex));
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      double result = Math.Round(args[0]);
       if(result == 0.0) return 1.0;
       else if(result == 1.0) return 0.0;
       else return double.NaN;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      Not clone = new Not(this, clonedObjects);
-      clonedObjects.Add(clone.Guid, clone);
-      return clone;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

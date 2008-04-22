@@ -35,7 +35,7 @@ namespace HeuristicLab.StructureIdentification {
 
     public GPEvaluatorBase()
       : base() {
-      AddVariableInfo(new VariableInfo("OperatorTree", "The function tree that should be evaluated", typeof(IFunction), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
@@ -45,14 +45,14 @@ namespace HeuristicLab.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      IFunction function = GetVariableValue<IFunction>("OperatorTree", scope, true);
+      IFunctionTree functionTree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
       this.maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
 
-      double result = Evaluate(scope, function, targetVariable, dataset);
+      double result = Evaluate(scope, functionTree, targetVariable, dataset);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Quality"), new DoubleData(result)));
       return null;
     }
 
-    public abstract double Evaluate(IScope scope, IFunction function, int targetVariable, Dataset dataset);
+    public abstract double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset);
   }
 }
