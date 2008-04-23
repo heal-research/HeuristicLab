@@ -36,7 +36,6 @@ namespace HeuristicLab.StructureIdentification {
 
     public StructIdProblemInjector()
       : base() {
-      AddVariableInfo(new VariableInfo("Maximization", "Set to false as default (for MSE)", typeof(BoolData), VariableKind.New));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.New));
       AddVariable(new Variable("Dataset", new Dataset()));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.New));
@@ -52,7 +51,6 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     public override IOperation Apply(IScope scope) {
-      scope.AddVariable(new Variable(scope.TranslateName("Maximization"), new BoolData(false)));
       scope.AddVariable(new Variable(scope.TranslateName("Dataset"), (IItem)GetVariable("Dataset").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), (IItem)GetVariable("TargetVariable").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("MaxTreeHeight"), (IItem)GetVariable("MaxTreeHeight").Value.Clone()));
