@@ -88,13 +88,15 @@ namespace HeuristicLab.DataAnalysis {
 
     public int TrainingSamplesStart {
       get {
-        return metadata["TRAININGSAMPLESSTART"][0].intValue;
+        if(!metadata.ContainsKey("TRAININGSAMPLESTART")) return 0;
+        else return metadata["TRAININGSAMPLESSTART"][0].intValue;
       }
     }
 
     public int TrainingSamplesEnd {
       get {
-        return metadata["TRAININGSAMPLESEND"][0].intValue;
+        if(!metadata.ContainsKey("TRAININGSAMPLEEND")) return rows;
+        else return metadata["TRAININGSAMPLESEND"][0].intValue;
       }
     }
 

@@ -40,10 +40,6 @@ namespace HeuristicLab.StructureIdentification {
       AddVariable(new Variable("Dataset", new Dataset()));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.New));
       AddVariable(new Variable("TargetVariable", new IntData()));
-      AddVariableInfo(new VariableInfo("MaxTreeHeight", "MaxTreeHeight", typeof(IntData), VariableKind.New));
-      AddVariable(new Variable("MaxTreeHeight", new IntData(1)));
-      AddVariableInfo(new VariableInfo("MaxTreeSize", "MaxTreeSize", typeof(IntData), VariableKind.New));
-      AddVariable(new Variable("MaxTreeSize", new IntData(1)));
     }
 
     public override IView CreateView() {
@@ -53,8 +49,6 @@ namespace HeuristicLab.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       scope.AddVariable(new Variable(scope.TranslateName("Dataset"), (IItem)GetVariable("Dataset").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), (IItem)GetVariable("TargetVariable").Value.Clone()));
-      scope.AddVariable(new Variable(scope.TranslateName("MaxTreeHeight"), (IItem)GetVariable("MaxTreeHeight").Value.Clone()));
-      scope.AddVariable(new Variable(scope.TranslateName("MaxTreeSize"), (IItem)GetVariable("MaxTreeSize").Value.Clone()));
       return null;
     }
   }

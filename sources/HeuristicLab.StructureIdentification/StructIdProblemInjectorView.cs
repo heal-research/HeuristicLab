@@ -90,8 +90,6 @@ namespace HeuristicLab.StructureIdentification {
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
 
           ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
-          ((IntData)StructIdProblemInjector.GetVariable("MaxTreeHeight").Value).Data = parser.MaxTreeHeight;
-          ((IntData)StructIdProblemInjector.GetVariable("MaxTreeSize").Value).Data = parser.MaxTreeSize;
           Refresh();
         }
       }
