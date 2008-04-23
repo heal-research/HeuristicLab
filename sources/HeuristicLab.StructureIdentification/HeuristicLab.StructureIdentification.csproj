@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Evaluation\CoefficientOfDeterminationEvaluator.cs" />
+    <Compile Include="Evaluation\MCCEvaluator.cs" />
     <Compile Include="Evaluation\GPEvaluatorBase.cs" />
     <Compile Include="Evaluation\EarlyStoppingMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluation\MeanSquaredErrorEvaluator.cs" />
