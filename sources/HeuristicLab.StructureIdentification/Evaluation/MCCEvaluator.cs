@@ -37,12 +37,13 @@ namespace HeuristicLab.StructureIdentification {
       }
     }
 
-    double limit = 50.0;
     public MCCEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("ClassSeparation", "The value of separation between negative and positive target classification values (for instance 0.5 if negative=0 and positive=1).", typeof(DoubleData), VariableKind.In));
     }
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
+      double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, false).Data;
       double[] estimated = new double[dataset.Rows];
       double[] original = new double[dataset.Rows];
       double positive = 0;
@@ -64,7 +65,7 @@ namespace HeuristicLab.StructureIdentification {
         else negative++;
       }
       Array.Sort(estimated, original);
-      double best_mcc = 0.0;
+      double best_mcc = -1.0;
       double tp = 0;
       double fn = positive;
       double tn = negative;
@@ -75,7 +76,7 @@ namespace HeuristicLab.StructureIdentification {
         } else {
           tn--; fp++;
         }
-        double mcc = (tp * tn - fp * fn) / Math.Sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+        double mcc = (tp * tn - fp * fn) / Math.Sqrt(positive * (tp + fn) * (tn + fp) * negative);
         if(best_mcc < mcc) {
           best_mcc = mcc;
         }
