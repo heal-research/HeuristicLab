@@ -137,7 +137,7 @@ namespace HeuristicLab.StructureIdentification {
       // filter the set of allowed functions and select only from those that fit into the given maximal size and height limits
       IFunction[] possibleFunctions = allowedFunctions.Where(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data <= treeHeight &&
         ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data <= treeSize).ToArray();
-      IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+      IFunction selectedFunction = RandomSelect(possibleFunctions);
 
       // build the tree 
       IFunctionTree root = new FunctionTree(selectedFunction);
@@ -374,12 +374,12 @@ namespace HeuristicLab.StructureIdentification {
     #region private utility methods
     private IFunctionTree CreateRandomRoot(int maxTreeSize, int maxTreeHeight) {
       if(maxTreeHeight == 1 || maxTreeSize == 1) {
-        IFunction selectedTerminal = terminals[random.Next(terminals.Count())];
+        IFunction selectedTerminal = RandomSelect(terminals);
         return new FunctionTree(selectedTerminal);
       } else {
         IFunction[] possibleFunctions = allFunctions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
           GetMinimalTreeSize(f) <= maxTreeSize).ToArray();
-        IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+        IFunction selectedFunction = RandomSelect(possibleFunctions);
         return new FunctionTree(selectedFunction);
       }
     }
@@ -398,7 +398,7 @@ namespace HeuristicLab.StructureIdentification {
         for(int i = 0; i < actualArity; i++) {
           IFunction[] possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
             GetMinimalTreeSize(f) <= maxSubTreeSize).ToArray();
-          IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+          IFunction selectedFunction = RandomSelect(possibleFunctions);
           FunctionTree newSubTree = new FunctionTree(selectedFunction);
           MakeUnbalancedTree(newSubTree, maxSubTreeSize - 1, maxTreeHeight - 1);
           parent.InsertSubTree(i, newSubTree);
@@ -421,8 +421,8 @@ namespace HeuristicLab.StructureIdentification {
         int maxSubTreeSize = maxTreeSize / actualArity;
         for(int i = 0; i < actualArity; i++) {
           if(maxTreeHeight == 1 || maxSubTreeSize == 1) {
-            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(IsTerminal(f)).ToArray();
-            IFunction selectedTerminal = possibleTerminals[random.Next(possibleTerminals.Length)];
+            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(f => IsTerminal(f)).ToArray();
+            IFunction selectedTerminal = RandomSelect(possibleTerminals);
             IFunctionTree newTree = new FunctionTree(selectedTerminal);
             parent.InsertSubTree(i, newTree);
           } else {
@@ -430,7 +430,7 @@ namespace HeuristicLab.StructureIdentification {
               f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
               GetMinimalTreeSize(f) <= maxSubTreeSize &&
               !IsTerminal(f)).ToArray();
-            IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
+            IFunction selectedFunction = RandomSelect(possibleFunctions);
             FunctionTree newTree = new FunctionTree(selectedFunction);
             parent.InsertSubTree(i, newTree);
             MakeBalancedTree(newTree, maxSubTreeSize - 1, maxTreeHeight - 1);
@@ -464,6 +464,25 @@ namespace HeuristicLab.StructureIdentification {
       return branches;
     }
 
+    private IFunction RandomSelect(IList<IFunction> functionSet) {
+      double[] accumulatedTickets = new double[functionSet.Count];
+      double ticketAccumulator = 0;
+      int i = 0;
+      // precalculate the slot-sizes
+      foreach(IFunction function in functionSet) {
+        ticketAccumulator += ((DoubleData)function.GetVariable(GPOperatorLibrary.TICKETS).Value).Data;
+        accumulatedTickets[i] = ticketAccumulator;
+        i++;
+      }
+      // throw ball
+      double r = random.NextDouble() * ticketAccumulator;
+      // find the slot that has been hit
+      for(i = 0; i < accumulatedTickets.Length; i++) {
+        if(r < accumulatedTickets[i]) return functionSet[i];
+      }
+      // sanity check
+      throw new InvalidProgramException(); // should never happen
+    }
 
     #endregion
 
