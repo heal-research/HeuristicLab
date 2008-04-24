@@ -58,7 +58,7 @@ the operator tries to fix the tree by generating random subtrees where necessary
       // parent==null means the whole tree should be deleted.
       // => return a new minimal random tree
       if(parent == null) {
-        IFunctionTree newTree = gardener.CreateRandomTree(1, 1, false);
+        IFunctionTree newTree = gardener.CreateBalancedRandomTree(1, 1);
         // check if the tree is ok
         if(!gardener.IsValidTree(newTree)) {
           throw new InvalidOperationException();

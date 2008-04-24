@@ -58,9 +58,9 @@ namespace HeuristicLab.StructureIdentification {
       int treeSize = random.Next(1, maxTreeSize + 1);
       IFunctionTree root;
       if(random.NextDouble() <= balancedTreesRate) {
-        root = gardener.CreateRandomTree(treeSize, treeHeight, true);
+        root = gardener.CreateBalancedRandomTree(treeSize, treeHeight);
       } else {
-        root = gardener.CreateRandomTree(treeSize, treeHeight, false);
+        root = gardener.CreateBalancedRandomTree(treeSize, treeHeight);
       }
 
       int actualTreeSize = gardener.GetTreeSize(root);
