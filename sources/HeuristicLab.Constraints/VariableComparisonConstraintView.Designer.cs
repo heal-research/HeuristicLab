@@ -76,7 +76,7 @@ namespace HeuristicLab.Constraints {
       this.comparerGroupBox.Location = new System.Drawing.Point(3, 54);
       this.comparerGroupBox.Name = "comparerGroupBox";
       this.comparerGroupBox.Size = new System.Drawing.Size(141, 137);
-      this.comparerGroupBox.TabIndex = 1;
+      this.comparerGroupBox.TabIndex = 4;
       this.comparerGroupBox.TabStop = false;
       this.comparerGroupBox.Text = "Comparer";
       // 
@@ -141,7 +141,7 @@ namespace HeuristicLab.Constraints {
       this.label2.Location = new System.Drawing.Point(3, 31);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(32, 13);
-      this.label2.TabIndex = 4;
+      this.label2.TabIndex = 2;
       this.label2.Text = "Right";
       // 
       // rightVarNameStringDataView
@@ -151,7 +151,7 @@ namespace HeuristicLab.Constraints {
       this.rightVarNameStringDataView.Name = "rightVarNameStringDataView";
       this.rightVarNameStringDataView.Size = new System.Drawing.Size(100, 20);
       this.rightVarNameStringDataView.StringData = null;
-      this.rightVarNameStringDataView.TabIndex = 5;
+      this.rightVarNameStringDataView.TabIndex = 3;
       // 
       // leftVarNameStringDataView
       // 
@@ -160,7 +160,7 @@ namespace HeuristicLab.Constraints {
       this.leftVarNameStringDataView.Name = "leftVarNameStringDataView";
       this.leftVarNameStringDataView.Size = new System.Drawing.Size(100, 20);
       this.leftVarNameStringDataView.StringData = null;
-      this.leftVarNameStringDataView.TabIndex = 6;
+      this.leftVarNameStringDataView.TabIndex = 1;
       // 
       // VariableComparisonConstraintView
       // 
