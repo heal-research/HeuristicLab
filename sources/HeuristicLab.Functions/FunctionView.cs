@@ -256,6 +256,9 @@ namespace HeuristicLab.Functions {
         name = "<";
       }
 
+      public void Visit(GreaterThan greaterThan) {
+        name = ">";
+      }
       #endregion
     }
 
@@ -371,6 +374,10 @@ namespace HeuristicLab.Functions {
 
       public void Visit(LessThan lessThan) {
         VisitFunction("Boolean[0]", lessThan);
+      }
+
+      public void Visit(GreaterThan greaterThan) {
+        VisitFunction("Boolean[4]", greaterThan);
       }
       #endregion
 
