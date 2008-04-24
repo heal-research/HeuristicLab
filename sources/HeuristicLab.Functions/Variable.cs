@@ -31,9 +31,9 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public class Variable : FunctionBase {
 
-    public static readonly string WEIGHT = "Weight";
-    public static readonly string OFFSET = "SampleOffset";
-    public static readonly string INDEX = "Variable";
+    public const string WEIGHT = "Weight";
+    public const string OFFSET = "SampleOffset";
+    public const string INDEX = "Variable";
 
     public override string Description {
       get { return @"Variable reads a value from a dataset, multiplies that value with a given factor and returns the result.

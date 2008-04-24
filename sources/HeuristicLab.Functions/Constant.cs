@@ -30,7 +30,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
   public class Constant : FunctionBase {
-    public static readonly string VALUE = "Value";
+    public const string VALUE = "Value";
 
     public override string Description {
       get { return "Returns the value of local variable 'Value'."; }
