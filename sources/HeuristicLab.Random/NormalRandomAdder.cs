@@ -46,7 +46,7 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
 
       AddVariableInfo(new VariableInfo("Sigma", "Parameter sigma of the normal distribution", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Sigma").Local = true;
-      AddVariable(new Variable("Sigma", new DoubleData(0.0)));
+      AddVariable(new Variable("Sigma", new DoubleData(1.0)));
 
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (actual type is one of: IntData, DoubleData, ConstrainedIntData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the force of the shaking factor (effective sigma = sigma * shakingFactor)", typeof(DoubleData), VariableKind.In));
