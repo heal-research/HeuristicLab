@@ -48,7 +48,7 @@ namespace HeuristicLab.Constraints {
 
     public override string Description {
       get {
-        return @"Compares items in a ConstrainedItemList";
+        return @"Compares variables in a ConstrainedItemList";
       }
     }
 
@@ -69,7 +69,7 @@ namespace HeuristicLab.Constraints {
           left = (tmp.Value as IComparable);
           if (left == null) throw new InvalidCastException("ERROR in VariableComparisonConstraint: Value of the variable on the left side needs to be of type IComparable");
         } else if (tmp != null && tmp.Name.Equals(rightVarName.Data)) {
-          right = tmp;
+          right = tmp.Value;
         }
       }
       if (left != null && right != null) {
