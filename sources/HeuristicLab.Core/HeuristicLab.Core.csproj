@@ -91,6 +91,7 @@
       <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="AliasEventArgs.cs" />
+    <Compile Include="KeyValueEventArgs.cs" />
     <Compile Include="OperatorBaseDescriptionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
