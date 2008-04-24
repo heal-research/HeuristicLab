@@ -54,6 +54,7 @@
     <Compile Include="GreaterThan.cs" />
     <Compile Include="FunctionTree.cs" />
     <Compile Include="IFunctionTree.cs" />
+    <Compile Include="ModelAnalyzerExporter.cs" />
     <Compile Include="ProgrammableFunction.cs" />
     <Compile Include="Equal.cs" />
     <Compile Include="FunctionView.cs">

@@ -134,7 +134,7 @@ namespace HeuristicLab.Functions {
       TreeNode node = functionTreeView.SelectedNode;
       if(node == null || node.Tag == null) return;
 
-      ModelAnalyzerExportVisitor visitor = new ModelAnalyzerExportVisitor();
+      ModelAnalyzerExporter visitor = new ModelAnalyzerExporter();
       visitor.Visit((IFunctionTree)node.Tag);
       Clipboard.SetText(visitor.ModelAnalyzerPrefix);
     }
@@ -260,139 +260,6 @@ namespace HeuristicLab.Functions {
         name = ">";
       }
       #endregion
-    }
-
-    private class ModelAnalyzerExportVisitor : IFunctionVisitor {
-      private string prefix;
-      private string currentIndend = "";
-      private IFunctionTree currentBranch;
-      public string ModelAnalyzerPrefix {
-        get { return prefix; }
-      }
-      public void Reset() {
-        prefix = "";
-      }
-
-      private void VisitFunction(string name, IFunction f) {
-        prefix += currentIndend + "[F]" + name + "(\n";
-      }
-
-      #region IFunctionVisitor Members
-
-      public void Visit(IFunction function) {
-        prefix += function.Name;
-      }
-
-      public void Visit(Addition addition) {
-        VisitFunction("Addition[0]", addition);
-      }
-
-      public void Visit(Constant constant) {
-        double value = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Constant.VALUE).Value).Data;
-        prefix += currentIndend + "[T]Constant(" + value + ";0;0)";
-      }
-
-      public void Visit(Cosinus cosinus) {
-        VisitFunction("Trigonometrics[1]", cosinus);
-      }
-
-      public void Visit(Division division) {
-        VisitFunction("Division[0]", division);
-      }
-
-      public void Visit(Exponential exponential) {
-        VisitFunction("Exponential[0]", exponential);
-      }
-
-      public void Visit(Logarithm logarithm) {
-        VisitFunction("Logarithm[0]", logarithm);
-      }
-
-      public void Visit(Multiplication multiplication) {
-        VisitFunction("Multiplication[0]", multiplication);
-      }
-
-      public void Visit(Power power) {
-        VisitFunction("Power[0]", power);
-      }
-
-      public void Visit(Signum signum) {
-        VisitFunction("Signum[0]", signum);
-      }
-
-      public void Visit(Sinus sinus) {
-        VisitFunction("Trigonometrics[0]", sinus);
-      }
-
-      public void Visit(Sqrt sqrt) {
-        VisitFunction("Sqrt[0]", sqrt);
-      }
-
-      public void Visit(Substraction substraction) {
-        VisitFunction("Substraction[0]", substraction);
-      }
-
-      public void Visit(Tangens tangens) {
-        VisitFunction("Trigonometrics[2]", tangens);
-      }
-
-      public void Visit(HeuristicLab.Functions.Variable variable) {
-        double weight = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.WEIGHT).Value).Data;
-        double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.INDEX).Value).Data;
-        double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.OFFSET).Value).Data;
-
-        prefix += currentIndend + "[T]Variable(" + weight + ";" + index + ";" + -offset + ")";
-      }
-
-      public void Visit(And and) {
-        VisitFunction("Logical[0]", and);
-      }
-
-      public void Visit(Average average) {
-        VisitFunction("N/A (average)", average);
-      }
-
-      public void Visit(IfThenElse ifThenElse) {
-        VisitFunction("Conditional[0]", ifThenElse);
-      }
-
-      public void Visit(Not not) {
-        VisitFunction("Logical[2]", not);
-      }
-
-      public void Visit(Or or) {
-        VisitFunction("Logical[1]", or);
-      }
-
-      public void Visit(Xor xor) {
-        VisitFunction("N/A (xor)", xor);
-      }
-
-      public void Visit(Equal equal) {
-        VisitFunction("Boolean[2]", equal);
-      }
-
-      public void Visit(LessThan lessThan) {
-        VisitFunction("Boolean[0]", lessThan);
-      }
-
-      public void Visit(GreaterThan greaterThan) {
-        VisitFunction("Boolean[4]", greaterThan);
-      }
-      #endregion
-
-      public void Visit(IFunctionTree functionTree) {
-        currentBranch = functionTree;
-        functionTree.Function.Accept(this);
-        currentIndend += "  ";
-        foreach(IFunctionTree subTree in functionTree.SubTrees) {
-          Visit(subTree);
-          prefix += ";\n";
-        }
-        prefix = prefix.TrimEnd(';', '\n');
-        prefix += ")";
-        currentIndend = currentIndend.Remove(0, 2);
-      }
     }
   }
 }
