@@ -253,7 +253,7 @@ namespace HeuristicLab.StructureIdentification {
         variableInfo.DataType == typeof(ConstrainedIntData) ||
         variableInfo.DataType == typeof(DoubleData) ||
         variableInfo.DataType == typeof(IntData)) {
-        shaker = new UniformRandomAdder();
+        shaker = new NormalRandomAdder();
       } else {
         return null;
       }
