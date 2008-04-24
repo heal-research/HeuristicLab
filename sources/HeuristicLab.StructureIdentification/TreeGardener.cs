@@ -111,7 +111,9 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     /// <summary>
-    /// selects a random function from allowedFunctions and creates a (un)balanced random tree with maximal size and height.
+    /// Selects a random function from allowedFunctions and creates a (un)balanced random tree with maximal size and height.
+    /// Max-size and max-height are not accepted as hard constraints, if all functions in the set of allowed functions would
+    /// lead to a bigger tree then the limits are automatically extended to guarantee that we can build a tree.
     /// </summary>
     /// <param name="allowedFunctions">Set of allowed functions.</param>
     /// <param name="maxTreeSize">Maximal size of the tree (number of nodes).</param>
@@ -119,21 +121,25 @@ namespace HeuristicLab.StructureIdentification {
     /// <param name="balanceTrees">Flag determining whether the tree should be balanced or not.</param>
     /// <returns>New random tree</returns>
     internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
+      // get the minimal needed height based on allowed functions and extend the max-height if necessary
       int minTreeHeight = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data).Min();
       if(minTreeHeight > maxTreeHeight)
         maxTreeHeight = minTreeHeight;
-
+      // get the minimal needed size based on allowed functions and extend the max-size if necessary
       int minTreeSize = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data).Min();
       if(minTreeSize > maxTreeSize)
         maxTreeSize = minTreeSize;
 
+      // select a random value for the size and height
       int treeHeight = random.Next(minTreeHeight, maxTreeHeight + 1);
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
 
+      // filter the set of allowed functions and select only from those that fit into the given maximal size and height limits
       IFunction[] possibleFunctions = allowedFunctions.Where(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data <= treeHeight &&
         ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data <= treeSize).ToArray();
       IFunction selectedFunction = possibleFunctions[random.Next(possibleFunctions.Length)];
 
+      // build the tree 
       IFunctionTree root = new FunctionTree(selectedFunction);
       if(balanceTrees) {
         MakeBalancedTree(root, maxTreeSize - 1, maxTreeHeight - 1);
@@ -415,10 +421,7 @@ namespace HeuristicLab.StructureIdentification {
         int maxSubTreeSize = maxTreeSize / actualArity;
         for(int i = 0; i < actualArity; i++) {
           if(maxTreeHeight == 1 || maxSubTreeSize == 1) {
-            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(
-              f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
-              GetMinimalTreeSize(f) <= maxSubTreeSize &&
-              IsTerminal(f)).ToArray();
+            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(IsTerminal(f)).ToArray();
             IFunction selectedTerminal = possibleTerminals[random.Next(possibleTerminals.Length)];
             IFunctionTree newTree = new FunctionTree(selectedTerminal);
             parent.InsertSubTree(i, newTree);
