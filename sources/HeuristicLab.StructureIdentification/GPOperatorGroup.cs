@@ -93,6 +93,9 @@ namespace HeuristicLab.StructureIdentification {
       if(op.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.ALLOWED_SUBOPERATORS, new ItemList()));
       }
+      if(op.GetVariable(GPOperatorLibrary.TICKETS) == null) {
+        op.AddVariable(new Variable(GPOperatorLibrary.TICKETS, new DoubleData(1.0)));
+      }
 
       RecalculateAllowedSuboperators();
       RecalculateMinimalTreeBounds();
@@ -280,13 +283,13 @@ namespace HeuristicLab.StructureIdentification {
 
     public override void RemoveOperator(IOperator op) {
       base.RemoveOperator(op);
-
       op.RemoveVariable(GPOperatorLibrary.MANIPULATION);
       op.RemoveVariable(GPOperatorLibrary.INITIALIZATION);
       op.RemoveVariable(GPOperatorLibrary.TYPE_ID);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_SIZE);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_HEIGHT);
       op.RemoveVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS);
+      op.RemoveVariable(GPOperatorLibrary.TICKETS);
 
       OnOperatorRemoved(op);
     }
