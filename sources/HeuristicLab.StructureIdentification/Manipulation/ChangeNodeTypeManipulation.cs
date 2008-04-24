@@ -127,19 +127,19 @@ resulting in a valid tree again.";
   
 
     private IFunctionTree ChangeTerminalType(IFunctionTree parent, IFunctionTree child, int childIndex, TreeGardener gardener, MersenneTwister random) {
-      IList<IFunction> allowedChildren;
+      IList<IFunction> allowedTerminals;
       if (parent == null) {
-        allowedChildren = gardener.Terminals;
+        allowedTerminals = gardener.Terminals;
       } else {
-        allowedChildren = new List<IFunction>();
+        allowedTerminals = new List<IFunction>();
         var allAllowedChildren = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
         foreach(IFunction c in allAllowedChildren) {
-          if(gardener.IsTerminal(c)) allowedChildren.Add(c);
+          if(gardener.IsTerminal(c)) allowedTerminals.Add(c);
         }
       }
       // selecting from the terminals should always work since the current child was also a terminal
       // so in the worst case we will just create a new terminal of the same type again.
-      return gardener.CreateRandomTree(allowedChildren[random.Next(allowedChildren.Count)], 1, 1, false);
+      return gardener.CreateRandomTree(allowedTerminals, 1, 1);
     }
 
     private IFunctionTree ChangeFunctionType(IFunctionTree parent, IFunctionTree child, int childIndex, TreeGardener gardener, MersenneTwister random,
