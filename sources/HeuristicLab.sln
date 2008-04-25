@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Grid", "Heuris
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ES", "HeuristicLab.ES\HeuristicLab.ES.csproj", "{2E6112A7-3A94-406D-A28C-38AC2D324DCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SQLite", "HeuristicLab.SQLite\HeuristicLab.SQLite.csproj", "{6960CBCD-E44B-49B0-BA86-671091C42C36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,10 @@ Global
 		{2E6112A7-3A94-406D-A28C-38AC2D324DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6112A7-3A94-406D-A28C-38AC2D324DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E6112A7-3A94-406D-A28C-38AC2D324DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6960CBCD-E44B-49B0-BA86-671091C42C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6960CBCD-E44B-49B0-BA86-671091C42C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6960CBCD-E44B-49B0-BA86-671091C42C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6960CBCD-E44B-49B0-BA86-671091C42C36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
