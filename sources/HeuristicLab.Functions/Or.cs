@@ -40,21 +40,30 @@ Special form, evaluation stops at first sub-tree that evaluates to 1.0 (true).";
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
-      foreach(IFunctionTree subTree in tree.SubTrees) {
+    public override IFunctionTree GetTreeNode() {
+      return new OrFunctionTree(this);
+    }
+    // or is a special form and can't be applied
+    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotImplementedException();
+    }
+    public override void Accept(IFunctionVisitor visitor) {
+      visitor.Visit(this);
+    }
+  }
+
+  class OrFunctionTree : FunctionTree {
+    public OrFunctionTree() : base() { }
+    public OrFunctionTree(Or or) : base(or) { }
+
+    public override double Evaluate(Dataset dataset, int sampleIndex) {
+      foreach(IFunctionTree subTree in SubTrees) {
         double result = Math.Round(subTree.Evaluate(dataset, sampleIndex));
         if(result == 1.0) return 1.0; // sub-tree evaluates to 1.0 (true) return 1.0
         else if(result != 0.0) return double.NaN;
       }
       // all sub-trees evaluated to 0.0 (false) return false
       return 0.0;
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotImplementedException();
-    }
-    public override void Accept(IFunctionVisitor visitor) {
-      visitor.Visit(this);
     }
   }
 }

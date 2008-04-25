@@ -27,7 +27,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
   public interface IFunction : IOperator {
-    double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree);
+    IFunctionTree GetTreeNode();
     double Apply(Dataset dataset, int sampleIndex, double[] args);
     void Accept(IFunctionVisitor visitor);
   }

@@ -34,22 +34,14 @@ namespace HeuristicLab.Functions {
   /// </summary>
   public abstract class FunctionBase : OperatorBase, IFunction {
     
-    public virtual double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
-      if(tree.SubTrees.Count > 0) {
-        double[] evaluationResults = new double[tree.SubTrees.Count];
-        for(int i = 0; i < evaluationResults.Length; i++) {
-          evaluationResults[i] = tree.SubTrees[i].Evaluate(dataset, sampleIndex);
-        }
-        return Apply(dataset, sampleIndex, evaluationResults);
-      } else {
-        return Apply(dataset, sampleIndex, null);
-      }
-    }
-
     public abstract double Apply(Dataset dataset, int sampleIndex, double[] args);
 
     public virtual void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
+    }
+
+    public virtual IFunctionTree GetTreeNode() {
+      return new FunctionTree(this);
     }
 
     // operator-tree style evaluation is not supported for functions.

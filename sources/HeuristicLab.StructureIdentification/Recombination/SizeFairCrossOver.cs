@@ -222,7 +222,7 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
       ICollection<IFunction> possibleParents = gardener.GetPossibleParents(new List<IFunction>() { f.Function, g.Function });
       if(possibleParents.Count == 0) throw new InvalidProgramException();
       // and select a random one
-      IFunctionTree parent = new FunctionTree(possibleParents.ElementAt(random.Next(possibleParents.Count())));
+      IFunctionTree parent = possibleParents.ElementAt(random.Next(possibleParents.Count())).GetTreeNode();
 
       int minArity;
       int maxArity;

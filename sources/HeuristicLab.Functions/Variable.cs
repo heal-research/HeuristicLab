@@ -67,15 +67,8 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
 
-    // variable can be evaluated directly
-    // evaluation reads local variables weight, index, offset from function-tree and returns the variable-value * weight
-    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
-      double w = ((ConstrainedDoubleData)tree.GetLocalVariable(WEIGHT).Value).Data;
-      int v = ((ConstrainedIntData)tree.GetLocalVariable(INDEX).Value).Data;
-      int offset = ((ConstrainedIntData)tree.GetLocalVariable(OFFSET).Value).Data;
-
-      if(sampleIndex + offset < 0 || sampleIndex + offset >= dataset.Rows) return double.NaN;
-      return w * dataset.GetValue(sampleIndex + offset, v);
+    public override IFunctionTree GetTreeNode() {
+      return new VariableFunctionTree(this);
     }
 
     // can't apply a variable
@@ -85,6 +78,37 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
+    }
+  }
+  class VariableFunctionTree : FunctionTree {
+    private ConstrainedDoubleData weight;
+    private ConstrainedIntData index;
+    private ConstrainedIntData offset;
+
+    public VariableFunctionTree() : base() { }
+    public VariableFunctionTree(Variable variable) : base(variable) {
+      UpdateCachedValues();
+    }
+
+    protected void UpdateCachedValues() {
+      weight = (ConstrainedDoubleData)GetLocalVariable(Variable.WEIGHT).Value;
+      index = (ConstrainedIntData)GetLocalVariable(Variable.INDEX).Value;
+      offset = (ConstrainedIntData)GetLocalVariable(Variable.OFFSET).Value;
+    }
+
+    public override double Evaluate(Dataset dataset, int sampleIndex) {
+      return weight.Data * dataset.GetValue(sampleIndex + offset.Data, index.Data);
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      VariableFunctionTree clone = (VariableFunctionTree)base.Clone(clonedObjects);
+      clone.UpdateCachedValues();
+      return clone;
+    }
+
+    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      UpdateCachedValues();
     }
   }
 }

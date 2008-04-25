@@ -34,12 +34,14 @@ namespace HeuristicLab.Functions {
     private List<IVariable> localVariables;
     private IFunction function;
 
-    public FunctionTree() : base() {
+    public FunctionTree()
+      : base() {
       subTrees = new List<IFunctionTree>();
       localVariables = new List<IVariable>();
     }
 
-    public FunctionTree(IFunction function) : this() {
+    internal FunctionTree(IFunction function)
+      : this() {
       this.function = function;
       // create and store clones of all local variables of the function
       foreach(VariableInfo info in function.VariableInfos) {
@@ -90,8 +92,12 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    public double Evaluate(Dataset dataset, int sampleIndex) {
-      return function.Evaluate(dataset, sampleIndex, this);
+    public virtual double Evaluate(Dataset dataset, int sampleIndex) {
+      double[] evaluationResults = new double[SubTrees.Count];
+      for(int i = 0; i < evaluationResults.Length; i++) {
+        evaluationResults[i] = SubTrees[i].Evaluate(dataset, sampleIndex);
+      }
+      return function.Apply(dataset, sampleIndex, evaluationResults);
     }
     #endregion
 

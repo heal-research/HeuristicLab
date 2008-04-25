@@ -51,9 +51,8 @@ namespace HeuristicLab.Functions {
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
 
-    // constant is evaluated directly. Evaluation reads the local variable value from the tree and returns
-    public override double Evaluate(Dataset dataset, int sampleIndex, IFunctionTree tree) {
-      return ((ConstrainedDoubleData)tree.GetLocalVariable(VALUE).Value).Data;
+    public override IFunctionTree GetTreeNode() {
+      return new ConstantFunctionTree(this);
     }
 
     // can't apply a constant
@@ -63,6 +62,33 @@ namespace HeuristicLab.Functions {
 
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
+    }
+  }
+
+  class ConstantFunctionTree : FunctionTree {
+    private ConstrainedDoubleData value;
+    public ConstantFunctionTree() : base() { }
+    public ConstantFunctionTree(Constant constant) : base(constant) {
+      UpdateCachedValues();
+    }
+
+    private void UpdateCachedValues() {
+      value = (ConstrainedDoubleData)GetLocalVariable(Constant.VALUE).Value;
+    }
+
+    public override double Evaluate(Dataset dataset, int sampleIndex) {
+      return value.Data;
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      ConstantFunctionTree clone = (ConstantFunctionTree)base.Clone(clonedObjects);
+      clone.UpdateCachedValues();
+      return clone;
+    }
+
+    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      UpdateCachedValues();
     }
   }
 }

@@ -155,7 +155,7 @@ resulting in a valid tree again.";
       int minArity;
       int maxArity;
       // create a new tree-node for a randomly selected function
-      IFunctionTree newTree = new FunctionTree(allowedFunctions[random.Next(allowedFunctions.Count)]);
+      IFunctionTree newTree = allowedFunctions[random.Next(allowedFunctions.Count)].GetTreeNode();
       gardener.GetMinMaxArity(newTree.Function, out minArity, out maxArity);
       // if the old child had too many sub-trees then the new child should keep as many sub-trees as possible
       if (actualArity > maxArity)
