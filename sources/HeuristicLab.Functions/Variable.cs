@@ -97,6 +97,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
     }
 
     public override double Evaluate(Dataset dataset, int sampleIndex) {
+      if(sampleIndex + offset.Data < 0 || sampleIndex + offset.Data >= dataset.Rows) return double.NaN;
       return weight.Data * dataset.GetValue(sampleIndex + offset.Data, index.Data);
     }
 
