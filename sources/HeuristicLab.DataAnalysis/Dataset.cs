@@ -38,6 +38,8 @@ namespace HeuristicLab.DataAnalysis {
 
     private double[] samples;
     private int rows;
+    Dictionary<int, Dictionary<int, double>>[] cachedMeans;
+    Dictionary<int, Dictionary<int, double>>[] cachedRanges;
 
     public int Rows {
       get { return rows; }
@@ -49,8 +51,6 @@ namespace HeuristicLab.DataAnalysis {
       get { return columns; }
       set { columns = value; }
     }
-    private Dictionary<int, double[]>[] ranges;
-    private Dictionary<int, double[]>[] means;
 
     public double GetValue(int i, int j) {
       return samples[columns * i + j];
@@ -93,12 +93,12 @@ namespace HeuristicLab.DataAnalysis {
     private void CreateDictionaries() {
       // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
 
-      means = new Dictionary<int, double[]>[columns];
-      ranges = new Dictionary<int, double[]>[columns];
+      cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
+      cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
 
       for(int i = 0; i < columns; i++) {
-        means[i] = new Dictionary<int, double[]>();
-        ranges[i] = new Dictionary<int, double[]>();
+        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
+        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
       }
     }
 
@@ -200,12 +200,18 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetMean(int column, int from, int to) {
-      double[] values = new double[to - from + 1];
-      for(int sample = from; sample <= to; sample++) {
-        values[sample - from] = GetValue(sample, column);
+      if(!cachedMeans[column].ContainsKey(from) || !cachedMeans[column][from].ContainsKey(to)) {
+        double[] values = new double[to - from + 1];
+        for(int sample = from; sample <= to; sample++) {
+          values[sample - from] = GetValue(sample, column);
+        }
+        double mean = Statistics.Mean(values);
+        if(!cachedMeans[column].ContainsKey(from)) cachedMeans[column][from] = new Dictionary<int, double>();
+        cachedMeans[column][from][to] = mean;
+        return mean;
+      } else {
+        return cachedMeans[column][from][to];
       }
-
-      return Statistics.Mean(values);
     }
 
     public double GetRange(int column) {
@@ -213,12 +219,18 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetRange(int column, int from, int to) {
-      double[] values = new double[to - from + 1];
-      for(int sample = from; sample <= to; sample++) {
-        values[sample - from] = GetValue(sample, column);
+      if(!cachedRanges[column].ContainsKey(from) || !cachedRanges[column][from].ContainsKey(to)) {
+        double[] values = new double[to - from + 1];
+        for(int sample = from; sample <= to; sample++) {
+          values[sample - from] = GetValue(sample, column);
+        }
+        double range = Statistics.Range(values);
+        if(!cachedRanges[column].ContainsKey(from)) cachedRanges[column][from] = new Dictionary<int, double>();
+        cachedRanges[column][from][to] = range;
+        return range;
+      } else {
+        return cachedRanges[column][from][to];
       }
-
-      return Statistics.Range(values);
     }
   }
 }
