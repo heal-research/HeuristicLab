@@ -33,13 +33,13 @@ namespace HeuristicLab.Data {
       listView.View = View.Details;
       listView.Columns[0].Text = "Key";
       listView.Columns[1].Text = "Value";
+      valueTypeTextBox.Text = typeof(V).ToString();
+      keyTypeTextBox.Text = typeof(K).ToString();
     }
 
     public ItemDictionaryView(ItemDictionary<K, V> dictionary)
       : this() {
       ItemDictionary = dictionary;
-      valueTypeTextBox.Text = typeof(V).ToString();
-      keyTypeTextBox.Text = typeof(K).ToString();
     }
 
     protected override void RemoveItemEvents() {
