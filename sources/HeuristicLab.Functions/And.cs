@@ -66,7 +66,14 @@ stopped as soon as one of the sub-trees evaluates to 0.0 (false).";
         else if(result != 1.0) return double.NaN;
       }
       // all sub-trees evaluated to 1.0 (true) => return 1.0 (true)
-      return 1.0;      
+      return 1.0;
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      AndFunctionTree clone = new AndFunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
+      return clone;
     }
   }
 }

@@ -92,8 +92,12 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
+    double[] evaluationResults;
     public virtual double Evaluate(Dataset dataset, int sampleIndex) {
-      double[] evaluationResults = new double[SubTrees.Count];
+      // lazy creation of evaluationResults to unburden the GC
+      if(evaluationResults == null) {
+        evaluationResults = new double[SubTrees.Count];
+      }
       for(int i = 0; i < evaluationResults.Length; i++) {
         evaluationResults[i] = SubTrees[i].Evaluate(dataset, sampleIndex);
       }
@@ -127,15 +131,20 @@ namespace HeuristicLab.Functions {
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      FunctionTree clone = (FunctionTree)base.Clone(clonedObjects);
-      foreach(IFunctionTree tree in subTrees) {
-        clone.AddSubTree((IFunctionTree)tree.Clone(clonedObjects));
-      }
+      FunctionTree clone = new FunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
+      return clone;
+    }
+
+    public void FillClone(FunctionTree clone, IDictionary<Guid, object> clonedObjects) {
+      clone.function = function;
       foreach(IVariable variable in localVariables) {
         clone.AddVariable((IVariable)variable.Clone(clonedObjects));
       }
-      clone.function = function;
-      return clone;
+      foreach(IFunctionTree tree in subTrees) {
+        clone.AddSubTree((IFunctionTree)tree.Clone(clonedObjects));
+      }
     }
 
     public override IView CreateView() {

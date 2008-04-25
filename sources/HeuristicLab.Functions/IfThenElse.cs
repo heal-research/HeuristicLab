@@ -64,5 +64,12 @@ of the third sub-tree if the first sub-tree evaluates to >= 0.5.";
       else if(condition >= .5) return SubTrees[2].Evaluate(dataset, sampleIndex);
       else return double.NaN;
     }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      IfThenElseFunctionTree clone = new IfThenElseFunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
+      return clone;
+    }
   }
 }

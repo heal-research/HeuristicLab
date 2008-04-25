@@ -101,7 +101,9 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      VariableFunctionTree clone = (VariableFunctionTree)base.Clone(clonedObjects);
+      VariableFunctionTree clone = new VariableFunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
       clone.UpdateCachedValues();
       return clone;
     }

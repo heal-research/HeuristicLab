@@ -81,7 +81,9 @@ namespace HeuristicLab.Functions {
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ConstantFunctionTree clone = (ConstantFunctionTree)base.Clone(clonedObjects);
+      ConstantFunctionTree clone = new ConstantFunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
       clone.UpdateCachedValues();
       return clone;
     }

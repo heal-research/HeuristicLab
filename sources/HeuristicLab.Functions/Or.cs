@@ -65,5 +65,12 @@ Special form, evaluation stops at first sub-tree that evaluates to 1.0 (true).";
       // all sub-trees evaluated to 0.0 (false) return false
       return 0.0;
     }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      OrFunctionTree clone = new OrFunctionTree();
+      clonedObjects.Add(clone.Guid, clone);
+      FillClone(clone, clonedObjects);
+      return clone;
+    }
   }
 }
