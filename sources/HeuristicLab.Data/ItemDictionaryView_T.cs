@@ -8,14 +8,14 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
-  public partial class ItemDictionaryView<K, V> : ViewBase 
+  public partial class ItemDictionaryView<K, V> : ViewBase
     where K : IItem
     where V : IItem {
 
     private EditKeyValueDialog editKeyValueDialog;
 
-    public ItemDictionary<K,V> ItemDictionary {
-      get { return (ItemDictionary<K,V>) Item; }
+    public ItemDictionary<K, V> ItemDictionary {
+      get { return (ItemDictionary<K, V>) Item; }
       set { base.Item = value; }
     }
 
@@ -28,16 +28,18 @@ namespace HeuristicLab.Data {
       return item;
     }
 
-    public ItemDictionaryView() : this(new ItemDictionary<K,V>()) { }
-
-    public ItemDictionaryView(ItemDictionary<K,V> dictionary) {
+    public ItemDictionaryView() {
       InitializeComponent();
-      ItemDictionary = dictionary;
       listView.View = View.Details;
       listView.Columns[0].Text = "Key";
       listView.Columns[1].Text = "Value";
+    }
+
+    public ItemDictionaryView(ItemDictionary<K, V> dictionary)
+      : this() {
+      ItemDictionary = dictionary;
       valueTypeTextBox.Text = typeof(V).ToString();
-      keyTypeTextBox.Text = typeof(K).ToString(); 
+      keyTypeTextBox.Text = typeof(K).ToString();
     }
 
     protected override void RemoveItemEvents() {
@@ -132,17 +134,21 @@ namespace HeuristicLab.Data {
       detailsPanel.Enabled = false;
       keyPanel.Enabled = false;
       removeButton.Enabled = false;
-
-      foreach (ListViewItem item in listView.Items) {
-        ((IItem) item.SubItems[0]).Changed -= new EventHandler(Item_Changed);
-        ((IItem) item.SubItems[1]).Changed -= new EventHandler(Item_Changed);
-      }
-      listView.Items.Clear();
-      foreach (KeyValuePair<K, V> data in ItemDictionary) {
-        ListViewItem item = CreateListViewItem(data.Key, data.Value);
-        listView.Items.Add(item);
-        data.Key.Changed += new EventHandler(Item_Changed);
-        data.Value.Changed += new EventHandler(Item_Changed);
+      if (ItemDictionary != null) {
+        foreach (ListViewItem item in listView.Items) {
+          ((IItem) item.SubItems[0]).Changed -= new EventHandler(Item_Changed);
+          ((IItem) item.SubItems[1]).Changed -= new EventHandler(Item_Changed);
+        }
+        listView.Items.Clear();
+        foreach (KeyValuePair<K, V> data in ItemDictionary) {
+          ListViewItem item = CreateListViewItem(data.Key, data.Value);
+          listView.Items.Add(item);
+          data.Key.Changed += new EventHandler(Item_Changed);
+          data.Value.Changed += new EventHandler(Item_Changed);
+        }
+        addButton.Enabled = true; 
+      } else {
+        addButton.Enabled = false; 
       }
     }
     #endregion
