@@ -199,34 +199,8 @@ namespace HeuristicLab.DataAnalysis {
       return GetMean(column, 0, Rows-1);
     }
 
-    // return value of GetMean should be memoized because it is called repeatedly in Evaluators
     public double GetMean(int column, int from, int to) {
-      Dictionary<int, double[]> columnMeans = means[column];
-      if(columnMeans.ContainsKey(from)) {
-        double[] fromMeans = columnMeans[from];
-        if(fromMeans[to-from] >= 0.0) {
-          // already calculated
-          return fromMeans[to-from];
-        } else {
-          // not yet calculated => calculate
-          fromMeans[to-from] = CalculateMean(column, from, to);
-          return fromMeans[to-from];
-        }
-      } else {
-        // never saw this from-index => create a new array, initialize and recalculate for to-index
-        double[] fromMeans = new double[rows - from];
-        // fill with negative values to indicate which means have already been calculated
-        for(int i=0;i<fromMeans.Length;i++) {fromMeans[i] = -1.0;}
-        // store new array in the dictionary
-        columnMeans[from] = fromMeans;
-        // calculate for specific to-index
-        fromMeans[to-from] = CalculateMean(column, from, to);
-        return fromMeans[to-from];
-      }
-    }
-
-    private double CalculateMean(int column, int from, int to) {
-      double[] values = new double[to - from +1];
+      double[] values = new double[to - from + 1];
       for(int sample = from; sample <= to; sample++) {
         values[sample - from] = GetValue(sample, column);
       }
@@ -238,33 +212,7 @@ namespace HeuristicLab.DataAnalysis {
       return GetRange(column, 0, Rows-1);
     }
 
-    // return value of GetRange should be memoized because it is called repeatedly in Evaluators
     public double GetRange(int column, int from, int to) {
-      Dictionary<int, double[]> columnRanges = ranges[column];
-      if(columnRanges.ContainsKey(from)) {
-        double[] fromRanges = columnRanges[from];
-        if(fromRanges[to-from] >= 0.0) {
-          // already calculated
-          return fromRanges[to-from];
-        } else {
-          // not yet calculated => calculate
-          fromRanges[to-from] = CalculateRange(column, from, to);
-          return fromRanges[to-from];
-        }
-      } else {
-        // never saw this from-index => create a new array, initialize and recalculate for to-index
-        double[] fromRanges = new double[rows - from];
-        // fill with negative values to indicate which means have already been calculated
-        for(int i = 0; i < fromRanges.Length; i++) { fromRanges[i] = -1.0; }
-        // store in dictionary
-        columnRanges[from] = fromRanges;
-        // calculate for specific to-index
-        fromRanges[to-from] = CalculateRange(column, from, to);
-        return fromRanges[to-from];
-      }
-    }
-
-    private double CalculateRange(int column, int from, int to) {
       double[] values = new double[to - from + 1];
       for(int sample = from; sample <= to; sample++) {
         values[sample - from] = GetValue(sample, column);
