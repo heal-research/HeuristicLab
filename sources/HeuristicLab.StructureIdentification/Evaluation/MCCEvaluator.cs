@@ -42,10 +42,14 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("ClassSeparation", "The value of separation between negative and positive target classification values (for instance 0.5 if negative=0 and positive=1).", typeof(DoubleData), VariableKind.In));
     }
 
+    private double[] original = new double[1];
+    private double[] estimated = new double[1];
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, false).Data;
-      double[] estimated = new double[dataset.Rows];
-      double[] original = new double[dataset.Rows];
+      if(estimated.Length != dataset.Rows) {
+        estimated = new double[dataset.Rows];
+        original = new double[dataset.Rows];
+      }
       double positive = 0;
       double negative = 0;
       double targetMean = dataset.GetMean(targetVariable);
