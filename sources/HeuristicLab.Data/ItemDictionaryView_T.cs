@@ -33,13 +33,7 @@ namespace HeuristicLab.Data {
     public ItemDictionaryView(ItemDictionary<K,V> dictionary) {
       InitializeComponent();
       ItemDictionary = dictionary;
-      ImageList imageListSmall = new ImageList();
-      listView.SmallImageList = imageListSmall;
       listView.View = View.Details;
-      imageListSmall.Images.Add(Bitmap.FromFile(@"C:\Documents and Settings\Monika Kofler\Desktop\material.bmp"));
-      imageListSmall.Images.Add(Bitmap.FromFile(@"C:\Documents and Settings\Monika Kofler\Desktop\demand.bmp"));
-      imageListSmall.Images.Add(Bitmap.FromFile(@"C:\Documents and Settings\Monika Kofler\Desktop\job.bmp"));
-      imageListSmall.Images.Add(Bitmap.FromFile(@"C:\Documents and Settings\Monika Kofler\Desktop\tool.bmp"));
       listView.Columns[0].Text = "Key";
       listView.Columns[1].Text = "Value";
       valueTypeTextBox.Text = typeof(V).ToString();
