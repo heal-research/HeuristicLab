@@ -420,16 +420,18 @@ namespace HeuristicLab.StructureIdentification {
       if(actualArity > 0) {
         int maxSubTreeSize = maxTreeSize / actualArity;
         for(int i = 0; i < actualArity; i++) {
-          if(maxTreeHeight == 1 || maxSubTreeSize == 1) {
-            IFunction[] possibleTerminals = GetAllowedSubFunctions(parent.Function, i).Where(f => IsTerminal(f)).ToArray();
-            IFunction selectedTerminal = RandomSelect(possibleTerminals);
+          // first try to find a function that fits into the maxHeight and maxSize limits 
+          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(
+            f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+            GetMinimalTreeSize(f) <= maxSubTreeSize &&
+            !IsTerminal(f)).ToArray();
+          // no possible function found => extend function set to terminals
+          if(possibleFunctions.Length == 0) {
+            possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(f => IsTerminal(f)).ToArray();
+            IFunction selectedTerminal = RandomSelect(possibleFunctions);
             IFunctionTree newTree = selectedTerminal.GetTreeNode();
             parent.InsertSubTree(i, newTree);
           } else {
-            IFunction[] possibleFunctions = GetAllowedSubFunctions(parent.Function, i).Where(
-              f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
-              GetMinimalTreeSize(f) <= maxSubTreeSize &&
-              !IsTerminal(f)).ToArray();
             IFunction selectedFunction = RandomSelect(possibleFunctions);
             IFunctionTree newTree = selectedFunction.GetTreeNode();
             parent.InsertSubTree(i, newTree);
