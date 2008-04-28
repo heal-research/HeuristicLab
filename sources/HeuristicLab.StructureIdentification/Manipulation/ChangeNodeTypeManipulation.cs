@@ -155,8 +155,8 @@ resulting in a valid tree again.";
       int minArity;
       int maxArity;
       // create a new tree-node for a randomly selected function
-      IFunctionTree newTree = allowedFunctions[random.Next(allowedFunctions.Count)].GetTreeNode();
-      gardener.GetMinMaxArity(newTree.Function, out minArity, out maxArity);
+      IFunction selectedFunction = allowedFunctions[random.Next(allowedFunctions.Count)];
+      gardener.GetMinMaxArity(selectedFunction, out minArity, out maxArity);
       // if the old child had too many sub-trees then the new child should keep as many sub-trees as possible
       if (actualArity > maxArity)
         actualArity = maxArity;
@@ -164,14 +164,15 @@ resulting in a valid tree again.";
         actualArity = minArity;
       // create a list that holds old sub-trees that we can reuse in the new tree
       List<IFunctionTree> availableSubTrees = new List<IFunctionTree>(child.SubTrees);
-      List<IFunctionTree> freshSubTrees = new List<IFunctionTree>() { newTree };
+      List<IFunctionTree> freshSubTrees = new List<IFunctionTree>();
+      IFunctionTree newTree = selectedFunction.GetTreeNode();
       // randomly select the sub-trees that we keep
       for (int i = 0; i < actualArity; i++) {
         // fill all sub-tree slots of the new tree
         // if for a given slot i there are multiple existing sub-trees that can be used in that slot
         // then use a random existing sub-tree. When there are no existing sub-trees
         // that fit in the given slot then create a new random tree and use it for the slot
-        ICollection<IFunction> allowedSubFunctions = gardener.GetAllowedSubFunctions(newTree.Function, i);
+        ICollection<IFunction> allowedSubFunctions = gardener.GetAllowedSubFunctions(selectedFunction, i);
         var matchingSubTrees = availableSubTrees.Where(subTree => allowedSubFunctions.Contains(subTree.Function));
         if (matchingSubTrees.Count() > 0) {
           IFunctionTree selectedSubTree = matchingSubTrees.ElementAt(random.Next(matchingSubTrees.Count()));
@@ -185,6 +186,7 @@ resulting in a valid tree again.";
           newTree.InsertSubTree(i, freshTree);
         }
       }
+      freshSubTrees.Add(newTree);
       uninitializedBranches = freshSubTrees;
       return newTree;
     }
