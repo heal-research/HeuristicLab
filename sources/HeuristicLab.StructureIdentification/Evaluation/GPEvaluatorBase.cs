@@ -32,13 +32,17 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.StructureIdentification {
   public abstract class GPEvaluatorBase : OperatorBase {
     protected double maximumPunishment;
+    protected int treeSize;
+    protected double totalEvaluatedNodes;
 
     public GPEvaluatorBase()
       : base() {
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TotalEvaluatedNodes", "Number of evaluated nodes", typeof(DoubleData), VariableKind.In | VariableKind.Out)); 
       AddVariableInfo(new VariableInfo("Quality", "The evaluated quality of the model", typeof(DoubleData), VariableKind.New));
     }
 
@@ -47,6 +51,8 @@ namespace HeuristicLab.StructureIdentification {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       IFunctionTree functionTree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
       this.maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
+      this.treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
+      this.totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
 
       double result = Evaluate(scope, functionTree, targetVariable, dataset);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Quality"), new DoubleData(result)));

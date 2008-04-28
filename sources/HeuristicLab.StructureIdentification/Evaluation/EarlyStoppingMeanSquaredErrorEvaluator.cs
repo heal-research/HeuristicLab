@@ -62,13 +62,16 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         errorsSquaredSum += error * error;
 
         // check the limit and stop as soon as we hit the limit
-        if(errorsSquaredSum / dataset.Rows >= qualityLimit)
-          return errorsSquaredSum / (sample+1); // return estimated MSE (when the remaining errors are on average the same)
+        if(errorsSquaredSum / dataset.Rows >= qualityLimit) {
+          scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * sample+1;
+          return errorsSquaredSum / (sample + 1); // return estimated MSE (when the remaining errors are on average the same)
+        }
       }
       errorsSquaredSum /= dataset.Rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
       return errorsSquaredSum;
     }
   }

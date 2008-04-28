@@ -63,6 +63,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
       return errorsSquaredSum;
     }
   }
