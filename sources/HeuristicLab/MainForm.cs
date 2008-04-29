@@ -95,7 +95,7 @@ namespace HeuristicLab {
           Thread t = new Thread(delegate() {
             PluginManager.Manager.Run(app);
           });
-          t.SetApartmentState(ApartmentState.STA);
+          t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
           t.Start();
         }
       }
