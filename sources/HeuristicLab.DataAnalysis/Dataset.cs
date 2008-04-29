@@ -28,7 +28,7 @@ using System.Globalization;
 using System.Text;
 
 namespace HeuristicLab.DataAnalysis {
-  public class Dataset : ItemBase {
+  public sealed class Dataset : ItemBase {
 
     private string name;
     public string Name {
