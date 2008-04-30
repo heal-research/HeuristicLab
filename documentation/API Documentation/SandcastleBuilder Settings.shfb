@@ -9,6 +9,7 @@
         <assembly assemblyPath=".\Assemblies\HeuristicLab.Data.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.Data.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.DataAnalysis.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.DataAnalysis.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.DistributedEngine.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.DistributedEngine.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\Assemblies\HeuristicLab.ES.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.ES.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.Evolutionary.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.Evolutionary.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.Functions.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.Functions.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.Grid.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.Grid.xml" commentsOnly="False" />
@@ -27,6 +28,7 @@
         <assembly assemblyPath=".\Assemblies\HeuristicLab.Selection.OffspringSelection.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.Selection.OffspringSelection.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.SequentialEngine.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.SequentialEngine.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.SGA.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.SGA.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\Assemblies\HeuristicLab.SQLite.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.SQLite.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.StructureIdentification.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.StructureIdentification.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.TestFunctions.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.TestFunctions.xml" commentsOnly="False" />
         <assembly assemblyPath=".\Assemblies\HeuristicLab.ThreadParallelEngine.dll" xmlCommentsPath=".\Assemblies\HeuristicLab.ThreadParallelEngine.xml" commentsOnly="False" />

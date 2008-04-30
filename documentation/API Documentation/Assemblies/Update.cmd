@@ -19,6 +19,8 @@ copy ..\..\..\sources\HeuristicLab.DataAnalysis\bin\%configuration%\HeuristicLab
 copy ..\..\..\sources\HeuristicLab.DataAnalysis\bin\%configuration%\HeuristicLab.DataAnalysis.xml .
 copy ..\..\..\sources\HeuristicLab.DistributedEngine\bin\%configuration%\HeuristicLab.DistributedEngine.dll .
 copy ..\..\..\sources\HeuristicLab.DistributedEngine\bin\%configuration%\HeuristicLab.DistributedEngine.xml .
+copy ..\..\..\sources\HeuristicLab.ES\bin\%configuration%\HeuristicLab.ES.dll .
+copy ..\..\..\sources\HeuristicLab.ES\bin\%configuration%\HeuristicLab.ES.xml .
 copy ..\..\..\sources\HeuristicLab.Evolutionary\bin\%configuration%\HeuristicLab.Evolutionary.dll .
 copy ..\..\..\sources\HeuristicLab.Evolutionary\bin\%configuration%\HeuristicLab.Evolutionary.xml .
 copy ..\..\..\sources\HeuristicLab.Functions\bin\%configuration%\HeuristicLab.Functions.dll .
@@ -56,6 +58,8 @@ copy ..\..\..\sources\HeuristicLab.SequentialEngine\bin\%configuration%\Heuristi
 copy ..\..\..\sources\HeuristicLab.SequentialEngine\bin\%configuration%\HeuristicLab.SequentialEngine.xml .
 copy ..\..\..\sources\HeuristicLab.SGA\bin\%configuration%\HeuristicLab.SGA.dll .
 copy ..\..\..\sources\HeuristicLab.SGA\bin\%configuration%\HeuristicLab.SGA.xml .
+copy ..\..\..\sources\HeuristicLab.SQLite\bin\%configuration%\HeuristicLab.SQLite.dll .
+copy ..\..\..\sources\HeuristicLab.SQLite\bin\%configuration%\HeuristicLab.SQLite.xml .
 copy ..\..\..\sources\HeuristicLab.StructureIdentification\bin\%configuration%\HeuristicLab.StructureIdentification.dll .
 copy ..\..\..\sources\HeuristicLab.StructureIdentification\bin\%configuration%\HeuristicLab.StructureIdentification.xml .
 copy ..\..\..\sources\HeuristicLab.TestFunctions\bin\%configuration%\HeuristicLab.TestFunctions.dll .
