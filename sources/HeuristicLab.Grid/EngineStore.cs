@@ -89,7 +89,7 @@ namespace HeuristicLab.Grid {
     public void StoreResult(Guid guid, byte[] result) {
       lock(bigLock) {
         // clear old results
-        List<Guid> expiredResults = FindExpiredResults(DateTime.Now.AddHours(-1.0));
+        List<Guid> expiredResults = FindExpiredResults(DateTime.Now.AddMinutes(-10.0));
         foreach(Guid expiredGuid in expiredResults) {
           results.Remove(expiredGuid);
           waitHandles.Remove(expiredGuid);
