@@ -93,7 +93,14 @@ namespace HeuristicLab.DistributedEngine {
           foreach(AtomicOperation parOperation in compositeOperation.Operations) {
             waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
           }
-          WaitHandle.WaitAll(waithandles);
+          // WaitAll works only with maximally 64 waithandles
+          if(waithandles.Length <= 64) {
+            WaitHandle.WaitAll(waithandles);
+          } else {
+            for(i = 0; i < waithandles.Length; i++) {
+              waithandles[i].WaitOne();
+            }
+          }
           if(jobManager.Exception != null) {
             myExecutionStack.Push(compositeOperation);
             Abort();
