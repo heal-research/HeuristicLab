@@ -29,26 +29,20 @@ using HeuristicLab.Grid;
 using System.ServiceModel;
 using System.IO;
 using System.IO.Compression;
+using HeuristicLab.PluginInfrastructure;
+using System.Windows.Forms;
 
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
-    private IGridServer server;
-    private Dictionary<Guid, AtomicOperation> engineOperations = new Dictionary<Guid, AtomicOperation>();
-    private List<Guid> runningEngines = new List<Guid>();
-    private string serverAddress;
-    private bool cancelRequested;
+    private JobManager jobManager;
     private CompositeOperation waitingOperations;
+    private string serverAddress;
     public string ServerAddress {
       get { return serverAddress; }
       set {
         if(value != serverAddress) {
           serverAddress = value;
         }
-      }
-    }
-    public override bool Terminated {
-      get {
-        return myExecutionStack.Count == 0 && runningEngines.Count == 0 && waitingOperations==null;
       }
     }
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
@@ -65,14 +59,8 @@ namespace HeuristicLab.DistributedEngine {
     }
 
     public override void Execute() {
-      NetTcpBinding binding = new NetTcpBinding();
-      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-      binding.Security.Mode = SecurityMode.None;
-      ChannelFactory<IGridServer> factory = new ChannelFactory<IGridServer>(binding);
-      server = factory.CreateChannel(new EndpointAddress(serverAddress));
-
+      if(jobManager == null) this.jobManager = new JobManager(serverAddress);
+      jobManager.Reset();
       base.Execute();
     }
 
@@ -80,101 +68,40 @@ namespace HeuristicLab.DistributedEngine {
       throw new InvalidOperationException("DistributedEngine doesn't support stepwise execution");
     }
 
-    public override void Abort() {
-      lock(runningEngines) {
-        cancelRequested = true;
-        foreach(Guid engineGuid in runningEngines) {
-          server.AbortEngine(engineGuid);
-        }
-      }
-    }
-    public override void Reset() {
-      base.Reset();
-      engineOperations.Clear();
-      runningEngines.Clear();
-      cancelRequested = false;
-    }
-
     protected override void ProcessNextOperation() {
-      lock(runningEngines) {
-        if(runningEngines.Count == 0 && cancelRequested) {
-          base.Abort();
-          cancelRequested = false;
-          if(waitingOperations != null && waitingOperations.Operations.Count != 0) {
-            myExecutionStack.Push(waitingOperations);
-            waitingOperations = null;
-          }
-          return;
+      IOperation operation = myExecutionStack.Pop();
+      if(operation is AtomicOperation) {
+        AtomicOperation atomicOperation = (AtomicOperation)operation;
+        IOperation next = null;
+        try {
+          next = atomicOperation.Operator.Execute(atomicOperation.Scope);
+        } catch(Exception ex) {
+          // push operation on stack again
+          myExecutionStack.Push(atomicOperation);
+          Abort();
+          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
         }
-        if(runningEngines.Count != 0) {
-          Guid engineGuid = runningEngines[0];
-          byte[] resultXml = server.TryEndExecuteEngine(engineGuid, 100);
-          if(resultXml != null) {
-            GZipStream stream = new GZipStream(new MemoryStream(resultXml), CompressionMode.Decompress);
-            ProcessingEngine resultEngine = (ProcessingEngine)PersistenceManager.Load(stream);
-            IScope oldScope = engineOperations[engineGuid].Scope;
-            oldScope.Clear();
-            foreach(IVariable variable in resultEngine.InitialOperation.Scope.Variables) {
-              oldScope.AddVariable(variable);
-            }
-            foreach(IScope subScope in resultEngine.InitialOperation.Scope.SubScopes) {
-              oldScope.AddSubScope(subScope);
-            }
-            OnOperationExecuted(engineOperations[engineGuid]);
-
-            if(cancelRequested & resultEngine.ExecutionStack.Count != 0) {
-              if(waitingOperations == null) {
-                waitingOperations = new CompositeOperation();
-                waitingOperations.ExecuteInParallel = false;
-              }
-              CompositeOperation task = new CompositeOperation();
-              while(resultEngine.ExecutionStack.Count > 0) {
-                AtomicOperation oldOperation = (AtomicOperation)resultEngine.ExecutionStack.Pop();
-                if(oldOperation.Scope == resultEngine.InitialOperation.Scope) {
-                  oldOperation = new AtomicOperation(oldOperation.Operator, oldScope);
-                }
-                task.AddOperation(oldOperation);
-              }
-              waitingOperations.AddOperation(task);
-            }
-            runningEngines.Remove(engineGuid);
-            engineOperations.Remove(engineGuid);
+        if(next != null)
+          myExecutionStack.Push(next);
+        OnOperationExecuted(atomicOperation);
+        if(atomicOperation.Operator.Breakpoint) Abort();
+      } else if(operation is CompositeOperation) {
+        CompositeOperation compositeOperation = (CompositeOperation)operation;
+        if(compositeOperation.ExecuteInParallel) {
+          WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
+          int i = 0;
+          foreach(AtomicOperation parOperation in compositeOperation.Operations) {
+            waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
           }
-          return;
-        }
-        IOperation operation = myExecutionStack.Pop();
-        if(operation is AtomicOperation) {
-          AtomicOperation atomicOperation = (AtomicOperation)operation;
-          IOperation next = null;
-          try {
-            next = atomicOperation.Operator.Execute(atomicOperation.Scope);
-          } catch(Exception ex) {
-            // push operation on stack again
-            myExecutionStack.Push(atomicOperation);
+          WaitHandle.WaitAll(waithandles);
+          if(jobManager.Exception != null) {
+            myExecutionStack.Push(compositeOperation);
             Abort();
-            ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
+            ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(jobManager.Exception); });
           }
-          if(next != null)
-            myExecutionStack.Push(next);
-          OnOperationExecuted(atomicOperation);
-          if(atomicOperation.Operator.Breakpoint) Abort();
-        } else if(operation is CompositeOperation) {
-          CompositeOperation compositeOperation = (CompositeOperation)operation;
-          if(compositeOperation.ExecuteInParallel) {
-            foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-              ProcessingEngine engine = new ProcessingEngine(OperatorGraph, GlobalScope, parOperation); // OperatorGraph not needed?
-              MemoryStream memStream = new MemoryStream();
-              GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-              PersistenceManager.Save(engine, stream);
-              stream.Close();
-              Guid currentEngineGuid = server.BeginExecuteEngine(memStream.ToArray());
-              runningEngines.Add(currentEngineGuid);
-              engineOperations[currentEngineGuid] = parOperation;
-            }
-          } else {
-            for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
-              myExecutionStack.Push(compositeOperation.Operations[i]);
-          }
+        } else {
+          for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
+            myExecutionStack.Push(compositeOperation.Operations[i]);
         }
       }
     }

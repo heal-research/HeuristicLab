@@ -25,8 +25,18 @@ using System.ServiceModel;
 using System.Text;
 
 namespace HeuristicLab.Grid {
+  public enum JobState {
+    Unkown,
+    Waiting,
+    Busy,
+    Finished
+  }
+
+
   [ServiceContract(Namespace = "http://HeuristicLab.Grid")]
   public interface IGridServer {
+    [OperationContract]
+    JobState JobState(Guid guid);
     [OperationContract]
     Guid BeginExecuteEngine(byte[] engine);
     [OperationContract]

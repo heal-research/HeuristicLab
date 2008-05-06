@@ -45,7 +45,6 @@ namespace HeuristicLab.Grid {
     private Guid currentGuid;
     private ProcessingEngine currentEngine;
     private string clientUrl;
-    private object locker = new object();
 
     public ClientForm() {
       InitializeComponent();
@@ -61,10 +60,10 @@ namespace HeuristicLab.Grid {
       IPAddress[] addresses = Dns.GetHostAddresses(hostname);
 
       // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
-      if (System.Environment.OSVersion.Version.Major >= 6) {
-        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":" + clientPort.Text +"/Grid/Client";
+      if(System.Environment.OSVersion.Version.Major >= 6) {
+        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":" + clientPort.Text + "/Grid/Client";
       } else {
-        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":" + clientPort.Text +"/Grid/Client";
+        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":" + clientPort.Text + "/Grid/Client";
       }
 
       clientHost = new ServiceHost(this, new Uri(clientUrl));
@@ -86,7 +85,7 @@ namespace HeuristicLab.Grid {
         stopButton.Enabled = true;
         statusTextBox.Text = "Waiting for engine";
 
-      } catch (CommunicationException ex) {
+      } catch(CommunicationException ex) {
         MessageBox.Show("Exception while connecting to the server: " + ex.Message);
         clientHost.Abort();
         startButton.Enabled = true;
@@ -105,10 +104,10 @@ namespace HeuristicLab.Grid {
     }
 
     private void fetchOperationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      lock(locker) {
-        byte[] engineXml;
-        fetchOperationTimer.Stop();
-        if(engineStore.TryTakeEngine(clientUrl, out currentGuid, out engineXml)) {
+      byte[] engineXml;
+      fetchOperationTimer.Stop();
+      try {
+        if(engineStore.TryTakeEngine(out currentGuid, out engineXml)) {
           currentEngine = RestoreEngine(engineXml);
           if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
           currentEngine.Finished += delegate(object src, EventArgs args) {
@@ -125,16 +124,18 @@ namespace HeuristicLab.Grid {
           fetchOperationTimer.Interval = 5000;
           fetchOperationTimer.Start();
         }
+      } catch(Exception ex) {
+        currentEngine = null;
+        currentGuid = Guid.Empty;
+        fetchOperationTimer.Interval = 5000;
+        fetchOperationTimer.Start();
       }
     }
     public void Abort(Guid guid) {
-      lock(locker) {
-        if(!IsRunningEngine(guid)) return;
-        currentEngine.Abort();
-      }
+      throw new NotSupportedException();
     }
     public bool IsRunningEngine(Guid guid) {
-      return currentGuid == guid;
+      throw new NotSupportedException();
     }
     private ProcessingEngine RestoreEngine(byte[] engine) {
       GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);

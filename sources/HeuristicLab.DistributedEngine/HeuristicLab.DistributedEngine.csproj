@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabDistributedEnginePlugin.cs" />
+    <Compile Include="JobManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DistributedEngine.cs" />
     <Compile Include="DistributedEngineEditor.cs">

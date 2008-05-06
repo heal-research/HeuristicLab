@@ -67,11 +67,9 @@ namespace HeuristicLab.Grid {
           // push operation on stack again
           myExecutionStack.Push(atomicOperation);
           Abort();
-          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
         }
         if(next != null)
           myExecutionStack.Push(next);
-        OnOperationExecuted(atomicOperation);
         if(atomicOperation.Operator.Breakpoint) Abort();
       } else if(operation is CompositeOperation) {
         CompositeOperation compositeOperation = (CompositeOperation)operation;
