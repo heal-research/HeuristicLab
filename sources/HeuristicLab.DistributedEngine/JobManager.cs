@@ -20,6 +20,7 @@ namespace HeuristicLab.DistributedEngine {
     private object locker = new object();
     private const int MAX_RESTARTS = 5;
     private Exception exception;
+    private ChannelFactory<IGridServer> factory;
     public Exception Exception {
       get { return exception; }
     }
@@ -30,15 +31,7 @@ namespace HeuristicLab.DistributedEngine {
 
     internal void Reset() {
       lock(locker) {
-        // open a new channel
-        NetTcpBinding binding = new NetTcpBinding();
-        binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-        binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-        binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-        binding.Security.Mode = SecurityMode.None;
-        ChannelFactory<IGridServer> factory = new ChannelFactory<IGridServer>(binding);
-        server = factory.CreateChannel(new EndpointAddress(address));
-
+        ResetConnection();
         foreach(WaitHandle wh in waithandles.Values) wh.Close();
         waithandles.Clear();
         engineOperations.Clear();
@@ -47,12 +40,25 @@ namespace HeuristicLab.DistributedEngine {
       }
     }
 
+    private void ResetConnection() {
+      // open a new channel
+      NetTcpBinding binding = new NetTcpBinding();
+      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
+      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
+      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
+      binding.Security.Mode = SecurityMode.None;
+      factory = new ChannelFactory<IGridServer>(binding);
+      server = factory.CreateChannel(new EndpointAddress(address));
+    }
+
     public WaitHandle BeginExecuteOperation(IOperatorGraph operatorGraph, IScope globalScope, AtomicOperation operation) {
       ProcessingEngine engine = new ProcessingEngine(operatorGraph, globalScope, operation); // OperatorGraph not needed?
       MemoryStream memStream = new MemoryStream();
       GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      PersistenceManager.Save(engine, stream); // Careful! Make sure that persistence is thread-safe!
+      PersistenceManager.Save(engine, stream);
       stream.Close();
+      if(factory.State != CommunicationState.Opened)
+        ResetConnection();
       Guid currentEngineGuid = server.BeginExecuteEngine(memStream.ToArray());
       lock(locker) {
         runningEngines[currentEngineGuid] = memStream.ToArray();
@@ -68,6 +74,7 @@ namespace HeuristicLab.DistributedEngine {
       int restartCounter = 0;
       do {
         try {
+          if(factory.State != CommunicationState.Opened) ResetConnection();
           byte[] resultXml = server.TryEndExecuteEngine(engineGuid, 100);
           if(resultXml != null) {
             // restore the engine 

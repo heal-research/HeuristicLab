@@ -88,20 +88,26 @@ namespace HeuristicLab.DistributedEngine {
       } else if(operation is CompositeOperation) {
         CompositeOperation compositeOperation = (CompositeOperation)operation;
         if(compositeOperation.ExecuteInParallel) {
-          WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
-          int i = 0;
-          foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-            waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
-          }
-          // WaitAll works only with maximally 64 waithandles
-          if(waithandles.Length <= 64) {
-            WaitHandle.WaitAll(waithandles);
-          } else {
-            for(i = 0; i < waithandles.Length; i++) {
-              waithandles[i].WaitOne();
+          try {
+            WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
+            int i = 0;
+            foreach(AtomicOperation parOperation in compositeOperation.Operations) {
+              waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
             }
-          }
-          if(jobManager.Exception != null) {
+            // WaitAll works only with maximally 64 waithandles
+            if(waithandles.Length <= 64) {
+              WaitHandle.WaitAll(waithandles);
+            } else {
+              for(i = 0; i < waithandles.Length; i++) {
+                waithandles[i].WaitOne();
+              }
+            }
+            if(jobManager.Exception != null) {
+              myExecutionStack.Push(compositeOperation);
+              Abort();
+              ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(jobManager.Exception); });
+            }
+          } catch(Exception e) {
             myExecutionStack.Push(compositeOperation);
             Abort();
             ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(jobManager.Exception); });

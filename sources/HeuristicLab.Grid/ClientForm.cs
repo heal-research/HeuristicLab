@@ -39,12 +39,10 @@ namespace HeuristicLab.Grid {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public partial class ClientForm : Form, IClient {
     private ChannelFactory<IEngineStore> factory;
-    private ServiceHost clientHost;
     private System.Timers.Timer fetchOperationTimer;
     private IEngineStore engineStore;
     private Guid currentGuid;
     private ProcessingEngine currentEngine;
-    private string clientUrl;
 
     public ClientForm() {
       InitializeComponent();
@@ -56,30 +54,8 @@ namespace HeuristicLab.Grid {
     }
 
     private void startButton_Click(object sender, EventArgs e) {
-      string hostname = Dns.GetHostName();
-      IPAddress[] addresses = Dns.GetHostAddresses(hostname);
-
-      // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
-      if(System.Environment.OSVersion.Version.Major >= 6) {
-        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":" + clientPort.Text + "/Grid/Client";
-      } else {
-        clientUrl = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":" + clientPort.Text + "/Grid/Client";
-      }
-
-      clientHost = new ServiceHost(this, new Uri(clientUrl));
       try {
-        NetTcpBinding binding = new NetTcpBinding();
-        binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-        binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-        binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-        binding.Security.Mode = SecurityMode.None;
-
-        clientHost.AddServiceEndpoint(typeof(IClient), binding, clientUrl);
-        clientHost.Open();
-
-        factory = new ChannelFactory<IEngineStore>(binding);
-        engineStore = factory.CreateChannel(new EndpointAddress(addressTextBox.Text));
-
+        ResetConnection();
         fetchOperationTimer.Start();
         startButton.Enabled = false;
         stopButton.Enabled = true;
@@ -87,17 +63,25 @@ namespace HeuristicLab.Grid {
 
       } catch(CommunicationException ex) {
         MessageBox.Show("Exception while connecting to the server: " + ex.Message);
-        clientHost.Abort();
         startButton.Enabled = true;
         stopButton.Enabled = false;
         fetchOperationTimer.Stop();
       }
     }
 
+    private void ResetConnection() {
+      NetTcpBinding binding = new NetTcpBinding();
+      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
+      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
+      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
+      binding.Security.Mode = SecurityMode.None;
+      factory = new ChannelFactory<IEngineStore>(binding);
+      engineStore = factory.CreateChannel(new EndpointAddress(addressTextBox.Text));
+    }
+
     private void stopButton_Click(object sender, EventArgs e) {
       fetchOperationTimer.Stop();
       factory.Abort();
-      clientHost.Close();
       statusTextBox.Text = "Stopped";
       stopButton.Enabled = false;
       startButton.Enabled = true;
@@ -107,6 +91,9 @@ namespace HeuristicLab.Grid {
       byte[] engineXml;
       fetchOperationTimer.Stop();
       try {
+        if(factory.State != CommunicationState.Opened) {
+          ResetConnection();
+        }
         if(engineStore.TryTakeEngine(out currentGuid, out engineXml)) {
           currentEngine = RestoreEngine(engineXml);
           if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
