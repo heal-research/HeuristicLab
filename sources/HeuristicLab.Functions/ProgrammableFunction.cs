@@ -33,12 +33,15 @@ using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.IO;
 using HeuristicLab.Operators.Programmable;
+using HeuristicLab.Data;
+using System.Collections;
 
 namespace HeuristicLab.Functions {
   public sealed class ProgrammableFunction : ProgrammableOperator, IFunction {
     private MethodInfo applyMethod;
-    public ProgrammableFunction()
-      : base() {
+    public ProgrammableFunction() {
+      // clear the variableinfo that was added by the default constructor of ProgrammableOperator 
+      RemoveVariableInfo("Result"); 
       Code = "return 0.0;";
       SetDescription("A function that can be programmed for arbitrary needs.");
       applyMethod = null;
@@ -122,17 +125,69 @@ namespace HeuristicLab.Functions {
       return new BakedFunctionTree(this);
     }
 
-    // application of programmable-function is not possible
     public double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotSupportedException();
-    }
-
-    internal double Call(object[] parameters) {
+      // collect parameters
+      ArrayList parameters = new ArrayList(args.Length);
+      parameters.Add(dataset);
+      parameters.Add(sampleIndex);
+      int j = 0;
+      List<double> backupValues = new List<double>();
+      // all local variables are available in the custom function
+      // values of local variables need to be adjusted based on the arguments we recieve from the evaluator
+      // because each instance of programmable-function can have different values for the local variables
+      foreach(IVariableInfo info in VariableInfos) {
+        if(info.Local) {
+          IVariable localVariable = GetVariable(info.FormalName);
+          double curValue = GetDoubleValue(localVariable);
+          backupValues.Add(curValue);
+          SetFromDoubleValue(localVariable, args[j++]);
+          parameters.Add(localVariable.Value);
+        }
+      }
+      // copy the evaluation results of the sub-branches into a separate array (last argument of user-defined function)
+      double[] evaluationResults = new double[args.Length - j];
+      Array.Copy(args, j, evaluationResults, 0, evaluationResults.Length);
+      parameters.Add(evaluationResults);
       // lazy activation of the user-programmed code
       if(applyMethod == null) {
         Compile();
       }
-      return (double)applyMethod.Invoke(null, parameters);
+      double result = (double)applyMethod.Invoke(null, parameters.ToArray());
+
+      // restore backed up values of variables (just a savety measure. changes of the function-library are unwanted)
+      j = 0;
+      foreach(IVariableInfo info in VariableInfos) {
+        if(info.Local) {
+          SetFromDoubleValue(GetVariable(info.FormalName), backupValues[j]);
+        }
+      }
+      return result;
+    }
+
+    private double GetDoubleValue(IVariable localVariable) {
+      IItem value = localVariable.Value;
+      if(value is ConstrainedDoubleData) {
+        return ((ConstrainedDoubleData)value).Data;
+      } else if(value is ConstrainedIntData) {
+        return (double)((ConstrainedIntData)value).Data;
+      } else if(value is DoubleData) {
+        return ((DoubleData)value).Data;
+      } else if(value is IntData) {
+        return (double)((IntData)value).Data;
+      } else throw new NotSupportedException("Datatype of variable " + localVariable.Name + " is not supported as local variable for programmable-functions.");
+    }
+
+    private void SetFromDoubleValue(IVariable variable, double x) {
+      IItem value = variable.Value;
+      if(value is ConstrainedDoubleData) {
+        ((ConstrainedDoubleData)value).Data = x;
+      } else if(value is ConstrainedIntData) {
+        ((ConstrainedIntData)value).Data = (int)x;
+      } else if(value is DoubleData) {
+        ((DoubleData)value).Data = x;
+      } else if(value is IntData) {
+        ((IntData)value).Data = (int)x;
+      } else throw new NotSupportedException("Datatype of variable " + variable.Name + " is not supported as local variable for programmable-functions.");
     }
 
     #endregion
@@ -185,32 +240,4 @@ namespace HeuristicLab.Functions {
     }
     #endregion
   }
-
-  //class ProgrammableFunctionTree : FunctionTree {
-  //  private ProgrammableFunction progFun;
-  //  public ProgrammableFunctionTree() : base() { }
-  //  public ProgrammableFunctionTree(ProgrammableFunction progFun) : base(progFun) {
-  //    this.progFun = progFun;
-  //  }
-  //  public override double Evaluate(Dataset dataset, int sampleIndex) {
-  //    // evaluate sub-trees
-  //    double[] evaluationResults = new double[SubTrees.Count];
-  //    for(int subTree = 0; subTree < SubTrees.Count; subTree++) {
-  //      evaluationResults[subTree] = SubTrees[subTree].Evaluate(dataset, sampleIndex);
-  //    }
-
-  //    // collect parameters
-  //    object[] parameters = new object[LocalVariables.Count + 3];
-  //    parameters[0] = dataset;
-  //    parameters[1] = sampleIndex;
-  //    int i = 2;
-  //    // all local variables are available in the custom function
-  //    foreach(IVariable variable in LocalVariables) {
-  //      parameters[i] = variable;
-  //      i++;
-  //    }
-  //    parameters[i] = evaluationResults;
-  //    return progFun.Call(parameters);
-  //  }
-  //}
 }
