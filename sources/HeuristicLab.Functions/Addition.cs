@@ -29,7 +29,7 @@ using System.Linq;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Addition : FunctionBase {
+  public sealed class Addition : FunctionBase {
     public override string Description {
       get {
         return @"Returns the sum of all sub-tree results.
@@ -43,17 +43,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      // (+ 3) => 3
-      // (+ 2 3) => 5
-      // (+ 3 4 5) => 12
-      double sum = 0.0;
-      for (int i = 0; i < args.Length; i++) {
-        sum += args[i];
-      }
-      return sum;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

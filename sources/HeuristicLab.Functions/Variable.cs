@@ -29,16 +29,18 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Variable : FunctionBase {
+  public sealed class Variable : FunctionBase {
 
     public const string WEIGHT = "Weight";
     public const string OFFSET = "SampleOffset";
     public const string INDEX = "Variable";
 
     public override string Description {
-      get { return @"Variable reads a value from a dataset, multiplies that value with a given factor and returns the result.
+      get {
+        return @"Variable reads a value from a dataset, multiplies that value with a given factor and returns the result.
 The variable 'SampleOffset' can be used to read a value from previous or following rows.
-The index of the row that is actually read is SampleIndex+SampleOffset)."; }
+The index of the row that is actually read is SampleIndex+SampleOffset).";
+      }
     }
 
     public Variable()
@@ -67,51 +69,8 @@ The index of the row that is actually read is SampleIndex+SampleOffset)."; }
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
 
-    public override IFunctionTree GetTreeNode() {
-      return new VariableFunctionTree(this);
-    }
-
-    // can't apply a variable
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotSupportedException();
-    }
-
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
-    }
-  }
-  class VariableFunctionTree : FunctionTree {
-    private ConstrainedDoubleData weight;
-    private ConstrainedIntData index;
-    private ConstrainedIntData offset;
-
-    public VariableFunctionTree() : base() { }
-    public VariableFunctionTree(Variable variable) : base(variable) {
-      UpdateCachedValues();
-    }
-
-    protected void UpdateCachedValues() {
-      weight = (ConstrainedDoubleData)GetLocalVariable(Variable.WEIGHT).Value;
-      index = (ConstrainedIntData)GetLocalVariable(Variable.INDEX).Value;
-      offset = (ConstrainedIntData)GetLocalVariable(Variable.OFFSET).Value;
-    }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      if(sampleIndex + offset.Data < 0 || sampleIndex + offset.Data >= dataset.Rows) return double.NaN;
-      return weight.Data * dataset.GetValue(sampleIndex + offset.Data, index.Data);
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      VariableFunctionTree clone = new VariableFunctionTree();
-      clonedObjects.Add(clone.Guid, clone);
-      FillClone(clone, clonedObjects);
-      clone.UpdateCachedValues();
-      return clone;
-    }
-
-    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      UpdateCachedValues();
     }
   }
 }

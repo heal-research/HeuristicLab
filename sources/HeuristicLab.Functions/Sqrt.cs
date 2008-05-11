@@ -28,7 +28,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Sqrt : FunctionBase {
+  public sealed class Sqrt : FunctionBase {
     public override string Description {
       get { return "Returns the square root of the first sub-tree."; }
     }
@@ -37,11 +37,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // must have exactly 1 suboperator
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
-    }
-
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      return Math.Sqrt(args[0]);
     }
 
     public override void Accept(IFunctionVisitor visitor) {

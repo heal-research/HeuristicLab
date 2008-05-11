@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class And : FunctionBase {
+  public sealed class And : FunctionBase {
     public override string Description {
       get {
         return @"Logical AND operation. Only defined for sub-tree-results 0.0 and 1.0.
@@ -41,39 +41,8 @@ stopped as soon as one of the sub-trees evaluates to 0.0 (false).";
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public override IFunctionTree GetTreeNode() {
-      return new AndFunctionTree(this);
-    }
-
-    // special form
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotImplementedException();
-    }
-
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
-    }
-  }
-
-  class AndFunctionTree : FunctionTree {
-    public AndFunctionTree() : base() { }
-    public AndFunctionTree(And and) : base(and) { }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      foreach(IFunctionTree subTree in SubTrees) {
-        double result = Math.Round(subTree.Evaluate(dataset, sampleIndex));
-        if(result == 0.0) return 0.0; // one sub-tree is 0.0 (false) => return false
-        else if(result != 1.0) return double.NaN;
-      }
-      // all sub-trees evaluated to 1.0 (true) => return 1.0 (true)
-      return 1.0;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      AndFunctionTree clone = new AndFunctionTree();
-      clonedObjects.Add(clone.Guid, clone);
-      FillClone(clone, clonedObjects);
-      return clone;
     }
   }
 }

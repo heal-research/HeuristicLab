@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Not : FunctionBase {
+  public sealed class Not : FunctionBase {
     public override string Description {
       get {
         return @"Logical NOT operation. Only defined for sub-tree-results 0.0 and 1.0.";
@@ -37,13 +37,6 @@ namespace HeuristicLab.Functions {
     public Not()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      double result = Math.Round(args[0]);
-      if(result == 0.0) return 1.0;
-      else if(result == 1.0) return 0.0;
-      else return double.NaN;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

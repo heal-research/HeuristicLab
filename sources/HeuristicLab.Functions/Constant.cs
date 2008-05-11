@@ -29,7 +29,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Constant : FunctionBase {
+  public sealed class Constant : FunctionBase {
     public const string VALUE = "Value";
 
     public override string Description {
@@ -50,47 +50,8 @@ namespace HeuristicLab.Functions {
       // constant can't have suboperators
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
-
-    public override IFunctionTree GetTreeNode() {
-      return new ConstantFunctionTree(this);
-    }
-
-    // can't apply a constant
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotSupportedException();
-    }
-
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
-    }
-  }
-
-  class ConstantFunctionTree : FunctionTree {
-    private ConstrainedDoubleData value;
-    public ConstantFunctionTree() : base() { }
-    public ConstantFunctionTree(Constant constant) : base(constant) {
-      UpdateCachedValues();
-    }
-
-    private void UpdateCachedValues() {
-      value = (ConstrainedDoubleData)GetLocalVariable(Constant.VALUE).Value;
-    }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      return value.Data;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      ConstantFunctionTree clone = new ConstantFunctionTree();
-      clonedObjects.Add(clone.Guid, clone);
-      FillClone(clone, clonedObjects);
-      clone.UpdateCachedValues();
-      return clone;
-    }
-
-    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      UpdateCachedValues();
     }
   }
 }

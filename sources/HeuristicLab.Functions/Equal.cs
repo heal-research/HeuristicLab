@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Equal : FunctionBase {
+  public sealed class Equal : FunctionBase {
     public override string Description {
       get {
         return @"Equal condition. Returns 1.0 if both sub-trees evaluate to the same value and 0.0 if they differ.";
@@ -37,11 +37,6 @@ namespace HeuristicLab.Functions {
     public Equal()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      if(args[0] == args[1]) return 1.0;
-      else return 0.0;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

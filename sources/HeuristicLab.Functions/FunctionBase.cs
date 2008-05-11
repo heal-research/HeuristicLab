@@ -33,15 +33,17 @@ namespace HeuristicLab.Functions {
   /// is to evaluate all children first.
   /// </summary>
   public abstract class FunctionBase : OperatorBase, IFunction {
-    
-    public abstract double Apply(Dataset dataset, int sampleIndex, double[] args);
+
+    public virtual double Apply(Dataset dataset, int sampleIndex, double[] args) {
+      throw new NotImplementedException();
+    }
 
     public virtual void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
     }
 
     public virtual IFunctionTree GetTreeNode() {
-      return new FunctionTree(this);
+      return new BakedFunctionTree(this);
     }
 
     // operator-tree style evaluation is not supported for functions.

@@ -28,7 +28,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Exponential : FunctionBase {
+  public sealed class Exponential : FunctionBase {
     public override string Description {
       get { return "Returns returns exponential of the first sub-tree (power(e, x))."; }
     }
@@ -37,10 +37,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // must have exactly one sub-operator
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      return Math.Exp(args[0]);
     }
 
     public override void Accept(IFunctionVisitor visitor) {

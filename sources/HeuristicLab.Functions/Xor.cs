@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Xor : FunctionBase {
+  public sealed class Xor : FunctionBase {
     public override string Description {
       get {
         return @"Logical XOR operation. Only defined for sub-tree-results 0.0 and 1.0.";
@@ -37,12 +37,6 @@ namespace HeuristicLab.Functions {
     public Xor()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      if(args[0] == 0.0 && args[1] == 0.0) return 0.0;
-      if(args[0] * args[1] == 0.0) return 1.0;
-      return 0.0;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

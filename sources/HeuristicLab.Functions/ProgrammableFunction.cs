@@ -35,7 +35,7 @@ using System.IO;
 using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.Functions {
-  public class ProgrammableFunction : ProgrammableOperator, IFunction {
+  public sealed class ProgrammableFunction : ProgrammableOperator, IFunction {
     private MethodInfo applyMethod;
     public ProgrammableFunction()
       : base() {
@@ -119,7 +119,7 @@ namespace HeuristicLab.Functions {
     }
 
     public IFunctionTree GetTreeNode() {
-      return new ProgrammableFunctionTree(this);
+      return new BakedFunctionTree(this);
     }
 
     // application of programmable-function is not possible
@@ -186,31 +186,31 @@ namespace HeuristicLab.Functions {
     #endregion
   }
 
-  class ProgrammableFunctionTree : FunctionTree {
-    private ProgrammableFunction progFun;
-    public ProgrammableFunctionTree() : base() { }
-    public ProgrammableFunctionTree(ProgrammableFunction progFun) : base(progFun) {
-      this.progFun = progFun;
-    }
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      // evaluate sub-trees
-      double[] evaluationResults = new double[SubTrees.Count];
-      for(int subTree = 0; subTree < SubTrees.Count; subTree++) {
-        evaluationResults[subTree] = SubTrees[subTree].Evaluate(dataset, sampleIndex);
-      }
+  //class ProgrammableFunctionTree : FunctionTree {
+  //  private ProgrammableFunction progFun;
+  //  public ProgrammableFunctionTree() : base() { }
+  //  public ProgrammableFunctionTree(ProgrammableFunction progFun) : base(progFun) {
+  //    this.progFun = progFun;
+  //  }
+  //  public override double Evaluate(Dataset dataset, int sampleIndex) {
+  //    // evaluate sub-trees
+  //    double[] evaluationResults = new double[SubTrees.Count];
+  //    for(int subTree = 0; subTree < SubTrees.Count; subTree++) {
+  //      evaluationResults[subTree] = SubTrees[subTree].Evaluate(dataset, sampleIndex);
+  //    }
 
-      // collect parameters
-      object[] parameters = new object[LocalVariables.Count + 3];
-      parameters[0] = dataset;
-      parameters[1] = sampleIndex;
-      int i = 2;
-      // all local variables are available in the custom function
-      foreach(IVariable variable in LocalVariables) {
-        parameters[i] = variable;
-        i++;
-      }
-      parameters[i] = evaluationResults;
-      return progFun.Call(parameters);
-    }
-  }
+  //    // collect parameters
+  //    object[] parameters = new object[LocalVariables.Count + 3];
+  //    parameters[0] = dataset;
+  //    parameters[1] = sampleIndex;
+  //    int i = 2;
+  //    // all local variables are available in the custom function
+  //    foreach(IVariable variable in LocalVariables) {
+  //      parameters[i] = variable;
+  //      i++;
+  //    }
+  //    parameters[i] = evaluationResults;
+  //    return progFun.Call(parameters);
+  //  }
+  //}
 }

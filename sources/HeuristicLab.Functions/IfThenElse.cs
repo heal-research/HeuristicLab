@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class IfThenElse : FunctionBase {
+  public sealed class IfThenElse : FunctionBase {
     public override string Description {
       get {
         return @"Returns the result of the second sub-tree if the first sub-tree evaluates to a value < 0.5 and the result
@@ -40,36 +40,8 @@ of the third sub-tree if the first sub-tree evaluates to >= 0.5.";
       AddConstraint(new NumberOfSubOperatorsConstraint(3, 3));
     }
 
-    public override IFunctionTree GetTreeNode() {
-      return new IfThenElseFunctionTree(this);
-    }
-
-    // special form
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotImplementedException();
-    }
-
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
-    }
-  }
-
-  class IfThenElseFunctionTree : FunctionTree {
-    public IfThenElseFunctionTree() : base() { }
-    public IfThenElseFunctionTree(IfThenElse ifte) : base(ifte) { }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      double condition = Math.Round(SubTrees[0].Evaluate(dataset, sampleIndex));
-      if(condition < .5) return SubTrees[1].Evaluate(dataset, sampleIndex);
-      else if(condition >= .5) return SubTrees[2].Evaluate(dataset, sampleIndex);
-      else return double.NaN;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      IfThenElseFunctionTree clone = new IfThenElseFunctionTree();
-      clonedObjects.Add(clone.Guid, clone);
-      FillClone(clone, clonedObjects);
-      return clone;
     }
   }
 }

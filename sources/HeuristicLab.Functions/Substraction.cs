@@ -29,7 +29,7 @@ using System.Linq;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Substraction : FunctionBase {
+  public sealed class Substraction : FunctionBase {
     public override string Description {
       get {
         return @"Substracts the results of sub-tree 2..n from the result of the first sub-tree.
@@ -43,19 +43,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
-    }
-
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      if(args.Length == 1) {
-        return -args[0];
-      } else {
-        double result = args[0];
-        for(int i = 1; i < args.Length; i++) {
-          result -= args[i];
-        }
-        return result;
-      }
     }
 
     public override void Accept(IFunctionVisitor visitor) {

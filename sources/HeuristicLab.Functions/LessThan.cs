@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class LessThan : FunctionBase {
+  public sealed class LessThan : FunctionBase {
     public override string Description {
       get {
         return @"Less-than condition. Returns 1.0 if the value of the first sub-tree is less than the value of the second sub-tree and 0.0 otherwise.";
@@ -37,11 +37,6 @@ namespace HeuristicLab.Functions {
     public LessThan()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      if(args[0] < args[1]) return 1.0;
-      else return 0.0;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

@@ -29,7 +29,7 @@ using System.Linq;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Multiplication : FunctionBase {
+  public sealed class Multiplication : FunctionBase {
     public override string Description {
       get {
         return @"Returns the product of the results of all sub-tree.
@@ -43,17 +43,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      // (* 3) => 3
-      // (* 2 3) => 6
-      // (* 3 4 5) => 60
-      double result = 1.0;
-      for(int i = 0; i < args.Length; i++) {
-        result *= args[i];
-      }
-      return result;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

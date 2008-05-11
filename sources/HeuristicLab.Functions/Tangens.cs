@@ -28,7 +28,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Tangens : FunctionBase {
+  public sealed class Tangens : FunctionBase {
     public override string Description {
       get { return "Returns the tangens of the first sub-tree."; }
     }
@@ -37,10 +37,6 @@ namespace HeuristicLab.Functions {
       : base() {
       // must have exactly one suboperator
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      return Math.Tan(args[0]);
     }
 
     public override void Accept(IFunctionVisitor visitor) {

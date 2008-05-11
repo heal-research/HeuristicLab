@@ -27,7 +27,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Functions {
-  public class Average : FunctionBase {
+  public sealed class Average : FunctionBase {
     public override string Description {
       get {
         return @"Returns the average (arithmetic mean) of all sub-tree results.";
@@ -37,14 +37,6 @@ namespace HeuristicLab.Functions {
     public Average()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      double sum = 0.0;
-      for(int i = 0; i < args.Length; i++) {
-        sum += args[i];
-      }
-      return sum / args.Length;
     }
 
     public override void Accept(IFunctionVisitor visitor) {

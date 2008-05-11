@@ -27,7 +27,7 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Or : FunctionBase {
+  public sealed class Or : FunctionBase {
     public override string Description {
       get {
         return @"Logical OR operation. Only defined for sub-tree-results 0.0 and 1.0.
@@ -40,37 +40,8 @@ Special form, evaluation stops at first sub-tree that evaluates to 1.0 (true).";
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
     }
 
-    public override IFunctionTree GetTreeNode() {
-      return new OrFunctionTree(this);
-    }
-    // or is a special form and can't be applied
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      throw new NotImplementedException();
-    }
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
-    }
-  }
-
-  class OrFunctionTree : FunctionTree {
-    public OrFunctionTree() : base() { }
-    public OrFunctionTree(Or or) : base(or) { }
-
-    public override double Evaluate(Dataset dataset, int sampleIndex) {
-      foreach(IFunctionTree subTree in SubTrees) {
-        double result = Math.Round(subTree.Evaluate(dataset, sampleIndex));
-        if(result == 1.0) return 1.0; // sub-tree evaluates to 1.0 (true) return 1.0
-        else if(result != 0.0) return double.NaN;
-      }
-      // all sub-trees evaluated to 0.0 (false) return false
-      return 0.0;
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      OrFunctionTree clone = new OrFunctionTree();
-      clonedObjects.Add(clone.Guid, clone);
-      FillClone(clone, clonedObjects);
-      return clone;
     }
   }
 }

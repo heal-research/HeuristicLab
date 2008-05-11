@@ -29,7 +29,7 @@ using System.Linq;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public class Division : FunctionBase {
+  public sealed class Division : FunctionBase {
     private const double EPSILON = 10.0E-20; // if any divisor is < EPSILON return 0
 
     public override string Description {
@@ -49,26 +49,6 @@ In case one of the divisors is 0 returns 0.
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
-    }
-
-    public override double Apply(Dataset dataset, int sampleIndex, double[] args) {
-      // (/ 3) => 1/3
-      // (/ 2 3) => 2/3
-      // (/ 3 4 5) => 3/20
-
-      if(args.Length == 1) {
-        double divisor = args[0];
-        if(Math.Abs(divisor) < EPSILON) return 0;
-        else return 1.0 / divisor;
-      } else {
-        double result = args[0];
-        for(int i = 1; i < args.Length; i++) {
-          double divisor = args[i];
-          if(Math.Abs(divisor) < EPSILON) return 0.0;
-          result /= divisor;
-        }
-        return result;
-      }
     }
 
     public override void Accept(IFunctionVisitor visitor) {

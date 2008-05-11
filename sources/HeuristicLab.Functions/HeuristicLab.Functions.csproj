@@ -48,13 +48,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Addition.cs" />
-    <Compile Include="And.cs" />
+    <Compile Include="And.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Average.cs" />
+    <Compile Include="BakedFunctionTree.cs" />
+    <Compile Include="BakedTreeEvaluator.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="GreaterThan.cs" />
-    <Compile Include="FunctionTree.cs" />
+    <Compile Include="IfThenElse.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IFunctionTree.cs" />
     <Compile Include="ModelAnalyzerExporter.cs" />
+    <Compile Include="Or.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ProgrammableFunction.cs" />
     <Compile Include="Equal.cs" />
     <Compile Include="FunctionView.cs">
@@ -63,11 +72,9 @@
     <Compile Include="FunctionView.Designer.cs">
       <DependentUpon>FunctionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="IfThenElse.cs" />
     <Compile Include="IFunctionVisitor.cs" />
     <Compile Include="LessThan.cs" />
     <Compile Include="Not.cs" />
-    <Compile Include="Or.cs" />
     <Compile Include="Signum.cs" />
     <Compile Include="Logarithm.cs" />
     <Compile Include="Exponential.cs" />
