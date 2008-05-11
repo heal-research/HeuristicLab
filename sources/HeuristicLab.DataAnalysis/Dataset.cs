@@ -59,6 +59,7 @@ namespace HeuristicLab.DataAnalysis {
     public void SetValue(int i, int j, double v) {
       if(v != samples[columns * i + j]) {
         samples[columns * i + j] = v;
+        CreateDictionaries();
         FireChanged();
       }
     }
@@ -84,10 +85,6 @@ namespace HeuristicLab.DataAnalysis {
       Columns = 1;
       Rows = 1;
       Samples = new double[1];
-    }
-
-    void samples_Changed(object sender, EventArgs e) {
-      CreateDictionaries();
     }
 
     private void CreateDictionaries() {
@@ -231,6 +228,24 @@ namespace HeuristicLab.DataAnalysis {
       } else {
         return cachedRanges[column][from][to];
       }
+    }
+
+    public double GetMaximum(int column) {
+      double max = Double.NegativeInfinity;
+      for(int i = 0; i < Rows; i++) {
+        double val = GetValue(i, column);
+        if(val > max) max = val;
+      }
+      return max;
+    }
+
+    public double GetMinimum(int column) {
+      double min = Double.PositiveInfinity;
+      for(int i = 0; i < Rows; i++) {
+        double val = GetValue(i, column);
+        if(val < min) min = val;
+      }
+      return min;
     }
   }
 }

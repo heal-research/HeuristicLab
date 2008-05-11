@@ -24,10 +24,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.DataAnalysis {
-  public partial class DatasetView : ViewBase {
-
-    private OpenFileDialog openFileDialog;
-
+  public partial class DatasetView : EditorBase {
     public Dataset Dataset {
       get { return (Dataset)Item; }
       set {
@@ -36,10 +33,11 @@ namespace HeuristicLab.DataAnalysis {
       }
     }
 
+    private double[] scalingFactor;
+    private double[] scalingOffset;
     public DatasetView()
       : base() {
       InitializeComponent();
-      openFileDialog = new OpenFileDialog();
     }
 
     public DatasetView(Dataset dataset)
@@ -49,6 +47,14 @@ namespace HeuristicLab.DataAnalysis {
 
     protected override void UpdateControls() {
       base.UpdateControls();
+      if(this.scalingFactor == null) {
+        this.scalingFactor = new double[Dataset.Columns];
+        this.scalingOffset = new double[Dataset.Columns];
+        for(int i = 0; i < scalingFactor.Length; i++) {
+          scalingFactor[i] = 1.0;
+          scalingOffset[i] = 0.0;
+        }
+      }
       if (Dataset != null) {
         int rows = Dataset.Rows;
         int columns = Dataset.Columns;
@@ -62,16 +68,12 @@ namespace HeuristicLab.DataAnalysis {
             dataGridView.Rows[i].Cells[j].Value = Dataset.GetValue(i, j);
           }
         }
-        if (Dataset.VariableNames.Length == dataGridView.Columns.Count) {
-          for (int i = 0; i < columns; i++) {
-            dataGridView.Columns[i].Name = Dataset.VariableNames[i];
-          }
-        } else {
-          for (int i = 0; i < columns; i++) {
-            dataGridView.Columns[i].Name = "Var" + i;
-          }
+        for (int i = 0; i < columns; i++) {
+          dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+          dataGridView.Columns[i].Name = GetColumnName(i);
+          dataGridView.Columns[i].ContextMenuStrip = contextMenuStrip;
         }
-
+        dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
       } else {
         rowsTextBox.Text = "1";
         columnsTextBox.Text = "1";
@@ -102,6 +104,49 @@ namespace HeuristicLab.DataAnalysis {
     private bool ValidateData(string element) {
       double result;
       return element != null && double.TryParse(element, out result);
+    }
+
+    private void exportButton_Click(object sender, EventArgs e) {
+      throw new NotImplementedException();
+    }
+
+    private void scaleValuesToolStripMenuItem_Click(object sender, EventArgs e) {
+      foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
+        if(scalingFactor[column.Index] == 1.0) {
+          double min = Dataset.GetMinimum(column.Index);
+          double max = Dataset.GetMaximum(column.Index);
+          double range = max - min;
+          scalingFactor[column.Index] = range;
+          scalingOffset[column.Index] = min;
+          column.Name = GetColumnName(column.Index) + " [scaled]";
+          for(int i = 0; i < Dataset.Rows; i++) {
+            Dataset.SetValue(i, column.Index, (Dataset.GetValue(i, column.Index)-min) / range);
+          }
+        }
+      }
+      Refresh();
+    }
+
+    private void originalValuesToolStripMenuItem_Click(object sender, EventArgs e) {
+      foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
+        if(scalingFactor[column.Index] != 1.0) {
+          column.Name = GetColumnName(column.Index);
+          for(int i = 0; i < Dataset.Rows; i++) {
+            Dataset.SetValue(i, column.Index, Dataset.GetValue(i, column.Index) * scalingFactor[column.Index] + scalingOffset[column.Index]);
+          }
+          scalingFactor[column.Index] = 1.0;
+          scalingOffset[column.Index] = 0.0;
+        }
+      }
+      Refresh();      
+    }
+
+    private string GetColumnName(int index) {
+      if(Dataset.VariableNames.Length == dataGridView.Columns.Count) {
+        return Dataset.VariableNames[index];
+      } else {
+        return "Var " + index;
+      }
     }
   }
 }

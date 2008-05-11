@@ -44,6 +44,7 @@ namespace HeuristicLab.DataAnalysis {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.rowsTextBox = new System.Windows.Forms.TextBox();
       this.columnsTextBox = new System.Windows.Forms.TextBox();
       this.dataGridView = new System.Windows.Forms.DataGridView();
@@ -51,12 +52,17 @@ namespace HeuristicLab.DataAnalysis {
       this.columnsLabel = new System.Windows.Forms.Label();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
+      this.exportButton = new System.Windows.Forms.Button();
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.scaleValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.originalValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // rowsTextBox
       // 
-      this.rowsTextBox.Location = new System.Drawing.Point(46, 32);
+      this.rowsTextBox.Location = new System.Drawing.Point(50, 29);
       this.rowsTextBox.Name = "rowsTextBox";
       this.rowsTextBox.ReadOnly = true;
       this.rowsTextBox.Size = new System.Drawing.Size(100, 20);
@@ -64,7 +70,7 @@ namespace HeuristicLab.DataAnalysis {
       // 
       // columnsTextBox
       // 
-      this.columnsTextBox.Location = new System.Drawing.Point(208, 32);
+      this.columnsTextBox.Location = new System.Drawing.Point(217, 29);
       this.columnsTextBox.Name = "columnsTextBox";
       this.columnsTextBox.ReadOnly = true;
       this.columnsTextBox.Size = new System.Drawing.Size(100, 20);
@@ -78,16 +84,16 @@ namespace HeuristicLab.DataAnalysis {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dataGridView.Location = new System.Drawing.Point(3, 58);
+      this.dataGridView.Location = new System.Drawing.Point(3, 84);
       this.dataGridView.Name = "dataGridView";
-      this.dataGridView.Size = new System.Drawing.Size(554, 482);
+      this.dataGridView.Size = new System.Drawing.Size(554, 456);
       this.dataGridView.TabIndex = 3;
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
       // 
       // rowsLabel
       // 
       this.rowsLabel.AutoSize = true;
-      this.rowsLabel.Location = new System.Drawing.Point(3, 35);
+      this.rowsLabel.Location = new System.Drawing.Point(3, 32);
       this.rowsLabel.Name = "rowsLabel";
       this.rowsLabel.Size = new System.Drawing.Size(37, 13);
       this.rowsLabel.TabIndex = 4;
@@ -96,7 +102,7 @@ namespace HeuristicLab.DataAnalysis {
       // columnsLabel
       // 
       this.columnsLabel.AutoSize = true;
-      this.columnsLabel.Location = new System.Drawing.Point(152, 35);
+      this.columnsLabel.Location = new System.Drawing.Point(161, 32);
       this.columnsLabel.Name = "columnsLabel";
       this.columnsLabel.Size = new System.Drawing.Size(50, 13);
       this.columnsLabel.TabIndex = 5;
@@ -113,17 +119,50 @@ namespace HeuristicLab.DataAnalysis {
       // 
       // nameTextBox
       // 
-      this.nameTextBox.Location = new System.Drawing.Point(46, 3);
+      this.nameTextBox.Location = new System.Drawing.Point(50, 3);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.ReadOnly = true;
-      this.nameTextBox.Size = new System.Drawing.Size(262, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(219, 20);
       this.nameTextBox.TabIndex = 7;
+      // 
+      // exportButton
+      // 
+      this.exportButton.Location = new System.Drawing.Point(6, 55);
+      this.exportButton.Name = "exportButton";
+      this.exportButton.Size = new System.Drawing.Size(75, 23);
+      this.exportButton.TabIndex = 11;
+      this.exportButton.Text = "Export ...";
+      this.exportButton.UseVisualStyleBackColor = true;
+      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+      // 
+      // contextMenuStrip
+      // 
+      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scaleValuesToolStripMenuItem,
+            this.originalValuesToolStripMenuItem});
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.Size = new System.Drawing.Size(146, 48);
+      // 
+      // scaleValuesToolStripMenuItem
+      // 
+      this.scaleValuesToolStripMenuItem.Name = "scaleValuesToolStripMenuItem";
+      this.scaleValuesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+      this.scaleValuesToolStripMenuItem.Text = "Scale values";
+      this.scaleValuesToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesToolStripMenuItem_Click);
+      // 
+      // originalValuesToolStripMenuItem
+      // 
+      this.originalValuesToolStripMenuItem.Name = "originalValuesToolStripMenuItem";
+      this.originalValuesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+      this.originalValuesToolStripMenuItem.Text = "Unscale values";
+      this.originalValuesToolStripMenuItem.Click += new System.EventHandler(this.originalValuesToolStripMenuItem_Click);
       // 
       // DatasetView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.nameTextBox);
+      this.Controls.Add(this.exportButton);
       this.Controls.Add(this.nameLabel);
       this.Controls.Add(this.columnsLabel);
       this.Controls.Add(this.rowsLabel);
@@ -133,6 +172,7 @@ namespace HeuristicLab.DataAnalysis {
       this.Name = "DatasetView";
       this.Size = new System.Drawing.Size(560, 543);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -147,5 +187,9 @@ namespace HeuristicLab.DataAnalysis {
     private System.Windows.Forms.Label columnsLabel;
     private System.Windows.Forms.Label nameLabel;
     private System.Windows.Forms.TextBox nameTextBox;
+    private System.Windows.Forms.Button exportButton;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    private System.Windows.Forms.ToolStripMenuItem scaleValuesToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem originalValuesToolStripMenuItem;
   }
 }
