@@ -103,32 +103,32 @@ namespace HeuristicLab.Functions {
     }
 
     private static double EvaluateBakedCode() {
-      int arity = codeArr[PC++];
-      int functionSymbol = codeArr[PC++];
-      int nLocalVariables = codeArr[PC++];
+      int arity = codeArr[PC];
+      int functionSymbol = codeArr[PC+1];
+      int nLocalVariables = codeArr[PC+2];
+      PC += 3;
       switch(functionSymbol) {
         case VARIABLE: {
-            int var = (int)dataArr[DP++];
-            double weight = dataArr[DP++];
-            int offset = (int)dataArr[DP++];
-            int row = sampleIndex + offset;
+            int var = (int)dataArr[DP];
+            double weight = dataArr[DP+1];
+            int row = sampleIndex + (int)dataArr[DP+2];
+            DP += 3;
             if(row < 0 || row >= dataset.Rows) return double.NaN;
             else return weight * dataset.GetValue(row, var);
           }
         case CONSTANT: {
-            double value = dataArr[DP++];
-            return value;
+            return dataArr[DP++];
           }
         case MULTIPLICATION: {
-            double result = 1.0;
-            for(int i = 0; i < arity; i++) {
+            double result = EvaluateBakedCode();
+            for(int i = 1; i < arity; i++) {
               result *= EvaluateBakedCode();
             }
             return result;
           }
         case ADDITION: {
-            double sum = 0.0;
-            for(int i = 0; i < arity; i++) {
+            double sum = EvaluateBakedCode();
+            for(int i = 1; i < arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum;
@@ -145,23 +145,21 @@ namespace HeuristicLab.Functions {
             }
           }
         case DIVISION: {
+            double result;
             if(arity == 1) {
-              double divisor = EvaluateBakedCode();
-              if(divisor == 0) return 0;
-              else return 1.0 / divisor;
+              result = 1.0 / EvaluateBakedCode();
             } else {
-              double result = EvaluateBakedCode();
+              result = EvaluateBakedCode();
               for(int i = 1; i < arity; i++) {
-                double divisor = EvaluateBakedCode();
-                if(divisor == 0) result = 0;
-                else result /= divisor;
+                result /= EvaluateBakedCode();
               }
-              return result;
             }
+            if(double.IsInfinity(result)) return 0.0;
+            else return result;
           }
         case AVERAGE: {
-            double sum = 0.0;
-            for(int i = 0; i < arity; i++) {
+            double sum = EvaluateBakedCode();
+            for(int i = 1; i < arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum / arity;
@@ -184,11 +182,9 @@ namespace HeuristicLab.Functions {
             return Math.Pow(x, p);
           }
         case SIGNUM: {
-            // protected signum
             double value = EvaluateBakedCode();
-            if(value < 0) return -1;
-            if(value > 0) return 1;
-            return 0;
+            if(double.IsNaN(value)) return double.NaN;
+            else return Math.Sign(value);
           }
         case SQRT: {
             return Math.Sqrt(EvaluateBakedCode());
@@ -202,9 +198,8 @@ namespace HeuristicLab.Functions {
             // we have to iterate over the linear structure anyway
             for(int i = 0; i < arity; i++) {
               double x = Math.Round(EvaluateBakedCode());
-              if(x == 0) result *= 0;
-              else if(x == 1.0) result *= 1.0;
-              else result *= double.NaN;
+              if(x == 0 || x==1.0) result *= x;
+              else result = double.NaN;
             }
             return result;
           }
