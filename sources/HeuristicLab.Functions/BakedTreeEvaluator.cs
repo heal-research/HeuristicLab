@@ -85,20 +85,18 @@ namespace HeuristicLab.Functions {
 
     private static int PC;
     private static int DP;
-    private static int[] codeArr;
-    private static double[] dataArr;
+    private static int MAX_CODE_LENGTH = 4096;
+    private static int MAX_DATA_LENGTH = 4096;
+    private static int[] codeArr = new int[MAX_CODE_LENGTH];
+    private static double[] dataArr = new double[MAX_DATA_LENGTH];
     private static Dataset dataset;
     private static int sampleIndex;
 
     internal static double Evaluate(Dataset _dataset, int _sampleIndex, List<int> code, List<double> data) {
       PC = 0;
       DP = 0;
-      if(codeArr == null || codeArr.Length!=code.Count) {
-        codeArr = new int[code.Count];
-        dataArr = new double[data.Count];
-        code.CopyTo(codeArr);
-        data.CopyTo(dataArr);
-      }
+      code.CopyTo(codeArr);
+      data.CopyTo(dataArr);
       sampleIndex = _sampleIndex;
       dataset = _dataset;
       return EvaluateBakedCode();
