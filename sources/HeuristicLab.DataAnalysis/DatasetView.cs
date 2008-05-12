@@ -22,6 +22,7 @@
 using System;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.DataAnalysis {
   public partial class DatasetView : EditorBase {
@@ -38,6 +39,13 @@ namespace HeuristicLab.DataAnalysis {
     public DatasetView()
       : base() {
       InitializeComponent();
+      DiscoveryService discovery = new DiscoveryService();
+      IDatasetManipulator[] manipuators = discovery.GetInstances<IDatasetManipulator>();
+      contextMenuStrip.Items.Add(new ToolStripSeparator());
+      foreach(IDatasetManipulator manipulator in manipuators) {
+        contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action,null , delegate(object source, EventArgs args) 
+          { manipulator.Execute(Dataset); }));
+      }
     }
 
     public DatasetView(Dataset dataset)
