@@ -71,7 +71,6 @@ namespace HeuristicLab.DataAnalysis {
         for (int i = 0; i < columns; i++) {
           dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
           dataGridView.Columns[i].Name = GetColumnName(i);
-          dataGridView.Columns[i].ContextMenuStrip = contextMenuStrip;
         }
         dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
       } else {
@@ -104,10 +103,6 @@ namespace HeuristicLab.DataAnalysis {
     private bool ValidateData(string element) {
       double result;
       return element != null && double.TryParse(element, out result);
-    }
-
-    private void exportButton_Click(object sender, EventArgs e) {
-      throw new NotImplementedException();
     }
 
     private void scaleValuesToolStripMenuItem_Click(object sender, EventArgs e) {

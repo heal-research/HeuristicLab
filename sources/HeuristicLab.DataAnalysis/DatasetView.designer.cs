@@ -52,7 +52,6 @@ namespace HeuristicLab.DataAnalysis {
       this.columnsLabel = new System.Windows.Forms.Label();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
-      this.exportButton = new System.Windows.Forms.Button();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.scaleValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.originalValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,9 +83,10 @@ namespace HeuristicLab.DataAnalysis {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dataGridView.Location = new System.Drawing.Point(3, 84);
+      this.dataGridView.ContextMenuStrip = this.contextMenuStrip;
+      this.dataGridView.Location = new System.Drawing.Point(3, 55);
       this.dataGridView.Name = "dataGridView";
-      this.dataGridView.Size = new System.Drawing.Size(554, 456);
+      this.dataGridView.Size = new System.Drawing.Size(554, 485);
       this.dataGridView.TabIndex = 3;
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
       // 
@@ -125,16 +125,6 @@ namespace HeuristicLab.DataAnalysis {
       this.nameTextBox.Size = new System.Drawing.Size(219, 20);
       this.nameTextBox.TabIndex = 7;
       // 
-      // exportButton
-      // 
-      this.exportButton.Location = new System.Drawing.Point(6, 55);
-      this.exportButton.Name = "exportButton";
-      this.exportButton.Size = new System.Drawing.Size(75, 23);
-      this.exportButton.TabIndex = 11;
-      this.exportButton.Text = "Export ...";
-      this.exportButton.UseVisualStyleBackColor = true;
-      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
-      // 
       // contextMenuStrip
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -162,7 +152,6 @@ namespace HeuristicLab.DataAnalysis {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.nameTextBox);
-      this.Controls.Add(this.exportButton);
       this.Controls.Add(this.nameLabel);
       this.Controls.Add(this.columnsLabel);
       this.Controls.Add(this.rowsLabel);
@@ -187,7 +176,6 @@ namespace HeuristicLab.DataAnalysis {
     private System.Windows.Forms.Label columnsLabel;
     private System.Windows.Forms.Label nameLabel;
     private System.Windows.Forms.TextBox nameTextBox;
-    private System.Windows.Forms.Button exportButton;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem scaleValuesToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem originalValuesToolStripMenuItem;
