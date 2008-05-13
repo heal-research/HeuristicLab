@@ -45,6 +45,8 @@ namespace HeuristicLab.Grid {
     private ProcessingEngine currentEngine;
     private object connectionLock = new object();
     private bool stopped;
+    private const int CONNECTION_RETRY_TIMEOUT_SEC = 10;
+    private const int MAX_RETRIES = 10;
 
     public ClientForm() {
       InitializeComponent();
@@ -100,52 +102,82 @@ namespace HeuristicLab.Grid {
     }
 
     private void fetchOperationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      byte[] engineXml;
+      byte[] engineXml = null;
+      // first stop the timer!
       fetchOperationTimer.Stop();
-      if(stopped) return;
-      try {
-        bool success;
-        lock(connectionLock) {
-          if(factory.State != CommunicationState.Opened) {
-            ResetConnection();
-          }
-          success = engineStore.TryTakeEngine(out currentGuid, out engineXml);
+      bool gotEngine = false;
+      lock(connectionLock) {
+        if(stopped) return;
+        try {
+          gotEngine = engineStore.TryTakeEngine(out currentGuid, out engineXml);
+        } catch(TimeoutException timeoutException) {
+          currentEngine = null;
+          currentGuid = Guid.Empty;
+          // timeout -> just start the timer again
+          fetchOperationTimer.Interval = 5000;
+          fetchOperationTimer.Start();
+        } catch(CommunicationException communicationException) {
+          // connection problem -> reset connection and start the timer again
+          ResetConnection();
+          currentEngine = null;
+          currentGuid = Guid.Empty;
+          fetchOperationTimer.Interval = 5000;
+          fetchOperationTimer.Start();
         }
-        if(success && !stopped) {
-          currentEngine = RestoreEngine(engineXml);
-          if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
-          currentEngine.Finished += delegate(object src, EventArgs args) {
-            if(factory.State == CommunicationState.Opened && !currentEngine.Canceled) {
-              byte[] resultXml = SaveEngine(currentEngine);
-              lock(connectionLock) {
-                engineStore.StoreResult(currentGuid, resultXml);
-              }
-              currentGuid = Guid.Empty;
-              currentEngine = null;
-              fetchOperationTimer.Interval = 100;
-              fetchOperationTimer.Start();
-            }
-          };
-          currentEngine.Execute();
-        } else {
-          if(!stopped) {
-            if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
-            fetchOperationTimer.Interval = 5000;
-            fetchOperationTimer.Start();
-          }
+      }
+      // got engine from server and user didn't press stop -> execute the engine
+      if(gotEngine && !stopped) {
+        currentEngine = RestoreEngine(engineXml);
+        if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
+        currentEngine.Finished += new EventHandler(currentEngine_Finished); // register event-handler that sends result back to server and restarts timer
+        currentEngine.Execute();
+      } else {
+        // ok we didn't get engine -> if the user didn't press stop this means that the server doesn't have engines for us
+        // if the user pressed stop we must not start the timer
+        if(!stopped) {
+          if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
+          // start the timer again
+          fetchOperationTimer.Interval = 5000;
+          fetchOperationTimer.Start();
         }
-      } catch(TimeoutException timeoutException) {
-        currentEngine = null;
-        currentGuid = Guid.Empty;
-        fetchOperationTimer.Interval = 5000;
-        fetchOperationTimer.Start();
-      } catch(CommunicationException communicationException) {
-        currentEngine = null;
-        currentGuid = Guid.Empty;
-        fetchOperationTimer.Interval = 5000;
-        fetchOperationTimer.Start();
       }
     }
+
+    void currentEngine_Finished(object sender, EventArgs e) {
+      IEngine engine = (IEngine)sender;
+      byte[] resultXml = SaveEngine(engine);
+      bool success = false;
+      int retries = 0;
+      do {
+        lock(connectionLock) {
+          if(!stopped) {
+            try {
+              engineStore.StoreResult(currentGuid, resultXml);
+              success = true;
+            } catch(TimeoutException timeoutException) {
+              success = false;
+              retries++;
+              Thread.Sleep(TimeSpan.FromSeconds(CONNECTION_RETRY_TIMEOUT_SEC));
+            } catch(CommunicationException communicationException) {
+              ResetConnection();
+              success = false;
+              retries++;
+              Thread.Sleep(TimeSpan.FromSeconds(CONNECTION_RETRY_TIMEOUT_SEC));
+            }
+          }
+        }
+      } while(!success && retries < MAX_RETRIES);
+      // ok if we could store the result it's probable that the server can send us another engine use a small time-interval
+      if(success)
+        fetchOperationTimer.Interval = 100;
+      else fetchOperationTimer.Interval = CONNECTION_RETRY_TIMEOUT_SEC; // if there were problems -> sleep for a longer time
+      // clear state
+      currentEngine = null;
+      currentGuid = Guid.Empty;
+      // start the timer
+      fetchOperationTimer.Start();
+    }
+
     private ProcessingEngine RestoreEngine(byte[] engine) {
       GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);
       return (ProcessingEngine)PersistenceManager.Load(stream);
