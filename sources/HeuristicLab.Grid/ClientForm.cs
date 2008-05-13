@@ -37,12 +37,13 @@ using System.Net;
 
 namespace HeuristicLab.Grid {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-  public partial class ClientForm : Form, IClient {
+  public partial class ClientForm : Form {
     private ChannelFactory<IEngineStore> factory;
     private System.Timers.Timer fetchOperationTimer;
     private IEngineStore engineStore;
     private Guid currentGuid;
     private ProcessingEngine currentEngine;
+    private object connectionLock = new object();
 
     public ClientForm() {
       InitializeComponent();
@@ -81,7 +82,12 @@ namespace HeuristicLab.Grid {
 
     private void stopButton_Click(object sender, EventArgs e) {
       fetchOperationTimer.Stop();
-      factory.Abort();
+      if(currentEngine != null)
+        currentEngine.Abort();
+      lock(connectionLock) {
+        IAsyncResult closeResult = factory.BeginClose(null, null);
+        factory.EndClose(closeResult);
+      }
       statusTextBox.Text = "Stopped";
       stopButton.Enabled = false;
       startButton.Enabled = true;
@@ -91,19 +97,27 @@ namespace HeuristicLab.Grid {
       byte[] engineXml;
       fetchOperationTimer.Stop();
       try {
-        if(factory.State != CommunicationState.Opened) {
-          ResetConnection();
+        bool success;
+        lock(connectionLock) {
+          if(factory.State != CommunicationState.Opened) {
+            ResetConnection();
+          }
+          success = engineStore.TryTakeEngine(out currentGuid, out engineXml);
         }
-        if(engineStore.TryTakeEngine(out currentGuid, out engineXml)) {
+        if(success) {
           currentEngine = RestoreEngine(engineXml);
           if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
           currentEngine.Finished += delegate(object src, EventArgs args) {
-            byte[] resultXml = SaveEngine(currentEngine);
-            engineStore.StoreResult(currentGuid, resultXml);
-            currentGuid = Guid.Empty;
-            currentEngine = null;
-            fetchOperationTimer.Interval = 100;
-            fetchOperationTimer.Start();
+            if(factory.State == CommunicationState.Opened && !currentEngine.Canceled) {
+              byte[] resultXml = SaveEngine(currentEngine);
+              lock(connectionLock) {
+                engineStore.StoreResult(currentGuid, resultXml);
+              }
+              currentGuid = Guid.Empty;
+              currentEngine = null;
+              fetchOperationTimer.Interval = 100;
+              fetchOperationTimer.Start();
+            }
           };
           currentEngine.Execute();
         } else {
@@ -111,18 +125,17 @@ namespace HeuristicLab.Grid {
           fetchOperationTimer.Interval = 5000;
           fetchOperationTimer.Start();
         }
-      } catch(Exception ex) {
+      } catch(TimeoutException timeoutException) {
+        currentEngine = null;
+        currentGuid = Guid.Empty;
+        fetchOperationTimer.Interval = 5000;
+        fetchOperationTimer.Start();
+      } catch(CommunicationException communicationException) {
         currentEngine = null;
         currentGuid = Guid.Empty;
         fetchOperationTimer.Interval = 5000;
         fetchOperationTimer.Start();
       }
-    }
-    public void Abort(Guid guid) {
-      throw new NotSupportedException();
-    }
-    public bool IsRunningEngine(Guid guid) {
-      throw new NotSupportedException();
     }
     private ProcessingEngine RestoreEngine(byte[] engine) {
       GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);
