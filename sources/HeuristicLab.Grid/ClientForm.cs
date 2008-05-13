@@ -166,7 +166,7 @@ namespace HeuristicLab.Grid {
             }
           }
         }
-      } while(!success && retries < MAX_RETRIES);
+      } while(!stopped && !success && retries < MAX_RETRIES);
       // ok if we could store the result it's probable that the server can send us another engine use a small time-interval
       if(success)
         fetchOperationTimer.Interval = 100;
