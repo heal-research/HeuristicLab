@@ -69,8 +69,6 @@ namespace HeuristicLab.DistributedEngine {
       int retryCount = 0;
       do {
         lock(connectionLock) {
-          if(factory.State != CommunicationState.Opened)
-            ResetConnection();
           try {
             currentEngineGuid = server.BeginExecuteEngine(zippedEngine);
             success = true;
@@ -82,6 +80,7 @@ namespace HeuristicLab.DistributedEngine {
               throw new ApplicationException("Max retries reached.", timeoutException);
             }
           } catch(CommunicationException communicationException) {
+            ResetConnection();
             // wait some time and try again (limit with maximal retries if retry count reached throw exception -> engine can decide to stop execution)
             if(retryCount < MAX_CONNECTION_RETRIES) {
               Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
@@ -119,7 +118,6 @@ namespace HeuristicLab.DistributedEngine {
           bool success = false;
           int retries = 0;
           do {
-            if(factory.State != CommunicationState.Opened) ResetConnection();
             try {
               zippedResult = server.TryEndExecuteEngine(engineGuid, 100);
               success = true;
@@ -128,6 +126,7 @@ namespace HeuristicLab.DistributedEngine {
               retries++;
               Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             } catch(CommunicationException communicationException) {
+              ResetConnection();
               success = false;
               retries++;
               Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
@@ -155,7 +154,6 @@ namespace HeuristicLab.DistributedEngine {
           do {
             try {
               lock(connectionLock) {
-                if(factory.State != CommunicationState.Opened) ResetConnection();
                 jobState = server.JobState(engineGuid);
               }
               success = true;
@@ -164,6 +162,7 @@ namespace HeuristicLab.DistributedEngine {
               success = false;
               Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             } catch(CommunicationException communicationException) {
+              ResetConnection();
               retries++;
               success = false;
               Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
@@ -180,7 +179,6 @@ namespace HeuristicLab.DistributedEngine {
             do {
               try {
                 lock(connectionLock) {
-                  if(factory.State != CommunicationState.Opened) ResetConnection();
                   server.BeginExecuteEngine(packedEngine);
                 }
                 success = true;
@@ -189,6 +187,7 @@ namespace HeuristicLab.DistributedEngine {
                 retries++;
                 Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
               } catch(CommunicationException communicationException) {
+                ResetConnection();
                 success = false;
                 retries++;
                 Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
