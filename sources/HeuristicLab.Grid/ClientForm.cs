@@ -44,6 +44,7 @@ namespace HeuristicLab.Grid {
     private Guid currentGuid;
     private ProcessingEngine currentEngine;
     private object connectionLock = new object();
+    private bool stopped;
 
     public ClientForm() {
       InitializeComponent();
@@ -51,6 +52,7 @@ namespace HeuristicLab.Grid {
       fetchOperationTimer.Interval = 200;
       fetchOperationTimer.Elapsed += new System.Timers.ElapsedEventHandler(fetchOperationTimer_Elapsed);
       statusTextBox.Text = "Stopped";
+      stopped = true;
       currentGuid = Guid.Empty;
     }
 
@@ -61,6 +63,7 @@ namespace HeuristicLab.Grid {
         startButton.Enabled = false;
         stopButton.Enabled = true;
         statusTextBox.Text = "Waiting for engine";
+        stopped = false;
 
       } catch(CommunicationException ex) {
         MessageBox.Show("Exception while connecting to the server: " + ex.Message);
@@ -81,12 +84,15 @@ namespace HeuristicLab.Grid {
     }
 
     private void stopButton_Click(object sender, EventArgs e) {
+      stopped = true;
       fetchOperationTimer.Stop();
       if(currentEngine != null)
         currentEngine.Abort();
       lock(connectionLock) {
-        IAsyncResult closeResult = factory.BeginClose(null, null);
-        factory.EndClose(closeResult);
+        if(factory.State == CommunicationState.Opened || factory.State == CommunicationState.Opening) {
+          IAsyncResult closeResult = factory.BeginClose(null, null);
+          factory.EndClose(closeResult);
+        }
       }
       statusTextBox.Text = "Stopped";
       stopButton.Enabled = false;
@@ -96,6 +102,7 @@ namespace HeuristicLab.Grid {
     private void fetchOperationTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       byte[] engineXml;
       fetchOperationTimer.Stop();
+      if(stopped) return;
       try {
         bool success;
         lock(connectionLock) {
@@ -104,7 +111,7 @@ namespace HeuristicLab.Grid {
           }
           success = engineStore.TryTakeEngine(out currentGuid, out engineXml);
         }
-        if(success) {
+        if(success && !stopped) {
           currentEngine = RestoreEngine(engineXml);
           if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Executing engine"; }); } else statusTextBox.Text = "Executing engine";
           currentEngine.Finished += delegate(object src, EventArgs args) {
@@ -121,9 +128,11 @@ namespace HeuristicLab.Grid {
           };
           currentEngine.Execute();
         } else {
-          if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
-          fetchOperationTimer.Interval = 5000;
-          fetchOperationTimer.Start();
+          if(!stopped) {
+            if(InvokeRequired) { Invoke((MethodInvoker)delegate() { statusTextBox.Text = "Waiting for engine"; }); } else statusTextBox.Text = "Waiting for engine";
+            fetchOperationTimer.Interval = 5000;
+            fetchOperationTimer.Start();
+          }
         }
       } catch(TimeoutException timeoutException) {
         currentEngine = null;
