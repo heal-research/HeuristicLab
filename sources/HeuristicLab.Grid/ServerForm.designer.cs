@@ -46,8 +46,6 @@ namespace HeuristicLab.Grid {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.externalAddressTextBox = new System.Windows.Forms.TextBox();
-      this.startButton = new System.Windows.Forms.Button();
-      this.stopButton = new System.Windows.Forms.Button();
       this.externalAddressLabel = new System.Windows.Forms.Label();
       this.internalAddressLabel = new System.Windows.Forms.Label();
       this.internalAddressTextBox = new System.Windows.Forms.TextBox();
@@ -67,29 +65,6 @@ namespace HeuristicLab.Grid {
       this.externalAddressTextBox.ReadOnly = true;
       this.externalAddressTextBox.Size = new System.Drawing.Size(229, 20);
       this.externalAddressTextBox.TabIndex = 0;
-      // 
-      // startButton
-      // 
-      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Location = new System.Drawing.Point(12, 160);
-      this.startButton.Name = "startButton";
-      this.startButton.Size = new System.Drawing.Size(75, 23);
-      this.startButton.TabIndex = 1;
-      this.startButton.Text = "St&art";
-      this.startButton.UseVisualStyleBackColor = true;
-      this.startButton.Click += new System.EventHandler(this.startButton_Click);
-      // 
-      // stopButton
-      // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Enabled = false;
-      this.stopButton.Location = new System.Drawing.Point(99, 160);
-      this.stopButton.Name = "stopButton";
-      this.stopButton.Size = new System.Drawing.Size(75, 23);
-      this.stopButton.TabIndex = 2;
-      this.stopButton.Text = "St&op";
-      this.stopButton.UseVisualStyleBackColor = true;
-      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
       // externalAddressLabel
       // 
@@ -184,7 +159,7 @@ namespace HeuristicLab.Grid {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(347, 195);
+      this.ClientSize = new System.Drawing.Size(347, 150);
       this.Controls.Add(this.waitingResultsLabel);
       this.Controls.Add(this.waitingResultsTextBox);
       this.Controls.Add(this.runningJobsLabel);
@@ -194,8 +169,6 @@ namespace HeuristicLab.Grid {
       this.Controls.Add(this.internalAddressLabel);
       this.Controls.Add(this.internalAddressTextBox);
       this.Controls.Add(this.externalAddressLabel);
-      this.Controls.Add(this.stopButton);
-      this.Controls.Add(this.startButton);
       this.Controls.Add(this.externalAddressTextBox);
       this.Name = "ServerForm";
       this.Text = "Grid Server";
@@ -207,8 +180,6 @@ namespace HeuristicLab.Grid {
     #endregion
 
     private System.Windows.Forms.TextBox externalAddressTextBox;
-    private System.Windows.Forms.Button startButton;
-    private System.Windows.Forms.Button stopButton;
     private System.Windows.Forms.Label externalAddressLabel;
     private System.Windows.Forms.Label internalAddressLabel;
     private System.Windows.Forms.TextBox internalAddressTextBox;

@@ -51,13 +51,12 @@ namespace HeuristicLab.Grid {
         externalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8000/Grid/Service";
         internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8001/Grid/JobStore";
       }
-
       jobStore = new EngineStore();
       server = new GridServer(jobStore);
-      
+      Start();
     }
 
-    private void startButton_Click(object sender, EventArgs e) {
+    private void Start() {
       externalHost = new ServiceHost(server, new Uri(externalAddressTextBox.Text));
       internalHost = new ServiceHost(jobStore, new Uri(internalAddressTextBox.Text));
       try {
@@ -72,23 +71,12 @@ namespace HeuristicLab.Grid {
 
         internalHost.AddServiceEndpoint(typeof(IEngineStore), binding, internalAddressTextBox.Text);
         internalHost.Open();
-
-        startButton.Enabled = false;
-        stopButton.Enabled = true;
       } catch (CommunicationException ex) {
         MessageBox.Show("An exception occurred: " + ex.Message);
         externalHost.Abort();
         internalHost.Abort();
       }
     }
-
-    private void stopButton_Click(object sender, EventArgs e) {
-      externalHost.Close();
-      internalHost.Close();
-      stopButton.Enabled = false;
-      startButton.Enabled = true;
-    }
-
     private void statusUpdateTimer_Tick(object sender, EventArgs e) {
       waitingJobsTextBox.Text = jobStore.WaitingJobs+"";
       waitingResultsTextBox.Text = jobStore.WaitingResults+"";
