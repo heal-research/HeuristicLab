@@ -91,9 +91,12 @@ namespace HeuristicLab.DistributedEngine {
           try {
             WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
             int i = 0;
+            // start all parallel jobs
             foreach(AtomicOperation parOperation in compositeOperation.Operations) {
               waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
             }
+
+            // wait until all jobs are finished
             // WaitAll works only with maximally 64 waithandles
             if(waithandles.Length <= 64) {
               WaitHandle.WaitAll(waithandles);
@@ -102,20 +105,34 @@ namespace HeuristicLab.DistributedEngine {
                 waithandles[i].WaitOne();
               }
             }
-            if(jobManager.Exception != null) {
-              myExecutionStack.Push(compositeOperation);
-              Abort();
-              ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(jobManager.Exception); });
+            // retrieve results and merge into scope-tree
+            foreach(AtomicOperation parOperation in compositeOperation.Operations) {
+              IScope result = jobManager.EndExecuteOperation(parOperation);
+              MergeScope(parOperation.Scope, result);
             }
           } catch(Exception e) {
             myExecutionStack.Push(compositeOperation);
             Abort();
-            ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(jobManager.Exception); });
+            ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(e); });
           }
         } else {
           for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
             myExecutionStack.Push(compositeOperation.Operations[i]);
         }
+      }
+    }
+
+    private void MergeScope(IScope original, IScope result) {
+      // merge the results
+      original.Clear();
+      foreach(IVariable variable in result.Variables) {
+        original.AddVariable(variable);
+      }
+      foreach(IScope subScope in result.SubScopes) {
+        original.AddSubScope(subScope);
+      }
+      foreach(KeyValuePair<string, string> alias in result.Aliases) {
+        original.AddAlias(alias.Key, alias.Value);
       }
     }
 
