@@ -126,11 +126,11 @@ namespace HeuristicLab.DistributedEngine {
             } catch(TimeoutException timeoutException) {
               success = false;
               retries++;
-              Thread.Sleep(RETRY_TIMEOUT_SEC);
+              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             } catch(CommunicationException communicationException) {
               success = false;
               retries++;
-              Thread.Sleep(RETRY_TIMEOUT_SEC);
+              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             }
 
           } while(!success && retries < MAX_CONNECTION_RETRIES);
@@ -162,11 +162,11 @@ namespace HeuristicLab.DistributedEngine {
             } catch(TimeoutException timeoutException) {
               retries++;
               success = false;
-              Thread.Sleep(RETRY_TIMEOUT_SEC);
+              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             } catch(CommunicationException communicationException) {
               retries++;
               success = false;
-              Thread.Sleep(RETRY_TIMEOUT_SEC);
+              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
             }
           } while(!success && retries < MAX_CONNECTION_RETRIES);
           if(jobState == JobState.Unkown) {
@@ -187,11 +187,11 @@ namespace HeuristicLab.DistributedEngine {
               } catch(TimeoutException timeoutException) {
                 success = false;
                 retries++;
-                Thread.Sleep(RETRY_TIMEOUT_SEC);
+                Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
               } catch(CommunicationException communicationException) {
                 success = false;
                 retries++;
-                Thread.Sleep(RETRY_TIMEOUT_SEC);
+                Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
               }
             } while(!success && retries < MAX_CONNECTION_RETRIES);
             restartCounter++;
