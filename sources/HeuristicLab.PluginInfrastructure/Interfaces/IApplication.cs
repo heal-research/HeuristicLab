@@ -28,6 +28,7 @@ namespace HeuristicLab.PluginInfrastructure {
     string Name { get; }
     Version Version { get; }
     string Description { get;}
+    bool AutoRestart { get; }
     void Run();
   }
 }

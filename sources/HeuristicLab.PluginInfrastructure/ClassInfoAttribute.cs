@@ -51,6 +51,12 @@ namespace HeuristicLab.PluginInfrastructure {
       set { description = value; }
     }
 
+    private bool autoRestart;
+    public bool AutoRestart {
+      get { return autoRestart; }
+      set { autoRestart = value; }
+    }
+
     public ClassInfoAttribute() {}
   }
 }

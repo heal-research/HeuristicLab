@@ -29,7 +29,8 @@ namespace HeuristicLab.PluginInfrastructure {
     private string name;
     private Version version;
     private string description;
-    
+    private bool autoRestart;
+
     public ApplicationBase() {
       ReadAttributes();
     }
@@ -44,26 +45,29 @@ namespace HeuristicLab.PluginInfrastructure {
 
       // after the assertion we are sure that the array access will not fail
       ClassInfoAttribute pluginAttribute = (ClassInfoAttribute)pluginAttributes[0];
+      if(pluginAttribute != null) {
+        // if the plugin name is not explicitly set in the attribute then the default plugin name is the FullName of the type
+        if(pluginAttribute.Name != null) {
+          this.name = pluginAttribute.Name;
+        } else {
+          this.name = this.GetType().FullName;
+        }
 
-      // if the plugin name is not explicitly set in the attribute then the default plugin name is the FullName of the type
-      if(pluginAttribute != null && pluginAttribute.Name != null) {
-        this.name = pluginAttribute.Name;
-      } else {
-        this.name = this.GetType().FullName;
-      }
+        // if the version is not explicitly set in the attribute then the version of the assembly is used as default
+        if(pluginAttribute.Version != null) {
+          this.version = new Version(pluginAttribute.Version);
+        } else {
+          this.version = this.GetType().Assembly.GetName().Version;
+        }
 
-      // if the version is not explicitly set in the attribute then the version of the assembly is used as default
-      if(pluginAttribute != null && pluginAttribute.Version != null) {
-        this.version = new Version(pluginAttribute.Version);
-      } else {
-        this.version = this.GetType().Assembly.GetName().Version;
-      }
+        // if the description is not explicitly set in the attribute then the name of name of the application is used as default
+        if(pluginAttribute.Description != null) {
+          this.description = pluginAttribute.Description;
+        } else {
+          this.description = name;
+        }
 
-      // if the description is not explicitly set in the attribute then the name of name of the application is used as default
-      if(pluginAttribute != null && pluginAttribute.Description != null) {
-        this.description = pluginAttribute.Description;
-      } else {
-        this.description = name;
+        this.autoRestart = pluginAttribute.AutoRestart;
       }
     }
 
@@ -82,7 +86,11 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return description; }
     }
 
-    public abstract void Run() ;
+    public bool AutoRestart {
+      get { return autoRestart; }
+    }
+
+    public abstract void Run();
 
     #endregion
   }

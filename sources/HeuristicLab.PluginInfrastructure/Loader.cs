@@ -119,6 +119,7 @@ namespace HeuristicLab.PluginInfrastructure {
         info.Name = application.Name;
         info.Version = application.Version;
         info.Description = application.Description;
+        info.AutoRestart = application.AutoRestart;
         info.PluginAssembly = application.GetType().Assembly.GetName().Name;
         info.PluginType = application.GetType().Namespace + "." + application.GetType().Name;
 

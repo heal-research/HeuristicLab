@@ -45,10 +45,15 @@ namespace HeuristicLab.PluginInfrastructure {
       set { description = value; }
     }
 
+    private bool autoRestart;
+    public bool AutoRestart {
+      get { return autoRestart; }
+      set { autoRestart = value; }
+    }
+
     private string pluginAssembly;
     /// <summary>
     /// Name of the assembly that contains the IApplication type.
-    /// NEEDED?
     /// </summary>
     public string PluginAssembly {
       get { return pluginAssembly; }
@@ -58,7 +63,6 @@ namespace HeuristicLab.PluginInfrastructure {
     private string pluginType;
     /// <summary>
     /// Name of the type that implements the interface IApplication.
-    /// NEEDED?
     /// </summary>
     public string PluginType {
       get { return pluginType; }

@@ -93,11 +93,17 @@ namespace HeuristicLab {
           splashScreen.Show();
           PluginManager.Manager.Action += new PluginManagerActionEventHandler(splashScreen.Manager_Action);
           Thread t = new Thread(delegate() {
-            try {
-              PluginManager.Manager.Run(app);
-            } catch(Exception ex) {
-              ShowErrorMessageBox(ex);
-            }
+            bool stopped = false;
+            do {
+              try {
+                PluginManager.Manager.Run(app);
+                stopped = true;
+              } catch(Exception ex) {
+                stopped = false;
+                ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
+                Thread.Sleep(5000); // sleep 5 seconds before autorestart
+              }
+            } while(!stopped && app.AutoRestart);
           });
           t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
           t.Start();
