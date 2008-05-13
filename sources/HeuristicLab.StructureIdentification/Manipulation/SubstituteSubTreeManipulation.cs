@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class SubstituteSubTreeManipulation : OperatorBase {
@@ -60,9 +61,7 @@ namespace HeuristicLab.StructureIdentification {
         // parent == null means we should subsitute the whole tree
         // => create a new random tree
         IFunctionTree newTree = gardener.CreateRandomTree(gardener.AllFunctions, maxTreeSize, maxTreeHeight);
-        if(!gardener.IsValidTree(newTree)) {
-          throw new InvalidProgramException();
-        }
+        Debug.Assert(gardener.IsValidTree(newTree));
 
         // update the variables in the scope with the new values
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
@@ -93,10 +92,7 @@ namespace HeuristicLab.StructureIdentification {
         parent.RemoveSubTree(childIndex);
         parent.InsertSubTree(childIndex, newTree);
 
-        if(!gardener.IsValidTree(root)) {
-          throw new InvalidProgramException();
-        }
-
+        Debug.Assert(gardener.IsValidTree(root));
         // update the values of treeSize and treeHeight
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);

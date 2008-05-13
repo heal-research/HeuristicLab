@@ -26,6 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class DeleteSubTreeManipulation : OperatorBase {
@@ -60,9 +61,7 @@ the operator tries to fix the tree by generating random subtrees where necessary
       if(parent == null) {
         IFunctionTree newTree = gardener.CreateBalancedRandomTree(1, 1);
         // check if the tree is ok
-        if(!gardener.IsValidTree(newTree)) {
-          throw new InvalidOperationException();
-        }
+        Debug.Assert(gardener.IsValidTree(newTree));
         // update sizes to match the new tree
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
@@ -85,9 +84,7 @@ the operator tries to fix the tree by generating random subtrees where necessary
         // when this starts to become a problem a possible solution is to go through the shifted branches from the place of the shifted
         // and find the first one that doesn't fit. At this position we insert a new randomly initialized subtree of matching type (gkronber 25.12.07)
 
-        if(!gardener.IsValidTree(root)) {
-          throw new InvalidOperationException();
-        }
+        Debug.Assert(gardener.IsValidTree(root));
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
         // root hasn't changed so don't need to update 'FunctionTree' variable
@@ -98,9 +95,7 @@ the operator tries to fix the tree by generating random subtrees where necessary
         ICollection<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
         IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, 1, 1);
         parent.InsertSubTree(childIndex, newFunctionTree);
-        if(!gardener.IsValidTree(root)) {
-          throw new InvalidProgramException();
-        }
+        Debug.Assert(gardener.IsValidTree(root));
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
         // again the root hasn't changed so we don't need to update the 'FunctionTree' variable

@@ -29,6 +29,7 @@ using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class SizeFairCrossOver : OperatorBase {
@@ -94,11 +95,8 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
 
       // check if the new tree is valid and if the size of is still in the allowed bounds
-      if(!gardener.IsValidTree(newTree) ||
-        newTreeHeight > maxTreeHeight ||
-        newTreeSize > maxTreeSize) {
-        throw new InvalidProgramException();
-      }
+      Debug.Assert(gardener.IsValidTree(newTree) &&
+        newTreeHeight <= maxTreeHeight && newTreeSize <= maxTreeSize);
       return gardener.CreateInitializationOperation(newBranches, child);
     }
 
@@ -164,7 +162,7 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
           //  - go up in tree0 => the insert position allows larger trees
           //  - go down in tree1 => the tree that is inserted becomes smaller
           //  - however we have to get lucky to solve the 'allowed sub-trees' problem
-          if(tree1Height == 1 || (tree0Level>0 && random.Next(2) == 0)) {
+          if(tree1Height == 1 || (tree0Level > 0 && random.Next(2) == 0)) {
             // go up in tree0 
             tree0Level--;
             tree0 = gardener.GetRandomBranch(root, tree0Level);

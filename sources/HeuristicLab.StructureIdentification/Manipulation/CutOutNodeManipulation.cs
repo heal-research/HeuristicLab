@@ -27,6 +27,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using System;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class CutOutNodeManipulation : OperatorBase {
@@ -76,9 +77,7 @@ of that node with one of the childs of the selected child.
           GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
           // update the variable
           scope.GetVariable(scope.TranslateName("FunctionTree")).Value = root;
-          if (!gardener.IsValidTree(root)) {
-            throw new InvalidProgramException();
-          }
+          Debug.Assert(gardener.IsValidTree(root));
           // we reused a sub-tree so we don't have to schedule initialization operations
           return null;
         } else {
@@ -89,9 +88,7 @@ of that node with one of the childs of the selected child.
           GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
           // update the variable
           scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTree;
-          if (!gardener.IsValidTree(newTree)) {
-            throw new InvalidProgramException();
-          }
+          Debug.Assert(gardener.IsValidTree(newTree));
           // schedule an operation to initialize the whole tree
           return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newTree), scope);
         }
@@ -107,9 +104,7 @@ of that node with one of the childs of the selected child.
         IFunctionTree selectedChild = possibleChilds[random.Next(possibleChilds.Length)];        
         parent.RemoveSubTree(childIndex);
         parent.InsertSubTree(childIndex, selectedChild);
-        if (!gardener.IsValidTree(root)) {
-          throw new InvalidProgramException();
-        }
+        Debug.Assert(gardener.IsValidTree(root));
         // update the size and height of our tree
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
@@ -128,9 +123,7 @@ of that node with one of the childs of the selected child.
         parent.InsertSubTree(childIndex, newFunctionTree);
         GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
         GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
-        if (!gardener.IsValidTree(root)) {
-          throw new InvalidProgramException();
-        }
+        Debug.Assert(gardener.IsValidTree(root));
         // schedule an initialization operation for the new function-tree
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newFunctionTree), scope);
       }

@@ -29,6 +29,7 @@ using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class ChangeNodeTypeManipulation : OperatorBase {
@@ -84,7 +85,7 @@ resulting in a valid tree again.";
           parent.InsertSubTree(selectedChildIndex, newTerminal);
           // updating the variable is not necessary because it stays the same
         }
-        if(!gardener.IsValidTree(root)) throw new InvalidProgramException();
+        Debug.Assert(gardener.IsValidTree(root));
         // size and height stays the same when changing a terminal so no need to update the variables
         // schedule an operation to initialize the new terminal
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newTerminal), scope);
@@ -118,8 +119,7 @@ resulting in a valid tree again.";
         treeSize.Data = (treeSize.Data - oldChildSize) + newChildSize;
         treeHeight.Data = gardener.GetTreeHeight(root); // must recalculate height because we can't know wether the manipulated branch was the deepest branch
         // check if whole tree is ok
-        if(!gardener.IsValidTree(root))
-          throw new InvalidProgramException();
+        Debug.Assert(gardener.IsValidTree(root));
         // return a composite operation that initializes all created sub-trees
         return gardener.CreateInitializationOperation(uninitializedBranches, scope);
       }
