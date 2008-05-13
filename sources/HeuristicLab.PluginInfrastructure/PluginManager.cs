@@ -102,14 +102,19 @@ namespace HeuristicLab.PluginInfrastructure {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
       AppDomain applicationDomain = AppDomain.CreateDomain(appInfo.Name + " AppDomain", null, setup);
-
-      Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfrastructure", "HeuristicLab.PluginInfrastructure.Runner");
-      NotifyListeners(PluginManagerAction.Initializing, "All plugins");
-      remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
-      NotifyListeners(PluginManagerAction.Initialized, "All plugins");
-      remoteRunner.Run(appInfo);
-
-      AppDomain.Unload(applicationDomain);
+      try {
+        Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfrastructure", "HeuristicLab.PluginInfrastructure.Runner");
+        NotifyListeners(PluginManagerAction.Initializing, "All plugins");
+        remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
+        NotifyListeners(PluginManagerAction.Initialized, "All plugins");
+        remoteRunner.Run(appInfo);
+      } catch(Exception ex) {
+        // can't handle exception here -> rethrow 
+        throw new ApplicationException("Exception in "+appInfo.Name, ex);
+      } finally {
+        // make sure domain is unloaded in all cases
+        AppDomain.Unload(applicationDomain);
+      }
     }
 
     /// <summary>

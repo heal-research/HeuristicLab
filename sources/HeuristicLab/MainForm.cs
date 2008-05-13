@@ -93,7 +93,11 @@ namespace HeuristicLab {
           splashScreen.Show();
           PluginManager.Manager.Action += new PluginManagerActionEventHandler(splashScreen.Manager_Action);
           Thread t = new Thread(delegate() {
-            PluginManager.Manager.Run(app);
+            try {
+              PluginManager.Manager.Run(app);
+            } catch(Exception ex) {
+              ShowErrorMessageBox(ex);
+            }
           });
           t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
           t.Start();
@@ -121,5 +125,21 @@ namespace HeuristicLab {
       applicationsListView.View = View.Details;
     }
 
+    public void ShowErrorMessageBox(Exception ex) {
+      MessageBox.Show(BuildErrorMessage(ex),
+                      "Error - " + ex.GetType().Name,
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Error);
+    }
+    private string BuildErrorMessage(Exception ex) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+
+      while(ex.InnerException != null) {
+        ex = ex.InnerException;
+        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+      }
+      return sb.ToString();
+    }
   }
 }
