@@ -46,7 +46,7 @@ namespace HeuristicLab.Grid {
 
     public int RunningJobs {
       get {
-        return waitHandles.Count;
+        return runningEngines.Count;
       }
     }
 
