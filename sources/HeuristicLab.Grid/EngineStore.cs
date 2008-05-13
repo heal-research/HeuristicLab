@@ -30,11 +30,14 @@ namespace HeuristicLab.Grid {
   public class EngineStore : IEngineStore {
     private List<Guid> engineList;
     private Dictionary<Guid, byte[]> waitingEngines;
+    private Dictionary<Guid, byte[]> runningEngines;
     private Dictionary<Guid, ManualResetEvent> waitHandles;
     private Dictionary<Guid, byte[]> results;
     private Dictionary<Guid, DateTime> resultDate;
+    private Dictionary<Guid, DateTime> runningEngineDate;
+    private const int RESULT_EXPIRY_TIME_MIN = 10;
+    private const int RUNNING_JOB_EXPIRY_TIME_MIN = 10;
     private object bigLock;
-    private ChannelFactory<IClient> clientChannelFactory;
     public int WaitingJobs {
       get {
         return waitingEngines.Count;
@@ -56,9 +59,11 @@ namespace HeuristicLab.Grid {
     public EngineStore() {
       engineList = new List<Guid>();
       waitingEngines = new Dictionary<Guid, byte[]>();
+      runningEngines = new Dictionary<Guid, byte[]>();
       waitHandles = new Dictionary<Guid, ManualResetEvent>();
       results = new Dictionary<Guid, byte[]>();
       resultDate = new Dictionary<Guid, DateTime>();
+      runningEngineDate = new Dictionary<Guid, DateTime>();
       bigLock = new object();
 
       NetTcpBinding binding = new NetTcpBinding();
@@ -67,7 +72,6 @@ namespace HeuristicLab.Grid {
       binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
       binding.Security.Mode = SecurityMode.None;
 
-      clientChannelFactory = new ChannelFactory<IClient>(binding);
     }
 
     public bool TryTakeEngine(out Guid guid, out byte[] engine) {
@@ -81,6 +85,8 @@ namespace HeuristicLab.Grid {
           engineList.RemoveAt(0);
           engine = waitingEngines[guid];
           waitingEngines.Remove(guid);
+          runningEngines[guid] = engine;
+          runningEngineDate[guid] = DateTime.Now;
           return true;
         }
       }
@@ -89,13 +95,15 @@ namespace HeuristicLab.Grid {
     public void StoreResult(Guid guid, byte[] result) {
       lock(bigLock) {
         // clear old results
-        List<Guid> expiredResults = FindExpiredResults(DateTime.Now.AddMinutes(-10.0));
+        List<Guid> expiredResults = FindExpiredResults(DateTime.Now.AddMinutes(-RESULT_EXPIRY_TIME_MIN));
         foreach(Guid expiredGuid in expiredResults) {
           results.Remove(expiredGuid);
           waitHandles.Remove(expiredGuid);
           resultDate.Remove(expiredGuid);
         }
         // add the new result
+        runningEngines.Remove(guid);
+        runningEngineDate.Remove(guid);
         results[guid] = result;
         resultDate[guid] = DateTime.Now;
         waitHandles[guid].Set();
@@ -110,6 +118,15 @@ namespace HeuristicLab.Grid {
         }
       }
       return expiredResults;
+    }
+    private List<Guid> FindExpiredJobs(DateTime expirationDate) {
+      List<Guid> expiredJobs = new List<Guid>();
+      foreach(Guid guid in runningEngines.Keys) {
+        if(runningEngineDate[guid] < expirationDate) {
+          expiredJobs.Add(guid);
+        }
+      }
+      return expiredJobs;
     }
 
     internal void AddEngine(Guid guid, byte[] engine) {
@@ -138,7 +155,6 @@ namespace HeuristicLab.Grid {
         } else {
           // result not yet available, if there is also no wait-handle for that result then we will never have a result and can return null
           if(!waitHandles.ContainsKey(guid)) return null;
-
           // otherwise we have a wait-handle and can wait for the result
           ManualResetEvent waitHandle = waitHandles[guid];
           // wait
@@ -149,7 +165,14 @@ namespace HeuristicLab.Grid {
             byte[] result = results[guid];
             return result;
           } else {
-            // no result yet return without result
+            // no result yet, check for which jobs we waited too long and requeue those jobs
+            List<Guid> expiredJobs = FindExpiredJobs(DateTime.Now.AddMinutes(-RUNNING_JOB_EXPIRY_TIME_MIN));
+            foreach(Guid expiredGuid in expiredJobs) {
+              engineList.Insert(0, expiredGuid);
+              waitingEngines[expiredGuid] = runningEngines[expiredGuid];
+              runningEngines.Remove(expiredGuid);
+              runningEngineDate.Remove(expiredGuid);
+            }
             return null;
           }
         }
@@ -157,15 +180,7 @@ namespace HeuristicLab.Grid {
     }
 
     internal void AbortEngine(Guid guid) {
-      lock(bigLock) {
-        if(waitingEngines.ContainsKey(guid)) {
-          byte[] engine = waitingEngines[guid];
-          waitingEngines.Remove(guid);
-          engineList.Remove(guid);
-          waitHandles[guid].Set();
-          results.Add(guid, engine);
-        }
-      }
+      throw new NotImplementedException();
     }
 
     internal JobState JobState(Guid guid) {
