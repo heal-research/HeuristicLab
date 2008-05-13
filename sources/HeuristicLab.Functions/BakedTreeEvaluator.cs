@@ -5,7 +5,7 @@ using System.Text;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  static class BakedTreeEvaluator {
+  internal class BakedTreeEvaluator {
     private const int ADDITION = 10010;
     private const int AND = 10020;
     private const int AVERAGE = 10030;
@@ -34,6 +34,10 @@ namespace HeuristicLab.Functions {
     private static Dictionary<int, IFunction> symbolTable;
     private static Dictionary<IFunction, int> reverseSymbolTable;
     private static Dictionary<Type, int> staticTypes;
+    private static int MAX_CODE_LENGTH = 4096;
+    private static int MAX_DATA_LENGTH = 4096;
+    private static int[] codeArr = new int[MAX_CODE_LENGTH];
+    private static double[] dataArr = new double[MAX_DATA_LENGTH];
 
     static BakedTreeEvaluator() {
       symbolTable = new Dictionary<int, IFunction>();
@@ -64,6 +68,11 @@ namespace HeuristicLab.Functions {
       staticTypes[typeof(Xor)] = XOR;
     }
 
+    internal BakedTreeEvaluator(List<int> code, List<double> data) {
+      code.CopyTo(codeArr);
+      data.CopyTo(dataArr);
+    }
+
     internal static int MapFunction(IFunction function) {
       if(!reverseSymbolTable.ContainsKey(function)) {
         int curFunctionSymbol;
@@ -83,26 +92,20 @@ namespace HeuristicLab.Functions {
     }
 
 
-    private static int PC;
-    private static int DP;
-    private static int MAX_CODE_LENGTH = 4096;
-    private static int MAX_DATA_LENGTH = 4096;
-    private static int[] codeArr = new int[MAX_CODE_LENGTH];
-    private static double[] dataArr = new double[MAX_DATA_LENGTH];
-    private static Dataset dataset;
-    private static int sampleIndex;
+    private int PC;
+    private int DP;
+    private Dataset dataset;
+    private int sampleIndex;
 
-    internal static double Evaluate(Dataset _dataset, int _sampleIndex, List<int> code, List<double> data) {
+    internal double Evaluate(Dataset _dataset, int _sampleIndex) {
       PC = 0;
       DP = 0;
-      code.CopyTo(codeArr);
-      data.CopyTo(dataArr);
       sampleIndex = _sampleIndex;
       dataset = _dataset;
       return EvaluateBakedCode();
     }
 
-    private static double EvaluateBakedCode() {
+    private double EvaluateBakedCode() {
       int arity = codeArr[PC];
       int functionSymbol = codeArr[PC+1];
       int nLocalVariables = codeArr[PC+2];
