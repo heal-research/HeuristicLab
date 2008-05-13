@@ -33,9 +33,6 @@ namespace HeuristicLab.DataAnalysis {
         Refresh();
       }
     }
-
-    private double[] scalingFactor;
-    private double[] scalingOffset;
     public DatasetView()
       : base() {
       InitializeComponent();
@@ -55,14 +52,6 @@ namespace HeuristicLab.DataAnalysis {
 
     protected override void UpdateControls() {
       base.UpdateControls();
-      if(this.scalingFactor == null) {
-        this.scalingFactor = new double[Dataset.Columns];
-        this.scalingOffset = new double[Dataset.Columns];
-        for(int i = 0; i < scalingFactor.Length; i++) {
-          scalingFactor[i] = 1.0;
-          scalingOffset[i] = 0.0;
-        }
-      }
       if (Dataset != null) {
         int rows = Dataset.Rows;
         int columns = Dataset.Columns;
@@ -104,7 +93,6 @@ namespace HeuristicLab.DataAnalysis {
       double.TryParse(element, out result);
       if (result != Dataset.GetValue(row, column)) {
         Dataset.SetValue(row, column, result);
-        Dataset.FireChanged();
       }
     }
 
@@ -115,31 +103,16 @@ namespace HeuristicLab.DataAnalysis {
 
     private void scaleValuesToolStripMenuItem_Click(object sender, EventArgs e) {
       foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
-        if(scalingFactor[column.Index] == 1.0) {
-          double min = Dataset.GetMinimum(column.Index);
-          double max = Dataset.GetMaximum(column.Index);
-          double range = max - min;
-          scalingFactor[column.Index] = range;
-          scalingOffset[column.Index] = min;
-          column.Name = GetColumnName(column.Index) + " [scaled]";
-          for(int i = 0; i < Dataset.Rows; i++) {
-            Dataset.SetValue(i, column.Index, (Dataset.GetValue(i, column.Index)-min) / range);
-          }
-        }
+        Dataset.ScaleVariable(column.Index);
+        column.Name = GetColumnName(column.Index) + " [scaled]";
       }
       Refresh();
     }
 
     private void originalValuesToolStripMenuItem_Click(object sender, EventArgs e) {
       foreach(DataGridViewColumn column in dataGridView.SelectedColumns) {
-        if(scalingFactor[column.Index] != 1.0) {
-          column.Name = GetColumnName(column.Index);
-          for(int i = 0; i < Dataset.Rows; i++) {
-            Dataset.SetValue(i, column.Index, Dataset.GetValue(i, column.Index) * scalingFactor[column.Index] + scalingOffset[column.Index]);
-          }
-          scalingFactor[column.Index] = 1.0;
-          scalingOffset[column.Index] = 0.0;
-        }
+        Dataset.UnscaleVariable(column.Index);
+        column.Name = GetColumnName(column.Index);
       }
       Refresh();      
     }

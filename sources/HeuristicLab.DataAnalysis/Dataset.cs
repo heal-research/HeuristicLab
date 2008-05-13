@@ -38,8 +38,10 @@ namespace HeuristicLab.DataAnalysis {
 
     private double[] samples;
     private int rows;
-    Dictionary<int, Dictionary<int, double>>[] cachedMeans;
-    Dictionary<int, Dictionary<int, double>>[] cachedRanges;
+    private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
+    private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
+    private double[] scalingFactor;
+    private double[] scalingOffset;
 
     public int Rows {
       get { return rows; }
@@ -66,7 +68,13 @@ namespace HeuristicLab.DataAnalysis {
 
     public double[] Samples {
       get { return samples; }
-      set { 
+      set {
+        scalingFactor = new double[columns];
+        scalingOffset = new double[columns];
+        for(int i = 0; i < scalingFactor.Length; i++) {
+          scalingFactor[i] = 1.0;
+          scalingOffset[i] = 0.0;
+        }
         samples = value;
         CreateDictionaries();
         FireChanged();
@@ -81,18 +89,18 @@ namespace HeuristicLab.DataAnalysis {
 
     public Dataset() {
       Name = "-";
-      VariableNames = new string[] {"Var0"};
+      VariableNames = new string[] { "Var0" };
       Columns = 1;
       Rows = 1;
       Samples = new double[1];
+      scalingOffset = new double[] { 0.0 };
+      scalingFactor = new double[] { 1.0 };
     }
 
     private void CreateDictionaries() {
       // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
-
       cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
       cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
-
       for(int i = 0; i < columns; i++) {
         cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
         cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
@@ -114,6 +122,8 @@ namespace HeuristicLab.DataAnalysis {
       clone.Name = Name;
       clone.VariableNames = new string[VariableNames.Length];
       Array.Copy(VariableNames, clone.VariableNames, VariableNames.Length);
+      Array.Copy(scalingFactor, clone.scalingFactor, columns);
+      Array.Copy(scalingOffset, clone.scalingOffset, columns);
       return clone;
     }
 
@@ -128,11 +138,15 @@ namespace HeuristicLab.DataAnalysis {
       XmlAttribute dim2 = document.CreateAttribute("Dimension2");
       dim2.Value = columns.ToString(CultureInfo.InvariantCulture.NumberFormat);
       node.Attributes.Append(dim2);
-
       XmlAttribute variableNames = document.CreateAttribute("VariableNames");
       variableNames.Value = GetVariableNamesString();
       node.Attributes.Append(variableNames);
-
+      XmlAttribute scalingFactorsAttribute = document.CreateAttribute("ScalingFactors");
+      scalingFactorsAttribute.Value = GetString(scalingFactor);
+      node.Attributes.Append(scalingFactorsAttribute);
+      XmlAttribute scalingOffsetsAttribute = document.CreateAttribute("ScalingOffsets");
+      scalingOffsetsAttribute.Value = GetString(scalingOffset);
+      node.Attributes.Append(scalingOffsetsAttribute);
       node.InnerText = ToString(CultureInfo.InvariantCulture.NumberFormat);
       return node;
     }
@@ -142,15 +156,27 @@ namespace HeuristicLab.DataAnalysis {
       Name = node.Attributes["Name"].Value;
       rows = int.Parse(node.Attributes["Dimension1"].Value, CultureInfo.InvariantCulture.NumberFormat);
       columns = int.Parse(node.Attributes["Dimension2"].Value, CultureInfo.InvariantCulture.NumberFormat);
-      
+
       VariableNames = ParseVariableNamesString(node.Attributes["VariableNames"].Value);
+      if(node.Attributes["ScalingFactors"] != null)
+        scalingFactor = ParseDoubleString(node.Attributes["ScalingFactors"].Value);
+      else {
+        scalingFactor = new double[columns]; // compatibility with old serialization format
+        for(int i = 0; i < scalingFactor.Length; i++) scalingFactor[i] = 1.0;
+      }
+      if(node.Attributes["ScalingOffsets"] != null)
+        scalingOffset = ParseDoubleString(node.Attributes["ScalingOffsets"].Value);
+      else {
+        scalingOffset = new double[columns]; // compatibility with old serialization format
+        for(int i = 0; i < scalingOffset.Length; i++) scalingOffset[i] = 0.0;
+      }
 
       string[] tokens = node.InnerText.Split(';');
       if(tokens.Length != rows * columns) throw new FormatException();
       samples = new double[rows * columns];
       for(int row = 0; row < rows; row++) {
         for(int column = 0; column < columns; column++) {
-          if(double.TryParse(tokens[row * columns + column], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out samples[row*columns + column]) == false) {
+          if(double.TryParse(tokens[row * columns + column], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out samples[row * columns + column]) == false) {
             throw new FormatException("Can't parse " + tokens[row * columns + column] + " as double value.");
           }
         }
@@ -167,7 +193,7 @@ namespace HeuristicLab.DataAnalysis {
       for(int row = 0; row < rows; row++) {
         for(int column = 0; column < columns; column++) {
           builder.Append(";");
-          builder.Append(samples[row*columns+column].ToString(format));
+          builder.Append(samples[row * columns + column].ToString(format));
         }
       }
       if(builder.Length > 0) builder.Remove(0, 1);
@@ -176,11 +202,22 @@ namespace HeuristicLab.DataAnalysis {
 
     private string GetVariableNamesString() {
       string s = "";
-      for (int i = 0; i < variableNames.Length; i++) {
+      for(int i = 0; i < variableNames.Length; i++) {
         s += variableNames[i] + "; ";
       }
 
-      if (variableNames.Length > 0) {
+      if(variableNames.Length > 0) {
+        s = s.TrimEnd(';', ' ');
+      }
+      return s;
+    }
+    private string GetString(double[] xs) {
+      string s = "";
+      for(int i = 0; i < xs.Length; i++) {
+        s += xs[i].ToString(CultureInfo.InvariantCulture) + "; ";
+      }
+
+      if(xs.Length > 0) {
         s = s.TrimEnd(';', ' ');
       }
       return s;
@@ -188,12 +225,21 @@ namespace HeuristicLab.DataAnalysis {
 
     private string[] ParseVariableNamesString(string p) {
       p = p.Trim();
-      string[] tokens = p.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+      string[] tokens = p.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return tokens;
+    }
+    private double[] ParseDoubleString(string s) {
+      s = s.Trim();
+      string[] ss = s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      double[] xs = new double[ss.Length];
+      for(int i = 0; i < xs.Length; i++) {
+        xs[i] = double.Parse(ss[i], CultureInfo.InvariantCulture);
+      }
+      return xs;
     }
 
     public double GetMean(int column) {
-      return GetMean(column, 0, Rows-1);
+      return GetMean(column, 0, Rows - 1);
     }
 
     public double GetMean(int column, int from, int to) {
@@ -212,7 +258,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetRange(int column) {
-      return GetRange(column, 0, Rows-1);
+      return GetRange(column, 0, Rows - 1);
     }
 
     public double GetRange(int column, int from, int to) {
@@ -246,6 +292,33 @@ namespace HeuristicLab.DataAnalysis {
         if(val < min) min = val;
       }
       return min;
+    }
+
+    internal void ScaleVariable(int column) {
+      if(scalingFactor[column] == 1.0) {
+        double min = GetMinimum(column);
+        double max = GetMaximum(column);
+        double range = max - min;
+        scalingFactor[column] = range;
+        scalingOffset[column] = min;
+        for(int i = 0; i < Rows; i++) {
+          double origValue = samples[i * columns + column];
+          samples[i * columns + column] = (origValue - min) / range;
+        }
+      }
+      CreateDictionaries();
+      FireChanged();
+    }
+
+    internal void UnscaleVariable(int column) {
+      if(scalingFactor[column] != 1.0) {
+        for(int i = 0; i < rows; i++) {
+          double scaledValue = samples[i * columns + column];
+          samples[i * columns + column] = scaledValue * scalingFactor[column] + scalingOffset[column];
+        }
+        scalingFactor[column] = 1.0;
+        scalingOffset[column] = 0.0;
+      }
     }
   }
 }
