@@ -14,8 +14,7 @@ namespace HeuristicLab.DistributedEngine {
   class JobManager {
     private IGridServer server;
     private string address;
-    private Dictionary<Guid, AtomicOperation> engineOperations = new Dictionary<Guid, AtomicOperation>();
-    private Dictionary<Guid, byte[]> runningEngines = new Dictionary<Guid, byte[]>();
+    private Dictionary<Guid, ProcessingEngine> engines = new Dictionary<Guid, ProcessingEngine>();
     private Dictionary<Guid, ManualResetEvent> waithandles = new Dictionary<Guid, ManualResetEvent>();
     private Dictionary<AtomicOperation, byte[]> results = new Dictionary<AtomicOperation, byte[]>();
     private object connectionLock = new object();
@@ -37,8 +36,7 @@ namespace HeuristicLab.DistributedEngine {
       lock(dictionaryLock) {
         foreach(WaitHandle wh in waithandles.Values) wh.Close();
         waithandles.Clear();
-        engineOperations.Clear();
-        runningEngines.Clear();
+        engines.Clear();
         results.Clear();
       }
     }
@@ -59,12 +57,7 @@ namespace HeuristicLab.DistributedEngine {
 
     public WaitHandle BeginExecuteOperation(IOperatorGraph operatorGraph, IScope globalScope, AtomicOperation operation) {
       ProcessingEngine engine = new ProcessingEngine(operatorGraph, globalScope, operation); // OperatorGraph not needed?
-      MemoryStream memStream = new MemoryStream();
-      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      PersistenceManager.Save(engine, stream);
-      stream.Close();
-      byte[] zippedEngine = memStream.ToArray();
-      memStream.Close();
+      byte[] zippedEngine = ZipEngine(engine);
       Guid currentEngineGuid = Guid.Empty;
       bool success = false;
       int retryCount = 0;
@@ -93,12 +86,21 @@ namespace HeuristicLab.DistributedEngine {
         }
       } while(!success);
       lock(dictionaryLock) {
-        runningEngines[currentEngineGuid] = memStream.ToArray();
-        engineOperations[currentEngineGuid] = operation;
+        engines[currentEngineGuid] = engine;
         waithandles[currentEngineGuid] = new ManualResetEvent(false);
       }
       ThreadPool.QueueUserWorkItem(new WaitCallback(TryGetResult), currentEngineGuid);
       return waithandles[currentEngineGuid];
+    }
+
+    private byte[] ZipEngine(ProcessingEngine engine) {
+      MemoryStream memStream = new MemoryStream();
+      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+      PersistenceManager.Save(engine, stream);
+      stream.Close();
+      byte[] zippedEngine = memStream.ToArray();
+      memStream.Close();
+      return zippedEngine;
     }
 
     public IScope EndExecuteOperation(AtomicOperation operation) {
@@ -142,11 +144,10 @@ namespace HeuristicLab.DistributedEngine {
         if(zippedResult != null) {
           lock(dictionaryLock) {
             // store result
-            results[engineOperations[engineGuid]] = zippedResult;
+            results[engines[engineGuid].InitialOperation] = zippedResult;
 
             // signal the wait handle and clean up then return
-            engineOperations.Remove(engineGuid);
-            runningEngines.Remove(engineGuid);
+            engines.Remove(engineGuid);
             waithandles[engineGuid].Set();
             waithandles.Remove(engineGuid);
           }
@@ -175,16 +176,17 @@ namespace HeuristicLab.DistributedEngine {
           } while(!success && retries < MAX_CONNECTION_RETRIES);
           if(jobState == JobState.Unkown) {
             // restart job
-            byte[] packedEngine;
+            ProcessingEngine engine;
             lock(dictionaryLock) {
-              packedEngine = runningEngines[engineGuid];
+              engine = engines[engineGuid];
             }
+            byte[] zippedEngine = ZipEngine(engine);
             success = false;
             retries = 0;
             do {
               try {
                 lock(connectionLock) {
-                  server.BeginExecuteEngine(packedEngine);
+                  server.BeginExecuteEngine(zippedEngine);
                 }
                 success = true;
               } catch(TimeoutException timeoutException) {
