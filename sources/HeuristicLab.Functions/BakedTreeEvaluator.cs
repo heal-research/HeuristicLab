@@ -8,89 +8,17 @@ using System.Xml;
 
 namespace HeuristicLab.Functions {
   internal class BakedTreeEvaluator : StorableBase {
-    private const int ADDITION = 10010;
-    private const int AND = 10020;
-    private const int AVERAGE = 10030;
-    private const int CONSTANT = 10040;
-    private const int COSINUS = 10050;
-    private const int DIVISION = 10060;
-    private const int EQU = 10070;
-    private const int EXP = 10080;
-    private const int GT = 10090;
-    private const int IFTE = 10100;
-    private const int LT = 10110;
-    private const int LOG = 10120;
-    private const int MULTIPLICATION = 10130;
-    private const int NOT = 10140;
-    private const int OR = 10150;
-    private const int POWER = 10160;
-    private const int SIGNUM = 10170;
-    private const int SINUS = 10180;
-    private const int SQRT = 10190;
-    private const int SUBSTRACTION = 10200;
-    private const int TANGENS = 10210;
-    private const int VARIABLE = 10220;
-    private const int XOR = 10230;
+    private int[] codeArr;
+    private double[] dataArr;
+    private static EvaluatorSymbolTable symbolTable = EvaluatorSymbolTable.SymbolTable;
 
-    private int nextFunctionSymbol = 10240;
-    private Dictionary<int, IFunction> symbolTable;
-    private Dictionary<IFunction, int> reverseSymbolTable;
-    private Dictionary<Type, int> staticTypes;
-    private const int MAX_CODE_LENGTH = 4096;
-    private const int MAX_DATA_LENGTH = 4096;
-    private int[] codeArr = new int[MAX_CODE_LENGTH];
-    private double[] dataArr = new double[MAX_DATA_LENGTH];
-
+    // for persistence mechanism only
     public BakedTreeEvaluator() {
-      symbolTable = new Dictionary<int, IFunction>();
-      reverseSymbolTable = new Dictionary<IFunction, int>();
-      staticTypes = new Dictionary<Type, int>();
-      staticTypes[typeof(Addition)] = ADDITION;
-      staticTypes[typeof(And)] = AND;
-      staticTypes[typeof(Average)] = AVERAGE;
-      staticTypes[typeof(Constant)] = CONSTANT;
-      staticTypes[typeof(Cosinus)] = COSINUS;
-      staticTypes[typeof(Division)] = DIVISION;
-      staticTypes[typeof(Equal)] = EQU;
-      staticTypes[typeof(Exponential)] = EXP;
-      staticTypes[typeof(GreaterThan)] = GT;
-      staticTypes[typeof(IfThenElse)] = IFTE;
-      staticTypes[typeof(LessThan)] = LT;
-      staticTypes[typeof(Logarithm)] = LOG;
-      staticTypes[typeof(Multiplication)] = MULTIPLICATION;
-      staticTypes[typeof(Not)] = NOT;
-      staticTypes[typeof(Or)] = OR;
-      staticTypes[typeof(Power)] = POWER;
-      staticTypes[typeof(Signum)] = SIGNUM;
-      staticTypes[typeof(Sinus)] = SINUS;
-      staticTypes[typeof(Sqrt)] = SQRT;
-      staticTypes[typeof(Substraction)] = SUBSTRACTION;
-      staticTypes[typeof(Tangens)] = TANGENS;
-      staticTypes[typeof(Variable)] = VARIABLE;
-      staticTypes[typeof(Xor)] = XOR;
     }
 
-    internal int MapFunction(IFunction function) {
-      if(!reverseSymbolTable.ContainsKey(function)) {
-        int curFunctionSymbol;
-        if(staticTypes.ContainsKey(function.GetType())) curFunctionSymbol = staticTypes[function.GetType()];
-        else {
-          curFunctionSymbol = nextFunctionSymbol;
-          nextFunctionSymbol++;
-        }
-        reverseSymbolTable[function] = curFunctionSymbol;
-        symbolTable[curFunctionSymbol] = function;
-      }
-      return reverseSymbolTable[function];
-    }
-
-    internal IFunction MapSymbol(int symbol) {
-      return symbolTable[symbol];
-    }
-
-    internal void SetCode(List<int> code, List<double> data) {
-      code.CopyTo(codeArr);
-      data.CopyTo(dataArr);
+    public BakedTreeEvaluator(List<int> code, List<double> data) {
+      codeArr = code.ToArray();
+      dataArr = data.ToArray();
     }
 
     private int PC;
@@ -112,7 +40,7 @@ namespace HeuristicLab.Functions {
       int nLocalVariables = codeArr[PC + 2];
       PC += 3;
       switch(functionSymbol) {
-        case VARIABLE: {
+        case EvaluatorSymbolTable.VARIABLE: {
             int var = (int)dataArr[DP];
             double weight = dataArr[DP + 1];
             int row = sampleIndex + (int)dataArr[DP + 2];
@@ -120,24 +48,24 @@ namespace HeuristicLab.Functions {
             if(row < 0 || row >= dataset.Rows) return double.NaN;
             else return weight * dataset.GetValue(row, var);
           }
-        case CONSTANT: {
+        case EvaluatorSymbolTable.CONSTANT: {
             return dataArr[DP++];
           }
-        case MULTIPLICATION: {
+        case EvaluatorSymbolTable.MULTIPLICATION: {
             double result = EvaluateBakedCode();
             for(int i = 1; i < arity; i++) {
               result *= EvaluateBakedCode();
             }
             return result;
           }
-        case ADDITION: {
+        case EvaluatorSymbolTable.ADDITION: {
             double sum = EvaluateBakedCode();
             for(int i = 1; i < arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum;
           }
-        case SUBSTRACTION: {
+        case EvaluatorSymbolTable.SUBSTRACTION: {
             if(arity == 1) {
               return -EvaluateBakedCode();
             } else {
@@ -148,7 +76,7 @@ namespace HeuristicLab.Functions {
               return result;
             }
           }
-        case DIVISION: {
+        case EvaluatorSymbolTable.DIVISION: {
             double result;
             if(arity == 1) {
               result = 1.0 / EvaluateBakedCode();
@@ -161,42 +89,42 @@ namespace HeuristicLab.Functions {
             if(double.IsInfinity(result)) return 0.0;
             else return result;
           }
-        case AVERAGE: {
+        case EvaluatorSymbolTable.AVERAGE: {
             double sum = EvaluateBakedCode();
             for(int i = 1; i < arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum / arity;
           }
-        case COSINUS: {
+        case EvaluatorSymbolTable.COSINUS: {
             return Math.Cos(EvaluateBakedCode());
           }
-        case SINUS: {
+        case EvaluatorSymbolTable.SINUS: {
             return Math.Sin(EvaluateBakedCode());
           }
-        case EXP: {
+        case EvaluatorSymbolTable.EXP: {
             return Math.Exp(EvaluateBakedCode());
           }
-        case LOG: {
+        case EvaluatorSymbolTable.LOG: {
             return Math.Log(EvaluateBakedCode());
           }
-        case POWER: {
+        case EvaluatorSymbolTable.POWER: {
             double x = EvaluateBakedCode();
             double p = EvaluateBakedCode();
             return Math.Pow(x, p);
           }
-        case SIGNUM: {
+        case EvaluatorSymbolTable.SIGNUM: {
             double value = EvaluateBakedCode();
             if(double.IsNaN(value)) return double.NaN;
             else return Math.Sign(value);
           }
-        case SQRT: {
+        case EvaluatorSymbolTable.SQRT: {
             return Math.Sqrt(EvaluateBakedCode());
           }
-        case TANGENS: {
+        case EvaluatorSymbolTable.TANGENS: {
             return Math.Tan(EvaluateBakedCode());
           }
-        case AND: {
+        case EvaluatorSymbolTable.AND: {
             double result = 1.0;
             // have to evaluate all sub-trees, skipping would probably not lead to a big gain because 
             // we have to iterate over the linear structure anyway
@@ -207,18 +135,18 @@ namespace HeuristicLab.Functions {
             }
             return result;
           }
-        case EQU: {
+        case EvaluatorSymbolTable.EQU: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             if(x == y) return 1.0; else return 0.0;
           }
-        case GT: {
+        case EvaluatorSymbolTable.GT: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             if(x > y) return 1.0;
             else return 0.0;
           }
-        case IFTE: {
+        case EvaluatorSymbolTable.IFTE: {
             double condition = Math.Round(EvaluateBakedCode());
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
@@ -226,19 +154,19 @@ namespace HeuristicLab.Functions {
             else if(condition >= .5) return y;
             else return double.NaN;
           }
-        case LT: {
+        case EvaluatorSymbolTable.LT: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             if(x < y) return 1.0;
             else return 0.0;
           }
-        case NOT: {
+        case EvaluatorSymbolTable.NOT: {
             double result = Math.Round(EvaluateBakedCode());
             if(result == 0.0) return 1.0;
             else if(result == 1.0) return 0.0;
             else return double.NaN;
           }
-        case OR: {
+        case EvaluatorSymbolTable.OR: {
             double result = 0.0; // default is false
             for(int i = 0; i < arity; i++) {
               double x = Math.Round(EvaluateBakedCode());
@@ -247,7 +175,7 @@ namespace HeuristicLab.Functions {
             }
             return result;
           }
-        case XOR: {
+        case EvaluatorSymbolTable.XOR: {
             double x = Math.Round(EvaluateBakedCode());
             double y = Math.Round(EvaluateBakedCode());
             if(x == 0.0 && y == 0.0) return 0.0;
@@ -257,7 +185,7 @@ namespace HeuristicLab.Functions {
             return double.NaN;
           }
         default: {
-            IFunction function = symbolTable[functionSymbol];
+            IFunction function = symbolTable.MapSymbol(functionSymbol);
             double[] args = new double[nLocalVariables + arity];
             for(int i = 0; i < nLocalVariables; i++) {
               args[i] = dataArr[DP++];
@@ -276,33 +204,13 @@ namespace HeuristicLab.Functions {
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute nextFunctionSymbolAttribute = document.CreateAttribute("NextFunctionSymbol");
-      nextFunctionSymbolAttribute.Value = nextFunctionSymbol.ToString();
-      node.Attributes.Append(nextFunctionSymbolAttribute);
-      XmlNode symbolTableNode = document.CreateNode(XmlNodeType.Element, "SymbolTable", null);
-      foreach(KeyValuePair<int, IFunction> entry in symbolTable) {
-        XmlNode entryNode = PersistenceManager.Persist("Entry", entry.Value, document, persistedObjects);
-        XmlAttribute symbolAttr = document.CreateAttribute("Symbol");
-        symbolAttr.Value = entry.Key.ToString();
-        entryNode.Attributes.Append(symbolAttr);
-        symbolTableNode.AppendChild(entryNode);
-      }
-      node.AppendChild(symbolTableNode);
+      node.AppendChild(PersistenceManager.Persist("SymbolTable", symbolTable, document, persistedObjects));
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      symbolTable.Clear();
-      reverseSymbolTable.Clear();
-      nextFunctionSymbol = int.Parse(node.Attributes["NextFunctionSymbol"].Value);
-      XmlNode symbolTableNode = node.SelectSingleNode("SymbolTable");
-      foreach(XmlNode entry in symbolTableNode.ChildNodes) {
-        IFunction function = (IFunction)PersistenceManager.Restore(entry, restoredObjects);
-        int symbol = int.Parse(entry.Attributes["Symbol"].Value);
-        symbolTable[symbol] = function;
-        reverseSymbolTable[function] = symbol;
-      }
+      PersistenceManager.Restore(node.SelectSingleNode("SymbolTable"), restoredObjects);
     }
   }
 }

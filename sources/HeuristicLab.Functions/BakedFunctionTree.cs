@@ -33,7 +33,7 @@ namespace HeuristicLab.Functions {
   class BakedFunctionTree : ItemBase, IFunctionTree {
     private List<int> code;
     private List<double> data;
-    private static BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
+    private static EvaluatorSymbolTable symbolTable = EvaluatorSymbolTable.SymbolTable;
     public BakedFunctionTree() {
       code = new List<int>();
       data = new List<double>();
@@ -42,7 +42,7 @@ namespace HeuristicLab.Functions {
     internal BakedFunctionTree(IFunction function)
       : this() {
       code.Add(0);
-      code.Add(evaluator.MapFunction(function));
+      code.Add(symbolTable.MapFunction(function));
       code.Add(0);
       treesExpanded = true;
       subTrees = new List<IFunctionTree>();
@@ -58,7 +58,7 @@ namespace HeuristicLab.Functions {
     internal BakedFunctionTree(IFunctionTree tree)
       : this() {
       code.Add(0);
-      code.Add(evaluator.MapFunction(tree.Function));
+      code.Add(symbolTable.MapFunction(tree.Function));
       code.Add(tree.LocalVariables.Count);
       foreach(IVariable variable in tree.LocalVariables) {
         IItem value = variable.Value;
@@ -158,7 +158,7 @@ namespace HeuristicLab.Functions {
       get {
         if(!variablesExpanded) {
           variables = new List<IVariable>();
-          IFunction function = evaluator.MapSymbol(code[1]);
+          IFunction function = symbolTable.MapSymbol(code[1]);
           int localVariableIndex = 0;
           foreach(IVariableInfo variableInfo in function.VariableInfos) {
             if(variableInfo.Local) {
@@ -186,7 +186,7 @@ namespace HeuristicLab.Functions {
     }
 
     public IFunction Function {
-      get { return evaluator.MapSymbol(code[1]); }
+      get { return symbolTable.MapSymbol(code[1]); }
     }
 
     public IVariable GetLocalVariable(string name) {
@@ -220,10 +220,11 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
+    private BakedTreeEvaluator evaluator = null;
     public double Evaluate(Dataset dataset, int sampleIndex) {
       FlattenVariables();
       FlattenTrees();
-      evaluator.SetCode(code, data);
+      if(evaluator == null) evaluator = new BakedTreeEvaluator(code, data);
       return evaluator.Evaluate(dataset, sampleIndex);
     }
 
@@ -249,11 +250,12 @@ namespace HeuristicLab.Functions {
       base.Populate(node, restoredObjects);
       XmlNode evaluatorNode = node.SelectSingleNode("Evaluator");
       if(evaluatorNode != null) {
-        BakedTreeEvaluator evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
-        BakedFunctionTree.evaluator = evaluator;
+        this.evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
       }
       code = GetList<int>(node.Attributes["Code"].Value, s => int.Parse(s, CultureInfo.InvariantCulture));
       data = GetList<double>(node.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
+      treesExpanded = false;
+      variablesExpanded = false;
     }
 
     private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {

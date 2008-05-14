@@ -82,6 +82,7 @@
     <Compile Include="Substraction.cs" />
     <Compile Include="Power.cs" />
     <Compile Include="Division.cs" />
+    <Compile Include="SymbolTable.cs" />
     <Compile Include="Tangens.cs" />
     <Compile Include="Cosinus.cs" />
     <Compile Include="Sinus.cs" />
