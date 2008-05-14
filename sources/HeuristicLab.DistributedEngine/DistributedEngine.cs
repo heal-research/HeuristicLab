@@ -103,6 +103,7 @@ namespace HeuristicLab.DistributedEngine {
             } else {
               for(i = 0; i < waithandles.Length; i++) {
                 waithandles[i].WaitOne();
+                waithandles[i].Close();
               }
             }
             // retrieve results and merge into scope-tree
