@@ -120,6 +120,7 @@ namespace HeuristicLab.DistributedEngine {
       Guid engineGuid = (Guid)state;
       int restartCounter = 0;
       do {
+        Thread.Sleep(TimeSpan.FromSeconds(CHECK_RESULTS_TIMEOUT));
         byte[] zippedResult = null;
         lock(connectionLock) {
           bool success = false;
@@ -208,8 +209,6 @@ namespace HeuristicLab.DistributedEngine {
         if(restartCounter > MAX_RESTARTS) {
           throw new ApplicationException("Maximum number of job restarts reached.");
         }
-
-        Thread.Sleep(TimeSpan.FromSeconds(CHECK_RESULTS_TIMEOUT));
       } while(true);
     }
   }
