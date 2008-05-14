@@ -64,6 +64,7 @@ namespace HeuristicLab.DistributedEngine {
       PersistenceManager.Save(engine, stream);
       stream.Close();
       byte[] zippedEngine = memStream.ToArray();
+      memStream.Close();
       Guid currentEngineGuid = Guid.Empty;
       bool success = false;
       int retryCount = 0;
@@ -101,12 +102,16 @@ namespace HeuristicLab.DistributedEngine {
     }
 
     public IScope EndExecuteOperation(AtomicOperation operation) {
-      byte[] zippedResult = results[operation];
+      byte[] zippedResult = null;
+      lock(dictionaryLock) {
+        zippedResult = results[operation];
+        results.Remove(operation);
+      }
       // restore the engine 
-      GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress);
-      ProcessingEngine resultEngine = (ProcessingEngine)PersistenceManager.Load(stream);
-
-      return resultEngine.InitialOperation.Scope;
+      using(GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress)) {
+        ProcessingEngine resultEngine = (ProcessingEngine)PersistenceManager.Load(stream);
+        return resultEngine.InitialOperation.Scope;
+      }      
     }
 
     private void TryGetResult(object state) {
