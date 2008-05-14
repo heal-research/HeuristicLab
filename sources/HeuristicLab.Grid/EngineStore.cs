@@ -151,7 +151,9 @@ namespace HeuristicLab.Grid {
             waitHandle.Close();
             waitHandles.Remove(guid);
           }
-          return results[guid];
+          byte[] result = results[guid];
+          results.Remove(guid);
+          return result;
         } else {
           // result not yet available, if there is also no wait-handle for that result then we will never have a result and can return null
           if(!waitHandles.ContainsKey(guid)) return null;
