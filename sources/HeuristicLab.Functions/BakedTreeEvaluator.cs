@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Core;
+using System.Xml;
 
 namespace HeuristicLab.Functions {
-  internal class BakedTreeEvaluator {
+  internal class BakedTreeEvaluator : StorableBase {
     private const int ADDITION = 10010;
     private const int AND = 10020;
     private const int AVERAGE = 10030;
@@ -30,16 +32,16 @@ namespace HeuristicLab.Functions {
     private const int VARIABLE = 10220;
     private const int XOR = 10230;
 
-    private static int nextFunctionSymbol = 10240;
-    private static Dictionary<int, IFunction> symbolTable;
-    private static Dictionary<IFunction, int> reverseSymbolTable;
-    private static Dictionary<Type, int> staticTypes;
-    private static int MAX_CODE_LENGTH = 4096;
-    private static int MAX_DATA_LENGTH = 4096;
-    private static int[] codeArr = new int[MAX_CODE_LENGTH];
-    private static double[] dataArr = new double[MAX_DATA_LENGTH];
+    private int nextFunctionSymbol = 10240;
+    private Dictionary<int, IFunction> symbolTable;
+    private Dictionary<IFunction, int> reverseSymbolTable;
+    private Dictionary<Type, int> staticTypes;
+    private const int MAX_CODE_LENGTH = 4096;
+    private const int MAX_DATA_LENGTH = 4096;
+    private int[] codeArr = new int[MAX_CODE_LENGTH];
+    private double[] dataArr = new double[MAX_DATA_LENGTH];
 
-    static BakedTreeEvaluator() {
+    public BakedTreeEvaluator() {
       symbolTable = new Dictionary<int, IFunction>();
       reverseSymbolTable = new Dictionary<IFunction, int>();
       staticTypes = new Dictionary<Type, int>();
@@ -68,12 +70,7 @@ namespace HeuristicLab.Functions {
       staticTypes[typeof(Xor)] = XOR;
     }
 
-    internal BakedTreeEvaluator(List<int> code, List<double> data) {
-      code.CopyTo(codeArr);
-      data.CopyTo(dataArr);
-    }
-
-    internal static int MapFunction(IFunction function) {
+    internal int MapFunction(IFunction function) {
       if(!reverseSymbolTable.ContainsKey(function)) {
         int curFunctionSymbol;
         if(staticTypes.ContainsKey(function.GetType())) curFunctionSymbol = staticTypes[function.GetType()];
@@ -87,10 +84,14 @@ namespace HeuristicLab.Functions {
       return reverseSymbolTable[function];
     }
 
-    internal static IFunction MapSymbol(int symbol) {
+    internal IFunction MapSymbol(int symbol) {
       return symbolTable[symbol];
     }
 
+    internal void SetCode(List<int> code, List<double> data) {
+      code.CopyTo(codeArr);
+      data.CopyTo(dataArr);
+    }
 
     private int PC;
     private int DP;
@@ -107,14 +108,14 @@ namespace HeuristicLab.Functions {
 
     private double EvaluateBakedCode() {
       int arity = codeArr[PC];
-      int functionSymbol = codeArr[PC+1];
-      int nLocalVariables = codeArr[PC+2];
+      int functionSymbol = codeArr[PC + 1];
+      int nLocalVariables = codeArr[PC + 2];
       PC += 3;
       switch(functionSymbol) {
         case VARIABLE: {
             int var = (int)dataArr[DP];
-            double weight = dataArr[DP+1];
-            int row = sampleIndex + (int)dataArr[DP+2];
+            double weight = dataArr[DP + 1];
+            int row = sampleIndex + (int)dataArr[DP + 2];
             DP += 3;
             if(row < 0 || row >= dataset.Rows) return double.NaN;
             else return weight * dataset.GetValue(row, var);
@@ -201,7 +202,7 @@ namespace HeuristicLab.Functions {
             // we have to iterate over the linear structure anyway
             for(int i = 0; i < arity; i++) {
               double x = Math.Round(EvaluateBakedCode());
-              if(x == 0 || x==1.0) result *= x;
+              if(x == 0 || x == 1.0) result *= x;
               else result = double.NaN;
             }
             return result;
@@ -266,6 +267,41 @@ namespace HeuristicLab.Functions {
             }
             return function.Apply(dataset, sampleIndex, args);
           }
+      }
+    }
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      throw new NotImplementedException();
+    }
+
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute nextFunctionSymbolAttribute = document.CreateAttribute("NextFunctionSymbol");
+      nextFunctionSymbolAttribute.Value = nextFunctionSymbol.ToString();
+      node.Attributes.Append(nextFunctionSymbolAttribute);
+      XmlNode symbolTableNode = document.CreateNode(XmlNodeType.Element, "SymbolTable", null);
+      foreach(KeyValuePair<int, IFunction> entry in symbolTable) {
+        XmlNode entryNode = PersistenceManager.Persist("Entry", entry.Value, document, persistedObjects);
+        XmlAttribute symbolAttr = document.CreateAttribute("Symbol");
+        symbolAttr.Value = entry.Key.ToString();
+        entryNode.Attributes.Append(symbolAttr);
+        symbolTableNode.AppendChild(entryNode);
+      }
+      node.AppendChild(symbolTableNode);
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      symbolTable.Clear();
+      reverseSymbolTable.Clear();
+      nextFunctionSymbol = int.Parse(node.Attributes["NextFunctionSymbol"].Value);
+      XmlNode symbolTableNode = node.SelectSingleNode("SymbolTable");
+      foreach(XmlNode entry in symbolTableNode.ChildNodes) {
+        IFunction function = (IFunction)PersistenceManager.Restore(entry, restoredObjects);
+        int symbol = int.Parse(entry.Attributes["Symbol"].Value);
+        symbolTable[symbol] = function;
+        reverseSymbolTable[function] = symbol;
       }
     }
   }

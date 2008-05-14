@@ -27,12 +27,13 @@ using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Data;
 using System.Xml;
+using System.Globalization;
 
 namespace HeuristicLab.Functions {
   class BakedFunctionTree : ItemBase, IFunctionTree {
     private List<int> code;
     private List<double> data;
-
+    private static BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
     public BakedFunctionTree() {
       code = new List<int>();
       data = new List<double>();
@@ -41,7 +42,7 @@ namespace HeuristicLab.Functions {
     internal BakedFunctionTree(IFunction function)
       : this() {
       code.Add(0);
-      code.Add(BakedTreeEvaluator.MapFunction(function));
+      code.Add(evaluator.MapFunction(function));
       code.Add(0);
       treesExpanded = true;
       subTrees = new List<IFunctionTree>();
@@ -57,7 +58,7 @@ namespace HeuristicLab.Functions {
     internal BakedFunctionTree(IFunctionTree tree)
       : this() {
       code.Add(0);
-      code.Add(BakedTreeEvaluator.MapFunction(tree.Function));
+      code.Add(evaluator.MapFunction(tree.Function));
       code.Add(tree.LocalVariables.Count);
       foreach(IVariable variable in tree.LocalVariables) {
         IItem value = variable.Value;
@@ -157,7 +158,7 @@ namespace HeuristicLab.Functions {
       get {
         if(!variablesExpanded) {
           variables = new List<IVariable>();
-          IFunction function = BakedTreeEvaluator.MapSymbol(code[1]);
+          IFunction function = evaluator.MapSymbol(code[1]);
           int localVariableIndex = 0;
           foreach(IVariableInfo variableInfo in function.VariableInfos) {
             if(variableInfo.Local) {
@@ -185,7 +186,7 @@ namespace HeuristicLab.Functions {
     }
 
     public IFunction Function {
-      get { return BakedTreeEvaluator.MapSymbol(code[1]); }
+      get { return evaluator.MapSymbol(code[1]); }
     }
 
     public IVariable GetLocalVariable(string name) {
@@ -219,51 +220,65 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    private BakedTreeEvaluator evaluator;
     public double Evaluate(Dataset dataset, int sampleIndex) {
       FlattenVariables();
       FlattenTrees();
-      if(evaluator == null) evaluator = new BakedTreeEvaluator(code, data);
+      evaluator.SetCode(code, data);
       return evaluator.Evaluate(dataset, sampleIndex);
     }
 
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      FlattenVariables();
+      FlattenTrees();
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Function", Function, document, persistedObjects));
-      XmlNode subTreesNode = document.CreateNode(XmlNodeType.Element, "SubTrees", null);
-      for(int i = 0; i < SubTrees.Count; i++)
-        subTreesNode.AppendChild(PersistenceManager.Persist(SubTrees[i], document, persistedObjects));
-      node.AppendChild(subTreesNode);
-      XmlNode variablesNode = document.CreateNode(XmlNodeType.Element, "Variables", null);
-      foreach(IVariable variable in LocalVariables)
-        variablesNode.AppendChild(PersistenceManager.Persist(variable, document, persistedObjects));
-      node.AppendChild(variablesNode);
+      if(evaluator != null) {
+        XmlNode evaluatorNode = PersistenceManager.Persist("Evaluator", evaluator, document, persistedObjects);
+        node.AppendChild(evaluatorNode);
+      }
+      XmlAttribute codeAttribute = document.CreateAttribute("Code");
+      codeAttribute.Value = GetString<int>(code);
+      node.Attributes.Append(codeAttribute);
+      XmlAttribute dataAttribute = document.CreateAttribute("Data");
+      dataAttribute.Value = GetString<double>(data);
+      node.Attributes.Append(dataAttribute);
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      IFunction function = (IFunction)PersistenceManager.Restore(node.SelectSingleNode("Function"), restoredObjects);
-      code.Add(0);
-      code.Add(BakedTreeEvaluator.MapFunction(function));
-      code.Add(0);
-      treesExpanded = true;
-      subTrees = new List<IFunctionTree>();
-      variables = new List<IVariable>();
-      variablesExpanded = true;
-      XmlNode subTreesNode = node.SelectSingleNode("SubTrees");
-      for(int i = 0; i < subTreesNode.ChildNodes.Count; i++)
-        subTrees.Add((IFunctionTree)PersistenceManager.Restore(subTreesNode.ChildNodes[i], restoredObjects));
-      XmlNode variablesNode = node.SelectSingleNode("Variables");
-      foreach(XmlNode variableNode in variablesNode.ChildNodes)
-        variables.Add((IVariable)PersistenceManager.Restore(variableNode, restoredObjects));
+      XmlNode evaluatorNode = node.SelectSingleNode("Evaluator");
+      if(evaluatorNode != null) {
+        BakedTreeEvaluator evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
+        BakedFunctionTree.evaluator = evaluator;
+      }
+      code = GetList<int>(node.Attributes["Code"].Value, s => int.Parse(s, CultureInfo.InvariantCulture));
+      data = GetList<double>(node.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
+    }
+
+    private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
+      StringBuilder builder = new StringBuilder();
+      foreach(T x in xs) {
+        builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
+      }
+      if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
+      return builder.ToString();
+    }
+
+    private List<T> GetList<T>(string s, Converter<string, T> converter) {
+      List<T> result = new List<T>();
+      string[] tokens = s.Split(new char[] {';',' '}, StringSplitOptions.RemoveEmptyEntries);
+      foreach(string token in tokens) {
+        T x = converter(token.Trim());
+        result.Add(x);
+      }
+      return result;
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       BakedFunctionTree clone = new BakedFunctionTree();
       // in case the user (de)serialized the tree between evaluation and selection we have to flatten the tree again.
-      if(treesExpanded) FlattenTrees(); 
+      if(treesExpanded) FlattenTrees();
       if(variablesExpanded) FlattenVariables();
       clone.code.AddRange(code);
       clone.data.AddRange(data);
