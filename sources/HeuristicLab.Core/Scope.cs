@@ -171,7 +171,7 @@ namespace HeuristicLab.Core {
       if (Guid == guid) return this;
       else {
         for (int i = 0; i < mySubScopes.Count; i++) {
-          IScope s = GetScope(guid);
+          IScope s = mySubScopes[i].GetScope(guid);
           if (s != null) return s;
         }
       }
@@ -181,7 +181,7 @@ namespace HeuristicLab.Core {
       if (Name == name) return this;
       else {
         for (int i = 0; i < mySubScopes.Count; i++) {
-          IScope s = GetScope(name);
+          IScope s = mySubScopes[i].GetScope(name);
           if (s != null) return s;
         }
       }
