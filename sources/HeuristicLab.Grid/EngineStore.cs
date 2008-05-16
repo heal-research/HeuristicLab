@@ -65,13 +65,6 @@ namespace HeuristicLab.Grid {
       resultDate = new Dictionary<Guid, DateTime>();
       runningEngineDate = new Dictionary<Guid, DateTime>();
       bigLock = new object();
-
-      NetTcpBinding binding = new NetTcpBinding();
-      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-      binding.Security.Mode = SecurityMode.None;
-
     }
 
     public bool TryTakeEngine(out Guid guid, out byte[] engine) {
