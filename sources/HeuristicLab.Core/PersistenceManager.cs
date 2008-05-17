@@ -87,7 +87,7 @@ namespace HeuristicLab.Core {
 
     public static string BuildTypeString(Type type) {
       string assembly = type.Assembly.FullName;
-      assembly = assembly.Split(new string[] { ", " }, StringSplitOptions.None)[0];
+      assembly = assembly.Substring(0, assembly.IndexOf(", "));
 
       StringBuilder builder = new StringBuilder();
       builder.Append(type.Namespace);
