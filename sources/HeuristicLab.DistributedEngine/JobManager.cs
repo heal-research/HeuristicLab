@@ -76,8 +76,8 @@ namespace HeuristicLab.DistributedEngine {
       }
     }
 
-    public WaitHandle BeginExecuteOperation(IOperatorGraph operatorGraph, IScope globalScope, AtomicOperation operation) {
-      ProcessingEngine engine = new ProcessingEngine(operatorGraph, globalScope, operation); // OperatorGraph not needed?
+    public WaitHandle BeginExecuteOperation(IScope globalScope, AtomicOperation operation) {
+      ProcessingEngine engine = new ProcessingEngine(globalScope, operation);
       byte[] zippedEngine = ZipEngine(engine);
       Guid currentEngineGuid = Guid.Empty;
       bool success = false;

@@ -31,6 +31,7 @@ using System.IO;
 using System.IO.Compression;
 using HeuristicLab.PluginInfrastructure;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
@@ -91,10 +92,30 @@ namespace HeuristicLab.DistributedEngine {
           try {
             WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
             int i = 0;
+            // HACK: assume that all atomicOperations have the same parent scope.
+            // 1) find that parent scope
+            // 2) remove all branches starting from the global scope that don't lead to the parentScope of the parallel operation
+            // 3) keep the branches to 'repair' the scope-tree later
+            // 4) for each parallel job attach only the sub-scope that this operation uses
+            // 5) after starting all parallel jobs restore the whole scope-tree
+            IScope parentScope = FindParentScope(GlobalScope, compositeOperation);
+            List<IList<IScope>> prunedScopes = new List<IList<IScope>>();
+            PruneToParentScope(GlobalScope, parentScope, prunedScopes);
+            List<IScope> subScopes = new List<IScope>(parentScope.SubScopes);
+            foreach(IScope scope in subScopes) {
+              parentScope.RemoveSubScope(scope);
+            }
             // start all parallel jobs
             foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-              waithandles[i++] = jobManager.BeginExecuteOperation(OperatorGraph, GlobalScope, parOperation);
+              parentScope.AddSubScope(parOperation.Scope);
+              waithandles[i++] = jobManager.BeginExecuteOperation(GlobalScope, parOperation);
+              parentScope.RemoveSubScope(parOperation.Scope);
             }
+            foreach(IScope scope in subScopes) {
+              parentScope.AddSubScope(scope);
+            }
+            prunedScopes.Reverse();
+            RestoreFullTree(GlobalScope, prunedScopes);
 
             // wait until all jobs are finished
             // WaitAll works only with maximally 64 waithandles
@@ -121,6 +142,52 @@ namespace HeuristicLab.DistributedEngine {
             myExecutionStack.Push(compositeOperation.Operations[i]);
         }
       }
+    }
+
+    private void RestoreFullTree(IScope currentScope, IList<IList<IScope>> savedScopes) {
+      if(savedScopes.Count == 0) return;
+      IScope remainingBranch = currentScope.SubScopes[0];
+      currentScope.RemoveSubScope(remainingBranch);
+      IList<IScope> savedScopesForCurrent = savedScopes[0];
+      foreach(IScope savedScope in savedScopesForCurrent) {
+        currentScope.AddSubScope(savedScope);
+      }
+      savedScopes.RemoveAt(0);
+      RestoreFullTree(remainingBranch, savedScopes);
+    }
+
+    private IScope PruneToParentScope(IScope currentScope, IScope scope, IList<IList<IScope>> prunedScopes) {
+      if(currentScope == scope) return currentScope;
+      if(currentScope.SubScopes.Count == 0) return null;
+      IScope foundScope = null;
+      // try to find the searched scope in all my sub-scopes
+      foreach(IScope subScope in currentScope.SubScopes) {
+        foundScope = PruneToParentScope(subScope, scope, prunedScopes);
+        if(foundScope != null) break; // we can stop as soon as we find the scope in a branch
+      }
+      if(foundScope != null) { // when we found the scopes in my sub-scopes
+        List<IScope> subScopes = new List<IScope>(currentScope.SubScopes); // store the list of sub-scopes
+        prunedScopes.Add(subScopes);
+        // remove all my sub-scopes
+        foreach(IScope subScope in subScopes) { 
+          currentScope.RemoveSubScope(subScope);
+        }
+        // add only the branch that leads to the scope that I search for
+        currentScope.AddSubScope(foundScope);
+        return currentScope; // return that this scope contains the branch that leads to the searched scopes
+      } else {
+        return null; // otherwise we didn't find the searched scope and we can return null
+      }
+    }
+
+    private IScope FindParentScope(IScope currentScope, CompositeOperation compositeOperation) {
+      AtomicOperation currentOperation = (AtomicOperation)compositeOperation.Operations[0];
+      if(currentScope.SubScopes.Contains(currentOperation.Scope)) return currentScope;
+      foreach(IScope subScope in currentScope.SubScopes) {
+        IScope result = FindParentScope(subScope, compositeOperation);
+        if(result != null) return result;
+      }
+      return null;
     }
 
     private void MergeScope(IScope original, IScope result) {

@@ -38,11 +38,10 @@ namespace HeuristicLab.Grid {
       : base() {
     }
 
-    public ProcessingEngine(IOperatorGraph graph, IScope globalScope, AtomicOperation initialOperation)
+    public ProcessingEngine(IScope globalScope, AtomicOperation initialOperation)
       : base() {
       this.initialOperation = initialOperation;
       myGlobalScope = globalScope;
-      myOperatorGraph = graph;
       myExecutionStack.Push(initialOperation);
     }
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
