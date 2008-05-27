@@ -31,6 +31,6 @@ namespace HeuristicLab.Scheduling.JSSP {
   [Dependency(Dependency = "HeuristicLab.Data")]
   [Dependency(Dependency = "HeuristicLab.Operators")]
   [Dependency(Dependency = "HeuristicLab.Permutation")]
-  public class HeuristicLabRoutingTSPPlugin : PluginBase {
+  public class HeuristicLabSchedulingJSPPlugin : PluginBase {
   }
 }
