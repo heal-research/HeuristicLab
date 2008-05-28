@@ -61,12 +61,11 @@ namespace HeuristicLab.Data {
 
     public virtual void Visit(ConstrainedDoubleData data) {
     }
-    public void Visit(ConstrainedObjectData constrainedObjectData) {
-      throw new NotImplementedException();
+
+    public virtual void Visit(ConstrainedObjectData constrainedObjectData) {
     }
 
-    public void Visit(ObjectData objectData) {
-      throw new NotImplementedException();
+    public virtual void Visit(ObjectData objectData) {
     }
     #endregion
   }
