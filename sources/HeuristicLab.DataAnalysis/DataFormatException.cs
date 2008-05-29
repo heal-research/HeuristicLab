@@ -34,19 +34,9 @@ namespace HeuristicLab.DataAnalysis {
     public string Token {
       get { return token; }
     }
-    private string message;
-    public string Message {
-      get { return message; }
-    }
-
-    public DataFormatException(string message, string token, int line) {
-      this.message = message;
+    public DataFormatException(string message, string token, int line) : base(message+"\nToken: " + token + " (line: " + line + ")"){
       this.token = token;
       this.line = line;
-    }
-
-    public override string ToString() {
-      return message + "\nToken: " + token + " (line: " + line + ")\n";
     }
   }
 }

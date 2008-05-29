@@ -76,7 +76,8 @@ namespace HeuristicLab.StructureIdentification {
           try {
             parser.Import(openFileDialog.FileName, true);
             success = true;
-          } catch(DataFormatException) {
+          } catch(DataFormatException ex) {
+            ShowWarningMessageBox(ex);
             // not possible to parse strictly => try to parse non-strict
             parser.Import(openFileDialog.FileName, false);
             success = true;
@@ -100,6 +101,12 @@ namespace HeuristicLab.StructureIdentification {
       }
     }
 
+    private void ShowWarningMessageBox(Exception ex) {
+      MessageBox.Show(ex.Message,
+                      "Warning - " + ex.GetType().Name,
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Warning);
+    }
     private void ShowErrorMessageBox(Exception ex) {
       MessageBox.Show(BuildErrorMessage(ex),
                       "Error - " + ex.GetType().Name,

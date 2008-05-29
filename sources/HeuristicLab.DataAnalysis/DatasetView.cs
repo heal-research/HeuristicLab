@@ -69,7 +69,7 @@ namespace HeuristicLab.DataAnalysis {
           dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
           dataGridView.Columns[i].Name = GetColumnName(i);
         }
-        dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
+        //dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect;
       } else {
         rowsTextBox.Text = "1";
         columnsTextBox.Text = "1";
