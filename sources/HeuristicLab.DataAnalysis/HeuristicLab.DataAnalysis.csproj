@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataFormatException.cs" />
     <Compile Include="Dataset.cs" />
     <Compile Include="DatasetParser.cs" />
     <Compile Include="DatasetView.cs">

@@ -73,12 +73,17 @@ namespace HeuristicLab.StructureIdentification {
         DatasetParser parser = new DatasetParser();
         bool success = false;
         try {
-          parser.Import(openFileDialog.FileName, true);
-          success = true;
-        } catch (Exception) {
-          // not possible to parse strictly => try to parse non-strict
-          parser.Import(openFileDialog.FileName, false);
-          success = true;
+          try {
+            parser.Import(openFileDialog.FileName, true);
+            success = true;
+          } catch(DataFormatException) {
+            // not possible to parse strictly => try to parse non-strict
+            parser.Import(openFileDialog.FileName, false);
+            success = true;
+          }
+        } catch(DataFormatException ex) {
+          // if the non-strict parsing also failed then show the exception
+          ShowErrorMessageBox(ex);
         }
         if (success) {
           Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
@@ -93,6 +98,23 @@ namespace HeuristicLab.StructureIdentification {
           Refresh();
         }
       }
+    }
+
+    private void ShowErrorMessageBox(Exception ex) {
+      MessageBox.Show(BuildErrorMessage(ex),
+                      "Error - " + ex.GetType().Name,
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Error);
+    }
+    private string BuildErrorMessage(Exception ex) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+
+      while(ex.InnerException != null) {
+        ex = ex.InnerException;
+        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+      }
+      return sb.ToString();
     }
   }
 }

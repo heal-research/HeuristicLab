@@ -27,6 +27,13 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.DataAnalysis {
   public class DatasetParser {
+    private const string PROBLEMNAME = "PROBLEMNAME";
+    private const string VARIABLENAMES = "VARIABLENAMES";
+    private const string TARGETVARIABLE = "TARGETVARIABLE";
+    private const string MAXIMUMTREEHEIGHT = "MAXIMUMTREEHEIGHT";
+    private const string MAXIMUMTREESIZE = "MAXIMUMTREESIZE";
+    private const string TRAININGSAMPLESSTART = "TRAININGSAMPLESSTART";
+    private const string TRAININGSAMPLESEND = "TRAININGSAMPLESEND";
     private Tokenizer tokenizer;
     private Dictionary<string, List<Token>> metadata;
     private List<List<double>> samplesList;
@@ -52,51 +59,68 @@ namespace HeuristicLab.DataAnalysis {
 
     public string ProblemName {
       get {
-        return metadata["PROBLEMNAME"][0].stringValue;
+        if(metadata.ContainsKey(PROBLEMNAME)) {
+          return metadata[PROBLEMNAME][0].stringValue;
+        } else return "-";
       }
     }
 
     public string[] VariableNames {
       get {
-        List<Token> nameList = metadata["VARIABLENAMES"];
-        string[] names = new string[nameList.Count];
-        for(int i = 0; i < names.Length; i++) {
-          names[i] = nameList[i].stringValue;
+        if(metadata.ContainsKey(VARIABLENAMES)) {
+          List<Token> nameList = metadata[VARIABLENAMES];
+          string[] names = new string[nameList.Count];
+          for(int i = 0; i < names.Length; i++) {
+            names[i] = nameList[i].stringValue;
+          }
+          return names;
+        } else {
+          string[] names = new string[columns];
+          for(int i = 0; i < names.Length; i++) {
+            names[i] = "X" + i.ToString("000");
+          }
+          return names;
         }
-
-        return names;
       }
     }
 
     public int TargetVariable {
       get {
-        return metadata["TARGETVARIABLE"][0].intValue;
+        if(metadata.ContainsKey(TARGETVARIABLE)) {
+          return metadata[TARGETVARIABLE][0].intValue;
+        } else return 0; // default is the first column
       }
     }
 
     public int MaxTreeHeight {
       get {
-        return metadata["MAXIMUMTREEHEIGHT"][0].intValue;
+        if(metadata.ContainsKey(MAXIMUMTREEHEIGHT)) {
+          return metadata[MAXIMUMTREEHEIGHT][0].intValue;
+        } else return 0;
       }
     }
 
     public int MaxTreeSize {
       get {
-        return metadata["MAXIMUMTREESIZE"][0].intValue;
+        if(metadata.ContainsKey(MAXIMUMTREESIZE)) {
+          return metadata[MAXIMUMTREESIZE][0].intValue;
+        } else return 0;
       }
     }
 
     public int TrainingSamplesStart {
       get {
-        if(!metadata.ContainsKey("TRAININGSAMPLESSTART")) return 0;
-        else return metadata["TRAININGSAMPLESSTART"][0].intValue;
+        if(metadata.ContainsKey(TRAININGSAMPLESSTART)) {
+          return metadata[TRAININGSAMPLESSTART][0].intValue;
+        } else return 0;
       }
     }
 
     public int TrainingSamplesEnd {
       get {
-        if(!metadata.ContainsKey("TRAININGSAMPLESEND")) return rows;
-        else return metadata["TRAININGSAMPLESEND"][0].intValue;
+        if(metadata.ContainsKey(TRAININGSAMPLESEND)) {
+          return metadata[TRAININGSAMPLESEND][0].intValue;
+        } else return rows;
       }
     }
 
@@ -278,7 +302,7 @@ namespace HeuristicLab.DataAnalysis {
             // the first row defines how many samples are needed
             if(samplesList.Count > 0 && samplesList[0].Count != row.Count) {
               Error("The first row of the dataset has " + samplesList[0].Count + " columns." +
-                "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.");
+                "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "", tokenizer.CurrentLineNumber);
             }
           } else if(samplesList.Count > 0) {
             // when we are not strict then fill or drop elements as needed
@@ -300,8 +324,7 @@ namespace HeuristicLab.DataAnalysis {
           // found an unexpected token => return false when parsing strictly
           // when we are parsing non-strictly we also allow unreadable values inserting NAN instead
           if(strict) {
-            Error("Unkown value " + current + " in line " + tokenizer.CurrentLineNumber +
-              "\n" + tokenizer.CurrentLine);
+            Error("Unexpected token.", current.stringValue, tokenizer.CurrentLineNumber);
           } else {
             row.Add(double.NaN);
           }
@@ -315,8 +338,7 @@ namespace HeuristicLab.DataAnalysis {
 
         Token nameToken = tokenizer.Next();
         if(nameToken.type != TokenTypeEnum.String)
-          throw new Exception("Expected a variable name; got " + nameToken +
-            "\nLine " + tokenizer.CurrentLineNumber + ": " + tokenizer.CurrentLine);
+          Error("Expected a variable name.", nameToken.stringValue, tokenizer.CurrentLineNumber);
 
         Expect(Tokenizer.AssignmentToken);
 
@@ -334,13 +356,12 @@ namespace HeuristicLab.DataAnalysis {
     private void Expect(Token expectedToken) {
       Token actualToken = tokenizer.Next();
       if(actualToken != expectedToken) {
-        Error("Expected: " + expectedToken + " got: " + actualToken +
-          "\nLine " + tokenizer.CurrentLineNumber + ": " + tokenizer.CurrentLine);
+        Error("Expected: " + expectedToken, actualToken.stringValue, tokenizer.CurrentLineNumber);
       }
     }
 
-    private void Error(string message) {
-      throw new Exception("Error while parsing.\n" + message);
+    private void Error(string message, string token, int lineNumber) {
+      throw new DataFormatException("Error while parsing.\n" + message, token, lineNumber);
     }
     #endregion
   }
