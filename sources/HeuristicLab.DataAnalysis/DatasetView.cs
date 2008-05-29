@@ -53,10 +53,10 @@ namespace HeuristicLab.DataAnalysis {
     protected override void UpdateControls() {
       base.UpdateControls();
       if (Dataset != null) {
-        // DataGridView is bitching around. The columnCount (maybe also rowCount) is changed it creates
+        // DataGridView is bitching around. When it's columnCount (maybe also rowCount) is changed it creates
         // new column objects and they have SortMode set to 'automatic'. However this is not allowed if the
-        // selectionmode is set to 'ColumnHeaderSelect' at the same time resulting in an exception.
-        // A solution is to set the SelectionMode to CellSelect before any changes. And after the columns
+        // selectionmode is set to 'ColumnHeaderSelect' at the same time, resulting in an exception.
+        // A solution is to set the SelectionMode to CellSelect before any changes. After the columns
         // have been updated (and their SortMode set to 'NotSortable') we switch back to SelectionMode=ColumnHeaderSelect.
         dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
         int rows = Dataset.Rows;
