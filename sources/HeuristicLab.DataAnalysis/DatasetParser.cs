@@ -60,7 +60,7 @@ namespace HeuristicLab.DataAnalysis {
       get {
         List<Token> nameList = metadata["VARIABLENAMES"];
         string[] names = new string[nameList.Count];
-        for (int i = 0; i < names.Length; i++) {
+        for(int i = 0; i < names.Length; i++) {
           names[i] = nameList[i].stringValue;
         }
 
@@ -110,8 +110,12 @@ namespace HeuristicLab.DataAnalysis {
       this.tokenizer = new Tokenizer(reader);
       tokenizer.Separators = new string[] { " ", ";", "\t" };
 
-      // parse the file
-      Parse(strict);
+      try {
+        // parse the file
+        Parse(strict);
+      } finally {
+        reader.Close();
+      }
 
       // translate the list of samples into a DoubleMatrixData item
       samples = new double[samplesList.Count * samplesList[0].Count];
@@ -120,9 +124,9 @@ namespace HeuristicLab.DataAnalysis {
 
       int i = 0;
       int j = 0;
-      foreach (List<double> row in samplesList) {
+      foreach(List<double> row in samplesList) {
         j = 0;
-        foreach (double element in row) {
+        foreach(double element in row) {
           samples[i * columns + j] = element;
           j++;
         }
@@ -179,7 +183,7 @@ namespace HeuristicLab.DataAnalysis {
       }
 
       private void ReadNextTokens() {
-        if (!reader.EndOfStream) {
+        if(!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
           Token[] newTokens = Array.ConvertAll(CurrentLine.Split(separators, StringSplitOptions.RemoveEmptyEntries), delegate(string str) {
             return MakeToken(str);
@@ -192,38 +196,38 @@ namespace HeuristicLab.DataAnalysis {
       }
 
       private Token MakeToken(string strToken) {
-        if (strToken == "@")
+        if(strToken == "@")
           return AtToken;
-        else if (strToken == "=")
+        else if(strToken == "=")
           return AssignmentToken;
         else {
           Token token = new Token(TokenTypeEnum.String, strToken);
 
           // try invariant culture
           NumberFormatInfo currentNumberFormatInfo = CultureInfo.InvariantCulture.NumberFormat;
-          if (int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
+          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
             token.type = TokenTypeEnum.Int;
             return token;
-          } else if (double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
+          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
             token.type = TokenTypeEnum.Double;
             return token;
           }
           // try german culture
           currentNumberFormatInfo = CultureInfo.GetCultureInfo("de-DE").NumberFormat;
-          if (int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
+          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
             token.type = TokenTypeEnum.Int;
             return token;
-          } else if (double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
+          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
             token.type = TokenTypeEnum.Double;
             return token;
           }
 
           // try current culture
           currentNumberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-          if (int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
+          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
             token.type = TokenTypeEnum.Int;
             return token;
-          } else if (double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
+          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
             token.type = TokenTypeEnum.Double;
             return token;
           }
@@ -240,7 +244,7 @@ namespace HeuristicLab.DataAnalysis {
       public Token Next() {
         Token next = tokens[0];
         tokens.RemoveAt(0);
-        if (tokens.Count == 0) {
+        if(tokens.Count == 0) {
           ReadNextTokens();
         }
         return next;
@@ -260,30 +264,30 @@ namespace HeuristicLab.DataAnalysis {
 
     private void ParseSampleData(bool strict) {
       List<double> row = new List<double>();
-      while (tokenizer.HasNext()) {
+      while(tokenizer.HasNext()) {
         Token current = tokenizer.Next();
-        if (current.type == TokenTypeEnum.Double) {
+        if(current.type == TokenTypeEnum.Double) {
           // just take the value
           row.Add(current.doubleValue);
-        } else if (current.type == TokenTypeEnum.Int) {
+        } else if(current.type == TokenTypeEnum.Int) {
           // translate the int value to double
           row.Add((double)current.intValue);
-        } else if (current == Tokenizer.NewlineToken) {
+        } else if(current == Tokenizer.NewlineToken) {
           // when parsing strictly all rows have to have the same number of values            
-          if (strict) {
+          if(strict) {
             // the first row defines how many samples are needed
-            if (samplesList.Count > 0 && samplesList[0].Count != row.Count) {
+            if(samplesList.Count > 0 && samplesList[0].Count != row.Count) {
               Error("The first row of the dataset has " + samplesList[0].Count + " columns." +
                 "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.");
             }
-          } else if (samplesList.Count > 0) {
+          } else if(samplesList.Count > 0) {
             // when we are not strict then fill or drop elements as needed
-            if (samplesList[0].Count > row.Count) {
+            if(samplesList[0].Count > row.Count) {
               // fill with NAN
-              for (int i = row.Count; i < samplesList[0].Count; i++) {
+              for(int i = row.Count; i < samplesList[0].Count; i++) {
                 row.Add(double.NaN);
               }
-            } else if (samplesList[0].Count < row.Count) {
+            } else if(samplesList[0].Count < row.Count) {
               // drop last k elements where k = n - length of first row
               row.RemoveRange(samplesList[0].Count - 1, row.Count - samplesList[0].Count);
             }
@@ -295,7 +299,7 @@ namespace HeuristicLab.DataAnalysis {
         } else {
           // found an unexpected token => return false when parsing strictly
           // when we are parsing non-strictly we also allow unreadable values inserting NAN instead
-          if (strict) {
+          if(strict) {
             Error("Unkown value " + current + " in line " + tokenizer.CurrentLineNumber +
               "\n" + tokenizer.CurrentLine);
           } else {
@@ -306,11 +310,11 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ParseMetaData(bool strict) {
-      while (tokenizer.Peek() == Tokenizer.AtToken) {
+      while(tokenizer.Peek() == Tokenizer.AtToken) {
         Expect(Tokenizer.AtToken);
 
         Token nameToken = tokenizer.Next();
-        if (nameToken.type != TokenTypeEnum.String)
+        if(nameToken.type != TokenTypeEnum.String)
           throw new Exception("Expected a variable name; got " + nameToken +
             "\nLine " + tokenizer.CurrentLineNumber + ": " + tokenizer.CurrentLine);
 
@@ -318,7 +322,7 @@ namespace HeuristicLab.DataAnalysis {
 
         List<Token> tokens = new List<Token>();
         Token valueToken = tokenizer.Next();
-        while (valueToken != Tokenizer.NewlineToken) {
+        while(valueToken != Tokenizer.NewlineToken) {
           tokens.Add(valueToken);
           valueToken = tokenizer.Next();
         }
@@ -329,7 +333,7 @@ namespace HeuristicLab.DataAnalysis {
 
     private void Expect(Token expectedToken) {
       Token actualToken = tokenizer.Next();
-      if (actualToken != expectedToken) {
+      if(actualToken != expectedToken) {
         Error("Expected: " + expectedToken + " got: " + actualToken +
           "\nLine " + tokenizer.CurrentLineNumber + ": " + tokenizer.CurrentLine);
       }
