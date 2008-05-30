@@ -60,7 +60,7 @@ namespace HeuristicLab.StructureIdentification {
       if(random.NextDouble() <= balancedTreesRate) {
         root = gardener.CreateBalancedRandomTree(treeSize, treeHeight);
       } else {
-        root = gardener.CreateBalancedRandomTree(treeSize, treeHeight);
+        root = gardener.CreateUnbalancedRandomTree(treeSize, treeHeight);
       }
 
       int actualTreeSize = gardener.GetTreeSize(root);
