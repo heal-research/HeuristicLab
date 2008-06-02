@@ -124,7 +124,7 @@ namespace HeuristicLab.DistributedEngine {
       return zippedEngine;
     }
 
-    public IScope EndExecuteOperation(AtomicOperation operation) {
+    public ProcessingEngine EndExecuteOperation(AtomicOperation operation) {
       byte[] zippedResult = null;
       lock(dictionaryLock) {
         zippedResult = results[operation];
@@ -132,8 +132,7 @@ namespace HeuristicLab.DistributedEngine {
       }
       // restore the engine 
       using(GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress)) {
-        ProcessingEngine resultEngine = (ProcessingEngine)PersistenceManager.Load(stream);
-        return resultEngine.InitialOperation.Scope;
+        return (ProcessingEngine)PersistenceManager.Load(stream);
       }      
     }
 

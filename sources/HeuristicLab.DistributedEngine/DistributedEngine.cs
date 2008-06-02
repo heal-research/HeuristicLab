@@ -98,7 +98,7 @@ namespace HeuristicLab.DistributedEngine {
             // 3) keep the branches to 'repair' the scope-tree later
             // 4) for each parallel job attach only the sub-scope that this operation uses
             // 5) after starting all parallel jobs restore the whole scope-tree
-            IScope parentScope = FindParentScope(GlobalScope, compositeOperation);
+            IScope parentScope = FindParentScope(GlobalScope, ((AtomicOperation)compositeOperation.Operations[0]).Scope);
             List<IList<IScope>> prunedScopes = new List<IList<IScope>>();
             PruneToParentScope(GlobalScope, parentScope, prunedScopes);
             List<IScope> subScopes = new List<IScope>(parentScope.SubScopes);
@@ -129,8 +129,20 @@ namespace HeuristicLab.DistributedEngine {
             }
             // retrieve results and merge into scope-tree
             foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-              IScope result = jobManager.EndExecuteOperation(parOperation);
-              MergeScope(parOperation.Scope, result);
+              ProcessingEngine resultEngine = jobManager.EndExecuteOperation(parOperation);
+              if(resultEngine.ExecutionStack.Count > 0) {
+                // when there are operations left in the execution stack it means that the engine has been aborted
+                // for unkown reason. Probably there was a problem at the client, so we can try to execute the steps locally.
+                // If they also fail the (local) distributued-engine will be aborted and we will see an error-message.
+                // Solution: We could push all waiting operations in the execution stack of the result engine into our own
+                // execution stack, but this is not easy because we have to change the operations to point to the 
+                // original scopes instead of the new scopes (created while deserializing the processing engine).
+                // Instead just push the original parallel operation back on the stack to force local execution.
+                ExecutionStack.Push(parOperation);
+              } else {
+                // if everything went fine we can merge the results into our local scope-tree
+                MergeScope(parOperation.Scope, resultEngine.InitialOperation.Scope);
+              }
             }
           } catch(Exception e) {
             myExecutionStack.Push(compositeOperation);
@@ -180,11 +192,10 @@ namespace HeuristicLab.DistributedEngine {
       }
     }
 
-    private IScope FindParentScope(IScope currentScope, CompositeOperation compositeOperation) {
-      AtomicOperation currentOperation = (AtomicOperation)compositeOperation.Operations[0];
-      if(currentScope.SubScopes.Contains(currentOperation.Scope)) return currentScope;
+    private IScope FindParentScope(IScope currentScope, IScope childScope) {
+      if(currentScope.SubScopes.Contains(childScope)) return currentScope;
       foreach(IScope subScope in currentScope.SubScopes) {
-        IScope result = FindParentScope(subScope, compositeOperation);
+        IScope result = FindParentScope(subScope, childScope);
         if(result != null) return result;
       }
       return null;
