@@ -68,10 +68,7 @@ namespace HeuristicLab.Logging {
       } else {
         string[] lines = new string[Log.Items.Count];
         for (int i = 0; i < Log.Items.Count; i++) {
-          double[] values = ((DoubleArrayData)Log.Items[i]).Data;
-          lines[i] = values[0].ToString() + "     " +
-                     values[1].ToString() + "     " +
-                     values[2].ToString();
+          lines[i] = Log.Items[i].ToString().Replace(';','\t');
         }
         qualityLogTextBox.Lines = lines;
         qualityLogTextBox.Enabled = true;
@@ -103,10 +100,7 @@ namespace HeuristicLab.Logging {
         string[] lines = new string[qualityLogTextBox.Lines.Length + 1];
         Array.Copy(qualityLogTextBox.Lines, 0, lines, 0, index);
         Array.Copy(qualityLogTextBox.Lines, index, lines, index + 1, qualityLogTextBox.Lines.Length - index);
-        double[] values = ((DoubleArrayData)Log.Items[index]).Data;
-        lines[index] = values[0].ToString() + "     " +
-                       values[1].ToString() + "     " +
-                       values[2].ToString();
+        lines[index] = Log.Items[index].ToString().Replace(';', '\t');
         qualityLogTextBox.Lines = lines;
       }
     }

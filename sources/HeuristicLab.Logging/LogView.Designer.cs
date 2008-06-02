@@ -57,15 +57,16 @@ namespace HeuristicLab.Logging {
       this.qualityLogTextBox.Multiline = true;
       this.qualityLogTextBox.Name = "qualityLogTextBox";
       this.qualityLogTextBox.ReadOnly = true;
-      this.qualityLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.qualityLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
       this.qualityLogTextBox.Size = new System.Drawing.Size(150, 150);
       this.qualityLogTextBox.TabIndex = 0;
+      this.qualityLogTextBox.WordWrap = false;
       // 
-      // QualityLogDataView
+      // LogView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Controls.Add(this.qualityLogTextBox);
-      this.Name = "QualityLogDataView";
+      this.Name = "LogView";
       this.ResumeLayout(false);
       this.PerformLayout();
 
