@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.SQLite {
   [ClassInfo(Name = "HeuristicLab.SQLite")]
   [PluginFile(Filename = "HeuristicLab.SQLite.dll", Filetype = PluginFileType.Assembly)]
+  [PluginFile(Filename = "System.Data.SQLite.dll", Filetype = PluginFileType.Assembly)]
   public class HeuristicLabSQLitePlugin : PluginBase {
   }
 }
