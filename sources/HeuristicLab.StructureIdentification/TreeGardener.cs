@@ -127,7 +127,8 @@ namespace HeuristicLab.StructureIdentification {
           parent.RemoveSubTree(a);
           parent.InsertSubTree(a, RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(f => IsTerminal(f)).ToArray()).GetTreeNode());
         } else {
-          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(f => !IsTerminal(f)).ToArray());
+          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where( 
+            f => !IsTerminal(f) && GetMinimalTreeHeight(f) + (d-1) <= maxDepth).ToArray());
           IFunctionTree newTree = selectedFunction.GetTreeNode();
           parent.RemoveSubTree(a);
           parent.InsertSubTree(a, newTree);
@@ -152,9 +153,8 @@ namespace HeuristicLab.StructureIdentification {
         IFunctionTree parent = (IFunctionTree)nextExtension[0];
         int a = (int)nextExtension[1];
         int d = (int)nextExtension[2];
-        IFunction selectedTerminal = RandomSelect(terminals);
         parent.RemoveSubTree(a);
-        parent.InsertSubTree(a, selectedTerminal.GetTreeNode());
+        parent.InsertSubTree(a, CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1)); // append a tree with minimal possible height
       }
       return root;
     }
