@@ -377,7 +377,7 @@ namespace HeuristicLab.StructureIdentification {
         IFunction selectedTerminal = RandomSelect(terminals);
         return selectedTerminal;
       } else {
-        IFunction[] possibleFunctions = allFunctions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+        IFunction[] possibleFunctions = functions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
           GetMinimalTreeSize(f) <= maxTreeSize).ToArray();
         IFunction selectedFunction = RandomSelect(possibleFunctions);
         return selectedFunction;
