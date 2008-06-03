@@ -37,8 +37,8 @@ namespace HeuristicLab.StructureIdentification {
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Uniform random number generator", typeof(MersenneTwister), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MinTreeHeight", "The minimal allowed height of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("BalancedTreesRate", "Determines how many trees should be balanced", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The created tree", typeof(IFunctionTree), VariableKind.New | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
@@ -48,19 +48,18 @@ namespace HeuristicLab.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       GPOperatorLibrary opLibrary = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
+      int minTreeHeight = GetVariableValue<IntData>("MinTreeHeight", scope, true).Data;
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
-      int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
       double balancedTreesRate = GetVariableValue<DoubleData>("BalancedTreesRate", scope, true).Data;
 
       TreeGardener gardener = new TreeGardener(random, opLibrary);
 
-      int treeHeight = random.Next(1, maxTreeHeight + 1);
-      int treeSize = random.Next(1, maxTreeSize + 1);
+      int treeHeight = random.Next(minTreeHeight, maxTreeHeight + 1);
       IFunctionTree root;
       if(random.NextDouble() <= balancedTreesRate) {
-        root = gardener.CreateBalancedRandomTree(treeSize, treeHeight);
+        root = gardener.CreateBalancedRandomTree(Int32.MaxValue, treeHeight);
       } else {
-        root = gardener.CreateUnbalancedRandomTree(treeSize, treeHeight);
+        root = gardener.CreateUnbalancedRandomTree(Int32.MaxValue, treeHeight);
       }
 
       int actualTreeSize = gardener.GetTreeSize(root);
@@ -72,8 +71,7 @@ namespace HeuristicLab.StructureIdentification {
 
       if(!gardener.IsValidTree(root)) { throw new InvalidProgramException(); }
 
-      if(actualTreeSize > maxTreeSize ||
-        actualTreeHeight > maxTreeHeight) {
+      if(actualTreeHeight > maxTreeHeight) {
         throw new InvalidProgramException();
       }
 
