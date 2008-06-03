@@ -125,9 +125,9 @@ namespace HeuristicLab.StructureIdentification {
         int d = (int)nextExtension[2];
         if(d == maxDepth) {
           parent.RemoveSubTree(a);
-          parent.InsertSubTree(a, RandomSelect(terminals).GetTreeNode());
+          parent.InsertSubTree(a, RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(f => IsTerminal(f)).ToArray()).GetTreeNode());
         } else {
-          IFunction selectedFunction = RandomSelect(functions);
+          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(f => !IsTerminal(f)).ToArray());
           IFunctionTree newTree = selectedFunction.GetTreeNode();
           parent.RemoveSubTree(a);
           parent.InsertSubTree(a, newTree);
