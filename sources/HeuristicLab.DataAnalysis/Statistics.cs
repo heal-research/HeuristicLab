@@ -233,7 +233,6 @@ namespace HeuristicLab.DataAnalysis {
       for(int i = start; i < end; i++) {
         if(double.IsNaN(values[i])) {
           throw new NotFiniteNumberException();
-        } else {
         }
         double d = values[i] - mean;
         squaredErrorsSum += d * d;
