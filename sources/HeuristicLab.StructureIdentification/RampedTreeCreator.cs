@@ -28,12 +28,12 @@ using HeuristicLab.Random;
 using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
-  public class RandomTreeCreator : OperatorBase {
+  public class RampedTreeCreator : OperatorBase {
     public override string Description {
       get { return @"Generates a new random operator tree."; }
     }
 
-    public RandomTreeCreator()
+    public RampedTreeCreator()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Uniform random number generator", typeof(MersenneTwister), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));

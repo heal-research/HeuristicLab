@@ -47,6 +47,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProbabilisticTreeCreator.cs" />
     <Compile Include="Evaluation\CoefficientOfDeterminationEvaluator.cs" />
     <Compile Include="Evaluation\MCCEvaluator.cs" />
     <Compile Include="Evaluation\GPEvaluatorBase.cs" />

@@ -98,6 +98,67 @@ namespace HeuristicLab.StructureIdentification {
       return tree;
     }
 
+    internal IFunctionTree PTC2(IRandom random, int size, int maxDepth) {
+      if(size == 1) return RandomSelect(terminals).GetTreeNode();
+      List<object[]> list = new List<object[]>();
+      IFunctionTree root = GetRandomRoot(size, maxDepth).GetTreeNode();
+      int currentSize = 1;
+      int minArity;
+      int maxArity;
+      GetMinMaxArity(root.Function, out minArity, out maxArity);
+      if(maxArity >= size) {
+        maxArity = size;
+      }
+      int actualArity = random.Next(minArity, maxArity + 1);
+      for(int i=0;i<actualArity;i++) {
+        // insert a dummy sub-tree and add the pending extension to the list
+        root.AddSubTree(null);
+        list.Add(new object[] {root, i, 2});
+      }
+
+      while(list.Count > 0 && list.Count + currentSize < size) {
+        int randomIndex = random.Next(list.Count);
+        object[] nextExtension = list[randomIndex];
+        list.RemoveAt(randomIndex);
+        IFunctionTree parent = (IFunctionTree)nextExtension[0];
+        int a = (int)nextExtension[1];
+        int d = (int)nextExtension[2];
+        if(d == maxDepth) {
+          parent.RemoveSubTree(a);
+          parent.InsertSubTree(a, RandomSelect(terminals).GetTreeNode());
+        } else {
+          IFunction selectedFunction = RandomSelect(functions);
+          IFunctionTree newTree = selectedFunction.GetTreeNode();
+          parent.RemoveSubTree(a);
+          parent.InsertSubTree(a, newTree);
+
+          GetMinMaxArity(selectedFunction, out minArity, out maxArity);
+          if(maxArity >= size) {
+            maxArity = size;
+          }
+          actualArity = random.Next(minArity, maxArity + 1);
+          for(int i = 0; i < actualArity; i++) {
+            // insert a dummy sub-tree and add the pending extension to the list
+            newTree.AddSubTree(null);
+            list.Add(new object[] { newTree, i, d + 1 });
+          }
+        }
+        currentSize++;
+      }
+      while(list.Count > 0) {
+        int randomIndex = random.Next(list.Count);
+        object[] nextExtension = list[randomIndex];
+        list.RemoveAt(randomIndex);
+        IFunctionTree parent = (IFunctionTree)nextExtension[0];
+        int a = (int)nextExtension[1];
+        int d = (int)nextExtension[2];
+        IFunction selectedTerminal = RandomSelect(terminals);
+        parent.RemoveSubTree(a);
+        parent.InsertSubTree(a, selectedTerminal.GetTreeNode());
+      }
+      return root;
+    }
+
     /// <summary>
     /// selects a random function from allowedFunctions and creates a random (unbalanced) tree with maximal size and height.
     /// </summary>
