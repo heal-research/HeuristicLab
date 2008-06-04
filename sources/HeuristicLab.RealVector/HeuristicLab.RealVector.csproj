@@ -45,6 +45,7 @@
     <Compile Include="ContinuousCrossover.cs" />
     <Compile Include="CompleteContinuousCrossover.cs" />
     <Compile Include="BoundsChecker.cs" />
+    <Compile Include="ContinuousManipulator.cs" />
     <Compile Include="DiscreteCrossover.cs" />
     <Compile Include="DiscreteMultiCrossover.cs" />
     <Compile Include="HeuristicCrossover.cs" />

@@ -67,6 +67,10 @@ Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Program
         } else {
           vector[i] = vector[i] - Delta(random, currentGeneration, vector[i] - min, maximumGenerations, generationsDependency);
         }
+
+//        DISCUSS WITH adoppelb
+//        if (vector[i] < min) vector[i] = min;
+//        else if (vector[i] > max) vector[i] = max;
       }
 
       return vector;
