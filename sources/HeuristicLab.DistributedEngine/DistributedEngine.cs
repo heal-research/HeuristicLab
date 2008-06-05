@@ -149,6 +149,7 @@ namespace HeuristicLab.DistributedEngine {
             Abort();
             ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(e); });
           }
+          OnOperationExecuted(compositeOperation);
         } else {
           for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
             myExecutionStack.Push(compositeOperation.Operations[i]);
