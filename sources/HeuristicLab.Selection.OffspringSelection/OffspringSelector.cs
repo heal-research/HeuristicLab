@@ -150,11 +150,6 @@ namespace HeuristicLab.Selection.OffspringSelection {
           RemoveVariable(badChildrenInfo.ActualName);
         else
           scope.RemoveVariable(scope.TranslateName(badChildrenInfo.FormalName));
-        IVariableInfo badCountInfo = GetVariableInfo("BadCount");
-        if(badCountInfo.Local)
-          RemoveVariable(badCountInfo.ActualName);
-        else
-          scope.RemoveVariable(scope.TranslateName("BadCount"));
         return null;
       }
     }
