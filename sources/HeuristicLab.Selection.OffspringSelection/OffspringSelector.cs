@@ -48,37 +48,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
       IScope parents = scope.SubScopes[0];
       IScope children = scope.SubScopes[1];
 
-      // retrieve good and bad children
-      ItemList<IScope> goodChildren = GetVariableValue<ItemList<IScope>>("GoodChildren", scope, false, false);
-      if (goodChildren == null) {
-        goodChildren = new ItemList<IScope>();
-        IVariableInfo goodChildrenInfo = GetVariableInfo("GoodChildren");
-        if (goodChildrenInfo.Local)
-          AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
-        else
-          scope.AddVariable(new Variable(scope.TranslateName(goodChildrenInfo.FormalName), goodChildren));
-      }
-      ItemList<IScope> badChildren = GetVariableValue<ItemList<IScope>>("BadChildren", scope, false, false);
-      if (badChildren == null) {
-        badChildren = new ItemList<IScope>();
-        IVariableInfo badChildrenInfo = GetVariableInfo("BadChildren");
-        if (badChildrenInfo.Local)
-          AddVariable(new Variable(badChildrenInfo.ActualName, badChildren));
-        else
-          scope.AddVariable(new Variable(scope.TranslateName(badChildrenInfo.FormalName), badChildren));
-      }
-
-      // separate new children in good and bad children
-      IVariableInfo successfulInfo = GetVariableInfo("SuccessfulChild");
-      while (children.SubScopes.Count > 0) {
-        IScope child = children.SubScopes[0];
-        bool successful = child.GetVariableValue<BoolData>(successfulInfo.FormalName, false).Data;
-        if (successful) goodChildren.Add(child);
-        else badChildren.Add(child);
-        children.RemoveSubScope(child);
-      }
-
-      // calculate actual selection pressure and success ratio
+      // retrieve actual selection pressure and success ratio
       DoubleData selectionPressure = GetVariableValue<DoubleData>("SelectionPressure", scope, false, false);
       if (selectionPressure == null) {
         IVariableInfo selectionPressureInfo = GetVariableInfo("SelectionPressure");
@@ -97,14 +67,59 @@ namespace HeuristicLab.Selection.OffspringSelection {
         else
           scope.AddVariable(new Variable(scope.TranslateName(successRatioInfo.FormalName), successRatio));
       }
-      int goodCount = goodChildren.Count;
-      int badCount = badChildren.Count;
-      selectionPressure.Data = (goodCount + badCount) / ((double)parents.SubScopes.Count);
+
+      // retrieve good and bad children
+      ItemList<IScope> goodChildren = GetVariableValue<ItemList<IScope>>("GoodChildren", scope, false, false);
+      if (goodChildren == null) {
+        goodChildren = new ItemList<IScope>();
+        IVariableInfo goodChildrenInfo = GetVariableInfo("GoodChildren");
+        if (goodChildrenInfo.Local)
+          AddVariable(new Variable(goodChildrenInfo.ActualName, goodChildren));
+        else
+          scope.AddVariable(new Variable(scope.TranslateName(goodChildrenInfo.FormalName), goodChildren));
+
+        // no good children available -> first iteration of this generation -> initialize selection pressure
+        selectionPressure.Data = 0;
+      }
+      ItemList<IScope> badChildren = GetVariableValue<ItemList<IScope>>("BadChildren", scope, false, false);
+      if (badChildren == null) {
+        badChildren = new ItemList<IScope>();
+        IVariableInfo badChildrenInfo = GetVariableInfo("BadChildren");
+        if (badChildrenInfo.Local)
+          AddVariable(new Variable(badChildrenInfo.ActualName, badChildren));
+        else
+          scope.AddVariable(new Variable(scope.TranslateName(badChildrenInfo.FormalName), badChildren));
+      }
+
+      // separate new children in good and bad children
+      int goodCount = 0;
+      int badCount = 0;
+      IVariableInfo successfulInfo = GetVariableInfo("SuccessfulChild");
+      while (children.SubScopes.Count > 0) {
+        IScope child = children.SubScopes[0];
+        bool successful = child.GetVariableValue<BoolData>(successfulInfo.FormalName, false).Data;
+        if (successful) {
+          goodCount++;
+          goodChildren.Add(child);
+        } else {
+          badCount++;
+          // only keep the child if we have not filled up the pool or if we reached the
+          // selection pressure limit in which case we have to keep more lucky losers than usual
+          if ((1 - successRatioLimit) * parents.SubScopes.Count >= badChildren.Count ||
+            selectionPressure.Data >= selectionPressureLimit) {
+            badChildren.Add(child);
+          }
+        }
+        children.RemoveSubScope(child);
+      }
+
+      // calculate actual selection pressure and success ratio
+      selectionPressure.Data += (goodCount + badCount) / ((double)parents.SubScopes.Count);
       successRatio.Data = goodCount / ((double)parents.SubScopes.Count);
 
       // check if enough children have been generated
       if (((selectionPressure.Data < selectionPressureLimit) && (successRatio.Data < successRatioLimit)) ||
-          ((goodCount + badCount) < parents.SubScopes.Count)) {
+          ((goodChildren.Count + badChildren.Count) < parents.SubScopes.Count)) {
         // more children required -> reduce left and start children generation again
         scope.RemoveSubScope(parents);
         scope.RemoveSubScope(children);
@@ -135,7 +150,11 @@ namespace HeuristicLab.Selection.OffspringSelection {
           RemoveVariable(badChildrenInfo.ActualName);
         else
           scope.RemoveVariable(scope.TranslateName(badChildrenInfo.FormalName));
-
+        IVariableInfo badCountInfo = GetVariableInfo("BadCount");
+        if(badCountInfo.Local)
+          RemoveVariable(badCountInfo.ActualName);
+        else
+          scope.RemoveVariable(scope.TranslateName("BadCount"));
         return null;
       }
     }
