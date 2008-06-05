@@ -105,7 +105,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
           badCount++;
           // only keep the child if we have not filled up the pool or if we reached the
           // selection pressure limit in which case we have to keep more lucky losers than usual
-          if ((1 - successRatioLimit) * parents.SubScopes.Count >= badChildren.Count ||
+          if ((1 - successRatioLimit) * parents.SubScopes.Count > badChildren.Count ||
             selectionPressure.Data >= selectionPressureLimit) {
             badChildren.Add(child);
           }
@@ -115,7 +115,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
 
       // calculate actual selection pressure and success ratio
       selectionPressure.Data += (goodCount + badCount) / ((double)parents.SubScopes.Count);
-      successRatio.Data = goodCount / ((double)parents.SubScopes.Count);
+      successRatio.Data = goodChildren.Count / ((double)parents.SubScopes.Count);
 
       // check if enough children have been generated
       if (((selectionPressure.Data < selectionPressureLimit) && (successRatio.Data < successRatioLimit)) ||
