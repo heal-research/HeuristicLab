@@ -92,8 +92,8 @@ namespace HeuristicLab.Functions {
       VisitFunction("Sqrt[0]", sqrt);
     }
 
-    public void Visit(Substraction substraction) {
-      VisitFunction("Substraction[0]", substraction);
+    public void Visit(Subtraction substraction) {
+      VisitFunction("Subtraction[0]", substraction);
     }
 
     public void Visit(Tangens tangens) {

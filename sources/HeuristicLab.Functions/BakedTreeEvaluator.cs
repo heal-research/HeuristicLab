@@ -86,7 +86,7 @@ namespace HeuristicLab.Functions {
             }
             return sum;
           }
-        case EvaluatorSymbolTable.SUBSTRACTION: {
+        case EvaluatorSymbolTable.SUBTRACTION: {
             if(arity == 1) {
               return -EvaluateBakedCode();
             } else {

@@ -201,7 +201,7 @@ namespace HeuristicLab.Functions {
         name = "Sqrt";
       }
 
-      public void Visit(Substraction substraction) {
+      public void Visit(Subtraction substraction) {
         name = "-";
       }
 

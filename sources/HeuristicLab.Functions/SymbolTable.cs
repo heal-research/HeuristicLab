@@ -47,7 +47,7 @@ namespace HeuristicLab.Functions {
     public const int SIGNUM = 10170;
     public const int SINUS = 10180;
     public const int SQRT = 10190;
-    public const int SUBSTRACTION = 10200;
+    public const int SUBTRACTION = 10200;
     public const int TANGENS = 10210;
     public const int VARIABLE = 10220;
     public const int XOR = 10230;
@@ -86,7 +86,7 @@ namespace HeuristicLab.Functions {
       staticTypes[typeof(Signum)] = SIGNUM;
       staticTypes[typeof(Sinus)] = SINUS;
       staticTypes[typeof(Sqrt)] = SQRT;
-      staticTypes[typeof(Substraction)] = SUBSTRACTION;
+      staticTypes[typeof(Subtraction)] = SUBTRACTION;
       staticTypes[typeof(Tangens)] = TANGENS;
       staticTypes[typeof(Variable)] = VARIABLE;
       staticTypes[typeof(Xor)] = XOR;

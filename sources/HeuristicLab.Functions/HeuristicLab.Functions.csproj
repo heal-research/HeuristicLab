@@ -79,9 +79,9 @@
     <Compile Include="Logarithm.cs" />
     <Compile Include="Exponential.cs" />
     <Compile Include="Sqrt.cs" />
-    <Compile Include="Substraction.cs" />
     <Compile Include="Power.cs" />
     <Compile Include="Division.cs" />
+    <Compile Include="Subtraction.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Tangens.cs" />
     <Compile Include="Cosinus.cs" />

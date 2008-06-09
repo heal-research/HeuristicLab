@@ -45,7 +45,7 @@ namespace HeuristicLab.Functions {
     void Visit(Signum signum);
     void Visit(Sinus sinus);
     void Visit(Sqrt sqrt);
-    void Visit(Substraction substraction);
+    void Visit(Subtraction substraction);
     void Visit(Tangens tangens);
     void Visit(Variable variable);
     void Visit(Xor xor);

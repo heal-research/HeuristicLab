@@ -29,17 +29,17 @@ using System.Linq;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
-  public sealed class Substraction : FunctionBase {
+  public sealed class Subtraction : FunctionBase {
     public override string Description {
       get {
-        return @"Substracts the results of sub-tree 2..n from the result of the first sub-tree.
+        return @"Subtracts the results of sub-tree 2..n from the result of the first sub-tree.
     (- 3) => -3
     (- 2 3) => -1
     (- 3 4 5) => -6";
       }
     }
 
-    public Substraction()
+    public Subtraction()
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
