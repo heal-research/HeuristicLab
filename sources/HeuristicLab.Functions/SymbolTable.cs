@@ -128,16 +128,20 @@ namespace HeuristicLab.Functions {
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      table.Clear();
-      reverseTable.Clear();
-      nextFunctionSymbol = int.Parse(node.Attributes["NextFunctionSymbol"].Value);
-      XmlNode symbolTableNode = node.SelectSingleNode("Table");
-      foreach(XmlNode entry in symbolTableNode.ChildNodes) {
-        IFunction function = (IFunction)PersistenceManager.Restore(entry, restoredObjects);
-        int symbol = int.Parse(entry.Attributes["Symbol"].Value);
-        table[symbol] = function;
-        reverseTable[function] = symbol;
+      if(this == symbolTable) {
+        base.Populate(node, restoredObjects);
+        table.Clear();
+        reverseTable.Clear();
+        nextFunctionSymbol = int.Parse(node.Attributes["NextFunctionSymbol"].Value);
+        XmlNode symbolTableNode = node.SelectSingleNode("Table");
+        foreach(XmlNode entry in symbolTableNode.ChildNodes) {
+          IFunction function = (IFunction)PersistenceManager.Restore(entry, restoredObjects);
+          int symbol = int.Parse(entry.Attributes["Symbol"].Value);
+          table[symbol] = function;
+          reverseTable[function] = symbol;
+        }
+      } else {
+        symbolTable.Populate(node, restoredObjects);
       }
     }
   }
