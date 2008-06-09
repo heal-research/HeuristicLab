@@ -154,7 +154,7 @@ namespace HeuristicLab.Functions {
         prefix += ";\n";
       }
       prefix = prefix.TrimEnd(';', '\n');
-      prefix += ")";
+      if(functionTree.SubTrees.Count>0) prefix += ")";
       currentIndend = currentIndend.Remove(0, 2);
     }
   }
