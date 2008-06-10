@@ -61,6 +61,12 @@
     </Compile>
     <Compile Include="HeuristicLabDataAnalysisPlugin.cs" />
     <Compile Include="IDatasetManipulator.cs" />
+    <Compile Include="ManualScalingControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManualScalingControl.Designer.cs">
+      <DependentUpon>ManualScalingControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regression.cs" />
     <Compile Include="Statistics.cs" />
@@ -90,6 +96,9 @@
     <EmbeddedResource Include="DatasetView.resx">
       <DependentUpon>DatasetView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManualScalingControl.resx">
+      <DependentUpon>ManualScalingControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SvmExporter.resx">
       <DependentUpon>SvmExporter.cs</DependentUpon>

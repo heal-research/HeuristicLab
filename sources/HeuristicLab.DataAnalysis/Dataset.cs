@@ -41,7 +41,15 @@ namespace HeuristicLab.DataAnalysis {
     private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
     private double[] scalingFactor;
+
+    public double[] ScalingFactor {
+      get { return scalingFactor; }
+    }
     private double[] scalingOffset;
+
+    public double[] ScalingOffset {
+      get { return scalingOffset; }
+    }
 
     public int Rows {
       get { return rows; }
@@ -295,26 +303,33 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     internal void ScaleVariable(int column) {
-      if(scalingFactor[column] == 1.0) {
+      if(scalingFactor[column] == 1.0 && scalingOffset[column] == 0.0) {
         double min = GetMinimum(column);
         double max = GetMaximum(column);
         double range = max - min;
-        scalingFactor[column] = range;
-        scalingOffset[column] = min;
-        for(int i = 0; i < Rows; i++) {
-          double origValue = samples[i * columns + column];
-          samples[i * columns + column] = (origValue - min) / range;
-        }
+        if(range == 0) ScaleVariable(column, 1.0, -min);
+        else ScaleVariable(column, 1.0 / range, -min);
+      }
+      CreateDictionaries();
+      FireChanged();
+    }
+
+    internal void ScaleVariable(int column, double factor, double offset) {
+      scalingFactor[column] = factor;
+      scalingOffset[column] = offset;
+      for(int i = 0; i < Rows; i++) {
+        double origValue = samples[i * columns + column];
+        samples[i * columns + column] = (origValue + offset) * factor;
       }
       CreateDictionaries();
       FireChanged();
     }
 
     internal void UnscaleVariable(int column) {
-      if(scalingFactor[column] != 1.0) {
+      if(scalingFactor[column] != 1.0 || scalingOffset[column]!=0.0) {
         for(int i = 0; i < rows; i++) {
           double scaledValue = samples[i * columns + column];
-          samples[i * columns + column] = scaledValue * scalingFactor[column] + scalingOffset[column];
+          samples[i * columns + column] = scaledValue / scalingFactor[column] - scalingOffset[column];
         }
         scalingFactor[column] = 1.0;
         scalingOffset[column] = 0.0;

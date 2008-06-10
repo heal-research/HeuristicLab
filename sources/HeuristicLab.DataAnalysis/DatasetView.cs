@@ -130,5 +130,32 @@ namespace HeuristicLab.DataAnalysis {
         return "Var " + index;
       }
     }
+
+    private void showScalingToolStripMenuItem_Click(object sender, EventArgs e) {
+      ManualScalingControl scalingControl = new ManualScalingControl(false);
+      double[,] scalingParameters = new double[2, Dataset.Columns];
+      for(int i = 0; i < Dataset.Columns; i++) {
+        scalingParameters[0, i] = Dataset.ScalingFactor[i];
+        scalingParameters[1, i] = Dataset.ScalingOffset[i];
+      }
+      scalingControl.Data = scalingParameters;
+      scalingControl.ShowDialog();
+    }
+
+    private void scaleValuesmanuallyToolStripMenuItem_Click(object sender, EventArgs e) {
+      ManualScalingControl scalingControl = new ManualScalingControl(true);
+      double[,] scalingParameters = new double[2, Dataset.Columns];
+      for(int i = 0; i < Dataset.Columns; i++) {
+        scalingParameters[0, i] = Dataset.ScalingFactor[i];
+        scalingParameters[1, i] = Dataset.ScalingOffset[i];
+      }
+      scalingControl.Data = scalingParameters;
+      if(scalingControl.ShowDialog() == DialogResult.OK) {
+        for(int i = 0; i < Dataset.Columns; i++) {
+          Dataset.ScaleVariable(i, scalingControl.Data[0, i], scalingControl.Data[1, i]);
+        }
+      }
+      Refresh();
+    }
   }
 }
