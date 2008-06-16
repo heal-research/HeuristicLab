@@ -38,12 +38,13 @@ namespace HeuristicLab.DistributedEngine {
     private Dictionary<Guid, ProcessingEngine> engines = new Dictionary<Guid, ProcessingEngine>();
     private Dictionary<Guid, ManualResetEvent> waithandles = new Dictionary<Guid, ManualResetEvent>();
     private Dictionary<AtomicOperation, byte[]> results = new Dictionary<AtomicOperation, byte[]>();
+    private List<IOperation> erroredOperations = new List<IOperation>();
     private object connectionLock = new object();
     private object dictionaryLock = new object();
 
     private const int MAX_RESTARTS = 5;
     private const int MAX_CONNECTION_RETRIES = 10;
-    private const int RETRY_TIMEOUT_SEC = 10;
+    private const int RETRY_TIMEOUT_SEC = 60;
     private const int CHECK_RESULTS_TIMEOUT = 10;
 
     private ChannelFactory<IGridServer> factory;
@@ -59,6 +60,7 @@ namespace HeuristicLab.DistributedEngine {
         waithandles.Clear();
         engines.Clear();
         results.Clear();
+        erroredOperations.Clear();
       }
     }
 
@@ -83,27 +85,22 @@ namespace HeuristicLab.DistributedEngine {
       bool success = false;
       int retryCount = 0;
       do {
-        lock(connectionLock) {
-          try {
+        try {
+          lock(connectionLock) {
             currentEngineGuid = server.BeginExecuteEngine(zippedEngine);
-            success = true;
-          } catch(TimeoutException timeoutException) {
-            if(retryCount < MAX_CONNECTION_RETRIES) {
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-              retryCount++;
-            } else {
-              throw new ApplicationException("Max retries reached.", timeoutException);
-            }
-          } catch(CommunicationException communicationException) {
-            ResetConnection();
-            // wait some time and try again (limit with maximal retries if retry count reached throw exception -> engine can decide to stop execution)
-            if(retryCount < MAX_CONNECTION_RETRIES) {
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-              retryCount++;
-            } else {
-              throw new ApplicationException("Max retries reached.", communicationException);
-            }
           }
+          success = true;
+        } catch(TimeoutException timeoutException) {
+          if(retryCount++ >= MAX_CONNECTION_RETRIES) {
+            throw new ApplicationException("Maximal number of connection attempts reached. There is a problem with the connection to the grid-server.", timeoutException);
+          }
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        } catch(CommunicationException communicationException) {
+          if(retryCount++ >= MAX_CONNECTION_RETRIES) {
+            throw new ApplicationException("Maximal number of connection attempts reached. There is a problem with the connection to the grid-server.", communicationException);
+          }
+          ResetConnection();
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
       } while(!success);
       lock(dictionaryLock) {
@@ -125,15 +122,20 @@ namespace HeuristicLab.DistributedEngine {
     }
 
     public ProcessingEngine EndExecuteOperation(AtomicOperation operation) {
-      byte[] zippedResult = null;
-      lock(dictionaryLock) {
-        zippedResult = results[operation];
-        results.Remove(operation);
+      if(erroredOperations.Contains(operation)) {
+        erroredOperations.Remove(operation);
+        throw new ApplicationException("Maximal number of job restarts reached. There is a problem with the connection to the grid-server.");
+      } else {
+        byte[] zippedResult = null;
+        lock(dictionaryLock) {
+          zippedResult = results[operation];
+          results.Remove(operation);
+        }
+        // restore the engine 
+        using(GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress)) {
+          return (ProcessingEngine)PersistenceManager.Load(stream);
+        }
       }
-      // restore the engine 
-      using(GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress)) {
-        return (ProcessingEngine)PersistenceManager.Load(stream);
-      }      
     }
 
     private void TryGetResult(object state) {
@@ -141,95 +143,102 @@ namespace HeuristicLab.DistributedEngine {
       int restartCounter = 0;
       do {
         Thread.Sleep(TimeSpan.FromSeconds(CHECK_RESULTS_TIMEOUT));
-        byte[] zippedResult = null;
-        lock(connectionLock) {
-          bool success = false;
-          int retries = 0;
-          do {
-            try {
-              zippedResult = server.TryEndExecuteEngine(engineGuid, 100);
-              success = true;
-            } catch(TimeoutException timeoutException) {
-              success = false;
-              retries++;
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-            } catch(CommunicationException communicationException) {
-              ResetConnection();
-              success = false;
-              retries++;
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-            }
-
-          } while(!success && retries < MAX_CONNECTION_RETRIES);
-        }
-        if(zippedResult != null) {
+        byte[] zippedResult = TryEndExecuteEngine(server, engineGuid);
+        if(zippedResult != null) { // successful
           lock(dictionaryLock) {
             // store result
             results[engines[engineGuid].InitialOperation] = zippedResult;
-
-            // signal the wait handle and clean up then return
+            // clean up and signal the wait handle then return
             engines.Remove(engineGuid);
             waithandles[engineGuid].Set();
             waithandles.Remove(engineGuid);
           }
           return;
         } else {
-          // check if the server is still working on the job
-          bool success = false;
-          int retries = 0;
-          JobState jobState = JobState.Unkown;
-          do {
-            try {
-              lock(connectionLock) {
-                jobState = server.JobState(engineGuid);
-              }
-              success = true;
-            } catch(TimeoutException timeoutException) {
-              retries++;
-              success = false;
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-            } catch(CommunicationException communicationException) {
-              ResetConnection();
-              retries++;
-              success = false;
-              Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-            }
-          } while(!success && retries < MAX_CONNECTION_RETRIES);
+          // there was a problem -> check the state of the job and restart if necessary
+          JobState jobState = TryGetJobState(server, engineGuid);
           if(jobState == JobState.Unkown) {
-            // restart job
-            ProcessingEngine engine;
-            lock(dictionaryLock) {
-              engine = engines[engineGuid];
-            }
-            byte[] zippedEngine = ZipEngine(engine);
-            success = false;
-            retries = 0;
-            do {
-              try {
-                lock(connectionLock) {
-                  server.BeginExecuteEngine(zippedEngine);
-                }
-                success = true;
-              } catch(TimeoutException timeoutException) {
-                success = false;
-                retries++;
-                Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-              } catch(CommunicationException communicationException) {
-                ResetConnection();
-                success = false;
-                retries++;
-                Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-              }
-            } while(!success && retries < MAX_CONNECTION_RETRIES);
+            TryRestartJob(engineGuid);
             restartCounter++;
           }
         }
+      } while(restartCounter < MAX_RESTARTS);
+      lock(dictionaryLock) {
+        // the job was never finished and restarting didn't help -> stop trying to execute the job and
+        // save the faulted operation in a list to throw an exception when EndExecuteEngine is called.
+        erroredOperations.Add(engines[engineGuid].InitialOperation);
+        // clean up and signal the wait handle
+        engines.Remove(engineGuid);
+        waithandles[engineGuid].Set();
+        waithandles.Remove(engineGuid);
+      }
+    }
 
-        // when we reach a maximum amount of restarts => signal the wait-handle and set a flag that there was a problem
-        if(restartCounter > MAX_RESTARTS) {
-          throw new ApplicationException("Maximum number of job restarts reached.");
+    private void TryRestartJob(Guid engineGuid) {
+      // restart job
+      ProcessingEngine engine;
+      lock(dictionaryLock) {
+        engine = engines[engineGuid];
+      }
+      byte[] zippedEngine = ZipEngine(engine);
+      int retries = 0;
+      do {
+        try {
+          lock(connectionLock) {
+            server.BeginExecuteEngine(zippedEngine);
+          }
+          return;
+        } catch(TimeoutException timeoutException) {
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        } catch(CommunicationException communicationException) {
+          ResetConnection();
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
-      } while(true);
+      } while(retries < MAX_CONNECTION_RETRIES);
+    }
+
+    private byte[] TryEndExecuteEngine(IGridServer server, Guid engineGuid) {
+      int retries = 0;
+      do {
+        try {
+          lock(connectionLock) {
+            byte[] zippedResult = server.TryEndExecuteEngine(engineGuid, 100);
+            return zippedResult;
+          }
+        } catch(TimeoutException timeoutException) {
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        } catch(CommunicationException communicationException) {
+          ResetConnection();
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        }
+      } while(retries < MAX_CONNECTION_RETRIES);
+      return null;
+    }
+
+    private JobState TryGetJobState(IGridServer server, Guid engineGuid) {
+      // check if the server is still working on the job
+      int retries = 0;
+      do {
+        try {
+          lock(connectionLock) {
+            JobState jobState = server.JobState(engineGuid);
+            return jobState;
+          }
+        } catch(TimeoutException timeoutException) {
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        } catch(CommunicationException communicationException) {
+          ResetConnection();
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        }
+      } while(retries < MAX_CONNECTION_RETRIES);
+      return JobState.Unkown;
+      
     }
   }
 }
