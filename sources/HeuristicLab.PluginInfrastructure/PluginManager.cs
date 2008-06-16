@@ -108,9 +108,6 @@ namespace HeuristicLab.PluginInfrastructure {
         remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
         NotifyListeners(PluginManagerAction.Initialized, "All plugins");
         remoteRunner.Run(appInfo);
-      } catch(Exception ex) {
-        // can't handle exception here -> rethrow 
-        throw new ApplicationException("Exception in "+appInfo.Name, ex);
       } finally {
         // make sure domain is unloaded in all cases
         AppDomain.Unload(applicationDomain);
