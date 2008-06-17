@@ -32,26 +32,33 @@ namespace HeuristicLab.Functions {
     private int[] codeArr;
     private double[] dataArr;
     private static EvaluatorSymbolTable symbolTable = EvaluatorSymbolTable.SymbolTable;
-
-    // for persistence mechanism only
-    public BakedTreeEvaluator() {
-    }
-
-    public BakedTreeEvaluator(List<int> code, List<double> data) {
-      codeArr = code.ToArray();
-      dataArr = data.ToArray();
-    }
-
     private int PC;
     private int DP;
     private Dataset dataset;
     private int sampleIndex;
 
-    internal double Evaluate(Dataset _dataset, int _sampleIndex) {
+    // for persistence mechanism only
+    public BakedTreeEvaluator() {
+    }
+
+    public BakedTreeEvaluator(List<LightWeightFunction> linearRepresentation) {
+      List<int> code = new List<int>();
+      List<double> data = new List<double>();
+      foreach(LightWeightFunction fun in linearRepresentation) {
+        code.Add(fun.arity);
+        code.Add(symbolTable.MapFunction(fun.functionType));
+        code.Add(fun.data.Count);
+        data.AddRange(fun.data);
+      }
+      codeArr = code.ToArray();
+      dataArr = data.ToArray();
+    }
+
+    internal double Evaluate(Dataset dataset, int sampleIndex) {
       PC = 0;
       DP = 0;
-      sampleIndex = _sampleIndex;
-      dataset = _dataset;
+      this.sampleIndex = sampleIndex;
+      this.dataset = dataset;
       return EvaluateBakedCode();
     }
 

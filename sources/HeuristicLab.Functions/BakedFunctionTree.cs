@@ -30,20 +30,38 @@ using System.Xml;
 using System.Globalization;
 
 namespace HeuristicLab.Functions {
+
+  class LightWeightFunction {
+    public int arity = 0;
+    public IFunction functionType;
+    public List<double> data = new List<double>();
+
+    public LightWeightFunction Clone() {
+      LightWeightFunction clone = new LightWeightFunction();
+      clone.arity = arity;
+      clone.functionType = functionType;
+      clone.data.AddRange(data);
+      return clone;
+    }
+  }
+
   class BakedFunctionTree : ItemBase, IFunctionTree {
-    private List<int> code;
-    private List<double> data;
-    private static EvaluatorSymbolTable symbolTable = EvaluatorSymbolTable.SymbolTable;
+    private List<LightWeightFunction> linearRepresentation;
+    private bool treesExpanded = false;
+    private List<IFunctionTree> subTrees;
+    private bool variablesExpanded = false;
+    private List<IVariable> variables;
+    private BakedTreeEvaluator evaluator = null;
+
     public BakedFunctionTree() {
-      code = new List<int>();
-      data = new List<double>();
+      linearRepresentation = new List<LightWeightFunction>();
     }
 
     internal BakedFunctionTree(IFunction function)
       : this() {
-      code.Add(0);
-      code.Add(symbolTable.MapFunction(function));
-      code.Add(0);
+      LightWeightFunction fun = new LightWeightFunction();
+      fun.functionType = function;
+      linearRepresentation.Add(fun);
       treesExpanded = true;
       subTrees = new List<IFunctionTree>();
       variables = new List<IVariable>();
@@ -57,12 +75,12 @@ namespace HeuristicLab.Functions {
 
     internal BakedFunctionTree(IFunctionTree tree)
       : this() {
-      code.Add(0);
-      code.Add(symbolTable.MapFunction(tree.Function));
-      code.Add(tree.LocalVariables.Count);
+      LightWeightFunction fun = new LightWeightFunction();
+      fun.functionType = tree.Function;
+      linearRepresentation.Add(fun);
       foreach(IVariable variable in tree.LocalVariables) {
         IItem value = variable.Value;
-        data.Add(GetDoubleValue(value));
+        fun.data.Add(GetDoubleValue(value));
       }
       foreach(IFunctionTree subTree in tree.SubTrees) {
         AddSubTree(new BakedFunctionTree(subTree));
@@ -81,30 +99,22 @@ namespace HeuristicLab.Functions {
       } else throw new NotSupportedException("Invalid datatype of local variable for GP");
     }
 
-    private void BranchLength(int branchRoot, out int codeLength, out int dataLength) {
-      int arity = code[branchRoot];
-      int nLocalVariables = code[branchRoot + 2];
-      codeLength = 3;
-      dataLength = nLocalVariables;
-      int subBranchStart = branchRoot + codeLength;
+    private int BranchLength(int branchRoot) {
+      int arity = linearRepresentation[branchRoot].arity;
+      int length = 1;
       for(int i = 0; i < arity; i++) {
-        int branchCodeLength;
-        int branchDataLength;
-        BranchLength(subBranchStart, out branchCodeLength, out branchDataLength);
-        subBranchStart += branchCodeLength;
-        codeLength += branchCodeLength;
-        dataLength += branchDataLength;
+        length += BranchLength(branchRoot + length);
       }
+      return length;
     }
 
     private void FlattenTrees() {
       if(treesExpanded) {
-        code[0] = subTrees.Count;
+        linearRepresentation[0].arity = subTrees.Count;
         foreach(BakedFunctionTree subTree in subTrees) {
           subTree.FlattenVariables();
           subTree.FlattenTrees();
-          code.AddRange(subTree.code);
-          data.AddRange(subTree.data);
+          linearRepresentation.AddRange(subTree.linearRepresentation);
         }
         treesExpanded = false;
         subTrees = null;
@@ -113,80 +123,70 @@ namespace HeuristicLab.Functions {
 
     private void FlattenVariables() {
       if(variablesExpanded) {
-        code[2] = variables.Count;
+        linearRepresentation[0].data.Clear();
         foreach(IVariable variable in variables) {
-          data.Add(GetDoubleValue(variable.Value));
+          linearRepresentation[0].data.Add(GetDoubleValue(variable.Value));
         }
         variablesExpanded = false;
         variables = null;
       }
     }
 
-    private bool treesExpanded = false;
-    private List<IFunctionTree> subTrees;
     public IList<IFunctionTree> SubTrees {
       get {
         if(!treesExpanded) {
           subTrees = new List<IFunctionTree>();
-          int arity = code[0];
-          int nLocalVariables = code[2];
-          int branchIndex = 3;
-          int dataIndex = nLocalVariables; // skip my local variables to reach the local variables of the first branch
+          int arity = linearRepresentation[0].arity;
+          int branchIndex = 1;
           for(int i = 0; i < arity; i++) {
             BakedFunctionTree subTree = new BakedFunctionTree();
-            int codeLength;
-            int dataLength;
-            BranchLength(branchIndex, out codeLength, out dataLength);
-            subTree.code = code.GetRange(branchIndex, codeLength);
-            subTree.data = data.GetRange(dataIndex, dataLength);
-            branchIndex += codeLength;
-            dataIndex += dataLength;
+            int length = BranchLength(branchIndex);
+            for(int j = branchIndex; j < branchIndex + length; j++) {
+              subTree.linearRepresentation.Add(linearRepresentation[j].Clone());
+            }
+            branchIndex += length;
             subTrees.Add(subTree);
           }
           treesExpanded = true;
-          code.RemoveRange(3, code.Count - 3);
-          code[0] = 0;
-          data.RemoveRange(nLocalVariables, data.Count - nLocalVariables);
+          linearRepresentation.RemoveRange(1, linearRepresentation.Count - 1);
+          linearRepresentation[0].arity = 0;
         }
         return subTrees;
       }
     }
 
-    private bool variablesExpanded = false;
-    private List<IVariable> variables;
     public ICollection<IVariable> LocalVariables {
       get {
         if(!variablesExpanded) {
           variables = new List<IVariable>();
-          IFunction function = symbolTable.MapSymbol(code[1]);
+          IFunction function = Function;
           int localVariableIndex = 0;
           foreach(IVariableInfo variableInfo in function.VariableInfos) {
             if(variableInfo.Local) {
               IVariable clone = (IVariable)function.GetVariable(variableInfo.FormalName).Clone();
               IItem value = clone.Value;
               if(value is ConstrainedDoubleData) {
-                ((ConstrainedDoubleData)value).Data = data[localVariableIndex];
+                ((ConstrainedDoubleData)value).Data = linearRepresentation[0].data[localVariableIndex];
               } else if(value is ConstrainedIntData) {
-                ((ConstrainedIntData)value).Data = (int)data[localVariableIndex];
+                ((ConstrainedIntData)value).Data = (int)linearRepresentation[0].data[localVariableIndex];
               } else if(value is DoubleData) {
-                ((DoubleData)value).Data = data[localVariableIndex];
+                ((DoubleData)value).Data = linearRepresentation[0].data[localVariableIndex];
               } else if(value is IntData) {
-                ((IntData)value).Data = (int)data[localVariableIndex];
+                ((IntData)value).Data = (int)linearRepresentation[0].data[localVariableIndex];
               } else throw new NotSupportedException("Invalid local variable type for GP.");
               variables.Add(clone);
               localVariableIndex++;
             }
           }
           variablesExpanded = true;
-          code[2] = 0;
-          data.RemoveRange(0, variables.Count);
+          linearRepresentation[0].data.Clear();
         }
         return variables;
       }
     }
 
     public IFunction Function {
-      get { return symbolTable.MapSymbol(code[1]); }
+      get { return linearRepresentation[0].functionType; }
     }
 
     public IVariable GetLocalVariable(string name) {
@@ -220,11 +220,10 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    private BakedTreeEvaluator evaluator = null;
     public double Evaluate(Dataset dataset, int sampleIndex) {
       FlattenVariables();
       FlattenTrees();
-      if(evaluator == null) evaluator = new BakedTreeEvaluator(code, data);
+      if(evaluator == null) evaluator = new BakedTreeEvaluator(linearRepresentation);
       return evaluator.Evaluate(dataset, sampleIndex);
     }
 
@@ -237,53 +236,53 @@ namespace HeuristicLab.Functions {
         XmlNode evaluatorNode = PersistenceManager.Persist("Evaluator", evaluator, document, persistedObjects);
         node.AppendChild(evaluatorNode);
       }
-      XmlAttribute codeAttribute = document.CreateAttribute("Code");
-      codeAttribute.Value = GetString<int>(code);
-      node.Attributes.Append(codeAttribute);
-      XmlAttribute dataAttribute = document.CreateAttribute("Data");
-      dataAttribute.Value = GetString<double>(data);
-      node.Attributes.Append(dataAttribute);
-      return node;
+      throw new NotImplementedException();
+      //XmlAttribute codeAttribute = document.CreateAttribute("LinearRepresentation");
+      //codeAttribute.Value = GetString<int>(code);
+      //node.Attributes.Append(codeAttribute);
+      //return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode evaluatorNode = node.SelectSingleNode("Evaluator");
-      if(evaluatorNode != null) {
-        this.evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
-      }
-      code = GetList<int>(node.Attributes["Code"].Value, s => int.Parse(s, CultureInfo.InvariantCulture));
-      data = GetList<double>(node.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
-      treesExpanded = false;
-      variablesExpanded = false;
+      throw new NotImplementedException();
+      //base.Populate(node, restoredObjects);
+      //XmlNode evaluatorNode = node.SelectSingleNode("Evaluator");
+      //if(evaluatorNode != null) {
+      //  this.evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
+      //}
+      //code = GetList<int>(node.Attributes["Code"].Value, s => int.Parse(s, CultureInfo.InvariantCulture));
+      //data = GetList<double>(node.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
+      //treesExpanded = false;
+      //variablesExpanded = false;
     }
 
-    private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
-      StringBuilder builder = new StringBuilder();
-      foreach(T x in xs) {
-        builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
-      }
-      if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
-      return builder.ToString();
-    }
+    //private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
+    //  StringBuilder builder = new StringBuilder();
+    //  foreach(T x in xs) {
+    //    builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
+    //  }
+    //  if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
+    //  return builder.ToString();
+    //}
 
-    private List<T> GetList<T>(string s, Converter<string, T> converter) {
-      List<T> result = new List<T>();
-      string[] tokens = s.Split(new char[] {';',' '}, StringSplitOptions.RemoveEmptyEntries);
-      foreach(string token in tokens) {
-        T x = converter(token.Trim());
-        result.Add(x);
-      }
-      return result;
-    }
+    //private List<T> GetList<T>(string s, Converter<string, T> converter) {
+    //  List<T> result = new List<T>();
+    //  string[] tokens = s.Split(new char[] {';',' '}, StringSplitOptions.RemoveEmptyEntries);
+    //  foreach(string token in tokens) {
+    //    T x = converter(token.Trim());
+    //    result.Add(x);
+    //  }
+    //  return result;
+    //}
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       BakedFunctionTree clone = new BakedFunctionTree();
       // in case the user (de)serialized the tree between evaluation and selection we have to flatten the tree again.
       if(treesExpanded) FlattenTrees();
       if(variablesExpanded) FlattenVariables();
-      clone.code.AddRange(code);
-      clone.data.AddRange(data);
+      foreach(LightWeightFunction f in linearRepresentation) {
+        clone.linearRepresentation.Add(f.Clone());
+      }
       return clone;
     }
 
