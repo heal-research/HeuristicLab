@@ -29,11 +29,16 @@ using System.Xml;
 
 namespace HeuristicLab.Functions {
   internal class BakedTreeEvaluator : StorableBase {
-    private int[] codeArr;
-    private double[] dataArr;
-    private static EvaluatorSymbolTable symbolTable = EvaluatorSymbolTable.SymbolTable;
+    private struct Instr {
+      public double d_arg0;
+      public int i_arg0;
+      public int i_arg1;
+      public int arity;
+      public int symbol;
+    }
+
+    private Instr[] codeArr;
     private int PC;
-    private int DP;
     private Dataset dataset;
     private int sampleIndex;
 
@@ -42,63 +47,70 @@ namespace HeuristicLab.Functions {
     }
 
     public BakedTreeEvaluator(List<LightWeightFunction> linearRepresentation) {
-      List<int> code = new List<int>();
-      List<double> data = new List<double>();
-      foreach(LightWeightFunction fun in linearRepresentation) {
-        code.Add(fun.arity);
-        code.Add(symbolTable.MapFunction(fun.functionType));
-        code.Add(fun.data.Count);
-        data.AddRange(fun.data);
+      codeArr = new Instr[linearRepresentation.Count];
+      int i = 0;
+      foreach(LightWeightFunction f in linearRepresentation) {
+        codeArr[i++] = TranslateToInstr(f);
       }
-      codeArr = code.ToArray();
-      dataArr = data.ToArray();
+    }
+
+    private Instr TranslateToInstr(LightWeightFunction f) {
+      Instr instr = new Instr();
+      instr.arity = f.arity;
+      instr.symbol = EvaluatorSymbolTable.SymbolTable.MapFunction(f.functionType);
+      switch(instr.symbol) {
+        case EvaluatorSymbolTable.VARIABLE: {
+            instr.i_arg0 = (int)f.data[0]; // var
+            instr.d_arg0 = f.data[1]; // weight
+            instr.i_arg1 = (int)f.data[2]; // sample-offset
+            break;
+          }
+        case EvaluatorSymbolTable.CONSTANT: {
+            instr.d_arg0 = f.data[0]; // value
+            break;
+          }
+      }
+      return instr;
     }
 
     internal double Evaluate(Dataset dataset, int sampleIndex) {
       PC = 0;
-      DP = 0;
       this.sampleIndex = sampleIndex;
       this.dataset = dataset;
       return EvaluateBakedCode();
     }
 
     private double EvaluateBakedCode() {
-      int arity = codeArr[PC];
-      int functionSymbol = codeArr[PC + 1];
-      int nLocalVariables = codeArr[PC + 2];
-      PC += 3;
-      switch(functionSymbol) {
+      Instr currInstr = codeArr[PC++];
+      switch(currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
-            int var = (int)dataArr[DP];
-            double weight = dataArr[DP + 1];
-            int row = sampleIndex + (int)dataArr[DP + 2];
-            DP += 3;
+            int row = sampleIndex + currInstr.i_arg1;
             if(row < 0 || row >= dataset.Rows) return double.NaN;
-            else return weight * dataset.GetValue(row, var);
+            else return currInstr.d_arg0 * dataset.GetValue(row, currInstr.i_arg0);
           }
         case EvaluatorSymbolTable.CONSTANT: {
-            return dataArr[DP++];
+            return currInstr.d_arg0;
           }
         case EvaluatorSymbolTable.MULTIPLICATION: {
             double result = EvaluateBakedCode();
-            for(int i = 1; i < arity; i++) {
+            for(int i = 1; i < currInstr.arity; i++) {
               result *= EvaluateBakedCode();
             }
             return result;
           }
         case EvaluatorSymbolTable.ADDITION: {
             double sum = EvaluateBakedCode();
-            for(int i = 1; i < arity; i++) {
+            for(int i = 1; i < currInstr.arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum;
           }
         case EvaluatorSymbolTable.SUBTRACTION: {
-            if(arity == 1) {
+            if(currInstr.arity == 1) {
               return -EvaluateBakedCode();
             } else {
               double result = EvaluateBakedCode();
-              for(int i = 1; i < arity; i++) {
+              for(int i = 1; i < currInstr.arity; i++) {
                 result -= EvaluateBakedCode();
               }
               return result;
@@ -106,11 +118,11 @@ namespace HeuristicLab.Functions {
           }
         case EvaluatorSymbolTable.DIVISION: {
             double result;
-            if(arity == 1) {
+            if(currInstr.arity == 1) {
               result = 1.0 / EvaluateBakedCode();
             } else {
               result = EvaluateBakedCode();
-              for(int i = 1; i < arity; i++) {
+              for(int i = 1; i < currInstr.arity; i++) {
                 result /= EvaluateBakedCode();
               }
             }
@@ -119,10 +131,10 @@ namespace HeuristicLab.Functions {
           }
         case EvaluatorSymbolTable.AVERAGE: {
             double sum = EvaluateBakedCode();
-            for(int i = 1; i < arity; i++) {
+            for(int i = 1; i < currInstr.arity; i++) {
               sum += EvaluateBakedCode();
             }
-            return sum / arity;
+            return sum / currInstr.arity;
           }
         case EvaluatorSymbolTable.COSINUS: {
             return Math.Cos(EvaluateBakedCode());
@@ -156,7 +168,7 @@ namespace HeuristicLab.Functions {
             double result = 1.0;
             // have to evaluate all sub-trees, skipping would probably not lead to a big gain because 
             // we have to iterate over the linear structure anyway
-            for(int i = 0; i < arity; i++) {
+            for(int i = 0; i < currInstr.arity; i++) {
               double x = Math.Round(EvaluateBakedCode());
               if(x == 0 || x == 1.0) result *= x;
               else result = double.NaN;
@@ -196,7 +208,7 @@ namespace HeuristicLab.Functions {
           }
         case EvaluatorSymbolTable.OR: {
             double result = 0.0; // default is false
-            for(int i = 0; i < arity; i++) {
+            for(int i = 0; i < currInstr.arity; i++) {
               double x = Math.Round(EvaluateBakedCode());
               if(x == 1.0 && result == 0.0) result = 1.0; // found first true (1.0) => set to true
               else if(x != 0.0) result = double.NaN; // if it was not true it can only be false (0.0) all other cases are undefined => (NaN)
@@ -213,15 +225,7 @@ namespace HeuristicLab.Functions {
             return double.NaN;
           }
         default: {
-            IFunction function = symbolTable.MapSymbol(functionSymbol);
-            double[] args = new double[nLocalVariables + arity];
-            for(int i = 0; i < nLocalVariables; i++) {
-              args[i] = dataArr[DP++];
-            }
-            for(int j = 0; j < arity; j++) {
-              args[nLocalVariables + j] = EvaluateBakedCode();
-            }
-            return function.Apply(dataset, sampleIndex, args);
+            throw new NotImplementedException();
           }
       }
     }
@@ -232,7 +236,7 @@ namespace HeuristicLab.Functions {
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("SymbolTable", symbolTable, document, persistedObjects));
+      node.AppendChild(PersistenceManager.Persist("SymbolTable", EvaluatorSymbolTable.SymbolTable, document, persistedObjects));
       return node;
     }
 
