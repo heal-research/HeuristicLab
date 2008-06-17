@@ -232,10 +232,6 @@ namespace HeuristicLab.Functions {
       FlattenVariables();
       FlattenTrees();
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      if(evaluator != null) {
-        XmlNode evaluatorNode = PersistenceManager.Persist("Evaluator", evaluator, document, persistedObjects);
-        node.AppendChild(evaluatorNode);
-      }
       throw new NotImplementedException();
       //XmlAttribute codeAttribute = document.CreateAttribute("LinearRepresentation");
       //codeAttribute.Value = GetString<int>(code);

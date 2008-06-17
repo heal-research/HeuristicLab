@@ -57,7 +57,7 @@ namespace HeuristicLab.Functions {
     private Instr TranslateToInstr(LightWeightFunction f) {
       Instr instr = new Instr();
       instr.arity = f.arity;
-      instr.symbol = EvaluatorSymbolTable.SymbolTable.MapFunction(f.functionType);
+      instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
       switch(instr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             instr.i_arg0 = (int)f.data[0]; // var
@@ -232,17 +232,6 @@ namespace HeuristicLab.Functions {
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       throw new NotImplementedException();
-    }
-
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("SymbolTable", EvaluatorSymbolTable.SymbolTable, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      PersistenceManager.Restore(node.SelectSingleNode("SymbolTable"), restoredObjects);
     }
   }
 }
