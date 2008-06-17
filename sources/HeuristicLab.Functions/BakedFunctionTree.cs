@@ -232,44 +232,57 @@ namespace HeuristicLab.Functions {
       FlattenVariables();
       FlattenTrees();
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      throw new NotImplementedException();
-      //XmlAttribute codeAttribute = document.CreateAttribute("LinearRepresentation");
-      //codeAttribute.Value = GetString<int>(code);
-      //node.Attributes.Append(codeAttribute);
-      //return node;
+      XmlNode linearRepresentationNode = document.CreateElement("LinearRepresentation");
+      foreach(LightWeightFunction f in linearRepresentation) {
+        XmlNode entryNode = PersistenceManager.Persist("FunctionType", f.functionType, document, persistedObjects);
+        XmlAttribute arityAttribute = document.CreateAttribute("Arity");
+        arityAttribute.Value = f.arity+"";
+        entryNode.Attributes.Append(arityAttribute);
+        if(f.data.Count > 0) {
+          XmlAttribute dataAttribute = document.CreateAttribute("Data");
+          dataAttribute.Value = GetString<double>(f.data);
+          entryNode.Attributes.Append(dataAttribute);
+        }
+        linearRepresentationNode.AppendChild(entryNode);
+      }
+
+      node.AppendChild(linearRepresentationNode);
+      return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      throw new NotImplementedException();
-      //base.Populate(node, restoredObjects);
-      //XmlNode evaluatorNode = node.SelectSingleNode("Evaluator");
-      //if(evaluatorNode != null) {
-      //  this.evaluator = (BakedTreeEvaluator)PersistenceManager.Restore(evaluatorNode, restoredObjects);
-      //}
-      //code = GetList<int>(node.Attributes["Code"].Value, s => int.Parse(s, CultureInfo.InvariantCulture));
-      //data = GetList<double>(node.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
-      //treesExpanded = false;
-      //variablesExpanded = false;
+      base.Populate(node, restoredObjects);
+      XmlNode linearRepresentationNode = node.SelectSingleNode("LinearRepresentation");
+      foreach(XmlNode entryNode in linearRepresentationNode.ChildNodes) {
+        LightWeightFunction f = new LightWeightFunction();
+        f.arity = int.Parse(entryNode.Attributes["Arity"].Value, CultureInfo.InvariantCulture);
+        if(entryNode.Attributes["Data"]!=null) 
+          f.data = GetList<double>(entryNode.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
+        f.functionType = (IFunction)PersistenceManager.Restore(entryNode, restoredObjects);
+        linearRepresentation.Add(f);
+      }
+      treesExpanded = false;
+      variablesExpanded = false;
     }
 
-    //private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
-    //  StringBuilder builder = new StringBuilder();
-    //  foreach(T x in xs) {
-    //    builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
-    //  }
-    //  if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
-    //  return builder.ToString();
-    //}
+    private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
+      StringBuilder builder = new StringBuilder();
+      foreach(T x in xs) {
+        builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
+      }
+      if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
+      return builder.ToString();
+    }
 
-    //private List<T> GetList<T>(string s, Converter<string, T> converter) {
-    //  List<T> result = new List<T>();
-    //  string[] tokens = s.Split(new char[] {';',' '}, StringSplitOptions.RemoveEmptyEntries);
-    //  foreach(string token in tokens) {
-    //    T x = converter(token.Trim());
-    //    result.Add(x);
-    //  }
-    //  return result;
-    //}
+    private List<T> GetList<T>(string s, Converter<string, T> converter) {
+      List<T> result = new List<T>();
+      string[] tokens = s.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+      foreach(string token in tokens) {
+        T x = converter(token.Trim());
+        result.Add(x);
+      }
+      return result;
+    }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       BakedFunctionTree clone = new BakedFunctionTree();
