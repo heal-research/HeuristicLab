@@ -28,8 +28,8 @@ using HeuristicLab.Core;
 using System.Xml;
 
 namespace HeuristicLab.Functions {
-  internal class BakedTreeEvaluator : StorableBase {
-    private struct Instr {
+  internal class BakedTreeEvaluator {
+    private class Instr {
       public double d_arg0;
       public int i_arg0;
       public int i_arg1;
@@ -41,10 +41,6 @@ namespace HeuristicLab.Functions {
     private int PC;
     private Dataset dataset;
     private int sampleIndex;
-
-    // for persistence mechanism only
-    public BakedTreeEvaluator() {
-    }
 
     public BakedTreeEvaluator(List<LightWeightFunction> linearRepresentation) {
       codeArr = new Instr[linearRepresentation.Count];
@@ -228,10 +224,6 @@ namespace HeuristicLab.Functions {
             throw new NotImplementedException();
           }
       }
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      throw new NotImplementedException();
     }
   }
 }
