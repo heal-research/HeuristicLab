@@ -73,8 +73,8 @@ of that node with one of the childs of the selected child.
         // when there are sub-trees then replace the old tree with a random sub-tree
         if (root.SubTrees.Count > 0) {
           root = root.SubTrees[random.Next(root.SubTrees.Count)];
-          GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-          GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+          GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+          GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
           // update the variable
           scope.GetVariable(scope.TranslateName("FunctionTree")).Value = root;
           Debug.Assert(gardener.IsValidTree(root));
@@ -84,8 +84,8 @@ of that node with one of the childs of the selected child.
           // we want to cut the root node and there are no sub-trees => create a new random terminal
           IFunctionTree newTree;
           newTree = gardener.CreateRandomTree(gardener.Terminals, 1, 1);
-          GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
-          GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
+          GetVariableValue<IntData>("TreeSize", scope, true).Data = newTree.Size;
+          GetVariableValue<IntData>("TreeHeight", scope, true).Data = newTree.Height;
           // update the variable
           scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTree;
           Debug.Assert(gardener.IsValidTree(newTree));
@@ -106,8 +106,8 @@ of that node with one of the childs of the selected child.
         parent.InsertSubTree(childIndex, selectedChild);
         Debug.Assert(gardener.IsValidTree(root));
         // update the size and height of our tree
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
         // don't need to schedule initialization operations
         return null;
       } else {
@@ -117,12 +117,12 @@ of that node with one of the childs of the selected child.
         // first remove the old child (first step essential!)
         parent.RemoveSubTree(childIndex);
         // then determine the number of nodes left over after the child has been removed!
-        int remainingNodes = gardener.GetTreeSize(root);
+        int remainingNodes = root.Size;
         allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, childIndex);
         IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, maxTreeSize - remainingNodes, maxTreeHeight - parentLevel);
         parent.InsertSubTree(childIndex, newFunctionTree);
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
         Debug.Assert(gardener.IsValidTree(root));
         // schedule an initialization operation for the new function-tree
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newFunctionTree), scope);

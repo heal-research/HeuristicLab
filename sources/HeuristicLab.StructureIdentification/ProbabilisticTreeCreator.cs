@@ -57,8 +57,8 @@ namespace HeuristicLab.StructureIdentification {
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
       IFunctionTree root = gardener.PTC2(random, treeSize, maxTreeHeight);
 
-      int actualTreeSize = gardener.GetTreeSize(root);
-      int actualTreeHeight = gardener.GetTreeHeight(root);
+      int actualTreeSize = root.Size;
+      int actualTreeHeight = root.Height;
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), root));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(actualTreeSize)));

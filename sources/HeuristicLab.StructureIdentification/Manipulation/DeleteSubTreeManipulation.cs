@@ -63,8 +63,8 @@ the operator tries to fix the tree by generating random subtrees where necessary
         // check if the tree is ok
         Debug.Assert(gardener.IsValidTree(newTree));
         // update sizes to match the new tree
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = newTree.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = newTree.Height;
         scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTree;
 
         // schedule an operation to initialize the newly created operator
@@ -85,8 +85,8 @@ the operator tries to fix the tree by generating random subtrees where necessary
         // and find the first one that doesn't fit. At this position we insert a new randomly initialized subtree of matching type (gkronber 25.12.07)
 
         Debug.Assert(gardener.IsValidTree(root));
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
         // root hasn't changed so don't need to update 'FunctionTree' variable
         return null;
       } else {
@@ -96,8 +96,8 @@ the operator tries to fix the tree by generating random subtrees where necessary
         IFunctionTree newFunctionTree = gardener.CreateRandomTree(allowedFunctions, 1, 1);
         parent.InsertSubTree(childIndex, newFunctionTree);
         Debug.Assert(gardener.IsValidTree(root));
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
         // again the root hasn't changed so we don't need to update the 'FunctionTree' variable
         // but we have to return an initialization operation for the newly created tree
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newFunctionTree), scope);

@@ -95,10 +95,10 @@ resulting in a valid tree again.";
         // in rare cases the function creates a tree that breaks the size limits
         // calculate the height and size difference and 
         // check if the size of the new tree is still in the allowed bounds
-        int oldChildSize = gardener.GetTreeSize(selectedChild);
-        int oldChildHeight = gardener.GetTreeSize(selectedChild);
-        int newChildSize = gardener.GetTreeSize(newFunctionTree);
-        int newChildHeight = gardener.GetTreeHeight(newFunctionTree);
+        int oldChildSize = selectedChild.Size;
+        int oldChildHeight = selectedChild.Height;
+        int newChildSize = newFunctionTree.Size;
+        int newChildHeight = newFunctionTree.Height;
         if((treeHeight.Data - oldChildHeight) + newChildHeight > maxTreeHeight ||
           (treeSize.Data - oldChildSize) + newChildSize > maxTreeSize) {
           // if size-constraints are violated don't change anything
@@ -117,7 +117,7 @@ resulting in a valid tree again.";
         }
         // update size and height
         treeSize.Data = (treeSize.Data - oldChildSize) + newChildSize;
-        treeHeight.Data = gardener.GetTreeHeight(root); // must recalculate height because we can't know wether the manipulated branch was the deepest branch
+        treeHeight.Data = root.Height; // must recalculate height because we can't know wether the manipulated branch was the deepest branch
         // check if whole tree is ok
         Debug.Assert(gardener.IsValidTree(root));
         // return a composite operation that initializes all created sub-trees

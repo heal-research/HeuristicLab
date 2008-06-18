@@ -240,14 +240,14 @@ namespace HeuristicLab.StructureIdentification {
     #endregion
 
     #region tree information gathering
-    internal int GetTreeSize(IFunctionTree tree) {
-      return 1 + tree.SubTrees.Sum(f => GetTreeSize(f));
-    }
+    //internal int GetTreeSize(IFunctionTree tree) {
+    //  return 1 + tree.SubTrees.Sum(f => GetTreeSize(f));
+    //}
 
-    internal int GetTreeHeight(IFunctionTree tree) {
-      if(tree.SubTrees.Count == 0) return 1;
-      return 1 + tree.SubTrees.Max(f => GetTreeHeight(f));
-    }
+    //internal int GetTreeHeight(IFunctionTree tree) {
+    //  if(tree.SubTrees.Count == 0) return 1;
+    //  return 1 + tree.SubTrees.Max(f => GetTreeHeight(f));
+    //}
 
     internal IFunctionTree GetRandomParentNode(IFunctionTree tree) {
       List<IFunctionTree> parentNodes = new List<IFunctionTree>();

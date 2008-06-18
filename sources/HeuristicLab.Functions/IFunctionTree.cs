@@ -27,6 +27,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Functions {
   public interface IFunctionTree : IItem {
+    int Size { get; }
+    int Height { get; }
     IList<IFunctionTree> SubTrees { get; }
     ICollection<IVariable> LocalVariables { get; }
     IFunction Function { get; }

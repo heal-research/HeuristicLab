@@ -62,8 +62,8 @@ namespace HeuristicLab.StructureIdentification {
         root = gardener.CreateUnbalancedRandomTree(Int32.MaxValue, treeHeight);
       }
 
-      int actualTreeSize = gardener.GetTreeSize(root);
-      int actualTreeHeight = gardener.GetTreeHeight(root);
+      int actualTreeSize = root.Size;
+      int actualTreeHeight = root.Height;
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), root));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(actualTreeSize)));

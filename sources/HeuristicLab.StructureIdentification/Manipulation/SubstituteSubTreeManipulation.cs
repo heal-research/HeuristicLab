@@ -64,8 +64,8 @@ namespace HeuristicLab.StructureIdentification {
         Debug.Assert(gardener.IsValidTree(newTree));
 
         // update the variables in the scope with the new values
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(newTree);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(newTree);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = newTree.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = newTree.Height;
         scope.GetVariable(scope.TranslateName("FunctionTree")).Value = newTree;
         
         // return a CompositeOperation that randomly initializes the new tree
@@ -85,7 +85,7 @@ namespace HeuristicLab.StructureIdentification {
         // it will be inserted
         int parentLevel = gardener.GetBranchLevel(root, parent);
         int maxSubTreeHeight = maxTreeHeight - parentLevel;
-        int maxSubTreeSize = maxTreeSize - (treeSize - gardener.GetTreeSize(parent.SubTrees[childIndex]));
+        int maxSubTreeSize = maxTreeSize - (treeSize - parent.SubTrees[childIndex].Size);
 
         // create a random function tree
         IFunctionTree newTree = gardener.CreateRandomTree(allowedFunctions, maxSubTreeSize, maxSubTreeHeight);
@@ -94,8 +94,8 @@ namespace HeuristicLab.StructureIdentification {
 
         Debug.Assert(gardener.IsValidTree(root));
         // update the values of treeSize and treeHeight
-        GetVariableValue<IntData>("TreeSize", scope, true).Data = gardener.GetTreeSize(root);
-        GetVariableValue<IntData>("TreeHeight", scope, true).Data = gardener.GetTreeHeight(root);
+        GetVariableValue<IntData>("TreeSize", scope, true).Data = root.Size;
+        GetVariableValue<IntData>("TreeHeight", scope, true).Data = root.Height;
         // the root hasn't changed so we don't need to update 
         // return a CompositeOperation that randomly initializes all nodes of the new subtree
         return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(newTree), scope);

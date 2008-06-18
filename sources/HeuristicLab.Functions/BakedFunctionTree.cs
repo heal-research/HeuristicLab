@@ -131,6 +131,48 @@ namespace HeuristicLab.Functions {
       }
     }
 
+    public int Size {
+      get {
+        if(treesExpanded) {
+          int size = 1;
+          foreach(BakedFunctionTree tree in subTrees) {
+            size += tree.Size;
+          }
+          return size;
+        } else 
+        return linearRepresentation.Count;
+      }
+    }
+
+    public int Height {
+      get {
+        if(treesExpanded) {
+          int height = 0;
+          foreach(IFunctionTree subTree in subTrees) {
+            int curHeight = subTree.Height;
+            if(curHeight > height) height = curHeight;
+          }
+          return height+1;
+        } else {
+          int nextBranchStart;
+          return BranchHeight(0, out nextBranchStart);
+        }
+      }
+    }
+
+    private int BranchHeight(int branchStart, out int nextBranchStart) {
+      LightWeightFunction f = linearRepresentation[branchStart];
+      int height = 0;
+      branchStart++;
+      for(int i = 0; i < f.arity; i++) {
+        int curHeight = BranchHeight(branchStart, out nextBranchStart);
+        if(curHeight > height) height = curHeight;
+        branchStart = nextBranchStart;
+      }
+      nextBranchStart = branchStart;
+      return height + 1;
+    }
+
     public IList<IFunctionTree> SubTrees {
       get {
         if(!treesExpanded) {
@@ -141,7 +183,7 @@ namespace HeuristicLab.Functions {
             BakedFunctionTree subTree = new BakedFunctionTree();
             int length = BranchLength(branchIndex);
             for(int j = branchIndex; j < branchIndex + length; j++) {
-              subTree.linearRepresentation.Add(linearRepresentation[j].Clone());
+              subTree.linearRepresentation.Add(linearRepresentation[j]);
             }
             branchIndex += length;
             subTrees.Add(subTree);

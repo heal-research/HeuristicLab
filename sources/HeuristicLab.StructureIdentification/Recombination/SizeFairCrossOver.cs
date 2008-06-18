@@ -88,8 +88,8 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
         random, maxTreeSize, maxTreeHeight, out newBranches);
 
 
-      int newTreeSize = gardener.GetTreeSize(newTree);
-      int newTreeHeight = gardener.GetTreeHeight(newTree);
+      int newTreeSize = newTree.Size;
+      int newTreeHeight = newTree.Height;
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), newTree));
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(newTreeSize)));
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
@@ -132,8 +132,8 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
         tree1 = gardener.GetRandomBranch(tree1, tree1Level);
 
         // recalculate the size and height of tree1 (the one that we want to insert) because we need to check constraints later on
-        tree1Size = gardener.GetTreeSize(tree1);
-        tree1Height = gardener.GetTreeHeight(tree1);
+        tree1Size = tree1.Size;
+        tree1Height = tree1.Height;
 
         List<int> possibleChildIndices = new List<int>();
 
@@ -142,7 +142,7 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
         // to merge the trees then throw an exception
         // find the list of allowed indices (regarding allowed sub-trees, maxTreeSize and maxTreeHeight)
         for(int i = 0; i < tree0.SubTrees.Count; i++) {
-          int subTreeSize = gardener.GetTreeSize(tree0.SubTrees[i]);
+          int subTreeSize = tree0.SubTrees[i].Size;
 
           // the index is ok when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
           if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.Function) &&
@@ -169,8 +169,8 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
           } else if(tree1.SubTrees.Count > 0) {
             // go down in node2:
             tree1 = tree1.SubTrees[random.Next(tree1.SubTrees.Count)];
-            tree1Size = gardener.GetTreeSize(tree1);
-            tree1Height = gardener.GetTreeHeight(tree1);
+            tree1Size = tree1.Size;
+            tree1Height = tree1.Height;
           } else {
             // could neither go up or down ... don't know what to do ... give up
             throw new InvalidProgramException();
@@ -179,7 +179,7 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
           // recalculate the list of possible indices 
           possibleChildIndices.Clear();
           for(int i = 0; i < tree0.SubTrees.Count; i++) {
-            int subTreeSize = gardener.GetTreeSize(tree0.SubTrees[i]);
+            int subTreeSize = tree0.SubTrees[i].Size;
 
             // when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
             // the index is ok
