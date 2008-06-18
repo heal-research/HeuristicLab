@@ -51,7 +51,6 @@ namespace HeuristicLab.Functions {
     private List<IFunctionTree> subTrees;
     private bool variablesExpanded = false;
     private List<IVariable> variables;
-    private BakedTreeEvaluator evaluator = null;
 
     public BakedFunctionTree() {
       linearRepresentation = new List<LightWeightFunction>();
@@ -220,11 +219,15 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
+    bool resetted = false;
     public double Evaluate(Dataset dataset, int sampleIndex) {
       FlattenVariables();
       FlattenTrees();
-      if(evaluator == null) evaluator = new BakedTreeEvaluator(linearRepresentation);
-      return evaluator.Evaluate(dataset, sampleIndex);
+      if(!resetted) {
+        BakedTreeEvaluator.ResetEvaluator(linearRepresentation);
+        resetted = true;
+      }
+      return BakedTreeEvaluator.Evaluate(dataset, sampleIndex);
     }
 
 
