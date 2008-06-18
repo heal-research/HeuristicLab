@@ -219,13 +219,13 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    bool resetted = false;
+    bool evaluatorReset = false;
     public double Evaluate(Dataset dataset, int sampleIndex) {
       FlattenVariables();
       FlattenTrees();
-      if(!resetted) {
+      if(!evaluatorReset) {
         BakedTreeEvaluator.ResetEvaluator(linearRepresentation);
-        resetted = true;
+        evaluatorReset = true;
       }
       return BakedTreeEvaluator.Evaluate(dataset, sampleIndex);
     }
