@@ -526,6 +526,7 @@ namespace HeuristicLab.StructureIdentification {
 
       List<IFunctionTree> branches = new List<IFunctionTree>();
       foreach(IFunctionTree subTree in tree.SubTrees) {
+        if(subTree.Height>=level-1)
         branches.AddRange(GetBranchesAtLevel(subTree, level - 1));
       }
       return branches;
