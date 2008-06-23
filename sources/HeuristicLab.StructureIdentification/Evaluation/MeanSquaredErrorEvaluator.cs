@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class MeanSquaredErrorEvaluator : GPEvaluatorBase {
+    protected double[] backupValues;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates the mean-squared-error
@@ -40,13 +41,23 @@ for the estimated values vs. the real values of 'TargetVariable'.";
 
     public MeanSquaredErrorEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("UseEstimatedTargetValue", "Wether to use the original (measured) or the estimated (calculated) value for the targat variable when doing autoregressive modelling", typeof(BoolData), VariableKind.In));
+      GetVariableInfo("UseEstimatedTargetValue").Local = true;
+      AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData(false)));
     }
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
+      if(useEstimatedValues && backupValues == null) {
+        backupValues = new double[dataset.Rows];
+        for(int i = 0; i < dataset.Rows; i++) {
+          backupValues[i] = dataset.GetValue(i, targetVariable);
+        }
+      }
 
+      for(int sample = 0; sample < dataset.Rows; sample++) {
         double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
@@ -58,13 +69,24 @@ for the estimated values vs. the real values of 'TargetVariable'.";
         }
         double error = estimated - original;
         errorsSquaredSum += error * error;
+        if(useEstimatedValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
+        }
       }
+
+      if(useEstimatedValues) RestoreDataset(dataset, targetVariable);
       errorsSquaredSum /= dataset.Rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
       return errorsSquaredSum;
+    }
+
+    private void RestoreDataset(Dataset dataset, int targetVariable) {
+      for(int i = 0; i < dataset.Rows; i++) {
+        dataset.SetValue(i, targetVariable, backupValues[i]);
+      }
     }
   }
 }

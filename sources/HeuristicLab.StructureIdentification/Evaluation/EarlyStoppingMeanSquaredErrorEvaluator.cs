@@ -44,8 +44,16 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.In));
     }
 
+    // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
+      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
+      if(useEstimatedValues && backupValues == null) {
+        backupValues = new double[dataset.Rows];
+        for(int i = 0; i < dataset.Rows; i++) {
+          backupValues[i] = dataset.GetValue(i, targetVariable);
+        }
+      }
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
       for(int sample = 0; sample < dataset.Rows; sample++) {
@@ -58,21 +66,33 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         } else if(estimated < targetMean - maximumPunishment) {
           estimated = targetMean - maximumPunishment;
         }
+
         double error = estimated - original;
         errorsSquaredSum += error * error;
 
         // check the limit and stop as soon as we hit the limit
         if(errorsSquaredSum / dataset.Rows >= qualityLimit) {
           scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * sample+1;
+          if(useEstimatedValues) RestoreDataset(dataset, targetVariable, 0, sample);
           return errorsSquaredSum / (sample + 1); // return estimated MSE (when the remaining errors are on average the same)
         }
+        if(useEstimatedValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
+        }
       }
+      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, 0, dataset.Rows);
       errorsSquaredSum /= dataset.Rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
       return errorsSquaredSum;
+    }
+
+    private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
+      for(int i = from; i < to; i++) {
+        dataset.SetValue(i, targetVariable, backupValues[i]);
+      }
     }
   }
 }
