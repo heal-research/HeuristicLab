@@ -31,35 +31,34 @@ namespace HeuristicLab.DataAnalysis {
   public sealed class Dataset : ItemBase {
 
     private string name;
-    public string Name {
-      get { return name; }
-      set { name = value; }
-    }
-
     private double[] samples;
     private int rows;
+    private int columns;
     private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
     private double[] scalingFactor;
-
-    public double[] ScalingFactor {
-      get { return scalingFactor; }
-    }
     private double[] scalingOffset;
 
-    public double[] ScalingOffset {
-      get { return scalingOffset; }
+    public string Name {
+      get { return name; }
+      set { name = value; }
     }
 
     public int Rows {
       get { return rows; }
       set { rows = value; }
     }
-    private int columns;
 
     public int Columns {
       get { return columns; }
       set { columns = value; }
+    }
+
+    public double[] ScalingFactor {
+      get { return scalingFactor; }
+    }
+    public double[] ScalingOffset {
+      get { return scalingOffset; }
     }
 
     public double GetValue(int i, int j) {
