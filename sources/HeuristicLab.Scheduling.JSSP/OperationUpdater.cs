@@ -50,7 +50,7 @@ namespace HeuristicLab.Scheduling.JSSP {
           }
           if(index != -1) {
             op.Predecessors.RemoveAt(index); // remove scheduled op from predecessor list
-            op.Start = scheduledOp.Start + scheduledOp.Duration; // new earliest start date
+            op.Start = Math.Max(scheduledOp.Start + scheduledOp.Duration, op.Start); // new earliest start date
           }
         }
       }
