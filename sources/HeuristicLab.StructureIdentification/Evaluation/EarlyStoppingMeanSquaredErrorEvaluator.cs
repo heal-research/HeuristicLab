@@ -48,15 +48,18 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      int rows = trainingEnd-trainingStart;
       if(useEstimatedValues && backupValues == null) {
-        backupValues = new double[dataset.Rows];
-        for(int i = 0; i < dataset.Rows; i++) {
-          backupValues[i] = dataset.GetValue(i, targetVariable);
+        backupValues = new double[rows];
+        for(int i = trainingStart; i < trainingEnd; i++) {
+          backupValues[i-trainingStart] = dataset.GetValue(i, targetVariable);
         }
       }
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
@@ -71,27 +74,27 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         errorsSquaredSum += error * error;
 
         // check the limit and stop as soon as we hit the limit
-        if(errorsSquaredSum / dataset.Rows >= qualityLimit) {
-          scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * sample+1;
-          if(useEstimatedValues) RestoreDataset(dataset, targetVariable, 0, sample);
-          return errorsSquaredSum / (sample + 1); // return estimated MSE (when the remaining errors are on average the same)
+        if(errorsSquaredSum / rows >= qualityLimit) {
+          scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (sample-trainingStart + 1);
+          if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, sample);
+          return errorsSquaredSum / (sample-trainingStart + 1); // return estimated MSE (when the remaining errors are on average the same)
         }
         if(useEstimatedValues) {
           dataset.SetValue(sample, targetVariable, estimated);
         }
       }
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, 0, dataset.Rows);
-      errorsSquaredSum /= dataset.Rows;
+      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, trainingEnd);
+      errorsSquaredSum /= rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * rows;
       return errorsSquaredSum;
     }
 
     private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
       for(int i = from; i < to; i++) {
-        dataset.SetValue(i, targetVariable, backupValues[i]);
+        dataset.SetValue(i, targetVariable, backupValues[i-from]);
       }
     }
   }

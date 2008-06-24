@@ -50,14 +50,16 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       double errorsSquaredSum = 0;
       double targetMean = dataset.GetMean(targetVariable);
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       if(useEstimatedValues && backupValues == null) {
-        backupValues = new double[dataset.Rows];
-        for(int i = 0; i < dataset.Rows; i++) {
-          backupValues[i] = dataset.GetValue(i, targetVariable);
+        backupValues = new double[trainingEnd - trainingStart];
+        for(int i = trainingStart; i < trainingEnd; i++) {
+          backupValues[i-trainingStart] = dataset.GetValue(i, targetVariable);
         }
       }
 
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double estimated = functionTree.Evaluate(dataset, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
@@ -74,18 +76,18 @@ for the estimated values vs. the real values of 'TargetVariable'.";
         }
       }
 
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable);
-      errorsSquaredSum /= dataset.Rows;
+      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, trainingEnd);
+      errorsSquaredSum /= (trainingEnd-trainingStart);
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * dataset.Rows;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd-trainingStart);
       return errorsSquaredSum;
     }
 
-    private void RestoreDataset(Dataset dataset, int targetVariable) {
-      for(int i = 0; i < dataset.Rows; i++) {
-        dataset.SetValue(i, targetVariable, backupValues[i]);
+    private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
+      for(int i = from; i < to; i++) {
+        dataset.SetValue(i, targetVariable, backupValues[i-from]);
       }
     }
   }
