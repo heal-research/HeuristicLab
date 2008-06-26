@@ -68,14 +68,14 @@ namespace HeuristicLab.Constraints {
         ubIncludedCheckBox.Checked = false;
         ubEnabledCheckBox.Enabled = false;
       } else {
-        lbTextBox.Text = DoubleBoundedConstraint.LowerBound + "";
+        lbTextBox.Text = DoubleBoundedConstraint.LowerBound.ToString("r");
         lbTextBox.Enabled = DoubleBoundedConstraint.LowerBoundEnabled;
         lbIncludedCheckBox.Checked = DoubleBoundedConstraint.LowerBoundIncluded;
         lbIncludedCheckBox.Enabled = true;
         lbEnabledCheckBox.Checked = DoubleBoundedConstraint.LowerBoundEnabled;
         lbEnabledCheckBox.Enabled = true;
 
-        ubTextBox.Text = DoubleBoundedConstraint.UpperBound + "";
+        ubTextBox.Text = DoubleBoundedConstraint.UpperBound.ToString("r");
         ubTextBox.Enabled = DoubleBoundedConstraint.UpperBoundEnabled;
         ubIncludedCheckBox.Checked = DoubleBoundedConstraint.UpperBoundIncluded;
         ubIncludedCheckBox.Enabled = true;

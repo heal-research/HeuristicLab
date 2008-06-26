@@ -53,7 +53,7 @@ namespace HeuristicLab.Functions {
 
     public void Visit(Constant constant) {
       double value = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Constant.VALUE).Value).Data;
-      prefix += currentIndend + "[T]Constant(" + value + ";0;0)";
+      prefix += currentIndend + "[T]Constant(" + value.ToString("r") + ";0;0)";
     }
 
     public void Visit(Cosinus cosinus) {
@@ -105,7 +105,7 @@ namespace HeuristicLab.Functions {
       double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.OFFSET).Value).Data;
 
-      prefix += currentIndend + "[T]Variable(" + weight + ";" + index + ";" + -offset + ")";
+      prefix += currentIndend + "[T]Variable(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
     }
 
     public void Visit(And and) {

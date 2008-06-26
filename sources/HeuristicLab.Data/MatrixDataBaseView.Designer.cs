@@ -131,7 +131,7 @@ namespace HeuristicLab.Data {
 
     private System.Windows.Forms.Label rowsLabel;
     private System.Windows.Forms.TextBox rowsTextBox;
-    private System.Windows.Forms.DataGridView dataGridView;
+    protected System.Windows.Forms.DataGridView dataGridView;
     private System.Windows.Forms.TextBox columnsTextBox;
     private System.Windows.Forms.Label columnsLabel;
   }

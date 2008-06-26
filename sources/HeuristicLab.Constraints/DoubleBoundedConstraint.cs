@@ -135,13 +135,13 @@ namespace HeuristicLab.Constraints {
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute lb = document.CreateAttribute("LowerBound");
-      lb.Value = LowerBound.ToString(CultureInfo.InvariantCulture);
+      lb.Value = LowerBound.ToString("r", CultureInfo.InvariantCulture);
       XmlAttribute lbi = document.CreateAttribute("LowerBoundIncluded");
       lbi.Value = lowerBoundIncluded.ToString();
       XmlAttribute lbe = document.CreateAttribute("LowerBoundEnabled");
       lbe.Value = lowerBoundEnabled.ToString();
       XmlAttribute ub = document.CreateAttribute("UpperBound");
-      ub.Value = upperBound.ToString(CultureInfo.InvariantCulture);
+      ub.Value = upperBound.ToString("r", CultureInfo.InvariantCulture);
       XmlAttribute ubi = document.CreateAttribute("UpperBoundIncluded");
       ubi.Value = upperBoundIncluded.ToString();
       XmlAttribute ube = document.CreateAttribute("UpperBoundEnabled");

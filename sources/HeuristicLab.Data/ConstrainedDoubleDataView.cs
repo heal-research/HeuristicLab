@@ -61,7 +61,7 @@ namespace HeuristicLab.Data {
         dataTextBox.Enabled = false;
       } else {
         dataTextBox.Enabled = true;
-        dataTextBox.Text = ConstrainedDoubleData.ToString();
+        dataTextBox.Text = ConstrainedDoubleData.Data.ToString("r");
       }
     }
 

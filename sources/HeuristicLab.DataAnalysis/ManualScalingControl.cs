@@ -17,6 +17,10 @@ namespace HeuristicLab.DataAnalysis {
       okButton.Text = editingAllowed ? "Scale" : "Close";
       cancelButton.Visible = editingAllowed;
       cancelButton.Text = "Cancel";
+
+      // format all cells with the round-trip formatter to make sure that exported and imported values have
+      // the same numeric value
+      dataGridView.DefaultCellStyle.Format = "r";
     }
 
     private double[,] data;

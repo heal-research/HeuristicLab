@@ -104,6 +104,6 @@ namespace HeuristicLab.Data {
 
     private System.Windows.Forms.Label sizeLabel;
     private System.Windows.Forms.TextBox lengthTextBox;
-    private System.Windows.Forms.DataGridView dataGridView;
+    protected System.Windows.Forms.DataGridView dataGridView;
   }
 }

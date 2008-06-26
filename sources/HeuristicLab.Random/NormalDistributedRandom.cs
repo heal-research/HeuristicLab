@@ -515,11 +515,11 @@ namespace HeuristicLab.Random {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
       XmlNode muNode = document.CreateNode(XmlNodeType.Element, "Mu", null);
-      muNode.InnerText = mu.ToString(CultureInfo.InvariantCulture);
+      muNode.InnerText = mu.ToString("r", CultureInfo.InvariantCulture);
       node.AppendChild(muNode);
 
       XmlNode sigmaNode = document.CreateNode(XmlNodeType.Element, "Sigma", null);
-      sigmaNode.InnerText = sigma.ToString(CultureInfo.InvariantCulture);
+      sigmaNode.InnerText = sigma.ToString("r", CultureInfo.InvariantCulture);
       node.AppendChild(sigmaNode);
 
       node.AppendChild(PersistenceManager.Persist("UniformRandom", uniform, document, persistedObjects));

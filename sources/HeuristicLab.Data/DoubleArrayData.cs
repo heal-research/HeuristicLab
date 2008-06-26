@@ -64,7 +64,7 @@ namespace HeuristicLab.Data {
       StringBuilder builder = new StringBuilder();
       for(int i = 0; i < Data.Length; i++) {
         builder.Append(";");
-        builder.Append(Data[i].ToString(format));
+        builder.Append(Data[i].ToString("r", format));
       }
       if(builder.Length > 0)
         builder.Remove(0, 1);

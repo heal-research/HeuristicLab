@@ -53,7 +53,7 @@ namespace HeuristicLab.Data {
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.InnerText = Data.ToString(CultureInfo.InvariantCulture.NumberFormat);
+      node.InnerText = Data.ToString("r", CultureInfo.InvariantCulture.NumberFormat);
       return node;
     }
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {

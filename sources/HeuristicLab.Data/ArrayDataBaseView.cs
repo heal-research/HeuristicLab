@@ -63,7 +63,7 @@ namespace HeuristicLab.Data {
         dataGridView.ColumnCount = 1;
         dataGridView.RowCount = length;
         for (int i = 0; i < length; i++) {
-          dataGridView.Rows[i].Cells[0].Value = ArrayDataBase.Data.GetValue(i); ;
+          dataGridView.Rows[i].Cells[0].Value = ArrayDataBase.Data.GetValue(i);
         }
       } else {
         lengthTextBox.Text = "0";

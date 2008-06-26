@@ -200,7 +200,7 @@ namespace HeuristicLab.DataAnalysis {
       for(int row = 0; row < rows; row++) {
         for(int column = 0; column < columns; column++) {
           builder.Append(";");
-          builder.Append(samples[row * columns + column].ToString(format));
+          builder.Append(samples[row * columns + column].ToString("r", format));
         }
       }
       if(builder.Length > 0) builder.Remove(0, 1);
@@ -221,7 +221,7 @@ namespace HeuristicLab.DataAnalysis {
     private string GetString(double[] xs) {
       string s = "";
       for(int i = 0; i < xs.Length; i++) {
-        s += xs[i].ToString(CultureInfo.InvariantCulture) + "; ";
+        s += xs[i].ToString("r", CultureInfo.InvariantCulture) + "; ";
       }
 
       if(xs.Length > 0) {

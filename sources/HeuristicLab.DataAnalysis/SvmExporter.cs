@@ -108,12 +108,12 @@ namespace HeuristicLab.DataAnalysis {
         string filename = saveDialog.FileName;
         StreamWriter writer = new StreamWriter(filename);
         for(int i = 0; i < dataset.Rows; i++) {
-          writer.Write(dataset.GetValue(i, targetColumn).ToString(CultureInfo.InvariantCulture) + "\t");
+          writer.Write(dataset.GetValue(i, targetColumn).ToString("r", CultureInfo.InvariantCulture) + "\t");
           for(int j = 0; j < dataset.Columns; j++) {
             if(j != targetColumn) {
               double val = dataset.GetValue(i, j);
               if(!double.IsInfinity(val) && !double.IsNaN(val))
-                writer.Write((j + 1) + ":" + val.ToString(CultureInfo.InvariantCulture) + "\t");
+                writer.Write((j + 1) + ":" + val.ToString("r", CultureInfo.InvariantCulture) + "\t");
             }
           }
           writer.WriteLine();

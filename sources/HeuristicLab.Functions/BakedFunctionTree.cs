@@ -285,7 +285,7 @@ namespace HeuristicLab.Functions {
         entryNode.Attributes.Append(arityAttribute);
         if(f.data.Count > 0) {
           XmlAttribute dataAttribute = document.CreateAttribute("Data");
-          dataAttribute.Value = GetString<double>(f.data);
+          dataAttribute.Value = GetString(f.data);
           entryNode.Attributes.Append(dataAttribute);
         }
         linearRepresentationNode.AppendChild(entryNode);
@@ -310,10 +310,10 @@ namespace HeuristicLab.Functions {
       variablesExpanded = false;
     }
 
-    private string GetString<T>(IEnumerable<T> xs) where T : IConvertible {
+    private string GetString(IEnumerable<double> xs) {
       StringBuilder builder = new StringBuilder();
-      foreach(T x in xs) {
-        builder.Append(x.ToString(CultureInfo.InvariantCulture) + "; ");
+      foreach(double x in xs) {
+        builder.Append(x.ToString("r", CultureInfo.InvariantCulture) + "; ");
       }
       if(builder.Length > 0) builder.Remove(builder.Length - 2, 2);
       return builder.ToString();

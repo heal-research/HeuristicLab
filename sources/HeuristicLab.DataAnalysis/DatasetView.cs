@@ -43,6 +43,10 @@ namespace HeuristicLab.DataAnalysis {
         contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action,null , delegate(object source, EventArgs args) 
           { manipulator.Execute(Dataset); }));
       }
+      
+      // format all cells with the round-trip formatter to make sure that values that are exported and imported to
+      // another C# app (HL2) have the same numeric value
+      dataGridView.DefaultCellStyle.Format = "r";
     }
 
     public DatasetView(Dataset dataset)

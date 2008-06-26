@@ -80,7 +80,7 @@ namespace HeuristicLab.Data {
       for (int i = 0; i < Data.GetLength(0); i++) {
         for (int j = 0; j < Data.GetLength(1); j++) {
           builder.Append(";");
-          builder.Append(Data[i, j].ToString(format));
+          builder.Append(Data[i, j].ToString("r", format));
         }
       }
       if (builder.Length > 0) builder.Remove(0, 1);

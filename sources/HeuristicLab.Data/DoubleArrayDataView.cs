@@ -36,6 +36,8 @@ namespace HeuristicLab.Data {
 
     public DoubleArrayDataView() {
       InitializeComponent();
+      // round-trip format for all cells
+      dataGridView.DefaultCellStyle.Format = "r";
     }
     public DoubleArrayDataView(DoubleArrayData doubleArrayData)
       : this() {
