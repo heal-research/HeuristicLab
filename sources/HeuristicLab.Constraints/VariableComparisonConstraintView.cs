@@ -105,8 +105,8 @@ namespace HeuristicLab.Constraints {
           VariableComparisonConstraint.Comparer.Data = 4;
         } else if (((RadioButton)sender).Checked && ((RadioButton)sender).Name.StartsWith("equal")) {
           VariableComparisonConstraint.Comparer.Data = 2;
-        } else {
-          Auxiliary.ShowErrorMessageBox("Unknown radio button selected");
+        } else if (((RadioButton)sender).Checked) {
+          Auxiliary.ShowErrorMessageBox("Unknown radio button selected: " + ((RadioButton)sender).Name.ToString());
         }
       }
     }
