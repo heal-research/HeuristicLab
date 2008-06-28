@@ -31,6 +31,10 @@ namespace HeuristicLab.Data {
     private List<IItem> list;
     private bool suspendConstraintCheck;
 
+    public bool ConstraintCheckSuspended {
+      get { return suspendConstraintCheck; }
+    }
+
     public ConstrainedItemList()
       : base() {
       list = new List<IItem>();
@@ -99,8 +103,12 @@ namespace HeuristicLab.Data {
     }
 
     public bool EndCombinedOperation(out ICollection<IConstraint> violatedConstraints) {
-      suspendConstraintCheck = false;
-      return IsValid(out violatedConstraints);
+      if (IsValid(out violatedConstraints))
+        suspendConstraintCheck = false;
+      else
+        suspendConstraintCheck = true;
+
+      return !suspendConstraintCheck;
     }
 
     public bool TryInsert(int index, IItem item, out ICollection<IConstraint> violatedConstraints) {
