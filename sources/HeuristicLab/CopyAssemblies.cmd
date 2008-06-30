@@ -9,6 +9,11 @@ copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\bin\%1\HeuristicLab.Adv
 copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "..\..\..\HeuristicLab.BitVector\bin\%1\HeuristicLab.BitVector.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.Console\bin\%1\HeuristicLab.CEDMA.Console.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\HeuristicLab.CEDMA.DB.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.DB.Interfaces\bin\%1\HeuristicLab.CEDMA.DB.Interfaces.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.Operators\bin\%1\HeuristicLab.CEDMA.Operators.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.Server\bin\%1\HeuristicLab.CEDMA.Server.dll" .\plugins
 copy "..\..\..\HeuristicLab.Charting\bin\%1\HeuristicLab.Charting.dll" .\plugins
 copy "..\..\..\HeuristicLab.Charting.Data\bin\%1\HeuristicLab.Charting.Data.dll" .\plugins
 copy "..\..\..\HeuristicLab.Core\bin\%1\HeuristicLab.Core.dll" .\plugins
@@ -32,6 +37,9 @@ copy "..\..\..\HeuristicLab.Selection\bin\%1\HeuristicLab.Selection.dll" .\plugi
 copy "..\..\..\HeuristicLab.Selection.OffspringSelection\bin\%1\HeuristicLab.Selection.OffspringSelection.dll" .\plugins
 copy "..\..\..\HeuristicLab.SequentialEngine\bin\%1\HeuristicLab.SequentialEngine.dll" .\plugins
 copy "..\..\..\HeuristicLab.SGA\bin\%1\HeuristicLab.SGA.dll" .\plugins
+copy "..\..\..\HeuristicLab.SQLite\bin\%1\HeuristicLab.SQLite.dll" .\plugins
+copy "..\..\..\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
+copy "..\..\..\HeuristicLab.SQLite\SQLite License.txt" .\plugins
 copy "..\..\..\HeuristicLab.StructureIdentification\bin\%1\HeuristicLab.StructureIdentification.dll" .\plugins
 copy "..\..\..\HeuristicLab.TestFunctions\bin\%1\HeuristicLab.TestFunctions.dll" .\plugins
 copy "..\..\..\HeuristicLab.ThreadParallelEngine\bin\%1\HeuristicLab.ThreadParallelEngine.dll" .\plugins
