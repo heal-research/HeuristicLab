@@ -47,7 +47,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EqualiserTuner.cs" />
     <Compile Include="ProbabilisticTreeCreator.cs" />
     <Compile Include="Evaluation\CoefficientOfDeterminationEvaluator.cs" />
     <Compile Include="Evaluation\MCCEvaluator.cs" />
@@ -72,8 +71,6 @@
     <Compile Include="HeuristicLabStructureIdentificationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RampedTreeCreator.cs" />
-    <Compile Include="OffspringEqualiser.cs" />
-    <Compile Include="Recombination\StandardCrossOver.cs" />
     <Compile Include="Recombination\SizeFairCrossOver.cs" />
     <Compile Include="TreeGardener.cs" />
     <Compile Include="StructIdProblemInjector.cs" />

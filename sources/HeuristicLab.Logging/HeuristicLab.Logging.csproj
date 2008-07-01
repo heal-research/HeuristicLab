@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
-    <Compile Include="StatisticsLogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Linechart.cs" />
     <Compile Include="HeuristicLabLoggingPlugin.cs" />
