@@ -21,15 +21,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using System.Windows.Forms;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Console {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Console")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Console.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.Server")]
-  public class HeuristicLabCedmaConsolePlugin : PluginBase {
+  public partial class AgentView : ViewBase {
+    public IAgent Agent {
+      get { return (IAgent)Item; }
+      set { base.Item = value; }
+    }
+
+    public AgentView() {
+      InitializeComponent();
+      Caption = "Agent";
+    }
+    public AgentView(IAgent agent)
+      : this() {
+      Agent = agent;
+    }
+
+    protected override void UpdateControls() {
+      base.UpdateControls();
+      editorGroupBox.Controls.Clear();
+      editorGroupBox.Enabled = false;
+      if(Agent != null && Agent.OperatorGraph != null) {
+        Control editor = (Control)Agent.OperatorGraph.CreateView();
+        if(editor != null) {
+          editorGroupBox.Controls.Add(editor);
+          editor.Dock = DockStyle.Fill;
+          editorGroupBox.Enabled = true;
+        }
+      }
+    }
   }
 }

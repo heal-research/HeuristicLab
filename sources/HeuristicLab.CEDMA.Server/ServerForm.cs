@@ -31,11 +31,13 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
+using HeuristicLab.CEDMA.DB;
+using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
     private ServiceHost host;
-    private AgentWorld agentWorld = new AgentWorld();
+    private Database database = new Database();
 
     public ServerForm() {
       InitializeComponent();
@@ -50,7 +52,7 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void Start() {
-      host = new ServiceHost(agentWorld, new Uri(addressTextBox.Text));
+      host = new ServiceHost(database, new Uri(addressTextBox.Text));
       ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
       throttlingBehavior.MaxConcurrentSessions = 20;
       host.Description.Behaviors.Add(throttlingBehavior);
@@ -61,7 +63,7 @@ namespace HeuristicLab.CEDMA.Server {
         binding.ReaderQuotas.MaxArrayLength = 10000000; // also 10M elements;
         binding.Security.Mode = SecurityMode.None;
 
-        host.AddServiceEndpoint(typeof(IAgentWorld), binding, addressTextBox.Text);
+        host.AddServiceEndpoint(typeof(IDatabase), binding, addressTextBox.Text);
         host.Open();
       } catch (CommunicationException ex) {
         MessageBox.Show("An exception occurred: " + ex.Message);
@@ -70,7 +72,6 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void statusUpdateTimer_Tick(object sender, EventArgs e) {
-      activeAgentsTextBox.Text = agentWorld.ActiveAgents.ToString();
     }
   }
 }
