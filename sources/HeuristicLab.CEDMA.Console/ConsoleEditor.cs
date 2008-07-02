@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Windows.Forms;
+using System.ServiceModel;
 
 namespace HeuristicLab.CEDMA.Console {
   class ConsoleEditor : EditorBase {
@@ -13,11 +14,12 @@ namespace HeuristicLab.CEDMA.Console {
     private System.Windows.Forms.TabPage overviewPage;
     private System.Windows.Forms.TabPage agentsPage;
     private System.Windows.Forms.TabPage resultsPage;
+    private Button connectButton;
     private Console console;
 
     public ConsoleEditor(Console console) {
+      InitializeComponent();
       this.console = console;
-      agentsPage.Controls.Add((Control)console.AgentList.CreateView());
     }
 
     private void InitializeComponent() {
@@ -27,8 +29,8 @@ namespace HeuristicLab.CEDMA.Console {
       this.overviewPage = new System.Windows.Forms.TabPage();
       this.agentsPage = new System.Windows.Forms.TabPage();
       this.resultsPage = new System.Windows.Forms.TabPage();
+      this.connectButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
-      this.agentsPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // uriTextBox
@@ -37,7 +39,6 @@ namespace HeuristicLab.CEDMA.Console {
       this.uriTextBox.Name = "uriTextBox";
       this.uriTextBox.Size = new System.Drawing.Size(205, 20);
       this.uriTextBox.TabIndex = 0;
-      this.uriTextBox.Validated += new System.EventHandler(this.uriTextBox_Validated);
       // 
       // uriLabel
       // 
@@ -56,10 +57,11 @@ namespace HeuristicLab.CEDMA.Console {
       this.tabControl.Controls.Add(this.overviewPage);
       this.tabControl.Controls.Add(this.agentsPage);
       this.tabControl.Controls.Add(this.resultsPage);
+      this.tabControl.Enabled = false;
       this.tabControl.Location = new System.Drawing.Point(6, 29);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(310, 242);
+      this.tabControl.Size = new System.Drawing.Size(407, 242);
       this.tabControl.TabIndex = 2;
       // 
       // overviewPage
@@ -67,7 +69,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.overviewPage.Location = new System.Drawing.Point(4, 22);
       this.overviewPage.Name = "overviewPage";
       this.overviewPage.Padding = new System.Windows.Forms.Padding(3);
-      this.overviewPage.Size = new System.Drawing.Size(288, 194);
+      this.overviewPage.Size = new System.Drawing.Size(399, 216);
       this.overviewPage.TabIndex = 0;
       this.overviewPage.Text = "Overview";
       this.overviewPage.UseVisualStyleBackColor = true;
@@ -77,7 +79,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.agentsPage.Location = new System.Drawing.Point(4, 22);
       this.agentsPage.Name = "agentsPage";
       this.agentsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.agentsPage.Size = new System.Drawing.Size(302, 216);
+      this.agentsPage.Size = new System.Drawing.Size(399, 216);
       this.agentsPage.TabIndex = 1;
       this.agentsPage.Text = "Agents";
       this.agentsPage.UseVisualStyleBackColor = true;
@@ -87,28 +89,46 @@ namespace HeuristicLab.CEDMA.Console {
       this.resultsPage.Location = new System.Drawing.Point(4, 22);
       this.resultsPage.Name = "resultsPage";
       this.resultsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsPage.Size = new System.Drawing.Size(288, 194);
+      this.resultsPage.Size = new System.Drawing.Size(399, 216);
       this.resultsPage.TabIndex = 2;
       this.resultsPage.Text = "Results";
       this.resultsPage.UseVisualStyleBackColor = true;
       // 
+      // connectButton
+      // 
+      this.connectButton.Location = new System.Drawing.Point(302, 1);
+      this.connectButton.Name = "connectButton";
+      this.connectButton.Size = new System.Drawing.Size(75, 23);
+      this.connectButton.TabIndex = 3;
+      this.connectButton.Text = "&Connect";
+      this.connectButton.UseVisualStyleBackColor = true;
+      this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+      // 
       // ConsoleEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.connectButton);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.uriLabel);
       this.Controls.Add(this.uriTextBox);
       this.Name = "ConsoleEditor";
-      this.Size = new System.Drawing.Size(319, 274);
+      this.Size = new System.Drawing.Size(416, 274);
       this.tabControl.ResumeLayout(false);
-      this.agentsPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
     }
 
-    private void uriTextBox_Validated(object sender, EventArgs e) {
-      console.ServerUri = uriTextBox.Text;
+    private void connectButton_Click(object sender, EventArgs e) {
+      try {
+        console.Connect(uriTextBox.Text);
+        connectButton.Enabled = false;
+        tabControl.Enabled = true;
+        agentsPage.Controls.Add((Control)console.AgentList.CreateView());
+      } catch(CommunicationException ex) {
+        // TASK create helper class for error reporting
+        MessageBox.Show("Exception while trying to connect to " + uriTextBox.Text + "\n" + ex.Message);
+      }
     }
   }
 }

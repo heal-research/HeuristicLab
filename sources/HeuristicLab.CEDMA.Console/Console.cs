@@ -16,10 +16,6 @@ namespace HeuristicLab.CEDMA.Console {
     private string serverUri;
     public string ServerUri {
       get { return serverUri; }
-      set {
-        serverUri = value;
-        ResetConnection();
-      }
     }
 
     public IAgentList AgentList {
@@ -50,7 +46,7 @@ namespace HeuristicLab.CEDMA.Console {
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      ServerUri = node.Attributes["ServerURI"].Value;
+      serverUri = node.Attributes["ServerURI"].Value;
     }
     #endregion
 
@@ -66,5 +62,10 @@ namespace HeuristicLab.CEDMA.Console {
       agentList.Database = database;
     }
     #endregion
+
+    internal void Connect(string serverUri) {
+      this.serverUri = serverUri;
+      ResetConnection();
+    }
   }
 }
