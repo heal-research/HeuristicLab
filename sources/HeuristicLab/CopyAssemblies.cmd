@@ -40,6 +40,7 @@ copy "..\..\..\HeuristicLab.SGA\bin\%1\HeuristicLab.SGA.dll" .\plugins
 copy "..\..\..\HeuristicLab.SQLite\bin\%1\HeuristicLab.SQLite.dll" .\plugins
 copy "..\..\..\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
 copy "..\..\..\HeuristicLab.SQLite\SQLite License.txt" .\plugins
+copy "..\..\..\HeuristicLab.SQLite\SQLite.NET.chm" .\plugins
 copy "..\..\..\HeuristicLab.StructureIdentification\bin\%1\HeuristicLab.StructureIdentification.dll" .\plugins
 copy "..\..\..\HeuristicLab.TestFunctions\bin\%1\HeuristicLab.TestFunctions.dll" .\plugins
 copy "..\..\..\HeuristicLab.ThreadParallelEngine\bin\%1\HeuristicLab.ThreadParallelEngine.dll" .\plugins
