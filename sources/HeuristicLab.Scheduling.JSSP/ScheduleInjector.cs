@@ -42,7 +42,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       AddVariableInfo(new VariableInfo("Machines", "Number of machines", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Timespan", "Desired timespan for the schedule", typeof(IntData), VariableKind.In));
       GetVariableInfo("Timespan").Local = true;
-      AddVariable(new Variable("Timespan", new IntData(10000)));
+      AddVariable(new Variable("Timespan", new IntData(Int32.MaxValue)));
       AddVariableInfo(new VariableInfo("Schedule", "Schedule", typeof(Schedule), VariableKind.New));
     }
 

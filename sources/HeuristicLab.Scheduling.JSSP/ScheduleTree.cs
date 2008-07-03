@@ -109,7 +109,8 @@ namespace HeuristicLab.Scheduling.JSSP {
     }
 
     private bool FitsIntoEmptySlot(TimeSlot slot, int start, int duration) {
-      return ((slot.free >= duration) && (slot.start <= start) && (slot.end >= start + duration));
+      // beware of operations with processing time zero --> check operation != null
+      return ((slot.free >= duration) && (slot.start <= start) && (slot.end >= start + duration) && (slot.operation == null));
     }
 
     private void UpdateMaxFreeSlot(ScheduleTreeNode slot) {
@@ -132,8 +133,8 @@ namespace HeuristicLab.Scheduling.JSSP {
         return -1;
       }
       if(IsLeaf(slot)) {
-        // fits exactly into slot
-        if((slot.Data.start == op.Start) && (slot.Data.end == end)) {
+        // fits exactly into slot; beware of operations with processing time 0 --> check operation != null
+        if((slot.Data.start == op.Start) && (slot.Data.end == end) && (slot.Data.operation == null)) {
           slot.Data = new TimeSlot(op);
           UpdateMaxFreeSlot(slot);
           return op.Start;
