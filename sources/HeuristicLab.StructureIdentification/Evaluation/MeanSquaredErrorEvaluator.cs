@@ -59,8 +59,9 @@ for the estimated values vs. the real values of 'TargetVariable'.";
         }
       }
 
+      functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = functionTree.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
           estimated = targetMean + maximumPunishment;

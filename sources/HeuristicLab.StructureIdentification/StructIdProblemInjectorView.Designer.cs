@@ -50,12 +50,15 @@ namespace HeuristicLab.StructureIdentification {
       this.dataTabPage = new System.Windows.Forms.TabPage();
       this.variableInfosTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseVariableInfosView = new HeuristicLab.Core.OperatorBaseVariableInfosView();
+      this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.operatorBaseVariablesView = new HeuristicLab.Core.OperatorBaseVariablesView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseDescriptionView = new HeuristicLab.Core.OperatorBaseDescriptionView();
       this.datasetView = new HeuristicLab.DataAnalysis.DatasetView();
       this.tabControl.SuspendLayout();
       this.dataTabPage.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
+      this.tabPage1.SuspendLayout();
       this.descriptionTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -80,6 +83,7 @@ namespace HeuristicLab.StructureIdentification {
       // 
       this.tabControl.Controls.Add(this.dataTabPage);
       this.tabControl.Controls.Add(this.variableInfosTabPage);
+      this.tabControl.Controls.Add(this.tabPage1);
       this.tabControl.Controls.Add(this.descriptionTabPage);
       this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -121,6 +125,27 @@ namespace HeuristicLab.StructureIdentification {
       this.operatorBaseVariableInfosView.Size = new System.Drawing.Size(493, 419);
       this.operatorBaseVariableInfosView.TabIndex = 0;
       // 
+      // tabPage1
+      // 
+      this.tabPage1.Controls.Add(this.operatorBaseVariablesView);
+      this.tabPage1.Location = new System.Drawing.Point(4, 22);
+      this.tabPage1.Name = "tabPage1";
+      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage1.Size = new System.Drawing.Size(499, 425);
+      this.tabPage1.TabIndex = 3;
+      this.tabPage1.Text = "Variables";
+      this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // operatorBaseVariablesView
+      // 
+      this.operatorBaseVariablesView.Caption = "Operator";
+      this.operatorBaseVariablesView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.operatorBaseVariablesView.Location = new System.Drawing.Point(3, 3);
+      this.operatorBaseVariablesView.Name = "operatorBaseVariablesView";
+      this.operatorBaseVariablesView.Operator = null;
+      this.operatorBaseVariablesView.Size = new System.Drawing.Size(493, 419);
+      this.operatorBaseVariablesView.TabIndex = 0;
+      // 
       // descriptionTabPage
       // 
       this.descriptionTabPage.Controls.Add(this.operatorBaseDescriptionView);
@@ -142,14 +167,16 @@ namespace HeuristicLab.StructureIdentification {
       this.operatorBaseDescriptionView.Size = new System.Drawing.Size(493, 419);
       this.operatorBaseDescriptionView.TabIndex = 0;
       // 
-      // datasetView
+      // datasetView1
       // 
       this.datasetView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.datasetView.Caption = "View";
+      this.datasetView.Caption = "Editor";
+      this.datasetView.Dataset = null;
+      this.datasetView.Filename = null;
       this.datasetView.Location = new System.Drawing.Point(6, 33);
-      this.datasetView.Name = "datasetView";
+      this.datasetView.Name = "datasetView1";
       this.datasetView.Size = new System.Drawing.Size(487, 386);
       this.datasetView.TabIndex = 7;
       // 
@@ -163,6 +190,7 @@ namespace HeuristicLab.StructureIdentification {
       this.tabControl.ResumeLayout(false);
       this.dataTabPage.ResumeLayout(false);
       this.variableInfosTabPage.ResumeLayout(false);
+      this.tabPage1.ResumeLayout(false);
       this.descriptionTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -178,6 +206,8 @@ namespace HeuristicLab.StructureIdentification {
     private HeuristicLab.Core.OperatorBaseVariableInfosView operatorBaseVariableInfosView;
     private System.Windows.Forms.TabPage descriptionTabPage;
     private HeuristicLab.Core.OperatorBaseDescriptionView operatorBaseDescriptionView;
+    private System.Windows.Forms.TabPage tabPage1;
+    private HeuristicLab.Core.OperatorBaseVariablesView operatorBaseVariablesView;
     private HeuristicLab.DataAnalysis.DatasetView datasetView;
   }
 }

@@ -34,6 +34,8 @@ namespace HeuristicLab.DataAnalysis {
     private const string MAXIMUMTREESIZE = "MAXIMUMTREESIZE";
     private const string TRAININGSAMPLESSTART = "TRAININGSAMPLESSTART";
     private const string TRAININGSAMPLESEND = "TRAININGSAMPLESEND";
+    private const string VALIDATIONSAMPLESSTART = "VALIDATIONSAMPLESSTART";
+    private const string VALIDATIONSAMPLESEND = "VALIDATIONSAMPLESEND";
     private Tokenizer tokenizer;
     private Dictionary<string, List<Token>> metadata;
     private List<List<double>> samplesList;
@@ -120,6 +122,21 @@ namespace HeuristicLab.DataAnalysis {
       get {
         if(metadata.ContainsKey(TRAININGSAMPLESEND)) {
           return metadata[TRAININGSAMPLESEND][0].intValue;
+        } else return rows;
+      }
+    }
+    public int ValidationSamplesStart {
+      get {
+        if(metadata.ContainsKey(VALIDATIONSAMPLESSTART)) {
+          return metadata[VALIDATIONSAMPLESSTART][0].intValue;
+        } else return 0;
+      }
+    }
+
+    public int ValidationSamplesEnd {
+      get {
+        if(metadata.ContainsKey(VALIDATIONSAMPLESEND)) {
+          return metadata[VALIDATIONSAMPLESEND][0].intValue;
         } else return rows;
       }
     }

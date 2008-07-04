@@ -56,8 +56,9 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       double[] errors = new double[dataset.Rows];
       double[] originalTargetVariableValues = new double[dataset.Rows];
       double targetMean = dataset.GetMean(targetVariable);
+      functionTree.PrepareEvaluation(dataset);
       for(int sample = 0; sample < dataset.Rows; sample++) {
-        double estimated = functionTree.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))

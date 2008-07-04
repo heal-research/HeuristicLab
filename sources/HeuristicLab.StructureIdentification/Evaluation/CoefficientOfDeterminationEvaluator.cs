@@ -46,8 +46,9 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       double targetMean = dataset.GetMean(targetVariable);
+      functionTree.PrepareEvaluation(dataset);
       for(int sample = 0; sample < dataset.Rows; sample++) {
-        double estimated = functionTree.Evaluate(dataset, sample);
+        double estimated = functionTree.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))

@@ -88,13 +88,16 @@ namespace HeuristicLab.StructureIdentification {
         }
         if (success) {
           Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
-          dataset.Rows = parser.TrainingSamplesEnd - parser.TrainingSamplesStart;
+          dataset.Rows = parser.Rows;
           dataset.Columns = parser.Columns;
           dataset.VariableNames = parser.VariableNames;
           dataset.Name = parser.ProblemName;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
-
+          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesStart").Value).Data = parser.TrainingSamplesStart;
+          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesEnd").Value).Data = parser.TrainingSamplesEnd;
+          ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesStart").Value).Data = parser.ValidationSamplesStart;
+          ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesEnd").Value).Data = parser.ValidationSamplesEnd;
           ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
           Refresh();
         }

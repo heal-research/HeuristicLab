@@ -39,6 +39,7 @@ namespace HeuristicLab.Functions {
     void InsertSubTree(int index, IFunctionTree tree);
     void RemoveSubTree(int index);
 
-    double Evaluate(Dataset dataset, int sampleIndex);
+    void PrepareEvaluation(Dataset dataset);
+    double Evaluate(int sampleIndex);
   }
 }

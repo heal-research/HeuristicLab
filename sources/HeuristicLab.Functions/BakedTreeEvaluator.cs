@@ -52,8 +52,9 @@ namespace HeuristicLab.Functions {
       }
     }
 
-    public static void ResetEvaluator(List<LightWeightFunction> linearRepresentation) {
+    public static void ResetEvaluator(Dataset dataset, List<LightWeightFunction> linearRepresentation) {
       int i = 0;
+      BakedTreeEvaluator.dataset = dataset;
       foreach(LightWeightFunction f in linearRepresentation) {
         TranslateToInstr(f, codeArr[i++]);
       }
@@ -77,10 +78,9 @@ namespace HeuristicLab.Functions {
       return instr;
     }
 
-    internal static double Evaluate(Dataset dataset, int sampleIndex) {
+    internal static double Evaluate(int sampleIndex) {
       PC = 0;
       BakedTreeEvaluator.sampleIndex = sampleIndex;
-      BakedTreeEvaluator.dataset = dataset;
       return EvaluateBakedCode();
     }
 

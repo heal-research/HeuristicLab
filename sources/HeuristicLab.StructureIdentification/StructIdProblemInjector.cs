@@ -40,6 +40,14 @@ namespace HeuristicLab.StructureIdentification {
       AddVariable(new Variable("Dataset", new Dataset()));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.New));
       AddVariable(new Variable("TargetVariable", new IntData()));
+      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("TrainingSamplesStart", new IntData()));
+      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "TrainingSamplesEnd", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("TrainingSamplesEnd", new IntData()));
+      AddVariableInfo(new VariableInfo("ValidationSamplesStart", "ValidationSamplesStart", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("ValidationSamplesStart", new IntData()));
+      AddVariableInfo(new VariableInfo("ValidationSamplesEnd", "ValidationSamplesEnd", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("ValidationSamplesEnd", new IntData()));
     }
 
     public override IView CreateView() {
@@ -49,6 +57,10 @@ namespace HeuristicLab.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       scope.AddVariable(new Variable(scope.TranslateName("Dataset"), (IItem)GetVariable("Dataset").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), (IItem)GetVariable("TargetVariable").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesStart"), (IItem)GetVariable("TrainingSamplesStart").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesEnd"), (IItem)GetVariable("TrainingSamplesEnd").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("ValidationSamplesStart"), (IItem)GetVariable("ValidationSamplesStart").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("ValidationSamplesEnd"), (IItem)GetVariable("ValidationSamplesEnd").Value.Clone()));
       return null;
     }
   }
