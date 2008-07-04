@@ -33,6 +33,21 @@ using HeuristicLab.Charting.Data;
 
 namespace HeuristicLab.Logging {
   public partial class LinechartView : ViewBase {
+    private static int[] colors = new int[] {
+      182,182,255, 
+      218,255,182,
+      255,182,218, 
+      182,255,255, 
+      218,182,255, 
+      255,182,255,
+      255,182,182, 
+      255,218,182, 
+      255,255,182, 
+      182,255,182, 
+      182,255,218, 
+      182,218,255
+    };
+
     public Linechart Linechart {
       get { return (Linechart)base.Item; }
       set { base.Item = value; }
@@ -48,7 +63,7 @@ namespace HeuristicLab.Logging {
     }
 
     protected override void RemoveItemEvents() {
-      if (Linechart != null) {
+      if(Linechart != null) {
         Linechart.Values.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
         Linechart.Values.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
       }
@@ -56,7 +71,7 @@ namespace HeuristicLab.Logging {
     }
     protected override void AddItemEvents() {
       base.AddItemEvents();
-      if (Linechart != null) {
+      if(Linechart != null) {
         Linechart.Values.ItemAdded += new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
         Linechart.Values.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Values_ItemRemoved);
       }
@@ -70,16 +85,29 @@ namespace HeuristicLab.Logging {
       dataChartControl.Chart = datachart;
       datachart.Group.Clear();
       datachart.Group.Add(new Axis(datachart, 0, 0, AxisType.Both));
-      if (Linechart != null) {
+      double maxY = double.MinValue, minY = double.MaxValue;
+      if(Linechart != null) {
         datachart.UpdateEnabled = false;
-        for (int i = 0; i < Linechart.NumberOfLines; i++)
-          datachart.AddDataRow(DataRowType.Lines, Pens.Black, Brushes.Blue);
-
-        for (int i = 0; i < Linechart.Values.Count; i++) {
-          ItemList list = (ItemList)Linechart.Values[i];
-          for (int j = 0; j < list.Count; j++)
-            datachart.AddDataPoint(j, i, ((DoubleData)list[j]).Data);
+        for(int i = 0; i < Linechart.NumberOfLines; i++) {
+          int colorIndex = (i % 12)*3;
+          Color curCol = Color.FromArgb(colors[colorIndex],colors[colorIndex + 1], colors[colorIndex + 2]);
+          Pen p = new Pen(curCol);
+          SolidBrush b = new SolidBrush(curCol);
+          datachart.AddDataRow(DataRowType.Lines, p, b);
         }
+
+        for(int i = 0; i < Linechart.Values.Count; i++) {
+          ItemList list = (ItemList)Linechart.Values[i];
+          for(int j = 0; j < list.Count; j++) {
+            double value = ((DoubleData)list[j]).Data;
+            if(!double.IsInfinity(value) && !double.IsNaN(value)) {
+              if(value < minY) minY = value;
+              if(value > maxY) maxY = value;
+              datachart.AddDataPoint(j, i, value);
+            }
+          }
+        }
+        datachart.ZoomIn(-Linechart.Values.Count * 0.05, minY - (minY * 0.1), Linechart.Values.Count * 1.05, maxY * 1.05);
         datachart.UpdateEnabled = true;
         datachart.EnforceUpdate();
       }
@@ -88,20 +116,20 @@ namespace HeuristicLab.Logging {
     #region Values Events
     private delegate void ItemIndexDelegate(object sender, ItemIndexEventArgs e);
     private void Values_ItemRemoved(object sender, ItemIndexEventArgs e) {
-      if (InvokeRequired) {
+      if(InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemRemoved), sender, e);
       } else {
         Datachart datachart = dataChartControl.Chart;
       }
     }
     private void Values_ItemAdded(object sender, ItemIndexEventArgs e) {
-      if (InvokeRequired) {
+      if(InvokeRequired) {
         Invoke(new ItemIndexDelegate(Values_ItemAdded), sender, e);
       } else {
         Datachart datachart = dataChartControl.Chart;
         ItemList list = (ItemList)e.Item;
         datachart.UpdateEnabled = false;
-        for (int i = 0; i < list.Count; i++)
+        for(int i = 0; i < list.Count; i++)
           datachart.AddDataPoint(i, e.Index, ((DoubleData)list[i]).Data);
         datachart.UpdateEnabled = true;
         datachart.EnforceUpdate();
