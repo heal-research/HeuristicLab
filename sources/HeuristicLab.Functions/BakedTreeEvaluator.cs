@@ -95,6 +95,11 @@ namespace HeuristicLab.Functions {
         case EvaluatorSymbolTable.CONSTANT: {
             return currInstr.d_arg0;
           }
+        case EvaluatorSymbolTable.DIFFERENTIAL: {
+            int row = sampleIndex + currInstr.i_arg1;
+            if(row < 1 || row >= dataset.Rows) return double.NaN;
+            else return currInstr.d_arg0 * (dataset.GetValue(row, currInstr.i_arg0) - dataset.GetValue(row - 1, currInstr.i_arg0));
+          }
         case EvaluatorSymbolTable.MULTIPLICATION: {
             double result = EvaluateBakedCode();
             for(int i = 1; i < currInstr.arity; i++) {

@@ -33,6 +33,7 @@ namespace HeuristicLab.Functions {
     public const int AVERAGE = 3;
     public const int CONSTANT = 4;
     public const int COSINUS = 5;
+    public const int DIFFERENTIAL = 25;
     public const int DIVISION = 6;
     public const int EQU = 7;
     public const int EXP = 8;
@@ -81,6 +82,7 @@ namespace HeuristicLab.Functions {
       staticTypes[typeof(Tangens)] = TANGENS;
       staticTypes[typeof(Variable)] = VARIABLE;
       staticTypes[typeof(Xor)] = XOR;
+      staticTypes[typeof(Differential)] = DIFFERENTIAL;
     }
 
     internal static int MapFunction(IFunction function) {

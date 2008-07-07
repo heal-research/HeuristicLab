@@ -169,6 +169,21 @@ namespace HeuristicLab.Functions {
         name = "Sin";
       }
 
+      public void Visit(Differential diff) {
+        string timeOffset = "";
+        int sampleOffset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.OFFSET).Value).Data;
+        int variableIndex = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.INDEX).Value).Data;
+        double weight = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.WEIGHT).Value).Data;
+        if(sampleOffset < 0) {
+          timeOffset = "(t" + sampleOffset + ")";
+        } else if(sampleOffset > 0) {
+          timeOffset = "(t+" + sampleOffset + ")";
+        } else {
+          timeOffset = "";
+        }
+        name = "Diff" + variableIndex + timeOffset + " * " + weight;
+      }
+
       public void Visit(Division division) {
         name = "/";
       }

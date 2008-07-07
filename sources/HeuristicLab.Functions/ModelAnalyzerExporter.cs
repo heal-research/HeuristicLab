@@ -60,6 +60,14 @@ namespace HeuristicLab.Functions {
       VisitFunction("Trigonometrics[1]", cosinus);
     }
 
+    public void Visit(Differential differential) {
+      double weight = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.WEIGHT).Value).Data;
+      double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.INDEX).Value).Data;
+      double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.OFFSET).Value).Data;
+
+      prefix += currentIndend + "[T]Differential(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
+    }
+
     public void Visit(Division division) {
       VisitFunction("Division[0]", division);
     }

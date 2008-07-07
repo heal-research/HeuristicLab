@@ -32,6 +32,7 @@ namespace HeuristicLab.Functions {
     void Visit(Average average);
     void Visit(Constant constant);
     void Visit(Cosinus cosinus);
+    void Visit(Differential differential);
     void Visit(Division division);
     void Visit(Equal equal);
     void Visit(Exponential exponential);
