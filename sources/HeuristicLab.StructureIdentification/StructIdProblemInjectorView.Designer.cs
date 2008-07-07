@@ -48,13 +48,13 @@ namespace HeuristicLab.StructureIdentification {
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.dataTabPage = new System.Windows.Forms.TabPage();
+      this.datasetView = new HeuristicLab.DataAnalysis.DatasetView();
       this.variableInfosTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseVariableInfosView = new HeuristicLab.Core.OperatorBaseVariableInfosView();
       this.tabPage1 = new System.Windows.Forms.TabPage();
-      this.operatorBaseVariablesView = new HeuristicLab.Core.OperatorBaseVariablesView();
+      this.variablesView = new HeuristicLab.Core.OperatorBaseVariablesView();
       this.descriptionTabPage = new System.Windows.Forms.TabPage();
       this.operatorBaseDescriptionView = new HeuristicLab.Core.OperatorBaseDescriptionView();
-      this.datasetView = new HeuristicLab.DataAnalysis.DatasetView();
       this.tabControl.SuspendLayout();
       this.dataTabPage.SuspendLayout();
       this.variableInfosTabPage.SuspendLayout();
@@ -104,6 +104,19 @@ namespace HeuristicLab.StructureIdentification {
       this.dataTabPage.Text = "Data";
       this.dataTabPage.UseVisualStyleBackColor = true;
       // 
+      // datasetView
+      // 
+      this.datasetView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.datasetView.Caption = "Editor";
+      this.datasetView.Dataset = null;
+      this.datasetView.Filename = null;
+      this.datasetView.Location = new System.Drawing.Point(6, 33);
+      this.datasetView.Name = "datasetView";
+      this.datasetView.Size = new System.Drawing.Size(487, 386);
+      this.datasetView.TabIndex = 7;
+      // 
       // variableInfosTabPage
       // 
       this.variableInfosTabPage.Controls.Add(this.operatorBaseVariableInfosView);
@@ -127,7 +140,7 @@ namespace HeuristicLab.StructureIdentification {
       // 
       // tabPage1
       // 
-      this.tabPage1.Controls.Add(this.operatorBaseVariablesView);
+      this.tabPage1.Controls.Add(this.variablesView);
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -136,15 +149,15 @@ namespace HeuristicLab.StructureIdentification {
       this.tabPage1.Text = "Variables";
       this.tabPage1.UseVisualStyleBackColor = true;
       // 
-      // operatorBaseVariablesView
+      // variablesView
       // 
-      this.operatorBaseVariablesView.Caption = "Operator";
-      this.operatorBaseVariablesView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.operatorBaseVariablesView.Location = new System.Drawing.Point(3, 3);
-      this.operatorBaseVariablesView.Name = "operatorBaseVariablesView";
-      this.operatorBaseVariablesView.Operator = null;
-      this.operatorBaseVariablesView.Size = new System.Drawing.Size(493, 419);
-      this.operatorBaseVariablesView.TabIndex = 0;
+      this.variablesView.Caption = "Operator";
+      this.variablesView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.variablesView.Location = new System.Drawing.Point(3, 3);
+      this.variablesView.Name = "variablesView";
+      this.variablesView.Operator = null;
+      this.variablesView.Size = new System.Drawing.Size(493, 419);
+      this.variablesView.TabIndex = 0;
       // 
       // descriptionTabPage
       // 
@@ -166,19 +179,6 @@ namespace HeuristicLab.StructureIdentification {
       this.operatorBaseDescriptionView.Operator = null;
       this.operatorBaseDescriptionView.Size = new System.Drawing.Size(493, 419);
       this.operatorBaseDescriptionView.TabIndex = 0;
-      // 
-      // datasetView1
-      // 
-      this.datasetView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.datasetView.Caption = "Editor";
-      this.datasetView.Dataset = null;
-      this.datasetView.Filename = null;
-      this.datasetView.Location = new System.Drawing.Point(6, 33);
-      this.datasetView.Name = "datasetView1";
-      this.datasetView.Size = new System.Drawing.Size(487, 386);
-      this.datasetView.TabIndex = 7;
       // 
       // StructIdProblemInjectorView
       // 
@@ -207,7 +207,7 @@ namespace HeuristicLab.StructureIdentification {
     private System.Windows.Forms.TabPage descriptionTabPage;
     private HeuristicLab.Core.OperatorBaseDescriptionView operatorBaseDescriptionView;
     private System.Windows.Forms.TabPage tabPage1;
-    private HeuristicLab.Core.OperatorBaseVariablesView operatorBaseVariablesView;
+    private HeuristicLab.Core.OperatorBaseVariablesView variablesView;
     private HeuristicLab.DataAnalysis.DatasetView datasetView;
   }
 }

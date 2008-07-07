@@ -38,12 +38,14 @@ namespace HeuristicLab.StructureIdentification {
       set { base.Item = value; }
     }
 
-    public StructIdProblemInjectorView() {
+    public StructIdProblemInjectorView() : base() {
       InitializeComponent();
     }
     public StructIdProblemInjectorView(StructIdProblemInjector structIdProblemInjector)
       : this() {
       StructIdProblemInjector = structIdProblemInjector;
+      variablesView.Operator = structIdProblemInjector;
+      variablesView.Update();
     }
 
     protected override void RemoveItemEvents() {
