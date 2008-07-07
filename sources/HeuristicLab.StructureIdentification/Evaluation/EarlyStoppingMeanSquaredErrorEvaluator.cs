@@ -58,7 +58,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         }
       }
       double errorsSquaredSum = 0;
-      double targetMean = dataset.GetMean(targetVariable);
+      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
       functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double estimated = functionTree.Evaluate(sample);

@@ -43,11 +43,13 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
     }
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
-      double targetMean = dataset.GetMean(targetVariable);
+      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
       functionTree.PrepareEvaluation(dataset);
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double estimated = functionTree.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {

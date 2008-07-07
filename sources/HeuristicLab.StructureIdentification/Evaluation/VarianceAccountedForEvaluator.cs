@@ -53,11 +53,13 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
 
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      double[] errors = new double[dataset.Rows];
-      double[] originalTargetVariableValues = new double[dataset.Rows];
-      double targetMean = dataset.GetMean(targetVariable);
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      double[] errors = new double[trainingEnd-trainingStart];
+      double[] originalTargetVariableValues = new double[trainingEnd-trainingStart];
+      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
       functionTree.PrepareEvaluation(dataset);
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double estimated = functionTree.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
@@ -69,8 +71,8 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
             estimated = targetMean - maximumPunishment;
         }
 
-        errors[sample] = original - estimated;
-        originalTargetVariableValues[sample] = original;
+        errors[sample-trainingStart] = original - estimated;
+        originalTargetVariableValues[sample-trainingStart] = original;
       }
 
       double errorsVariance = Statistics.Variance(errors);

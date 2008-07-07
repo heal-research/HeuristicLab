@@ -45,16 +45,20 @@ namespace HeuristicLab.StructureIdentification {
     private double[] original = new double[1];
     private double[] estimated = new double[1];
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      int nSamples = trainingEnd-trainingStart;
       double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, false).Data;
-      if(estimated.Length != dataset.Rows) {
-        estimated = new double[dataset.Rows];
-        original = new double[dataset.Rows];
+      if(estimated.Length != nSamples) {
+        estimated = new double[nSamples];
+        original = new double[nSamples];
       }
+
       double positive = 0;
       double negative = 0;
-      double targetMean = dataset.GetMean(targetVariable);
+      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
       functionTree.PrepareEvaluation(dataset);
-      for(int sample = 0; sample < dataset.Rows; sample++) {
+      for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double est = functionTree.Evaluate(sample);
         double orig = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(est) || double.IsInfinity(est)) {
@@ -64,8 +68,8 @@ namespace HeuristicLab.StructureIdentification {
         } else if(est < targetMean - maximumPunishment) {
           est = targetMean - maximumPunishment;
         }
-        estimated[sample] = est;
-        original[sample] = orig;
+        estimated[sample-trainingStart] = est;
+        original[sample-trainingStart] = orig;
         if(orig >= limit) positive++;
         else negative++;
       }

@@ -47,11 +47,11 @@ for the estimated values vs. the real values of 'TargetVariable'.";
     }
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      double errorsSquaredSum = 0;
-      double targetMean = dataset.GetMean(targetVariable);
-      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      double errorsSquaredSum = 0;
+      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
+      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
       if(useEstimatedValues && backupValues == null) {
         backupValues = new double[trainingEnd - trainingStart];
         for(int i = trainingStart; i < trainingEnd; i++) {
