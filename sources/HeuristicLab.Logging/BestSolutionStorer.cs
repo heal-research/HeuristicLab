@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
-  public class BestSolutionStorer : OperatorBase {
+  public class BestSolutionStorer : DelegatingOperator {
     public override string Description {
       get { return @"Keeps a variable in the global scope that contains the scope representing the best of run solution."; }
     }
@@ -36,34 +36,73 @@ namespace HeuristicLab.Logging {
       : base() {
       AddVariableInfo(new VariableInfo("Quality", "Quality value of a solution", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("BestSolution", "The best solution of the run", typeof(IScope), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("BestSolution", "The best solution of the run", typeof(IScope), VariableKind.New | VariableKind.In | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      double[] qualities = new double[scope.SubScopes.Count];
+      if(scope.GetVariable(Guid.ToString() + "-Active") == null) {
+        double[] qualities = new double[scope.SubScopes.Count];
+        bool maximization = scope.GetVariableValue<BoolData>("Maximization", true).Data;
+        for(int i = 0; i < scope.SubScopes.Count; i++)
+          qualities[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
 
-      for (int i = 0; i < scope.SubScopes.Count; i++)
-        qualities[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
-
-      double smallest = qualities[0]; int smallestIndex = 0;
-      double biggest = qualities[0]; int biggestIndex = 0;
-      for (int i = 1; i < qualities.Length; i++) {
-        if(qualities[i] < smallest) {
-          smallest = qualities[i];
-          smallestIndex = i;
+        double smallest = qualities[0]; int smallestIndex = 0;
+        double biggest = qualities[0]; int biggestIndex = 0;
+        for(int i = 1; i < qualities.Length; i++) {
+          if(qualities[i] < smallest) {
+            smallest = qualities[i];
+            smallestIndex = i;
+          }
+          if(qualities[i] > biggest) {
+            biggest = qualities[i];
+            biggestIndex = i;
+          }
         }
-        if(qualities[i] > biggest) {
-          biggest = qualities[i];
-          biggestIndex = i;
-        }
-      }
 
-      if(!GetVariableValue<BoolData>("Maximization", scope, true).Data) {
-        SetValue(GetVariableInfo("BestSolution"), (IScope)scope.SubScopes[smallestIndex].Clone(), scope);
-      } else {
-        SetValue(GetVariableInfo("BestSolution"), (IScope)scope.SubScopes[biggestIndex].Clone(), scope);
+        IVariable bestSolutionVariable = scope.GetVariable("BestSolution");
+        if(bestSolutionVariable != null) {
+
+          double bestQuality = ((IScope)bestSolutionVariable.Value).GetVariableValue<DoubleData>("Quality", false).Data;
+
+          // do nothing if the best solution of the current scope is not better than the best solution of the whole run so far.
+          if((maximization && biggest <= bestQuality) ||
+            (!maximization && smallest >= bestQuality)) return null;
+        }
+
+        IScope bestSolutionClone;
+        if(maximization) {
+          bestSolutionClone = (IScope)scope.SubScopes[biggestIndex].Clone();
+        } else {
+          bestSolutionClone = (IScope)scope.SubScopes[smallestIndex].Clone();
+        }
+
+        if(SubOperators.Count > 0) {
+          scope.AddSubScope(bestSolutionClone);
+          scope.AddVariable(new Variable(Guid.ToString() + "-Active", new BoolData(true)));
+
+          CompositeOperation compOp = new CompositeOperation();
+          AtomicOperation operation = new AtomicOperation(SubOperators[0], bestSolutionClone);
+          AtomicOperation continuation = new AtomicOperation(this, scope);
+
+          compOp.AddOperation(operation);
+          compOp.AddOperation(continuation);
+          return compOp;
+        } else {
+          StoreBestSolution(bestSolutionClone, scope);
+          return null;
+        }
+      } else {  // operator already executed
+        scope.RemoveVariable(Guid.ToString() + "-Active");
+        IScope bestSolutionClone = scope.SubScopes[scope.SubScopes.Count - 1];
+        scope.RemoveSubScope(bestSolutionClone);
+
+        StoreBestSolution(bestSolutionClone, scope);
+        return null;
       }
-      return null;
+    }
+
+    private void StoreBestSolution(IScope bestSolution, IScope scope) {
+      SetValue(GetVariableInfo("BestSolution"), bestSolution, scope);
     }
 
     private void SetValue(IVariableInfo info, IScope data, IScope scope) {
