@@ -58,11 +58,11 @@ namespace HeuristicLab.Logging {
             biggestIndex = i;
           }
         }
-
-        IVariable bestSolutionVariable = scope.GetVariable("BestSolution");
+        IVariableInfo qualityInfo = GetVariableInfo("Quality");
+        IVariable bestSolutionVariable = scope.GetVariable(scope.TranslateName("BestSolution"));
         if(bestSolutionVariable != null) {
 
-          double bestQuality = ((IScope)bestSolutionVariable.Value).GetVariableValue<DoubleData>("Quality", false).Data;
+          double bestQuality = ((IScope)bestSolutionVariable.Value).GetVariableValue<DoubleData>(qualityInfo.ActualName, false).Data;
 
           // do nothing if the best solution of the current scope is not better than the best solution of the whole run so far.
           if((maximization && biggest <= bestQuality) ||
@@ -106,7 +106,7 @@ namespace HeuristicLab.Logging {
     }
 
     private void SetValue(IVariableInfo info, IScope data, IScope scope) {
-      IVariable var = scope.GetVariable(info.FormalName);
+      IVariable var = scope.GetVariable(info.ActualName);
       if(var == null) {
         var = new Variable(scope.TranslateName(info.FormalName), data);
         scope.AddVariable(var);
