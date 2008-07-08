@@ -176,6 +176,22 @@ namespace HeuristicLab.Scheduling.JSSP {
       return ((slot.Right == null) && (slot.Left == null));
     }
 
+    public ScheduleTreeNode GetFirstSlot() { // left-most slot
+      ScheduleTreeNode node = root;
+      while (node.Left != null) {
+        node = node.Left;
+      }
+      return node; 
+    }
+
+    public ScheduleTreeNode GetLastSlot() { // right-most slot
+      ScheduleTreeNode node = root;
+      while (node.Right != null) {
+        node = node.Right;
+      }
+      return node; 
+    }
+
     public override string ToString() {
       StringBuilder builder = new StringBuilder();
       foreach(ScheduleTreeNode node in this.InOrder) {
