@@ -64,6 +64,7 @@
     <Compile Include="HeuristicLabGridPlugin.cs" />
     <Compile Include="IEngineStore.cs" />
     <Compile Include="IGridServer.cs" />
+    <Compile Include="JobManager.cs" />
     <Compile Include="ProcessingEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerForm.cs">

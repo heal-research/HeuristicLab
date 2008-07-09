@@ -23,15 +23,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.CEDMA.Console {
-  public interface IAgent : IDatabaseItem {
-    string Name { get; }
-    AgentStatus Status { get; }
-    IOperatorGraph OperatorGraph { get; }
-    void Save();
-    void Activate();
+namespace HeuristicLab.CEDMA.DB.Interfaces {
+  [DataContract]
+  public class AgentEntry {
+    [DataMember]
+    public long Id { get; set; }
+    [DataMember]
+    public string Name { get; set; }
+    [DataMember]
+    public AgentStatus Status { get; set; }
+    [DataMember]
+    public byte[] RawData { get; set; }
+
+    public AgentEntry(long id, string name, AgentStatus status, byte[] rawData) {
+      Id = id;
+      Name = name;
+      Status = status;
+      RawData = rawData;
+    }
   }
 }

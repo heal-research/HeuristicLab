@@ -33,22 +33,43 @@ using HeuristicLab.PluginInfrastructure;
 using System.Net;
 using HeuristicLab.CEDMA.DB;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using System.Data.Common;
+using System.Threading;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
     private ServiceHost host;
-    private Database database = new Database();
-
+    private Database database;
+    private static readonly string dbFile = AppDomain.CurrentDomain.BaseDirectory + "/test.db3";
+    private static readonly string connectionString = "Data Source=\""+dbFile+"\";Pooling=False";
     public ServerForm() {
       InitializeComponent();
+      InitDatabase();
+      InitAgentScheduler();
 
       // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
       if (System.Environment.OSVersion.Version.Major >= 6) {
-        addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8000/CEDMA/World";
+        addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8002/CEDMA/World";
       } else {
-        addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8000/CEDMA/World";
+        addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/CEDMA/World";
       }
       Start();
+    }
+
+    private void InitAgentScheduler() {
+      AgentScheduler scheduler = new AgentScheduler(database);
+      ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
+    }
+
+    private void InitDatabase() {
+      DbProviderFactory fact;
+      fact = DbProviderFactories.GetFactory("System.Data.SQLite");
+      if(!System.IO.File.Exists(dbFile)) {
+        database = new Database(connectionString);
+        database.CreateNew();
+      } else {
+        database = new Database(connectionString);
+      }
     }
 
     private void Start() {

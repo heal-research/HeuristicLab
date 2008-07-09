@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgentScheduler.cs" />
+    <Compile Include="DbPersistenceManager.cs" />
     <Compile Include="ServerApplication.cs" />
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +71,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.CEDMA.Console\HeuristicLab.CEDMA.Console.csproj">
+      <Project>{F8880599-F224-4EC7-9288-5C4A6853E7BE}</Project>
+      <Name>HeuristicLab.CEDMA.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.CEDMA.DB.Interfaces\HeuristicLab.CEDMA.DB.Interfaces.csproj">
       <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
       <Name>HeuristicLab.CEDMA.DB.Interfaces</Name>
@@ -77,9 +83,17 @@
       <Project>{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}</Project>
       <Name>HeuristicLab.CEDMA.DB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
+      <Name>HeuristicLab.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\HeuristicLab.SequentialEngine.csproj">
+      <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
+      <Name>HeuristicLab.SequentialEngine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

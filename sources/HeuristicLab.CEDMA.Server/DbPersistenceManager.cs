@@ -23,15 +23,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO.Compression;
+using System.IO;
 using HeuristicLab.Core;
-using HeuristicLab.CEDMA.DB.Interfaces;
 
-namespace HeuristicLab.CEDMA.Console {
-  public interface IAgent : IDatabaseItem {
-    string Name { get; }
-    AgentStatus Status { get; }
-    IOperatorGraph OperatorGraph { get; }
-    void Save();
-    void Activate();
+namespace HeuristicLab.CEDMA.Server  {
+  internal static class DbPersistenceManager {
+    internal static IStorable Restore(byte[] serializedStorable) {
+      GZipStream stream = new GZipStream(new MemoryStream(serializedStorable), CompressionMode.Decompress);
+      return PersistenceManager.Load(stream);
+    }
+    internal static byte[] Save(IStorable storable) {
+      MemoryStream memStream = new MemoryStream();
+      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+      PersistenceManager.Save(storable, stream);
+      stream.Close();
+      return memStream.ToArray();
+    }
   }
 }

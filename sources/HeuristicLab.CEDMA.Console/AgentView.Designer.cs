@@ -47,7 +47,6 @@ namespace HeuristicLab.CEDMA.Console {
       this.editorGroupBox = new System.Windows.Forms.GroupBox();
       this.saveButton = new System.Windows.Forms.Button();
       this.activateButton = new System.Windows.Forms.Button();
-      this.stopButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // editorGroupBox
@@ -71,6 +70,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.saveButton.TabIndex = 1;
       this.saveButton.Text = "&Save";
       this.saveButton.UseVisualStyleBackColor = true;
+      this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
       // 
       // activateButton
       // 
@@ -81,22 +81,12 @@ namespace HeuristicLab.CEDMA.Console {
       this.activateButton.TabIndex = 2;
       this.activateButton.Text = "&Activate";
       this.activateButton.UseVisualStyleBackColor = true;
-      // 
-      // stopButton
-      // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Location = new System.Drawing.Point(166, 128);
-      this.stopButton.Name = "stopButton";
-      this.stopButton.Size = new System.Drawing.Size(75, 23);
-      this.stopButton.TabIndex = 3;
-      this.stopButton.Text = "S&top";
-      this.stopButton.UseVisualStyleBackColor = true;
+      this.activateButton.Click += new System.EventHandler(this.activateButton_Click);
       // 
       // AgentView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.stopButton);
       this.Controls.Add(this.activateButton);
       this.Controls.Add(this.saveButton);
       this.Controls.Add(this.editorGroupBox);
@@ -111,6 +101,5 @@ namespace HeuristicLab.CEDMA.Console {
     private System.Windows.Forms.GroupBox editorGroupBox;
     private System.Windows.Forms.Button saveButton;
     private System.Windows.Forms.Button activateButton;
-    private System.Windows.Forms.Button stopButton;
   }
 }

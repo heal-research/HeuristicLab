@@ -93,10 +93,8 @@ namespace HeuristicLab.CEDMA.Console {
 
     #region Button Events
     private void addButton_Click(object sender, EventArgs e) {
-      Agent agent = new Agent();
-      string name = DateTime.Now.ToString();
-      agent.Name = name;
-      AgentList.Add(agent);
+      AgentList.CreateAgent();
+      UpdateControls();
     }
     #endregion
   }

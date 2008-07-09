@@ -31,8 +31,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
 
-namespace HeuristicLab.DistributedEngine {
-  class JobManager {
+namespace HeuristicLab.Grid {
+  public class JobManager {
     private IGridServer server;
     private string address;
     private Dictionary<Guid, ProcessingEngine> engines = new Dictionary<Guid, ProcessingEngine>();
@@ -53,7 +53,7 @@ namespace HeuristicLab.DistributedEngine {
       this.address = address;
     }
 
-    internal void Reset() {
+    public void Reset() {
       ResetConnection();
       lock(dictionaryLock) {
         foreach(WaitHandle wh in waithandles.Values) wh.Close();

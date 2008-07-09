@@ -27,11 +27,9 @@ using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Console {
-  public interface IAgent : IDatabaseItem {
-    string Name { get; }
-    AgentStatus Status { get; }
-    IOperatorGraph OperatorGraph { get; }
+  public interface IDatabaseItem : IItem {
+    IDatabase Database { get; set; }
+    long Id { get; set; }
     void Save();
-    void Activate();
   }
 }

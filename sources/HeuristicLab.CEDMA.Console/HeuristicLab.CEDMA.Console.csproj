@@ -65,9 +65,11 @@
     <Compile Include="ConsoleEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="DbPersistenceManager.cs" />
     <Compile Include="HeuristicLabCedmaConsolePlugin.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="IAgentList.cs" />
+    <Compile Include="IDatabaseItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AgentListView.cs">
       <SubType>UserControl</SubType>

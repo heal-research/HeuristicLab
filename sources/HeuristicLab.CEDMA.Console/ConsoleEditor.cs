@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +36,9 @@ namespace HeuristicLab.CEDMA.Console {
     private System.Windows.Forms.TabPage agentsPage;
     private System.Windows.Forms.TabPage resultsPage;
     private Button connectButton;
+    private ComboBox comboBox1;
+    private Label projectLabel;
+    private Button newButton;
     private Console console;
 
     public ConsoleEditor(Console console) {
@@ -30,6 +54,9 @@ namespace HeuristicLab.CEDMA.Console {
       this.agentsPage = new System.Windows.Forms.TabPage();
       this.resultsPage = new System.Windows.Forms.TabPage();
       this.connectButton = new System.Windows.Forms.Button();
+      this.comboBox1 = new System.Windows.Forms.ComboBox();
+      this.projectLabel = new System.Windows.Forms.Label();
+      this.newButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -58,10 +85,10 @@ namespace HeuristicLab.CEDMA.Console {
       this.tabControl.Controls.Add(this.agentsPage);
       this.tabControl.Controls.Add(this.resultsPage);
       this.tabControl.Enabled = false;
-      this.tabControl.Location = new System.Drawing.Point(6, 29);
+      this.tabControl.Location = new System.Drawing.Point(6, 56);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(407, 242);
+      this.tabControl.Size = new System.Drawing.Size(506, 407);
       this.tabControl.TabIndex = 2;
       // 
       // overviewPage
@@ -69,7 +96,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.overviewPage.Location = new System.Drawing.Point(4, 22);
       this.overviewPage.Name = "overviewPage";
       this.overviewPage.Padding = new System.Windows.Forms.Padding(3);
-      this.overviewPage.Size = new System.Drawing.Size(399, 216);
+      this.overviewPage.Size = new System.Drawing.Size(498, 381);
       this.overviewPage.TabIndex = 0;
       this.overviewPage.Text = "Overview";
       this.overviewPage.UseVisualStyleBackColor = true;
@@ -79,7 +106,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.agentsPage.Location = new System.Drawing.Point(4, 22);
       this.agentsPage.Name = "agentsPage";
       this.agentsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.agentsPage.Size = new System.Drawing.Size(399, 216);
+      this.agentsPage.Size = new System.Drawing.Size(498, 381);
       this.agentsPage.TabIndex = 1;
       this.agentsPage.Text = "Agents";
       this.agentsPage.UseVisualStyleBackColor = true;
@@ -89,7 +116,7 @@ namespace HeuristicLab.CEDMA.Console {
       this.resultsPage.Location = new System.Drawing.Point(4, 22);
       this.resultsPage.Name = "resultsPage";
       this.resultsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsPage.Size = new System.Drawing.Size(399, 216);
+      this.resultsPage.Size = new System.Drawing.Size(498, 381);
       this.resultsPage.TabIndex = 2;
       this.resultsPage.Text = "Results";
       this.resultsPage.UseVisualStyleBackColor = true;
@@ -104,15 +131,47 @@ namespace HeuristicLab.CEDMA.Console {
       this.connectButton.UseVisualStyleBackColor = true;
       this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
       // 
+      // comboBox1
+      // 
+      this.comboBox1.Enabled = false;
+      this.comboBox1.FormattingEnabled = true;
+      this.comboBox1.Location = new System.Drawing.Point(91, 29);
+      this.comboBox1.Name = "comboBox1";
+      this.comboBox1.Size = new System.Drawing.Size(121, 21);
+      this.comboBox1.TabIndex = 4;
+      // 
+      // projectLabel
+      // 
+      this.projectLabel.AutoSize = true;
+      this.projectLabel.Enabled = false;
+      this.projectLabel.Location = new System.Drawing.Point(42, 32);
+      this.projectLabel.Name = "projectLabel";
+      this.projectLabel.Size = new System.Drawing.Size(43, 13);
+      this.projectLabel.TabIndex = 5;
+      this.projectLabel.Text = "Project:";
+      // 
+      // newButton
+      // 
+      this.newButton.Enabled = false;
+      this.newButton.Location = new System.Drawing.Point(218, 27);
+      this.newButton.Name = "newButton";
+      this.newButton.Size = new System.Drawing.Size(75, 23);
+      this.newButton.TabIndex = 6;
+      this.newButton.Text = "New...";
+      this.newButton.UseVisualStyleBackColor = true;
+      // 
       // ConsoleEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.newButton);
+      this.Controls.Add(this.projectLabel);
+      this.Controls.Add(this.comboBox1);
       this.Controls.Add(this.connectButton);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.uriLabel);
       this.Controls.Add(this.uriTextBox);
       this.Name = "ConsoleEditor";
-      this.Size = new System.Drawing.Size(416, 274);
+      this.Size = new System.Drawing.Size(515, 466);
       this.tabControl.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -124,7 +183,9 @@ namespace HeuristicLab.CEDMA.Console {
         console.Connect(uriTextBox.Text);
         connectButton.Enabled = false;
         tabControl.Enabled = true;
+        agentsPage.Controls.Clear();
         agentsPage.Controls.Add((Control)console.AgentList.CreateView());
+        agentsPage.Controls[0].Dock = DockStyle.Fill;
       } catch(CommunicationException ex) {
         // TASK create helper class for error reporting
         MessageBox.Show("Exception while trying to connect to " + uriTextBox.Text + "\n" + ex.Message);
