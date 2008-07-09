@@ -29,7 +29,7 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 namespace HeuristicLab.CEDMA.Console {
   public interface IAgent : IDatabaseItem {
     string Name { get; }
-    AgentStatus Status { get; }
+    ProcessStatus Status { get; }
     IOperatorGraph OperatorGraph { get; }
     void Save();
     void Activate();

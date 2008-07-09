@@ -32,7 +32,7 @@ namespace HeuristicLab.CEDMA.Console {
     public IDatabase Database { get; set; }
     public long Id { get; set; }
     public string Name { get; set; }
-    public AgentStatus Status { get; set; }
+    public ProcessStatus Status { get; set; }
     private OperatorGraph operatorGraph;
 
     public IOperatorGraph OperatorGraph {
@@ -50,12 +50,13 @@ namespace HeuristicLab.CEDMA.Console {
     }
 
     public void Save() {
-      AgentEntry entry = new AgentEntry(Id, Name, Status, DbPersistenceManager.Save(this));
-      Database.Update(entry);
+      Database.UpdateAgent(Id, Name);
+      Database.UpdateAgent(Id, Status);
+      Database.UpdateAgent(Id, DbPersistenceManager.Save(this));
     }
 
     public void Activate() {
-      Status = AgentStatus.Waiting;
+      Status = ProcessStatus.Waiting;
       Save();
     }
 

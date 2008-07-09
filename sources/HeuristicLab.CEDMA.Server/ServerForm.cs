@@ -35,6 +35,7 @@ using HeuristicLab.CEDMA.DB;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Data.Common;
 using System.Threading;
+using HeuristicLab.Grid;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
@@ -44,20 +45,22 @@ namespace HeuristicLab.CEDMA.Server {
     private static readonly string connectionString = "Data Source=\""+dbFile+"\";Pooling=False";
     public ServerForm() {
       InitializeComponent();
-      InitDatabase();
-      InitAgentScheduler();
-
       // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
       if (System.Environment.OSVersion.Version.Major >= 6) {
         addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8002/CEDMA/World";
       } else {
         addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/CEDMA/World";
       }
-      Start();
     }
 
     private void InitAgentScheduler() {
       AgentScheduler scheduler = new AgentScheduler(database);
+      ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
+    }
+
+    private void InitRunScheduler() {
+      JobManager jobManager = new JobManager(gridAddress.Text);
+      RunScheduler scheduler = new RunScheduler(database, jobManager);
       ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
     }
 
@@ -73,6 +76,10 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void Start() {
+      InitDatabase();
+      InitAgentScheduler();
+      InitRunScheduler();
+
       host = new ServiceHost(database, new Uri(addressTextBox.Text));
       ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
       throttlingBehavior.MaxConcurrentSessions = 20;
@@ -93,6 +100,11 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void statusUpdateTimer_Tick(object sender, EventArgs e) {
+    }
+
+    private void startButton_Click(object sender, EventArgs e) {
+      Start();
+      startButton.Enabled = false;
     }
   }
 }

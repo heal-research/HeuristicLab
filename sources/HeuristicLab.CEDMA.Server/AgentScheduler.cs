@@ -58,12 +58,12 @@ namespace HeuristicLab.CEDMA.Server {
       foreach(IEngine e in finishedEngines) {
         engines.Remove(e);
         AgentEntry entry = agent[e];
-        entry.Status = AgentStatus.Finished;
-        database.Update(entry);
+        entry.Status = ProcessStatus.Finished;
+        database.UpdateAgent(entry.Id, entry.Status);
       }
     }
     private void CreateNewEngines() {
-      ICollection<AgentEntry> agents = database.GetAgentEntries(AgentStatus.Waiting);
+      ICollection<AgentEntry> agents = database.GetAgents(ProcessStatus.Waiting);
       foreach(AgentEntry a in agents) {
         SequentialEngine.SequentialEngine engine = new HeuristicLab.SequentialEngine.SequentialEngine();
         Agent newAgent = (Agent)DbPersistenceManager.Restore(a.RawData);
@@ -74,8 +74,8 @@ namespace HeuristicLab.CEDMA.Server {
 
         agent[engine] = a;
         engines.Add(engine);
-        a.Status = AgentStatus.Active;
-        database.Update(a);
+        a.Status = ProcessStatus.Active;
+        database.UpdateAgent(a.Id, a.Status);
       }
     }
     private void StepAllEngines() {
@@ -83,7 +83,7 @@ namespace HeuristicLab.CEDMA.Server {
         foreach(IEngine engine in engines) {
           engine.ExecuteStep();
         }
-        Thread.Sleep(100); // prevent over-load
+        Thread.Sleep(100); // prevent overload
       }
     }
   }

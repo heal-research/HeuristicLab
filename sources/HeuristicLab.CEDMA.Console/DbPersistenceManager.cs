@@ -28,12 +28,12 @@ using System.IO;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Console {
-  internal static class DbPersistenceManager {
-    internal static IStorable Restore(byte[] serializedStorable) {
+  public static class DbPersistenceManager {
+    public static IStorable Restore(byte[] serializedStorable) {
       GZipStream stream = new GZipStream(new MemoryStream(serializedStorable), CompressionMode.Decompress);
       return PersistenceManager.Load(stream);
     }
-    internal static byte[] Save(IStorable storable) {
+    public static byte[] Save(IStorable storable) {
       MemoryStream memStream = new MemoryStream();
       GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
       PersistenceManager.Save(storable, stream);

@@ -45,7 +45,7 @@ namespace HeuristicLab.CEDMA.Console {
 
     private void ReloadList() {
       agentList.Clear();
-      foreach(AgentEntry a in database.GetAgentEntries()) {
+      foreach(AgentEntry a in database.GetAgents()) {
         Agent newAgent = (Agent)DbPersistenceManager.Restore(a.RawData);
         newAgent.Database = database;
         newAgent.Id = a.Id;
@@ -62,10 +62,12 @@ namespace HeuristicLab.CEDMA.Console {
     }
 
     public void CreateAgent() {
-      long id = database.CreateAgent();
-      Agent agent = new Agent(database, id);
+      Agent agent = new Agent();
       agent.Name = DateTime.Now.ToString();
-      agent.Save();
+      agent.Status = ProcessStatus.Unkown;
+      agent.Database = database;
+      long id = database.InsertAgent(agent.Name, DbPersistenceManager.Save(agent));
+      agent.Id = id;
       agentList.Add(agent);
     }
 

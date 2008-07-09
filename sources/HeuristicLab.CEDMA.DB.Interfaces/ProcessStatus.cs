@@ -23,19 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using System.Runtime.Serialization;
 
 namespace HeuristicLab.CEDMA.DB.Interfaces {
-  [DataContract]
-  public class AgentEntry {
-    [DataMember]
-    public long Id { get; set; }
-    [DataMember]
-    public string Name { get; set; }
-    [DataMember]
-    public ProcessStatus Status { get; set; }
-    [DataMember]
-    public byte[] RawData { get; set; }
-  }
+  public enum ProcessStatus { Unkown, Active, Finished, Error, Waiting}
 }

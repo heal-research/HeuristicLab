@@ -30,21 +30,14 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
   [DataContract]
   public class ResultEntry {
     [DataMember]
-    private long id;
+    public long Id { get; set; }
     [DataMember]
-    private byte[] rawData;
-
-    public ResultEntry(long id, byte[] rawData) {
-      this.id = id;
-      this.rawData = rawData;
-    }
-
-    public long Id {
-      get { return id; }
-    }
-
-    public byte[] RawData {
-      get { return rawData; }
-    }
+    public long RunId { get; set; }
+    [DataMember]
+    public long ResultId { get; set; }
+    [DataMember]
+    public DateTime CreationTime { get; set; }
+    [DataMember]
+    public byte[] RawData { get; set; }
   }
 }

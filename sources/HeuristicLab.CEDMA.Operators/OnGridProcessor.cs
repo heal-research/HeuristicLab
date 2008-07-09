@@ -24,10 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Grid;
 using System.Threading;
+using HeuristicLab.CEDMA.DB.Interfaces;
+using System.ServiceModel;
+using HeuristicLab.CEDMA.Console;
 
-namespace HeuristicLab.DistributedEngine {
+namespace HeuristicLab.CEDMA.Operators {
   public class OnGridProcessor : OperatorBase {
     public override string Description {
       get { return "TASK."; }
@@ -35,23 +37,26 @@ namespace HeuristicLab.DistributedEngine {
 
     public OnGridProcessor()
       : base() {
+      AddVariableInfo(new VariableInfo("AgentId", "Id of the agent that the run should be associated to.", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorGraph", "The operator graph that should be executed on the grid", typeof(IOperatorGraph), VariableKind.In));
-      AddVariableInfo(new VariableInfo("GridServerUrl", "Url of the grid server", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ServerUrl", "Url of the CEDMA server", typeof(StringData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       IOperatorGraph operatorGraph = scope.GetVariableValue<IOperatorGraph>("OperatorGraph", false);
-      string gridServerUrl = scope.GetVariableValue<StringData>("GridServerUrl", true).Data;
-      JobManager jobManager = new JobManager(gridServerUrl);
-      jobManager.Reset();
-      Scope globalScope = new Scope();
-      AtomicOperation operation = new AtomicOperation(operatorGraph.InitialOperator, globalScope);
-      WaitHandle w = jobManager.BeginExecuteOperation(globalScope, operation);
-      
-      ThreadPool.QueueUserWorkItem(delegate(object status) {
-        w.WaitOne();
-        jobManager.EndExecuteOperation(operation);
-      });
+      string serverUrl = scope.GetVariableValue<StringData>("ServerUrl", true).Data;
+      long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
+
+      NetTcpBinding binding = new NetTcpBinding();
+      binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
+      binding.ReaderQuotas.MaxStringContentLength = 10000000; // also 10M chars
+      binding.ReaderQuotas.MaxArrayLength = 10000000; // also 10M elements;
+      binding.Security.Mode = SecurityMode.None;
+      using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
+        IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
+        long id = database.InsertRun(agentId, DbPersistenceManager.Save(operatorGraph));
+        database.UpdateRunStatus(id, ProcessStatus.Waiting);
+      }
       return null;
     }
   }

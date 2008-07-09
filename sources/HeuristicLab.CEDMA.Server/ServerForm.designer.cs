@@ -50,6 +50,9 @@ namespace HeuristicLab.CEDMA.Server {
       this.activeAgentsLabel = new System.Windows.Forms.Label();
       this.activeAgentsTextBox = new System.Windows.Forms.TextBox();
       this.statusUpdateTimer = new System.Windows.Forms.Timer(this.components);
+      this.gridAddressLabel = new System.Windows.Forms.Label();
+      this.gridAddress = new System.Windows.Forms.TextBox();
+      this.startButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // addressTextBox
@@ -72,7 +75,7 @@ namespace HeuristicLab.CEDMA.Server {
       // activeAgentsLabel
       // 
       this.activeAgentsLabel.AutoSize = true;
-      this.activeAgentsLabel.Location = new System.Drawing.Point(12, 35);
+      this.activeAgentsLabel.Location = new System.Drawing.Point(12, 61);
       this.activeAgentsLabel.Name = "activeAgentsLabel";
       this.activeAgentsLabel.Size = new System.Drawing.Size(75, 13);
       this.activeAgentsLabel.TabIndex = 7;
@@ -80,7 +83,7 @@ namespace HeuristicLab.CEDMA.Server {
       // 
       // activeAgentsTextBox
       // 
-      this.activeAgentsTextBox.Location = new System.Drawing.Point(106, 32);
+      this.activeAgentsTextBox.Location = new System.Drawing.Point(106, 58);
       this.activeAgentsTextBox.Name = "activeAgentsTextBox";
       this.activeAgentsTextBox.ReadOnly = true;
       this.activeAgentsTextBox.Size = new System.Drawing.Size(90, 20);
@@ -94,11 +97,40 @@ namespace HeuristicLab.CEDMA.Server {
       this.statusUpdateTimer.Interval = 1000;
       this.statusUpdateTimer.Tick += new System.EventHandler(this.statusUpdateTimer_Tick);
       // 
+      // gridAddressLabel
+      // 
+      this.gridAddressLabel.AutoSize = true;
+      this.gridAddressLabel.Location = new System.Drawing.Point(12, 35);
+      this.gridAddressLabel.Name = "gridAddressLabel";
+      this.gridAddressLabel.Size = new System.Drawing.Size(69, 13);
+      this.gridAddressLabel.TabIndex = 9;
+      this.gridAddressLabel.Text = "&Grid address:";
+      // 
+      // gridAddress
+      // 
+      this.gridAddress.Location = new System.Drawing.Point(106, 32);
+      this.gridAddress.Name = "gridAddress";
+      this.gridAddress.Size = new System.Drawing.Size(229, 20);
+      this.gridAddress.TabIndex = 8;
+      // 
+      // startButton
+      // 
+      this.startButton.Location = new System.Drawing.Point(15, 84);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new System.Drawing.Size(75, 23);
+      this.startButton.TabIndex = 10;
+      this.startButton.Text = "Start";
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += new System.EventHandler(this.startButton_Click);
+      // 
       // ServerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(347, 62);
+      this.ClientSize = new System.Drawing.Size(347, 119);
+      this.Controls.Add(this.startButton);
+      this.Controls.Add(this.gridAddressLabel);
+      this.Controls.Add(this.gridAddress);
       this.Controls.Add(this.activeAgentsLabel);
       this.Controls.Add(this.activeAgentsTextBox);
       this.Controls.Add(this.externalAddressLabel);
@@ -117,5 +149,8 @@ namespace HeuristicLab.CEDMA.Server {
     private System.Windows.Forms.Label activeAgentsLabel;
     private System.Windows.Forms.TextBox activeAgentsTextBox;
     private System.Windows.Forms.Timer statusUpdateTimer;
+    private System.Windows.Forms.Label gridAddressLabel;
+    private System.Windows.Forms.TextBox gridAddress;
+    private System.Windows.Forms.Button startButton;
   }
 }
