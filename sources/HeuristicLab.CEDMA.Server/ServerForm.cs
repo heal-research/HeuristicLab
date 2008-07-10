@@ -60,6 +60,7 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void InitRunScheduler() {
       JobManager jobManager = new JobManager(gridAddress.Text);
+      jobManager.Reset();
       RunScheduler scheduler = new RunScheduler(database, jobManager);
       ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
     }
@@ -97,9 +98,6 @@ namespace HeuristicLab.CEDMA.Server {
         MessageBox.Show("An exception occurred: " + ex.Message);
         host.Abort();
       }
-    }
-
-    private void statusUpdateTimer_Tick(object sender, EventArgs e) {
     }
 
     private void startButton_Click(object sender, EventArgs e) {

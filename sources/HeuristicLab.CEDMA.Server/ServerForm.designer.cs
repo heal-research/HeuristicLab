@@ -44,12 +44,10 @@ namespace HeuristicLab.CEDMA.Server {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.externalAddressLabel = new System.Windows.Forms.Label();
       this.activeAgentsLabel = new System.Windows.Forms.Label();
       this.activeAgentsTextBox = new System.Windows.Forms.TextBox();
-      this.statusUpdateTimer = new System.Windows.Forms.Timer(this.components);
       this.gridAddressLabel = new System.Windows.Forms.Label();
       this.gridAddress = new System.Windows.Forms.TextBox();
       this.startButton = new System.Windows.Forms.Button();
@@ -90,12 +88,6 @@ namespace HeuristicLab.CEDMA.Server {
       this.activeAgentsTextBox.TabIndex = 6;
       this.activeAgentsTextBox.Text = "0";
       this.activeAgentsTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      // 
-      // statusUpdateTimer
-      // 
-      this.statusUpdateTimer.Enabled = true;
-      this.statusUpdateTimer.Interval = 1000;
-      this.statusUpdateTimer.Tick += new System.EventHandler(this.statusUpdateTimer_Tick);
       // 
       // gridAddressLabel
       // 
@@ -148,7 +140,6 @@ namespace HeuristicLab.CEDMA.Server {
     private System.Windows.Forms.Label externalAddressLabel;
     private System.Windows.Forms.Label activeAgentsLabel;
     private System.Windows.Forms.TextBox activeAgentsTextBox;
-    private System.Windows.Forms.Timer statusUpdateTimer;
     private System.Windows.Forms.Label gridAddressLabel;
     private System.Windows.Forms.TextBox gridAddress;
     private System.Windows.Forms.Button startButton;

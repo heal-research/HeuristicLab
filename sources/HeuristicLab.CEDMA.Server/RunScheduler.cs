@@ -35,6 +35,8 @@ namespace HeuristicLab.CEDMA.Server {
     private Database database;
     private JobManager jobManager;
     private const int RELEASE_INTERVAL = 5;
+    private object remoteCommLock = new object();
+
     public RunScheduler(Database database, JobManager jobManager) {
       this.database = database;
       this.jobManager = jobManager;
@@ -46,26 +48,36 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
     private void ReleaseWaitingRuns() {
-      ICollection<RunEntry> runs = database.GetRuns(ProcessStatus.Waiting);
-      jobManager.Reset();
+      ICollection<RunEntry> runs;
+      lock(remoteCommLock) {
+        runs = database.GetRuns(ProcessStatus.Waiting);
+      }
       foreach(RunEntry entry in runs) {
         IOperatorGraph opGraph = (IOperatorGraph)DbPersistenceManager.Restore(entry.RawData);
-
         Scope scope = new Scope();
         AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, scope);
-        WaitHandle wHandle = jobManager.BeginExecuteOperation(scope, op);
+        WaitHandle wHandle;
+        lock(remoteCommLock) {
+          wHandle = jobManager.BeginExecuteOperation(scope, op);
+          database.UpdateRunStatus(entry.Id, ProcessStatus.Active);
+          database.UpdateRunStart(entry.Id, DateTime.Now);
+        }
 
-        ThreadPool.QueueUserWorkItem(delegate(object state) {
-          wHandle.WaitOne();
-          jobManager.EndExecuteOperation(op);
-          entry.Status = ProcessStatus.Finished;
-          database.UpdateRunStatus(entry.Id, entry.Status);
-          database.UpdateRunFinished(entry.Id, DateTime.Now);
-        });
+        ThreadPool.QueueUserWorkItem(WaitForFinishedRun, new object[] {wHandle, op, entry});
+      }
+    }
 
-        entry.Status = ProcessStatus.Active;
-        database.UpdateRunStatus(entry.Id, entry.Status);
-        database.UpdateRunStart(entry.Id, DateTime.Now);
+    private void WaitForFinishedRun(object state) {
+      object[] param = (object[])state;
+      WaitHandle wHandle = (WaitHandle)param[0];
+      AtomicOperation op = (AtomicOperation)param[1];
+      RunEntry entry = (RunEntry)param[2];
+      wHandle.WaitOne();
+      wHandle.Close();
+      lock(remoteCommLock) {
+        jobManager.EndExecuteOperation(op);
+        database.UpdateRunStatus(entry.Id, ProcessStatus.Finished);
+        database.UpdateRunFinished(entry.Id, DateTime.Now);
       }
     }
   }
