@@ -238,7 +238,6 @@ namespace HeuristicLab.Grid {
         }
       } while(retries < MAX_CONNECTION_RETRIES);
       return JobState.Unkown;
-      
     }
   }
 }
