@@ -55,14 +55,16 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void InitAgentScheduler() {
       AgentScheduler scheduler = new AgentScheduler(database);
-      ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
+      Thread agentSchedulerThread = new Thread(scheduler.Run);
+      agentSchedulerThread.Start();
     }
 
     private void InitRunScheduler() {
       JobManager jobManager = new JobManager(gridAddress.Text);
       jobManager.Reset();
       RunScheduler scheduler = new RunScheduler(database, jobManager);
-      ThreadPool.QueueUserWorkItem(delegate(object status) { scheduler.Run(); });
+      Thread runSchedulerThread = new Thread(scheduler.Run);
+      runSchedulerThread.Start();
     }
 
     private void InitDatabase() {

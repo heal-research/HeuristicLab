@@ -36,10 +36,19 @@ namespace HeuristicLab.CEDMA.Server {
     private JobManager jobManager;
     private const int RELEASE_INTERVAL = 5;
     private object remoteCommLock = new object();
+    private object collectionsLock = new object();
+    private Queue<WaitHandle> waithandles;
+    private Dictionary<WaitHandle, AtomicOperation> runningOperations;
+    private Dictionary<WaitHandle, long> runningEntries;
 
     public RunScheduler(Database database, JobManager jobManager) {
       this.database = database;
       this.jobManager = jobManager;
+      runningOperations = new Dictionary<WaitHandle, AtomicOperation>();
+      runningEntries = new Dictionary<WaitHandle, long>();
+      waithandles = new Queue<WaitHandle>();
+      Thread resultsGatheringThread = new Thread(GatherResults);
+      resultsGatheringThread.Start();
     }
     public void Run() {
       while(true) {
@@ -63,21 +72,38 @@ namespace HeuristicLab.CEDMA.Server {
           database.UpdateRunStart(entry.Id, DateTime.Now);
         }
 
-        ThreadPool.QueueUserWorkItem(WaitForFinishedRun, new object[] {wHandle, op, entry});
+        lock(collectionsLock) {
+          waithandles.Enqueue(wHandle);
+          runningOperations[wHandle] = op;
+          runningEntries[wHandle] = entry.Id;
+        }
       }
     }
 
-    private void WaitForFinishedRun(object state) {
-      object[] param = (object[])state;
-      WaitHandle wHandle = (WaitHandle)param[0];
-      AtomicOperation op = (AtomicOperation)param[1];
-      RunEntry entry = (RunEntry)param[2];
-      wHandle.WaitOne();
-      wHandle.Close();
-      lock(remoteCommLock) {
-        jobManager.EndExecuteOperation(op);
-        database.UpdateRunStatus(entry.Id, ProcessStatus.Finished);
-        database.UpdateRunFinished(entry.Id, DateTime.Now);
+    private void GatherResults() {
+      while(true) {
+        if(waithandles.Count == 0) Thread.Sleep(1000);
+        else {
+          WaitHandle w;
+          lock(collectionsLock) {
+            w = waithandles.Dequeue();
+          }
+          w.WaitOne();
+          long id;
+          AtomicOperation op;
+          lock(collectionsLock) {
+            id = runningEntries[w];
+            runningEntries.Remove(w);
+            op = runningOperations[w];
+            runningOperations.Remove(w);
+          }
+          w.Close();
+          lock(remoteCommLock) {
+            jobManager.EndExecuteOperation(op);
+            database.UpdateRunStatus(id, ProcessStatus.Finished);
+            database.UpdateRunFinished(id, DateTime.Now);
+          }
+        }
       }
     }
   }

@@ -45,7 +45,8 @@ namespace HeuristicLab.CEDMA.Server {
       while(true) {
         ClearFinishedEngines();
         CreateNewEngines();
-        StepAllEngines();
+        if(engines.Count == 0) Thread.Sleep(10000);
+        else StepAllEngines();
       }
     }
     private void ClearFinishedEngines() {
