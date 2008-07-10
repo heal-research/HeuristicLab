@@ -27,7 +27,7 @@ using System.IO.Compression;
 using System.IO;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public static class DbPersistenceManager {
     public static IStorable Restore(byte[] serializedStorable) {
       GZipStream stream = new GZipStream(new MemoryStream(serializedStorable), CompressionMode.Decompress);

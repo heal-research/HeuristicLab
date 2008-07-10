@@ -77,11 +77,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.DB.Inter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.DB", "HeuristicLab.CEDMA.DB\HeuristicLab.CEDMA.DB.csproj", "{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Console", "HeuristicLab.CEDMA.Console\HeuristicLab.CEDMA.Console.csproj", "{F8880599-F224-4EC7-9288-5C4A6853E7BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Operators", "HeuristicLab.CEDMA.Operators\HeuristicLab.CEDMA.Operators.csproj", "{6BC692D4-8843-4945-ACE4-5B41ED55476A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Server", "HeuristicLab.CEDMA.Server\HeuristicLab.CEDMA.Server.csproj", "{F05D261A-4F7D-46C9-AB9C-21FD4566D719}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Core", "HeuristicLab.CEDMA.Core\HeuristicLab.CEDMA.Core.csproj", "{C27DDF6C-84DF-45EF-B82F-57A28DD51166}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -229,10 +229,6 @@ Global
 		{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8880599-F224-4EC7-9288-5C4A6853E7BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8880599-F224-4EC7-9288-5C4A6853E7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8880599-F224-4EC7-9288-5C4A6853E7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8880599-F224-4EC7-9288-5C4A6853E7BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6BC692D4-8843-4945-ACE4-5B41ED55476A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6BC692D4-8843-4945-ACE4-5B41ED55476A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BC692D4-8843-4945-ACE4-5B41ED55476A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -241,6 +237,10 @@ Global
 		{F05D261A-4F7D-46C9-AB9C-21FD4566D719}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F05D261A-4F7D-46C9-AB9C-21FD4566D719}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F05D261A-4F7D-46C9-AB9C-21FD4566D719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

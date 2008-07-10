@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.CEDMA.Console {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Console")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Console.dll", Filetype = PluginFileType.Assembly)]
+namespace HeuristicLab.CEDMA.Core {
+  [ClassInfo(Name = "HeuristicLab.CEDMA.Core")]
+  [PluginFile(Filename = "HeuristicLab.CEDMA.Core.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
   [Dependency(Dependency = "HeuristicLab.CEDMA.Server")]
-  public class HeuristicLabCedmaConsolePlugin : PluginBase {
+  public class HeuristicLabCedmaCorePlugin : PluginBase {
   }
 }

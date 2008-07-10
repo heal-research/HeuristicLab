@@ -30,7 +30,7 @@ using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public class AgentList : ItemBase, IAgentList {
     private string serverUri;
     private List<IAgent> agentList;

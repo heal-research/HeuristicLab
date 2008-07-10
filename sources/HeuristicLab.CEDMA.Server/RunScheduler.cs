@@ -27,7 +27,7 @@ using HeuristicLab.CEDMA.DB;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using HeuristicLab.Core;
 using System.Threading;
-using HeuristicLab.CEDMA.Console;
+using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Grid;
 
 namespace HeuristicLab.CEDMA.Server {

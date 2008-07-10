@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public interface IAgent : IDatabaseItem {
     string Name { get; }
     ProcessStatus Status { get; }

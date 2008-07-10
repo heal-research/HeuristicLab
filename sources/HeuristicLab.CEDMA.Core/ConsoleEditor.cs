@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using System.Windows.Forms;
 using System.ServiceModel;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   class ConsoleEditor : EditorBase {
     private System.Windows.Forms.TextBox uriTextBox;
     private System.Windows.Forms.Label uriLabel;

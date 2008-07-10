@@ -28,7 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public partial class AgentListView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 

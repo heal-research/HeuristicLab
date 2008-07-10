@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public class Agent : ItemBase, IAgent {
     public IDatabase Database { get; set; }
     public long Id { get; set; }
@@ -44,7 +44,8 @@ namespace HeuristicLab.CEDMA.Console {
       operatorGraph = new OperatorGraph();
     }
 
-    public Agent(IDatabase database, long id) : this() {
+    public Agent(IDatabase database, long id)
+      : this() {
       Database = database;
       Id = id;
     }

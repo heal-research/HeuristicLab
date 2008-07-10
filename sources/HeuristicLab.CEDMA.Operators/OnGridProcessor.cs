@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using System.Threading;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.Console;
+using HeuristicLab.CEDMA.Core;
 
 namespace HeuristicLab.CEDMA.Operators {
   public class OnGridProcessor : OperatorBase {

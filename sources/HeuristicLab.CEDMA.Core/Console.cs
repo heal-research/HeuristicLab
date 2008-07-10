@@ -29,7 +29,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
     private AgentList agentList;
     private ChannelFactory<IDatabase> factory;

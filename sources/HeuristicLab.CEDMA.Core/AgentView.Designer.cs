@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   partial class AgentView {
     /// <summary> 
     /// Required designer variable.
@@ -31,7 +31,7 @@ namespace HeuristicLab.CEDMA.Console {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
+      if(disposing && (components != null)) {
         components.Dispose();
       }
       base.Dispose(disposing);

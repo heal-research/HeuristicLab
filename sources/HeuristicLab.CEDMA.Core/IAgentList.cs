@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public interface IAgentList : IItem, IEnumerable<IAgent> {
     void CreateAgent();
   }

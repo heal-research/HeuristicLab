@@ -72,9 +72,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.CEDMA.Console\HeuristicLab.CEDMA.Console.csproj">
-      <Project>{F8880599-F224-4EC7-9288-5C4A6853E7BE}</Project>
-      <Name>HeuristicLab.CEDMA.Console</Name>
+    <ProjectReference Include="..\HeuristicLab.CEDMA.Core\HeuristicLab.CEDMA.Core.csproj">
+      <Project>{C27DDF6C-84DF-45EF-B82F-57A28DD51166}</Project>
+      <Name>HeuristicLab.CEDMA.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.CEDMA.DB.Interfaces\HeuristicLab.CEDMA.DB.Interfaces.csproj">
       <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>

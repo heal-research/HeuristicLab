@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
-namespace HeuristicLab.CEDMA.Console {
+namespace HeuristicLab.CEDMA.Core {
   public partial class AgentView : ViewBase {
     public IAgent Agent {
       get { return (IAgent)Item; }
