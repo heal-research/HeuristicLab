@@ -62,7 +62,7 @@ namespace HeuristicLab.Grid {
         IOperation next = null;
         try {
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
-        } catch(Exception ex) {
+        } catch(Exception) {
           // push operation on stack again
           myExecutionStack.Push(atomicOperation);
           Abort();

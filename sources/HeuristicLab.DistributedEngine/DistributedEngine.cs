@@ -36,7 +36,6 @@ using System.Diagnostics;
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
     private JobManager jobManager;
-    private CompositeOperation waitingOperations;
     private string serverAddress;
     public string ServerAddress {
       get { return serverAddress; }

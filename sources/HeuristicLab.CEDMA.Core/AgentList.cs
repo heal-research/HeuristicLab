@@ -32,7 +32,6 @@ using System.IO;
 
 namespace HeuristicLab.CEDMA.Core {
   public class AgentList : ItemBase, IAgentList {
-    private string serverUri;
     private List<IAgent> agentList;
     private IDatabase database;
     public IDatabase Database {

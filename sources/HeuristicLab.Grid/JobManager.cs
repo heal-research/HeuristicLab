@@ -188,10 +188,10 @@ namespace HeuristicLab.Grid {
             server.BeginExecuteEngine(zippedEngine);
           }
           return;
-        } catch(TimeoutException timeoutException) {
+        } catch(TimeoutException) {
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException communicationException) {
+        } catch(CommunicationException) {
           ResetConnection();
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
@@ -207,10 +207,10 @@ namespace HeuristicLab.Grid {
             byte[] zippedResult = server.TryEndExecuteEngine(engineGuid, 100);
             return zippedResult;
           }
-        } catch(TimeoutException timeoutException) {
+        } catch(TimeoutException) {
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException communicationException) {
+        } catch(CommunicationException) {
           ResetConnection();
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
@@ -228,10 +228,10 @@ namespace HeuristicLab.Grid {
             JobState jobState = server.JobState(engineGuid);
             return jobState;
           }
-        } catch(TimeoutException timeoutException) {
+        } catch(TimeoutException) {
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException communicationException) {
+        } catch(CommunicationException) {
           ResetConnection();
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));

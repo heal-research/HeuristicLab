@@ -30,8 +30,6 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Core {
   public partial class AgentListView : ViewBase {
-    private ChooseItemDialog chooseItemDialog;
-
     public IAgentList AgentList {
       get { return (IAgentList)Item; }
       set { base.Item = value; }

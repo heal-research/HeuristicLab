@@ -52,7 +52,7 @@ namespace HeuristicLab.CEDMA.Core {
       return new ConsoleEditor(this);
     }
 
-    public IView CreateView() {
+    public override IView CreateView() {
       return new ConsoleEditor(this);
     }
 

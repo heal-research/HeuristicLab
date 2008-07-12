@@ -110,13 +110,13 @@ namespace HeuristicLab.Grid {
         if(stopped) return;
         try {
           gotEngine = engineStore.TryTakeEngine(out currentGuid, out engineXml);
-        } catch(TimeoutException timeoutException) {
+        } catch(TimeoutException) {
           currentEngine = null;
           currentGuid = Guid.Empty;
           // timeout -> just start the timer again
           fetchOperationTimer.Interval = 5000;
           fetchOperationTimer.Start();
-        } catch(CommunicationException communicationException) {
+        } catch(CommunicationException) {
           // connection problem -> reset connection and start the timer again
           ResetConnection();
           currentEngine = null;
@@ -154,11 +154,11 @@ namespace HeuristicLab.Grid {
             try {
               engineStore.StoreResult(currentGuid, resultXml);
               success = true;
-            } catch(TimeoutException timeoutException) {
+            } catch(TimeoutException) {
               success = false;
               retries++;
               Thread.Sleep(TimeSpan.FromSeconds(CONNECTION_RETRY_TIMEOUT_SEC));
-            } catch(CommunicationException communicationException) {
+            } catch(CommunicationException) {
               ResetConnection();
               success = false;
               retries++;

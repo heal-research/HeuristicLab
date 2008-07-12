@@ -64,7 +64,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         default:
           // this method is not defined for actions other than "Install" and "Remove"
           throw new InvalidOperationException();
-          return "";
       }
     }
   }
