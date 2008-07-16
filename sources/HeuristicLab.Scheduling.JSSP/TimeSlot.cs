@@ -40,12 +40,15 @@ namespace HeuristicLab.Scheduling.JSSP {
       }
     } 
     public Operation operation;
+    public List<TimeSlot> dependentSlots;
+    public TimeSlot parent; 
 
     public TimeSlot(int start, int end) {
       this.start = start;
       this.end = end;
       free = end - start;
       maxFreeSlot = end - start;
+      dependentSlots = new List<TimeSlot>(); 
     }
 
     public TimeSlot(Operation op) {
@@ -54,6 +57,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       end = op.Start + op.Duration;
       free = 0;
       maxFreeSlot = 0;
+      dependentSlots = new List<TimeSlot>(); 
     }
 
     public TimeSlot(string s) {
@@ -71,6 +75,7 @@ namespace HeuristicLab.Scheduling.JSSP {
         }
         operation = new Operation(job, start, end - start, opIndex, machines, null); 
       }
+      dependentSlots = new List<TimeSlot>(); 
     }
 
     public override string ToString() {

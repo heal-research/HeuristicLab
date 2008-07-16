@@ -124,7 +124,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       }
     }
 
-    private int Insert(ScheduleTreeNode slot, Operation op) {
+    public int Insert(ScheduleTreeNode slot, Operation op) {
       if (op == null) {
         return -1;
       }
@@ -176,7 +176,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       return ((slot.Right == null) && (slot.Left == null));
     }
 
-    public ScheduleTreeNode GetFirstSlot() { // left-most slot
+    public ScheduleTreeNode GetFirstNode() { // left-most slot
       ScheduleTreeNode node = root;
       while (node.Left != null) {
         node = node.Left;
@@ -184,7 +184,7 @@ namespace HeuristicLab.Scheduling.JSSP {
       return node; 
     }
 
-    public ScheduleTreeNode GetLastSlot() { // right-most slot
+    public ScheduleTreeNode GetLastNode() { // right-most slot
       ScheduleTreeNode node = root;
       while (node.Right != null) {
         node = node.Right;
