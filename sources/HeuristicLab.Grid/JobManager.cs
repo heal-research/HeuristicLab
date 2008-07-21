@@ -55,8 +55,8 @@ namespace HeuristicLab.Grid {
     private object connectionLock = new object();
     private object dictionaryLock = new object();
 
-    private ManualResetEvent runningWaitHandle = new ManualResetEvent(false);
-    private ManualResetEvent waitingWaitHandle = new ManualResetEvent(false);
+    private AutoResetEvent runningWaitHandle = new AutoResetEvent(false);
+    private AutoResetEvent waitingWaitHandle = new AutoResetEvent(false);
 
     private ChannelFactory<IGridServer> factory;
 
@@ -170,7 +170,6 @@ namespace HeuristicLab.Grid {
           } else {
             // no engines are waiting
             waitingWaitHandle.WaitOne();
-            waitingWaitHandle.Reset();
           }
         }
       } finally {
@@ -220,7 +219,6 @@ namespace HeuristicLab.Grid {
           } else {
             // no running engines
             runningWaitHandle.WaitOne();
-            runningWaitHandle.Reset();
           }
         }
       } finally {
