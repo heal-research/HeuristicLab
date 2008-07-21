@@ -52,7 +52,7 @@ namespace HeuristicLab.CEDMA.Server {
     private void ClearFinishedEngines() {
       List<IEngine> finishedEngines = new List<IEngine>();
       foreach(IEngine e in engines) {
-        if(!e.Running) {
+        if(e.Terminated) {
           finishedEngines.Add(e);
         }
       }
