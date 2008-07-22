@@ -33,7 +33,7 @@ namespace HeuristicLab.CEDMA.Core {
     public long Id { get; set; }
     public string Summary { get; set; }
     public string Description { get; set; }
-    public IItem result;
+    public IItem Item { get; set; }
     public Result()
       : base() {
     }
@@ -50,6 +50,11 @@ namespace HeuristicLab.CEDMA.Core {
         List<IResult> results = new List<IResult>();
         foreach(ResultEntry entry in Database.GetSubResults(Id)) {
           Result result = (Result)DbPersistenceManager.Restore(entry.RawData);
+          result.Database = Database;
+          result.Id = entry.Id;
+          result.Summary = entry.Summary;
+          result.Description = entry.Description;
+          results.Add(result);
         }
         return results;
       }
@@ -58,19 +63,18 @@ namespace HeuristicLab.CEDMA.Core {
     #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Result", result, document, persistedObjects));
+      node.AppendChild(PersistenceManager.Persist("Item", Item, document, persistedObjects));
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      result = (IItem)PersistenceManager.Restore(node.SelectSingleNode("Result"), restoredObjects);
+      Item = (IItem)PersistenceManager.Restore(node.SelectSingleNode("Item"), restoredObjects);
     }
     #endregion
 
-    // TASK: create class ResultView
-    //public override IView CreateView() {
-    //  return new ResultView(this);
-    //}
+    public override IView CreateView() {
+      return Item.CreateView();
+    }
   }
 }

@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScopeResultWriter.cs" />
     <Compile Include="HeuristicLabCedmaOperatorsPlugin.cs" />
     <Compile Include="OnGridProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

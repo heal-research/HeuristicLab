@@ -322,16 +322,16 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, ParentAgentId, name, status, ControllerAgent, rawdata from Agent";
+            c.CommandText = "Select id, name, status, ControllerAgent, rawdata from Agent where ParentAgentId isnull";
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 AgentEntry agent = new AgentEntry();
+                agent.ParentAgentId = null;
                 agent.Id = r.GetInt32(0);
-                agent.ParentAgentId = r.IsDBNull(1) ? null : new Nullable<long>(r.GetInt32(1));
-                agent.Name = r.IsDBNull(2)?"-":r.GetString(2);
-                agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
-                agent.ControllerAgent = r.GetBoolean(4);
-                agent.RawData = (byte[])r.GetValue(5);
+                agent.Name = r.IsDBNull(1)?"-":r.GetString(1);
+                agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
+                agent.ControllerAgent = r.GetBoolean(3);
+                agent.RawData = (byte[])r.GetValue(4);
                 agents.Add(agent);
               }
             }

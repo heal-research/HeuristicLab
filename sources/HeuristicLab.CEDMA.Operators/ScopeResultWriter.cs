@@ -30,28 +30,22 @@ using System.ServiceModel;
 using HeuristicLab.CEDMA.Core;
 
 namespace HeuristicLab.CEDMA.Operators {
-  public class OnGridProcessor : OperatorBase {
+  public class ScopeResultWriter : OperatorBase {
     public override string Description {
       get { return "TASK."; }
     }
 
-    public OnGridProcessor()
+    public ScopeResultWriter()
       : base() {
       AddVariableInfo(new VariableInfo("AgentId", "Id of the agent that the run should be associated to.", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorGraph", "The operator graph that should be executed on the grid", typeof(IOperatorGraph), VariableKind.In));
       AddVariableInfo(new VariableInfo("CedmaServerUri", "Uri of the CEDMA server", typeof(StringData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
-      IOperatorGraph operatorGraph = scope.GetVariableValue<IOperatorGraph>("OperatorGraph", false);
       string serverUrl = scope.GetVariableValue<StringData>("CedmaServerUri", true).Data;
       long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
-
-      Agent agent = new Agent();
-      foreach(IOperator op in operatorGraph.Operators) {
-        agent.OperatorGraph.AddOperator(op);
-      }
-      agent.OperatorGraph.InitialOperator = operatorGraph.InitialOperator;
+      Result result = new Result();
+      result.Item = scope;
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
@@ -60,8 +54,7 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        long id = database.InsertAgent(agentId, null, false, DbPersistenceManager.Save(agent));
-        database.UpdateAgent(id, ProcessStatus.Waiting);
+        database.InsertResult(agentId, scope.Name, "Scope", DbPersistenceManager.Save(result));
       }
       return null;
     }

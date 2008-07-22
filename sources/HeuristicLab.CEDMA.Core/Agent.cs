@@ -82,6 +82,11 @@ namespace HeuristicLab.CEDMA.Core {
         List<IResult> results = new List<IResult>();
         foreach(ResultEntry entry in Database.GetResults(Id)) {
           Result result = (Result)DbPersistenceManager.Restore(entry.RawData);
+          result.Database = Database;
+          result.Id = entry.Id;
+          result.Summary = entry.Summary;
+          result.Description = entry.Description;
+          results.Add(result);
         }
         return results;
       }

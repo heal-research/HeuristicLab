@@ -78,20 +78,31 @@ namespace HeuristicLab.CEDMA.Core {
 
     private void agentTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
       e.Node.Nodes.Clear();
-      IAgent agent = (IAgent)e.Node.Tag;
-      foreach(IAgent subAgent in agent.SubAgents) {
-        TreeNode node = new TreeNode();
-        node.Text = subAgent.Name;
-        node.Tag = subAgent;
-        node.Nodes.Add("dummy");
-        e.Node.Nodes.Add(node);
-      }
-      foreach(IResult result in agent.Results) {
-        TreeNode node = new TreeNode();
-        node.Text = result.Summary;
-        node.Tag = result;
-        node.Nodes.Add("dummy");
-        e.Node.Nodes.Add(node);
+      if(e.Node.Tag is IAgent) {
+        IAgent agent = (IAgent)e.Node.Tag;
+        foreach(IAgent subAgent in agent.SubAgents) {
+          TreeNode node = new TreeNode();
+          node.Text = subAgent.Name;
+          node.Tag = subAgent;
+          node.Nodes.Add("dummy");
+          e.Node.Nodes.Add(node);
+        }
+        foreach(IResult result in agent.Results) {
+          TreeNode node = new TreeNode();
+          node.Text = result.Summary;
+          node.Tag = result;
+          node.Nodes.Add("dummy");
+          e.Node.Nodes.Add(node);
+        }
+      } else if(e.Node.Tag is IResult) {
+        IResult result = (IResult)e.Node.Tag;
+        foreach(IResult subResult in result.SubResults) {
+          TreeNode node = new TreeNode();
+          node.Text = subResult.Summary;
+          node.Tag = subResult;
+          node.Nodes.Add("dummy");
+          e.Node.Nodes.Add(node);
+        }
       }
     }
 
