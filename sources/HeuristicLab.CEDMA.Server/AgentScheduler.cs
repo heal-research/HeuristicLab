@@ -28,15 +28,18 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.CEDMA.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.CEDMA.Server {
   public class AgentScheduler {
     private Database database;
     private List<IEngine> engines;
     private Dictionary<IEngine, AgentEntry> agent;
+    private string serverUri;
 
-    public AgentScheduler(Database database) {
+    public AgentScheduler(Database database, string serverUri) {
       this.database = database;
+      this.serverUri = serverUri;
       engines = new List<IEngine>();
       agent = new Dictionary<IEngine, AgentEntry>();
     }
@@ -72,6 +75,10 @@ namespace HeuristicLab.CEDMA.Server {
         foreach(IOperator op in newAgent.OperatorGraph.Operators) engine.OperatorGraph.AddOperator(op);
         engine.OperatorGraph.InitialOperator = newAgent.OperatorGraph.InitialOperator;
         engine.Reset();
+
+        // initialize CEDMA variables for the execution of the agent
+        engine.GlobalScope.AddVariable(new Variable("AgentId", new IntData((int)a.Id)));
+        engine.GlobalScope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
 
         agent[engine] = a;
         engines.Add(engine);

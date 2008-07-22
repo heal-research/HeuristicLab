@@ -39,14 +39,20 @@ namespace HeuristicLab.CEDMA.Operators {
       : base() {
       AddVariableInfo(new VariableInfo("AgentId", "Id of the agent that the run should be associated to.", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorGraph", "The operator graph that should be executed on the grid", typeof(IOperatorGraph), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ServerUrl", "Url of the CEDMA server", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("CedmaServerUri", "Uri of the CEDMA server", typeof(StringData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       
       IOperatorGraph operatorGraph = scope.GetVariableValue<IOperatorGraph>("OperatorGraph", false);
-      string serverUrl = scope.GetVariableValue<StringData>("ServerUrl", true).Data;
+      string serverUrl = scope.GetVariableValue<StringData>("CedmaServerUri", true).Data;
       long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
+
+      Agent agent = new Agent();
+      foreach(IOperator op in operatorGraph.Operators) {
+        agent.OperatorGraph.AddOperator(op);
+      }
+      agent.OperatorGraph.InitialOperator = operatorGraph.InitialOperator;
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
@@ -55,7 +61,7 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        long id = database.InsertAgent(agentId, null, false, DbPersistenceManager.Save(operatorGraph));
+        long id = database.InsertAgent(agentId, null, false, DbPersistenceManager.Save(agent));
         database.UpdateAgent(id, ProcessStatus.Waiting);
       }
       return null;

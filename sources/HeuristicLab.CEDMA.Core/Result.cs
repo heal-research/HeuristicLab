@@ -28,59 +28,27 @@ using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
-  public class Agent : ItemBase, IAgent {
+  public class Result : ItemBase, IResult {
     public IDatabase Database { get; set; }
     public long Id { get; set; }
-    public string Name { get; set; }
-    public ProcessStatus Status { get; set; }
-    public bool Terminated { get; set; }
-    private OperatorGraph operatorGraph;
-
-    public IOperatorGraph OperatorGraph {
-      get { return operatorGraph; }
-    }
-
-    public Agent()
+    public string Summary { get; set; }
+    public string Description { get; set; }
+    public IItem result;
+    public Result()
       : base() {
-      operatorGraph = new OperatorGraph();
     }
 
-    public Agent(IDatabase database, long id)
+    public Result(IDatabase database, long id)
       : this() {
       Database = database;
       Id = id;
     }
 
-    public void Save() {
-      Database.UpdateAgent(Id, Name);
-      Database.UpdateAgent(Id, Status);
-      Database.UpdateAgent(Id, DbPersistenceManager.Save(this));
-    }
 
-    public void Start() {
-      Status = ProcessStatus.Waiting;
-      Save();
-    }
-
-    public ICollection<IAgent> SubAgents {
-      get {
-        List<IAgent> agents = new List<IAgent>();
-        foreach(AgentEntry entry in Database.GetSubAgents(Id)) {
-          Agent newAgent = (Agent)DbPersistenceManager.Restore(entry.RawData);
-          newAgent.Database = Database;
-          newAgent.Id = entry.Id;
-          newAgent.Name = entry.Name;
-          newAgent.Status = entry.Status;
-          agents.Add(newAgent);
-        }
-        return agents;
-      }
-    }
-
-    public ICollection<IResult> Results {
+    public ICollection<IResult> SubResults {
       get {
         List<IResult> results = new List<IResult>();
-        foreach(ResultEntry entry in Database.GetResults(Id)) {
+        foreach(ResultEntry entry in Database.GetSubResults(Id)) {
           Result result = (Result)DbPersistenceManager.Restore(entry.RawData);
         }
         return results;
@@ -90,18 +58,19 @@ namespace HeuristicLab.CEDMA.Core {
     #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("OperatorGraph", operatorGraph, document, persistedObjects));
+      node.AppendChild(PersistenceManager.Persist("Result", result, document, persistedObjects));
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      operatorGraph = (OperatorGraph)PersistenceManager.Restore(node.SelectSingleNode("OperatorGraph"), restoredObjects);
+      result = (IItem)PersistenceManager.Restore(node.SelectSingleNode("Result"), restoredObjects);
     }
     #endregion
 
-    public override IView CreateView() {
-      return new AgentView(this);
-    }
+    // TASK: create class ResultView
+    //public override IView CreateView() {
+    //  return new ResultView(this);
+    //}
   }
 }

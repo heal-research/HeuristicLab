@@ -37,6 +37,8 @@ namespace HeuristicLab.CEDMA.Core {
     private ComboBox comboBox1;
     private Label projectLabel;
     private Button newButton;
+    private Timer refreshTimer;
+    private System.ComponentModel.IContainer components;
     private Console console;
 
     public ConsoleEditor(Console console) {
@@ -45,6 +47,7 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.uriTextBox = new System.Windows.Forms.TextBox();
       this.uriLabel = new System.Windows.Forms.Label();
       this.tabControl = new System.Windows.Forms.TabControl();
@@ -53,6 +56,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.projectLabel = new System.Windows.Forms.Label();
       this.newButton = new System.Windows.Forms.Button();
+      this.refreshTimer = new System.Windows.Forms.Timer(this.components);
       this.tabControl.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -134,6 +138,11 @@ namespace HeuristicLab.CEDMA.Core {
       this.newButton.Text = "New...";
       this.newButton.UseVisualStyleBackColor = true;
       // 
+      // refreshTimer
+      // 
+      this.refreshTimer.Interval = 3000;
+      this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
+      // 
       // ConsoleEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -160,10 +169,17 @@ namespace HeuristicLab.CEDMA.Core {
         agentsPage.Controls.Clear();
         agentsPage.Controls.Add((Control)console.AgentList.CreateView());
         agentsPage.Controls[0].Dock = DockStyle.Fill;
+        refreshTimer.Enabled = true;
       } catch(CommunicationException ex) {
         // TASK create helper class for error reporting
         MessageBox.Show("Exception while trying to connect to " + uriTextBox.Text + "\n" + ex.Message);
       }
+    }
+
+    private void refreshTimer_Tick(object sender, EventArgs e) {
+      refreshTimer.Stop();
+      UpdateControls();
+      refreshTimer.Enabled = true;
     }
   }
 }

@@ -63,6 +63,7 @@ namespace HeuristicLab.CEDMA.Core {
           TreeNode node = new TreeNode();
           node.Text = agent.Name;
           node.Tag = agent;
+          node.Nodes.Add("dummy");
           agentTreeView.Nodes.Add(node);
         }
       }
@@ -76,6 +77,22 @@ namespace HeuristicLab.CEDMA.Core {
     #endregion
 
     private void agentTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+      e.Node.Nodes.Clear();
+      IAgent agent = (IAgent)e.Node.Tag;
+      foreach(IAgent subAgent in agent.SubAgents) {
+        TreeNode node = new TreeNode();
+        node.Text = subAgent.Name;
+        node.Tag = subAgent;
+        node.Nodes.Add("dummy");
+        e.Node.Nodes.Add(node);
+      }
+      foreach(IResult result in agent.Results) {
+        TreeNode node = new TreeNode();
+        node.Text = result.Summary;
+        node.Tag = result;
+        node.Nodes.Add("dummy");
+        e.Node.Nodes.Add(node);
+      }
     }
 
     private void agentTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
@@ -84,8 +101,8 @@ namespace HeuristicLab.CEDMA.Core {
       detailsGroupBox.Controls.Clear();
       detailsGroupBox.Enabled = false;
       if(agentTreeView.SelectedNode != null) {
-        IAgent agent = (IAgent)agentTreeView.SelectedNode.Tag;
-        Control control = (Control)new AgentView(agent);
+        IViewable viewable = (IViewable)agentTreeView.SelectedNode.Tag;
+        Control control = (Control)viewable.CreateView();
         detailsGroupBox.Controls.Add(control);
         control.Dock = DockStyle.Fill;
         detailsGroupBox.Enabled = true;

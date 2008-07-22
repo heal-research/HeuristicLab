@@ -61,6 +61,7 @@
     <Compile Include="ConsoleEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Result.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="DbPersistenceManager.cs" />
     <Compile Include="HeuristicLabCedmaCorePlugin.cs" />

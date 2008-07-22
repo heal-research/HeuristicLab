@@ -30,6 +30,5 @@ namespace HeuristicLab.CEDMA.Core {
   public interface IDatabaseItem : IItem {
     IDatabase Database { get; set; }
     long Id { get; set; }
-    void Save();
   }
 }

@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
-  public interface IAgent : IDatabaseItem {
+  public interface IAgent : IDatabaseItem, IViewable {
     string Name { get; }
     ProcessStatus Status { get; }
     IOperatorGraph OperatorGraph { get; }
     ICollection<IAgent> SubAgents { get; }
     ICollection<IResult> Results { get; }
     bool Terminated { get; }
-    
+    void Save();
     void Start();
   }
 }

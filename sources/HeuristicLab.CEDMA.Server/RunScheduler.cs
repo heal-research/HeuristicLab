@@ -30,6 +30,7 @@ using System.Threading;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Grid;
 using System.Diagnostics;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.CEDMA.Server {
   public class RunScheduler {
@@ -38,6 +39,7 @@ namespace HeuristicLab.CEDMA.Server {
       public WaitHandle WaitHandle;
       public AtomicOperation Operation;
     }
+    private string serverUri;
     private Database database;
     private JobManager jobManager;
     private const int RELEASE_INTERVAL = 5;
@@ -46,9 +48,10 @@ namespace HeuristicLab.CEDMA.Server {
     private Queue<Job> jobQueue;
     private AutoResetEvent runningJobs = new AutoResetEvent(false);
 
-    public RunScheduler(Database database, JobManager jobManager) {
+    public RunScheduler(Database database, JobManager jobManager, string serverUri) {
       this.database = database;
       this.jobManager = jobManager;
+      this.serverUri = serverUri;
       jobQueue = new Queue<Job>();
       Thread resultsGatheringThread = new Thread(GatherResults);
       resultsGatheringThread.Start();
@@ -65,8 +68,13 @@ namespace HeuristicLab.CEDMA.Server {
         agents = database.GetAgents(ProcessStatus.Waiting).Where(a=>!a.ControllerAgent);
       }
       foreach(AgentEntry entry in agents) {
-        IOperatorGraph opGraph = (IOperatorGraph)DbPersistenceManager.Restore(entry.RawData);
-        AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, new Scope());
+        Agent agent = (Agent)DbPersistenceManager.Restore(entry.RawData);
+        IOperatorGraph opGraph = agent.OperatorGraph;
+        Scope scope = new Scope();
+        // initialize CEDMA variables for the execution of the agent
+        scope.AddVariable(new Variable("AgentId", new IntData((int)entry.Id)));
+        scope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
+        AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, scope);
         WaitHandle wHandle;
         lock(remoteCommLock) {
           wHandle = jobManager.BeginExecuteOperation(op.Scope, op);
