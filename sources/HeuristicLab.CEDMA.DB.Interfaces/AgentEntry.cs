@@ -36,6 +36,8 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [DataMember]
     public string Name { get; set; }
     [DataMember]
+    public DateTime CreationTime { get; set; }
+    [DataMember]
     public ProcessStatus Status { get; set; }
     [DataMember]
     public bool ControllerAgent { get; set; }

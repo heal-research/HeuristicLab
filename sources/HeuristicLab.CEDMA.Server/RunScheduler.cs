@@ -44,6 +44,7 @@ namespace HeuristicLab.CEDMA.Server {
     private object remoteCommLock = new object();
     private object queueLock = new object();
     private Queue<Job> jobQueue;
+    private AutoResetEvent runningJobs = new AutoResetEvent(false);
 
     public RunScheduler(Database database, JobManager jobManager) {
       this.database = database;
@@ -79,6 +80,7 @@ namespace HeuristicLab.CEDMA.Server {
 
         lock(queueLock) {
           jobQueue.Enqueue(job);
+          runningJobs.Set();
         }
       }
     }
@@ -86,19 +88,19 @@ namespace HeuristicLab.CEDMA.Server {
     private void GatherResults() {
       try {
         while(true) {
-          int runningJobs;
-          lock(queueLock) runningJobs = jobQueue.Count;
-          if(runningJobs==0) Thread.Sleep(1000); // TASK: replace with waithandle
+          Job job = null;
+          lock(queueLock) if(jobQueue.Count > 0) job = jobQueue.Dequeue();
+          if(job == null) runningJobs.WaitOne();
           else {
-            Job job;
-            lock(queueLock) {
-              job = jobQueue.Dequeue();
-            }
             job.WaitHandle.WaitOne();
             job.WaitHandle.Close();
             lock(remoteCommLock) {
-              jobManager.EndExecuteOperation(job.Operation);
-              database.UpdateAgent(job.AgentId, ProcessStatus.Finished);
+              try {
+                jobManager.EndExecuteOperation(job.Operation);
+                database.UpdateAgent(job.AgentId, ProcessStatus.Finished);
+              } catch(JobExecutionException ex) {
+                database.UpdateAgent(job.AgentId, ProcessStatus.Error);
+              }
             }
           }
         }
