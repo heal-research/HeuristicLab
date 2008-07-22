@@ -26,7 +26,7 @@ using System.Text;
 
 namespace HeuristicLab.Grid {
   public enum JobState {
-    Unkown,
+    Unknown,
     Waiting,
     Busy,
     Finished

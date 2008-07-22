@@ -183,7 +183,7 @@ namespace HeuristicLab.Grid {
         if(waitingEngines.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Waiting;
         else if(waitHandles.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Busy;
         else if(results.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Finished;
-        else return HeuristicLab.Grid.JobState.Unkown;
+        else return HeuristicLab.Grid.JobState.Unknown;
       }
     }
   }

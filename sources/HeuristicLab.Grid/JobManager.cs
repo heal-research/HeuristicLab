@@ -33,23 +33,30 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
+  public class JobExecutionException : ApplicationException {
+    public JobExecutionException(string msg) : base(msg) { }
+  }
+
   public class JobManager {
     private const int MAX_RESTARTS = 5;
     private const int MAX_CONNECTION_RETRIES = 10;
     private const int RETRY_TIMEOUT_SEC = 60;
     private const int CHECK_RESULTS_TIMEOUT = 3;
 
+    private class Job {
+      public Guid guid;
+      public ProcessingEngine engine;
+      public ManualResetEvent waitHandle;
+      public int restarts;
+    }
+
     private IGridServer server;
     private string address;
     private object waitingQueueLock = new object();
-    private Queue<ProcessingEngine> waitingEngines = new Queue<ProcessingEngine>();
+    private Queue<Job> waitingJobs = new Queue<Job>();
     private object runningQueueLock = new object();
-    private Queue<Guid> runningEngines = new Queue<Guid>();
-
-    private Dictionary<Guid, ProcessingEngine> engines = new Dictionary<Guid, ProcessingEngine>();
-    private Dictionary<ProcessingEngine, ManualResetEvent> waithandles = new Dictionary<ProcessingEngine, ManualResetEvent>();
+    private Queue<Job> runningJobs = new Queue<Job>();
     private Dictionary<AtomicOperation, byte[]> results = new Dictionary<AtomicOperation, byte[]>();
-    private Dictionary<ProcessingEngine, int> restarts = new Dictionary<ProcessingEngine, int>();
 
     private List<IOperation> erroredOperations = new List<IOperation>();
     private object connectionLock = new object();
@@ -71,14 +78,16 @@ namespace HeuristicLab.Grid {
     public void Reset() {
       ResetConnection();
       lock(dictionaryLock) {
-        foreach(WaitHandle wh in waithandles.Values) wh.Close();
-        waithandles.Clear();
-        engines.Clear();
+        foreach(Job j in waitingJobs) {
+          j.waitHandle.Close();
+        }
+        waitingJobs.Clear();
+        foreach(Job j in runningJobs) {
+          j.waitHandle.Close();
+        }
+        runningJobs.Clear();
         results.Clear();
         erroredOperations.Clear();
-        runningEngines.Clear();
-        waitingEngines.Clear();
-        restarts.Clear();
       }
     }
 
@@ -99,77 +108,34 @@ namespace HeuristicLab.Grid {
     public void StartEngines() {
       try {
         while(true) {
-          bool enginesWaiting = false;
+          Job job = null;
           lock(waitingQueueLock) {
-            enginesWaiting = waitingEngines.Count > 0;
+            if(waitingJobs.Count > 0) job = waitingJobs.Dequeue();
           }
-          if(enginesWaiting) {
-            ProcessingEngine engine;
-            lock(waitingQueueLock) {
-              engine = waitingEngines.Dequeue();
-            }
-            int nRestarts = 0;
-            lock(dictionaryLock) {
-              if(restarts.ContainsKey(engine)) {
-                nRestarts = restarts[engine];
-                restarts[engine] = nRestarts + 1;
+          if(job==null) waitingWaitHandle.WaitOne(); // no jobs waiting
+          else {
+            Guid currentEngineGuid = TryStartExecuteEngine(job.engine);
+            if(currentEngineGuid == Guid.Empty) {
+              // couldn't start the job -> requeue
+              if(job.restarts < MAX_RESTARTS) {
+                job.restarts++;
+                lock(waitingQueueLock) waitingJobs.Enqueue(job);
+                waitingWaitHandle.Set();
               } else {
-                restarts[engine] = 0;
-              }
-            }
-            if(nRestarts < MAX_RESTARTS) {
-              byte[] zippedEngine = ZipEngine(engine);
-              Guid currentEngineGuid = Guid.Empty;
-              bool success = false;
-              int retryCount = 0;
-              do {
-                try {
-                  lock(connectionLock) {
-                    currentEngineGuid = server.BeginExecuteEngine(zippedEngine);
-                  }
-                  lock(dictionaryLock) {
-                    engines[currentEngineGuid] = engine;
-                  }
-                  lock(runningQueueLock) {
-                    runningEngines.Enqueue(currentEngineGuid);
-                  }
-
-                  success = true;
-                } catch(TimeoutException timeoutException) {
-                  if(retryCount++ >= MAX_CONNECTION_RETRIES) {
-                    //                  throw new ApplicationException("Maximal number of connection attempts reached. There is a problem with the connection to the grid-server.", timeoutException);
-                    lock(waitingQueueLock) {
-                      waitingEngines.Enqueue(engine);
-                    }
-                    success = true;
-                  }
-                  Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-                } catch(CommunicationException communicationException) {
-                  if(retryCount++ >= MAX_CONNECTION_RETRIES) {
-                    //                  throw new ApplicationException("Maximal number of connection attempts reached. There is a problem with the connection to the grid-server.", communicationException);
-                    lock(waitingQueueLock) {
-                      waitingEngines.Enqueue(engine);
-                    }
-                    success = true;
-                  }
-                  ResetConnection();
-                  Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+                // max restart count reached -> give up on this job and flag error
+                lock(dictionaryLock) {
+                  erroredOperations.Add(job.engine.InitialOperation);
+                  job.waitHandle.Set();
                 }
-              } while(!success); // connection attempts
-            } // restarts
-            else {
-              lock(dictionaryLock) {
-                erroredOperations.Add(engine.InitialOperation);
-                restarts.Remove(engine);
-                Debug.Assert(!engines.ContainsValue(engine));
-                //// clean up and signal the wait handle then return
-                waithandles[engine].Set();
-                waithandles.Remove(engine);
+              }
+            } else {
+              // job started successfully
+              job.guid = currentEngineGuid;
+              lock(runningQueueLock) {
+                runningJobs.Enqueue(job);
+                runningWaitHandle.Set();
               }
             }
-          } else {
-            // no engines are waiting
-            waitingWaitHandle.WaitOne();
           }
         }
       } finally {
@@ -177,48 +143,41 @@ namespace HeuristicLab.Grid {
       }
     }
 
+
     public void GetResults() {
       try {
         while(true) {
-          Guid engineGuid = Guid.Empty;
+          Job job = null;
           lock(runningQueueLock) {
-            if(runningEngines.Count > 0) engineGuid = runningEngines.Dequeue();
+            if(runningJobs.Count > 0) job = runningJobs.Dequeue();
           }
-
-          if(engineGuid != Guid.Empty) {
-            Thread.Sleep(TimeSpan.FromSeconds(CHECK_RESULTS_TIMEOUT));
-            byte[] zippedResult = TryEndExecuteEngine(server, engineGuid);
+          if(job == null) runningWaitHandle.WaitOne(); // no jobs running
+          else {
+            byte[] zippedResult = TryEndExecuteEngine(server, job.guid);
             if(zippedResult != null) { // successful
               lock(dictionaryLock) {
-                ProcessingEngine engine = engines[engineGuid];
-                engines.Remove(engineGuid);
-                restarts.Remove(engine);
                 // store result
-                results[engine.InitialOperation] = zippedResult;
-                // clean up and signal the wait handle then return
-                waithandles[engine].Set();
-                waithandles.Remove(engine);
+                results[job.engine.InitialOperation] = zippedResult;
+                // notify consumer that result is ready
+                job.waitHandle.Set();
               }
             } else {
               // there was a problem -> check the state of the job and restart if necessary
-              JobState jobState = TryGetJobState(server, engineGuid);
-              if(jobState == JobState.Unkown) {
+              JobState jobState = TryGetJobState(server, job.guid);
+              if(jobState == JobState.Unknown) {
+                job.restarts++;
                 lock(waitingQueueLock) {
-                  ProcessingEngine engine = engines[engineGuid];
-                  engines.Remove(engineGuid);
-                  waitingEngines.Enqueue(engine);
+                  waitingJobs.Enqueue(job);
                   waitingWaitHandle.Set();
                 }
               } else {
                 // job still active at the server 
                 lock(runningQueueLock) {
-                  runningEngines.Enqueue(engineGuid);
+                  runningJobs.Enqueue(job);
+                  runningWaitHandle.Set();
                 }
               }
             }
-          } else {
-            // no running engines
-            runningWaitHandle.WaitOne();
           }
         }
       } finally {
@@ -227,13 +186,15 @@ namespace HeuristicLab.Grid {
     }
 
     public WaitHandle BeginExecuteOperation(IScope globalScope, AtomicOperation operation) {
-      ProcessingEngine engine = new ProcessingEngine(globalScope, operation);
-      waithandles[engine] = new ManualResetEvent(false);
+      Job job = new Job();
+      job.engine = new ProcessingEngine(globalScope, operation);
+      job.waitHandle = new ManualResetEvent(false);
+      job.restarts = 0;
       lock(waitingQueueLock) {
-        waitingEngines.Enqueue(engine);
+        waitingJobs.Enqueue(job);
       }
       waitingWaitHandle.Set();
-      return waithandles[engine];
+      return job.waitHandle;
     }
 
     private byte[] ZipEngine(ProcessingEngine engine) {
@@ -249,7 +210,7 @@ namespace HeuristicLab.Grid {
     public ProcessingEngine EndExecuteOperation(AtomicOperation operation) {
       if(erroredOperations.Contains(operation)) {
         erroredOperations.Remove(operation);
-        throw new ApplicationException("Maximal number of job restarts reached. There is a problem with the connection to the grid-server.");
+        throw new JobExecutionException("Maximal number of job restarts reached. There is a problem with the connection to the grid-server.");
       } else {
         byte[] zippedResult = null;
         lock(dictionaryLock) {
@@ -261,6 +222,28 @@ namespace HeuristicLab.Grid {
           return (ProcessingEngine)PersistenceManager.Load(stream);
         }
       }
+    }
+
+    private Guid TryStartExecuteEngine(ProcessingEngine engine) {
+      byte[] zippedEngine = ZipEngine(engine);
+      int retries = 0;
+      Guid guid = Guid.Empty;
+      do {
+        try {
+          lock(connectionLock) {
+            guid = server.BeginExecuteEngine(zippedEngine);
+          }
+          return guid;
+        } catch(TimeoutException) {
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        } catch(CommunicationException) {
+          ResetConnection();
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        }
+      } while(retries < MAX_CONNECTION_RETRIES);
+      return Guid.Empty;
     }
 
     private byte[] TryEndExecuteEngine(IGridServer server, Guid engineGuid) {
@@ -301,7 +284,7 @@ namespace HeuristicLab.Grid {
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
       } while(retries < MAX_CONNECTION_RETRIES);
-      return JobState.Unkown;
+      return JobState.Unknown;
     }
   }
 }
