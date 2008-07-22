@@ -43,6 +43,7 @@ namespace HeuristicLab.CEDMA.Operators {
     }
 
     public override IOperation Apply(IScope scope) {
+      
       IOperatorGraph operatorGraph = scope.GetVariableValue<IOperatorGraph>("OperatorGraph", false);
       string serverUrl = scope.GetVariableValue<StringData>("ServerUrl", true).Data;
       long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
@@ -54,8 +55,8 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        long id = database.InsertRun(agentId, DbPersistenceManager.Save(operatorGraph));
-        database.UpdateRunStatus(id, ProcessStatus.Waiting);
+        long id = database.InsertAgent(agentId, null, false, DbPersistenceManager.Save(operatorGraph));
+        database.UpdateAgent(id, ProcessStatus.Waiting);
       }
       return null;
     }

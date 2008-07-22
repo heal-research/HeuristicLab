@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="AgentEntry.cs" />
     <Compile Include="ProcessStatus.cs" />
-    <Compile Include="RunEntry.cs" />
     <Compile Include="ResultEntry.cs" />
     <Compile Include="HeuristicLabCedmaDbInterfacesPlugin.cs" />
     <Compile Include="IDatabase.cs" />

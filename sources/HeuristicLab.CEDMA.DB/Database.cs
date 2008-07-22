@@ -54,17 +54,12 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, Name text, Status text default 'Unknown', RawData Blob)";
+              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, ParentAgentId integer, Name text, Status text default 'Unknown', ControllerAgent integer, RawData Blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Run (ID integer primary key autoincrement, AgentId integer, CreationTime DateTime, StartTime DateTime, FinishedTime DateTime, Status text default 'Unknown', RawData Blob)";
-              cmd.Transaction = t;
-              cmd.ExecuteNonQuery();
-            }
-            using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Result (ID integer primary key autoincrement, RunId integer, ResultId integer, CreationTime DateTime, RawData Blob)";
+              cmd.CommandText = "CREATE TABLE Result (ID integer primary key autoincrement, AgentId integer, ParentResultId integer, Summary text, Description text, CreationTime DateTime, RawData Blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -78,7 +73,7 @@ namespace HeuristicLab.CEDMA.DB {
     #endregion
 
     #region insert agent/run/result/sub-result
-    public long InsertAgent(string name, byte[] rawData) {
+    public long InsertAgent(long? parentAgentId, string name, bool controllerAgent, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
@@ -87,11 +82,19 @@ namespace HeuristicLab.CEDMA.DB {
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
-              c.CommandText = "Insert into Agent (Name, RawData) values (@Name, @RawData); select last_insert_rowid()";
+              c.CommandText = "Insert into Agent (Name, ParentAgentId, ControllerAgent, RawData) values (@Name, @ParentAgentId, @ControllerAgent, @RawData); select last_insert_rowid()";
               DbParameter nameParam = c.CreateParameter();
               nameParam.ParameterName = "@Name";
               nameParam.Value = name;
               c.Parameters.Add(nameParam);
+              DbParameter parentParam = c.CreateParameter();
+              parentParam.ParameterName = "@ParentAgentId";
+              parentParam.Value = parentAgentId;
+              c.Parameters.Add(parentParam);
+              DbParameter controllerParam = c.CreateParameter();
+              controllerParam.ParameterName = "@ControllerAgent";
+              controllerParam.Value = controllerAgent;
+              c.Parameters.Add(controllerParam);
               DbParameter dataParam = c.CreateParameter();
               dataParam.ParameterName = "@RawData";
               dataParam.Value = rawData;
@@ -107,7 +110,7 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
-    public long InsertRun(long agentId, byte[] rawData) {
+    public long InsertResult(long agentId, string summary, string description, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
@@ -116,7 +119,7 @@ namespace HeuristicLab.CEDMA.DB {
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
-              c.CommandText = "Insert into Run (AgentId, CreationTime, RawData) values (@AgentId, @CreationTime, @RawData); select last_insert_rowid()";
+              c.CommandText = "Insert into Result (AgentId, CreationTime, Summary, Description, RawData) values (@AgentId, @CreationTime, @Summary, @Description, @RawData); select last_insert_rowid()";
               DbParameter agentIdParam = c.CreateParameter();
               agentIdParam.ParameterName = "@AgentId";
               agentIdParam.Value = agentId;
@@ -126,6 +129,14 @@ namespace HeuristicLab.CEDMA.DB {
               DateTime now = DateTime.Now;
               creationParam.Value = now;
               c.Parameters.Add(creationParam);
+              DbParameter summaryParam = c.CreateParameter();
+              summaryParam.ParameterName = "@Summary";
+              summaryParam.Value = summary;
+              c.Parameters.Add(summaryParam);
+              DbParameter descParam = c.CreateParameter();
+              descParam.ParameterName = "@Description";
+              descParam.Value = description;
+              c.Parameters.Add(descParam);
               DbParameter rawDataParam = c.CreateParameter();
               rawDataParam.ParameterName = "@RawData";
               rawDataParam.Value = rawData;
@@ -141,7 +152,7 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
-    public long InsertResult(long runId, byte[] rawData) {
+    public long InsertSubResult(long resultId, string summary, string description, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
@@ -150,43 +161,9 @@ namespace HeuristicLab.CEDMA.DB {
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
-              c.CommandText = "Insert into Result (RunId, CreationTime, RawData) values (@RunId, @CreationTime, @RawData); select last_insert_rowid()";
-              DbParameter runIdParam = c.CreateParameter();
-              runIdParam.ParameterName = "@RunId";
-              runIdParam.Value = runId;
-              c.Parameters.Add(runIdParam);
-              DbParameter creationParam = c.CreateParameter();
-              creationParam.ParameterName = "@CreationTime";
-              DateTime now = DateTime.Now;
-              creationParam.Value = now;
-              c.Parameters.Add(creationParam);
-              DbParameter rawDataParam = c.CreateParameter();
-              rawDataParam.ParameterName = "@RawData";
-              rawDataParam.Value = rawData;
-              c.Parameters.Add(rawDataParam);
-              id = (long)c.ExecuteScalar();
-            }
-            t.Commit();
-            return id;
-          }
-        }
-      } finally {
-        rwLock.ExitWriteLock();
-      }
-    }
-
-    public long InsertSubResult(long resultId, byte[] rawData) {
-      rwLock.EnterWriteLock();
-      try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
-          cnn.Open();
-          long id;
-          using(DbTransaction t = cnn.BeginTransaction()) {
-            using(DbCommand c = cnn.CreateCommand()) {
-              c.Transaction = t;
-              c.CommandText = "Insert into Result (ResultId, CreationTime, RawData) values (@ResultId, @CreationTime, @RawData); select last_insert_rowid()";
+              c.CommandText = "Insert into Result (ParentResultId, CreationTime, Summary, Description, RawData) values (@ParentResultId, @CreationTime, @Summary, @Description, @RawData); select last_insert_rowid()";
               DbParameter resultIdParam = c.CreateParameter();
-              resultIdParam.ParameterName = "@ResultId";
+              resultIdParam.ParameterName = "@ParentResultId";
               resultIdParam.Value = resultId;
               c.Parameters.Add(resultIdParam);
               DbParameter creationParam = c.CreateParameter();
@@ -194,6 +171,14 @@ namespace HeuristicLab.CEDMA.DB {
               DateTime now = DateTime.Now;
               creationParam.Value = now;
               c.Parameters.Add(creationParam);
+              DbParameter summaryParam = c.CreateParameter();
+              summaryParam.ParameterName = "@Summary";
+              summaryParam.Value = summary;
+              c.Parameters.Add(summaryParam);
+              DbParameter descParam = c.CreateParameter();
+              descParam.ParameterName = "@Description";
+              descParam.Value = description;
+              c.Parameters.Add(descParam);
               DbParameter rawDataParam = c.CreateParameter();
               rawDataParam.ParameterName = "@RawData";
               rawDataParam.Value = rawData;
@@ -292,86 +277,86 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
-    public void UpdateRunStart(long runId, DateTime startTime) {
-      rwLock.EnterWriteLock();
-      try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
-          cnn.Open();
-          using(SQLiteTransaction t = cnn.BeginTransaction()) {
-            using(SQLiteCommand c = cnn.CreateCommand()) {
-              c.Transaction = t;
-              c.CommandText = "Update Run set StartTime=@StartTime where id=@Id";
-              DbParameter startTimeParam = c.CreateParameter();
-              DbParameter idParam = c.CreateParameter();
-              startTimeParam.ParameterName = "@StartTime";
-              startTimeParam.Value = startTime;
-              idParam.ParameterName = "@Id";
-              idParam.Value = runId;
-              c.Parameters.Add(startTimeParam);
-              c.Parameters.Add(idParam);
-              c.ExecuteNonQuery();
-            }
-            t.Commit();
-          }
-        }
-      } finally {
-        rwLock.ExitWriteLock();
-      }
-    }
+    //public void UpdateRunStart(long runId, DateTime startTime) {
+    //  rwLock.EnterWriteLock();
+    //  try {
+    //    using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+    //      cnn.Open();
+    //      using(SQLiteTransaction t = cnn.BeginTransaction()) {
+    //        using(SQLiteCommand c = cnn.CreateCommand()) {
+    //          c.Transaction = t;
+    //          c.CommandText = "Update Run set StartTime=@StartTime where id=@Id";
+    //          DbParameter startTimeParam = c.CreateParameter();
+    //          DbParameter idParam = c.CreateParameter();
+    //          startTimeParam.ParameterName = "@StartTime";
+    //          startTimeParam.Value = startTime;
+    //          idParam.ParameterName = "@Id";
+    //          idParam.Value = runId;
+    //          c.Parameters.Add(startTimeParam);
+    //          c.Parameters.Add(idParam);
+    //          c.ExecuteNonQuery();
+    //        }
+    //        t.Commit();
+    //      }
+    //    }
+    //  } finally {
+    //    rwLock.ExitWriteLock();
+    //  }
+    //}
 
-    public void UpdateRunFinished(long runId, DateTime finishedTime) {
-      rwLock.EnterWriteLock();
-      try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
-          cnn.Open();
-          using(SQLiteTransaction t = cnn.BeginTransaction()) {
-            using(SQLiteCommand c = cnn.CreateCommand()) {
-              c.Transaction = t;
-              c.CommandText = "Update Run set FinishedTime=@FinishedTime where id=@Id";
-              DbParameter finishedTimeParam = c.CreateParameter();
-              DbParameter idParam = c.CreateParameter();
-              finishedTimeParam.ParameterName = "@FinishedTime";
-              finishedTimeParam.Value = finishedTime;
-              idParam.ParameterName = "@Id";
-              idParam.Value = runId;
-              c.Parameters.Add(finishedTimeParam);
-              c.Parameters.Add(idParam);
-              c.ExecuteNonQuery();
-            }
-            t.Commit();
-          }
-        }
-      } finally {
-        rwLock.ExitWriteLock();
-      }
-    }
+    //public void UpdateRunFinished(long runId, DateTime finishedTime) {
+    //  rwLock.EnterWriteLock();
+    //  try {
+    //    using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+    //      cnn.Open();
+    //      using(SQLiteTransaction t = cnn.BeginTransaction()) {
+    //        using(SQLiteCommand c = cnn.CreateCommand()) {
+    //          c.Transaction = t;
+    //          c.CommandText = "Update Run set FinishedTime=@FinishedTime where id=@Id";
+    //          DbParameter finishedTimeParam = c.CreateParameter();
+    //          DbParameter idParam = c.CreateParameter();
+    //          finishedTimeParam.ParameterName = "@FinishedTime";
+    //          finishedTimeParam.Value = finishedTime;
+    //          idParam.ParameterName = "@Id";
+    //          idParam.Value = runId;
+    //          c.Parameters.Add(finishedTimeParam);
+    //          c.Parameters.Add(idParam);
+    //          c.ExecuteNonQuery();
+    //        }
+    //        t.Commit();
+    //      }
+    //    }
+    //  } finally {
+    //    rwLock.ExitWriteLock();
+    //  }
+    //}
 
-    public void UpdateRunStatus(long runId, ProcessStatus status) {
-      rwLock.EnterWriteLock();
-      try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
-          cnn.Open();
-          using(SQLiteTransaction t = cnn.BeginTransaction()) {
-            using(SQLiteCommand c = cnn.CreateCommand()) {
-              c.Transaction = t;
-              c.CommandText = "Update Run set Status=@Status where id=@Id";
-              DbParameter statusParam = c.CreateParameter();
-              DbParameter idParam = c.CreateParameter();
-              statusParam.ParameterName = "@Status";
-              statusParam.Value = status;
-              idParam.ParameterName = "@Id";
-              idParam.Value = runId;
-              c.Parameters.Add(statusParam);
-              c.Parameters.Add(idParam);
-              c.ExecuteNonQuery();
-            }
-            t.Commit();
-          }
-        }
-      } finally {
-        rwLock.ExitWriteLock();
-      }
-    }
+    //public void UpdateRunStatus(long runId, ProcessStatus status) {
+    //  rwLock.EnterWriteLock();
+    //  try {
+    //    using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+    //      cnn.Open();
+    //      using(SQLiteTransaction t = cnn.BeginTransaction()) {
+    //        using(SQLiteCommand c = cnn.CreateCommand()) {
+    //          c.Transaction = t;
+    //          c.CommandText = "Update Run set Status=@Status where id=@Id";
+    //          DbParameter statusParam = c.CreateParameter();
+    //          DbParameter idParam = c.CreateParameter();
+    //          statusParam.ParameterName = "@Status";
+    //          statusParam.Value = status;
+    //          idParam.ParameterName = "@Id";
+    //          idParam.Value = runId;
+    //          c.Parameters.Add(statusParam);
+    //          c.Parameters.Add(idParam);
+    //          c.ExecuteNonQuery();
+    //        }
+    //        t.Commit();
+    //      }
+    //    }
+    //  } finally {
+    //    rwLock.ExitWriteLock();
+    //  }
+    //}
     #endregion
 
     #region get agent/run/result/sub-result
@@ -383,7 +368,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           SQLiteCommand c = cnn.CreateCommand();
-          c.CommandText = "Select id, name, status, rawdata from Agent where Status=@Status";
+          c.CommandText = "Select id, name, ControllerAgent, rawdata from Agent where Status=@Status";
           DbParameter statusParameter = c.CreateParameter();
           statusParameter.ParameterName = "@Status";
           statusParameter.Value = status;
@@ -392,9 +377,11 @@ namespace HeuristicLab.CEDMA.DB {
           SQLiteDataReader r = c.ExecuteReader();
           while(r.Read()) {
             AgentEntry agent = new AgentEntry();
+            agent.ParentAgentId = null;
+            agent.Status = status;
             agent.Id = r.GetInt32(0);
-            agent.Name = r.GetString(1);
-            agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
+            agent.Name = r.IsDBNull(1)?"":r.GetString(1);
+            agent.ControllerAgent = r.GetBoolean(2);
             agent.RawData = (byte[])r.GetValue(3);
             agents.Add(agent);
           }
@@ -412,14 +399,16 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, name, status, rawdata from Agent";
+            c.CommandText = "Select id, ParentAgentId, name, status, ControllerAgent, rawdata from Agent";
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 AgentEntry agent = new AgentEntry();
                 agent.Id = r.GetInt32(0);
-                agent.Name = r.GetString(1);
-                agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
-                agent.RawData = (byte[])r.GetValue(3);
+                agent.ParentAgentId = r.IsDBNull(1) ? null : new Nullable<long>(r.GetInt32(1));
+                agent.Name = r.GetString(2);
+                agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
+                agent.ControllerAgent = r.GetBoolean(4);
+                agent.RawData = (byte[])r.GetValue(5);
                 agents.Add(agent);
               }
             }
@@ -431,28 +420,24 @@ namespace HeuristicLab.CEDMA.DB {
       return agents;
     }
 
-    public ICollection<RunEntry> GetRuns(long agentId) {
-      List<RunEntry> runs = new List<RunEntry>();
+    public ICollection<AgentEntry> GetSubAgents(long parentAgentId) {
       rwLock.EnterReadLock();
+      List<AgentEntry> agents = new List<AgentEntry>();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where AgentId=@AgentId";
-            DbParameter agentParameter = c.CreateParameter();
-            agentParameter.ParameterName = "@AgentId";
-            agentParameter.Value = agentId;
-            c.Parameters.Add(agentParameter);
-
+            c.CommandText = "Select id, name, status, controllerAgent, rawdata from Agent where ParentAgentId=@ParentAgentId";
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
-                RunEntry run = new RunEntry();
-                run.Id = r.GetInt32(0);
-                run.AgentId = r.GetInt32(1);
-                run.CreationTime = r.GetDateTime(2);
-                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
-                run.RawData = (byte[])r.GetValue(4);
-                runs.Add(run);
+                AgentEntry agent = new AgentEntry();
+                agent.ParentAgentId = parentAgentId;
+                agent.Id = r.GetInt32(0);
+                agent.Name = r.GetString(1);
+                agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
+                agent.ControllerAgent = r.GetBoolean(3);
+                agent.RawData = (byte[])r.GetValue(4);
+                agents.Add(agent);
               }
             }
           }
@@ -460,56 +445,94 @@ namespace HeuristicLab.CEDMA.DB {
       } finally {
         rwLock.ExitReadLock();
       }
-      return runs;
+      return agents;
     }
 
-    public ICollection<RunEntry> GetRuns(ProcessStatus status) {
-      List<RunEntry> runs = new List<RunEntry>();
-      rwLock.EnterReadLock();
-      try {
-        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
-          cnn.Open();
-          using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where Status=@Status";
-            DbParameter statusParameter = c.CreateParameter();
-            statusParameter.ParameterName = "@Status";
-            statusParameter.Value = status;
-            c.Parameters.Add(statusParameter);
+    //public ICollection<RunEntry> GetRuns(long agentId) {
+    //  List<RunEntry> runs = new List<RunEntry>();
+    //  rwLock.EnterReadLock();
+    //  try {
+    //    using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+    //      cnn.Open();
+    //      using(DbCommand c = cnn.CreateCommand()) {
+    //        c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where AgentId=@AgentId";
+    //        DbParameter agentParameter = c.CreateParameter();
+    //        agentParameter.ParameterName = "@AgentId";
+    //        agentParameter.Value = agentId;
+    //        c.Parameters.Add(agentParameter);
 
-            using(DbDataReader r = c.ExecuteReader()) {
-              while(r.Read()) {
-                RunEntry run = new RunEntry();
-                run.Id = r.GetInt32(0);
-                run.AgentId = r.GetInt32(1);
-                run.CreationTime = r.GetDateTime(2);
-                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
-                run.RawData = (byte[])r.GetValue(4);
-                runs.Add(run);
-              }
-            }
-          }
-        }
-      } finally {
-        rwLock.ExitReadLock();
-      }
-      return runs;
-    }
+    //        using(DbDataReader r = c.ExecuteReader()) {
+    //          while(r.Read()) {
+    //            RunEntry run = new RunEntry();
+    //            run.Id = r.GetInt32(0);
+    //            run.AgentId = r.GetInt32(1);
+    //            run.CreationTime = r.GetDateTime(2);
+    //            run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
+    //            run.RawData = (byte[])r.GetValue(4);
+    //            runs.Add(run);
+    //          }
+    //        }
+    //      }
+    //    }
+    //  } finally {
+    //    rwLock.ExitReadLock();
+    //  }
+    //  return runs;
+    //}
 
-    public ICollection<ResultEntry> GetResults(long runId) {
+    //public ICollection<RunEntry> GetRuns(ProcessStatus status) {
+    //  List<RunEntry> runs = new List<RunEntry>();
+    //  rwLock.EnterReadLock();
+    //  try {
+    //    using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+    //      cnn.Open();
+    //      using(DbCommand c = cnn.CreateCommand()) {
+    //        c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where Status=@Status";
+    //        DbParameter statusParameter = c.CreateParameter();
+    //        statusParameter.ParameterName = "@Status";
+    //        statusParameter.Value = status;
+    //        c.Parameters.Add(statusParameter);
+
+    //        using(DbDataReader r = c.ExecuteReader()) {
+    //          while(r.Read()) {
+    //            RunEntry run = new RunEntry();
+    //            run.Id = r.GetInt32(0);
+    //            run.AgentId = r.GetInt32(1);
+    //            run.CreationTime = r.GetDateTime(2);
+    //            run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
+    //            run.RawData = (byte[])r.GetValue(4);
+    //            runs.Add(run);
+    //          }
+    //        }
+    //      }
+    //    }
+    //  } finally {
+    //    rwLock.ExitReadLock();
+    //  }
+    //  return runs;
+    //}
+
+    public ICollection<ResultEntry> GetResults(long agentId) {
       List<ResultEntry> results = new List<ResultEntry>();
       rwLock.EnterReadLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, RunId, CreationTime, Rawdata from Result";
+            c.CommandText = "Select Id, CreationTime, Summary, Description, Rawdata from Result where AgentId=@AgentId";
+            DbParameter agentParam = c.CreateParameter();
+            agentParam.ParameterName = "@AgentId";
+            agentParam.Value = agentId;
+            c.Parameters.Add(agentParam);
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 ResultEntry result = new ResultEntry();
+                result.AgentId = agentId;
                 result.Id = r.GetInt32(0);
-                result.RunId = r.GetInt32(1);
-                result.CreationTime = r.GetDateTime(2);
-                result.RawData = (byte[])r.GetValue(3);
+                result.CreationTime = r.GetDateTime(1);
+                result.Summary = r.GetString(2);
+                result.Description = r.GetString(3);
+                result.RawData = (byte[])r.GetValue(4);
                 results.Add(result);
               }
             }
@@ -522,7 +545,35 @@ namespace HeuristicLab.CEDMA.DB {
     }
 
     public ICollection<ResultEntry> GetSubResults(long resultId) {
-      throw new NotImplementedException();
+      List<ResultEntry> results = new List<ResultEntry>();
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select Id, CreationTime, Summary, Description, Rawdata from Result where ParentResultId=@ParentResultId";
+            DbParameter parentParam = c.CreateParameter();
+            parentParam.ParameterName = "@ParentResultId";
+            parentParam.Value = resultId;
+            c.Parameters.Add(parentParam);
+            using(DbDataReader r = c.ExecuteReader()) {
+              while(r.Read()) {
+                ResultEntry result = new ResultEntry();
+                result.ParentResultId = resultId;
+                result.Id = r.GetInt32(0);
+                result.CreationTime = r.GetDateTime(1);
+                result.Summary = r.GetString(2);
+                result.Description = r.GetString(3);
+                result.RawData = (byte[])r.GetValue(4);
+                results.Add(result);
+              }
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return results;
     }
     #endregion
   }

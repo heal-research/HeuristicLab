@@ -64,7 +64,7 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
     private void CreateNewEngines() {
-      ICollection<AgentEntry> agents = database.GetAgents(ProcessStatus.Waiting);
+      IEnumerable<AgentEntry> agents = database.GetAgents(ProcessStatus.Waiting).Where(a=>a.ControllerAgent);
       foreach(AgentEntry a in agents) {
         SequentialEngine.SequentialEngine engine = new HeuristicLab.SequentialEngine.SequentialEngine();
         Agent newAgent = (Agent)DbPersistenceManager.Restore(a.RawData);

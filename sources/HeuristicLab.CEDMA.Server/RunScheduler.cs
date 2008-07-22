@@ -29,24 +29,26 @@ using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Grid;
+using System.Diagnostics;
 
 namespace HeuristicLab.CEDMA.Server {
   public class RunScheduler {
+    private class Job {
+      public long AgentId;
+      public WaitHandle WaitHandle;
+      public AtomicOperation Operation;
+    }
     private Database database;
     private JobManager jobManager;
     private const int RELEASE_INTERVAL = 5;
     private object remoteCommLock = new object();
-    private object collectionsLock = new object();
-    private Queue<WaitHandle> waithandles;
-    private Dictionary<WaitHandle, AtomicOperation> runningOperations;
-    private Dictionary<WaitHandle, long> runningEntries;
+    private object queueLock = new object();
+    private Queue<Job> jobQueue;
 
     public RunScheduler(Database database, JobManager jobManager) {
       this.database = database;
       this.jobManager = jobManager;
-      runningOperations = new Dictionary<WaitHandle, AtomicOperation>();
-      runningEntries = new Dictionary<WaitHandle, long>();
-      waithandles = new Queue<WaitHandle>();
+      jobQueue = new Queue<Job>();
       Thread resultsGatheringThread = new Thread(GatherResults);
       resultsGatheringThread.Start();
     }
@@ -57,53 +59,51 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
     private void ReleaseWaitingRuns() {
-      ICollection<RunEntry> runs;
+      IEnumerable<AgentEntry> agents;
       lock(remoteCommLock) {
-        runs = database.GetRuns(ProcessStatus.Waiting);
+        agents = database.GetAgents(ProcessStatus.Waiting).Where(a=>!a.ControllerAgent);
       }
-      foreach(RunEntry entry in runs) {
+      foreach(AgentEntry entry in agents) {
         IOperatorGraph opGraph = (IOperatorGraph)DbPersistenceManager.Restore(entry.RawData);
-        Scope scope = new Scope();
-        AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, scope);
+        AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, new Scope());
         WaitHandle wHandle;
         lock(remoteCommLock) {
-          wHandle = jobManager.BeginExecuteOperation(scope, op);
-          database.UpdateRunStatus(entry.Id, ProcessStatus.Active);
-          database.UpdateRunStart(entry.Id, DateTime.Now);
+          wHandle = jobManager.BeginExecuteOperation(op.Scope, op);
+          database.UpdateAgent(entry.Id, ProcessStatus.Active);
         }
 
-        lock(collectionsLock) {
-          waithandles.Enqueue(wHandle);
-          runningOperations[wHandle] = op;
-          runningEntries[wHandle] = entry.Id;
+        Job job = new Job();
+        job.AgentId = entry.Id;
+        job.Operation = op;
+        job.WaitHandle = wHandle;
+
+        lock(queueLock) {
+          jobQueue.Enqueue(job);
         }
       }
     }
 
     private void GatherResults() {
-      while(true) {
-        if(waithandles.Count == 0) Thread.Sleep(1000);
-        else {
-          WaitHandle w;
-          lock(collectionsLock) {
-            w = waithandles.Dequeue();
-          }
-          w.WaitOne();
-          long id;
-          AtomicOperation op;
-          lock(collectionsLock) {
-            id = runningEntries[w];
-            runningEntries.Remove(w);
-            op = runningOperations[w];
-            runningOperations.Remove(w);
-          }
-          w.Close();
-          lock(remoteCommLock) {
-            jobManager.EndExecuteOperation(op);
-            database.UpdateRunStatus(id, ProcessStatus.Finished);
-            database.UpdateRunFinished(id, DateTime.Now);
+      try {
+        while(true) {
+          int runningJobs;
+          lock(queueLock) runningJobs = jobQueue.Count;
+          if(runningJobs==0) Thread.Sleep(1000); // TASK: replace with waithandle
+          else {
+            Job job;
+            lock(queueLock) {
+              job = jobQueue.Dequeue();
+            }
+            job.WaitHandle.WaitOne();
+            job.WaitHandle.Close();
+            lock(remoteCommLock) {
+              jobManager.EndExecuteOperation(job.Operation);
+              database.UpdateAgent(job.AgentId, ProcessStatus.Finished);
+            }
           }
         }
+      } finally {
+        Debug.Assert(false); // make sure we are notified when this thread is killed while debugging
       }
     }
   }

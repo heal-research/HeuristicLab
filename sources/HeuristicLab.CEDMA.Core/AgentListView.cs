@@ -68,20 +68,6 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
-    private void variablesListView_SelectedIndexChanged(object sender, EventArgs e) {
-      if(detailsGroupBox.Controls.Count > 0)
-        detailsGroupBox.Controls[0].Dispose();
-      detailsGroupBox.Controls.Clear();
-      detailsGroupBox.Enabled = false;
-      if(agentTreeView.SelectedNode!=null) {
-        IAgent agent = (IAgent)agentTreeView.SelectedNode.Tag;
-        Control control = (Control)new AgentView(agent);
-        detailsGroupBox.Controls.Add(control);
-        control.Dock = DockStyle.Fill;
-        detailsGroupBox.Enabled = true;
-      }
-    }
-
     #region Button Events
     private void addButton_Click(object sender, EventArgs e) {
       AgentList.CreateAgent();
@@ -90,6 +76,20 @@ namespace HeuristicLab.CEDMA.Core {
     #endregion
 
     private void agentTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+    }
+
+    private void agentTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+      if(detailsGroupBox.Controls.Count > 0)
+        detailsGroupBox.Controls[0].Dispose();
+      detailsGroupBox.Controls.Clear();
+      detailsGroupBox.Enabled = false;
+      if(agentTreeView.SelectedNode != null) {
+        IAgent agent = (IAgent)agentTreeView.SelectedNode.Tag;
+        Control control = (Control)new AgentView(agent);
+        detailsGroupBox.Controls.Add(control);
+        control.Dock = DockStyle.Fill;
+        detailsGroupBox.Enabled = true;
+      }
     }
   }
 }

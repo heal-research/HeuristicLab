@@ -118,6 +118,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentTreeView.Size = new System.Drawing.Size(129, 136);
       this.agentTreeView.TabIndex = 0;
       this.agentTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.agentTreeView_BeforeExpand);
+      this.agentTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.agentTreeView_AfterSelect);
       // 
       // AgentListView
       // 

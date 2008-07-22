@@ -32,9 +32,13 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [DataMember]
     public long Id { get; set; }
     [DataMember]
+    public long? ParentAgentId { get; set; }
+    [DataMember]
     public string Name { get; set; }
     [DataMember]
     public ProcessStatus Status { get; set; }
+    [DataMember]
+    public bool ControllerAgent { get; set; }
     [DataMember]
     public byte[] RawData { get; set; }
   }

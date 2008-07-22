@@ -63,9 +63,9 @@ namespace HeuristicLab.CEDMA.Core {
     public void CreateAgent() {
       Agent agent = new Agent();
       agent.Name = DateTime.Now.ToString();
-      agent.Status = ProcessStatus.Unkown;
+      agent.Status = ProcessStatus.Unknown;
       agent.Database = database;
-      long id = database.InsertAgent(agent.Name, DbPersistenceManager.Save(agent));
+      long id = database.InsertAgent(null, agent.Name, true, DbPersistenceManager.Save(agent));
       agent.Id = id;
       agentList.Add(agent);
     }

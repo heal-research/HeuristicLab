@@ -25,5 +25,5 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.CEDMA.DB.Interfaces {
-  public enum ProcessStatus { Unkown, Active, Finished, Error, Waiting}
+  public enum ProcessStatus { Unknown, Active, Finished, Error, Waiting}
 }

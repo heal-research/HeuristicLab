@@ -57,7 +57,7 @@ namespace HeuristicLab.CEDMA.Core {
           editorGroupBox.Enabled = true;
         }
 
-        if(Agent.Status == ProcessStatus.Unkown) activateButton.Enabled = true;
+        if(Agent.Status == ProcessStatus.Unknown) activateButton.Enabled = true;
         else activateButton.Enabled = false;
       }
     }

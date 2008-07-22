@@ -30,7 +30,7 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
   [ServiceContract(Namespace = "http://HeuristicLab.CEDMA.DB")]
   public interface IDatabase {
     [OperationContract]
-    long InsertAgent(string name, byte[] rawData);
+    long InsertAgent(long? parentAgentId, string name, bool controllerAgent, byte[] rawData);
 
     [OperationContract(Name = "UpdateAgentName")]
     void UpdateAgent(long id, string name);
@@ -42,36 +42,23 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     void UpdateAgent(long id, byte[] rawData);
 
     [OperationContract]
-    long InsertRun(long agentId, byte[] rawData);
+    long InsertResult(long agentId, string summary, string description, byte[] rawData);
 
     [OperationContract]
-    void UpdateRunStart(long runId, DateTime CreationTime);
-
-    [OperationContract]
-    void UpdateRunFinished(long runId, DateTime CreationTime);
-
-    [OperationContract]
-    void UpdateRunStatus(long runId, ProcessStatus status);
-
-    [OperationContract]
-    long InsertResult(long runId, byte[] rawData);
-
-    [OperationContract]
-    long InsertSubResult(long resultId, byte[] rawData);
-
+    long InsertSubResult(long resultId, string summary, string description, byte[] rawData);
 
     // should be replaced by more powerful querying interface (LINQ provider?)
     [OperationContract]
     ICollection<AgentEntry> GetAgents();
 
     [OperationContract]
-    ICollection<RunEntry> GetRuns(long agentId);
+    ICollection<AgentEntry> GetSubAgents(long parentAgentId);
 
     [OperationContract]
-    ICollection<ResultEntry> GetResults(long runId);
+    ICollection<ResultEntry> GetResults(long agentId);
 
     [OperationContract]
-    ICollection<ResultEntry> GetSubResults(long resultId);
+    ICollection<ResultEntry> GetSubResults(long parentResultId);
 
   }
 }
