@@ -31,6 +31,10 @@ namespace HeuristicLab.CEDMA.Core {
     string Name { get; }
     ProcessStatus Status { get; }
     IOperatorGraph OperatorGraph { get; }
-    void Activate();
+    ICollection<IAgent> SubAgents { get; }
+    ICollection<IResult> Results { get; }
+    bool Terminated { get; }
+    
+    void Start();
   }
 }

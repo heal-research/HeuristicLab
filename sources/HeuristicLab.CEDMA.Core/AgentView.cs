@@ -67,7 +67,7 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private void activateButton_Click(object sender, EventArgs e) {
-      Agent.Activate();
+      Agent.Start();
       activateButton.Enabled = false;
     }
   }

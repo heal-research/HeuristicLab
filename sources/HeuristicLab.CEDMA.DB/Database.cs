@@ -431,24 +431,27 @@ namespace HeuristicLab.CEDMA.DB {
       return agents;
     }
 
-    public ICollection<RunEntry> GetRuns() {
+    public ICollection<RunEntry> GetRuns(long agentId) {
       List<RunEntry> runs = new List<RunEntry>();
       rwLock.EnterReadLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, AgentId, CreationTime, StartTime, FinishedTime, Status, Rawdata from Run";
+            c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where AgentId=@AgentId";
+            DbParameter agentParameter = c.CreateParameter();
+            agentParameter.ParameterName = "@AgentId";
+            agentParameter.Value = agentId;
+            c.Parameters.Add(agentParameter);
+
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 RunEntry run = new RunEntry();
                 run.Id = r.GetInt32(0);
                 run.AgentId = r.GetInt32(1);
                 run.CreationTime = r.GetDateTime(2);
-                run.StartTime = r.GetDateTime(3);
-                run.FinishedTime = r.GetDateTime(4);
-                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(5));
-                run.RawData = (byte[])r.GetValue(6);
+                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
+                run.RawData = (byte[])r.GetValue(4);
                 runs.Add(run);
               }
             }
@@ -467,7 +470,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, AgentId, CreationTime, StartTime, FinishedTime, Status, Rawdata from Run where Status=@Status";
+            c.CommandText = "Select Id, AgentId, CreationTime, Status, Rawdata from Run where Status=@Status";
             DbParameter statusParameter = c.CreateParameter();
             statusParameter.ParameterName = "@Status";
             statusParameter.Value = status;
@@ -479,10 +482,8 @@ namespace HeuristicLab.CEDMA.DB {
                 run.Id = r.GetInt32(0);
                 run.AgentId = r.GetInt32(1);
                 run.CreationTime = r.GetDateTime(2);
-                run.StartTime = r.IsDBNull(3) ? null : new Nullable<DateTime>(r.GetDateTime(3));
-                run.FinishedTime = r.IsDBNull(4) ? null : new Nullable<DateTime>(r.GetDateTime(4));
-                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(5));
-                run.RawData = (byte[])r.GetValue(6);
+                run.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(3));
+                run.RawData = (byte[])r.GetValue(4);
                 runs.Add(run);
               }
             }

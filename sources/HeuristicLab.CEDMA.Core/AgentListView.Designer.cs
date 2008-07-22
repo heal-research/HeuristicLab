@@ -49,10 +49,9 @@ namespace HeuristicLab.CEDMA.Core {
     private void InitializeComponent() {
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.agentsGroupBox = new System.Windows.Forms.GroupBox();
-      this.agentsListView = new System.Windows.Forms.ListView();
-      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.addButton = new System.Windows.Forms.Button();
+      this.agentTreeView = new System.Windows.Forms.TreeView();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -81,7 +80,7 @@ namespace HeuristicLab.CEDMA.Core {
       // 
       // agentsGroupBox
       // 
-      this.agentsGroupBox.Controls.Add(this.agentsListView);
+      this.agentsGroupBox.Controls.Add(this.agentTreeView);
       this.agentsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.agentsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.agentsGroupBox.Name = "agentsGroupBox";
@@ -89,23 +88,6 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentsGroupBox.TabIndex = 0;
       this.agentsGroupBox.TabStop = false;
       this.agentsGroupBox.Text = "&Agents";
-      // 
-      // agentsListView
-      // 
-      this.agentsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-      this.agentsListView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.agentsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.agentsListView.HideSelection = false;
-      this.agentsListView.Location = new System.Drawing.Point(3, 16);
-      this.agentsListView.Name = "agentsListView";
-      this.agentsListView.Size = new System.Drawing.Size(129, 136);
-      this.agentsListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-      this.agentsListView.TabIndex = 0;
-      this.agentsListView.UseCompatibleStateImageBehavior = false;
-      this.agentsListView.View = System.Windows.Forms.View.Details;
-      this.agentsListView.SelectedIndexChanged += new System.EventHandler(this.variablesListView_SelectedIndexChanged);
-      this.agentsListView.SizeChanged += new System.EventHandler(this.variablesListView_SizeChanged);
       // 
       // detailsGroupBox
       // 
@@ -128,12 +110,21 @@ namespace HeuristicLab.CEDMA.Core {
       this.addButton.UseVisualStyleBackColor = true;
       this.addButton.Click += new System.EventHandler(this.addButton_Click);
       // 
-      // AgentView
+      // agentTreeView
+      // 
+      this.agentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.agentTreeView.Location = new System.Drawing.Point(3, 16);
+      this.agentTreeView.Name = "agentTreeView";
+      this.agentTreeView.Size = new System.Drawing.Size(129, 136);
+      this.agentTreeView.TabIndex = 0;
+      this.agentTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.agentTreeView_BeforeExpand);
+      // 
+      // AgentListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Controls.Add(this.addButton);
       this.Controls.Add(this.splitContainer1);
-      this.Name = "AgentView";
+      this.Name = "AgentListView";
       this.Size = new System.Drawing.Size(276, 184);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
@@ -147,9 +138,8 @@ namespace HeuristicLab.CEDMA.Core {
 
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.GroupBox agentsGroupBox;
-    private System.Windows.Forms.ListView agentsListView;
-    private System.Windows.Forms.ColumnHeader columnHeader1;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private System.Windows.Forms.Button addButton;
+    private TreeView agentTreeView;
   }
 }

@@ -65,7 +65,7 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     ICollection<AgentEntry> GetAgents();
 
     [OperationContract]
-    ICollection<RunEntry> GetRuns();
+    ICollection<RunEntry> GetRuns(long agentId);
 
     [OperationContract]
     ICollection<ResultEntry> GetResults(long runId);

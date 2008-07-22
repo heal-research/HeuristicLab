@@ -55,15 +55,15 @@ namespace HeuristicLab.CEDMA.Core {
       detailsGroupBox.Enabled = false;
       if(AgentList == null) {
         Caption = "Agents View";
-        agentsListView.Enabled = false;
+        agentTreeView.Enabled = false;
       } else {
-        agentsListView.Enabled = true;
-        agentsListView.Items.Clear();
+        agentTreeView.Enabled = true;
+        agentTreeView.Nodes.Clear();
         foreach(IAgent agent in AgentList) {
-          ListViewItem item = new ListViewItem();
-          item.Text = agent.Name;
-          item.Tag = agent;
-          agentsListView.Items.Add(item);
+          TreeNode node = new TreeNode();
+          node.Text = agent.Name;
+          node.Tag = agent;
+          agentTreeView.Nodes.Add(node);
         }
       }
     }
@@ -73,8 +73,8 @@ namespace HeuristicLab.CEDMA.Core {
         detailsGroupBox.Controls[0].Dispose();
       detailsGroupBox.Controls.Clear();
       detailsGroupBox.Enabled = false;
-      if(agentsListView.SelectedItems.Count == 1) {
-        IAgent agent = (IAgent)agentsListView.SelectedItems[0].Tag;
+      if(agentTreeView.SelectedNode!=null) {
+        IAgent agent = (IAgent)agentTreeView.SelectedNode.Tag;
         Control control = (Control)new AgentView(agent);
         detailsGroupBox.Controls.Add(control);
         control.Dock = DockStyle.Fill;
@@ -82,19 +82,15 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
-    #region Size Changed Events
-    private void variablesListView_SizeChanged(object sender, EventArgs e) {
-      if(agentsListView.Columns.Count > 0)
-        agentsListView.Columns[0].Width = Math.Max(0, agentsListView.Width - 25);
-    }
-    #endregion
-
     #region Button Events
     private void addButton_Click(object sender, EventArgs e) {
       AgentList.CreateAgent();
       UpdateControls();
     }
     #endregion
+
+    private void agentTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+    }
   }
 }
 

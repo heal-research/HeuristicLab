@@ -23,25 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
-using System.Runtime.Serialization;
 
-namespace HeuristicLab.CEDMA.DB.Interfaces {
-  [DataContract]
-  public class ResultEntry {
-    [DataMember]
-    public long Id { get; set; }
-    [DataMember]
-    public long RunId { get; set; }
-    [DataMember]
-    public long ResultId { get; set; }
-    [DataMember]
-    public string Summary { get; set; }
-    [DataMember]
-    public string Description { get; set; }
-    [DataMember]
-    public DateTime CreationTime { get; set; }
-    [DataMember]
-    public byte[] RawData { get; set; }
+namespace HeuristicLab.CEDMA.Core {
+  public interface IResult : IDatabaseItem {
+    string Summary { get; }
+    string Description { get; }
+    ICollection<IResult> SubResults { get; }
   }
 }

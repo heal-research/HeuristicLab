@@ -32,9 +32,7 @@ namespace HeuristicLab.CEDMA.Core {
     private System.Windows.Forms.TextBox uriTextBox;
     private System.Windows.Forms.Label uriLabel;
     private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage overviewPage;
     private System.Windows.Forms.TabPage agentsPage;
-    private System.Windows.Forms.TabPage resultsPage;
     private Button connectButton;
     private ComboBox comboBox1;
     private Label projectLabel;
@@ -50,9 +48,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.uriTextBox = new System.Windows.Forms.TextBox();
       this.uriLabel = new System.Windows.Forms.Label();
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.overviewPage = new System.Windows.Forms.TabPage();
       this.agentsPage = new System.Windows.Forms.TabPage();
-      this.resultsPage = new System.Windows.Forms.TabPage();
       this.connectButton = new System.Windows.Forms.Button();
       this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.projectLabel = new System.Windows.Forms.Label();
@@ -81,25 +77,13 @@ namespace HeuristicLab.CEDMA.Core {
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.overviewPage);
       this.tabControl.Controls.Add(this.agentsPage);
-      this.tabControl.Controls.Add(this.resultsPage);
       this.tabControl.Enabled = false;
       this.tabControl.Location = new System.Drawing.Point(6, 56);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(506, 407);
       this.tabControl.TabIndex = 2;
-      // 
-      // overviewPage
-      // 
-      this.overviewPage.Location = new System.Drawing.Point(4, 22);
-      this.overviewPage.Name = "overviewPage";
-      this.overviewPage.Padding = new System.Windows.Forms.Padding(3);
-      this.overviewPage.Size = new System.Drawing.Size(498, 381);
-      this.overviewPage.TabIndex = 0;
-      this.overviewPage.Text = "Overview";
-      this.overviewPage.UseVisualStyleBackColor = true;
       // 
       // agentsPage
       // 
@@ -110,16 +94,6 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentsPage.TabIndex = 1;
       this.agentsPage.Text = "Agents";
       this.agentsPage.UseVisualStyleBackColor = true;
-      // 
-      // resultsPage
-      // 
-      this.resultsPage.Location = new System.Drawing.Point(4, 22);
-      this.resultsPage.Name = "resultsPage";
-      this.resultsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsPage.Size = new System.Drawing.Size(498, 381);
-      this.resultsPage.TabIndex = 2;
-      this.resultsPage.Text = "Results";
-      this.resultsPage.UseVisualStyleBackColor = true;
       // 
       // connectButton
       // 

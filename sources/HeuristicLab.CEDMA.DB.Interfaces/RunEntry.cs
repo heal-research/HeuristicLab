@@ -36,10 +36,6 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [DataMember]
     public DateTime CreationTime { get; set; }
     [DataMember]
-    public DateTime? StartTime { get; set; }
-    [DataMember]
-    public DateTime? FinishedTime { get; set; }
-    [DataMember]
     public ProcessStatus Status { get; set; }
     [DataMember]
     public byte[] RawData { get; set; }

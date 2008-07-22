@@ -79,7 +79,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.activateButton.Name = "activateButton";
       this.activateButton.Size = new System.Drawing.Size(75, 23);
       this.activateButton.TabIndex = 2;
-      this.activateButton.Text = "&Activate";
+      this.activateButton.Text = "&Start";
       this.activateButton.UseVisualStyleBackColor = true;
       this.activateButton.Click += new System.EventHandler(this.activateButton_Click);
       // 

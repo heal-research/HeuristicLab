@@ -33,6 +33,7 @@ namespace HeuristicLab.CEDMA.Core {
     public long Id { get; set; }
     public string Name { get; set; }
     public ProcessStatus Status { get; set; }
+    public bool Terminated { get; set; }
     private OperatorGraph operatorGraph;
 
     public IOperatorGraph OperatorGraph {
@@ -56,10 +57,26 @@ namespace HeuristicLab.CEDMA.Core {
       Database.UpdateAgent(Id, DbPersistenceManager.Save(this));
     }
 
-    public void Activate() {
+    public void Start() {
       Status = ProcessStatus.Waiting;
       Save();
     }
+
+    public ICollection<IAgent> SubAgents {
+      get {
+        List<IAgent> runs = new List<IAgent>();
+        // TASK
+        return runs;
+      }
+    }
+
+    public ICollection<IResult> Results {
+      get {
+        List<IResult> results = new List<IResult>();
+        // TASK
+        return results;
+      }
+    } 
 
     #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
