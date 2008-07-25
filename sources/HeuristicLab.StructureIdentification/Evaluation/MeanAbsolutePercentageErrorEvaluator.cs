@@ -30,49 +30,41 @@ using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
-  public class TheilInequalityCoefficientEvaluator : GPEvaluatorBase {
+  public class MeanAbsolutePercentageErrorEvaluator : GPEvaluatorBase {
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
-the 'Theil inequality coefficient (scale invariant)' of estimated values vs. real values of 'TargetVariable'.";
+the 'mean absolute percentage error (scale invariant)' of estimated values vs. real values of 'TargetVariable'.";
       }
     }
 
-    public TheilInequalityCoefficientEvaluator()
+    public MeanAbsolutePercentageErrorEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("Differential", "Wether to calculate the coefficient for the predicted change vs. original change or for the absolute prediction vs. original value", typeof(BoolData), VariableKind.In));
     }
 
     public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      bool difference = GetVariableValue<BoolData>("Differential", scope, true).Data;
-      double errorsSquaredSum = 0.0;
-      double estimatedSquaredSum = 0.0;
-      double originalSquaredSum = 0.0;
+      double errorsSum = 0.0;
       functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double prevValue = 0.0;
-        if(difference) prevValue = dataset.GetValue(sample - 1, targetVariable);
-        double estimatedChange = functionTree.Evaluate(sample) - prevValue;
-        double originalChange = dataset.GetValue(sample, targetVariable) - prevValue;
-        if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
-          if(double.IsNaN(estimatedChange) || double.IsInfinity(estimatedChange))
-            estimatedChange = maximumPunishment;
-          else if(estimatedChange > maximumPunishment)
-            estimatedChange = maximumPunishment;
-          else if(estimatedChange < -maximumPunishment)
-            estimatedChange = - maximumPunishment;
+        double estimated = functionTree.Evaluate(sample);
+        double original = dataset.GetValue(sample, targetVariable);
+        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+          if(double.IsNaN(estimated) || double.IsInfinity(estimated))
+            estimated = maximumPunishment;
+          else if(estimated > maximumPunishment)
+            estimated = maximumPunishment;
+          else if(estimated < -maximumPunishment)
+            estimated = -maximumPunishment;
 
-          double error = estimatedChange - originalChange;
-          errorsSquaredSum += error * error;
-          estimatedSquaredSum += estimatedChange * estimatedChange;
-          originalSquaredSum += originalChange * originalChange;
+          double percent_error = Math.Abs((estimated - original) / original);
+          errorsSum += percent_error;
         }
       }
       int nSamples = trainingEnd - trainingStart;
-      double quality = Math.Sqrt(errorsSquaredSum / nSamples) / (Math.Sqrt(estimatedSquaredSum/nSamples) + Math.Sqrt(originalSquaredSum/nSamples));
-      if(double.IsNaN(quality) || double.IsInfinity(quality)) 
+      double quality = errorsSum / nSamples;
+      if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
       return quality;
     }
