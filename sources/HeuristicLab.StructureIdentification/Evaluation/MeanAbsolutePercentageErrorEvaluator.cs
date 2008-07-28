@@ -46,9 +46,8 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       double errorsSum = 0.0;
-      functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = functionTree.Evaluate(sample);
+        double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           if(double.IsNaN(estimated) || double.IsInfinity(estimated))

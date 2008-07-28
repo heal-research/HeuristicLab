@@ -33,6 +33,7 @@ namespace HeuristicLab.StructureIdentification {
   public class SimpleEvaluator : OperatorBase {
     protected int treeSize;
     protected double totalEvaluatedNodes;
+    private IEvaluator evaluator;
 
     public SimpleEvaluator()
       : base() {
@@ -65,10 +66,11 @@ namespace HeuristicLab.StructureIdentification {
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
       values.Clear();
-      functionTree.PrepareEvaluation(dataset);
+      if(evaluator == null) evaluator = functionTree.CreateEvaluator(dataset);
+      evaluator.ResetEvaluator(functionTree);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
         ItemList row = new ItemList();
-        row.Add(new DoubleData(functionTree.Evaluate(sample)));
+        row.Add(new DoubleData(evaluator.Evaluate(sample)));
         row.Add(new DoubleData(dataset.GetValue(sample, targetVariable)));
         values.Add(row);
       }

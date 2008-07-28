@@ -57,6 +57,7 @@
     <Compile Include="Constant.cs" />
     <Compile Include="Differential.cs" />
     <Compile Include="GreaterThan.cs" />
+    <Compile Include="IEvaluator.cs" />
     <Compile Include="IfThenElse.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -50,11 +50,10 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
       double errorsSquaredSum = 0.0;
       double estimatedSquaredSum = 0.0;
       double originalSquaredSum = 0.0;
-      functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double prevValue = 0.0;
         if(difference) prevValue = dataset.GetValue(sample - 1, targetVariable);
-        double estimatedChange = functionTree.Evaluate(sample) - prevValue;
+        double estimatedChange = evaluator.Evaluate(sample) - prevValue;
         double originalChange = dataset.GetValue(sample, targetVariable) - prevValue;
         if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           if(double.IsNaN(estimatedChange) || double.IsInfinity(estimatedChange))

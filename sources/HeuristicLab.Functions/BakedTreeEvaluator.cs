@@ -28,7 +28,7 @@ using HeuristicLab.Core;
 using System.Xml;
 
 namespace HeuristicLab.Functions {
-  internal static class BakedTreeEvaluator {
+  internal class BakedTreeEvaluator : IEvaluator {
     private const int MAX_TREE_SIZE = 4096;
 
     private class Instr {
@@ -39,28 +39,29 @@ namespace HeuristicLab.Functions {
       public int symbol;
     }
 
-    private static Instr[] codeArr;
-    private static int PC;
-    private static Dataset dataset;
-    private static int sampleIndex;
+    private Instr[] codeArr;
+    private int PC;
+    private Dataset dataset;
+    private int sampleIndex;
 
 
-    static BakedTreeEvaluator() {
+    public BakedTreeEvaluator(Dataset dataset) {
+      this.dataset = dataset;
       codeArr = new Instr[MAX_TREE_SIZE];
       for(int i = 0; i < MAX_TREE_SIZE; i++) {
         codeArr[i] = new Instr();
       }
     }
 
-    public static void ResetEvaluator(Dataset dataset, List<LightWeightFunction> linearRepresentation) {
+    public void ResetEvaluator(IFunctionTree functionTree) {
+      List<LightWeightFunction> linearRepresentation = ((BakedFunctionTree)functionTree).LinearRepresentation;
       int i = 0;
-      BakedTreeEvaluator.dataset = dataset;
       foreach(LightWeightFunction f in linearRepresentation) {
         TranslateToInstr(f, codeArr[i++]);
       }
     }
 
-    private static Instr TranslateToInstr(LightWeightFunction f, Instr instr) {
+    private Instr TranslateToInstr(LightWeightFunction f, Instr instr) {
       instr.arity = f.arity;
       instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
       switch(instr.symbol) {
@@ -78,13 +79,13 @@ namespace HeuristicLab.Functions {
       return instr;
     }
 
-    internal static double Evaluate(int sampleIndex) {
+    public double Evaluate(int sampleIndex) {
       PC = 0;
-      BakedTreeEvaluator.sampleIndex = sampleIndex;
+      this.sampleIndex = sampleIndex;
       return EvaluateBakedCode();
     }
 
-    private static double EvaluateBakedCode() {
+    private double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
       switch(currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {

@@ -57,9 +57,8 @@ namespace HeuristicLab.StructureIdentification {
       double positive = 0;
       double negative = 0;
       double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      functionTree.PrepareEvaluation(dataset);
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double est = functionTree.Evaluate(sample);
+        double est = evaluator.Evaluate(sample);
         double orig = dataset.GetValue(sample, targetVariable);
         if(double.IsNaN(est) || double.IsInfinity(est)) {
           est = targetMean + maximumPunishment;

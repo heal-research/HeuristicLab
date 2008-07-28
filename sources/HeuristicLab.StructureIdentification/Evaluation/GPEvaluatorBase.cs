@@ -34,6 +34,7 @@ namespace HeuristicLab.StructureIdentification {
     protected double maximumPunishment;
     protected int treeSize;
     protected double totalEvaluatedNodes;
+    protected IEvaluator evaluator;
 
     public GPEvaluatorBase()
       : base() {
@@ -55,6 +56,8 @@ namespace HeuristicLab.StructureIdentification {
       this.maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
       this.treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
       this.totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
+      if(evaluator == null) evaluator = functionTree.CreateEvaluator(dataset);
+      evaluator.ResetEvaluator(functionTree);
       double result = Evaluate(scope, functionTree, targetVariable, dataset);
 
       DoubleData quality = GetVariableValue<DoubleData>("Quality", scope, false, false);

@@ -47,10 +47,18 @@ namespace HeuristicLab.Functions {
 
   class BakedFunctionTree : ItemBase, IFunctionTree {
     private List<LightWeightFunction> linearRepresentation;
+    internal List<LightWeightFunction> LinearRepresentation {
+      get {
+        FlattenVariables();
+        FlattenTrees(); 
+        return linearRepresentation;
+      }
+    }
     private bool treesExpanded = false;
     private List<IFunctionTree> subTrees;
     private bool variablesExpanded = false;
     private List<IVariable> variables;
+    private BakedTreeEvaluator evaluator;
 
     public BakedFunctionTree() {
       linearRepresentation = new List<LightWeightFunction>();
@@ -261,16 +269,9 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    public void PrepareEvaluation(Dataset dataset) {
-      FlattenVariables();
-      FlattenTrees();
-      BakedTreeEvaluator.ResetEvaluator(dataset, linearRepresentation);
+    public IEvaluator CreateEvaluator(Dataset dataset) {
+      return new BakedTreeEvaluator(dataset);
     }
-
-    public double Evaluate(int sampleIndex) {
-      return BakedTreeEvaluator.Evaluate(sampleIndex);
-    }
-
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       FlattenVariables();
