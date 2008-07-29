@@ -193,7 +193,6 @@ namespace HeuristicLab.DataAnalysis {
       foreach(NumberFormatInfo numberFormat in possibleFormats) {
         using(StreamReader reader = new StreamReader(importFileName)) {
           tokenizer = new Tokenizer(reader, numberFormat);
-          tokenizer.Separators = new string[] { " ", ";", "\t" };
           try {
             // parse the file
             Parse(strict);
@@ -209,7 +208,7 @@ namespace HeuristicLab.DataAnalysis {
 
     #region tokenizer
     internal enum TokenTypeEnum {
-      At, Assign, NewLine, String, Double, Int
+      At, Assign, NewLine, String, Double, Int, WhiteSpace
     }
 
     internal class Token {
@@ -234,7 +233,7 @@ namespace HeuristicLab.DataAnalysis {
     class Tokenizer {
       private StreamReader reader;
       private List<Token> tokens;
-      private string[] separators;
+      private string[] separators = new string[] { "@", "=", ";", "\t" };
       private NumberFormatInfo numberFormatInfo;
 
       public int CurrentLineNumber = 0;
@@ -243,7 +242,7 @@ namespace HeuristicLab.DataAnalysis {
       public static Token NewlineToken = new Token(TokenTypeEnum.NewLine, "\n");
       public static Token AtToken = new Token(TokenTypeEnum.At, "@");
       public static Token AssignmentToken = new Token(TokenTypeEnum.Assign, "=");
-
+      public static Token SeparatorToken = new Token(TokenTypeEnum.WhiteSpace, "");
       public string[] Separators {
         get { return separators; }
         set { separators = value; }
@@ -261,33 +260,30 @@ namespace HeuristicLab.DataAnalysis {
         if(!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
           Token[] newTokens = Array.ConvertAll(CurrentLine.Split(separators, StringSplitOptions.RemoveEmptyEntries), delegate(string str) {
-            return MakeToken(str);
+            return MakeToken(str.Trim());
           });
 
-          tokens.AddRange(newTokens);
+          foreach(Token tok in newTokens) {
+            if(tok != SeparatorToken) tokens.Add(tok);
+          }
           tokens.Add(NewlineToken);
           CurrentLineNumber++;
         }
       }
 
       private Token MakeToken(string strToken) {
-        if(strToken == "@")
-          return AtToken;
-        else if(strToken == "=")
-          return AssignmentToken;
-        else {
-          Token token = new Token(TokenTypeEnum.String, strToken);
+        Token token = new Token(TokenTypeEnum.String, strToken);
 
-          if(int.TryParse(strToken, NumberStyles.Integer, numberFormatInfo, out token.intValue)) {
-            token.type = TokenTypeEnum.Int;
-            return token;
-          } else if(double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
-            token.type = TokenTypeEnum.Double;
-            return token;
-          }
-          // couldn't parse the token as an int or float number
+        // try to parse as a number first
+        if(int.TryParse(strToken, NumberStyles.Integer, numberFormatInfo, out token.intValue)) {
+          token.type = TokenTypeEnum.Int;
+          return token;
+        } else if(double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
+          token.type = TokenTypeEnum.Double;
           return token;
         }
+        // couldn't parse the token as an int or float number so return a string token
+        return token;
       }
 
       public Token Peek() {
@@ -362,14 +358,10 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ParseMetaData(bool strict) {
-      while(tokenizer.Peek() == Tokenizer.AtToken) {
-        Expect(Tokenizer.AtToken);
-
+      while(tokenizer.Peek().type==TokenTypeEnum.String) {
         Token nameToken = tokenizer.Next();
         if(nameToken.type != TokenTypeEnum.String)
           Error("Expected a variable name.", nameToken.stringValue, tokenizer.CurrentLineNumber);
-
-        Expect(Tokenizer.AssignmentToken);
 
         List<Token> tokens = new List<Token>();
         Token valueToken = tokenizer.Next();
