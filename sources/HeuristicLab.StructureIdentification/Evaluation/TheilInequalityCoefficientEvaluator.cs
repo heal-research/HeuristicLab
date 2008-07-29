@@ -70,7 +70,8 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
         }
       }
       int nSamples = trainingEnd - trainingStart;
-      double quality = Math.Sqrt(errorsSquaredSum / nSamples) / (Math.Sqrt(estimatedSquaredSum/nSamples) + Math.Sqrt(originalSquaredSum/nSamples));
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * nSamples;
+      double quality = Math.Sqrt(errorsSquaredSum / nSamples) / (Math.Sqrt(estimatedSquaredSum / nSamples) + Math.Sqrt(originalSquaredSum / nSamples));
       if(double.IsNaN(quality) || double.IsInfinity(quality)) 
         quality = double.MaxValue;
       return quality;

@@ -66,6 +66,9 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
           originalDeviationTotalSumOfSquares += origDeviation * origDeviation;
         }
       }
+
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
+
       double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
       if(quality > 1) 
         throw new InvalidProgramException();

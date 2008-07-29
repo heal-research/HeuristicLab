@@ -62,6 +62,7 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
         }
       }
       int nSamples = trainingEnd - trainingStart;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * nSamples;
       double quality = errorsSum / nSamples;
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;

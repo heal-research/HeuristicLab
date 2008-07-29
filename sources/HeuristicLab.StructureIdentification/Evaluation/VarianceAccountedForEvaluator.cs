@@ -73,6 +73,7 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
         errors[sample-trainingStart] = original - estimated;
         originalTargetVariableValues[sample-trainingStart] = original;
       }
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd-trainingStart);
 
       double errorsVariance = Statistics.Variance(errors);
       double originalsVariance = Statistics.Variance(originalTargetVariableValues);

@@ -89,6 +89,7 @@ namespace HeuristicLab.StructureIdentification {
           best_mcc = mcc;
         }
       }
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
       return best_mcc;
     }
   }
