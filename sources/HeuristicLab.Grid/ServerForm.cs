@@ -31,6 +31,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
+using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
   public partial class ServerForm : Form {
@@ -57,6 +58,9 @@ namespace HeuristicLab.Grid {
     }
 
     private void Start() {
+      Trace.Listeners.Clear();
+      Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
+
       externalHost = new ServiceHost(server, new Uri(externalAddressTextBox.Text));
       internalHost = new ServiceHost(jobStore, new Uri(internalAddressTextBox.Text));
       ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
