@@ -80,7 +80,8 @@ namespace HeuristicLab.StructureIdentification {
             success = true;
           } catch(DataFormatException ex) {
             ShowWarningMessageBox(ex);
-            // not possible to parse strictly => try to parse non-strict
+            // not possible to parse strictly => clear and try to parse non-strict
+            parser.Reset();
             parser.Import(openFileDialog.FileName, false);
             success = true;
           }

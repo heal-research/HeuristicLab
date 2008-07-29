@@ -163,6 +163,11 @@ namespace HeuristicLab.DataAnalysis {
       samplesList = new List<List<double>>();
     }
 
+    public void Reset() {
+      metadata.Clear();
+      samplesList.Clear();
+    }
+
     public void Import(string importFileName, bool strict) {
       StreamReader reader = new StreamReader(importFileName);
       this.tokenizer = new Tokenizer(reader);
