@@ -28,6 +28,8 @@ namespace HeuristicLab.CEDMA.Operators {
   [ClassInfo(Name = "HeuristicLab.CEDMA.Operators")]
   [PluginFile(Filename = "HeuristicLab.CEDMA.Operators.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
+  [Dependency(Dependency = "HeuristicLab.Core")]
+  [Dependency(Dependency = "HeuristicLab.Data")]
   public class HeuristicLabCedmaOperatorsPlugin : PluginBase {
   }
 }

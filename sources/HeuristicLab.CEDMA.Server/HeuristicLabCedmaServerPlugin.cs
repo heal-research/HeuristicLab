@@ -28,6 +28,10 @@ namespace HeuristicLab.CEDMA.Server {
   [ClassInfo(Name = "HeuristicLab.CEDMA.Server")]
   [PluginFile(Filename = "HeuristicLab.CEDMA.Server.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.DB")]
+  [Dependency(Dependency = "HeuristicLab.Grid")]
+  [Dependency(Dependency = "HeuristicLab.Core")]
+  [Dependency(Dependency = "HeuristicLab.Data")]
   public class HeuristicLabCedmaServerPlugin : PluginBase {
   }
 }

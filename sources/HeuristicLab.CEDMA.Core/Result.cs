@@ -28,7 +28,7 @@ using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
-  public class Result : ItemBase, IResult {
+  public class Result : IResult {
     public IDatabase Database { get; set; }
     public long Id { get; set; }
     public string Summary { get; set; }
@@ -49,31 +49,17 @@ namespace HeuristicLab.CEDMA.Core {
       get {
         List<IResult> results = new List<IResult>();
         foreach(ResultEntry entry in Database.GetSubResults(Id)) {
-          Result result = (Result)DbPersistenceManager.Restore(entry.RawData);
-          result.Database = Database;
-          result.Id = entry.Id;
+          Result result = new Result(Database, entry.Id);
           result.Summary = entry.Summary;
           result.Description = entry.Description;
+          result.Item = (IItem)PersistenceManager.RestoreFromGZip(entry.RawData);
           results.Add(result);
         }
         return results;
       }
     } 
 
-    #region persistence
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Item", Item, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      Item = (IItem)PersistenceManager.Restore(node.SelectSingleNode("Item"), restoredObjects);
-    }
-    #endregion
-
-    public override IView CreateView() {
+    public IView CreateView() {
       return Item.CreateView();
     }
   }

@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
-  public interface IDatabaseItem : IItem {
+  public interface IDatabaseItem {
     IDatabase Database { get; set; }
     long Id { get; set; }
   }

@@ -28,7 +28,7 @@ using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
-  public class Agent : ItemBase, IAgent {
+  public class Agent : IAgent {
     public IDatabase Database { get; set; }
     public long Id { get; set; }
     public string Name { get; set; }
@@ -54,7 +54,7 @@ namespace HeuristicLab.CEDMA.Core {
     public void Save() {
       Database.UpdateAgent(Id, Name);
       Database.UpdateAgent(Id, Status);
-      Database.UpdateAgent(Id, DbPersistenceManager.Save(this));
+      Database.UpdateAgent(Id, PersistenceManager.SaveToGZip(OperatorGraph));
     }
 
     public void Start() {
@@ -66,11 +66,13 @@ namespace HeuristicLab.CEDMA.Core {
       get {
         List<IAgent> agents = new List<IAgent>();
         foreach(AgentEntry entry in Database.GetSubAgents(Id)) {
-          Agent newAgent = (Agent)DbPersistenceManager.Restore(entry.RawData);
-          newAgent.Database = Database;
-          newAgent.Id = entry.Id;
+          Agent newAgent = new Agent(Database, entry.Id);
           newAgent.Name = entry.Name;
           newAgent.Status = entry.Status;
+          IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
+          OperatorGraph.Clear();
+          foreach(IOperator op in opGraph.Operators) OperatorGraph.AddOperator(op);
+          OperatorGraph.InitialOperator = opGraph.InitialOperator;
           agents.Add(newAgent);
         }
         return agents;
@@ -81,31 +83,17 @@ namespace HeuristicLab.CEDMA.Core {
       get {
         List<IResult> results = new List<IResult>();
         foreach(ResultEntry entry in Database.GetResults(Id)) {
-          Result result = (Result)DbPersistenceManager.Restore(entry.RawData);
-          result.Database = Database;
-          result.Id = entry.Id;
+          Result result = new Result(Database, entry.Id);
           result.Summary = entry.Summary;
           result.Description = entry.Description;
+          result.Item = (IItem)PersistenceManager.RestoreFromGZip(entry.RawData);
           results.Add(result);
         }
         return results;
       }
     } 
 
-    #region persistence
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("OperatorGraph", operatorGraph, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      operatorGraph = (OperatorGraph)PersistenceManager.Restore(node.SelectSingleNode("OperatorGraph"), restoredObjects);
-    }
-    #endregion
-
-    public override IView CreateView() {
+    public IView CreateView() {
       return new AgentView(this);
     }
   }

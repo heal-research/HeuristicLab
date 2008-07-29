@@ -27,7 +27,6 @@ using HeuristicLab.Data;
 using System.Threading;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.Core;
 
 namespace HeuristicLab.CEDMA.Operators {
   public class ScopeResultWriter : OperatorBase {
@@ -44,8 +43,6 @@ namespace HeuristicLab.CEDMA.Operators {
     public override IOperation Apply(IScope scope) {
       string serverUrl = scope.GetVariableValue<StringData>("CedmaServerUri", true).Data;
       long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
-      Result result = new Result();
-      result.Item = scope;
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
@@ -54,7 +51,7 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        database.InsertResult(agentId, scope.Name, "Scope", DbPersistenceManager.Save(result));
+        database.InsertResult(agentId, scope.Name, "Scope", PersistenceManager.SaveToGZip(scope));
       }
       return null;
     }

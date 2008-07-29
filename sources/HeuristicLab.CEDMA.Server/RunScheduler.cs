@@ -27,7 +27,6 @@ using HeuristicLab.CEDMA.DB;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using HeuristicLab.Core;
 using System.Threading;
-using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Grid;
 using System.Diagnostics;
 using HeuristicLab.Data;
@@ -68,12 +67,11 @@ namespace HeuristicLab.CEDMA.Server {
         agents = database.GetAgents(ProcessStatus.Waiting);
       }
       foreach(AgentEntry entry in agents) {
-        Agent agent = (Agent)DbPersistenceManager.Restore(entry.RawData);
-        IOperatorGraph opGraph = agent.OperatorGraph;
         Scope scope = new Scope();
         // initialize CEDMA variables for the execution of the agent
         scope.AddVariable(new Variable("AgentId", new IntData((int)entry.Id)));
         scope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
+        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
         AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, scope);
         WaitHandle wHandle;
         lock(remoteCommLock) {

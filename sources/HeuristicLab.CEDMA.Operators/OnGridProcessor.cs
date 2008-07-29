@@ -27,7 +27,6 @@ using HeuristicLab.Data;
 using System.Threading;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.Core;
 
 namespace HeuristicLab.CEDMA.Operators {
   public class OnGridProcessor : OperatorBase {
@@ -47,12 +46,6 @@ namespace HeuristicLab.CEDMA.Operators {
       string serverUrl = scope.GetVariableValue<StringData>("CedmaServerUri", true).Data;
       long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
 
-      Agent agent = new Agent();
-      foreach(IOperator op in operatorGraph.Operators) {
-        agent.OperatorGraph.AddOperator(op);
-      }
-      agent.OperatorGraph.InitialOperator = operatorGraph.InitialOperator;
-
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
       binding.ReaderQuotas.MaxStringContentLength = 10000000; // also 10M chars
@@ -60,7 +53,7 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        long id = database.InsertAgent(agentId, null, DbPersistenceManager.Save(agent));
+        long id = database.InsertAgent(agentId, null, PersistenceManager.SaveToGZip(operatorGraph));
         database.UpdateAgent(id, ProcessStatus.Waiting);
       }
       return null;

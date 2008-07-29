@@ -45,11 +45,12 @@ namespace HeuristicLab.CEDMA.Core {
     private void ReloadList() {
       agentList.Clear();
       foreach(AgentEntry a in database.GetAgents()) {
-        Agent newAgent = (Agent)DbPersistenceManager.Restore(a.RawData);
-        newAgent.Database = database;
-        newAgent.Id = a.Id;
+        Agent newAgent = new Agent(Database, a.Id);
         newAgent.Name = a.Name;
         newAgent.Status = a.Status;
+        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(a.RawData);
+        foreach(IOperator op in opGraph.Operators) newAgent.OperatorGraph.AddOperator(op);
+        newAgent.OperatorGraph.InitialOperator = opGraph.InitialOperator;
         agentList.Add(newAgent);
       }
       FireChanged();
@@ -65,7 +66,7 @@ namespace HeuristicLab.CEDMA.Core {
       agent.Name = DateTime.Now.ToString();
       agent.Status = ProcessStatus.Unknown;
       agent.Database = database;
-      long id = database.InsertAgent(null, agent.Name, DbPersistenceManager.Save(agent));
+      long id = database.InsertAgent(null, agent.Name, PersistenceManager.SaveToGZip(agent.OperatorGraph));
       agent.Id = id;
       agentList.Add(agent);
     }

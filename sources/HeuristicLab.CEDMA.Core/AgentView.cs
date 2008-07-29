@@ -31,9 +31,10 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
   public partial class AgentView : ViewBase {
+    private IAgent agent;
     public IAgent Agent {
-      get { return (IAgent)Item; }
-      set { base.Item = value; }
+      get { return agent; }
+      set { agent = value; }
     }
 
     public AgentView() {
