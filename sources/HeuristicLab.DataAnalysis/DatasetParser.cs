@@ -169,17 +169,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public void Import(string importFileName, bool strict) {
-      StreamReader reader = new StreamReader(importFileName);
-      this.tokenizer = new Tokenizer(reader);
-      tokenizer.Separators = new string[] { " ", ";", "\t" };
-
-      try {
-        // parse the file
-        Parse(strict);
-      } finally {
-        reader.Close();
-      }
-
+      TryParse(importFileName, strict);
       // translate the list of samples into a DoubleMatrixData item
       samples = new double[samplesList.Count * samplesList[0].Count];
       rows = samplesList.Count;
@@ -195,6 +185,26 @@ namespace HeuristicLab.DataAnalysis {
         }
         i++;
       }
+    }
+
+    private void TryParse(string importFileName, bool strict) {
+      Exception lastEx = null;
+      NumberFormatInfo[] possibleFormats = new NumberFormatInfo[] { NumberFormatInfo.InvariantInfo, CultureInfo.GetCultureInfo("de-DE").NumberFormat, NumberFormatInfo.CurrentInfo };
+      foreach(NumberFormatInfo numberFormat in possibleFormats) {
+        using(StreamReader reader = new StreamReader(importFileName)) {
+          tokenizer = new Tokenizer(reader, numberFormat);
+          tokenizer.Separators = new string[] { " ", ";", "\t" };
+          try {
+            // parse the file
+            Parse(strict);
+            return; // parsed without errors -> return;
+          } catch(DataFormatException ex) {
+            lastEx = ex;
+          }
+        }
+      }
+      // all number formats threw an exception -> rethrow the last exception
+      throw lastEx;
     }
 
     #region tokenizer
@@ -225,6 +235,7 @@ namespace HeuristicLab.DataAnalysis {
       private StreamReader reader;
       private List<Token> tokens;
       private string[] separators;
+      private NumberFormatInfo numberFormatInfo;
 
       public int CurrentLineNumber = 0;
       public string CurrentLine;
@@ -239,8 +250,9 @@ namespace HeuristicLab.DataAnalysis {
       }
 
 
-      public Tokenizer(StreamReader reader) {
+      public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo) {
         this.reader = reader;
+        this.numberFormatInfo = numberFormatInfo;
         tokens = new List<Token>();
         ReadNextTokens();
       }
@@ -266,36 +278,14 @@ namespace HeuristicLab.DataAnalysis {
         else {
           Token token = new Token(TokenTypeEnum.String, strToken);
 
-          // try invariant culture
-          NumberFormatInfo currentNumberFormatInfo = CultureInfo.InvariantCulture.NumberFormat;
-          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
+          if(int.TryParse(strToken, NumberStyles.Integer, numberFormatInfo, out token.intValue)) {
             token.type = TokenTypeEnum.Int;
             return token;
-          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
+          } else if(double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
             token.type = TokenTypeEnum.Double;
             return token;
           }
-          // try german culture
-          currentNumberFormatInfo = CultureInfo.GetCultureInfo("de-DE").NumberFormat;
-          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
-            token.type = TokenTypeEnum.Int;
-            return token;
-          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
-            token.type = TokenTypeEnum.Double;
-            return token;
-          }
-
-          // try current culture
-          currentNumberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
-          if(int.TryParse(strToken, NumberStyles.Integer, currentNumberFormatInfo, out token.intValue)) {
-            token.type = TokenTypeEnum.Int;
-            return token;
-          } else if(double.TryParse(strToken, NumberStyles.Float, currentNumberFormatInfo, out token.doubleValue)) {
-            token.type = TokenTypeEnum.Double;
-            return token;
-          }
-
-          // nothing worked
+          // couldn't parse the token as an int or float number
           return token;
         }
       }
