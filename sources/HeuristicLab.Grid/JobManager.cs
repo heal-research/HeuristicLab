@@ -28,7 +28,6 @@ using HeuristicLab.Grid;
 using System.Threading;
 using HeuristicLab.Core;
 using System.IO;
-using System.IO.Compression;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -68,6 +67,8 @@ namespace HeuristicLab.Grid {
     private ChannelFactory<IGridServer> factory;
 
     public JobManager(string address) {
+      Trace.Listeners.Clear();
+      Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
       this.address = address;
       Thread starterThread = new Thread(StartEngines);
       Thread resultsGatheringThread = new Thread(GetResults);
@@ -92,6 +93,7 @@ namespace HeuristicLab.Grid {
     }
 
     private void ResetConnection() {
+      Trace.TraceInformation("Reset connection in JobManager");
       lock(connectionLock) {
         // open a new channel
         NetTcpBinding binding = new NetTcpBinding();
@@ -138,8 +140,8 @@ namespace HeuristicLab.Grid {
             }
           }
         }
-      } finally {
-        Debug.Assert(false);  // make sure that we are notified when this thread is stopped in debugging
+      } catch(Exception e) {
+        Trace.TraceError("Exception "+e+" in JobManager.StartEngines() killed the start-engine thread\n"+e.StackTrace);
       }
     }
 
@@ -180,8 +182,8 @@ namespace HeuristicLab.Grid {
             }
           }
         }
-      } finally {
-        Debug.Assert(false); // just to make sure that I get notified when debugging whenever this thread is killed somehow
+      } catch(Exception e) {
+        Trace.TraceError("Exception " + e + " in JobManager.GetResults() killed the results-gathering thread\n"+ e.StackTrace);
       }
     }
 
@@ -198,13 +200,7 @@ namespace HeuristicLab.Grid {
     }
 
     private byte[] ZipEngine(ProcessingEngine engine) {
-      MemoryStream memStream = new MemoryStream();
-      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      PersistenceManager.Save(engine, stream);
-      stream.Close();
-      byte[] zippedEngine = memStream.ToArray();
-      memStream.Close();
-      return zippedEngine;
+      return PersistenceManager.SaveToGZip(engine);
     }
 
     public ProcessingEngine EndExecuteOperation(AtomicOperation operation) {
@@ -218,9 +214,7 @@ namespace HeuristicLab.Grid {
           results.Remove(operation);
         }
         // restore the engine 
-        using(GZipStream stream = new GZipStream(new MemoryStream(zippedResult), CompressionMode.Decompress)) {
-          return (ProcessingEngine)PersistenceManager.Load(stream);
-        }
+        return (ProcessingEngine)PersistenceManager.RestoreFromGZip(zippedResult);
       }
     }
 
@@ -243,6 +237,7 @@ namespace HeuristicLab.Grid {
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
       } while(retries < MAX_CONNECTION_RETRIES);
+      Trace.TraceWarning("Reached max connection retries in TryStartExecuteEngine");
       return Guid.Empty;
     }
 
@@ -263,6 +258,7 @@ namespace HeuristicLab.Grid {
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
       } while(retries < MAX_CONNECTION_RETRIES);
+      Trace.TraceWarning("Reached max connection retries in TryEndExecuteEngine");
       return null;
     }
 
@@ -284,6 +280,7 @@ namespace HeuristicLab.Grid {
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
       } while(retries < MAX_CONNECTION_RETRIES);
+      Trace.TraceWarning("Reached max connection retries in TryGetJobState");
       return JobState.Unknown;
     }
   }

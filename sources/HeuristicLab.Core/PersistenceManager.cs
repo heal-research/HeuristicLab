@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.IO;
+using System.IO.Compression;
 
 namespace HeuristicLab.Core {
   public static class PersistenceManager {
@@ -83,6 +84,19 @@ namespace HeuristicLab.Core {
       XmlDocument doc = new XmlDocument();
       doc.Load(stream);
       return PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+    }
+
+    public static IStorable RestoreFromGZip(byte[] serializedStorable) {
+      GZipStream stream = new GZipStream(new MemoryStream(serializedStorable), CompressionMode.Decompress);
+      return Load(stream);
+    }
+
+    public static byte[] SaveToGZip(IStorable storable) {
+      MemoryStream memStream = new MemoryStream();
+      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+      Save(storable, stream);
+      stream.Close();
+      return memStream.ToArray();
     }
 
     public static string BuildTypeString(Type type) {

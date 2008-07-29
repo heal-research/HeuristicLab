@@ -32,8 +32,8 @@ using HeuristicLab.Core;
 using System.Xml;
 using System.Threading;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
+using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
@@ -60,6 +60,9 @@ namespace HeuristicLab.Grid {
 
     private void startButton_Click(object sender, EventArgs e) {
       try {
+        Trace.Listeners.Clear();
+        Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
+
         ResetConnection();
         fetchOperationTimer.Start();
         startButton.Enabled = false;
@@ -76,6 +79,7 @@ namespace HeuristicLab.Grid {
     }
 
     private void ResetConnection() {
+      Trace.TraceInformation("Reset connection in GridClient");
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
       binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
@@ -111,12 +115,14 @@ namespace HeuristicLab.Grid {
         try {
           gotEngine = engineStore.TryTakeEngine(out currentGuid, out engineXml);
         } catch(TimeoutException) {
+          Trace.TraceWarning("TimeoutException while trying to get an engine");
           currentEngine = null;
           currentGuid = Guid.Empty;
           // timeout -> just start the timer again
           fetchOperationTimer.Interval = 5000;
           fetchOperationTimer.Start();
         } catch(CommunicationException) {
+          Trace.TraceWarning("CommunicationException while trying to get an engine");
           // connection problem -> reset connection and start the timer again
           ResetConnection();
           currentEngine = null;
@@ -155,10 +161,12 @@ namespace HeuristicLab.Grid {
               engineStore.StoreResult(currentGuid, resultXml);
               success = true;
             } catch(TimeoutException) {
+              Trace.TraceWarning("TimeoutException while trying to store the result of an engine");
               success = false;
               retries++;
               Thread.Sleep(TimeSpan.FromSeconds(CONNECTION_RETRY_TIMEOUT_SEC));
             } catch(CommunicationException) {
+              Trace.TraceWarning("CommunicationException while trying to store the result of an engine");
               ResetConnection();
               success = false;
               retries++;
@@ -179,15 +187,10 @@ namespace HeuristicLab.Grid {
     }
 
     private ProcessingEngine RestoreEngine(byte[] engine) {
-      GZipStream stream = new GZipStream(new MemoryStream(engine), CompressionMode.Decompress);
-      return (ProcessingEngine)PersistenceManager.Load(stream);
+      return (ProcessingEngine)PersistenceManager.RestoreFromGZip(engine);
     }
     private byte[] SaveEngine(IEngine engine) {
-      MemoryStream memStream = new MemoryStream();
-      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      PersistenceManager.Save(engine, stream);
-      stream.Close();
-      return memStream.ToArray();
+      return PersistenceManager.SaveToGZip(engine);
     }
   }
 }
