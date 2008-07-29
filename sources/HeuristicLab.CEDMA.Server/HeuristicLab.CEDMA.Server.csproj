@@ -58,7 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AgentScheduler.cs" />
     <Compile Include="RunScheduler.cs" />
     <Compile Include="DbPersistenceManager.cs" />
     <Compile Include="ServerApplication.cs" />

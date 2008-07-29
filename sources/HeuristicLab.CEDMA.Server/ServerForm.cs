@@ -53,12 +53,6 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    private void InitAgentScheduler() {
-      AgentScheduler scheduler = new AgentScheduler(database, addressTextBox.Text);
-      Thread agentSchedulerThread = new Thread(scheduler.Run);
-      agentSchedulerThread.Start();
-    }
-
     private void InitRunScheduler() {
       JobManager jobManager = new JobManager(gridAddress.Text);
       jobManager.Reset();
@@ -80,7 +74,6 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void Start() {
       InitDatabase();
-      InitAgentScheduler();
       InitRunScheduler();
 
       host = new ServiceHost(database, new Uri(addressTextBox.Text));

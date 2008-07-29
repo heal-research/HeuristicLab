@@ -30,7 +30,7 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
   [ServiceContract(Namespace = "http://HeuristicLab.CEDMA.DB")]
   public interface IDatabase {
     [OperationContract]
-    long InsertAgent(long? parentAgentId, string name, bool controllerAgent, byte[] rawData);
+    long InsertAgent(long? parentAgentId, string name, byte[] rawData);
 
     [OperationContract(Name = "UpdateAgentName")]
     void UpdateAgent(long id, string name);

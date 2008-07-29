@@ -40,8 +40,6 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [DataMember]
     public ProcessStatus Status { get; set; }
     [DataMember]
-    public bool ControllerAgent { get; set; }
-    [DataMember]
     public byte[] RawData { get; set; }
   }
 }

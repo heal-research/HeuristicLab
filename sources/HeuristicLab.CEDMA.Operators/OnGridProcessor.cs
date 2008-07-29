@@ -60,7 +60,7 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        long id = database.InsertAgent(agentId, null, false, DbPersistenceManager.Save(agent));
+        long id = database.InsertAgent(agentId, null, DbPersistenceManager.Save(agent));
         database.UpdateAgent(id, ProcessStatus.Waiting);
       }
       return null;

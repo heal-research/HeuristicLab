@@ -54,7 +54,7 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, ParentAgentId integer, Name text, Status text default "+ProcessStatus.Unknown+", ControllerAgent integer, CreationTime DateTime, RawData Blob)";
+              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, ParentAgentId integer, Name text, Status text default "+ProcessStatus.Unknown+", CreationTime DateTime, RawData Blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -72,8 +72,8 @@ namespace HeuristicLab.CEDMA.DB {
     }
     #endregion
 
-    #region insert agent/run/result/sub-result
-    public long InsertAgent(long? parentAgentId, string name, bool controllerAgent, byte[] rawData) {
+    #region insert agent/result/sub-result
+    public long InsertAgent(long? parentAgentId, string name, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
@@ -82,7 +82,7 @@ namespace HeuristicLab.CEDMA.DB {
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
-              c.CommandText = "Insert into Agent (Name, ParentAgentId, ControllerAgent, CreationTime, RawData) values (@Name, @ParentAgentId, @ControllerAgent, @CreationTime, @RawData); select last_insert_rowid()";
+              c.CommandText = "Insert into Agent (Name, ParentAgentId, CreationTime, RawData) values (@Name, @ParentAgentId, @CreationTime, @RawData); select last_insert_rowid()";
               DbParameter nameParam = c.CreateParameter();
               nameParam.ParameterName = "@Name";
               nameParam.Value = name;
@@ -91,10 +91,6 @@ namespace HeuristicLab.CEDMA.DB {
               parentParam.ParameterName = "@ParentAgentId";
               parentParam.Value = parentAgentId;
               c.Parameters.Add(parentParam);
-              DbParameter controllerParam = c.CreateParameter();
-              controllerParam.ParameterName = "@ControllerAgent";
-              controllerParam.Value = controllerAgent;
-              c.Parameters.Add(controllerParam);
               DbParameter creationTimeParam = c.CreateParameter();
               creationTimeParam.ParameterName = "@CreationTime";
               creationTimeParam.Value = DateTime.Now;
@@ -283,7 +279,7 @@ namespace HeuristicLab.CEDMA.DB {
 
     #endregion
 
-    #region get agent/run/result/sub-result
+    #region get agent/result/sub-result
 
     public ICollection<AgentEntry> GetAgents(ProcessStatus status) {
       rwLock.EnterReadLock();
@@ -292,7 +288,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           SQLiteCommand c = cnn.CreateCommand();
-          c.CommandText = "Select id, name, ControllerAgent, rawdata from Agent where Status=@Status";
+          c.CommandText = "Select id, name, rawdata from Agent where Status=@Status";
           DbParameter statusParameter = c.CreateParameter();
           statusParameter.ParameterName = "@Status";
           statusParameter.Value = status.ToString();
@@ -304,8 +300,7 @@ namespace HeuristicLab.CEDMA.DB {
             agent.Status = status;
             agent.Id = r.GetInt32(0);
             agent.Name = r.IsDBNull(1)?"":r.GetString(1);
-            agent.ControllerAgent = r.GetBoolean(2);
-            agent.RawData = (byte[])r.GetValue(3);
+            agent.RawData = (byte[])r.GetValue(2);
             agents.Add(agent);
           }
         }
@@ -322,7 +317,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, name, status, ControllerAgent, rawdata from Agent where ParentAgentId isnull";
+            c.CommandText = "Select id, name, status, rawdata from Agent where ParentAgentId isnull";
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 AgentEntry agent = new AgentEntry();
@@ -330,8 +325,7 @@ namespace HeuristicLab.CEDMA.DB {
                 agent.Id = r.GetInt32(0);
                 agent.Name = r.IsDBNull(1)?"-":r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
-                agent.ControllerAgent = r.GetBoolean(3);
-                agent.RawData = (byte[])r.GetValue(4);
+                agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
               }
             }
@@ -350,7 +344,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, name, status, controllerAgent, rawdata from Agent where ParentAgentId=@ParentAgentId";
+            c.CommandText = "Select id, name, status, rawdata from Agent where ParentAgentId=@ParentAgentId";
             DbParameter parentParameter = c.CreateParameter();
             parentParameter.ParameterName = "@ParentAgentId";
             parentParameter.Value = parentAgentId;
@@ -363,8 +357,7 @@ namespace HeuristicLab.CEDMA.DB {
                 agent.Id = r.GetInt32(0);
                 agent.Name = r.IsDBNull(1)?"-":r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
-                agent.ControllerAgent = r.GetBoolean(3);
-                agent.RawData = (byte[])r.GetValue(4);
+                agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
               }
             }

@@ -63,9 +63,9 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
     private void ReleaseWaitingRuns() {
-      IEnumerable<AgentEntry> agents;
+      ICollection<AgentEntry> agents;
       lock(remoteCommLock) {
-        agents = database.GetAgents(ProcessStatus.Waiting).Where(a=>!a.ControllerAgent);
+        agents = database.GetAgents(ProcessStatus.Waiting);
       }
       foreach(AgentEntry entry in agents) {
         Agent agent = (Agent)DbPersistenceManager.Restore(entry.RawData);
