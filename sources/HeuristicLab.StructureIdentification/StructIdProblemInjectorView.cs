@@ -100,6 +100,8 @@ namespace HeuristicLab.StructureIdentification {
           ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesEnd").Value).Data = parser.TrainingSamplesEnd;
           ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesStart").Value).Data = parser.ValidationSamplesStart;
           ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesEnd").Value).Data = parser.ValidationSamplesEnd;
+          ((IntData)StructIdProblemInjector.GetVariable("TestSamplesStart").Value).Data = parser.TestSamplesStart;
+          ((IntData)StructIdProblemInjector.GetVariable("TestSamplesEnd").Value).Data = parser.TestSamplesEnd;
           ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
           Refresh();
         }

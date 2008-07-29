@@ -48,6 +48,10 @@ namespace HeuristicLab.StructureIdentification {
       AddVariable(new Variable("ValidationSamplesStart", new IntData()));
       AddVariableInfo(new VariableInfo("ValidationSamplesEnd", "ValidationSamplesEnd", typeof(IntData), VariableKind.New));
       AddVariable(new Variable("ValidationSamplesEnd", new IntData()));
+      AddVariableInfo(new VariableInfo("TestSamplesStart", "TestSamplesStart", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("TestSamplesStart", new IntData()));
+      AddVariableInfo(new VariableInfo("TestSamplesEnd", "TestSamplesEnd", typeof(IntData), VariableKind.New));
+      AddVariable(new Variable("TestSamplesEnd", new IntData()));
     }
 
     public override IView CreateView() {
@@ -61,6 +65,8 @@ namespace HeuristicLab.StructureIdentification {
       scope.AddVariable(new Variable(scope.TranslateName("TrainingSamplesEnd"), (IItem)GetVariable("TrainingSamplesEnd").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("ValidationSamplesStart"), (IItem)GetVariable("ValidationSamplesStart").Value.Clone()));
       scope.AddVariable(new Variable(scope.TranslateName("ValidationSamplesEnd"), (IItem)GetVariable("ValidationSamplesEnd").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TestSamplesStart"), (IItem)GetVariable("TestSamplesStart").Value.Clone()));
+      scope.AddVariable(new Variable(scope.TranslateName("TestSamplesEnd"), (IItem)GetVariable("TestSamplesEnd").Value.Clone()));
       return null;
     }
   }

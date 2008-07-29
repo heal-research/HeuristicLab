@@ -36,6 +36,8 @@ namespace HeuristicLab.DataAnalysis {
     private const string TRAININGSAMPLESEND = "TRAININGSAMPLESEND";
     private const string VALIDATIONSAMPLESSTART = "VALIDATIONSAMPLESSTART";
     private const string VALIDATIONSAMPLESEND = "VALIDATIONSAMPLESEND";
+    private const string TESTSAMPLESSTART = "TESTSAMPLESSTART";
+    private const string TESTSAMPLESEND = "TESTSAMPLESEND";
     private Tokenizer tokenizer;
     private Dictionary<string, List<Token>> metadata;
     private List<List<double>> samplesList;
@@ -137,6 +139,21 @@ namespace HeuristicLab.DataAnalysis {
       get {
         if(metadata.ContainsKey(VALIDATIONSAMPLESEND)) {
           return metadata[VALIDATIONSAMPLESEND][0].intValue;
+        } else return rows;
+      }
+    }
+    public int TestSamplesStart {
+      get {
+        if(metadata.ContainsKey(TESTSAMPLESSTART)) {
+          return metadata[TESTSAMPLESSTART][0].intValue;
+        } else return 0;
+      }
+    }
+
+    public int TestSamplesEnd {
+      get {
+        if(metadata.ContainsKey(TESTSAMPLESEND)) {
+          return metadata[TESTSAMPLESEND][0].intValue;
         } else return rows;
       }
     }
