@@ -44,6 +44,7 @@ namespace HeuristicLab.CEDMA.Core {
     public AgentView(IAgent agent)
       : this() {
       Agent = agent;
+      UpdateControls();
     }
 
     protected override void UpdateControls() {
