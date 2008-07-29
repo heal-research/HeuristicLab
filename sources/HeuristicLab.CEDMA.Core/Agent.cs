@@ -70,9 +70,9 @@ namespace HeuristicLab.CEDMA.Core {
           newAgent.Name = entry.Name;
           newAgent.Status = entry.Status;
           IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
-          OperatorGraph.Clear();
-          foreach(IOperator op in opGraph.Operators) OperatorGraph.AddOperator(op);
-          OperatorGraph.InitialOperator = opGraph.InitialOperator;
+          newAgent.OperatorGraph.Clear();
+          foreach(IOperator op in opGraph.Operators) newAgent.OperatorGraph.AddOperator(op);
+          newAgent.OperatorGraph.InitialOperator = opGraph.InitialOperator;
           agents.Add(newAgent);
         }
         return agents;
