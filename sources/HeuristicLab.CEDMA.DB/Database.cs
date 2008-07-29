@@ -35,15 +35,17 @@ namespace HeuristicLab.CEDMA.DB {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public class Database : IDatabase {
     private string connectionString;
-    private ReaderWriterLockSlim rwLock;
+    private ReaderWriterLockSlim agentLock;
+    private ReaderWriterLockSlim resultLock;
     public Database(string connectionString) {
       this.connectionString = connectionString;
-      rwLock = new ReaderWriterLockSlim();
+      agentLock = new ReaderWriterLockSlim();
+      resultLock = new ReaderWriterLockSlim();
     }
 
     #region create empty database
     public void CreateNew() {
-      rwLock.EnterWriteLock();
+      agentLock.EnterWriteLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -67,14 +69,14 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        agentLock.ExitWriteLock();
       }
     }
     #endregion
 
     #region insert agent/result/sub-result
     public long InsertAgent(long? parentAgentId, string name, byte[] rawData) {
-      rwLock.EnterWriteLock();
+      agentLock.EnterWriteLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -106,12 +108,12 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        agentLock.ExitWriteLock();
       }
     }
 
     public long InsertResult(long agentId, string summary, string description, byte[] rawData) {
-      rwLock.EnterWriteLock();
+      resultLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -148,12 +150,12 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        resultLock.ExitWriteLock();
       }
     }
 
     public long InsertSubResult(long resultId, string summary, string description, byte[] rawData) {
-      rwLock.EnterWriteLock();
+      resultLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -190,14 +192,14 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        resultLock.ExitWriteLock();
       }
     }
     #endregion
 
     #region update agent/run
     public void UpdateAgent(long id, string name) {
-      rwLock.EnterWriteLock();
+      agentLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -219,12 +221,12 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        agentLock.ExitWriteLock();
       }
     }
 
     public void UpdateAgent(long id, ProcessStatus status) {
-      rwLock.EnterWriteLock();
+      agentLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -246,12 +248,12 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        agentLock.ExitWriteLock();
       }
     }
 
     public void UpdateAgent(long id, byte[] rawData) {
-      rwLock.EnterWriteLock();
+      agentLock.EnterWriteLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -273,7 +275,7 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitWriteLock();
+        agentLock.ExitWriteLock();
       }
     }
 
@@ -282,7 +284,7 @@ namespace HeuristicLab.CEDMA.DB {
     #region get agent/result/sub-result
 
     public ICollection<AgentEntry> GetAgents(ProcessStatus status) {
-      rwLock.EnterReadLock();
+      agentLock.EnterReadLock();
       List<AgentEntry> agents = new List<AgentEntry>();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
@@ -305,13 +307,13 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        agentLock.ExitReadLock();
       }
       return agents;
     }
 
     public ICollection<AgentEntry> GetAgents() {
-      rwLock.EnterReadLock();
+      agentLock.EnterReadLock();
       List<AgentEntry> agents = new List<AgentEntry>();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
@@ -332,13 +334,13 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        agentLock.ExitReadLock();
       }
       return agents;
     }
 
     public ICollection<AgentEntry> GetSubAgents(long parentAgentId) {
-      rwLock.EnterReadLock();
+      agentLock.EnterReadLock();
       List<AgentEntry> agents = new List<AgentEntry>();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
@@ -364,14 +366,14 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        agentLock.ExitReadLock();
       }
       return agents;
     }
 
     public ICollection<ResultEntry> GetResults(long agentId) {
       List<ResultEntry> results = new List<ResultEntry>();
-      rwLock.EnterReadLock();
+      resultLock.EnterReadLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -396,14 +398,14 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        resultLock.ExitReadLock();
       }
       return results;
     }
 
     public ICollection<ResultEntry> GetSubResults(long resultId) {
       List<ResultEntry> results = new List<ResultEntry>();
-      rwLock.EnterReadLock();
+      resultLock.EnterReadLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
@@ -428,7 +430,7 @@ namespace HeuristicLab.CEDMA.DB {
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        resultLock.ExitReadLock();
       }
       return results;
     }
