@@ -51,19 +51,19 @@ namespace HeuristicLab.Functions {
     }
 
     protected override void UpdateControls() {
-      functionTreeView.Nodes.Clear();
+      funTreeView.Nodes.Clear();
       functionNameVisitor.Visit(functionTree);
       TreeNode rootNode = new TreeNode();
       rootNode.Name = functionTree.Function.Name;
       rootNode.Text = functionNameVisitor.Name;
       rootNode.Tag = functionTree;
       rootNode.ContextMenuStrip = treeNodeContextMenu;
-      functionTreeView.Nodes.Add(rootNode);
+      funTreeView.Nodes.Add(rootNode);
 
       foreach(IFunctionTree subTree in functionTree.SubTrees) {
         CreateTree(rootNode, subTree);
       }
-      functionTreeView.ExpandAll();
+      funTreeView.ExpandAll();
     }
 
     private void CreateTree(TreeNode rootNode, IFunctionTree functionTree) {
@@ -84,8 +84,8 @@ namespace HeuristicLab.Functions {
       variablesSplitContainer.Panel2.Controls.Clear();
       templateTextBox.Clear();
       editButton.Enabled = false;
-      if(functionTreeView.SelectedNode != null && functionTreeView.SelectedNode.Tag != null) {
-        IFunctionTree selectedBranch = (IFunctionTree)functionTreeView.SelectedNode.Tag;
+      if(funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
+        IFunctionTree selectedBranch = (IFunctionTree)funTreeView.SelectedNode.Tag;
         UpdateVariablesList(selectedBranch);
         templateTextBox.Text = selectedBranch.Function.Name;
         this.selectedBranch = selectedBranch;
@@ -119,8 +119,8 @@ namespace HeuristicLab.Functions {
     }
 
     void selectedVariable_ValueChanged(object sender, EventArgs e) {
-      if(functionTreeView.SelectedNode != null && functionTreeView.SelectedNode.Tag != null) {
-        TreeNode node = functionTreeView.SelectedNode;
+      if(funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
+        TreeNode node = funTreeView.SelectedNode;
         functionNameVisitor.Visit(selectedBranch);
         node.Text = functionNameVisitor.Name;
       }
@@ -131,12 +131,18 @@ namespace HeuristicLab.Functions {
     }
 
     private void copyToClipboardMenuItem_Click(object sender, EventArgs e) {
-      TreeNode node = functionTreeView.SelectedNode;
+      TreeNode node = funTreeView.SelectedNode;
       if(node == null || node.Tag == null) return;
 
       ModelAnalyzerExporter visitor = new ModelAnalyzerExporter();
       visitor.Visit((IFunctionTree)node.Tag);
       Clipboard.SetText(visitor.ModelAnalyzerPrefix);
+    }
+    private void funTreeView_MouseUp(object sender, MouseEventArgs e) {
+      if(e.Button == MouseButtons.Right) {
+        // Select the clicked node
+        funTreeView.SelectedNode = funTreeView.GetNodeAt(e.X, e.Y);
+      }
     }
 
     private class FunctionNameVisitor : IFunctionVisitor {

@@ -49,7 +49,7 @@ namespace HeuristicLab.Functions {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.functionTreeView = new System.Windows.Forms.TreeView();
+      this.funTreeView = new System.Windows.Forms.TreeView();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.variablesGroupBox = new System.Windows.Forms.GroupBox();
       this.variablesSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -68,15 +68,16 @@ namespace HeuristicLab.Functions {
       this.treeNodeContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
-      // functionTreeView
+      // funTreeView
       // 
-      this.functionTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.functionTreeView.HideSelection = false;
-      this.functionTreeView.Location = new System.Drawing.Point(0, 0);
-      this.functionTreeView.Name = "functionTreeView";
-      this.functionTreeView.Size = new System.Drawing.Size(182, 532);
-      this.functionTreeView.TabIndex = 0;
-      this.functionTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.functionTreeView_AfterSelect);
+      this.funTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.funTreeView.HideSelection = false;
+      this.funTreeView.Location = new System.Drawing.Point(0, 0);
+      this.funTreeView.Name = "funTreeView";
+      this.funTreeView.Size = new System.Drawing.Size(182, 532);
+      this.funTreeView.TabIndex = 0;
+      this.funTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.funTreeView_MouseUp);
+      this.funTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.functionTreeView_AfterSelect);
       // 
       // splitContainer
       // 
@@ -86,7 +87,7 @@ namespace HeuristicLab.Functions {
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.functionTreeView);
+      this.splitContainer.Panel1.Controls.Add(this.funTreeView);
       // 
       // splitContainer.Panel2
       // 
@@ -166,21 +167,21 @@ namespace HeuristicLab.Functions {
       this.treeNodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToClipboardMenuItem});
       this.treeNodeContextMenu.Name = "treeNodeContextMenu";
-      this.treeNodeContextMenu.Size = new System.Drawing.Size(248, 26);
+      this.treeNodeContextMenu.Size = new System.Drawing.Size(259, 26);
       // 
       // copyToClipboardMenuItem
       // 
       this.copyToClipboardMenuItem.Name = "copyToClipboardMenuItem";
-      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(247, 22);
+      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(258, 22);
       this.copyToClipboardMenuItem.Text = "Copy to clip-board (Model-Analyzer)";
       this.copyToClipboardMenuItem.Click += new System.EventHandler(this.copyToClipboardMenuItem_Click);
       // 
-      // FunctionView
+      // FunctionTreeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer);
-      this.Name = "FunctionView";
+      this.Name = "FunctionTreeView";
       this.Size = new System.Drawing.Size(735, 532);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
@@ -196,7 +197,7 @@ namespace HeuristicLab.Functions {
 
     #endregion
 
-    private System.Windows.Forms.TreeView functionTreeView;
+    private System.Windows.Forms.TreeView funTreeView;
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.TextBox templateTextBox;
     private System.Windows.Forms.Button editButton;
