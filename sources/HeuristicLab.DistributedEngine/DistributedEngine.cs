@@ -129,14 +129,10 @@ namespace HeuristicLab.DistributedEngine {
             // retrieve results and merge into scope-tree
             foreach(AtomicOperation parOperation in compositeOperation.Operations) {
               ProcessingEngine resultEngine = jobManager.EndExecuteOperation(parOperation);
-              if(resultEngine.ExecutionStack.Count > 0) {
-                // when there are operations left in the execution stack it means that the engine has been aborted
-                // for unkown reason. Probably there was a problem at the client, so we can try to execute the steps locally.
+              if(resultEngine.Canceled) {
+                // When the engine was canceled because of a problem at the client we can try to execute the steps locally.
                 // If they also fail the (local) distributued-engine will be aborted and we will see an error-message.
-                // Solution: We could push all waiting operations in the execution stack of the result engine into our own
-                // execution stack, but this is not easy because we have to change the operations to point to the 
-                // original scopes instead of the new scopes (created while deserializing the processing engine).
-                // Instead just push the original parallel operation back on the stack to force local execution.
+                // so just push the original parallel operation back on the stack to force local execution.
                 ExecutionStack.Push(parOperation);
               } else {
                 // if everything went fine we can merge the results into our local scope-tree
@@ -181,7 +177,7 @@ namespace HeuristicLab.DistributedEngine {
         List<IScope> subScopes = new List<IScope>(currentScope.SubScopes); // store the list of sub-scopes
         prunedScopes.Add(subScopes);
         // remove all my sub-scopes
-        foreach(IScope subScope in subScopes) { 
+        foreach(IScope subScope in subScopes) {
           currentScope.RemoveSubScope(subScope);
         }
         // add only the branch that leads to the scope that I search for

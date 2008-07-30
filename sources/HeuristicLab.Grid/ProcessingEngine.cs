@@ -47,12 +47,16 @@ namespace HeuristicLab.Grid {
     }
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute canceledAttr = document.CreateAttribute("Canceled");
+      canceledAttr.Value = Canceled.ToString();
+      node.Attributes.Append(canceledAttr);
       node.AppendChild(PersistenceManager.Persist("InitialOperation", initialOperation, document, persistedObjects));
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
+      myCanceled = bool.Parse(node.Attributes["Canceled"].Value);
       initialOperation = (AtomicOperation)PersistenceManager.Restore(node.SelectSingleNode("InitialOperation"), restoredObjects);
     }
 
