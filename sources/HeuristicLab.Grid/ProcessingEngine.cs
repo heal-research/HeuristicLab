@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Threading;
+using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
   public class ProcessingEngine : EngineBase {
@@ -62,7 +63,8 @@ namespace HeuristicLab.Grid {
         IOperation next = null;
         try {
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
-        } catch(Exception) {
+        } catch(Exception ex) {
+          Trace.TraceWarning("Exception while executing an engine.\n" + ex.Message + "\n" + ex.StackTrace);
           // push operation on stack again
           myExecutionStack.Push(atomicOperation);
           Abort();
