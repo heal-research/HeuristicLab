@@ -188,8 +188,12 @@ namespace HeuristicLab.Grid {
     }
 
     public WaitHandle BeginExecuteOperation(IScope globalScope, AtomicOperation operation) {
+      return BeginExecuteEngine(new ProcessingEngine(globalScope, operation));
+    }
+
+    public WaitHandle BeginExecuteEngine(ProcessingEngine engine) {
       Job job = new Job();
-      job.engine = new ProcessingEngine(globalScope, operation);
+      job.engine = engine;
       job.waitHandle = new ManualResetEvent(false);
       job.restarts = 0;
       lock(waitingQueueLock) {

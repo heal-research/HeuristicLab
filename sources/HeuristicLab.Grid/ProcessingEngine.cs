@@ -33,11 +33,17 @@ namespace HeuristicLab.Grid {
     private AtomicOperation initialOperation;
     public AtomicOperation InitialOperation {
       get { return initialOperation; }
+      set { initialOperation = value; }
     }
 
     private string errorMessage;
     public string ErrorMessage {
       get { return errorMessage; }
+    }
+
+    private bool suspended;
+    public bool Suspended {
+      get { return suspended; }
     }
 
     public ProcessingEngine()
@@ -50,25 +56,20 @@ namespace HeuristicLab.Grid {
       myGlobalScope = globalScope;
       myExecutionStack.Push(initialOperation);
     }
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute canceledAttr = document.CreateAttribute("Canceled");
-      canceledAttr.Value = Canceled.ToString();
-      node.Attributes.Append(canceledAttr);
-      if(errorMessage != null) {
-        XmlAttribute errorMessageAttr = document.CreateAttribute("ErrorMessage");
-        errorMessageAttr.Value = ErrorMessage;
-        node.Attributes.Append(errorMessageAttr);
-      }
-      node.AppendChild(PersistenceManager.Persist("InitialOperation", initialOperation, document, persistedObjects));
-      return node;
+
+    private void Suspend() {
+      Abort();
+      suspended = true;
     }
 
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myCanceled = bool.Parse(node.Attributes["Canceled"].Value);
-      if(node.Attributes["ErrorMessage"] != null) errorMessage = node.Attributes["ErrorMessage"].Value;
-      initialOperation = (AtomicOperation)PersistenceManager.Restore(node.SelectSingleNode("InitialOperation"), restoredObjects);
+    public override void Execute() {
+      suspended = false;
+      base.Execute();
+    }
+
+    public override void ExecuteSteps(int steps) {
+      suspended = false;
+      base.ExecuteSteps(steps);
     }
 
     protected override void ProcessNextOperation() {
@@ -87,13 +88,40 @@ namespace HeuristicLab.Grid {
         }
         if(next != null)
           myExecutionStack.Push(next);
-        if(atomicOperation.Operator.Breakpoint) Abort();
+        if(atomicOperation.Operator.Breakpoint) Suspend();
       } else if(operation is CompositeOperation) {
         CompositeOperation compositeOperation = (CompositeOperation)operation;
         for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
           myExecutionStack.Push(compositeOperation.Operations[i]);
       }
     }
+
+    #region persistence
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute canceledAttr = document.CreateAttribute("Canceled");
+      canceledAttr.Value = Canceled.ToString();
+      node.Attributes.Append(canceledAttr);
+      XmlAttribute suspendedAttr = document.CreateAttribute("Suspended");
+      suspendedAttr.Value = Suspended.ToString();
+      node.Attributes.Append(suspendedAttr);
+      if(errorMessage != null) {
+        XmlAttribute errorMessageAttr = document.CreateAttribute("ErrorMessage");
+        errorMessageAttr.Value = ErrorMessage;
+        node.Attributes.Append(errorMessageAttr);
+      }
+      node.AppendChild(PersistenceManager.Persist("InitialOperation", initialOperation, document, persistedObjects));
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      myCanceled = bool.Parse(node.Attributes["Canceled"].Value);
+      suspended = bool.Parse(node.Attributes["Suspended"].Value);
+      if(node.Attributes["ErrorMessage"] != null) errorMessage = node.Attributes["ErrorMessage"].Value;
+      initialOperation = (AtomicOperation)PersistenceManager.Restore(node.SelectSingleNode("InitialOperation"), restoredObjects);
+    }
+    #endregion
 
     private string CreateErrorMessage(Exception ex) {
       StringBuilder sb = new StringBuilder();

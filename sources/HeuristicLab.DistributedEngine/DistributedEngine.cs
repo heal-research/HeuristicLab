@@ -35,6 +35,7 @@ using System.Diagnostics;
 
 namespace HeuristicLab.DistributedEngine {
   public class DistributedEngine : EngineBase, IEditable {
+    private List<KeyValuePair<ProcessingEngine, AtomicOperation>> suspendedEngines = new List<KeyValuePair<ProcessingEngine, AtomicOperation>>();
     private JobManager jobManager;
     private string serverAddress;
     public string ServerAddress {
@@ -58,6 +59,17 @@ namespace HeuristicLab.DistributedEngine {
       return new DistributedEngineEditor(this);
     }
 
+    public override bool Terminated {
+      get {
+        return base.Terminated && suspendedEngines.Count == 0;
+      }
+    }
+
+    public override void Reset() {
+      suspendedEngines.Clear();
+      base.Reset();
+    }
+
     public override void Execute() {
       if(jobManager == null) this.jobManager = new JobManager(serverAddress);
       jobManager.Reset();
@@ -69,7 +81,42 @@ namespace HeuristicLab.DistributedEngine {
     }
 
     protected override void ProcessNextOperation() {
-      IOperation operation = myExecutionStack.Pop();
+      if(suspendedEngines.Count > 0) {
+        ProcessSuspendedEngines();
+      } else {
+        IOperation operation = myExecutionStack.Pop();
+        ProcessOperation(operation);
+      }
+    }
+
+    private void ProcessSuspendedEngines() {
+      WaitHandle[] waitHandles = new WaitHandle[suspendedEngines.Count];
+      int i = 0;
+      foreach(KeyValuePair<ProcessingEngine, AtomicOperation> suspendedPair in suspendedEngines) {
+        waitHandles[i++] = jobManager.BeginExecuteEngine(suspendedPair.Key);
+      }
+      WaitForAll(waitHandles);
+      // collect results
+      List<KeyValuePair<ProcessingEngine, AtomicOperation>> results = new List<KeyValuePair<ProcessingEngine, AtomicOperation>>();
+      try {
+        foreach(KeyValuePair<ProcessingEngine, AtomicOperation> suspendedPair in suspendedEngines) {
+          KeyValuePair<ProcessingEngine, AtomicOperation> p = new KeyValuePair<ProcessingEngine, AtomicOperation>(
+              jobManager.EndExecuteOperation(suspendedPair.Value),
+              suspendedPair.Value);
+          results.Add(p);
+        }
+      } catch(Exception e) {
+        // this exception means there was a problem with the underlying communication infrastructure
+        // -> show message dialog and abort engine
+        Abort();
+        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(e); });
+        return;
+      }
+      // got all result engines without an exception -> merge results
+      ProcessResults(results);
+    }
+
+    private void ProcessOperation(IOperation operation) {
       if(operation is AtomicOperation) {
         AtomicOperation atomicOperation = (AtomicOperation)operation;
         IOperation next = null;
@@ -88,73 +135,121 @@ namespace HeuristicLab.DistributedEngine {
       } else if(operation is CompositeOperation) {
         CompositeOperation compositeOperation = (CompositeOperation)operation;
         if(compositeOperation.ExecuteInParallel) {
-          try {
-            WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
-            int i = 0;
-            // HACK: assume that all atomicOperations have the same parent scope.
-            // 1) find that parent scope
-            // 2) remove all branches starting from the global scope that don't lead to the parentScope of the parallel operation
-            // 3) keep the branches to 'repair' the scope-tree later
-            // 4) for each parallel job attach only the sub-scope that this operation uses
-            // 5) after starting all parallel jobs restore the whole scope-tree
-            IScope parentScope = FindParentScope(GlobalScope, ((AtomicOperation)compositeOperation.Operations[0]).Scope);
-            List<IList<IScope>> prunedScopes = new List<IList<IScope>>();
-            PruneToParentScope(GlobalScope, parentScope, prunedScopes);
-            List<IScope> subScopes = new List<IScope>(parentScope.SubScopes);
-            foreach(IScope scope in subScopes) {
-              parentScope.RemoveSubScope(scope);
-            }
-            // start all parallel jobs
-            foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-              parentScope.AddSubScope(parOperation.Scope);
-              waithandles[i++] = jobManager.BeginExecuteOperation(GlobalScope, parOperation);
-              parentScope.RemoveSubScope(parOperation.Scope);
-            }
-            foreach(IScope scope in subScopes) {
-              parentScope.AddSubScope(scope);
-            }
-            prunedScopes.Reverse();
-            RestoreFullTree(GlobalScope, prunedScopes);
-
-            // wait until all jobs are finished
-            // WaitAll works only with maximally 64 waithandles
-            if(waithandles.Length <= 64) {
-              WaitHandle.WaitAll(waithandles);
-            } else {
-              for(i = 0; i < waithandles.Length; i++) {
-                waithandles[i].WaitOne();
-                waithandles[i].Close();
-              }
-            }
-
-            CompositeOperation canceledOperations = new CompositeOperation();
-            canceledOperations.ExecuteInParallel = true;
-            // retrieve results and merge into scope-tree
-            foreach(AtomicOperation parOperation in compositeOperation.Operations) {
-              ProcessingEngine resultEngine = jobManager.EndExecuteOperation(parOperation);
-              if(resultEngine.Canceled) {
-                ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(new JobExecutionException(resultEngine.ErrorMessage)); });
-                canceledOperations.AddOperation(parOperation);
-              } else {
-                // if everything went fine we can merge the results into our local scope-tree
-                MergeScope(parOperation.Scope, resultEngine.InitialOperation.Scope);
-              }
-            }
-
-            if(canceledOperations.Operations.Count > 0) {
-              myExecutionStack.Push(canceledOperations);
-              Abort();
-            }
-          } catch(Exception e) {
-            myExecutionStack.Push(compositeOperation);
-            Abort();
-            ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(e); });
-          }
+          ProcessParallelOperation(compositeOperation);
           OnOperationExecuted(compositeOperation);
         } else {
           for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
             myExecutionStack.Push(compositeOperation.Operations[i]);
         }
+      }
+    }
+
+    private void ProcessParallelOperation(CompositeOperation compositeOperation) {
+      // send operations to grid
+      WaitHandle[] waithandles = BeginExecuteOperations(compositeOperation);
+      WaitForAll(waithandles);
+      // collect results
+      List<KeyValuePair<ProcessingEngine, AtomicOperation>> results = new List<KeyValuePair<ProcessingEngine, AtomicOperation>>();
+      try {
+        foreach(AtomicOperation parOperation in compositeOperation.Operations) {
+          KeyValuePair<ProcessingEngine, AtomicOperation> p = new KeyValuePair<ProcessingEngine, AtomicOperation>(
+            jobManager.EndExecuteOperation(parOperation), parOperation);
+          results.Add(p);
+        }
+      } catch(Exception e) {
+        // this exception means there was a problem with the underlying communication infrastructure
+        // -> show message dialog, abort engine, requeue the whole composite operation again and return
+        myExecutionStack.Push(compositeOperation);
+        Abort();
+        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(e); });
+        return;
+      }
+      // got all result engines without an exception -> merge results
+      ProcessResults(results);
+    }
+
+    private WaitHandle[] BeginExecuteOperations(CompositeOperation compositeOperation) {
+      WaitHandle[] waithandles = new WaitHandle[compositeOperation.Operations.Count];
+      int i = 0;
+      // HACK: assume that all atomicOperations have the same parent scope.
+      // 1) find that parent scope
+      // 2) remove all branches starting from the global scope that don't lead to the parentScope of the parallel operation
+      // 3) keep the branches to 'repair' the scope-tree later
+      // 4) for each parallel job attach only the sub-scope that this operation uses
+      // 5) after starting all parallel jobs restore the whole scope-tree
+      IScope parentScope = FindParentScope(GlobalScope, ((AtomicOperation)compositeOperation.Operations[0]).Scope);
+      List<IList<IScope>> prunedScopes = new List<IList<IScope>>();
+      PruneToParentScope(GlobalScope, parentScope, prunedScopes);
+      List<IScope> subScopes = new List<IScope>(parentScope.SubScopes);
+      foreach(IScope scope in subScopes) {
+        parentScope.RemoveSubScope(scope);
+      }
+      // start all parallel jobs
+      foreach(AtomicOperation parOperation in compositeOperation.Operations) {
+        parentScope.AddSubScope(parOperation.Scope);
+        waithandles[i++] = jobManager.BeginExecuteOperation(GlobalScope, parOperation);
+        parentScope.RemoveSubScope(parOperation.Scope);
+      }
+      foreach(IScope scope in subScopes) {
+        parentScope.AddSubScope(scope);
+      }
+      prunedScopes.Reverse();
+      RestoreFullTree(GlobalScope, prunedScopes);
+
+      return waithandles;
+    }
+
+    private void WaitForAll(WaitHandle[] waithandles) {
+      // wait until all jobs are finished
+      // WaitAll works only with maximally 64 waithandles
+      if(waithandles.Length <= 64) {
+        WaitHandle.WaitAll(waithandles);
+      } else {
+        int i;
+        for(i = 0; i < waithandles.Length; i++) {
+          waithandles[i].WaitOne();
+          waithandles[i].Close();
+        }
+      }
+    }
+
+    private void ProcessResults(List<KeyValuePair<ProcessingEngine, AtomicOperation>> results) {
+      // create a new compositeOperation to hold canceled operations that should be restarted
+      CompositeOperation canceledOperations = new CompositeOperation();
+      canceledOperations.ExecuteInParallel = true;
+
+      suspendedEngines.Clear();
+      // retrieve results and merge into scope-tree
+      foreach(KeyValuePair<ProcessingEngine, AtomicOperation> p in results) {
+        ProcessingEngine resultEngine = p.Key;
+        AtomicOperation parOperation = p.Value;
+        if(resultEngine.Canceled && !resultEngine.Suspended) {
+          // when an engine was canceled but not suspended this means there was a problem
+          // show error message and queue the operation for restart (again parallel)
+          // but don't merge the results of the aborted engine
+          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(new JobExecutionException(resultEngine.ErrorMessage)); });
+          canceledOperations.AddOperation(parOperation);
+        } else if(resultEngine.Suspended) {
+          // when the engine was suspended it means it was stopped because of a breakpoint 
+          // -> merge the partial results and queue the engine (which has operations remaining in the execution stack) to be resumed (parallel)
+          MergeScope(parOperation.Scope, resultEngine.InitialOperation.Scope);
+          resultEngine.InitialOperation = parOperation;
+          suspendedEngines.Add(new KeyValuePair<ProcessingEngine, AtomicOperation>(resultEngine, parOperation));
+        } else {
+          // engine is finished ->
+          // simply merge the results into our local scope-tree
+          MergeScope(parOperation.Scope, resultEngine.InitialOperation.Scope);
+        }
+      }
+      // if there were exceptions -> abort 
+      if(canceledOperations.Operations.Count > 0) {
+        // requeue the aborted operations 
+        myExecutionStack.Push(canceledOperations);
+        Abort();
+      }
+      // if there were breakpoints -> abort
+      if(suspendedEngines.Count > 0) {
+        Abort();
       }
     }
 
@@ -222,12 +317,31 @@ namespace HeuristicLab.DistributedEngine {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute addressAttribute = document.CreateAttribute("ServerAddress");
       addressAttribute.Value = ServerAddress;
-      node.Attributes.Append(addressAttribute);
+      if(suspendedEngines.Count > 0) {
+        node.Attributes.Append(addressAttribute);
+        XmlNode suspendedEnginesNode = document.CreateElement("SuspendedEngines");
+        foreach(KeyValuePair<ProcessingEngine, AtomicOperation> p in suspendedEngines) {
+          XmlNode n = document.CreateElement("Entry");
+          n.AppendChild(PersistenceManager.Persist(p.Key, document, persistedObjects));
+          n.AppendChild(PersistenceManager.Persist(p.Value, document, persistedObjects));
+          suspendedEnginesNode.AppendChild(n);
+        }
+        node.AppendChild(suspendedEnginesNode);
+      }
       return node;
     }
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       ServerAddress = node.Attributes["ServerAddress"].Value;
+      XmlNode suspendedEnginesNode = node.SelectSingleNode("SuspendedEngines");
+      if(suspendedEnginesNode != null) {
+        foreach(XmlNode n in suspendedEnginesNode.ChildNodes) {
+          KeyValuePair<ProcessingEngine, AtomicOperation> p = new KeyValuePair<ProcessingEngine, AtomicOperation>(
+            (ProcessingEngine)PersistenceManager.Restore(n.ChildNodes[0], restoredObjects),
+            (AtomicOperation)PersistenceManager.Restore(n.ChildNodes[1], restoredObjects));
+          suspendedEngines.Add(p);
+        }
+      }
     }
     #endregion
   }

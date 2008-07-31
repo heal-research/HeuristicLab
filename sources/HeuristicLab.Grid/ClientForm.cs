@@ -152,9 +152,10 @@ namespace HeuristicLab.Grid {
     void currentEngine_Finished(object sender, EventArgs e) {
       ProcessingEngine engine = (ProcessingEngine)sender;
 
-      // if the engine was stopped because of an error it's not necessary to return the whole engine
+      // if the engine was stopped because of an error (not suspended because of a breakpoint) 
+      // it's not necessary to return the whole engine
       // instead just return an empty engine that has the aborted flag set
-      if(engine.Canceled) {
+      if(engine.Canceled && !engine.Suspended) {
         engine.Reset();
         engine.OperatorGraph.Clear();
         engine.Abort();
