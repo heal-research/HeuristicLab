@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentEntry.cs" />
+    <Compile Include="OperatorEntry.cs" />
     <Compile Include="ProcessStatus.cs" />
     <Compile Include="ResultEntry.cs" />
     <Compile Include="HeuristicLabCedmaDbInterfacesPlugin.cs" />

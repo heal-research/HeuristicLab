@@ -63,6 +63,11 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
+            using(DbCommand cmd = cnn.CreateCommand()) {
+              cmd.CommandText = "CREATE TABLE Operator (ID integer primary key autoincrement, Name text, RawData text)";
+              cmd.Transaction = t;
+              cmd.ExecuteNonQuery();
+            }
             t.Commit();
           }
         }
@@ -183,6 +188,35 @@ namespace HeuristicLab.CEDMA.DB {
               rawDataParam.ParameterName = "@RawData";
               rawDataParam.Value = rawData;
               c.Parameters.Add(rawDataParam);
+              id = (long)c.ExecuteScalar();
+            }
+            t.Commit();
+            return id;
+          }
+        }
+      } finally {
+        rwLock.ExitWriteLock();
+      }
+    }
+
+    public long InsertOperator(string name, string rawData) {
+      rwLock.EnterWriteLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          long id;
+          using(DbTransaction t = cnn.BeginTransaction()) {
+            using(DbCommand c = cnn.CreateCommand()) {
+              c.Transaction = t;
+              c.CommandText = "Insert into Operator (Name, RawData) values (@Name, @RawData); select last_insert_rowid()";
+              DbParameter nameParam = c.CreateParameter();
+              nameParam.ParameterName = "@Name";
+              nameParam.Value = name;
+              c.Parameters.Add(nameParam);
+              DbParameter dataParam = c.CreateParameter();
+              dataParam.ParameterName = "@RawData";
+              dataParam.Value = rawData;
+              c.Parameters.Add(dataParam);
               id = (long)c.ExecuteScalar();
             }
             t.Commit();
@@ -431,6 +465,31 @@ namespace HeuristicLab.CEDMA.DB {
         rwLock.ExitReadLock();
       }
       return results;
+    }
+
+    public ICollection<OperatorEntry> GetOperators() {
+      rwLock.EnterReadLock();
+      List<OperatorEntry> operators = new List<OperatorEntry>();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select id, name, rawdata from Operator";
+            using(DbDataReader r = c.ExecuteReader()) {
+              while(r.Read()) {
+                OperatorEntry op = new OperatorEntry();
+                op.Id = r.GetInt32(0);
+                op.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
+                op.RawData = r.GetString(2);
+                operators.Add(op);
+              }
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return operators;
     }
     #endregion
   }
