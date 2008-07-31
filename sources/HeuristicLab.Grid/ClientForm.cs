@@ -161,6 +161,11 @@ namespace HeuristicLab.Grid {
         engine.Abort();
       }
 
+      if(!engine.Canceled && !engine.Suspended) {
+        engine.OperatorGraph.Clear();
+        engine.GlobalScope.Clear();
+      }
+
       byte[] resultXml = SaveEngine(engine);
       bool success = false;
       int retries = 0;
