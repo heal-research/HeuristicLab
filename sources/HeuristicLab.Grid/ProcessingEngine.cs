@@ -35,6 +35,11 @@ namespace HeuristicLab.Grid {
       get { return initialOperation; }
     }
 
+    private string errorMessage;
+    public string ErrorMessage {
+      get { return errorMessage; }
+    }
+
     public ProcessingEngine()
       : base() {
     }
@@ -50,6 +55,11 @@ namespace HeuristicLab.Grid {
       XmlAttribute canceledAttr = document.CreateAttribute("Canceled");
       canceledAttr.Value = Canceled.ToString();
       node.Attributes.Append(canceledAttr);
+      if(errorMessage != null) {
+        XmlAttribute errorMessageAttr = document.CreateAttribute("ErrorMessage");
+        errorMessageAttr.Value = ErrorMessage;
+        node.Attributes.Append(errorMessageAttr);
+      }
       node.AppendChild(PersistenceManager.Persist("InitialOperation", initialOperation, document, persistedObjects));
       return node;
     }
@@ -57,6 +67,7 @@ namespace HeuristicLab.Grid {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myCanceled = bool.Parse(node.Attributes["Canceled"].Value);
+      if(node.Attributes["ErrorMessage"] != null) errorMessage = node.Attributes["ErrorMessage"].Value;
       initialOperation = (AtomicOperation)PersistenceManager.Restore(node.SelectSingleNode("InitialOperation"), restoredObjects);
     }
 
@@ -68,7 +79,8 @@ namespace HeuristicLab.Grid {
         try {
           next = atomicOperation.Operator.Execute(atomicOperation.Scope);
         } catch(Exception ex) {
-          Trace.TraceWarning("Exception while executing an engine.\n" + ex.Message + "\n" + ex.StackTrace);
+          errorMessage = CreateErrorMessage(ex);
+          Trace.TraceWarning(errorMessage);
           // push operation on stack again
           myExecutionStack.Push(atomicOperation);
           Abort();
@@ -81,6 +93,17 @@ namespace HeuristicLab.Grid {
         for(int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
           myExecutionStack.Push(compositeOperation.Operations[i]);
       }
+    }
+
+    private string CreateErrorMessage(Exception ex) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+
+      while(ex.InnerException != null) {
+        ex = ex.InnerException;
+        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+      }
+      return sb.ToString();
     }
   }
 }

@@ -126,18 +126,24 @@ namespace HeuristicLab.DistributedEngine {
                 waithandles[i].Close();
               }
             }
+
+            CompositeOperation canceledOperations = new CompositeOperation();
+            canceledOperations.ExecuteInParallel = true;
             // retrieve results and merge into scope-tree
             foreach(AtomicOperation parOperation in compositeOperation.Operations) {
               ProcessingEngine resultEngine = jobManager.EndExecuteOperation(parOperation);
               if(resultEngine.Canceled) {
-                // When the engine was canceled because of a problem at the client we can try to execute the steps locally.
-                // If they also fail the (local) distributued-engine will be aborted and we will see an error-message.
-                // so just push the original parallel operation back on the stack to force local execution.
-                ExecutionStack.Push(parOperation);
+                ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(new JobExecutionException(resultEngine.ErrorMessage)); });
+                canceledOperations.AddOperation(parOperation);
               } else {
                 // if everything went fine we can merge the results into our local scope-tree
                 MergeScope(parOperation.Scope, resultEngine.InitialOperation.Scope);
               }
+            }
+
+            if(canceledOperations.Operations.Count > 0) {
+              myExecutionStack.Push(canceledOperations);
+              Abort();
             }
           } catch(Exception e) {
             myExecutionStack.Push(compositeOperation);
