@@ -30,6 +30,8 @@ using System.Threading;
 using HeuristicLab.Grid;
 using System.Diagnostics;
 using HeuristicLab.Data;
+using HeuristicLab.CEDMA.Core;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.CEDMA.Server {
   public class RunScheduler {
@@ -72,16 +74,21 @@ namespace HeuristicLab.CEDMA.Server {
         scope.AddVariable(new Variable("AgentId", new IntData((int)entry.Id)));
         scope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
         IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
-        AtomicOperation op = new AtomicOperation(opGraph.InitialOperator, scope);
+
+        foreach(IOperator op in opGraph.Operators) {
+          PatchLinks(op);
+        }
+
+        AtomicOperation operation = new AtomicOperation(opGraph.InitialOperator, scope);
         WaitHandle wHandle;
         lock(remoteCommLock) {
-          wHandle = jobManager.BeginExecuteOperation(op.Scope, op);
+          wHandle = jobManager.BeginExecuteOperation(operation.Scope, operation);
           database.UpdateAgent(entry.Id, ProcessStatus.Active);
         }
 
         Job job = new Job();
         job.AgentId = entry.Id;
-        job.Operation = op;
+        job.Operation = operation;
         job.WaitHandle = wHandle;
 
         lock(queueLock) {
@@ -89,6 +96,24 @@ namespace HeuristicLab.CEDMA.Server {
           runningJobs.Set();
         }
       }
+    }
+
+    private void PatchLinks(IOperator op) {
+      if(op is OperatorLink) {
+        OperatorLink link = op as OperatorLink;
+        OperatorEntry targetEntry = database.GetOperator(link.Id);
+        IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
+        ReplaceOperatorInGraph(link, target);
+      } else if(op is CombinedOperator) {
+        CombinedOperator combinedOp = op as CombinedOperator;
+        foreach(IOperator internalOp in combinedOp.OperatorGraph.Operators) {
+          PatchLinks(internalOp);
+        }
+      }
+    }
+
+    private void ReplaceOperatorInGraph(OperatorLink link, IOperator target) {
+      throw new NotImplementedException();
     }
 
     private void GatherResults() {

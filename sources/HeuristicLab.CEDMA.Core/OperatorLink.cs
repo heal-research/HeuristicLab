@@ -10,7 +10,7 @@ namespace HeuristicLab.CEDMA.Core {
     private long id;
     public long Id {
       get { return id; }
-    } 
+    }
 
     private IOperator myOperator;
     public IOperator Operator {
@@ -20,7 +20,8 @@ namespace HeuristicLab.CEDMA.Core {
 
     public OperatorLink() : base() { } // for cloning and persistence
 
-    public OperatorLink(long id, IOperator op): base() {
+    public OperatorLink(long id, IOperator op)
+      : base() {
       this.id = id;
       this.myOperator = op;
       Name = myOperator.Name;
@@ -29,18 +30,6 @@ namespace HeuristicLab.CEDMA.Core {
     public override void Abort() {
       throw new NotSupportedException();
     }
-
-    //public override void AddConstraint(IConstraint constraint) {
-    //  throw new NotSupportedException();
-    //}
-
-    //public override void AddVariable(IVariable variable) {
-    //  throw new NotSupportedException();
-    //}
-
-    //public override void AddVariableInfo(IVariableInfo variableInfo) {
-    //  throw new NotSupportedException();
-    //}
 
     public override IOperation Apply(IScope scope) {
       throw new NotSupportedException();
@@ -73,17 +62,5 @@ namespace HeuristicLab.CEDMA.Core {
       id = long.Parse(node.Attributes["OperatorId"].Value);
       base.Populate(node, restoredObjects);
     }
-
-    //public override void RemoveConstraint(IConstraint constraint) {
-    //  throw new NotSupportedException();
-    //}
-
-    //public override void RemoveVariable(string name) {
-    //  throw new NotSupportedException();
-    //}
-
-    //public override void RemoveVariableInfo(string formalName) {
-    //  throw new NotSupportedException();
-    //}
   }
 }

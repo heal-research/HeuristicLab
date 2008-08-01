@@ -54,7 +54,7 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, ParentAgentId integer, Name text, Status text default "+ProcessStatus.Unknown+", CreationTime DateTime, RawData Blob)";
+              cmd.CommandText = "CREATE TABLE Agent (ID integer primary key autoincrement, ProjectId integer, ParentAgentId integer, Name text, Status text default " + ProcessStatus.Unknown + ", CreationTime DateTime, RawData Blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -364,7 +364,7 @@ namespace HeuristicLab.CEDMA.DB {
             agent.ParentAgentId = null;
             agent.Status = status;
             agent.Id = r.GetInt32(0);
-            agent.Name = r.IsDBNull(1)?"":r.GetString(1);
+            agent.Name = r.IsDBNull(1) ? "" : r.GetString(1);
             agent.RawData = (byte[])r.GetValue(2);
             agents.Add(agent);
           }
@@ -388,7 +388,7 @@ namespace HeuristicLab.CEDMA.DB {
                 AgentEntry agent = new AgentEntry();
                 agent.ParentAgentId = null;
                 agent.Id = r.GetInt32(0);
-                agent.Name = r.IsDBNull(1)?"-":r.GetString(1);
+                agent.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
                 agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
@@ -420,7 +420,7 @@ namespace HeuristicLab.CEDMA.DB {
                 AgentEntry agent = new AgentEntry();
                 agent.ParentAgentId = parentAgentId;
                 agent.Id = r.GetInt32(0);
-                agent.Name = r.IsDBNull(1)?"-":r.GetString(1);
+                agent.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
                 agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
@@ -521,6 +521,31 @@ namespace HeuristicLab.CEDMA.DB {
         rwLock.ExitReadLock();
       }
       return operators;
+    }
+    public OperatorEntry GetOperator(long id) {
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select id, name, rawdata from Operator where id=@Id";
+            DbParameter idParam = c.CreateParameter();
+            idParam.ParameterName = "@Id";
+            idParam.Value = id;
+            c.Parameters.Add(idParam);
+            using(DbDataReader r = c.ExecuteReader()) {
+              r.Read();
+              OperatorEntry op = new OperatorEntry();
+              op.Id = r.GetInt32(0);
+              op.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
+              op.RawData = (byte[])r.GetValue(2);
+              return op;
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
     }
     #endregion
 
