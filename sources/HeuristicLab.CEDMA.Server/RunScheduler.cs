@@ -75,9 +75,7 @@ namespace HeuristicLab.CEDMA.Server {
         scope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
         IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
 
-        foreach(IOperator op in opGraph.Operators) {
-          PatchLinks(op);
-        }
+        PatchLinks(opGraph, new Dictionary<long, IOperator>());
 
         AtomicOperation operation = new AtomicOperation(opGraph.InitialOperator, scope);
         WaitHandle wHandle;
@@ -98,22 +96,44 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    private void PatchLinks(IOperator op) {
-      if(op is OperatorLink) {
-        OperatorLink link = op as OperatorLink;
-        OperatorEntry targetEntry = database.GetOperator(link.Id);
-        IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
-        ReplaceOperatorInGraph(link, target);
-      } else if(op is CombinedOperator) {
-        CombinedOperator combinedOp = op as CombinedOperator;
-        foreach(IOperator internalOp in combinedOp.OperatorGraph.Operators) {
-          PatchLinks(internalOp);
+    private void PatchLinks(IOperatorGraph opGraph, Dictionary<long, IOperator> patchedOperators) {
+      Dictionary<IOperator, IOperator> patchDictionary = new Dictionary<IOperator, IOperator>();
+      foreach(IOperator op in opGraph.Operators) {
+        IOperator patched = PatchLinks(op, patchedOperators);
+        patchDictionary.Add(op, patched);
+      }
+      foreach(KeyValuePair<IOperator, IOperator> p in patchDictionary) {
+        IOperator original = p.Key;
+        IOperator patch = p.Value;
+        if(original != patch) {
+          foreach(IOperator subOperator in original.SubOperators) {
+            patch.AddSubOperator(subOperator);
+          }
+          if(opGraph.InitialOperator == original)
+            opGraph.InitialOperator = patch;
+          opGraph.RemoveOperator(original.Guid);
+          opGraph.AddOperator(patch);
         }
       }
     }
 
-    private void ReplaceOperatorInGraph(OperatorLink link, IOperator target) {
-      throw new NotImplementedException();
+    private IOperator PatchLinks(IOperator op, Dictionary<long, IOperator> patchedOperators) {
+      if(op is OperatorLink) {
+        OperatorLink link = op as OperatorLink;
+        if(patchedOperators.ContainsKey(link.Id)) {
+          return patchedOperators[link.Id];
+        } else {
+          OperatorEntry targetEntry = database.GetOperator(link.Id);
+          IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
+          patchedOperators.Add(link.Id, target);
+          PatchLinks(target, patchedOperators);
+          return target;
+        }
+      } else if(op is CombinedOperator) {
+        PatchLinks(((CombinedOperator)op).OperatorGraph, patchedOperators);
+        return op;
+      }
+      return op;
     }
 
     private void GatherResults() {

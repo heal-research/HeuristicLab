@@ -29,6 +29,7 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.CEDMA.Core {
   public class AgentList : ItemBase, IAgentList {
@@ -49,7 +50,12 @@ namespace HeuristicLab.CEDMA.Core {
         newAgent.Name = a.Name;
         newAgent.Status = a.Status;
         IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(a.RawData);
-        foreach(IOperator op in opGraph.Operators) newAgent.OperatorGraph.AddOperator(op);
+
+        DownloadOperators(opGraph, new Dictionary<long, IOperator>());
+
+        foreach(IOperator op in opGraph.Operators) {
+          newAgent.OperatorGraph.AddOperator(op);
+        }
         newAgent.OperatorGraph.InitialOperator = opGraph.InitialOperator;
         agentList.Add(newAgent);
       }
@@ -77,6 +83,29 @@ namespace HeuristicLab.CEDMA.Core {
 
     IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
+    }
+
+    private void DownloadOperators(IOperatorGraph opGraph, Dictionary<long, IOperator> downloaded) {
+      foreach(IOperator op in opGraph.Operators) {
+        DownloadOperators(op, downloaded);
+      }
+    }
+
+    private void DownloadOperators(IOperator op, Dictionary<long, IOperator> downloaded) {
+      if(op is OperatorLink) {
+        OperatorLink link = op as OperatorLink;
+        if(downloaded.ContainsKey(link.Id)) {
+          link.Operator = downloaded[link.Id];
+        } else {
+          OperatorEntry targetEntry = database.GetOperator(link.Id);
+          IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
+          downloaded.Add(link.Id, target);
+          DownloadOperators(target, downloaded);
+          link.Operator = target;
+        }
+      } else if(op is CombinedOperator) {
+        DownloadOperators(((CombinedOperator)op).OperatorGraph, downloaded);
+      }
     }
 
     public override IView CreateView() {

@@ -72,5 +72,8 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [OperationContract]
     ICollection<OperatorEntry> GetOperators();
 
+    [OperationContract]
+    OperatorEntry GetOperator(long agentId);
+
   }
 }
