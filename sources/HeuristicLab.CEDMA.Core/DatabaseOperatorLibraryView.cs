@@ -55,7 +55,7 @@ namespace HeuristicLab.CEDMA.Core {
         TreeNode ty = y as TreeNode;
 
         int result = string.Compare(tx.Text, ty.Text);
-        if (result == 0)
+        if(result == 0)
           result = tx.Index.CompareTo(ty.Index);
         return result;
       }
@@ -66,7 +66,7 @@ namespace HeuristicLab.CEDMA.Core {
       operatorsTreeView.Nodes.Clear();
       addOperatorButton.Enabled = false;
       removeButton.Enabled = false;
-      if (OperatorLibrary == null) {
+      if(OperatorLibrary == null) {
         Caption = "Operator Library";
         operatorsGroupBox.Enabled = false;
       } else {
@@ -97,11 +97,11 @@ namespace HeuristicLab.CEDMA.Core {
       return node;
     }
     private void RemoveTreeNode(TreeNode node) {
-      if (node.Tag is IOperatorGroup) {
+      if(node.Tag is IOperatorGroup) {
         IOperatorGroup group = node.Tag as IOperatorGroup;
         IOperatorGroup parent = node.Parent.Tag as IOperatorGroup;
         parent.RemoveSubGroup(group);
-      } else if (node.Tag is IOperator) {
+      } else if(node.Tag is IOperator) {
         IOperator op = node.Tag as IOperator;
         IOperatorGroup group = node.Parent.Tag as IOperatorGroup;
         group.RemoveOperator(op);
@@ -115,10 +115,10 @@ namespace HeuristicLab.CEDMA.Core {
       removeButton.Enabled = false;
       operatorsTreeView.Focus();
 
-      if (operatorsTreeView.SelectedNode != null) {
-        if (operatorsTreeView.SelectedNode.Parent != null)
+      if(operatorsTreeView.SelectedNode != null) {
+        if(operatorsTreeView.SelectedNode.Parent != null)
           removeButton.Enabled = true;
-        if (operatorsTreeView.SelectedNode.Tag is IOperatorGroup) {
+        if(operatorsTreeView.SelectedNode.Tag is IOperatorGroup) {
           addOperatorButton.Enabled = true;
         }
       }
@@ -132,19 +132,19 @@ namespace HeuristicLab.CEDMA.Core {
       e.CancelEdit = false;
 
       string name = e.Label;
-      if (name != null) {
-        if (e.Node.Tag is IOperatorGroup)
+      if(name != null) {
+        if(e.Node.Tag is IOperatorGroup)
           ((IOperatorGroup)e.Node.Tag).Name = name;
-        else if (e.Node.Tag is IOperator)
+        else if(e.Node.Tag is IOperator)
           ((IOperator)e.Node.Tag).Name = name;
       }
     }
     private void operatorsTreeView_DoubleClick(object sender, EventArgs e) {
-      if (operatorsTreeView.SelectedNode != null) {
+      if(operatorsTreeView.SelectedNode != null) {
         IOperator op = operatorsTreeView.SelectedNode.Tag as IOperator;
-        if (op != null) {
+        if(op != null) {
           IView view = op.CreateView();
-          if (view != null)
+          if(view != null)
             PluginManager.ControlManager.ShowControl(view);
         }
       }
@@ -153,8 +153,8 @@ namespace HeuristicLab.CEDMA.Core {
 
     #region Button Events
     private void addOperatorButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+      if(chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+      if(chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
         TreeNode node = operatorsTreeView.SelectedNode;
         IOperatorGroup group = node.Tag as IOperatorGroup;
         group.AddOperator(chooseOperatorDialog.Operator);
@@ -172,9 +172,9 @@ namespace HeuristicLab.CEDMA.Core {
     #region Key Events
     private void operatorsTreeView_KeyDown(object sender, KeyEventArgs e) {
       TreeNode node = operatorsTreeView.SelectedNode;
-      if ((e.KeyCode == Keys.Delete) && (node != null) && (node.Parent != null))
+      if((e.KeyCode == Keys.Delete) && (node != null) && (node.Parent != null))
         RemoveTreeNode(operatorsTreeView.SelectedNode);
-      if ((e.KeyCode == Keys.F2) && (node != null))
+      if((e.KeyCode == Keys.F2) && (node != null))
         node.BeginEdit();
     }
     #endregion
@@ -182,9 +182,9 @@ namespace HeuristicLab.CEDMA.Core {
 
     #region Mouse Events
     private void operatorsTreeView_MouseDown(object sender, MouseEventArgs e) {
-      if (e.Button != MouseButtons.Right) return;
+      if(e.Button != MouseButtons.Right) return;
       TreeNode clickedNode = operatorsTreeView.GetNodeAt(e.X, e.Y);
-      if (clickedNode != null) {
+      if(clickedNode != null) {
         operatorsTreeView.SelectedNode = clickedNode;
         operatorsTreeView.Refresh();
       }
@@ -195,41 +195,43 @@ namespace HeuristicLab.CEDMA.Core {
     private void operatorsTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode node = (TreeNode)e.Item;
       IOperator op = node.Tag as IOperator;
-      if (op != null) {
+      if(op != null) {
+        long opId = ((DatabaseOperatorLibrary)OperatorLibrary).GetId(op);
+        OperatorLink link = new OperatorLink(opId, op);
         DataObject data = new DataObject();
-        data.SetData("IOperator", op);
+        data.SetData("IOperator", link);
         data.SetData("DragSource", operatorsTreeView);
         DoDragDrop(data, DragDropEffects.Copy);
       }
     }
     private void operatorsTreeView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (e.Data.GetDataPresent("IOperator")) {
+      if(e.Data.GetDataPresent("IOperator")) {
         Point p = operatorsTreeView.PointToClient(new Point(e.X, e.Y));
         TreeNode node = operatorsTreeView.GetNodeAt(p);
-        if ((node != null) && (node.Tag is IOperatorGroup))
+        if((node != null) && (node.Tag is IOperatorGroup))
           e.Effect = DragDropEffects.Copy;
       }
     }
     private void operatorsTreeView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (e.Data.GetDataPresent("IOperator")) {
+      if(e.Data.GetDataPresent("IOperator")) {
         Point p = operatorsTreeView.PointToClient(new Point(e.X, e.Y));
         TreeNode node = operatorsTreeView.GetNodeAt(p);
-        if ((node != null) && (node.Tag is IOperatorGroup))
+        if((node != null) && (node.Tag is IOperatorGroup))
           e.Effect = DragDropEffects.Copy;
       }
     }
     private void operatorsTreeView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
-        if (e.Data.GetDataPresent("IOperator")) {
+      if(e.Effect != DragDropEffects.None) {
+        if(e.Data.GetDataPresent("IOperator")) {
           IOperator op = (IOperator)e.Data.GetData("IOperator");
           Point p = operatorsTreeView.PointToClient(new Point(e.X, e.Y));
           TreeNode node = operatorsTreeView.GetNodeAt(p);
-          if (node != null) {
+          if(node != null) {
             op = (IOperator)op.Clone();
 
-            while (op.SubOperators.Count > 0)
+            while(op.SubOperators.Count > 0)
               op.RemoveSubOperator(0);
 
             IOperatorGroup group = (IOperatorGroup)node.Tag;

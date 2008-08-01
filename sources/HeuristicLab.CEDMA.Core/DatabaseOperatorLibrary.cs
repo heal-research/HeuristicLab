@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.CEDMA.Core {
   public class DatabaseOperatorLibrary : ItemBase, IOperatorLibrary {
@@ -28,11 +29,11 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     public void Save() {
-      Dictionary<IOperator, long> newKnownOperators = new Dictionary<IOperator,long>();
+      Dictionary<IOperator, long> newKnownOperators = new Dictionary<IOperator, long>();
       foreach(IOperator op in group.Operators) {
         if(knownOperators.ContainsKey(op)) {
           // update
-          long id =knownOperators[op]; 
+          long id = knownOperators[op];
           Database.UpdateOperator(id, op.Name, PersistenceManager.SaveToGZip(op));
           knownOperators.Remove(op);
           newKnownOperators.Add(op, id);
@@ -46,7 +47,7 @@ namespace HeuristicLab.CEDMA.Core {
       foreach(long id in knownOperators.Values) {
         Database.DeleteOperator(id);
       }
-      
+
       knownOperators = newKnownOperators;
     }
 
@@ -61,6 +62,29 @@ namespace HeuristicLab.CEDMA.Core {
         knownOperators.Add(op, e.Id);
         group.AddOperator(op);
       }
+
+      // patch all OperatorLinks
+      foreach(IOperator op in group.Operators) {
+        PatchLinks(op);
+      }
+    }
+
+    private void PatchLinks(IOperator op) {
+      if(op is OperatorLink) {
+        OperatorLink link = op as OperatorLink;
+        link.Operator = FindOperator(link.Id);
+      }
+      else if(op is CombinedOperator) {
+        CombinedOperator combinedOp = op as CombinedOperator;
+        foreach(IOperator internalOp in combinedOp.OperatorGraph.Operators) {
+          PatchLinks(internalOp);
+        }
+      }
+    }
+
+    private IOperator FindOperator(long id) {
+      foreach(KeyValuePair<IOperator, long> p in knownOperators) if(p.Value == id) return p.Key;
+      return null;
     }
 
     public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
@@ -78,6 +102,10 @@ namespace HeuristicLab.CEDMA.Core {
     public override IView CreateView() {
       Restore();
       return new DatabaseOperatorLibraryView(this);
+    }
+
+    internal long GetId(IOperator op) {
+      return knownOperators[op];
     }
   }
 }
