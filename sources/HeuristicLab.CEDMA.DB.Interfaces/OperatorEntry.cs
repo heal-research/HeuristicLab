@@ -34,6 +34,6 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     [DataMember]
     public string Name { get; set; }
     [DataMember]
-    public string RawData { get; set; }
+    public byte[] RawData { get; set; }
   }
 }

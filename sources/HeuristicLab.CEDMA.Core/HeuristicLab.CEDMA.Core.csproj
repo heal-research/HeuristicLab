@@ -62,6 +62,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DatabaseOperatorLibrary.cs" />
+    <Compile Include="DatabaseOperatorLibraryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DatabaseOperatorLibraryView.Designer.cs">
+      <DependentUpon>DatabaseOperatorLibraryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Result.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="HeuristicLabCedmaCorePlugin.cs" />
@@ -110,6 +116,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConsoleEditor.resx">
       <DependentUpon>ConsoleEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DatabaseOperatorLibraryView.resx">
+      <DependentUpon>DatabaseOperatorLibraryView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

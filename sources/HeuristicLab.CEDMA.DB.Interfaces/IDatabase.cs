@@ -48,7 +48,13 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     long InsertSubResult(long resultId, string summary, string description, byte[] rawData);
 
     [OperationContract]
-    long InsertOperator(string name, string rawData);
+    long InsertOperator(string name, byte[] rawData);
+
+    [OperationContract]
+    void UpdateOperator(long id, string name, byte[] rawData);
+
+    [OperationContract]
+    void DeleteOperator(long id);
 
     // should be replaced by more powerful querying interface (LINQ provider?)
     [OperationContract]

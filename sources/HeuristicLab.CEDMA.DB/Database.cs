@@ -64,7 +64,7 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Operator (ID integer primary key autoincrement, Name text, RawData text)";
+              cmd.CommandText = "CREATE TABLE Operator (ID integer primary key autoincrement, Name text, RawData Blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -199,7 +199,7 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
-    public long InsertOperator(string name, string rawData) {
+    public long InsertOperator(string name, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
@@ -229,7 +229,7 @@ namespace HeuristicLab.CEDMA.DB {
     }
     #endregion
 
-    #region update agent/run
+    #region update agent, run, operator
     public void UpdateAgent(long id, string name) {
       rwLock.EnterWriteLock();
       try {
@@ -311,9 +311,40 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
+    public void UpdateOperator(long id, string name, byte[] rawData) {
+      rwLock.EnterWriteLock();
+      try {
+        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(SQLiteTransaction t = cnn.BeginTransaction()) {
+            using(SQLiteCommand c = cnn.CreateCommand()) {
+              c.Transaction = t;
+              c.CommandText = "Update Operator set Name=@Name, RawData=@RawData where id=@Id";
+              DbParameter rawDataParam = c.CreateParameter();
+              DbParameter nameParam = c.CreateParameter();
+              DbParameter idParam = c.CreateParameter();
+              rawDataParam.ParameterName = "@RawData";
+              rawDataParam.Value = rawData;
+              idParam.ParameterName = "@Id";
+              idParam.Value = id;
+              nameParam.ParameterName = "@Name";
+              nameParam.Value = name;
+              c.Parameters.Add(rawDataParam);
+              c.Parameters.Add(nameParam);
+              c.Parameters.Add(idParam);
+              c.ExecuteNonQuery();
+            }
+            t.Commit();
+          }
+        }
+      } finally {
+        rwLock.ExitWriteLock();
+      }
+    }
+
     #endregion
 
-    #region get agent/result/sub-result
+    #region get agent/result/sub-result/operator
 
     public ICollection<AgentEntry> GetAgents(ProcessStatus status) {
       rwLock.EnterReadLock();
@@ -480,7 +511,7 @@ namespace HeuristicLab.CEDMA.DB {
                 OperatorEntry op = new OperatorEntry();
                 op.Id = r.GetInt32(0);
                 op.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
-                op.RawData = r.GetString(2);
+                op.RawData = (byte[])r.GetValue(2);
                 operators.Add(op);
               }
             }
@@ -490,6 +521,31 @@ namespace HeuristicLab.CEDMA.DB {
         rwLock.ExitReadLock();
       }
       return operators;
+    }
+    #endregion
+
+    #region delete operator
+    public void DeleteOperator(long id) {
+      rwLock.EnterWriteLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbTransaction t = cnn.BeginTransaction()) {
+            using(DbCommand c = cnn.CreateCommand()) {
+              c.Transaction = t;
+              c.CommandText = "Delete from Operator where id=@Id";
+              DbParameter idParam = c.CreateParameter();
+              idParam.ParameterName = "@Id";
+              idParam.Value = id;
+              c.Parameters.Add(idParam);
+              c.ExecuteNonQuery();
+            }
+            t.Commit();
+          }
+        }
+      } finally {
+        rwLock.ExitWriteLock();
+      }
     }
     #endregion
   }

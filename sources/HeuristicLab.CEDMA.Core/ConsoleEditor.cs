@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Windows.Forms;
 using System.ServiceModel;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Core {
   class ConsoleEditor : EditorBase {
@@ -39,6 +40,8 @@ namespace HeuristicLab.CEDMA.Core {
     private Button newButton;
     private Timer refreshTimer;
     private System.ComponentModel.IContainer components;
+    private Button opLibButton;
+    private Label label1;
     private Console console;
 
     public ConsoleEditor(Console console) {
@@ -57,12 +60,14 @@ namespace HeuristicLab.CEDMA.Core {
       this.projectLabel = new System.Windows.Forms.Label();
       this.newButton = new System.Windows.Forms.Button();
       this.refreshTimer = new System.Windows.Forms.Timer(this.components);
+      this.opLibButton = new System.Windows.Forms.Button();
+      this.label1 = new System.Windows.Forms.Label();
       this.tabControl.SuspendLayout();
       this.SuspendLayout();
       // 
       // uriTextBox
       // 
-      this.uriTextBox.Location = new System.Drawing.Point(91, 3);
+      this.uriTextBox.Location = new System.Drawing.Point(94, 3);
       this.uriTextBox.Name = "uriTextBox";
       this.uriTextBox.Size = new System.Drawing.Size(205, 20);
       this.uriTextBox.TabIndex = 0;
@@ -83,10 +88,10 @@ namespace HeuristicLab.CEDMA.Core {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.agentsPage);
       this.tabControl.Enabled = false;
-      this.tabControl.Location = new System.Drawing.Point(6, 56);
+      this.tabControl.Location = new System.Drawing.Point(6, 85);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(506, 407);
+      this.tabControl.Size = new System.Drawing.Size(506, 378);
       this.tabControl.TabIndex = 2;
       // 
       // agentsPage
@@ -94,14 +99,14 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentsPage.Location = new System.Drawing.Point(4, 22);
       this.agentsPage.Name = "agentsPage";
       this.agentsPage.Padding = new System.Windows.Forms.Padding(3);
-      this.agentsPage.Size = new System.Drawing.Size(498, 381);
+      this.agentsPage.Size = new System.Drawing.Size(498, 352);
       this.agentsPage.TabIndex = 1;
       this.agentsPage.Text = "Agents";
       this.agentsPage.UseVisualStyleBackColor = true;
       // 
       // connectButton
       // 
-      this.connectButton.Location = new System.Drawing.Point(302, 1);
+      this.connectButton.Location = new System.Drawing.Point(305, 1);
       this.connectButton.Name = "connectButton";
       this.connectButton.Size = new System.Drawing.Size(75, 23);
       this.connectButton.TabIndex = 3;
@@ -113,7 +118,7 @@ namespace HeuristicLab.CEDMA.Core {
       // 
       this.comboBox1.Enabled = false;
       this.comboBox1.FormattingEnabled = true;
-      this.comboBox1.Location = new System.Drawing.Point(91, 29);
+      this.comboBox1.Location = new System.Drawing.Point(94, 29);
       this.comboBox1.Name = "comboBox1";
       this.comboBox1.Size = new System.Drawing.Size(121, 21);
       this.comboBox1.TabIndex = 4;
@@ -131,7 +136,7 @@ namespace HeuristicLab.CEDMA.Core {
       // newButton
       // 
       this.newButton.Enabled = false;
-      this.newButton.Location = new System.Drawing.Point(218, 27);
+      this.newButton.Location = new System.Drawing.Point(221, 27);
       this.newButton.Name = "newButton";
       this.newButton.Size = new System.Drawing.Size(75, 23);
       this.newButton.TabIndex = 6;
@@ -143,9 +148,31 @@ namespace HeuristicLab.CEDMA.Core {
       this.refreshTimer.Interval = 3000;
       this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
       // 
+      // opLibButton
+      // 
+      this.opLibButton.Enabled = false;
+      this.opLibButton.Location = new System.Drawing.Point(94, 56);
+      this.opLibButton.Name = "opLibButton";
+      this.opLibButton.Size = new System.Drawing.Size(75, 23);
+      this.opLibButton.TabIndex = 7;
+      this.opLibButton.Text = "&Open";
+      this.opLibButton.UseVisualStyleBackColor = true;
+      this.opLibButton.Click += new System.EventHandler(this.opLibButton_Click);
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(3, 61);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(85, 13);
+      this.label1.TabIndex = 8;
+      this.label1.Text = "Operator Library:";
+      // 
       // ConsoleEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.label1);
+      this.Controls.Add(this.opLibButton);
       this.Controls.Add(this.newButton);
       this.Controls.Add(this.projectLabel);
       this.Controls.Add(this.comboBox1);
@@ -170,6 +197,8 @@ namespace HeuristicLab.CEDMA.Core {
         agentsPage.Controls.Add((Control)console.AgentList.CreateView());
         agentsPage.Controls[0].Dock = DockStyle.Fill;
         refreshTimer.Enabled = true;
+        opLibButton.Enabled = true;
+        opLibButton.Enabled = true;
       } catch(CommunicationException ex) {
         // TASK create helper class for error reporting
         MessageBox.Show("Exception while trying to connect to " + uriTextBox.Text + "\n" + ex.Message);
@@ -180,6 +209,15 @@ namespace HeuristicLab.CEDMA.Core {
       refreshTimer.Stop();
       UpdateControls();
       refreshTimer.Enabled = true;
+    }
+
+    private void opLibButton_Click(object sender, EventArgs e) {
+      IOperatorLibrary opLib = console.OperatorLibrary;
+      if(opLib != null) {
+        IView view = opLib.CreateView();
+        if(view != null)
+          PluginManager.ControlManager.ShowControl(view);
+      }
     }
   }
 }
