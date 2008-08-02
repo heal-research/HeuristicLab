@@ -26,10 +26,12 @@ using System.Text;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Core;
 using System.Xml;
+using System.Diagnostics;
 
 namespace HeuristicLab.Functions {
   internal class BakedTreeEvaluator : IEvaluator {
     private const int MAX_TREE_SIZE = 4096;
+    private const double EPSILON = 1.0e-7;
 
     private class Instr {
       public double d_arg0;
@@ -174,21 +176,21 @@ namespace HeuristicLab.Functions {
         case EvaluatorSymbolTable.TANGENS: {
             return Math.Tan(EvaluateBakedCode());
           }
-        case EvaluatorSymbolTable.AND: {
+        case EvaluatorSymbolTable.AND: { // only defined for inputs 1 and 0
             double result = 1.0;
             // have to evaluate all sub-trees, skipping would probably not lead to a big gain because 
             // we have to iterate over the linear structure anyway
             for(int i = 0; i < currInstr.arity; i++) {
-              double x = Math.Round(EvaluateBakedCode());
-              if(x == 0 || x == 1.0) result *= x;
-              else result = double.NaN;
+              double x = EvaluateBakedCode();
+              Debug.Assert(x == 0.0 || x == 1.0);
+              result *= x;
             }
             return result;
           }
         case EvaluatorSymbolTable.EQU: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(x == y) return 1.0; else return 0.0;
+            if(Math.Abs(x - y) < EPSILON) return 1.0; else return 0.0;
           }
         case EvaluatorSymbolTable.GT: {
             double x = EvaluateBakedCode();
@@ -196,13 +198,13 @@ namespace HeuristicLab.Functions {
             if(x > y) return 1.0;
             else return 0.0;
           }
-        case EvaluatorSymbolTable.IFTE: {
-            double condition = Math.Round(EvaluateBakedCode());
+        case EvaluatorSymbolTable.IFTE: { // only defined for condition 0 or 1
+            double condition = EvaluateBakedCode();
+            Debug.Assert(condition == 0.0 || condition == 1.0);
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(condition < .5) return x;
-            else if(condition >= .5) return y;
-            else return double.NaN;
+            if(condition == 0.0) return x;
+            else return y;
           }
         case EvaluatorSymbolTable.LT: {
             double x = EvaluateBakedCode();
@@ -210,29 +212,25 @@ namespace HeuristicLab.Functions {
             if(x < y) return 1.0;
             else return 0.0;
           }
-        case EvaluatorSymbolTable.NOT: {
-            double result = Math.Round(EvaluateBakedCode());
+        case EvaluatorSymbolTable.NOT: { // only defined for inputs 0 or 1
+            double result = EvaluateBakedCode();
+            Debug.Assert(result == 0.0 || result == 1.0);
             if(result == 0.0) return 1.0;
-            else if(result == 1.0) return 0.0;
-            else return double.NaN;
+            else return 0.0;
           }
-        case EvaluatorSymbolTable.OR: {
+        case EvaluatorSymbolTable.OR: { // only defined for inputs 0 or 1
             double result = 0.0; // default is false
             for(int i = 0; i < currInstr.arity; i++) {
-              double x = Math.Round(EvaluateBakedCode());
-              if(x == 1.0 && result == 0.0) result = 1.0; // found first true (1.0) => set to true
-              else if(x != 0.0) result = double.NaN; // if it was not true it can only be false (0.0) all other cases are undefined => (NaN)
+              double x = EvaluateBakedCode();
+              Debug.Assert(x == 0.0 || x == 1.0);
+              if(x == 1.0) result = 1.0;
             }
             return result;
           }
-        case EvaluatorSymbolTable.XOR: {
-            double x = Math.Round(EvaluateBakedCode());
-            double y = Math.Round(EvaluateBakedCode());
-            if(x == 0.0 && y == 0.0) return 0.0;
-            if(x == 1.0 && y == 0.0) return 1.0;
-            if(x == 0.0 && y == 1.0) return 1.0;
-            if(x == 1.0 && y == 1.0) return 0.0;
-            return double.NaN;
+        case EvaluatorSymbolTable.XOR: { // only defined for inputs 0 or 1
+            double x = EvaluateBakedCode();
+            double y = EvaluateBakedCode();
+            return Math.Abs(x - y);
           }
         default: {
             throw new NotImplementedException();
