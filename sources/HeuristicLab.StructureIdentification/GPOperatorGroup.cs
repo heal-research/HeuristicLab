@@ -97,8 +97,8 @@ namespace HeuristicLab.StructureIdentification {
         op.AddVariable(new Variable(GPOperatorLibrary.TICKETS, new DoubleData(1.0)));
       }
 
-      RecalculateAllowedSuboperators();
-      RecalculateMinimalTreeBounds();
+      //RecalculateAllowedSuboperators();
+      //RecalculateMinimalTreeBounds();
 
       OnOperatorAdded(op);
     }
@@ -290,7 +290,6 @@ namespace HeuristicLab.StructureIdentification {
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_HEIGHT);
       op.RemoveVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS);
       op.RemoveVariable(GPOperatorLibrary.TICKETS);
-
       OnOperatorRemoved(op);
     }
 
@@ -310,6 +309,11 @@ namespace HeuristicLab.StructureIdentification {
       if(OperatorRemoved != null) {
         OperatorRemoved(this, new OperatorEventArgs(op));
       }
+    }
+
+    internal void Prepare() {
+      RecalculateAllowedSuboperators();
+      RecalculateMinimalTreeBounds();
     }
   }
 

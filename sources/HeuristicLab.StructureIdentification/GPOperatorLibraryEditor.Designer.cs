@@ -53,8 +53,9 @@ namespace HeuristicLab.StructureIdentification {
       this.initVariableView = new HeuristicLab.Core.VariableView();
       this.mutationTabPage = new System.Windows.Forms.TabPage();
       this.mutationSplitContainer = new System.Windows.Forms.SplitContainer();
-      this.mutationVariableView = new HeuristicLab.Core.VariableView();
       this.mutationListView = new System.Windows.Forms.ListView();
+      this.mutationVariableView = new HeuristicLab.Core.VariableView();
+      this.preprocessButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.operatorLibraryTabPage.SuspendLayout();
       this.initializationTabPage.SuspendLayout();
@@ -92,6 +93,7 @@ namespace HeuristicLab.StructureIdentification {
       // 
       // operatorLibraryTabPage
       // 
+      this.operatorLibraryTabPage.Controls.Add(this.preprocessButton);
       this.operatorLibraryTabPage.Controls.Add(this.operatorLibraryEditor);
       this.operatorLibraryTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorLibraryTabPage.Name = "operatorLibraryTabPage";
@@ -178,16 +180,6 @@ namespace HeuristicLab.StructureIdentification {
       this.mutationSplitContainer.SplitterDistance = 221;
       this.mutationSplitContainer.TabIndex = 0;
       // 
-      // mutationVariableView
-      // 
-      this.mutationVariableView.Caption = "Variable";
-      this.mutationVariableView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.mutationVariableView.Location = new System.Drawing.Point(0, 0);
-      this.mutationVariableView.Name = "mutationVariableView";
-      this.mutationVariableView.Size = new System.Drawing.Size(438, 529);
-      this.mutationVariableView.TabIndex = 0;
-      this.mutationVariableView.Variable = null;
-      // 
       // mutationListView
       // 
       this.mutationListView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -199,6 +191,27 @@ namespace HeuristicLab.StructureIdentification {
       this.mutationListView.UseCompatibleStateImageBehavior = false;
       this.mutationListView.View = System.Windows.Forms.View.List;
       this.mutationListView.SelectedIndexChanged += new System.EventHandler(this.mutationListView_SelectedIndexChanged);
+      // 
+      // mutationVariableView
+      // 
+      this.mutationVariableView.Caption = "Variable";
+      this.mutationVariableView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.mutationVariableView.Location = new System.Drawing.Point(0, 0);
+      this.mutationVariableView.Name = "mutationVariableView";
+      this.mutationVariableView.Size = new System.Drawing.Size(438, 529);
+      this.mutationVariableView.TabIndex = 0;
+      this.mutationVariableView.Variable = null;
+      // 
+      // preprocessButton
+      // 
+      this.preprocessButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.preprocessButton.Location = new System.Drawing.Point(440, 509);
+      this.preprocessButton.Name = "preprocessButton";
+      this.preprocessButton.Size = new System.Drawing.Size(75, 23);
+      this.preprocessButton.TabIndex = 1;
+      this.preprocessButton.Text = "Prepare";
+      this.preprocessButton.UseVisualStyleBackColor = true;
+      this.preprocessButton.Click += new System.EventHandler(this.preprocessButton_Click);
       // 
       // GPOperatorLibraryEditor
       // 
@@ -234,5 +247,6 @@ namespace HeuristicLab.StructureIdentification {
     private HeuristicLab.Core.VariableView mutationVariableView;
     private System.Windows.Forms.ListView initListView;
     private System.Windows.Forms.ListView mutationListView;
+    private System.Windows.Forms.Button preprocessButton;
   }
 }
