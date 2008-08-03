@@ -32,6 +32,7 @@ using System.Diagnostics;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
+using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public partial class GPOperatorLibraryEditor : EditorBase {
@@ -53,14 +54,14 @@ namespace HeuristicLab.StructureIdentification {
       initVariableView.Enabled = false;
 
       foreach(IOperator op in library.Group.Operators) {
-        if(op.GetVariable(GPOperatorLibrary.MANIPULATION) != null) {
+        if(op.GetVariable(FunctionBase.MANIPULATION) != null) {
           ListViewItem item = new ListViewItem();
           item.Text = op.Name;
           item.Name = op.Name;
           item.Tag = op;
           mutationListView.Items.Add(item);
         }
-        if(op.GetVariable(GPOperatorLibrary.INITIALIZATION) != null) {
+        if(op.GetVariable(FunctionBase.INITIALIZATION) != null) {
           ListViewItem item = new ListViewItem();
           item.Name = op.Name;
           item.Text = op.Name;
@@ -73,7 +74,7 @@ namespace HeuristicLab.StructureIdentification {
 
     private void GPOperatorLibraryView_OperatorAdded(object sender, EventArgs e) {
       IOperator op = ((OperatorEventArgs)e).op;
-      if (op.GetVariable(GPOperatorLibrary.MANIPULATION) != null) {
+      if(op.GetVariable(FunctionBase.MANIPULATION) != null) {
         ListViewItem operatorMutationItem = new ListViewItem();
         operatorMutationItem.Name = op.Name;
         operatorMutationItem.Text = op.Name;
@@ -81,7 +82,7 @@ namespace HeuristicLab.StructureIdentification {
         mutationListView.Items.Add(operatorMutationItem);
       }
 
-      if (op.GetVariable(GPOperatorLibrary.INITIALIZATION) != null) {
+      if(op.GetVariable(FunctionBase.INITIALIZATION) != null) {
         ListViewItem operatorInitItem = new ListViewItem();
         operatorInitItem.Name = op.Name;
         operatorInitItem.Text = op.Name;
@@ -132,7 +133,7 @@ namespace HeuristicLab.StructureIdentification {
 
     private void mutationListView_SelectedIndexChanged(object sender, EventArgs e) {
       if(mutationListView.SelectedItems.Count>0 && mutationListView.SelectedItems[0].Tag != null) {
-        IVariable variable = ((IOperator)mutationListView.SelectedItems[0].Tag).GetVariable(GPOperatorLibrary.MANIPULATION);
+        IVariable variable = ((IOperator)mutationListView.SelectedItems[0].Tag).GetVariable(FunctionBase.MANIPULATION);
         mutationVariableView.Enabled = true;
         mutationVariableView.Variable = variable;
       } else {
@@ -142,7 +143,7 @@ namespace HeuristicLab.StructureIdentification {
 
     private void initListView_SelectedIndexChanged(object sender, EventArgs e) {
       if(initListView.SelectedItems.Count>0 && initListView.SelectedItems[0].Tag != null) {
-        IVariable variable = ((IOperator)initListView.SelectedItems[0].Tag).GetVariable(GPOperatorLibrary.INITIALIZATION);
+        IVariable variable = ((IOperator)initListView.SelectedItems[0].Tag).GetVariable(FunctionBase.INITIALIZATION);
         initVariableView.Enabled = true;
         initVariableView.Variable = variable;
       } else {

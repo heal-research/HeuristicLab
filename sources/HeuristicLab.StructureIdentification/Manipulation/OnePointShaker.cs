@@ -33,7 +33,7 @@ using HeuristicLab.Functions;
 namespace HeuristicLab.StructureIdentification {
   public class OnePointShaker : DelegatingOperator {
     public override string Description {
-      get { return "Selects a random node of all tree-nodes that have a '"+GPOperatorLibrary.MANIPULATION+"' variable defined and manipulates the selected node."; }
+      get { return "Selects a random node of all tree-nodes that have a '"+FunctionBase.MANIPULATION+"' variable defined and manipulates the selected node."; }
     }
 
     public OnePointShaker()
@@ -51,9 +51,9 @@ namespace HeuristicLab.StructureIdentification {
       TreeGardener gardener = new TreeGardener(mt, library);
 
       // get all nodes for which a manipulation is defined
-      var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(GPOperatorLibrary.MANIPULATION) != null);
+      var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(FunctionBase.MANIPULATION) != null);
       IFunctionTree selectedBranch = parametricBranches.ElementAt(mt.Next(parametricBranches.Count()));
-      IOperator mutation = (IOperator)selectedBranch.Function.GetVariable(GPOperatorLibrary.MANIPULATION).Value;
+      IOperator mutation = (IOperator)selectedBranch.Function.GetVariable(FunctionBase.MANIPULATION).Value;
       CompositeOperation next = new CompositeOperation();
 
       // store all local variables into a temporary scope

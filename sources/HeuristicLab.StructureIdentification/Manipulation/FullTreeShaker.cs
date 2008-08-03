@@ -33,7 +33,7 @@ using HeuristicLab.Functions;
 namespace HeuristicLab.StructureIdentification {
   public class FullTreeShaker : DelegatingOperator {
     public override string Description {
-      get { return "Manipulates all tree nodes for which a '"+GPOperatorLibrary.MANIPULATION+"' variable is defined."; }
+      get { return "Manipulates all tree nodes for which a '" + FunctionBase.MANIPULATION + "' variable is defined."; }
     }
 
     public FullTreeShaker()
@@ -56,9 +56,9 @@ namespace HeuristicLab.StructureIdentification {
       Scope tempScope = new Scope("Temp. manipulation scope");
 
       TreeGardener gardener = new TreeGardener(mt, library);
-      var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(GPOperatorLibrary.MANIPULATION) != null);
+      var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(FunctionBase.MANIPULATION) != null);
       foreach(IFunctionTree subTree in parametricBranches) {
-        IOperator mutation =(IOperator)subTree.Function.GetVariable(GPOperatorLibrary.MANIPULATION).Value;
+        IOperator mutation = (IOperator)subTree.Function.GetVariable(FunctionBase.MANIPULATION).Value;
 
         // store all local variables into a temporary scope
         Scope mutationScope = new Scope();
@@ -72,7 +72,7 @@ namespace HeuristicLab.StructureIdentification {
 
       // save all existing sub-scopes in a backup scope
       Scope backupScope = new Scope("backup");
-      foreach (Scope subScope in scope.SubScopes) {
+      foreach(Scope subScope in scope.SubScopes) {
         backupScope.AddSubScope(subScope);
       }
 

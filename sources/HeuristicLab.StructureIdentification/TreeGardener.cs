@@ -215,10 +215,10 @@ namespace HeuristicLab.StructureIdentification {
       CompositeOperation initializationOperation = new CompositeOperation();
       Scope tempScope = new Scope("Temp. initialization scope");
 
-      var parametricTrees = trees.Where(t => t.Function.GetVariable(GPOperatorLibrary.INITIALIZATION) != null);
+      var parametricTrees = trees.Where(t => t.Function.GetVariable(FunctionBase.INITIALIZATION) != null);
       foreach(IFunctionTree tree in parametricTrees) {
         // enqueue an initialization operation for each operator with local variables 
-        IOperator initialization = (IOperator)tree.Function.GetVariable(GPOperatorLibrary.INITIALIZATION).Value;
+        IOperator initialization = (IOperator)tree.Function.GetVariable(FunctionBase.INITIALIZATION).Value;
         Scope initScope = new Scope();
         // copy the local variables into a temporary scope used for initialization
         foreach(IVariable variable in tree.LocalVariables) {

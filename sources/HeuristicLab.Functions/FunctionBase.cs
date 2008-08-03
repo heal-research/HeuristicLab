@@ -33,8 +33,8 @@ namespace HeuristicLab.Functions {
   /// is to evaluate all children first.
   /// </summary>
   public abstract class FunctionBase : OperatorBase, IFunction {
-    protected const string INITIALIZATION = "Initialization";
-    protected const string MANIPULATION = "Manipulation";
+    public const string INITIALIZATION = "Initialization";
+    public const string MANIPULATION = "Manipulation";
 
 
     public virtual double Apply(Dataset dataset, int sampleIndex, double[] args) {

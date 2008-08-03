@@ -40,45 +40,6 @@ namespace HeuristicLab.StructureIdentification {
 
       var localVariableInfos = op.VariableInfos.Where(f => f.Local);
 
-      //if(op.GetVariable(GPOperatorLibrary.MANIPULATION) == null) {
-      //  CombinedOperator manipulationOperator = new CombinedOperator();
-      //  SequentialProcessor manipulationSequence = new SequentialProcessor();
-      //  foreach(IVariableInfo variableInfo in localVariableInfos) {
-      //    IOperator manipulator = GetDefaultManipulationOperator(variableInfo);
-      //    if (manipulator != null) {
-      //      manipulationSequence.AddSubOperator(manipulator);
-      //    }
-      //  }
-      //  if(manipulationSequence.SubOperators.Count > 0) {
-      //    op.AddVariable(new Variable(GPOperatorLibrary.MANIPULATION, manipulationOperator));
-
-      //    manipulationOperator.OperatorGraph.AddOperator(manipulationSequence);
-      //    manipulationOperator.OperatorGraph.InitialOperator = manipulationSequence;
-      //    foreach(IOperator subOp in manipulationSequence.SubOperators) {
-      //      manipulationOperator.OperatorGraph.AddOperator(subOp);
-      //    }
-      //  }
-      //}
-
-      //if(op.GetVariable(GPOperatorLibrary.INITIALIZATION) == null) {
-      //  CombinedOperator initOperator = new CombinedOperator();
-      //  SequentialProcessor initSequence = new SequentialProcessor();
-      //  foreach(IVariableInfo variableInfo in localVariableInfos) {
-      //    IOperator initializer = GetDefaultInitOperator(variableInfo);
-      //    if (initializer != null) {
-      //      initSequence.AddSubOperator(initializer);
-      //    }
-      //  }
-      //  if(initSequence.SubOperators.Count > 0) {
-      //    op.AddVariable(new Variable(GPOperatorLibrary.INITIALIZATION, initOperator));
-      //    initOperator.OperatorGraph.AddOperator(initSequence);
-      //    initOperator.OperatorGraph.InitialOperator = initSequence;
-      //    foreach(IOperator subOp in initSequence.SubOperators) {
-      //      initOperator.OperatorGraph.AddOperator(subOp);
-      //    }
-      //  }
-      //}
-
       // add a new typeid if necessary
       if(op.GetVariable(GPOperatorLibrary.TYPE_ID) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.TYPE_ID, new StringData(Guid.NewGuid().ToString())));
@@ -241,37 +202,6 @@ namespace HeuristicLab.StructureIdentification {
     private string GetTypeId(IOperator op) {
       return ((StringData)op.GetVariable(GPOperatorLibrary.TYPE_ID).Value).Data;
     }
-
-
-    //private IOperator GetDefaultManipulationOperator(IVariableInfo variableInfo) {
-    //  IOperator shaker;
-    //  if(variableInfo.DataType == typeof(ConstrainedDoubleData) ||
-    //    variableInfo.DataType == typeof(ConstrainedIntData) ||
-    //    variableInfo.DataType == typeof(DoubleData) ||
-    //    variableInfo.DataType == typeof(IntData)) {
-    //    shaker = new NormalRandomAdder();
-    //  } else {
-    //    return null;
-    //  }
-    //  shaker.GetVariableInfo("Value").ActualName = variableInfo.FormalName;
-    //  shaker.Name = variableInfo.FormalName + " manipulation";
-    //  return shaker;
-    //}
-
-    //private IOperator GetDefaultInitOperator(IVariableInfo variableInfo) {
-    //  IOperator shaker;
-    //  if(variableInfo.DataType == typeof(ConstrainedDoubleData) ||
-    //    variableInfo.DataType == typeof(ConstrainedIntData) ||
-    //    variableInfo.DataType == typeof(DoubleData) ||
-    //    variableInfo.DataType == typeof(IntData)) {
-    //    shaker = new UniformRandomizer();
-    //  } else {
-    //    return null;
-    //  }
-    //  shaker.GetVariableInfo("Value").ActualName = variableInfo.FormalName;
-    //  shaker.Name = variableInfo.FormalName + " initialization";
-    //  return shaker;
-    //}
 
     public override void AddSubGroup(IOperatorGroup group) {
       throw new NotSupportedException();
