@@ -37,6 +37,9 @@ namespace HeuristicLab.Functions {
     public Average()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
+      AddConstraint(new SubOperatorTypeConstraint(2));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

@@ -49,6 +49,9 @@ In case one of the divisors is 0 returns 0.
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
+      AddConstraint(new SubOperatorTypeConstraint(2));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

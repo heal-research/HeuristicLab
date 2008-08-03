@@ -37,6 +37,8 @@ namespace HeuristicLab.Functions {
     public LessThan()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

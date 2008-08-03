@@ -38,6 +38,9 @@ of the third sub-tree if the first sub-tree evaluates to >= 0.5.";
     public IfThenElse()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(3, 3));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
+      AddConstraint(new SubOperatorTypeConstraint(2));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

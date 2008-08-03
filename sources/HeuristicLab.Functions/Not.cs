@@ -37,6 +37,7 @@ namespace HeuristicLab.Functions {
     public Not()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(1, 1));
+      AddConstraint(new SubOperatorTypeConstraint(0));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

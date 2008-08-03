@@ -38,6 +38,9 @@ Special form, evaluation stops at first sub-tree that evaluates to 1.0 (true).";
     public Or()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
+      AddConstraint(new SubOperatorTypeConstraint(2));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

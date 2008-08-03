@@ -39,6 +39,9 @@ stopped as soon as one of the sub-trees evaluates to 0.0 (false).";
     public And()
       : base() {
       AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
+      AddConstraint(new SubOperatorTypeConstraint(0));
+      AddConstraint(new SubOperatorTypeConstraint(1));
+      AddConstraint(new SubOperatorTypeConstraint(2));
     }
 
     public override void Accept(IFunctionVisitor visitor) {
