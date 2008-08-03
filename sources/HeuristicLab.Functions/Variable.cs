@@ -27,6 +27,8 @@ using System.Diagnostics;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Random;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.Functions {
   public sealed class Variable : FunctionBase {
@@ -61,12 +63,83 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       AddVariable(new HeuristicLab.Core.Variable(INDEX, variable));
 
       ConstrainedIntData sampleOffset = new ConstrainedIntData();
-      // initialize a totally arbitrary default range for sampleoffset = [-10, 10]
-      sampleOffset.AddConstraint(new IntBoundedConstraint(0, 0));
+      // initialize a sample offset for static models
+      IntBoundedConstraint offsetConstraint = new IntBoundedConstraint(0, 0);
+      offsetConstraint.LowerBoundIncluded = true;
+      offsetConstraint.UpperBoundIncluded = true;
+      sampleOffset.AddConstraint(offsetConstraint);
       AddVariable(new HeuristicLab.Core.Variable(OFFSET, sampleOffset));
+
+      SetupInitialization();
+      SetupManipulation();
 
       // variable can't have suboperators
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
+    }
+
+    private void SetupInitialization() {
+      AddVariableInfo(new VariableInfo(INITIALIZATION, "Initialization operator for variables", typeof(CombinedOperator), VariableKind.None));
+      GetVariableInfo(INITIALIZATION).Local = false;
+      CombinedOperator combinedOp = new CombinedOperator();
+      SequentialProcessor seq = new SequentialProcessor();
+      UniformRandomizer indexRandomizer = new UniformRandomizer();
+      indexRandomizer.Min = 0;
+      indexRandomizer.Max = 10;
+      indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
+      indexRandomizer.Name = "Index Randomizer";
+      NormalRandomizer weightRandomizer = new NormalRandomizer();
+      weightRandomizer.Mu = 1.0;
+      weightRandomizer.Sigma = 1.0;
+      weightRandomizer.GetVariableInfo("Value").ActualName = WEIGHT;
+      weightRandomizer.Name = "Weight Randomizer";
+      UniformRandomizer offsetRandomizer = new UniformRandomizer();
+      offsetRandomizer.Min = 0.0;
+      offsetRandomizer.Max = 1.0;
+      offsetRandomizer.GetVariableInfo("Value").ActualName = OFFSET;
+      offsetRandomizer.Name = "Offset Randomizer";
+
+      combinedOp.OperatorGraph.AddOperator(seq);
+      combinedOp.OperatorGraph.AddOperator(indexRandomizer);
+      combinedOp.OperatorGraph.AddOperator(weightRandomizer);
+      combinedOp.OperatorGraph.AddOperator(offsetRandomizer);
+      combinedOp.OperatorGraph.InitialOperator = seq;
+      seq.AddSubOperator(indexRandomizer);
+      seq.AddSubOperator(weightRandomizer);
+      seq.AddSubOperator(offsetRandomizer);
+      AddVariable(new HeuristicLab.Core.Variable(INITIALIZATION, combinedOp));
+    }
+
+    private void SetupManipulation() {
+      // manipulation operator
+      AddVariableInfo(new VariableInfo(MANIPULATION, "Manipulation operator for variables", typeof(CombinedOperator), VariableKind.None));
+      GetVariableInfo(MANIPULATION).Local = false;
+      CombinedOperator combinedOp = new CombinedOperator();
+      SequentialProcessor seq = new SequentialProcessor();
+      UniformRandomizer indexRandomizer = new UniformRandomizer();
+      indexRandomizer.Min = 0;
+      indexRandomizer.Max = 10;
+      indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
+      indexRandomizer.Name = "Index Randomizer";
+      NormalRandomAdder weightRandomAdder = new NormalRandomAdder();
+      weightRandomAdder.Mu = 0.0;
+      weightRandomAdder.Sigma = 0.1;
+      weightRandomAdder.GetVariableInfo("Value").ActualName = WEIGHT;
+      weightRandomAdder.Name = "Weight Adder";
+      NormalRandomAdder offsetRandomAdder = new NormalRandomAdder();
+      offsetRandomAdder.Mu = 0.0;
+      offsetRandomAdder.Sigma = 1.0;
+      offsetRandomAdder.GetVariableInfo("Value").ActualName = OFFSET;
+      offsetRandomAdder.Name = "Offset Adder";
+
+      combinedOp.OperatorGraph.AddOperator(seq);
+      combinedOp.OperatorGraph.AddOperator(indexRandomizer);
+      combinedOp.OperatorGraph.AddOperator(weightRandomAdder);
+      combinedOp.OperatorGraph.AddOperator(offsetRandomAdder);
+      combinedOp.OperatorGraph.InitialOperator = seq;
+      seq.AddSubOperator(indexRandomizer);
+      seq.AddSubOperator(weightRandomAdder);
+      seq.AddSubOperator(offsetRandomAdder);
+      AddVariable(new HeuristicLab.Core.Variable(MANIPULATION, combinedOp));
     }
 
     public override void Accept(IFunctionVisitor visitor) {

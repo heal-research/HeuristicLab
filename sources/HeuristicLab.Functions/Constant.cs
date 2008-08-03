@@ -27,6 +27,8 @@ using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Operators;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Functions {
   public sealed class Constant : FunctionBase {
@@ -47,9 +49,47 @@ namespace HeuristicLab.Functions {
       HeuristicLab.Core.Variable value = new HeuristicLab.Core.Variable(VALUE, valueData);
       AddVariable(value);
 
+      SetupInitialization();
+      SetupManipulation();
+
       // constant can't have suboperators
       AddConstraint(new NumberOfSubOperatorsConstraint(0, 0));
     }
+
+    private void SetupInitialization() {
+      // initialization operator
+      AddVariableInfo(new VariableInfo(INITIALIZATION, "Initialization operator-graph for constants", typeof(IOperatorGraph), VariableKind.None));
+      GetVariableInfo(INITIALIZATION).Local = false;
+      CombinedOperator combinedOp = new CombinedOperator();
+      SequentialProcessor initSeq = new SequentialProcessor();
+      UniformRandomizer randomizer = new UniformRandomizer();
+      randomizer.Min = -20.0;
+      randomizer.Max = 20.0;
+
+      combinedOp.OperatorGraph.AddOperator(initSeq);
+      combinedOp.OperatorGraph.AddOperator(randomizer);
+      combinedOp.OperatorGraph.InitialOperator = initSeq;
+      initSeq.AddSubOperator(randomizer);
+      AddVariable(new HeuristicLab.Core.Variable(INITIALIZATION, combinedOp));
+    }
+
+    private void SetupManipulation() {
+      // manipulation operator
+      AddVariableInfo(new VariableInfo(MANIPULATION, "Manipulation operator-graph for constants", typeof(IOperatorGraph), VariableKind.None));
+      GetVariableInfo(MANIPULATION).Local = false;
+      CombinedOperator combinedOp = new CombinedOperator();
+      SequentialProcessor manipulationSeq = new SequentialProcessor();
+      NormalRandomAdder valueAdder = new NormalRandomAdder();
+      valueAdder.Mu = 0.0;
+      valueAdder.Sigma = 0.1;
+
+      combinedOp.OperatorGraph.AddOperator(manipulationSeq);
+      combinedOp.OperatorGraph.AddOperator(valueAdder);
+      combinedOp.OperatorGraph.InitialOperator = manipulationSeq;
+      manipulationSeq.AddSubOperator(valueAdder);
+      AddVariable(new HeuristicLab.Core.Variable(MANIPULATION, combinedOp));
+    }
+
     public override void Accept(IFunctionVisitor visitor) {
       visitor.Visit(this);
     }

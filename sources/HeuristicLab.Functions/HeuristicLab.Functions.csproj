@@ -117,9 +117,17 @@
       <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
       <Name>HeuristicLab.Operators.Programmable</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
+      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
+      <Name>HeuristicLab.Operators</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
+      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
+      <Name>HeuristicLab.Random</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
