@@ -51,28 +51,22 @@ namespace HeuristicLab.Constraints {
       subOperators = new List<IOperator>();
     }
 
-    public void AddOperator(IOperator op) {
-      // check if already in the list of allowed functions
-      foreach(IOperator existingOp in subOperators) {
-        if(existingOp == op) {
-          return;
-        }
-      }
+    public SubOperatorTypeConstraint(int index) : base() {
+      subOperatorIndex = new IntData(index);
+      subOperators = new List<IOperator>();
+    }
 
-      subOperators.Add(op);
+    public void AddOperator(IOperator op) {
+      if(!subOperators.Contains(op)) {
+        subOperators.Add(op);
+        FireChanged();
+      }
     }
 
     public void RemoveOperator(IOperator op) {
-      IOperator matchingOperator = null;
-      foreach(IOperator existingOp in subOperators) {
-        if(existingOp == op) {
-          matchingOperator = existingOp;
-          break;
-        }
-      }
-
-      if(matchingOperator != null) {
-        subOperators.Remove(matchingOperator);
+      if(subOperators.Contains(op)) {
+        subOperators.Remove(op);
+        FireChanged();
       }
     }
 
@@ -83,8 +77,7 @@ namespace HeuristicLab.Constraints {
       if(op.SubOperators.Count <= subOperatorIndex.Data) {
         return false;
       }
-
-      return subOperators.Exists(delegate(IOperator curOp) { return curOp == op.SubOperators[subOperatorIndex.Data]; });
+      return subOperators.Contains(op.SubOperators[subOperatorIndex.Data]);
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

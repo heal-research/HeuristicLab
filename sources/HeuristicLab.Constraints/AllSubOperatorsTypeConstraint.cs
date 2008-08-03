@@ -48,19 +48,21 @@ namespace HeuristicLab.Constraints {
 
     public void AddOperator(IOperator op) {
       groupConstraint.AddOperator(op);
+      FireChanged();
     }
 
     public void RemoveOperator(IOperator op) {
       groupConstraint.RemoveOperator(op);
+      FireChanged();
     }
 
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
-      if (data == null) return false;
+      if(data == null) return false;
 
-      for (int i = 0; i < op.SubOperators.Count; i++ ) {
+      for(int i = 0; i < op.SubOperators.Count; i++) {
         groupConstraint.SubOperatorIndex.Data = i;
-        if(groupConstraint.Check(data)==false) {
+        if(groupConstraint.Check(data) == false) {
           return false;
         }
       }
@@ -83,7 +85,7 @@ namespace HeuristicLab.Constraints {
     }
 
     #region persistence
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlNode subOperatorsNode = PersistenceManager.Persist("SubOperatorsGroupConstraint", groupConstraint, document, persistedObjects);
       node.AppendChild(subOperatorsNode);
@@ -91,7 +93,7 @@ namespace HeuristicLab.Constraints {
       return node;
     }
 
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       groupConstraint = (SubOperatorTypeConstraint)PersistenceManager.Restore(node.SelectSingleNode("SubOperatorsGroupConstraint"), restoredObjects);
     }
