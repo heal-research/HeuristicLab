@@ -34,6 +34,15 @@ namespace HeuristicLab.Random {
       get { return "Initializes the value of variable 'Value' to a random value normally distributed with 'Mu' and 'Sigma'."; }
     }
 
+    public double Mu {
+      get { return ((DoubleData)GetVariable("Mu").Value).Data; }
+      set { ((DoubleData)GetVariable("Mu").Value).Data = value; }
+    }
+    public double Sigma {
+      get { return ((DoubleData)GetVariable("Sigma").Value).Data; }
+      set { ((DoubleData)GetVariable("Sigma").Value).Data = value; }
+    }
+
     public NormalRandomizer() {
       AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Mu").Local = true;

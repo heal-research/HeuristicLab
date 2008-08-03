@@ -39,6 +39,15 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       }
     }
 
+    public double Mu {
+      get { return ((DoubleData)GetVariable("Mu").Value).Data; }
+      set { ((DoubleData)GetVariable("Mu").Value).Data = value; }
+    }
+    public double Sigma {
+      get { return ((DoubleData)GetVariable("Sigma").Value).Data; }
+      set { ((DoubleData)GetVariable("Sigma").Value).Data = value; }
+    }
+
     public NormalRandomAdder() {
       AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Mu").Local = true;

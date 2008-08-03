@@ -33,6 +33,15 @@ namespace HeuristicLab.Random {
       get { return "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max' (exclusive)"; }
     }
 
+    public double Max {
+      get { return ((DoubleData)GetVariable("Max").Value).Data; }
+      set { ((DoubleData)GetVariable("Max").Value).Data = value; }
+    }
+    public double Min {
+      get { return ((DoubleData)GetVariable("Min").Value).Data; }
+      set { ((DoubleData)GetVariable("Min").Value).Data = value; }
+    }
+
     public UniformRandomizer() {
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
