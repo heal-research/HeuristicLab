@@ -240,15 +240,6 @@ namespace HeuristicLab.StructureIdentification {
     #endregion
 
     #region tree information gathering
-    //internal int GetTreeSize(IFunctionTree tree) {
-    //  return 1 + tree.SubTrees.Sum(f => GetTreeSize(f));
-    //}
-
-    //internal int GetTreeHeight(IFunctionTree tree) {
-    //  if(tree.SubTrees.Count == 0) return 1;
-    //  return 1 + tree.SubTrees.Max(f => GetTreeHeight(f));
-    //}
-
     internal IFunctionTree GetRandomParentNode(IFunctionTree tree) {
       List<IFunctionTree> parentNodes = new List<IFunctionTree>();
 
@@ -410,6 +401,7 @@ namespace HeuristicLab.StructureIdentification {
         return allFunctions;
       } else {
         SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
+        analyzer.AllPossibleOperators = AllFunctions.Cast<IOperator>().ToArray<IOperator>();
         List<IFunction> result = new List<IFunction>();
         foreach(IFunction function in analyzer.GetAllowedOperators(f, index)) {
           result.Add(function);
