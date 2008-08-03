@@ -46,9 +46,6 @@ namespace HeuristicLab.StructureIdentification {
       if(op.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.MIN_TREE_SIZE, new IntData(-1)));
       }
-      if(op.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS) == null) {
-        op.AddVariable(new Variable(GPOperatorLibrary.ALLOWED_SUBOPERATORS, new ItemList()));
-      }
       if(op.GetVariable(GPOperatorLibrary.TICKETS) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.TICKETS, new DoubleData(1.0)));
       }
@@ -59,29 +56,6 @@ namespace HeuristicLab.StructureIdentification {
     private Dictionary<IOperator, int> minTreeHeight = new Dictionary<IOperator, int>();
     private Dictionary<IOperator, int> minTreeSize = new Dictionary<IOperator, int>();
     private SubOperatorsConstraintAnalyser constraintAnalyser = new SubOperatorsConstraintAnalyser();
-
-    private void RecalculateAllowedSuboperators() {
-      foreach(IOperator op in Operators) {
-        RecalculateAllowedSuboperators(op);
-      }
-    }
-
-    private void RecalculateAllowedSuboperators(IOperator op) {
-      constraintAnalyser.AllPossibleOperators = Operators;
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(op, out minArity, out maxArity);
-      var slotsList = (ItemList)op.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
-      slotsList.Clear();
-      for(int i = 0; i < maxArity; i++) {
-        ItemList slotList = new ItemList();
-        foreach(IOperator allowedOp in constraintAnalyser.GetAllowedOperators(op, i)) {
-          slotList.Add(allowedOp);
-        }
-        slotsList.Add(slotList);
-      }
-    }
-
 
     private void RecalculateMinimalTreeBounds() {
       minTreeHeight.Clear();
@@ -200,7 +174,6 @@ namespace HeuristicLab.StructureIdentification {
       base.RemoveOperator(op);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_SIZE);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_HEIGHT);
-      op.RemoveVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS);
       op.RemoveVariable(GPOperatorLibrary.TICKETS);
       OnOperatorRemoved(op);
     }
@@ -224,11 +197,9 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal void Prepare() {
-      RecalculateAllowedSuboperators();
       RecalculateMinimalTreeBounds();
     }
   }
-
 
   internal class OperatorEventArgs : EventArgs {
     public IOperator op;

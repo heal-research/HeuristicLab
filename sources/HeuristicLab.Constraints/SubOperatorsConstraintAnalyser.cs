@@ -36,15 +36,13 @@ namespace HeuristicLab.Constraints {
     }
 
     public IList<IOperator> GetAllowedOperators(IOperator op, int childIndex) {
-
       AndConstraint andConstraint = new AndConstraint();
       foreach(IConstraint constraint in op.Constraints) {
         andConstraint.Clauses.Add(constraint);
       }
-
+      
       GetAllowedOperatorsVisitor visitor = new GetAllowedOperatorsVisitor(allPossibleOperators, childIndex);
       andConstraint.Accept(visitor);
-
       return visitor.AllowedOperators;
     }
 

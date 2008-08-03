@@ -31,7 +31,6 @@ namespace HeuristicLab.StructureIdentification {
     // constants for variable names
     internal const string MIN_TREE_HEIGHT = "MinTreeHeight";
     internal const string MIN_TREE_SIZE = "MinTreeSize";
-    internal const string ALLOWED_SUBOPERATORS = "AllowedSuboperators";
     internal const string TICKETS = "Tickets";
 
     private GPOperatorGroup group;

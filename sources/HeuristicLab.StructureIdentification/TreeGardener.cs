@@ -409,9 +409,9 @@ namespace HeuristicLab.StructureIdentification {
       if(f == null) {
         return allFunctions;
       } else {
-        ItemList slotList = (ItemList)f.GetVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS).Value;
+        SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
         List<IFunction> result = new List<IFunction>();
-        foreach(IFunction function in (ItemList)slotList[index]) {
+        foreach(IFunction function in analyzer.GetAllowedOperators(f, index)) {
           result.Add(function);
         }
         return result;
