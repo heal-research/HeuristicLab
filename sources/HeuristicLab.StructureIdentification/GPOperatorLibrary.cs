@@ -29,7 +29,6 @@ using System.Xml;
 namespace HeuristicLab.StructureIdentification {
   public class GPOperatorLibrary : ItemBase, IOperatorLibrary, IEditable  {
     // constants for variable names
-    internal const string TYPE_ID = "TypeId";
     internal const string MIN_TREE_HEIGHT = "MinTreeHeight";
     internal const string MIN_TREE_SIZE = "MinTreeSize";
     internal const string ALLOWED_SUBOPERATORS = "AllowedSuboperators";

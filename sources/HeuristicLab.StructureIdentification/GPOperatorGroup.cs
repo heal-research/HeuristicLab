@@ -40,11 +40,6 @@ namespace HeuristicLab.StructureIdentification {
 
       var localVariableInfos = op.VariableInfos.Where(f => f.Local);
 
-      // add a new typeid if necessary
-      if(op.GetVariable(GPOperatorLibrary.TYPE_ID) == null) {
-        op.AddVariable(new Variable(GPOperatorLibrary.TYPE_ID, new StringData(Guid.NewGuid().ToString())));
-      }
-
       if(op.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.MIN_TREE_HEIGHT, new IntData(-1)));
       }
@@ -61,8 +56,8 @@ namespace HeuristicLab.StructureIdentification {
     }
 
 
-    private Dictionary<string, int> minTreeHeight = new Dictionary<string, int>();
-    private Dictionary<string, int> minTreeSize = new Dictionary<string, int>();
+    private Dictionary<IOperator, int> minTreeHeight = new Dictionary<IOperator, int>();
+    private Dictionary<IOperator, int> minTreeSize = new Dictionary<IOperator, int>();
     private SubOperatorsConstraintAnalyser constraintAnalyser = new SubOperatorsConstraintAnalyser();
 
     private void RecalculateAllowedSuboperators() {
@@ -100,10 +95,9 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     private int RecalculateMinimalTreeSize(IOperator op) {
-      string typeId = GetTypeId(op);
       // check for memoized value
-      if(minTreeSize.ContainsKey(typeId)) {
-        return minTreeSize[typeId];
+      if(minTreeSize.ContainsKey(op)) {
+        return minTreeSize[op];
       }
 
       int minArity;
@@ -111,7 +105,7 @@ namespace HeuristicLab.StructureIdentification {
       GetMinMaxArity(op, out minArity, out maxArity);
       // no suboperators possible => minimalTreeSize == 1 (the current node)
       if(minArity == 0 && maxArity == 0) {
-        minTreeSize[typeId] = 1;
+        minTreeSize[op] = 1;
         return 1;
       }
 
@@ -120,7 +114,7 @@ namespace HeuristicLab.StructureIdentification {
       int subTreeSizeSum = 0;
 
       // mark the currently processed operator to prevent infinite recursions and stack overflow
-      minTreeSize[typeId] = 9999;
+      minTreeSize[op] = 9999;
       for(int i = 0; i < minArity; i++) {
         // calculate the minTreeSize of all allowed sub-operators 
         // if the list of allowed suboperators is empty because the operator needs suboperators 
@@ -135,16 +129,15 @@ namespace HeuristicLab.StructureIdentification {
         subTreeSizeSum += minSubTreeSize;
       }
 
-      minTreeSize[typeId] = subTreeSizeSum + 1;
+      minTreeSize[op] = subTreeSizeSum + 1;
       return subTreeSizeSum + 1;
     }
 
 
     private int RecalculateMinimalTreeHeight(IOperator op) {
-      string typeId = GetTypeId(op);
       // check for memoized value
-      if(minTreeHeight.ContainsKey(typeId)) {
-        return minTreeHeight[typeId];
+      if(minTreeHeight.ContainsKey(op)) {
+        return minTreeHeight[op];
       }
 
       int minArity;
@@ -152,7 +145,7 @@ namespace HeuristicLab.StructureIdentification {
       GetMinMaxArity(op, out minArity, out maxArity);
       // no suboperators possible => minimalTreeHeight == 1
       if(minArity == 0 && maxArity == 0) {
-        minTreeHeight[typeId] = 1;
+        minTreeHeight[op] = 1;
         return 1;
       }
 
@@ -161,7 +154,7 @@ namespace HeuristicLab.StructureIdentification {
       int maxSubTreeHeight = 0;
 
       // mark the currently processed operator to prevent infinite recursions leading to stack overflow
-      minTreeHeight[typeId] = 9999;
+      minTreeHeight[op] = 9999;
       for(int i = 0; i < minArity; i++) {
         // calculate the minTreeHeight of all possible sub-operators.
         // use the smallest possible subTree as lower bound for the subTreeHeight.
@@ -181,7 +174,7 @@ namespace HeuristicLab.StructureIdentification {
         }
       }
 
-      minTreeHeight[typeId] = maxSubTreeHeight + 1;
+      minTreeHeight[op] = maxSubTreeHeight + 1;
       return maxSubTreeHeight + 1;
     }
 
@@ -199,17 +192,12 @@ namespace HeuristicLab.StructureIdentification {
       maxArity = 2;
     }
 
-    private string GetTypeId(IOperator op) {
-      return ((StringData)op.GetVariable(GPOperatorLibrary.TYPE_ID).Value).Data;
-    }
-
     public override void AddSubGroup(IOperatorGroup group) {
       throw new NotSupportedException();
     }
 
     public override void RemoveOperator(IOperator op) {
       base.RemoveOperator(op);
-      op.RemoveVariable(GPOperatorLibrary.TYPE_ID);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_SIZE);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_HEIGHT);
       op.RemoveVariable(GPOperatorLibrary.ALLOWED_SUBOPERATORS);

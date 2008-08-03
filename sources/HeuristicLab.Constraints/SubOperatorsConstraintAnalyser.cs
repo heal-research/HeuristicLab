@@ -90,13 +90,9 @@ namespace HeuristicLab.Constraints {
 
     private static bool InSet(IOperator op, ICollection<IOperator> set) {
       foreach(IOperator element in set) {
-        if(element==op ||
-          ((StringData)element.GetVariable("TypeId").Value).Data ==
-          ((StringData)op.GetVariable("TypeId").Value).Data) {
+        if(element == op)
           return true;
-        }
       }
-
       return false;
     }
     #endregion
@@ -131,7 +127,7 @@ namespace HeuristicLab.Constraints {
           allowedOperators = Intersect(allowedOperators, visitor.allowedOperators);
         }
       }
-      
+
       public override void Visit(OrConstraint constraint) {
         base.Visit(constraint);
 

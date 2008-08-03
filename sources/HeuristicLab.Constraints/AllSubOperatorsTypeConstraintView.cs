@@ -86,8 +86,7 @@ namespace HeuristicLab.Constraints {
     }
     #endregion
 
-    #region Drag Events   
-
+    #region Drag Events
     private void listView_DragDrop(object sender, DragEventArgs e) {
       if(e.Effect != DragDropEffects.None) {
         if(e.Data.GetDataPresent("IOperator")) {
@@ -104,7 +103,6 @@ namespace HeuristicLab.Constraints {
       }
     }
 
-
     private void listView_DragEnter(object sender, DragEventArgs e) {
       this.FindForm().BringToFront();
       this.Focus();
@@ -116,7 +114,6 @@ namespace HeuristicLab.Constraints {
         }
       }
     }
-
 
     private void listView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;

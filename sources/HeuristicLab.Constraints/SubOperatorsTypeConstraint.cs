@@ -54,7 +54,7 @@ namespace HeuristicLab.Constraints {
     public void AddOperator(IOperator op) {
       // check if already in the list of allowed functions
       foreach(IOperator existingOp in subOperators) {
-        if (IsOperatorTypeEqual(existingOp, op)) {
+        if(existingOp == op) {
           return;
         }
       }
@@ -65,26 +65,26 @@ namespace HeuristicLab.Constraints {
     public void RemoveOperator(IOperator op) {
       IOperator matchingOperator = null;
       foreach(IOperator existingOp in subOperators) {
-        if(IsOperatorTypeEqual(existingOp, op)) {
+        if(existingOp == op) {
           matchingOperator = existingOp;
           break;
         }
       }
 
-      if (matchingOperator != null) {
+      if(matchingOperator != null) {
         subOperators.Remove(matchingOperator);
       }
     }
 
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
-      if (data == null) return false;
+      if(data == null) return false;
 
       if(op.SubOperators.Count <= subOperatorIndex.Data) {
         return false;
       }
-      
-      return subOperators.Exists(delegate(IOperator curOp) { return IsOperatorTypeEqual(curOp, op.SubOperators[subOperatorIndex.Data]); });
+
+      return subOperators.Exists(delegate(IOperator curOp) { return curOp == op.SubOperators[subOperatorIndex.Data]; });
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
@@ -107,7 +107,7 @@ namespace HeuristicLab.Constraints {
 
 
     #region persistence
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlNode indexNode = PersistenceManager.Persist("SubOperatorIndex", subOperatorIndex, document, persistedObjects);
       node.AppendChild(indexNode);
@@ -120,7 +120,7 @@ namespace HeuristicLab.Constraints {
       return node;
     }
 
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       subOperatorIndex = (IntData)PersistenceManager.Restore(node.SelectSingleNode("SubOperatorIndex"), restoredObjects);
       subOperators = new List<IOperator>();
@@ -130,9 +130,5 @@ namespace HeuristicLab.Constraints {
     }
     #endregion persistence
 
-
-    private bool IsOperatorTypeEqual(IOperator f, IOperator g) {
-      return ((StringData)f.GetVariable("TypeId").Value).Data == ((StringData)g.GetVariable("TypeId").Value).Data;
-    }
   }
 }
