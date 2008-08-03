@@ -55,7 +55,6 @@ namespace HeuristicLab.StructureIdentification {
       this.mutationSplitContainer = new System.Windows.Forms.SplitContainer();
       this.mutationListView = new System.Windows.Forms.ListView();
       this.mutationVariableView = new HeuristicLab.Core.VariableView();
-      this.preprocessButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.operatorLibraryTabPage.SuspendLayout();
       this.initializationTabPage.SuspendLayout();
@@ -93,7 +92,6 @@ namespace HeuristicLab.StructureIdentification {
       // 
       // operatorLibraryTabPage
       // 
-      this.operatorLibraryTabPage.Controls.Add(this.preprocessButton);
       this.operatorLibraryTabPage.Controls.Add(this.operatorLibraryEditor);
       this.operatorLibraryTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorLibraryTabPage.Name = "operatorLibraryTabPage";
@@ -202,17 +200,6 @@ namespace HeuristicLab.StructureIdentification {
       this.mutationVariableView.TabIndex = 0;
       this.mutationVariableView.Variable = null;
       // 
-      // preprocessButton
-      // 
-      this.preprocessButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.preprocessButton.Location = new System.Drawing.Point(440, 509);
-      this.preprocessButton.Name = "preprocessButton";
-      this.preprocessButton.Size = new System.Drawing.Size(75, 23);
-      this.preprocessButton.TabIndex = 1;
-      this.preprocessButton.Text = "Prepare";
-      this.preprocessButton.UseVisualStyleBackColor = true;
-      this.preprocessButton.Click += new System.EventHandler(this.preprocessButton_Click);
-      // 
       // GPOperatorLibraryEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,6 +234,5 @@ namespace HeuristicLab.StructureIdentification {
     private HeuristicLab.Core.VariableView mutationVariableView;
     private System.Windows.Forms.ListView initListView;
     private System.Windows.Forms.ListView mutationListView;
-    private System.Windows.Forms.Button preprocessButton;
   }
 }

@@ -31,13 +31,16 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.StructureIdentification {
   public class GPOperatorGroup : OperatorGroup {
+    private Dictionary<IOperator, int> minTreeHeight = new Dictionary<IOperator, int>();
+    private Dictionary<IOperator, int> minTreeSize = new Dictionary<IOperator, int>();
+    private SubOperatorsConstraintAnalyser constraintAnalyser = new SubOperatorsConstraintAnalyser();
+
     public GPOperatorGroup()
       : base() {
     }
 
     public override void AddOperator(IOperator op) {
       base.AddOperator(op);
-
       var localVariableInfos = op.VariableInfos.Where(f => f.Local);
 
       if(op.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT) == null) {
@@ -49,13 +52,15 @@ namespace HeuristicLab.StructureIdentification {
       if(op.GetVariable(GPOperatorLibrary.TICKETS) == null) {
         op.AddVariable(new Variable(GPOperatorLibrary.TICKETS, new DoubleData(1.0)));
       }
+      foreach(IConstraint c in op.Constraints) {
+        if(c is SubOperatorTypeConstraint || c is AllSubOperatorsTypeConstraint) c.Changed += new EventHandler(UpdateTreeBounds);
+      }
       OnOperatorAdded(op);
     }
 
-
-    private Dictionary<IOperator, int> minTreeHeight = new Dictionary<IOperator, int>();
-    private Dictionary<IOperator, int> minTreeSize = new Dictionary<IOperator, int>();
-    private SubOperatorsConstraintAnalyser constraintAnalyser = new SubOperatorsConstraintAnalyser();
+    void UpdateTreeBounds(object sender, EventArgs e) {
+      RecalculateMinimalTreeBounds();
+    }
 
     private void RecalculateMinimalTreeBounds() {
       minTreeHeight.Clear();
@@ -106,7 +111,6 @@ namespace HeuristicLab.StructureIdentification {
       minTreeSize[op] = subTreeSizeSum + 1;
       return subTreeSizeSum + 1;
     }
-
 
     private int RecalculateMinimalTreeHeight(IOperator op) {
       // check for memoized value
@@ -175,6 +179,9 @@ namespace HeuristicLab.StructureIdentification {
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_SIZE);
       op.RemoveVariable(GPOperatorLibrary.MIN_TREE_HEIGHT);
       op.RemoveVariable(GPOperatorLibrary.TICKETS);
+      foreach(IConstraint c in op.Constraints) {
+        if(c is SubOperatorTypeConstraint || c is AllSubOperatorsTypeConstraint) c.Changed -= new EventHandler(UpdateTreeBounds);
+      }
       OnOperatorRemoved(op);
     }
 
@@ -194,10 +201,6 @@ namespace HeuristicLab.StructureIdentification {
       if(OperatorRemoved != null) {
         OperatorRemoved(this, new OperatorEventArgs(op));
       }
-    }
-
-    internal void Prepare() {
-      RecalculateMinimalTreeBounds();
     }
   }
 

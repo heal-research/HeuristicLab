@@ -150,9 +150,5 @@ namespace HeuristicLab.StructureIdentification {
         initVariableView.Enabled = false;
       }
     }
-
-    private void preprocessButton_Click(object sender, EventArgs e) {
-      ((GPOperatorLibrary)OperatorLibrary).Prepare();
-    }
   }
 }

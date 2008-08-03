@@ -82,9 +82,5 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     #endregion
-
-    internal void Prepare() {
-      GPOperatorGroup.Prepare();
-    }
   }
 }
