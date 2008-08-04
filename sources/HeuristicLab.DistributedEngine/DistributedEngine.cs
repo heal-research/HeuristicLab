@@ -317,8 +317,8 @@ namespace HeuristicLab.DistributedEngine {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute addressAttribute = document.CreateAttribute("ServerAddress");
       addressAttribute.Value = ServerAddress;
+      node.Attributes.Append(addressAttribute);
       if(suspendedEngines.Count > 0) {
-        node.Attributes.Append(addressAttribute);
         XmlNode suspendedEnginesNode = document.CreateElement("SuspendedEngines");
         foreach(KeyValuePair<ProcessingEngine, AtomicOperation> p in suspendedEngines) {
           XmlNode n = document.CreateElement("Entry");
