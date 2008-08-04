@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Constraints {
   public partial class AllSubOperatorsTypeConstraintView : ViewBase {
-    private SubOperatorTypeConstraint constraint;
+    private SubOperatorTypeConstraint constraint = new SubOperatorTypeConstraint();
 
     public SubOperatorTypeConstraint Constraint {
       get { return constraint; }
@@ -45,9 +45,8 @@ namespace HeuristicLab.Constraints {
     }
 
     public AllSubOperatorsTypeConstraintView(SubOperatorTypeConstraint constraint) {
-      InitializeComponent();
       this.constraint = constraint;
-      UpdateAllowedOperatorsList();
+      InitializeComponent();
     }
 
     private void UpdateAllowedOperatorsList() {

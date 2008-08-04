@@ -69,6 +69,9 @@ namespace HeuristicLab.Constraints {
       // 
       // allSubOperatorsTypeConstraintView
       // 
+      this.allSubOperatorsTypeConstraintView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.allSubOperatorsTypeConstraintView.Caption = "View";
       this.allSubOperatorsTypeConstraintView.Location = new System.Drawing.Point(0, 35);
       this.allSubOperatorsTypeConstraintView.Name = "allSubOperatorsTypeConstraintView";

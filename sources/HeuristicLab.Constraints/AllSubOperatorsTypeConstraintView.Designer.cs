@@ -46,19 +46,19 @@ namespace HeuristicLab.Constraints {
     private void InitializeComponent() {
       this.groupBox = new System.Windows.Forms.GroupBox();
       this.listView = new System.Windows.Forms.ListView();
-      this.panel = new System.Windows.Forms.Panel();
       this.removeButton = new System.Windows.Forms.Button();
       this.groupBox.SuspendLayout();
-      this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox
       // 
+      this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox.Controls.Add(this.listView);
-      this.groupBox.Dock = System.Windows.Forms.DockStyle.Top;
       this.groupBox.Location = new System.Drawing.Point(0, 0);
       this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(463, 285);
+      this.groupBox.Size = new System.Drawing.Size(463, 305);
       this.groupBox.TabIndex = 0;
       this.groupBox.TabStop = false;
       this.groupBox.Text = "Allowed sub-operators";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Constraints {
       this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.listView.Location = new System.Drawing.Point(3, 16);
       this.listView.Name = "listView";
-      this.listView.Size = new System.Drawing.Size(457, 266);
+      this.listView.Size = new System.Drawing.Size(457, 286);
       this.listView.TabIndex = 1;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.List;
@@ -79,18 +79,10 @@ namespace HeuristicLab.Constraints {
       this.listView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
       this.listView.DragOver += new System.Windows.Forms.DragEventHandler(this.listView_DragOver);
       // 
-      // panel
-      // 
-      this.panel.Controls.Add(this.removeButton);
-      this.panel.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel.Location = new System.Drawing.Point(0, 291);
-      this.panel.Name = "panel";
-      this.panel.Size = new System.Drawing.Size(463, 46);
-      this.panel.TabIndex = 1;
-      // 
       // removeButton
       // 
-      this.removeButton.Location = new System.Drawing.Point(3, 3);
+      this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.removeButton.Location = new System.Drawing.Point(3, 311);
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(75, 23);
       this.removeButton.TabIndex = 0;
@@ -102,12 +94,11 @@ namespace HeuristicLab.Constraints {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.panel);
+      this.Controls.Add(this.removeButton);
       this.Controls.Add(this.groupBox);
       this.Name = "AllSubOperatorsTypeConstraintView";
       this.Size = new System.Drawing.Size(463, 337);
       this.groupBox.ResumeLayout(false);
-      this.panel.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -115,7 +106,6 @@ namespace HeuristicLab.Constraints {
     #endregion
 
     private System.Windows.Forms.GroupBox groupBox;
-    private System.Windows.Forms.Panel panel;
     private System.Windows.Forms.Button removeButton;
     private System.Windows.Forms.ListView listView;
 
