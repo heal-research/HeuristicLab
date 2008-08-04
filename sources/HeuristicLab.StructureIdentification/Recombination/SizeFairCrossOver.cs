@@ -37,9 +37,9 @@ namespace HeuristicLab.StructureIdentification {
     public override string Description {
       get {
         return @"Takes two parent individuals P0 and P1 each. Selects a random node N0 of P0 and a random node N1 of P1.
-And replaces the branch with root N0 in P0 with N1 from P1 if the tree-size limits are not violated.
-When recombination with N0 and N1 would create a tree that is too large the operator randomly either goes
-up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configuration is found.";
+And replaces the branch with root0 N0 in P0 with N1 from P1 if the tree-size limits are not violated.
+When recombination with N0 and N1 would create a tree that is too large or invalid the operator randomly selects new N0 and N1 
+until a valid configuration is found.";
       }
     }
     public SizeFairCrossOver()
@@ -121,13 +121,16 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
           int tmpSize = tree0Size; tree0Size = tree1Size; tree1Size = tmpSize;
         }
 
-        // save the root because later on we change tree0 and tree1 while searching a valid tree configuration
-        IFunctionTree root = tree0;
+        // save the roots because later on we change tree0 and tree1 while searching a valid tree configuration
+        IFunctionTree root0 = tree0;
+        IFunctionTree root1 = tree1;
+        int root0Height = tree0Height;
+        int root1Height = tree1Height;
         int rootSize = tree0Size;
 
         // select a random suboperators of the two trees at a random level
-        int tree0Level = random.Next(tree0Height - 1); // since we checked before that the height of tree0 is > 1 this is OK
-        int tree1Level = random.Next(tree1Height);
+        int tree0Level = random.Next(root0Height - 1); // since we checked before that the height of tree0 is > 1 this is OK
+        int tree1Level = random.Next(root1Height);
         tree0 = gardener.GetRandomBranch(tree0, tree0Level);
         tree1 = gardener.GetRandomBranch(tree1, tree1Level);
 
@@ -151,31 +154,22 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
             possibleChildIndices.Add(i);
           }
         }
-
         while(possibleChildIndices.Count == 0) {
           // we couln't find a possible configuration given the current tree0 and tree1
           // possible reasons for this are: 
           //  - tree1 is not allowed as sub-tree of tree0
           //  - appending tree1 as child of tree0 would create a tree that exceedes the maxTreeHeight
           //  - replacing any child of tree0 with tree1 woulde create a tree that exceedes the maxTeeSize
-          // thus we have to either:
-          //  - go up in tree0 => the insert position allows larger trees
-          //  - go down in tree1 => the tree that is inserted becomes smaller
-          //  - however we have to get lucky to solve the 'allowed sub-trees' problem
-          if(tree1Height == 1 || (tree0Level > 0 && random.Next(2) == 0)) {
-            // go up in tree0 
-            tree0Level--;
-            tree0 = gardener.GetRandomBranch(root, tree0Level);
-          } else if(tree1.SubTrees.Count > 0) {
-            // go down in node2:
-            tree1 = tree1.SubTrees[random.Next(tree1.SubTrees.Count)];
-            tree1Size = tree1.Size;
-            tree1Height = tree1.Height;
-          } else {
-            // could neither go up or down ... don't know what to do ... give up
-            throw new InvalidProgramException();
-          }
+          // thus we just try until we find a valid configuration
 
+          tree0Level = random.Next(root0Height - 1);
+          tree1Level = random.Next(root1Height);
+          tree0 = gardener.GetRandomBranch(root0, tree0Level);
+          tree1 = gardener.GetRandomBranch(root1, tree1Level);
+
+          // recalculate the size and height of tree1 (the one that we want to insert) because we need to check constraints later on
+          tree1Size = tree1.Size;
+          tree1Height = tree1.Height;
           // recalculate the list of possible indices 
           possibleChildIndices.Clear();
           for(int i = 0; i < tree0.SubTrees.Count; i++) {
@@ -190,12 +184,6 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
             }
           }
         }
-
-        // no possible configuration found this indicates that there is a bigger problem
-        if(possibleChildIndices.Count == 0) {
-          throw new InvalidProgramException();
-        }
-
         // replace the existing sub-tree at a random index in tree0 with tree1
         int selectedIndex = possibleChildIndices[random.Next(possibleChildIndices.Count)];
         tree0.RemoveSubTree(selectedIndex);
@@ -203,7 +191,7 @@ up in P0 (parent of N0) or down in P1 (random child of N1) until a valid configu
 
         // no new operators where needed
         newBranches = new List<IFunctionTree>();
-        return root;
+        return root0;
       }
     }
 
