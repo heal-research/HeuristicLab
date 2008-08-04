@@ -44,12 +44,15 @@ namespace HeuristicLab.Grid {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.label1 = new System.Windows.Forms.Label();
       this.stopButton = new System.Windows.Forms.Button();
       this.startButton = new System.Windows.Forms.Button();
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.statusLabel = new System.Windows.Forms.Label();
       this.statusTextBox = new System.Windows.Forms.TextBox();
+      this.statusStrip = new System.Windows.Forms.StatusStrip();
+      this.timer = new System.Windows.Forms.Timer(this.components);
       this.SuspendLayout();
       // 
       // label1
@@ -65,7 +68,7 @@ namespace HeuristicLab.Grid {
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.stopButton.Enabled = false;
-      this.stopButton.Location = new System.Drawing.Point(99, 59);
+      this.stopButton.Location = new System.Drawing.Point(96, 61);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(75, 23);
       this.stopButton.TabIndex = 6;
@@ -76,7 +79,7 @@ namespace HeuristicLab.Grid {
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Location = new System.Drawing.Point(15, 59);
+      this.startButton.Location = new System.Drawing.Point(12, 61);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(75, 23);
       this.startButton.TabIndex = 5;
@@ -108,11 +111,26 @@ namespace HeuristicLab.Grid {
       this.statusTextBox.Size = new System.Drawing.Size(222, 20);
       this.statusTextBox.TabIndex = 9;
       // 
+      // statusStrip
+      // 
+      this.statusStrip.Location = new System.Drawing.Point(0, 87);
+      this.statusStrip.Name = "statusStrip";
+      this.statusStrip.Size = new System.Drawing.Size(330, 22);
+      this.statusStrip.TabIndex = 10;
+      this.statusStrip.Text = "statusStrip1";
+      // 
+      // timer
+      // 
+      this.timer.Enabled = true;
+      this.timer.Interval = 1000;
+      this.timer.Tick += new System.EventHandler(this.timer_Tick);
+      // 
       // ClientForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(330, 94);
+      this.ClientSize = new System.Drawing.Size(330, 109);
+      this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.statusTextBox);
       this.Controls.Add(this.statusLabel);
       this.Controls.Add(this.label1);
@@ -134,5 +152,7 @@ namespace HeuristicLab.Grid {
     private System.Windows.Forms.TextBox addressTextBox;
     private System.Windows.Forms.Label statusLabel;
     private System.Windows.Forms.TextBox statusTextBox;
+    private System.Windows.Forms.StatusStrip statusStrip;
+    private System.Windows.Forms.Timer timer;
   }
 }

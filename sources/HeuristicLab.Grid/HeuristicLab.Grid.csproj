@@ -59,7 +59,9 @@
     <Compile Include="ClientForm.designer.cs">
       <DependentUpon>ClientForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EngineRunner.cs" />
     <Compile Include="EngineStore.cs" />
+    <Compile Include="GridClient.cs" />
     <Compile Include="GridClientApplication.cs" />
     <Compile Include="GridServer.cs" />
     <Compile Include="GridServerApplication.cs" />
