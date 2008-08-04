@@ -36,7 +36,6 @@ using System.Net;
 using System.Diagnostics;
 
 namespace HeuristicLab.Grid {
-  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public partial class ClientForm : Form {
     private ChannelFactory<IEngineStore> factory;
     private System.Timers.Timer fetchOperationTimer;
