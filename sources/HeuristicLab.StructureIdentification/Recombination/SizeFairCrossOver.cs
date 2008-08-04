@@ -33,7 +33,7 @@ using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class SizeFairCrossOver : OperatorBase {
-
+    private const int MAX_RECOMBINATION_TRIES = 20;
     public override string Description {
       get {
         return @"Takes two parent individuals P0 and P1 each. Selects a random node N0 of P0 and a random node N1 of P1.
@@ -94,9 +94,8 @@ until a valid configuration is found.";
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(newTreeSize)));
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
 
-      // check if the new tree is valid and if the size of is still in the allowed bounds
-      Debug.Assert(gardener.IsValidTree(newTree) &&
-        newTreeHeight <= maxTreeHeight && newTreeSize <= maxTreeSize);
+      // check if the new tree is valid and if the height of is still in the allowed bounds (we are not so strict for the max-size)
+      Debug.Assert(gardener.IsValidTree(newTree) && newTreeHeight <= maxTreeHeight);
       return gardener.CreateInitializationOperation(newBranches, child);
     }
 
@@ -113,6 +112,8 @@ until a valid configuration is found.";
       if(tree0Size == 1 && tree1Size == 1) {
         return CombineTerminals(gardener, tree0, tree1, random, maxTreeHeight, out newBranches);
       } else {
+        newBranches = new List<IFunctionTree>();
+
         // we are going to insert tree1 into tree0 at a random place so we have to make sure that tree0 is not a terminal
         // in case both trees are higher than 1 we swap the trees with probability 50%
         if(tree0Height == 1 || (tree1Height > 1 && random.Next(2) == 0)) {
@@ -154,7 +155,12 @@ until a valid configuration is found.";
             possibleChildIndices.Add(i);
           }
         }
+        int tries = 0;
         while(possibleChildIndices.Count == 0) {
+          if(tries++ > MAX_RECOMBINATION_TRIES) {
+            if(random.Next() > 0.5) return root1;
+            else return root0;
+          }
           // we couln't find a possible configuration given the current tree0 and tree1
           // possible reasons for this are: 
           //  - tree1 is not allowed as sub-tree of tree0
@@ -188,9 +194,6 @@ until a valid configuration is found.";
         int selectedIndex = possibleChildIndices[random.Next(possibleChildIndices.Count)];
         tree0.RemoveSubTree(selectedIndex);
         tree0.InsertSubTree(selectedIndex, tree1);
-
-        // no new operators where needed
-        newBranches = new List<IFunctionTree>();
         return root0;
       }
     }
