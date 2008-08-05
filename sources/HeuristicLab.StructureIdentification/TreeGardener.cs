@@ -281,6 +281,12 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal bool IsValidTree(IFunctionTree tree) {
+      SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
+      analyzer.AllPossibleOperators = AllFunctions.Cast<IOperator>().ToArray<IOperator>();
+      for(int i = 0; i < tree.SubTrees.Count; i++) {
+        if(!analyzer.GetAllowedOperators(tree.Function, i).Contains(tree.SubTrees[i].Function)) return false;
+      }
+
       foreach(IConstraint constraint in tree.Function.Constraints) {
         if(constraint is NumberOfSubOperatorsConstraint) {
           int max = ((NumberOfSubOperatorsConstraint)constraint).MaxOperators.Data;
