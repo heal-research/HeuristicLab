@@ -103,10 +103,9 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal IFunctionTree PTC2(IRandom random, IFunction rootF, int size, int maxDepth) {
-      if(size <= 1 || maxDepth <= 1) return RandomSelect(terminals).GetTreeNode();
-      List<object[]> list = new List<object[]>();
       IFunctionTree root = rootF.GetTreeNode();
-
+      if(size <= 1 || maxDepth <= 1) return root;
+      List<object[]> list = new List<object[]>();
       int currentSize = 1;
       int totalListMinSize = 0;
       int minArity;
@@ -166,7 +165,8 @@ namespace HeuristicLab.StructureIdentification {
         int a = (int)nextExtension[1];
         int d = (int)nextExtension[2];
         parent.RemoveSubTree(a);
-        parent.InsertSubTree(a, CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1)); // append a tree with minimal possible height
+        parent.InsertSubTree(a, 
+          CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1)); // append a tree with minimal possible height
       }
       return root;
     }
@@ -199,7 +199,7 @@ namespace HeuristicLab.StructureIdentification {
 
       // build the tree 
       IFunctionTree root;
-      root = PTC2(random, selectedFunction, maxTreeSize - 1, maxTreeHeight - 1);
+      root = PTC2(random, selectedFunction, maxTreeSize, maxTreeHeight);
       return root;
     }
 
