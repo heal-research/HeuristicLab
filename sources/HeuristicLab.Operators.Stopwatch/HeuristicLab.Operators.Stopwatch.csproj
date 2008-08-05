@@ -47,14 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StopStopwatch.cs" />
     <Compile Include="StartStopwatch.cs" />
     <Compile Include="HeuristicLabOperatorsStopwatchPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stopwatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
@@ -78,4 +79,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>
