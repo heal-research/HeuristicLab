@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Server",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CEDMA.Core", "HeuristicLab.CEDMA.Core\HeuristicLab.CEDMA.Core.csproj", "{C27DDF6C-84DF-45EF-B82F-57A28DD51166}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Stopwatch", "HeuristicLab.Operators.Stopwatch\HeuristicLab.Operators.Stopwatch.csproj", "{39DEF061-8261-43DB-8B3B-C7555251FF77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -241,6 +243,10 @@ Global
 		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C27DDF6C-84DF-45EF-B82F-57A28DD51166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39DEF061-8261-43DB-8B3B-C7555251FF77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39DEF061-8261-43DB-8B3B-C7555251FF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39DEF061-8261-43DB-8B3B-C7555251FF77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39DEF061-8261-43DB-8B3B-C7555251FF77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

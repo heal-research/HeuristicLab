@@ -27,6 +27,7 @@ copy "..\..\..\HeuristicLab.Grid\bin\%1\HeuristicLab.Grid.dll" .\plugins
 copy "..\..\..\HeuristicLab.Logging\bin\%1\HeuristicLab.Logging.dll" .\plugins
 copy "..\..\..\HeuristicLab.Operators\bin\%1\HeuristicLab.Operators.dll" .\plugins
 copy "..\..\..\HeuristicLab.Operators.Programmable\bin\%1\HeuristicLab.Operators.Programmable.dll" .\plugins
+copy "..\..\..\HeuristicLab.Operators.Stopwatch\bin\%1\HeuristicLab.Operators.Stopwatch.dll" .\plugins
 copy "..\..\..\HeuristicLab.OptimizationFrontend\bin\%1\HeuristicLab.OptimizationFrontend.dll" .\plugins
 copy "..\..\..\HeuristicLab.Permutation\bin\%1\HeuristicLab.Permutation.dll" .\plugins
 copy "..\..\..\HeuristicLab.Random\bin\%1\HeuristicLab.Random.dll" .\plugins
