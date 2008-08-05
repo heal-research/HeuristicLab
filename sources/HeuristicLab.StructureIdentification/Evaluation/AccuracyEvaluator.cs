@@ -48,7 +48,7 @@ namespace HeuristicLab.StructureIdentification {
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       int nSamples = trainingEnd-trainingStart;
-      double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, false).Data;
+      double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, true).Data;
       double TP = 0;
       double TN = 0;
       double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
