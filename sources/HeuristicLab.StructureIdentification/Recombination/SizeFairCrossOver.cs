@@ -239,7 +239,7 @@ until a valid configuration is found.";
         // when neither f nor g fit into the slot => create a new random tree
         if(allowedTrees.Count() == 0) {
           var allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, slot);
-          selectedFunctionTrees[slot] = gardener.CreateRandomTree(allowedFunctions, 1, 1, true);
+          selectedFunctionTrees[slot] = gardener.CreateRandomTree(allowedFunctions, 1, 1);
           newBranches.AddRange(gardener.GetAllSubTrees(selectedFunctionTrees[slot]));
         } else {
           // select randomly which tree to insert into this slot

@@ -179,21 +179,6 @@ namespace HeuristicLab.StructureIdentification {
     /// <param name="maxTreeHeight">Maximal height of the tree.</param>
     /// <returns>New random unbalanced tree</returns>
     internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight) {
-      // default is non-balanced trees
-      return CreateRandomTree(allowedFunctions, maxTreeSize, maxTreeHeight, false);
-    }
-
-    /// <summary>
-    /// Selects a random function from allowedFunctions and creates a (un)balanced random tree with maximal size and height.
-    /// Max-size and max-height are not accepted as hard constraints, if all functions in the set of allowed functions would
-    /// lead to a bigger tree then the limits are automatically extended to guarantee that we can build a tree.
-    /// </summary>
-    /// <param name="allowedFunctions">Set of allowed functions.</param>
-    /// <param name="maxTreeSize">Maximal size of the tree (number of nodes).</param>
-    /// <param name="maxTreeHeight">Maximal height of the tree.</param>
-    /// <param name="balanceTrees">Flag determining whether the tree should be balanced or not.</param>
-    /// <returns>New random tree</returns>
-    internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
       // get the minimal needed height based on allowed functions and extend the max-height if necessary
       int minTreeHeight = allowedFunctions.Select(f => GetMinimalTreeHeight(f)).Min();
       if(minTreeHeight > maxTreeHeight)
@@ -214,11 +199,7 @@ namespace HeuristicLab.StructureIdentification {
 
       // build the tree 
       IFunctionTree root;
-      if(balanceTrees) {
-        root = PTC2(random, selectedFunction, maxTreeSize -1, maxTreeHeight - 1);
-      } else {
-        root = PTC2(random, selectedFunction, maxTreeSize - 1, maxTreeHeight - 1);
-      }
+      root = PTC2(random, selectedFunction, maxTreeSize - 1, maxTreeHeight - 1);
       return root;
     }
 
@@ -482,7 +463,7 @@ namespace HeuristicLab.StructureIdentification {
         IFunctionTree parentTree = parent.GetTreeNode();
         for(int i = 0; i < actualArity; i++) {
           // first try to find a function that fits into the maxHeight limit
-          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight && 
+          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
             !IsTerminal(f)).ToArray();
           // no possible function found => extend function set to terminals
           if(possibleFunctions.Length == 0) {
