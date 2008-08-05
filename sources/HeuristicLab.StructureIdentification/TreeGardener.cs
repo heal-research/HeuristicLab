@@ -99,9 +99,13 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal IFunctionTree PTC2(IRandom random, int size, int maxDepth) {
+      return PTC2(random, GetRandomRoot(size, maxDepth), size, maxDepth);
+    }
+
+    internal IFunctionTree PTC2(IRandom random, IFunction rootF, int size, int maxDepth) {
       if(size <= 1 || maxDepth <= 1) return RandomSelect(terminals).GetTreeNode();
       List<object[]> list = new List<object[]>();
-      IFunctionTree root = GetRandomRoot(size, maxDepth).GetTreeNode();
+      IFunctionTree root = rootF.GetTreeNode();
 
       int currentSize = 1;
       int totalListMinSize = 0;
@@ -211,9 +215,9 @@ namespace HeuristicLab.StructureIdentification {
       // build the tree 
       IFunctionTree root;
       if(balanceTrees) {
-        root = MakeBalancedTree(selectedFunction, maxTreeHeight - 1);
+        root = PTC2(random, selectedFunction, maxTreeSize -1, maxTreeHeight - 1);
       } else {
-        root = MakeUnbalancedTree(selectedFunction, maxTreeHeight - 1);
+        root = PTC2(random, selectedFunction, maxTreeSize - 1, maxTreeHeight - 1);
       }
       return root;
     }
