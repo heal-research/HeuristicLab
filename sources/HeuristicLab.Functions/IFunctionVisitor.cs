@@ -36,6 +36,7 @@ namespace HeuristicLab.Functions {
     void Visit(Division division);
     void Visit(Equal equal);
     void Visit(Exponential exponential);
+    void Visit(GreaterThan greaterThan);
     void Visit(IfThenElse ifThenElse);
     void Visit(LessThan lessThan);
     void Visit(Logarithm logarithm);
