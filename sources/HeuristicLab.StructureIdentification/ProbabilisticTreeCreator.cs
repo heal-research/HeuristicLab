@@ -26,6 +26,7 @@ using HeuristicLab.Operators;
 using System;
 using HeuristicLab.Random;
 using HeuristicLab.Functions;
+using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
   public class ProbabilisticTreeCreator : OperatorBase {
@@ -64,11 +65,7 @@ namespace HeuristicLab.StructureIdentification {
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(actualTreeSize)));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(actualTreeHeight)));
 
-      if(!gardener.IsValidTree(root)) { throw new InvalidProgramException(); }
-
-      if(actualTreeHeight > maxTreeHeight) {
-        throw new InvalidProgramException();
-      }
+      Debug.Assert(gardener.IsValidTree(root) && actualTreeHeight<=maxTreeHeight);
 
       return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(root), scope);
     }

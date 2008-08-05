@@ -95,7 +95,7 @@ until a valid configuration is found.";
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
 
       // check if the new tree is valid and if the height of is still in the allowed bounds (we are not so strict for the max-size)
-      Debug.Assert(gardener.IsValidTree(newTree) && newTreeHeight <= maxTreeHeight);
+      Debug.Assert(gardener.IsValidTree(newTree) && newTreeHeight <= maxTreeHeight && newTreeSize <= maxTreeSize);
       return gardener.CreateInitializationOperation(newBranches, child);
     }
 

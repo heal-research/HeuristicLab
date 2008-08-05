@@ -99,10 +99,12 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal IFunctionTree PTC2(IRandom random, int size, int maxDepth) {
-      if(size == 1) return RandomSelect(terminals).GetTreeNode();
+      if(size <= 1 || maxDepth<=1) return RandomSelect(terminals).GetTreeNode();
       List<object[]> list = new List<object[]>();
       IFunctionTree root = GetRandomRoot(size, maxDepth).GetTreeNode();
+
       int currentSize = 1;
+      int totalListMinSize = 0;
       int minArity;
       int maxArity;
       GetMinMaxArity(root.Function, out minArity, out maxArity);
@@ -110,13 +112,14 @@ namespace HeuristicLab.StructureIdentification {
         maxArity = size;
       }
       int actualArity = random.Next(minArity, maxArity + 1);
-      for(int i=0;i<actualArity;i++) {
+      totalListMinSize += GetMinimalTreeSize(root.Function) - 1;
+      for(int i = 0; i < actualArity; i++) {
         // insert a dummy sub-tree and add the pending extension to the list
         root.AddSubTree(null);
-        list.Add(new object[] {root, i, 2});
+        list.Add(new object[] { root, i, 2 });
       }
 
-      while(list.Count > 0 && list.Count + currentSize < size) {
+      while(list.Count > 0 && totalListMinSize + currentSize < size) {
         int randomIndex = random.Next(list.Count);
         object[] nextExtension = list[randomIndex];
         list.RemoveAt(randomIndex);
@@ -125,13 +128,18 @@ namespace HeuristicLab.StructureIdentification {
         int d = (int)nextExtension[2];
         if(d == maxDepth) {
           parent.RemoveSubTree(a);
-          parent.InsertSubTree(a, RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(f => IsTerminal(f)).ToArray()).GetTreeNode());
+          IFunctionTree branch = CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1);
+          parent.InsertSubTree(a, branch); // insert a smallest possible tree
+          currentSize += branch.Size;
+          totalListMinSize-=branch.Size;
         } else {
-          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where( 
-            f => !IsTerminal(f) && GetMinimalTreeHeight(f) + (d-1) <= maxDepth).ToArray());
+          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(
+            f => !IsTerminal(f) && GetMinimalTreeHeight(f) + (d - 1) <= maxDepth).ToArray());
           IFunctionTree newTree = selectedFunction.GetTreeNode();
           parent.RemoveSubTree(a);
           parent.InsertSubTree(a, newTree);
+          currentSize++;
+          totalListMinSize--;
 
           GetMinMaxArity(selectedFunction, out minArity, out maxArity);
           if(maxArity >= size) {
@@ -143,8 +151,8 @@ namespace HeuristicLab.StructureIdentification {
             newTree.AddSubTree(null);
             list.Add(new object[] { newTree, i, d + 1 });
           }
+          totalListMinSize += GetMinimalTreeSize(newTree.Function) - 1;
         }
-        currentSize++;
       }
       while(list.Count > 0) {
         int randomIndex = random.Next(list.Count);
@@ -183,11 +191,11 @@ namespace HeuristicLab.StructureIdentification {
     /// <returns>New random tree</returns>
     internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight, bool balanceTrees) {
       // get the minimal needed height based on allowed functions and extend the max-height if necessary
-      int minTreeHeight = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data).Min();
+      int minTreeHeight = allowedFunctions.Select(f => GetMinimalTreeSize(f)).Min();
       if(minTreeHeight > maxTreeHeight)
         maxTreeHeight = minTreeHeight;
       // get the minimal needed size based on allowed functions and extend the max-size if necessary
-      int minTreeSize = allowedFunctions.Select(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data).Min();
+      int minTreeSize = allowedFunctions.Select(f => GetMinimalTreeSize(f)).Min();
       if(minTreeSize > maxTreeSize)
         maxTreeSize = minTreeSize;
 
@@ -196,8 +204,8 @@ namespace HeuristicLab.StructureIdentification {
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
 
       // filter the set of allowed functions and select only from those that fit into the given maximal size and height limits
-      IFunction[] possibleFunctions = allowedFunctions.Where(f => ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data <= treeHeight &&
-        ((IntData)f.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data <= treeSize).ToArray();
+      IFunction[] possibleFunctions = allowedFunctions.Where(f => GetMinimalTreeHeight(f) <= treeHeight &&
+        GetMinimalTreeSize(f) <= treeSize).ToArray();
       IFunction selectedFunction = RandomSelect(possibleFunctions);
 
       // build the tree 
@@ -518,8 +526,8 @@ namespace HeuristicLab.StructureIdentification {
 
       List<IFunctionTree> branches = new List<IFunctionTree>();
       foreach(IFunctionTree subTree in tree.SubTrees) {
-        if(subTree.Height>=level-1)
-        branches.AddRange(GetBranchesAtLevel(subTree, level - 1));
+        if(subTree.Height >= level - 1)
+          branches.AddRange(GetBranchesAtLevel(subTree, level - 1));
       }
       return branches;
     }
