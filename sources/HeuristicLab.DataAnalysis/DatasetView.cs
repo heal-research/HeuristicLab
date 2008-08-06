@@ -43,7 +43,7 @@ namespace HeuristicLab.DataAnalysis {
         contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action,null , delegate(object source, EventArgs args) 
           { 
             manipulator.Execute(Dataset);
-            UpdateControls();
+            Refresh();
           }));
       }
       
