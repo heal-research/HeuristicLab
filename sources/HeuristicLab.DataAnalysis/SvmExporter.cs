@@ -109,7 +109,7 @@ namespace HeuristicLab.DataAnalysis {
       this.Controls.Add(this.helpLabel);
       this.Controls.Add(this.dataGridView);
       this.Name = "SvmExporter";
-      this.Text = "Execute to libSVM";
+      this.Text = "Export to libSVM";
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
