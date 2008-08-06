@@ -203,8 +203,7 @@ namespace HeuristicLab.Functions {
             Debug.Assert(condition == 0.0 || condition == 1.0);
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(condition == 0.0) return x;
-            else return y;
+            return condition * y - (condition - 1) * x;
           }
         case EvaluatorSymbolTable.LT: {
             double x = EvaluateBakedCode();
@@ -215,17 +214,16 @@ namespace HeuristicLab.Functions {
         case EvaluatorSymbolTable.NOT: { // only defined for inputs 0 or 1
             double result = EvaluateBakedCode();
             Debug.Assert(result == 0.0 || result == 1.0);
-            if(result == 0.0) return 1.0;
-            else return 0.0;
+            return Math.Abs(result - 1.0);
           }
         case EvaluatorSymbolTable.OR: { // only defined for inputs 0 or 1
             double result = 0.0; // default is false
             for(int i = 0; i < currInstr.arity; i++) {
               double x = EvaluateBakedCode();
               Debug.Assert(x == 0.0 || x == 1.0);
-              if(x == 1.0) result = 1.0;
+              result += x;
             }
-            return result;
+            return Math.Sign(result);
           }
         case EvaluatorSymbolTable.XOR: { // only defined for inputs 0 or 1
             double x = EvaluateBakedCode();
