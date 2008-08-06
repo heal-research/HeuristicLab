@@ -49,6 +49,7 @@ namespace HeuristicLab.DataAnalysis {
       for(int i = 0; i < dataset.Rows; i++) {
         for(int j = 0; j < dataset.Columns; j++) {
           dataGridView.Rows[i].Cells[j].Value = dataset.GetValue(i, j);
+          dataGridView.Rows[i].HeaderCell.Value = i.ToString();
         }
       }
       for(int i = 0; i < dataset.Columns; i++) {
@@ -63,6 +64,7 @@ namespace HeuristicLab.DataAnalysis {
     #endregion
 
     private void InitializeComponent() {
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
       this.dataGridView = new System.Windows.Forms.DataGridView();
       this.helpLabel = new System.Windows.Forms.Label();
       this.nextButton = new System.Windows.Forms.Button();
@@ -73,12 +75,22 @@ namespace HeuristicLab.DataAnalysis {
       // 
       this.dataGridView.AllowUserToAddRows = false;
       this.dataGridView.AllowUserToDeleteRows = false;
-      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.Location = new System.Drawing.Point(12, 25);
       this.dataGridView.Name = "dataGridView";
       this.dataGridView.ReadOnly = true;
+      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+      dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+      this.dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+      this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
       this.dataGridView.Size = new System.Drawing.Size(568, 200);
       this.dataGridView.TabIndex = 0;
       this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
@@ -94,6 +106,7 @@ namespace HeuristicLab.DataAnalysis {
       // 
       // nextButton
       // 
+      this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.nextButton.Location = new System.Drawing.Point(505, 231);
       this.nextButton.Name = "nextButton";
       this.nextButton.Size = new System.Drawing.Size(75, 23);
