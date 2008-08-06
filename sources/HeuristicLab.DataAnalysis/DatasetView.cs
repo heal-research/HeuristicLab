@@ -76,6 +76,7 @@ namespace HeuristicLab.DataAnalysis {
         for (int i = 0; i < rows; i++) {
           for (int j = 0; j < columns; j++) {
             dataGridView.Rows[i].Cells[j].Value = Dataset.GetValue(i, j);
+            dataGridView.Rows[i].HeaderCell.Value = i.ToString();
           }
         }
         for (int i = 0; i < columns; i++) {

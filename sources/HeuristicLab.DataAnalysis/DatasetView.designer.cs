@@ -45,18 +45,19 @@ namespace HeuristicLab.DataAnalysis {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
       this.rowsTextBox = new System.Windows.Forms.TextBox();
       this.columnsTextBox = new System.Windows.Forms.TextBox();
       this.dataGridView = new System.Windows.Forms.DataGridView();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.scaleValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.scaleValuesmanuallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.showScalingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.originalValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.rowsLabel = new System.Windows.Forms.Label();
       this.columnsLabel = new System.Windows.Forms.Label();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
-      this.showScalingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.scaleValuesmanuallyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
       this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
@@ -88,6 +89,15 @@ namespace HeuristicLab.DataAnalysis {
       this.dataGridView.ContextMenuStrip = this.contextMenuStrip;
       this.dataGridView.Location = new System.Drawing.Point(3, 55);
       this.dataGridView.Name = "dataGridView";
+      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+      dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+      this.dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+      this.dataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
       this.dataGridView.Size = new System.Drawing.Size(554, 485);
       this.dataGridView.TabIndex = 3;
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
@@ -100,7 +110,7 @@ namespace HeuristicLab.DataAnalysis {
             this.showScalingToolStripMenuItem,
             this.originalValuesToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(198, 114);
+      this.contextMenuStrip.Size = new System.Drawing.Size(198, 92);
       // 
       // scaleValuesToolStripMenuItem
       // 
@@ -108,6 +118,20 @@ namespace HeuristicLab.DataAnalysis {
       this.scaleValuesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
       this.scaleValuesToolStripMenuItem.Text = "Scale values [0..1]";
       this.scaleValuesToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesToolStripMenuItem_Click);
+      // 
+      // scaleValuesmanuallyToolStripMenuItem
+      // 
+      this.scaleValuesmanuallyToolStripMenuItem.Name = "scaleValuesmanuallyToolStripMenuItem";
+      this.scaleValuesmanuallyToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+      this.scaleValuesmanuallyToolStripMenuItem.Text = "Scale values (manually)";
+      this.scaleValuesmanuallyToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesmanuallyToolStripMenuItem_Click);
+      // 
+      // showScalingToolStripMenuItem
+      // 
+      this.showScalingToolStripMenuItem.Name = "showScalingToolStripMenuItem";
+      this.showScalingToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+      this.showScalingToolStripMenuItem.Text = "Show scaling...";
+      this.showScalingToolStripMenuItem.Click += new System.EventHandler(this.showScalingToolStripMenuItem_Click);
       // 
       // originalValuesToolStripMenuItem
       // 
@@ -150,20 +174,6 @@ namespace HeuristicLab.DataAnalysis {
       this.nameTextBox.ReadOnly = true;
       this.nameTextBox.Size = new System.Drawing.Size(219, 20);
       this.nameTextBox.TabIndex = 7;
-      // 
-      // showScalingToolStripMenuItem
-      // 
-      this.showScalingToolStripMenuItem.Name = "showScalingToolStripMenuItem";
-      this.showScalingToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-      this.showScalingToolStripMenuItem.Text = "Show scaling...";
-      this.showScalingToolStripMenuItem.Click += new System.EventHandler(this.showScalingToolStripMenuItem_Click);
-      // 
-      // scaleValuesmanuallyToolStripMenuItem
-      // 
-      this.scaleValuesmanuallyToolStripMenuItem.Name = "scaleValuesmanuallyToolStripMenuItem";
-      this.scaleValuesmanuallyToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-      this.scaleValuesmanuallyToolStripMenuItem.Text = "Scale values (manually)";
-      this.scaleValuesmanuallyToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesmanuallyToolStripMenuItem_Click);
       // 
       // DatasetView
       // 
