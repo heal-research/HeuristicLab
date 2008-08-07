@@ -34,7 +34,7 @@ namespace HeuristicLab.Operators.Metaprogramming {
 
     public DoubleRangeVariableInjector()
       : base() {
-      AddVariableInfo(new VariableInfo("VariableInjector", "The operator graph that should hold the generated variable injector", typeof(IOperatorGraph), VariableKind.New));
+      AddVariableInfo(new VariableInfo("VariableInjector", "The combined operator that should hold the generated variable injector", typeof(CombinedOperator), VariableKind.New));
       AddVariableInfo(new VariableInfo("VariableName", "Name of the variable that should be injected", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Min", "Minimal value of the injected variable", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Max", "Maximal value of the injected variable", typeof(DoubleData), VariableKind.In));
@@ -52,14 +52,14 @@ namespace HeuristicLab.Operators.Metaprogramming {
         double value = min+i*stepSize;
         Scope subScope = new Scope(variableName + "<-" + value);
 
-        OperatorGraph opGraph = new OperatorGraph();
+        CombinedOperator combOp = new CombinedOperator();
         VariableInjector varInjector = new VariableInjector();
         varInjector.AddVariable(new Variable(variableName, new DoubleData(value)));
 
-        opGraph.AddOperator(varInjector);
-        opGraph.InitialOperator = varInjector;
+        combOp.OperatorGraph.AddOperator(varInjector);
+        combOp.OperatorGraph.InitialOperator = varInjector;
 
-        subScope.AddVariable(new Variable(scope.TranslateName("VariableInjector"), opGraph));
+        subScope.AddVariable(new Variable(scope.TranslateName("VariableInjector"), combOp));
         scope.AddSubScope(subScope);
       }
       return null;

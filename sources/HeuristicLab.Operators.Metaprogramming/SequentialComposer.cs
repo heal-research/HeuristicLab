@@ -44,10 +44,10 @@ namespace HeuristicLab.Operators.Metaprogramming {
       SequentialProcessor seq = new SequentialProcessor();
 
       foreach(StringData opName in parts) {
-        IOperatorGraph subOpGraph = scope.GetVariableValue<IOperatorGraph>(opName.Data, true);
-        foreach(IOperator op in subOpGraph.Operators)
+        CombinedOperator subOp = scope.GetVariableValue<CombinedOperator>(opName.Data, true);
+        foreach(IOperator op in subOp.OperatorGraph.Operators)
           combOp.OperatorGraph.AddOperator(op);
-        seq.AddSubOperator(subOpGraph.InitialOperator);
+        seq.AddSubOperator(subOp.OperatorGraph.InitialOperator);
       }
       combOp.OperatorGraph.AddOperator(seq);
       combOp.OperatorGraph.InitialOperator = seq;
