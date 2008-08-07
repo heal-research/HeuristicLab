@@ -30,6 +30,7 @@ namespace HeuristicLab.CEDMA.Operators {
   [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
   [Dependency(Dependency = "HeuristicLab.Core")]
   [Dependency(Dependency = "HeuristicLab.Data")]
+  [Dependency(Dependency = "HeuristicLab.Operators")]
   public class HeuristicLabCedmaOperatorsPlugin : PluginBase {
   }
 }
