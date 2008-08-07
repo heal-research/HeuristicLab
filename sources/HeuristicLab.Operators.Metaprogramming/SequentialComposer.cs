@@ -24,12 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System.Threading;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using System.ServiceModel;
 using HeuristicLab.Operators;
 
-namespace HeuristicLab.CEDMA.Operators {
+namespace HeuristicLab.Operators.Metaprogramming {
   public class SequentialComposer: OperatorBase {
     public override string Description {
       get { return "TASK."; }
