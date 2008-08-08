@@ -66,6 +66,7 @@ namespace HeuristicLab.DataAnalysis {
         // A solution is to set the SelectionMode to CellSelect before any changes. After the columns
         // have been updated (and their SortMode set to 'NotSortable') we switch back to SelectionMode=ColumnHeaderSelect.
         dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
+        dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
         int rows = Dataset.Rows;
         int columns = Dataset.Columns;
         nameTextBox.Text = Dataset.Name;
@@ -84,6 +85,7 @@ namespace HeuristicLab.DataAnalysis {
           dataGridView.Columns[i].Name = GetColumnName(i);
         }
         dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect; // switch back to column selection
+        dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
       } else {
         rowsTextBox.Text = "1";
         columnsTextBox.Text = "1";
