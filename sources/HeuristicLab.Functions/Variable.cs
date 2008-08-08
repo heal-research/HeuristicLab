@@ -87,7 +87,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       SequentialProcessor seq = new SequentialProcessor();
       UniformRandomizer indexRandomizer = new UniformRandomizer();
       indexRandomizer.Min = minIndex;
-      indexRandomizer.Max = maxIndex;
+      indexRandomizer.Max = maxIndex + 1; // uniform randomizer generates numbers in the range [min, max[
       indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomizer weightRandomizer = new NormalRandomizer();
@@ -97,7 +97,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       weightRandomizer.Name = "Weight Randomizer";
       UniformRandomizer offsetRandomizer = new UniformRandomizer();
       offsetRandomizer.Min = minOffset;
-      offsetRandomizer.Max = maxOffset;
+      offsetRandomizer.Max = maxOffset + 1;
       offsetRandomizer.GetVariableInfo("Value").ActualName = OFFSET;
       offsetRandomizer.Name = "Offset Randomizer";
 
@@ -123,7 +123,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       SequentialProcessor seq = new SequentialProcessor();
       UniformRandomizer indexRandomizer = new UniformRandomizer();
       indexRandomizer.Min = minIndex;
-      indexRandomizer.Max = maxIndex;
+      indexRandomizer.Max = maxIndex + 1;
       indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomAdder weightRandomAdder = new NormalRandomAdder();
