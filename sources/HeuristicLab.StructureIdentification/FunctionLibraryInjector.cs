@@ -31,7 +31,6 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.StructureIdentification {
   public class FunctionLibraryInjector : OperatorBase {
-    private const string TARGETVARIABLE = "TargetVariable";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
@@ -47,7 +46,6 @@ namespace HeuristicLab.StructureIdentification {
 
     public FunctionLibraryInjector()
       : base() {
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "Target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       GetVariableInfo(ALLOWEDFEATURES).Local = true;
       AddVariable(new Variable(ALLOWEDFEATURES, new ItemList<IntData>()));
