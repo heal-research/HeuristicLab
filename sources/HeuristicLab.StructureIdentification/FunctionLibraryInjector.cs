@@ -73,14 +73,12 @@ namespace HeuristicLab.StructureIdentification {
       int[] allowedIndexes = new int[allowedFeatures.Count];
       for(int i = 0; i < allowedIndexes.Length; i++) {
         allowedIndexes[i] = allowedFeatures[i].Data;
-        i++;
       }
 
       variable.SetConstraints(allowedIndexes, minTimeOffset.Data, maxTimeOffset.Data);
       differential.SetConstraints(allowedIndexes, minTimeOffset.Data, maxTimeOffset.Data);
 
       scope.AddVariable(new Variable(scope.TranslateName(OPERATORLIBRARY), operatorLibrary));
-
       return null;
     }
 

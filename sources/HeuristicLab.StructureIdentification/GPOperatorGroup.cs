@@ -55,6 +55,7 @@ namespace HeuristicLab.StructureIdentification {
       foreach(IConstraint c in op.Constraints) {
         if(c is SubOperatorTypeConstraint || c is AllSubOperatorsTypeConstraint) c.Changed += new EventHandler(UpdateTreeBounds);
       }
+      RecalculateMinimalTreeBounds();
       OnOperatorAdded(op);
     }
 

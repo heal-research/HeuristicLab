@@ -187,6 +187,14 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
         }
         prev = allowedIndexes[i];
       }
+      IntBoundedConstraint range = new IntBoundedConstraint();
+      range.LowerBound = start;
+      range.LowerBoundEnabled = true;
+      range.LowerBoundIncluded = true;
+      range.UpperBound = prev;
+      range.UpperBoundEnabled = true;
+      range.UpperBoundIncluded = true;
+      constraints.Add(range);
       if(constraints.Count > 1) {
         OrConstraint or = new OrConstraint();
         foreach(IConstraint c in constraints) or.Clauses.Add(c);
