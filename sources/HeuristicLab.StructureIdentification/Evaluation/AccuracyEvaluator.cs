@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class AccuracyEvaluator : GPEvaluatorBase {
+    private const double EPSILON = 1.0E-6;
     public override string Description {
       get {
         return @"TASK";
@@ -39,7 +40,7 @@ namespace HeuristicLab.StructureIdentification {
 
     public AccuracyEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("ClassSeparation", "The value of separation between negative and positive target classification values (for instance 0.5 if negative=0 and positive=1).", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
     private double[] original = new double[1];
@@ -48,25 +49,34 @@ namespace HeuristicLab.StructureIdentification {
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       int nSamples = trainingEnd-trainingStart;
-      double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, true).Data;
-      double TP = 0;
-      double TN = 0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
+      ItemList<DoubleData> classes = GetVariableValue<ItemList<DoubleData>>("TargetClassValues", scope, true);
+      double[] classesArr = new double[classes.Count];
+      for(int i=0;i<classesArr.Length;i++) classesArr[i] = classes[i].Data;
+      Array.Sort(classesArr);
+      double[] thresholds = new double[classes.Count - 1];
+      for(int i=0;i<classesArr.Length-1;i++) {
+        thresholds[i] = (classesArr[i]+classesArr[i+1]) / 2.0;
+      }
+
+      int nCorrect = 0;
       for(int sample = trainingStart; sample < trainingEnd; sample++) {
         double est = evaluator.Evaluate(sample);
-        double orig = dataset.GetValue(sample, targetVariable);
-        if(double.IsNaN(est) || double.IsInfinity(est)) {
-          est = targetMean + maximumPunishment;
-        } else if(est > targetMean + maximumPunishment) {
-          est = targetMean + maximumPunishment;
-        } else if(est < targetMean - maximumPunishment) {
-          est = targetMean - maximumPunishment;
+        double origClass = dataset.GetValue(sample, targetVariable);
+        double estClass = double.NaN;
+        if(est < classesArr[0]) estClass = classesArr[0];
+        else if(est > classesArr[classesArr.Length - 1]) estClass = classesArr[classesArr.Length - 1];
+        else {
+          for(int k = 0; k < thresholds.Length; k++) {
+            if(thresholds[k] > est) {
+              estClass = classesArr[k + 1];
+              break;
+            }
+          }
         }
-        if(orig >= limit && est>=limit) TP++;
-        if(orig < limit && est < limit) TN++;
+        if(Math.Abs(estClass - origClass) < EPSILON) nCorrect++;
       }
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * nSamples;
-      return (TP+TN) / nSamples;
+      return  nCorrect / (double)nSamples;
     }
   }
 }
