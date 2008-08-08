@@ -78,11 +78,9 @@ namespace HeuristicLab.Random {
       public override void Visit(ConstrainedDoubleData data) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double r = normal.NextDouble();
-
           if(IsIntegerConstrained(data)) {
             r = Math.Round(r);
           }
-
           if(data.TrySetData(r)) {
             return;
           }
@@ -91,13 +89,11 @@ namespace HeuristicLab.Random {
       }
 
       public override void Visit(ConstrainedIntData data) {
-
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double r = normal.NextDouble();
-          if(data.TrySetData((int)Math.Round(r)))
+          if(data.TrySetData((int)Math.Round(r))) // since r is a continuous normally distributed random variable rounding should be OK
             return;
         }
-
         throw new InvalidProgramException("Couldn't find a valid value");
       }
 

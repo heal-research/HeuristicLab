@@ -45,11 +45,11 @@ namespace HeuristicLab.Random {
     public UniformRandomizer() {
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Min", "Lower bound of the uniform distribution", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Min", "Lower bound of the uniform distribution (inclusive)", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Min").Local = true;
       AddVariable(new Variable("Min", new DoubleData(0.0)));
 
-      AddVariableInfo(new VariableInfo("Max", "Upper bound of the uniform distribution", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Max", "Upper bound of the uniform distribution (exclusive)", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Max").Local = true;
       AddVariable(new Variable("Max", new DoubleData(1.0)));
     }
@@ -81,31 +81,25 @@ namespace HeuristicLab.Random {
       }
 
       public override void Visit(IntData data) {
-        data.Data = (int)Math.Round(mt.NextDouble() * (max - min) + min);
+        data.Data = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
       }
 
       public override void Visit(ConstrainedDoubleData data) {
-
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double r = mt.NextDouble() * (max - min) + min;
-
           if(IsIntegerConstrained(data)) {
-            r = Math.Round(r);
+            r = Math.Floor(r);
           }
-
           if(data.TrySetData(r)) {
             return;
           }
         }
-
         throw new InvalidProgramException("Couldn't find a valid value");
       }
 
       public override void Visit(ConstrainedIntData data) {
-
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          int r = (int)Math.Round(mt.NextDouble() * (max - min) + min);
-
+          int r = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
           if(data.TrySetData(r)) {
             return;
           }

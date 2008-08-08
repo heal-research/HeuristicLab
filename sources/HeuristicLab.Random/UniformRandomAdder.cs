@@ -42,13 +42,13 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
 
     public UniformRandomAdder() {
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the force of the shaking factor.", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the force of the shaking factor", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Min", "Lower bound of the uniform distribution.", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Min", "Lower bound of the uniform distribution (inclusive)", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Min").Local = true;
       AddVariable(new Variable("Min", new DoubleData(-1.0)));
 
-      AddVariableInfo(new VariableInfo("Max", "Upper bound of the uniform distribution", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Max", "Upper bound of the uniform distribution (exclusive)", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Max").Local = true;
       AddVariable(new Variable("Max", new DoubleData(1.0)));
     }
@@ -83,27 +83,21 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       }
 
       public override void Visit(ConstrainedDoubleData data) {
-
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-
           double newValue = data.Data + mt.NextDouble() * (max - min) + min;
-
           if(IsIntegerConstrained(data)) {
-            newValue = Math.Round(newValue);
+            newValue = Math.Floor(newValue);
           }
-
           if(data.TrySetData(newValue)) {
             return;
           }
         }
-
         throw new InvalidProgramException("Couldn't find a valid value");
       }
 
       public override void Visit(ConstrainedIntData data) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          int newValue = (int)Math.Round(data.Data + mt.NextDouble() * (max - min) + min);
-
+          int newValue = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
           if(data.TrySetData(newValue)) {
             return;
           }
@@ -116,7 +110,7 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       }
 
       public override void Visit(IntData data) {
-        data.Data = (int)Math.Round(data.Data + mt.NextDouble() * (max - min) + min);
+        data.Data = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
       }
       private bool IsIntegerConstrained(ConstrainedDoubleData data) {
         foreach(IConstraint constraint in data.Constraints) {

@@ -87,10 +87,8 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       }
 
       public override void Visit(ConstrainedDoubleData data) {
-
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double newValue = data.Data + normal.NextDouble();
-
           if(IsIntegerConstrained(data)) {
             newValue = Math.Round(newValue);
           }
@@ -98,7 +96,6 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
             return;
           }
         }
-
         throw new InvalidProgramException("Coudn't find a valid value");
       }
 
@@ -111,7 +108,6 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
           if(data.TrySetData((int)Math.Round(data.Data + normal.NextDouble())))
             return;
         }
-
         throw new InvalidProgramException("Couldn't find a valid value.");
       }
 
