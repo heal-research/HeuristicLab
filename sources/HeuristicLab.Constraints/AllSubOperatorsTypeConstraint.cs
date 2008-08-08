@@ -69,6 +69,10 @@ namespace HeuristicLab.Constraints {
       return true;
     }
 
+    public void Clear() {
+      groupConstraint.Clear();
+    }
+
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       AllSubOperatorsTypeConstraint clone = new AllSubOperatorsTypeConstraint();
       clonedObjects.Add(Guid, clone);

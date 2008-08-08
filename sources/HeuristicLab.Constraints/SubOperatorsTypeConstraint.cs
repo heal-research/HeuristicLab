@@ -70,6 +70,10 @@ namespace HeuristicLab.Constraints {
       }
     }
 
+    public void Clear() {
+      subOperators.Clear();
+    }
+
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
       if(data == null) return false;
@@ -122,6 +126,5 @@ namespace HeuristicLab.Constraints {
       }
     }
     #endregion persistence
-
   }
 }

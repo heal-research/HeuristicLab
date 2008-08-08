@@ -47,6 +47,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionLibraryInjector.cs" />
     <Compile Include="Evaluation\AccuracyEvaluator.cs" />
     <Compile Include="Evaluation\MeanAbsolutePercentageErrorEvaluator.cs" />
     <Compile Include="Evaluation\TheilInequalityCoefficientEvaluator.cs" />

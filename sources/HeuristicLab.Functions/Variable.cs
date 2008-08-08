@@ -31,11 +31,16 @@ using HeuristicLab.Random;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Functions {
-  public sealed class Variable : FunctionBase {
+  public class Variable : FunctionBase {
 
     public const string WEIGHT = "Weight";
     public const string OFFSET = "SampleOffset";
     public const string INDEX = "Variable";
+
+    private int minIndex;
+    private int maxIndex;
+    private int minOffset;
+    private int maxOffset;
 
     public override string Description {
       get {
@@ -53,6 +58,10 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       GetVariableInfo(WEIGHT).Local = true;
       AddVariableInfo(new VariableInfo(OFFSET, "SampleOffset is added to the sample index", typeof(ConstrainedIntData), VariableKind.None));
       GetVariableInfo(OFFSET).Local = true;
+      AddVariableInfo(new VariableInfo(INITIALIZATION, "Initialization operator for variables", typeof(CombinedOperator), VariableKind.None));
+      GetVariableInfo(INITIALIZATION).Local = false;
+      AddVariableInfo(new VariableInfo(MANIPULATION, "Manipulation operator for variables", typeof(CombinedOperator), VariableKind.None));
+      GetVariableInfo(MANIPULATION).Local = false;
 
       ConstrainedDoubleData weight = new ConstrainedDoubleData();
       // initialize a totally arbitrary range for the weight = [-20.0, 20.0]
@@ -61,13 +70,9 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
 
       ConstrainedIntData variable = new ConstrainedIntData();
       AddVariable(new HeuristicLab.Core.Variable(INDEX, variable));
+      minIndex = 0; maxIndex = 100;
 
       ConstrainedIntData sampleOffset = new ConstrainedIntData();
-      // initialize a sample offset for static models
-      IntBoundedConstraint offsetConstraint = new IntBoundedConstraint(0, 0);
-      offsetConstraint.LowerBoundIncluded = true;
-      offsetConstraint.UpperBoundIncluded = true;
-      sampleOffset.AddConstraint(offsetConstraint);
       AddVariable(new HeuristicLab.Core.Variable(OFFSET, sampleOffset));
 
       SetupInitialization();
@@ -78,13 +83,11 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
     }
 
     private void SetupInitialization() {
-      AddVariableInfo(new VariableInfo(INITIALIZATION, "Initialization operator for variables", typeof(CombinedOperator), VariableKind.None));
-      GetVariableInfo(INITIALIZATION).Local = false;
       CombinedOperator combinedOp = new CombinedOperator();
       SequentialProcessor seq = new SequentialProcessor();
       UniformRandomizer indexRandomizer = new UniformRandomizer();
-      indexRandomizer.Min = 0;
-      indexRandomizer.Max = 10;
+      indexRandomizer.Min = minIndex;
+      indexRandomizer.Max = maxIndex;
       indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomizer weightRandomizer = new NormalRandomizer();
@@ -93,8 +96,8 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       weightRandomizer.GetVariableInfo("Value").ActualName = WEIGHT;
       weightRandomizer.Name = "Weight Randomizer";
       UniformRandomizer offsetRandomizer = new UniformRandomizer();
-      offsetRandomizer.Min = 0.0;
-      offsetRandomizer.Max = 1.0;
+      offsetRandomizer.Min = minOffset;
+      offsetRandomizer.Max = maxOffset;
       offsetRandomizer.GetVariableInfo("Value").ActualName = OFFSET;
       offsetRandomizer.Name = "Offset Randomizer";
 
@@ -106,18 +109,21 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       seq.AddSubOperator(indexRandomizer);
       seq.AddSubOperator(weightRandomizer);
       seq.AddSubOperator(offsetRandomizer);
-      AddVariable(new HeuristicLab.Core.Variable(INITIALIZATION, combinedOp));
+      HeuristicLab.Core.IVariable initOp = GetVariable(INITIALIZATION);
+      if(initOp == null) {
+        AddVariable(new HeuristicLab.Core.Variable(INITIALIZATION, combinedOp));
+      } else {
+        initOp.Value = combinedOp;
+      }
     }
 
     private void SetupManipulation() {
       // manipulation operator
-      AddVariableInfo(new VariableInfo(MANIPULATION, "Manipulation operator for variables", typeof(CombinedOperator), VariableKind.None));
-      GetVariableInfo(MANIPULATION).Local = false;
       CombinedOperator combinedOp = new CombinedOperator();
       SequentialProcessor seq = new SequentialProcessor();
       UniformRandomizer indexRandomizer = new UniformRandomizer();
-      indexRandomizer.Min = 0;
-      indexRandomizer.Max = 10;
+      indexRandomizer.Min = minIndex;
+      indexRandomizer.Max = maxIndex;
       indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomAdder weightRandomAdder = new NormalRandomAdder();
@@ -139,7 +145,58 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       seq.AddSubOperator(indexRandomizer);
       seq.AddSubOperator(weightRandomAdder);
       seq.AddSubOperator(offsetRandomAdder);
-      AddVariable(new HeuristicLab.Core.Variable(MANIPULATION, combinedOp));
+      HeuristicLab.Core.IVariable manipulationOp = GetVariable(MANIPULATION);
+      if(manipulationOp == null) {
+        AddVariable(new HeuristicLab.Core.Variable(MANIPULATION, combinedOp));
+      } else {
+        manipulationOp.Value = combinedOp;
+      }
+    }
+
+    public void SetConstraints(int[] allowedIndexes, int minSampleOffset, int maxSampleOffset) {
+      ConstrainedIntData offset = GetVariableValue<ConstrainedIntData>(OFFSET, null, false);
+      IntBoundedConstraint rangeConstraint = new IntBoundedConstraint();
+      this.minOffset = minSampleOffset;
+      this.maxOffset = maxSampleOffset;
+      rangeConstraint.LowerBound = minSampleOffset;
+      rangeConstraint.LowerBoundEnabled = true;
+      rangeConstraint.LowerBoundIncluded = true;
+      rangeConstraint.UpperBound = maxSampleOffset;
+      rangeConstraint.UpperBoundEnabled = true;
+      rangeConstraint.UpperBoundIncluded = true;
+      offset.AddConstraint(rangeConstraint);
+
+      ConstrainedIntData index = GetVariableValue<ConstrainedIntData>(INDEX, null, false);
+      Array.Sort(allowedIndexes);
+      minIndex = allowedIndexes[0]; maxIndex = allowedIndexes[allowedIndexes.Length - 1];
+      List<IConstraint> constraints = new List<IConstraint>();
+      int start = allowedIndexes[0];
+      int prev = start;
+      for(int i = 1; i < allowedIndexes.Length; i++) {
+        if(allowedIndexes[i] != prev + 1) {
+          IntBoundedConstraint lastRange = new IntBoundedConstraint();
+          lastRange.LowerBound = start;
+          lastRange.LowerBoundEnabled = true;
+          lastRange.LowerBoundIncluded = true;
+          lastRange.UpperBound = prev;
+          lastRange.UpperBoundEnabled = true;
+          lastRange.UpperBoundIncluded = true;
+          constraints.Add(lastRange);
+          start = allowedIndexes[i];
+          prev = start;
+        }
+        prev = allowedIndexes[i];
+      }
+      if(constraints.Count > 1) {
+        OrConstraint or = new OrConstraint();
+        foreach(IConstraint c in constraints) or.Clauses.Add(c);
+        index.AddConstraint(or);
+      } else {
+        index.AddConstraint(constraints[0]);
+      }
+
+      SetupInitialization();
+      SetupManipulation();
     }
 
     public override void Accept(IFunctionVisitor visitor) {
