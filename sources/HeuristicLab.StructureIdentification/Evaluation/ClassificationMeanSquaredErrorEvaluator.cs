@@ -65,19 +65,22 @@ for the estimated values vs. the real values of 'TargetVariable'.";
           estimated = targetMean - maximumPunishment;
         }
         double error = estimated - original;
-        if(estimated < classesArr[0] ||
-          estimated > classesArr[classesArr.Length - 1]) {
+        // between classes use squared error
+        // on the lower end and upper end only add linear error if the absolute error is larger than 1
+        // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
+        if(error < -1.0 && original == classesArr[0] && estimated < classesArr[0] ||
+          error > 1.0 && original == classesArr[classesArr.Length - 1] && estimated > classesArr[classesArr.Length - 1]) {
           errorsSquaredSum += Math.Abs(error); // only add linear error below the smallest class or above the largest class
         } else {
           errorsSquaredSum += error * error;
         }
       }
 
-      errorsSquaredSum /= (trainingEnd-trainingStart);
+      errorsSquaredSum /= (trainingEnd - trainingStart);
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd-trainingStart);
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
       return errorsSquaredSum;
     }
   }

@@ -63,12 +63,15 @@ namespace HeuristicLab.StructureIdentification {
         double est = evaluator.Evaluate(sample);
         double origClass = dataset.GetValue(sample, targetVariable);
         double estClass = double.NaN;
-        if(est < classesArr[0]) estClass = classesArr[0];
-        else if(est > classesArr[classesArr.Length - 1]) estClass = classesArr[classesArr.Length - 1];
+        // if estimation is lower than the smallest threshold value -> estimated class is the lower class
+        if(est < thresholds[0]) estClass = classesArr[0];
+        // if estimation is larger (or equal) than the largest threshold value -> estimated class is the upper class
+        else if(est >= thresholds[thresholds.Length - 1]) estClass = classesArr[classesArr.Length - 1];  
         else {
+          // otherwise the estimated class is the class which upper threshold is larger than the estimated value
           for(int k = 0; k < thresholds.Length; k++) {
             if(thresholds[k] > est) {
-              estClass = classesArr[k + 1];
+              estClass = classesArr[k];
               break;
             }
           }
