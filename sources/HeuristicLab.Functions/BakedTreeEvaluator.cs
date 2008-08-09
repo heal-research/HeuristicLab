@@ -67,6 +67,7 @@ namespace HeuristicLab.Functions {
       instr.arity = f.arity;
       instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
       switch(instr.symbol) {
+        case EvaluatorSymbolTable.DIFFERENTIAL: 
         case EvaluatorSymbolTable.VARIABLE: {
             instr.i_arg0 = (int)f.data[0]; // var
             instr.d_arg0 = f.data[1]; // weight
