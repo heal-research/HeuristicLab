@@ -31,8 +31,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class ClassificationMeanSquaredErrorEvaluator : GPEvaluatorBase {
-    protected double[] backupValues;
     private const double EPSILON = 1.0E-6;
+    private double[] classesArr;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates the mean-squared-error
@@ -45,43 +45,38 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+    public override IOperation Apply(IScope scope) {
       ItemList<DoubleData> classes = GetVariableValue<ItemList<DoubleData>>("TargetClassValues", scope, true);
-      double[] classesArr = new double[classes.Count];
+      classesArr = new double[classes.Count];
       for(int i = 0; i < classesArr.Length; i++) classesArr[i] = classes[i].Data;
       Array.Sort(classesArr);
+      return base.Apply(scope);
+    }
+
+    public override double Evaluate(int start, int end) {
 
       double errorsSquaredSum = 0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-        if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated > targetMean + maximumPunishment) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated < targetMean - maximumPunishment) {
-          estimated = targetMean - maximumPunishment;
-        }
-        double error = estimated - original;
-        // between classes use squared error
-        // on the lower end and upper end only add linear error if the absolute error is larger than 1
-        // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
-        if(error < -1.0 && IsEqual(original, classesArr[0]) && estimated < classesArr[0] ||
-          error > 1.0 && IsEqual(original, classesArr[classesArr.Length - 1]) && estimated > classesArr[classesArr.Length - 1]) {
-          errorsSquaredSum += Math.Abs(error); // only add linear error below the smallest class or above the largest class
-        } else {
-          errorsSquaredSum += error * error;
+      for(int sample = start; sample < end; sample++) {
+        double estimated = GetEstimatedValue(sample);
+        double original = GetOriginalValue(sample);
+        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+          double error = estimated - original;
+          // between classes use squared error
+          // on the lower end and upper end only add linear error if the absolute error is larger than 1
+          // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
+          if(error < -1.0 && IsEqual(original, classesArr[0]) && estimated < classesArr[0] ||
+            error > 1.0 && IsEqual(original, classesArr[classesArr.Length - 1]) && estimated > classesArr[classesArr.Length - 1]) {
+            errorsSquaredSum += Math.Abs(error); // only add linear error below the smallest class or above the largest class
+          } else {
+            errorsSquaredSum += error * error;
+          }
         }
       }
 
-      errorsSquaredSum /= (trainingEnd - trainingStart);
+      errorsSquaredSum /= (end - start);
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
       return errorsSquaredSum;
     }
 

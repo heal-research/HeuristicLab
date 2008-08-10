@@ -42,32 +42,20 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       : base() {
     }
 
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+    public override double Evaluate(int start, int end) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
+      for(int sample = start; sample < end; sample++) {
+        double estimated = GetEstimatedValue(sample);
+        double original = GetOriginalValue(sample);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
-          if(double.IsNaN(estimated) || double.IsInfinity(estimated))
-            estimated = targetMean + maximumPunishment;
-          else if(estimated > (targetMean + maximumPunishment))
-            estimated = targetMean + maximumPunishment;
-          else if(estimated < (targetMean - maximumPunishment))
-            estimated = targetMean - maximumPunishment;
-
           double error = estimated - original;
           errorsSquaredSum += error * error;
 
-          double origDeviation = original - targetMean;
+          double origDeviation = original - TargetMean;
           originalDeviationTotalSumOfSquares += origDeviation * origDeviation;
         }
       }
-
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
 
       double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
       if(quality > 1) 

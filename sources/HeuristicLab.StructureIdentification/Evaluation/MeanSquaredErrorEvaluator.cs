@@ -31,7 +31,6 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class MeanSquaredErrorEvaluator : GPEvaluatorBase {
-    protected double[] backupValues;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates the mean-squared-error
@@ -41,53 +40,24 @@ for the estimated values vs. the real values of 'TargetVariable'.";
 
     public MeanSquaredErrorEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("UseEstimatedTargetValue", "Wether to use the original (measured) or the estimated (calculated) value for the targat variable when doing autoregressive modelling", typeof(BoolData), VariableKind.In));
-      GetVariableInfo("UseEstimatedTargetValue").Local = true;
-      AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData(false)));
     }
 
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+    public override double Evaluate(int start, int end) {
       double errorsSquaredSum = 0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
-      if(useEstimatedValues && backupValues == null) {
-        backupValues = new double[trainingEnd - trainingStart];
-        for(int i = trainingStart; i < trainingEnd; i++) {
-          backupValues[i-trainingStart] = dataset.GetValue(i, targetVariable);
-        }
-      }
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-        if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated > targetMean + maximumPunishment) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated < targetMean - maximumPunishment) {
-          estimated = targetMean - maximumPunishment;
-        }
-        double error = estimated - original;
-        errorsSquaredSum += error * error;
-        if(useEstimatedValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
+      for(int sample = start; sample < end; sample++) {
+        double original = GetOriginalValue(sample);
+        double estimated = GetEstimatedValue(sample);
+        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+          double error = estimated - original;
+          errorsSquaredSum += error * error;
         }
       }
 
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, trainingEnd);
-      errorsSquaredSum /= (trainingEnd-trainingStart);
+      errorsSquaredSum /= (end - start);
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd-trainingStart);
       return errorsSquaredSum;
-    }
-
-    private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
-      for(int i = from; i < to; i++) {
-        dataset.SetValue(i, targetVariable, backupValues[i-from]);
-      }
     }
   }
 }

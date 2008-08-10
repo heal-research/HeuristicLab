@@ -42,28 +42,17 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       : base() {
     }
 
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+    public override double Evaluate(int start, int end) {
       double errorsSum = 0.0;
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
+      for(int sample = start; sample < end; sample++) {
+        double estimated = GetEstimatedValue(sample);
+        double original = GetOriginalValue(sample);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
-          if(double.IsNaN(estimated) || double.IsInfinity(estimated))
-            estimated = maximumPunishment;
-          else if(estimated > maximumPunishment)
-            estimated = maximumPunishment;
-          else if(estimated < -maximumPunishment)
-            estimated = -maximumPunishment;
-
           double percent_error = Math.Abs((estimated - original) / original);
           errorsSum += percent_error;
         }
       }
-      int nSamples = trainingEnd - trainingStart;
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * nSamples;
-      double quality = errorsSum / nSamples;
+      double quality = errorsSum / (end - start);
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
       return quality;

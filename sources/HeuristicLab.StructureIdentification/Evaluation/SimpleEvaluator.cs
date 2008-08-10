@@ -30,33 +30,15 @@ using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
-  public class SimpleEvaluator : OperatorBase {
-    protected int treeSize;
-    protected double totalEvaluatedNodes;
-    private IEvaluator evaluator;
-
+  public class SimpleEvaluator : GPEvaluatorBase {
+    private ItemList values;
     public SimpleEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TotalEvaluatedNodes", "Number of evaluated nodes", typeof(DoubleData), VariableKind.In | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training samples in dataset", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training samples in dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Values", "The values of the target variable as predicted by the model and the original value of the target variable", typeof(ItemList), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
-      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      IFunctionTree functionTree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
-      this.treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
-      this.totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-
-      ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
+      values = GetVariableValue<ItemList>("Values", scope, false, false);
       if(values == null) {
         values = new ItemList();
         IVariableInfo info = GetVariableInfo("Values");
@@ -66,16 +48,17 @@ namespace HeuristicLab.StructureIdentification {
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
       values.Clear();
-      if(evaluator == null) evaluator = functionTree.CreateEvaluator(dataset);
-      evaluator.ResetEvaluator(functionTree);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
+      return base.Apply(scope);
+    }
+
+    public override double Evaluate(int start, int end) {
+      for(int sample = start; sample < end; sample++) {
         ItemList row = new ItemList();
-        row.Add(new DoubleData(evaluator.Evaluate(sample)));
-        row.Add(new DoubleData(dataset.GetValue(sample, targetVariable)));
+        row.Add(new DoubleData(GetEstimatedValue(sample)));
+        row.Add(new DoubleData(GetOriginalValue(sample)));
         values.Add(row);
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
-      return null;
+      return double.NaN;
     }
   }
 }

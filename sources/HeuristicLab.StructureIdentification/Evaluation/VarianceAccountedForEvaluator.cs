@@ -52,29 +52,18 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
     }
 
 
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      double[] errors = new double[trainingEnd-trainingStart];
-      double[] originalTargetVariableValues = new double[trainingEnd-trainingStart];
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
+    public override double Evaluate(int start, int end) {
+      int nSamples = end - start;
+      double[] errors = new double[nSamples];
+      double[] originalTargetVariableValues = new double[nSamples];
+      for(int sample = start; sample < end; sample++) {
+        double estimated = GetEstimatedValue(sample);
+        double original = GetOriginalValue(sample);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
-          if(double.IsNaN(estimated) || double.IsInfinity(estimated))
-            estimated = targetMean + maximumPunishment;
-          else if(estimated > (targetMean + maximumPunishment))
-            estimated = targetMean + maximumPunishment;
-          else if(estimated < (targetMean - maximumPunishment))
-            estimated = targetMean - maximumPunishment;
+          errors[sample - start] = original - estimated;
+          originalTargetVariableValues[sample - start] = original;
         }
-
-        errors[sample-trainingStart] = original - estimated;
-        originalTargetVariableValues[sample-trainingStart] = original;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd-trainingStart);
-
       double errorsVariance = Statistics.Variance(errors);
       double originalsVariance = Statistics.Variance(originalTargetVariableValues);
       double quality = 1 - errorsVariance / originalsVariance;

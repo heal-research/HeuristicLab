@@ -32,6 +32,8 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.StructureIdentification {
   public class AccuracyEvaluator : GPEvaluatorBase {
     private const double EPSILON = 1.0E-6;
+    private double[] classesArr;
+    private double[] thresholds;
     public override string Description {
       get {
         return @"TASK";
@@ -43,25 +45,25 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
-    private double[] original = new double[1];
-    private double[] estimated = new double[1];
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      int nSamples = trainingEnd-trainingStart;
+    public override IOperation Apply(IScope scope) {
       ItemList<DoubleData> classes = GetVariableValue<ItemList<DoubleData>>("TargetClassValues", scope, true);
-      double[] classesArr = new double[classes.Count];
-      for(int i=0;i<classesArr.Length;i++) classesArr[i] = classes[i].Data;
+      classesArr = new double[classes.Count];
+      for(int i = 0; i < classesArr.Length; i++) classesArr[i] = classes[i].Data;
       Array.Sort(classesArr);
-      double[] thresholds = new double[classes.Count - 1];
-      for(int i=0;i<classesArr.Length-1;i++) {
-        thresholds[i] = (classesArr[i]+classesArr[i+1]) / 2.0;
+      thresholds = new double[classes.Count - 1];
+      for(int i = 0; i < classesArr.Length - 1; i++) {
+        thresholds[i] = (classesArr[i] + classesArr[i + 1]) / 2.0;
       }
 
+      return base.Apply(scope);
+    }
+
+    public override double Evaluate(int start, int end) {
+      int nSamples = end-start;
       int nCorrect = 0;
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double est = evaluator.Evaluate(sample);
-        double origClass = dataset.GetValue(sample, targetVariable);
+      for(int sample = start; sample < end; sample++) {
+        double est = GetEstimatedValue(sample);
+        double origClass = GetOriginalValue(sample);
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
         if(est < thresholds[0]) estClass = classesArr[0];
@@ -78,7 +80,6 @@ namespace HeuristicLab.StructureIdentification {
         }
         if(Math.Abs(estClass - origClass) < EPSILON) nCorrect++;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * nSamples;
       return  nCorrect / (double)nSamples;
     }
   }

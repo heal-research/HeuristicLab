@@ -31,24 +31,26 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class MCCEvaluator : GPEvaluatorBase {
+    private double limit;
+    private double[] original = new double[1];
+    private double[] estimated = new double[1];
     public override string Description {
       get {
         return @"TASK";
       }
     }
-
     public MCCEvaluator()
       : base() {
       AddVariableInfo(new VariableInfo("ClassSeparation", "The value of separation between negative and positive target classification values (for instance 0.5 if negative=0 and positive=1).", typeof(DoubleData), VariableKind.In));
     }
 
-    private double[] original = new double[1];
-    private double[] estimated = new double[1];
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      int nSamples = trainingEnd-trainingStart;
-      double limit = GetVariableValue<DoubleData>("ClassSeparation", scope, true).Data;
+    public override IOperation Apply(IScope scope) {
+      limit = GetVariableValue<DoubleData>("ClassSeparation", scope, true).Data;
+      return base.Apply(scope);
+    }
+
+    public override double Evaluate(int start, int end) {
+      int nSamples = end - start;
       if(estimated.Length != nSamples) {
         estimated = new double[nSamples];
         original = new double[nSamples];
@@ -56,19 +58,11 @@ namespace HeuristicLab.StructureIdentification {
 
       double positive = 0;
       double negative = 0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double est = evaluator.Evaluate(sample);
-        double orig = dataset.GetValue(sample, targetVariable);
-        if(double.IsNaN(est) || double.IsInfinity(est)) {
-          est = targetMean + maximumPunishment;
-        } else if(est > targetMean + maximumPunishment) {
-          est = targetMean + maximumPunishment;
-        } else if(est < targetMean - maximumPunishment) {
-          est = targetMean - maximumPunishment;
-        }
-        estimated[sample-trainingStart] = est;
-        original[sample-trainingStart] = orig;
+      for(int sample = start; sample < end; sample++) {
+        double est = GetEstimatedValue(sample);
+        double orig = GetOriginalValue(sample);
+        estimated[sample - start] = est;
+        original[sample - start] = orig;
         if(orig >= limit) positive++;
         else negative++;
       }
@@ -78,7 +72,7 @@ namespace HeuristicLab.StructureIdentification {
       double fn = positive;
       double tn = negative;
       double fp = 0;
-      for(int i = original.Length-1; i >= 0 ; i--) {
+      for(int i = original.Length - 1; i >= 0; i--) {
         if(original[i] >= limit) {
           tp++; fn--;
         } else {
@@ -89,7 +83,6 @@ namespace HeuristicLab.StructureIdentification {
           best_mcc = mcc;
         }
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (trainingEnd - trainingStart);
       return best_mcc;
     }
   }

@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class EarlyStoppingMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
+    private double qualityLimit;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of the dataset and calculates the mean-squared-error
@@ -44,58 +45,32 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.In));
     }
 
+    public override IOperation Apply(IScope scope) {
+      qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
+      return base.Apply(scope);
+    }
+
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override double Evaluate(IScope scope, IFunctionTree functionTree, int targetVariable, Dataset dataset) {
-      double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
-      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, false).Data;
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      int rows = trainingEnd-trainingStart;
-      if(useEstimatedValues && backupValues == null) {
-        backupValues = new double[rows];
-        for(int i = trainingStart; i < trainingEnd; i++) {
-          backupValues[i-trainingStart] = dataset.GetValue(i, targetVariable);
-        }
-      }
+    public override double Evaluate(int start, int end) {
       double errorsSquaredSum = 0;
-      double targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
-      for(int sample = trainingStart; sample < trainingEnd; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-        if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated > targetMean + maximumPunishment) {
-          estimated = targetMean + maximumPunishment;
-        } else if(estimated < targetMean - maximumPunishment) {
-          estimated = targetMean - maximumPunishment;
+      int rows = end - start;
+      for(int sample = start; sample < end; sample++) {
+        double estimated = GetEstimatedValue(sample);
+        double original = GetOriginalValue(sample);
+        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+          double error = estimated - original;
+          errorsSquaredSum += error * error;
         }
-
-        double error = estimated - original;
-        errorsSquaredSum += error * error;
-
         // check the limit and stop as soon as we hit the limit
         if(errorsSquaredSum / rows >= qualityLimit) {
-          scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (sample-trainingStart + 1);
-          if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, sample);
-          return errorsSquaredSum / (sample-trainingStart + 1); // return estimated MSE (when the remaining errors are on average the same)
-        }
-        if(useEstimatedValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
+          return errorsSquaredSum / (sample - start + 1); // return estimated MSE (when the remaining errors are on average the same)
         }
       }
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, trainingEnd);
       errorsSquaredSum /= rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * rows;
       return errorsSquaredSum;
-    }
-
-    private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
-      for(int i = from; i < to; i++) {
-        dataset.SetValue(i, targetVariable, backupValues[i-from]);
-      }
     }
   }
 }
