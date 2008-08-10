@@ -64,6 +64,7 @@ namespace HeuristicLab.StructureIdentification {
       for(int sample = start; sample < end; sample++) {
         double est = GetEstimatedValue(sample);
         double origClass = GetOriginalValue(sample);
+        SetOriginalValue(sample, est);
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
         if(est < thresholds[0]) estClass = classesArr[0];

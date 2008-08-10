@@ -57,6 +57,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
         double original = GetOriginalValue(sample);
+        SetOriginalValue(sample, estimated);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;

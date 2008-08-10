@@ -61,6 +61,7 @@ namespace HeuristicLab.StructureIdentification {
       for(int sample = start; sample < end; sample++) {
         double est = GetEstimatedValue(sample);
         double orig = GetOriginalValue(sample);
+        SetOriginalValue(sample, est);
         estimated[sample - start] = est;
         original[sample - start] = orig;
         if(orig >= limit) positive++;

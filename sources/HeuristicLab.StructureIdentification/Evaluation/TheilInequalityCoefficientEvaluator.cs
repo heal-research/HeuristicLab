@@ -58,6 +58,7 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
         if(differential) prevValue = GetOriginalValue(sample - 1);
         double estimatedChange = GetEstimatedValue(sample) - prevValue;
         double originalChange = GetOriginalValue(sample) - prevValue;
+        SetOriginalValue(sample, estimatedChange+prevValue);
         if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;

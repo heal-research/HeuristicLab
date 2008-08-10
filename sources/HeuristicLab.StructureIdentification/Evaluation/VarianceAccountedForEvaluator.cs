@@ -59,6 +59,7 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
         double original = GetOriginalValue(sample);
+        SetOriginalValue(sample, estimated);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           errors[sample - start] = original - estimated;
           originalTargetVariableValues[sample - start] = original;

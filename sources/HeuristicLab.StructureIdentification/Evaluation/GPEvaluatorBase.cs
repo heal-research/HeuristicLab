@@ -113,11 +113,14 @@ namespace HeuristicLab.StructureIdentification {
 
     public abstract double Evaluate(int start, int end);
 
+    public void SetOriginalValue(int sample, double value) {
+      if(useEstimatedValues) {
+        dataset.SetValue(sample, targetVariable, value);
+      }
+    }
+
     public double GetOriginalValue(int sample) {
-      if(useEstimatedValues)
-        return backupValues[sample - trainingStart];
-      else
-        return dataset.GetValue(sample, targetVariable);
+      return dataset.GetValue(sample, targetVariable);
     }
 
     public double GetEstimatedValue(int sample) {
@@ -130,11 +133,6 @@ namespace HeuristicLab.StructureIdentification {
       } else if(estimated < estimatedValueMin) {
         estimated = estimatedValueMin;
       }
-
-      if(useEstimatedValues) {
-        dataset.SetValue(sample, targetVariable, estimated);
-      }
-
       return estimated;
     }
   }

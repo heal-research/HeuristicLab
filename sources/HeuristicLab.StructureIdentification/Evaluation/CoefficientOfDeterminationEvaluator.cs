@@ -48,6 +48,7 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
         double original = GetOriginalValue(sample);
+        SetOriginalValue(sample, estimated);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;

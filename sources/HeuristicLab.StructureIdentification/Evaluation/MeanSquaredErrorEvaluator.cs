@@ -47,6 +47,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       for(int sample = start; sample < end; sample++) {
         double original = GetOriginalValue(sample);
         double estimated = GetEstimatedValue(sample);
+        SetOriginalValue(sample, estimated);
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
