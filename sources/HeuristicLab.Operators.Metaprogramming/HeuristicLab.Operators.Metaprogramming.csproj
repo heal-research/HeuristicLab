@@ -49,6 +49,7 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="PermutationInjector.cs" />
     <Compile Include="DoubleRangeVariableInjector.cs" />
     <Compile Include="HeuristicLabOperatorsMetaprogrammingPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
