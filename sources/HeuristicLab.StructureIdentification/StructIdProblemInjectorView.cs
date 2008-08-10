@@ -105,6 +105,7 @@ namespace HeuristicLab.StructureIdentification {
           ((IntData)StructIdProblemInjector.GetVariable("TestSamplesEnd").Value).Data = parser.TestSamplesEnd;
           ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
           ItemList<IntData> allowedFeatures = (ItemList<IntData>)StructIdProblemInjector.GetVariable("AllowedFeatures").Value;
+          allowedFeatures.Clear();
           List<int> nonInputVariables = parser.NonInputVariables;
           for(int i = 0; i < dataset.Columns; i++) {
             if(!nonInputVariables.Contains(i)) allowedFeatures.Add(new IntData(i));
