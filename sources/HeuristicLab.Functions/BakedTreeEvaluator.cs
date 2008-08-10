@@ -47,15 +47,15 @@ namespace HeuristicLab.Functions {
     private int sampleIndex;
 
 
-    public BakedTreeEvaluator(Dataset dataset) {
-      this.dataset = dataset;
+    public BakedTreeEvaluator() {
       codeArr = new Instr[MAX_TREE_SIZE];
       for(int i = 0; i < MAX_TREE_SIZE; i++) {
         codeArr[i] = new Instr();
       }
     }
 
-    public void ResetEvaluator(IFunctionTree functionTree) {
+    public void ResetEvaluator(IFunctionTree functionTree, Dataset dataset) {
+      this.dataset = dataset;
       List<LightWeightFunction> linearRepresentation = ((BakedFunctionTree)functionTree).LinearRepresentation;
       int i = 0;
       foreach(LightWeightFunction f in linearRepresentation) {

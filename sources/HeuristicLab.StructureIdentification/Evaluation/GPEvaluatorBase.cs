@@ -86,8 +86,8 @@ namespace HeuristicLab.StructureIdentification {
       estimatedValueMax = targetMean + maximumPunishment;
 
       // initialize and reset the evaluator
-      if(evaluator == null) evaluator = functionTree.CreateEvaluator(dataset);
-      evaluator.ResetEvaluator(functionTree);
+      if(evaluator == null) evaluator = functionTree.CreateEvaluator();
+      evaluator.ResetEvaluator(functionTree, dataset);
       evaluatedSamples = 0;
 
       Evaluate(start, end);
@@ -96,7 +96,6 @@ namespace HeuristicLab.StructureIdentification {
       if(useEstimatedValues) RestoreDataset(dataset, targetVariable, start, end);
       // update the value of total evaluated nodes
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * evaluatedSamples;
-      // write the calculate quality value
       return null;
     }
 

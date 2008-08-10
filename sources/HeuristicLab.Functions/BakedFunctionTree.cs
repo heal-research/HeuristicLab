@@ -269,8 +269,8 @@ namespace HeuristicLab.Functions {
       subTrees.RemoveAt(index);
     }
 
-    public IEvaluator CreateEvaluator(Dataset dataset) {
-      return new BakedTreeEvaluator(dataset);
+    public IEvaluator CreateEvaluator() {
+      return new BakedTreeEvaluator();
     }
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
