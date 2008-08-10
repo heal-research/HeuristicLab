@@ -38,6 +38,7 @@ namespace HeuristicLab.DataAnalysis {
     private const string VALIDATIONSAMPLESEND = "VALIDATIONSAMPLESEND";
     private const string TESTSAMPLESSTART = "TESTSAMPLESSTART";
     private const string TESTSAMPLESEND = "TESTSAMPLESEND";
+    private const string NONINPUTVARIABLES = "NONINPUTVARIABLES";
     private Tokenizer tokenizer;
     private Dictionary<string, List<Token>> metadata;
     private List<List<double>> samplesList;
@@ -155,6 +156,18 @@ namespace HeuristicLab.DataAnalysis {
         if(metadata.ContainsKey(TESTSAMPLESEND)) {
           return metadata[TESTSAMPLESEND][0].intValue;
         } else return rows;
+      }
+    }
+
+    public List<int> NonInputVariables {
+      get {
+        List<int> disallowedVariables = new List<int>();
+        if(metadata.ContainsKey(NONINPUTVARIABLES)) {
+          foreach(Token t in metadata[NONINPUTVARIABLES]) {
+            disallowedVariables.Add(t.intValue);
+          }
+        }
+        return disallowedVariables;
       }
     }
 
@@ -358,7 +371,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ParseMetaData(bool strict) {
-      while(tokenizer.Peek().type==TokenTypeEnum.String) {
+      while(tokenizer.Peek().type == TokenTypeEnum.String) {
         Token nameToken = tokenizer.Next();
         if(nameToken.type != TokenTypeEnum.String)
           Error("Expected a variable name.", nameToken.stringValue, tokenizer.CurrentLineNumber);

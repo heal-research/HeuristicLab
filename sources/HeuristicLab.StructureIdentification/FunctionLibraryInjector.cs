@@ -34,7 +34,7 @@ namespace HeuristicLab.StructureIdentification {
     private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
-    private const string OPERATORLIBRARY = "OperatorLibrary";
+    private const string OPERATORLIBRARY = "FunctionLibrary";
 
     private HeuristicLab.Functions.Variable variable;
     private HeuristicLab.Functions.Differential differential;
@@ -47,18 +47,9 @@ namespace HeuristicLab.StructureIdentification {
     public FunctionLibraryInjector()
       : base() {
       AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
-      GetVariableInfo(ALLOWEDFEATURES).Local = true;
-      AddVariable(new Variable(ALLOWEDFEATURES, new ItemList<IntData>()));
-
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
-      GetVariableInfo(MINTIMEOFFSET).Local = true;
-      AddVariable(new Variable(MINTIMEOFFSET, new IntData()));
-
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-      GetVariableInfo(MAXTIMEOFFSET).Local = true;
-      AddVariable(new Variable(MAXTIMEOFFSET, new IntData()));
-
-      AddVariableInfo(new VariableInfo("OperatorLibrary", "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
+      AddVariableInfo(new VariableInfo(OPERATORLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {

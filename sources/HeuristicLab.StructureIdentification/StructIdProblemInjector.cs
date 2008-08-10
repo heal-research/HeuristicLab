@@ -44,6 +44,10 @@ namespace HeuristicLab.StructureIdentification {
       GetVariableInfo("TargetVariable").Local = true;
       AddVariable(new Variable("TargetVariable", new IntData()));
 
+      AddVariableInfo(new VariableInfo("AllowedFeatures", "Indexes of allowed input variables", typeof(ItemList<IntData>), VariableKind.New));
+      GetVariableInfo("AllowedFeatures").Local = true;
+      AddVariable(new Variable("AllowedFeatures", new ItemList<IntData>()));
+
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.New));
       GetVariableInfo("TrainingSamplesStart").Local = true;
       AddVariable(new Variable("TrainingSamplesStart", new IntData()));
