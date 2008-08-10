@@ -68,11 +68,14 @@ namespace HeuristicLab.StructureIdentification {
       double maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
       treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
       totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
-      trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
-      if(useEstimatedValues && backupValues == null) {
+      if(useEstimatedValues && 
+        (backupValues == null || trainingStart!=this.trainingStart || trainingEnd!=this.trainingEnd)) {
+        this.trainingStart = trainingStart;
+        this.trainingEnd = trainingEnd;
         backupValues = new double[trainingEnd - trainingStart];
         for(int i = trainingStart; i < trainingEnd; i++) {
           backupValues[i - trainingStart] = dataset.GetValue(i, targetVariable);
