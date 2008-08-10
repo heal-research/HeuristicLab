@@ -51,7 +51,7 @@ namespace HeuristicLab.StructureIdentification {
       return base.Apply(scope);
     }
 
-    public override double Evaluate(int start, int end) {
+    public override void Evaluate(int start, int end) {
       for(int sample = start; sample < end; sample++) {
         ItemList row = new ItemList();
         double estimated = GetEstimatedValue(sample);
@@ -61,7 +61,6 @@ namespace HeuristicLab.StructureIdentification {
         row.Add(new DoubleData(original));
         values.Add(row);
       }
-      return double.NaN;
     }
   }
 }

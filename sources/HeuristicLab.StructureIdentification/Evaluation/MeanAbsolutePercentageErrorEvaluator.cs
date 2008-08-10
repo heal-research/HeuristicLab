@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class MeanAbsolutePercentageErrorEvaluator : GPEvaluatorBase {
+    private DoubleData mape;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -40,9 +41,20 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
 
     public MeanAbsolutePercentageErrorEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("MAPE", "The mean absolute percentage error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override double Evaluate(int start, int end) {
+    public override IOperation Apply(IScope scope) {
+      mape = GetVariableValue<DoubleData>("MAPE", scope, false, false);
+      if(mape == null) {
+        mape = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MAPE"), mape));
+      }
+
+      return base.Apply(scope);
+    }
+
+    public override void Evaluate(int start, int end) {
       double errorsSum = 0.0;
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
@@ -56,7 +68,7 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       double quality = errorsSum / (end - start);
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
-      return quality;
+      mape.Data = quality;
     }
   }
 }

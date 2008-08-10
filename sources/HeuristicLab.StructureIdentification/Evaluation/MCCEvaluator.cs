@@ -34,22 +34,29 @@ namespace HeuristicLab.StructureIdentification {
     private double limit;
     private double[] original = new double[1];
     private double[] estimated = new double[1];
+    private DoubleData mcc;
     public override string Description {
       get {
-        return @"TASK";
+        return @"Calculates the matthews correlation coefficient for a given model and class separation threshold";
       }
     }
     public MCCEvaluator()
       : base() {
       AddVariableInfo(new VariableInfo("ClassSeparation", "The value of separation between negative and positive target classification values (for instance 0.5 if negative=0 and positive=1).", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MCC", "The matthews correlation coefficient of the model", typeof(DoubleData), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
+      mcc = GetVariableValue<DoubleData>("MCC", scope, false, false);
+      if(mcc == null) {
+        mcc = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MCC"), mcc));
+      }
       limit = GetVariableValue<DoubleData>("ClassSeparation", scope, true).Data;
       return base.Apply(scope);
     }
 
-    public override double Evaluate(int start, int end) {
+    public override void Evaluate(int start, int end) {
       int nSamples = end - start;
       if(estimated.Length != nSamples) {
         estimated = new double[nSamples];
@@ -84,7 +91,7 @@ namespace HeuristicLab.StructureIdentification {
           best_mcc = mcc;
         }
       }
-      return best_mcc;
+      this.mcc.Data = best_mcc;
     }
   }
 }

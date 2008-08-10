@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class MeanSquaredErrorEvaluator : GPEvaluatorBase {
+    protected DoubleData mse;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates the mean-squared-error
@@ -40,9 +41,20 @@ for the estimated values vs. the real values of 'TargetVariable'.";
 
     public MeanSquaredErrorEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override double Evaluate(int start, int end) {
+    public override IOperation Apply(IScope scope) {
+      mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
+      if(mse == null) {
+        mse = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
+      }
+
+      return base.Apply(scope);
+    }
+
+    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0;
       for(int sample = start; sample < end; sample++) {
         double original = GetOriginalValue(sample);
@@ -58,7 +70,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      return errorsSquaredSum;
+      mse.Data = errorsSquaredSum;
     }
   }
 }

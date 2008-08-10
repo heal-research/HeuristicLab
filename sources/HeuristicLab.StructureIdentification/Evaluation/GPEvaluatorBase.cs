@@ -33,8 +33,8 @@ namespace HeuristicLab.StructureIdentification {
   public abstract class GPEvaluatorBase : OperatorBase {
     private IEvaluator evaluator;
     private int targetVariable;
-    private int trainingStart;
-    private int trainingEnd;
+    private int start;
+    private int end;
     private bool useEstimatedValues;
     private double[] backupValues;
     private int evaluatedSamples;
@@ -54,10 +54,9 @@ namespace HeuristicLab.StructureIdentification {
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TotalEvaluatedNodes", "Number of evaluated nodes", typeof(DoubleData), VariableKind.In | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training samples in dataset", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training samples in dataset", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("UseEstimatedTargetValue", "Wether to use the original (measured) or the estimated (calculated) value for the targat variable when doing autoregressive modelling", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Quality", "The evaluated quality of the model", typeof(DoubleData), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -68,21 +67,21 @@ namespace HeuristicLab.StructureIdentification {
       double maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
       treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
       totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
-      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
-      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
+      int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
       if(useEstimatedValues && 
-        (backupValues == null || trainingStart!=this.trainingStart || trainingEnd!=this.trainingEnd)) {
-        this.trainingStart = trainingStart;
-        this.trainingEnd = trainingEnd;
-        backupValues = new double[trainingEnd - trainingStart];
-        for(int i = trainingStart; i < trainingEnd; i++) {
-          backupValues[i - trainingStart] = dataset.GetValue(i, targetVariable);
+        (backupValues == null || start!=this.start || end!=this.end)) {
+        this.start = start;
+        this.end = end;
+        backupValues = new double[end - start];
+        for(int i = start; i < end; i++) {
+          backupValues[i - start] = dataset.GetValue(i, targetVariable);
         }
       }
       // get the mean of the values of the target variable to determin the max and min bounds of the estimated value
-      targetMean = dataset.GetMean(targetVariable, trainingStart, trainingEnd);
+      targetMean = dataset.GetMean(targetVariable, start, end);
       estimatedValueMin = targetMean - maximumPunishment;
       estimatedValueMax = targetMean + maximumPunishment;
 
@@ -91,20 +90,13 @@ namespace HeuristicLab.StructureIdentification {
       evaluator.ResetEvaluator(functionTree);
       evaluatedSamples = 0;
 
-      // calculate the quality measure
-      double result = Evaluate(trainingStart, trainingEnd);
+      Evaluate(start, end);
 
       // restore the values of the target variable from the backup array if necessary
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, trainingStart, trainingEnd);
+      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, start, end);
       // update the value of total evaluated nodes
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * evaluatedSamples;
       // write the calculate quality value
-      DoubleData quality = GetVariableValue<DoubleData>("Quality", scope, false, false);
-      if(quality == null) {
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Quality"), new DoubleData(result)));
-      } else {
-        quality.Data = result;
-      }
       return null;
     }
 
@@ -114,7 +106,7 @@ namespace HeuristicLab.StructureIdentification {
       }
     }
 
-    public abstract double Evaluate(int start, int end);
+    public abstract void Evaluate(int start, int end);
 
     public void SetOriginalValue(int sample, double value) {
       if(useEstimatedValues) {

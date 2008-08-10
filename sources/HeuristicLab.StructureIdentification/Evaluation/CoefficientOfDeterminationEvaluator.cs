@@ -31,6 +31,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
   public class CoefficientOfDeterminationEvaluator : GPEvaluatorBase {
+    private DoubleData r2;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -40,9 +41,20 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
 
     public CoefficientOfDeterminationEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("R2", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override double Evaluate(int start, int end) {
+    public override IOperation Apply(IScope scope) {
+      r2 = GetVariableValue<DoubleData>("R2", scope, false, false);
+      if(r2 == null) {
+        r2 = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("R2"), r2));
+      }
+
+      return base.Apply(scope);
+    }
+
+    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       for(int sample = start; sample < end; sample++) {
@@ -59,11 +71,11 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       }
 
       double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
-      if(quality > 1) 
+      if(quality > 1)
         throw new InvalidProgramException();
-      if(double.IsNaN(quality) || double.IsInfinity(quality)) 
+      if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
-      return quality;
+      r2.Data = quality;
     }
   }
 }

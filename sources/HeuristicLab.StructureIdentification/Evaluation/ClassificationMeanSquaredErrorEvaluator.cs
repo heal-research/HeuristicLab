@@ -30,7 +30,7 @@ using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.StructureIdentification {
-  public class ClassificationMeanSquaredErrorEvaluator : GPEvaluatorBase {
+  public class ClassificationMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
     private const double EPSILON = 1.0E-6;
     private double[] classesArr;
     public override string Description {
@@ -53,8 +53,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       return base.Apply(scope);
     }
 
-    public override double Evaluate(int start, int end) {
-
+    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0;
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
@@ -78,7 +77,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      return errorsSquaredSum;
+      mse.Data = errorsSquaredSum;
     }
 
     private bool IsEqual(double x, double y) {

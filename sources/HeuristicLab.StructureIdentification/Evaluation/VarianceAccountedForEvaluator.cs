@@ -31,6 +31,7 @@ using HeuristicLab.Functions;
 
 namespace HeuristicLab.StructureIdentification {
   public class VarianceAccountedForEvaluator : GPEvaluatorBase {
+    private DoubleData vaf;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates 
@@ -49,10 +50,21 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
     /// </summary>
     public VarianceAccountedForEvaluator()
       : base() {
+      AddVariableInfo(new VariableInfo("VAF", "The variance-accounted-for quality of the model", typeof(DoubleData), VariableKind.New));
+
     }
 
+    public override IOperation Apply(IScope scope) {
+      vaf = GetVariableValue<DoubleData>("VAF", scope, false, false);
+      if(vaf == null) {
+        vaf = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("VAF"), vaf));
+      }
 
-    public override double Evaluate(int start, int end) {
+      return base.Apply(scope);
+    }
+
+    public override void Evaluate(int start, int end) {
       int nSamples = end - start;
       double[] errors = new double[nSamples];
       double[] originalTargetVariableValues = new double[nSamples];
@@ -72,7 +84,7 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       if(double.IsNaN(quality) || double.IsInfinity(quality)) {
         quality = double.MaxValue;
       }
-      return quality;
+      vaf.Data = quality;
     }
   }
 }

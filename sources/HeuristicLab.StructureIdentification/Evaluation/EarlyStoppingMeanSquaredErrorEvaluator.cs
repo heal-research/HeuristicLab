@@ -51,7 +51,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     }
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override double Evaluate(int start, int end) {
+    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0;
       int rows = end - start;
       for(int sample = start; sample < end; sample++) {
@@ -64,14 +64,15 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         }
         // check the limit and stop as soon as we hit the limit
         if(errorsSquaredSum / rows >= qualityLimit) {
-          return errorsSquaredSum / (sample - start + 1); // return estimated MSE (when the remaining errors are on average the same)
+          mse.Data = errorsSquaredSum / (sample - start + 1); // return estimated MSE (when the remaining errors are on average the same)
+          return;
         }
       }
       errorsSquaredSum /= rows;
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
-      return errorsSquaredSum;
+      mse.Data = errorsSquaredSum;
     }
   }
 }

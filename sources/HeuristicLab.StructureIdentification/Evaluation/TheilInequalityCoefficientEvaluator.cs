@@ -32,6 +32,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.StructureIdentification {
   public class TheilInequalityCoefficientEvaluator : GPEvaluatorBase {
     private bool differential;
+    private DoubleData theilInequaliy;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -42,14 +43,22 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
     public TheilInequalityCoefficientEvaluator()
       : base() {
       AddVariableInfo(new VariableInfo("Differential", "Wether to calculate the coefficient for the predicted change vs. original change or for the absolute prediction vs. original value", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TheilInequalityCoefficient", "Theil's inequality coefficient of the model", typeof(DoubleData), VariableKind.New));
+
     }
 
     public override IOperation Apply(IScope scope) {
       differential = GetVariableValue<BoolData>("Differential", scope, true).Data;
+      theilInequaliy = GetVariableValue<DoubleData>("TheilInequalityCoefficient", scope, false, false);
+      if(theilInequaliy == null) {
+        theilInequaliy = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficient"), theilInequaliy));
+      }
+
       return base.Apply(scope);
     }
 
-    public override double Evaluate(int start, int end) {
+    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0.0;
       double estimatedSquaredSum = 0.0;
       double originalSquaredSum = 0.0;
@@ -58,7 +67,7 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
         if(differential) prevValue = GetOriginalValue(sample - 1);
         double estimatedChange = GetEstimatedValue(sample) - prevValue;
         double originalChange = GetOriginalValue(sample) - prevValue;
-        SetOriginalValue(sample, estimatedChange+prevValue);
+        SetOriginalValue(sample, estimatedChange + prevValue);
         if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;
@@ -70,7 +79,7 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
       double quality = Math.Sqrt(errorsSquaredSum / nSamples) / (Math.Sqrt(estimatedSquaredSum / nSamples) + Math.Sqrt(originalSquaredSum / nSamples));
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
-      return quality;
+      theilInequaliy.Data = quality;
     }
   }
 }
