@@ -161,7 +161,7 @@ namespace HeuristicLab.Grid {
             return result;
           } else {
             // no result yet, check for which jobs we waited too long and requeue those jobs
-            List<Guid> expiredJobs = FindExpiredJobs(DateTime.Now.AddMinutes(-RUNNING_JOB_EXPIRY_TIME_MIN));
+            List<Guid> expiredJobs = FindExpiredJobs(DateTime.Now.AddDays(-RUNNING_JOB_EXPIRY_TIME_MIN));
             foreach(Guid expiredGuid in expiredJobs) {
               engineList.Insert(0, expiredGuid);
               waitingEngines[expiredGuid] = runningEngines[expiredGuid];
