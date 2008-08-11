@@ -43,7 +43,5 @@ namespace HeuristicLab.Grid {
     byte[] EndExecuteEngine(Guid engineGuid);
     [OperationContract]
     byte[] TryEndExecuteEngine(Guid engineGuid, int timeout);
-    [OperationContract]
-    void AbortEngine(Guid engineGuid);
   }
 }

@@ -22,112 +22,79 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Threading;
 using System.ServiceModel;
+using System.Data.Common;
 
 namespace HeuristicLab.Grid {
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
   public class EngineStore : IEngineStore {
-    private List<Guid> engineList;
-    private Dictionary<Guid, byte[]> waitingEngines;
-    private Dictionary<Guid, byte[]> runningEngines;
     private Dictionary<Guid, ManualResetEvent> waitHandles;
-    private Dictionary<Guid, byte[]> results;
-    private Dictionary<Guid, DateTime> resultDate;
-    private Dictionary<Guid, DateTime> runningEngineDate;
-    private const int RESULT_EXPIRY_TIME_MIN = 10;
-    private const int RUNNING_JOB_EXPIRY_TIME_MIN = 10;
-    private object bigLock;
+    private Database database;
+
+    private static readonly string dbFile = AppDomain.CurrentDomain.BaseDirectory + "/enginestore.db3";
+    private static readonly string connectionString = "Data Source=\"" + dbFile + "\";Pooling=False";
+
+    private int waitingJobs;
     public int WaitingJobs {
       get {
-        return waitingEngines.Count;
+        return waitingJobs;
       }
     }
-
+    private int runningJobs;
     public int RunningJobs {
       get {
-        return runningEngines.Count;
+        return runningJobs;
       }
     }
-
+    private int results;
     public int WaitingResults {
       get {
-        return results.Count;
+        return results;
       }
     }
 
     public EngineStore() {
-      engineList = new List<Guid>();
-      waitingEngines = new Dictionary<Guid, byte[]>();
-      runningEngines = new Dictionary<Guid, byte[]>();
       waitHandles = new Dictionary<Guid, ManualResetEvent>();
-      results = new Dictionary<Guid, byte[]>();
-      resultDate = new Dictionary<Guid, DateTime>();
-      runningEngineDate = new Dictionary<Guid, DateTime>();
-      bigLock = new object();
+      DbProviderFactory fact;
+      fact = DbProviderFactories.GetFactory("System.Data.SQLite");
+      if(!System.IO.File.Exists(dbFile)) {
+        database = new Database(connectionString);
+        database.CreateNew();
+      } else {
+        database = new Database(connectionString);
+      }
+      database = new Database(connectionString);
     }
 
+    private object t = new object();
     public bool TryTakeEngine(out Guid guid, out byte[] engine) {
-      lock(bigLock) {
-        if(engineList.Count == 0) {
-          guid = Guid.Empty;
-          engine = null;
+      lock(t) {
+        List<JobEntry> waitingJobs = database.GetWaitingJobs();
+        if(waitingJobs.Count == 0) {
+          guid = Guid.Empty; engine = null;
           return false;
         } else {
-          guid = engineList[0];
-          engineList.RemoveAt(0);
-          engine = waitingEngines[guid];
-          waitingEngines.Remove(guid);
-          runningEngines[guid] = engine;
-          runningEngineDate[guid] = DateTime.Now;
+          JobEntry oldestEntry = waitingJobs.OrderBy(a => a.CreationTime).First();
+          guid = oldestEntry.Guid;
+          engine = oldestEntry.RawData;
+          database.UpdateJobState(guid, HeuristicLab.Grid.JobState.Busy);
           return true;
         }
       }
     }
 
     public void StoreResult(Guid guid, byte[] result) {
-      lock(bigLock) {
-        // clear old results
-        List<Guid> expiredResults = FindExpiredResults(DateTime.Now.AddMinutes(-RESULT_EXPIRY_TIME_MIN));
-        foreach(Guid expiredGuid in expiredResults) {
-          results.Remove(expiredGuid);
-          waitHandles.Remove(expiredGuid);
-          resultDate.Remove(expiredGuid);
-        }
-        // add the new result
-        runningEngines.Remove(guid);
-        runningEngineDate.Remove(guid);
-        results[guid] = result;
-        resultDate[guid] = DateTime.Now;
-        waitHandles[guid].Set();
-      }
-    }
-
-    private List<Guid> FindExpiredResults(DateTime expirationDate) {
-      List<Guid> expiredResults = new List<Guid>();
-      foreach(Guid guid in results.Keys) {
-        if(resultDate[guid] < expirationDate) {
-          expiredResults.Add(guid);
-        }
-      }
-      return expiredResults;
-    }
-    private List<Guid> FindExpiredJobs(DateTime expirationDate) {
-      List<Guid> expiredJobs = new List<Guid>();
-      foreach(Guid guid in runningEngines.Keys) {
-        if(runningEngineDate[guid] < expirationDate) {
-          expiredJobs.Add(guid);
-        }
-      }
-      return expiredJobs;
+      database.DeleteExpiredResults();
+      // add the new result
+      database.SetJobResult(guid, result);
+      waitHandles[guid].Set();
     }
 
     internal void AddEngine(Guid guid, byte[] engine) {
-      lock(bigLock) {
-        engineList.Add(guid);
-        waitingEngines.Add(guid, engine);
-        waitHandles.Add(guid, new ManualResetEvent(false));
-      }
+      database.InsertJob(guid, HeuristicLab.Grid.JobState.Waiting, engine);
+      waitHandles.Add(guid, new ManualResetEvent(false));
     }
 
     internal byte[] GetResult(Guid guid) {
@@ -135,56 +102,34 @@ namespace HeuristicLab.Grid {
     }
 
     internal byte[] GetResult(Guid guid, int timeout) {
-      lock(bigLock) {
-        // result already available
-        if(results.ContainsKey(guid)) {
-          // if the wait-handle for this result is still alive then close and remove it
-          if(waitHandles.ContainsKey(guid)) {
-            ManualResetEvent waitHandle = waitHandles[guid];
-            waitHandle.Close();
-            waitHandles.Remove(guid);
-          }
-          byte[] result = results[guid];
-          results.Remove(guid);
-          return result;
+      if(JobState(guid) == HeuristicLab.Grid.JobState.Finished) {
+        ManualResetEvent waitHandle = waitHandles[guid];
+        waitHandle.Close();
+        waitHandles.Remove(guid);
+        JobEntry entry = database.GetJob(guid);
+        return entry.RawData;
+      } else {
+        // result not yet available, if there is also no wait-handle for that result then we will never have a result and can return null
+        if(!waitHandles.ContainsKey(guid)) return null;
+        // otherwise we have a wait-handle and can wait for the result
+        ManualResetEvent waitHandle = waitHandles[guid];
+        // wait
+        if(waitHandle.WaitOne(timeout, true)) {
+          // ok got the result in within the wait time => close and remove the wait-hande and return the result
+          waitHandle.Close();
+          waitHandles.Remove(guid);
+          JobEntry entry = database.GetJob(guid);
+          return entry.RawData;
         } else {
-          // result not yet available, if there is also no wait-handle for that result then we will never have a result and can return null
-          if(!waitHandles.ContainsKey(guid)) return null;
-          // otherwise we have a wait-handle and can wait for the result
-          ManualResetEvent waitHandle = waitHandles[guid];
-          // wait
-          if(waitHandle.WaitOne(timeout, true)) {
-            // ok got the result in within the wait time => close and remove the wait-hande and return the result
-            waitHandle.Close();
-            waitHandles.Remove(guid);
-            byte[] result = results[guid];
-            return result;
-          } else {
-            // no result yet, check for which jobs we waited too long and requeue those jobs
-            List<Guid> expiredJobs = FindExpiredJobs(DateTime.Now.AddDays(-RUNNING_JOB_EXPIRY_TIME_MIN));
-            foreach(Guid expiredGuid in expiredJobs) {
-              engineList.Insert(0, expiredGuid);
-              waitingEngines[expiredGuid] = runningEngines[expiredGuid];
-              runningEngines.Remove(expiredGuid);
-              runningEngineDate.Remove(expiredGuid);
-            }
-            return null;
-          }
+          // no result yet, check for which jobs we waited too long and requeue those jobs
+          database.RestartExpiredActiveJobs();
+          return null;
         }
       }
     }
 
-    internal void AbortEngine(Guid guid) {
-      throw new NotImplementedException();
-    }
-
     internal JobState JobState(Guid guid) {
-      lock(bigLock) {
-        if(waitingEngines.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Waiting;
-        else if(waitHandles.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Busy;
-        else if(results.ContainsKey(guid)) return HeuristicLab.Grid.JobState.Finished;
-        else return HeuristicLab.Grid.JobState.Unknown;
-      }
+      return database.GetJob(guid).Status;
     }
   }
 }

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,34 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.ServiceModel;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.Grid {
-  [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext=false)]
-  public class GridServer : IGridServer {
-
-    private EngineStore engineStore;
-
-    public GridServer(EngineStore engineStore) {
-      this.engineStore = engineStore;
-    }
-
-    public JobState JobState(Guid guid) {
-      return engineStore.JobState(guid);
-    }
-
-    public Guid BeginExecuteEngine(byte[] engine) {
-      Guid guid = Guid.NewGuid();
-      engineStore.AddEngine(guid, engine);
-      return guid;
-    }
-
-    public byte[] EndExecuteEngine(Guid guid) {
-      return engineStore.GetResult(guid);
-    }
-    public byte[] TryEndExecuteEngine(Guid guid, int timeout) {
-      return engineStore.GetResult(guid, timeout);
-    }
+  public class JobEntry {
+    public Guid Guid { get; set; }
+    public JobState Status { get; set; }
+    public DateTime CreationTime { get; set; }
+    public DateTime? StartTime { get; set; }
+    public byte[] RawData { get; set; }
   }
 }
