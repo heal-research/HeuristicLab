@@ -38,7 +38,8 @@ namespace HeuristicLab.StructureIdentification {
       set { base.Item = value; }
     }
 
-    public StructIdProblemInjectorView() : base() {
+    public StructIdProblemInjectorView()
+      : base() {
       InitializeComponent();
     }
     public StructIdProblemInjectorView(StructIdProblemInjector structIdProblemInjector)
@@ -61,7 +62,7 @@ namespace HeuristicLab.StructureIdentification {
 
     protected override void UpdateControls() {
       base.UpdateControls();
-      if (StructIdProblemInjector == null) {
+      if(StructIdProblemInjector == null) {
         importInstanceButton.Enabled = false;
       } else {
         Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
@@ -71,7 +72,7 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     private void importInstanceButton_Click(object sender, EventArgs e) {
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+      if(openFileDialog.ShowDialog(this) == DialogResult.OK) {
         DatasetParser parser = new DatasetParser();
         bool success = false;
         try {
@@ -89,7 +90,7 @@ namespace HeuristicLab.StructureIdentification {
           // if the non-strict parsing also failed then show the exception
           ShowErrorMessageBox(ex);
         }
-        if (success) {
+        if(success) {
           Dataset dataset = (Dataset)StructIdProblemInjector.GetVariable("Dataset").Value;
           dataset.Rows = parser.Rows;
           dataset.Columns = parser.Columns;
@@ -97,21 +98,33 @@ namespace HeuristicLab.StructureIdentification {
           dataset.Name = parser.ProblemName;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
-          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesStart").Value).Data = parser.TrainingSamplesStart;
-          ((IntData)StructIdProblemInjector.GetVariable("TrainingSamplesEnd").Value).Data = parser.TrainingSamplesEnd;
-          ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesStart").Value).Data = parser.ValidationSamplesStart;
-          ((IntData)StructIdProblemInjector.GetVariable("ValidationSamplesEnd").Value).Data = parser.ValidationSamplesEnd;
-          ((IntData)StructIdProblemInjector.GetVariable("TestSamplesStart").Value).Data = parser.TestSamplesStart;
-          ((IntData)StructIdProblemInjector.GetVariable("TestSamplesEnd").Value).Data = parser.TestSamplesEnd;
-          ((IntData)StructIdProblemInjector.GetVariable("TargetVariable").Value).Data = parser.TargetVariable;
-          ItemList<IntData> allowedFeatures = (ItemList<IntData>)StructIdProblemInjector.GetVariable("AllowedFeatures").Value;
-          allowedFeatures.Clear();
-          List<int> nonInputVariables = parser.NonInputVariables;
-          for(int i = 0; i < dataset.Columns; i++) {
-            if(!nonInputVariables.Contains(i)) allowedFeatures.Add(new IntData(i));
+          TrySetVariable("TrainingSamplesStart", parser.TrainingSamplesStart);
+          TrySetVariable("TrainingSamplesStart", parser.TrainingSamplesStart);
+          TrySetVariable("TrainingSamplesEnd", parser.TrainingSamplesEnd);
+          TrySetVariable("ValidationSamplesStart", parser.ValidationSamplesStart);
+          TrySetVariable("ValidationSamplesEnd", parser.ValidationSamplesEnd);
+          TrySetVariable("TestSamplesStart", parser.TestSamplesStart);
+          TrySetVariable("TestSamplesEnd", parser.TestSamplesEnd);
+          TrySetVariable("TargetVariable", parser.TargetVariable);
+
+          IVariable var = StructIdProblemInjector.GetVariable("AllowedFeatures");
+          if(var != null) {
+            ItemList<IntData> allowedFeatures = (ItemList<IntData>)var.Value;
+            allowedFeatures.Clear();
+            List<int> nonInputVariables = parser.NonInputVariables;
+            for(int i = 0; i < dataset.Columns; i++) {
+              if(!nonInputVariables.Contains(i)) allowedFeatures.Add(new IntData(i));
+            }
           }
           Refresh();
         }
+      }
+    }
+
+    private void TrySetVariable(string name, int value) {
+      IVariable var = StructIdProblemInjector.GetVariable(name);
+      if(var != null) {
+        ((IntData)var.Value).Data = value;
       }
     }
 
