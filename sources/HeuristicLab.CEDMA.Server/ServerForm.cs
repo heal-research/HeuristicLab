@@ -82,9 +82,9 @@ namespace HeuristicLab.CEDMA.Server {
       host.Description.Behaviors.Add(throttlingBehavior);
       try {
         NetTcpBinding binding = new NetTcpBinding();
-        binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
-        binding.ReaderQuotas.MaxStringContentLength = 10000000; // also 10M chars
-        binding.ReaderQuotas.MaxArrayLength = 10000000; // also 10M elements;
+        binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
+        binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
+        binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
         binding.Security.Mode = SecurityMode.None;
 
         host.AddServiceEndpoint(typeof(IDatabase), binding, addressTextBox.Text);
