@@ -45,9 +45,8 @@ namespace HeuristicLab.Operators.Metaprogramming {
 
       foreach(StringData opName in parts) {
         CombinedOperator subOp = scope.GetVariableValue<CombinedOperator>(opName.Data, true);
-        foreach(IOperator op in subOp.OperatorGraph.Operators)
-          combOp.OperatorGraph.AddOperator(op);
-        seq.AddSubOperator(subOp.OperatorGraph.InitialOperator);
+        combOp.OperatorGraph.AddOperator(subOp);
+        seq.AddSubOperator(subOp);
       }
       combOp.OperatorGraph.AddOperator(seq);
       combOp.OperatorGraph.InitialOperator = seq;
