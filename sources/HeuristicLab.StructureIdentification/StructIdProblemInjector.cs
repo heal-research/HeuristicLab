@@ -80,7 +80,8 @@ namespace HeuristicLab.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       foreach(VariableInfo info in VariableInfos) {
         if(info.Local) {
-          scope.AddVariable(new Variable(info.ActualName, (IItem)GetVariable(info.FormalName).Value.Clone()));
+          IVariable var = GetVariable(info.FormalName);
+          if(var!=null) scope.AddVariable(new Variable(info.ActualName, (IItem)var.Value.Clone()));
         }
       }
       return null;
