@@ -133,6 +133,14 @@ namespace HeuristicLab.CEDMA.Server {
         PatchLinks(((CombinedOperator)op).OperatorGraph, patchedOperators);
         return op;
       }
+      foreach(VariableInfo varInfo in op.VariableInfos) {
+        IVariable var = op.GetVariable(varInfo.ActualName);
+        if(var != null && var.Value is IOperatorGraph) {
+          PatchLinks((IOperatorGraph)var.Value, patchedOperators);
+        } else if(var != null && var.Value is IOperator) {
+          PatchLinks((IOperator)var.Value, patchedOperators);
+        }
+      }
       return op;
     }
 
