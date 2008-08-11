@@ -31,6 +31,8 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.StructureIdentification {
   public class FunctionLibraryInjector : OperatorBase {
+    private const string TARGETVARIABLE = "TargetVariable";
+    private const string AUTOREGRESSIVE = "Autoregressive";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
@@ -46,6 +48,8 @@ namespace HeuristicLab.StructureIdentification {
 
     public FunctionLibraryInjector()
       : base() {
+      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(AUTOREGRESSIVE, "Switch to turn on/off autoregressive modeling (wether to allow the target variable as input)", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
@@ -56,6 +60,17 @@ namespace HeuristicLab.StructureIdentification {
       IntData minTimeOffset = GetVariableValue<IntData>(MINTIMEOFFSET, scope, true);
       IntData maxTimeOffset = GetVariableValue<IntData>(MAXTIMEOFFSET, scope, true);
       ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
+      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+      bool autoregressive = GetVariableValue<BoolData>(AUTOREGRESSIVE, scope, true).Data;
+
+      if(autoregressive) {
+        // make sure the target-variable occures in list of allowed features
+        if(!allowedFeatures.Exists(d => d.Data == targetVariable)) allowedFeatures.Add(new IntData(targetVariable));
+      } else {
+        // remove the target-variable in case it occures in allowed features
+        List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
+        foreach(IntData t in ts) allowedFeatures.Remove(t);
+      }
 
       InitDefaultOperatorLibrary();
 
