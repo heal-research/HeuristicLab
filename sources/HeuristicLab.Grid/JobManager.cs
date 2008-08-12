@@ -40,7 +40,7 @@ namespace HeuristicLab.Grid {
     private const int MAX_RESTARTS = 5;
     private const int MAX_CONNECTION_RETRIES = 10;
     private const int RETRY_TIMEOUT_SEC = 60;
-    private const int CHECK_RESULTS_TIMEOUT = 3;
+    private const int RESULT_POLLING_TIMEOUT = 5;
 
     private class Job {
       public Guid guid;
@@ -149,6 +149,7 @@ namespace HeuristicLab.Grid {
     public void GetResults() {
       try {
         while(true) {
+          Thread.Sleep(TimeSpan.FromSeconds(RESULT_POLLING_TIMEOUT));
           Job job = null;
           lock(runningQueueLock) {
             if(runningJobs.Count > 0) job = runningJobs.Dequeue();

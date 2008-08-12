@@ -45,7 +45,7 @@ namespace HeuristicLab.Grid {
           cnn.Open();
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Job (ID integer primary key autoincrement, Guid Guid, Status text, CreationTime DateTime, StartTime DateTime, RawData blob)";
+              cmd.CommandText = "CREATE TABLE Job (ID integer primary key autoincrement, Guid text, Status text, CreationTime DateTime, StartTime DateTime, RawData blob)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Grid {
               c.CommandText = "Insert into Job (Guid, Status, CreationTime, StartTime, RawData) values (@Guid, @Status, @CreationTime, @StartTime, @RawData)";
               DbParameter guidParam = c.CreateParameter();
               guidParam.ParameterName = "@Guid";
-              guidParam.Value = guid;
+              guidParam.Value = guid.ToString();
               c.Parameters.Add(guidParam);
               DbParameter statusParam = c.CreateParameter();
               statusParam.ParameterName = "@Status";
@@ -100,33 +100,57 @@ namespace HeuristicLab.Grid {
 
     }
 
-    internal List<JobEntry> GetWaitingJobs() {
-      rwLock.EnterReadLock();
-      List<JobEntry> jobs = new List<JobEntry>();
+    internal JobEntry GetNextWaitingJob() {
+      rwLock.EnterUpgradeableReadLock();
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
-          SQLiteCommand c = cnn.CreateCommand();
-          c.CommandText = "Select Guid, CreationTime, StartTime, Rawdata from Job where Status=@Status";
-          DbParameter statusParameter = c.CreateParameter();
-          statusParameter.ParameterName = "@Status";
-          statusParameter.Value = JobState.Waiting.ToString();
-          c.Parameters.Add(statusParameter);
-          SQLiteDataReader r = c.ExecuteReader();
-          while(r.Read()) {
+          using(DbTransaction t = cnn.BeginTransaction()) {
+            DbCommand c = cnn.CreateCommand();
+            c.Transaction = t;
+            c.CommandText = "Select Guid, CreationTime, StartTime, Rawdata from Job where Status=@Status order by CreationTime limit 1";
+            DbParameter statusParameter = c.CreateParameter();
+            statusParameter.ParameterName = "@Status";
+            statusParameter.Value = JobState.Waiting.ToString();
+            c.Parameters.Add(statusParameter);
+            DbDataReader r = c.ExecuteReader();
+            if(!r.HasRows) {
+              r.Close();
+              t.Commit();
+              return null;
+            }
+            r.Read();
             JobEntry job = new JobEntry();
-            job.Status = JobState.Waiting;
+            job.Status = JobState.Busy;
             job.Guid = r.GetGuid(0);
             job.CreationTime = r.GetDateTime(1);
-            job.StartTime = r.IsDBNull(2)?null:new Nullable<DateTime>(r.GetDateTime(2));
+            job.StartTime = r.IsDBNull(2) ? null : new Nullable<DateTime>(r.GetDateTime(2));
             job.RawData = (byte[])r.GetValue(3);
-            jobs.Add(job);
+            r.Close();
+            rwLock.EnterWriteLock();
+            try {
+              DbCommand updateCmd = cnn.CreateCommand();
+              updateCmd.Transaction = t;
+              updateCmd.CommandText = "Update job set Status=@Status where Guid=@Guid";
+              statusParameter = updateCmd.CreateParameter();
+              statusParameter.ParameterName = "@Status";
+              statusParameter.Value = JobState.Busy.ToString();
+              DbParameter guidParam = updateCmd.CreateParameter();
+              guidParam.ParameterName = "@Guid";
+              guidParam.Value = job.Guid.ToString();
+              updateCmd.Parameters.Add(statusParameter);
+              updateCmd.Parameters.Add(guidParam);
+              updateCmd.ExecuteNonQuery();
+            } finally {
+              rwLock.ExitWriteLock();
+            }
+            t.Commit();
+            return job;
           }
         }
       } finally {
-        rwLock.ExitReadLock();
+        rwLock.ExitUpgradeableReadLock();
       }
-      return jobs;
     }
 
     internal void SetJobResult(Guid guid, byte[] result) {
@@ -134,8 +158,8 @@ namespace HeuristicLab.Grid {
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
-          using(SQLiteTransaction t = cnn.BeginTransaction()) {
-            using(SQLiteCommand c = cnn.CreateCommand()) {
+          using(DbTransaction t = cnn.BeginTransaction()) {
+            using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
               c.CommandText = "Update Job set Status=@Status, RawData=@RawData where Guid=@Guid";
               DbParameter rawDataParam = c.CreateParameter();
@@ -144,9 +168,9 @@ namespace HeuristicLab.Grid {
               rawDataParam.ParameterName = "@RawData";
               rawDataParam.Value = result;
               guidParam.ParameterName = "@Guid";
-              guidParam.Value = guid;
+              guidParam.Value = guid.ToString();
               statusParam.ParameterName = "@Status";
-              statusParam.Value = JobState.Finished;
+              statusParam.Value = JobState.Finished.ToString();
               c.Parameters.Add(rawDataParam);
               c.Parameters.Add(statusParam);
               c.Parameters.Add(guidParam);
@@ -165,8 +189,8 @@ namespace HeuristicLab.Grid {
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
-          using(SQLiteTransaction t = cnn.BeginTransaction()) {
-            using(SQLiteCommand c = cnn.CreateCommand()) {
+          using(DbTransaction t = cnn.BeginTransaction()) {
+            using(DbCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
               c.CommandText = "Update Job set Status=@Status, StartTime=@StartTime where Guid=@Guid";
               DbParameter statusParam = c.CreateParameter();
@@ -178,9 +202,9 @@ namespace HeuristicLab.Grid {
               else
                 startTimeParam.Value = null;
               guidParam.ParameterName = "@Guid";
-              guidParam.Value = guid;
+              guidParam.Value = guid.ToString();
               statusParam.ParameterName = "@Status";
-              statusParam.Value = jobState;
+              statusParam.Value = jobState.ToString();
               c.Parameters.Add(startTimeParam);
               c.Parameters.Add(statusParam);
               c.Parameters.Add(guidParam);
@@ -200,27 +224,53 @@ namespace HeuristicLab.Grid {
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
-          SQLiteCommand c = cnn.CreateCommand();
+          DbCommand c = cnn.CreateCommand();
           c.CommandText = "Select Status, CreationTime, StartTime, Rawdata from Job where Guid=@Guid";
           DbParameter guidParameter = c.CreateParameter();
           guidParameter.ParameterName = "@Guid";
-          guidParameter.Value = guid;
+          guidParameter.Value = guid.ToString();
           c.Parameters.Add(guidParameter);
-          SQLiteDataReader r = c.ExecuteReader();
-          while(r.Read()) {
+          DbDataReader r = c.ExecuteReader();
+          if(r.HasRows) {
+            r.Read();
             JobEntry job = new JobEntry();
             job.Guid = guid;
             job.Status = (JobState)Enum.Parse(typeof(JobState), r.GetString(0));
             job.CreationTime = r.GetDateTime(1);
-            job.StartTime = r.IsDBNull(2)?null:new Nullable<DateTime>(r.GetDateTime(2));
+            job.StartTime = r.IsDBNull(2) ? null : new Nullable<DateTime>(r.GetDateTime(2));
             job.RawData = (byte[])r.GetValue(3);
             return job;
           }
+          r.Close();
         }
       } finally {
         rwLock.ExitReadLock();
       }
       return null;
+    }
+
+    internal JobState GetJobState(Guid guid) {
+      rwLock.EnterReadLock();
+      try {
+        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          DbCommand c = cnn.CreateCommand();
+          c.CommandText = "Select Status from Job where Guid=@Guid";
+          DbParameter guidParameter = c.CreateParameter();
+          guidParameter.ParameterName = "@Guid";
+          guidParameter.Value = guid.ToString();
+          c.Parameters.Add(guidParameter);
+          DbDataReader r = c.ExecuteReader();
+          if(r.HasRows) {
+            r.Read();
+            return (JobState)Enum.Parse(typeof(JobState), r.GetString(0));
+          }
+          r.Close();
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return JobState.Unknown;
     }
 
     /// <summary>
