@@ -353,7 +353,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           SQLiteCommand c = cnn.CreateCommand();
-          c.CommandText = "Select id, name, rawdata from Agent where Status=@Status";
+          c.CommandText = "Select id, name from Agent where Status=@Status";
           DbParameter statusParameter = c.CreateParameter();
           statusParameter.ParameterName = "@Status";
           statusParameter.Value = status.ToString();
@@ -365,7 +365,6 @@ namespace HeuristicLab.CEDMA.DB {
             agent.Status = status;
             agent.Id = r.GetInt32(0);
             agent.Name = r.IsDBNull(1) ? "" : r.GetString(1);
-            agent.RawData = (byte[])r.GetValue(2);
             agents.Add(agent);
           }
         }
@@ -382,7 +381,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, name, status, rawdata from Agent where ParentAgentId isnull";
+            c.CommandText = "Select id, name, status from Agent where ParentAgentId isnull";
             using(DbDataReader r = c.ExecuteReader()) {
               while(r.Read()) {
                 AgentEntry agent = new AgentEntry();
@@ -390,7 +389,6 @@ namespace HeuristicLab.CEDMA.DB {
                 agent.Id = r.GetInt32(0);
                 agent.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
-                agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
               }
             }
@@ -409,7 +407,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select id, name, status, rawdata from Agent where ParentAgentId=@ParentAgentId";
+            c.CommandText = "Select id, name, status from Agent where ParentAgentId=@ParentAgentId";
             DbParameter parentParameter = c.CreateParameter();
             parentParameter.ParameterName = "@ParentAgentId";
             parentParameter.Value = parentAgentId;
@@ -422,7 +420,6 @@ namespace HeuristicLab.CEDMA.DB {
                 agent.Id = r.GetInt32(0);
                 agent.Name = r.IsDBNull(1) ? "-" : r.GetString(1);
                 agent.Status = (ProcessStatus)Enum.Parse(typeof(ProcessStatus), r.GetString(2));
-                agent.RawData = (byte[])r.GetValue(3);
                 agents.Add(agent);
               }
             }
@@ -434,6 +431,31 @@ namespace HeuristicLab.CEDMA.DB {
       return agents;
     }
 
+    public byte[] GetAgentRawData(long id) {
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select RawData from Agent where Id=@Id";
+            DbParameter idParameter = c.CreateParameter();
+            idParameter.ParameterName = "@Id";
+            idParameter.Value = id;
+            c.Parameters.Add(idParameter);
+            using(DbDataReader r = c.ExecuteReader()) {
+              if(r.HasRows) {
+                r.Read();
+                return (byte[])r.GetValue(0);
+              }
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return null; // agent with the given id not found
+    }
+
     public ICollection<ResultEntry> GetResults(long agentId) {
       List<ResultEntry> results = new List<ResultEntry>();
       rwLock.EnterReadLock();
@@ -441,7 +463,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, CreationTime, Summary, Description, Rawdata from Result where AgentId=@AgentId";
+            c.CommandText = "Select Id, CreationTime, Summary, Description from Result where AgentId=@AgentId";
             DbParameter agentParam = c.CreateParameter();
             agentParam.ParameterName = "@AgentId";
             agentParam.Value = agentId;
@@ -454,7 +476,6 @@ namespace HeuristicLab.CEDMA.DB {
                 result.CreationTime = r.GetDateTime(1);
                 result.Summary = r.GetString(2);
                 result.Description = r.GetString(3);
-                result.RawData = (byte[])r.GetValue(4);
                 results.Add(result);
               }
             }
@@ -473,7 +494,7 @@ namespace HeuristicLab.CEDMA.DB {
         using(DbConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
           using(DbCommand c = cnn.CreateCommand()) {
-            c.CommandText = "Select Id, CreationTime, Summary, Description, Rawdata from Result where ParentResultId=@ParentResultId";
+            c.CommandText = "Select Id, CreationTime, Summary, Description from Result where ParentResultId=@ParentResultId";
             DbParameter parentParam = c.CreateParameter();
             parentParam.ParameterName = "@ParentResultId";
             parentParam.Value = resultId;
@@ -486,7 +507,6 @@ namespace HeuristicLab.CEDMA.DB {
                 result.CreationTime = r.GetDateTime(1);
                 result.Summary = r.GetString(2);
                 result.Description = r.GetString(3);
-                result.RawData = (byte[])r.GetValue(4);
                 results.Add(result);
               }
             }
@@ -496,6 +516,31 @@ namespace HeuristicLab.CEDMA.DB {
         rwLock.ExitReadLock();
       }
       return results;
+    }
+
+    public byte[] GetResultRawData(long id) {
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select RawData from Result where Id=@Id";
+            DbParameter idParameter = c.CreateParameter();
+            idParameter.ParameterName = "@Id";
+            idParameter.Value = id;
+            c.Parameters.Add(idParameter);
+            using(DbDataReader r = c.ExecuteReader()) {
+              if(r.HasRows) {
+                r.Read();
+                return (byte[])r.GetValue(0);
+              }
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return null; // result with the given id not found
     }
 
     public ICollection<OperatorEntry> GetOperators() {

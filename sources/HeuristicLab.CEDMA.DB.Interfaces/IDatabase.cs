@@ -64,10 +64,16 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     ICollection<AgentEntry> GetSubAgents(long parentAgentId);
 
     [OperationContract]
+    byte[] GetAgentRawData(long id);
+
+    [OperationContract]
     ICollection<ResultEntry> GetResults(long agentId);
 
     [OperationContract]
     ICollection<ResultEntry> GetSubResults(long parentResultId);
+
+    [OperationContract]
+    byte[] GetResultRawData(long id);
 
     [OperationContract]
     ICollection<OperatorEntry> GetOperators();

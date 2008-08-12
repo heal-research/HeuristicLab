@@ -73,7 +73,9 @@ namespace HeuristicLab.CEDMA.Server {
         // initialize CEDMA variables for the execution of the agent
         scope.AddVariable(new Variable("AgentId", new IntData((int)entry.Id)));
         scope.AddVariable(new Variable("CedmaServerUri", new StringData(serverUri)));
-        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
+
+        byte[] rawData = database.GetAgentRawData(entry.Id);
+        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(rawData);
 
         PatchLinks(opGraph, new Dictionary<long, IOperator>());
 

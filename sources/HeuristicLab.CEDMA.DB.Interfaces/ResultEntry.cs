@@ -41,7 +41,5 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public string Description { get; set; }
     [DataMember]
     public DateTime CreationTime { get; set; }
-    [DataMember]
-    public byte[] RawData { get; set; }
   }
 }

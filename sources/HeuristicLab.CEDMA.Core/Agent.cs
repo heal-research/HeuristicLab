@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Agent : IAgent {
@@ -69,10 +70,6 @@ namespace HeuristicLab.CEDMA.Core {
           Agent newAgent = new Agent(Database, entry.Id);
           newAgent.Name = entry.Name;
           newAgent.Status = entry.Status;
-          IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(entry.RawData);
-          newAgent.OperatorGraph.Clear();
-          foreach(IOperator op in opGraph.Operators) newAgent.OperatorGraph.AddOperator(op);
-          newAgent.OperatorGraph.InitialOperator = opGraph.InitialOperator;
           agents.Add(newAgent);
         }
         return agents;
@@ -86,7 +83,6 @@ namespace HeuristicLab.CEDMA.Core {
           Result result = new Result(Database, entry.Id);
           result.Summary = entry.Summary;
           result.Description = entry.Description;
-          result.Item = (IItem)PersistenceManager.RestoreFromGZip(entry.RawData);
           results.Add(result);
         }
         return results;
@@ -94,7 +90,37 @@ namespace HeuristicLab.CEDMA.Core {
     } 
 
     public IView CreateView() {
+      if(OperatorGraph.Operators.Count == 0) {
+        byte[] rawData = Database.GetAgentRawData(Id);
+        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(rawData);
+        DownloadOperators(opGraph, new Dictionary<long, IOperator>());
+        foreach(IOperator op in opGraph.Operators) OperatorGraph.AddOperator(op);
+        OperatorGraph.InitialOperator = opGraph.InitialOperator;
+      }
       return new AgentView(this);
+    }
+
+    private void DownloadOperators(IOperatorGraph opGraph, Dictionary<long, IOperator> downloaded) {
+      foreach(IOperator op in opGraph.Operators) {
+        DownloadOperators(op, downloaded);
+      }
+    }
+
+    private void DownloadOperators(IOperator op, Dictionary<long, IOperator> downloaded) {
+      if(op is OperatorLink) {
+        OperatorLink link = op as OperatorLink;
+        if(downloaded.ContainsKey(link.Id)) {
+          link.Operator = downloaded[link.Id];
+        } else {
+          OperatorEntry targetEntry = Database.GetOperator(link.Id);
+          IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
+          downloaded.Add(link.Id, target);
+          DownloadOperators(target, downloaded);
+          link.Operator = target;
+        }
+      } else if(op is CombinedOperator) {
+        DownloadOperators(((CombinedOperator)op).OperatorGraph, downloaded);
+      }
     }
   }
 }

@@ -52,7 +52,6 @@ namespace HeuristicLab.CEDMA.Core {
           Result result = new Result(Database, entry.Id);
           result.Summary = entry.Summary;
           result.Description = entry.Description;
-          result.Item = (IItem)PersistenceManager.RestoreFromGZip(entry.RawData);
           results.Add(result);
         }
         return results;
@@ -60,6 +59,10 @@ namespace HeuristicLab.CEDMA.Core {
     } 
 
     public IView CreateView() {
+      if(Item == null) {
+        byte[] rawData = Database.GetResultRawData(Id);
+        Item = (IItem)PersistenceManager.RestoreFromGZip(rawData);
+      }
       return Item.CreateView();
     }
   }
