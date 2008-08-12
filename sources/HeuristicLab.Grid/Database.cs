@@ -105,46 +105,48 @@ namespace HeuristicLab.Grid {
       try {
         using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
           cnn.Open();
+          JobEntry job = new JobEntry();
           using(DbTransaction t = cnn.BeginTransaction()) {
-            DbCommand c = cnn.CreateCommand();
-            c.Transaction = t;
-            c.CommandText = "select guid,creationtime,starttime,rawdata from job, (select id from job where status=@Status order by creationtime limit 1) as next where job.id=next.id";
-            DbParameter statusParameter = c.CreateParameter();
-            statusParameter.ParameterName = "@Status";
-            statusParameter.Value = JobState.Waiting.ToString();
-            c.Parameters.Add(statusParameter);
-            DbDataReader r = c.ExecuteReader();
-            if(!r.HasRows) {
+            using(DbCommand c = cnn.CreateCommand()) {
+              c.Transaction = t;
+              c.CommandText = "select guid,creationtime,starttime,rawdata from job, (select id from job where status=@Status order by creationtime limit 1) as next where job.id=next.id";
+              DbParameter statusParameter = c.CreateParameter();
+              statusParameter.ParameterName = "@Status";
+              statusParameter.Value = JobState.Waiting.ToString();
+              c.Parameters.Add(statusParameter);
+              DbDataReader r = c.ExecuteReader();
+              if(!r.HasRows) {
+                r.Close();
+                t.Commit();
+                return null;
+              }
+              r.Read();              
+              job.Status = JobState.Busy;
+              job.Guid = r.GetGuid(0);
+              job.CreationTime = r.GetDateTime(1);
+              job.StartTime = r.IsDBNull(2) ? null : new Nullable<DateTime>(r.GetDateTime(2));
+              job.RawData = (byte[])r.GetValue(3);
               r.Close();
-              t.Commit();
-              return null;
             }
-            r.Read();
-            JobEntry job = new JobEntry();
-            job.Status = JobState.Busy;
-            job.Guid = r.GetGuid(0);
-            job.CreationTime = r.GetDateTime(1);
-            job.StartTime = r.IsDBNull(2) ? null : new Nullable<DateTime>(r.GetDateTime(2));
-            job.RawData = (byte[])r.GetValue(3);
-            r.Close();
             rwLock.EnterWriteLock();
             try {
-              DbCommand updateCmd = cnn.CreateCommand();
-              updateCmd.Transaction = t;
-              updateCmd.CommandText = "Update job set Status=@Status where Guid=@Guid";
-              statusParameter = updateCmd.CreateParameter();
-              statusParameter.ParameterName = "@Status";
-              statusParameter.Value = JobState.Busy.ToString();
-              DbParameter guidParam = updateCmd.CreateParameter();
-              guidParam.ParameterName = "@Guid";
-              guidParam.Value = job.Guid.ToString();
-              updateCmd.Parameters.Add(statusParameter);
-              updateCmd.Parameters.Add(guidParam);
-              updateCmd.ExecuteNonQuery();
+              using(DbCommand updateCmd = cnn.CreateCommand()) {
+                updateCmd.Transaction = t;
+                updateCmd.CommandText = "Update job set Status=@Status where Guid=@Guid";
+                DbParameter statusParam = updateCmd.CreateParameter();
+                statusParam.ParameterName = "@Status";
+                statusParam.Value = JobState.Busy.ToString();
+                DbParameter guidParam = updateCmd.CreateParameter();
+                guidParam.ParameterName = "@Guid";
+                guidParam.Value = job.Guid.ToString();
+                updateCmd.Parameters.Add(statusParam);
+                updateCmd.Parameters.Add(guidParam);
+                updateCmd.ExecuteNonQuery();
+              }
+              t.Commit();
             } finally {
               rwLock.ExitWriteLock();
             }
-            t.Commit();
             return job;
           }
         }
