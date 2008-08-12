@@ -108,7 +108,7 @@ namespace HeuristicLab.Grid {
           using(DbTransaction t = cnn.BeginTransaction()) {
             DbCommand c = cnn.CreateCommand();
             c.Transaction = t;
-            c.CommandText = "Select Guid, CreationTime, StartTime, Rawdata from Job where Status=@Status order by CreationTime limit 1";
+            c.CommandText = "select guid,creationtime,starttime,rawdata from job, (select id from job where status=@Status order by creationtime limit 1) as next where job.id=next.id";
             DbParameter statusParameter = c.CreateParameter();
             statusParameter.ParameterName = "@Status";
             statusParameter.Value = JobState.Waiting.ToString();
