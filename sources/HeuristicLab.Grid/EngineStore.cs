@@ -53,7 +53,7 @@ namespace HeuristicLab.Grid {
         return results;
       }
     }
-
+    private object locker = new object();
     public EngineStore() {
       DbProviderFactory fact;
       fact = DbProviderFactories.GetFactory("System.Data.SQLite");
@@ -78,8 +78,10 @@ namespace HeuristicLab.Grid {
       } else {
         guid = nextWaitingJob.Guid;
         engine = nextWaitingJob.RawData;
-        runningJobs++;
-        waitingJobs--;
+        lock(locker) {
+          runningJobs++;
+          waitingJobs--;
+        }
         return true;
       }
     }
@@ -88,12 +90,17 @@ namespace HeuristicLab.Grid {
       database.DeleteExpiredResults();
       // add the new result
       database.SetJobResult(guid, result);
-      results++;
+      lock(locker) {
+        results++;
+        runningJobs--;
+      }
     }
 
     internal void AddEngine(Guid guid, byte[] engine) {
       database.InsertJob(guid, JobState.Waiting, engine);
-      waitingJobs++;
+      lock(locker) {
+        waitingJobs++;
+      }
     }
 
     internal byte[] GetResult(Guid guid) {
