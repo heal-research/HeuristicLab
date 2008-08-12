@@ -250,7 +250,7 @@ namespace HeuristicLab.Grid {
       do {
         try {
           lock(connectionLock) {
-            byte[] zippedResult = server.TryEndExecuteEngine(engineGuid, 100);
+            byte[] zippedResult = server.TryEndExecuteEngine(engineGuid);
             return zippedResult;
           }
         } catch(TimeoutException) {

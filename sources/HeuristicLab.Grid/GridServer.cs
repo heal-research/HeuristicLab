@@ -44,11 +44,8 @@ namespace HeuristicLab.Grid {
       return guid;
     }
 
-    public byte[] EndExecuteEngine(Guid guid) {
+    public byte[] TryEndExecuteEngine(Guid guid) {
       return engineStore.GetResult(guid);
-    }
-    public byte[] TryEndExecuteEngine(Guid guid, int timeout) {
-      return engineStore.GetResult(guid, timeout);
     }
   }
 }
