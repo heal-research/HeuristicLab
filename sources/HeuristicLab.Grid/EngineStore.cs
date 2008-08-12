@@ -63,6 +63,11 @@ namespace HeuristicLab.Grid {
       } else {
         database = new Database(connectionString);
       }
+
+      // init counters
+      waitingJobs = (int)database.GetJobCount(JobState.Waiting);
+      runningJobs = (int)database.GetJobCount(JobState.Busy);
+      results = (int)database.GetJobCount(JobState.Finished);
     }
 
     public bool TryTakeEngine(out Guid guid, out byte[] engine) {
@@ -73,6 +78,8 @@ namespace HeuristicLab.Grid {
       } else {
         guid = nextWaitingJob.Guid;
         engine = nextWaitingJob.RawData;
+        runningJobs++;
+        waitingJobs--;
         return true;
       }
     }
@@ -81,14 +88,16 @@ namespace HeuristicLab.Grid {
       database.DeleteExpiredResults();
       // add the new result
       database.SetJobResult(guid, result);
+      results++;
     }
 
     internal void AddEngine(Guid guid, byte[] engine) {
-      database.InsertJob(guid, HeuristicLab.Grid.JobState.Waiting, engine);
+      database.InsertJob(guid, JobState.Waiting, engine);
+      waitingJobs++;
     }
 
     internal byte[] GetResult(Guid guid) {
-      if(JobState(guid) == HeuristicLab.Grid.JobState.Finished) {
+      if(GetJobState(guid) == JobState.Finished) {
         JobEntry entry = database.GetJob(guid);
         return entry.RawData;
       } else {
@@ -99,7 +108,7 @@ namespace HeuristicLab.Grid {
       }
     }
 
-    internal JobState JobState(Guid guid) {
+    internal JobState GetJobState(Guid guid) {
       return database.GetJobState(guid);
     }
   }

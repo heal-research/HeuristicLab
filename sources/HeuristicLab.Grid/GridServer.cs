@@ -35,7 +35,7 @@ namespace HeuristicLab.Grid {
     }
 
     public JobState JobState(Guid guid) {
-      return engineStore.JobState(guid);
+      return engineStore.GetJobState(guid);
     }
 
     public Guid BeginExecuteEngine(byte[] engine) {

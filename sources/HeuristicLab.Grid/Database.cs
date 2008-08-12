@@ -273,6 +273,24 @@ namespace HeuristicLab.Grid {
       return JobState.Unknown;
     }
 
+    internal long GetJobCount(JobState status) {
+      rwLock.EnterReadLock();
+      try {
+        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          DbCommand c = cnn.CreateCommand();
+          c.CommandText = "Select Count(id) from Job where Status=@Status";
+          DbParameter stateParameter = c.CreateParameter();
+          stateParameter.ParameterName = "@Status";
+          stateParameter.Value = status.ToString();
+          c.Parameters.Add(stateParameter);
+          return (long)c.ExecuteScalar();
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+    }
+
     /// <summary>
     /// Does nothing right now (= running jobs that disappear are never restarted).
     /// </summary>
