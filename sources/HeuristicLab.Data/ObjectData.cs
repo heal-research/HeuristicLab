@@ -50,11 +50,12 @@ namespace HeuristicLab.Data {
     }
 
     public override bool Equals(object obj) {
+      if(obj == this) return true; // same instance
       IObjectData other = obj as IObjectData;
-      if (other != null)
-        return Data.Equals(other);
+      if(other != null)
+        return Data.Equals(other.Data); // are the contained Data the same?
       else
-        return Data.Equals(obj);
+        return false;
     }
 
     public override int GetHashCode() {
