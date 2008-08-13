@@ -40,6 +40,7 @@ namespace HeuristicLab.CEDMA.Core {
       set {
         database = value;
         ReloadList();
+        FireChanged();
       }
     }
 
@@ -51,7 +52,6 @@ namespace HeuristicLab.CEDMA.Core {
         newAgent.Status = a.Status;
         agentList.Add(newAgent);
       }
-      FireChanged();
     }
 
     public AgentList()
@@ -67,9 +67,11 @@ namespace HeuristicLab.CEDMA.Core {
       long id = database.InsertAgent(null, agent.Name, PersistenceManager.SaveToGZip(agent.OperatorGraph));
       agent.Id = id;
       agentList.Add(agent);
+      FireChanged();
     }
 
     public IEnumerator<IAgent> GetEnumerator() {
+      ReloadList();
       return agentList.GetEnumerator();
     }
 

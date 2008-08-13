@@ -49,9 +49,10 @@ namespace HeuristicLab.CEDMA.Core {
     private void InitializeComponent() {
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.agentsGroupBox = new System.Windows.Forms.GroupBox();
+      this.agentTreeView = new System.Windows.Forms.TreeView();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.addButton = new System.Windows.Forms.Button();
-      this.agentTreeView = new System.Windows.Forms.TreeView();
+      this.refreshButton = new System.Windows.Forms.Button();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -89,6 +90,16 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentsGroupBox.TabStop = false;
       this.agentsGroupBox.Text = "&Agents";
       // 
+      // agentTreeView
+      // 
+      this.agentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.agentTreeView.Location = new System.Drawing.Point(3, 16);
+      this.agentTreeView.Name = "agentTreeView";
+      this.agentTreeView.Size = new System.Drawing.Size(129, 136);
+      this.agentTreeView.TabIndex = 0;
+      this.agentTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.agentTreeView_BeforeExpand);
+      this.agentTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.agentTreeView_AfterSelect);
+      // 
       // detailsGroupBox
       // 
       this.detailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -110,19 +121,21 @@ namespace HeuristicLab.CEDMA.Core {
       this.addButton.UseVisualStyleBackColor = true;
       this.addButton.Click += new System.EventHandler(this.addButton_Click);
       // 
-      // agentTreeView
+      // refreshButton
       // 
-      this.agentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.agentTreeView.Location = new System.Drawing.Point(3, 16);
-      this.agentTreeView.Name = "agentTreeView";
-      this.agentTreeView.Size = new System.Drawing.Size(129, 136);
-      this.agentTreeView.TabIndex = 0;
-      this.agentTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.agentTreeView_BeforeExpand);
-      this.agentTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.agentTreeView_AfterSelect);
+      this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.refreshButton.Location = new System.Drawing.Point(81, 161);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(75, 23);
+      this.refreshButton.TabIndex = 2;
+      this.refreshButton.Text = "&Refresh";
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
       // AgentListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.addButton);
       this.Controls.Add(this.splitContainer1);
       this.Name = "AgentListView";
@@ -142,5 +155,6 @@ namespace HeuristicLab.CEDMA.Core {
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private System.Windows.Forms.Button addButton;
     private TreeView agentTreeView;
+    private Button refreshButton;
   }
 }

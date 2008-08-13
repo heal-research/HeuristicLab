@@ -72,7 +72,6 @@ namespace HeuristicLab.CEDMA.Core {
     #region Button Events
     private void addButton_Click(object sender, EventArgs e) {
       AgentList.CreateAgent();
-      UpdateControls();
     }
     #endregion
 
@@ -118,6 +117,10 @@ namespace HeuristicLab.CEDMA.Core {
         control.Dock = DockStyle.Fill;
         detailsGroupBox.Enabled = true;
       }
+    }
+
+    private void refreshButton_Click(object sender, EventArgs e) {
+      UpdateControls();
     }
   }
 }
