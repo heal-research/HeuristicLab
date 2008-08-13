@@ -72,7 +72,7 @@ namespace HeuristicLab.CEDMA.Core {
         if(Database == null) return null;
         OperatorEntry targetEntry = Database.GetOperator(Id);
         IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
-        PatchOperatorLinks(target);
+        OperatorLinkPatcher.LinkDatabase(target, Database);
         Operator = target;
       }
       return myOperator.CreateView();
@@ -93,39 +93,6 @@ namespace HeuristicLab.CEDMA.Core {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       id = long.Parse(node.Attributes["OperatorId"].Value);
       base.Populate(node, restoredObjects);
-    }
-
-    private void PatchOperatorLinks(IOperatorGraph opGraph) {
-      foreach(IOperator op in opGraph.Operators) {
-        PatchOperatorLinks(op);
-      }
-    }
-
-    private void PatchOperatorLinks(IOperator op) {
-      if(op is OperatorLink) {
-        OperatorLink link = op as OperatorLink;
-        link.Database = Database;
-        //if(downloaded.ContainsKey(link.Id)) {
-        //  link.Operator = downloaded[link.Id];
-        //} else {
-        //  OperatorEntry targetEntry = Database.GetOperator(link.Id);
-        //  IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
-        //  downloaded.Add(link.Id, target);
-        //  PatchOperatorLinks(target, downloaded);
-        //  link.Operator = target;
-        //}
-      } else if(op is CombinedOperator) {
-        PatchOperatorLinks(((CombinedOperator)op).OperatorGraph);
-      }
-      // also patch operator links contained (indirectily) in variables
-      foreach(VariableInfo varInfo in op.VariableInfos) {
-        IVariable var = op.GetVariable(varInfo.ActualName);
-        if(var != null && var.Value is IOperatorGraph) {
-          PatchOperatorLinks((IOperatorGraph)var.Value);
-        } else if(var != null && var.Value is IOperator) {
-          PatchOperatorLinks((IOperator)var.Value);
-        }
-      }
     }
   }
 }

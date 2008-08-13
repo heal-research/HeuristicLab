@@ -69,6 +69,7 @@
       <DependentUpon>DatabaseOperatorLibraryView.cs</DependentUpon>
     </Compile>
     <Compile Include="OperatorLink.cs" />
+    <Compile Include="OperatorLinkPatcher.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="HeuristicLabCedmaCorePlugin.cs" />

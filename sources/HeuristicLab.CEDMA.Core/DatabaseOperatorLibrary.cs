@@ -84,37 +84,9 @@ namespace HeuristicLab.CEDMA.Core {
         group.AddOperator(op);
       }
 
-      // patch all OperatorLinks
+      // set the DB source for each operator
       foreach(IOperator op in group.Operators) {
-        PatchLinks(op);
-      }
-    }
-
-    private void PatchLinks(IOperatorGraph opGraph) {
-      foreach(IOperator op in opGraph.Operators) {
-        PatchLinks(op);
-      }
-    }
-
-    private void PatchLinks(IOperator op) {
-      if(op is OperatorLink) {
-        OperatorLink link = op as OperatorLink;
-        link.Database = Database;
-      }
-      else if(op is CombinedOperator) {
-        CombinedOperator combinedOp = op as CombinedOperator;
-        foreach(IOperator internalOp in combinedOp.OperatorGraph.Operators) {
-          PatchLinks(internalOp);
-        }
-      }
-      // also patch operator links contained (indirectly) in variables
-      foreach(VariableInfo varInfo in op.VariableInfos) {
-        IVariable var = op.GetVariable(varInfo.ActualName);
-        if(var != null && var.Value is IOperatorGraph) {
-          PatchLinks((IOperatorGraph)var.Value);
-        } else if(var != null && var.Value is IOperator) {
-          PatchLinks((IOperator)var.Value);
-        }
+        OperatorLinkPatcher.LinkDatabase(op, Database);
       }
     }
 
