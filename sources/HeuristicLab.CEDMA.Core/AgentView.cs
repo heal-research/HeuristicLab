@@ -31,8 +31,8 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
   public partial class AgentView : ViewBase {
-    private IAgent agent;
-    public IAgent Agent {
+    private Agent agent;
+    public Agent Agent {
       get { return agent; }
       set { agent = value; }
     }
@@ -41,7 +41,7 @@ namespace HeuristicLab.CEDMA.Core {
       InitializeComponent();
       Caption = "Agent";
     }
-    public AgentView(IAgent agent)
+    public AgentView(Agent agent)
       : this() {
       Agent = agent;
       UpdateControls();

@@ -87,39 +87,49 @@ namespace HeuristicLab.CEDMA.Core {
         }
         return results;
       }
-    } 
+    }
 
     public IView CreateView() {
       if(OperatorGraph.Operators.Count == 0) {
         byte[] rawData = Database.GetAgentRawData(Id);
         IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(rawData);
-        DownloadOperators(opGraph, new Dictionary<long, IOperator>());
         foreach(IOperator op in opGraph.Operators) OperatorGraph.AddOperator(op);
         OperatorGraph.InitialOperator = opGraph.InitialOperator;
+        PatchOperatorLinks(OperatorGraph);
       }
       return new AgentView(this);
     }
 
-    private void DownloadOperators(IOperatorGraph opGraph, Dictionary<long, IOperator> downloaded) {
+    private void PatchOperatorLinks(IOperatorGraph opGraph) {
       foreach(IOperator op in opGraph.Operators) {
-        DownloadOperators(op, downloaded);
+        PatchOperatorLinks(op);
       }
     }
 
-    private void DownloadOperators(IOperator op, Dictionary<long, IOperator> downloaded) {
+    private void PatchOperatorLinks(IOperator op) {
       if(op is OperatorLink) {
         OperatorLink link = op as OperatorLink;
-        if(downloaded.ContainsKey(link.Id)) {
-          link.Operator = downloaded[link.Id];
-        } else {
-          OperatorEntry targetEntry = Database.GetOperator(link.Id);
-          IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
-          downloaded.Add(link.Id, target);
-          DownloadOperators(target, downloaded);
-          link.Operator = target;
-        }
+        link.Database = Database;
+        //if(downloaded.ContainsKey(link.Id)) {
+        //  link.Operator = downloaded[link.Id];
+        //} else {
+        //  OperatorEntry targetEntry = Database.GetOperator(link.Id);
+        //  IOperator target = (IOperator)PersistenceManager.RestoreFromGZip(targetEntry.RawData);
+        //  downloaded.Add(link.Id, target);
+        //  PatchOperatorLinks(target, downloaded);
+        //  link.Operator = target;
+        //}
       } else if(op is CombinedOperator) {
-        DownloadOperators(((CombinedOperator)op).OperatorGraph, downloaded);
+        PatchOperatorLinks(((CombinedOperator)op).OperatorGraph);
+      }
+      // also patch operator links contained (indirectly) in variables
+      foreach(VariableInfo varInfo in op.VariableInfos) {
+        IVariable var = op.GetVariable(varInfo.ActualName);
+        if(var != null && var.Value is IOperatorGraph) {
+          PatchOperatorLinks((IOperatorGraph)var.Value);
+        } else if(var != null && var.Value is IOperator) {
+          PatchOperatorLinks((IOperator)var.Value);
+        }
       }
     }
   }

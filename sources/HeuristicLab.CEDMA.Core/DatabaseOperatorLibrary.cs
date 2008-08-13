@@ -90,15 +90,30 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
+    private void PatchLinks(IOperatorGraph opGraph) {
+      foreach(IOperator op in opGraph.Operators) {
+        PatchLinks(op);
+      }
+    }
+
     private void PatchLinks(IOperator op) {
       if(op is OperatorLink) {
         OperatorLink link = op as OperatorLink;
-        link.Operator = FindOperator(link.Id);
+        link.Database = Database;
       }
       else if(op is CombinedOperator) {
         CombinedOperator combinedOp = op as CombinedOperator;
         foreach(IOperator internalOp in combinedOp.OperatorGraph.Operators) {
           PatchLinks(internalOp);
+        }
+      }
+      // also patch operator links contained (indirectly) in variables
+      foreach(VariableInfo varInfo in op.VariableInfos) {
+        IVariable var = op.GetVariable(varInfo.ActualName);
+        if(var != null && var.Value is IOperatorGraph) {
+          PatchLinks((IOperatorGraph)var.Value);
+        } else if(var != null && var.Value is IOperator) {
+          PatchLinks((IOperator)var.Value);
         }
       }
     }
