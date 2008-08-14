@@ -28,6 +28,7 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
   public interface IResult : IDatabaseItem, IViewable {
+    IItem Item { get; }
     string Summary { get; }
     string Description { get; }
     ICollection<IResult> SubResults { get; }

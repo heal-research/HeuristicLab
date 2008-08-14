@@ -47,16 +47,20 @@ namespace HeuristicLab.CEDMA.Core {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.agentsGroupBox = new System.Windows.Forms.GroupBox();
       this.agentTreeView = new System.Windows.Forms.TreeView();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.addButton = new System.Windows.Forms.Button();
       this.refreshButton = new System.Windows.Forms.Button();
+      this.entryContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.exportAllResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
       this.agentsGroupBox.SuspendLayout();
+      this.entryContextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer1
@@ -132,6 +136,20 @@ namespace HeuristicLab.CEDMA.Core {
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
+      // entryContextMenuStrip
+      // 
+      this.entryContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportAllResultsToolStripMenuItem});
+      this.entryContextMenuStrip.Name = "entryContextMenuStrip";
+      this.entryContextMenuStrip.Size = new System.Drawing.Size(166, 26);
+      // 
+      // exportAllResultsToolStripMenuItem
+      // 
+      this.exportAllResultsToolStripMenuItem.Name = "exportAllResultsToolStripMenuItem";
+      this.exportAllResultsToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.exportAllResultsToolStripMenuItem.Text = "Export all results";
+      this.exportAllResultsToolStripMenuItem.Click += new System.EventHandler(this.exportAllResultsToolStripMenuItem_Click);
+      // 
       // AgentListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -144,6 +162,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
       this.agentsGroupBox.ResumeLayout(false);
+      this.entryContextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -156,5 +175,7 @@ namespace HeuristicLab.CEDMA.Core {
     private System.Windows.Forms.Button addButton;
     private TreeView agentTreeView;
     private Button refreshButton;
+    private ContextMenuStrip entryContextMenuStrip;
+    private ToolStripMenuItem exportAllResultsToolStripMenuItem;
   }
 }

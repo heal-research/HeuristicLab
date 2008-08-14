@@ -26,49 +26,35 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using System.IO;
 
 namespace HeuristicLab.CEDMA.Core {
-  public class Result : IResult {
-    public IDatabase Database { get; set; }
-    public long Id { get; set; }
-    public string Summary { get; set; }
-    public string Description { get; set; }
-    private IItem item;
-    public IItem Item {
-      get {
-        if(item == null) {
-          byte[] rawData = Database.GetResultRawData(Id);
-          item = (IItem)PersistenceManager.RestoreFromGZip(rawData);
-        }
-        return item;
+  public class ResultExporter {
+    internal void Export(IAgent agent, ResultTable t) {
+      foreach(IResult r in agent.Results) {
+        Export(r, t);
+      }
+      foreach(IAgent a in agent.SubAgents) {
+        Export(a, t);
       }
     }
-    public Result()
-      : base() {
-    }
 
-    public Result(IDatabase database, long id)
-      : this() {
-      Database = database;
-      Id = id;
-    }
-
-
-    public ICollection<IResult> SubResults {
-      get {
-        List<IResult> results = new List<IResult>();
-        foreach(ResultEntry entry in Database.GetSubResults(Id)) {
-          Result result = new Result(Database, entry.Id);
-          result.Summary = entry.Summary;
-          result.Description = entry.Description;
-          results.Add(result);
-        }
-        return results;
+    private void Export(IResult result, ResultTable t) {
+      Export(result.Item, t);
+      foreach(IResult subResult in result.SubResults) {
+        Export(subResult, t);
       }
-    } 
+    }
 
-    public IView CreateView() {
-      return Item.CreateView();
+    private void Export(IItem item, ResultTable t) {
+      if(item is IScope) {
+        IScope scope = item as IScope;
+        ResultRow row = new ResultRow();
+        foreach(IVariable variable in scope.Variables) {
+          row.AddAttribute(variable.Name, variable.Value.ToString());
+        }
+        t.AddRow(row);
+      } 
     }
   }
 }

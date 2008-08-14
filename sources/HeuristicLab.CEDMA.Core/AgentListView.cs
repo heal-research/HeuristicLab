@@ -64,6 +64,7 @@ namespace HeuristicLab.CEDMA.Core {
           node.Text = agent.Name;
           node.Tag = agent;
           node.Nodes.Add("dummy");
+          node.ContextMenuStrip = entryContextMenuStrip;
           agentTreeView.Nodes.Add(node);
         }
       }
@@ -83,6 +84,7 @@ namespace HeuristicLab.CEDMA.Core {
           TreeNode node = new TreeNode();
           node.Text = subAgent.Name;
           node.Tag = subAgent;
+          node.ContextMenuStrip = entryContextMenuStrip;
           node.Nodes.Add("dummy");
           e.Node.Nodes.Add(node);
         }
@@ -121,6 +123,18 @@ namespace HeuristicLab.CEDMA.Core {
 
     private void refreshButton_Click(object sender, EventArgs e) {
       UpdateControls();
+    }
+
+    private void exportAllResultsToolStripMenuItem_Click(object sender, EventArgs e) {
+      TreeNode node = agentTreeView.SelectedNode;
+      Agent agent = (Agent)node.Tag;
+      ResultExporter exporter = new ResultExporter();
+      ResultTable table = new ResultTable();
+      exporter.Export(agent, table);
+
+      using(System.IO.FileStream s = new System.IO.FileStream("exported-results.txt", System.IO.FileMode.Create)) {
+        table.Write(s);
+      }
     }
   }
 }
