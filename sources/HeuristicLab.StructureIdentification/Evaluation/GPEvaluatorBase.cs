@@ -71,8 +71,8 @@ namespace HeuristicLab.StructureIdentification {
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
-      if(useEstimatedValues && 
-        (backupValues == null || start!=this.start || end!=this.end)) {
+      if(useEstimatedValues &&
+        (backupValues == null || start != this.start || end != this.end)) {
         this.start = start;
         this.end = end;
         backupValues = new double[end - start];
@@ -81,7 +81,7 @@ namespace HeuristicLab.StructureIdentification {
         }
       }
       // get the mean of the values of the target variable to determin the max and min bounds of the estimated value
-      targetMean = dataset.GetMean(targetVariable, start, end);
+      targetMean = dataset.GetMean(targetVariable, start, end - 1);
       estimatedValueMin = targetMean - maximumPunishment;
       estimatedValueMax = targetMean + maximumPunishment;
 
