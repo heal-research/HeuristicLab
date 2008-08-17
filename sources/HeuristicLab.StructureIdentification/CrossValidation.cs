@@ -83,7 +83,7 @@ namespace HeuristicLab.StructureIdentification {
 
         double[] samples = new double[origDataset.Samples.Length];
         Array.Copy(origDataset.Samples, samples, samples.Length);
-        RotateArray(samples, i * nFolds);
+        RotateArray(samples, i * nTestSamples * origDataset.Columns);
 
         rotatedSet.Rows = origDataset.Rows;
         rotatedSet.Columns = origDataset.Columns;
