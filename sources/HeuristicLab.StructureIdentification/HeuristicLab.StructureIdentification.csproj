@@ -47,6 +47,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrossValidation.cs" />
+    <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
+    <Compile Include="MulticlassModeller.cs" />
     <Compile Include="Evaluation\ClassificationMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluation\ClassificationMatrixEvaluator.cs" />
     <Compile Include="FunctionLibraryInjector.cs" />
