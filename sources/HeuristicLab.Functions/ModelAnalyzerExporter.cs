@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Functions {
   public class ModelAnalyzerExporter : IFunctionVisitor {
     private string prefix;
-    private string currentIndend = "";
+    private string currentIndent = "";
     private IFunctionTree currentBranch;
     public string ModelAnalyzerPrefix {
       get { return prefix; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Functions {
     }
 
     private void VisitFunction(string name, IFunction f) {
-      prefix += currentIndend + "[F]" + name + "(\n";
+      prefix += currentIndent + "[F]" + name + "(\n";
     }
 
     #region IFunctionVisitor Members
@@ -53,7 +53,7 @@ namespace HeuristicLab.Functions {
 
     public void Visit(Constant constant) {
       double value = ((ConstrainedDoubleData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Constant.VALUE).Value).Data;
-      prefix += currentIndend + "[T]Constant(" + value.ToString("r") + ";0;0)";
+      prefix += currentIndent + "[T]Constant(" + value.ToString("r") + ";0;0)";
     }
 
     public void Visit(Cosinus cosinus) {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Functions {
       double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Differential.OFFSET).Value).Data;
 
-      prefix += currentIndend + "[T]Differential(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
+      prefix += currentIndent + "[T]Differential(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
     }
 
     public void Visit(Division division) {
@@ -113,7 +113,7 @@ namespace HeuristicLab.Functions {
       double index = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)currentBranch.GetLocalVariable(HeuristicLab.Functions.Variable.OFFSET).Value).Data;
 
-      prefix += currentIndend + "[T]Variable(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
+      prefix += currentIndent + "[T]Variable(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
     }
 
     public void Visit(And and) {
@@ -156,14 +156,14 @@ namespace HeuristicLab.Functions {
     public void Visit(IFunctionTree functionTree) {
       currentBranch = functionTree;
       functionTree.Function.Accept(this);
-      currentIndend += "  ";
+      currentIndent += "  ";
       foreach(IFunctionTree subTree in functionTree.SubTrees) {
         Visit(subTree);
         prefix += ";\n";
       }
       prefix = prefix.TrimEnd(';', '\n');
       if(functionTree.SubTrees.Count>0) prefix += ")";
-      currentIndend = currentIndend.Remove(0, 2);
+      currentIndent = currentIndent.Remove(0, 2);
     }
   }
 }
