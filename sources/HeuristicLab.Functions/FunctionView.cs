@@ -138,6 +138,15 @@ namespace HeuristicLab.Functions {
       visitor.Visit((IFunctionTree)node.Tag);
       Clipboard.SetText(visitor.ModelAnalyzerPrefix);
     }
+
+    private void copyToClipboardSExpressionToolStripMenuItem_Click(object sender, EventArgs e) {
+      TreeNode node = funTreeView.SelectedNode;
+      if(node == null || node.Tag == null) return;
+
+      string sexp = ((IFunctionTree)node.Tag).ToString();
+      Clipboard.SetText(sexp);
+    }
+
     private void funTreeView_MouseUp(object sender, MouseEventArgs e) {
       if(e.Button == MouseButtons.Right) {
         // Select the clicked node

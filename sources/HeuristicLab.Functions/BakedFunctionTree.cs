@@ -343,5 +343,11 @@ namespace HeuristicLab.Functions {
     public override IView CreateView() {
       return new FunctionTreeView(this);
     }
+
+    public override string ToString() {
+      SymbolicExpressionExporter exporter = new SymbolicExpressionExporter();
+      exporter.Visit(this);
+      return exporter.GetStringRepresentation();
+    }
   }
 }

@@ -77,6 +77,7 @@
     <Compile Include="IFunctionVisitor.cs" />
     <Compile Include="LessThan.cs" />
     <Compile Include="Not.cs" />
+    <Compile Include="SymbolicExpressionExporter.cs" />
     <Compile Include="Signum.cs" />
     <Compile Include="Logarithm.cs" />
     <Compile Include="Exponential.cs" />

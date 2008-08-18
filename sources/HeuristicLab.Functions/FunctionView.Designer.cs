@@ -59,6 +59,7 @@ namespace HeuristicLab.Functions {
       this.editButton = new System.Windows.Forms.Button();
       this.treeNodeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.copyToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.copyToClipboardSExpressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -166,16 +167,24 @@ namespace HeuristicLab.Functions {
       // treeNodeContextMenu
       // 
       this.treeNodeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyToClipboardMenuItem});
+            this.copyToClipboardMenuItem,
+            this.copyToClipboardSExpressionToolStripMenuItem});
       this.treeNodeContextMenu.Name = "treeNodeContextMenu";
-      this.treeNodeContextMenu.Size = new System.Drawing.Size(248, 26);
+      this.treeNodeContextMenu.Size = new System.Drawing.Size(259, 70);
       // 
       // copyToClipboardMenuItem
       // 
       this.copyToClipboardMenuItem.Name = "copyToClipboardMenuItem";
-      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(247, 22);
+      this.copyToClipboardMenuItem.Size = new System.Drawing.Size(258, 22);
       this.copyToClipboardMenuItem.Text = "Copy to clip-board (Model-Analyzer)";
       this.copyToClipboardMenuItem.Click += new System.EventHandler(this.copyToClipboardMenuItem_Click);
+      // 
+      // copyToClipboardSExpressionToolStripMenuItem
+      // 
+      this.copyToClipboardSExpressionToolStripMenuItem.Name = "copyToClipboardSExpressionToolStripMenuItem";
+      this.copyToClipboardSExpressionToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+      this.copyToClipboardSExpressionToolStripMenuItem.Text = "Copy to clip-board (S-Expression)";
+      this.copyToClipboardSExpressionToolStripMenuItem.Click += new System.EventHandler(this.copyToClipboardSExpressionToolStripMenuItem_Click);
       // 
       // FunctionTreeView
       // 
@@ -208,6 +217,7 @@ namespace HeuristicLab.Functions {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.ContextMenuStrip treeNodeContextMenu;
     private System.Windows.Forms.ToolStripMenuItem copyToClipboardMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem copyToClipboardSExpressionToolStripMenuItem;
 
   }
 }
