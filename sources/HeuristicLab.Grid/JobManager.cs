@@ -149,7 +149,6 @@ namespace HeuristicLab.Grid {
     public void GetResults() {
       try {
         while(true) {
-          Thread.Sleep(TimeSpan.FromSeconds(RESULT_POLLING_TIMEOUT));
           Job job = null;
           lock(runningQueueLock) {
             if(runningJobs.Count > 0) job = runningJobs.Dequeue();
@@ -179,6 +178,7 @@ namespace HeuristicLab.Grid {
                   runningJobs.Enqueue(job);
                   runningWaitHandle.Set();
                 }
+                Thread.Sleep(TimeSpan.FromSeconds(RESULT_POLLING_TIMEOUT)); // sleep a while before trying to get the next result
               }
             }
           }
