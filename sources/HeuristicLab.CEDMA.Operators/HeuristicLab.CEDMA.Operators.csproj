@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ScopeResultMailer.cs" />
+    <Compile Include="ItemMailer.cs" />
     <Compile Include="ScopeResultWriter.cs" />
     <Compile Include="HeuristicLabCedmaOperatorsPlugin.cs" />
     <Compile Include="OnGridProcessor.cs" />
