@@ -84,7 +84,7 @@ namespace HeuristicLab.Functions {
           foreach(IConstraint constraint in Constraints) {
             if(constraint is SubOperatorTypeConstraint) {
               SubOperatorTypeConstraint subOpConstraint = constraint as SubOperatorTypeConstraint;
-              if(subOpConstraint.SubOperatorIndex.Data == index) {
+              if(subOpConstraint.SubOperatorIndex.Data == i) {
                 allowedSubFunctions[i] = new List<IFunction>();
                 foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions[i].Add(f);
                 break;
