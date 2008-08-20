@@ -67,7 +67,7 @@ namespace HeuristicLab.Functions {
       instr.arity = f.arity;
       instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
       switch(instr.symbol) {
-        case EvaluatorSymbolTable.DIFFERENTIAL: 
+        case EvaluatorSymbolTable.DIFFERENTIAL:
         case EvaluatorSymbolTable.VARIABLE: {
             instr.i_arg0 = (int)f.data[0]; // var
             instr.d_arg0 = f.data[1]; // weight
@@ -86,6 +86,15 @@ namespace HeuristicLab.Functions {
       PC = 0;
       this.sampleIndex = sampleIndex;
       return EvaluateBakedCode();
+    }
+
+    // skips a whole branch
+    private void SkipBakedCode() {
+      int i = 1;
+      while(i > 0) {
+        i+=codeArr[PC++].arity;
+        i--;
+      }
     }
 
     private double EvaluateBakedCode() {
@@ -178,13 +187,13 @@ namespace HeuristicLab.Functions {
             return Math.Tan(EvaluateBakedCode());
           }
         case EvaluatorSymbolTable.AND: { // only defined for inputs 1 and 0
-            double result = 1.0;
-            // have to evaluate all sub-trees, skipping would probably not lead to a big gain because 
-            // we have to iterate over the linear structure anyway
-            for(int i = 0; i < currInstr.arity; i++) {
-              double x = EvaluateBakedCode();
-              Debug.Assert(x == 0.0 || x == 1.0);
-              result *= x;
+            double result = EvaluateBakedCode();
+            for(int i = 1; i < currInstr.arity; i++) {
+              if(result == 0.0) SkipBakedCode();
+              else {
+                result = EvaluateBakedCode();
+              }
+              Debug.Assert(result == 0.0 || result == 1.0);
             }
             return result;
           }
@@ -202,9 +211,13 @@ namespace HeuristicLab.Functions {
         case EvaluatorSymbolTable.IFTE: { // only defined for condition 0 or 1
             double condition = EvaluateBakedCode();
             Debug.Assert(condition == 0.0 || condition == 1.0);
-            double x = EvaluateBakedCode();
-            double y = EvaluateBakedCode();
-            return condition * y - (condition - 1) * x;
+            double result;
+            if(condition == 0.0) {
+              result = EvaluateBakedCode(); SkipBakedCode();
+            } else {
+              SkipBakedCode(); result = EvaluateBakedCode();
+            }
+            return result;
           }
         case EvaluatorSymbolTable.LT: {
             double x = EvaluateBakedCode();
@@ -218,19 +231,22 @@ namespace HeuristicLab.Functions {
             return Math.Abs(result - 1.0);
           }
         case EvaluatorSymbolTable.OR: { // only defined for inputs 0 or 1
-            double result = 0.0; // default is false
-            for(int i = 0; i < currInstr.arity; i++) {
-              double x = EvaluateBakedCode();
-              Debug.Assert(x == 0.0 || x == 1.0);
-              result += x;
+            double result = EvaluateBakedCode();
+            for(int i = 1; i < currInstr.arity; i++) {
+              if(result > 0.0) SkipBakedCode();
+              else {
+                result = EvaluateBakedCode();
+                Debug.Assert(result == 0.0 || result == 1.0);
+              }
             }
-            return Math.Sign(result);
+            return result;
           }
         case EvaluatorSymbolTable.XOR: { // only defined for inputs 0 or 1
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             return Math.Abs(x - y);
           }
+        case EvaluatorSymbolTable.UNKNOWN:
         default: {
             throw new NotImplementedException();
           }
