@@ -183,6 +183,19 @@ namespace HeuristicLab.StructureIdentification {
       foreach(IConstraint c in op.Constraints) {
         if(c is SubOperatorTypeConstraint || c is AllSubOperatorsTypeConstraint) c.Changed -= new EventHandler(UpdateTreeBounds);
       }
+
+      // remove the operator from the allowed sub-functions of the remaining operators
+      foreach(IOperator o in Operators) {
+        if(o != op) {
+          foreach(IConstraint c in o.Constraints) {
+            if(c is SubOperatorTypeConstraint) {
+              ((SubOperatorTypeConstraint)c).RemoveOperator(op);
+            } else if(c is AllSubOperatorsTypeConstraint) {
+              ((AllSubOperatorsTypeConstraint)c).RemoveOperator(op);
+            }
+          }
+        }
+      }
       OnOperatorRemoved(op);
     }
 

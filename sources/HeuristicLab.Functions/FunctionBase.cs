@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Constraints;
+using System.Diagnostics;
 
 namespace HeuristicLab.Functions {
   /// <summary>
@@ -79,26 +80,37 @@ namespace HeuristicLab.Functions {
 
     public IList<IFunction> AllowedSubFunctions(int index) {
       if(allowedSubFunctions == null) {
+        // first time: analyze the constraint and create a cached copy of the allowed sub-functions
         allowedSubFunctions = new List<IFunction>[MaxArity];
         for(int i = 0; i < MaxArity; i++) {
-          foreach(IConstraint constraint in Constraints) {
-            if(constraint is SubOperatorTypeConstraint) {
-              SubOperatorTypeConstraint subOpConstraint = constraint as SubOperatorTypeConstraint;
-              if(subOpConstraint.SubOperatorIndex.Data == i) {
-                allowedSubFunctions[i] = new List<IFunction>();
-                foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions[i].Add(f);
-                break;
-              }
-            } else if(constraint is AllSubOperatorsTypeConstraint) {
-              AllSubOperatorsTypeConstraint subOpConstraint = constraint as AllSubOperatorsTypeConstraint;
-              allowedSubFunctions[i] = new List<IFunction>();
-              foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions[i].Add(f);
-              break;
-            }
-          }
+          allowedSubFunctions[i] = GetAllowedSubFunctions(i);
         }
       }
       return allowedSubFunctions[index];
+    }
+
+    private List<IFunction> GetAllowedSubFunctions(int index) {
+      List<IFunction> allowedSubFunctions = new List<IFunction>();
+      foreach(IConstraint constraint in Constraints) {
+        if(constraint is SubOperatorTypeConstraint) {
+          SubOperatorTypeConstraint subOpConstraint = constraint as SubOperatorTypeConstraint;
+          if(subOpConstraint.SubOperatorIndex.Data == index) {
+            foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions.Add(f);
+            subOpConstraint.Changed += new EventHandler(subOpConstraint_Changed); // register an event-handler to invalidate the cache on constraing changes
+            return allowedSubFunctions;
+          }
+        } else if(constraint is AllSubOperatorsTypeConstraint) {
+          AllSubOperatorsTypeConstraint subOpConstraint = constraint as AllSubOperatorsTypeConstraint;
+          foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions.Add(f);
+          subOpConstraint.Changed += new EventHandler(subOpConstraint_Changed); // register an event-handler to invalidate the cache on constraint changes
+          return allowedSubFunctions;
+        }
+      }
+      return allowedSubFunctions;
+    }
+
+    private void subOpConstraint_Changed(object sender, EventArgs e) {
+      allowedSubFunctions = null;
     }
 
     // operator-tree style evaluation is not supported for functions.
