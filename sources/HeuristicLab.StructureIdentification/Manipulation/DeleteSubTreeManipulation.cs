@@ -73,10 +73,7 @@ the operator tries to fix the tree by generating random subtrees where necessary
 
       // select a branch to prune
       int childIndex = random.Next(parent.SubTrees.Count);
-      int min;
-      int max;
-      gardener.GetMinMaxArity(parent.Function, out min, out max);
-      if(parent.SubTrees.Count > min) {
+      if(parent.SubTrees.Count > parent.Function.MinArity) {
         parent.RemoveSubTree(childIndex);
         // actually since the next sub-trees are shifted in the place of the removed branch
         // it might be possible that these sub-trees are not allowed in the place of the old branch

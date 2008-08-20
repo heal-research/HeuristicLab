@@ -151,12 +151,11 @@ resulting in a valid tree again.";
       IList<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent!=null?parent.Function:null, childIndex);
       // try to make a tree with the same arity as the old child.
       int actualArity = child.SubTrees.Count;
-      // arity of the selected operator
-      int minArity;
-      int maxArity;
       // create a new tree-node for a randomly selected function
       IFunction selectedFunction = allowedFunctions[random.Next(allowedFunctions.Count)];
-      gardener.GetMinMaxArity(selectedFunction, out minArity, out maxArity);
+      // arity of the selected operator
+      int minArity = selectedFunction.MinArity;
+      int maxArity = selectedFunction.MaxArity;
       // if the old child had too many sub-trees then the new child should keep as many sub-trees as possible
       if (actualArity > maxArity)
         actualArity = maxArity;

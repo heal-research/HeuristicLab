@@ -213,10 +213,7 @@ until a valid configuration is found.";
       // and select a random one
       IFunctionTree parent = possibleParents.ElementAt(random.Next(possibleParents.Count())).GetTreeNode();
 
-      int minArity;
-      int maxArity;
-      gardener.GetMinMaxArity(parent.Function, out minArity, out maxArity);
-      int nSlots = Math.Max(2, minArity);
+      int nSlots = Math.Max(2, parent.Function.MinArity);
       // determine which slot can take which sub-trees
       List<IFunctionTree>[] slots = new List<IFunctionTree>[nSlots];
       for(int slot = 0; slot < nSlots; slot++) {

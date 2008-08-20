@@ -58,9 +58,7 @@ namespace HeuristicLab.StructureIdentification {
       functions = new List<IFunction>();
       // init functions and terminals based on constraints
       foreach(IFunction fun in funLibrary.Group.Operators) {
-        int maxA, minA;
-        GetMinMaxArity(fun, out minA, out maxA);
-        if(maxA == 0) {
+        if(fun.MaxArity == 0) {
           terminals.Add(fun);
           allFunctions.Add(fun);
         } else {
@@ -108,9 +106,8 @@ namespace HeuristicLab.StructureIdentification {
       List<object[]> list = new List<object[]>();
       int currentSize = 1;
       int totalListMinSize = 0;
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(root.Function, out minArity, out maxArity);
+      int minArity = root.Function.MinArity;
+      int maxArity = root.Function.MaxArity;
       if(maxArity >= size) {
         maxArity = size;
       }
@@ -144,7 +141,8 @@ namespace HeuristicLab.StructureIdentification {
           currentSize++;
           totalListMinSize--;
 
-          GetMinMaxArity(selectedFunction, out minArity, out maxArity);
+          minArity = selectedFunction.MinArity;
+          maxArity = selectedFunction.MaxArity;
           if(maxArity >= size) {
             maxArity = size;
           }
@@ -313,10 +311,8 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     private bool IsPossibleParent(IFunction f, List<IFunction> children) {
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(f, out minArity, out maxArity);
-
+      int minArity = f.MinArity;
+      int maxArity = f.MaxArity;
       // note: we can't assume that the operators in the children list have different types!
 
       // when the maxArity of this function is smaller than the list of operators that
@@ -379,10 +375,7 @@ namespace HeuristicLab.StructureIdentification {
       return parents;
     }
     internal bool IsTerminal(IFunction f) {
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(f, out minArity, out maxArity);
-      return minArity == 0 && maxArity == 0;
+      return f.MinArity == 0 && f.MaxArity == 0;
     }
     internal IList<IFunction> GetAllowedSubFunctions(IFunction f, int index) {
       if(f == null) {
@@ -390,10 +383,6 @@ namespace HeuristicLab.StructureIdentification {
       } else {
         return f.AllowedSubFunctions(index);
       }
-    }
-    internal void GetMinMaxArity(IFunction f, out int minArity, out int maxArity) {
-      minArity = f.MinArity;
-      maxArity = f.MaxArity;
     }
     #endregion
 
@@ -413,9 +402,8 @@ namespace HeuristicLab.StructureIdentification {
 
     private IFunctionTree MakeUnbalancedTree(IFunction parent, int maxTreeHeight) {
       if(maxTreeHeight == 0) return parent.GetTreeNode();
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(parent, out minArity, out maxArity);
+      int minArity = parent.MinArity;
+      int maxArity = parent.MaxArity;
       int actualArity = random.Next(minArity, maxArity + 1);
       if(actualArity > 0) {
         IFunctionTree parentTree = parent.GetTreeNode();
@@ -435,9 +423,8 @@ namespace HeuristicLab.StructureIdentification {
     // types of possible sub-functions which can indirectly impose a limit for the depth of a given sub-tree
     private IFunctionTree MakeBalancedTree(IFunction parent, int maxTreeHeight) {
       if(maxTreeHeight == 0) return parent.GetTreeNode();
-      int minArity;
-      int maxArity;
-      GetMinMaxArity(parent, out minArity, out maxArity);
+      int minArity = parent.MinArity;
+      int maxArity = parent.MaxArity;
       int actualArity = random.Next(minArity, maxArity + 1);
       if(actualArity > 0) {
         IFunctionTree parentTree = parent.GetTreeNode();
