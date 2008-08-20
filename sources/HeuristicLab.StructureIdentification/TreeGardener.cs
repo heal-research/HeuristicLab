@@ -165,7 +165,7 @@ namespace HeuristicLab.StructureIdentification {
         int a = (int)nextExtension[1];
         int d = (int)nextExtension[2];
         parent.RemoveSubTree(a);
-        parent.InsertSubTree(a, 
+        parent.InsertSubTree(a,
           CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1)); // append a tree with minimal possible height
       }
       return root;
@@ -281,20 +281,12 @@ namespace HeuristicLab.StructureIdentification {
     }
 
     internal bool IsValidTree(IFunctionTree tree) {
-      SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
-      analyzer.AllPossibleOperators = AllFunctions.Cast<IOperator>().ToArray<IOperator>();
       for(int i = 0; i < tree.SubTrees.Count; i++) {
-        if(!analyzer.GetAllowedOperators(tree.Function, i).Contains(tree.SubTrees[i].Function)) return false;
+        if(!tree.Function.AllowedSubFunctions(i).Contains(tree.SubTrees[i].Function)) return false;
       }
 
-      foreach(IConstraint constraint in tree.Function.Constraints) {
-        if(constraint is NumberOfSubOperatorsConstraint) {
-          int max = ((NumberOfSubOperatorsConstraint)constraint).MaxOperators.Data;
-          int min = ((NumberOfSubOperatorsConstraint)constraint).MinOperators.Data;
-          if(tree.SubTrees.Count < min || tree.SubTrees.Count > max)
-            return false;
-        }
-      }
+      if(tree.SubTrees.Count < tree.Function.MinArity || tree.SubTrees.Count > tree.Function.MaxArity)
+        return false;
       foreach(IFunctionTree subTree in tree.SubTrees) {
         if(!IsValidTree(subTree)) return false;
       }
@@ -334,16 +326,13 @@ namespace HeuristicLab.StructureIdentification {
       }
       int nSlots = Math.Max(minArity, children.Count);
 
-      SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
-      analyzer.AllPossibleOperators = children.Cast<IOperator>().ToArray<IOperator>();
-
       List<HashSet<IFunction>> slotSets = new List<HashSet<IFunction>>();
 
       // we iterate through all slots for sub-trees and calculate the set of 
       // allowed functions for this slot.
       // we only count those slots that can hold at least one of the children that we should combine
       for(int slot = 0; slot < nSlots; slot++) {
-        HashSet<IFunction> functionSet = new HashSet<IFunction>(analyzer.GetAllowedOperators(f, slot).Cast<IFunction>());
+        HashSet<IFunction> functionSet = new HashSet<IFunction>(f.AllowedSubFunctions(slot));
         if(functionSet.Count() > 0) {
           slotSets.Add(functionSet);
         }
@@ -399,27 +388,12 @@ namespace HeuristicLab.StructureIdentification {
       if(f == null) {
         return allFunctions;
       } else {
-        SubOperatorsConstraintAnalyser analyzer = new SubOperatorsConstraintAnalyser();
-        analyzer.AllPossibleOperators = AllFunctions.Cast<IOperator>().ToArray<IOperator>();
-        List<IFunction> result = new List<IFunction>();
-        foreach(IFunction function in analyzer.GetAllowedOperators(f, index)) {
-          result.Add(function);
-        }
-        return result;
+        return f.AllowedSubFunctions(index);
       }
     }
     internal void GetMinMaxArity(IFunction f, out int minArity, out int maxArity) {
-      foreach(IConstraint constraint in f.Constraints) {
-        NumberOfSubOperatorsConstraint theConstraint = constraint as NumberOfSubOperatorsConstraint;
-        if(theConstraint != null) {
-          minArity = theConstraint.MinOperators.Data;
-          maxArity = theConstraint.MaxOperators.Data;
-          return;
-        }
-      }
-      // the default arity is 2
-      minArity = 2;
-      maxArity = 2;
+      minArity = f.MinArity;
+      maxArity = f.MaxArity;
     }
     #endregion
 

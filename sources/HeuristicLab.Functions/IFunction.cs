@@ -30,5 +30,8 @@ namespace HeuristicLab.Functions {
     IFunctionTree GetTreeNode();
     double Apply(Dataset dataset, int sampleIndex, double[] args);
     void Accept(IFunctionVisitor visitor);
+    IList<IFunction> AllowedSubFunctions(int index);
+    int MinArity { get; }
+    int MaxArity { get; }
   }
 }

@@ -26,6 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Functions {
   /// <summary>
@@ -35,7 +36,9 @@ namespace HeuristicLab.Functions {
   public abstract class FunctionBase : OperatorBase, IFunction {
     public const string INITIALIZATION = "Initialization";
     public const string MANIPULATION = "Manipulation";
-
+    private List<IFunction>[] allowedSubFunctions;
+    private int minArity = -1;
+    private int maxArity = -1;
 
     public virtual double Apply(Dataset dataset, int sampleIndex, double[] args) {
       throw new NotImplementedException();
@@ -47,6 +50,55 @@ namespace HeuristicLab.Functions {
 
     public virtual IFunctionTree GetTreeNode() {
       return new BakedFunctionTree(this);
+    }
+
+    public int MinArity {
+      get {
+        if(minArity < 0) RefreshArity();
+        return minArity;
+      }
+    }
+
+    public int MaxArity {
+      get {
+        if(maxArity < 0) RefreshArity();
+        return maxArity;
+      }
+    }
+
+    private void RefreshArity() {
+      minArity = 2; maxArity = 2; // default arity is 2
+      foreach(IConstraint constraint in Constraints) {
+        NumberOfSubOperatorsConstraint theConstraint = constraint as NumberOfSubOperatorsConstraint;
+        if(theConstraint != null) {
+          minArity = theConstraint.MinOperators.Data;
+          maxArity = theConstraint.MaxOperators.Data;
+        }
+      }
+    }
+
+    public IList<IFunction> AllowedSubFunctions(int index) {
+      if(allowedSubFunctions == null) {
+        allowedSubFunctions = new List<IFunction>[MaxArity];
+        for(int i = 0; i < MaxArity; i++) {
+          foreach(IConstraint constraint in Constraints) {
+            if(constraint is SubOperatorTypeConstraint) {
+              SubOperatorTypeConstraint subOpConstraint = constraint as SubOperatorTypeConstraint;
+              if(subOpConstraint.SubOperatorIndex.Data == index) {
+                allowedSubFunctions[i] = new List<IFunction>();
+                foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions[i].Add(f);
+                break;
+              }
+            } else if(constraint is AllSubOperatorsTypeConstraint) {
+              AllSubOperatorsTypeConstraint subOpConstraint = constraint as AllSubOperatorsTypeConstraint;
+              allowedSubFunctions[i] = new List<IFunction>();
+              foreach(IFunction f in subOpConstraint.AllowedSubOperators) allowedSubFunctions[i].Add(f);
+              break;
+            }
+          }
+        }
+      }
+      return allowedSubFunctions[index];
     }
 
     // operator-tree style evaluation is not supported for functions.
