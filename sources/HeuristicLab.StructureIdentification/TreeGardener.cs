@@ -294,7 +294,8 @@ namespace HeuristicLab.StructureIdentification {
     // returns a random branch from the specified level in the tree
     internal IFunctionTree GetRandomBranch(IFunctionTree tree, int level) {
       if(level == 0) return tree;
-      List<IFunctionTree> branches = GetBranchesAtLevel(tree, level);
+      List<IFunctionTree> branches = new List<IFunctionTree>();
+      GetBranchesAtLevel(tree, level, branches);
       return branches[random.Next(branches.Count)];
     }
     #endregion
@@ -464,15 +465,12 @@ namespace HeuristicLab.StructureIdentification {
       }
     }
 
-    private List<IFunctionTree> GetBranchesAtLevel(IFunctionTree tree, int level) {
-      if(level == 1) return new List<IFunctionTree>(tree.SubTrees);
-
-      List<IFunctionTree> branches = new List<IFunctionTree>();
+    private void GetBranchesAtLevel(IFunctionTree tree, int level, List<IFunctionTree> result) {
+      if(level == 1) result.AddRange(tree.SubTrees);
       foreach(IFunctionTree subTree in tree.SubTrees) {
         if(subTree.Height >= level - 1)
-          branches.AddRange(GetBranchesAtLevel(subTree, level - 1));
+          GetBranchesAtLevel(subTree, level - 1, result);
       }
-      return branches;
     }
 
     private IFunction RandomSelect(IList<IFunction> functionSet) {
