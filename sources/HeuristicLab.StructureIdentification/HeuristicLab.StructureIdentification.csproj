@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="CrossValidation.cs" />
     <Compile Include="Evaluation\AveragePercentageChangeEvaluator.cs" />
+    <Compile Include="Evaluation\ProfitEvaluator.cs" />
     <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
     <Compile Include="MulticlassModeller.cs" />
     <Compile Include="Evaluation\ClassificationMeanSquaredErrorEvaluator.cs" />

@@ -42,7 +42,7 @@ namespace HeuristicLab.StructureIdentification {
     private double estimatedValueMin;
     private int treeSize;
     private double totalEvaluatedNodes;
-    private Dataset dataset;
+    protected Dataset dataset;
     private double targetMean;
     protected double TargetMean { get { return targetMean; } }
 
