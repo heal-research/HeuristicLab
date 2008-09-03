@@ -137,6 +137,7 @@ namespace HeuristicLab.Core {
       return node;
     }
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
       myActualName = node.Attributes["ActualName"].Value;
       myFormalName = node.Attributes["FormalName"].Value;
       myDescription = node.Attributes["Description"].Value;
