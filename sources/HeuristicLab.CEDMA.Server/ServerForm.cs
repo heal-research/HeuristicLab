@@ -36,6 +36,8 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Data.Common;
 using System.Threading;
 using HeuristicLab.Grid;
+using HeuristicLab.Data;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
@@ -67,9 +69,50 @@ namespace HeuristicLab.CEDMA.Server {
       if(!System.IO.File.Exists(dbFile)) {
         database = new Database(connectionString);
         database.CreateNew();
+        InitDefaultOntology();
       } else {
         database = new Database(connectionString);
+        if(database.GetOntologyItems().Count==0) InitDefaultOntology();
       }
+    }
+
+    private void InitDefaultOntology() {
+      // init default ontology
+      StringData cedmaOntology = new StringData("CedmaOntology");
+      StringData definesEntity = new StringData("definesEntity");
+      StringData classGpFunctionTree = new StringData("class:GpFunctionTree");
+      StringData classDataset = new StringData("class:Dataset");
+      StringData instanceOf = new StringData("instanceOf");
+      StringData hasModel = new StringData("hasModel");
+      StringData modelOf = new StringData("modelOf");
+      StringData targetVariable = new StringData("targetVariable");
+      StringData trainingMse = new StringData("trainingMSE");
+      StringData validationMse = new StringData("validationMSE");
+
+      LinkItems(cedmaOntology, definesEntity, cedmaOntology);
+      LinkItems(cedmaOntology, definesEntity, definesEntity);
+      LinkItems(cedmaOntology, definesEntity, classGpFunctionTree);
+      LinkItems(cedmaOntology, definesEntity, classDataset);
+      LinkItems(cedmaOntology, definesEntity, instanceOf);
+      LinkItems(cedmaOntology, definesEntity, hasModel);
+      LinkItems(cedmaOntology, definesEntity, modelOf);
+      LinkItems(cedmaOntology, definesEntity, targetVariable);
+      LinkItems(cedmaOntology, definesEntity, trainingMse);
+      LinkItems(cedmaOntology, definesEntity, validationMse);
+    }
+
+    private void LinkItems(StringData subj, StringData pred, StringData prop) {
+      ItemEntry subjEntry = new ItemEntry();
+      ItemEntry predEntry = new ItemEntry();
+      ItemEntry propEntry = new ItemEntry();
+      subjEntry.Guid = subj.Guid;
+      subjEntry.RawData = PersistenceManager.SaveToGZip(subj);
+      predEntry.Guid = pred.Guid;
+      predEntry.RawData = PersistenceManager.SaveToGZip(pred);
+      propEntry.Guid = prop.Guid;
+      propEntry.RawData = PersistenceManager.SaveToGZip(prop);
+
+      database.LinkItems(subjEntry, predEntry, propEntry);
     }
 
     private void Start() {
