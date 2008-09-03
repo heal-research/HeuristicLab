@@ -68,6 +68,16 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
+            using(DbCommand cmd = cnn.CreateCommand()) {
+              cmd.CommandText = "CREATE TABLE Item (guid GUID primary key, RawData Blob)";
+              cmd.Transaction = t;
+              cmd.ExecuteNonQuery();
+            }
+            using(DbCommand cmd = cnn.CreateCommand()) {
+              cmd.CommandText = "CREATE TABLE Statement (subject GUID, predicate GUID, property GUID)";
+              cmd.Transaction = t;
+              cmd.ExecuteNonQuery();
+            }
             t.Commit();
           }
         }
@@ -618,5 +628,135 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
     #endregion
+
+    public IList<ItemEntry> GetOntologyItems() {
+      List<ItemEntry> ontologies = new List<ItemEntry>();
+      List<ItemEntry> items = new List<ItemEntry>();
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select guid, rawdata from Item,(select subject from Statement where subject=property) where subject=guid";
+            using(DbDataReader r = c.ExecuteReader()) {
+              while(r.Read()) {
+                ItemEntry ontology = new ItemEntry();
+                ontology.Guid = r.GetGuid(0);
+                ontology.RawData = (byte[])r.GetValue(1);
+                ontologies.Add(ontology);
+              }
+            }
+          }
+          foreach(ItemEntry ontology in ontologies) {
+            using(DbCommand c = cnn.CreateCommand()) {
+              c.CommandText = "Select guid, rawdata from Item,(select property from Statement where subject=@ontology) where guid=property";
+              DbParameter ontologyParam = c.CreateParameter();
+              ontologyParam.ParameterName = "@ontology";
+              ontologyParam.Value = ontology.Guid.ToString();
+              c.Parameters.Add(ontologyParam);
+              using(DbDataReader r = c.ExecuteReader()) {
+                while(r.Read()) {
+                  ItemEntry item = new ItemEntry();
+                  item.Guid = r.GetGuid(0);
+                  item.RawData = (byte[])r.GetValue(1);
+                  items.Add(item);
+                }
+              }
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return items;
+    }
+
+    public IList<ItemEntry> GetItems(Guid predicate, Guid property) {
+      List<ItemEntry> items = new List<ItemEntry>();
+      rwLock.EnterReadLock();
+      try {
+        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(DbCommand c = cnn.CreateCommand()) {
+            c.CommandText = "Select guid, rawdata from Item,(select subject from Statement where predicate=@Predicate and property=@Property) where subject=guid";
+            DbParameter predParam = c.CreateParameter();
+            predParam.ParameterName = "@Predicate";
+            predParam.Value = predicate;
+            c.Parameters.Add(predParam);
+            DbParameter propertyParam = c.CreateParameter();
+            propertyParam.ParameterName = "@Property";
+            propertyParam.Value = property;
+            c.Parameters.Add(propertyParam);
+            using(DbDataReader r = c.ExecuteReader()) {
+              r.Read();
+              ItemEntry item = new ItemEntry();
+              item.Guid = r.GetGuid(0);
+              item.RawData = (byte[])r.GetValue(1);
+              items.Add(item);
+            }
+          }
+        }
+      } finally {
+        rwLock.ExitReadLock();
+      }
+      return items;
+    }
+
+    public void LinkItems(ItemEntry subject, ItemEntry predicate, ItemEntry property) {
+      rwLock.EnterWriteLock();
+      try {
+        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+          cnn.Open();
+          using(SQLiteTransaction t = cnn.BeginTransaction()) {
+            ItemEntry[] items = new ItemEntry[] { subject, predicate, property };
+            foreach(ItemEntry item in items) {
+              long n = 0;
+              using(SQLiteCommand c = cnn.CreateCommand()) {
+                c.Transaction = t;
+                c.CommandText = "select count(guid) from item where guid=@guid";
+                DbParameter guidParam = c.CreateParameter();
+                guidParam.ParameterName = "@guid";
+                guidParam.Value = item.Guid.ToString();
+                c.Parameters.Add(guidParam);
+                n = (long)c.ExecuteScalar();
+              }
+              if(n == 0) using(SQLiteCommand c = cnn.CreateCommand()) {
+                  c.Transaction = t;
+                  c.CommandText = "insert into item (Guid, RawData) values (@Guid, @RawData)";
+                  DbParameter guidParam = c.CreateParameter();
+                  guidParam.ParameterName = "@Guid";
+                  guidParam.Value = item.Guid.ToString();
+                  c.Parameters.Add(guidParam);
+                  DbParameter rawDataParam = c.CreateParameter();
+                  rawDataParam.ParameterName = "@RawData";
+                  rawDataParam.Value = item.RawData;
+                  c.Parameters.Add(rawDataParam);
+                  c.ExecuteNonQuery();
+                }
+            }
+            using(SQLiteCommand c = cnn.CreateCommand()) {
+              c.Transaction = t;
+              c.CommandText = "insert into Statement (Subject, Predicate, Property) values (@Subject, @Predicate, @Property)";
+              DbParameter subjectParam = c.CreateParameter();
+              subjectParam.ParameterName = "@Subject";
+              subjectParam.Value = subject.Guid.ToString();
+              c.Parameters.Add(subjectParam);
+              DbParameter predParam = c.CreateParameter();
+              predParam.ParameterName = "@Predicate";
+              predParam.Value = predicate.Guid.ToString();
+              c.Parameters.Add(predParam);
+              DbParameter propertyParam = c.CreateParameter();
+              propertyParam.ParameterName = "@Property";
+              propertyParam.Value = property.Guid.ToString();
+              c.Parameters.Add(propertyParam);
+              c.ExecuteNonQuery();
+            }
+            t.Commit();
+          }
+        }
+      } finally {
+        rwLock.ExitWriteLock();
+      }
+    }
   }
 }

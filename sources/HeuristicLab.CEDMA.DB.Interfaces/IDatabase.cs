@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.ServiceModel;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace HeuristicLab.CEDMA.DB.Interfaces {
   [ServiceContract(Namespace = "http://HeuristicLab.CEDMA.DB")]
@@ -79,7 +80,15 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     ICollection<OperatorEntry> GetOperators();
 
     [OperationContract]
-    OperatorEntry GetOperator(long agentId);
+    OperatorEntry GetOperator(long id);
 
+    [OperationContract]
+    IList<ItemEntry> GetOntologyItems();
+
+    [OperationContract]
+    IList<ItemEntry> GetItems(Guid predicate, Guid property);
+
+    [OperationContract]
+    void LinkItems(ItemEntry subject, ItemEntry predicate, ItemEntry property);
   }
 }
