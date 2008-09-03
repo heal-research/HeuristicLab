@@ -233,6 +233,7 @@ namespace HeuristicLab.DataAnalysis {
     private string[] ParseVariableNamesString(string p) {
       p = p.Trim();
       string[] tokens = p.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      for(int i = 0; i < tokens.Length; i++) tokens[i] = tokens[i].Trim();
       return tokens;
     }
     private double[] ParseDoubleString(string s) {
