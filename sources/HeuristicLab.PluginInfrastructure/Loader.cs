@@ -131,7 +131,9 @@ namespace HeuristicLab.PluginInfrastructure {
       List<Assembly> assemblies = new List<Assembly>();
       // load all installed plugins into the reflection only context
       foreach(String filename in Directory.GetFiles(pluginDir, "*.dll")) {
-        assemblies.Add(ReflectionOnlyLoadDll(filename));
+        try {
+          assemblies.Add(ReflectionOnlyLoadDll(filename));
+        } catch(BadImageFormatException) { } // just ignore the case that the .dll file is not actually a CLR dll
       }
       return assemblies;
     }
