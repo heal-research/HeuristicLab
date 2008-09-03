@@ -42,9 +42,9 @@ namespace HeuristicLab.CEDMA.Operators {
     }
 
     public override IOperation Apply(IScope scope) {
-      IOperator op = scope.GetVariableValue<IOperator>("Operator", true);
-      string serverUrl = scope.GetVariableValue<StringData>("CedmaServerUri", true).Data;
-      long agentId = scope.GetVariableValue<IntData>("AgentId", true).Data;
+      IOperator op = GetVariableValue<IOperator>("Operator", scope, true);
+      string serverUrl = GetVariableValue<StringData>("CedmaServerUri", scope, true).Data;
+      long agentId = GetVariableValue<IntData>("AgentId", scope, true).Data;
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
