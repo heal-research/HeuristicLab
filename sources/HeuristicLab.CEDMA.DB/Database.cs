@@ -74,7 +74,7 @@ namespace HeuristicLab.CEDMA.DB {
               cmd.ExecuteNonQuery();
             }
             using(DbCommand cmd = cnn.CreateCommand()) {
-              cmd.CommandText = "CREATE TABLE Statement (subject GUID, predicate GUID, property GUID)";
+              cmd.CommandText = "CREATE TABLE Statement (id integer primary key autoincrement, subject GUID, predicate GUID, property GUID, CreationTime DateTime)";
               cmd.Transaction = t;
               cmd.ExecuteNonQuery();
             }
@@ -681,18 +681,19 @@ namespace HeuristicLab.CEDMA.DB {
             c.CommandText = "Select guid, rawdata from Item,(select subject from Statement where predicate=@Predicate and property=@Property) where subject=guid";
             DbParameter predParam = c.CreateParameter();
             predParam.ParameterName = "@Predicate";
-            predParam.Value = predicate;
+            predParam.Value = predicate.ToString();
             c.Parameters.Add(predParam);
             DbParameter propertyParam = c.CreateParameter();
             propertyParam.ParameterName = "@Property";
-            propertyParam.Value = property;
+            propertyParam.Value = property.ToString();
             c.Parameters.Add(propertyParam);
             using(DbDataReader r = c.ExecuteReader()) {
-              r.Read();
-              ItemEntry item = new ItemEntry();
-              item.Guid = r.GetGuid(0);
-              item.RawData = (byte[])r.GetValue(1);
-              items.Add(item);
+              while(r.Read()) {
+                ItemEntry item = new ItemEntry();
+                item.Guid = r.GetGuid(0);
+                item.RawData = (byte[])r.GetValue(1);
+                items.Add(item);
+              }
             }
           }
         }
@@ -736,7 +737,7 @@ namespace HeuristicLab.CEDMA.DB {
             }
             using(SQLiteCommand c = cnn.CreateCommand()) {
               c.Transaction = t;
-              c.CommandText = "insert into Statement (Subject, Predicate, Property) values (@Subject, @Predicate, @Property)";
+              c.CommandText = "insert into Statement (Subject, Predicate, Property, CreationTime) values (@Subject, @Predicate, @Property, @CreationTime)";
               DbParameter subjectParam = c.CreateParameter();
               subjectParam.ParameterName = "@Subject";
               subjectParam.Value = subject.Guid.ToString();
@@ -749,6 +750,10 @@ namespace HeuristicLab.CEDMA.DB {
               propertyParam.ParameterName = "@Property";
               propertyParam.Value = property.Guid.ToString();
               c.Parameters.Add(propertyParam);
+              DbParameter timeParam = c.CreateParameter();
+              timeParam.ParameterName = "@CreationTime";
+              timeParam.Value = DateTime.Now;
+              c.Parameters.Add(timeParam);
               c.ExecuteNonQuery();
             }
             t.Commit();
