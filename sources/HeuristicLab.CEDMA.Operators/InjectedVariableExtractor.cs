@@ -40,13 +40,13 @@ namespace HeuristicLab.CEDMA.Operators {
       : base() {
       AddVariableInfo(new VariableInfo("AgentId", "Id of the agent to extract injected variables from.", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("CedmaServerUri", "Uri of the CEDMA server", typeof(StringData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("VariableName", "Name of the injected variable that should be extracted", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("VariableNames", "The names of injected variables that should be extracted", typeof(ItemList<StringData>), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       string serverUrl = GetVariableValue<StringData>("CedmaServerUri", scope, true).Data;
       long agentId = GetVariableValue<IntData>("AgentId", scope, true).Data;
-      string variableName = GetVariableValue<StringData>("VariableName", scope, true).Data;
+      ItemList<StringData> variableNames = GetVariableValue<ItemList<StringData>>("VariableNames", scope, true);
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
@@ -55,29 +55,37 @@ namespace HeuristicLab.CEDMA.Operators {
       binding.Security.Mode = SecurityMode.None;
       using(ChannelFactory<IDatabase> factory = new ChannelFactory<IDatabase>(binding)) {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
-        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(database.GetAgentRawData(agentId));        
+        IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(database.GetAgentRawData(agentId));
         OperatorLinkPatcher.LinkDatabase(opGraph, database);
-        IVariable var = FindInjectedVariable(database, variableName, opGraph);
-        if(var != null) {
+        List<IVariable> vars = FindInjectedVariable(database, variableNames, opGraph);
+        foreach(IVariable var in vars) {
           scope.AddVariable(var);
         }
       }
       return null;
     }
 
-    private IVariable FindInjectedVariable(IDatabase database, string variableName, IOperatorGraph opGraph) {
+    private List<IVariable> FindInjectedVariable(IDatabase database, ItemList<StringData> variableNames, IOperatorGraph opGraph) {
+      List<IVariable> vars = new List<IVariable>();
       foreach(IOperator op in opGraph.Operators) {
-        IVariable var = FindInjectedVariable(database, variableName, op);
-        if(var != null) return var;
+        vars.AddRange(FindInjectedVariable(database, variableNames, op));
       }
-      return null;
+      return vars;
     }
 
-    private IVariable FindInjectedVariable(IDatabase database, string variableName, IOperator op) {
-      IVariable var = op.GetVariable(variableName);
-      if(var != null) return var;
-      else if(op is CombinedOperator) {
-        var = FindInjectedVariable(database, variableName, ((CombinedOperator)op).OperatorGraph);
+    private List<IVariable> FindInjectedVariable(IDatabase database, ItemList<StringData> variableNames, IOperator op) {
+      List<IVariable> vars = new List<IVariable>();
+      List<string> missingVariables = new List<string>();
+      foreach(StringData variableName in variableNames) missingVariables.Add(variableName.Data);
+      foreach(string variableName in missingVariables) {
+        IVariable var = op.GetVariable(variableName);
+        if(var != null) {
+          vars.Add(var);
+          variableNames.Remove(new StringData(variableName));
+        }
+      }
+      if(op is CombinedOperator) {
+        vars.AddRange(FindInjectedVariable(database, variableNames, ((CombinedOperator)op).OperatorGraph));
       } else if(op is OperatorLink) {
         OperatorLink link = op as OperatorLink;
         OperatorEntry targetEntry = database.GetOperator(link.Id);
@@ -85,9 +93,9 @@ namespace HeuristicLab.CEDMA.Operators {
         OperatorLinkPatcher.LinkDatabase(target, database);
         link.Operator = target;
 
-        var = FindInjectedVariable(database, variableName, link.Operator);
+        vars.AddRange(FindInjectedVariable(database, variableNames, link.Operator));
       }
-      return var;
+      return vars;
     }
   }
 }

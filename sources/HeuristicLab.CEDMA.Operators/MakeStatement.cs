@@ -38,7 +38,6 @@ namespace HeuristicLab.CEDMA.Operators {
 
     public MakeStatement()
       : base() {
-      AddVariableInfo(new VariableInfo("AgentId", "Id of the agent to extract injected variables from.", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("CedmaServerUri", "Uri of the CEDMA server", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Subject", "", typeof(IItem), VariableKind.In));
       AddVariableInfo(new VariableInfo("Predicate", "", typeof(IItem), VariableKind.In));
@@ -47,7 +46,6 @@ namespace HeuristicLab.CEDMA.Operators {
 
     public override IOperation Apply(IScope scope) {
       string serverUrl = GetVariableValue<StringData>("CedmaServerUri", scope, true).Data;
-      long agentId = GetVariableValue<IntData>("AgentId", scope, true).Data;
       IItem subject = GetVariableValue<IItem>("Subject", scope, true);
       IItem predicate = GetVariableValue<IItem>("Predicate", scope, true);
       IItem property = GetVariableValue<IItem>("Property", scope, true);

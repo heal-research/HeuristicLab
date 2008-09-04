@@ -53,6 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VariableExtractor.cs" />
+    <Compile Include="SubScopesExtractor.cs" />
     <Compile Include="OntologyExtractor.cs" />
     <Compile Include="ResultsExtractor.cs" />
     <Compile Include="MakeStatement.cs" />
