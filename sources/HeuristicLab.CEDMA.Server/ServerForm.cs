@@ -44,11 +44,11 @@ namespace HeuristicLab.CEDMA.Server {
     private ServiceHost host;
     private Database database;
     private static readonly string dbFile = AppDomain.CurrentDomain.BaseDirectory + "/test.db3";
-    private static readonly string connectionString = "Data Source=\""+dbFile+"\";Pooling=False";
+    private static readonly string connectionString = "Data Source=\"" + dbFile + "\";Pooling=False";
     public ServerForm() {
       InitializeComponent();
       // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
-      if (System.Environment.OSVersion.Version.Major >= 6) {
+      if(System.Environment.OSVersion.Version.Major >= 6) {
         addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8002/CEDMA/World";
       } else {
         addressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8002/CEDMA/World";
@@ -72,33 +72,39 @@ namespace HeuristicLab.CEDMA.Server {
         InitDefaultOntology();
       } else {
         database = new Database(connectionString);
-        if(database.GetOntologyItems().Count==0) InitDefaultOntology();
+        if(database.GetOntologyItems().Count == 0) InitDefaultOntology();
       }
     }
 
     private void InitDefaultOntology() {
       // init default ontology
-      StringData cedmaOntology = new StringData("CedmaOntology");
-      StringData definesEntity = new StringData("definesEntity");
-      StringData classGpFunctionTree = new StringData("class:GpFunctionTree");
-      StringData classDataset = new StringData("class:Dataset");
-      StringData instanceOf = new StringData("instanceOf");
-      StringData hasModel = new StringData("hasModel");
-      StringData modelOf = new StringData("modelOf");
-      StringData targetVariable = new StringData("targetVariable");
-      StringData trainingMse = new StringData("trainingMSE");
-      StringData validationMse = new StringData("validationMSE");
-
-      LinkItems(cedmaOntology, definesEntity, cedmaOntology);
-      LinkItems(cedmaOntology, definesEntity, definesEntity);
-      LinkItems(cedmaOntology, definesEntity, classGpFunctionTree);
-      LinkItems(cedmaOntology, definesEntity, classDataset);
-      LinkItems(cedmaOntology, definesEntity, instanceOf);
-      LinkItems(cedmaOntology, definesEntity, hasModel);
-      LinkItems(cedmaOntology, definesEntity, modelOf);
-      LinkItems(cedmaOntology, definesEntity, targetVariable);
-      LinkItems(cedmaOntology, definesEntity, trainingMse);
-      LinkItems(cedmaOntology, definesEntity, validationMse);
+      StringData[] entities = new StringData[] {
+      new StringData("CedmaOntology"),
+      new StringData("definesEntity"),
+      new StringData("class:GpFunctionTree"),
+      new StringData("class:Dataset"),
+      new StringData("instanceOf"),
+      new StringData("hasModel"),
+      new StringData("modelOf"),
+      new StringData("targetVariable"),
+      new StringData("trainingSamplesStart"),
+      new StringData("trainingSamplesEnd"),
+      new StringData("validationSamplesStart"),
+      new StringData("validationSamplesEnd"),
+      new StringData("testSamplesStart"),
+      new StringData("testSamplesEnd"),
+      new StringData("trainingMeanSquaredError"),
+      new StringData("validationMeanSquaredError"),
+      new StringData("testMeanSquaredError"),
+      new StringData("trainingMeanAbsolutePercentageError"),
+      new StringData("validationMeanAbsolutePercentageError"),
+      new StringData("testMeanAbsolutePercentageError"),
+      new StringData("treeSize"),
+      new StringData("treeHeight")
+      };
+      foreach(StringData entity in entities) {
+        LinkItems(entities[0], entities[1], entity);
+      }
     }
 
     private void LinkItems(StringData subj, StringData pred, StringData prop) {
@@ -132,7 +138,7 @@ namespace HeuristicLab.CEDMA.Server {
 
         host.AddServiceEndpoint(typeof(IDatabase), binding, addressTextBox.Text);
         host.Open();
-      } catch (CommunicationException ex) {
+      } catch(CommunicationException ex) {
         MessageBox.Show("An exception occurred: " + ex.Message);
         host.Abort();
       }
