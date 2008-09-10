@@ -54,6 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentEntry.cs" />
+    <Compile Include="SerializedLiteral.cs" />
+    <Compile Include="Literal.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="Statement.cs" />
+    <Compile Include="IStore.cs" />
     <Compile Include="OperatorEntry.cs" />
     <Compile Include="ProcessStatus.cs" />
     <Compile Include="ResultEntry.cs" />
