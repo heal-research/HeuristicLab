@@ -42,9 +42,13 @@ using HeuristicLab.Core;
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
     private ServiceHost host;
+    private ServiceHost rdfHost;
     private Database database;
+    private Store store;
     private static readonly string dbFile = AppDomain.CurrentDomain.BaseDirectory + "/test.db3";
     private static readonly string connectionString = "Data Source=\"" + dbFile + "\";Pooling=False";
+    private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
+    private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
     public ServerForm() {
       InitializeComponent();
       // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
@@ -74,14 +78,21 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
+    private void InitRdfStore() {
+      store = new Store(rdfConnectionString);
+    }
+
     private void Start() {
       InitDatabase();
-      InitRunScheduler();
+      InitRdfStore();
+      //InitRunScheduler();
 
       host = new ServiceHost(database, new Uri(addressTextBox.Text));
+      rdfHost = new ServiceHost(store, new Uri(addressTextBox.Text+"/RdfStore"));
       ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
       throttlingBehavior.MaxConcurrentSessions = 20;
       host.Description.Behaviors.Add(throttlingBehavior);
+      rdfHost.Description.Behaviors.Add(throttlingBehavior);
       try {
         NetTcpBinding binding = new NetTcpBinding();
         binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
@@ -91,9 +102,12 @@ namespace HeuristicLab.CEDMA.Server {
 
         host.AddServiceEndpoint(typeof(IDatabase), binding, addressTextBox.Text);
         host.Open();
+        rdfHost.AddServiceEndpoint(typeof(IStore), binding, addressTextBox.Text+"/RdfStore");
+        rdfHost.Open();
       } catch(CommunicationException ex) {
         MessageBox.Show("An exception occurred: " + ex.Message);
         host.Abort();
+        rdfHost.Abort();
       }
     }
 
