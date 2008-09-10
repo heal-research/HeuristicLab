@@ -81,14 +81,5 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
 
     [OperationContract]
     OperatorEntry GetOperator(long id);
-
-    [OperationContract]
-    IList<ItemEntry> GetOntologyItems();
-
-    [OperationContract]
-    IList<ItemEntry> GetItems(Guid predicate, Guid property);
-
-    [OperationContract]
-    void LinkItems(ItemEntry subject, ItemEntry predicate, ItemEntry property);
   }
 }

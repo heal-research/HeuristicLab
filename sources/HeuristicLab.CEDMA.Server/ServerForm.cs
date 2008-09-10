@@ -69,56 +69,9 @@ namespace HeuristicLab.CEDMA.Server {
       if(!System.IO.File.Exists(dbFile)) {
         database = new Database(connectionString);
         database.CreateNew();
-        InitDefaultOntology();
       } else {
         database = new Database(connectionString);
-        if(database.GetOntologyItems().Count == 0) InitDefaultOntology();
       }
-    }
-
-    private void InitDefaultOntology() {
-      // init default ontology
-      StringData[] entities = new StringData[] {
-      new StringData("CedmaOntology"),
-      new StringData("definesEntity"),
-      new StringData("class:GpFunctionTree"),
-      new StringData("class:Dataset"),
-      new StringData("instanceOf"),
-      new StringData("hasModel"),
-      new StringData("modelOf"),
-      new StringData("targetVariable"),
-      new StringData("trainingSamplesStart"),
-      new StringData("trainingSamplesEnd"),
-      new StringData("validationSamplesStart"),
-      new StringData("validationSamplesEnd"),
-      new StringData("testSamplesStart"),
-      new StringData("testSamplesEnd"),
-      new StringData("trainingMeanSquaredError"),
-      new StringData("validationMeanSquaredError"),
-      new StringData("testMeanSquaredError"),
-      new StringData("trainingMeanAbsolutePercentageError"),
-      new StringData("validationMeanAbsolutePercentageError"),
-      new StringData("testMeanAbsolutePercentageError"),
-      new StringData("treeSize"),
-      new StringData("treeHeight")
-      };
-      foreach(StringData entity in entities) {
-        LinkItems(entities[0], entities[1], entity);
-      }
-    }
-
-    private void LinkItems(StringData subj, StringData pred, StringData prop) {
-      ItemEntry subjEntry = new ItemEntry();
-      ItemEntry predEntry = new ItemEntry();
-      ItemEntry propEntry = new ItemEntry();
-      subjEntry.Guid = subj.Guid;
-      subjEntry.RawData = PersistenceManager.SaveToGZip(subj);
-      predEntry.Guid = pred.Guid;
-      predEntry.RawData = PersistenceManager.SaveToGZip(pred);
-      propEntry.Guid = prop.Guid;
-      propEntry.RawData = PersistenceManager.SaveToGZip(prop);
-
-      database.LinkItems(subjEntry, predEntry, propEntry);
     }
 
     private void Start() {

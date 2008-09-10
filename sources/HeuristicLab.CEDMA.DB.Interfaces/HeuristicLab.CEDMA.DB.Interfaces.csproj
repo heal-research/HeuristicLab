@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentEntry.cs" />
-    <Compile Include="ItemEntry.cs" />
     <Compile Include="OperatorEntry.cs" />
     <Compile Include="ProcessStatus.cs" />
     <Compile Include="ResultEntry.cs" />
