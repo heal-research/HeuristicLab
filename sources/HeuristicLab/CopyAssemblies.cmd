@@ -11,6 +11,8 @@ copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Do
 copy "..\..\..\HeuristicLab.BitVector\bin\%1\HeuristicLab.BitVector.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.Core\bin\%1\HeuristicLab.CEDMA.Core.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\HeuristicLab.CEDMA.DB.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\SemWeb.SqliteStore.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\SemWeb.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.DB.Interfaces\bin\%1\HeuristicLab.CEDMA.DB.Interfaces.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.Operators\bin\%1\HeuristicLab.CEDMA.Operators.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.Server\bin\%1\HeuristicLab.CEDMA.Server.dll" .\plugins
