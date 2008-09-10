@@ -57,7 +57,9 @@ namespace HeuristicLab.CEDMA.Operators {
         IDatabase database = factory.CreateChannel(new EndpointAddress(serverUrl));
         IOperatorGraph opGraph = (IOperatorGraph)PersistenceManager.RestoreFromGZip(database.GetAgentRawData(agentId));
         OperatorLinkPatcher.LinkDatabase(opGraph, database);
-        List<IVariable> vars = FindInjectedVariable(database, variableNames, opGraph);
+        ItemList<StringData> clone = new ItemList<StringData>();
+        foreach(StringData name in variableNames) clone.Add(name);
+        List<IVariable> vars = FindInjectedVariable(database, clone, opGraph);
         foreach(IVariable var in vars) {
           scope.AddVariable(var);
         }

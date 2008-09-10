@@ -53,6 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SelectSubjectsLiteral.cs" />
+    <Compile Include="SelectProperties.cs" />
+    <Compile Include="SelectSubjects.cs" />
+    <Compile Include="MakeLiteralStatement.cs" />
+    <Compile Include="MakeItemStatement.cs" />
     <Compile Include="ResultsExtractor.cs" />
     <Compile Include="InjectedVariableExtractor.cs" />
     <Compile Include="SplitScopeToItemsResultWriter.cs" />
