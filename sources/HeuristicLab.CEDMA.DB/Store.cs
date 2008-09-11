@@ -58,6 +58,37 @@ namespace HeuristicLab.CEDMA.DB {
       return r;
     }
 
+    public IList<Statement> Select(SelectFilter filter) {
+      SemWeb.SelectResult result = store.Select(Translate(filter));
+      List<Statement> r = new List<Statement>();
+      foreach(SemWeb.Statement resultStatement in result) {
+        r.Add(Translate(resultStatement));
+      }
+      return r;
+    }
+
+    private SemWeb.SelectFilter Translate(SelectFilter filter) {
+      SemWeb.SelectFilter f = new SemWeb.SelectFilter();
+      f.Subjects = Array.ConvertAll(filter.Subjects, s => Translate(s));
+      f.Predicates = Array.ConvertAll(filter.Predicates, p => Translate(p));
+      f.Objects = Array.ConvertAll(filter.Properties, prop => Translate(prop));
+      return f;
+    }
+
+    private SemWeb.Entity Translate(Entity e) {
+      return e.Uri == null ? null : new SemWeb.Entity(e.Uri);
+    }
+
+    private SemWeb.Resource Translate(Resource prop) {
+      if(prop is Literal) {
+        return TranslateLiteral((Literal)prop);
+      } else if(prop is SerializedLiteral) {
+        return TranslateLiteral((SerializedLiteral)prop);
+      } else {
+        return Translate((Entity)prop);
+      }
+    }
+
     private Statement Translate(SemWeb.Statement statement) {
       if(statement.Object is SemWeb.Literal) {
         return new Statement(
@@ -73,22 +104,10 @@ namespace HeuristicLab.CEDMA.DB {
     }
 
     private SemWeb.Statement Translate(Statement statement) {
-      if(statement.Property is Literal) {
-        return new SemWeb.Statement(
-          statement.Subject.Uri == null ? null : new SemWeb.Entity(statement.Subject.Uri),
-          statement.Predicate.Uri == null ? null : new SemWeb.Entity(statement.Predicate.Uri),
-          TranslateLiteral((Literal)statement.Property));
-      } else if(statement.Property is SerializedLiteral) {
-        return new SemWeb.Statement(
-          statement.Subject.Uri == null ? null : new SemWeb.Entity(statement.Subject.Uri),
-          statement.Predicate.Uri == null ? null : new SemWeb.Entity(statement.Predicate.Uri),
-          TranslateLiteral((SerializedLiteral)statement.Property));
-      } else {
-        return new SemWeb.Statement(
-          statement.Subject.Uri == null ? null : new SemWeb.Entity(statement.Subject.Uri),
-          statement.Predicate.Uri == null ? null : new SemWeb.Entity(statement.Predicate.Uri),
-          statement.Property.Uri == null ? null : new SemWeb.Entity(((Entity)statement.Property).Uri));
-      }
+      return new SemWeb.Statement(
+        Translate(statement.Subject),
+        Translate(statement.Predicate),
+        Translate(statement.Property));
     }
 
     private SemWeb.Literal TranslateLiteral(SerializedLiteral l) {

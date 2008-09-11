@@ -23,20 +23,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.ServiceModel;
-using System.Data;
-using System.Linq.Expressions;
+using HeuristicLab.CEDMA.DB.Interfaces;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.CEDMA.DB.Interfaces {
-  [ServiceContract(Namespace = "http://HeuristicLab.CEDMA.DB")]
-  public interface IStore {
-    [OperationContract]
-    void Add(Statement statement);
+  [DataContract]
+  [KnownType(typeof(Literal))]
+  [KnownType(typeof(Entity))]
+  [KnownType(typeof(SerializedLiteral))]
+  public class SelectFilter {
+    [DataMember]
+    public Entity[] Subjects { get; set; }
+    [DataMember]
+    public Entity[] Predicates { get; set; }
+    [DataMember]
+    public Resource[] Properties { get; set; }
 
-    [OperationContract]
-    IList<Statement> Select(Statement template);
-
-    [OperationContract(Name = "SelectFiltered")]
-    IList<Statement> Select(SelectFilter filter);
+    public SelectFilter(Entity[] subj, Entity[] pred, Resource[] prop) {
+      Subjects = subj;
+      Predicates = pred;
+      Properties = prop;
+    }
   }
 }
