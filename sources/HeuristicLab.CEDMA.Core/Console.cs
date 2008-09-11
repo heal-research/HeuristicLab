@@ -32,6 +32,7 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
     private AgentList agentList;
+    private ResultList resultsList;
     private DatabaseOperatorLibrary operatorLibary;
     private ChannelFactory<IDatabase> factory;
     private IDatabase database;
@@ -44,6 +45,10 @@ namespace HeuristicLab.CEDMA.Core {
       get { return agentList; }
     }
 
+    public ResultList ResultsList {
+      get { return resultsList; }
+    }
+
     public IOperatorLibrary OperatorLibrary {
       get { return operatorLibary; }
     }
@@ -51,6 +56,7 @@ namespace HeuristicLab.CEDMA.Core {
     public Console()
       : base() {
       agentList = new AgentList();
+      resultsList = new ResultList();
       operatorLibary = new DatabaseOperatorLibrary();
     }
 
@@ -88,6 +94,10 @@ namespace HeuristicLab.CEDMA.Core {
       database = factory.CreateChannel(new EndpointAddress(serverUri));
       agentList.Database = database;
       operatorLibary.Database = database;
+
+      ChannelFactory<IStore> storeFactory = new ChannelFactory<IStore>(binding);
+      IStore store = storeFactory.CreateChannel(new EndpointAddress(serverUri + "/RdfStore"));
+      resultsList.Store = store;
     }
     #endregion
 

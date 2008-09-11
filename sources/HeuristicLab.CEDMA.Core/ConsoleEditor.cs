@@ -27,6 +27,9 @@ using HeuristicLab.Core;
 using System.Windows.Forms;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Charting;
+using System.Drawing;
+using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
   class ConsoleEditor : EditorBase {
@@ -38,9 +41,9 @@ namespace HeuristicLab.CEDMA.Core {
     private ComboBox comboBox1;
     private Label projectLabel;
     private Button newButton;
-    private System.ComponentModel.IContainer components;
     private Button opLibButton;
     private Label label1;
+    private TabPage resultsTabPage;
     private Console console;
 
     public ConsoleEditor(Console console) {
@@ -53,6 +56,7 @@ namespace HeuristicLab.CEDMA.Core {
       this.uriLabel = new System.Windows.Forms.Label();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.agentsPage = new System.Windows.Forms.TabPage();
+      this.resultsTabPage = new System.Windows.Forms.TabPage();
       this.connectButton = new System.Windows.Forms.Button();
       this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.projectLabel = new System.Windows.Forms.Label();
@@ -84,6 +88,7 @@ namespace HeuristicLab.CEDMA.Core {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.agentsPage);
+      this.tabControl.Controls.Add(this.resultsTabPage);
       this.tabControl.Enabled = false;
       this.tabControl.Location = new System.Drawing.Point(6, 85);
       this.tabControl.Name = "tabControl";
@@ -100,6 +105,16 @@ namespace HeuristicLab.CEDMA.Core {
       this.agentsPage.TabIndex = 1;
       this.agentsPage.Text = "Agents";
       this.agentsPage.UseVisualStyleBackColor = true;
+      // 
+      // resultsTabPage
+      // 
+      this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.resultsTabPage.Name = "resultsTabPage";
+      this.resultsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.resultsTabPage.Size = new System.Drawing.Size(498, 352);
+      this.resultsTabPage.TabIndex = 2;
+      this.resultsTabPage.Text = "Results";
+      this.resultsTabPage.UseVisualStyleBackColor = true;
       // 
       // connectButton
       // 
@@ -188,6 +203,9 @@ namespace HeuristicLab.CEDMA.Core {
         agentsPage.Controls.Clear();
         agentsPage.Controls.Add((Control)console.AgentList.CreateView());
         agentsPage.Controls[0].Dock = DockStyle.Fill;
+        resultsTabPage.Controls.Clear();
+        resultsTabPage.Controls.Add((Control)console.ResultsList.CreateView());
+        resultsTabPage.Controls[0].Dock = DockStyle.Fill;
         opLibButton.Enabled = true;
         opLibButton.Enabled = true;
       } catch(CommunicationException ex) {
