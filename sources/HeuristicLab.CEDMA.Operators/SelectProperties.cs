@@ -44,11 +44,14 @@ namespace HeuristicLab.CEDMA.Operators {
       : base() {
       AddVariableInfo(new VariableInfo("CedmaServerUri", "Uri of the CEDMA server", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SubjectGuid", "", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Predicate", "", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Property", "", typeof(IItem), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
       string serverUrl = GetVariableValue<StringData>("CedmaServerUri", scope, true).Data;
       StringData subjectGuid = GetVariableValue<StringData>("SubjectGuid", scope, true);
+      StringData predicate = GetVariableValue<StringData>("Predicate", scope, true);
 
       NetTcpBinding binding = new NetTcpBinding();
       binding.MaxReceivedMessageSize = 10000000; // 10Mbytes
@@ -59,17 +62,33 @@ namespace HeuristicLab.CEDMA.Operators {
         IStore store = factory.CreateChannel(new EndpointAddress(serverUrl));
         Statement template = new Statement(
           new Entity(cedmaNamespace+subjectGuid.Data),
-          new Entity(null),
+          new Entity(cedmaNamespace+predicate.Data),
           new Entity(null));
         IList<Statement> result = store.Select(template);
 
-        foreach(Statement s in result) {
+        if(result.Count == 1) {
+          Statement s = result[0];
+          Variable var = new Variable();
+          var.Name = scope.TranslateName("Property");
+          scope.AddVariable(var);
           if(s.Property is Literal) {
-            scope.AddVariable(new Variable(s.Predicate.Uri.Replace(cedmaNamespace,""), TranslateLiteral((Literal)s.Property)));
+            var.Value = TranslateLiteral((Literal)s.Property);
           } else if(s.Property is SerializedLiteral) {
-            scope.AddVariable(new Variable(s.Predicate.Uri.Replace(cedmaNamespace, ""), TranslateLiteral((SerializedLiteral)s.Property)));
+            var.Value = TranslateLiteral((SerializedLiteral)s.Property);
           } else {
-            scope.AddVariable(new Variable(s.Predicate.Uri, new StringData(((Entity)s.Property).Uri.Replace(cedmaNamespace, ""))));
+            var.Value = new StringData(((Entity)s.Property).Uri.Replace(cedmaNamespace, ""));
+          }
+        } else {
+          ItemList<IItem> resultValues = new ItemList<IItem>();
+          scope.AddVariable(new Variable(scope.TranslateName("Property"), resultValues));
+          foreach(Statement s in result) {
+            if(s.Property is Literal) {
+              resultValues.Add(TranslateLiteral((Literal)s.Property));
+            } else if(s.Property is SerializedLiteral) {
+              resultValues.Add(TranslateLiteral((SerializedLiteral)s.Property));
+            } else {
+              resultValues.Add(new StringData(((Entity)s.Property).Uri.Replace(cedmaNamespace, "")));
+            }
           }
         }
       }
