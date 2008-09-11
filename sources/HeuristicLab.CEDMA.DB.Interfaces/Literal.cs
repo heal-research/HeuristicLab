@@ -35,5 +35,16 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public Literal(object value) {
       Value = value;
     }
+
+    public override bool Equals(object obj) {
+      if(this == obj) return true;
+      Literal other = obj as Literal;
+      if(obj == null) return false;
+      else return other.Value.Equals(this.Value);
+    }
+
+    public override int GetHashCode() {
+      return Value.GetHashCode();
+    }
   }
 }

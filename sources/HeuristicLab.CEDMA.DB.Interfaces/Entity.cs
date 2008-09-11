@@ -33,5 +33,16 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public Entity(string uri) {
       this.Uri = uri;
     }
+
+    public override bool Equals(object obj) {
+      if(this == obj) return true;
+      Entity other = obj as Entity;
+      if(other == null) return false;
+      else return other.Uri.Equals(this.Uri);
+    }
+
+    public override int GetHashCode() {
+      return Uri.GetHashCode();
+    }
   }
 }

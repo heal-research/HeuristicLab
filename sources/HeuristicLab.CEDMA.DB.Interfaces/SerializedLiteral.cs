@@ -35,5 +35,16 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public SerializedLiteral(string rawData) {
       RawData = rawData;
     }
+
+    public override bool Equals(object obj) {
+      if(this == obj) return true;
+      SerializedLiteral other = obj as SerializedLiteral;
+      if(other == null) return false;
+      else return other.RawData.Equals(this.RawData);
+    }
+
+    public override int GetHashCode() {
+      return RawData.GetHashCode();
+    }
   }
 }
