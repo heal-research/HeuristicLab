@@ -33,7 +33,7 @@ namespace HeuristicLab.Charting.Data {
     public string Title {
       get { return myTitle; }
       set {
-        if (myTitle != value) {
+        if(myTitle != value) {
           myTitle = value;
           OnUpdate();
         }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Charting.Data {
       group.Brush = brush;
       Group.Add(group);
       dataRowTypes.Add(dataRowType);
-      if (dataRowType == DataRowType.Lines) {
+      if(dataRowType == DataRowType.Lines) {
         Group lines = new Group(this);
         group.Add(lines);
         Group points = new Group(this);
@@ -70,11 +70,11 @@ namespace HeuristicLab.Charting.Data {
       DataRowType dataRowType = dataRowTypes[dataRowIndex];
       Group group = (Group)Group.Primitives[dataRowIndex];
 
-      switch (dataRowType) {
+      switch(dataRowType) {
         case DataRowType.Lines:
           Group lines = (Group)group.Primitives[1];
           Group points = (Group)group.Primitives[0];
-          if (points.Primitives.Count > 0) {
+          if(points.Primitives.Count > 0) {
             FixedSizeRectangle lastRect = (FixedSizeRectangle)points.Primitives[0];
             Line line = new Line(this, lastRect.Point, point, group.Pen);
             lines.Add(line);
@@ -84,11 +84,25 @@ namespace HeuristicLab.Charting.Data {
           points.Add(rect);
           break;
         case DataRowType.Bars:
+          if(group.Primitives.Count < 2) {
+            group.Add(new FixedSizeRectangle(this, point, new Size(0, 0), group.Pen, group.Brush));
+            if(group.Primitives.Count == 2) {
+              PointD p = ((FixedSizeRectangle)group.Primitives[0]).Point;
+              PointD q = ((FixedSizeRectangle)group.Primitives[1]).Point;
+              double y0 = Math.Min(p.Y, q.Y);
+              double y1 = Math.Max(p.Y, q.Y);
+              double x0 = Math.Min(p.X, q.X);
+              double x1 = Math.Max(p.X, q.X);
+              Rectangle bar = new Rectangle(this, x0, y0, x1, y1, group.Pen, group.Brush);
+              bar.ToolTipText = "Height=" + (y1 - y0);
+              group.Add(bar);
+            }
+          }
           break;
         case DataRowType.Points:
-          FixedSizeRectangle p = new FixedSizeRectangle(this, point, new Size(5, 5), group.Pen, group.Brush);
-          p.ToolTipText = "(" + point.X.ToString() + " ; " + point.Y.ToString() + ")";
-          group.Add(p);
+          FixedSizeRectangle r = new FixedSizeRectangle(this, point, new Size(5, 5), group.Pen, group.Brush);
+          r.ToolTipText = "(" + point.X.ToString() + " ; " + point.Y.ToString() + ")";
+          group.Add(r);
           break;
       }
     }
