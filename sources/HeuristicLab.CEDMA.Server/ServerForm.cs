@@ -85,7 +85,7 @@ namespace HeuristicLab.CEDMA.Server {
     private void Start() {
       InitDatabase();
       InitRdfStore();
-      //InitRunScheduler();
+      InitRunScheduler();
 
       host = new ServiceHost(database, new Uri(addressTextBox.Text));
       rdfHost = new ServiceHost(store, new Uri(addressTextBox.Text+"/RdfStore"));
