@@ -56,16 +56,18 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
 
     public override void Evaluate(int start, int end) {
       double errorsSum = 0.0;
+      int n = 0;
       for(int sample = start; sample < end; sample++) {
         double estimated = GetEstimatedValue(sample);
         double original = GetOriginalValue(sample);
         SetOriginalValue(sample, estimated);
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        if(!double.IsNaN(original) && !double.IsInfinity(original) && original!=0.0) {
           double percent_error = Math.Abs((estimated - original) / original);
           errorsSum += percent_error;
+          n++;
         }
       }
-      double quality = errorsSum / (end - start);
+      double quality = errorsSum / n;
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
       mape.Data = quality;
