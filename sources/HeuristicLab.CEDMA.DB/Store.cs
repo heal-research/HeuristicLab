@@ -40,17 +40,25 @@ namespace HeuristicLab.CEDMA.DB {
   public class Store : IStore {
     private string connectionString;
     private SemWeb.Store store;
+    private object bigLock = new object();
     public Store(string connectionString) {
-      this.connectionString = connectionString;
-      store = SemWeb.Store.Create(connectionString);
+      lock(bigLock) {
+        this.connectionString = connectionString;
+        store = SemWeb.Store.Create(connectionString);
+      }
     }
 
     public void Add(Statement statement) {
-      store.Add(Translate(statement));
+      lock(bigLock) {
+        store.Add(Translate(statement));
+      }
     }
 
     public IList<Statement> Select(Statement template) {
-      SemWeb.SelectResult result = store.Select(Translate(template));
+      SemWeb.SelectResult result;
+      lock(bigLock) {
+        result = store.Select(Translate(template));
+      }
       List<Statement> r = new List<Statement>();
       foreach(SemWeb.Statement resultStatement in result) {
         r.Add(Translate(resultStatement));
@@ -59,7 +67,10 @@ namespace HeuristicLab.CEDMA.DB {
     }
 
     public IList<Statement> Select(SelectFilter filter) {
-      SemWeb.SelectResult result = store.Select(Translate(filter));
+      SemWeb.SelectResult result;
+      lock(bigLock) {
+        result = store.Select(Translate(filter));
+      }
       List<Statement> r = new List<Statement>();
       foreach(SemWeb.Statement resultStatement in result) {
         r.Add(Translate(resultStatement));
