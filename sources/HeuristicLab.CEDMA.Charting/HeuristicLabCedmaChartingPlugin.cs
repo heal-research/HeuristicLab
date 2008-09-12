@@ -28,6 +28,9 @@ namespace HeuristicLab.CEDMA.Charting {
   [ClassInfo(Name = "HeuristicLab.CEDMA.Charting")]
   [PluginFile(Filename = "HeuristicLab.CEDMA.Charting.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Charting")]
+  [Dependency(Dependency = "HeuristicLab.Charting.Data")]
+  [Dependency(Dependency = "HeuristicLab.Core")]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
   public class HeuristicLabCedmaCorePlugin : PluginBase {
   }
 }

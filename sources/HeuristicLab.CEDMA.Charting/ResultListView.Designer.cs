@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.CEDMA.Core {
+﻿namespace HeuristicLab.CEDMA.Charting {
   partial class ResultListView {
     /// <summary> 
     /// Required designer variable.

@@ -29,9 +29,8 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
-using HeuristicLab.Operators;
 
-namespace HeuristicLab.CEDMA.Core {
+namespace HeuristicLab.CEDMA.Charting {
   public class ResultList : ItemBase {
     private const string cedmaNS = "http://www.heuristiclab.com/cedma/";
 

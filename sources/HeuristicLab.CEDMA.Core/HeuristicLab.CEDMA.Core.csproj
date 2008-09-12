@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C27DDF6C-84DF-45EF-B82F-57A28DD51166}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -49,10 +49,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Charting, Version=3.0.0.91, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Charting\bin\Debug\HeuristicLab.Charting.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -81,8 +77,6 @@
     <Compile Include="ConsoleEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Histogram.cs" />
-    <Compile Include="ResultList.cs" />
     <Compile Include="ResultTable.cs" />
     <Compile Include="ResultExporter.cs" />
     <Compile Include="DatabaseOperatorLibrary.cs" />
@@ -113,24 +107,18 @@
     <Compile Include="AgentView.Designer.cs">
       <DependentUpon>AgentView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ResultListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ResultListView.Designer.cs">
-      <DependentUpon>ResultListView.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.CEDMA.Charting\HeuristicLab.CEDMA.Charting.csproj">
+      <Project>{1BF17271-5350-476A-8F6D-FC74FA3E82CA}</Project>
+      <Name>HeuristicLab.CEDMA.Charting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.CEDMA.DB.Interfaces\HeuristicLab.CEDMA.DB.Interfaces.csproj">
       <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
       <Name>HeuristicLab.CEDMA.DB.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Charting.Data\HeuristicLab.Charting.Data.csproj">
-      <Project>{E0740131-AA3E-4A3F-BA03-C9FF8327F4EE}</Project>
-      <Name>HeuristicLab.Charting.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
@@ -160,10 +148,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DatabaseOperatorLibraryView.resx">
       <DependentUpon>DatabaseOperatorLibraryView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ResultListView.resx">
-      <DependentUpon>ResultListView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

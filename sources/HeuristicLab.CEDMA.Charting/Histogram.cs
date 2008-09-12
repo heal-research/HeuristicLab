@@ -26,9 +26,8 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.Operators;
 
-namespace HeuristicLab.CEDMA.Core {
+namespace HeuristicLab.CEDMA.Charting {
   public class Histogram {
     private int buckets;
     public int Buckets {

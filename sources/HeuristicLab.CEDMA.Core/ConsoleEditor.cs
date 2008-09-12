@@ -27,7 +27,6 @@ using HeuristicLab.Core;
 using System.Windows.Forms;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Charting;
 using System.Drawing;
 using HeuristicLab.CEDMA.DB.Interfaces;
 

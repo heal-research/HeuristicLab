@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Charting;
 
-namespace HeuristicLab.CEDMA.Core {
+namespace HeuristicLab.CEDMA.Charting {
   public partial class ResultListView : ViewBase {
     private ResultList results;
     private const string FREQUENCY = "<Frequency>";

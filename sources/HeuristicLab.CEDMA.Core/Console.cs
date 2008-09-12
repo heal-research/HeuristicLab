@@ -28,6 +28,7 @@ using System.Xml;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using HeuristicLab.CEDMA.Charting;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
