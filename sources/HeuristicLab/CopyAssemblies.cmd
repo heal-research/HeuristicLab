@@ -9,6 +9,7 @@ copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\bin\%1\HeuristicLab.Adv
 copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "..\..\..\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "..\..\..\HeuristicLab.BitVector\bin\%1\HeuristicLab.BitVector.dll" .\plugins
+copy "..\..\..\HeuristicLab.CEDMA.Charting\bin\%1\HeuristicLab.CEDMA.Charting.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.Core\bin\%1\HeuristicLab.CEDMA.Core.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\HeuristicLab.CEDMA.DB.dll" .\plugins
 copy "..\..\..\HeuristicLab.CEDMA.DB\bin\%1\SemWeb.SqliteStore.dll" .\plugins
