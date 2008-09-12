@@ -28,6 +28,12 @@
       this.xAxisComboBox = new System.Windows.Forms.ComboBox();
       this.yAxisLabel = new System.Windows.Forms.Label();
       this.yAxisComboBox = new System.Windows.Forms.ComboBox();
+      this.yTrackBar = new System.Windows.Forms.TrackBar();
+      this.xTrackBar = new System.Windows.Forms.TrackBar();
+      this.xJitterlabel = new System.Windows.Forms.Label();
+      this.yJitterLabel = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       this.SuspendLayout();
       // 
       // dataChart
@@ -47,7 +53,7 @@
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.Location = new System.Drawing.Point(305, 429);
+      this.xAxisLabel.Location = new System.Drawing.Point(197, 429);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
       this.xAxisLabel.TabIndex = 8;
@@ -57,7 +63,7 @@
       // 
       this.xAxisComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisComboBox.FormattingEnabled = true;
-      this.xAxisComboBox.Location = new System.Drawing.Point(326, 426);
+      this.xAxisComboBox.Location = new System.Drawing.Point(218, 426);
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(121, 21);
       this.xAxisComboBox.TabIndex = 7;
@@ -81,17 +87,63 @@
       this.yAxisComboBox.TabIndex = 5;
       this.yAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.yAxisComboBox_SelectedIndexChanged);
       // 
-      // ResultView
+      // yTrackBar
+      // 
+      this.yTrackBar.Location = new System.Drawing.Point(186, 3);
+      this.yTrackBar.Maximum = 100;
+      this.yTrackBar.Name = "yTrackBar";
+      this.yTrackBar.Size = new System.Drawing.Size(60, 45);
+      this.yTrackBar.TabIndex = 10;
+      this.yTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.yTrackBar.ValueChanged += new System.EventHandler(this.yTrackBar_ValueChanged);
+      // 
+      // xTrackBar
+      // 
+      this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.xTrackBar.Location = new System.Drawing.Point(387, 426);
+      this.xTrackBar.Maximum = 100;
+      this.xTrackBar.Name = "xTrackBar";
+      this.xTrackBar.Size = new System.Drawing.Size(60, 45);
+      this.xTrackBar.TabIndex = 11;
+      this.xTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.xTrackBar.ValueChanged += new System.EventHandler(this.xTrackBar_ValueChanged);
+      // 
+      // xJitterlabel
+      // 
+      this.xJitterlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.xJitterlabel.AutoSize = true;
+      this.xJitterlabel.Location = new System.Drawing.Point(352, 429);
+      this.xJitterlabel.Name = "xJitterlabel";
+      this.xJitterlabel.Size = new System.Drawing.Size(29, 13);
+      this.xJitterlabel.TabIndex = 12;
+      this.xJitterlabel.Text = "jitter:";
+      // 
+      // yJitterLabel
+      // 
+      this.yJitterLabel.AutoSize = true;
+      this.yJitterLabel.Location = new System.Drawing.Point(151, 6);
+      this.yJitterLabel.Name = "yJitterLabel";
+      this.yJitterLabel.Size = new System.Drawing.Size(29, 13);
+      this.yJitterLabel.TabIndex = 13;
+      this.yJitterLabel.Text = "jitter:";
+      // 
+      // ResultListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.yJitterLabel);
+      this.Controls.Add(this.xJitterlabel);
+      this.Controls.Add(this.xTrackBar);
       this.Controls.Add(this.dataChart);
       this.Controls.Add(this.xAxisLabel);
       this.Controls.Add(this.xAxisComboBox);
       this.Controls.Add(this.yAxisLabel);
       this.Controls.Add(this.yAxisComboBox);
-      this.Name = "ResultView";
+      this.Controls.Add(this.yTrackBar);
+      this.Name = "ResultListView";
       this.Size = new System.Drawing.Size(450, 450);
+      ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -104,5 +156,9 @@
     private System.Windows.Forms.ComboBox xAxisComboBox;
     private System.Windows.Forms.Label yAxisLabel;
     private System.Windows.Forms.ComboBox yAxisComboBox;
+    private System.Windows.Forms.TrackBar yTrackBar;
+    private System.Windows.Forms.TrackBar xTrackBar;
+    private System.Windows.Forms.Label xJitterlabel;
+    private System.Windows.Forms.Label yJitterLabel;
   }
 }
