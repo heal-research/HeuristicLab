@@ -40,18 +40,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void InitChart() {
-      dataChart.Chart = new BubbleChart(0, 0, 100, 100);
-      foreach(string dim in results.VariableNames) {
-        dataChart.Chart.AddDimension(dim);
-        IList<double> xs = results.GetValues(dim);
-        for(int i = 0; i < xs.Count; i++) {
-          double x = xs[i];
-          if(double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
-          if(!double.IsNaN(x)) {
-            dataChart.Chart.AddDataPoint(dim, x);
-          }
-        }
-      }
+      dataChart.Chart = new BubbleChart(results, 0, 0, 100, 100);
     }
 
     private void yAxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -78,11 +67,11 @@ namespace HeuristicLab.CEDMA.Charting {
     private void CreateHistogramChart() {
       // TASK
     }
-    
+
     private void jitterTrackBar_ValueChanged(object sender, EventArgs e) {
       if(dataChart.Chart != null) {
-        double xJitterFactor = xTrackBar.Value / 100.0 ;
-        double yJitterFactor = yTrackBar.Value / 100.0 ;
+        double xJitterFactor = xTrackBar.Value / 100.0;
+        double yJitterFactor = yTrackBar.Value / 100.0;
         dataChart.Chart.SetJitter(xJitterFactor, yJitterFactor);
       }
       UpdateChart();

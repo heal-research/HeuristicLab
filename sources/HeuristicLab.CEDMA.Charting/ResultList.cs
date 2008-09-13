@@ -29,8 +29,52 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Charting {
+  public class Record {
+    private Dictionary<string, double> values = new Dictionary<string, double>();
+    public Dictionary<string,double> Values {
+      get {
+        return values;
+      }
+    }
+
+    private bool selected = false;
+    public bool Selected { get { return selected; } }
+
+    private string uri;
+    public string Uri { get { return uri; } }
+    public Record(string uri) {
+      this.uri = uri;
+    }
+
+    public void Set(string name, double value) {
+      Values.Add(name, value);
+    }
+
+    public double Get(string name) {
+      if(name==null || !Values.ContainsKey(name)) return double.NaN;
+      return Values[name];
+    }
+
+    public void ToggleSelected() {
+      selected = !selected;
+      if(OnSelectionChanged != null) OnSelectionChanged(this, new EventArgs());
+    }
+
+    public event EventHandler OnSelectionChanged;
+  }
+
+  public class RecordAddedEventArgs : EventArgs {
+    private Record record;
+    public Record Record { get { return record; } }
+    public RecordAddedEventArgs(Record r)
+      : base() {
+      this.record = r;
+    }
+  }
+
   public class ResultList : ItemBase {
     private const string cedmaNS = "http://www.heuristiclab.com/cedma/";
 
@@ -53,6 +97,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private readonly Entity testR2Predicate = new Entity(cedmaNS + "CoefficientOfDeterminationTest");
     private readonly Entity treeSizePredicate = new Entity(cedmaNS + "TreeSize");
     private readonly Entity treeHeightPredicate = new Entity(cedmaNS + "TreeHeight");
+    private readonly Entity rawDataPredicate = new Entity(cedmaNS + "rawData");
     private readonly Entity anyEntity = new Entity(null);
 
     private IStore store;
@@ -73,32 +118,12 @@ namespace HeuristicLab.CEDMA.Charting {
         return variableNames.ToArray();
       }
     }
-    private Dictionary<string, List<double>> allVariables;
+
+    public event EventHandler<RecordAddedEventArgs> OnRecordAdded;
+
+    private List<Record> records;
 
     private void ReloadList() {
-      List<double> trainingMAPE = new List<double>();
-      List<double> validationMAPE = new List<double>();
-      List<double> testMAPE = new List<double>();
-      List<double> trainingR2 = new List<double>();
-      List<double> validationR2 = new List<double>();
-      List<double> testR2 = new List<double>();
-      List<double> size = new List<double>();
-      List<double> height = new List<double>();
-      List<double> targetVariable = new List<double>();
-
-      lock(allVariables) {
-        allVariables.Clear();
-        allVariables[MAPE_TRAINING] = trainingMAPE;
-        allVariables[MAPE_VALIDATION] = validationMAPE;
-        allVariables[MAPE_TEST] = testMAPE;
-        allVariables[R2_TRAINING] = trainingR2;
-        allVariables[R2_VALIDATION] = validationR2;
-        allVariables[R2_TEST] = testR2;
-        allVariables[TREE_SIZE] = size;
-        allVariables[TREE_HEIGHT] = height;
-        allVariables[TARGET_VARIABLE] = targetVariable;
-      }
-
       var results = store.Select(new Statement(anyEntity, new Entity(cedmaNS + "instanceOf"), new Literal("class:GpFunctionTree")))
       .Select(x => store.Select(new SelectFilter(
         new Entity[] { new Entity(x.Subject.Uri) },
@@ -107,71 +132,58 @@ namespace HeuristicLab.CEDMA.Charting {
           trainingR2Predicate, validationR2Predicate, testR2Predicate },
           new Resource[] { anyEntity })));
 
-      Random random = new Random(); // for adding random noise to int values
       foreach(Statement[] ss in results) {
-        lock(allVariables) {
-          targetVariable.Add(double.NaN);
-          size.Add(double.NaN);
-          height.Add(double.NaN);
-          trainingMAPE.Add(double.NaN);
-          validationMAPE.Add(double.NaN);
-          testMAPE.Add(double.NaN);
-          trainingR2.Add(double.NaN);
-          validationR2.Add(double.NaN);
-          testR2.Add(double.NaN);
+        if(ss.Length > 0) {
+          Record r = new Record(ss[0].Subject.Uri);
           foreach(Statement s in ss) {
             if(s.Predicate.Equals(targetVariablePredicate)) {
-              ReplaceLastItem(targetVariable, (double)(int)((Literal)s.Property).Value);
+              r.Set(TARGET_VARIABLE, (double)(int)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(treeSizePredicate)) {
-              ReplaceLastItem(size, (double)(int)((Literal)s.Property).Value);
+              r.Set(TREE_SIZE, (double)(int)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(treeHeightPredicate)) {
-              ReplaceLastItem(height, (double)(int)((Literal)s.Property).Value);
+              r.Set(TREE_HEIGHT, (double)(int)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(trainingMAPEPredicate)) {
-              ReplaceLastItem(trainingMAPE, (double)((Literal)s.Property).Value);
+              r.Set(MAPE_TRAINING, (double)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(validationMAPEPredicate)) {
-              ReplaceLastItem(validationMAPE, (double)((Literal)s.Property).Value);
+              r.Set(MAPE_VALIDATION, (double)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(testMAPEPredicate)) {
-              ReplaceLastItem(testMAPE, (double)((Literal)s.Property).Value);
+              r.Set(MAPE_TEST, (double)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(trainingR2Predicate)) {
-              ReplaceLastItem(trainingR2, (double)((Literal)s.Property).Value);
+              r.Set(R2_TRAINING, (double)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(validationR2Predicate)) {
-              ReplaceLastItem(validationR2, (double)((Literal)s.Property).Value);
+              r.Set(R2_VALIDATION, (double)((Literal)s.Property).Value);
             } else if(s.Predicate.Equals(testR2Predicate)) {
-              ReplaceLastItem(testR2, (double)((Literal)s.Property).Value);
+              r.Set(R2_TEST, (double)((Literal)s.Property).Value);
             }
           }
+          records.Add(r);
+          FireRecordAdded(r);
         }
-        FireChanged();
       }
     }
 
-    private void ReplaceLastItem(List<double> xs, double x) {
-      xs.RemoveAt(xs.Count - 1); xs.Add(x);
+    private void FireRecordAdded(Record r) {
+      if(OnRecordAdded != null) OnRecordAdded(this, new RecordAddedEventArgs(r));
     }
 
     public ResultList()
       : base() {
-      allVariables = new Dictionary<string, List<double>>();
+      records = new List<Record>();
     }
 
     public override IView CreateView() {
       return new ResultListView(this);
     }
 
-    internal Histogram GetHistogram(string variableName) {
-      Histogram h = new Histogram(50);
-      lock(allVariables) {
-        h.AddValues(allVariables[variableName]);
+    internal void OpenModel(Record r) {
+      IList<Statement> s = store.Select(new Statement(new Entity(r.Uri), rawDataPredicate, anyEntity));
+      if(s.Count == 1) {
+        string rawData = ((SerializedLiteral)s[0].Property).RawData;
+        XmlDocument doc = new XmlDocument();
+        doc.LoadXml(rawData);
+        IItem item = (IItem)PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+        PluginManager.ControlManager.ShowControl(item.CreateView());
       }
-      return h;
-    }
-
-    internal IList<double> GetValues(string variableName) {
-      List<double> result = new List<double>();
-      lock(allVariables) {
-        result.AddRange(allVariables[variableName]);
-      }
-      return result;
     }
   }
 }
