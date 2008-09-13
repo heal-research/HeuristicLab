@@ -21,15 +21,34 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using System.Windows.Forms;
+using HeuristicLab.Charting;
 
 namespace HeuristicLab.CEDMA.Charting {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Charting")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Charting.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Charting")]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
-  public class HeuristicLabCedmaCorePlugin : PluginBase {
+  public partial class BubbleChartControl : ChartControl {
+    public new BubbleChart Chart {
+      get { return (BubbleChart)base.Chart; }
+      set {
+        if (Chart != null) {
+          Chart.Update -= new EventHandler(Chart_Update);
+        }
+        base.Chart = value;
+        if (Chart != null) {
+          Chart.Update += new EventHandler(Chart_Update);
+        }
+      }
+    }
+
+    void Chart_Update(object sender, EventArgs e) {
+      // do nothing;
+    }
+
+    public BubbleChartControl() {
+      InitializeComponent();
+    }
   }
 }

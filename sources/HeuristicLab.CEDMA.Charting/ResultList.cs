@@ -60,10 +60,11 @@ namespace HeuristicLab.CEDMA.Charting {
       get { return store; }
       set {
         store = value;
-        ReloadList();
-        FireChanged();
+        Action reloadList = ReloadList;
+        reloadList.BeginInvoke(null, null);
       }
     }
+
     private List<string> variableNames = new List<string>() { TARGET_VARIABLE, TREE_SIZE, TREE_HEIGHT,
     MAPE_TRAINING, MAPE_VALIDATION, MAPE_TEST,
     R2_TRAINING, R2_VALIDATION, R2_TEST};
@@ -75,7 +76,6 @@ namespace HeuristicLab.CEDMA.Charting {
     private Dictionary<string, List<double>> allVariables;
 
     private void ReloadList() {
-      allVariables.Clear();
       List<double> trainingMAPE = new List<double>();
       List<double> validationMAPE = new List<double>();
       List<double> testMAPE = new List<double>();
@@ -85,15 +85,19 @@ namespace HeuristicLab.CEDMA.Charting {
       List<double> size = new List<double>();
       List<double> height = new List<double>();
       List<double> targetVariable = new List<double>();
-      allVariables[MAPE_TRAINING] = trainingMAPE;
-      allVariables[MAPE_VALIDATION] = validationMAPE;
-      allVariables[MAPE_TEST] = testMAPE;
-      allVariables[R2_TRAINING] = trainingR2;
-      allVariables[R2_VALIDATION] = validationR2;
-      allVariables[R2_TEST] = testR2;
-      allVariables[TREE_SIZE] = size;
-      allVariables[TREE_HEIGHT] = height;
-      allVariables[TARGET_VARIABLE] = targetVariable;
+
+      lock(allVariables) {
+        allVariables.Clear();
+        allVariables[MAPE_TRAINING] = trainingMAPE;
+        allVariables[MAPE_VALIDATION] = validationMAPE;
+        allVariables[MAPE_TEST] = testMAPE;
+        allVariables[R2_TRAINING] = trainingR2;
+        allVariables[R2_VALIDATION] = validationR2;
+        allVariables[R2_TEST] = testR2;
+        allVariables[TREE_SIZE] = size;
+        allVariables[TREE_HEIGHT] = height;
+        allVariables[TARGET_VARIABLE] = targetVariable;
+      }
 
       var results = store.Select(new Statement(anyEntity, new Entity(cedmaNS + "instanceOf"), new Literal("class:GpFunctionTree")))
       .Select(x => store.Select(new SelectFilter(
@@ -105,36 +109,39 @@ namespace HeuristicLab.CEDMA.Charting {
 
       Random random = new Random(); // for adding random noise to int values
       foreach(Statement[] ss in results) {
-        targetVariable.Add(double.NaN);
-        size.Add(double.NaN);
-        height.Add(double.NaN);
-        trainingMAPE.Add(double.NaN);
-        validationMAPE.Add(double.NaN);
-        testMAPE.Add(double.NaN);
-        trainingR2.Add(double.NaN);
-        validationR2.Add(double.NaN);
-        testR2.Add(double.NaN);
-        foreach(Statement s in ss) {
-          if(s.Predicate.Equals(targetVariablePredicate)) {
-            ReplaceLastItem(targetVariable, (double)(int)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(treeSizePredicate)) {
-            ReplaceLastItem(size, (double)(int)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(treeHeightPredicate)) {
-            ReplaceLastItem(height, (double)(int)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(trainingMAPEPredicate)) {
-            ReplaceLastItem(trainingMAPE, (double)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(validationMAPEPredicate)) {
-            ReplaceLastItem(validationMAPE, (double)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(testMAPEPredicate)) {
-            ReplaceLastItem(testMAPE, (double)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(trainingR2Predicate)) {
-            ReplaceLastItem(trainingR2, (double)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(validationR2Predicate)) {
-            ReplaceLastItem(validationR2, (double)((Literal)s.Property).Value);
-          } else if(s.Predicate.Equals(testR2Predicate)) {
-            ReplaceLastItem(testR2, (double)((Literal)s.Property).Value);
+        lock(allVariables) {
+          targetVariable.Add(double.NaN);
+          size.Add(double.NaN);
+          height.Add(double.NaN);
+          trainingMAPE.Add(double.NaN);
+          validationMAPE.Add(double.NaN);
+          testMAPE.Add(double.NaN);
+          trainingR2.Add(double.NaN);
+          validationR2.Add(double.NaN);
+          testR2.Add(double.NaN);
+          foreach(Statement s in ss) {
+            if(s.Predicate.Equals(targetVariablePredicate)) {
+              ReplaceLastItem(targetVariable, (double)(int)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(treeSizePredicate)) {
+              ReplaceLastItem(size, (double)(int)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(treeHeightPredicate)) {
+              ReplaceLastItem(height, (double)(int)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(trainingMAPEPredicate)) {
+              ReplaceLastItem(trainingMAPE, (double)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(validationMAPEPredicate)) {
+              ReplaceLastItem(validationMAPE, (double)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(testMAPEPredicate)) {
+              ReplaceLastItem(testMAPE, (double)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(trainingR2Predicate)) {
+              ReplaceLastItem(trainingR2, (double)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(validationR2Predicate)) {
+              ReplaceLastItem(validationR2, (double)((Literal)s.Property).Value);
+            } else if(s.Predicate.Equals(testR2Predicate)) {
+              ReplaceLastItem(testR2, (double)((Literal)s.Property).Value);
+            }
           }
         }
+        FireChanged();
       }
     }
 
@@ -153,12 +160,18 @@ namespace HeuristicLab.CEDMA.Charting {
 
     internal Histogram GetHistogram(string variableName) {
       Histogram h = new Histogram(50);
-      h.AddValues(allVariables[variableName]);
+      lock(allVariables) {
+        h.AddValues(allVariables[variableName]);
+      }
       return h;
     }
 
     internal IList<double> GetValues(string variableName) {
-      return allVariables[variableName];
+      List<double> result = new List<double>();
+      lock(allVariables) {
+        result.AddRange(allVariables[variableName]);
+      }
+      return result;
     }
   }
 }

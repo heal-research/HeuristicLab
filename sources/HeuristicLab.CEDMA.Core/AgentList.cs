@@ -39,18 +39,23 @@ namespace HeuristicLab.CEDMA.Core {
       get { return database; }
       set {
         database = value;
-        ReloadList();
-        FireChanged();
+        Action reload = ReloadList;
+        lock(agentList) {
+          agentList.Clear();
+        }
+        reload.BeginInvoke(null, null);
       }
     }
 
     private void ReloadList() {
-      agentList.Clear();
       foreach(AgentEntry a in database.GetAgents()) {
         Agent newAgent = new Agent(Database, a.Id);
         newAgent.Name = a.Name;
         newAgent.Status = a.Status;
-        agentList.Add(newAgent);
+        lock(agentList) {
+          agentList.Add(newAgent);
+        }
+        FireChanged();
       }
     }
 
@@ -66,13 +71,18 @@ namespace HeuristicLab.CEDMA.Core {
       agent.Database = database;
       long id = database.InsertAgent(null, agent.Name, PersistenceManager.SaveToGZip(agent.OperatorGraph));
       agent.Id = id;
-      agentList.Add(agent);
+      lock(agentList) {
+        agentList.Add(agent);
+      }
       FireChanged();
     }
 
     public IEnumerator<IAgent> GetEnumerator() {
-      ReloadList();
-      return agentList.GetEnumerator();
+      List<IAgent> agents = new List<IAgent>();
+      lock(agentList) {
+        agents.AddRange(agentList);
+      }
+      return agents.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {

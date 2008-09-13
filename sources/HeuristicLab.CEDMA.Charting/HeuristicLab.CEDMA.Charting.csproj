@@ -49,6 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BubbleChart.cs" />
+    <Compile Include="BubbleChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BubbleChartControl.Designer.cs">
+      <DependentUpon>BubbleChartControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabCedmaChartingPlugin.cs" />
     <Compile Include="Histogram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,10 +71,6 @@
     <ProjectReference Include="..\HeuristicLab.CEDMA.DB.Interfaces\HeuristicLab.CEDMA.DB.Interfaces.csproj">
       <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
       <Name>HeuristicLab.CEDMA.DB.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Charting.Data\HeuristicLab.Charting.Data.csproj">
-      <Project>{E0740131-AA3E-4A3F-BA03-C9FF8327F4EE}</Project>
-      <Name>HeuristicLab.Charting.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Charting\HeuristicLab.Charting.csproj">
       <Project>{B462D3CC-8866-42F0-9832-AD0967613B72}</Project>
@@ -87,6 +90,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BubbleChartControl.resx">
+      <DependentUpon>BubbleChartControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResultListView.resx">
       <DependentUpon>ResultListView.cs</DependentUpon>
       <SubType>Designer</SubType>
