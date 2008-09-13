@@ -53,5 +53,14 @@ namespace HeuristicLab.Charting {
                            Size.Width,
                            Size.Height);
     }
+
+    public override bool ContainsPoint(PointD point) {
+      PointD center = Chart.TransformWorldToPixel(this.Point);
+      PointD x = Chart.TransformWorldToPixel(point);
+      double xDistance = x.X - center.X;
+      double yDistance = x.Y - center.Y;
+
+      return Size.Height*Size.Height/4.0 >= (xDistance * xDistance + yDistance * yDistance);
+    }
   }
 }
