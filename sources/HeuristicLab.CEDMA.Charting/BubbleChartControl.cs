@@ -33,10 +33,10 @@ namespace HeuristicLab.CEDMA.Charting {
   public partial class BubbleChartControl : UserControl {
     private Bitmap bitmap;
     private bool renderingRequired;
-    private Point buttonDownPoint;
     private Point mousePosition;
-    private int mouseClickCount;
-    private DateTime lastRendered = DateTime.Now;
+    private Record clickedRecord;
+    private Point buttonDownPoint;
+
     private BubbleChart myChart;
     public BubbleChart Chart {
       get { return myChart; }
@@ -81,8 +81,11 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
+      clickedRecord = null;
       buttonDownPoint = e.Location;
-      mouseClickCount = e.Clicks;
+      if(e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) {
+        clickedRecord = Chart.GetRecord(buttonDownPoint);
+      }
     }
     private void pictureBox_MouseUp(object sender, MouseEventArgs e) {
       if(e.Button == MouseButtons.Left) {
@@ -99,11 +102,11 @@ namespace HeuristicLab.CEDMA.Charting {
           if((lowerLeft.X != upperRight.X) && (lowerLeft.Y != upperRight.Y)) {
             Chart.MouseDrag(lowerLeft, upperRight, e.Button);
           }
+        } else if(Chart.Mode == ChartMode.Move) {
         }
       } else if(e.Button == MouseButtons.Middle) {
         if(Chart.Mode == ChartMode.Zoom) {
-          if(mouseClickCount == 1) Chart.ZoomOut();
-          else if(mouseClickCount == 2) Chart.Unzoom();
+          Chart.ZoomOut();
         }
       }
     }
@@ -137,6 +140,9 @@ namespace HeuristicLab.CEDMA.Charting {
     private void selectToolStripMenuItem_Click(object sender, EventArgs e) {
       SetMode(ChartMode.Select);
     }
+    private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
+      SetMode(ChartMode.Move);
+    }
 
     private void GenerateImage() {
       if(!Visible) {
@@ -161,17 +167,19 @@ namespace HeuristicLab.CEDMA.Charting {
     private void SetMode(ChartMode mode) {
       zoomToolStripMenuItem.Checked = false;
       selectToolStripMenuItem.Checked = false;
+      moveToolStripMenuItem.Checked = false;
       if(mode == ChartMode.Zoom) zoomToolStripMenuItem.Checked = true;
       else if(mode == ChartMode.Select) selectToolStripMenuItem.Checked = true;
+      else if(mode == ChartMode.Move) moveToolStripMenuItem.Checked = true;
       Chart.Mode = mode;
     }
 
     private void pictureBox_MouseClick(object sender, MouseEventArgs e) {
-      Chart.MouseClick(e.Location, e.Button);
+      if(clickedRecord != null) clickedRecord.ToggleSelected();
     }
 
     private void pictureBox_MouseDoubleClick(object sender, MouseEventArgs e) {
-      Chart.MouseDoubleClick(e.Location, e.Button);
+      if(clickedRecord != null) clickedRecord.OpenModel();
     }
   }
 }

@@ -159,10 +159,10 @@ namespace HeuristicLab.CEDMA.Charting {
           if(!double.IsNaN(x) && !double.IsNaN(y)) {
             UpdateViewSize(x, y, size);
             int alpha = CalculateAlpha(size);
-            Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor: defaultColor));
+            Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
             Brush brush = pen.Brush;
             FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
-            c.ToolTipText = CreateToolTipText(r);
+            c.ToolTipText = r.GetToolTipText();
             points.Add(c);
             primitiveToRecordDictionary[c] = r;
             recordToPrimitiveDictionary[r] = c;
@@ -171,14 +171,6 @@ namespace HeuristicLab.CEDMA.Charting {
         Group.Add(points);
         UpdateEnabled = true;
       }
-    }
-
-    private string CreateToolTipText(Record r) {
-      StringBuilder b = new StringBuilder();
-      foreach(KeyValuePair<string, double> v in r.Values) {
-        b.Append(v.Key).Append(" = ").Append(v.Value).AppendLine();
-      }
-      return b.ToString();
     }
 
     private int CalculateSize(double size, double minSize, double maxSize) {
@@ -219,28 +211,15 @@ namespace HeuristicLab.CEDMA.Charting {
       maxY = double.NegativeInfinity;
     }
 
-    public override void MouseClick(Point point, MouseButtons button) {
-      if(button == MouseButtons.Left) {
-        Record r;
-        IPrimitive p = points.GetPrimitive(TransformPixelToWorld(point));
-        if(p != null) {
-          primitiveToRecordDictionary.TryGetValue(p, out r);
-          if(r != null) r.ToggleSelected();
-          results.FireChanged();
-        }
-      } else base.MouseClick(point, button);
+    internal Record GetRecord(Point point) {
+      Record r = null;
+      IPrimitive p = points.GetPrimitive(TransformPixelToWorld(point));
+      if(p != null) {
+        primitiveToRecordDictionary.TryGetValue(p, out r);
+      }
+      return r;
     }
 
-    public override void MouseDoubleClick(Point point, MouseButtons button) {
-      if(button == MouseButtons.Left) {
-        Record r;
-        IPrimitive p = points.GetPrimitive(TransformPixelToWorld(point));
-        if(p != null) {
-          primitiveToRecordDictionary.TryGetValue(p, out r);
-          if(r != null) results.OpenModel(r);
-        }
-      } else base.MouseDoubleClick(point, button);
-    }
 
     public override void MouseDrag(Point start, Point end, MouseButtons button) {
       if(button == MouseButtons.Left && Mode == ChartMode.Select) {
@@ -260,7 +239,6 @@ namespace HeuristicLab.CEDMA.Charting {
             primitiveToRecordDictionary[p].ToggleSelected();
           }
         }
-        results.FireChanged();
       } else {
         base.MouseDrag(start, end, button);
       }

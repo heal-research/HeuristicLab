@@ -30,6 +30,12 @@ using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Logging;
+using HeuristicLab.Data;
+using HeuristicLab.DataAnalysis;
+using HeuristicLab.Functions;
+using HeuristicLab.Charting.Data;
+using System.Drawing;
 
 namespace HeuristicLab.CEDMA.Charting {
 
@@ -54,7 +60,9 @@ namespace HeuristicLab.CEDMA.Charting {
     private readonly Entity treeSizePredicate = new Entity(cedmaNS + "TreeSize");
     private readonly Entity treeHeightPredicate = new Entity(cedmaNS + "TreeHeight");
     private readonly Entity rawDataPredicate = new Entity(cedmaNS + "rawData");
+    private readonly Entity hasModelPredicate = new Entity(cedmaNS + "hasModel");
     private readonly Entity anyEntity = new Entity(null);
+    private Dictionary<Record, Dataset> datasets;
 
     private IStore store;
     public IStore Store {
@@ -101,7 +109,7 @@ namespace HeuristicLab.CEDMA.Charting {
       Random random = new Random();
       foreach(Statement[] ss in results) {
         if(ss.Length > 0) {
-          Record r = new Record(ss[0].Subject.Uri);
+          Record r = new Record(this, ss[0].Subject.Uri);
           r.Set(Record.X_JITTER, random.NextDouble() * 2.0 - 1.0);
           r.Set(Record.Y_JITTER, random.NextDouble() * 2.0 - 1.0);
           foreach(Statement s in ss) {
@@ -131,6 +139,7 @@ namespace HeuristicLab.CEDMA.Charting {
     public ResultList()
       : base() {
       records = new List<Record>();
+      datasets = new Dictionary<Record, Dataset>();
       predicateToVariableName = new Dictionary<Entity, string>();
       predicateToVariableName[targetVariablePredicate] = Record.TARGET_VARIABLE;
       predicateToVariableName[treeSizePredicate] = Record.TREE_SIZE;
@@ -147,15 +156,36 @@ namespace HeuristicLab.CEDMA.Charting {
       return new ResultListView(this);
     }
 
-    internal void OpenModel(Record r) {
-      IList<Statement> s = store.Select(new Statement(new Entity(r.Uri), rawDataPredicate, anyEntity));
-      if(s.Count == 1) {
-        string rawData = ((SerializedLiteral)s[0].Property).RawData;
+    internal void OpenModel(Record record) {
+      IList<Statement> modelResults = store.Select(new Statement(new Entity(record.Uri), rawDataPredicate, anyEntity));
+      if(modelResults.Count == 1) {
+        string rawData = ((SerializedLiteral)modelResults[0].Property).RawData;
         XmlDocument doc = new XmlDocument();
         doc.LoadXml(rawData);
-        IItem item = (IItem)PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
-        PluginManager.ControlManager.ShowControl(item.CreateView());
+        IFunctionTree tree = (IFunctionTree)PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+        int targetVariable = (int)record.Get(Record.TARGET_VARIABLE);
+        Dataset dataset = GetDataset(record);
+
+        ModelView modelView = new ModelView(dataset, tree, targetVariable);
+        PluginManager.ControlManager.ShowControl(modelView);
       }
+    }
+
+    private Dataset GetDataset(Record record) {
+      if(!datasets.ContainsKey(record)) {
+        IList<Statement> result = store.Select(new Statement(anyEntity, hasModelPredicate, new Entity(record.Uri)));
+        if(result.Count == 1) {
+          IList<Statement> datasetResult = store.Select(new Statement(result[0].Subject, rawDataPredicate, anyEntity));
+          if(datasetResult.Count == 1) {
+            string rawData = ((SerializedLiteral)datasetResult[0].Property).RawData;
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(rawData);
+            Dataset dataset = (Dataset)PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+            datasets.Add(record, dataset);
+          }
+        }
+      }
+      return datasets[record];
     }
   }
 }

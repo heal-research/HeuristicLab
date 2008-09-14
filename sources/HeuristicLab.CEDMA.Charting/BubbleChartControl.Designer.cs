@@ -47,9 +47,9 @@ namespace HeuristicLab.CEDMA.Charting {
       this.components = new System.ComponentModel.Container();
       this.pictureBox = new System.Windows.Forms.PictureBox();
       this.pictureBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.pictureBoxContextMenuStrip.SuspendLayout();
@@ -79,30 +79,32 @@ namespace HeuristicLab.CEDMA.Charting {
       // pictureBoxContextMenuStrip
       // 
       this.pictureBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveToolStripMenuItem,
             this.zoomToolStripMenuItem,
-            this.selectToolStripMenuItem,
-            this.toolStripMenuItem2});
+            this.selectToolStripMenuItem});
       this.pictureBoxContextMenuStrip.Name = "pictureBoxContextMenuStrip";
-      this.pictureBoxContextMenuStrip.Size = new System.Drawing.Size(104, 54);
+      this.pictureBoxContextMenuStrip.Size = new System.Drawing.Size(153, 92);
+      // 
+      // moveToolStripMenuItem
+      // 
+      this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
+      this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.moveToolStripMenuItem.Text = "Move";
+      this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
       // 
       // zoomToolStripMenuItem
       // 
       this.zoomToolStripMenuItem.Name = "zoomToolStripMenuItem";
-      this.zoomToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+      this.zoomToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.zoomToolStripMenuItem.Text = "&Zoom";
       this.zoomToolStripMenuItem.Click += new System.EventHandler(this.zoomToolStripMenuItem_Click);
       // 
       // selectToolStripMenuItem
       // 
       this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-      this.selectToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+      this.selectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.selectToolStripMenuItem.Text = "&Select";
       this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
-      // 
-      // toolStripMenuItem2
-      // 
-      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-      this.toolStripMenuItem2.Size = new System.Drawing.Size(100, 6);
       // 
       // BubbleChartControl
       // 
@@ -125,7 +127,7 @@ namespace HeuristicLab.CEDMA.Charting {
     protected System.Windows.Forms.ContextMenuStrip pictureBoxContextMenuStrip;
     protected System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
     protected System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
-    protected System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+    private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
 
   }
 }

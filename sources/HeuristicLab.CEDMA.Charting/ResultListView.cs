@@ -14,10 +14,6 @@ namespace HeuristicLab.CEDMA.Charting {
     private ResultList results;
     private const string FREQUENCY = "<Frequency>";
     private const string CONSTANT_SIZE = "<constant>";
-    private double xJitterFactor = 0.0;
-    private double yJitterFactor = 0.0;
-    private double maxXJitterPercent = .1;
-    private double maxYJitterPercent = .1;
 
     public ResultListView(ResultList results) {
       this.results = results;
@@ -36,14 +32,10 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void yAxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      yJitterFactor = 0.0;
-      yTrackBar.Value = 0;
       UpdateChart();
     }
 
     private void xAxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      xJitterFactor = 0.0;
-      xTrackBar.Value = 0;
       UpdateChart();
     }
 

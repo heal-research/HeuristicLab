@@ -67,36 +67,48 @@ namespace HeuristicLab.CEDMA.Charting {
     public const string X_JITTER = "__X_JITTER";
     public const string Y_JITTER = "__Y_JITTER";
 
+    public event EventHandler OnSelectionChanged;
+
     private Dictionary<string, double> values = new Dictionary<string, double>();
-    public Dictionary<string, double> Values {
-      get {
-        return values;
-      }
-    }
+    private ResultList resultList;
 
     private bool selected = false;
     public bool Selected { get { return selected; } }
 
     private string uri;
     public string Uri { get { return uri; } }
-    public Record(string uri) {
+    public Record(ResultList resultList, string uri) {
       this.uri = uri;
+      this.resultList = resultList;
     }
 
     public void Set(string name, double value) {
-      Values.Add(name, value);
+      values.Add(name, value);
     }
 
     public double Get(string name) {
-      if(name == null || !Values.ContainsKey(name)) return double.NaN;
-      return Values[name];
+      if(name == null || !values.ContainsKey(name)) return double.NaN;
+      return values[name];
     }
 
     public void ToggleSelected() {
       selected = !selected;
       if(OnSelectionChanged != null) OnSelectionChanged(this, new EventArgs());
+      resultList.FireChanged();
     }
 
-    public event EventHandler OnSelectionChanged;
+    internal string GetToolTipText() {
+      StringBuilder b = new StringBuilder();
+      foreach(KeyValuePair<string, double> v in values) {
+        if(v.Key != X_JITTER && v.Key != Y_JITTER) {
+          b.Append(v.Key).Append(" = ").Append(v.Value).AppendLine();
+        }
+      }
+      return b.ToString();
+    }
+
+    internal void OpenModel() {
+      resultList.OpenModel(this);
+    }
   }
 }
