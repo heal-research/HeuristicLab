@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,61 +21,175 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using HeuristicLab.Core;
-using System.Xml;
-using HeuristicLab.CEDMA.DB.Interfaces;
+using System.Drawing;
+using System.Linq;
+using HeuristicLab.Charting;
+using System.Windows.Forms;
 
 namespace HeuristicLab.CEDMA.Charting {
-  public class Histogram {
-    private int buckets;
-    public int Buckets {
-      get { return buckets; }
-      set {
-        buckets = value;
-        ResetBucketBounds();
+  public class Histogram : Chart {
+    private static readonly Color defaultColor = Color.Blue;
+    private static readonly Color selectionColor = Color.Red;
+
+    private double minX;
+    private double maxX;
+    private double maxFrequency;
+    private const int N_BUCKETS = 50;
+    private List<Record> records;
+    private ResultList results;
+    private Dictionary<IPrimitive, List<Record>> primitiveToRecordsDictionary;
+    private Dictionary<Record, IPrimitive> recordToPrimitiveDictionary;
+    private Group bars;
+    private double[] limits;
+    private int[] buckets;
+    private string dimension;
+
+    public Histogram(ResultList results, double x1, double y1, double x2, double y2)
+      : this(results, new PointD(x1, y1), new PointD(x2, y2)) {
+    }
+
+    public Histogram(ResultList results, PointD lowerLeft, PointD upperRight)
+      : base(lowerLeft, upperRight) {
+      records = new List<Record>();
+      primitiveToRecordsDictionary = new Dictionary<IPrimitive, List<Record>>();
+      recordToPrimitiveDictionary = new Dictionary<Record, IPrimitive>();
+      this.results = results;
+      foreach(Record r in results.Records) {
+        records.Add(r);
+        r.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
+      }
+      results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
+      results.Changed += new EventHandler(results_Changed);
+      limits = new double[N_BUCKETS - 1];
+      buckets = new int[N_BUCKETS];
+    }
+
+    void results_Changed(object sender, EventArgs e) {
+      Repaint();
+      EnforceUpdate();
+    }
+
+    void results_OnRecordAdded(object sender, RecordAddedEventArgs e) {
+      lock(records) {
+        e.Record.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
+        records.Add(e.Record);
       }
     }
 
-    private double[] limit;
-
-    private List<double> values;
-
-    public Histogram(int buckets) {
-      this.buckets = buckets;
-      values = new List<double>();
+    void Record_OnSelectionChanged(object sender, EventArgs e) {
+      Record r = (Record)sender;
+      IPrimitive primitive;
+      recordToPrimitiveDictionary.TryGetValue(r, out primitive);
+      if(primitive != null) {
+        ((FixedSizeCircle)primitive).UpdateEnabled = false;
+        bars.UpdateEnabled = false;
+        if(r.Selected) {
+          int alpha = primitive.Pen.Color.A;
+          primitive.Pen.Color = Color.FromArgb(alpha, selectionColor);
+          primitive.Brush = primitive.Pen.Brush;
+          primitive.IntoForeground();
+        } else {
+          int alpha = primitive.Pen.Color.A;
+          primitive.Pen.Color = Color.FromArgb(alpha, defaultColor);
+          primitive.Brush = primitive.Pen.Brush;
+          primitive.IntoBackground();
+        }
+        ((FixedSizeCircle)primitive).UpdateEnabled = true;
+        bars.UpdateEnabled = true;
+      }
     }
 
-    public double LowerValue(int bucketIndex) {
-      return limit[bucketIndex];
+    public void ShowFrequency(string dimension) {
+      if(this.dimension != dimension) {
+        this.dimension = dimension;
+        ResetViewSize();
+        Repaint();
+        ZoomToViewSize();
+      }
     }
 
-    public double UpperValue(int bucketIndex) {
-      return limit[bucketIndex+1];
+    private void Repaint() {
+      if(dimension == null) return;
+      UpdateEnabled = false;
+      Group.Clear();
+      primitiveToRecordsDictionary.Clear();
+      recordToPrimitiveDictionary.Clear();
+      bars = new Group(this);
+      Group.Add(new Axis(this, 0, 0, AxisType.Both));
+      UpdateViewSize(0, 0);
+      var values = records.Select(r => r.Get(dimension)).Where(
+        x => !double.IsNaN(x) && !double.IsInfinity(x) && x != double.MinValue && x != double.MaxValue).OrderBy(x => x);
+      IEnumerable<IGrouping<double,double>> frequencies;
+      double bucketSize;
+      if(dimension == Record.TARGET_VARIABLE || dimension == Record.TREE_HEIGHT || dimension == Record.TREE_SIZE) {
+        frequencies = values.GroupBy(x => x);
+        bucketSize = 1.0;
+      } else {
+        double min = values.ElementAt((int)(values.Count() * 0.05));
+        double max = values.ElementAt((int)(values.Count() * 0.95));
+        bucketSize = (max - min) / N_BUCKETS;
+        frequencies = values.GroupBy(x => Math.Min(Math.Max(min, Math.Floor((x - min) / bucketSize) * bucketSize + min), max));
+      }
+      Pen defaultPen = new Pen(defaultColor);
+      Brush defaultBrush = defaultPen.Brush;
+      foreach(IGrouping<double, double> g in frequencies) {
+        double freq = g.Count();
+        double lower = g.Key;
+        double upper = g.Key+bucketSize;
+        HeuristicLab.Charting.Rectangle bar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, freq, defaultPen, defaultBrush);
+        primitiveToRecordsDictionary[bar] = records;
+        if(lower == frequencies.First().Key) bar.ToolTipText = " x < "+upper+" : "+freq;
+        else if(lower ==frequencies.Last().Key) bar.ToolTipText = "x >= "+lower+" : "+freq;
+        else bar.ToolTipText = "x in ["+lower+" .. "+upper+"[ : "+freq;
+        bars.Add(bar);
+        UpdateViewSize(lower, freq);
+        UpdateViewSize(upper, freq);
+      }
+      Group.Add(bars);
+      UpdateEnabled = true;
     }
 
-    public int Frequency(int bucketIndex) {
-      return values.Count(x => x >= LowerValue(bucketIndex) && x < UpperValue(bucketIndex));
+    private void ZoomToViewSize() {
+      if(minX < maxX) {
+        // enlarge view by 5% on each side
+        double width = maxX - minX;
+        minX = minX - width * 0.05;
+        maxX = maxX + width * 0.05;
+        double minY = 0 - maxFrequency * 0.05;
+        double maxY = maxFrequency + maxFrequency * 0.05;
+        ZoomIn(minX, minY, maxX, maxY);
+      }
     }
 
-    public void AddValues(IEnumerable<double> xs) {
-      values.AddRange(xs.Where(x=>
-        !double.IsInfinity(x) && !double.IsNaN(x) && double.MaxValue!=x && double.MinValue !=x));
-      ResetBucketBounds();
+    private void UpdateViewSize(double x, double freq) {
+      if(x < minX) minX = x;
+      if(x > maxX) maxX = x;
+      if(freq  > maxFrequency) maxFrequency = freq;
     }
 
-    private void ResetBucketBounds() {
-      limit = new double[buckets+1];
-      values.Sort();
-      double min = values[10];
-      double max = values[values.Count-10];
+    private void ResetViewSize() {
+      minX = double.PositiveInfinity;
+      maxX = double.NegativeInfinity;
+      maxFrequency = double.NegativeInfinity;
+    }
 
-      double step = (max - min) / buckets;
-      double cur = min;
-      for(int i = 0; i < buckets+1; i++) {
-        limit[i] = cur;
-        cur += step;
+    internal List<Record> GetRecords(Point point) {
+      List<Record> records = null;
+      IPrimitive p = bars.GetPrimitive(TransformPixelToWorld(point));
+      if(p != null) {
+        primitiveToRecordsDictionary.TryGetValue(p, out records);
+      }
+      return records;
+    }
+
+    public override void MouseClick(Point point, MouseButtons button) {
+      if(button == MouseButtons.Left) {
+        List<Record> rs = GetRecords(point);
+        if(rs != null) rs.ForEach(r => r.ToggleSelected());
+        results.FireChanged();
+      } else {
+        base.MouseClick(point, button);
       }
     }
   }

@@ -31,10 +31,10 @@
       this.yAxisLabel = new System.Windows.Forms.Label();
       this.yAxisComboBox = new System.Windows.Forms.ComboBox();
       this.yTrackBar = new System.Windows.Forms.TrackBar();
-      this.dataChart = new HeuristicLab.CEDMA.Charting.BubbleChartControl();
       this.sizeComboBox = new System.Windows.Forms.ComboBox();
       this.sizeLabel = new System.Windows.Forms.Label();
       this.invertCheckbox = new System.Windows.Forms.CheckBox();
+      this.chartPanel = new System.Windows.Forms.Panel();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       this.SuspendLayout();
@@ -117,19 +117,6 @@
       this.yTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
       this.yTrackBar.ValueChanged += new System.EventHandler(this.jitterTrackBar_ValueChanged);
       // 
-      // dataChart
-      // 
-      this.dataChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataChart.BackColor = System.Drawing.SystemColors.Control;
-      this.dataChart.Chart = null;
-      this.dataChart.Location = new System.Drawing.Point(3, 81);
-      this.dataChart.Name = "dataChart";
-      this.dataChart.ScaleOnResize = true;
-      this.dataChart.Size = new System.Drawing.Size(447, 304);
-      this.dataChart.TabIndex = 9;
-      // 
       // sizeComboBox
       // 
       this.sizeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -163,14 +150,24 @@
       this.invertCheckbox.UseVisualStyleBackColor = true;
       this.invertCheckbox.CheckedChanged += new System.EventHandler(this.sizeComboBox_SelectedIndexChanged);
       // 
+      // chartPanel
+      // 
+      this.chartPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.chartPanel.Location = new System.Drawing.Point(0, 81);
+      this.chartPanel.Name = "chartPanel";
+      this.chartPanel.Size = new System.Drawing.Size(447, 304);
+      this.chartPanel.TabIndex = 17;
+      // 
       // ResultListView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.chartPanel);
       this.Controls.Add(this.invertCheckbox);
       this.Controls.Add(this.sizeLabel);
       this.Controls.Add(this.sizeComboBox);
-      this.Controls.Add(this.dataChart);
       this.Controls.Add(this.yJitterLabel);
       this.Controls.Add(this.xJitterlabel);
       this.Controls.Add(this.xTrackBar);
@@ -190,7 +187,6 @@
 
     #endregion
 
-    private BubbleChartControl dataChart;
     private System.Windows.Forms.Label xAxisLabel;
     private System.Windows.Forms.ComboBox xAxisComboBox;
     private System.Windows.Forms.Label yAxisLabel;
@@ -202,5 +198,6 @@
     private System.Windows.Forms.ComboBox sizeComboBox;
     private System.Windows.Forms.Label sizeLabel;
     private System.Windows.Forms.CheckBox invertCheckbox;
+    private System.Windows.Forms.Panel chartPanel;
   }
 }

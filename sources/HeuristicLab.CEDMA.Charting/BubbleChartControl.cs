@@ -107,10 +107,6 @@ namespace HeuristicLab.CEDMA.Charting {
     }
     private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
       toolTip.SetToolTip(pictureBox, Chart.GetToolTipText(e.Location));
-      Cursor cursor = Chart.GetCursor(e.Location);
-      if(cursor != null) pictureBox.Cursor = cursor;
-      else pictureBox.Cursor = Cursors.Default;
-
       if(e.Button != MouseButtons.None) {
         if((Chart.Mode == ChartMode.Zoom || Chart.Mode == ChartMode.Select) && (e.Button == MouseButtons.Left)) {
           pictureBox.Refresh();

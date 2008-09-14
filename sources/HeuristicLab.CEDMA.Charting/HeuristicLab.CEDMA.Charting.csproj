@@ -72,6 +72,13 @@
     <Compile Include="BubbleChartControl.Designer.cs">
       <DependentUpon>BubbleChartControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Histogram.cs" />
+    <Compile Include="HistogramControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HistogramControl.Designer.cs">
+      <DependentUpon>HistogramControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -80,7 +87,6 @@
     </Compile>
     <Compile Include="Record.cs" />
     <Compile Include="HeuristicLabCedmaChartingPlugin.cs" />
-    <Compile Include="Histogram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultList.cs" />
     <Compile Include="ResultListView.cs">
@@ -135,6 +141,10 @@
   <ItemGroup>
     <EmbeddedResource Include="BubbleChartControl.resx">
       <DependentUpon>BubbleChartControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HistogramControl.resx">
+      <DependentUpon>HistogramControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ModelView.resx">
