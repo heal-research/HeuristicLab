@@ -51,6 +51,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private List<Record> records;
     private ResultList results;
     private Dictionary<IPrimitive, Record> primitiveToRecordDictionary;
+    private Dictionary<Record, IPrimitive> recordToPrimitiveDictionary;
     private Random random = new Random();
     private Group points;
 
@@ -58,8 +59,19 @@ namespace HeuristicLab.CEDMA.Charting {
       : base(lowerLeft, upperRight) {
       records = new List<Record>();
       primitiveToRecordDictionary = new Dictionary<IPrimitive, Record>();
+      recordToPrimitiveDictionary = new Dictionary<Record, IPrimitive>();
       this.results = results;
+      foreach(Record r in results.Records) {
+        records.Add(r);
+        r.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
+      }
       results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
+      results.Changed += new EventHandler(results_Changed);
+    }
+
+    void results_Changed(object sender, EventArgs e) {
+      Repaint();
+      EnforceUpdate();
     }
 
     public BubbleChart(ResultList results, double x1, double y1, double x2, double y2)
@@ -75,37 +87,26 @@ namespace HeuristicLab.CEDMA.Charting {
 
     void Record_OnSelectionChanged(object sender, EventArgs e) {
       Record r = (Record)sender;
-      foreach(KeyValuePair<IPrimitive, Record> pair in primitiveToRecordDictionary) {
-        if(pair.Value == r) {
-          IPrimitive primitive = pair.Key;
-          if(r.Selected) {
-            int alpha = primitive.Pen.Color.A;
-            primitive.Pen.Color = Color.FromArgb(alpha, selectionColor);
-            primitive.Brush = primitive.Pen.Brush;
-            primitive.IntoForeground();
-          } else {
-            int alpha = primitive.Pen.Color.A;
-            primitive.Pen.Color = Color.FromArgb(alpha, defaultColor);
-            primitive.Brush = primitive.Pen.Brush;
-            primitive.IntoBackground();
-          }
-          primitive.EnforceUpdate();
+      IPrimitive primitive;
+      recordToPrimitiveDictionary.TryGetValue(r, out primitive);
+      if(primitive != null) {
+        ((FixedSizeCircle)primitive).UpdateEnabled = false;
+        points.UpdateEnabled = false;
+        if(r.Selected) {
+          int alpha = primitive.Pen.Color.A;
+          primitive.Pen.Color = Color.FromArgb(alpha, selectionColor);
+          primitive.Brush = primitive.Pen.Brush;
+          primitive.IntoForeground();
+        } else {
+          int alpha = primitive.Pen.Color.A;
+          primitive.Pen.Color = Color.FromArgb(alpha, defaultColor);
+          primitive.Brush = primitive.Pen.Brush;
+          primitive.IntoBackground();
         }
+        ((FixedSizeCircle)primitive).UpdateEnabled = true;
+        points.UpdateEnabled = true;
       }
     }
-
-    //public void AddDimension(string name) {
-    //  dimensions.Add(name);
-    //  values.Add(name, new List<double>());
-    //}
-    //public void RemoveDimension(string name) {
-    //  dimensions.Remove(name);
-    //  values.Remove(name);
-    //}
-
-    //public void AddDataPoint(string dimension, double value) {
-    //  values[dimension].Add(value);
-    //}
 
     public void SetBubbleSizeDimension(string dimension, bool inverted) {
       this.sizeDimension = dimension;
@@ -132,6 +133,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void Repaint() {
+      if(xDimension == null || yDimension == null) return;
       lock(records) {
         double maxSize = 1;
         double minSize = 1;
@@ -143,12 +145,13 @@ namespace HeuristicLab.CEDMA.Charting {
         UpdateEnabled = false;
         Group.Clear();
         primitiveToRecordDictionary.Clear();
+        recordToPrimitiveDictionary.Clear();
         points = new Group(this);
         Group.Add(new Axis(this, 0, 0, AxisType.Both));
         UpdateViewSize(0, 0, 5);
         foreach(Record r in records) {
-          double x = r.Get(xDimension) + (random.NextDouble() * 2.0 - 1.0) * xJitterFactor;
-          double y = r.Get(yDimension) + (random.NextDouble() * 2.0 - 1.0) * yJitterFactor;
+          double x = r.Get(xDimension) + r.Get(Record.X_JITTER) * xJitterFactor;
+          double y = r.Get(yDimension) + r.Get(Record.Y_JITTER) * yJitterFactor;
           int size = CalculateSize(r.Get(sizeDimension), minSize, maxSize);
 
           if(double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
@@ -156,12 +159,13 @@ namespace HeuristicLab.CEDMA.Charting {
           if(!double.IsNaN(x) && !double.IsNaN(y)) {
             UpdateViewSize(x, y, size);
             int alpha = CalculateAlpha(size);
-            Pen pen = new Pen(Color.FromArgb(alpha, defaultColor));
+            Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor: defaultColor));
             Brush brush = pen.Brush;
             FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
             c.ToolTipText = CreateToolTipText(r);
             points.Add(c);
             primitiveToRecordDictionary[c] = r;
+            recordToPrimitiveDictionary[r] = c;
           }
         }
         Group.Add(points);
@@ -222,6 +226,7 @@ namespace HeuristicLab.CEDMA.Charting {
         if(p != null) {
           primitiveToRecordDictionary.TryGetValue(p, out r);
           if(r != null) r.ToggleSelected();
+          results.FireChanged();
         }
       } else base.MouseClick(point, button);
     }
@@ -235,6 +240,30 @@ namespace HeuristicLab.CEDMA.Charting {
           if(r != null) results.OpenModel(r);
         }
       } else base.MouseDoubleClick(point, button);
+    }
+
+    public override void MouseDrag(Point start, Point end, MouseButtons button) {
+      if(button == MouseButtons.Left && Mode == ChartMode.Select) {
+        PointD a = TransformPixelToWorld(start);
+        PointD b = TransformPixelToWorld(end);
+        double minX = Math.Min(a.X, b.X);
+        double minY = Math.Min(a.Y, b.Y);
+        double maxX = Math.Max(a.X, b.X);
+        double maxY = Math.Max(a.Y, b.Y);
+        HeuristicLab.Charting.Rectangle r = new HeuristicLab.Charting.Rectangle(this, minX, minY, maxX, maxY);
+
+        List<IPrimitive> primitives = new List<IPrimitive>();
+        primitives.AddRange(points.Primitives);
+
+        foreach(FixedSizeCircle p in primitives) {
+          if(r.ContainsPoint(p.Point)) {
+            primitiveToRecordDictionary[p].ToggleSelected();
+          }
+        }
+        results.FireChanged();
+      } else {
+        base.MouseDrag(start, end, button);
+      }
     }
   }
 }

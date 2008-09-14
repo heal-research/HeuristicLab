@@ -21,7 +21,6 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public ResultListView(ResultList results) {
       this.results = results;
-      results.Changed += new EventHandler(results_Changed);
       InitializeComponent();
       xAxisComboBox.Items.AddRange(results.VariableNames);
       yAxisComboBox.Items.Add(FREQUENCY);
@@ -29,13 +28,6 @@ namespace HeuristicLab.CEDMA.Charting {
       sizeComboBox.Items.Add(CONSTANT_SIZE);
       sizeComboBox.Items.AddRange(results.VariableNames);
       sizeComboBox.SelectedItem = sizeComboBox.Items[0];
-      InitChart();
-    }
-
-    private DateTime lastUpdate = DateTime.Now;
-    void results_Changed(object sender, EventArgs e) {
-      if(DateTime.Now.Subtract(lastUpdate).TotalSeconds < 3) return;
-      lastUpdate = DateTime.Now;
       InitChart();
     }
 

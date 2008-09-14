@@ -31,7 +31,7 @@ namespace HeuristicLab.CEDMA.Charting {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
+      if(disposing && (components != null)) {
         components.Dispose();
       }
       base.Dispose(disposing);
@@ -44,30 +44,88 @@ namespace HeuristicLab.CEDMA.Charting {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BubbleChartControl));
+      this.components = new System.ComponentModel.Container();
+      this.pictureBox = new System.Windows.Forms.PictureBox();
+      this.pictureBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+      this.pictureBoxContextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // pictureBox
       // 
-      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox.Image")));
-      this.pictureBox.Size = new System.Drawing.Size(300, 263);
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox.BackColor = System.Drawing.Color.White;
+      this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.pictureBox.ContextMenuStrip = this.pictureBoxContextMenuStrip;
+      this.pictureBox.Location = new System.Drawing.Point(0, 0);
+      this.pictureBox.Name = "pictureBox";
+      this.pictureBox.Size = new System.Drawing.Size(266, 236);
+      this.pictureBox.TabIndex = 0;
+      this.pictureBox.TabStop = false;
+      this.pictureBox.VisibleChanged += new System.EventHandler(this.pictureBox_VisibleChanged);
+      this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
+      this.pictureBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDoubleClick);
+      this.pictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseClick);
+      this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDown);
+      this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseUp);
+      this.pictureBox.SizeChanged += new System.EventHandler(this.pictureBox_SizeChanged);
+      // 
+      // pictureBoxContextMenuStrip
+      // 
+      this.pictureBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zoomToolStripMenuItem,
+            this.selectToolStripMenuItem,
+            this.toolStripMenuItem2});
+      this.pictureBoxContextMenuStrip.Name = "pictureBoxContextMenuStrip";
+      this.pictureBoxContextMenuStrip.Size = new System.Drawing.Size(104, 54);
+      // 
+      // zoomToolStripMenuItem
+      // 
+      this.zoomToolStripMenuItem.Name = "zoomToolStripMenuItem";
+      this.zoomToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+      this.zoomToolStripMenuItem.Text = "&Zoom";
+      this.zoomToolStripMenuItem.Click += new System.EventHandler(this.zoomToolStripMenuItem_Click);
+      // 
+      // selectToolStripMenuItem
+      // 
+      this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
+      this.selectToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+      this.selectToolStripMenuItem.Text = "&Select";
+      this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
+      // 
+      // toolStripMenuItem2
+      // 
+      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(100, 6);
       // 
       // BubbleChartControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Control;
+      this.Controls.Add(this.pictureBox);
       this.Name = "BubbleChartControl";
-      this.Size = new System.Drawing.Size(300, 263);
-      this.Controls.SetChildIndex(this.pictureBox, 0);
+      this.Size = new System.Drawing.Size(266, 236);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+      this.pictureBoxContextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
 
     #endregion
+
+    protected System.Windows.Forms.PictureBox pictureBox;
+    protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.ContextMenuStrip pictureBoxContextMenuStrip;
+    protected System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
+    protected System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
+    protected System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 
   }
 }
