@@ -63,8 +63,7 @@ namespace HeuristicLab.CEDMA.Charting {
       this.results = results;
       foreach(Record r in results.Records) {
         records.Add(r);
-        r.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
-      }
+     }
       results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
       results.Changed += new EventHandler(results_Changed);
     }
@@ -80,31 +79,7 @@ namespace HeuristicLab.CEDMA.Charting {
 
     void results_OnRecordAdded(object sender, RecordAddedEventArgs e) {
       lock(records) {
-        e.Record.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
         records.Add(e.Record);
-      }
-    }
-
-    void Record_OnSelectionChanged(object sender, EventArgs e) {
-      Record r = (Record)sender;
-      IPrimitive primitive;
-      recordToPrimitiveDictionary.TryGetValue(r, out primitive);
-      if(primitive != null) {
-        ((FixedSizeCircle)primitive).UpdateEnabled = false;
-        points.UpdateEnabled = false;
-        if(r.Selected) {
-          int alpha = primitive.Pen.Color.A;
-          primitive.Pen.Color = Color.FromArgb(alpha, selectionColor);
-          primitive.Brush = primitive.Pen.Brush;
-          primitive.IntoForeground();
-        } else {
-          int alpha = primitive.Pen.Color.A;
-          primitive.Pen.Color = Color.FromArgb(alpha, defaultColor);
-          primitive.Brush = primitive.Pen.Brush;
-          primitive.IntoBackground();
-        }
-        ((FixedSizeCircle)primitive).UpdateEnabled = true;
-        points.UpdateEnabled = true;
       }
     }
 
@@ -164,6 +139,7 @@ namespace HeuristicLab.CEDMA.Charting {
             FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
             c.ToolTipText = r.GetToolTipText();
             points.Add(c);
+            if(!r.Selected) c.IntoBackground();
             primitiveToRecordDictionary[c] = r;
             recordToPrimitiveDictionary[r] = c;
           }

@@ -86,22 +86,24 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void Repaint() {
-      if(dimension == null) return;
-      UpdateEnabled = false;
-      Group.Clear();
-      primitiveToRecordsDictionary.Clear();
-      recordToPrimitiveDictionary.Clear();
-      bars = new Group(this);
-      Group.Add(new Axis(this, 0, 0, AxisType.Both));
-      UpdateViewSize(0, 0);
-      Pen defaultPen = new Pen(defaultColor);
-      Brush defaultBrush = defaultPen.Brush;
-      PaintHistogram(records, defaultPen, defaultBrush);
-      Pen selectionPen = new Pen(selectionColor);
-      Brush selectionBrush = selectionPen.Brush;
-      PaintHistogram(records.Where(r => r.Selected), selectionPen, selectionBrush);
-      Group.Add(bars);
-      UpdateEnabled = true;
+      lock(records) {
+        if(dimension == null) return;
+        UpdateEnabled = false;
+        Group.Clear();
+        primitiveToRecordsDictionary.Clear();
+        recordToPrimitiveDictionary.Clear();
+        bars = new Group(this);
+        Group.Add(new Axis(this, 0, 0, AxisType.Both));
+        UpdateViewSize(0, 0);
+        Pen defaultPen = new Pen(defaultColor);
+        Brush defaultBrush = defaultPen.Brush;
+        PaintHistogram(records, defaultPen, defaultBrush);
+        Pen selectionPen = new Pen(selectionColor);
+        Brush selectionBrush = selectionPen.Brush;
+        PaintHistogram(records.Where(r => r.Selected), selectionPen, selectionBrush);
+        Group.Add(bars);
+        UpdateEnabled = true;
+      }
     }
 
     private void PaintHistogram(IEnumerable<Record> records, Pen pen, Brush brush) {
@@ -167,10 +169,12 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public override void MouseClick(Point point, MouseButtons button) {
       if(button == MouseButtons.Left) {
-        List<Record> rs = GetRecords(point);
-        UpdateEnabled = false;
-        if(rs != null) rs.ForEach(r => r.ToggleSelected());
-        UpdateEnabled = true;
+        lock(records) {
+          List<Record> rs = GetRecords(point);
+          UpdateEnabled = false;
+          if(rs != null) rs.ForEach(r => r.ToggleSelected());
+          UpdateEnabled = true;
+        }
         results.FireChanged();
       } else {
         base.MouseClick(point, button);

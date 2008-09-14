@@ -67,8 +67,6 @@ namespace HeuristicLab.CEDMA.Charting {
     public const string X_JITTER = "__X_JITTER";
     public const string Y_JITTER = "__Y_JITTER";
 
-    public event EventHandler OnSelectionChanged;
-
     private Dictionary<string, double> values = new Dictionary<string, double>();
     private ResultList resultList;
 
@@ -93,7 +91,6 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public void ToggleSelected() {
       selected = !selected;
-      if(OnSelectionChanged != null) OnSelectionChanged(this, new EventArgs());      
     }
 
     internal string GetToolTipText() {
