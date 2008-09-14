@@ -229,18 +229,40 @@ namespace HeuristicLab.CEDMA.Charting {
         double minY = Math.Min(a.Y, b.Y);
         double maxX = Math.Max(a.X, b.X);
         double maxY = Math.Max(a.Y, b.Y);
-        HeuristicLab.Charting.Rectangle r = new HeuristicLab.Charting.Rectangle(this, minX, minY, maxX, maxY);
+        HeuristicLab.Charting.Rectangle rect = new HeuristicLab.Charting.Rectangle(this, minX, minY, maxX, maxY);
 
         List<IPrimitive> primitives = new List<IPrimitive>();
         primitives.AddRange(points.Primitives);
 
         foreach(FixedSizeCircle p in primitives) {
-          if(r.ContainsPoint(p.Point)) {
-            primitiveToRecordDictionary[p].ToggleSelected();
+          if(rect.ContainsPoint(p.Point)) {
+            Record r;
+            primitiveToRecordDictionary.TryGetValue(p, out r);
+            if(r != null) r.ToggleSelected();
           }
         }
+        results.FireChanged();
       } else {
         base.MouseDrag(start, end, button);
+      }
+    }
+
+    public override void MouseClick(Point point, MouseButtons button) {
+      if(button == MouseButtons.Left) {
+        Record r = GetRecord(point);
+        if(r != null) r.ToggleSelected();
+        results.FireChanged();
+      } else {
+        base.MouseClick(point, button);
+      }
+    }
+
+    public override void MouseDoubleClick(Point point, MouseButtons button) {
+      if(button == MouseButtons.Left) {
+        Record r = GetRecord(point);
+        if(r != null) r.OpenModel();
+      } else {
+        base.MouseDoubleClick(point, button);
       }
     }
   }

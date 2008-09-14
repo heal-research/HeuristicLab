@@ -93,8 +93,7 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public void ToggleSelected() {
       selected = !selected;
-      if(OnSelectionChanged != null) OnSelectionChanged(this, new EventArgs());
-      resultList.FireChanged();
+      if(OnSelectionChanged != null) OnSelectionChanged(this, new EventArgs());      
     }
 
     internal string GetToolTipText() {

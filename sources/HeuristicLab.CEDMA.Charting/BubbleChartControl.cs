@@ -34,7 +34,6 @@ namespace HeuristicLab.CEDMA.Charting {
     private Bitmap bitmap;
     private bool renderingRequired;
     private Point mousePosition;
-    private Record clickedRecord;
     private Point buttonDownPoint;
 
     private BubbleChart myChart;
@@ -81,11 +80,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
-      clickedRecord = null;
       buttonDownPoint = e.Location;
-      if(e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) {
-        clickedRecord = Chart.GetRecord(buttonDownPoint);
-      }
     }
     private void pictureBox_MouseUp(object sender, MouseEventArgs e) {
       if(e.Button == MouseButtons.Left) {
@@ -175,11 +170,11 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void pictureBox_MouseClick(object sender, MouseEventArgs e) {
-      if(clickedRecord != null) clickedRecord.ToggleSelected();
+      Chart.MouseClick(e.Location, e.Button);
     }
 
     private void pictureBox_MouseDoubleClick(object sender, MouseEventArgs e) {
-      if(clickedRecord != null) clickedRecord.OpenModel();
+      Chart.MouseDoubleClick(e.Location, e.Button);
     }
   }
 }
