@@ -139,8 +139,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>cmd /c ..\..\CopyAssemblies.cmd $(ConfigurationName)
-cmd /c ..\..\UpdateLocalInstallation.cmd $(ConfigurationName)</PostBuildEvent>
-    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+    <PostBuildEvent>cmd /c $(ProjectDir)CopyAssemblies.cmd $(SolutionDir) $(Outdir)
+cmd /c $(ProjectDir)UpdateLocalInstallation.cmd $(Outdir)</PostBuildEvent>
+    <PreBuildEvent>cmd /c $(SolutionDir)PreBuildEvent.cmd $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>

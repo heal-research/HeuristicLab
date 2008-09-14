@@ -102,6 +102,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>cmd /c ..\..\..\PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent>cmd /c $(SolutionDir)PreBuildEvent.cmd $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>
