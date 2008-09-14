@@ -138,9 +138,9 @@ namespace HeuristicLab.CEDMA.Charting {
         double maxSize = 1;
         double minSize = 1;
         if(sizeDimension != null) {
-          var sizes = records.Select(r => r.Get(sizeDimension));
-          maxSize = sizes.Max();
-          minSize = sizes.Min();
+          var sizes = records.Select(r => r.Get(sizeDimension)).Where(x => !double.IsInfinity(x) && x != double.MaxValue && x != double.MinValue).OrderBy(x=>x);
+          minSize = sizes.ElementAt((int)(sizes.Count() * 0.1));
+          maxSize = sizes.ElementAt((int)(sizes.Count() * 0.9));
         }
         UpdateEnabled = false;
         Group.Clear();
@@ -174,7 +174,9 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private int CalculateSize(double size, double minSize, double maxSize) {
-      if(double.IsNaN(size)) return minBubbleSize;
+      if(double.IsNaN(size) || double.IsInfinity(size) || size == double.MaxValue || size == double.MinValue) return minBubbleSize;
+      if(size > maxSize) size = maxSize;
+      if(size < minSize) size = minSize;
       double sizeDifference = ((size - minSize) / (maxSize - minSize) * (maxBubbleSize - minBubbleSize));
       if(invertSize) return maxBubbleSize - (int)sizeDifference;
       else return minBubbleSize + (int)sizeDifference;
