@@ -36,6 +36,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private double maxX;
     private double maxFrequency;
     private const int N_BUCKETS = 50;
+    private const int MAX_BUCKETS = 100;
     private List<Record> records;
     private ResultList results;
     private Dictionary<IPrimitive, List<Record>> primitiveToRecordsDictionary;
@@ -57,7 +58,6 @@ namespace HeuristicLab.CEDMA.Charting {
       this.results = results;
       foreach(Record r in results.Records) {
         records.Add(r);
-        r.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
       }
       results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
       results.Changed += new EventHandler(results_Changed);
@@ -72,31 +72,7 @@ namespace HeuristicLab.CEDMA.Charting {
 
     void results_OnRecordAdded(object sender, RecordAddedEventArgs e) {
       lock(records) {
-        e.Record.OnSelectionChanged += new EventHandler(Record_OnSelectionChanged);
         records.Add(e.Record);
-      }
-    }
-
-    void Record_OnSelectionChanged(object sender, EventArgs e) {
-      Record r = (Record)sender;
-      IPrimitive primitive;
-      recordToPrimitiveDictionary.TryGetValue(r, out primitive);
-      if(primitive != null) {
-        ((FixedSizeCircle)primitive).UpdateEnabled = false;
-        bars.UpdateEnabled = false;
-        if(r.Selected) {
-          int alpha = primitive.Pen.Color.A;
-          primitive.Pen.Color = Color.FromArgb(alpha, selectionColor);
-          primitive.Brush = primitive.Pen.Brush;
-          primitive.IntoForeground();
-        } else {
-          int alpha = primitive.Pen.Color.A;
-          primitive.Pen.Color = Color.FromArgb(alpha, defaultColor);
-          primitive.Brush = primitive.Pen.Brush;
-          primitive.IntoBackground();
-        }
-        ((FixedSizeCircle)primitive).UpdateEnabled = true;
-        bars.UpdateEnabled = true;
       }
     }
 
@@ -118,36 +94,42 @@ namespace HeuristicLab.CEDMA.Charting {
       bars = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
       UpdateViewSize(0, 0);
-      var values = records.Select(r => r.Get(dimension)).Where(
-        x => !double.IsNaN(x) && !double.IsInfinity(x) && x != double.MinValue && x != double.MaxValue).OrderBy(x => x);
-      IEnumerable<IGrouping<double,double>> frequencies;
-      double bucketSize;
-      if(dimension == Record.TARGET_VARIABLE || dimension == Record.TREE_HEIGHT || dimension == Record.TREE_SIZE) {
-        frequencies = values.GroupBy(x => x);
-        bucketSize = 1.0;
-      } else {
-        double min = values.ElementAt((int)(values.Count() * 0.05));
-        double max = values.ElementAt((int)(values.Count() * 0.95));
-        bucketSize = (max - min) / N_BUCKETS;
-        frequencies = values.GroupBy(x => Math.Min(Math.Max(min, Math.Floor((x - min) / bucketSize) * bucketSize + min), max));
-      }
       Pen defaultPen = new Pen(defaultColor);
       Brush defaultBrush = defaultPen.Brush;
-      foreach(IGrouping<double, double> g in frequencies) {
+      PaintHistogram(records, defaultPen, defaultBrush);
+      Pen selectionPen = new Pen(selectionColor);
+      Brush selectionBrush = selectionPen.Brush;
+      PaintHistogram(records.Where(r => r.Selected), selectionPen, selectionBrush);
+      Group.Add(bars);
+      UpdateEnabled = true;
+    }
+
+    private void PaintHistogram(IEnumerable<Record> records, Pen pen, Brush brush) {
+      var values = records.Select(r => new { Record = r, Value = r.Get(dimension) }).Where(
+        x => !double.IsNaN(x.Value) && !double.IsInfinity(x.Value) && x.Value != double.MinValue && x.Value != double.MaxValue).OrderBy(x => x.Value);
+      if(values.Count() == 0) return;
+      double bucketSize = 1.0;
+      var frequencies = values.GroupBy(x => x.Value);
+      if(frequencies.Count() > MAX_BUCKETS) {
+        double min = values.ElementAt((int)(values.Count() * 0.05)).Value;
+        double max = values.ElementAt((int)(values.Count() * 0.95)).Value;
+        bucketSize = (max - min) / N_BUCKETS;
+        frequencies = values.GroupBy(x => Math.Min(Math.Max(min, Math.Floor((x.Value - min) / bucketSize) * bucketSize + min), max));
+      }
+      foreach(var g in frequencies) {
         double freq = g.Count();
         double lower = g.Key;
-        double upper = g.Key+bucketSize;
-        HeuristicLab.Charting.Rectangle bar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, freq, defaultPen, defaultBrush);
-        primitiveToRecordsDictionary[bar] = records;
-        if(lower == frequencies.First().Key) bar.ToolTipText = " x < "+upper+" : "+freq;
-        else if(lower ==frequencies.Last().Key) bar.ToolTipText = "x >= "+lower+" : "+freq;
-        else bar.ToolTipText = "x in ["+lower+" .. "+upper+"[ : "+freq;
+        double upper = g.Key + bucketSize;
+        HeuristicLab.Charting.Rectangle bar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, freq, pen, brush);
+        primitiveToRecordsDictionary[bar] = g.Select(r => r.Record).ToList();
+        primitiveToRecordsDictionary[bar].ForEach(x => recordToPrimitiveDictionary[x] = bar);
+        if(lower == frequencies.First().Key) bar.ToolTipText = " x < " + upper + " : " + freq;
+        else if(lower == frequencies.Last().Key) bar.ToolTipText = "x >= " + lower + " : " + freq;
+        else bar.ToolTipText = "x in [" + lower + " .. " + upper + "[ : " + freq;
         bars.Add(bar);
         UpdateViewSize(lower, freq);
         UpdateViewSize(upper, freq);
       }
-      Group.Add(bars);
-      UpdateEnabled = true;
     }
 
     private void ZoomToViewSize() {
@@ -165,7 +147,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private void UpdateViewSize(double x, double freq) {
       if(x < minX) minX = x;
       if(x > maxX) maxX = x;
-      if(freq  > maxFrequency) maxFrequency = freq;
+      if(freq > maxFrequency) maxFrequency = freq;
     }
 
     private void ResetViewSize() {
@@ -186,7 +168,9 @@ namespace HeuristicLab.CEDMA.Charting {
     public override void MouseClick(Point point, MouseButtons button) {
       if(button == MouseButtons.Left) {
         List<Record> rs = GetRecords(point);
+        UpdateEnabled = false;
         if(rs != null) rs.ForEach(r => r.ToggleSelected());
+        UpdateEnabled = true;
         results.FireChanged();
       } else {
         base.MouseClick(point, button);
