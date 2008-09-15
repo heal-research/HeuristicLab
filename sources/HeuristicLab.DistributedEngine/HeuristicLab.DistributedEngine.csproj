@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E66D1EAA-525C-4F6D-BD25-DBCAE3750E25}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -111,6 +111,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>cmd /c $(SolutionDir)PreBuildEvent.cmd $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>cmd /c ""$(SolutionDir)PreBuildEvent.cmd" "$(ProjectDir).""</PreBuildEvent>
   </PropertyGroup>
 </Project>
