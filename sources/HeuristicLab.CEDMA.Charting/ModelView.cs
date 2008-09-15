@@ -85,7 +85,7 @@ namespace HeuristicLab.CEDMA.Charting {
       IEvaluator eval = model.CreateEvaluator();
       eval.ResetEvaluator(model, dataset);
       int n = 0;
-      for(int i = 0; i < dataset.Rows; i += 10) {
+      for(int i = 0; i < dataset.Rows; i ++) {
         double predicted = eval.Evaluate(i);
         double original = dataset.GetValue(i, targetVariable);
         if(double.IsInfinity(predicted) || predicted == double.MaxValue || predicted == double.MinValue) predicted = double.NaN;
