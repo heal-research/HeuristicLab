@@ -18,12 +18,14 @@ namespace HeuristicLab.CEDMA.Charting {
     private Dataset dataset;
     private IFunctionTree model;
     private int targetVariable;
+    private Record record;
 
-    public ModelView(Dataset dataset, IFunctionTree model, int targetVariable) {
+    public ModelView(Record record, Dataset dataset, IFunctionTree model, int targetVariable) {
       InitializeComponent();
       this.dataset = dataset;
       this.model = model;
       this.targetVariable = targetVariable;
+      this.record = record;
 
       splitContainer.Panel1.Controls.Add((Control)model.CreateView());
       splitContainer.Panel1.Controls[0].Dock = DockStyle.Fill;
@@ -109,6 +111,10 @@ namespace HeuristicLab.CEDMA.Charting {
         control.ScaleOnResize = false;
       }
       return control;
+    }
+
+    private void algoButton_Click(object sender, EventArgs e) {
+      record.OpenGeneratingAlgorithm();
     }
   }
 }

@@ -62,6 +62,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private readonly Entity selectionPressurePredicate = new Entity(cedmaNS + "SelectionPressure");
     private readonly Entity rawDataPredicate = new Entity(cedmaNS + "RawData");
     private readonly Entity hasModelPredicate = new Entity(cedmaNS + "Model");
+    private readonly Entity generatedByPredicate = new Entity(cedmaNS + "GeneratedBy");
     private readonly Entity anyEntity = new Entity(null);
     private Dictionary<Record, Dataset> datasets;
 
@@ -168,7 +169,7 @@ namespace HeuristicLab.CEDMA.Charting {
         int targetVariable = (int)record.Get(Record.TARGET_VARIABLE);
         Dataset dataset = GetDataset(record);
 
-        ModelView modelView = new ModelView(dataset, tree, targetVariable);
+        ModelView modelView = new ModelView(record, dataset, tree, targetVariable);
         PluginManager.ControlManager.ShowControl(modelView);
       }
     }
@@ -188,6 +189,20 @@ namespace HeuristicLab.CEDMA.Charting {
         }
       }
       return datasets[record];
+    }
+
+    internal void OpenAlgorithm(Record record) {
+      IList<Statement> generatedBy = store.Select(new Statement(new Entity(record.Uri), generatedByPredicate, anyEntity));
+      if(generatedBy.Count == 1) {
+        IList<Statement> algoResult = store.Select(new Statement((Entity)generatedBy[0].Property, rawDataPredicate, anyEntity));
+        if(algoResult.Count == 1) {
+          string rawData = ((SerializedLiteral)algoResult[0].Property).RawData;
+          XmlDocument doc = new XmlDocument();
+          doc.LoadXml(rawData);
+          IItem algo = (IItem)PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+          PluginManager.ControlManager.ShowControl(algo.CreateView());
+        }
+      }
     }
   }
 }

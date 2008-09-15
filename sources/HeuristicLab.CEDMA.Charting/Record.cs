@@ -107,5 +107,9 @@ namespace HeuristicLab.CEDMA.Charting {
     internal void OpenModel() {
       resultList.OpenModel(this);
     }
+
+    internal void OpenGeneratingAlgorithm() {
+      resultList.OpenAlgorithm(this);
+    }
   }
 }

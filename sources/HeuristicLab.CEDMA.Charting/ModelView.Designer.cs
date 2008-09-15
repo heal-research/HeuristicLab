@@ -25,6 +25,7 @@
     private void InitializeComponent() {
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.lowerSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.algoButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.lowerSplitContainer.SuspendLayout();
@@ -32,7 +33,9 @@
       // 
       // splitContainer
       // 
-      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
@@ -41,8 +44,8 @@
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.lowerSplitContainer);
-      this.splitContainer.Size = new System.Drawing.Size(450, 459);
-      this.splitContainer.SplitterDistance = 217;
+      this.splitContainer.Size = new System.Drawing.Size(450, 427);
+      this.splitContainer.SplitterDistance = 185;
       this.splitContainer.TabIndex = 0;
       // 
       // lowerSplitContainer
@@ -55,10 +58,22 @@
       this.lowerSplitContainer.SplitterDistance = 232;
       this.lowerSplitContainer.TabIndex = 0;
       // 
+      // algoButton
+      // 
+      this.algoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.algoButton.Location = new System.Drawing.Point(352, 433);
+      this.algoButton.Name = "algoButton";
+      this.algoButton.Size = new System.Drawing.Size(95, 23);
+      this.algoButton.TabIndex = 1;
+      this.algoButton.Text = "Open algorithm";
+      this.algoButton.UseVisualStyleBackColor = true;
+      this.algoButton.Click += new System.EventHandler(this.algoButton_Click);
+      // 
       // ModelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.algoButton);
       this.Controls.Add(this.splitContainer);
       this.Name = "ModelView";
       this.Size = new System.Drawing.Size(450, 459);
@@ -73,6 +88,7 @@
 
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.SplitContainer lowerSplitContainer;
+    private System.Windows.Forms.Button algoButton;
 
   }
 }
