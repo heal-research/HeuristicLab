@@ -31,6 +31,10 @@ namespace HeuristicLab.CEDMA.Charting {
   public class Histogram : Chart {
     private static readonly Color defaultColor = Color.Blue;
     private static readonly Color selectionColor = Color.Red;
+    private static readonly Pen defaultPen = new Pen(defaultColor);
+    private static readonly Brush defaultBrush = defaultPen.Brush;
+    private static readonly Pen selectionPen = new Pen(selectionColor);
+    private static readonly Brush selectionBrush = selectionPen.Brush;
 
     private double minX;
     private double maxX;
@@ -42,8 +46,6 @@ namespace HeuristicLab.CEDMA.Charting {
     private Dictionary<IPrimitive, List<Record>> primitiveToRecordsDictionary;
     private Dictionary<Record, IPrimitive> recordToPrimitiveDictionary;
     private Group bars;
-    private double[] limits;
-    private int[] buckets;
     private string dimension;
 
     public Histogram(ResultList results, double x1, double y1, double x2, double y2)
@@ -61,11 +63,10 @@ namespace HeuristicLab.CEDMA.Charting {
       }
       results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
       results.Changed += new EventHandler(results_Changed);
-      limits = new double[N_BUCKETS - 1];
-      buckets = new int[N_BUCKETS];
     }
 
     void results_Changed(object sender, EventArgs e) {
+      ResetViewSize();
       Repaint();
       EnforceUpdate();
     }
@@ -95,18 +96,13 @@ namespace HeuristicLab.CEDMA.Charting {
         bars = new Group(this);
         Group.Add(new Axis(this, 0, 0, AxisType.Both));
         UpdateViewSize(0, 0);
-        Pen defaultPen = new Pen(defaultColor);
-        Brush defaultBrush = defaultPen.Brush;
-        PaintHistogram(records, defaultPen, defaultBrush);
-        Pen selectionPen = new Pen(selectionColor);
-        Brush selectionBrush = selectionPen.Brush;
-        PaintHistogram(records.Where(r => r.Selected), selectionPen, selectionBrush);
+        PaintHistogram(records);
         Group.Add(bars);
         UpdateEnabled = true;
       }
     }
 
-    private void PaintHistogram(IEnumerable<Record> records, Pen pen, Brush brush) {
+    private void PaintHistogram(IEnumerable<Record> records) {
       var values = records.Select(r => new { Record = r, Value = r.Get(dimension) }).Where(
         x => !double.IsNaN(x.Value) && !double.IsInfinity(x.Value) && x.Value != double.MinValue && x.Value != double.MaxValue).OrderBy(x => x.Value);
       if(values.Count() == 0) return;
@@ -120,15 +116,27 @@ namespace HeuristicLab.CEDMA.Charting {
       }
       foreach(var g in frequencies) {
         double freq = g.Count();
+        double selectedFreq = g.Where(r=>r.Record.Selected).Count();
         double lower = g.Key;
         double upper = g.Key + bucketSize;
-        HeuristicLab.Charting.Rectangle bar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, freq, pen, brush);
+        HeuristicLab.Charting.Rectangle bar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, freq, defaultPen, defaultBrush);
         primitiveToRecordsDictionary[bar] = g.Select(r => r.Record).ToList();
         primitiveToRecordsDictionary[bar].ForEach(x => recordToPrimitiveDictionary[x] = bar);
-        if(lower == frequencies.First().Key) bar.ToolTipText = " x < " + upper + " : " + freq;
-        else if(lower == frequencies.Last().Key) bar.ToolTipText = "x >= " + lower + " : " + freq;
-        else bar.ToolTipText = "x in [" + lower + " .. " + upper + "[ : " + freq;
+        HeuristicLab.Charting.Rectangle selectedBar = new HeuristicLab.Charting.Rectangle(this, lower, 0, upper, selectedFreq, selectionPen, selectionBrush);
+        primitiveToRecordsDictionary[selectedBar] = g.Select(r => r.Record).Where(r=>r.Selected).ToList();
+        primitiveToRecordsDictionary[selectedBar].ForEach(x => recordToPrimitiveDictionary[x] = bar);
+        if(lower == frequencies.First().Key) {
+          selectedBar.ToolTipText = " x < " + upper + " : " + selectedFreq;
+           bar.ToolTipText = " x < " + upper + " : " + freq;
+        } else if(lower == frequencies.Last().Key) {
+          selectedBar.ToolTipText = "x >= " + lower + " : " + selectedFreq;
+          bar.ToolTipText = "x >= " + lower + " : " + freq;
+        } else {
+          selectedBar.ToolTipText = "x in [" + lower + " .. " + upper + "[ : " + selectedFreq;
+           bar.ToolTipText = "x in [" + lower + " .. " + upper + "[ : " + freq;
+        }
         bars.Add(bar);
+        bars.Add(selectedBar);
         UpdateViewSize(lower, freq);
         UpdateViewSize(upper, freq);
       }

@@ -63,6 +63,7 @@ namespace HeuristicLab.CEDMA.Charting {
     public const string TARGET_VARIABLE = "Target variable";
     public const string TREE_SIZE = "Tree size";
     public const string TREE_HEIGHT = "Tree height";
+    public const string SELECTIONPRESSURE = "Selection pressure";
 
     public const string X_JITTER = "__X_JITTER";
     public const string Y_JITTER = "__Y_JITTER";

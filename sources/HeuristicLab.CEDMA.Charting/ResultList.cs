@@ -59,8 +59,9 @@ namespace HeuristicLab.CEDMA.Charting {
     private readonly Entity testR2Predicate = new Entity(cedmaNS + "CoefficientOfDeterminationTest");
     private readonly Entity treeSizePredicate = new Entity(cedmaNS + "TreeSize");
     private readonly Entity treeHeightPredicate = new Entity(cedmaNS + "TreeHeight");
-    private readonly Entity rawDataPredicate = new Entity(cedmaNS + "rawData");
-    private readonly Entity hasModelPredicate = new Entity(cedmaNS + "hasModel");
+    private readonly Entity selectionPressurePredicate = new Entity(cedmaNS + "SelectionPressure");
+    private readonly Entity rawDataPredicate = new Entity(cedmaNS + "RawData");
+    private readonly Entity hasModelPredicate = new Entity(cedmaNS + "Model");
     private readonly Entity anyEntity = new Entity(null);
     private Dictionary<Record, Dataset> datasets;
 
@@ -74,7 +75,7 @@ namespace HeuristicLab.CEDMA.Charting {
       }
     }
 
-    private List<string> variableNames = new List<string>() { Record.TARGET_VARIABLE, Record.TREE_SIZE, Record.TREE_HEIGHT,
+    private List<string> variableNames = new List<string>() { Record.TARGET_VARIABLE, Record.TREE_SIZE, Record.TREE_HEIGHT, Record.SELECTIONPRESSURE,
     Record.MAPE_TRAINING, Record.MAPE_VALIDATION, Record.MAPE_TEST,
     Record.R2_TRAINING, Record.R2_VALIDATION, Record.R2_TEST};
     public string[] VariableNames {
@@ -101,7 +102,7 @@ namespace HeuristicLab.CEDMA.Charting {
       var results = store.Select(new Statement(anyEntity, new Entity(cedmaNS + "instanceOf"), new Literal("class:GpFunctionTree")))
       .Select(x => store.Select(new SelectFilter(
         new Entity[] { new Entity(x.Subject.Uri) },
-        new Entity[] { targetVariablePredicate, treeSizePredicate, treeHeightPredicate,
+        new Entity[] { targetVariablePredicate, treeSizePredicate, treeHeightPredicate, selectionPressurePredicate,
           trainingMAPEPredicate, validationMAPEPredicate, testMAPEPredicate,
           trainingR2Predicate, validationR2Predicate, testR2Predicate },
           new Resource[] { anyEntity })));
@@ -144,6 +145,7 @@ namespace HeuristicLab.CEDMA.Charting {
       predicateToVariableName[targetVariablePredicate] = Record.TARGET_VARIABLE;
       predicateToVariableName[treeSizePredicate] = Record.TREE_SIZE;
       predicateToVariableName[treeHeightPredicate] = Record.TREE_HEIGHT;
+      predicateToVariableName[selectionPressurePredicate] = Record.SELECTIONPRESSURE;
       predicateToVariableName[trainingMAPEPredicate] = Record.MAPE_TRAINING;
       predicateToVariableName[validationMAPEPredicate] = Record.MAPE_VALIDATION;
       predicateToVariableName[testMAPEPredicate] = Record.MAPE_TEST;
