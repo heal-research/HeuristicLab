@@ -7,7 +7,7 @@ mkdir plugins\temp
 mkdir plugins\backup
 copy %1\HeuristicLab.AdvancedOptimizationFrontend\%2\HeuristicLab.AdvancedOptimizationFrontend.dll .\plugins
 copy %1\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking.dll .\plugins
-copy %1\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking License.txt .\plugins
+copy %1\HeuristicLab.AdvancedOptimizationFrontend\"WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy %1\HeuristicLab.BitVector\%2\HeuristicLab.BitVector.dll .\plugins
 copy %1\HeuristicLab.CEDMA.Charting\%2\HeuristicLab.CEDMA.Charting.dll .\plugins
 copy %1\HeuristicLab.CEDMA.Core\%2\HeuristicLab.CEDMA.Core.dll .\plugins
@@ -44,7 +44,7 @@ copy %1\HeuristicLab.SequentialEngine\%2\HeuristicLab.SequentialEngine.dll .\plu
 copy %1\HeuristicLab.SGA\%2\HeuristicLab.SGA.dll .\plugins
 copy %1\HeuristicLab.SQLite\%2\HeuristicLab.SQLite.dll .\plugins
 copy %1\HeuristicLab.SQLite\System.Data.SQLite.dll .\plugins
-copy %1\HeuristicLab.SQLite\SQLite License.txt .\plugins
+copy %1\HeuristicLab.SQLite\"SQLite License.txt" .\plugins
 copy %1\HeuristicLab.SQLite\SQLite.NET.chm .\plugins
 copy %1\HeuristicLab.StructureIdentification\%2\HeuristicLab.StructureIdentification.dll .\plugins
 copy %1\HeuristicLab.TestFunctions\%2\HeuristicLab.TestFunctions.dll .\plugins
