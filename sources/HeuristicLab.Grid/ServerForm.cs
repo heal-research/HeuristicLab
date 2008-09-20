@@ -44,14 +44,15 @@ namespace HeuristicLab.Grid {
     public ServerForm() {
       InitializeComponent();
 
-      // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2
+      IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+      // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2 (presumably in the last entry, which normally is 2)
+      int index = 0;
       if (System.Environment.OSVersion.Version.Major >= 6) {
-        externalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8000/Grid/Service";
-        internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[2] + ":8001/Grid/JobStore";
-      } else {
-        externalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8000/Grid/Service";
-        internalAddressTextBox.Text = "net.tcp://" + Dns.GetHostAddresses(Dns.GetHostName())[0] + ":8001/Grid/JobStore";
+        index = addresses.Length - 1;
       }
+      externalAddressTextBox.Text = "net.tcp://" + addresses[index] + ":8000/Grid/Service";
+      internalAddressTextBox.Text = "net.tcp://" + addresses[index] + ":8001/Grid/JobStore";
+
       jobStore = new EngineStore();
       server = new GridServer(jobStore);
       Start();
