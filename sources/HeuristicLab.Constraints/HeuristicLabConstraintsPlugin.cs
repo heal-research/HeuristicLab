@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Constraints {
-  [ClassInfo(Name = "HeuristicLab.Constraints")]
-  [PluginFile(Filename = "HeuristicLab.Constraints.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
+  [ClassInfo(Name = "HeuristicLab.Constraints-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Constraints-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabConstraintsPlugin : PluginBase {
   }
 }

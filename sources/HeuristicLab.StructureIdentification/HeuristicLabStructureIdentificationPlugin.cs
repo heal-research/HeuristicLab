@@ -25,16 +25,16 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.StructureIdentification {
-  [ClassInfo(Name = "HeuristicLab.StructureIdentification")]
-  [PluginFile(Filename = "HeuristicLab.StructureIdentification.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Constraints")]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis")]
-  [Dependency(Dependency = "HeuristicLab.Functions")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
-  [Dependency(Dependency = "HeuristicLab.Selection")]
-  [Dependency(Dependency = "HeuristicLab.Random")]
+  [ClassInfo(Name = "HeuristicLab.StructureIdentification-3.2")]
+  [PluginFile(Filename = "HeuristicLab.StructureIdentification-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Functions-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   public class HeuristicLabStructureIdentificationPlugin : PluginBase {
   }
 }

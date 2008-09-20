@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SequentialEngine {
-  [ClassInfo(Name = "HeuristicLab.SequentialEngine")]
-  [PluginFile(Filename = "HeuristicLab.SequentialEngine.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
+  [ClassInfo(Name = "HeuristicLab.SequentialEngine-3.2")]
+  [PluginFile(Filename = "HeuristicLab.SequentialEngine-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   public class HeuristicLabSequentialEnginePlugin : PluginBase {
   }
 }

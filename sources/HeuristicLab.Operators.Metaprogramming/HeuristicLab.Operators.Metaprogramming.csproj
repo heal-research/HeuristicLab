@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Operators.Metaprogramming</RootNamespace>
-    <AssemblyName>HeuristicLab.Operators.Metaprogramming</AssemblyName>
+    <AssemblyName>HeuristicLab.Operators.Metaprogramming-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

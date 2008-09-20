@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Operators {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Operators")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Operators.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces")]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
+  [ClassInfo(Name = "HeuristicLab.CEDMA.Operators-3.2")]
+  [PluginFile(Filename = "HeuristicLab.CEDMA.Operators-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   public class HeuristicLabCedmaOperatorsPlugin : PluginBase {
   }
 }

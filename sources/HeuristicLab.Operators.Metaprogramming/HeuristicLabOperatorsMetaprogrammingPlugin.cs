@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Metaprogramming {
-  [ClassInfo(Name = "HeuristicLab.Operators.Metaprogramming")]
-  [PluginFile(Filename = "HeuristicLab.Operators.Metaprogramming.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
+  [ClassInfo(Name = "HeuristicLab.Operators.Metaprogramming-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Operators.Metaprogramming-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabOperatorsMetaprogrammingPlugin : PluginBase {
   }
 }

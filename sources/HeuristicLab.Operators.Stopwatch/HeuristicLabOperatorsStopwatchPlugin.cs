@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Stopwatch {
-  [ClassInfo(Name = "HeuristicLab.Operators.Stopwatch")]
-  [PluginFile(Filename = "HeuristicLab.Operators.Stopwatch.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
+  [ClassInfo(Name = "HeuristicLab.Operators.Stopwatch-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Operators.Stopwatch-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabOperatorsStopwatchPlugin : PluginBase {
   }
 }

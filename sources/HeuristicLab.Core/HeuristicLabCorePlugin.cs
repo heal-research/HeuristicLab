@@ -26,8 +26,8 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
-  [ClassInfo(Name = "HeuristicLab.Core")]
-  [PluginFile(Filename = "HeuristicLab.Core.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.Core-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Core-3.2.dll", Filetype = PluginFileType.Assembly)]
   public class HeuristicLabCorePlugin : PluginBase {
   }
 }

@@ -25,13 +25,13 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Routing.TSP {
-  [ClassInfo(Name = "HeuristicLab.Routing.TSP")]
-  [PluginFile(Filename = "HeuristicLab.Routing.TSP.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
-  [Dependency(Dependency = "HeuristicLab.Permutation")]
-  [Dependency(Dependency = "HeuristicLab.Charting")]
+  [ClassInfo(Name = "HeuristicLab.Routing.TSP-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Routing.TSP-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Permutation-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
   public class HeuristicLabRoutingTSPPlugin : PluginBase {
   }
 }

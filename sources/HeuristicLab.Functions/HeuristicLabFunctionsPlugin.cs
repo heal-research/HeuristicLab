@@ -25,15 +25,15 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Functions {
-  [ClassInfo(Name = "HeuristicLab.Functions")]
-  [PluginFile(Filename = "HeuristicLab.Functions.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Constraints")]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
-  [Dependency(Dependency = "HeuristicLab.Operators.Programmable")]
-  [Dependency(Dependency = "HeuristicLab.Random")]
+  [ClassInfo(Name = "HeuristicLab.Functions-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Functions-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators.Programmable-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   public class HeuristicLabFunctionsPlugin : PluginBase {
   }
 }

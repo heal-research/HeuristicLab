@@ -25,10 +25,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.DistributedEngine {
-  [ClassInfo(Name = "HeuristicLab.DistributedEngine")]
-  [PluginFile(Filename = "HeuristicLab.DistributedEngine.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Grid")]
+  [ClassInfo(Name = "HeuristicLab.DistributedEngine-3.2")]
+  [PluginFile(Filename = "HeuristicLab.DistributedEngine-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Grid-3.2")]
   public class HeuristicLabDistributedEnginePlugin : PluginBase {
   }
 }

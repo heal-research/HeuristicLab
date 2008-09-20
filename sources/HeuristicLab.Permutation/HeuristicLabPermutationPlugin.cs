@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Permutation {
-  [ClassInfo(Name = "HeuristicLab.Permutation")]
-  [PluginFile(Filename = "HeuristicLab.Permutation.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary")]
+  [ClassInfo(Name = "HeuristicLab.Permutation-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Permutation-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
   public class HeuristicLabRandomPlugin : PluginBase {
   }
 }

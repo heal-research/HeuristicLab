@@ -25,17 +25,17 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ES {
-  [ClassInfo(Name = "HeuristicLab.ES")]
-  [PluginFile(Filename = "HeuristicLab.ES.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary")]
-  [Dependency(Dependency = "HeuristicLab.Logging")]
-  [Dependency(Dependency = "HeuristicLab.Operators")]
-  [Dependency(Dependency = "HeuristicLab.Random")]
-  [Dependency(Dependency = "HeuristicLab.Selection")]
-  [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine")]
+  [ClassInfo(Name = "HeuristicLab.ES-3.2")]
+  [PluginFile(Filename = "HeuristicLab.ES-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection-3.2")]
+  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabESPlugin : PluginBase {
   }
 }

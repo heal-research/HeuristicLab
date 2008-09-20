@@ -26,9 +26,9 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.OptimizationFrontend {
-  [ClassInfo(Name = "HeuristicLab.OptimizationFrontend")]
-  [PluginFile(Filename = "HeuristicLab.OptimizationFrontend.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
+  [ClassInfo(Name = "HeuristicLab.OptimizationFrontend-3.2")]
+  [PluginFile(Filename = "HeuristicLab.OptimizationFrontend-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   public class HeuristicLabOptimizationFrontendPlugin : PluginBase {
   }
 }

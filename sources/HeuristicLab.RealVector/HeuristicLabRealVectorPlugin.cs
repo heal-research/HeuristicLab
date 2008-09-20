@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.RealVector {
-  [ClassInfo(Name = "HeuristicLab.RealVector")]
-  [PluginFile(Filename = "HeuristicLab.RealVector.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary")]
+  [ClassInfo(Name = "HeuristicLab.RealVector-3.2")]
+  [PluginFile(Filename = "HeuristicLab.RealVector-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
   public class HeuristicLabRealVectorPlugin : PluginBase {
   }
 }

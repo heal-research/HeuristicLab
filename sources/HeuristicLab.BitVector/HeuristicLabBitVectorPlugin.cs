@@ -25,11 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.BitVector {
-  [ClassInfo(Name = "HeuristicLab.BitVector")]
-  [PluginFile(Filename = "HeuristicLab.BitVector.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
-  [Dependency(Dependency = "HeuristicLab.Data")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary")]
+  [ClassInfo(Name = "HeuristicLab.BitVector-3.2")]
+  [PluginFile(Filename = "HeuristicLab.BitVector-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
   public class HeuristicLabBitVectorPlugin : PluginBase {
   }
 }

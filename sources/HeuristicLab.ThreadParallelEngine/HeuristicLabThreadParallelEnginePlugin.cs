@@ -25,9 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ThreadParallelEngine {
-  [ClassInfo(Name = "HeuristicLab.ThreadParallelEngine")]
-  [PluginFile(Filename = "HeuristicLab.ThreadParallelEngine.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core")]
+  [ClassInfo(Name = "HeuristicLab.ThreadParallelEngine-3.2")]
+  [PluginFile(Filename = "HeuristicLab.ThreadParallelEngine-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   public class HeuristicLabThreadParallelEnginePlugin : PluginBase {
   }
 }
