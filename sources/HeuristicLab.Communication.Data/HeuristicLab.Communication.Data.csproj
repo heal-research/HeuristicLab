@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{14E1C3E3-2496-436A-AE00-09F7B81DB15B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Communication.Data</RootNamespace>
+    <AssemblyName>HeuristicLab.Communication.Data-3.2</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>
+    </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="DummyDriverConfiguration.cs" />
+    <Compile Include="HeuristicLabCommunicationDataPlugin.cs" />
+    <Compile Include="IDataStream.cs" />
+    <Compile Include="IDriverConfiguration.cs" />
+    <Compile Include="IObjectStream.cs" />
+    <Compile Include="LocalProcessDriverConfiguration.cs" />
+    <Compile Include="LocalProcessDriverConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LocalProcessDriverConfigurationView.designer.cs">
+      <DependentUpon>LocalProcessDriverConfigurationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OdbcDatabaseDriverConfiguration.cs" />
+    <Compile Include="OdbcDatabaseDriverConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OdbcDatabaseDriverConfigurationView.designer.cs">
+      <DependentUpon>OdbcDatabaseDriverConfigurationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProcessData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol.cs" />
+    <Compile Include="ProtocolEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProtocolEditor.Designer.cs">
+      <DependentUpon>ProtocolEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProtocolState.cs" />
+    <Compile Include="ProtocolStateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProtocolStateView.Designer.cs">
+      <DependentUpon>ProtocolStateView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SocketData.cs" />
+    <Compile Include="StateTransition.cs" />
+    <Compile Include="StateTransitionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StateTransitionView.Designer.cs">
+      <DependentUpon>StateTransitionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TcpNetworkDriverConfiguration.cs" />
+    <Compile Include="TcpNetworkDriverConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TcpNetworkDriverConfigurationView.designer.cs">
+      <DependentUpon>TcpNetworkDriverConfigurationView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LocalProcessDriverConfigurationView.resx">
+      <DependentUpon>LocalProcessDriverConfigurationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OdbcDatabaseDriverConfigurationView.resx">
+      <DependentUpon>OdbcDatabaseDriverConfigurationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProtocolEditor.resx">
+      <DependentUpon>ProtocolEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProtocolStateView.resx">
+      <DependentUpon>ProtocolStateView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StateTransitionView.resx">
+      <DependentUpon>StateTransitionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TcpNetworkDriverConfigurationView.resx">
+      <DependentUpon>TcpNetworkDriverConfigurationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ""$(SolutionDir)PreBuildEvent.cmd" "$(ProjectDir).""</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Constraints\HeuristicLab.Constraints.csproj">
+      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
+      <Name>HeuristicLab.Constraints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
+      <Name>HeuristicLab.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
+      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
+      <Name>HeuristicLab.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Programmable\HeuristicLab.Operators.Programmable.csproj">
+      <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
+      <Name>HeuristicLab.Operators.Programmable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

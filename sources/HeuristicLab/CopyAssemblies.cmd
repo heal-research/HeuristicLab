@@ -19,6 +19,8 @@ copy %1\HeuristicLab.CEDMA.Operators\%2\HeuristicLab.CEDMA.Operators-3.2.dll .\p
 copy %1\HeuristicLab.CEDMA.Server\%2\HeuristicLab.CEDMA.Server-3.2.dll .\plugins
 copy %1\HeuristicLab.Charting\%2\HeuristicLab.Charting-3.2.dll .\plugins
 copy %1\HeuristicLab.Charting.Data\%2\HeuristicLab.Charting.Data-3.2.dll .\plugins
+copy %1\HeuristicLab.Communication.Data\%2\HeuristicLab.Communication.Data-3.2.dll .\plugins
+copy %1\HeuristicLab.Communication.Operators\%2\HeuristicLab.Communication.Operators-3.2.dll .\plugins
 copy %1\HeuristicLab.Core\%2\HeuristicLab.Core-3.2.dll .\plugins
 copy %1\HeuristicLab.Constraints\%2\HeuristicLab.Constraints-3.2.dll .\plugins
 copy %1\HeuristicLab.Data\%2\HeuristicLab.Data-3.2.dll .\plugins
@@ -42,6 +44,7 @@ copy %1\HeuristicLab.Selection\%2\HeuristicLab.Selection-3.2.dll .\plugins
 copy %1\HeuristicLab.Selection.OffspringSelection\%2\HeuristicLab.Selection.OffspringSelection-3.2.dll .\plugins
 copy %1\HeuristicLab.SequentialEngine\%2\HeuristicLab.SequentialEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.SGA\%2\HeuristicLab.SGA-3.2.dll .\plugins
+copy %1\HeuristicLab.SimOpt\%2\HeuristicLab.SimOpt-3.2.dll .\plugins
 copy %1\HeuristicLab.SQLite\%2\HeuristicLab.SQLite-3.2.dll .\plugins
 copy %1\HeuristicLab.SQLite\System.Data.SQLite.dll .\plugins
 copy %1\HeuristicLab.SQLite\"SQLite License.txt" .\plugins
