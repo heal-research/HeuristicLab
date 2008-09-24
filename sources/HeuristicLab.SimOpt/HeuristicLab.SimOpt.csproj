@@ -59,7 +59,6 @@
     <Compile Include="SimOptCrossoverBase.cs" />
     <Compile Include="SimOptSequentialSubOperatorProcessor.cs" />
     <Compile Include="SimOptSquentialSubOperatorCrossover.cs" />
-    <Compile Include="SubScopesRemover.cs" />
     <Compile Include="Swap2PermutationManipulator.cs" />
     <Compile Include="RandomDoubleInitializer.cs" />
     <Compile Include="RandomPermutationInitializer.cs" />

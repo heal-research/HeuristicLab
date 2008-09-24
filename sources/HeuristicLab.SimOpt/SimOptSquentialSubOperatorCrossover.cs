@@ -45,7 +45,7 @@ namespace HeuristicLab.SimOpt {
         scope.AddSubScope(child);
         for (int n = 0 ; n < SubOperators.Count ; n++)
           co.AddOperation(new AtomicOperation(SubOperators[n], child));
-        co.AddOperation(new AtomicOperation(new SubScopesRemover(), child));
+        co.AddOperation(new AtomicOperation(new Operators.SubScopesRemover(), child));
       }
       return co;
     }
