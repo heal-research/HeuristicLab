@@ -29,13 +29,17 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab {
   public partial class SplashScreen : Form {
-    private int myDisplayTime = 1000;
+    private const int FADE_INTERVAL = 50;
+    private System.Timers.Timer waitTimer;
+    private System.Timers.Timer fadeTimer;
+    private object bigLock = new object();
+
+    private int displayTime = 1000;
     public int DisplayTime {
-      get { return (myDisplayTime); }
+      get { return (displayTime); }
       set {
         if(value > 0) {
-          myDisplayTime = value;
-          waitTimer.Interval = value;
+          displayTime = value;
         }
       }
     }
@@ -76,14 +80,11 @@ namespace HeuristicLab {
         userNameLabel.Text = "-";
         companyLabel.Text = "-";
       }
-      waitTimer.Start();
     }
 
     public SplashScreen(int displayTime, string initialText)
       : this() {
-      waitTimer.Stop();
       DisplayTime = displayTime;
-      waitTimer.Start();
       infoLabel.Text = initialText;
     }
 
@@ -92,64 +93,83 @@ namespace HeuristicLab {
     }
 
     public void Manager_Action(object sender, PluginManagerActionEventArgs e) {
-      if(!this.Disposing && !this.IsDisposed) {
-        waitTimer.Stop();
-        string info;
-        if(e.Action == PluginManagerAction.Initializing) info = "Initializing ...";
-        else if(e.Action == PluginManagerAction.InitializingPlugin) info = "Initializing Plugin " + e.Id + " ...";
-        else if(e.Action == PluginManagerAction.InitializedPlugin) info = "Initializing Plugin " + e.Id + " ... Initialized";
-        else if(e.Action == PluginManagerAction.Initialized) info = "Initialization Completed";
-        else {
-          if(e.Id != null) info = e.Action.ToString() + "   (" + e.Id + ")";
-          else info = e.Action.ToString();
-        }
-        SetInfoText(info);
-        Application.DoEvents();
-        waitTimer.Start();
-      }
-    }
-
-    private void waitTimer_Tick(object sender, System.EventArgs e) {
-      if(!this.Disposing && !this.IsDisposed) {
-        waitTimer.Stop();
-        fadeTimer.Start();
-      }
-    }
-
-    private void fadeTimer_Tick(object sender, EventArgs e) {
-      if(InvokeRequired) {
-        Invoke((MethodInvoker)delegate() {
-          if(Opacity > 0.9) {
-            Opacity = 0.9;
-          } else if(this.Opacity > 0) {
-            Opacity -= 0.1;
-          } else {
-            Opacity = 0;
-            fadeTimer.Stop();
-            Close();
+      lock(bigLock) {
+        if(!this.Disposing && !this.IsDisposed) {
+          if(waitTimer == null) {
+            waitTimer = new System.Timers.Timer();
+            waitTimer.SynchronizingObject = this;
+            waitTimer.Elapsed += new System.Timers.ElapsedEventHandler(waitTimer_Elapsed);
           }
-        });
-      } else {
-        if(Opacity > 0.9) {
-          Opacity = 0.9;
-        } else if(this.Opacity > 0) {
-          Opacity -= 0.1;
-        } else {
-          Opacity = 0;
-          fadeTimer.Stop();
-          Close();
+          waitTimer.Stop();
+          waitTimer.Interval = DisplayTime;
+          waitTimer.AutoReset = true;
+          string info;
+          if(e.Action == PluginManagerAction.Initializing) info = "Initializing ...";
+          else if(e.Action == PluginManagerAction.InitializingPlugin) info = "Initializing Plugin " + e.Id + " ...";
+          else if(e.Action == PluginManagerAction.InitializedPlugin) info = "Initializing Plugin " + e.Id + " ... Initialized";
+          else if(e.Action == PluginManagerAction.Initialized) info = "Initialization Completed";
+          else {
+            if(e.Id != null) info = e.Action.ToString() + "   (" + e.Id + ")";
+            else info = e.Action.ToString();
+          }
+          SetInfoText(info);
+          Application.DoEvents();
+          waitTimer.Start();
         }
       }
     }
 
+    private void waitTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+      lock(bigLock) {
+        if(!this.Disposing && !this.IsDisposed) {
+          if(fadeTimer == null) {
+            fadeTimer = new System.Timers.Timer();
+            fadeTimer.SynchronizingObject = this;
+            fadeTimer.Elapsed += new System.Timers.ElapsedEventHandler(fadeTimer_Elapsed);
+            fadeTimer.Interval = FADE_INTERVAL;
+            fadeTimer.AutoReset = true;
+            fadeTimer.Start();
+          }
+        }
+      }
+    }
+
+    private void fadeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+      lock(bigLock) {
+        if(!this.Disposing && !this.IsDisposed) {
+          fadeTimer.Stop();
+          if(InvokeRequired) {
+            Invoke((MethodInvoker)UpdateOpacity);
+          } else {
+            UpdateOpacity();
+          }
+        }
+      }
+    }
+
+    private void UpdateOpacity() {
+      if(Opacity > 0.9) {
+        Opacity = 0.9;
+        fadeTimer.Start();
+      } else if(this.Opacity > 0) {
+        Opacity -= 0.1;
+        fadeTimer.Start();
+      } else {
+        Opacity = 0;
+        Close();
+      }
+    }
 
     private void SplashScreen_FormClosing(object sender, FormClosingEventArgs e) {
       PluginManager.Manager.Action -= new PluginManagerActionEventHandler(this.Manager_Action);
     }
 
     private void closeButton_Click(object sender, EventArgs e) {
-      waitTimer.Stop();
-      Close();
+      lock(bigLock) {
+        if(fadeTimer != null) fadeTimer.Stop();
+        if(waitTimer != null) waitTimer.Stop();
+        Close();
+      }
     }
   }
 }

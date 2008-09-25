@@ -49,7 +49,6 @@ namespace HeuristicLab {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplashScreen));
-      this.waitTimer = new System.Windows.Forms.Timer(this.components);
       this.panel = new System.Windows.Forms.Panel();
       this.closeButton = new System.Windows.Forms.Button();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -61,15 +60,9 @@ namespace HeuristicLab {
       this.infoLabel = new System.Windows.Forms.Label();
       this.copyrightLabel = new System.Windows.Forms.Label();
       this.pictureBox = new System.Windows.Forms.PictureBox();
-      this.fadeTimer = new System.Windows.Forms.Timer(this.components);
       this.panel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.SuspendLayout();
-      // 
-      // waitTimer
-      // 
-      this.waitTimer.Interval = 1000;
-      this.waitTimer.Tick += new System.EventHandler(this.waitTimer_Tick);
       // 
       // panel
       // 
@@ -205,11 +198,6 @@ namespace HeuristicLab {
       this.pictureBox.TabIndex = 0;
       this.pictureBox.TabStop = false;
       // 
-      // fadeTimer
-      // 
-      this.fadeTimer.Interval = 50;
-      this.fadeTimer.Tick += new System.EventHandler(this.fadeTimer_Tick);
-      // 
       // SplashScreen
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -234,7 +222,6 @@ namespace HeuristicLab {
 
     #endregion
 
-    private System.Windows.Forms.Timer waitTimer;
     private System.Windows.Forms.Panel panel;
     private System.Windows.Forms.PictureBox pictureBox;
     private System.Windows.Forms.Label companyLabel;
@@ -246,6 +233,5 @@ namespace HeuristicLab {
     private System.Windows.Forms.Label infoLabel;
     private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.Button closeButton;
-    private System.Windows.Forms.Timer fadeTimer;
   }
 }
