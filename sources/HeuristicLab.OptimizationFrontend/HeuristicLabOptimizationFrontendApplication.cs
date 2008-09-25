@@ -26,7 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.OptimizationFrontend {
-  [ClassInfo(Name = "HeuristicLab 3.0", Description="Next generation heuristic optimization environment.")]
+  [ClassInfo(Name = "HeuristicLab 3.2", Description="Next generation heuristic optimization environment.")]
   class HeuristicLabOptimizationFrontendApplication : ApplicationBase {
     public override void Run() {
       Form mainForm = new MainForm();
