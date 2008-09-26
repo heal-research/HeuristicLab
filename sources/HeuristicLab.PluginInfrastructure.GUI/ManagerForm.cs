@@ -1001,11 +1001,12 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
     }
 
-    private void pluginTreeView_KeyPress(object sender, KeyPressEventArgs e) {
+    private void pluginTreeView_KeyDown(object sender, KeyEventArgs e) {
       e.Handled = true;
-      if(e.KeyChar == 'i' && installButton.Enabled) {
+      e.SuppressKeyPress = true;
+      if(e.KeyData == Keys.I && installButton.Enabled) {
         installButton_Clicked(sender, e);
-      } else if(e.KeyChar == 'd' && deleteButton.Enabled) {
+      } else if((e.KeyData == Keys.D || e.KeyData==Keys.Delete) && deleteButton.Enabled) {
         removeButton_Clicked(sender, e);
       }
     }

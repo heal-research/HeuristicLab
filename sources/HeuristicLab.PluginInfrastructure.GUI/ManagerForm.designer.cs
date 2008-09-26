@@ -114,52 +114,52 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // managePluginSourcesToolStripMenuItem
       // 
       this.managePluginSourcesToolStripMenuItem.Name = "managePluginSourcesToolStripMenuItem";
-      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.managePluginSourcesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.managePluginSourcesToolStripMenuItem.Text = "Edit plugin sources...";
       this.managePluginSourcesToolStripMenuItem.Click += new System.EventHandler(this.managePluginSourcesToolStripMenuItem_Click);
       // 
       // installPluginFromFileToolStripMenuItem
       // 
       this.installPluginFromFileToolStripMenuItem.Name = "installPluginFromFileToolStripMenuItem";
-      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.installPluginFromFileToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.installPluginFromFileToolStripMenuItem.Text = "Install plugin from file...";
       this.installPluginFromFileToolStripMenuItem.Click += new System.EventHandler(this.installPluginFromFileToolStripMenuItem_Click);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
       // 
       // installedPluginsToolStripMenuItem
       // 
       this.installedPluginsToolStripMenuItem.Name = "installedPluginsToolStripMenuItem";
-      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.installedPluginsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.installedPluginsToolStripMenuItem.Text = "Update";
       this.installedPluginsToolStripMenuItem.Click += new System.EventHandler(this.updateButton_Click);
       // 
       // installNewPluginsToolStripMenuItem
       // 
       this.installNewPluginsToolStripMenuItem.Name = "installNewPluginsToolStripMenuItem";
-      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.installNewPluginsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.installNewPluginsToolStripMenuItem.Text = "Delete/Upgrade/Install...";
       this.installNewPluginsToolStripMenuItem.Click += new System.EventHandler(this.upgradeButton_Click);
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(192, 6);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(203, 6);
       // 
       // refreshPluginListToolStripMenuItem
       // 
       this.refreshPluginListToolStripMenuItem.Name = "refreshPluginListToolStripMenuItem";
-      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.refreshPluginListToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.refreshPluginListToolStripMenuItem.Text = "Refresh plugin list";
       this.refreshPluginListToolStripMenuItem.Click += new System.EventHandler(this.refreshPluginListToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
       this.exitToolStripMenuItem.Text = "Close";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
       // 
@@ -174,7 +174,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
       this.aboutToolStripMenuItem.Text = "About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
       // 
@@ -208,9 +208,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.pluginTreeView.SelectedImageIndex = 0;
       this.pluginTreeView.Size = new System.Drawing.Size(828, 220);
       this.pluginTreeView.TabIndex = 0;
-      this.pluginTreeView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pluginTreeView_KeyPress);
       this.pluginTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.pluginTreeView_NodeMouseClick);
       this.pluginTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.pluginTreeView_BeforeSelect);
+      this.pluginTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pluginTreeView_KeyDown);
       // 
       // pluginIcons
       // 
@@ -316,26 +316,26 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
             this.deleteMenuItem,
             this.publishMenuItem});
       this.pluginContextMenuStrip.Name = "pluginContextMenuStrip";
-      this.pluginContextMenuStrip.Size = new System.Drawing.Size(108, 70);
+      this.pluginContextMenuStrip.Size = new System.Drawing.Size(119, 70);
       // 
       // installMenuItem
       // 
       this.installMenuItem.Name = "installMenuItem";
-      this.installMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.installMenuItem.Size = new System.Drawing.Size(118, 22);
       this.installMenuItem.Text = "Install";
       this.installMenuItem.Click += new System.EventHandler(this.installButton_Clicked);
       // 
       // deleteMenuItem
       // 
       this.deleteMenuItem.Name = "deleteMenuItem";
-      this.deleteMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.deleteMenuItem.Size = new System.Drawing.Size(118, 22);
       this.deleteMenuItem.Text = "Delete";
       this.deleteMenuItem.Click += new System.EventHandler(this.removeButton_Clicked);
       // 
       // publishMenuItem
       // 
       this.publishMenuItem.Name = "publishMenuItem";
-      this.publishMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.publishMenuItem.Size = new System.Drawing.Size(118, 22);
       this.publishMenuItem.Text = "Publish";
       this.publishMenuItem.Click += new System.EventHandler(this.publishButton_Click);
       // 
