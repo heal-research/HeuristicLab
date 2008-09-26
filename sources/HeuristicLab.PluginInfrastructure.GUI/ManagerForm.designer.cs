@@ -45,6 +45,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Available plugins", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Disabled plugins", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Installed plugins", System.Windows.Forms.HorizontalAlignment.Left);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManagerForm));
       this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,9 +62,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.pluginTreeView = new System.Windows.Forms.TreeView();
-      this.pluginIcons = new System.Windows.Forms.ImageList(this.components);
+      this.listView = new System.Windows.Forms.ListView();
+      this.nameHeader = new System.Windows.Forms.ColumnHeader();
+      this.versionHeader = new System.Windows.Forms.ColumnHeader();
       this.infoTextBox = new System.Windows.Forms.RichTextBox();
+      this.pluginIcons = new System.Windows.Forms.ImageList(this.components);
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.updateButton = new System.Windows.Forms.ToolStripButton();
       this.upgradeButton = new System.Windows.Forms.ToolStripButton();
@@ -189,7 +194,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.pluginTreeView);
+      this.splitContainer.Panel1.Controls.Add(this.listView);
       // 
       // splitContainer.Panel2
       // 
@@ -198,19 +203,50 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.splitContainer.SplitterDistance = 220;
       this.splitContainer.TabIndex = 1;
       // 
-      // pluginTreeView
+      // listView
       // 
-      this.pluginTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pluginTreeView.ImageIndex = 0;
-      this.pluginTreeView.ImageList = this.pluginIcons;
-      this.pluginTreeView.Location = new System.Drawing.Point(0, 0);
-      this.pluginTreeView.Name = "pluginTreeView";
-      this.pluginTreeView.SelectedImageIndex = 0;
-      this.pluginTreeView.Size = new System.Drawing.Size(828, 220);
-      this.pluginTreeView.TabIndex = 0;
-      this.pluginTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.pluginTreeView_NodeMouseClick);
-      this.pluginTreeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.pluginTreeView_BeforeSelect);
-      this.pluginTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pluginTreeView_KeyDown);
+      this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameHeader,
+            this.versionHeader});
+      this.listView.ContextMenuStrip = this.pluginContextMenuStrip;
+      this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
+      listViewGroup1.Header = "Available plugins";
+      listViewGroup1.Name = "Available plugins";
+      listViewGroup2.Header = "Disabled plugins";
+      listViewGroup2.Name = "Disabled plugins";
+      listViewGroup3.Header = "Installed plugins";
+      listViewGroup3.Name = "Installed plugins";
+      this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3});
+      this.listView.Location = new System.Drawing.Point(0, 0);
+      this.listView.Name = "listView";
+      this.listView.Size = new System.Drawing.Size(828, 220);
+      this.listView.SmallImageList = this.pluginIcons;
+      this.listView.TabIndex = 0;
+      this.listView.UseCompatibleStateImageBehavior = false;
+      this.listView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView_MouseDown);
+      this.listView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listView_ItemSelectionChanged);
+      this.listView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pluginTreeView_KeyDown);
+      // 
+      // nameHeader
+      // 
+      this.nameHeader.Text = "Name";
+      this.nameHeader.Width = 400;
+      // 
+      // versionHeader
+      // 
+      this.versionHeader.Text = "Version";
+      // 
+      // infoTextBox
+      // 
+      this.infoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.infoTextBox.Location = new System.Drawing.Point(0, 0);
+      this.infoTextBox.Name = "infoTextBox";
+      this.infoTextBox.Size = new System.Drawing.Size(828, 249);
+      this.infoTextBox.TabIndex = 0;
+      this.infoTextBox.Text = "";
       // 
       // pluginIcons
       // 
@@ -221,15 +257,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       this.pluginIcons.Images.SetKeyName(2, "install.bmp");
       this.pluginIcons.Images.SetKeyName(3, "delete.bmp");
       this.pluginIcons.Images.SetKeyName(4, "genericInternet.bmp");
-      // 
-      // infoTextBox
-      // 
-      this.infoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.infoTextBox.Location = new System.Drawing.Point(0, 0);
-      this.infoTextBox.Name = "infoTextBox";
-      this.infoTextBox.Size = new System.Drawing.Size(828, 249);
-      this.infoTextBox.TabIndex = 0;
-      this.infoTextBox.Text = "";
       // 
       // toolStrip
       // 
@@ -393,7 +420,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem managePluginSourcesToolStripMenuItem;
     private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.TreeView pluginTreeView;
     private System.Windows.Forms.RichTextBox infoTextBox;
     private System.Windows.Forms.ToolStripMenuItem refreshPluginListToolStripMenuItem;
     private System.Windows.Forms.ToolStrip toolStrip;
@@ -415,6 +441,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private System.Windows.Forms.ImageList pluginIcons;
     private System.Windows.Forms.StatusStrip statusStrip1;
     private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+    private System.Windows.Forms.ListView listView;
+    private System.Windows.Forms.ColumnHeader nameHeader;
+    private System.Windows.Forms.ColumnHeader versionHeader;
   }
 }
 

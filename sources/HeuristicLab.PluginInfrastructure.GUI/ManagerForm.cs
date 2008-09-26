@@ -33,9 +33,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.PluginInfrastructure.GUI {
   public partial class ManagerForm : Form {
-    private TreeNode installedPlugins;
-    private TreeNode availablePlugins;
-    private TreeNode disabledPlugins;
     private List<PluginTag> allTags = new List<PluginTag>();
     private Dictionary<PluginTag, PluginAction> actions = new Dictionary<PluginTag, PluginAction>();
     private List<PluginDescription> allAvailablePlugins = new List<PluginDescription>();
@@ -43,6 +40,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private string cacheDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
     private string backupDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.BackupDir;
     private string tempDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.TempDir;
+    private const string AVAILABLE_PLUGINS = "Available plugins";
+    private const string DISABLED_PLUGINS = "Disabled plugins";
+    private const string INSTALLED_PLUGINS = "Installed plugins";
 
     public ManagerForm() {
       InitializeComponent();
@@ -50,7 +50,9 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void InitializePlugins() {
-      pluginTreeView.Nodes.Clear();
+      listView.View = View.Details;
+      listView.FullRowSelect = true;
+      listView.Items.Clear();
       allTags.Clear();
       actions.Clear();
 
@@ -65,39 +67,27 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       deleteMenuItem.Enabled = false;
       deleteMenuItem.Checked = false;
 
-      installedPlugins = new TreeNode("Installed plugins");
-      installedPlugins.ImageIndex = 1;
-      installedPlugins.SelectedImageIndex = 1;
-      availablePlugins = new TreeNode("Available plugins");
-      availablePlugins.ImageIndex = 1;
-      availablePlugins.SelectedImageIndex = 1;
-      disabledPlugins = new TreeNode("Disabled plugins");
-      disabledPlugins.ImageIndex = 1;
-      disabledPlugins.SelectedImageIndex = 1;
-
-      pluginTreeView.Nodes.Add(installedPlugins);
-      pluginTreeView.Nodes.Add(availablePlugins);
-      pluginTreeView.Nodes.Add(disabledPlugins);
-
       foreach(PluginInfo pluginInfo in PluginManager.Manager.ActivePlugins) {
         // create a new PluginAction tag for the plugin
         PluginTag tag = new PluginTag(allTags, pluginInfo, PluginState.Installed);
         allTags.Add(tag);
-        // add to "installed plugins" node
-        TreeNode installedPluginsNode = new TreeNode(pluginInfo.Name);
-        installedPluginsNode.ContextMenuStrip = pluginContextMenuStrip;
-        installedPluginsNode.Tag = tag;
-        installedPluginsNode.ImageIndex = 0;
-        installedPlugins.Nodes.Add(installedPluginsNode);
+        // add to "installed plugins" item
+        ListViewItem installedPluginsItem = new ListViewItem(pluginInfo.Name);
+        installedPluginsItem.Tag = tag;
+        installedPluginsItem.ImageIndex = 0;
+        installedPluginsItem.Group = listView.Groups[INSTALLED_PLUGINS];
+        installedPluginsItem.SubItems.Add(pluginInfo.Version.ToString());
+        listView.Items.Add(installedPluginsItem);
       }
       foreach(PluginInfo pluginInfo in PluginManager.Manager.DisabledPlugins) {
         PluginTag tag = new PluginTag(allTags, pluginInfo, PluginState.Disabled);
         allTags.Add(tag);
-        TreeNode disabledPluginsNode = new TreeNode(pluginInfo.Name);
-        disabledPluginsNode.ContextMenuStrip = pluginContextMenuStrip;
-        disabledPluginsNode.Tag = tag;
-        disabledPluginsNode.ImageIndex = 0;
-        disabledPlugins.Nodes.Add(disabledPluginsNode);
+        ListViewItem disabledPluginsItem = new ListViewItem(pluginInfo.Name);
+        disabledPluginsItem.Tag = tag;
+        disabledPluginsItem.ImageIndex = 0;
+        disabledPluginsItem.Group = listView.Groups[DISABLED_PLUGINS];
+        disabledPluginsItem.SubItems.Add(pluginInfo.Version.ToString());
+        listView.Items.Add(disabledPluginsItem);
       }
 
       allAvailablePlugins = FilterMostRecentPluginVersions(allAvailablePlugins);
@@ -110,11 +100,12 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       newPlugins.ForEach(delegate(PluginDescription plugin) {
         PluginTag tag = new PluginTag(allTags, plugin, PluginState.Available);
         allTags.Add(tag);
-        TreeNode availableNode = new TreeNode(plugin.Name);
-        availableNode.ContextMenuStrip = pluginContextMenuStrip;
-        availableNode.Tag = tag;
-        availableNode.ImageIndex = 0;
-        availablePlugins.Nodes.Add(availableNode);
+        ListViewItem availableItem = new ListViewItem(plugin.Name);
+        availableItem.Tag = tag;
+        availableItem.ImageIndex = 0;
+        availableItem.Group = listView.Groups[AVAILABLE_PLUGINS];
+        availableItem.SubItems.Add(plugin.Version.ToString());
+        listView.Items.Add(availableItem);
       });
       upgrades.ForEach(delegate(PluginDescription upgrade) {
         // find the installed plugins that have the same name
@@ -134,9 +125,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         // replace the plugin description of the available plugin to point to the overriding plugin
         currentPlugin.PluginDescription = overridingPlugin;
       });
-      toolStripStatusLabel.Text = "Installed: " + installedPlugins.Nodes.Count + " Updates: " + upgrades.Count + " Available: " + availablePlugins.Nodes.Count;
+      toolStripStatusLabel.Text = "Installed: " + listView.Groups[INSTALLED_PLUGINS].Items.Count +
+        " Updates: " + upgrades.Count + " Available: " + listView.Groups[AVAILABLE_PLUGINS].Items.Count;
       RebuildActionHulls();
-      pluginTreeView.Sort();
+
+      listView.Sort();
     }
 
     private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -145,35 +138,46 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void publishButton_Click(object sender, EventArgs args) {
-      PluginInfo plugin = ((PluginTag)pluginTreeView.SelectedNode.Tag).Plugin;
-      publishPlugin(plugin);
+      if(listView.SelectedItems.Count == 0) return;
+      List<PluginInfo> plugins = new List<PluginInfo>();
+      foreach(ListViewItem item in listView.SelectedItems) {
+        plugins.Add(((PluginTag)item.Tag).Plugin);
+      }
+      PublishPlugin(plugins);
     }
 
-    private void publishPlugin(PluginInfo plugin) {
+    private void PublishPlugin(List<PluginInfo> plugins) {
+      StringBuilder xmlEntries = new StringBuilder();
       try {
-        string packageFileName = plugin.Name + "-" + plugin.Version + ".zip";
-        ZipFile zipFile = ZipFile.Create(packageFileName);
-        zipFile.NameTransform = new PluginNameTransform();
-        zipFile.BeginUpdate();
+        infoTextBox.Text = "Publishing plugin:\n";
+        foreach(PluginInfo plugin in plugins) {
+          string packageFileName = plugin.Name + "-" + plugin.Version + ".zip";
+          ZipFile zipFile = ZipFile.Create(packageFileName);
+          zipFile.NameTransform = new PluginNameTransform();
+          zipFile.BeginUpdate();
 
-        infoTextBox.Text = "Publishing plugin:\nCreating " + packageFileName + "...\n";
-        foreach(string filename in plugin.Files) {
-          infoTextBox.Text += "Adding " + filename + "\n";
-          zipFile.Add(filename);
+          infoTextBox.Text+="Creating " + packageFileName + "...\n";
+          foreach(string filename in plugin.Files) {
+            infoTextBox.Text += "Adding " + filename + "\n";
+            zipFile.Add(filename);
+          }
+
+          zipFile.CommitUpdate();
+          zipFile.Close();
+          FileInfo fileInfo = new FileInfo(packageFileName);
+          infoTextBox.Text += "Created " + packageFileName + " (" + fileInfo.Length + " bytes)\n";
+          xmlEntries.Append("  <Plugin Name=\"").Append(plugin.Name).Append("\" Version=\"").Append(plugin.Version)
+            .Append("\" Build=\"").Append(plugin.BuildDate.ToUniversalTime().ToString(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat))
+            .Append("\">").AppendLine();
+          foreach(PluginInfo dependency in plugin.Dependencies) {
+            xmlEntries.Append("    <Dependency Name=\"").Append(dependency.Name).Append("\" />").AppendLine();
+          }
+          xmlEntries.Append("  </Plugin>").AppendLine();
         }
 
-        zipFile.CommitUpdate();
-        zipFile.Close();
-        FileInfo fileInfo = new FileInfo(packageFileName);
-        infoTextBox.Text += "\nCreated " + packageFileName + " (" + fileInfo.Length + " bytes)\n";
-        infoTextBox.Text += "Upload this file to your plugin source and add the following entry to" +
+        infoTextBox.Text += "Upload the zip files to your plugin source and add the following to" +
 " the file plugins.xml residing in the base directory of your plugin source.\n\n";
-        infoTextBox.Text += "  <Plugin Name=\"" + plugin.Name + "\" Version=\""
-          + plugin.Version + "\" Build=\"" + plugin.BuildDate.ToUniversalTime().ToString(System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat) + "\">\n";
-        foreach(PluginInfo dependency in plugin.Dependencies) {
-          infoTextBox.Text += "    <Dependency Name=\"" + dependency.Name + "\" />\n";
-        }
-        infoTextBox.Text += "  </Plugin>";
+        infoTextBox.Text += xmlEntries.ToString();
       } catch(Exception exception) {
         infoTextBox.Text += "\nThere was an error!\n" + exception;
       }
@@ -336,13 +340,11 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
 
       // update the GUI to represent new state of the selected plugin
-      if(pluginTreeView.SelectedNode != null && pluginTreeView.SelectedNode.Tag is PluginTag) {
-        UpdateActionButtons((PluginTag)pluginTreeView.SelectedNode.Tag);
-        DisplayPluginInfo(((PluginTag)pluginTreeView.SelectedNode.Tag).GetPluginDetails());
+      if(listView.SelectedItems.Count>0 && listView.SelectedItems[0].Tag is PluginTag) {
+        UpdateActionButtons((PluginTag)listView.SelectedItems[0].Tag);
+        DisplayPluginInfo(((PluginTag)listView.SelectedItems[0].Tag).GetPluginDetails());
       }
     }
-
-
 
     private void MarkInstall(PluginTag actionTag) {
       if(!CheckInstallConflicts(actionTag)) {
@@ -420,8 +422,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       newAction.Plugin = actionTag;
       newAction.Hull = hull;
       newAction.Hull.Add(actionTag);
-
-
       actions[actionTag] = newAction;
       UpdateTreeNodes(newAction.Hull);
     }
@@ -541,25 +541,21 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
 
     private void UpdateTreeNodes(List<PluginTag> hull) {
       hull.ForEach(delegate(PluginTag tag) {
-        FindPluginNodes(tag).ForEach(delegate(TreeNode node) {
+        FindPluginItems(tag).ForEach(delegate(ListViewItem item) {
           ManagerAction action = GetAction(tag);
           if(action != ManagerAction.None) {
-            node.Text = tag.PluginName + " - Action: " + action;
+            item.Text = tag.PluginName + " - Action: " + action;
             if(action == ManagerAction.Remove) {
-              node.ImageIndex = 3;
-              node.SelectedImageIndex = 3;
+              item.ImageIndex = 3;
             } else if(action == ManagerAction.Install) {
-              node.ImageIndex = 2;
-              node.SelectedImageIndex = 2;
+              item.ImageIndex = 2;
             }
           } else if(tag.State == PluginState.Upgradeable) {
-            node.Text = tag.PluginName + " - Upgrade: " + tag.PluginVersion + " -> " + tag.UpgradePluginDescription.Version;
-            node.ImageIndex = 2;
-            node.SelectedImageIndex = 2;
+            item.Text = tag.PluginName + " - Upgrade: " + tag.PluginVersion + " -> " + tag.UpgradePluginDescription.Version;
+            item.ImageIndex = 2;
           } else {
-            node.Text = tag.PluginName;
-            node.ImageIndex = 0;
-            node.SelectedImageIndex = 0;
+            item.Text = tag.PluginName;
+            item.ImageIndex = 0;
           }
         });
       });
@@ -603,16 +599,16 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       }
     }
 
-    private List<TreeNode> FindPluginNodes(PluginTag pluginTag) {
-      List<TreeNode> nodes = new List<TreeNode>();
-      foreach(TreeNode rootNode in new TreeNode[] { installedPlugins, availablePlugins, disabledPlugins }) {
-        foreach(TreeNode node in rootNode.Nodes) {
-          if(pluginTag.Equals(node.Tag)) {
-            nodes.Add(node);
+    private List<ListViewItem> FindPluginItems(PluginTag pluginTag) {
+      List<ListViewItem> items = new List<ListViewItem>();
+      foreach(ListViewGroup group in listView.Groups) {
+        foreach(ListViewItem item in group.Items) {
+          if(pluginTag.Equals(item.Tag)) {
+            items.Add(item);
           }
         }
       }
-      return nodes;
+      return items;
     }
     private void DisplayPluginInfo(string pluginInformation) {
       infoTextBox.Text = pluginInformation;
@@ -888,8 +884,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void removeButton_Clicked(object sender, EventArgs e) {
-      // get the tag of the selected treeNode
-      PluginTag actionTag = (PluginTag)pluginTreeView.SelectedNode.Tag;
+      // get the tag of the selected listViewItem
+      PluginTag actionTag = (PluginTag)listView.SelectedItems[0].Tag;
       List<PluginAction> rootActions = GetActionsInvolving(actionTag);
       if(rootActions.Count > 0) {
         UnmarkRemove(actionTag);
@@ -904,8 +900,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void installButton_Clicked(object sender, EventArgs e) {
-      // get the tag of the selected treeNode
-      PluginTag actionTag = (PluginTag)pluginTreeView.SelectedNode.Tag;
+      // get the tag of the selected listViewItem
+      PluginTag actionTag = (PluginTag)listView.SelectedItems[0].Tag;
       List<PluginAction> rootActions = GetActionsInvolving(actionTag);
 
       if(rootActions.Count > 0) {
@@ -935,29 +931,6 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       PluginManager.Manager.LoadAllPlugins();
 
       InitializePlugins();
-    }
-
-    private void pluginTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
-      if(e.Node.Tag != null) {
-
-        UpdateActionButtons((PluginTag)e.Node.Tag);
-        // display the plugin details in the lower pane
-        DisplayPluginInfo(((PluginTag)e.Node.Tag).GetPluginDetails());
-
-      } else {
-        // when a node was selected that doesn't represent a plugin (root node) then install and remove are not possible
-        publishButton.Enabled = false;
-        installButton.Enabled = false;
-        deleteButton.Enabled = false;
-      }
-    }
-
-    private void pluginTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-      // dumb solution to automatically select the node on right clicks which opens the context menu because 
-      // per default the treeview doesn't select nodes on right click
-      if(e.Button == MouseButtons.Right) {
-        pluginTreeView.SelectedNode = e.Node;
-      }
     }
 
     private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1002,12 +975,35 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     }
 
     private void pluginTreeView_KeyDown(object sender, KeyEventArgs e) {
-      e.Handled = true;
-      e.SuppressKeyPress = true;
       if(e.KeyData == Keys.I && installButton.Enabled) {
+        e.Handled = true;
+        e.SuppressKeyPress = true;
         installButton_Clicked(sender, e);
-      } else if((e.KeyData == Keys.D || e.KeyData==Keys.Delete) && deleteButton.Enabled) {
+      } else if((e.KeyData == Keys.D || e.KeyData == Keys.Delete) && deleteButton.Enabled) {
+        e.Handled = true;
+        e.SuppressKeyPress = true;
         removeButton_Clicked(sender, e);
+      }
+    }
+
+    private void listView_MouseDown(object sender, MouseEventArgs e) {
+      // dumb solution to automatically select the node on right clicks which opens the context menu because 
+      // per default the treeview doesn't select nodes on right click
+      if(e.Button == MouseButtons.Right) {
+        listView.GetItemAt(e.X, e.Y).Selected = true;
+      }
+    }
+
+    private void listView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e) {
+      if(e.Item.Tag != null && e.IsSelected) {
+        UpdateActionButtons((PluginTag)e.Item.Tag);
+        // display the plugin details in the lower pane
+        DisplayPluginInfo(((PluginTag)e.Item.Tag).GetPluginDetails());
+      } else {
+        // when an item was 'unselected' or was selected but doesn't represent a plugin then install and remove are not possible
+        publishButton.Enabled = false;
+        installButton.Enabled = false;
+        deleteButton.Enabled = false;
       }
     }
   }
