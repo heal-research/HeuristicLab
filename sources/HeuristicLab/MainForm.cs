@@ -88,7 +88,7 @@ namespace HeuristicLab {
           this.Visible = true;
         } else {
           ApplicationInfo app = (ApplicationInfo)applicationsListView.SelectedItems[0].Tag;
-          SplashScreen splashScreen = new SplashScreen(3000, "Loading " + app.Name);
+          SplashScreen splashScreen = new SplashScreen(2000, "Loading " + app.Name);
           splashScreen.Owner = this;
           splashScreen.Show();
           PluginManager.Manager.Action += new PluginManagerActionEventHandler(splashScreen.Manager_Action);

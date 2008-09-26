@@ -30,19 +30,10 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab {
   public partial class SplashScreen : Form {
     private const int FADE_INTERVAL = 50;
-    private System.Timers.Timer waitTimer;
     private System.Timers.Timer fadeTimer;
+    private int initialInterval;
     private object bigLock = new object();
-
-    private int displayTime = 1000;
-    public int DisplayTime {
-      get { return (displayTime); }
-      set {
-        if(value > 0) {
-          displayTime = value;
-        }
-      }
-    }
+    private bool closing = false;
 
     public SplashScreen() {
       InitializeComponent();
@@ -82,9 +73,9 @@ namespace HeuristicLab {
       }
     }
 
-    public SplashScreen(int displayTime, string initialText)
+    public SplashScreen(int initialInterval, string initialText)
       : this() {
-      DisplayTime = displayTime;
+      this.initialInterval = initialInterval;
       infoLabel.Text = initialText;
     }
 
@@ -93,70 +84,49 @@ namespace HeuristicLab {
     }
 
     public void Manager_Action(object sender, PluginManagerActionEventArgs e) {
-      lock(bigLock) {
-        if(!this.Disposing && !this.IsDisposed) {
-          if(waitTimer == null) {
-            waitTimer = new System.Timers.Timer();
-            waitTimer.SynchronizingObject = this;
-            waitTimer.Elapsed += new System.Timers.ElapsedEventHandler(waitTimer_Elapsed);
-          }
-          waitTimer.Stop();
-          waitTimer.Interval = DisplayTime;
-          waitTimer.AutoReset = true;
-          string info;
-          if(e.Action == PluginManagerAction.Initializing) info = "Initializing ...";
-          else if(e.Action == PluginManagerAction.InitializingPlugin) info = "Initializing Plugin " + e.Id + " ...";
-          else if(e.Action == PluginManagerAction.InitializedPlugin) info = "Initializing Plugin " + e.Id + " ... Initialized";
-          else if(e.Action == PluginManagerAction.Initialized) info = "Initialization Completed";
-          else {
-            if(e.Id != null) info = e.Action.ToString() + "   (" + e.Id + ")";
-            else info = e.Action.ToString();
-          }
-          SetInfoText(info);
-          Application.DoEvents();
-          waitTimer.Start();
-        }
+      string info;
+      if(e.Action == PluginManagerAction.Initializing) info = "Initializing ...";
+      else if(e.Action == PluginManagerAction.InitializingPlugin) info = "Initializing Plugin " + e.Id + " ...";
+      else if(e.Action == PluginManagerAction.InitializedPlugin) info = "Initializing Plugin " + e.Id + " ... Initialized";
+      else if(e.Action == PluginManagerAction.Initialized) {
+        info = "Initialization Completed";
+        fadeTimer = new System.Timers.Timer();
+        fadeTimer.SynchronizingObject = this;
+        fadeTimer.Elapsed += new System.Timers.ElapsedEventHandler(fadeTimer_Elapsed);
+        fadeTimer.Interval = initialInterval;
+        fadeTimer.AutoReset = true;
+        fadeTimer.Start();
+      } else {
+        if(e.Id != null) info = e.Action.ToString() + "   (" + e.Id + ")";
+        else info = e.Action.ToString();
       }
-    }
-
-    private void waitTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      lock(bigLock) {
-        if(!this.Disposing && !this.IsDisposed) {
-          if(fadeTimer == null) {
-            fadeTimer = new System.Timers.Timer();
-            fadeTimer.SynchronizingObject = this;
-            fadeTimer.Elapsed += new System.Timers.ElapsedEventHandler(fadeTimer_Elapsed);
-            fadeTimer.Interval = FADE_INTERVAL;
-            fadeTimer.AutoReset = true;
-            fadeTimer.Start();
-          }
-        }
-      }
+      SetInfoText(info);
+      Application.DoEvents();
     }
 
     private void fadeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      lock(bigLock) {
-        if(!this.Disposing && !this.IsDisposed) {
-          fadeTimer.Stop();
-          if(InvokeRequired) {
-            Invoke((MethodInvoker)UpdateOpacity);
-          } else {
-            UpdateOpacity();
-          }
-        }
+      fadeTimer.Stop();
+      if(InvokeRequired) {
+        Invoke((MethodInvoker)UpdateOpacity);
+      } else {
+        UpdateOpacity();
       }
     }
 
     private void UpdateOpacity() {
-      if(Opacity > 0.9) {
-        Opacity = 0.9;
-        fadeTimer.Start();
-      } else if(this.Opacity > 0) {
-        Opacity -= 0.1;
-        fadeTimer.Start();
-      } else {
-        Opacity = 0;
-        Close();
+      lock(bigLock) {
+        if(closing) return;
+        if(Opacity > 0.9) {
+          Opacity = 0.9;
+          fadeTimer.Interval = FADE_INTERVAL;
+          fadeTimer.Start();
+        } else if(this.Opacity > 0) {
+          Opacity -= 0.1;
+          fadeTimer.Start();
+        } else {
+          Opacity = 0;
+          Close();
+        }
       }
     }
 
@@ -166,8 +136,8 @@ namespace HeuristicLab {
 
     private void closeButton_Click(object sender, EventArgs e) {
       lock(bigLock) {
+        closing = true;
         if(fadeTimer != null) fadeTimer.Stop();
-        if(waitTimer != null) waitTimer.Stop();
         Close();
       }
     }
