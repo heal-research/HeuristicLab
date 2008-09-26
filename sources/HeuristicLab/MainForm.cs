@@ -56,7 +56,7 @@ namespace HeuristicLab {
     }
 
     private void RefreshApplicationsList() {
-      applicationsListView.Clear();
+      applicationsListView.Items.Clear();
 
       pluginManagerListViewItem = new ListViewItem("Plugin Manager", 0);
       pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
