@@ -31,6 +31,10 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
   public partial class AboutDialog : Form {
     public AboutDialog() {
       InitializeComponent();
+      textBox1.Text = @"HeuristicLab
+v." + Application.ProductVersion + @"
+
+(c) 2002-2008 HEAL";
     }
 
     private void okButton_Click(object sender, EventArgs e) {
