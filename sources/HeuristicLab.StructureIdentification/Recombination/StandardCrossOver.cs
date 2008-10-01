@@ -32,20 +32,17 @@ using HeuristicLab.Functions;
 using System.Diagnostics;
 
 namespace HeuristicLab.StructureIdentification {
-  /// <summary>
-  /// Implementation of a size fair crossover operator as described in: 
-  /// William B. Langdon 
-  /// Size Fair and Homologous Tree Genetic Programming Crossovers, 
-  /// Genetic Programming and Evolvable Machines, Vol. 1, Number 1/2, pp. 95-119, April 2000
-  /// </summary>
-  public class SizeFairCrossOver : OperatorBase {
+  public class StandardCrossOver : OperatorBase {
     private const int MAX_RECOMBINATION_TRIES = 20;
     public override string Description {
       get {
-        return @"";
+        return @"Takes two parent individuals P0 and P1 each. Selects a random node N0 of P0 and a random node N1 of P1.
+And replaces the branch with root0 N0 in P0 with N1 from P1 if the tree-size limits are not violated.
+When recombination with N0 and N1 would create a tree that is too large or invalid the operator randomly selects new N0 and N1 
+until a valid configuration is found.";
       }
     }
-    public SizeFairCrossOver()
+    public StandardCrossOver()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(MersenneTwister), VariableKind.In));
       AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
@@ -132,87 +129,72 @@ namespace HeuristicLab.StructureIdentification {
         int root1Height = tree1Height;
         int rootSize = tree0Size;
 
-        // select a random suboperator of the 'receiving' tree
-        IFunctionTree crossoverPoint = gardener.GetRandomParentNode(root0);
-        int removedBranchIndex;
-        IFunctionTree removedBranch;
-        IList<IFunction> allowedFunctions;
-        if(crossoverPoint == null) {
-          removedBranchIndex = 0;
-          removedBranch = root0;
-          allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
-        } else {
-          removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
-          removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
-          allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
-        }
-        int removedBranchSize = removedBranch.Size;
-        int maxBranchSize = maxTreeSize - (root0.Size - removedBranchSize);
-        int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(root0, removedBranch);
-        IFunctionTree insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, root1, removedBranchSize, maxBranchSize, maxBranchHeight);
+        // select a random suboperators of the two trees at a random level
+        int tree0Level = random.Next(root0Height - 1); // since we checked before that the height of tree0 is > 1 this is OK
+        int tree1Level = random.Next(root1Height);
+        tree0 = gardener.GetRandomBranch(tree0, tree0Level);
+        tree1 = gardener.GetRandomBranch(tree1, tree1Level);
 
+        // recalculate the size and height of tree1 (the one that we want to insert) because we need to check constraints later on
+        tree1Size = tree1.Size;
+        tree1Height = tree1.Height;
+
+        List<int> possibleChildIndices = new List<int>();
+
+        // Now tree0 is supposed to take tree1 as one if its children. If this is not possible,
+        // then go down in either of the two trees as far as possible. If even then it is not possible
+        // to merge the trees then throw an exception
+        // find the list of allowed indices (regarding allowed sub-trees, maxTreeSize and maxTreeHeight)
+        for(int i = 0; i < tree0.SubTrees.Count; i++) {
+          int subTreeSize = tree0.SubTrees[i].Size;
+
+          // the index is ok when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
+          if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.Function) &&
+            rootSize - subTreeSize + tree1Size < maxTreeSize &&
+            tree0Level + tree1Height < maxTreeHeight) {
+            possibleChildIndices.Add(i);
+          }
+        }
         int tries = 0;
-        while(insertedBranch == null) {
+        while(possibleChildIndices.Count == 0) {
           if(tries++ > MAX_RECOMBINATION_TRIES) {
             if(random.Next() > 0.5) return root1;
             else return root0;
           }
+          // we couln't find a possible configuration given the current tree0 and tree1
+          // possible reasons for this are: 
+          //  - tree1 is not allowed as sub-tree of tree0
+          //  - appending tree1 as child of tree0 would create a tree that exceedes the maxTreeHeight
+          //  - replacing any child of tree0 with tree1 woulde create a tree that exceedes the maxTeeSize
+          // thus we just try until we find a valid configuration
 
-          // retry with a different crossoverPoint        
-          crossoverPoint = gardener.GetRandomParentNode(root0);
-          if(crossoverPoint == null) {
-            removedBranchIndex = 0;
-            removedBranch = root0;
-            allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
-          } else {
-            removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
-            removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
-            allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
+          tree0Level = random.Next(root0Height - 1);
+          tree1Level = random.Next(root1Height);
+          tree0 = gardener.GetRandomBranch(root0, tree0Level);
+          tree1 = gardener.GetRandomBranch(root1, tree1Level);
+
+          // recalculate the size and height of tree1 (the one that we want to insert) because we need to check constraints later on
+          tree1Size = tree1.Size;
+          tree1Height = tree1.Height;
+          // recalculate the list of possible indices 
+          possibleChildIndices.Clear();
+          for(int i = 0; i < tree0.SubTrees.Count; i++) {
+            int subTreeSize = tree0.SubTrees[i].Size;
+
+            // when the function is allowed as sub-tree and we don't violate the maxSize and maxHeight constraints
+            // the index is ok
+            if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.Function) &&
+              rootSize - subTreeSize + tree1Size < maxTreeSize &&
+              tree0Level + tree1Height < maxTreeHeight) {
+              possibleChildIndices.Add(i);
+            }
           }
-          removedBranchSize = removedBranch.Size;
-          maxBranchSize = maxTreeSize - (root0.Size - removedBranchSize);
-          maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(root0, removedBranch) + 1;
-          insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, root1, removedBranchSize, maxBranchSize, maxBranchHeight);
         }
-        if(crossoverPoint != null) {
-          // replace the branch below the crossoverpoint with the selected branch from root1
-          crossoverPoint.RemoveSubTree(removedBranchIndex);
-          crossoverPoint.InsertSubTree(removedBranchIndex, insertedBranch);
-          return root0;
-        } else {
-          return insertedBranch;
-        }
-      }
-    }
-
-    private IFunctionTree GetReplacementBranch(IRandom random, TreeGardener gardener, IList<IFunction> allowedFunctions, IFunctionTree tree, int removedBranchSize, int maxBranchSize, int maxBranchHeight) {
-      var branches = gardener.GetAllSubTrees(tree).Where(t => allowedFunctions.Contains(t.Function) && t.Size < maxBranchSize && t.Height < maxBranchHeight)
-        .Select(t => new { Tree = t, Size = t.Size }).Where(s => s.Size < 2 * removedBranchSize + 1);
-
-      var shorterBranches = branches.Where(t => t.Size < removedBranchSize);
-      var longerBranches = branches.Where(t => t.Size > removedBranchSize);
-      var equalLengthBranches = branches.Where(t => t.Size == removedBranchSize);
-
-      if(shorterBranches.Count() == 0 || longerBranches.Count() == 0) {
-        if(equalLengthBranches.Count() == 0) {
-          return null;
-        } else {
-          return equalLengthBranches.ElementAt(random.Next(equalLengthBranches.Count())).Tree;
-        }
-      } else {
-        // invariant: |shorterBranches| > 0  and |longerBranches| > 0
-        double pEqualLength = equalLengthBranches.Count() > 0 ? 1.0 / removedBranchSize : 0.0;
-        double pLonger = (1.0 - pEqualLength) / (longerBranches.Count() * (1.0 + longerBranches.Average(t => t.Size) / shorterBranches.Average(t => t.Size)));
-        double pShorter = (1.0 - pEqualLength - pLonger);
-
-        double r = random.NextDouble();
-        if(r < pLonger) {
-          return longerBranches.ElementAt(random.Next(longerBranches.Count())).Tree;
-        } else if(r < pLonger + pShorter) {
-          return shorterBranches.ElementAt(random.Next(shorterBranches.Count())).Tree;
-        } else {
-          return equalLengthBranches.ElementAt(random.Next(equalLengthBranches.Count())).Tree;
-        }
+        // replace the existing sub-tree at a random index in tree0 with tree1
+        int selectedIndex = possibleChildIndices[random.Next(possibleChildIndices.Count)];
+        tree0.RemoveSubTree(selectedIndex);
+        tree0.InsertSubTree(selectedIndex, tree1);
+        return root0;
       }
     }
 
