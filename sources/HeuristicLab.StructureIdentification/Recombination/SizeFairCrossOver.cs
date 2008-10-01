@@ -125,21 +125,14 @@ namespace HeuristicLab.StructureIdentification {
           int tmpSize = tree0Size; tree0Size = tree1Size; tree1Size = tmpSize;
         }
 
-        // save the roots because later on we change tree0 and tree1 while searching a valid tree configuration
-        IFunctionTree root0 = tree0;
-        IFunctionTree root1 = tree1;
-        int root0Height = tree0Height;
-        int root1Height = tree1Height;
-        int rootSize = tree0Size;
-
         // select a random suboperator of the 'receiving' tree
-        IFunctionTree crossoverPoint = gardener.GetRandomParentNode(root0);
+        IFunctionTree crossoverPoint = gardener.GetRandomParentNode(tree0);
         int removedBranchIndex;
         IFunctionTree removedBranch;
         IList<IFunction> allowedFunctions;
         if(crossoverPoint == null) {
           removedBranchIndex = 0;
-          removedBranch = root0;
+          removedBranch = tree0;
           allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
         } else {
           removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
@@ -147,22 +140,22 @@ namespace HeuristicLab.StructureIdentification {
           allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
         }
         int removedBranchSize = removedBranch.Size;
-        int maxBranchSize = maxTreeSize - (root0.Size - removedBranchSize);
-        int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(root0, removedBranch);
-        IFunctionTree insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, root1, removedBranchSize, maxBranchSize, maxBranchHeight);
+        int maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
+        int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch);
+        IFunctionTree insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchSize, maxBranchSize, maxBranchHeight);
 
         int tries = 0;
         while(insertedBranch == null) {
           if(tries++ > MAX_RECOMBINATION_TRIES) {
-            if(random.Next() > 0.5) return root1;
-            else return root0;
+            if(random.Next() > 0.5) return tree1;
+            else return tree0;
           }
 
           // retry with a different crossoverPoint        
-          crossoverPoint = gardener.GetRandomParentNode(root0);
+          crossoverPoint = gardener.GetRandomParentNode(tree0);
           if(crossoverPoint == null) {
             removedBranchIndex = 0;
-            removedBranch = root0;
+            removedBranch = tree0;
             allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
           } else {
             removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
@@ -170,15 +163,15 @@ namespace HeuristicLab.StructureIdentification {
             allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
           }
           removedBranchSize = removedBranch.Size;
-          maxBranchSize = maxTreeSize - (root0.Size - removedBranchSize);
-          maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(root0, removedBranch) + 1;
-          insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, root1, removedBranchSize, maxBranchSize, maxBranchHeight);
+          maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
+          maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch) + 1;
+          insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchSize, maxBranchSize, maxBranchHeight);
         }
         if(crossoverPoint != null) {
           // replace the branch below the crossoverpoint with the selected branch from root1
           crossoverPoint.RemoveSubTree(removedBranchIndex);
           crossoverPoint.InsertSubTree(removedBranchIndex, insertedBranch);
-          return root0;
+          return tree0;
         } else {
           return insertedBranch;
         }
