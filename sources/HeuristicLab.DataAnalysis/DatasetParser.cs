@@ -321,7 +321,9 @@ namespace HeuristicLab.DataAnalysis {
     #region parsing
     private void Parse(bool strict) {
       ParseMetaData(strict);
+      if(!tokenizer.HasNext()) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
       ParseSampleData(strict);
+      if(samplesList.Count == 0) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
     }
 
     private void ParseSampleData(bool strict) {
@@ -371,7 +373,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ParseMetaData(bool strict) {
-      while(tokenizer.Peek().type == TokenTypeEnum.String) {
+      while(tokenizer.HasNext() && tokenizer.Peek().type == TokenTypeEnum.String) {
         Token nameToken = tokenizer.Next();
         if(nameToken.type != TokenTypeEnum.String)
           Error("Expected a variable name.", nameToken.stringValue, tokenizer.CurrentLineNumber);
