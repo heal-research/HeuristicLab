@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Visualization.Test {
   [ClassInfo(Name = "HeuristicLab.Visualization.Test-3.2")]
   [PluginFile(Filename = "HeuristicLab.Visualization.Test-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Visualization-3.2")]
   public class HeuristicLabVisualizationTestPlugin : PluginBase {
   }
 }

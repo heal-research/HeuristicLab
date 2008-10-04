@@ -62,6 +62,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Visualization\HeuristicLab.Visualization.csproj">
+      <Project>{E392A1E2-DC95-4E33-B82E-8ED690EDA1AB}</Project>
+      <Name>HeuristicLab.Visualization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

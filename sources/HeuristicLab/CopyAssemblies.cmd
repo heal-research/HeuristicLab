@@ -53,3 +53,5 @@ copy %1\HeuristicLab.StructureIdentification\%2\HeuristicLab.StructureIdentifica
 copy %1\HeuristicLab.TestFunctions\%2\HeuristicLab.TestFunctions-3.2.dll .\plugins
 copy %1\HeuristicLab.ThreadParallelEngine\%2\HeuristicLab.ThreadParallelEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.ES\%2\HeuristicLab.ES-3.2.dll .\plugins
+copy %1\HeuristicLab.Visualization\%2\HeuristicLab.Visualization-3.2.dll .\plugins
+copy %1\HeuristicLab.Visualization.Test\%2\HeuristicLab.Visualization.Test-3.2.dll .\plugins
