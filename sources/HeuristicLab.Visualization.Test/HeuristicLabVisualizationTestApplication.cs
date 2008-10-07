@@ -29,8 +29,8 @@ namespace HeuristicLab.Visualization.Test {
   [ClassInfo(Name = "HeuristicLab Data Visualization", Description="Test application for the HeuristicLab data visualization framework.")]
   class HeuristicLabVisualizationTestApplication : ApplicationBase {
     public override void Run() {
-//      Form mainForm = new MainForm();
-//      Application.Run(mainForm);
+      Form mainForm = new MainForm();
+      Application.Run(mainForm);
     }
   }
 }
