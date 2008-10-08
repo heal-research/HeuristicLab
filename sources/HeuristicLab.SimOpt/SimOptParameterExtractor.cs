@@ -30,20 +30,33 @@ using HeuristicLab.Data;
 namespace HeuristicLab.SimOpt {
   public class SimOptParameterExtractor : OperatorBase {
     public override string Description {
-      get { return @"Injects the contents of a ConstrainedItemList into the scope"; }
+      get { return @"Appends each parameter as subscope to the current scope."; }
     }
 
     public SimOptParameterExtractor()
       : base() {
-      AddVariableInfo(new VariableInfo("Items", "The ConstrainedItemList to be extracted", typeof(ConstrainedItemList), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Items", "The ConstrainedItemList to be extracted", typeof(ConstrainedItemList), VariableKind.In | VariableKind.Deleted));
+      AddVariableInfo(new VariableInfo("DeleteItems", "Whether or not to remove items from the current scope", typeof(BoolData), VariableKind.In));
+      AddVariable(new Variable("DeleteItems", new BoolData(false)));
+      GetVariableInfo("DeleteItems").Local = true;
     }
 
     public override IOperation Apply(IScope scope) {
       ConstrainedItemList cil = GetVariableValue<ConstrainedItemList>("Items", scope, false);
+      bool delete = GetVariableValue<BoolData>("DeleteItems", scope, true).Data;
       for (int i = 0; i < cil.Count; i++) {
-        IVariable var = scope.GetVariable(((Variable)cil[i]).Name);
-        if (var == null) scope.AddVariable((IVariable)cil[i].Clone());
-        else var.Value = (IItem)((Variable)cil[i]).Value.Clone();
+        IScope tmp = new Scope(scope.Name + "_Param" + i.ToString());
+        try {
+          scope.AddVariable(cil[i].Clone() as Variable);
+        } catch (InvalidCastException ice) {
+          throw new InvalidCastException("Parameters in the constrained item list have to be encapsulated in a variable!\r\n\r\n" + ice.Message);
+        }
+        scope.AddSubScope(tmp);
+      }
+      if (delete) {
+        IVariableInfo info = GetVariableInfo("Items");
+        if (info.Local) RemoveVariable(info.ActualName);
+        else scope.RemoveVariable(info.ActualName);
       }
       return null;
     }

@@ -23,52 +23,98 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Evolutionary;
+using HeuristicLab.Operators;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.SimOpt {
   public class SimOptSquentialSubOperatorCrossover : OperatorBase {
+    private UniformSequentialSubScopesProcessor usssp, usssp2, usssp3, usssp4;
+    private SequentialSubScopesProcessor sssp;
+    private SimOptParameterExtractor extractor;
+    private SimOptParameterPacker packer;
+    private SimOptCrossoverPreparator preparator;
+    private MergingReducer merger;
+    private bool uptodate;
+
     public override string Description {
-      get { return @"Takes the parameter vector of two items and on each index applies the respectively indexed suboperator"; }
+      get {
+        return @"This operator encapsulates the functionality of crossing the parameters of a simulation parameter vector. It works as follows:
+1. The parameters of all parents are extracted [UniformSequentialSubScopeProcessor which applies a SimOptParameterExtractor]
+2. The parents are prepared for crossing by grouping the respective parameters [SimOptCrossoverPreparator]
+3. The parameters are crossed [UniformSequentialSubScopeProcessor which applies SequentialSubScopeProcessor which applies the SubOperators of this operator on each parameter group (except for the last one)]
+4. Assigning the crossed parameters to the respective children [MergingReducer]
+5. Update the parameters [UniformSequentialSubScopeProcessor which applies SimOptParameterPacker]
+
+Should the packing fail due to constraint violations, the operator will execute the last of its suboperators.";
+      }
     }
 
     public SimOptSquentialSubOperatorCrossover()
       : base() {
       AddVariableInfo(new VariableInfo("Items", "The parameter vector", typeof(ConstrainedItemList), VariableKind.In | VariableKind.New));
       AddVariableInfo(new VariableInfo("Parents", "The number of parents per child", typeof(IntData), VariableKind.In));
+      uptodate = false;
     }
 
     public override IOperation Apply(IScope scope) {
-      int parents = GetVariableValue<IntData>("Parents", scope, true).Data;
+      string itemsActualName = GetVariableInfo("Items").ActualName;
+      string parentsActualName = GetVariableInfo("Parents").ActualName;
+      int parameters = SubOperators.Count - 1;
 
-      int subScopesCount = scope.SubScopes.Count;
-      if (subScopesCount < parents || (subScopesCount % parents) != 0)
-        throw new InvalidOperationException("Size of mating pool is not a multiple (>1) of the number of parents per child");
-      int children = subScopesCount / parents;
+      if (!uptodate) {
+        usssp = new UniformSequentialSubScopesProcessor();
+        extractor = new SimOptParameterExtractor();
+        usssp.AddSubOperator(extractor);
+
+        preparator = new SimOptCrossoverPreparator();
+
+        usssp2 = new UniformSequentialSubScopesProcessor();
+        sssp = new SequentialSubScopesProcessor();
+        for (int i = 0; i < parameters; i++) {
+          sssp.AddSubOperator(SubOperators[i]);
+        }
+        usssp2.AddSubOperator(sssp);
+
+        usssp3 = new UniformSequentialSubScopesProcessor();
+        merger = new MergingReducer();
+        usssp3.AddSubOperator(merger);
+
+        usssp4 = new UniformSequentialSubScopesProcessor();
+        packer = new SimOptParameterPacker();
+        packer.AddSubOperator(SubOperators[SubOperators.Count - 1]);
+        usssp4.AddSubOperator(packer);
+        uptodate = true;
+      }
+      // Setting the actual names is necessary as the operator does not know if they've changed
+      extractor.GetVariableInfo("Items").ActualName = itemsActualName;
+      preparator.GetVariableInfo("Parents").ActualName = parentsActualName;
+      packer.GetVariableInfo("Items").ActualName = itemsActualName;
 
       CompositeOperation co = new CompositeOperation();
-      for (int i = 0; i < SubOperators.Count; i++) {
-        if (SubOperators[i].GetVariable("Index") != null) {
-          SubOperators[i].GetVariable("Index").Value = new IntData(i);
-        }
-        if (SubOperators[i].GetVariableInfo("Items") != null) {
-          SubOperators[i].GetVariableInfo("Items").ActualName = GetVariableInfo("Items").ActualName;
-        }
-      }
-      for (int i = 0; i < children; i++) {
-        IScope child = (IScope)scope.SubScopes[0].Clone();
-        for (int j = 0; j < parents; j++) {
-          IScope parent = scope.SubScopes[0];
-          child.AddSubScope(parent);
-          scope.RemoveSubScope(parent);
-        }
-        scope.AddSubScope(child);
-        for (int n = 0 ; n < SubOperators.Count ; n++)
-          co.AddOperation(new AtomicOperation(SubOperators[n], child));
-        co.AddOperation(new AtomicOperation(new Operators.SubScopesRemover(), child));
-      }
+      co.AddOperation(new AtomicOperation(usssp, scope));
+      co.AddOperation(new AtomicOperation(preparator, scope));
+      co.AddOperation(new AtomicOperation(usssp2, scope));
+      co.AddOperation(new AtomicOperation(usssp3, scope));
+      co.AddOperation(new AtomicOperation(usssp4, scope));
       return co;
+    }
+
+    protected override void OnSubOperatorAdded(IOperator subOperator, int index) {
+      base.OnSubOperatorAdded(subOperator, index);
+      uptodate = false;
+    }
+
+    protected override void OnSubOperatorRemoved(IOperator subOperator, int index) {
+      base.OnSubOperatorRemoved(subOperator, index);
+      uptodate = false;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      uptodate = false;
     }
   }
 }

@@ -30,25 +30,65 @@ using HeuristicLab.Data;
 namespace HeuristicLab.SimOpt {
   public class SimOptParameterPacker : OperatorBase {
     public override string Description {
-      get { return @"Updates a ConstrainedItemList with the variables in the scope and removes them afterwards."; }
+      get { return @"Takes the parameters in the subscope and creates or a updates a parameter vector. The order of the subscopes is assumed to be the same as the parameters appear in the vector.
+If the parameter vector could not be updated due to a constraint violation, the first suboperator is returned as the next operation."; }
     }
 
     public SimOptParameterPacker()
       : base() {
-      AddVariableInfo(new VariableInfo("Items", "The ConstrainedItemList to be updated", typeof(ConstrainedItemList), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Items", "The ConstrainedItemList to be updated or created", typeof(ConstrainedItemList), VariableKind.New | VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("DeleteParameters", "Whether or not the subscopes containing the parameters should be removed afterwards", typeof(BoolData), VariableKind.In));
+      AddVariable(new Variable("DeleteParameters", new BoolData(true)));
+      GetVariableInfo("DeleteParameters").Local = true;
     }
 
     public override IOperation Apply(IScope scope) {
-      ConstrainedItemList cil = GetVariableValue<ConstrainedItemList>("Items", scope, false);
-      for (int i = 0; i < cil.Count; i++) {
-        IVariable var = scope.GetVariable(((Variable)cil[i]).Name);
-        if (var == null) throw new InvalidOperationException("ERROR in SimOptParameterPacker: Cannot find variable " + ((Variable)cil[i]).Name + " in scope");
-        else {
-          ((Variable)cil[i]).Value = (IItem)var.Value.Clone();
-          scope.RemoveVariable(var.Name);
-        }
+      // ----- FETCH THE PARAMETER VECTOR ----- //
+      bool updateVector = true;
+      ConstrainedItemList cil;
+      try {
+        cil = GetVariableValue<ConstrainedItemList>("Items", scope, false);
+      } catch (ArgumentException) {
+        updateVector = false;
+        // the parameter vector is fetched from a higher scope and added locally
+        cil = GetVariableValue<ConstrainedItemList>("Items", scope, true);
       }
-      return null;
+      ConstrainedItemList tempcil = (ConstrainedItemList)cil.Clone();
+      bool delete = GetVariableValue<BoolData>("DeleteParameters", scope, true).Data;
+
+      ICollection<IConstraint> violatedConstraints;
+
+      tempcil.BeginCombinedOperation();
+      // ----- FETCH PARAMETERS AND UPDATE TEMPORARY VECTOR ----- //
+      for (int i = 0; i < scope.SubScopes.Count; i++) {
+        IVariable var = scope.SubScopes[i].GetVariable(((IVariable)tempcil[i]).Name);
+        if (var == null) throw new ArgumentNullException(scope.SubScopes[i].Name, "Could not find parameter " + ((IVariable)tempcil[i]).Name + " in this scope");
+        tempcil.TrySetAt(i, var, out violatedConstraints);
+      }
+
+      // ----- CONSTRAINT HANDLING ----- //
+      IVariableInfo info = GetVariableInfo("Items");
+      bool error = tempcil.EndCombinedOperation(out violatedConstraints);
+      if (!error) {
+        if (!updateVector) {
+          if (info.Local) AddVariable(new Variable(info.ActualName, tempcil));
+          else scope.AddVariable(new Variable(scope.TranslateName("Items"), tempcil));
+        } else {
+          if (info.Local) GetVariable(info.ActualName).Value = tempcil;
+          else scope.GetVariable(scope.TranslateName("Items")).Value = tempcil;
+        }
+      } else if (!updateVector) { // in case there was an error and the parameter vector is not in the current scope, add it
+        if (info.Local) AddVariable(new Variable(info.ActualName, cil));
+        else scope.AddVariable(new Variable(scope.TranslateName("Items"), cil));
+      }
+
+      // ----- DELETE SUBSCOPES ----- //
+      if (delete) {
+        scope.SubScopes.Clear();
+      }
+
+      if (error) return new AtomicOperation(SubOperators[0], scope);
+      else return null;
     }
   }
 }

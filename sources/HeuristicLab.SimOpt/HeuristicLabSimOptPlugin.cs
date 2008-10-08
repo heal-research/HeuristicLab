@@ -31,10 +31,9 @@ namespace HeuristicLab.SimOpt {
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
   [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Permutation-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
   public class HeuristicLabSimOptPlugin : PluginBase {
   }
 }

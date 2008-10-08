@@ -49,21 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultInitializer.cs" />
-    <Compile Include="DefaultManipulator.cs" />
-    <Compile Include="NormalDoubleManipulator.cs" />
-    <Compile Include="NormalIntManipulator.cs" />
-    <Compile Include="PermutationParameterCyclicCrossover.cs" />
-    <Compile Include="PermutationParameterOrderCrossover.cs" />
-    <Compile Include="PermutationParameterPartiallyMatchedCrossover.cs" />
-    <Compile Include="SimOptCrossoverBase.cs" />
+    <Compile Include="SimOptCrossoverPreparator.cs" />
     <Compile Include="SimOptSequentialSubOperatorProcessor.cs" />
     <Compile Include="SimOptSquentialSubOperatorCrossover.cs" />
-    <Compile Include="Swap2PermutationManipulator.cs" />
-    <Compile Include="RandomDoubleInitializer.cs" />
-    <Compile Include="RandomPermutationInitializer.cs" />
-    <Compile Include="SimOptInitializationOperatorBase.cs" />
-    <Compile Include="SimOptManipulationOperatorBase.cs" />
     <Compile Include="DoubleParameterBoundConstraint.cs" />
     <Compile Include="DoubleParameterBoundConstraintView.cs">
       <SubType>UserControl</SubType>
@@ -86,11 +74,6 @@
       <DependentUpon>SimOptProblemInjectorView.cs</DependentUpon>
     </Compile>
     <Compile Include="SimOptSinglePointCrossover.cs" />
-    <Compile Include="TranslocationPermutationAdaptiveManipulator.cs" />
-    <Compile Include="TranslocationPermutationManipulator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UniformIntInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -126,17 +109,13 @@
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
       <Name>HeuristicLab.Operators</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Permutation\HeuristicLab.Permutation.csproj">
-      <Project>{55FDCFB3-3E8C-4FB0-837C-0CF06BEDED39}</Project>
-      <Name>HeuristicLab.Permutation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
-      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random</Name>
+    <ProjectReference Include="..\HeuristicLab.Selection\HeuristicLab.Selection.csproj">
+      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
+      <Name>HeuristicLab.Selection</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

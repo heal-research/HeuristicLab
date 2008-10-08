@@ -25,7 +25,6 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
-using HeuristicLab.Random;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.SimOpt {
