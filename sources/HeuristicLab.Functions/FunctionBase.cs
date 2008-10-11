@@ -41,7 +41,7 @@ namespace HeuristicLab.Functions {
     private int minArity = -1;
     private int maxArity = -1;
 
-    public virtual double Apply(Dataset dataset, int sampleIndex, double[] args) {
+    public virtual double Apply() {
       throw new NotImplementedException();
     }
 

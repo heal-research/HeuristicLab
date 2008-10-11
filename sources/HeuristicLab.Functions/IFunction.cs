@@ -28,7 +28,7 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.Functions {
   public interface IFunction : IOperator {
     IFunctionTree GetTreeNode();
-    double Apply(Dataset dataset, int sampleIndex, double[] args);
+    double Apply();
     void Accept(IFunctionVisitor visitor);
     IList<IFunction> AllowedSubFunctions(int index);
     int MinArity { get; }

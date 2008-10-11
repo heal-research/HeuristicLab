@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using System.Xml;
 
 namespace HeuristicLab.Functions {
-  class EvaluatorSymbolTable : StorableBase{
+  class EvaluatorSymbolTable : StorableBase {
     public const int ADDITION = 1;
     public const int AND = 2;
     public const int AVERAGE = 3;
@@ -54,10 +54,10 @@ namespace HeuristicLab.Functions {
     public const int XOR = 23;
     public const int UNKNOWN = 24;
 
-    private static Dictionary<Type, int> staticTypes = new Dictionary<Type,int>();
+    private static Dictionary<Type, int> staticTypes = new Dictionary<Type, int>();
 
     // needs to be public for persistence mechanism (Activator.CreateInstance needs empty constructor)
-    static EvaluatorSymbolTable () {
+    static EvaluatorSymbolTable() {
       staticTypes = new Dictionary<Type, int>();
       staticTypes[typeof(Addition)] = ADDITION;
       staticTypes[typeof(And)] = AND;
@@ -86,7 +86,8 @@ namespace HeuristicLab.Functions {
     }
 
     internal static int MapFunction(IFunction function) {
-      return staticTypes[function.GetType()];
+      if(staticTypes.ContainsKey(function.GetType())) return staticTypes[function.GetType()];
+      else return UNKNOWN;
     }
   }
 }

@@ -39,6 +39,7 @@ namespace HeuristicLab.Functions {
       public int i_arg1;
       public int arity;
       public int symbol;
+      public IFunction function;
     }
 
     private Instr[] codeArr;
@@ -78,6 +79,10 @@ namespace HeuristicLab.Functions {
             instr.d_arg0 = f.data[0]; // value
             break;
           }
+        case EvaluatorSymbolTable.UNKNOWN: {
+            instr.function = f.functionType;
+            break;
+          }
       }
       return instr;
     }
@@ -92,7 +97,7 @@ namespace HeuristicLab.Functions {
     private void SkipBakedCode() {
       int i = 1;
       while(i > 0) {
-        i+=codeArr[PC++].arity;
+        i += codeArr[PC++].arity;
         i--;
       }
     }
@@ -246,7 +251,9 @@ namespace HeuristicLab.Functions {
             double y = EvaluateBakedCode();
             return Math.Abs(x - y);
           }
-        case EvaluatorSymbolTable.UNKNOWN:
+        case EvaluatorSymbolTable.UNKNOWN: { // evaluate functions which are not statically defined directly
+            return currInstr.function.Apply();
+          }
         default: {
             throw new NotImplementedException();
           }
