@@ -292,7 +292,7 @@ namespace HeuristicLab.OptimizationFrontend {
     private void saveAllToolStripButton_Click(object sender, EventArgs e) {
       for (int i = 0; i < MdiChildren.Length; i++) {
         EditorForm form = MdiChildren[i] as EditorForm;
-        if (((Control)form.Editor).Enabled) Save(form);
+        if (form!=null && ((Control)form.Editor).Enabled) Save(form);
       }
     }
     #endregion
