@@ -64,8 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccuracyEvaluator.cs" />
-    <Compile Include="ClassificationMatrixEvaluator.cs" />
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="ConfusionMatrixEvaluator.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="FunctionLibraryInjector.cs">
       <SubType>Code</SubType>

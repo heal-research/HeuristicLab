@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.Classification {
-  public class ClassificationMatrixEvaluator : GPEvaluatorBase {
+  public class ConfusionMatrixEvaluator : GPEvaluatorBase {
     private const double EPSILON = 1.0E-6;
     private double[] classesArr;
     private double[] thresholds;
@@ -39,9 +39,9 @@ namespace HeuristicLab.GP.Classification {
       }
     }
 
-    public ClassificationMatrixEvaluator()
+    public ConfusionMatrixEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("ClassificationMatrix", "The resulting classification matrix of the model", typeof(IntMatrixData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("ConfusionMatrix", "The confusion matrix of the model", typeof(IntMatrixData), VariableKind.New));
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
@@ -55,10 +55,10 @@ namespace HeuristicLab.GP.Classification {
         thresholds[i] = (classesArr[i] + classesArr[i + 1]) / 2.0;
       }
 
-      matrix = GetVariableValue<IntMatrixData>("ClassificationMatrix", scope, false, false);
+      matrix = GetVariableValue<IntMatrixData>("ConfusionMatrix", scope, false, false);
       if(matrix == null) {
         matrix = new IntMatrixData(new int[classesArr.Length, classesArr.Length]);
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("ClassificationMatrix"), matrix));
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("ConfusionMatrix"), matrix));
       }
       return base.Apply(scope);
     }
