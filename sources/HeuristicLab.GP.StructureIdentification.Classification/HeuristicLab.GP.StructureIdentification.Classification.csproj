@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7C20D100-8BEB-433A-9499-F075E2CB9297}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.GP.Classification</RootNamespace>
+    <AssemblyName>HeuristicLab.GP.StructureIdentification.Classification-3.2</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccuracyEvaluator.cs" />
+    <Compile Include="ClassificationMatrixEvaluator.cs" />
+    <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="CrossValidation.cs" />
+    <Compile Include="FunctionLibraryInjector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLabGPClassificationPlugin.cs" />
+    <Compile Include="MCCEvaluator.cs" />
+    <Compile Include="MulticlassModeller.cs" />
+    <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Constraints\HeuristicLab.Constraints.csproj">
+      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
+      <Name>HeuristicLab.Constraints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
+      <Name>HeuristicLab.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DataAnalysis\HeuristicLab.DataAnalysis.csproj">
+      <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
+      <Name>HeuristicLab.DataAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
+      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
+      <Name>HeuristicLab.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification\HeuristicLab.GP.StructureIdentification.csproj">
+      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
+      <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
+      <Name>HeuristicLab.GP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c ""$(SolutionDir)PreBuildEvent.cmd" "$(ProjectDir).""</PreBuildEvent>
+  </PropertyGroup>
+</Project>

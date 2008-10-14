@@ -27,8 +27,11 @@ copy %1\HeuristicLab.Data\%2\HeuristicLab.Data-3.2.dll .\plugins
 copy %1\HeuristicLab.DataAnalysis\%2\HeuristicLab.DataAnalysis-3.2.dll .\plugins
 copy %1\HeuristicLab.DistributedEngine\%2\HeuristicLab.DistributedEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.Evolutionary\%2\HeuristicLab.Evolutionary-3.2.dll .\plugins
-copy %1\HeuristicLab.Functions\%2\HeuristicLab.Functions-3.2.dll .\plugins
+copy %1\HeuristicLab.GP\%2\HeuristicLab.GP-3.2.dll .\plugins
 copy %1\HeuristicLab.GP.SantaFe\%2\HeuristicLab.GP.SantaFe-3.2.dll .\plugins
+copy %1\HeuristicLab.GP.StructureIdentification\%2\HeuristicLab.GP.StructureIdentification-3.2.dll .\plugins
+copy %1\HeuristicLab.GP.StructureIdentification.Classification\%2\HeuristicLab.GP.StructureIdentification.Classification-3.2.dll .\plugins
+copy %1\HeuristicLab.GP.StructureIdentification.TimeSeries\%2\HeuristicLab.GP.StructureIdentification.TimeSeries-3.2.dll .\plugins
 copy %1\HeuristicLab.Grid\%2\HeuristicLab.Grid-3.2.dll .\plugins
 copy %1\HeuristicLab.Logging\%2\HeuristicLab.Logging-3.2.dll .\plugins
 copy %1\HeuristicLab.Operators\%2\HeuristicLab.Operators-3.2.dll .\plugins
@@ -50,7 +53,6 @@ copy %1\HeuristicLab.SQLite\%2\HeuristicLab.SQLite-3.2.dll .\plugins
 copy %1\HeuristicLab.SQLite\System.Data.SQLite.dll .\plugins
 copy %1\HeuristicLab.SQLite\"SQLite License.txt" .\plugins
 copy %1\HeuristicLab.SQLite\SQLite.NET.chm .\plugins
-copy %1\HeuristicLab.StructureIdentification\%2\HeuristicLab.StructureIdentification-3.2.dll .\plugins
 copy %1\HeuristicLab.TestFunctions\%2\HeuristicLab.TestFunctions-3.2.dll .\plugins
 copy %1\HeuristicLab.ThreadParallelEngine\%2\HeuristicLab.ThreadParallelEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.ES\%2\HeuristicLab.ES-3.2.dll .\plugins

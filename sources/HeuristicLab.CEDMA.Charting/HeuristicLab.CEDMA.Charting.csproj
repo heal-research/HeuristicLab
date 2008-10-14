@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1BF17271-5350-476A-8F6D-FC74FA3E82CA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -121,9 +121,13 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Functions\HeuristicLab.Functions.csproj">
-      <Project>{B95CA6E2-34BC-4430-994D-BD6E99375319}</Project>
-      <Name>HeuristicLab.Functions</Name>
+    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification\HeuristicLab.GP.StructureIdentification.csproj">
+      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
+      <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
+      <Name>HeuristicLab.GP</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>

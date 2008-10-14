@@ -28,7 +28,6 @@ using System.Xml;
 using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Random;
-using HeuristicLab.Functions;
 
 namespace HeuristicLab.GP.SantaFe {
   public sealed class Left : FunctionBase {

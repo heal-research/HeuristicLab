@@ -8,10 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Charting;
-using HeuristicLab.Functions;
 using HeuristicLab.Logging;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Charting.Data;
+using HeuristicLab.GP;
+using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.CEDMA.Charting {
   public partial class ModelView : ViewBase {
@@ -44,8 +45,8 @@ namespace HeuristicLab.CEDMA.Charting {
       chart.UpdateEnabled = false;
       Pen pen = new Pen(Color.FromArgb(80, Color.Blue));
       chart.AddDataRow(DataRowType.Points, pen, pen.Brush);
-      IEvaluator eval = model.CreateEvaluator();
-      eval.ResetEvaluator(model, dataset);
+      BakedTreeEvaluator eval = new BakedTreeEvaluator();
+      eval.ResetEvaluator((BakedFunctionTree)model, dataset);
       for(int i = 0; i < dataset.Rows; i += 10) {
         double predicted = eval.Evaluate(i);
         double original = dataset.GetValue(i, targetVariable);
@@ -82,8 +83,8 @@ namespace HeuristicLab.CEDMA.Charting {
       Pen bluePen = new Pen(Color.FromArgb(180, Color.Blue));
       chart.AddDataRow(DataRowType.Lines, bluePen, bluePen.Brush);
       chart.AddDataRow(DataRowType.Lines, redPen, redPen.Brush);
-      IEvaluator eval = model.CreateEvaluator();
-      eval.ResetEvaluator(model, dataset);
+      BakedTreeEvaluator eval = new BakedTreeEvaluator();
+      eval.ResetEvaluator((BakedFunctionTree)model, dataset);
       int n = 0;
       for(int i = 0; i < dataset.Rows; i ++) {
         double predicted = eval.Evaluate(i);

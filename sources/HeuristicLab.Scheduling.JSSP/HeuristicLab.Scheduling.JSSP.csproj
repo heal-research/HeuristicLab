@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4C0EF782-CC94-4A94-BC3E-661D2600559B}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -117,10 +117,6 @@
     <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Functions\HeuristicLab.Functions.csproj">
-      <Project>{B95CA6E2-34BC-4430-994D-BD6E99375319}</Project>
-      <Name>HeuristicLab.Functions</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>

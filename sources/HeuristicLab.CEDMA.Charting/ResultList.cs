@@ -33,9 +33,9 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
-using HeuristicLab.Functions;
 using HeuristicLab.Charting.Data;
 using System.Drawing;
+using HeuristicLab.GP;
 
 namespace HeuristicLab.CEDMA.Charting {
 

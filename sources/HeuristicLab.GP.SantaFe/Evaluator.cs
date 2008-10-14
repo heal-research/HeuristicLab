@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Functions;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.SantaFe {

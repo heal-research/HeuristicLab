@@ -94,9 +94,9 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Functions\HeuristicLab.Functions.csproj">
-      <Project>{B95CA6E2-34BC-4430-994D-BD6E99375319}</Project>
-      <Name>HeuristicLab.Functions</Name>
+    <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
+      <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
+      <Name>HeuristicLab.GP</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
@@ -105,10 +105,6 @@
     <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
       <Name>HeuristicLab.Random</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.StructureIdentification\HeuristicLab.StructureIdentification.csproj">
-      <Project>{5948F299-0A5E-43B9-8F17-2D15298EEC34}</Project>
-      <Name>HeuristicLab.StructureIdentification</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

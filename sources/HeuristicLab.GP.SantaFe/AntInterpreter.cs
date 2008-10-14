@@ -27,7 +27,6 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Diagnostics;
-using HeuristicLab.Functions;
 
 namespace HeuristicLab.GP.SantaFe {
   internal class AntInterpreter {

@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
-using HeuristicLab.Functions;
 
 namespace HeuristicLab.GP.SantaFe {
   class SymbolTable : StorableBase {

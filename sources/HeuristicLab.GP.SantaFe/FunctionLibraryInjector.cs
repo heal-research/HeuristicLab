@@ -27,8 +27,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Constraints;
-using HeuristicLab.StructureIdentification;
-using HeuristicLab.Functions;
 
 namespace HeuristicLab.GP.SantaFe {
   public class FunctionLibraryInjector : OperatorBase {
@@ -81,18 +79,18 @@ namespace HeuristicLab.GP.SantaFe {
       operatorLibrary.GPOperatorGroup.AddOperator(right);
     }
 
-    private void SetAllowedSubOperators(HeuristicLab.Functions.IFunction f, HeuristicLab.Functions.IFunction[] gs) {
+    private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
       foreach(IConstraint c in f.Constraints) {
         if(c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           typeConstraint.Clear();
-          foreach(HeuristicLab.Functions.IFunction g in gs) {
+          foreach(IFunction g in gs) {
             typeConstraint.AddOperator(g);
           }
         } else if(c is AllSubOperatorsTypeConstraint) {
           AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
           typeConstraint.Clear();
-          foreach(HeuristicLab.Functions.IFunction g in gs) {
+          foreach(IFunction g in gs) {
             typeConstraint.AddOperator(g);
           }
         }
