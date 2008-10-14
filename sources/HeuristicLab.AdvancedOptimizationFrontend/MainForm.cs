@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
+using System.IO;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
   public partial class MainForm : Form, IControlManager {
@@ -139,7 +140,12 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     }
     private void AsynchronousLoad(object state) {
       Task task = (Task)state;
-      task.storable = PersistenceManager.Load(task.filename);
+      try {
+        task.storable = PersistenceManager.Load(task.filename);
+      } catch(FileNotFoundException ex) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + ex.FileName+ "\" is not available.\nPlease make sure you have all necessary plugins installed.",
+          "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       LoadFinished(task);
     }
     private delegate void TaskFinishedDelegate(Task task);
