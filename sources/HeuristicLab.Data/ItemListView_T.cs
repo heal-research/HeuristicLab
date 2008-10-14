@@ -64,17 +64,17 @@ namespace HeuristicLab.Data {
       detailsGroupBox.Controls.Clear();
       detailsGroupBox.Enabled = false;
       removeButton.Enabled = false;
-      if (ItemList == null) {
+      if(ItemList == null) {
         typeTextBox.Text = "";
         splitContainer.Enabled = false;
       } else {
         typeTextBox.Text = typeof(T).FullName;
         splitContainer.Enabled = true;
-        foreach (ListViewItem item in itemsListView.Items) {
+        foreach(ListViewItem item in itemsListView.Items) {
           ((IItem)item.Tag).Changed -= new EventHandler(Item_Changed);
         }
         itemsListView.Items.Clear();
-        foreach (IItem data in ItemList) {
+        foreach(IItem data in ItemList) {
           ListViewItem item = new ListViewItem();
           item.Text = data.ToString();
           item.Tag = data;
@@ -85,15 +85,15 @@ namespace HeuristicLab.Data {
     }
 
     private void elementsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      if (detailsGroupBox.Controls.Count > 0)
+      if(detailsGroupBox.Controls.Count > 0)
         detailsGroupBox.Controls[0].Dispose();
       detailsGroupBox.Controls.Clear();
       detailsGroupBox.Enabled = false;
       removeButton.Enabled = false;
-      if (itemsListView.SelectedItems.Count > 0) {
+      if(itemsListView.SelectedItems.Count > 0) {
         removeButton.Enabled = true;
       }
-      if (itemsListView.SelectedItems.Count == 1) {
+      if(itemsListView.SelectedItems.Count == 1) {
         IItem data = (IItem)itemsListView.SelectedItems[0].Tag;
         Control view = (Control)data.CreateView();
         detailsGroupBox.Controls.Add(view);
@@ -104,37 +104,46 @@ namespace HeuristicLab.Data {
 
     #region Size Changed Events
     private void elementsListView_SizeChanged(object sender, EventArgs e) {
-      if (itemsListView.Columns.Count > 0)
+      if(itemsListView.Columns.Count > 0)
         itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
     #endregion
 
     #region Key Events
     private void elementsListView_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Delete) {
-        while (itemsListView.SelectedIndices.Count > 0)
+      if(e.KeyCode == Keys.Delete) {
+        while(itemsListView.SelectedIndices.Count > 0)
           ItemList.RemoveAt(itemsListView.SelectedIndices[0]);
+        e.Handled = true;
+      } else if((e.KeyCode == Keys.C) && (e.Modifiers == Keys.Control)) {
+        // copy contents of itemlist to clipboard
+        StringBuilder buffer = new StringBuilder();
+        for(int i = 0; i < itemsListView.Items.Count; i++) {
+          buffer.Append(itemsListView.Items[i].Text);
+          buffer.Append("\n");
+        }
+        Clipboard.SetText(buffer.ToString());
+        e.Handled = true;
       }
     }
     #endregion
 
     #region Button Events
     private void addButton_Click(object sender, EventArgs e) {
-      if (chooseItemDialog == null) {
+      if(chooseItemDialog == null) {
         chooseItemDialog = new ChooseItemDialog(typeof(T));
         chooseItemDialog.Caption = "Add Item";
       }
-      if (chooseItemDialog.ShowDialog(this) == DialogResult.OK) {
+      if(chooseItemDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           ItemList.Add((T)chooseItemDialog.Item);
-        }
-        catch (Exception ex) {
+        } catch(Exception ex) {
           Auxiliary.ShowErrorMessageBox(ex);
         }
       }
     }
     private void removeButton_Click(object sender, EventArgs e) {
-      while (itemsListView.SelectedIndices.Count > 0)
+      while(itemsListView.SelectedIndices.Count > 0)
         ItemList.RemoveAt(itemsListView.SelectedIndices[0]);
     }
     #endregion
@@ -150,29 +159,29 @@ namespace HeuristicLab.Data {
     }
     private void elementsListView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (e.Data.GetDataPresent("IItem")) {
+      if(e.Data.GetDataPresent("IItem")) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem item = itemsListView.GetItemAt(p.X, p.Y);
-        if (item != null)
+        if(item != null)
           e.Effect = DragDropEffects.Move;
       }
     }
     private void elementsListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (e.Data.GetDataPresent("IItem")) {
+      if(e.Data.GetDataPresent("IItem")) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem item = itemsListView.GetItemAt(p.X, p.Y);
-        if (item != null)
+        if(item != null)
           e.Effect = DragDropEffects.Move;
       }
     }
     private void elementsListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
-        if (e.Data.GetDataPresent("IItem")) {
+      if(e.Effect != DragDropEffects.None) {
+        if(e.Data.GetDataPresent("IItem")) {
           IItem data = (IItem)e.Data.GetData("IItem");
           Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
           ListViewItem item = itemsListView.GetItemAt(p.X, p.Y);
-          if (item != null) {
+          if(item != null) {
             int index = item.Index;
             ItemList.Remove((T)data);
             ItemList.Insert(index, (T)data);
@@ -186,7 +195,7 @@ namespace HeuristicLab.Data {
 
     #region Item and Item List Events
     private void ItemList_ItemInserted(object sender, ItemIndexEventArgs e) {
-      if (InvokeRequired)
+      if(InvokeRequired)
         Invoke(new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted), sender, e);
       else {
         ListViewItem item = new ListViewItem();
@@ -197,7 +206,7 @@ namespace HeuristicLab.Data {
       }
     }
     private void ItemList_ItemRemoved(object sender, ItemIndexEventArgs e) {
-      if (InvokeRequired)
+      if(InvokeRequired)
         Invoke(new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved), sender, e);
       else {
         itemsListView.Items.RemoveAt(e.Index);
@@ -208,12 +217,12 @@ namespace HeuristicLab.Data {
       Refresh();
     }
     private void Item_Changed(object sender, EventArgs e) {
-      if (InvokeRequired)
+      if(InvokeRequired)
         Invoke(new EventHandler(Item_Changed), sender, e);
       else {
         IItem data = (IItem)sender;
-        foreach (ListViewItem item in itemsListView.Items) {
-          if (item.Tag == data)
+        foreach(ListViewItem item in itemsListView.Items) {
+          if(item.Tag == data)
             item.Text = data.ToString();
         }
       }
