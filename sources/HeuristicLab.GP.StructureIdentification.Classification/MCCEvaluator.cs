@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class MCCEvaluator : GPEvaluatorBase {
     private double limit;
     private double[] original = new double[1];

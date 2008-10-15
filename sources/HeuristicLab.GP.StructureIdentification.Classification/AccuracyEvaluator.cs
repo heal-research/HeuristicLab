@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class AccuracyEvaluator : GPEvaluatorBase {
     private const double EPSILON = 1.0E-6;
     private double[] classesArr;

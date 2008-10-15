@@ -29,7 +29,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Constraints;
 using StructId = HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class FunctionLibraryInjector : OperatorBase {
     private const string TARGETVARIABLE = "TargetVariable";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
@@ -64,7 +64,7 @@ namespace HeuristicLab.GP.Classification {
         allowedIndexes[i] = allowedFeatures[i].Data;
       }
 
-      scope.AddVariable(new Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
       return null;
     }
 

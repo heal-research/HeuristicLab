@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class MulticlassOneVsOneAnalyzer : OperatorBase {
 
     private const string DATASET = "Dataset";

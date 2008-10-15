@@ -28,9 +28,8 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class ROCAnalyser : OperatorBase {
-    private ItemList values;
 
     public override string Description {
       get { return @"Calculate TPR & FPR for various treshholds on dataset"; }
@@ -55,8 +54,58 @@ namespace HeuristicLab.GP.Classification {
       } else
         rocValues.Clear();
 
-      //calculate new ROC Values
+      //ROC Curve starts at 0,0
+      ItemList row = new ItemList();
+      row.Add(new DoubleData(0));
+      row.Add(new DoubleData(0));
+      rocValues.Add(row);
 
+      //calculate new ROC Values
+      double estimated;
+      double original;
+      double positiveClassKey;
+      double negativeClassKey;
+      double truePositiveRate;
+      double falsePositiveRate;
+
+      //initialize classes dictionary
+      Dictionary<double, List<double>> classes = new Dictionary<double, List<double>>();
+      foreach (ItemList value in values) {
+        estimated = ((DoubleData)value[0]).Data;
+        original = ((DoubleData)value[1]).Data;
+        if (!classes.ContainsKey(original))
+          classes[original] = new List<double>();
+        classes[original].Add(estimated);
+      }
+
+      //check for 2 classes classification problem
+      if (classes.Keys.Count != 2)
+        throw new Exception("ROCAnalyser only handles  2 class classification problems");
+
+      //sort estimated values in classes dictionary
+      foreach (List<double> estimatedValues in classes.Values)
+        estimatedValues.Sort();
+
+      //calculate truePosivite- & falsePositiveRate
+      positiveClassKey = classes.Keys.Min<double>();
+      negativeClassKey = classes.Keys.Max<double>();
+      for (int i = 0; i < classes[negativeClassKey].Count; i++) {
+        truePositiveRate = classes[positiveClassKey].Count<double>(value => value < classes[negativeClassKey][i]) / classes[positiveClassKey].Count;
+        //stop calculation if truePositiveRate = 1; save runtime
+        if (truePositiveRate == 1) 
+          break;
+        falsePositiveRate = (i) / classes[negativeClassKey].Count;
+        row = new ItemList();
+        row.Add(new DoubleData(falsePositiveRate));
+        row.Add(new DoubleData(truePositiveRate));
+        rocValues.Add(row);
+      }
+
+      //ROC ends at 1,1
+      row = new ItemList();
+      row.Add(new DoubleData(1));
+      row.Add(new DoubleData(1));
+      rocValues.Add(row);
 
       return null;
     }

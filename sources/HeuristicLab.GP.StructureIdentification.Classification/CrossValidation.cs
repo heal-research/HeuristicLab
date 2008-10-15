@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class CrossValidation : OperatorBase {
 
     private const string DATASET = "Dataset";
@@ -87,13 +87,13 @@ namespace HeuristicLab.GP.Classification {
         rotatedSet.Rows = origDataset.Rows;
         rotatedSet.Columns = origDataset.Columns;
         rotatedSet.Samples = samples;
-        childScope.AddVariable(new Variable(scope.TranslateName(DATASET), rotatedSet));
-        childScope.AddVariable(new Variable(scope.TranslateName(TRAININGSAMPLESSTART), new IntData(newTrainingSamplesStart)));
-        childScope.AddVariable(new Variable(scope.TranslateName(TRAININGSAMPLESEND), new IntData(newTrainingSamplesEnd)));
-        childScope.AddVariable(new Variable(scope.TranslateName(VALIDATIONSAMPLESSTART), new IntData(newValidationSamplesStart)));
-        childScope.AddVariable(new Variable(scope.TranslateName(VALIDATIONSAMPLESEND), new IntData(newValidationSamplesEnd)));
-        childScope.AddVariable(new Variable(scope.TranslateName(TESTSAMPLESSTART), new IntData(newTestSamplesStart)));
-        childScope.AddVariable(new Variable(scope.TranslateName(TESTSAMPLESEND), new IntData(newTestSamplesEnd)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(DATASET), rotatedSet));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(TRAININGSAMPLESSTART), new IntData(newTrainingSamplesStart)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(TRAININGSAMPLESEND), new IntData(newTrainingSamplesEnd)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(VALIDATIONSAMPLESSTART), new IntData(newValidationSamplesStart)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(VALIDATIONSAMPLESEND), new IntData(newValidationSamplesEnd)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(TESTSAMPLESSTART), new IntData(newTestSamplesStart)));
+        childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(TESTSAMPLESEND), new IntData(newTestSamplesEnd)));
 
         scope.AddSubScope(childScope);
       }

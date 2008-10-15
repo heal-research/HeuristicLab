@@ -8,7 +8,7 @@
     <ProjectGuid>{7C20D100-8BEB-433A-9499-F075E2CB9297}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.GP.Classification</RootNamespace>
+    <RootNamespace>HeuristicLab.GP.StructureIdentification.Classification</RootNamespace>
     <AssemblyName>HeuristicLab.GP.StructureIdentification.Classification-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

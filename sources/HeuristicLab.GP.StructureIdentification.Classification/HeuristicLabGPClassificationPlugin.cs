@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.Classification {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
   [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification.Classification-3.2")]
   [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification.Classification-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
