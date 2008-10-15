@@ -38,35 +38,36 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     public ROCAnalyzer()
       : base() {
       AddVariableInfo(new VariableInfo("Values", "Item list holding the estimated and orignial values for the ROCAnalyzer", typeof(ItemList), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ROCValues", "The values of the ROCAnalyzer, namely TPR & FPR", typeof(ItemList), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("ROCValues", "The values of the ROCAnalyzer, namely TPR & FPR", typeof(ItemList<ItemList<DoubleArrayData>>), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
       ItemList values = GetVariableValue<ItemList>("Values", scope, true);
-      ItemList rocValues = GetVariableValue<ItemList>("ROCValues", scope, false, false);
+      ItemList<ItemList<DoubleArrayData>> rocValues = GetVariableValue<ItemList<ItemList<DoubleArrayData>>>("ROCValues", scope, false, false);
       if (rocValues == null) {
-        rocValues = new ItemList();
+        rocValues = new ItemList<ItemList<DoubleArrayData>>();
         IVariableInfo info = GetVariableInfo("ROCValues");
         if (info.Local)
           AddVariable(new HeuristicLab.Core.Variable(info.ActualName, rocValues));
         else
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), rocValues));
-      } else
+      } else {
         rocValues.Clear();
+      }
 
+      rocValues.Add(new ItemList<DoubleArrayData>());
       //ROC Curve starts at 0,0
-      ItemList row = new ItemList();
-      row.Add(new DoubleData(0));
-      row.Add(new DoubleData(0));
-      rocValues.Add(row);
+      DoubleArrayData point = new DoubleArrayData();
+      point.Data = new double[2] { 0, 0 };
+      rocValues[0].Add(point);
 
       //calculate new ROC Values
-      double estimated=0.0;
-      double original=0.0;
+      double estimated = 0.0;
+      double original = 0.0;
       double positiveClassKey;
       double negativeClassKey;
-      double truePositiveRate=0.0;
-      double falsePositiveRate=0.0;
+      double truePositiveRate = 0.0;
+      double falsePositiveRate = 0.0;
 
       //initialize classes dictionary
       Dictionary<double, List<double>> classes = new Dictionary<double, List<double>>();
@@ -89,13 +90,11 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       //calculate truePosivite- & falsePositiveRate
       positiveClassKey = classes.Keys.Min<double>();
       negativeClassKey = classes.Keys.Max<double>();
-      for (int i = 0; i < classes[negativeClassKey].Count; i++) {
-        truePositiveRate = classes[positiveClassKey].Count<double>(value => value < classes[negativeClassKey][i]) / classes[positiveClassKey].Count;
-        falsePositiveRate = i / classes[negativeClassKey].Count;
-        row = new ItemList();
-        row.Add(new DoubleData(falsePositiveRate));
-        row.Add(new DoubleData(truePositiveRate));
-        rocValues.Add(row);
+      foreach (double treshold in classes[negativeClassKey].Distinct<double>()) {
+        truePositiveRate = ((double)classes[positiveClassKey].Count<double>(value => value < treshold)) / classes[positiveClassKey].Count;
+        falsePositiveRate = ((double)classes[negativeClassKey].Count<double>(value => value < treshold)) / classes[negativeClassKey].Count;
+        point = new DoubleArrayData(new double[2] { falsePositiveRate, truePositiveRate });
+        rocValues[0].Add(point);
 
         //stop calculation if truePositiveRate = 1; save runtime
         if (truePositiveRate == 1)
@@ -104,19 +103,14 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
       //add case when treshold == max negative class value => falsePositiveRate ==1
       if (truePositiveRate != 1.0) {
-        
-        truePositiveRate = classes[positiveClassKey].Count<double>(value => value <= classes[negativeClassKey][classes[negativeClassKey].Count - 1]) / classes[positiveClassKey].Count;
+        truePositiveRate = ((double)classes[positiveClassKey].Count<double>(value => value <= classes[negativeClassKey][classes[negativeClassKey].Count - 1])) / classes[positiveClassKey].Count;
         falsePositiveRate = 1;
-        row = new ItemList();
-        row.Add(new DoubleData(falsePositiveRate));
-        row.Add(new DoubleData(truePositiveRate));
-        rocValues.Add(row);
+        point = new DoubleArrayData(new double[2] { falsePositiveRate, truePositiveRate });
+        rocValues[0].Add(point);
       } else {
         //ROC ends at 1,1
-        row = new ItemList();
-        row.Add(new DoubleData(1));
-        row.Add(new DoubleData(1));
-        rocValues.Add(row);
+        point = new DoubleArrayData(new double[2] { 1, 1 });
+        rocValues[0].Add(point);
       }
 
       return null;
