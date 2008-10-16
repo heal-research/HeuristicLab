@@ -62,11 +62,11 @@ namespace HeuristicLab.OptimizationFrontend {
       // discover creatable items
       Type[] creatables = discoveryService.GetTypes(typeof(IEditable));
       string[] names = new string[creatables.Length];
-      for (int i = 0; i < creatables.Length; i++)
+      for(int i = 0; i < creatables.Length; i++)
         names[i] = creatables[i].Name;
       Array.Sort(names, creatables);
-      foreach (Type type in creatables) {
-        if (!type.IsAbstract) {
+      foreach(Type type in creatables) {
+        if(!type.IsAbstract) {
           ToolStripMenuItem item = new ToolStripMenuItem();
           item.Tag = type;
           item.Text = "&" + type.Name + "...";
@@ -84,11 +84,11 @@ namespace HeuristicLab.OptimizationFrontend {
 
     #region IControlManager Members
     public void ShowControl(IControl control) {
-      if (control is IEditor) {
+      if(control is IEditor) {
         EditorForm form = new EditorForm((IEditor)control);
         form.MdiParent = this;
         form.Show();
-      } else if (control is IView) {
+      } else if(control is IView) {
         ViewForm form = new ViewForm((IView)control);
         form.MdiParent = this;
         form.Show();
@@ -110,7 +110,7 @@ namespace HeuristicLab.OptimizationFrontend {
       tileHorizontallyToolStripMenuItem.Enabled = false;
       tileVerticallyToolStripMenuItem.Enabled = false;
 
-      if (ActiveMdiChild != null) {
+      if(ActiveMdiChild != null) {
         closeToolStripMenuItem.Enabled = true;
         closeAllToolStripMenuItem.Enabled = true;
         saveAllToolStripMenuItem.Enabled = true;
@@ -119,8 +119,8 @@ namespace HeuristicLab.OptimizationFrontend {
         tileHorizontallyToolStripMenuItem.Enabled = true;
         tileVerticallyToolStripMenuItem.Enabled = true;
         EditorForm form = ActiveMdiChild as EditorForm;
-        if (form != null){
-          if (((Control)form.Editor).Enabled) {
+        if(form != null) {
+          if(((Control)form.Editor).Enabled) {
             saveToolStripMenuItem.Enabled = true;
             saveToolStripButton.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
@@ -134,8 +134,8 @@ namespace HeuristicLab.OptimizationFrontend {
 
     #region Open and Save Methods
     private void Open() {
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        lock (locker) runningTasks++;
+      if(openFileDialog.ShowDialog(this) == DialogResult.OK) {
+        lock(locker) runningTasks++;
         Cursor = Cursors.AppStarting;
         Task task = new Task(openFileDialog.FileName, null, null);
         ThreadPool.QueueUserWorkItem(new WaitCallback(AsynchronousLoad), task);
@@ -148,38 +148,42 @@ namespace HeuristicLab.OptimizationFrontend {
       } catch(FileNotFoundException ex) {
         MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + ex.FileName + "\" is not available.\nPlease make sure you have all necessary plugins installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } catch(TypeLoadException typeLoadEx) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName + "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
+          "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+
       LoadFinished(task);
     }
     private delegate void TaskFinishedDelegate(Task task);
     private void LoadFinished(Task task) {
-      if (InvokeRequired)
+      if(InvokeRequired)
         Invoke(new TaskFinishedDelegate(LoadFinished), task);
       else {
         IEditor editor = null;
-        if (task.storable != null) {
+        if(task.storable != null) {
           IEditable editable = task.storable as IEditable;
-          if (editable != null)
+          if(editable != null)
             editor = editable.CreateEditor();
         }
-        if (editor == null)
+        if(editor == null)
           MessageBox.Show("Could not open item. The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         else {
           editor.Filename = task.filename;
           PluginManager.ControlManager.ShowControl(editor);
         }
-        lock (locker) {
+        lock(locker) {
           runningTasks--;
-          if (runningTasks == 0)
+          if(runningTasks == 0)
             Cursor = Cursors.Default;
         }
       }
     }
     private void Save(EditorForm form) {
-      if (form.Editor.Filename == null)
+      if(form.Editor.Filename == null)
         SaveAs(form);
       else {
-        lock (locker) runningTasks++;
+        lock(locker) runningTasks++;
         Cursor = Cursors.AppStarting;
         ((Control)form.Editor).Enabled = false;
         EnableDisableItems();
@@ -188,7 +192,7 @@ namespace HeuristicLab.OptimizationFrontend {
       }
     }
     private void SaveAs(EditorForm form) {
-      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
+      if(saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         form.Editor.Filename = saveFileDialog.FileName;
         Save(form);
       }
@@ -199,14 +203,14 @@ namespace HeuristicLab.OptimizationFrontend {
       SaveFinished(task);
     }
     private void SaveFinished(Task task) {
-      if (InvokeRequired)
+      if(InvokeRequired)
         Invoke(new TaskFinishedDelegate(SaveFinished), task);
       else {
         ((Control)task.editor).Enabled = true;
         EnableDisableItems();
-        lock (locker) {
+        lock(locker) {
           runningTasks--;
-          if (runningTasks == 0)
+          if(runningTasks == 0)
             Cursor = Cursors.Default;
         }
       }
@@ -222,11 +226,11 @@ namespace HeuristicLab.OptimizationFrontend {
       ToolStripItem item = (ToolStripItem)sender;
       Type type = (Type)item.Tag;
       IEditable editable = (IEditable)Activator.CreateInstance(type);
-      if (editable == null) {
+      if(editable == null) {
         MessageBox.Show("The selected item is not editable.", "Editable Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       } else {
         IEditor editor = editable.CreateEditor();
-        if (editor == null) {
+        if(editor == null) {
           MessageBox.Show("The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else {
           PluginManager.ControlManager.ShowControl(editor);
@@ -246,9 +250,9 @@ namespace HeuristicLab.OptimizationFrontend {
       SaveAs(form);
     }
     private void saveAllToolStripMenuItem_Click(object sender, EventArgs e) {
-      for (int i = 0; i < MdiChildren.Length; i++) {
+      for(int i = 0; i < MdiChildren.Length; i++) {
         EditorForm form = MdiChildren[i] as EditorForm;
-        if (((Control)form.Editor).Enabled) Save(form);
+        if(((Control)form.Editor).Enabled) Save(form);
       }
     }
     private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -256,7 +260,7 @@ namespace HeuristicLab.OptimizationFrontend {
       EnableDisableItems();
     }
     private void closeAllToolStripMenuItem_Click(object sender, EventArgs e) {
-      while (MdiChildren.Length > 0)
+      while(MdiChildren.Length > 0)
         MdiChildren[0].Close();
       EnableDisableItems();
     }
@@ -296,9 +300,9 @@ namespace HeuristicLab.OptimizationFrontend {
       Save(form);
     }
     private void saveAllToolStripButton_Click(object sender, EventArgs e) {
-      for (int i = 0; i < MdiChildren.Length; i++) {
+      for(int i = 0; i < MdiChildren.Length; i++) {
         EditorForm form = MdiChildren[i] as EditorForm;
-        if (form!=null && ((Control)form.Editor).Enabled) Save(form);
+        if(form != null && ((Control)form.Editor).Enabled) Save(form);
       }
     }
     #endregion
