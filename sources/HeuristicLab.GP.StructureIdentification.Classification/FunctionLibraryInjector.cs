@@ -64,6 +64,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         allowedIndexes[i] = allowedFeatures[i].Data;
       }
 
+      variable.SetConstraints(allowedIndexes, 0, 0);
+
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
       return null;
     }
