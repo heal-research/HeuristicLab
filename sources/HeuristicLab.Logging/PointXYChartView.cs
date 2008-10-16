@@ -107,11 +107,11 @@ namespace HeuristicLab.Logging {
               if (value[1] < minY) minY = value[1];
               if (value[1] > maxY) maxY = value[1];
 
-              datachart.AddDataPoint(i, value[0], value[1]);
+              datachart.AddDataPoint(i, value[0], value[1]);                                                         
             }
           }
         }
-        datachart.ZoomIn(minX - (minX * 0.1), minY - (minY * 0.1), maxX * 1.05 , maxY * 1.05);
+        datachart.ZoomIn(minX - (Math.Abs(maxX - minX) * 0.1), minY - (Math.Abs(maxY -minY) * 0.1), maxX + (Math.Abs(maxX - minX) * 0.1), maxY + (Math.Abs(maxY - minY) * 0.1));
         datachart.UpdateEnabled = true;
         datachart.EnforceUpdate();
       }
