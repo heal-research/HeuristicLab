@@ -142,8 +142,11 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       Task task = (Task)state;
       try {
         task.storable = PersistenceManager.Load(task.filename);
-      } catch(FileNotFoundException ex) {
-        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + ex.FileName+ "\" is not available.\nPlease make sure you have all necessary plugins installed.",
+      } catch(FileNotFoundException fileNotFoundEx) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + fileNotFoundEx.FileName + "\" is not available.\nPlease make sure you have all necessary plugins installed.",
+          "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } catch(TypeLoadException typeLoadEx) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName+ "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       LoadFinished(task);
