@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace HeuristicLab.Visualization {
-  interface IChartDataRowsModel {
+﻿namespace HeuristicLab.Visualization {
+  public interface IChartDataRowsModel {
+    event ChartDataRowsModelDataChangedHandler DataChanged;
   }
 }

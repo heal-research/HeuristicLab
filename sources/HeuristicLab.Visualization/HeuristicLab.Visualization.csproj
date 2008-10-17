@@ -57,8 +57,10 @@
     <Compile Include="CanvasUI.Designer.cs">
       <DependentUpon>CanvasUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChangeType.cs" />
     <Compile Include="ChartDataModelBase.cs" />
     <Compile Include="ChartDataRowsModel.cs" />
+    <Compile Include="ChartDataRowsModelDataChangedHandler.cs" />
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />
@@ -90,6 +92,11 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LineChart.resx">
+      <DependentUpon>LineChart.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
