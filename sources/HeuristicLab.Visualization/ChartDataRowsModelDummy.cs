@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Visualization {
-  class ChartDataRowsModelDummy {
+  class ChartDataRowsModelDummy : ChartDataRowsModel {
+
+    
   }
 }
