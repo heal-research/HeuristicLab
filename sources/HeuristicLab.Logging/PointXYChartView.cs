@@ -98,16 +98,18 @@ namespace HeuristicLab.Logging {
         }
 
         for (int i = 0; i < PointXYChart.Values.Count; i++) {
-          ItemList<DoubleArrayData> list = (ItemList<DoubleArrayData>)PointXYChart.Values[i];
+          ItemList list = (ItemList) PointXYChart.Values[i];
           for (int j = 0; j < list.Count; j++) {
-            double[] value = ((DoubleArrayData)list[j]).Data;
-            if (!double.IsInfinity(value[0]) && !double.IsNaN(value[0]) && !double.IsInfinity(value[1]) && !double.IsNaN(value[1])) {
-              if (value[0] < minX) minX = value[0];
-              if (value[0] > maxX) maxX = value[0];
-              if (value[1] < minY) minY = value[1];
-              if (value[1] > maxY) maxY = value[1];
+           ItemList value = ((ItemList)list[j]);
+           double x = ((DoubleData)value[0]).Data;
+           double y = ((DoubleData)value[1]).Data;
+            if (!double.IsInfinity(x) && !double.IsNaN(x) && !double.IsInfinity(y) && !double.IsNaN(y)) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
 
-              datachart.AddDataPoint(i, value[0], value[1]);                                                         
+              datachart.AddDataPoint(i, x, y);                                                         
             }
           }
         }

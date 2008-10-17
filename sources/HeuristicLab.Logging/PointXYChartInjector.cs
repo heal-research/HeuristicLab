@@ -37,13 +37,13 @@ namespace HeuristicLab.Logging {
       connectDotsInfo.Local = true;
       AddVariableInfo(connectDotsInfo);
       AddVariable(new Variable("ConnectDots", new BoolData(true)));
-      AddVariableInfo(new VariableInfo("Values", "Item list holding the values of the pointXYchart", typeof(ItemList<ItemList<DoubleArrayData>>), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Values", "Item list holding the values of the pointXYchart", typeof(ItemList), VariableKind.In));
       AddVariableInfo(new VariableInfo("PointXYchart", "Object representing a pointXYchart", typeof(PointXYChart), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
       bool connectDots = GetVariableValue<BoolData>("ConnectDots", scope, true).Data;
-      ItemList<ItemList<DoubleArrayData>> values = GetVariableValue<ItemList<ItemList<DoubleArrayData>>>("Values", scope, true);
+      ItemList values = GetVariableValue<ItemList>("Values", scope, true);
       PointXYChart pointXYchart = GetVariableValue<PointXYChart>("PointXYchart", scope, false, false);
       if (pointXYchart == null) {
         pointXYchart = new PointXYChart(connectDots, values);

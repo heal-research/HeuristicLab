@@ -28,8 +28,8 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Logging {
   public class PointXYChart : ItemBase, IVisualizationItem {
-    private ItemList<ItemList<DoubleArrayData>> myValues;
-    public ItemList<ItemList<DoubleArrayData>> Values {
+    private ItemList myValues;
+    public ItemList Values {
       get { return myValues; }
       set {
         if (value != myValues) {
@@ -55,14 +55,14 @@ namespace HeuristicLab.Logging {
     public PointXYChart() {
       myConnectDots = new BoolData(true);
     }
-    public PointXYChart(bool connectDots,ItemList<ItemList<DoubleArrayData>> values) {
+    public PointXYChart(bool connectDots,ItemList values) {
       myConnectDots = new BoolData(connectDots);
       myValues = values;
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       PointXYChart clone = (PointXYChart)base.Clone(clonedObjects);
-      clone.myValues = (ItemList<ItemList<DoubleArrayData>>)Auxiliary.Clone(Values, clonedObjects);
+      clone.myValues = (ItemList)Auxiliary.Clone(Values, clonedObjects);
       return clone;
     }
 
@@ -91,7 +91,7 @@ namespace HeuristicLab.Logging {
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myConnectDots = (BoolData)PersistenceManager.Restore(node.SelectSingleNode("ConnectDots"), restoredObjects);
-      myValues = (ItemList<ItemList<DoubleArrayData>>)PersistenceManager.Restore(node.SelectSingleNode("Values"), restoredObjects);
+      myValues = (ItemList)PersistenceManager.Restore(node.SelectSingleNode("Values"), restoredObjects);
     }
     #endregion
   }
