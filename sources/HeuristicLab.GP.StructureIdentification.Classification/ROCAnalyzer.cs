@@ -30,6 +30,9 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class ROCAnalyzer : OperatorBase {
+    private ItemList myRocValues;
+    private ItemList<DoubleData> myAucValues;
+
 
     public override string Description {
       get { return @"Calculate TPR & FPR for various tresholds on dataset"; }
@@ -38,39 +41,44 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     public ROCAnalyzer()
       : base() {
       AddVariableInfo(new VariableInfo("Values", "Item list holding the estimated and orignial values for the ROCAnalyzer", typeof(ItemList), VariableKind.In));
-      AddVariableInfo(new VariableInfo("ROCValues", "The values of the ROCAnalyzer, namely TPR & FPR", typeof(ItemList<ItemList<DoubleArrayData>>), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("ROCValues", "The values of the ROCAnalyzer, namely TPR & FPR", typeof(ItemList), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("AUCValues", "The AUC Values for each ROC", typeof(ItemList<DoubleData>), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
+      #region initialize HL-variables
       ItemList values = GetVariableValue<ItemList>("Values", scope, true);
-      ItemList<ItemList<DoubleArrayData>> rocValues = GetVariableValue<ItemList<ItemList<DoubleArrayData>>>("ROCValues", scope, false, false);
-      if (rocValues == null) {
-        rocValues = new ItemList<ItemList<DoubleArrayData>>();
+      myRocValues = GetVariableValue<ItemList>("ROCValues", scope, false, false);
+      if (myRocValues == null) {
+        myRocValues = new ItemList();
         IVariableInfo info = GetVariableInfo("ROCValues");
         if (info.Local)
-          AddVariable(new HeuristicLab.Core.Variable(info.ActualName, rocValues));
+          AddVariable(new HeuristicLab.Core.Variable(info.ActualName, myRocValues));
         else
-          scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), rocValues));
+          scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), myRocValues));
       } else {
-        rocValues.Clear();
+        myRocValues.Clear();
       }
 
-      rocValues.Add(new ItemList<DoubleArrayData>());
-      //ROC Curve starts at 0,0
-      DoubleArrayData point = new DoubleArrayData();
-      point.Data = new double[2] { 0, 0 };
-      rocValues[0].Add(point);
+      myAucValues = GetVariableValue<ItemList<DoubleData>>("AUCValues", scope, false, false);
+      if (myAucValues == null) {
+        myAucValues = new ItemList<DoubleData>();
+        IVariableInfo info = GetVariableInfo("AUCValues");
+        if (info.Local)
+          AddVariable(new HeuristicLab.Core.Variable(info.ActualName, myAucValues));
+        else
+          scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), myAucValues));
+      } else {
+        myAucValues.Clear();
+      }
+      #endregion
 
       //calculate new ROC Values
       double estimated = 0.0;
       double original = 0.0;
-      double positiveClassKey;
-      double negativeClassKey;
-      double truePositiveRate = 0.0;
-      double falsePositiveRate = 0.0;
 
       //initialize classes dictionary
-      Dictionary<double, List<double>> classes = new Dictionary<double, List<double>>();
+      SortedDictionary<double, List<double>> classes = new SortedDictionary<double, List<double>>();
       foreach (ItemList value in values) {
         estimated = ((DoubleData)value[0]).Data;
         original = ((DoubleData)value[1]).Data;
@@ -78,42 +86,166 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
           classes[original] = new List<double>();
         classes[original].Add(estimated);
       }
+      foreach (double key in classes.Keys)
+        classes[key].Sort();
 
       //check for 2 classes classification problem
-      if (classes.Keys.Count != 2)
-        throw new Exception("ROCAnalyser only handles  2 class classification problems");
+      //if (classes.Keys.Count != 2)
+      //  throw new Exception("ROCAnalyser only handles  2 class classification problems");
 
-      //sort estimated values in classes dictionary
-      foreach (List<double> estimatedValues in classes.Values)
-        estimatedValues.Sort();
-
-      //calculate truePosivite- & falsePositiveRate
-      positiveClassKey = classes.Keys.Min<double>();
-      negativeClassKey = classes.Keys.Max<double>();
-      foreach (double treshold in classes[negativeClassKey].Distinct<double>()) {
-        truePositiveRate = ((double)classes[positiveClassKey].Count<double>(value => value < treshold)) / classes[positiveClassKey].Count;
-        falsePositiveRate = ((double)classes[negativeClassKey].Count<double>(value => value < treshold)) / classes[negativeClassKey].Count;
-        point = new DoubleArrayData(new double[2] { falsePositiveRate, truePositiveRate });
-        rocValues[0].Add(point);
-
-        //stop calculation if truePositiveRate = 1; save runtime
-        if (truePositiveRate == 1)
-          break;
-      }
-
-      //add case when treshold == max negative class value => falsePositiveRate ==1
-      if (truePositiveRate != 1.0) {
-        truePositiveRate = ((double)classes[positiveClassKey].Count<double>(value => value <= classes[negativeClassKey][classes[negativeClassKey].Count - 1])) / classes[positiveClassKey].Count;
-        falsePositiveRate = 1;
-        point = new DoubleArrayData(new double[2] { falsePositiveRate, truePositiveRate });
-        rocValues[0].Add(point);
-      } else {
-        //ROC ends at 1,1
-        point = new DoubleArrayData(new double[2] { 1, 1 });
-        rocValues[0].Add(point);
+      //calculate ROC Curve
+      foreach (double key in classes.Keys) {
+        CalculateBestROC(key, classes);
       }
 
       return null;
     }
+
+    protected void CalculateBestROC(double positiveClassKey, SortedDictionary<double, List<double>> classes) {
+
+      int rocIndex = myRocValues.Count - 1;
+      List<KeyValuePair<double, double>> rocCharacteristics;
+      List<KeyValuePair<double, double>> bestROC;
+      List<KeyValuePair<double, double>> actROC;
+
+      List<double> negatives = new List<double>();
+      foreach (double key in classes.Keys) {
+        if (key != positiveClassKey)
+          negatives.AddRange(classes[key]);
+      }
+      List<double> actNegatives = negatives.Where<double>(value => value < classes[positiveClassKey].Max<double>()).ToList<double>();
+      actNegatives.Add(classes[positiveClassKey].Max<double>());
+      actNegatives.Sort();
+      actNegatives = actNegatives.Reverse<double>().ToList<double>();
+
+      double bestAUC = double.MinValue;
+      double actAUC = 0;
+      //first class
+      if (classes.Keys.ElementAt<double>(0) == positiveClassKey) {
+        rocCharacteristics = null;
+        CalculateROCValuesAndAUC(classes[positiveClassKey], actNegatives, negatives.Count, double.MinValue, ref rocCharacteristics, out  actROC, out actAUC);
+        myAucValues.Add(new DoubleData(actAUC));
+        myRocValues.Add(Convert(actROC));
+      }
+        //middle classes  
+      else if (classes.Keys.ElementAt<double>(classes.Keys.Count - 1) != positiveClassKey) {
+        rocCharacteristics = null;
+        bestROC = new List<KeyValuePair<double, double>>();
+        foreach (double minTreshold in classes[positiveClassKey].Distinct<double>()) {
+          CalculateROCValuesAndAUC(classes[positiveClassKey], actNegatives, negatives.Count, minTreshold, ref rocCharacteristics, out  actROC, out actAUC);
+          if (actAUC > bestAUC) {
+            bestAUC = actAUC;
+            bestROC = actROC;
+          }
+        }
+          myAucValues.Add(new DoubleData(bestAUC));
+          myRocValues.Add(Convert(bestROC));
+        
+      } else { //last class
+        actNegatives = negatives.Where<double>(value => value > classes[positiveClassKey].Min<double>()).ToList<double>();
+        actNegatives.Add(classes[positiveClassKey].Min<double>());
+        actNegatives.Sort();
+        CalculateROCValuesAndAUCForLastClass(classes[positiveClassKey], actNegatives, negatives.Count, out bestROC, out bestAUC);
+        myAucValues.Add(new DoubleData(bestAUC));
+        myRocValues.Add(Convert(bestROC));
+
+      }
+
+    }
+
+    protected void CalculateROCValuesAndAUC(List<double> positives, List<double> negatives, int negativesCount, double minTreshold,
+      ref List<KeyValuePair<double, double>> rocCharacteristics, out List<KeyValuePair<double, double>> roc, out double auc) {
+      double actTP = -1;
+      double actFP = -1;
+      double oldTP = -1;
+      double oldFP = -1;
+      auc = 0;
+      roc = new List<KeyValuePair<double, double>>();
+
+      actTP = positives.Count<double>(value => minTreshold <= value && value <= negatives.Max<double>());
+      actFP = negatives.Count<double>(value => minTreshold <= value && value <= negatives.Max<double>());
+      //add point (1,TPR) for AUC 'correct' calculation
+      roc.Add(new KeyValuePair<double, double>(1, actTP / positives.Count));
+      oldTP = actTP;
+      oldFP = negativesCount;
+      roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
+
+      if (rocCharacteristics == null) {
+        rocCharacteristics = new List<KeyValuePair<double, double>>();
+        foreach (double maxTreshold in negatives.Distinct<double>()) {
+          auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+          oldTP = actTP;
+          oldFP = actFP;
+          actTP = positives.Count<double>(value => minTreshold <= value && value < maxTreshold);
+          actFP = negatives.Count<double>(value => minTreshold <= value && value < maxTreshold);
+          rocCharacteristics.Add(new KeyValuePair<double, double>(oldTP - actTP, oldFP - actFP));
+          roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
+
+          //stop calculation if truePositiveRate == 0 => straight line with y=0 & save runtime
+          if ((actTP / positives.Count == 0) || (actFP / negatives.Count == 0))
+            break;
+        }
+        auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+      } else { //characteristics of ROCs calculated 
+        foreach (KeyValuePair<double, double> rocCharac in rocCharacteristics) {
+          auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+          oldTP = actTP;
+          oldFP = actFP;
+          actTP = oldTP - rocCharac.Key;
+          actFP = oldFP - rocCharac.Value;
+          roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
+          if (actTP / positives.Count == 0)
+            break;
+        }
+        auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+      }
+    }
+
+    protected void CalculateROCValuesAndAUCForLastClass(List<double> positives, List<double> negatives, int negativesCount,
+      out List<KeyValuePair<double, double>> roc, out double auc) {
+      double actTP = -1;
+      double actFP = -1;
+      double oldTP = -1;
+      double oldFP = -1;
+      auc = 0;
+      roc = new List<KeyValuePair<double, double>>();
+
+      actTP = positives.Count<double>(value => value >= negatives.Min<double>());
+      actFP = negatives.Count<double>(value => value >= negatives.Min<double>());
+      //add point (1,TPR) for AUC 'correct' calculation
+      roc.Add(new KeyValuePair<double, double>(1, actTP / positives.Count));
+      oldTP = actTP;
+      oldFP = negativesCount;
+      roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
+
+      foreach (double minTreshold in negatives.Distinct<double>()) {
+        auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+        oldTP = actTP;
+        oldFP = actFP;
+        actTP = positives.Count<double>(value => minTreshold <= value);
+        actFP = negatives.Count<double>(value => minTreshold <= value);
+        roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
+
+        //stop calculation if truePositiveRate == 0 => straight line with y=0 & save runtime
+        if ((actTP / positives.Count == 0) || (actFP / negatives.Count == 0))
+          break;
+      }
+      auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;
+
+    }
+
+    private ItemList Convert(List<KeyValuePair<double, double>> data) {
+      ItemList list = new ItemList();
+      ItemList row;
+      foreach (KeyValuePair<double, double> dataPoint in data) {
+        row = new ItemList();
+        row.Add(new DoubleData(dataPoint.Key));
+        row.Add(new DoubleData(dataPoint.Value));
+        list.Add(row);
+      }
+      return list;
+    }
+
   }
+
 }
