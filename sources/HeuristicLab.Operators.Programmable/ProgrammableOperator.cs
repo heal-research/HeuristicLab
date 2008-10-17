@@ -92,6 +92,7 @@ namespace HeuristicLab.Operators.Programmable {
       ns.Imports.Add(new CodeNamespaceImport("System"));
       ns.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
       ns.Imports.Add(new CodeNamespaceImport("System.Text"));
+      ns.Imports.Add(new CodeNamespaceImport("System.Linq"));
       ns.Imports.Add(new CodeNamespaceImport("HeuristicLab.Core"));
       foreach (IVariableInfo variableInfo in VariableInfos)
         ns.Imports.Add(new CodeNamespaceImport(variableInfo.DataType.Namespace));
