@@ -20,13 +20,12 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Core;
+using Core = HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
-using StructId = HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.TimeSeries {
-  public class FunctionLibraryInjector : OperatorBase {
+namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
+  public class FunctionLibraryInjector : Core.OperatorBase {
     private const string TARGETVARIABLE = "TargetVariable";
     private const string AUTOREGRESSIVE = "Autoregressive";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
@@ -34,8 +33,8 @@ namespace HeuristicLab.GP.TimeSeries {
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
     private const string FUNCTIONLIBRARY = "FunctionLibrary";
 
-    private StructId.Variable variable;
-    private StructId.Differential differential;
+    private Variable variable;
+    private Differential differential;
     private GPOperatorLibrary operatorLibrary;
 
     public override string Description {
@@ -44,15 +43,15 @@ namespace HeuristicLab.GP.TimeSeries {
 
     public FunctionLibraryInjector()
       : base() {
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(AUTOREGRESSIVE, "Switch to turn on/off autoregressive modeling (wether to allow the target variable as input)", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
-      AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
+      AddVariableInfo(new Core.VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(AUTOREGRESSIVE, "Switch to turn on/off autoregressive modeling (wether to allow the target variable as input)", typeof(BoolData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), Core.VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
+    public override Core.IOperation Apply(Core.IScope scope) {
       IntData minTimeOffset = GetVariableValue<IntData>(MINTIMEOFFSET, scope, true);
       IntData maxTimeOffset = GetVariableValue<IntData>(MAXTIMEOFFSET, scope, true);
       ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
@@ -78,36 +77,36 @@ namespace HeuristicLab.GP.TimeSeries {
       variable.SetConstraints(allowedIndexes, minTimeOffset.Data, maxTimeOffset.Data);
       differential.SetConstraints(allowedIndexes, minTimeOffset.Data, maxTimeOffset.Data);
 
-      scope.AddVariable(new Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
+      scope.AddVariable(new Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
       return null;
     }
 
     private void InitDefaultOperatorLibrary() {
-      variable = new StructId.Variable();
-      differential = new StructId.Differential();
-      StructId.Constant constant = new StructId.Constant();
+      variable = new Variable();
+      differential = new Differential();
+      Constant constant = new Constant();
 
-      StructId.Addition addition = new StructId.Addition();
-      StructId.And and = new StructId.And();
-      StructId.Average average = new StructId.Average();
-      StructId.Cosinus cosinus = new StructId.Cosinus();
-      StructId.Division division = new StructId.Division();
-      StructId.Equal equal = new StructId.Equal();
-      StructId.Exponential exponential = new StructId.Exponential();
-      StructId.GreaterThan greaterThan = new StructId.GreaterThan();
-      StructId.IfThenElse ifThenElse = new StructId.IfThenElse();
-      StructId.LessThan lessThan = new StructId.LessThan();
-      StructId.Logarithm logarithm = new StructId.Logarithm();
-      StructId.Multiplication multiplication = new StructId.Multiplication();
-      StructId.Not not = new StructId.Not();
-      StructId.Or or = new StructId.Or();
-      StructId.Power power = new StructId.Power();
-      StructId.Signum signum = new StructId.Signum();
-      StructId.Sinus sinus = new StructId.Sinus();
-      StructId.Sqrt sqrt = new StructId.Sqrt();
-      StructId.Subtraction subtraction = new StructId.Subtraction();
-      StructId.Tangens tangens = new StructId.Tangens();
-      StructId.Xor xor = new StructId.Xor();
+      Addition addition = new Addition();
+      And and = new And();
+      Average average = new Average();
+      Cosinus cosinus = new Cosinus();
+      Division division = new Division();
+      Equal equal = new Equal();
+      Exponential exponential = new Exponential();
+      GreaterThan greaterThan = new GreaterThan();
+      IfThenElse ifThenElse = new IfThenElse();
+      LessThan lessThan = new LessThan();
+      Logarithm logarithm = new Logarithm();
+      Multiplication multiplication = new Multiplication();
+      Not not = new Not();
+      Or or = new Or();
+      Power power = new Power();
+      Signum signum = new Signum();
+      Sinus sinus = new Sinus();
+      Sqrt sqrt = new Sqrt();
+      Subtraction subtraction = new Subtraction();
+      Tangens tangens = new Tangens();
+      Xor xor = new Xor();
 
       IFunction[] booleanFunctions = new IFunction[] {
         and,
@@ -188,7 +187,7 @@ namespace HeuristicLab.GP.TimeSeries {
     }
 
     private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
-      foreach(IConstraint c in f.Constraints) {
+      foreach(Core.IConstraint c in f.Constraints) {
         if(c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           typeConstraint.Clear();
@@ -206,7 +205,7 @@ namespace HeuristicLab.GP.TimeSeries {
     }
 
     private void SetAllowedSubOperators(IFunction f, int p, IFunction[] gs) {
-      foreach(IConstraint c in f.Constraints) {
+      foreach(Core.IConstraint c in f.Constraints) {
         if(c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           if(typeConstraint.SubOperatorIndex.Data == p) {

@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.StructureIdentification;
 
-namespace HeuristicLab.GP.TimeSeries {
+namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class AvergePercentageChangeEvaluator : GPEvaluatorBase {
     protected DoubleData apc;
     private bool differential;

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.TimeSeries {
+namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.2")]
   [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
