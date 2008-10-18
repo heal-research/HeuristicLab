@@ -30,12 +30,12 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Operators.Stopwatch {
   public class Stopwatch : ItemBase {
     private System.Diagnostics.Stopwatch stopwatch;
-    private long elapsedTicks;
+    private TimeSpan elapsedTime;
     private bool running;
 
     public Stopwatch() {
       stopwatch = new System.Diagnostics.Stopwatch();
-      elapsedTicks = 0;
+      elapsedTime = new TimeSpan(0L);
       running = false;
     }
 
@@ -46,27 +46,21 @@ namespace HeuristicLab.Operators.Stopwatch {
 
     public void Stop() {
       stopwatch.Stop();
-      elapsedTicks = stopwatch.ElapsedTicks;
+      elapsedTime += stopwatch.Elapsed;
       stopwatch.Reset();
       running = false;
     }
 
-    public long ElapsedTicks {
-      get {
-        return elapsedTicks + stopwatch.ElapsedTicks;
-      }
-    }
-
     public TimeSpan Elapsed {
       get {
-        return TimeSpan.FromTicks(elapsedTicks).Add(stopwatch.Elapsed);
+        return elapsedTime + stopwatch.Elapsed;
       }
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Stopwatch clone = (Stopwatch)base.Clone(clonedObjects);
       if(running) clone.Start();
-      clone.elapsedTicks = elapsedTicks;
+      clone.elapsedTime = elapsedTime;
       return clone;
     }
 
@@ -76,12 +70,13 @@ namespace HeuristicLab.Operators.Stopwatch {
       runningAttr.Value = running.ToString();
       node.Attributes.Append(runningAttr);
       XmlAttribute elapsedTicksAttr = document.CreateAttribute("ElapsedTicks");
-      elapsedTicksAttr.Value = elapsedTicks.ToString();
+      elapsedTicksAttr.Value = elapsedTime.Ticks.ToString();
       node.Attributes.Append(elapsedTicksAttr);
       return node;
     }
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      elapsedTicks = long.Parse(node.Attributes["ElapsedTicks"].Value);
+      long elapsedTicks = long.Parse(node.Attributes["ElapsedTicks"].Value);
+      elapsedTime = TimeSpan.FromTicks(elapsedTicks);
       running = bool.Parse(node.Attributes["Running"].Value);
       if(running) stopwatch.Start();
       base.Populate(node, restoredObjects);
