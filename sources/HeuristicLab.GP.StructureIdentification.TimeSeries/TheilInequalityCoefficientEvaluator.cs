@@ -26,20 +26,36 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.StructureIdentification;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class TheilInequalityCoefficientEvaluator : GPEvaluatorBase {
     private DoubleData theilInequaliy;
+    private DoubleData uBias;
+    private DoubleData uVariance;
+    private DoubleData uCovariance;
+
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
-the 'Theil inequality coefficient (scale invariant)' of estimated values vs. real values of 'TargetVariable'.";
+the 'Theil inequality coefficient (Theil's U2 not U1!)' of estimated values vs. real values of 'TargetVariable'.
+
+U2 = Sqrt(1/N * Sum(P_t - A_t)^2 ) / Sqrt(1/N * Sum(A_t)^2 ) 
+
+where P_t is the predicted change of the target variable and A_t is the measured (original) change.
+(P_t = y'_t - y_(t-1), A_t = y_t - y_(t-1)).
+
+U2 is 0 for a perfect prediction and 1 for the naive model y'_t = y_(t-1). An U2 > 1 means the
+model is worse than the naive model (=> model is useless).";
       }
     }
 
     public TheilInequalityCoefficientEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("TheilInequalityCoefficient", "Theil's inequality coefficient of the model", typeof(DoubleData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TheilInequalityCoefficient", "Theil's inequality coefficient (U2) of the model", typeof(DoubleData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TheilInequalityCoefficientBias", "Bias proportion of Theil's inequality coefficient", typeof(DoubleData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TheilInequalityCoefficientVariance", "Variance proportion of Theil's inequality coefficient", typeof(DoubleData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TheilInequalityCoefficientCovariance", "Covariance proportion of Theil's inequality coefficient", typeof(DoubleData), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -48,12 +64,30 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
         theilInequaliy = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficient"), theilInequaliy));
       }
+      uBias = GetVariableValue<DoubleData>("TheilInequalityCoefficientBias", scope, false, false);
+      if(uBias == null) {
+        uBias = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientBias"), uBias));
+      }
+      uVariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientVariance", scope, false, false);
+      if(uVariance == null) {
+        uVariance = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientVariance"), uVariance));
+      }
+      uCovariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientCovariance", scope, false, false);
+      if(uCovariance == null) {
+        uCovariance = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientCovariance"), uCovariance));
+      }
       return base.Apply(scope);
     }
 
     public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0.0;
       double originalSquaredSum = 0.0;
+      double[] estimatedChanges = new double[end-start];
+      double[] originalChanges = new double[end-start];
+      int nSamples = 0;
       for(int sample = start; sample < end; sample++) {
         double prevValue = GetOriginalValue(sample - 1);
         double estimatedChange = GetEstimatedValue(sample) - prevValue;
@@ -63,13 +97,27 @@ the 'Theil inequality coefficient (scale invariant)' of estimated values vs. rea
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;
           originalSquaredSum += originalChange * originalChange;
+          estimatedChanges[sample - start] = estimatedChange;
+          originalChanges[sample - start] = originalChange;
+          nSamples++;
         }
       }
-      int nSamples = end - start;
       double quality = Math.Sqrt(errorsSquaredSum / nSamples) / Math.Sqrt(originalSquaredSum / nSamples);
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
-      theilInequaliy.Data = quality;
+      theilInequaliy.Data = quality; // U2
+
+      // decomposition into U_bias + U_variance + U_covariance parts
+      double bias = Statistics.Mean(estimatedChanges) - Statistics.Mean(originalChanges);
+      bias *= bias; // squared
+      uBias.Data = bias / (errorsSquaredSum / nSamples);
+
+      double variance = Statistics.StandardDeviation(estimatedChanges) - Statistics.StandardDeviation(originalChanges);
+      variance *= variance; // squared
+      uVariance.Data = variance / (errorsSquaredSum / nSamples);
+
+      // all parts add up to one so I don't have to calculate the correlation coefficient for the covariance propotion
+      uCovariance.Data = 1.0 - uBias.Data - uVariance.Data; 
     }
   }
 }
