@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -31,6 +32,7 @@ using Microsoft.CSharp;
 using System.Text.RegularExpressions;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using System.Data.Linq;
 
 namespace HeuristicLab.Operators.Programmable {
   public class ProgrammableOperator : OperatorBase {
@@ -55,7 +57,6 @@ namespace HeuristicLab.Operators.Programmable {
     public ProgrammableOperator() {
       myCode = "Result.Data = true;";
       myDescription = "An operator that can be programmed for arbitrary needs.";
-
       AddVariableInfo(new VariableInfo("Result", "A computed variable", typeof(BoolData), VariableKind.New | VariableKind.Out));
       executeMethod = null;
     }
@@ -93,6 +94,7 @@ namespace HeuristicLab.Operators.Programmable {
       ns.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
       ns.Imports.Add(new CodeNamespaceImport("System.Text"));
       ns.Imports.Add(new CodeNamespaceImport("System.Linq"));
+      ns.Imports.Add(new CodeNamespaceImport("System.Data.Linq"));
       ns.Imports.Add(new CodeNamespaceImport("HeuristicLab.Core"));
       foreach (IVariableInfo variableInfo in VariableInfos)
         ns.Imports.Add(new CodeNamespaceImport(variableInfo.DataType.Namespace));
@@ -106,7 +108,9 @@ namespace HeuristicLab.Operators.Programmable {
       Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
       foreach (Assembly loadedAssembly in loadedAssemblies)
         parameters.ReferencedAssemblies.Add(loadedAssembly.Location);
-      CodeDomProvider provider = new CSharpCodeProvider();
+      parameters.ReferencedAssemblies.Add(typeof(Enumerable).Assembly.Location); // add reference to version 3.5 of System.dll
+      parameters.ReferencedAssemblies.Add(typeof(DataContext).Assembly.Location); // add reference System.Data.Linq.Dll
+      CodeDomProvider provider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } });  // support C# 3.0 syntax
       CompilerResults results = provider.CompileAssemblyFromDom(parameters, unit);
 
       executeMethod = null;
