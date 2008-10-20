@@ -60,7 +60,8 @@
     <Compile Include="ChangeType.cs" />
     <Compile Include="ChartDataModelBase.cs" />
     <Compile Include="ChartDataRowsModel.cs" />
-    <Compile Include="ChartDataRowsModelDataChangedHandler.cs" />
+    <Compile Include="ChartDataRowsModelColumn.cs" />
+    <Compile Include="ChartDataRowsModelColumnChangedHandler.cs" />
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />

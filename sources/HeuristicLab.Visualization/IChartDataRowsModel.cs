@@ -1,5 +1,8 @@
-﻿namespace HeuristicLab.Visualization {
+﻿using System.Collections.Generic;
+
+namespace HeuristicLab.Visualization {
   public interface IChartDataRowsModel {
-    event ChartDataRowsModelDataChangedHandler DataChanged;
+    event ChartDataRowsModelColumnChangedHandler ColumnChanged;
+    List<ChartDataRowsModelColumn> Columns { get; }
   }
 }

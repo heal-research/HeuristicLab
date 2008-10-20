@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 
 
 namespace HeuristicLab.Visualization{
-  public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
+  public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel {
 
     private readonly ListDictionary dataRows;
     
@@ -26,6 +26,16 @@ namespace HeuristicLab.Visualization{
 
     }
 
-    public event ChartDataRowsModelDataChangedHandler DataChanged;
+    public event ChartDataRowsModelColumnChangedHandler ColumnChanged;
+
+    private void RaiseColumnChanged(ChangeType type, long columnId, double[] values) {
+      if (ColumnChanged != null) {
+        ColumnChanged(type, columnId, values);
+      }
+    }
+
+    public List<ChartDataRowsModelColumn> Columns {
+      get { throw new NotImplementedException(); }
+    }
   }
 }
