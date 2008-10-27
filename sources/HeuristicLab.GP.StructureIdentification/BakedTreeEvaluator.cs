@@ -30,7 +30,6 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class BakedTreeEvaluator {
-    private const int MAX_TREE_SIZE = 4096;
     private const double EPSILON = 1.0e-7;
 
     private class Instr {
@@ -42,29 +41,28 @@ namespace HeuristicLab.GP.StructureIdentification {
       public IFunction function;
     }
 
-    private Instr[] codeArr;
+    private List<Instr> code;
     private int PC;
     private Dataset dataset;
     private int sampleIndex;
 
 
     public BakedTreeEvaluator() {
-      codeArr = new Instr[MAX_TREE_SIZE];
-      for(int i = 0; i < MAX_TREE_SIZE; i++) {
-        codeArr[i] = new Instr();
-      }
+      code = new List<Instr>();
     }
 
     public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset) {
       this.dataset = dataset;
       List<LightWeightFunction> linearRepresentation = functionTree.LinearRepresentation;
-      int i = 0;
+      code.Clear();
       foreach(LightWeightFunction f in linearRepresentation) {
-        TranslateToInstr(f, codeArr[i++]);
+        Instr curInstr = new Instr();
+        TranslateToInstr(f, curInstr);
+        code.Add(curInstr);
       }
     }
 
-    private Instr TranslateToInstr(LightWeightFunction f, Instr instr) {
+    private void TranslateToInstr(LightWeightFunction f, Instr instr) {
       instr.arity = f.arity;
       instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
       switch(instr.symbol) {
@@ -84,7 +82,6 @@ namespace HeuristicLab.GP.StructureIdentification {
             break;
           }
       }
-      return instr;
     }
 
     public double Evaluate(int sampleIndex) {
@@ -97,13 +94,13 @@ namespace HeuristicLab.GP.StructureIdentification {
     private void SkipBakedCode() {
       int i = 1;
       while(i > 0) {
-        i += codeArr[PC++].arity;
+        i += code[PC++].arity;
         i--;
       }
     }
 
     private double EvaluateBakedCode() {
-      Instr currInstr = codeArr[PC++];
+      Instr currInstr = code[PC++];
       switch(currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             int row = sampleIndex + currInstr.i_arg1;
