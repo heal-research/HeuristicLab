@@ -67,7 +67,9 @@
   <ItemGroup>
     <Compile Include="BakedFunctionTree.cs" />
     <Compile Include="DefaultFunctionTreeNameGenerator.cs" />
+    <Compile Include="EqualiserController.cs" />
     <Compile Include="Logging\TreeArityAnalyser.cs" />
+    <Compile Include="OffspringEqualiser.cs" />
     <Compile Include="UnknownFunctionException.cs" />
     <Compile Include="IFunctionTreeNameGenerator.cs" />
     <Compile Include="IFunctionTreeExporter.cs" />
