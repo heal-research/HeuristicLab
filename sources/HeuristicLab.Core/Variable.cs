@@ -72,7 +72,8 @@ namespace HeuristicLab.Core {
       Variable clone = new Variable();
       clonedObjects.Add(Guid, clone);
       clone.myName = Name;
-      clone.myValue = (IItem)Auxiliary.Clone(Value, clonedObjects);
+      if (Value != null)
+        clone.myValue = (IItem)Auxiliary.Clone(Value, clonedObjects);
       return clone;
     }
 
