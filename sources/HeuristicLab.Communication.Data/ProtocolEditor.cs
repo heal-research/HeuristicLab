@@ -38,93 +38,133 @@ namespace HeuristicLab.Communication.Data {
 
     public ProtocolEditor() {
       InitializeComponent();
+      statesListBox.DrawMode = DrawMode.OwnerDrawFixed;
+      statesListBox.DrawItem += new DrawItemEventHandler(statesListBox_DrawItem);
     }
+
+    void statesListBox_DrawItem(object sender, DrawItemEventArgs e) {
+      if (e.Index >= 0) { // during Items.Clear() this method is called with index -1
+        ListBox lb = (ListBox)sender;
+        ProtocolState state = (ProtocolState)lb.Items[e.Index];
+        e.DrawBackground();
+        e.DrawFocusRectangle();
+        SolidBrush textColor = new SolidBrush(Color.Black);
+        if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) textColor.Color = Color.White;
+        if (Protocol.InitialState.Equals(state))
+          e.Graphics.DrawString(state.Name, new Font(e.Font.FontFamily, e.Font.Size, FontStyle.Bold), textColor, e.Bounds);
+        else
+          e.Graphics.DrawString(state.Name, e.Font, textColor, e.Bounds);
+      }
+    }
+
     public ProtocolEditor(Protocol protocol)
       : this() {
       Protocol = protocol;
     }
 
     protected override void RemoveItemEvents() {
+      nameTextBox.DataBindings.Clear();
       Protocol.Changed -= new EventHandler(Protocol_Changed);
-      Protocol.StatesChanged -= new EventHandler(States_Changed);
-      Protocol.Name.Changed -= new EventHandler(ProtocolName_Changed);
       base.RemoveItemEvents();
     }
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Protocol.Changed += new EventHandler(Protocol_Changed);
-      Protocol.StatesChanged += new EventHandler(States_Changed);
-      Protocol.Name.Changed += new EventHandler(ProtocolName_Changed);
-    }
-
-    private void BuildInitialStateComboBox() {
-      // Rebuild the two ComboBoxes depicting the initial and final state
-      IList<ProtocolState> states = new List<ProtocolState>(Protocol.States.Count);
-      int initialSelectedIndex = -1;
-      for (int i = 0 ; i < Protocol.States.Count ; i++) {
-        states.Add((ProtocolState)Protocol.States[i]);
-        if (Protocol.States[i].Guid.Equals(Protocol.InitialState.Guid))
-          initialSelectedIndex = i;
-      }
-      initialStateComboBox.SelectedIndexChanged -= new EventHandler(initialStateComboBox_SelectedIndexChanged);
-      BindingList<ProtocolState> bl = new BindingList<ProtocolState>(states);
-      initialStateComboBox.DataSource = bl;
-      initialStateComboBox.DisplayMember = "Name";
-      initialStateComboBox.ValueMember = "Guid";
-      initialStateComboBox.SelectedIndex = initialSelectedIndex;
-      initialStateComboBox.SelectedIndexChanged += new EventHandler(initialStateComboBox_SelectedIndexChanged);
+      nameTextBox.DataBindings.Add("Text", Protocol, "Name");
     }
 
     protected override void UpdateControls() {
       base.UpdateControls();
       if (Protocol == null) {
         Caption = "Protocol";
-        nameViewControl.Enabled = false;
-        nameViewControl.StringData = null;
-        statesItemListView.Enabled = false;
-        statesItemListView.ItemList = null;
-        initialStateComboBox.Enabled = false;
-        initialStateComboBox.DataSource = null;
-        initialStateComboBox.Items.Clear();
+        nameTextBox.Enabled = false;
+        setAsInitialStateButton.Enabled = false;
+        addStateButton.Enabled = false;
+        removeStateButton.Enabled = false;
+        statesListBox.Enabled = false;
+
+        nameTextBox.Text = "";
+        statesListBox.Items.Clear();
       } else {
-        Caption = Protocol.Name.Data;
-        nameViewControl.StringData = Protocol.Name;
-        nameViewControl.Enabled = true;
-        statesItemListView.ItemList = Protocol.States;
-        statesItemListView.Enabled = true;
-        BuildInitialStateComboBox();
-        initialStateComboBox.Enabled = true;
+        Caption = Protocol.Name;
+
+        statesListBox.Items.Clear();
+        foreach (ProtocolState state in Protocol.States)
+          statesListBox.Items.Add(state);
+
+        statesListBox.Enabled = true;
+        addStateButton.Enabled = true;
+        removeStateButton.Enabled = true;
+        setAsInitialStateButton.Enabled = true;
+        nameTextBox.Enabled = true;
       }
     }
 
-    #region Custom events
     void Protocol_Changed(object sender, EventArgs e) {
       Refresh();
     }
 
-    void States_Changed(object sender, EventArgs e) {
-      Refresh();
-    }
-
-    void ProtocolName_Changed(object sender, EventArgs e) {
-      Caption = Protocol.Name.Data;
-    }
-    #endregion
-
-    #region ComboBox events
-    private void initialStateComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (initialStateComboBox.SelectedIndex >= 0)
-        Protocol.InitialState = (ProtocolState)initialStateComboBox.SelectedItem;
-    }
-    #endregion
-
-    private void invertButton_Click(object sender, EventArgs e) {
-      for (int i = 0 ; i < Protocol.States.Count ; i++) {
-        ConstrainedItemList tmp = ((ProtocolState)Protocol.States[i]).SendingData;
-        ((ProtocolState)Protocol.States[i]).SendingData = ((ProtocolState)Protocol.States[i]).ReceivingData;
-        ((ProtocolState)Protocol.States[i]).ReceivingData = tmp;
+    private void addStateButton_Click(object sender, EventArgs e) {
+      ProtocolState tmp = new ProtocolState();
+      int index = statesListBox.SelectedIndex;
+      if (index < 0) {
+        Protocol.States.Add(tmp);
+      } else {
+        Protocol.States.Insert(index, tmp);
       }
       Refresh();
+      statesListBox.SelectedIndex = index;
+    }
+
+    private void removeStateButton_Click(object sender, EventArgs e) {
+      if (statesListBox.SelectedIndex >= 0) {
+        int index = statesListBox.SelectedIndex;
+        Protocol.States.RemoveAt(statesListBox.SelectedIndex);
+        Refresh();
+        if (Protocol.States.Count > 0)
+          statesListBox.SelectedIndex = ((index < Protocol.States.Count) ? (index) : (Protocol.States.Count - 1));
+      }
+    }
+
+    private void setAsInitialStateButton_Click(object sender, EventArgs e) {
+      if (statesListBox.SelectedIndex >= 0) {
+        Protocol.InitialState = (ProtocolState)statesListBox.SelectedItem;
+        statesListBox.Refresh();
+      }
+    }
+
+    private void statesListBox_DoubleClick(object sender, EventArgs e) {
+      if (lastDeselectedIndex >= 0 || lastSelectedIndex >= 0) {
+        statesListBox.SelectedIndex = (lastDeselectedIndex >= 0) ? (lastDeselectedIndex) : (lastSelectedIndex);
+        ProtocolState selected = (ProtocolState)statesListBox.Items[(lastDeselectedIndex >= 0) ? (lastDeselectedIndex) : (lastSelectedIndex)];
+        bool editingInitial = (Protocol.InitialState == selected);
+        ProtocolState selectedClone = (ProtocolState)selected.Clone(new Dictionary<Guid, object>());
+        IView stateView = selectedClone.CreateView();
+        using (WindowedView display = new WindowedView(stateView as UserControl)) {
+          display.ShowDialog(this);
+          if (display.DialogResult == DialogResult.OK) {
+            Protocol.States[(lastDeselectedIndex >= 0) ? (lastDeselectedIndex) : (lastSelectedIndex)] = selectedClone;
+            if (editingInitial) Protocol.InitialState = selectedClone;
+            Refresh();
+          }
+        }
+      }
+    }
+
+    private int lastSelectedIndex = -1;
+    private int lastDeselectedIndex = -1;
+
+    private void statesListBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (statesListBox.SelectedIndex >= 0) {
+        if (lastSelectedIndex == statesListBox.SelectedIndex) {
+          lastDeselectedIndex = statesListBox.SelectedIndex;
+          statesListBox.SelectedIndex = -1;
+          lastSelectedIndex = -1;
+        } else {
+          lastSelectedIndex = statesListBox.SelectedIndex;
+          lastDeselectedIndex = -1;
+        }
+      }
     }
   }
 }

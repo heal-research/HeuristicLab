@@ -41,6 +41,12 @@ namespace HeuristicLab.Communication.Operators {
     public override IOperation Apply(IScope scope) {
       IDataStream datastream = GetVariableValue<IDataStream>("DataStream", scope, true);
 
+      datastream.Write("REQUEST_CLOSE");
+      string response = datastream.Read();
+      if (!response.Equals("REQUEST_CLOSE")) throw new InvalidOperationException("ERROR in DataStreamFinisher: Closing connection was denied");
+      datastream.Write("ACK");
+      response = datastream.Read();
+      if (!response.Equals("ACK")) throw new InvalidOperationException("ERROR in DataStreamFinisher: Closing connection was denied");
       datastream.Close();
 
       IVariableInfo info = GetVariableInfo("DataStream");

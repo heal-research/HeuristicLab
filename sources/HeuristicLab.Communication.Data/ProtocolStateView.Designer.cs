@@ -44,36 +44,23 @@ namespace HeuristicLab.Communication.Data {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      HeuristicLab.Data.StringData stringData1 = new HeuristicLab.Data.StringData();
-      HeuristicLab.Data.BoolData boolData1 = new HeuristicLab.Data.BoolData();
-      this.nameStringDataView = new HeuristicLab.Data.StringDataView();
       this.nameLabel = new System.Windows.Forms.Label();
       this.communicationDataTabControl = new System.Windows.Forms.TabControl();
-      this.sendTabPage = new System.Windows.Forms.TabPage();
-      this.outboundCommunicationDataView = new HeuristicLab.Data.ConstrainedItemListView();
-      this.receiveTabPage = new System.Windows.Forms.TabPage();
-      this.inboundCommunicationDataView = new HeuristicLab.Data.ConstrainedItemListView();
-      this.transitionTabPage = new System.Windows.Forms.TabPage();
-      this.removeTransitionButton = new System.Windows.Forms.Button();
-      this.addTransitionButton = new System.Windows.Forms.Button();
-      this.stateTransitionTabControl = new System.Windows.Forms.TabControl();
-      this.acceptingStateLabel = new System.Windows.Forms.Label();
-      this.acceptingStateBoolDataView = new HeuristicLab.Data.BoolDataView();
+      this.giveTabPage = new System.Windows.Forms.TabPage();
+      this.giveBatchCheckBox = new System.Windows.Forms.CheckBox();
+      this.giveVariablesLabel = new System.Windows.Forms.Label();
+      this.giveBatchLabel = new System.Windows.Forms.Label();
+      this.expectTabPage = new System.Windows.Forms.TabPage();
+      this.expectVariablesLabel = new System.Windows.Forms.Label();
+      this.expectBatchCheckBox = new System.Windows.Forms.CheckBox();
+      this.expectBatchLabel = new System.Windows.Forms.Label();
+      this.nameTextBox = new System.Windows.Forms.TextBox();
+      this.giveItemListView = new HeuristicLab.Data.ItemListView<HeuristicLab.Core.IVariable>();
+      this.expectItemListView = new HeuristicLab.Data.ItemListView<HeuristicLab.Core.IVariable>();
       this.communicationDataTabControl.SuspendLayout();
-      this.sendTabPage.SuspendLayout();
-      this.receiveTabPage.SuspendLayout();
-      this.transitionTabPage.SuspendLayout();
+      this.giveTabPage.SuspendLayout();
+      this.expectTabPage.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // nameStringDataView
-      // 
-      this.nameStringDataView.Caption = "View (StringData)";
-      this.nameStringDataView.Location = new System.Drawing.Point(48, 14);
-      this.nameStringDataView.Name = "nameStringDataView";
-      this.nameStringDataView.Size = new System.Drawing.Size(178, 26);
-      stringData1.Data = "";
-      this.nameStringDataView.StringData = stringData1;
-      this.nameStringDataView.TabIndex = 1;
       // 
       // nameLabel
       // 
@@ -89,143 +76,141 @@ namespace HeuristicLab.Communication.Data {
       this.communicationDataTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.communicationDataTabControl.Controls.Add(this.sendTabPage);
-      this.communicationDataTabControl.Controls.Add(this.receiveTabPage);
-      this.communicationDataTabControl.Controls.Add(this.transitionTabPage);
+      this.communicationDataTabControl.Controls.Add(this.giveTabPage);
+      this.communicationDataTabControl.Controls.Add(this.expectTabPage);
       this.communicationDataTabControl.Location = new System.Drawing.Point(3, 46);
       this.communicationDataTabControl.Name = "communicationDataTabControl";
       this.communicationDataTabControl.SelectedIndex = 0;
-      this.communicationDataTabControl.Size = new System.Drawing.Size(483, 381);
+      this.communicationDataTabControl.Size = new System.Drawing.Size(404, 324);
       this.communicationDataTabControl.TabIndex = 5;
       // 
-      // sendTabPage
+      // giveTabPage
       // 
-      this.sendTabPage.Controls.Add(this.outboundCommunicationDataView);
-      this.sendTabPage.Location = new System.Drawing.Point(4, 22);
-      this.sendTabPage.Name = "sendTabPage";
-      this.sendTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.sendTabPage.Size = new System.Drawing.Size(475, 355);
-      this.sendTabPage.TabIndex = 0;
-      this.sendTabPage.Text = "Send";
-      this.sendTabPage.UseVisualStyleBackColor = true;
+      this.giveTabPage.Controls.Add(this.giveItemListView);
+      this.giveTabPage.Controls.Add(this.giveBatchCheckBox);
+      this.giveTabPage.Controls.Add(this.giveVariablesLabel);
+      this.giveTabPage.Controls.Add(this.giveBatchLabel);
+      this.giveTabPage.Location = new System.Drawing.Point(4, 22);
+      this.giveTabPage.Name = "giveTabPage";
+      this.giveTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.giveTabPage.Size = new System.Drawing.Size(396, 298);
+      this.giveTabPage.TabIndex = 0;
+      this.giveTabPage.Text = "Give";
+      this.giveTabPage.UseVisualStyleBackColor = true;
       // 
-      // outboundCommunicationDataView
+      // giveBatchCheckBox
       // 
-      this.outboundCommunicationDataView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.giveBatchCheckBox.AutoSize = true;
+      this.giveBatchCheckBox.Location = new System.Drawing.Point(58, 20);
+      this.giveBatchCheckBox.Name = "giveBatchCheckBox";
+      this.giveBatchCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.giveBatchCheckBox.TabIndex = 9;
+      this.giveBatchCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // giveVariablesLabel
+      // 
+      this.giveVariablesLabel.AutoSize = true;
+      this.giveVariablesLabel.Location = new System.Drawing.Point(13, 48);
+      this.giveVariablesLabel.Name = "giveVariablesLabel";
+      this.giveVariablesLabel.Size = new System.Drawing.Size(53, 13);
+      this.giveVariablesLabel.TabIndex = 8;
+      this.giveVariablesLabel.Text = "Variables:";
+      // 
+      // giveBatchLabel
+      // 
+      this.giveBatchLabel.AutoSize = true;
+      this.giveBatchLabel.Location = new System.Drawing.Point(13, 20);
+      this.giveBatchLabel.Name = "giveBatchLabel";
+      this.giveBatchLabel.Size = new System.Drawing.Size(38, 13);
+      this.giveBatchLabel.TabIndex = 6;
+      this.giveBatchLabel.Text = "Batch:";
+      // 
+      // expectTabPage
+      // 
+      this.expectTabPage.Controls.Add(this.expectItemListView);
+      this.expectTabPage.Controls.Add(this.expectVariablesLabel);
+      this.expectTabPage.Controls.Add(this.expectBatchCheckBox);
+      this.expectTabPage.Controls.Add(this.expectBatchLabel);
+      this.expectTabPage.Location = new System.Drawing.Point(4, 22);
+      this.expectTabPage.Name = "expectTabPage";
+      this.expectTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.expectTabPage.Size = new System.Drawing.Size(396, 298);
+      this.expectTabPage.TabIndex = 1;
+      this.expectTabPage.Text = "Expect";
+      this.expectTabPage.UseVisualStyleBackColor = true;
+      // 
+      // expectVariablesLabel
+      // 
+      this.expectVariablesLabel.AutoSize = true;
+      this.expectVariablesLabel.Location = new System.Drawing.Point(13, 48);
+      this.expectVariablesLabel.Name = "expectVariablesLabel";
+      this.expectVariablesLabel.Size = new System.Drawing.Size(53, 13);
+      this.expectVariablesLabel.TabIndex = 12;
+      this.expectVariablesLabel.Text = "Variables:";
+      // 
+      // expectBatchCheckBox
+      // 
+      this.expectBatchCheckBox.AutoSize = true;
+      this.expectBatchCheckBox.Location = new System.Drawing.Point(58, 20);
+      this.expectBatchCheckBox.Name = "expectBatchCheckBox";
+      this.expectBatchCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.expectBatchCheckBox.TabIndex = 10;
+      this.expectBatchCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // expectBatchLabel
+      // 
+      this.expectBatchLabel.AutoSize = true;
+      this.expectBatchLabel.Location = new System.Drawing.Point(13, 20);
+      this.expectBatchLabel.Name = "expectBatchLabel";
+      this.expectBatchLabel.Size = new System.Drawing.Size(38, 13);
+      this.expectBatchLabel.TabIndex = 6;
+      this.expectBatchLabel.Text = "Batch:";
+      // 
+      // nameTextBox
+      // 
+      this.nameTextBox.Location = new System.Drawing.Point(48, 14);
+      this.nameTextBox.Name = "nameTextBox";
+      this.nameTextBox.Size = new System.Drawing.Size(137, 20);
+      this.nameTextBox.TabIndex = 6;
+      // 
+      // giveItemListView
+      // 
+      this.giveItemListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.outboundCommunicationDataView.Caption = "View";
-      this.outboundCommunicationDataView.ConstrainedItemList = null;
-      this.outboundCommunicationDataView.Location = new System.Drawing.Point(6, 6);
-      this.outboundCommunicationDataView.Name = "outboundCommunicationDataView";
-      this.outboundCommunicationDataView.Size = new System.Drawing.Size(463, 343);
-      this.outboundCommunicationDataView.TabIndex = 0;
+      this.giveItemListView.Caption = "View";
+      this.giveItemListView.ItemList = null;
+      this.giveItemListView.Location = new System.Drawing.Point(16, 64);
+      this.giveItemListView.Name = "giveItemListView";
+      this.giveItemListView.Size = new System.Drawing.Size(377, 231);
+      this.giveItemListView.TabIndex = 10;
       // 
-      // receiveTabPage
+      // expectItemListView
       // 
-      this.receiveTabPage.Controls.Add(this.inboundCommunicationDataView);
-      this.receiveTabPage.Location = new System.Drawing.Point(4, 22);
-      this.receiveTabPage.Name = "receiveTabPage";
-      this.receiveTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.receiveTabPage.Size = new System.Drawing.Size(475, 355);
-      this.receiveTabPage.TabIndex = 1;
-      this.receiveTabPage.Text = "Receive";
-      this.receiveTabPage.UseVisualStyleBackColor = true;
-      // 
-      // inboundCommunicationDataView
-      // 
-      this.inboundCommunicationDataView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.expectItemListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.inboundCommunicationDataView.Caption = "View";
-      this.inboundCommunicationDataView.ConstrainedItemList = null;
-      this.inboundCommunicationDataView.Location = new System.Drawing.Point(6, 6);
-      this.inboundCommunicationDataView.Name = "inboundCommunicationDataView";
-      this.inboundCommunicationDataView.Size = new System.Drawing.Size(463, 343);
-      this.inboundCommunicationDataView.TabIndex = 0;
-      // 
-      // transitionTabPage
-      // 
-      this.transitionTabPage.Controls.Add(this.removeTransitionButton);
-      this.transitionTabPage.Controls.Add(this.addTransitionButton);
-      this.transitionTabPage.Controls.Add(this.stateTransitionTabControl);
-      this.transitionTabPage.Location = new System.Drawing.Point(4, 22);
-      this.transitionTabPage.Name = "transitionTabPage";
-      this.transitionTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.transitionTabPage.Size = new System.Drawing.Size(475, 355);
-      this.transitionTabPage.TabIndex = 2;
-      this.transitionTabPage.Text = "State Transition";
-      this.transitionTabPage.UseVisualStyleBackColor = true;
-      // 
-      // removeTransitionButton
-      // 
-      this.removeTransitionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.removeTransitionButton.Enabled = false;
-      this.removeTransitionButton.Location = new System.Drawing.Point(365, 326);
-      this.removeTransitionButton.Name = "removeTransitionButton";
-      this.removeTransitionButton.Size = new System.Drawing.Size(104, 23);
-      this.removeTransitionButton.TabIndex = 2;
-      this.removeTransitionButton.Text = "Remove Transition";
-      this.removeTransitionButton.UseVisualStyleBackColor = true;
-      this.removeTransitionButton.Click += new System.EventHandler(this.removeTransitionButton_Click);
-      // 
-      // addTransitionButton
-      // 
-      this.addTransitionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.addTransitionButton.Location = new System.Drawing.Point(6, 326);
-      this.addTransitionButton.Name = "addTransitionButton";
-      this.addTransitionButton.Size = new System.Drawing.Size(104, 23);
-      this.addTransitionButton.TabIndex = 1;
-      this.addTransitionButton.Text = "Add Transition";
-      this.addTransitionButton.UseVisualStyleBackColor = true;
-      this.addTransitionButton.Click += new System.EventHandler(this.addTransitionButton_Click);
-      // 
-      // stateTransitionTabControl
-      // 
-      this.stateTransitionTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.stateTransitionTabControl.Location = new System.Drawing.Point(0, 0);
-      this.stateTransitionTabControl.Name = "stateTransitionTabControl";
-      this.stateTransitionTabControl.SelectedIndex = 0;
-      this.stateTransitionTabControl.Size = new System.Drawing.Size(475, 320);
-      this.stateTransitionTabControl.TabIndex = 0;
-      // 
-      // acceptingStateLabel
-      // 
-      this.acceptingStateLabel.AutoSize = true;
-      this.acceptingStateLabel.Location = new System.Drawing.Point(232, 17);
-      this.acceptingStateLabel.Name = "acceptingStateLabel";
-      this.acceptingStateLabel.Size = new System.Drawing.Size(86, 13);
-      this.acceptingStateLabel.TabIndex = 6;
-      this.acceptingStateLabel.Text = "Accepting State:";
-      // 
-      // acceptingStateBoolDataView
-      // 
-      boolData1.Data = true;
-      this.acceptingStateBoolDataView.BoolData = boolData1;
-      this.acceptingStateBoolDataView.Caption = "View";
-      this.acceptingStateBoolDataView.Enabled = false;
-      this.acceptingStateBoolDataView.Location = new System.Drawing.Point(324, 17);
-      this.acceptingStateBoolDataView.Name = "acceptingStateBoolDataView";
-      this.acceptingStateBoolDataView.Size = new System.Drawing.Size(15, 23);
-      this.acceptingStateBoolDataView.TabIndex = 7;
+      this.expectItemListView.Caption = "View";
+      this.expectItemListView.ItemList = null;
+      this.expectItemListView.Location = new System.Drawing.Point(16, 64);
+      this.expectItemListView.Name = "expectItemListView";
+      this.expectItemListView.Size = new System.Drawing.Size(377, 231);
+      this.expectItemListView.TabIndex = 13;
       // 
       // ProtocolStateView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.acceptingStateBoolDataView);
-      this.Controls.Add(this.acceptingStateLabel);
+      this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.communicationDataTabControl);
       this.Controls.Add(this.nameLabel);
-      this.Controls.Add(this.nameStringDataView);
       this.Name = "ProtocolStateView";
-      this.Size = new System.Drawing.Size(489, 430);
+      this.Size = new System.Drawing.Size(410, 373);
       this.communicationDataTabControl.ResumeLayout(false);
-      this.sendTabPage.ResumeLayout(false);
-      this.receiveTabPage.ResumeLayout(false);
-      this.transitionTabPage.ResumeLayout(false);
+      this.giveTabPage.ResumeLayout(false);
+      this.giveTabPage.PerformLayout();
+      this.expectTabPage.ResumeLayout(false);
+      this.expectTabPage.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -233,19 +218,19 @@ namespace HeuristicLab.Communication.Data {
 
     #endregion
 
-    private HeuristicLab.Data.StringDataView nameStringDataView;
     private System.Windows.Forms.Label nameLabel;
     private System.Windows.Forms.TabControl communicationDataTabControl;
-    private System.Windows.Forms.TabPage sendTabPage;
-    private System.Windows.Forms.TabPage receiveTabPage;
-    private HeuristicLab.Data.ConstrainedItemListView outboundCommunicationDataView;
-    private HeuristicLab.Data.ConstrainedItemListView inboundCommunicationDataView;
-    private System.Windows.Forms.Label acceptingStateLabel;
-    private HeuristicLab.Data.BoolDataView acceptingStateBoolDataView;
-    private System.Windows.Forms.TabPage transitionTabPage;
-    private System.Windows.Forms.TabControl stateTransitionTabControl;
-    private System.Windows.Forms.Button addTransitionButton;
-    private System.Windows.Forms.Button removeTransitionButton;
+    private System.Windows.Forms.TabPage giveTabPage;
+    private System.Windows.Forms.TabPage expectTabPage;
+    private System.Windows.Forms.Label giveBatchLabel;
+    private System.Windows.Forms.Label expectBatchLabel;
+    private System.Windows.Forms.CheckBox giveBatchCheckBox;
+    private System.Windows.Forms.Label giveVariablesLabel;
+    private System.Windows.Forms.Label expectVariablesLabel;
+    private System.Windows.Forms.CheckBox expectBatchCheckBox;
+    private System.Windows.Forms.TextBox nameTextBox;
+    private HeuristicLab.Data.ItemListView<HeuristicLab.Core.IVariable> giveItemListView;
+    private HeuristicLab.Data.ItemListView<HeuristicLab.Core.IVariable> expectItemListView;
 
   }
 }

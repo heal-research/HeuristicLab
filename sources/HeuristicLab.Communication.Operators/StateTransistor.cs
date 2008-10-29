@@ -43,7 +43,7 @@ If the choice on the transition was made and there are suboperators attached, it
     }
 
     public override IOperation Apply(IScope scope) {
-      ProtocolState currentState = GetVariableValue<ProtocolState>("CurrentState", scope, true);
+      /*ProtocolState currentState = GetVariableValue<ProtocolState>("CurrentState", scope, true);
       // Terminate as soon as an accepting state is reached
       if (currentState.AcceptingState.Data) return null;
 
@@ -110,7 +110,8 @@ If the choice on the transition was made and there are suboperators attached, it
       }
 
       sp.AddSubOperator(nextTransistor);
-      return new AtomicOperation(sp, scope);
+      return new AtomicOperation(sp, scope);*/
+      return null;
     }
   }
 }

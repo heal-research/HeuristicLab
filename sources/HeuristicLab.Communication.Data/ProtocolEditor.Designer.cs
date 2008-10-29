@@ -35,8 +35,6 @@ namespace HeuristicLab.Communication.Data {
         components.Dispose();
       }
       if (Protocol != null) Protocol.Changed -= new System.EventHandler(Protocol_Changed);
-      nameViewControl.Dispose();
-      statesItemListView.Dispose();
       base.Dispose(disposing);
     }
 
@@ -47,25 +45,16 @@ namespace HeuristicLab.Communication.Data {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      HeuristicLab.Data.StringData stringData2 = new HeuristicLab.Data.StringData();
-      this.nameViewControl = new HeuristicLab.Data.StringDataView();
       this.protocolNameLabel = new System.Windows.Forms.Label();
-      this.initialStateLabel = new System.Windows.Forms.Label();
-      this.initialStateComboBox = new System.Windows.Forms.ComboBox();
       this.protocolStatesLabel = new System.Windows.Forms.Label();
-      this.statesItemListView = new HeuristicLab.Data.ItemListView<ProtocolState>();
-      this.invertButton = new System.Windows.Forms.Button();
+      this.statesListBox = new System.Windows.Forms.ListBox();
+      this.stateChartPictureBox = new System.Windows.Forms.PictureBox();
+      this.addStateButton = new System.Windows.Forms.Button();
+      this.removeStateButton = new System.Windows.Forms.Button();
+      this.nameTextBox = new System.Windows.Forms.TextBox();
+      this.setAsInitialStateButton = new System.Windows.Forms.Button();
+      ((System.ComponentModel.ISupportInitialize)(this.stateChartPictureBox)).BeginInit();
       this.SuspendLayout();
-      // 
-      // nameViewControl
-      // 
-      this.nameViewControl.Caption = "View (StringData)";
-      this.nameViewControl.Location = new System.Drawing.Point(89, 3);
-      this.nameViewControl.Name = "nameViewControl";
-      this.nameViewControl.Size = new System.Drawing.Size(180, 28);
-      stringData2.Data = "";
-      this.nameViewControl.StringData = stringData2;
-      this.nameViewControl.TabIndex = 1;
       // 
       // protocolNameLabel
       // 
@@ -76,25 +65,6 @@ namespace HeuristicLab.Communication.Data {
       this.protocolNameLabel.TabIndex = 3;
       this.protocolNameLabel.Text = "Protocol Name:";
       // 
-      // initialStateLabel
-      // 
-      this.initialStateLabel.AutoSize = true;
-      this.initialStateLabel.Location = new System.Drawing.Point(275, 6);
-      this.initialStateLabel.Name = "initialStateLabel";
-      this.initialStateLabel.Size = new System.Drawing.Size(62, 13);
-      this.initialStateLabel.TabIndex = 5;
-      this.initialStateLabel.Text = "Initial State:";
-      // 
-      // initialStateComboBox
-      // 
-      this.initialStateComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.initialStateComboBox.FormattingEnabled = true;
-      this.initialStateComboBox.Location = new System.Drawing.Point(343, 3);
-      this.initialStateComboBox.Name = "initialStateComboBox";
-      this.initialStateComboBox.Size = new System.Drawing.Size(166, 21);
-      this.initialStateComboBox.TabIndex = 6;
-      this.initialStateComboBox.SelectedIndexChanged += new System.EventHandler(this.initialStateComboBox_SelectedIndexChanged);
-      // 
       // protocolStatesLabel
       // 
       this.protocolStatesLabel.AutoSize = true;
@@ -104,42 +74,86 @@ namespace HeuristicLab.Communication.Data {
       this.protocolStatesLabel.TabIndex = 8;
       this.protocolStatesLabel.Text = "Protocol States:";
       // 
-      // statesItemListView
+      // statesListBox
       // 
-      this.statesItemListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.statesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)));
+      this.statesListBox.FormattingEnabled = true;
+      this.statesListBox.Location = new System.Drawing.Point(6, 48);
+      this.statesListBox.MultiColumn = true;
+      this.statesListBox.Name = "statesListBox";
+      this.statesListBox.Size = new System.Drawing.Size(159, 303);
+      this.statesListBox.TabIndex = 10;
+      this.statesListBox.SelectedIndexChanged += new System.EventHandler(this.statesListBox_SelectedIndexChanged);
+      this.statesListBox.DoubleClick += new System.EventHandler(this.statesListBox_DoubleClick);
+      // 
+      // stateChartPictureBox
+      // 
+      this.stateChartPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.statesItemListView.Caption = "View";
-      this.statesItemListView.ItemList = null;
-      this.statesItemListView.Location = new System.Drawing.Point(3, 51);
-      this.statesItemListView.Name = "statesItemListView";
-      this.statesItemListView.Size = new System.Drawing.Size(613, 308);
-      this.statesItemListView.TabIndex = 7;
+      this.stateChartPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.stateChartPictureBox.Location = new System.Drawing.Point(172, 48);
+      this.stateChartPictureBox.Name = "stateChartPictureBox";
+      this.stateChartPictureBox.Size = new System.Drawing.Size(444, 303);
+      this.stateChartPictureBox.TabIndex = 11;
+      this.stateChartPictureBox.TabStop = false;
       // 
-      // invertButton
+      // addStateButton
       // 
-      this.invertButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.invertButton.Location = new System.Drawing.Point(3, 363);
-      this.invertButton.Name = "invertButton";
-      this.invertButton.Size = new System.Drawing.Size(162, 23);
-      this.invertButton.TabIndex = 9;
-      this.invertButton.Text = "Invert Send/Receive";
-      this.invertButton.UseVisualStyleBackColor = true;
-      this.invertButton.Click += new System.EventHandler(this.invertButton_Click);
+      this.addStateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.addStateButton.Location = new System.Drawing.Point(6, 357);
+      this.addStateButton.Name = "addStateButton";
+      this.addStateButton.Size = new System.Drawing.Size(77, 23);
+      this.addStateButton.TabIndex = 12;
+      this.addStateButton.Text = "Add";
+      this.addStateButton.UseVisualStyleBackColor = true;
+      this.addStateButton.Click += new System.EventHandler(this.addStateButton_Click);
+      // 
+      // removeStateButton
+      // 
+      this.removeStateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.removeStateButton.Location = new System.Drawing.Point(89, 357);
+      this.removeStateButton.Name = "removeStateButton";
+      this.removeStateButton.Size = new System.Drawing.Size(75, 23);
+      this.removeStateButton.TabIndex = 13;
+      this.removeStateButton.Text = "Remove";
+      this.removeStateButton.UseVisualStyleBackColor = true;
+      this.removeStateButton.Click += new System.EventHandler(this.removeStateButton_Click);
+      // 
+      // nameTextBox
+      // 
+      this.nameTextBox.Location = new System.Drawing.Point(89, 3);
+      this.nameTextBox.Name = "nameTextBox";
+      this.nameTextBox.Size = new System.Drawing.Size(142, 20);
+      this.nameTextBox.TabIndex = 14;
+      // 
+      // setAsInitialStateButton
+      // 
+      this.setAsInitialStateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.setAsInitialStateButton.Location = new System.Drawing.Point(170, 357);
+      this.setAsInitialStateButton.Name = "setAsInitialStateButton";
+      this.setAsInitialStateButton.Size = new System.Drawing.Size(75, 23);
+      this.setAsInitialStateButton.TabIndex = 15;
+      this.setAsInitialStateButton.Text = "Set Initital";
+      this.setAsInitialStateButton.UseVisualStyleBackColor = true;
+      this.setAsInitialStateButton.Click += new System.EventHandler(this.setAsInitialStateButton_Click);
       // 
       // ProtocolEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.invertButton);
+      this.Controls.Add(this.setAsInitialStateButton);
+      this.Controls.Add(this.nameTextBox);
+      this.Controls.Add(this.removeStateButton);
+      this.Controls.Add(this.addStateButton);
+      this.Controls.Add(this.stateChartPictureBox);
+      this.Controls.Add(this.statesListBox);
       this.Controls.Add(this.protocolStatesLabel);
-      this.Controls.Add(this.statesItemListView);
-      this.Controls.Add(this.initialStateComboBox);
-      this.Controls.Add(this.initialStateLabel);
       this.Controls.Add(this.protocolNameLabel);
-      this.Controls.Add(this.nameViewControl);
       this.Name = "ProtocolEditor";
       this.Size = new System.Drawing.Size(619, 389);
+      ((System.ComponentModel.ISupportInitialize)(this.stateChartPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -147,12 +161,13 @@ namespace HeuristicLab.Communication.Data {
 
     #endregion
 
-    private HeuristicLab.Data.StringDataView nameViewControl;
     private System.Windows.Forms.Label protocolNameLabel;
-    private System.Windows.Forms.Label initialStateLabel;
-    private System.Windows.Forms.ComboBox initialStateComboBox;
     private System.Windows.Forms.Label protocolStatesLabel;
-    private HeuristicLab.Data.ItemListView<ProtocolState> statesItemListView;
-    private System.Windows.Forms.Button invertButton;
+    private System.Windows.Forms.ListBox statesListBox;
+    private System.Windows.Forms.PictureBox stateChartPictureBox;
+    private System.Windows.Forms.Button addStateButton;
+    private System.Windows.Forms.Button removeStateButton;
+    private System.Windows.Forms.TextBox nameTextBox;
+    private System.Windows.Forms.Button setAsInitialStateButton;
   }
 }

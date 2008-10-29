@@ -43,13 +43,16 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="CurrentStateConstraintChecker.cs" />
-    <Compile Include="CurrentStateInitializer.cs" />
-    <Compile Include="CurrentStateVariableInjector.cs" />
+    <Compile Include="CommunicatorBase.cs" />
+    <Compile Include="CurrentStateInitializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DataStreamCommunicator.cs" />
     <Compile Include="DataStreamFinisher.cs" />
     <Compile Include="HeuristicLabCommunicationOperatorsPlugin.cs" />
     <Compile Include="LocalProcessInitiator.cs" />
+    <Compile Include="MessageInjector.cs" />
+    <Compile Include="MessageProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolInjector.cs" />
     <Compile Include="ProtocolInjectorView.cs">
@@ -58,14 +61,10 @@
     <Compile Include="ProtocolInjectorView.designer.cs">
       <DependentUpon>ProtocolInjectorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="SimpleReceiveItemDeserializer.cs" />
-    <Compile Include="SimpleSendItemSerializer.cs" />
     <Compile Include="StateTransistor.cs" />
-    <Compile Include="SubscopeCurrentStateLooseDataCollector.cs" />
-    <Compile Include="SubscopeCurrentStateLooseDataDistributor.cs" />
+    <Compile Include="SubScopeMessageComposer.cs" />
+    <Compile Include="SubScopeMessageDecomposer.cs" />
     <Compile Include="TcpNetworkInitiator.cs" />
-    <Compile Include="XMLConstrainedItemListDeserializer.cs" />
-    <Compile Include="XMLConstrainedItemListSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

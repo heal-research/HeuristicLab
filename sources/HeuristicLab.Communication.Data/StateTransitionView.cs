@@ -48,38 +48,11 @@ namespace HeuristicLab.Communication.Data {
 
     protected override void RemoveItemEvents() {
       StateTransition.Changed -= new EventHandler(StateTransition_Changed);
-      ConstrainedItemList request = StateTransition.SourceState.SendingData;
-      ConstrainedItemList response = StateTransition.SourceState.ReceivingData;
-
-      request.Changed -= new EventHandler(VariablesList_Changed);
-      request.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Parameter_Added);
-      request.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Parameter_Removed);
-      for (int i = 0 ; i < request.Count ; i++)
-        request[i].Changed -= new EventHandler(Parameter_Changed);
-      response.Changed -= new EventHandler(VariablesList_Changed);
-      response.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Parameter_Added);
-      response.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(Parameter_Removed);
-      for (int i = 0 ; i < response.Count ; i++)
-        response[i].Changed -= new EventHandler(Parameter_Changed);
       base.RemoveItemEvents();
     }
     protected override void AddItemEvents() {
       base.AddItemEvents();
       StateTransition.Changed += new EventHandler(StateTransition_Changed);
-      ConstrainedItemList request = StateTransition.SourceState.SendingData;
-      ConstrainedItemList response = StateTransition.SourceState.ReceivingData;
-
-      request.Changed += new EventHandler(VariablesList_Changed);
-      request.ItemAdded += new EventHandler<ItemIndexEventArgs>(Parameter_Added);
-      request.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Parameter_Removed);
-      for (int i = 0 ; i < request.Count ; i++)
-        request[i].Changed += new EventHandler(Parameter_Changed);
-      response.Changed += new EventHandler(VariablesList_Changed);
-      response.ItemAdded += new EventHandler<ItemIndexEventArgs>(Parameter_Added);
-      response.ItemRemoved += new EventHandler<ItemIndexEventArgs>(Parameter_Removed);
-      for (int i = 0 ; i < response.Count ; i++) {
-        response[i].Changed += new EventHandler(Parameter_Changed);
-      }
     }
 
     protected override void UpdateControls() {
@@ -120,11 +93,11 @@ namespace HeuristicLab.Communication.Data {
 
     private void BuildTargetStateComboBox() {
       ComboBox comboBox = targetStateComboBox;
-      ItemList<ProtocolState> states;
-      if (StateTransition.SourceState == null || StateTransition.SourceState.Protocol == null)
+      ItemList<ProtocolState> states = null;
+      /*if (StateTransition.SourceState == null || StateTransition.SourceState.Protocol == null)
         states = null;
       else
-        states = StateTransition.SourceState.Protocol.States;
+        states = StateTransition.SourceState.Protocol.States;*/
       ProtocolState selected = StateTransition.TargetState;
       ProtocolState forbidden = StateTransition.SourceState;
 
@@ -151,17 +124,17 @@ namespace HeuristicLab.Communication.Data {
 
     private void BuildVariablesListBox() {
       ListBox variables = variablesListBox;
-      ConstrainedItemList request = StateTransition.SourceState.SendingData;
-      ConstrainedItemList response = StateTransition.SourceState.ReceivingData;
+      /*ConstrainedItemList request = StateTransition.SourceState.SendingData;
+      ConstrainedItemList response = StateTransition.SourceState.ReceivingData;*/
       variables.Items.Clear();
       variables.Items.Add("==Sending==");
-      for (int i = 0 ; i < request.Count ; i++) {
+      /*for (int i = 0 ; i < request.Count ; i++) {
         variables.Items.Add(request[i]);
-      }
+      }*/
       variables.Items.Add("==Receiving==");
-      for (int i = 0 ; i < response.Count ; i++) {
+      /*for (int i = 0 ; i < response.Count ; i++) {
         variables.Items.Add(response[i]);
-      }
+      }*/
     }
 
     private void targetStateComboBox_SelectedIndexChanged(object sender, EventArgs e) {

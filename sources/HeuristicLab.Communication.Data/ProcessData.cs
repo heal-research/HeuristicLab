@@ -87,11 +87,11 @@ namespace HeuristicLab.Communication.Data {
 
     public void Initialize(IDriverConfiguration configuration) {
       Configuration = configuration;
-      StartProcess();
     }
 
-    public bool Connect() {  
-      return true;
+    public bool Connect() {
+      StartProcess();
+      return process != null && !process.HasExited;
     }
 
     public void Close() {
@@ -103,7 +103,7 @@ namespace HeuristicLab.Communication.Data {
     public void Write(string s) {
       StreamWriter writer = process.StandardInput;
       writer.WriteLine(s);
-      writer.WriteLine(".");
+      writer.WriteLine(((char)4).ToString());
     }
 
     public string Read() {
@@ -112,7 +112,7 @@ namespace HeuristicLab.Communication.Data {
       string line = "";
       do {
         line = reader.ReadLine();
-        if (line.Equals(".")) break;
+        if (line.Equals(((char)4).ToString())) break;
         buffer.AppendLine(line);
       } while (true);
       return buffer.ToString();

@@ -29,132 +29,149 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Communication.Data {
   public class ProtocolState : ItemBase {
-    private StringData name;
-    public StringData Name {
+    private string name;
+    public string Name {
       get { return name; }
       set {
-        name.Changed -= new EventHandler(Name_Changed);
         name = value;
-        name.Changed += new EventHandler(Name_Changed);
         OnChanged();
       }
     }
-    private BoolData acceptingState;
-    public BoolData AcceptingState {
-      get { return acceptingState; }
+    private bool giveBatch;
+    public bool GiveBatch {
+      get { return giveBatch; }
       set {
-        acceptingState = value;
+        giveBatch = value;
         OnChanged();
       }
     }
-    private ConstrainedItemList sendingData;
-    public ConstrainedItemList SendingData {
-      get { return sendingData; }
+    private ItemList<IVariable> give;
+    public ItemList<IVariable> Give {
+      get { return give; }
       set {
-        sendingData = value;
+        give = value;
         OnChanged();
       }
     }
-    private ConstrainedItemList receivingData;
-    public ConstrainedItemList ReceivingData {
-      get { return receivingData; }
+    private bool expectBatch;
+    public bool ExpectBatch {
+      get { return expectBatch; }
       set {
-        receivingData = value;
+        expectBatch = value;
         OnChanged();
       }
     }
-    private ItemList<StateTransition> stateTransitions;
-    public ItemList<StateTransition> StateTransitions {
-      get { return stateTransitions; }
+    private ItemList<IVariable> expect;
+    public ItemList<IVariable> Expect {
+      get { return expect; }
       set {
-        stateTransitions = value;
-        OnChanged();
-      }
-    }
-    private Protocol protocol;
-    public Protocol Protocol {
-      get { return protocol; }
-      set {
-        protocol = value;
+        expect = value;
         OnChanged();
       }
     }
 
     public ProtocolState() {
-      name = new StringData("Unnamed state");
-      name.Changed += new EventHandler(Name_Changed);
-      acceptingState = new BoolData(true);
-      sendingData = new ConstrainedItemList();
-      sendingData.AddConstraint(new ItemTypeConstraint(typeof(Variable)));
-      receivingData = new ConstrainedItemList();
-      receivingData.AddConstraint(new ItemTypeConstraint(typeof(Variable)));
-      stateTransitions = null;
-      protocol = null;
-    }
-
-    public void Dispose() {
-      name.Changed -= new EventHandler(Name_Changed);
+      name = Guid.NewGuid().ToString();
+      giveBatch = false;
+      expectBatch = false;
+      give = new ItemList<IVariable>();
+      expect = new ItemList<IVariable>();
     }
 
     public override IView CreateView() {
       return new ProtocolStateView(this);
     }
 
+    #region clone & persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ProtocolState clone = new ProtocolState();
       clonedObjects.Add(Guid, clone);
-      clone.name = (StringData)Auxiliary.Clone(Name, clonedObjects);
-      clone.acceptingState = (BoolData)Auxiliary.Clone(AcceptingState, clonedObjects);
-      clone.sendingData = (ConstrainedItemList)Auxiliary.Clone(SendingData, clonedObjects);
-      clone.receivingData = (ConstrainedItemList)Auxiliary.Clone(ReceivingData, clonedObjects);
-      if (StateTransitions != null)
-        clone.stateTransitions = (ItemList<StateTransition>)Auxiliary.Clone(StateTransitions, clonedObjects);
-      else clone.StateTransitions = null;
-      clone.protocol = Protocol;
+
+      clone.name = (string)name.Clone();
+      clone.giveBatch = giveBatch;
+      clone.expectBatch = expectBatch;
+
+      clone.give = new ItemList<IVariable>();
+      for (int i = 0; i < give.Count; i++)
+        clone.give.Add((IVariable)give[i].Clone());
+
+      clone.expect = new ItemList<IVariable>();
+      for (int i = 0; i < expect.Count; i++)
+        clone.expect.Add((IVariable)expect[i].Clone());
+
       return clone;
     }
 
-    #region persistence
+    // use a simpler serialization for the protocol to make reading it in other programming languages easier
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode protocolNode = PersistenceManager.Persist("ParentProtocol", Protocol, document, persistedObjects);
-      node.AppendChild(protocolNode);
-      XmlNode nameNode = PersistenceManager.Persist("Name", Name, document, persistedObjects);
-      node.AppendChild(nameNode);
-      XmlNode acceptingNode = PersistenceManager.Persist("AcceptingState", AcceptingState, document, persistedObjects);
-      node.AppendChild(acceptingNode);
-      XmlNode requestNode = PersistenceManager.Persist("Request", SendingData, document, persistedObjects);
-      node.AppendChild(requestNode);
-      XmlNode responseNode = PersistenceManager.Persist("Response", ReceivingData, document, persistedObjects);
-      node.AppendChild(responseNode);
-      if (StateTransitions != null) {
-        XmlNode transitionsNode = PersistenceManager.Persist("StateTransitions", StateTransitions, document, persistedObjects);
-        node.AppendChild(transitionsNode);
+      XmlAttribute nameAttrib = document.CreateAttribute("Name");
+      nameAttrib.Value = this.name;
+      node.Attributes.Append(nameAttrib);
+      XmlAttribute giveBatchAttrib = document.CreateAttribute("GiveBatch");
+      giveBatchAttrib.Value = giveBatch.ToString();
+      node.Attributes.Append(giveBatchAttrib);
+      XmlAttribute expectBatchAttrib = document.CreateAttribute("ExpectBatch");
+      expectBatchAttrib.Value = expectBatch.ToString();
+      node.Attributes.Append(expectBatchAttrib);
+
+      XmlNode giveNode = document.CreateNode(XmlNodeType.Element, "Give", null);
+      foreach (IVariable param in give) {
+        XmlNode tmp = document.CreateNode(XmlNodeType.Element, "Parameter", null);
+        XmlAttribute paramNameAttrib = document.CreateAttribute("Name");
+        paramNameAttrib.Value = param.Name;
+        tmp.Attributes.Append(paramNameAttrib);
+        XmlAttribute valueTypeAttrib = document.CreateAttribute("Type");
+        Type type = param.Value.GetType();
+        valueTypeAttrib.Value = type.FullName + ", " + type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(","));
+        tmp.Attributes.Append(valueTypeAttrib);
+        giveNode.AppendChild(tmp);
       }
+      node.AppendChild(giveNode);
+
+      XmlNode expectNode = document.CreateNode(XmlNodeType.Element, "Expect", null);
+      foreach (IVariable param in expect) {
+        XmlNode tmp = document.CreateNode(XmlNodeType.Element, "Parameter", null);
+        XmlAttribute paramNameAttrib = document.CreateAttribute("Name");
+        paramNameAttrib.Value = param.Name;
+        tmp.Attributes.Append(paramNameAttrib);
+        XmlAttribute valueTypeAttrib = document.CreateAttribute("Type");
+        Type type = param.Value.GetType();
+        valueTypeAttrib.Value = type.FullName + ", " + type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(","));
+        tmp.Attributes.Append(valueTypeAttrib);
+        expectNode.AppendChild(tmp);
+      }
+      node.AppendChild(expectNode);
       return node;
     }
 
+    // use a simpler serialization for the protocol to make reading it in other programming languages easier
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      protocol = (Protocol)PersistenceManager.Restore(node.SelectSingleNode("ParentProtocol"), restoredObjects);
-      name = (StringData)PersistenceManager.Restore(node.SelectSingleNode("Name"), restoredObjects);
-      acceptingState = (BoolData)PersistenceManager.Restore(node.SelectSingleNode("AcceptingState"), restoredObjects);
-      sendingData = (ConstrainedItemList)PersistenceManager.Restore(node.SelectSingleNode("Request"), restoredObjects);
-      receivingData = (ConstrainedItemList)PersistenceManager.Restore(node.SelectSingleNode("Response"), restoredObjects);
-      XmlNode transitions = node.SelectSingleNode("StateTransitions");
-      if (transitions != null)
-        stateTransitions = (ItemList<StateTransition>)PersistenceManager.Restore(transitions, restoredObjects);
-      else
-        stateTransitions = null;
-    }
-    #endregion persistence
+      name = node.Attributes.GetNamedItem("Name").Value;
+      bool.TryParse(node.Attributes.GetNamedItem("GiveBatch").Value, out giveBatch);
+      bool.TryParse(node.Attributes.GetNamedItem("ExpectBatch").Value, out expectBatch);
 
-    private void Name_Changed(object sender, EventArgs e) {
-      OnChanged();
+      give = new ItemList<IVariable>();
+      XmlNodeList giveParams = node.SelectSingleNode("Give").SelectNodes("Parameter");
+      foreach (XmlNode param in giveParams) {
+        IItem tmp = (IItem)Activator.CreateInstance(System.Type.GetType(param.Attributes.GetNamedItem("Type").Value));
+        IVariable var = new Variable(param.Attributes.GetNamedItem("Name").Value, tmp);
+        give.Add(var);
+      }
+
+      expect = new ItemList<IVariable>();
+      XmlNodeList expectParams = node.SelectSingleNode("Expect").SelectNodes("Parameter");
+      foreach (XmlNode param in expectParams) {
+        IItem tmp = (IItem)Activator.CreateInstance(System.Type.GetType(param.Attributes.GetNamedItem("Type").Value));
+        IVariable var = new Variable(param.Attributes.GetNamedItem("Name").Value, tmp);
+        expect.Add(var);
+      }
     }
+    #endregion clone & persistence
 
     public override string ToString() {
-      return Name.ToString();
+      return name.ToString();
     }
   }
 }

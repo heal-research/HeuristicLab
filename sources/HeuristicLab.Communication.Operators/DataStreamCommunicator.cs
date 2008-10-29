@@ -21,46 +21,78 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Communication.Data;
 
 namespace HeuristicLab.Communication.Operators {
-  public class DataStreamCommunicator : OperatorBase {
+  public class DataStreamCommunicator : CommunicatorBase {
     public override string Description {
       get {
-        return @"TODO";
+        return @"Sends a message if present and otherwise listens for incoming messages";
       }
     }
 
     public DataStreamCommunicator() {
-      AddVariableInfo(new VariableInfo("CurrentState", "", typeof(ProtocolState), VariableKind.In));
       AddVariableInfo(new VariableInfo("DataStream", "", typeof(IDataStream), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Message", "", typeof(StringData), VariableKind.New | VariableKind.Deleted));
     }
 
-    public override IOperation Apply(IScope scope) {
-      ProtocolState currentState = GetVariableValue<ProtocolState>("CurrentState", scope, true);
-      IDataStream connection = GetVariableValue<IDataStream>("DataStream", scope, true);
-      IVariableInfo info = GetVariableInfo("Message");
-      string actualName = "";
-      if (!info.Local)
-        actualName = scope.TranslateName(info.FormalName);
+    private string Encode(Message message) {
+      XmlDocument document = new XmlDocument();
+      return message.GetXmlNode("Message", document, new Dictionary<Guid, IStorable>()).ToString();
+    }
 
-      if (currentState.SendingData.Count > 0) {
-        string toSend = GetVariableValue<StringData>(info.FormalName, scope, false).Data;
-        connection.Write(toSend);
-        if (info.Local) RemoveVariable(info.ActualName);
-        else scope.RemoveVariable(actualName);
-      }
+    private Message Decode(string m) {
+      XmlDocument document = new XmlDocument();
+      document.LoadXml(m);
+      Message message = new Message();
+      message.Populate(document.SelectSingleNode("Message"), new Dictionary<Guid, IStorable>());
+      return message;
+    }
 
-      if (currentState.ReceivingData.Count > 0) {
-        string received = connection.Read();
-        if (info.Local) AddVariable(new Variable(info.ActualName, new StringData(received)));
-        else scope.AddVariable(new Variable(actualName, new StringData(received)));
+    protected override void Send(IScope scope, Protocol protocol, ProtocolState currentState, Message message) {
+      IDataStream connection = scope.GetVariableValue<IDataStream>("DataStream", true);
+      connection.Write("PROTOCOL_ID " + protocol.Name);
+      if (connection.Read().Equals("ACK")) {
+        connection.Write("STATE_ID " + currentState.Name);
+        if (connection.Read().Equals("ACK")) {
+          connection.Write(Encode(message));
+        }
       }
-      return null;
+    }
+
+    protected override Message Receive(IScope scope, Protocol protocol, ProtocolState currentState) {
+      IDataStream connection = scope.GetVariableValue<IDataStream>("DataStream", true);
+      Message message = new Message();
+      string rcvd = connection.Read();
+      if (rcvd.StartsWith("PROTOCOL_ID ")) {
+        if (rcvd.Substring(12).Equals(protocol.Name)) {
+          connection.Write("ACK");
+          rcvd = connection.Read();
+          if (rcvd.StartsWith("STATE_ID ")) {
+            if (rcvd.Substring(9).Equals(currentState.Name)) {
+              connection.Write("ACK");
+              message = Decode(connection.Read());
+              return message;
+            } else {
+              connection.Write("SYNCERROR STATE_ID");
+              return null;
+            }
+          } else {
+            connection.Write("ERROR");
+            return null;
+          }
+        } else {
+          connection.Write("SYNCERROR PROTOCOL_ID");
+          return null;
+        }
+      } else {
+        connection.Write("ERROR");
+        return null;
+      }
     }
   }
 }

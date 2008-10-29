@@ -111,20 +111,14 @@ namespace HeuristicLab.Communication.Data {
     }
 
     public void Close() {
+      tcpOut.Client.Close();
+      tcpOut.Close();
+      tcpOut = null;
+      while (tcpIn.Connected) ;
+      tcpIn.Client.Close();
+      tcpIn.Close();
+      tcpIn = null;
       tcpListener.Stop();
-      if ((tcpOut != null && tcpOut.Connected) && (tcpIn != null && tcpIn.Connected)) {
-        Write("CLOSING");
-        if (Read() != null)
-          throw new InvalidOperationException("ERROR in SocketData: Out of sync during Close()");
-      }
-      if (tcpIn != null) {
-        tcpIn.Close();
-        tcpIn = null;
-      }
-      if (tcpOut != null) {
-        tcpOut.Close();
-        tcpOut = null;
-      }
       buffer = "";
     }
 

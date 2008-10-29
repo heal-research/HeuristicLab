@@ -58,6 +58,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Message.cs" />
     <Compile Include="DummyDriverConfiguration.cs" />
     <Compile Include="HeuristicLabCommunicationDataPlugin.cs" />
     <Compile Include="IDataStream.cs" />
@@ -108,6 +109,12 @@
     <Compile Include="TcpNetworkDriverConfigurationView.designer.cs">
       <DependentUpon>TcpNetworkDriverConfigurationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="WindowedView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WindowedView.Designer.cs">
+      <DependentUpon>WindowedView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LocalProcessDriverConfigurationView.resx">
@@ -133,6 +140,9 @@
     <EmbeddedResource Include="TcpNetworkDriverConfigurationView.resx">
       <DependentUpon>TcpNetworkDriverConfigurationView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WindowedView.resx">
+      <DependentUpon>WindowedView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

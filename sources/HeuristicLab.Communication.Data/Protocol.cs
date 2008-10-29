@@ -29,24 +29,20 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Communication.Data {
   public class Protocol : ItemBase, IEditable {
-    private StringData name;
-    public StringData Name {
+    private string name;
+    public string Name {
       get { return name; }
       set {
         name = value;
         OnChanged();
       }
     }
-    private ItemList<ProtocolState> states;
-    public ItemList<ProtocolState> States {
+    private IList<ProtocolState> states;
+    public IList<ProtocolState> States {
       get { return states; }
       set {
-        states.ItemAdded -= new EventHandler<ItemIndexEventArgs>(States_ItemAdded);
-        states.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(States_ItemRemoved);
         states = value;
-        states.ItemAdded += new EventHandler<ItemIndexEventArgs>(States_ItemAdded);
-        states.ItemRemoved += new EventHandler<ItemIndexEventArgs>(States_ItemRemoved);
-        // if the newly assigned states don't contain the currently selected initial state
+        // if the newly assigned states list doesn't contain the currently selected initial state
         if (!states.Contains(initialState))
           if (states.Count > 0)
             initialState = states[0];
@@ -64,21 +60,13 @@ namespace HeuristicLab.Communication.Data {
     }
 
     public Protocol() {
-      name = new StringData("Unnamed protocol");
-      states = new ItemList<ProtocolState>();
-      states.ItemAdded += new EventHandler<ItemIndexEventArgs>(States_ItemAdded);
-      states.ItemRemoved += new EventHandler<ItemIndexEventArgs>(States_ItemRemoved);
+      name = "Unnamed protocol";
+      states = new List<ProtocolState>();
+
       ProtocolState firstState = new ProtocolState();
-      firstState.Name = new StringData("InitialState");
-      firstState.AcceptingState = new BoolData(true);
-      firstState.Protocol = this;
+      firstState.Name = "InitialState";
       states.Add(firstState);
       initialState = firstState;
-    }
-
-    public void Dispose() {
-      states.ItemAdded -= new EventHandler<ItemIndexEventArgs>(States_ItemAdded);
-      states.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(States_ItemRemoved);
     }
 
     public override IView CreateView() {
@@ -88,56 +76,56 @@ namespace HeuristicLab.Communication.Data {
       return new ProtocolEditor(this);
     }
 
+    #region clone & persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Protocol clone = new Protocol();
       clonedObjects.Add(Guid, clone);
-      clone.Name = (StringData)Auxiliary.Clone(Name, clonedObjects);
-      clone.States = (ItemList<ProtocolState>)Auxiliary.Clone(States, clonedObjects);
+      clone.Name = (string)name.Clone();
+      clone.States = new List<ProtocolState>(states.Count);
+      foreach (ProtocolState state in states)
+        clone.States.Add((ProtocolState)state.Clone(clonedObjects));
       // iterate through the states and select the appropriate state in the clone
-      for (int i = 0 ; i < states.Count ; i++)
-        if (states[i].Equals(initialState))
-          clone.InitialState = clone.States[i];
+      int index = states.IndexOf(initialState);
+      if (index >= 0) clone.InitialState = clone.States[index];
       return clone;
     }
 
-    #region States Events
-    void States_ItemRemoved(object sender, ItemIndexEventArgs e) {
-      e.Item.Changed -= new EventHandler(State_Changed);
-      State_Changed(this, new EventArgs());
-    }
-
-    void States_ItemAdded(object sender, ItemIndexEventArgs e) {
-      e.Item.Changed += new EventHandler(State_Changed);
-      ((ProtocolState)e.Item).Protocol = this;
-      State_Changed(this, new EventArgs());
-    }
-    #endregion
-
-    public EventHandler StatesChanged;
-    void State_Changed(object sender, EventArgs e) {
-      if (StatesChanged != null) StatesChanged(sender, e);
-    }
-
-    #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode nameNode = PersistenceManager.Persist("Name", Name, document, persistedObjects);
-      XmlNode statesNode = PersistenceManager.Persist("States", States, document, persistedObjects);
-      XmlNode initialStatesNode = PersistenceManager.Persist("InitialState", InitialState, document, persistedObjects);
-      node.AppendChild(nameNode);
+      
+      XmlAttribute nameAttrib = document.CreateAttribute("Name");
+      nameAttrib.Value = this.name;
+      node.Attributes.Append(nameAttrib);
+
+      XmlNode statesNode = document.CreateNode(XmlNodeType.Element, "States", null);
+      foreach (ProtocolState state in states) {
+        XmlNode tmp = state.GetXmlNode("State", document, persistedObjects);
+        if (state.Equals(initialState)) {
+          XmlAttribute initialStateAttrib = document.CreateAttribute("InitialState");
+          initialStateAttrib.Value = "1";
+          tmp.Attributes.Append(initialStateAttrib);
+        }
+        statesNode.AppendChild(tmp);
+      }
       node.AppendChild(statesNode);
-      node.AppendChild(initialStatesNode);
+
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      name = (StringData)PersistenceManager.Restore(node.SelectSingleNode("Name"), restoredObjects);
-      states = (ItemList<ProtocolState>)PersistenceManager.Restore(node.SelectSingleNode("States"), restoredObjects);
-      states.ItemAdded += new EventHandler<ItemIndexEventArgs>(States_ItemAdded);
-      states.ItemRemoved += new EventHandler<ItemIndexEventArgs>(States_ItemRemoved);
-      initialState = (ProtocolState)PersistenceManager.Restore(node.SelectSingleNode("InitialState"), restoredObjects);
+      name = node.Attributes.GetNamedItem("Name").Value;
+
+      XmlNode statesNode = node.SelectSingleNode("States");
+      states = new List<ProtocolState>(statesNode.ChildNodes.Count);
+      foreach (XmlNode childNode in statesNode.ChildNodes) {
+        ProtocolState tmp = new ProtocolState();
+        tmp.Populate(childNode, restoredObjects);
+        states.Add(tmp);
+        XmlNode initialStateNode = childNode.Attributes.GetNamedItem("InitialState");
+        if (initialStateNode != null && initialStateNode.Value.Equals("1")) initialState = tmp;
+      }
     }
-    #endregion persistence
+    #endregion clone & persistence
   }
 }
