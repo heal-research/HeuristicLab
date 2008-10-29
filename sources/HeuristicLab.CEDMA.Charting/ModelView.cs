@@ -46,7 +46,7 @@ namespace HeuristicLab.CEDMA.Charting {
       Pen pen = new Pen(Color.FromArgb(80, Color.Blue));
       chart.AddDataRow(DataRowType.Points, pen, pen.Brush);
       BakedTreeEvaluator eval = new BakedTreeEvaluator();
-      eval.ResetEvaluator((BakedFunctionTree)model, dataset);
+      eval.ResetEvaluator((BakedFunctionTree)model, dataset, targetVariable, 0, dataset.Rows, 1.0);
       for(int i = 0; i < dataset.Rows; i += 10) {
         double predicted = eval.Evaluate(i);
         double original = dataset.GetValue(i, targetVariable);
@@ -84,7 +84,7 @@ namespace HeuristicLab.CEDMA.Charting {
       chart.AddDataRow(DataRowType.Lines, bluePen, bluePen.Brush);
       chart.AddDataRow(DataRowType.Lines, redPen, redPen.Brush);
       BakedTreeEvaluator eval = new BakedTreeEvaluator();
-      eval.ResetEvaluator((BakedFunctionTree)model, dataset);
+      eval.ResetEvaluator((BakedFunctionTree)model, dataset, targetVariable, 0, dataset.Rows, 1.0);
       int n = 0;
       for(int i = 0; i < dataset.Rows; i ++) {
         double predicted = eval.Evaluate(i);
