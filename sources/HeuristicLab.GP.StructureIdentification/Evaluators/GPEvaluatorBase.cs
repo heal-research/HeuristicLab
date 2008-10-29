@@ -30,21 +30,6 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public abstract class GPEvaluatorBase : OperatorBase {
-    private int targetVariable;
-    private int start;
-    private int end;
-    private bool useEstimatedValues;
-    private double[] backupValues;
-    private int evaluatedSamples;
-    private double estimatedValueMax;
-    private double estimatedValueMin;
-    private int treeSize;
-    private double totalEvaluatedNodes;
-    protected Dataset dataset;
-    private double targetMean;
-    private BakedTreeEvaluator evaluator;
-    protected double TargetMean { get { return targetMean; } }
-
     public GPEvaluatorBase()
       : base() {
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
@@ -60,73 +45,43 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public override IOperation Apply(IScope scope) {
       // get all variable values
-      targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
-      dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       BakedFunctionTree functionTree = GetVariableValue<BakedFunctionTree>("FunctionTree", scope, true);
-      double maximumPunishment = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data * dataset.GetRange(targetVariable);
-      treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
-      totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
+      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
+      int treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
+      double totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-      useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
+      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
+      double[] backupValues = null;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
       if(useEstimatedValues &&
-        (backupValues == null || start != this.start || end != this.end)) {
-        this.start = start;
-        this.end = end;
+        (backupValues == null || backupValues.Length!=end-start)) {
         backupValues = new double[end - start];
         for(int i = start; i < end; i++) {
           backupValues[i - start] = dataset.GetValue(i, targetVariable);
         }
       }
-      // get the mean of the values of the target variable to determin the max and min bounds of the estimated value
-      targetMean = dataset.GetMean(targetVariable, start, end - 1);
-      estimatedValueMin = targetMean - maximumPunishment;
-      estimatedValueMax = targetMean + maximumPunishment;
 
       // initialize and reset the evaluator
-      if(evaluator == null) evaluator = new BakedTreeEvaluator();
-      evaluator.ResetEvaluator(functionTree, dataset);
-      evaluatedSamples = 0;
+      BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
+      evaluator.ResetEvaluator(functionTree, dataset, targetVariable, start, end, punishmentFactor);
 
-      Evaluate(start, end);
+      Evaluate(scope, evaluator, dataset, targetVariable, start, end, useEstimatedValues);
 
       // restore the values of the target variable from the backup array if necessary
-      if(useEstimatedValues) RestoreDataset(dataset, targetVariable, start, end);
+      if(useEstimatedValues) {
+        for(int i = start; i < end; i++) {
+          dataset.SetValue(i, targetVariable, backupValues[i - start]);
+        }
+      }
+
       // update the value of total evaluated nodes
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * evaluatedSamples;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (end-start);
       return null;
     }
 
-    private void RestoreDataset(Dataset dataset, int targetVariable, int from, int to) {
-      for(int i = from; i < to; i++) {
-        dataset.SetValue(i, targetVariable, backupValues[i - from]);
-      }
-    }
-
-    public abstract void Evaluate(int start, int end);
-
-    public void SetOriginalValue(int sample, double value) {
-      if(useEstimatedValues) {
-        dataset.SetValue(sample, targetVariable, value);
-      }
-    }
-
-    public double GetOriginalValue(int sample) {
-      return dataset.GetValue(sample, targetVariable);
-    }
-
-    public double GetEstimatedValue(int sample) {
-      evaluatedSamples++;
-      double estimated = evaluator.Evaluate(sample);
-      if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-        estimated = estimatedValueMax;
-      } else if(estimated > estimatedValueMax) {
-        estimated = estimatedValueMax;
-      } else if(estimated < estimatedValueMin) {
-        estimated = estimatedValueMin;
-      }
-      return estimated;
-    }
+    public abstract void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues);
   }
 }

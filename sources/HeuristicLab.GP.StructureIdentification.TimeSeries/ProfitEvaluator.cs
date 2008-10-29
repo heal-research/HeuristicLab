@@ -29,9 +29,6 @@ using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class ProfitEvaluator : GPEvaluatorBase {
-    protected DoubleData profit;
-    private int exchangeRateVarIndex;
-    private double transactionCost;
     public override string Description {
       get {
         return @"TASK";
@@ -45,35 +42,33 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       AddVariableInfo(new VariableInfo("TransactionCost", "Cost of a trade in percent of the transaction volume (0..1)", typeof(DoubleData), VariableKind.In));
     }
 
-    public override IOperation Apply(IScope scope) {
-      exchangeRateVarIndex = GetVariableValue<IntData>("ExchangeRate", scope, true).Data;
-      transactionCost = GetVariableValue<DoubleData>("TransactionCost", scope, true).Data;
-      profit = GetVariableValue<DoubleData>("Profit", scope, false, false);
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+      int exchangeRateVarIndex = GetVariableValue<IntData>("ExchangeRate", scope, true).Data;
+      double transactionCost = GetVariableValue<DoubleData>("TransactionCost", scope, true).Data;
+      DoubleData profit = GetVariableValue<DoubleData>("Profit", scope, false, false);
       if(profit == null) {
         profit = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Profit"), profit));
       }
 
-      return base.Apply(scope);
-    }
-
-    public override void Evaluate(int start, int end) {
       double cA = 1.0; // start with a capital of one entity of A
       double cB = 0;
       double exchangeRate = double.MaxValue;
       for(int sample = start; sample < end; sample++) {
         exchangeRate = dataset.GetValue(sample, exchangeRateVarIndex);
-        double originalPercentageChange = GetOriginalValue(sample);
-        double estimatedPercentageChange = GetEstimatedValue(sample);
-        SetOriginalValue(sample, estimatedPercentageChange);
+        double originalPercentageChange = dataset.GetValue(targetVariable, sample);
+        double estimatedPercentageChange = evaluator.Evaluate(sample);
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimatedPercentageChange);
+        }
         if(!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
           if(estimatedPercentageChange > 0) {
             // prediction is the rate of B/A will increase (= get more B for one A) => exchange all B to A
-            cA += (cB / exchangeRate) * (1-transactionCost);
+            cA += (cB / exchangeRate) * (1 - transactionCost);
             cB = 0;
           } else if(estimatedPercentageChange < 0) {
             // prediction is the rate of B/A will drop (= get more A for one B) => exchange all A to B
-            cB += (cA * exchangeRate) * (1-transactionCost);
+            cB += (cA * exchangeRate) * (1 - transactionCost);
             cA = 0;
           }
         }
@@ -85,7 +80,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       }
       // at the end we must exchange all B back to A 
       // (because we want to buy the local beer not import one from B-country)
-      profit.Data = cA + ((cB / exchangeRate) * (1-transactionCost));
+      profit.Data = cA + ((cB / exchangeRate) * (1 - transactionCost));
       profit.Data -= 1.0; // substract the start capital to determine actual profit
     }
   }

@@ -26,10 +26,10 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class MeanAbsolutePercentageErrorEvaluator : GPEvaluatorBase {
-    private DoubleData mape;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -42,24 +42,18 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       AddVariableInfo(new VariableInfo("MAPE", "The mean absolute percentage error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      mape = GetVariableValue<DoubleData>("MAPE", scope, false, false);
-      if(mape == null) {
-        mape = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MAPE"), mape));
-      }
-
-      return base.Apply(scope);
-    }
-
-    public override void Evaluate(int start, int end) {
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSum = 0.0;
       int n = 0;
       for(int sample = start; sample < end; sample++) {
-        double estimated = GetEstimatedValue(sample);
-        double original = GetOriginalValue(sample);
-        SetOriginalValue(sample, estimated);
-        if(!double.IsNaN(original) && !double.IsInfinity(original) && original!=0.0) {
+        double estimated = evaluator.Evaluate(sample);
+        double original = dataset.GetValue(targetVariable, sample);
+
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimated);
+        }
+        
+        if(!double.IsNaN(original) && !double.IsInfinity(original) && original != 0.0) {
           double percent_error = Math.Abs((estimated - original) / original);
           errorsSum += percent_error;
           n++;
@@ -68,6 +62,14 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       double quality = errorsSum / n;
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
+
+      // create a variable for the MAPE
+      DoubleData mape = GetVariableValue<DoubleData>("MAPE", scope, false, false);
+      if(mape == null) {
+        mape = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MAPE"), mape));
+      }
+
       mape.Data = quality;
     }
   }

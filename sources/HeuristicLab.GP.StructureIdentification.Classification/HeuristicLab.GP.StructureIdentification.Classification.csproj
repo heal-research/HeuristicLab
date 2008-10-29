@@ -66,12 +66,12 @@
     <Compile Include="AccuracyEvaluator.cs" />
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
     <Compile Include="ConfusionMatrixEvaluator.cs" />
+    <Compile Include="GPClassificationEvaluatorBase.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="FunctionLibraryInjector.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="HeuristicLabGPClassificationPlugin.cs" />
-    <Compile Include="MCCEvaluator.cs" />
     <Compile Include="MulticlassModeller.cs" />
     <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

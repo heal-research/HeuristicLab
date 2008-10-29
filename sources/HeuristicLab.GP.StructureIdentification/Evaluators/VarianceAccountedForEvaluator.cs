@@ -30,7 +30,6 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class VarianceAccountedForEvaluator : GPEvaluatorBase {
-    private DoubleData vaf;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates 
@@ -53,24 +52,16 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
 
     }
 
-    public override IOperation Apply(IScope scope) {
-      vaf = GetVariableValue<DoubleData>("VAF", scope, false, false);
-      if(vaf == null) {
-        vaf = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("VAF"), vaf));
-      }
-
-      return base.Apply(scope);
-    }
-
-    public override void Evaluate(int start, int end) {
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       int nSamples = end - start;
       double[] errors = new double[nSamples];
       double[] originalTargetVariableValues = new double[nSamples];
       for(int sample = start; sample < end; sample++) {
-        double estimated = GetEstimatedValue(sample);
-        double original = GetOriginalValue(sample);
-        SetOriginalValue(sample, estimated);
+        double estimated = evaluator.Evaluate(sample);
+        double original = dataset.GetValue(targetVariable, sample);
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimated);
+        }
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           errors[sample - start] = original - estimated;
           originalTargetVariableValues[sample - start] = original;
@@ -83,6 +74,12 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       if(double.IsNaN(quality) || double.IsInfinity(quality)) {
         quality = double.MaxValue;
       }
+      DoubleData vaf = GetVariableValue<DoubleData>("VAF", scope, false, false);
+      if(vaf == null) {
+        vaf = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("VAF"), vaf));
+      }
+
       vaf.Data = quality;
     }
   }

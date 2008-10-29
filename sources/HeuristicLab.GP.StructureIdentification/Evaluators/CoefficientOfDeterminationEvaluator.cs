@@ -29,7 +29,6 @@ using HeuristicLab.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class CoefficientOfDeterminationEvaluator : GPEvaluatorBase {
-    private DoubleData r2;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -42,28 +41,21 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       AddVariableInfo(new VariableInfo("R2", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      r2 = GetVariableValue<DoubleData>("R2", scope, false, false);
-      if(r2 == null) {
-        r2 = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("R2"), r2));
-      }
-
-      return base.Apply(scope);
-    }
-
-    public override void Evaluate(int start, int end) {
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
+      double targetMean = dataset.GetMean(targetVariable, start, end);
       for(int sample = start; sample < end; sample++) {
-        double estimated = GetEstimatedValue(sample);
-        double original = GetOriginalValue(sample);
-        SetOriginalValue(sample, estimated);
+        double estimated = evaluator.Evaluate(sample);
+        double original = dataset.GetValue(targetVariable, sample);
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimated);
+        }
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
 
-          double origDeviation = original - TargetMean;
+          double origDeviation = original - targetMean;
           originalDeviationTotalSumOfSquares += origDeviation * origDeviation;
         }
       }
@@ -73,6 +65,13 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
         throw new InvalidProgramException();
       if(double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
+
+      DoubleData r2 = GetVariableValue<DoubleData>("R2", scope, false, false);
+      if(r2 == null) {
+        r2 = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("R2"), r2));
+      }
+
       r2.Data = quality;
     }
   }

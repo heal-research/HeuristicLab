@@ -30,11 +30,6 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class TheilInequalityCoefficientEvaluator : GPEvaluatorBase {
-    private DoubleData theilInequaliy;
-    private DoubleData uBias;
-    private DoubleData uVariance;
-    private DoubleData uCovariance;
-
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -58,41 +53,42 @@ model is worse than the naive model (=> model is useless).";
       AddVariableInfo(new VariableInfo("TheilInequalityCoefficientCovariance", "Covariance proportion of Theil's inequality coefficient", typeof(DoubleData), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      theilInequaliy = GetVariableValue<DoubleData>("TheilInequalityCoefficient", scope, false, false);
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    #region create result variables
+      DoubleData theilInequaliy = GetVariableValue<DoubleData>("TheilInequalityCoefficient", scope, false, false);
       if(theilInequaliy == null) {
         theilInequaliy = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficient"), theilInequaliy));
       }
-      uBias = GetVariableValue<DoubleData>("TheilInequalityCoefficientBias", scope, false, false);
+      DoubleData uBias = GetVariableValue<DoubleData>("TheilInequalityCoefficientBias", scope, false, false);
       if(uBias == null) {
         uBias = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientBias"), uBias));
       }
-      uVariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientVariance", scope, false, false);
+      DoubleData uVariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientVariance", scope, false, false);
       if(uVariance == null) {
         uVariance = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientVariance"), uVariance));
       }
-      uCovariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientCovariance", scope, false, false);
+      DoubleData uCovariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientCovariance", scope, false, false);
       if(uCovariance == null) {
         uCovariance = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientCovariance"), uCovariance));
       }
-      return base.Apply(scope);
-    }
+      #endregion
 
-    public override void Evaluate(int start, int end) {
       double errorsSquaredSum = 0.0;
       double originalSquaredSum = 0.0;
-      double[] estimatedChanges = new double[end-start];
-      double[] originalChanges = new double[end-start];
+      double[] estimatedChanges = new double[end - start];
+      double[] originalChanges = new double[end - start];
       int nSamples = 0;
       for(int sample = start; sample < end; sample++) {
-        double prevValue = GetOriginalValue(sample - 1);
-        double estimatedChange = GetEstimatedValue(sample) - prevValue;
-        double originalChange = GetOriginalValue(sample) - prevValue;
-        SetOriginalValue(sample, estimatedChange + prevValue);
+        double prevValue = dataset.GetValue(targetVariable, sample - 1);
+        double estimatedChange = evaluator.Evaluate(sample) - prevValue;
+        double originalChange = dataset.GetValue(targetVariable, sample) - prevValue;
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimatedChange + prevValue);
+        }
         if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;
@@ -117,7 +113,7 @@ model is worse than the naive model (=> model is useless).";
       uVariance.Data = variance / (errorsSquaredSum / nSamples);
 
       // all parts add up to one so I don't have to calculate the correlation coefficient for the covariance propotion
-      uCovariance.Data = 1.0 - uBias.Data - uVariance.Data; 
+      uCovariance.Data = 1.0 - uBias.Data - uVariance.Data;
     }
   }
 }

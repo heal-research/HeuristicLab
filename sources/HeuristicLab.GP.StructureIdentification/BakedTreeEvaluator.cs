@@ -29,8 +29,14 @@ using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
+  /// <summary>
+  /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
+  /// Not thread-safe!
+  /// </summary>
   public class BakedTreeEvaluator {
     private const double EPSILON = 1.0e-7;
+    private double estimatedValueMax;
+    private double estimatedValueMin;
 
     private class Instr {
       public double d_arg0;
@@ -42,6 +48,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     private List<Instr> code;
+    private Instr[] codeArr;
     private int PC;
     private Dataset dataset;
     private int sampleIndex;
@@ -51,8 +58,15 @@ namespace HeuristicLab.GP.StructureIdentification {
       code = new List<Instr>();
     }
 
-    public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset) {
+    public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
       this.dataset = dataset;
+      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable);
+
+      // get the mean of the values of the target variable to determin the max and min bounds of the estimated value
+      double targetMean = dataset.GetMean(targetVariable, start, end - 1);
+      estimatedValueMin = targetMean - maximumPunishment;
+      estimatedValueMax = targetMean + maximumPunishment;
+
       List<LightWeightFunction> linearRepresentation = functionTree.LinearRepresentation;
       code.Clear();
       foreach(LightWeightFunction f in linearRepresentation) {
@@ -60,6 +74,8 @@ namespace HeuristicLab.GP.StructureIdentification {
         TranslateToInstr(f, curInstr);
         code.Add(curInstr);
       }
+
+      codeArr = code.ToArray<Instr>();
     }
 
     private void TranslateToInstr(LightWeightFunction f, Instr instr) {
@@ -87,7 +103,16 @@ namespace HeuristicLab.GP.StructureIdentification {
     public double Evaluate(int sampleIndex) {
       PC = 0;
       this.sampleIndex = sampleIndex;
-      return EvaluateBakedCode();
+
+      double estimated = EvaluateBakedCode();
+      if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
+        estimated = estimatedValueMax;
+      } else if(estimated > estimatedValueMax) {
+        estimated = estimatedValueMax;
+      } else if(estimated < estimatedValueMin) {
+        estimated = estimatedValueMin;
+      }
+      return estimated;
     }
 
     // skips a whole branch
@@ -100,7 +125,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     private double EvaluateBakedCode() {
-      Instr currInstr = code[PC++];
+      Instr currInstr = codeArr[PC++];
       switch(currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             int row = sampleIndex + currInstr.i_arg1;

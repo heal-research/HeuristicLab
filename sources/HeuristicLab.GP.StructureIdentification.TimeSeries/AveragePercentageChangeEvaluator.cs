@@ -29,8 +29,6 @@ using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class AvergePercentageChangeEvaluator : GPEvaluatorBase {
-    protected DoubleData apc;
-    private bool differential;
     public override string Description {
       get {
         return @"TASK";
@@ -43,32 +41,32 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       AddVariableInfo(new VariableInfo("APC", "The average percentage change of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      differential = GetVariableValue<BoolData>("Differential", scope, true).Data;
-      apc = GetVariableValue<DoubleData>("APC", scope, false, false);
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+      bool differential = GetVariableValue<BoolData>("Differential", scope, true).Data;
+      DoubleData apc = GetVariableValue<DoubleData>("APC", scope, false, false);
       if(apc == null) {
         apc = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("APC"), apc));
       }
 
-      return base.Apply(scope);
-    }
-
-    public override void Evaluate(int start, int end) {
       double percentageSum = 0;
       for(int sample = start; sample < end; sample++) {
         double prevOriginal;
         double originalPercentageChange;
         double estimatedPercentageChange;
         if(differential) {
-          prevOriginal = GetOriginalValue(sample - 1);
-          originalPercentageChange = (GetOriginalValue(sample) - prevOriginal) / prevOriginal;
-          estimatedPercentageChange = (GetEstimatedValue(sample) - prevOriginal) / prevOriginal;
-          SetOriginalValue(sample, estimatedPercentageChange*prevOriginal + prevOriginal);
+          prevOriginal = dataset.GetValue(targetVariable,sample - 1);
+          originalPercentageChange = (dataset.GetValue(targetVariable,sample) - prevOriginal) / prevOriginal;
+          estimatedPercentageChange = (evaluator.Evaluate(sample) - prevOriginal) / prevOriginal;
+          if(updateTargetValues) {
+            dataset.SetValue(targetVariable, sample, estimatedPercentageChange * prevOriginal + prevOriginal);
+          }
         } else {
-          originalPercentageChange = GetOriginalValue(sample);
-          estimatedPercentageChange = GetEstimatedValue(sample);
-          SetOriginalValue(sample, estimatedPercentageChange);
+          originalPercentageChange = dataset.GetValue(targetVariable,sample);
+          estimatedPercentageChange = evaluator.Evaluate(sample);
+          if(updateTargetValues) {
+            dataset.SetValue(targetVariable, sample, estimatedPercentageChange);
+          }
         }
         if(!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
           if((estimatedPercentageChange > 0 && originalPercentageChange > 0) ||

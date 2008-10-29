@@ -26,17 +26,17 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class SimpleEvaluator : GPEvaluatorBase {
-    private ItemList values;
     public SimpleEvaluator()
       : base() {
       AddVariableInfo(new VariableInfo("Values", "The values of the target variable as predicted by the model and the original value of the target variable", typeof(ItemList), VariableKind.New | VariableKind.Out));
     }
 
-    public override IOperation Apply(IScope scope) {
-      values = GetVariableValue<ItemList>("Values", scope, false, false);
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+      ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
       if(values == null) {
         values = new ItemList();
         IVariableInfo info = GetVariableInfo("Values");
@@ -46,15 +46,14 @@ namespace HeuristicLab.GP.StructureIdentification {
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
       values.Clear();
-      return base.Apply(scope);
-    }
 
-    public override void Evaluate(int start, int end) {
       for(int sample = start; sample < end; sample++) {
         ItemList row = new ItemList();
-        double estimated = GetEstimatedValue(sample);
-        double original = GetOriginalValue(sample);
-        SetOriginalValue(sample, estimated);
+        double estimated = evaluator.Evaluate(sample);
+        double original = dataset.GetValue(targetVariable, sample);
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimated);
+        }
         row.Add(new DoubleData(estimated));
         row.Add(new DoubleData(original));
         values.Add(row);

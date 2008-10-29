@@ -29,7 +29,6 @@ using HeuristicLab.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class EarlyStoppingMeanSquaredErrorEvaluator : MeanSquaredErrorEvaluator {
-    private double qualityLimit;
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of the dataset and calculates the mean-squared-error
@@ -43,19 +42,23 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       AddVariableInfo(new VariableInfo("QualityLimit", "The upper limit of the MSE which is used as early stopping criterion.", typeof(DoubleData), VariableKind.In));
     }
 
-    public override IOperation Apply(IScope scope) {
-      qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
-      return base.Apply(scope);
-    }
-
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override void Evaluate(int start, int end) {
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+      double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
+      DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
+      if(mse == null) {
+        mse = new DoubleData();
+        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
+      }
+
       double errorsSquaredSum = 0;
       int rows = end - start;
       for(int sample = start; sample < end; sample++) {
-        double estimated = GetEstimatedValue(sample);
-        double original = GetOriginalValue(sample);
-        SetOriginalValue(sample, estimated);
+        double estimated = evaluator.Evaluate(sample);
+        double original = dataset.GetValue(targetVariable, sample);
+        if(updateTargetValues) {
+          dataset.SetValue(targetVariable, sample, estimated);
+        }
         if(!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
@@ -70,6 +73,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
+
       mse.Data = errorsSquaredSum;
     }
   }
