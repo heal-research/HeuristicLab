@@ -94,11 +94,11 @@ namespace HeuristicLab.Communication.Data {
     }
 
     public bool Connect() {
-      if (tcpIn == null || !tcpIn.Connected) {
+      if (!Alive(tcpIn)) {
         if (tcpListener.Pending())
           tcpIn = tcpListener.AcceptTcpClient();
       }
-      if (tcpOut == null || !tcpOut.Connected) {
+      if (!Alive(tcpOut)) {
         tcpOut = new TcpClient();
         try {
           tcpOut.Connect(new IPEndPoint(IPAddress.Parse(config.TargetIPAddress.Data), config.TargetPort.Data));
@@ -111,19 +111,22 @@ namespace HeuristicLab.Communication.Data {
     }
 
     public void Close() {
-      tcpOut.Client.Close();
-      tcpOut.Close();
+      if (tcpOut != null && tcpOut.Connected) {
+        tcpOut.Client.Close();
+        tcpOut.Close();
+      }
       tcpOut = null;
-      while (tcpIn.Connected) ;
-      tcpIn.Client.Close();
-      tcpIn.Close();
+      if (tcpIn != null && tcpIn.Connected) {
+        tcpIn.Client.Close();
+        tcpIn.Close();
+      }
       tcpIn = null;
       tcpListener.Stop();
       buffer = "";
     }
 
     public void Write(string s) {
-      if (tcpOut == null || !tcpOut.Connected) Connect();
+      //if (tcpOut == null || !tcpOut.Connected) Connect();
       NetworkStream outStream = tcpOut.GetStream();
 
       byte[] sendBytes = Encoding.ASCII.GetBytes(s + "\n.\n");
@@ -133,7 +136,7 @@ namespace HeuristicLab.Communication.Data {
     }
 
     public string Read() {
-      if (tcpIn == null || !tcpIn.Connected) Connect();
+      //if (tcpIn == null || !tcpIn.Connected) Connect();
       NetworkStream inStream = tcpIn.GetStream();
       byte[] receivedBytes;
       int count = 0;
@@ -171,9 +174,7 @@ namespace HeuristicLab.Communication.Data {
       if (messageEnd < 0) throw new InvalidOperationException("ERROR: message was not received");
       if (messageEnd < count - 3)
         buffer = Encoding.ASCII.GetString(receivedBytes, messageEnd + 3, count - messageEnd - 3);
-      string result = Encoding.ASCII.GetString(receivedBytes, 0, messageEnd);
-      if (result.Equals("CLOSING")) return null;
-      else return result;
+      return Encoding.ASCII.GetString(receivedBytes, 0, messageEnd);
     }
 
     private int TerminationCheck(byte[] buffer, int start, int length) {
@@ -181,6 +182,18 @@ namespace HeuristicLab.Communication.Data {
         if (buffer[i] == 10 && buffer[i + 1] == 46 && buffer[i + 2] == 10) return i;
       }
       return -1;
+    }
+
+    private bool Alive(TcpClient c) {
+      if (c == null || !c.Connected) return false; // not connected if null or the property says so
+      try {
+        c.Client.Send(new byte[1], 0, 0); // if c != null && c.Connected make a zero byte send to check if still alive
+      } catch (SocketException e) {
+        return e.NativeErrorCode.Equals(10035); // 10035 == WSAEWOULDBLOCK, if true then connected, otherwise not connected
+      } catch (Exception) { // false regarding any other exception
+        return false;
+      }
+      return c.Connected; // return the property
     }
   }
 }

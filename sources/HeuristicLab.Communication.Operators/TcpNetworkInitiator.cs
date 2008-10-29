@@ -45,6 +45,17 @@ namespace HeuristicLab.Communication.Operators {
       SocketData socket = new SocketData();
       socket.Initialize(config);
       while (!socket.Connect()) ;
+      try {
+        socket.Write("REQUEST_CONNECT");
+        if (!socket.Read().Equals("REQUEST_CONNECT")) throw new InvalidOperationException("ERROR in TcpNetworkInitiator: Remote host answered with unknown response!");
+        socket.Write("ACK");
+        if (!socket.Read().Equals("ACK")) throw new InvalidOperationException("ERROR in TcpNetworkInitiator: Remote host answered with unknown response!");
+      } catch (Exception) {
+        try {
+          socket.Close();
+        } catch (Exception) { }
+        return new AtomicOperation(this, scope);
+      }
 
       IVariableInfo info = GetVariableInfo("NetworkConnection");
       if (info.Local)
