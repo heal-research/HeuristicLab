@@ -50,7 +50,7 @@ namespace HeuristicLab.GP {
 
       // enqueue all mutation operations as parallel operations
       CompositeOperation next = new CompositeOperation();
-      next.ExecuteInParallel = true;
+      next.ExecuteInParallel = false;
 
       Scope tempScope = new Scope("Temp. manipulation scope");
 
