@@ -44,6 +44,7 @@ namespace HeuristicLab.GP {
     public OnePointCrossOver()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(MersenneTwister), VariableKind.In));
+      AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The tree to mutate", typeof(IFunctionTree), VariableKind.In | VariableKind.New));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In | VariableKind.New));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In | VariableKind.New));
@@ -51,6 +52,8 @@ namespace HeuristicLab.GP {
 
     public override IOperation Apply(IScope scope) {
       MersenneTwister random = GetVariableValue<MersenneTwister>("Random", scope, true);
+      GPOperatorLibrary opLibrary = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
+      TreeGardener gardener = new TreeGardener(random, opLibrary);
 
       if((scope.SubScopes.Count % 2) != 0)
         throw new InvalidOperationException("Number of parents is not even");
@@ -64,7 +67,7 @@ namespace HeuristicLab.GP {
         IScope parent2 = scope.SubScopes[0];
         scope.RemoveSubScope(parent2);
         IScope child = new Scope(i.ToString());
-        IOperation childInitOperation = Cross(scope, random, parent1, parent2, child);
+        IOperation childInitOperation = Cross(scope, random, gardener, parent1, parent2, child);
         initOperations.AddOperation(childInitOperation);
         scope.AddSubScope(child);
       }
@@ -72,8 +75,8 @@ namespace HeuristicLab.GP {
       return initOperations;
     }
 
-    private IOperation Cross(IScope scope, MersenneTwister random, IScope parent1, IScope parent2, IScope child) {
-      IFunctionTree newTree = Cross(random, parent1, parent2);
+    private IOperation Cross(IScope scope, MersenneTwister random, TreeGardener gardener, IScope parent1, IScope parent2, IScope child) {
+      IFunctionTree newTree = Cross(random, gardener, parent1, parent2);
 
       int newTreeSize = newTree.Size;
       int newTreeHeight = newTree.Height;
@@ -85,7 +88,7 @@ namespace HeuristicLab.GP {
     }
 
 
-    private IFunctionTree Cross(MersenneTwister random, IScope f, IScope g) {
+    private IFunctionTree Cross(MersenneTwister random, TreeGardener gardener, IScope f, IScope g) {
       IFunctionTree tree0 = f.GetVariableValue<IFunctionTree>("FunctionTree", false);
       int tree0Height = f.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree0Size = f.GetVariableValue<IntData>("TreeSize", false).Data;
@@ -94,7 +97,7 @@ namespace HeuristicLab.GP {
       int tree1Height = g.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree1Size = g.GetVariableValue<IntData>("TreeSize", false).Data;
 
-      List<IFunctionTree[]> allowedCrossOverPoints = GetCrossOverPoints(null, tree0, tree1);
+      List<IFunctionTree[]> allowedCrossOverPoints = GetCrossOverPoints(gardener, null, tree0, tree1);
       if(allowedCrossOverPoints.Count == 0) {
         if(random.NextDouble() < 0.5) return tree0; else return tree1;
       }
@@ -112,14 +115,15 @@ namespace HeuristicLab.GP {
       }
     }
 
-    private List<IFunctionTree[]> GetCrossOverPoints(IFunctionTree parent, IFunctionTree tree0, IFunctionTree tree1) {
+    private List<IFunctionTree[]> GetCrossOverPoints(TreeGardener gardener, IFunctionTree parent, IFunctionTree tree0, IFunctionTree tree1) {
       List<IFunctionTree[]> results = new List<IFunctionTree[]>();
       if(tree0.SubTrees.Count != tree1.SubTrees.Count) return results;
       // invariant arity - number of subtrees is equal in both trees
-
-      results.Add(new IFunctionTree[] { parent, tree0, tree1 });
       for(int i = 0; i < tree0.SubTrees.Count; i++) {
-        results.AddRange(GetCrossOverPoints(tree0, tree0.SubTrees[i], tree1.SubTrees[i]));
+        if(gardener.GetAllowedSubFunctions(tree0.Function, i).Contains(tree1.SubTrees[i].Function)) {
+          results.Add(new IFunctionTree[] { tree0, tree0.SubTrees[i], tree1.SubTrees[i]});
+        }
+        results.AddRange(GetCrossOverPoints(gardener, tree0, tree0.SubTrees[i], tree1.SubTrees[i]));
       }
       return results;
     }
