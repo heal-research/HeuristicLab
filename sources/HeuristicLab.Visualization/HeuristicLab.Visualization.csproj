@@ -68,6 +68,7 @@
     <Compile Include="ICanvas.cs" />
     <Compile Include="IChartDataModel.cs" />
     <Compile Include="IChartDataRowsModel.cs" />
+    <Compile Include="IMouseEventListener.cs" />
     <Compile Include="IShape.cs" />
     <Compile Include="LineChart.cs">
       <SubType>UserControl</SubType>
@@ -75,6 +76,10 @@
     <Compile Include="LineChart.Designer.cs">
       <DependentUpon>LineChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="MouseEventDragDropListener.cs" />
+    <Compile Include="MouseEventPanListener.cs" />
+    <Compile Include="MouseEventSelectListener.cs" />
+    <Compile Include="MouseEventZoomListener.cs" />
     <Compile Include="Offset.cs" />
     <Compile Include="PointD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
