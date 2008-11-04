@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization {
-  class MouseEventDragDropListener {
+  internal class MouseEventDragDropListener : IMouseEventListener{
+    #region Interface members
+
+    public event MouseEventHandler OnMouseDown;
+    public event MouseEventHandler OnMouseUp;
+    public event MouseEventHandler OnMouseMove;
+
+    #endregion
+
+    public event MouseEventHandler OnDrag;
+    public event MouseEventHandler OnDrop;
   }
 }

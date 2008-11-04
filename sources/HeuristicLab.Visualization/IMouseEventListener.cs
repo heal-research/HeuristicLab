@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization {
-  class IMouseEventListener {
+  internal interface IMouseEventListener {
+    event MouseEventHandler OnMouseDown;
+    event MouseEventHandler OnMouseUp;
+    event MouseEventHandler OnMouseMove;
   }
 }
