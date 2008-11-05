@@ -44,35 +44,35 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       bool differential = GetVariableValue<BoolData>("Differential", scope, true).Data;
       DoubleData apc = GetVariableValue<DoubleData>("APC", scope, false, false);
-      if(apc == null) {
+      if (apc == null) {
         apc = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("APC"), apc));
       }
 
       double percentageSum = 0;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double prevOriginal;
         double originalPercentageChange;
         double estimatedPercentageChange;
-        if(differential) {
-          prevOriginal = dataset.GetValue(targetVariable,sample - 1);
-          originalPercentageChange = (dataset.GetValue(targetVariable,sample) - prevOriginal) / prevOriginal;
+        if (differential) {
+          prevOriginal = dataset.GetValue(sample - 1, targetVariable);
+          originalPercentageChange = (dataset.GetValue(sample, targetVariable) - prevOriginal) / prevOriginal;
           estimatedPercentageChange = (evaluator.Evaluate(sample) - prevOriginal) / prevOriginal;
-          if(updateTargetValues) {
-            dataset.SetValue(targetVariable, sample, estimatedPercentageChange * prevOriginal + prevOriginal);
+          if (updateTargetValues) {
+            dataset.SetValue(sample, targetVariable, estimatedPercentageChange * prevOriginal + prevOriginal);
           }
         } else {
-          originalPercentageChange = dataset.GetValue(targetVariable,sample);
+          originalPercentageChange = dataset.GetValue(sample, targetVariable);
           estimatedPercentageChange = evaluator.Evaluate(sample);
-          if(updateTargetValues) {
-            dataset.SetValue(targetVariable, sample, estimatedPercentageChange);
+          if (updateTargetValues) {
+            dataset.SetValue(sample, targetVariable, estimatedPercentageChange);
           }
         }
-        if(!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
-          if((estimatedPercentageChange > 0 && originalPercentageChange > 0) ||
+        if (!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
+          if ((estimatedPercentageChange > 0 && originalPercentageChange > 0) ||
             (estimatedPercentageChange < 0 && originalPercentageChange < 0)) {
             percentageSum += Math.Abs(originalPercentageChange);
-          } else if((estimatedPercentageChange > 0 && originalPercentageChange < 0) ||
+          } else if ((estimatedPercentageChange > 0 && originalPercentageChange < 0) ||
             (estimatedPercentageChange < 0 && originalPercentageChange > 0)) {
             percentageSum -= Math.Abs(originalPercentageChange);
           }
@@ -80,7 +80,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       }
 
       percentageSum /= (end - start);
-      if(double.IsNaN(percentageSum) || double.IsInfinity(percentageSum)) {
+      if (double.IsNaN(percentageSum) || double.IsInfinity(percentageSum)) {
         percentageSum = double.MinValue;
       }
       apc.Data = percentageSum;

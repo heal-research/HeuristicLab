@@ -42,18 +42,17 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void  Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end)
-{
+    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       double errorsSquaredSum = 0;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(targetVariable, sample);
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        double original = dataset.GetValue(sample, targetVariable);
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           // between classes use squared error
           // on the lower end and upper end only add linear error if the absolute error is larger than 1
           // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
-          if((IsEqual(original, classes[0]) && error < -1.0) ||
+          if ((IsEqual(original, classes[0]) && error < -1.0) ||
             (IsEqual(original, classes[classes.Length - 1]) && error > 1.0)) {
             errorsSquaredSum += Math.Abs(error); // only add linear error below the smallest class or above the largest class
           } else {
@@ -63,12 +62,12 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       }
 
       errorsSquaredSum /= (end - start);
-      if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
+      if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
 
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
-      if(mse == null) {
+      if (mse == null) {
         mse = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
       }

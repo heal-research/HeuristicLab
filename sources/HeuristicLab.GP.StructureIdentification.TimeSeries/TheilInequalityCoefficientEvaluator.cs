@@ -54,24 +54,24 @@ model is worse than the naive model (=> model is useless).";
     }
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-    #region create result variables
+      #region create result variables
       DoubleData theilInequaliy = GetVariableValue<DoubleData>("TheilInequalityCoefficient", scope, false, false);
-      if(theilInequaliy == null) {
+      if (theilInequaliy == null) {
         theilInequaliy = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficient"), theilInequaliy));
       }
       DoubleData uBias = GetVariableValue<DoubleData>("TheilInequalityCoefficientBias", scope, false, false);
-      if(uBias == null) {
+      if (uBias == null) {
         uBias = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientBias"), uBias));
       }
       DoubleData uVariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientVariance", scope, false, false);
-      if(uVariance == null) {
+      if (uVariance == null) {
         uVariance = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientVariance"), uVariance));
       }
       DoubleData uCovariance = GetVariableValue<DoubleData>("TheilInequalityCoefficientCovariance", scope, false, false);
-      if(uCovariance == null) {
+      if (uCovariance == null) {
         uCovariance = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TheilInequalityCoefficientCovariance"), uCovariance));
       }
@@ -82,14 +82,14 @@ model is worse than the naive model (=> model is useless).";
       double[] estimatedChanges = new double[end - start];
       double[] originalChanges = new double[end - start];
       int nSamples = 0;
-      for(int sample = start; sample < end; sample++) {
-        double prevValue = dataset.GetValue(targetVariable, sample - 1);
+      for (int sample = start; sample < end; sample++) {
+        double prevValue = dataset.GetValue(sample - 1, targetVariable);
         double estimatedChange = evaluator.Evaluate(sample) - prevValue;
-        double originalChange = dataset.GetValue(targetVariable, sample) - prevValue;
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimatedChange + prevValue);
+        double originalChange = dataset.GetValue(sample, targetVariable) - prevValue;
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimatedChange + prevValue);
         }
-        if(!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
+        if (!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;
           originalSquaredSum += originalChange * originalChange;
@@ -99,7 +99,7 @@ model is worse than the naive model (=> model is useless).";
         }
       }
       double quality = Math.Sqrt(errorsSquaredSum / nSamples) / Math.Sqrt(originalSquaredSum / nSamples);
-      if(double.IsNaN(quality) || double.IsInfinity(quality))
+      if (double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
       theilInequaliy.Data = quality; // U2
 

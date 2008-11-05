@@ -56,13 +56,13 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       int nSamples = end - start;
       double[] errors = new double[nSamples];
       double[] originalTargetVariableValues = new double[nSamples];
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(targetVariable, sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimated);
+        double original = dataset.GetValue(sample, targetVariable);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
         }
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           errors[sample - start] = original - estimated;
           originalTargetVariableValues[sample - start] = original;
         }
@@ -71,11 +71,11 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
       double originalsVariance = Statistics.Variance(originalTargetVariableValues);
       double quality = 1 - errorsVariance / originalsVariance;
 
-      if(double.IsNaN(quality) || double.IsInfinity(quality)) {
+      if (double.IsNaN(quality) || double.IsInfinity(quality)) {
         quality = double.MaxValue;
       }
       DoubleData vaf = GetVariableValue<DoubleData>("VAF", scope, false, false);
-      if(vaf == null) {
+      if (vaf == null) {
         vaf = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("VAF"), vaf));
       }

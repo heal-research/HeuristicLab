@@ -42,24 +42,24 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       IntMatrixData matrix = GetVariableValue<IntMatrixData>("ConfusionMatrix", scope, false, false);
-      if(matrix == null) {
+      if (matrix == null) {
         matrix = new IntMatrixData(new int[classes.Length, classes.Length]);
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("ConfusionMatrix"), matrix));
       }
 
       int nSamples = end - start;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double est = evaluator.Evaluate(sample);
-        double origClass = dataset.GetValue(targetVariable,sample);
+        double origClass = dataset.GetValue(sample, targetVariable);
         int estClassIndex = -1;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
-        if(est < thresholds[0]) estClassIndex = 0;
+        if (est < thresholds[0]) estClassIndex = 0;
         // if estimation is larger (or equal) than the largest threshold value -> estimated class is the upper class
-        else if(est >= thresholds[thresholds.Length - 1]) estClassIndex = classes.Length - 1;
+        else if (est >= thresholds[thresholds.Length - 1]) estClassIndex = classes.Length - 1;
         else {
           // otherwise the estimated class is the class which upper threshold is larger than the estimated value
-          for(int k = 0; k < thresholds.Length; k++) {
-            if(thresholds[k] > est) {
+          for (int k = 0; k < thresholds.Length; k++) {
+            if (thresholds[k] > est) {
               estClassIndex = k;
               break;
             }
@@ -67,9 +67,9 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         }
 
         // find the first threshold index that is larger to the original value
-        int origClassIndex = classes.Length-1;
-        for(int i = 0; i < thresholds.Length; i++) {
-          if(origClass < thresholds[i]) {
+        int origClassIndex = classes.Length - 1;
+        for (int i = 0; i < thresholds.Length; i++) {
+          if (origClass < thresholds[i]) {
             origClassIndex = i;
             break;
           }

@@ -37,22 +37,22 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
-      if(values == null) {
+      if (values == null) {
         values = new ItemList();
         IVariableInfo info = GetVariableInfo("Values");
-        if(info.Local)
+        if (info.Local)
           AddVariable(new HeuristicLab.Core.Variable(info.ActualName, values));
         else
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
       values.Clear();
 
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         ItemList row = new ItemList();
         double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(targetVariable, sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimated);
+        double original = dataset.GetValue(sample, targetVariable);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
         }
         row.Add(new DoubleData(estimated));
         row.Add(new DoubleData(original));

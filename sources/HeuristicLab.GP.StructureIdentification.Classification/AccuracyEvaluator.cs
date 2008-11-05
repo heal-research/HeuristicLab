@@ -44,31 +44,31 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       DoubleData accuracy = GetVariableValue<DoubleData>("Accuracy", scope, false, false);
-      if(accuracy == null) {
+      if (accuracy == null) {
         accuracy = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Accuracy"), accuracy));
       }
 
       int nSamples = end - start;
       int nCorrect = 0;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double est = evaluator.Evaluate(sample);
-        double origClass = dataset.GetValue(targetVariable, sample);
+        double origClass = dataset.GetValue(sample, targetVariable);
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
-        if(est < thresholds[0]) estClass = classes[0];
+        if (est < thresholds[0]) estClass = classes[0];
         // if estimation is larger (or equal) than the largest threshold value -> estimated class is the upper class
-        else if(est >= thresholds[thresholds.Length - 1]) estClass = classes[classes.Length - 1];
+        else if (est >= thresholds[thresholds.Length - 1]) estClass = classes[classes.Length - 1];
         else {
           // otherwise the estimated class is the class which upper threshold is larger than the estimated value
-          for(int k = 0; k < thresholds.Length; k++) {
-            if(thresholds[k] > est) {
+          for (int k = 0; k < thresholds.Length; k++) {
+            if (thresholds[k] > est) {
               estClass = classes[k];
               break;
             }
           }
         }
-        if(Math.Abs(estClass - origClass) < EPSILON) nCorrect++;
+        if (Math.Abs(estClass - origClass) < EPSILON) nCorrect++;
       }
       accuracy.Data = nCorrect / (double)nSamples;
     }

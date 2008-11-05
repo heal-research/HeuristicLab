@@ -46,31 +46,31 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
-      if(mse == null) {
+      if (mse == null) {
         mse = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
       }
 
       double errorsSquaredSum = 0;
       int rows = end - start;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(targetVariable, sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimated);
+        double original = dataset.GetValue(sample, targetVariable);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
         }
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
         }
         // check the limit and stop as soon as we hit the limit
-        if(errorsSquaredSum / rows >= qualityLimit) {
+        if (errorsSquaredSum / rows >= qualityLimit) {
           mse.Data = errorsSquaredSum / (sample - start + 1); // return estimated MSE (when the remaining errors are on average the same)
           return;
         }
       }
       errorsSquaredSum /= rows;
-      if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
+      if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
 

@@ -46,7 +46,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       int exchangeRateVarIndex = GetVariableValue<IntData>("ExchangeRate", scope, true).Data;
       double transactionCost = GetVariableValue<DoubleData>("TransactionCost", scope, true).Data;
       DoubleData profit = GetVariableValue<DoubleData>("Profit", scope, false, false);
-      if(profit == null) {
+      if (profit == null) {
         profit = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Profit"), profit));
       }
@@ -54,19 +54,19 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       double cA = 1.0; // start with a capital of one entity of A
       double cB = 0;
       double exchangeRate = double.MaxValue;
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         exchangeRate = dataset.GetValue(sample, exchangeRateVarIndex);
-        double originalPercentageChange = dataset.GetValue(targetVariable, sample);
+        double originalPercentageChange = dataset.GetValue(sample, targetVariable);
         double estimatedPercentageChange = evaluator.Evaluate(sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimatedPercentageChange);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimatedPercentageChange);
         }
-        if(!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
-          if(estimatedPercentageChange > 0) {
+        if (!double.IsNaN(originalPercentageChange) && !double.IsInfinity(originalPercentageChange)) {
+          if (estimatedPercentageChange > 0) {
             // prediction is the rate of B/A will increase (= get more B for one A) => exchange all B to A
             cA += (cB / exchangeRate) * (1 - transactionCost);
             cB = 0;
-          } else if(estimatedPercentageChange < 0) {
+          } else if (estimatedPercentageChange < 0) {
             // prediction is the rate of B/A will drop (= get more A for one B) => exchange all A to B
             cB += (cA * exchangeRate) * (1 - transactionCost);
             cA = 0;
@@ -74,7 +74,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
         }
       }
 
-      if(double.IsNaN(cA) || double.IsInfinity(cA) || double.IsInfinity(cB) || double.IsNaN(cB)) {
+      if (double.IsNaN(cA) || double.IsInfinity(cA) || double.IsInfinity(cB) || double.IsNaN(cB)) {
         cA = 0;
         cB = 0;
       }

@@ -56,10 +56,10 @@ namespace HeuristicLab.GP.StructureIdentification {
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       double[] backupValues = null;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
-      if(useEstimatedValues &&
-        (backupValues == null || backupValues.Length!=end-start)) {
+      if (useEstimatedValues &&
+        (backupValues == null || backupValues.Length != end - start)) {
         backupValues = new double[end - start];
-        for(int i = start; i < end; i++) {
+        for (int i = start; i < end; i++) {
           backupValues[i - start] = dataset.GetValue(i, targetVariable);
         }
       }
@@ -71,14 +71,14 @@ namespace HeuristicLab.GP.StructureIdentification {
       Evaluate(scope, evaluator, dataset, targetVariable, start, end, useEstimatedValues);
 
       // restore the values of the target variable from the backup array if necessary
-      if(useEstimatedValues) {
-        for(int i = start; i < end; i++) {
+      if (useEstimatedValues) {
+        for (int i = start; i < end; i++) {
           dataset.SetValue(i, targetVariable, backupValues[i - start]);
         }
       }
 
       // update the value of total evaluated nodes
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (end-start);
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (end - start);
       return null;
     }
 

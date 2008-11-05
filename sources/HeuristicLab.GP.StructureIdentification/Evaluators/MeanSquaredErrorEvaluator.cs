@@ -44,25 +44,25 @@ for the estimated values vs. the real values of 'TargetVariable'.";
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0;
-      for(int sample = start; sample < end; sample++) {
-        double original = dataset.GetValue(targetVariable, sample);
+      for (int sample = start; sample < end; sample++) {
+        double original = dataset.GetValue(sample, targetVariable);
         double estimated = evaluator.Evaluate(sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimated);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
         }
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
         }
       }
 
       errorsSquaredSum /= (end - start);
-      if(double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
+      if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
 
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
-      if(mse == null) {
+      if (mse == null) {
         mse = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
       }

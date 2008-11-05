@@ -45,13 +45,13 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       double targetMean = dataset.GetMean(targetVariable, start, end);
-      for(int sample = start; sample < end; sample++) {
+      for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(targetVariable, sample);
-        if(updateTargetValues) {
-          dataset.SetValue(targetVariable, sample, estimated);
+        double original = dataset.GetValue(sample, targetVariable);
+        if (updateTargetValues) {
+          dataset.SetValue(sample, targetVariable, estimated);
         }
-        if(!double.IsNaN(original) && !double.IsInfinity(original)) {
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
 
@@ -61,13 +61,13 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       }
 
       double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
-      if(quality > 1)
+      if (quality > 1)
         throw new InvalidProgramException();
-      if(double.IsNaN(quality) || double.IsInfinity(quality))
+      if (double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
 
       DoubleData r2 = GetVariableValue<DoubleData>("R2", scope, false, false);
-      if(r2 == null) {
+      if (r2 == null) {
         r2 = new DoubleData();
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("R2"), r2));
       }

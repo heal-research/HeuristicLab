@@ -68,8 +68,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       ItemList<DoubleData> binaryClassValues = new ItemList<DoubleData>();
       binaryClassValues.Add(new DoubleData(0.0));
       binaryClassValues.Add(new DoubleData(1.0));
-      for(int i = 0; i < classValues.Count-1; i++) {
-        for(int j = i+1; j < classValues.Count; j++) {
+      for (int i = 0; i < classValues.Count - 1; i++) {
+        for (int j = i + 1; j < classValues.Count; j++) {
           Dataset dataset = new Dataset();
           dataset.Columns = origDataset.Columns;
           double classAValue = classValues[i].Data;
@@ -81,17 +81,17 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
           trainingSamplesStart = 0;
           List<double[]> rows = new List<double[]>();
-          for(int k = origTrainingSamplesStart; k < origTrainingSamplesEnd; k++) {
+          for (int k = origTrainingSamplesStart; k < origTrainingSamplesEnd; k++) {
             double[] row = new double[dataset.Columns];
             double targetValue = origDataset.GetValue(k, targetVariable);
-            if(IsEqual(targetValue, classAValue)) {
-              for(int l = 0; l < row.Length; l++) {
+            if (IsEqual(targetValue, classAValue)) {
+              for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 0;
               rows.Add(row);
-            } else if(IsEqual(targetValue, classBValue)) {
-              for(int l = 0; l < row.Length; l++) {
+            } else if (IsEqual(targetValue, classBValue)) {
+              for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 1.0;
@@ -100,17 +100,17 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
           }
           trainingSamplesEnd = rows.Count;
           validationSamplesStart = rows.Count;
-          for(int k = origValidationSamplesStart; k < origValidationSamplesEnd; k++) {
+          for (int k = origValidationSamplesStart; k < origValidationSamplesEnd; k++) {
             double[] row = new double[dataset.Columns];
             double targetValue = origDataset.GetValue(k, targetVariable);
-            if(IsEqual(targetValue, classAValue)) {
-              for(int l = 0; l < row.Length; l++) {
+            if (IsEqual(targetValue, classAValue)) {
+              for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 0;
               rows.Add(row);
-            } else if(IsEqual(targetValue, classBValue)) {
-              for(int l = 0; l < row.Length; l++) {
+            } else if (IsEqual(targetValue, classBValue)) {
+              for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 1.0;
@@ -121,13 +121,13 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
           dataset.Rows = rows.Count;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
-          for(int k = 0; k < dataset.Rows; k++) {
-            for(int l = 0; l < dataset.Columns; l++) {
+          for (int k = 0; k < dataset.Rows; k++) {
+            for (int l = 0; l < dataset.Columns; l++) {
               dataset.SetValue(k, l, rows[k][l]);
             }
           }
 
-          Scope childScope = new Scope(classAValue+" vs. "+classBValue);
+          Scope childScope = new Scope(classAValue + " vs. " + classBValue);
 
           childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(TARGETCLASSVALUES), binaryClassValues));
           childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(CLASSAVALUE), new DoubleData(classAValue)));
