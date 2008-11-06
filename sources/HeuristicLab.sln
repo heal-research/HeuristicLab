@@ -115,6 +115,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.AD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Core", "HeuristicLab.Hive.Client.Core\HeuristicLab.Hive.Client.Core.csproj", "{5010BD86-23B7-4F8C-888A-76D21AD5266A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Common", "HeuristicLab.Hive.Client.Common\HeuristicLab.Hive.Client.Common.csproj", "{89F4BC52-C174-481E-9BD2-3814171020E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -528,6 +530,12 @@ Global
 		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|x86.ActiveCfg = Release|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F4BC52-C174-481E-9BD2-3814171020E8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
