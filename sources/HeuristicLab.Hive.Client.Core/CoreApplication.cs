@@ -14,6 +14,8 @@ namespace HeuristicLab.Hive.Client.Core {
       //logger.Source = "CoreApplication";
       //logger.WriteEntry("Program has Started");
       //logger.Close();
+      
+      this.ToString();
       Console.WriteLine("awesome");
     }
   }
