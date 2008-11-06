@@ -113,6 +113,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.Sc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.ADODataAccess", "HeuristicLab.Hive.Server.ADODataAccess\HeuristicLab.Hive.Server.ADODataAccess.csproj", "{715A9134-B6E4-4CB9-8A5A-E6601497565A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Core", "HeuristicLab.Hive.Client.Core\HeuristicLab.Hive.Client.Core.csproj", "{5010BD86-23B7-4F8C-888A-76D21AD5266A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -520,6 +522,12 @@ Global
 		{715A9134-B6E4-4CB9-8A5A-E6601497565A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{715A9134-B6E4-4CB9-8A5A-E6601497565A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{715A9134-B6E4-4CB9-8A5A-E6601497565A}.Release|x86.ActiveCfg = Release|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5010BD86-23B7-4F8C-888A-76D21AD5266A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
