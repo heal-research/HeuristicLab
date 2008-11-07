@@ -28,6 +28,7 @@ copy %1\HeuristicLab.DataAnalysis\%2\HeuristicLab.DataAnalysis-3.2.dll .\plugins
 copy %1\HeuristicLab.DistributedEngine\%2\HeuristicLab.DistributedEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.Evolutionary\%2\HeuristicLab.Evolutionary-3.2.dll .\plugins
 copy %1\HeuristicLab.GP\%2\HeuristicLab.GP-3.2.dll .\plugins
+copy %1\HeuristicLab.GP.Boolean\%2\HeuristicLab.GP.Boolean-1.0.dll .\plugins
 copy %1\HeuristicLab.GP.SantaFe\%2\HeuristicLab.GP.SantaFe-3.2.dll .\plugins
 copy %1\HeuristicLab.GP.StructureIdentification\%2\HeuristicLab.GP.StructureIdentification-3.2.dll .\plugins
 copy %1\HeuristicLab.GP.StructureIdentification.Classification\%2\HeuristicLab.GP.StructureIdentification.Classification-3.2.dll .\plugins
