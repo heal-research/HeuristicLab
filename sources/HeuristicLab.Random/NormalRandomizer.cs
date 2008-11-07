@@ -59,8 +59,8 @@ namespace HeuristicLab.Random {
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
-      double mu = GetVariableValue<DoubleData>("Mu", null, false).Data;
-      double sigma = GetVariableValue<DoubleData>("Sigma", null, false).Data;
+      double mu = GetVariableValue<DoubleData>("Mu", scope, true).Data;
+      double sigma = GetVariableValue<DoubleData>("Sigma", scope, true).Data;
       NormalDistributedRandom normal = new NormalDistributedRandom(mt, mu, sigma);
 
       value.Accept(new RandomizerVisitor(normal));

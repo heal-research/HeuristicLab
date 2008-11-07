@@ -57,8 +57,8 @@ namespace HeuristicLab.Random {
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
-      double min = GetVariableValue<DoubleData>("Min", null, false).Data;
-      double max = GetVariableValue<DoubleData>("Max", null, false).Data;
+      double min = GetVariableValue<DoubleData>("Min", scope, true).Data;
+      double max = GetVariableValue<DoubleData>("Max", scope, true).Data;
 
       value.Accept(new RandomVisitor(mt, min, max));
 
