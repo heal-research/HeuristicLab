@@ -42,7 +42,7 @@ namespace HeuristicLab.Operators {
 
     public override IOperation Apply(IScope scope) {
       ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("VariableNames", scope, false);
-      ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
+      ItemList values = GetVariableValue<ItemList>("Values", scope, true, false);
       if (values == null) {
         values = new ItemList();
         IVariableInfo info = GetVariableInfo("Values");
