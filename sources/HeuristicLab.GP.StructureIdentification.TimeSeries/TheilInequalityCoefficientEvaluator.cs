@@ -112,7 +112,7 @@ model is worse than the naive model (=> model is useless).";
       variance *= variance; // squared
       uVariance.Data = variance / (errorsSquaredSum / nSamples);
 
-      // all parts add up to one so I don't have to calculate the correlation coefficient for the covariance propotion
+      // all parts add up to one so I don't have to calculate the correlation coefficient for the covariance proportion
       uCovariance.Data = 1.0 - uBias.Data - uVariance.Data;
     }
   }
