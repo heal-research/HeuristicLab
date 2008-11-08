@@ -30,9 +30,12 @@ using HeuristicLab.Constraints;
 
 namespace HeuristicLab.GP.Boolean {
   public class FunctionLibraryInjector : OperatorBase {
+    private const string TARGETVARIABLE = "TargetVariable";
+    private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string OPERATORLIBRARY = "FunctionLibrary";
 
     private GPOperatorLibrary operatorLibrary;
+    private Variable variable;
 
     public override string Description {
       get { return @"Injects a function library for boolean logic."; }
@@ -40,11 +43,28 @@ namespace HeuristicLab.GP.Boolean {
 
     public FunctionLibraryInjector()
       : base() {
+      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo(OPERATORLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
+      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
+      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+
+      // remove the target-variable in case it occures in allowed features
+      List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
+      foreach (IntData t in ts) allowedFeatures.Remove(t);
+
       InitDefaultOperatorLibrary();
+
+      int[] allowedIndexes = new int[allowedFeatures.Count];
+      for (int i = 0; i < allowedIndexes.Length; i++) {
+        allowedIndexes[i] = allowedFeatures[i].Data;
+      }
+
+      variable.SetConstraints(allowedIndexes);
+
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OPERATORLIBRARY), operatorLibrary));
       return null;
     }
@@ -56,7 +76,7 @@ namespace HeuristicLab.GP.Boolean {
       Nand nand = new Nand();
       Nor nor = new Nor();
       Xor xor = new Xor();
-      HeuristicLab.GP.Boolean.Variable variable = new HeuristicLab.GP.Boolean.Variable();
+      variable = new HeuristicLab.GP.Boolean.Variable();
 
       IFunction[] allFunctions = new IFunction[] {
         and,
@@ -73,7 +93,7 @@ namespace HeuristicLab.GP.Boolean {
       SetAllowedSubOperators(not, allFunctions);
       SetAllowedSubOperators(nand, allFunctions);
       SetAllowedSubOperators(nor, allFunctions);
-      SetAllowedSubOperators(not, allFunctions);
+      SetAllowedSubOperators(xor, allFunctions);
 
       operatorLibrary = new GPOperatorLibrary();
       operatorLibrary.GPOperatorGroup.AddOperator(and);
@@ -86,17 +106,17 @@ namespace HeuristicLab.GP.Boolean {
     }
 
     private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
-      foreach(IConstraint c in f.Constraints) {
-        if(c is SubOperatorTypeConstraint) {
+      foreach (IConstraint c in f.Constraints) {
+        if (c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           typeConstraint.Clear();
-          foreach(IFunction g in gs) {
+          foreach (IFunction g in gs) {
             typeConstraint.AddOperator(g);
           }
-        } else if(c is AllSubOperatorsTypeConstraint) {
+        } else if (c is AllSubOperatorsTypeConstraint) {
           AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
           typeConstraint.Clear();
-          foreach(IFunction g in gs) {
+          foreach (IFunction g in gs) {
             typeConstraint.AddOperator(g);
           }
         }

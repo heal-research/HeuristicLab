@@ -36,36 +36,42 @@ namespace HeuristicLab.GP.Boolean {
     private IFunctionTree tree;
     private int targetVariable;
     private int currentRow;
+    private Dictionary<IFunctionTree, int> cachedIndex = new Dictionary<IFunctionTree, int>();
 
     public void Reset(Dataset dataset, IFunctionTree tree, int targetVariable) {
       this.dataset = dataset;
       this.tree = tree;
       this.targetVariable = targetVariable;
+      cachedIndex.Clear();
     }
 
     internal int GetNumberMatchingInstances(int start, int end) {
       int matchingInstances = 0;
-      for(int i = start; i < end; i++) {
+      for (int i = start; i < end; i++) {
         currentRow = i;
         int result = Step(tree) ? 1 : 0;
-        if(result - dataset.GetValue(i, targetVariable) < EPSILON) matchingInstances++;
+        if (Math.Abs(result - dataset.GetValue(i, targetVariable)) < EPSILON) matchingInstances++;
       }
       return matchingInstances;
     }
 
     internal bool Step(IFunctionTree tree) {
       int symbol = SymbolTable.MapFunction(tree.Function);
-      switch(symbol) {
-        case SymbolTable.AND: return Step(tree.SubTrees[0]) & Step(tree.SubTrees[0]);
-        case SymbolTable.OR: return Step(tree.SubTrees[0]) | Step(tree.SubTrees[0]);
+      switch (symbol) {
+        case SymbolTable.AND: return Step(tree.SubTrees[0]) && Step(tree.SubTrees[1]);
+        case SymbolTable.OR: return Step(tree.SubTrees[0]) || Step(tree.SubTrees[1]);
         case SymbolTable.NOT: return !Step(tree.SubTrees[0]);
         case SymbolTable.XOR: return Step(tree.SubTrees[0]) ^ Step(tree.SubTrees[1]);
-        case SymbolTable.NAND: return !(Step(tree.SubTrees[0]) & Step(tree.SubTrees[0]));
-        case SymbolTable.NOR: return !(Step(tree.SubTrees[0]) | Step(tree.SubTrees[0]));
+        case SymbolTable.NAND: return !(Step(tree.SubTrees[0]) && Step(tree.SubTrees[1]));
+        case SymbolTable.NOR: return !(Step(tree.SubTrees[0]) || Step(tree.SubTrees[1]));
         case SymbolTable.VARIABLE:
-          int index = ((ConstrainedIntData)tree.LocalVariables.ToArray()[0].Value).Data;
-          if(dataset.GetValue(currentRow, targetVariable) == 0.0) return false;
-          else return true;
+          int index;
+          if (cachedIndex.TryGetValue(tree, out index)==false) {
+          } else {
+            index = ((ConstrainedIntData)tree.LocalVariables.ToArray()[0].Value).Data;
+            cachedIndex[tree] = index;
+          }
+          return dataset.GetValue(currentRow, index) != 0.0;
         case SymbolTable.UNKNOWN:
         default:
           throw new InvalidOperationException(tree.Function.ToString());
