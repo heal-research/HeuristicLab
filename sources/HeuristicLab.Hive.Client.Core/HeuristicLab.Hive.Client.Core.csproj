@@ -32,6 +32,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -57,6 +73,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Hive.Client.Common\HeuristicLab.Hive.Client.Common.csproj">
+      <Project>{89F4BC52-C174-481E-9BD2-3814171020E8}</Project>
+      <Name>HeuristicLab.Hive.Client.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
