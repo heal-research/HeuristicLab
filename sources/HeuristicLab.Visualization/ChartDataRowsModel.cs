@@ -25,7 +25,7 @@ namespace HeuristicLab.Visualization{
 
     public void AddDataRow(int id){
 
-      double[] vals = new double[10]{4.0, 2.2, 0.2, 4, 18.2333, 1.1, 7, 99.99, 8, 2.6};
+      double[] vals = new double[0];
 
       ChartDataRowsModelColumn col = new ChartDataRowsModelColumn(id, vals);
 
@@ -34,14 +34,14 @@ namespace HeuristicLab.Visualization{
 
     public void PushData(int dataRowId, double value){
 
-      //double[] vals = new double[columns[dataRowId].Values.Length+1];
-      //for (int i = 0; i < columns[dataRowId].Values.Length; i++ ){
-      //  vals[i] = columns[dataRowId].Values[i];
+      double[] vals = new double[columns[dataRowId].Values.Length + 1];
+      for (int i = 0; i < columns[dataRowId].Values.Length; i++) {
+        vals[i] = columns[dataRowId].Values[i];
 
-      //}
-        
-      //vals[vals.Length] = value;
-      //columns[dataRowId].Values = vals;
+      }
+
+      vals[vals.Length-1] = value;
+      columns[dataRowId].Values = vals;
     }
 
     public override IView CreateView() {
