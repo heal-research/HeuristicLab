@@ -35,6 +35,7 @@
       this.canvasUI.Size = new System.Drawing.Size(800, 600);
       this.canvasUI.TabIndex = 3;
       this.canvasUI.Text = "canvasUI";
+      this.canvasUI.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI_MouseDown);
       // 
       // label2
       // 

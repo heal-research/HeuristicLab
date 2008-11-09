@@ -38,11 +38,15 @@ namespace HeuristicLab.Visualization {
     }
 
     private void CanvasUI_MouseMove(object sender, MouseEventArgs e) {
-      if (mouseEventListener != null) {}
+      if (mouseEventListener != null) {
+        mouseEventListener.MouseMove(e.Location);
+      }
     }
 
     private void CanvasUI_MouseUp(object sender, MouseEventArgs e) {
-      if (mouseEventListener != null) {}
+      if (mouseEventListener != null) {
+        mouseEventListener.MouseUp(e.Location);
+      }
     }
   }
 }
