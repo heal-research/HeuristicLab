@@ -30,6 +30,7 @@
       // canvasUI
       // 
       this.canvasUI.Location = new System.Drawing.Point(12, 29);
+      this.canvasUI.MouseEventListener = null;
       this.canvasUI.Name = "canvasUI";
       this.canvasUI.Size = new System.Drawing.Size(800, 600);
       this.canvasUI.TabIndex = 3;
@@ -44,14 +45,14 @@
       this.label2.TabIndex = 4;
       this.label2.Text = "Canvas";
       // 
-      // Form1
+      // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(822, 637);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.canvasUI);
-      this.Name = "Form1";
+      this.Name = "MainForm";
       this.Text = "Form1";
       this.ResumeLayout(false);
       this.PerformLayout();

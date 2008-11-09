@@ -28,7 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+          this.SuspendLayout();
+          // 
+          // CanvasUI
+          // 
+          this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CanvasUI_MouseMove);
+          this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CanvasUI_MouseUp);
+          this.ResumeLayout(false);
+
         }
 
         #endregion
