@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -42,6 +43,8 @@ namespace HeuristicLab.Visualization{
 
       vals[vals.Length-1] = value;
       columns[dataRowId].Values = vals;
+
+      RaiseColumnChanged(ChangeType.Add, vals.Length-1, new double[1]{value});
     }
 
     public override IView CreateView() {
@@ -77,24 +80,43 @@ namespace HeuristicLab.Visualization{
         columnElement.Attributes.Append(idAttr);
 
         for (int i = 0; i < column.Values.Length; i++){
-          columnElement.InnerText += column.Values[i].ToString() + ";";
+          if (i == 0){
+            columnElement.InnerText += column.Values[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+          } else{
+            columnElement.InnerText += ";" + column.Values[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+          }
         }
-          //columnElement.InnerText = "xx";
-          node.AppendChild(columnElement);
+        node.AppendChild(columnElement);
       }
       
-      //node.InnerText = "test1";
-      //test.Data = 11;
       return node;
 
     }
 
 
-    /*
+    
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      //Data = bool.Parse(node.InnerText);
+
+
+      foreach (XmlNode column in node.ChildNodes){
+        XmlAttributeCollection attrs = column.Attributes;
+        XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("id");
+        int rowId = int.Parse(rowIdAttr.Value);
+        AddDataRow(rowId);
+        string[] tokens = column.InnerText.Split(';');
+        double[] data = new double[tokens.Length];
+        for (int i = 0; i < data.Length; i++){
+          test.Data = i;
+          data[i] = 2.3;
+          //if(double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) == false) {
+          //  throw new FormatException("Can't parse " + tokens[i] + " as double value.");
+          //}
+
+        }
+        Columns[rowId-1].Values = data;
+      }
     }
-   */
+   
   }
 }
