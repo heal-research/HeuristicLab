@@ -33,48 +33,43 @@ namespace HeuristicLab.GP.Boolean {
   internal class BooleanTreeInterpreter {
     private const double EPSILON = 0.00001;
     private Dataset dataset;
-    private IFunctionTree tree;
+    private List<LightWeightFunction> expression;
     private int targetVariable;
     private int currentRow;
-    private Dictionary<IFunctionTree, int> cachedIndex = new Dictionary<IFunctionTree, int>();
+    private int pc;
 
-    public void Reset(Dataset dataset, IFunctionTree tree, int targetVariable) {
+    public void Reset(Dataset dataset, BakedFunctionTree tree, int targetVariable) {
       this.dataset = dataset;
-      this.tree = tree;
+      this.expression = tree.LinearRepresentation;
       this.targetVariable = targetVariable;
-      cachedIndex.Clear();
     }
 
-    internal int GetNumberMatchingInstances(int start, int end) {
-      int matchingInstances = 0;
+    internal int GetNumberOfErrors(int start, int end) {
+      int errors = 0;
       for (int i = start; i < end; i++) {
+        pc = 0;
         currentRow = i;
-        int result = Step(tree) ? 1 : 0;
-        if (Math.Abs(result - dataset.GetValue(i, targetVariable)) < EPSILON) matchingInstances++;
+        int result = Step() ? 1 : 0;
+        if (Math.Abs(result - dataset.GetValue(i, targetVariable)) > EPSILON) errors++;
       }
-      return matchingInstances;
+      return errors;
     }
 
-    internal bool Step(IFunctionTree tree) {
-      int symbol = SymbolTable.MapFunction(tree.Function);
+    internal bool Step() {
+      LightWeightFunction curFun = expression[pc++];
+      int symbol = SymbolTable.MapFunction(curFun.functionType);
       switch (symbol) {
-        case SymbolTable.AND: return Step(tree.SubTrees[0]) && Step(tree.SubTrees[1]);
-        case SymbolTable.OR: return Step(tree.SubTrees[0]) || Step(tree.SubTrees[1]);
-        case SymbolTable.NOT: return !Step(tree.SubTrees[0]);
-        case SymbolTable.XOR: return Step(tree.SubTrees[0]) ^ Step(tree.SubTrees[1]);
-        case SymbolTable.NAND: return !(Step(tree.SubTrees[0]) && Step(tree.SubTrees[1]));
-        case SymbolTable.NOR: return !(Step(tree.SubTrees[0]) || Step(tree.SubTrees[1]));
+        case SymbolTable.AND: return Step() & Step();
+        case SymbolTable.OR: return Step() | Step();
+        case SymbolTable.NOT: return !Step();
+        case SymbolTable.XOR: return Step() ^ Step();
+        case SymbolTable.NAND: return !(Step() & Step());
+        case SymbolTable.NOR: return !(Step() | Step());
         case SymbolTable.VARIABLE:
-          int index;
-          if (cachedIndex.TryGetValue(tree, out index)==false) {
-          } else {
-            index = ((ConstrainedIntData)tree.LocalVariables.ToArray()[0].Value).Data;
-            cachedIndex[tree] = index;
-          }
-          return dataset.GetValue(currentRow, index) != 0.0;
+          return dataset.GetValue(currentRow, (int)curFun.data[0]) != 0.0;
         case SymbolTable.UNKNOWN:
         default:
-          throw new InvalidOperationException(tree.Function.ToString());
+          throw new InvalidOperationException(curFun.functionType.ToString());
 
       }
     }

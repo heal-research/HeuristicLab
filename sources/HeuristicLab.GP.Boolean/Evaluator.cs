@@ -31,16 +31,16 @@ namespace HeuristicLab.GP.Boolean {
   public class Evaluator : OperatorBase {
     public Evaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the ant", typeof(IFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the ant", typeof(BakedFunctionTree), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "The boolean dataset (values 0.0 = false, 1.0=true)", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MatchingCases", "", typeof(DoubleData), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Errors", "", typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
+      BakedFunctionTree tree = GetVariableValue<BakedFunctionTree>("FunctionTree", scope, true);
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
@@ -48,9 +48,9 @@ namespace HeuristicLab.GP.Boolean {
 
       BooleanTreeInterpreter interpreter = new BooleanTreeInterpreter();
       interpreter.Reset(dataset, tree, targetVariable);
-      int matchingCases = interpreter.GetNumberMatchingInstances(start, end);
+      int errors = interpreter.GetNumberOfErrors(start, end);
 
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MatchingCases"), new DoubleData(matchingCases)));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Errors"), new DoubleData(errors)));
       return null;
     }
   }
