@@ -66,6 +66,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="CoreApplication.cs" />
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="Heartbeat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
