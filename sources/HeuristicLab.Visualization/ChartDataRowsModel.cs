@@ -107,16 +107,16 @@ namespace HeuristicLab.Visualization{
         string[] tokens = column.InnerText.Split(';');
         double[] data = new double[tokens.Length];
         for (int i = 0; i < data.Length; i++){
-          test.Data = i;
-          data[i] = 2.3;
-          //if(double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) == false) {
-          //  throw new FormatException("Can't parse " + tokens[i] + " as double value.");
-          //}
-
+          if (tokens[i].Length != 0){
+            if (
+              double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
+              false){
+              throw new FormatException("Can't parse " + tokens[i] + " as double value.");
+            }
+          }
         }
         Columns[rowId-1].Values = data;
       }
     }
-   
   }
 }
