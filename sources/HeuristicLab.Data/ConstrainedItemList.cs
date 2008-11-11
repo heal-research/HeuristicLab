@@ -113,11 +113,11 @@ namespace HeuristicLab.Data {
 
     public bool TryInsert(int index, IItem item, out ICollection<IConstraint> violatedConstraints) {
       list.Insert(index, item);
+      violatedConstraints = new List<IConstraint>();
       if (!suspendConstraintCheck && IsValid(out violatedConstraints)) {
         OnItemAdded(item, index);
         return true;
       } else {
-        violatedConstraints = new List<IConstraint>();
         list.RemoveAt(index);
         return false;
       }
@@ -126,11 +126,11 @@ namespace HeuristicLab.Data {
     public bool TryRemoveAt(int index, out ICollection<IConstraint> violatedConstraints) {
       IItem item = list[index];
       list.RemoveAt(index);
+      violatedConstraints = new List<IConstraint>();
       if (!suspendConstraintCheck && IsValid(out violatedConstraints)) {
         OnItemRemoved(item, index);
         return true;
       } else {
-        violatedConstraints = new List<IConstraint>();
         list.Insert(index, item);
         return false;
       }
@@ -143,10 +143,10 @@ namespace HeuristicLab.Data {
     public bool TrySetAt(int index, IItem item, out ICollection<IConstraint> violatedConstraints) {
       IItem backup = this[index];
       list[index] = item;
+      violatedConstraints = new List<IConstraint>();
       if (!suspendConstraintCheck && IsValid(out violatedConstraints)) {
         return true;
       } else {
-        violatedConstraints = new List<IConstraint>();
         list[index] = backup;
         return false;
       }
@@ -154,11 +154,11 @@ namespace HeuristicLab.Data {
 
     public bool TryAdd(IItem item, out ICollection<IConstraint> violatedConstraints) {
       list.Add(item);
+      violatedConstraints = new List<IConstraint>();
       if (!suspendConstraintCheck && IsValid(out violatedConstraints)) {
         OnItemAdded(item, list.Count - 1);
         return true;
       } else {
-        violatedConstraints = new List<IConstraint>();
         list.RemoveAt(list.Count - 1);
         return false;
       }
