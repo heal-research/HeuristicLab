@@ -13,24 +13,21 @@ namespace HeuristicLab.Hive.Client.Core {
   public class CoreApplication: ApplicationBase {
     public override void Run() {
  
-      Logging.getInstance().Info(this.Name, "Info Message");
-      Logging.getInstance().Error(this.Name, "Error Message");
-      Logging.getInstance().Error(this.Name, "Exception Message", new Exception("Exception"));
+      //Logging.getInstance().Info(this.Name, "Info Message");
+      //Logging.getInstance().Error(this.Name, "Error Message");
+      //Logging.getInstance().Error(this.Name, "Exception Message", new Exception("Exception"));
       
       Heartbeat beat = new Heartbeat();
       beat.Interval = 1000;
       beat.StartHeartbeat();
-      DoRubbish();
-      Console.WriteLine("done");
-      Thread.Sleep(99999);
-    }
+      MessageQueue queue = MessageQueue.GetInstance();
+      
+      while (true) {
+        MessageContainer container = queue.GetMessage();
+        Console.WriteLine(container.Message.ToString());
+      }
 
-    private void DoRubbish() {
-      for (int w = 0; w < 20000000; w++)
-        for (int x = 0; x < 20000000; x++)
-          for (int y = 0; y < 20000000; y++) {
-          }
-
+      
     }
   }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using HeuristicLab.Hive.Client.Common;
 
 namespace HeuristicLab.Hive.Client.Core {
   public class Heartbeat {
@@ -23,11 +24,12 @@ namespace HeuristicLab.Hive.Client.Core {
       heartbeatTimer.Interval = this.Interval;
       heartbeatTimer.AutoReset = true;
       heartbeatTimer.Elapsed += new ElapsedEventHandler(heartbeatTimer_Elapsed);
-      heartbeatTimer.Start();            
+      heartbeatTimer.Start();               
     }
 
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");
+      MessageQueue.GetInstance().AddMessage(MessageQueue.MessageType.FetchJob);
     }
 
   }

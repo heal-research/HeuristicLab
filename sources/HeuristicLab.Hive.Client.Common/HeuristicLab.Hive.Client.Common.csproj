@@ -66,6 +66,8 @@
   <ItemGroup>
     <Compile Include="CommonPlugin.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="MessageContainer.cs" />
+    <Compile Include="MessageQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
