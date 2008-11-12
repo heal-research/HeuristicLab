@@ -29,32 +29,73 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="ArrayDataBase"/>.
+  /// </summary>
   public partial class ArrayDataBaseView : ViewBase {
+    /// <summary>
+    /// Gets or sets the instance of the array to represent.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public ArrayDataBase ArrayDataBase {
       get { return (ArrayDataBase)Item; }
       protected set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ArrayDataBaseView"/>.
+    /// </summary>
     public ArrayDataBaseView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="ArrayDataBase"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ArrayDataBase.Changed -= new EventHandler(ArrayDataBase_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="ArrayDataBase"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ArrayDataBase.Changed += new EventHandler(ArrayDataBase_Changed);
     }
 
+    /// <summary>
+    /// Validates the given data.
+    /// <note type="caution"> Needs to be overridden in each inherited class!</note>
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when method is not 
+    /// overridden in inherited class.</exception>
+    /// <param name="element">The data to validate.</param>
+    /// <returns><c>true</c> if the data is valid, <c>false</c> otherwise.</returns>
     protected virtual bool ValidateData(string element) {
       throw new InvalidOperationException("ValidateData has to be overridden in each inherited class");
     }
+    /// <summary>
+    /// Replaces an element at the given <paramref name="index"/> 
+    /// with the given <paramref name="element"/>.
+    /// <note type="caution"> Needs to be overridden in each inherited class!</note>
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when method is not 
+    /// overridden in inherited class.</exception>
+    /// <param name="index">The position where to substitute the element.</param>
+    /// <param name="element">The element to insert.</param>
     protected virtual void SetArrayElement(int index, string element) {
       throw new InvalidOperationException("SetArrayElement has to be overridden in each inherited class");
     }
 
+    /// <summary>
+    /// Updates all controls and the elements of the table with the latest values.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (ArrayDataBase != null) {
@@ -89,6 +130,11 @@ namespace HeuristicLab.Data {
       }
     }
 
+    /// <summary>
+    /// Creates a new array having the specified number (<paramref name="newLength"/>) of elements of the 
+    /// current instance (starting from the beginning).
+    /// </summary>
+    /// <param name="newLength">The size/number of elements of the new array.</param>
     private void CreateAndCopyArray(int newLength) {
       Array newArray = Array.CreateInstance(ArrayDataBase.Data.GetType().GetElementType(), newLength);
       Array.Copy(ArrayDataBase.Data, newArray, Math.Min(newLength, ArrayDataBase.Data.Length));

@@ -29,29 +29,59 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="BoolData"/>, symbolizing a boolean value. 
+  /// </summary>
   public partial class BoolDataView : ViewBase {
+    /// <summary>
+    /// Gets or sets the boolean value to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public BoolData BoolData {
       get { return (BoolData)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="BoolDataView"/>.
+    /// </summary>
     public BoolDataView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="BoolDataView"/> with the given 
+    /// <paramref name="boolData"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="boolData"/> is not copied!</note>
+    /// </summary>
+    /// <param name="boolData">The boolean value to represent visually.</param>
     public BoolDataView(BoolData boolData)
       : this() {
       BoolData = boolData;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="BoolData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       BoolData.Changed -= new EventHandler(BoolData_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="BoolData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       BoolData.Changed += new EventHandler(BoolData_Changed);
     }
 
+    /// <summary>
+    /// Sets the <c>dataCheckBox</c> checked or unchecked according to the latest value.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (BoolData == null) {

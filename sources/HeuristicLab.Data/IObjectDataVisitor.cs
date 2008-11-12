@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// A basic interface for all data visitors.
+  /// </summary>
   public interface IObjectDataVisitor {
     void Visit(BoolData data);
     void Visit(IntData data);

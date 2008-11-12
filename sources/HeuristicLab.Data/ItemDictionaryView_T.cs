@@ -8,17 +8,33 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="HeuristicLab.Data.ItemDictionary&lt;K,V&gt;"/>.
+  /// </summary>
+  /// <typeparam name="K">The type of the keys of the dictionary.</typeparam>
+  /// <typeparam name="V">The type of the values of the dictionary.</typeparam>
   public partial class ItemDictionaryView<K, V> : ViewBase
     where K : IItem
     where V : IItem {
 
     private EditKeyValueDialog editKeyValueDialog;
 
+    /// <summary>
+    /// Gets or sets the dictionary to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public ItemDictionary<K, V> ItemDictionary {
       get { return (ItemDictionary<K, V>) Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Creates a new list view item with the given <paramref name="key"/> and <paramref name="value"/>.
+    /// </summary>
+    /// <param name="key">The key to show in the list item.</param>
+    /// <param name="value">The value to show in the list item.</param>
+    /// <returns>The created list item as <see cref="ListViewItem"/>.</returns>
     private ListViewItem CreateListViewItem(K key, V value) {
       ListViewItem item = new ListViewItem(key.ToString());
       item.Name = key.ToString();
@@ -28,6 +44,9 @@ namespace HeuristicLab.Data {
       return item;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="ItemDictionaryView&lt;K,V&gt;"/>.
+    /// </summary>
     public ItemDictionaryView() {
       InitializeComponent();
       listView.View = View.Details;
@@ -37,11 +56,23 @@ namespace HeuristicLab.Data {
       keyTypeTextBox.Text = typeof(K).ToString();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="ItemDictionaryView&lt;K,V&gt;"/> with the given
+    /// <paramref name="dictionary"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="dictionary"/> is not copied!</note>
+    /// </summary>
+    /// <param name="dictionary">The dictionary to represent visually.</param>
     public ItemDictionaryView(ItemDictionary<K, V> dictionary)
       : this() {
       ItemDictionary = dictionary;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying 
+    /// <see cref="HeuristicLab.Data.ItemDictionary&lt;K,V&gt;"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ItemDictionary.ItemAdded -= new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemInserted);
       ItemDictionary.ItemRemoved -= new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemRemoved);
@@ -49,6 +80,11 @@ namespace HeuristicLab.Data {
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="HeuristicLab.Data.ItemDictionary&lt;K,V&gt;"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ItemDictionary.ItemAdded += new EventHandler<KeyValueEventArgs>(ItemDictionary_ItemInserted);
@@ -127,6 +163,9 @@ namespace HeuristicLab.Data {
     #endregion
 
     #region Update Controls
+    /// <summary>
+    /// Updates the controls with the latest elements of the dictionary.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       detailsPanel.Controls.Clear();

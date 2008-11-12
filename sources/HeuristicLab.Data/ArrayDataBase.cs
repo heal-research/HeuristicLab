@@ -26,12 +26,24 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// An abstract base class for all kinds of arrays.
+  /// </summary>
   public abstract class ArrayDataBase : ObjectData {
+    /// <summary>
+    /// Gets or sets the elements of the array.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ObjectData.Data"/> of base class <see cref="ObjectData"/>. 
+    /// No own data storage present.</remarks>
     public new virtual Array Data {
       get { return (Array)base.Data; }
       set { base.Data = value; }
     }
 
+    /// <summary>
+    /// The string representation of the array.
+    /// </summary>
+    /// <returns>The elements of the array as a string seperated by a semicolon.</returns>
     public override string ToString() {
       if (Data.Length <= 0) return "Empty Array";
       StringBuilder builder = new StringBuilder();

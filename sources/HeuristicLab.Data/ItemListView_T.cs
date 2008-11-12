@@ -29,29 +29,57 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="HeuristicLab.Data.ItemList&lt;T&gt;"/>.
+  /// </summary>
+  /// <typeparam name="T">The type of the items in the list.</typeparam>
   public partial class ItemListView<T> : ViewBase where T : IItem {
     private ChooseItemDialog chooseItemDialog;
 
+    /// <summary>
+    /// Gets or sets the item list to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public ItemList<T> ItemList {
       get { return (ItemList<T>)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="HeuristicLab.Data.ItemListView&lt;T&gt;"/>.
+    /// </summary>
     public ItemListView() {
       InitializeComponent();
       itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="HeuristicLab.Data.ItemListView&lt;T&gt;"/> with the given
+    /// <paramref name="itemList"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="itemList"/> is not copied!</note>
+    /// </summary>
+    /// <param name="itemList">The list of items to represent visually.</param>
     public ItemListView(ItemList<T> itemList)
       : this() {
       ItemList = itemList;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="HeuristicLab.Data.ItemList&lt;T&gt;"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ItemList.ItemAdded -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
       ItemList.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(ItemList_ItemRemoved);
       ItemList.Cleared -= new EventHandler(ItemList_Cleared);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="HeuristicLab.Data.ItemList&lt;T&gt;"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ItemList.ItemAdded += new EventHandler<ItemIndexEventArgs>(ItemList_ItemInserted);
@@ -59,6 +87,9 @@ namespace HeuristicLab.Data {
       ItemList.Cleared += new EventHandler(ItemList_Cleared);
     }
 
+    /// <summary>
+    /// Update all controls with the lastest elements in the list.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       detailsGroupBox.Controls.Clear();

@@ -25,9 +25,20 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// Public interface to represent basic data types
+  /// </summary>
   public interface IObjectData : IItem, IComparable {
+    /// <summary>
+    /// Gets or sets the value of the object.
+    /// </summary>
     object Data { get; set; }
 
+    /// <summary>
+    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
+    /// can change the object.
+    /// </summary>
+    /// <param name="visitor">The visitor that changes the element.</param>
     void Accept(IObjectDataVisitor visitor);
   }
 }

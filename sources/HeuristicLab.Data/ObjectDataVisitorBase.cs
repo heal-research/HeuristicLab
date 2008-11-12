@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The base class for DataVisitors.
+  /// </summary>
   public class ObjectDataVisitorBase : IObjectDataVisitor{
     #region IObjectDataVisitor Members
     public virtual void Visit(BoolData data) {

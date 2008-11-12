@@ -29,29 +29,59 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="DoubleData"/>, symbolizing a double value.
+  /// </summary>
   public partial class DoubleDataView : ViewBase {
+    /// <summary>
+    /// Gets or sets the double value to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class 
+    /// <see cref="ViewBase"/>. No own data storage present.</remarks>
     public DoubleData DoubleData {
       get { return (DoubleData)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="DoubleDataView"/>.
+    /// </summary>
     public DoubleDataView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="DoubleDataView"/> with the given 
+    /// <paramref name="doubleData"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="doubleData"/> is not copied!</note>
+    /// </summary>
+    /// <param name="doubleData">The double value to represent visually.</param>
     public DoubleDataView(DoubleData doubleData)
       : this() {
       DoubleData = doubleData;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="DoubleData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       DoubleData.Changed -= new EventHandler(DoubleData_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="DoubleData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       DoubleData.Changed += new EventHandler(DoubleData_Changed);
     }
 
+    /// <summary>
+    /// Updates the controls with the latest double value.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (DoubleData == null) {

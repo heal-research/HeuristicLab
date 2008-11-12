@@ -27,7 +27,15 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// Generic list of elements that implement the interface <see cref="IItem"/>.
+  /// </summary>
   public class ItemList : ItemList<IItem> {
+    /// <summary>
+    /// Clones the current list and all its elements.
+    /// </summary>
+    /// <param name="clonedObjects">A dictionary of all already cloned objects.</param>
+    /// <returns>The cloned instance as <see cref="ItemList"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ItemList clone = new ItemList();
       clonedObjects.Add(Guid, clone);

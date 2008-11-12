@@ -26,28 +26,66 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// An array consisting of boolean values.
+  /// </summary>
   public class BoolArrayData : ArrayDataBase {
+    /// <summary>
+    /// Gets or sets the boolean elements of the array.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ArrayDataBase.Data"/> of base class <see cref="ArrayDataBase"/>. 
+    /// No own data storage present.</remarks>
     public new bool[] Data {
       get { return (bool[])base.Data; }
       set { base.Data = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoolArrayData"/> class.
+    /// </summary>
     public BoolArrayData() {
       Data = new bool[0];
     }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoolArrayData"/> class. 
+    /// <note type="caution"> No CopyConstructor! <paramref name="data"/> is not copied!</note>
+    /// </summary>
+    /// <param name="data">The boolean array the instance should represent.</param>
     public BoolArrayData(bool[] data) {
       Data = data;
     }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="BoolArrayDataView"/> class.
+    /// </summary>
+    /// <returns>The created instance of the <see cref="BoolArrayDataView"/>.</returns>
     public override IView CreateView() {
       return new BoolArrayDataView(this);
     }
 
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The boolean elements of the array are saved as string in the node's inner text, each element separated by a semicolon.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
+    /// <param name="persistedObjects">A dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       node.InnerText = ToString();
       return node;
     }
+    /// <summary>
+    /// Loads the persisted boolean array from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks> The elements of the boolean array must be saved in the node's inner 
+    /// text as a string, each element separated by a semicolon 
+    /// (see <see cref="GetXmlNode"/>).</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">A Dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       string[] tokens = node.InnerText.Split(';');
@@ -56,7 +94,11 @@ namespace HeuristicLab.Data {
         data[i] = bool.Parse(tokens[i]);
       Data = data;
     }
-
+    /// <summary>
+    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
+    /// can change the elements of the array.
+    /// </summary>
+    /// <param name="visitor">The visitor that changes the element.</param>
     public override void Accept(IObjectDataVisitor visitor) {
       visitor.Visit(this);
     }

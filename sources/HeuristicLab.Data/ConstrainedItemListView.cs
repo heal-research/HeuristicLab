@@ -29,31 +29,58 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="ConstrainedItemList"/>.
+  /// </summary>
   public partial class ConstrainedItemListView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
+
+    /// <summary>
+    /// Gets or sets the item list to represent.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.</remarks>
     public ConstrainedItemList ConstrainedItemList {
       get { return (ConstrainedItemList)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="ConstrainedItemListView"/>.
+    /// </summary>
     public ConstrainedItemListView() {
       InitializeComponent();
       //itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="ConstrainedItemListView"/> with the given
+    /// <paramref name="constrainedItemList"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="constrainedItemList"/> is not copied!</note>
+    /// </summary>
+    /// <param name="constrainedItemList">The item list to represent visually.</param>
     public ConstrainedItemListView(ConstrainedItemList constrainedItemList)
       : this() {
       ConstrainedItemList = constrainedItemList;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="ConstrainedItemList"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ConstrainedItemList.ItemAdded -= new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemAdded);
       ConstrainedItemList.ItemRemoved -= new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemRemoved);
       ConstrainedItemList.Cleared -= new EventHandler(ConstrainedItemList_Cleared);
       base.RemoveItemEvents();
     }
-
+    
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="ConstrainedItemList"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ConstrainedItemList.ItemAdded += new EventHandler<ItemIndexEventArgs>(ConstrainedItemList_ItemAdded);
@@ -61,6 +88,9 @@ namespace HeuristicLab.Data {
       ConstrainedItemList.Cleared += new EventHandler(ConstrainedItemList_Cleared);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest elements in the list.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       detailsGroupBox.Enabled = false;

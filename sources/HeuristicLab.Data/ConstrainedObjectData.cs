@@ -26,8 +26,16 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// A class representing all basic data types having some constraints.
+  /// </summary>
   public class ConstrainedObjectData : ConstrainedItemBase, IObjectData {
     private object myData;
+    /// <summary>
+    /// Gets or sets the object with constraints to represent.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ItemBase.OnChanged"/> in the setter.
+    /// </remarks>
     public virtual object Data {
       get { return myData; }
       set {
@@ -38,6 +46,11 @@ namespace HeuristicLab.Data {
       }
     }
 
+    /// <summary>
+    /// Assigns the new <paramref name="data"/> if it is valid according to the constraints.
+    /// </summary>
+    /// <param name="data">The data to assign.</param>
+    /// <returns><c>true</c> if the new <paramref name="data"/> could be assigned, <c>false</c> otherwise.</returns>
     public virtual bool TrySetData(object data) {
       if (myData != data) {
         object backup = myData;
@@ -52,6 +65,12 @@ namespace HeuristicLab.Data {
       }
       return true;
     }
+    /// <summary>
+    /// Assigns the new object <paramref name="data"/> if it is valid according to the constraints.
+    /// </summary>
+    /// <param name="data">The data to assign.</param>
+    /// <param name="violatedConstraints">Output parameter, containing all constraints that could not be fulfilled.</param>
+    /// <returns><c>true</c> if the new <paramref name="data"/> could be assigned, <c>false</c> otherwise.</returns>
     public virtual bool TrySetData(object data, out ICollection<IConstraint> violatedConstraints) {
       if (myData != data) {
         object backup = myData;
@@ -68,6 +87,14 @@ namespace HeuristicLab.Data {
       return true;
     }
 
+    /// <summary>
+    /// Clones the current object.
+    /// </summary>
+    /// <remarks>HeuristicLab data items are cloned with the <see cref="HeuristicLab.Core.Auxiliary.Clone"/> method of 
+    /// class <see cref="Auxiliary"/> (deep copy), all other items (like basic data types) 
+    /// are cloned with their own <c>Clone</c> methods (shadow copy).</remarks>
+    /// <param name="clonedObjects">All already cloned objects.</param>
+    /// <returns>The cloned object as <see cref="ConstrainedObjectData"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ConstrainedObjectData clone = (ConstrainedObjectData)base.Clone(clonedObjects);
       if (Data is IStorable)
@@ -79,6 +106,17 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
+    /// <summary>
+    /// Compares the current instance to the given <paramref name="obj"/>.
+    /// </summary>
+    /// <remarks>Can also compare basic data types with their representing HeuristicLab data types 
+    /// (e.g. a <see cref="ConstrainedDoubleData"/> with a double value).</remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the current 
+    /// instance does not implement the interface <see cref="IComparable"/></exception>
+    /// <param name="obj">The object to compare the current instance to.</param>
+    /// <returns><c>0</c> if the objects are the same, a value smaller than zero when the current instance
+    /// is smaller than the given <paramref name="obj"/> and a value greater than zero 
+    /// when the current instance is greater than the given <paramref name="obj"/>.</returns>
     public int CompareTo(object obj) {
       IComparable comparable = Data as IComparable;
       if (comparable != null) {
@@ -91,10 +129,19 @@ namespace HeuristicLab.Data {
       throw new InvalidOperationException("Cannot compare as contained object doesn't implement IComparable");
     }
 
+    /// <summary>
+    /// The string representation of the current instance.
+    /// </summary>
+    /// <returns>The current instance as a string.</returns>
     public override string ToString() {
       return Data.ToString();
     }
 
+    /// <summary>
+    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
+    /// can change the element.
+    /// </summary>
+    /// <param name="visitor">The visitor that changes the element.</param>
     public virtual void Accept(IObjectDataVisitor visitor) {
       visitor.Visit(this);
     }

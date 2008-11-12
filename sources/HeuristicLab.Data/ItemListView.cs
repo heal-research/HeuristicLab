@@ -29,8 +29,20 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="ItemList"/>.
+  /// </summary>
   public class ItemListView : ItemListView<IItem> {
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="ItemListView"/>.
+    /// </summary>
     public ItemListView() { }
+    /// <summary>
+    /// Initializes a new instnace of the class <see cref="ItemListView"/> with the given 
+    /// <paramref name="itemList"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="itemList"/> is not copied!</note>
+    /// </summary>
+    /// <param name="itemList">The list of items to represent.</param>
     public ItemListView(ItemList itemList)
       : this() {
       ItemList = itemList;

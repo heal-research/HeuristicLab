@@ -29,29 +29,59 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="StringData"/>, symbolizing a string value.
+  /// </summary>
   public partial class StringDataView : ViewBase {
+    /// <summary>
+    /// Gets or sets the string value to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public StringData StringData {
       get { return (StringData)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="StringDataView"/>.
+    /// </summary>
     public StringDataView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="StringDataView"/> with the given
+    /// <paramref name="stringData"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="stringData"/> is not copied!</note>
+    /// </summary>
+    /// <param name="stringData">The string value to represent visually.</param>
     public StringDataView(StringData stringData)
       : this() {
       StringData = stringData;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="StringData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       StringData.Changed -= new EventHandler(StringData_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="StringData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       StringData.Changed += new EventHandler(StringData_Changed);
     }
 
+    /// <summary>
+    /// Update the controls with the latest string value.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (StringData == null) {

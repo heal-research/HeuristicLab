@@ -29,29 +29,59 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="IntData"/>, symbolizing an int value.
+  /// </summary>
   public partial class IntDataView : ViewBase {
+    /// <summary>
+    /// Gets or set the int value to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IntData IntData {
       get { return (IntData)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="IntDataView"/>.
+    /// </summary>
     public IntDataView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of the class <see cref="IntDataView"/> with the 
+    /// given <paramref name="intData"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="intData"/> is not copied!</note>
+    /// </summary>
+    /// <param name="intData">The integer value to represent visually.</param>
     public IntDataView(IntData intData)
       : this() {
       IntData = intData;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="IntData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       IntData.Changed -= new EventHandler(IntData_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="IntData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       IntData.Changed += new EventHandler(IntData_Changed);
     }
 
+    /// <summary>
+    /// Updates the controls with the latest int value.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (IntData == null) {

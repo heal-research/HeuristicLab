@@ -29,7 +29,16 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Data {
+  /// <summary>
+  /// The visual representation of the class <see cref="ConstrainedIntDataView"/>, 
+  /// symbolizing an int value with some constraints.
+  /// </summary>
   public partial class ConstrainedIntDataView : ViewBase {
+    /// <summary>
+    /// Gets or sets the int value to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="HeuristicLab.Core.ViewBase.Item"/> of base class <see cref="ViewBase"/>,
+    /// but also own data storage present.</remarks>
     public ConstrainedIntData ConstrainedIntData {
       get { return (ConstrainedIntData)Item; }
       set {
@@ -38,23 +47,45 @@ namespace HeuristicLab.Data {
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of class <see cref="ConstrainedIntDataView"/>.
+    /// </summary>
     public ConstrainedIntDataView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of class <see cref="ConstrainedIntDataView"/> with the given
+    /// <paramref name="constraintIntData"/>.
+    /// <note type="caution"> No CopyConstructor! <paramref name="constraintIntData"/> is not copied!</note>
+    /// </summary>
+    /// <param name="constraintIntData">The int value to represent visually.</param>
     public ConstrainedIntDataView(ConstrainedIntData constraintIntData)
       : this() {
       ConstrainedIntData = constraintIntData;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="ConstrainedIntData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ConstrainedIntData.Changed -= new EventHandler(ConstrainedIntData_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="ConstrainedIntData"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="HeuristicLab.Core.ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ConstrainedIntData.Changed += new EventHandler(ConstrainedIntData_Changed);
     }
 
+    /// <summary>
+    /// Updates the controls with the latest int value.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (ConstrainedIntData == null) {
