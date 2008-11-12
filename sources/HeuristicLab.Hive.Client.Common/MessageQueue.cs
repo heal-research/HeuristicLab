@@ -32,8 +32,7 @@ namespace HeuristicLab.Hive.Client.Common {
   public class MessageQueue : MarshalByRefObject {
 
     private static MessageQueue instance = null;
-
-    public enum MessageType { FetchJob, AbortJob, RequestSnapshot, FinishedJob };
+    
     private Queue<MessageContainer> queue = null;
     private Semaphore semaphore = null;
 
@@ -87,7 +86,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// Adds a message to the Queue. The MessageContainer Object is built in the Method
     /// </summary>
     /// <param name="message">the Message</param>
-    public void AddMessage(MessageType message) {
+    public void AddMessage(MessageContainer.MessageType message) {
       lock (this) {
         queue.Enqueue(new MessageContainer(message));
         semaphore.Release();

@@ -60,7 +60,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");
-      MessageQueue.GetInstance().AddMessage(MessageQueue.MessageType.FetchJob);
+      MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.FetchJob);
     }
 
   }

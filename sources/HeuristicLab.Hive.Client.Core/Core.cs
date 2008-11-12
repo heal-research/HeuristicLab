@@ -28,9 +28,9 @@ using HeuristicLab.Hive.Client.Common;
 namespace HeuristicLab.Hive.Client.Core {
   public class Core {
     public void Start() {
-      //Logging.getInstance().Info(this.Name, "Info Message");
-      //Logging.getInstance().Error(this.Name, "Error Message");
-      //Logging.getInstance().Error(this.Name, "Exception Message", new Exception("Exception"));
+      Logging.getInstance().Info(this.ToString(), "Info Message");
+      Logging.getInstance().Error(this.ToString(), "Error Message");
+      Logging.getInstance().Error(this.ToString(), "Exception Message", new Exception("Exception"));      
 
       Heartbeat beat = new Heartbeat();
       beat.Interval = 1000;

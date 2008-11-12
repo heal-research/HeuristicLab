@@ -30,14 +30,17 @@ namespace HeuristicLab.Hive.Client.Common {
   /// the actual message itself and the JobId, refered by the message
   /// </summary>
   public class MessageContainer {
-    public MessageQueue.MessageType Message { get; set; }
+
+    public enum MessageType { FetchJob, AbortJob, RequestSnapshot, FinishedJob };
+
+    public MessageType Message { get; set; }
     public int JobId { get; set; }
 
-    public MessageContainer(MessageQueue.MessageType message) {
+    public MessageContainer(MessageType message) {
       Message = message;
       JobId = 0;
     }
-    public MessageContainer(MessageQueue.MessageType message, int jobId) {
+    public MessageContainer(MessageType message, int jobId) {
       Message = message;
       JobId = jobId;
     }

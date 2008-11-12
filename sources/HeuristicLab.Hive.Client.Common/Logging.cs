@@ -45,8 +45,8 @@ namespace HeuristicLab.Hive.Client.Common {
       return instance;
     }
 
-    private Logging() {
-      eventLogger = new EventLog("Hive Client");    
+    private Logging() {      
+      eventLogger = new EventLog("Hive Client");          
     }
 
     /// <summary>
