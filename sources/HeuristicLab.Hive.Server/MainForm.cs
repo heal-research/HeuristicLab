@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.Hive.Server
 {
-    public partial class MainForm : Form
-    {
-        public MainForm()
-        {
-            InitializeComponent();
+    public partial class MainForm : Form {
+        public MainForm(Uri address) {
+          InitializeComponent();
+          if(address != null)
+            this.lblAddress.Text = address.ToString();
         }
     }
 }

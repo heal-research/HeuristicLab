@@ -31,7 +31,7 @@ namespace HeuristicLab.Hive.Server.Interfaces {
   /// This is the facade for the client communication
   /// </summary>
   [ServiceContract]
-  interface IClientCommunicator {
+  public interface IClientCommunicator {
     [OperationContract]
     Response Login(Client clientInfo);
   }

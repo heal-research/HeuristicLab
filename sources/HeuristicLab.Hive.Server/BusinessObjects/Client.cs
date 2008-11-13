@@ -23,9 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.Hive.Server.BusinessObjects {
-  class Client {
+  [DataContract]
+  public class Client {
+    [DataMember]
     public Guid ClientId { get; set; }
   }
 }

@@ -24,15 +24,40 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
+using System.ServiceModel;
+using HeuristicLab.Hive.Server.Interfaces;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive Server",
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
   class HiveServerApplication : ApplicationBase {
+
+    private bool Startup() {
+      return true;
+    }
+
     public override void Run() {
-      Form mainForm = new MainForm();
-      Application.Run(mainForm);
+
+      DiscoveryService discService =
+        new DiscoveryService();
+
+      IClientCommunicator[] instances = 
+        discService.GetInstances<IClientCommunicator>();
+
+      if (instances.Length > 0) {
+        ServiceHost serviceHost =
+                new ServiceHost(instances[0].GetType());
+
+        serviceHost.Open();
+
+        Form mainForm = new MainForm(serviceHost.BaseAddresses[0]);
+        Application.Run(mainForm);
+
+        serviceHost.Close();
+      } else {
+        MessageBox.Show("Error - no ClientCommunicator instance");
+      }
     }
   }
 }
