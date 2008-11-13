@@ -21,18 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.ServiceModel;
-using HeuristicLab.Hive.Server.BusinessObjects;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Hive.Server.Interfaces {
-  /// <summary>
-  /// This is the facade for the client communication
-  /// </summary>
-  [ServiceContract]
-  public interface IClientCommunicator {
-    [OperationContract]
-    Response Login(Client clientInfo);
+namespace HeuristicLab.Hive.Server {
+  [ClassInfo(Name = "HeuristicLab.Hive.Contracts-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Hive.Contracts-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  public class HiveServerContracts : PluginBase {
   }
 }

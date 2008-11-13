@@ -62,6 +62,7 @@ copy %1\HeuristicLab.Visualization.Test\%2\HeuristicLab.Visualization.Test-3.2.d
 copy %1\HeuristicLab.Hive.Server\%2\HeuristicLab.Hive.Server-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Server.ADODataAccess\%2\HeuristicLab.Hive.Server.ADODataAccess-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Server.Core\%2\HeuristicLab.Hive.Server.Core-3.2.dll .\plugins
+copy %1\HeuristicLab.Hive.Server.Core\%2\HeuristicLab.Hive.Contracts-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Server.Scheduler\%2\HeuristicLab.Hive.Server.Scheduler-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Client.Core\%2\HeuristicLab.Hive.Client.Core-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Client.Common\%2\HeuristicLab.Hive.Client.Common-3.2.dll .\plugins

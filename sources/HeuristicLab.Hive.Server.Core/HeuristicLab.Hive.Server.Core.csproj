@@ -56,9 +56,9 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Hive.Server\HeuristicLab.Hive.Server.csproj">
-      <Project>{A04AE929-D0E1-466D-A9D3-BF3C4B2C209F}</Project>
-      <Name>HeuristicLab.Hive.Server</Name>
+    <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">
+      <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
+      <Name>HeuristicLab.Hive.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

@@ -121,6 +121,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.Boolean", "HeuristicLab.GP.Boolean\HeuristicLab.GP.Boolean.csproj", "{A0821479-801F-43DF-B788-AE92FB410DA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Contracts", "HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj", "{134F93D7-E7C8-4ECD-9923-7F63259A60D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -556,6 +558,12 @@ Global
 		{A0821479-801F-43DF-B788-AE92FB410DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0821479-801F-43DF-B788-AE92FB410DA9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0821479-801F-43DF-B788-AE92FB410DA9}.Release|x86.ActiveCfg = Release|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
