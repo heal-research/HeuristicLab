@@ -35,7 +35,10 @@ namespace HeuristicLab.Hive.Client.Core {
       Heartbeat beat = new Heartbeat();
       beat.Interval = 1000;
       beat.StartHeartbeat();
-      ConfigurationManager.GetInstance();
+      ConfigurationManager.GetInstance().Connect(Guid.Empty);
+      TestJob job = new TestJob();
+      job.Start();
+      
 
       MessageQueue queue = MessageQueue.GetInstance();
 
