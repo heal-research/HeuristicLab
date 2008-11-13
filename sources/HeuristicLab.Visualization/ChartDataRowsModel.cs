@@ -48,7 +48,7 @@ namespace HeuristicLab.Visualization{
     }
 
     public override IView CreateView() {
-      //return new LineChart(this); when LineChart is implemented
+      return new LineChart(this); //when LineChart is implemented
       return new IntDataView(test);
     }
 

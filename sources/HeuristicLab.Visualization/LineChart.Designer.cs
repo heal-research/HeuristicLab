@@ -28,18 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // LineChart
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "LineChart";
-            this.Size = new System.Drawing.Size(552, 390);
-            this.ResumeLayout(false);
+          this.canvasUI1 = new HeuristicLab.Visualization.CanvasUI();
+          this.SuspendLayout();
+          // 
+          // canvasUI1
+          // 
+          this.canvasUI1.Location = new System.Drawing.Point(3, 3);
+          this.canvasUI1.MouseEventListener = null;
+          this.canvasUI1.Name = "canvasUI1";
+          this.canvasUI1.Size = new System.Drawing.Size(546, 384);
+          this.canvasUI1.TabIndex = 0;
+          this.canvasUI1.Text = "canvasUI1";
+          // 
+          // LineChart
+          // 
+          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+          this.Controls.Add(this.canvasUI1);
+          this.Name = "LineChart";
+          this.Size = new System.Drawing.Size(552, 390);
+          this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private CanvasUI canvasUI1;
     }
 }
