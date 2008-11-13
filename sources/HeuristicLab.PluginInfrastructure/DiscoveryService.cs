@@ -116,5 +116,15 @@ namespace HeuristicLab.PluginInfrastructure {
       }
       return types.ToArray();
     }
+
+    public PluginInfo GetDeclaringPlugin(Type type) {
+      IPlugin[] plugins = GetInstances<IPlugin>(type.Assembly);
+      if(plugins.Length != 1) return null;
+      IPlugin plugin = plugins[0];
+      foreach(PluginInfo info in PluginManager.Manager.LoadedPlugins) {
+        if(info.Name == plugin.Name && info.Version == plugin.Version) return info;
+      }
+      return null;
+    }
   }
 }

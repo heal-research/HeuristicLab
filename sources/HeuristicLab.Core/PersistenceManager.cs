@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using System.IO.Compression;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
   public static class PersistenceManager {
@@ -39,7 +40,7 @@ namespace HeuristicLab.Core {
       return Persist(name, instance, document, persistedObjects);
     }
     public static XmlNode Persist(string name, IStorable instance, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      if (persistedObjects.ContainsKey(instance.Guid)) {
+      if(persistedObjects.ContainsKey(instance.Guid)) {
         XmlNode node = document.CreateNode(XmlNodeType.Element, name, null);
         XmlAttribute guidAttribute = document.CreateAttribute("GUID");
         guidAttribute.Value = instance.Guid.ToString();
@@ -51,9 +52,9 @@ namespace HeuristicLab.Core {
         return node;
       }
     }
-    public static IStorable Restore(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
+    public static IStorable Restore(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       Guid guid = new Guid(node.Attributes["GUID"].Value);
-      if (restoredObjects.ContainsKey(guid)) {
+      if(restoredObjects.ContainsKey(guid)) {
         return restoredObjects[guid];
       } else {
         Type type = Type.GetType(node.Attributes["Type"].Value, true);
@@ -71,8 +72,29 @@ namespace HeuristicLab.Core {
     }
     public static void Save(IStorable instance, Stream stream) {
       XmlDocument document = PersistenceManager.CreateXmlDocument();
-
-      document.AppendChild(Persist(instance, document, new Dictionary<Guid, IStorable>()));
+      Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
+      XmlNode rootNode = document.CreateElement("Root");
+      document.AppendChild(rootNode);
+      XmlNode necessaryPluginsNode = document.CreateElement("NecessaryPlugins");
+      rootNode.AppendChild(necessaryPluginsNode);
+      rootNode.AppendChild(Persist(instance, document, dictionary));
+      // determine the list of necessary plugins for this document
+      DiscoveryService service = new DiscoveryService();
+      List<PluginInfo> plugins = new List<PluginInfo>();
+      foreach(IStorable storeable in dictionary.Values) {
+        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
+        if(!plugins.Contains(pluginInfo)) plugins.Add(pluginInfo);
+      }
+      foreach(PluginInfo uniquePlugin in plugins) {
+        XmlNode necessaryPluginNode = document.CreateElement("Plugin");
+        XmlAttribute nameAttr = document.CreateAttribute("Name");
+        nameAttr.Value = uniquePlugin.Name;
+        XmlAttribute versionAttr = document.CreateAttribute("Version");
+        versionAttr.Value = uniquePlugin.Version.ToString();
+        necessaryPluginNode.Attributes.Append(nameAttr);
+        necessaryPluginNode.Attributes.Append(versionAttr);
+        necessaryPluginsNode.AppendChild(necessaryPluginNode);
+      }
       document.Save(stream);
     }
     public static IStorable Load(string filename) {
@@ -85,7 +107,14 @@ namespace HeuristicLab.Core {
     public static IStorable Load(Stream stream) {
       XmlDocument doc = new XmlDocument();
       doc.Load(stream);
-      return PersistenceManager.Restore(doc.ChildNodes[1], new Dictionary<Guid, IStorable>());
+      XmlNode rootNode = doc.ChildNodes[1];
+      if(rootNode.Name == "Root" && rootNode.ChildNodes.Count == 2) {
+        // load documents that have a list of necessary plugins at the top
+        return PersistenceManager.Restore(rootNode.ChildNodes[1], new Dictionary<Guid, IStorable>());
+      } else {
+        // compatibility to load documents without list of necessary plugins 
+        return PersistenceManager.Restore(rootNode, new Dictionary<Guid, IStorable>());
+      }
     }
 
     public static IStorable RestoreFromGZip(byte[] serializedStorable) {
@@ -110,11 +139,11 @@ namespace HeuristicLab.Core {
       builder.Append(".");
       builder.Append(type.Name);
       Type[] args = type.GetGenericArguments();
-      if (args.Length > 0) {
+      if(args.Length > 0) {
         builder.Append("[[");
         builder.Append(BuildTypeString(args[0]));
         builder.Append("]");
-        for (int i = 1; i < args.Length; i++) {
+        for(int i = 1; i < args.Length; i++) {
           builder.Append(",[");
           builder.Append(BuildTypeString(args[i]));
           builder.Append("]");
