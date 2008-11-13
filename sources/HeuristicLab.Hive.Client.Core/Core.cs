@@ -38,8 +38,7 @@ namespace HeuristicLab.Hive.Client.Core {
       ConfigurationManager.GetInstance().Connect(Guid.Empty);
       TestJob job = new TestJob();
       job.Start();
-      
-
+         
       MessageQueue queue = MessageQueue.GetInstance();
 
       while (true) {
