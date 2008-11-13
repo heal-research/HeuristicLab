@@ -25,6 +25,9 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.Net;
+using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.Interfaces;
 
 namespace HeuristicLab.Hive.Server {
@@ -32,22 +35,41 @@ namespace HeuristicLab.Hive.Server {
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
   class HiveServerApplication : ApplicationBase {
-
-    private bool Startup() {
-      return true;
-    }
+    const int port = 9000;
 
     public override void Run() {
+      IPHostEntry IPHost = Dns.GetHostEntry(Dns.GetHostName());
+      string externalIP = IPHost.AddressList[0].ToString();
 
       DiscoveryService discService =
         new DiscoveryService();
-
       IClientCommunicator[] instances = 
         discService.GetInstances<IClientCommunicator>();
 
       if (instances.Length > 0) {
+        Uri uriTcp =
+          new Uri("net.tcp://" + externalIP + ":" + port +"/HiveServer/"); 
+
         ServiceHost serviceHost =
-                new ServiceHost(instances[0].GetType());
+                new ServiceHost(instances[0].GetType(),
+                  uriTcp);
+
+        System.ServiceModel.Channels.Binding binding = 
+          new NetTcpBinding();
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IClientCommunicator),
+              binding,
+              "ClientCommunicator");
+
+        ServiceMetadataBehavior behavior =
+          new ServiceMetadataBehavior();
+        serviceHost.Description.Behaviors.Add(behavior);
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IMetadataExchange),
+          MetadataExchangeBindings.CreateMexTcpBinding(),
+          "mex");
 
         serviceHost.Open();
 
