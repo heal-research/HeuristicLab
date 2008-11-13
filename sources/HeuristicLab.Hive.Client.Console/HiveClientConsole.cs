@@ -27,11 +27,43 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Client.Console {
+
+  delegate void UpdateTextDelegate(EventLog ev);
+
   public partial class HiveClientConsole : Form {
+
+    int numEntries = 0;
+
     public HiveClientConsole() {
       InitializeComponent();
+      tbIp.Text = "010.020.053.006";
+      EventLog ev = new EventLog("Hive Client");
+      ev.Source = "Hive Client";
+      string str = ev.Entries[ev.Entries.Count - 1].Message;
+      foreach (System.Diagnostics.EventLogEntry entry in ev.Entries) {
+        lbEventLog.Items.Add(entry.TimeWritten + " -> " + entry.Message);
+      }
+      lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
+      numEntries = ev.Entries.Count;
+      ev.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
+      ev.EnableRaisingEvents = true;
+    }
+
+    private void UpdateText(EventLog ev) {
+      if (this.lbEventLog.InvokeRequired) {
+        this.lbEventLog.Invoke(new
+          UpdateTextDelegate(UpdateText), new object[] { ev });
+      } else {
+        string str = ev.Entries[numEntries].TimeWritten + " -> " + ev.Entries[numEntries].Message;
+        numEntries++;
+        lbEventLog.Items.Add(str);
+        lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
+
+      }
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -44,7 +76,7 @@ namespace HeuristicLab.Hive.Client.Console {
       tbIp.Enabled = false;
       tbPort.Enabled = false;
       tbUuid.Enabled = false;
-      rtbInfoClient.Text += tbIp.Text;
+      lbEventLog.Items.Add(tbIp.Text);
     }
 
     private void btnDisconnect_Click(object sender, EventArgs e) {
@@ -53,6 +85,10 @@ namespace HeuristicLab.Hive.Client.Console {
       tbIp.Enabled = true;
       tbPort.Enabled = true;
       tbUuid.Enabled = true;
+    }
+
+    public void OnEntryWritten(object source, EntryWrittenEventArgs e) {
+      UpdateText((EventLog)source);
     }
   }
 }

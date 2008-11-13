@@ -45,13 +45,13 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private System.ComponentModel.Container components = null;
 
-    private IPNotation ipNotation = IPNotation.IPv4Decimal;
-    private IPNotation newIPNotation = IPNotation.IPv4Decimal;
-    private bool bOverwrite = true;
-    private bool bPreventLeave = true;
+    private IPNotation m_ipNotation = IPNotation.IPv4Decimal;
+    private IPNotation m_newIPNotation = IPNotation.IPv4Decimal;
+    private bool m_bOverwrite = true;
+    private bool m_bPreventLeave = true;
     private System.Windows.Forms.ErrorProvider error;
-    private Regex regexValidNumbers = new Regex("[0-9]");
-    private ArrayList arlDelimeter = new ArrayList(new char[] { '.' });
+    private Regex m_regexValidNumbers = new Regex("[0-9]");
+    private ArrayList m_arlDelimeter = new ArrayList(new char[] { '.' });
 
 
     public enum IPNotation {
@@ -217,8 +217,8 @@ namespace HeuristicLab.Hive.Client.Console {
       }
       set {
         try {
-          if (IPAddressTextBox.ValidateIP(value, this.newIPNotation, this.arlDelimeter))
-            base.Text = IPAddressTextBox.MakeValidSpaces(value, this.newIPNotation, this.arlDelimeter);
+          if (IPAddressTextBox.ValidateIP(value, this.m_newIPNotation, this.m_arlDelimeter))
+            base.Text = IPAddressTextBox.MakeValidSpaces(value, this.m_newIPNotation, this.m_arlDelimeter);
         }
         catch {
 
@@ -236,11 +236,11 @@ namespace HeuristicLab.Hive.Client.Console {
     ]
     public bool OverWriteMode {
       get {
-        return this.bOverwrite;
+        return this.m_bOverwrite;
       }
       set {
-        if (value != this.bOverwrite) {
-          this.bOverwrite = value;
+        if (value != this.m_bOverwrite) {
+          this.m_bOverwrite = value;
           this.OnOverWriteChanged(value);
         }
       }
@@ -256,11 +256,11 @@ namespace HeuristicLab.Hive.Client.Console {
     ]
     public bool PreventLeaveAtError {
       get {
-        return this.bPreventLeave;
+        return this.m_bPreventLeave;
       }
       set {
-        if (value != this.bPreventLeave) {
-          this.bPreventLeave = value;
+        if (value != this.m_bPreventLeave) {
+          this.m_bPreventLeave = value;
           this.OnPreventLeaveChanged(value);
         }
       }
@@ -276,15 +276,15 @@ namespace HeuristicLab.Hive.Client.Console {
     ]
     public IPNotation Notation {
       get {
-        return this.ipNotation;
+        return this.m_ipNotation;
       }
       set {
-        if (value != this.ipNotation) {
+        if (value != this.m_ipNotation) {
           try {
-            this.newIPNotation = value;
-            this.ChangeNotation(this.ipNotation, this.newIPNotation);
-            this.ipNotation = this.newIPNotation;
-            this.OnNotationChanged(this.newIPNotation);
+            this.m_newIPNotation = value;
+            this.ChangeNotation(this.m_ipNotation, this.m_newIPNotation);
+            this.m_ipNotation = this.m_newIPNotation;
+            this.OnNotationChanged(this.m_newIPNotation);
           }
           catch (Exception LastError) {
             System.Diagnostics.Debug.WriteLine(LastError.Message);
@@ -345,24 +345,24 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void ChangeNotation(IPNotation arg_oldValue, IPNotation arg_newValue) {
       string sTo = "";
-      ArrayList arlFrom = new ArrayList(this.Text.Replace(" ", "").Split((char[])this.arlDelimeter.ToArray(typeof(char))));
+      ArrayList arlFrom = new ArrayList(this.Text.Replace(" ", "").Split((char[])this.m_arlDelimeter.ToArray(typeof(char))));
 
       switch (arg_newValue) {
         case IPNotation.IPv4Decimal:
-          this.regexValidNumbers = new Regex("[0-9]");
-          this.arlDelimeter = new ArrayList(new char[] { '.' });
+          this.m_regexValidNumbers = new Regex("[0-9]");
+          this.m_arlDelimeter = new ArrayList(new char[] { '.' });
           break;
         case IPNotation.IPv4DecimalCIDR:
-          this.regexValidNumbers = new Regex("[0-9]");
-          this.arlDelimeter = new ArrayList(new char[] { '.', '/' });
+          this.m_regexValidNumbers = new Regex("[0-9]");
+          this.m_arlDelimeter = new ArrayList(new char[] { '.', '/' });
           break;
         case IPNotation.IPv4Binary:
-          this.regexValidNumbers = new Regex("[01]");
-          this.arlDelimeter = new ArrayList(new char[] { '.' });
+          this.m_regexValidNumbers = new Regex("[01]");
+          this.m_arlDelimeter = new ArrayList(new char[] { '.' });
           break;
         case IPNotation.IPv4BinaryCIDR:
-          this.regexValidNumbers = new Regex("[01]");
-          this.arlDelimeter = new ArrayList(new char[] { '.', '/' });
+          this.m_regexValidNumbers = new Regex("[01]");
+          this.m_arlDelimeter = new ArrayList(new char[] { '.', '/' });
           break;
         default:
           break;
@@ -501,7 +501,8 @@ namespace HeuristicLab.Hive.Client.Console {
               break;
           }
           break;
-
+        default:
+          break;
       }
 
       this.Text = sTo;
@@ -543,7 +544,7 @@ namespace HeuristicLab.Hive.Client.Console {
       if (e.Modifiers == Keys.None) {
         if ((char.IsLetterOrDigit(Convert.ToChar(e.KeyValue)) || e.KeyCode == Keys.NumPad0)//Numpad0=96 --> `
           && iPos < this.TextLength) {
-          if (this.arlDelimeter.Contains(cText[iPos]))
+          if (this.m_arlDelimeter.Contains(cText[iPos]))
             iPos += 1;
           this.SelectionStart = iPos;
           if (this.OverWriteMode) {
@@ -572,7 +573,7 @@ namespace HeuristicLab.Hive.Client.Console {
       //Cursor hintern Punkt setzen
       if ((char.IsLetterOrDigit(Convert.ToChar(e.KeyValue)) || e.KeyCode == Keys.NumPad0)//Numpad0=96 --> `
         && iPos < this.TextLength) {
-        if (this.arlDelimeter.Contains(cText[iPos]))
+        if (this.m_arlDelimeter.Contains(cText[iPos]))
           iPos += 1;
 
         this.SelectionStart = iPos;
@@ -589,7 +590,7 @@ namespace HeuristicLab.Hive.Client.Console {
     protected override void OnKeyPress(KeyPressEventArgs e) {
       //valid input charachters
       if (char.IsControl(e.KeyChar) ||
-        regexValidNumbers.IsMatch(e.KeyChar.ToString())) {
+        m_regexValidNumbers.IsMatch(e.KeyChar.ToString())) {
         e.Handled = false;
       } else {
         switch (e.KeyChar) {
@@ -636,7 +637,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// <param name="e">CancelEventArgument</param>
     protected override void OnValidating(CancelEventArgs e) {
       //e.Cancel = true;//suppress cancel-signal = not validated
-      e.Cancel = (!this.ValidateIP() && this.bPreventLeave);
+      e.Cancel = (!this.ValidateIP() && this.m_bPreventLeave);
       base.OnValidating(e);
     }
 
@@ -728,12 +729,12 @@ namespace HeuristicLab.Hive.Client.Console {
     /// <returns>IP-Address without spaces and Zeroes</returns>
     public string GetPureIPAddress() {
       string s = "";
-      ArrayList arlIP = new ArrayList(this.Text.Replace(" ", "").Split((char[])this.arlDelimeter.ToArray(typeof(char))));
+      ArrayList arlIP = new ArrayList(this.Text.Replace(" ", "").Split((char[])this.m_arlDelimeter.ToArray(typeof(char))));
       for (int i = 0; i < arlIP.Count; i++) {
         while (arlIP[i].ToString().StartsWith("0"))
           arlIP[i] = arlIP[i].ToString().Substring(1);
       }
-      s = IPAddressTextBox.MakeIP((string[])arlIP.ToArray(typeof(string)), this.ipNotation);
+      s = IPAddressTextBox.MakeIP((string[])arlIP.ToArray(typeof(string)), this.m_ipNotation);
       return s;
     }
 
@@ -922,7 +923,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     /// <returns>true/false valid/not</returns>
     private bool ValidateIP() {
-      if (IPAddressTextBox.ValidateIP(this.Text, this.newIPNotation, this.arlDelimeter))
+      if (IPAddressTextBox.ValidateIP(this.Text, this.m_newIPNotation, this.m_arlDelimeter))
         return true;
       else
         //if Control is not visible or enabled, it doesn't matter if IP is valid

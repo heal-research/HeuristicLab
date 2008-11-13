@@ -54,13 +54,13 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbUser = new System.Windows.Forms.GroupBox();
       this.tbUuid = new System.Windows.Forms.TextBox();
       this.lblUuid = new System.Windows.Forms.Label();
-      this.rtbInfoClient = new System.Windows.Forms.RichTextBox();
       this.gbManager = new System.Windows.Forms.GroupBox();
       this.lblPort = new System.Windows.Forms.Label();
       this.lblIp = new System.Windows.Forms.Label();
       this.tbPort = new System.Windows.Forms.TextBox();
-      this.tbIp = new IPAddressTextBox();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.lbEventLog = new System.Windows.Forms.ListBox();
+      this.tbIp = new HeuristicLab.Hive.Client.Console.IPAddressTextBox();
       this.msClientConsole.SuspendLayout();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
@@ -106,10 +106,10 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // tpConnection
       // 
+      this.tpConnection.Controls.Add(this.lbEventLog);
       this.tpConnection.Controls.Add(this.btnDisconnect);
       this.tpConnection.Controls.Add(this.btnConnect);
       this.tpConnection.Controls.Add(this.gbUser);
-      this.tpConnection.Controls.Add(this.rtbInfoClient);
       this.tpConnection.Controls.Add(this.gbManager);
       this.tpConnection.Location = new System.Drawing.Point(4, 22);
       this.tpConnection.Name = "tpConnection";
@@ -168,14 +168,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lblUuid.TabIndex = 0;
       this.lblUuid.Text = "UUID";
       // 
-      // rtbInfoClient
-      // 
-      this.rtbInfoClient.Location = new System.Drawing.Point(18, 218);
-      this.rtbInfoClient.Name = "rtbInfoClient";
-      this.rtbInfoClient.Size = new System.Drawing.Size(387, 229);
-      this.rtbInfoClient.TabIndex = 1;
-      this.rtbInfoClient.Text = "";
-      // 
       // gbManager
       // 
       this.gbManager.Controls.Add(this.lblPort);
@@ -214,13 +206,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tbPort.Size = new System.Drawing.Size(209, 20);
       this.tbPort.TabIndex = 1;
       // 
-      // tbIp
-      // 
-      this.tbIp.Location = new System.Drawing.Point(57, 19);
-      this.tbIp.Name = "tbIp";
-      this.tbIp.Size = new System.Drawing.Size(211, 20);
-      this.tbIp.TabIndex = 0;
-      // 
       // tabPage2
       // 
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -230,6 +215,21 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "tabPage2";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // listBox1
+      // 
+      this.lbEventLog.FormattingEnabled = true;
+      this.lbEventLog.Location = new System.Drawing.Point(23, 226);
+      this.lbEventLog.Name = "listBox1";
+      this.lbEventLog.Size = new System.Drawing.Size(382, 212);
+      this.lbEventLog.TabIndex = 5;
+      // 
+      // tbIp
+      // 
+      this.tbIp.Location = new System.Drawing.Point(57, 19);
+      this.tbIp.Name = "tbIp";
+      this.tbIp.Size = new System.Drawing.Size(211, 20);
+      this.tbIp.TabIndex = 0;
       // 
       // HiveClientConsole
       // 
@@ -249,6 +249,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbUser.PerformLayout();
       this.gbManager.ResumeLayout(false);
       this.gbManager.PerformLayout();
+      //((System.ComponentModel.ISupportInitialize)(this.performanceCounter1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -261,10 +262,9 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.TabControl tcClientConsole;
     private System.Windows.Forms.TabPage tpConnection;
     private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.RichTextBox rtbInfoClient;
     private System.Windows.Forms.GroupBox gbManager;
     private System.Windows.Forms.TextBox tbPort;
-    private IPAddressTextBox tbIp;
+    private HeuristicLab.Hive.Client.Console.IPAddressTextBox tbIp;
     private System.Windows.Forms.Label lblIp;
     private System.Windows.Forms.GroupBox gbUser;
     private System.Windows.Forms.Label lblUuid;
@@ -273,6 +273,7 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Button btnConnect;
     private System.Windows.Forms.TextBox tbUuid;
     private System.Windows.Forms.ToolStripMenuItem tsmiExit;
+    private System.Windows.Forms.ListBox lbEventLog;
   }
 }
 
