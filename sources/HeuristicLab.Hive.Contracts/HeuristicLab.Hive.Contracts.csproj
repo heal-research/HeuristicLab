@@ -37,6 +37,12 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -47,8 +53,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessObjects\GrantedPermissions.cs" />
+    <Compile Include="BusinessObjects\ClientGroup.cs" />
+    <Compile Include="BusinessObjects\Job.cs" />
+    <Compile Include="BusinessObjects\JobResult.cs" />
+    <Compile Include="BusinessObjects\Permission.cs" />
+    <Compile Include="BusinessObjects\PermissionOwner.cs" />
+    <Compile Include="BusinessObjects\Resource.cs" />
+    <Compile Include="BusinessObjects\UpTimeStatistics.cs" />
     <Compile Include="BusinessObjects\Client.cs" />
     <Compile Include="BusinessObjects\ClientConfig.cs" />
+    <Compile Include="BusinessObjects\User.cs" />
+    <Compile Include="BusinessObjects\UserGroup.cs" />
     <Compile Include="HiveContractPlugin.cs" />
     <Compile Include="Interfaces\IClientCommunicator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

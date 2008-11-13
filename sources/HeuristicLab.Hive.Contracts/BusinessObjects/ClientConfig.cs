@@ -23,10 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Server.BusinessObjects {
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
-  class ClientConfig {
-
+  [DataContract]
+  public class ClientConfig {
+    [DataMember]
+    public String UpDownTimeCalendar { get; set; } // TODO define DataStructure
+    [DataMember]
+    public int HeartBeatIntervall { get; set; }
   }
 }

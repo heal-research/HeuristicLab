@@ -23,16 +23,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.ServiceModel;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Server.Interfaces {
-  /// <summary>
-  /// This is the facade for the client communication
-  /// </summary>
-  [ServiceContract]
-  public interface IClientCommunicator {
-    [OperationContract]
-    Response Login(Client clientInfo);
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+
+  [DataContract]
+  public class JobResult {
+    [DataMember]
+    public Job Job { get; set; }
+    [DataMember]
+    public String Result { get; set; } // TODO DataStructure for Result needs to be defined
+    [DataMember]
+    public Client Client { get; set; }
+
   }
 }

@@ -23,17 +23,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-namespace HeuristicLab.Hive.Server.BusinessObjects {
+using System.Runtime.Serialization;
+                                   
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   public enum State { idle, calculating };
 
-  public class Client {
+  [DataContract]
+  public class Client : Resource {
+    [DataMember]
     public Guid ClientId { get; set; }
+    [DataMember]
     public int NrOfCores { get; set; }
+    [DataMember]
     public int Memory { get; set; }
+    [DataMember]
     public DateTime Login { get; set; }
+    [DataMember]
     public State State { get; set; }
-        
+    [DataMember]
+    public ClientConfig Config { get; set; }
   }
 }
