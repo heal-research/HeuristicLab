@@ -49,6 +49,7 @@ copy %1\HeuristicLab.Selection\%2\HeuristicLab.Selection-3.2.dll .\plugins
 copy %1\HeuristicLab.Selection.OffspringSelection\%2\HeuristicLab.Selection.OffspringSelection-3.2.dll .\plugins
 copy %1\HeuristicLab.SequentialEngine\%2\HeuristicLab.SequentialEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.Settings\%2\HeuristicLab.Settings-3.2.dll .\plugins
+copy %1\HeuristicLab.Settings\%2\HeuristicLab.Settings-3.2.dll.config .\plugins
 copy %1\HeuristicLab.SGA\%2\HeuristicLab.SGA-3.2.dll .\plugins
 copy %1\HeuristicLab.SimOpt\%2\HeuristicLab.SimOpt-3.2.dll .\plugins
 copy %1\HeuristicLab.SQLite\%2\HeuristicLab.SQLite-3.2.dll .\plugins

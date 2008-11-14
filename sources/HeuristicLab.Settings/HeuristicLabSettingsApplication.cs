@@ -22,16 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Settings {
-  [ClassInfo(Name = "HeuristicLab.Settings-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Settings-3.2.dll", Filetype = PluginFileType.Assembly)]
-  public class HeuristicLabSettingsPlugin : PluginBase {
-    public HeuristicLabSettingsPlugin() {
-      Settings.Properties.Settings settings = Properties.Settings.Default;
-      settings.AnotherSetting = DateTime.Now.ToString();
-      settings.Save();
+  [ClassInfo(Name = "HeuristicLab Settings", Description="Test application for the HeuristicLab settings framework.")]
+  class HeuristicLabSettingsApplication : ApplicationBase {
+    public override void Run() {
+      Form mainForm = new MainForm();
+      Application.Run(mainForm);
     }
   }
 }
