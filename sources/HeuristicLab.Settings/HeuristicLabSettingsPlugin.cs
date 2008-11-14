@@ -28,10 +28,5 @@ namespace HeuristicLab.Settings {
   [ClassInfo(Name = "HeuristicLab.Settings-3.2")]
   [PluginFile(Filename = "HeuristicLab.Settings-3.2.dll", Filetype = PluginFileType.Assembly)]
   public class HeuristicLabSettingsPlugin : PluginBase {
-    public HeuristicLabSettingsPlugin() {
-      Settings.Properties.Settings settings = Properties.Settings.Default;
-      settings.AnotherSetting = DateTime.Now.ToString();
-      settings.Save();
-    }
   }
 }

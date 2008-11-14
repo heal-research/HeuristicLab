@@ -16,6 +16,7 @@ namespace HeuristicLab.Settings {
 
     private void MainForm_Load(object sender, EventArgs e) {
       settings = Properties.Settings.Default;
+      settings.Reload();
       textBox1.Text = settings.AnotherSetting;
       textBox2.Text = settings.MySetting;
     }
