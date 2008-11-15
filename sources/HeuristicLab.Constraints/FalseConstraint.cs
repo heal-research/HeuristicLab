@@ -44,10 +44,5 @@ namespace HeuristicLab.Constraints {
     public override bool Check(IItem data) {
       return false;
     }
-
-
-    public override void Accept(IConstraintVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

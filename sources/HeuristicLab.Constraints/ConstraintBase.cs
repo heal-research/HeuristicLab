@@ -32,8 +32,5 @@ namespace HeuristicLab.Constraints {
     }
 
     public abstract bool Check(IItem data);
-
-    public virtual void Accept(IConstraintVisitor visitor) {
-    }
   }
 }

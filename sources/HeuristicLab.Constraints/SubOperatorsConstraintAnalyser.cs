@@ -37,27 +37,40 @@ namespace HeuristicLab.Constraints {
 
     public IList<IOperator> GetAllowedOperators(IOperator op, int childIndex) {
       AndConstraint andConstraint = new AndConstraint();
-      foreach(IConstraint constraint in op.Constraints) {
+      foreach (IConstraint constraint in op.Constraints) {
         andConstraint.Clauses.Add(constraint);
       }
-      
-      GetAllowedOperatorsVisitor visitor = new GetAllowedOperatorsVisitor(allPossibleOperators, childIndex);
-      andConstraint.Accept(visitor);
-      return visitor.AllowedOperators;
+
+      return GetAllowedOperators(andConstraint, childIndex);
+    }
+
+    private IList<IOperator> GetAllowedOperators(IConstraint constraint, int childIndex) {
+      // manual dispatch on dynamic type
+      if (constraint is AndConstraint)
+        return GetAllowedOperators((AndConstraint)constraint, childIndex);
+      else if (constraint is OrConstraint)
+        return GetAllowedOperators((OrConstraint)constraint, childIndex);
+      else if (constraint is NotConstraint)
+        return GetAllowedOperators((NotConstraint)constraint, childIndex);
+      else if (constraint is AllSubOperatorsTypeConstraint)
+        return GetAllowedOperators((AllSubOperatorsTypeConstraint)constraint, childIndex);
+      else if (constraint is SubOperatorTypeConstraint)
+        return GetAllowedOperators((SubOperatorTypeConstraint)constraint, childIndex);
+      else return new List<IOperator>(allPossibleOperators); // ignore all other constraints
     }
 
     #region static set management methods
     // better to use HashSets from .NET 3.5
     // however we would need to switch the whole Constraints project to .NET 3.5 for that
     private static IList<IOperator> Intersect(ICollection<IOperator> a, ICollection<IOperator> b) {
-      if(a.Count > b.Count) {
+      if (a.Count > b.Count) {
         return Intersect(b, a);
       }
 
       List<IOperator> intersection = new List<IOperator>(a.Count);
 
-      foreach(IOperator element in a) {
-        if(InSet(element, b)) {
+      foreach (IOperator element in a) {
+        if (InSet(element, b)) {
           intersection.Add(element);
         }
       }
@@ -66,8 +79,8 @@ namespace HeuristicLab.Constraints {
 
     private static IList<IOperator> Union(ICollection<IOperator> a, ICollection<IOperator> b) {
       List<IOperator> union = new List<IOperator>(a);
-      foreach(IOperator candidateElement in b) {
-        if(!InSet(candidateElement, union)) {
+      foreach (IOperator candidateElement in b) {
+        if (!InSet(candidateElement, union)) {
           union.Add(candidateElement);
         }
       }
@@ -77,8 +90,8 @@ namespace HeuristicLab.Constraints {
 
     private static IList<IOperator> Substract(ICollection<IOperator> minuend, ICollection<IOperator> subtrahend) {
       List<IOperator> difference = new List<IOperator>();
-      foreach(IOperator element in minuend) {
-        if(!InSet(element, subtrahend)) {
+      foreach (IOperator element in minuend) {
+        if (!InSet(element, subtrahend)) {
           difference.Add(element);
         }
       }
@@ -87,80 +100,45 @@ namespace HeuristicLab.Constraints {
     }
 
     private static bool InSet(IOperator op, ICollection<IOperator> set) {
-      foreach(IOperator element in set) {
-        if(element == op)
+      foreach (IOperator element in set) {
+        if (element == op)
           return true;
       }
       return false;
     }
     #endregion
 
-    #region visitor
-    /// <summary>
-    /// The visitor builds a set of allowed operators based on a tree of constraints.
-    /// </summary>
-    private class GetAllowedOperatorsVisitor : ConstraintVisitorBase {
-      private IList<IOperator> allowedOperators;
-
-      public IList<IOperator> AllowedOperators {
-        get { return allowedOperators; }
+    public IList<IOperator> GetAllowedOperators(AndConstraint constraint, int childIndex) {
+      IList<IOperator> allowedOperators = new List<IOperator>(allPossibleOperators);
+      // keep only the intersection of all subconstraints
+      foreach (ConstraintBase clause in constraint.Clauses) {
+        allowedOperators = Intersect(allowedOperators, GetAllowedOperators(clause, childIndex));
       }
-      private ICollection<IOperator> possibleOperators;
-      private int childIndex;
+      return allowedOperators;
+    }
 
-      public GetAllowedOperatorsVisitor(ICollection<IOperator> possibleOperators, int childIndex) {
-        // default is that all possible operators are allowed
-        allowedOperators = new List<IOperator>(possibleOperators);
-        this.possibleOperators = possibleOperators;
-        this.childIndex = childIndex;
+    public IList<IOperator> GetAllowedOperators(OrConstraint constraint, int childIndex) {
+      IList<IOperator> allowedOperators = new List<IOperator>();
+      foreach (ConstraintBase clause in constraint.Clauses) {
+        allowedOperators = Union(allowedOperators, GetAllowedOperators(clause, childIndex));
       }
+      return allowedOperators;
+    }
 
-      public override void Visit(AndConstraint constraint) {
-        base.Visit(constraint);
+    public IList<IOperator> GetAllowedOperators(NotConstraint constraint, int childIndex) {
+      return Substract(allPossibleOperators, GetAllowedOperators(constraint.SubConstraint, childIndex));
+    }
 
-        // keep only the intersection of all subconstraints
-        foreach(ConstraintBase clause in constraint.Clauses) {
-          GetAllowedOperatorsVisitor visitor = new GetAllowedOperatorsVisitor(possibleOperators, childIndex);
-          clause.Accept(visitor);
-          allowedOperators = Intersect(allowedOperators, visitor.allowedOperators);
-        }
-      }
+    public IList<IOperator> GetAllowedOperators(AllSubOperatorsTypeConstraint constraint, int childIndex) {
+      return Intersect(allPossibleOperators, constraint.AllowedSubOperators);
+    }
 
-      public override void Visit(OrConstraint constraint) {
-        base.Visit(constraint);
-
-        // allowed operators is the union of all allowed operators as defined by the subconstraints
-        allowedOperators.Clear();
-
-        foreach(ConstraintBase clause in constraint.Clauses) {
-          GetAllowedOperatorsVisitor visitor = new GetAllowedOperatorsVisitor(possibleOperators, childIndex);
-          clause.Accept(visitor);
-          allowedOperators = Union(allowedOperators, visitor.allowedOperators);
-        }
-      }
-
-      public override void Visit(NotConstraint constraint) {
-        base.Visit(constraint);
-        GetAllowedOperatorsVisitor visitor = new GetAllowedOperatorsVisitor(possibleOperators, childIndex);
-        constraint.SubConstraint.Accept(visitor);
-
-        allowedOperators = Substract(possibleOperators, visitor.allowedOperators);
-      }
-
-      public override void Visit(AllSubOperatorsTypeConstraint constraint) {
-        base.Visit(constraint);
-
-        allowedOperators = Intersect(possibleOperators, constraint.AllowedSubOperators);
-      }
-
-      public override void Visit(SubOperatorTypeConstraint constraint) {
-        if(childIndex != constraint.SubOperatorIndex.Data) {
-          allowedOperators = new List<IOperator>(possibleOperators);
-        } else {
-          allowedOperators = Intersect(possibleOperators, constraint.AllowedSubOperators);
-        }
+    public IList<IOperator> GetAllowedOperators(SubOperatorTypeConstraint constraint, int childIndex) {
+      if (childIndex != constraint.SubOperatorIndex.Data) {
+        return new List<IOperator>(allPossibleOperators);
+      } else {
+        return Intersect(allPossibleOperators, constraint.AllowedSubOperators);
       }
     }
-    #endregion
   }
 }

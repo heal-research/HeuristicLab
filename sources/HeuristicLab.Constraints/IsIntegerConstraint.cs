@@ -49,10 +49,5 @@ namespace HeuristicLab.Constraints {
       // assume that all other data types are never integer
       return false;
     }
-
-    public override void Accept(IConstraintVisitor visitor) {
-      visitor.Visit(this);
-    }
-
   }
 }

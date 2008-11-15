@@ -98,11 +98,6 @@ namespace HeuristicLab.Constraints {
       return new SubOperatorsTypeConstraintView(this);
     }
 
-    public override void Accept(IConstraintVisitor visitor) {
-      visitor.Visit(this);
-    }
-
-
     #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);

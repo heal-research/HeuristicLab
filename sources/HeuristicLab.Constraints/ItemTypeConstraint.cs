@@ -66,10 +66,6 @@ If the item is a ConstrainedItemList, any containing elements are limited to the
       return new ItemTypeConstraintView(this);
     }
 
-    public override void Accept(IConstraintVisitor visitor) {
-      visitor.Visit(this);
-    }
-
     #region clone & persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ItemTypeConstraint clone = new ItemTypeConstraint(type);

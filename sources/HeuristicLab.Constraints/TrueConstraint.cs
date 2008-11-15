@@ -41,11 +41,6 @@ namespace HeuristicLab.Constraints {
       return clone;
     }
 
-    public override void Accept(IConstraintVisitor visitor) {
-      visitor.Visit(this);
-    }
-
-
     public override bool Check(IItem data) {
       return true;
     }
