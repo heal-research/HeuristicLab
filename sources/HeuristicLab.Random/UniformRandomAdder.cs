@@ -32,12 +32,14 @@ namespace HeuristicLab.Random {
     private static int MAX_NUMBER_OF_TRIES = 100;
 
     public override string Description {
-      get { return @"Samples a uniformly distributed random variable 'U' with range = [min,max] and E(u) = (max-min)/2
+      get {
+        return @"Samples a uniformly distributed random variable 'U' with range = [min,max] and E(u) = (max-min)/2
 and adds the result to the variable 'Value'. ShakingFactor influences the effective range of U. 
 If r=(max-min) then the effective range of U is [E(u) - shakingFactor * r/2, E(u) + shakingFactor * r/2].
 
 If a constraint for the allowed range of 'Value' is defined and the result of the operation would be smaller then 
-the smallest allowed value then 'Value' is set to the lower bound and vice versa for the upper bound."; }
+the smallest allowed value then 'Value' is set to the lower bound and vice versa for the upper bound.";
+      }
     }
 
     public UniformRandomAdder() {
@@ -65,61 +67,61 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       min = ex - newRange / 2;
       max = ex + newRange / 2;
 
-      value.Accept(new RandomAdderVisitor(mt, min, max));
-
+      AddUniform(value, mt, min, max);
       return null;
     }
 
+    private void AddUniform(IObjectData value, MersenneTwister mt, double min, double max) {
+      // dispatch manually on dynamic type
+      if (value is IntData)
+        AddUniform((IntData)value, mt, min, max);
+      else if (value is ConstrainedIntData)
+        AddUniform((ConstrainedIntData)value, mt, min, max);
+      else if (value is DoubleData)
+        AddUniform((DoubleData)value, mt, min, max);
+      else if (value is ConstrainedDoubleData)
+        AddUniform((ConstrainedDoubleData)value, mt, min, max);
+      else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
+    }
 
-    private class RandomAdderVisitor : ObjectDataVisitorBase {
-      private double min;
-      private double max;
-      private MersenneTwister mt;
 
-      public RandomAdderVisitor(MersenneTwister mt, double min, double max) {
-        this.mt = mt;
-        this.min = min;
-        this.max = max;
-      }
-
-      public override void Visit(ConstrainedDoubleData data) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          double newValue = data.Data + mt.NextDouble() * (max - min) + min;
-          if(IsIntegerConstrained(data)) {
-            newValue = Math.Floor(newValue);
-          }
-          if(data.TrySetData(newValue)) {
-            return;
-          }
+    public void AddUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
+      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
+        double newValue = data.Data + mt.NextDouble() * (max - min) + min;
+        if (IsIntegerConstrained(data)) {
+          newValue = Math.Floor(newValue);
         }
-        throw new InvalidProgramException("Couldn't find a valid value");
-      }
-
-      public override void Visit(ConstrainedIntData data) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          int newValue = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
-          if(data.TrySetData(newValue)) {
-            return;
-          }
+        if (data.TrySetData(newValue)) {
+          return;
         }
-        throw new InvalidProgramException("Couldn't find a valid value");
       }
+      throw new InvalidProgramException("Couldn't find a valid value");
+    }
 
-      public override void Visit(DoubleData data) {
-        data.Data = data.Data + mt.NextDouble() * (max - min) + min;
-      }
-
-      public override void Visit(IntData data) {
-        data.Data = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
-      }
-      private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-        foreach(IConstraint constraint in data.Constraints) {
-          if(constraint is IsIntegerConstraint) {
-            return true;
-          }
+    public void AddUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
+      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
+        int newValue = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
+        if (data.TrySetData(newValue)) {
+          return;
         }
-        return false;
       }
+      throw new InvalidProgramException("Couldn't find a valid value");
+    }
+
+    public void AddUniform(DoubleData data, MersenneTwister mt, double min, double max) {
+      data.Data = data.Data + mt.NextDouble() * (max - min) + min;
+    }
+
+    public void AddUniform(IntData data, MersenneTwister mt, double min, double max) {
+      data.Data = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
+    }
+    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
+      foreach (IConstraint constraint in data.Constraints) {
+        if (constraint is IsIntegerConstraint) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 }

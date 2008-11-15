@@ -70,55 +70,58 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       double sigma = GetVariableValue<DoubleData>("Sigma", scope, true).Data;
       NormalDistributedRandom normal = new NormalDistributedRandom(mt, mu, sigma * factor);
 
-      value.Accept(new RandomAdderVisitor(normal));
-
+      AddNormal(value, normal);
       return null;
     }
 
+    private void AddNormal(IObjectData value, NormalDistributedRandom normal) {
+      // dispatch manually based on dynamic type
+      if (value is IntData)
+        AddNormal((IntData)value, normal);
+      else if (value is ConstrainedIntData)
+        AddNormal((ConstrainedIntData)value, normal);
+      else if (value is ConstrainedDoubleData)
+        AddNormal((ConstrainedDoubleData)value, normal);
+      else if (value is DoubleData)
+        AddNormal((DoubleData)value, normal);
+      else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
+    }
+    public void AddNormal(DoubleData data, NormalDistributedRandom normal) {
+      data.Data += normal.NextDouble();
+    }
 
-    private class RandomAdderVisitor : ObjectDataVisitorBase {
-      private NormalDistributedRandom normal;
-      public RandomAdderVisitor(NormalDistributedRandom normal) {
-        this.normal = normal;
-      }
-
-      public override void Visit(DoubleData data) {
-        data.Data += normal.NextDouble();
-      }
-
-      public override void Visit(ConstrainedDoubleData data) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          double newValue = data.Data + normal.NextDouble();
-          if(IsIntegerConstrained(data)) {
-            newValue = Math.Round(newValue);
-          }
-          if(data.TrySetData(newValue)) {
-            return;
-          }
+    public void AddNormal(ConstrainedDoubleData data, NormalDistributedRandom normal) {
+      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
+        double newValue = data.Data + normal.NextDouble();
+        if (IsIntegerConstrained(data)) {
+          newValue = Math.Round(newValue);
         }
-        throw new InvalidProgramException("Coudn't find a valid value");
-      }
-
-      public override void Visit(IntData data) {
-        data.Data = (int)Math.Round(data.Data + normal.NextDouble());
-      }
-
-      public override void Visit(ConstrainedIntData data) {
-        for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-          if(data.TrySetData((int)Math.Round(data.Data + normal.NextDouble())))
-            return;
+        if (data.TrySetData(newValue)) {
+          return;
         }
-        throw new InvalidProgramException("Couldn't find a valid value.");
       }
+      throw new InvalidProgramException("Coudn't find a valid value");
+    }
 
-      private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-        foreach(IConstraint constraint in data.Constraints) {
-          if(constraint is IsIntegerConstraint) {
-            return true;
-          }
-        }
-        return false;
+    public void AddNormal(IntData data, NormalDistributedRandom normal) {
+      data.Data = (int)Math.Round(data.Data + normal.NextDouble());
+    }
+
+    public void AddNormal(ConstrainedIntData data, NormalDistributedRandom normal) {
+      for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
+        if (data.TrySetData((int)Math.Round(data.Data + normal.NextDouble())))
+          return;
       }
+      throw new InvalidProgramException("Couldn't find a valid value.");
+    }
+
+    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
+      foreach (IConstraint constraint in data.Constraints) {
+        if (constraint is IsIntegerConstraint) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 }

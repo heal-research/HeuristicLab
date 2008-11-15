@@ -57,14 +57,5 @@ namespace HeuristicLab.Data {
       clonedObjects.Add(Guid, clone);
       return clone;
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the value.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

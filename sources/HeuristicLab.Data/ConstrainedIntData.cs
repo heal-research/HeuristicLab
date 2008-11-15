@@ -109,14 +109,5 @@ namespace HeuristicLab.Data {
       base.Populate(node, restoredObjects);
       base.Data = (IntData)PersistenceManager.Restore(node.SelectSingleNode("Value"), restoredObjects);
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the int element.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

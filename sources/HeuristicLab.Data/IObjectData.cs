@@ -33,12 +33,5 @@ namespace HeuristicLab.Data {
     /// Gets or sets the value of the object.
     /// </summary>
     object Data { get; set; }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the object.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    void Accept(IObjectDataVisitor visitor);
   }
 }

@@ -72,36 +72,36 @@ namespace HeuristicLab.GP.Boolean {
     private void InitDefaultOperatorLibrary() {
       And and = new And();
       Or or = new Or();
-      Not not = new Not();
+      //Not not = new Not();
       Nand nand = new Nand();
       Nor nor = new Nor();
-      Xor xor = new Xor();
+      //Xor xor = new Xor();
       variable = new HeuristicLab.GP.Boolean.Variable();
 
       IFunction[] allFunctions = new IFunction[] {
         and,
         or,
-        not,
+        //not,
         nand,
         nor,
-        xor,
+        //xor,
         variable
       };
 
       SetAllowedSubOperators(and, allFunctions);
       SetAllowedSubOperators(or, allFunctions);
-      SetAllowedSubOperators(not, allFunctions);
+      //SetAllowedSubOperators(not, allFunctions);
       SetAllowedSubOperators(nand, allFunctions);
       SetAllowedSubOperators(nor, allFunctions);
-      SetAllowedSubOperators(xor, allFunctions);
+      //SetAllowedSubOperators(xor, allFunctions);
 
       operatorLibrary = new GPOperatorLibrary();
       operatorLibrary.GPOperatorGroup.AddOperator(and);
       operatorLibrary.GPOperatorGroup.AddOperator(or);
-      operatorLibrary.GPOperatorGroup.AddOperator(not);
+      //operatorLibrary.GPOperatorGroup.AddOperator(not);
       operatorLibrary.GPOperatorGroup.AddOperator(nand);
       operatorLibrary.GPOperatorGroup.AddOperator(nor);
-      operatorLibrary.GPOperatorGroup.AddOperator(xor);
+      //operatorLibrary.GPOperatorGroup.AddOperator(xor);
       operatorLibrary.GPOperatorGroup.AddOperator(variable);
     }
 

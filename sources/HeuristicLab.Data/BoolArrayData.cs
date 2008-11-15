@@ -94,13 +94,5 @@ namespace HeuristicLab.Data {
         data[i] = bool.Parse(tokens[i]);
       Data = data;
     }
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the elements of the array.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

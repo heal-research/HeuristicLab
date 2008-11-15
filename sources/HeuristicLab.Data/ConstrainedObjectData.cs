@@ -136,14 +136,5 @@ namespace HeuristicLab.Data {
     public override string ToString() {
       return Data.ToString();
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the element.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public virtual void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

@@ -138,14 +138,5 @@ namespace HeuristicLab.Data {
       if (builder.Length > 0) builder.Remove(0, 1);
       return builder.ToString();
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the elements of the matrix.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the elements.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

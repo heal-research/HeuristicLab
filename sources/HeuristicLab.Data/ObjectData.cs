@@ -119,14 +119,5 @@ namespace HeuristicLab.Data {
       else
         return Data.ToString();
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the object.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public virtual void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

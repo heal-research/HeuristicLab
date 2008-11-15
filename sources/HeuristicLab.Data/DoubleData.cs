@@ -108,14 +108,5 @@ namespace HeuristicLab.Data {
         throw new FormatException("Can't parse " + node.InnerText + " as double value.");       
       }
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the elements of the matrix.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the elements.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

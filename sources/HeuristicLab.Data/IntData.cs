@@ -102,14 +102,5 @@ namespace HeuristicLab.Data {
       base.Populate(node, restoredObjects);
       Data = int.Parse(node.InnerText, CultureInfo.InvariantCulture.NumberFormat);
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the int value.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

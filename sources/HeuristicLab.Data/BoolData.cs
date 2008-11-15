@@ -97,14 +97,5 @@ namespace HeuristicLab.Data {
       base.Populate(node, restoredObjects);
       Data = bool.Parse(node.InnerText);
     }
-
-    /// <summary>
-    /// The point of intersection where an <see cref="IObjectDataVisitor"/> 
-    /// can change the boolean element.
-    /// </summary>
-    /// <param name="visitor">The visitor that changes the element.</param>
-    public override void Accept(IObjectDataVisitor visitor) {
-      visitor.Visit(this);
-    }
   }
 }

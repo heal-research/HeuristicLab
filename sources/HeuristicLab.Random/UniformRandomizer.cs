@@ -60,31 +60,34 @@ namespace HeuristicLab.Random {
       double min = GetVariableValue<DoubleData>("Min", scope, true).Data;
       double max = GetVariableValue<DoubleData>("Max", scope, true).Data;
 
-      value.Accept(new RandomVisitor(mt, min, max));
-
+      RandomizeUniform(value, mt, min, max);
       return null;
     }
 
-    private class RandomVisitor : ObjectDataVisitorBase {
-      private MersenneTwister mt;
-      private double min;
-      private double max;
+    private void RandomizeUniform(IObjectData value, MersenneTwister mt, double min, double max) {
+      // Dispatch manually based on dynamic type,
+      // a bit awkward but necessary until we create a better type hierarchy for numeric types (gkronber 15.11.2008).
+      if (value is DoubleData)
+        RandomizeUniform((DoubleData)value, mt, min, max);
+      else if (value is ConstrainedDoubleData)
+        RandomizeUniform((ConstrainedDoubleData)value, mt, min, max);
+      else if (value is IntData)
+        RandomizeUniform((IntData)value, mt, min, max);
+      else if (value is ConstrainedIntData)
+        RandomizeUniform((ConstrainedIntData)value, mt, min, max);
+      else throw new ArgumentException("Can't handle type " + value.GetType().Name);
+    }
 
-      public RandomVisitor(MersenneTwister mt, double min, double max) {
-        this.mt = mt;
-        this.min = min;
-        this.max = max;
-      }
 
-      public override void Visit(DoubleData data) {
+      public void RandomizeUniform(DoubleData data, MersenneTwister mt, double min, double max) {
         data.Data = mt.NextDouble() * (max - min) + min;
       }
 
-      public override void Visit(IntData data) {
+      public void RandomizeUniform(IntData data, MersenneTwister mt, double min, double max) {
         data.Data = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
       }
 
-      public override void Visit(ConstrainedDoubleData data) {
+      public void RandomizeUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double r = mt.NextDouble() * (max - min) + min;
           if(IsIntegerConstrained(data)) {
@@ -94,17 +97,17 @@ namespace HeuristicLab.Random {
             return;
           }
         }
-        throw new InvalidProgramException("Couldn't find a valid value");
+        throw new InvalidOperationException("Couldn't find a valid value");
       }
 
-      public override void Visit(ConstrainedIntData data) {
+      public void RandomizeUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           int r = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
           if(data.TrySetData(r)) {
             return;
           }
         }
-        throw new InvalidProgramException("Couldn't find a valid value");
+        throw new InvalidOperationException("Couldn't find a valid value");
       }
 
       private bool IsIntegerConstrained(ConstrainedDoubleData data) {
@@ -116,5 +119,4 @@ namespace HeuristicLab.Random {
         return false;
       }
     }
-  }
 }
