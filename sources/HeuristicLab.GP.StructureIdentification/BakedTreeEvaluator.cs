@@ -40,64 +40,91 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     private class Instr {
       public double d_arg0;
-      public int i_arg0;
-      public int i_arg1;
-      public int arity;
-      public int symbol;
+      public short i_arg0;
+      public short i_arg1;
+      public byte arity;
+      public byte symbol;
+      public ushort exprLength;
       public IFunction function;
     }
 
-    private List<Instr> code;
     private Instr[] codeArr;
     private int PC;
     private Dataset dataset;
     private int sampleIndex;
 
-
-    public BakedTreeEvaluator() {
-      code = new List<Instr>();
-    }
-
     public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
       this.dataset = dataset;
       double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable);
 
-      // get the mean of the values of the target variable to determin the max and min bounds of the estimated value
+      // get the mean of the values of the target variable to determine the max and min bounds of the estimated value
       double targetMean = dataset.GetMean(targetVariable, start, end - 1);
       estimatedValueMin = targetMean - maximumPunishment;
       estimatedValueMax = targetMean + maximumPunishment;
 
       List<LightWeightFunction> linearRepresentation = functionTree.LinearRepresentation;
-      code.Clear();
-      foreach(LightWeightFunction f in linearRepresentation) {
-        Instr curInstr = new Instr();
-        TranslateToInstr(f, curInstr);
-        code.Add(curInstr);
+      codeArr = new Instr[linearRepresentation.Count];
+      int i = 0;
+      foreach (LightWeightFunction f in linearRepresentation) {
+        codeArr[i++] = TranslateToInstr(f);
       }
-
-      codeArr = code.ToArray<Instr>();
+      exprIndex = 0;
+      ushort exprLength;
+      bool constExpr;
+      PatchExpressionLengthsAndConstants(0, out constExpr, out exprLength);
     }
 
-    private void TranslateToInstr(LightWeightFunction f, Instr instr) {
+    ushort exprIndex;
+    private void PatchExpressionLengthsAndConstants(ushort index, out bool constExpr, out ushort exprLength) {
+      exprLength = 1;
+      if (codeArr[index].arity == 0) {
+        // when no children then it's a constant expression only if the terminal is a constant
+        constExpr = codeArr[index].symbol == EvaluatorSymbolTable.CONSTANT;
+      } else {
+        constExpr = true; // when there are children it's a constant expression if all children are constant;
+      }
+      for (int i = 0; i < codeArr[index].arity; i++) {
+        exprIndex++;
+        ushort branchLength;
+        bool branchConstExpr;
+        PatchExpressionLengthsAndConstants(exprIndex, out branchConstExpr, out branchLength);
+        exprLength += branchLength;
+        constExpr &= branchConstExpr;
+      }
+      codeArr[index].exprLength = exprLength;
+
+      if (constExpr) {
+        codeArr[index].symbol = EvaluatorSymbolTable.CONSTANT;
+        PC = index;
+        codeArr[index].d_arg0 = EvaluateBakedCode();
+      }
+    }
+
+    private Instr TranslateToInstr(LightWeightFunction f) {
+      Instr instr = new Instr();
       instr.arity = f.arity;
       instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
-      switch(instr.symbol) {
+      switch (instr.symbol) {
         case EvaluatorSymbolTable.DIFFERENTIAL:
         case EvaluatorSymbolTable.VARIABLE: {
-            instr.i_arg0 = (int)f.data[0]; // var
+            instr.i_arg0 = (byte)f.data[0]; // var
             instr.d_arg0 = f.data[1]; // weight
-            instr.i_arg1 = (int)f.data[2]; // sample-offset
+            instr.i_arg1 = (byte)f.data[2]; // sample-offset
+            instr.exprLength = 1;
             break;
           }
         case EvaluatorSymbolTable.CONSTANT: {
             instr.d_arg0 = f.data[0]; // value
+            instr.exprLength = 1;
             break;
           }
         case EvaluatorSymbolTable.UNKNOWN: {
             instr.function = f.functionType;
+            instr.exprLength = 1;
             break;
           }
       }
+      return instr;
     }
 
     public double Evaluate(int sampleIndex) {
@@ -105,11 +132,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.sampleIndex = sampleIndex;
 
       double estimated = EvaluateBakedCode();
-      if(double.IsNaN(estimated) || double.IsInfinity(estimated)) {
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated)) {
         estimated = estimatedValueMax;
-      } else if(estimated > estimatedValueMax) {
+      } else if (estimated > estimatedValueMax) {
         estimated = estimatedValueMax;
-      } else if(estimated < estimatedValueMin) {
+      } else if (estimated < estimatedValueMin) {
         estimated = estimatedValueMin;
       }
       return estimated;
@@ -117,49 +144,46 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     // skips a whole branch
     private void SkipBakedCode() {
-      int i = 1;
-      while(i > 0) {
-        i += code[PC++].arity;
-        i--;
-      }
+      PC += codeArr[PC].exprLength;
     }
 
     private double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
-      switch(currInstr.symbol) {
+      switch (currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             int row = sampleIndex + currInstr.i_arg1;
-            if(row < 0 || row >= dataset.Rows) return double.NaN;
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
             else return currInstr.d_arg0 * dataset.GetValue(row, currInstr.i_arg0);
           }
         case EvaluatorSymbolTable.CONSTANT: {
+            PC += currInstr.exprLength - 1;
             return currInstr.d_arg0;
           }
         case EvaluatorSymbolTable.DIFFERENTIAL: {
             int row = sampleIndex + currInstr.i_arg1;
-            if(row < 1 || row >= dataset.Rows) return double.NaN;
+            if (row < 1 || row >= dataset.Rows) return double.NaN;
             else return currInstr.d_arg0 * (dataset.GetValue(row, currInstr.i_arg0) - dataset.GetValue(row - 1, currInstr.i_arg0));
           }
         case EvaluatorSymbolTable.MULTIPLICATION: {
             double result = EvaluateBakedCode();
-            for(int i = 1; i < currInstr.arity; i++) {
+            for (int i = 1; i < currInstr.arity; i++) {
               result *= EvaluateBakedCode();
             }
             return result;
           }
         case EvaluatorSymbolTable.ADDITION: {
             double sum = EvaluateBakedCode();
-            for(int i = 1; i < currInstr.arity; i++) {
+            for (int i = 1; i < currInstr.arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum;
           }
         case EvaluatorSymbolTable.SUBTRACTION: {
-            if(currInstr.arity == 1) {
+            if (currInstr.arity == 1) {
               return -EvaluateBakedCode();
             } else {
               double result = EvaluateBakedCode();
-              for(int i = 1; i < currInstr.arity; i++) {
+              for (int i = 1; i < currInstr.arity; i++) {
                 result -= EvaluateBakedCode();
               }
               return result;
@@ -167,20 +191,20 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.DIVISION: {
             double result;
-            if(currInstr.arity == 1) {
+            if (currInstr.arity == 1) {
               result = 1.0 / EvaluateBakedCode();
             } else {
               result = EvaluateBakedCode();
-              for(int i = 1; i < currInstr.arity; i++) {
+              for (int i = 1; i < currInstr.arity; i++) {
                 result /= EvaluateBakedCode();
               }
             }
-            if(double.IsInfinity(result)) return 0.0;
+            if (double.IsInfinity(result)) return 0.0;
             else return result;
           }
         case EvaluatorSymbolTable.AVERAGE: {
             double sum = EvaluateBakedCode();
-            for(int i = 1; i < currInstr.arity; i++) {
+            for (int i = 1; i < currInstr.arity; i++) {
               sum += EvaluateBakedCode();
             }
             return sum / currInstr.arity;
@@ -204,7 +228,7 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.SIGNUM: {
             double value = EvaluateBakedCode();
-            if(double.IsNaN(value)) return double.NaN;
+            if (double.IsNaN(value)) return double.NaN;
             else return Math.Sign(value);
           }
         case EvaluatorSymbolTable.SQRT: {
@@ -215,8 +239,8 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.AND: { // only defined for inputs 1 and 0
             double result = EvaluateBakedCode();
-            for(int i = 1; i < currInstr.arity; i++) {
-              if(result == 0.0) SkipBakedCode();
+            for (int i = 1; i < currInstr.arity; i++) {
+              if (result == 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
               }
@@ -227,19 +251,19 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.EQU: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(Math.Abs(x - y) < EPSILON) return 1.0; else return 0.0;
+            if (Math.Abs(x - y) < EPSILON) return 1.0; else return 0.0;
           }
         case EvaluatorSymbolTable.GT: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(x > y) return 1.0;
+            if (x > y) return 1.0;
             else return 0.0;
           }
         case EvaluatorSymbolTable.IFTE: { // only defined for condition 0 or 1
             double condition = EvaluateBakedCode();
             Debug.Assert(condition == 0.0 || condition == 1.0);
             double result;
-            if(condition == 0.0) {
+            if (condition == 0.0) {
               result = EvaluateBakedCode(); SkipBakedCode();
             } else {
               SkipBakedCode(); result = EvaluateBakedCode();
@@ -249,7 +273,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.LT: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if(x < y) return 1.0;
+            if (x < y) return 1.0;
             else return 0.0;
           }
         case EvaluatorSymbolTable.NOT: { // only defined for inputs 0 or 1
@@ -259,8 +283,8 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.OR: { // only defined for inputs 0 or 1
             double result = EvaluateBakedCode();
-            for(int i = 1; i < currInstr.arity; i++) {
-              if(result > 0.0) SkipBakedCode();
+            for (int i = 1; i < currInstr.arity; i++) {
+              if (result > 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
                 Debug.Assert(result == 0.0 || result == 1.0);

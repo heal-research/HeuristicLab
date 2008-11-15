@@ -31,7 +31,7 @@ using System.Globalization;
 namespace HeuristicLab.GP {
 
   public class LightWeightFunction {
-    public int arity = 0;
+    public byte arity = 0;
     public IFunction functionType;
     public List<double> data = new List<double>();
 
@@ -115,7 +115,7 @@ namespace HeuristicLab.GP {
 
     private void FlattenTrees() {
       if(treesExpanded) {
-        linearRepresentation[0].arity = subTrees.Count;
+        linearRepresentation[0].arity = (byte)subTrees.Count;
         foreach(BakedFunctionTree subTree in subTrees) {
           subTree.FlattenVariables();
           subTree.FlattenTrees();
@@ -294,7 +294,7 @@ namespace HeuristicLab.GP {
       XmlNode linearRepresentationNode = node.SelectSingleNode("LinearRepresentation");
       foreach(XmlNode entryNode in linearRepresentationNode.ChildNodes) {
         LightWeightFunction f = new LightWeightFunction();
-        f.arity = int.Parse(entryNode.Attributes["Arity"].Value, CultureInfo.InvariantCulture);
+        f.arity = byte.Parse(entryNode.Attributes["Arity"].Value, CultureInfo.InvariantCulture);
         if(entryNode.Attributes["Data"]!=null) 
           f.data = GetList<double>(entryNode.Attributes["Data"].Value, s => double.Parse(s, CultureInfo.InvariantCulture));
         f.functionType = (IFunction)PersistenceManager.Restore(entryNode, restoredObjects);
