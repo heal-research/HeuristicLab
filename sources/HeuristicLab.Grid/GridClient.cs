@@ -25,6 +25,7 @@ using System.Text;
 using System.ServiceModel;
 using System.Diagnostics;
 using System.Threading;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Grid {
   class GridClient {
@@ -133,8 +134,10 @@ namespace HeuristicLab.Grid {
         // got engine from server and user didn't press stop -> execute the engine
         if(gotEngine && !stopped) {
           executing = true;
-          AppDomain engineDomain = AppDomain.CreateDomain("Engine domain", null, AppDomain.CurrentDomain.SetupInformation);
-          EngineRunner runner = (EngineRunner)engineDomain.CreateInstanceAndUnwrap("HeuristicLab.Grid", typeof(EngineRunner).FullName);
+          AppDomain engineDomain = PluginManager.Manager.CreateAndInitAppDomain("Engine domain");
+          Type engineRunnerType = typeof(EngineRunner);
+          
+          EngineRunner runner = (EngineRunner)engineDomain.CreateInstanceAndUnwrap(engineRunnerType.Assembly.GetName().Name, engineRunnerType.FullName);
           byte[] resultXml = runner.Execute(engineXml);
           bool success = false;
           int retries = 0;

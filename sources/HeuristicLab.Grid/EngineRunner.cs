@@ -24,6 +24,8 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Threading;
+using HeuristicLab.PluginInfrastructure;
+using System.Reflection;
 
 namespace HeuristicLab.Grid {
   internal class EngineRunner: MarshalByRefObject {

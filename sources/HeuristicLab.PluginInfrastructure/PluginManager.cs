@@ -83,7 +83,7 @@ namespace HeuristicLab.PluginInfrastructure {
       setup.PrivateBinPath = pluginDir;
       pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
       remoteLoader = (Loader)pluginDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfraStructure", "HeuristicLab.PluginInfrastructure.Loader");
-      remoteLoader.PluginAction += delegate(object sender, PluginManagerActionEventArgs args) { if(Action != null) Action(this, args); };
+      remoteLoader.PluginAction += delegate(object sender, PluginManagerActionEventArgs args) { if (Action != null) Action(this, args); };
       remoteLoader.Init();
       NotifyListeners(PluginManagerAction.Initialized, "-");
     }
@@ -99,20 +99,38 @@ namespace HeuristicLab.PluginInfrastructure {
       // and remotely tell it to start the application
 
       NotifyListeners(PluginManagerAction.Starting, appInfo.Name);
-      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-      setup.PrivateBinPath = pluginDir;
-      AppDomain applicationDomain = AppDomain.CreateDomain(appInfo.Name + " AppDomain", null, setup);
+      AppDomain applicationDomain = null;
       try {
-        Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap("HeuristicLab.PluginInfrastructure", "HeuristicLab.PluginInfrastructure.Runner");
-        NotifyListeners(PluginManagerAction.Initializing, "All plugins");
-        remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
-        NotifyListeners(PluginManagerAction.Initialized, "All plugins");
+        applicationDomain = CreateAndInitAppDomain(appInfo.Name + " AppDomain");
+        Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
         remoteRunner.Run(appInfo);
-      } finally {
+      }
+      finally {
         // make sure domain is unloaded in all cases
-        AppDomain.Unload(applicationDomain);
+        if (applicationDomain != null) AppDomain.Unload(applicationDomain);
       }
     }
+
+    /// <summary>
+    /// Creates a new AppDomain with all plugins preloaded.
+    /// </summary>
+    /// <param name="friendlyName">Name of the new AppDomain</param>
+    /// <returns>the new AppDomain with all plugins preloaded.</returns>
+    public AppDomain CreateAndInitAppDomain(string friendlyName) {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.PrivateBinPath = pluginDir;
+      AppDomain applicationDomain = AppDomain.CreateDomain(friendlyName, null, setup);
+      Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
+      NotifyListeners(PluginManagerAction.Initializing, "All plugins");
+      if (remoteLoader != null) {
+        remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
+      } else if (LoadedPlugins != null && LoadedPlugins.Count > 0) {
+        remoteRunner.LoadPlugins(LoadedPlugins);
+      }
+      NotifyListeners(PluginManagerAction.Initialized, "All plugins");
+      return applicationDomain;
+    }
+
 
     /// <summary>
     /// Calculates a set of plugins that directly or transitively depend on the plugin given in the argument.
@@ -121,15 +139,15 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>a list of plugins that are directly of transitively dependent.</returns>
     public List<PluginInfo> GetDependentPlugins(PluginInfo pluginInfo) {
       List<PluginInfo> mergedList = new List<PluginInfo>();
-      foreach(PluginInfo plugin in InstalledPlugins) {
-        if(plugin.Dependencies.Contains(pluginInfo)) {
-          if(!mergedList.Contains(plugin)) {
+      foreach (PluginInfo plugin in InstalledPlugins) {
+        if (plugin.Dependencies.Contains(pluginInfo)) {
+          if (!mergedList.Contains(plugin)) {
             mergedList.Add(plugin);
           }
           // for each of the dependent plugins add the list of transitively dependent plugins
           // make sure that only one entry for each plugin is added to the merged list
           GetDependentPlugins(plugin).ForEach(delegate(PluginInfo dependentPlugin) {
-            if(!mergedList.Contains(dependentPlugin)) {
+            if (!mergedList.Contains(dependentPlugin)) {
               mergedList.Add(dependentPlugin);
             }
           });
@@ -163,7 +181,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private void NotifyListeners(PluginManagerAction action, string text) {
-      if(Action != null) {
+      if (Action != null) {
         Action(this, new PluginManagerActionEventArgs(text, action));
       }
     }
