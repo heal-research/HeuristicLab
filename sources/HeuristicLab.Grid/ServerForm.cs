@@ -45,10 +45,13 @@ namespace HeuristicLab.Grid {
       InitializeComponent();
 
       IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
-      // windows XP returns the external ip on index 0 while windows vista returns the external ip on index 2 (presumably in the last entry, which normally is 2)
+      // windows XP returns the external ip on index 0 while windows vista returns the external ip as one of the last entries
+      // also if IPv6 protocol is installed we want to find an entry that is IPv4
       int index = 0;
       if (System.Environment.OSVersion.Version.Major >= 6) {
-        index = addresses.Length - 1;
+        for (index = addresses.Length - 1; index >= 0; index--)
+          if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            break;
       }
       externalAddressTextBox.Text = "net.tcp://" + addresses[index] + ":8000/Grid/Service";
       internalAddressTextBox.Text = "net.tcp://" + addresses[index] + ":8001/Grid/JobStore";
