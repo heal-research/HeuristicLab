@@ -8,14 +8,16 @@ namespace HeuristicLab.Visualization{
     public ChartDataRowsModelDummy(){
       Random rand = new Random();
 
-   
+      // TODO an neues model interface anpassen   
+      throw new NotImplementedException();
+
       // test rows
-      for (int i = 0; i < 10; i++){
-        AddDataRow(i);
-        PushData(i, rand.NextDouble() * 1000);
-        PushData(i, rand.NextDouble() * 1000);
-        PushData(i, rand.NextDouble() * 1000);
-      }
+//      for (int i = 0; i < 10; i++){
+//        AddDataRow(i);
+//        PushData(i, rand.NextDouble() * 1000);
+//        PushData(i, rand.NextDouble() * 1000);
+//        PushData(i, rand.NextDouble() * 1000);
+//      }
     }
   }
 }

@@ -48,44 +48,47 @@ namespace HeuristicLab.Visualization
     /// </summary>
     private void Reset()
     {
-      BeginUpdate();
-
-      // TODO clear existing shapes
-
-      WorldShape mainWorld = canvasUI1.MainCanvas.WorldShape;
-
-      double spacing = mainWorld.BoundingBox.Width/model.Columns.Count;
-      double oldX = 0;
-      double currentX = spacing;
-      ChartDataRowsModelColumn oldColumn = null;
-      // reload data from the model and create shapes
-      foreach (ChartDataRowsModelColumn column in model.Columns)
-      {
-        if (oldColumn != null)
-        {
-          if (column.Values != null)
-          {
-            for (int i = 0; i < column.Values.Length; i++)
-            {
-              LineShape line = new LineShape(oldX, oldColumn.Values[i], currentX, column.Values[i], 0, lineColors[i]);
-              mainWorld.AddShape(line);
-            }
-            oldX = currentX;
-            currentX += spacing;
-          }
-          oldColumn = column;
-        }
-        else
-        {
-          oldColumn = column;
-        }
-
-        canvasUI1.Invalidate();
-
-        //   AddColumn(column.ColumnId, column.Values);
-      }
-
-      EndUpdate();
+      // TODO an neues model interface anpassen   
+      throw new NotImplementedException();
+      
+//      BeginUpdate();
+//
+//      // TODO clear existing shapes
+//
+//      WorldShape mainWorld = canvasUI1.MainCanvas.WorldShape;
+//
+//      double spacing = mainWorld.BoundingBox.Width/model.Columns.Count;
+//      double oldX = 0;
+//      double currentX = spacing;
+//      ChartDataRowsModelColumn oldColumn = null;
+//      // reload data from the model and create shapes
+//      foreach (ChartDataRowsModelColumn column in model.Columns)
+//      {
+//        if (oldColumn != null)
+//        {
+//          if (column.Values != null)
+//          {
+//            for (int i = 0; i < column.Values.Length; i++)
+//            {
+//              LineShape line = new LineShape(oldX, oldColumn.Values[i], currentX, column.Values[i], 0, lineColors[i]);
+//              mainWorld.AddShape(line);
+//            }
+//            oldX = currentX;
+//            currentX += spacing;
+//          }
+//          oldColumn = column;
+//        }
+//        else
+//        {
+//          oldColumn = column;
+//        }
+//
+//        canvasUI1.Invalidate();
+//
+//        //   AddColumn(column.ColumnId, column.Values);
+//      }
+//
+//      EndUpdate();
     }
 
     /// <summary>
@@ -145,14 +148,19 @@ namespace HeuristicLab.Visualization
 
     protected override void AddItemEvents()
     {
-      base.AddItemEvents();
-      model.ColumnChanged += OnDataChanged;
+      // TODO an neues model interface anpassen   
+      throw new NotImplementedException();
+//      base.AddItemEvents();
+//      model.ColumnChanged += OnDataChanged;
     }
 
     protected override void RemoveItemEvents()
     {
-      base.RemoveItemEvents();
-      model.ColumnChanged -= OnDataChanged;
+      // TODO an neues model interface anpassen   
+      throw new NotImplementedException();
+
+//      base.RemoveItemEvents();
+//      model.ColumnChanged -= OnDataChanged;
     }
 
     #endregion
