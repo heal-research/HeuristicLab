@@ -23,28 +23,58 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Hive.Client.ExecutionEngine;
 using HeuristicLab.Hive.Client.Common;
+using System.Threading;
+
 
 namespace HeuristicLab.Hive.Client.Core {
   public class Core {
+
+    Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
+    
     public void Start() {
       Logging.getInstance().Info(this.ToString(), "Info Message");
-      Logging.getInstance().Error(this.ToString(), "Error Message");
-      Logging.getInstance().Error(this.ToString(), "Exception Message", new Exception("Exception"));      
+      //Logging.getInstance().Error(this.ToString(), "Error Message");
+      //Logging.getInstance().Error(this.ToString(), "Exception Message", new Exception("Exception"));      
 
       Heartbeat beat = new Heartbeat();
-      beat.Interval = 1000;
+      beat.Interval = 5000;
       beat.StartHeartbeat();
-      ConfigurationManager.GetInstance().Connect(Guid.Empty);
-      TestJob job = new TestJob();
-      job.Start();
-         
-      MessageQueue queue = MessageQueue.GetInstance();
 
+      MessageQueue queue = MessageQueue.GetInstance();
+      
+      JobBase job = new TestJob();
+      
+      ExecutionEngine.Executor engine = new ExecutionEngine.Executor();
+      engine.Job = job;
+      engine.JobId = 1L;
+      engine.Queue = queue;      
+      engine.Start();
+      engines.Add(engine.JobId, engine);
+
+      Thread.Sleep(15000);
+      engine.RequestSnapshot();
       while (true) {
         MessageContainer container = queue.GetMessage();
-        Console.WriteLine(container.Message.ToString());
+        Logging.getInstance().Info(this.ToString(), container.Message.ToString()); 
+        DetermineAction(container);
+
+        
       }
     }
+
+    private void DetermineAction(MessageContainer container) {
+      if(container.Message == MessageContainer.MessageType.AbortJob)
+        engines[container.JobId].Abort();
+      else if (container.Message == MessageContainer.MessageType.JobAborted)
+        //kill appdomain
+        Console.WriteLine("tmp");
+      else if (container.Message == MessageContainer.MessageType.RequestSnapshot)
+        engines[container.JobId].RequestSnapshot();
+      else if (container.Message == MessageContainer.MessageType.SnapshotReady)
+        // must be async!
+        engines[container.JobId].GetSnapshot();
+    }        
   }
 }
