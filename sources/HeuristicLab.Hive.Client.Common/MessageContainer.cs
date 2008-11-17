@@ -29,6 +29,7 @@ namespace HeuristicLab.Hive.Client.Common {
   /// The MessageContainer is a container class for Messages. Its two parts are:
   /// the actual message itself and the JobId, refered by the message
   /// </summary>
+  [Serializable]
   public class MessageContainer {
 
     public enum MessageType { FetchJob, AbortJob, JobAborted, RequestSnapshot, FinishedJob, NoMessage, SnapshotReady };
