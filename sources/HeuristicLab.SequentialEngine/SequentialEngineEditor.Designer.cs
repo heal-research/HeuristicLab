@@ -44,8 +44,46 @@ namespace HeuristicLab.SequentialEngine {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
+      this.operatorGraphGroupBox.SuspendLayout();
+      this.globalScopeGroupBox.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.SplitterDistance = 495;
+      // 
+      // operatorGraphGroupBox
+      // 
+      this.operatorGraphGroupBox.Size = new System.Drawing.Size(495, 441);
+      // 
+      // globalScopeGroupBox
+      // 
+      this.globalScopeGroupBox.Size = new System.Drawing.Size(141, 441);
+      // 
+      // operatorGraphView
+      // 
+      this.operatorGraphView.Size = new System.Drawing.Size(489, 422);
+      // 
+      // scopeView
+      // 
+      this.scopeView.Size = new System.Drawing.Size(135, 422);
+      // 
+      // SequentialEngineEditor
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Name = "SequentialEngineEditor";
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.ResumeLayout(false);
+      this.operatorGraphGroupBox.ResumeLayout(false);
+      this.globalScopeGroupBox.ResumeLayout(false);
+      this.ResumeLayout(false);
+      this.PerformLayout();
+
     }
 
     #endregion
