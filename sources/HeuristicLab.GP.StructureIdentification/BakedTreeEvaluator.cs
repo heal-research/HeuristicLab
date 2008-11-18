@@ -91,13 +91,13 @@ namespace HeuristicLab.GP.StructureIdentification {
         exprLength += branchLength;
         constExpr &= branchConstExpr;
       }
-      codeArr[index].exprLength = exprLength;
 
       if (constExpr) {
-        codeArr[index].symbol = EvaluatorSymbolTable.CONSTANT;
         PC = index;
         codeArr[index].d_arg0 = EvaluateBakedCode();
+        codeArr[index].symbol = EvaluatorSymbolTable.CONSTANT;
       }
+      codeArr[index].exprLength = exprLength;
     }
 
     private Instr TranslateToInstr(LightWeightFunction f) {
@@ -107,9 +107,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       switch (instr.symbol) {
         case EvaluatorSymbolTable.DIFFERENTIAL:
         case EvaluatorSymbolTable.VARIABLE: {
-            instr.i_arg0 = (byte)f.data[0]; // var
+            instr.i_arg0 = (short)f.data[0]; // var
             instr.d_arg0 = f.data[1]; // weight
-            instr.i_arg1 = (byte)f.data[2]; // sample-offset
+            instr.i_arg1 = (short)f.data[2]; // sample-offset
             instr.exprLength = 1;
             break;
           }
