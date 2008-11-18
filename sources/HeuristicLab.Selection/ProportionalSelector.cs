@@ -108,6 +108,7 @@ namespace HeuristicLab.Selection {
               qualities[i] = (solutionQuality - worst) / (best - worst);
             }
           } else {
+            if (solutionQuality < 0.0) throw new InvalidOperationException("ERROR in ProportionalSelector: Non-windowing is not working with quality values < 0. Use windowing.");
             if (!maximization) qualities[i] = limit - solutionQuality;
             else qualities[i] = solutionQuality;
           }
