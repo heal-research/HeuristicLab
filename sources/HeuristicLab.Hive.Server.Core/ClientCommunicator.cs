@@ -77,7 +77,7 @@ namespace HeuristicLab.Hive.Server.Core {
           clientRemoved = true;
         }
       }
-      Response response = new Response()
+      Response response = new Response();
       
       if (clientRemoved) {
         response.Success = true;
