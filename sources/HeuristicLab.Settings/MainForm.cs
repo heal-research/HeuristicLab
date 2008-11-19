@@ -16,9 +16,8 @@ namespace HeuristicLab.Settings {
 
     private void MainForm_Load(object sender, EventArgs e) {
       settings = Properties.Settings.Default;
-      settings.Reload();
-      textBox1.Text = settings.AnotherSetting;
-      textBox2.Text = settings.MySetting;
+      textBox1.Text = settings.MyApplicationSetting;
+      textBox2.Text = settings.MyUserSetting;
     }
 
     private void button1_Click(object sender, EventArgs e) {
@@ -26,7 +25,17 @@ namespace HeuristicLab.Settings {
     }
 
     private void textBox1_TextChanged(object sender, EventArgs e) {
-      settings.AnotherSetting = textBox1.Text;
+      settings.MyApplicationSetting = textBox1.Text;
+    }
+
+    private void textBox2_TextChanged(object sender, EventArgs e) {
+      settings.MyUserSetting = textBox2.Text;
+    }
+
+    private void button2_Click(object sender, EventArgs e) {
+      settings.Reload();
+      textBox1.Text = settings.MyApplicationSetting;
+      textBox2.Text = settings.MyUserSetting;
     }
   }
 }

@@ -2,11 +2,11 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Settings.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="MySetting" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Nice Value</Value>
+    <Setting Name="MyApplicationSetting" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Application Setting Value</Value>
     </Setting>
-    <Setting Name="AnotherSetting" Type="System.String" Scope="User">
-      <Value Profile="(Default)">COOL!!</Value>
+    <Setting Name="MyUserSetting" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User Setting Value</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -25,22 +25,25 @@ namespace HeuristicLab.Settings.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Nice Value")]
-        public string MySetting {
+        [global::System.Configuration.DefaultSettingValueAttribute("Application Setting Value")]
+        public string MyApplicationSetting {
             get {
-                return ((string)(this["MySetting"]));
+                return ((string)(this["MyApplicationSetting"]));
+            }
+            set {
+                this["MyApplicationSetting"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("COOL!!")]
-        public string AnotherSetting {
+        [global::System.Configuration.DefaultSettingValueAttribute("User Setting Value")]
+        public string MyUserSetting {
             get {
-                return ((string)(this["AnotherSetting"]));
+                return ((string)(this["MyUserSetting"]));
             }
             set {
-                this["AnotherSetting"] = value;
+                this["MyUserSetting"] = value;
             }
         }
     }
