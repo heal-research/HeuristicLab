@@ -57,45 +57,19 @@ namespace HeuristicLab.Hive.Client.Core {
       return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
     }
 
-    public void Start() {
-      Logging.getInstance().Info(this.ToString(), "Info Message");
-      //Logging.getInstance().Error(this.ToString(), "Error Message");
-      //Logging.getInstance().Error(this.ToString(), "Exception Message", new Exception("Exception"));      
-
+    public void Start() {      
       Heartbeat beat = new Heartbeat();
       beat.Interval = 5000;
       beat.StartHeartbeat();
 
       MessageQueue queue = MessageQueue.GetInstance();
-      
-      TestJob job = new TestJob();
-
-      AppDomain appDomain = CreateNewAppDomain(false);
-      
-      //This is a HACK. remove static directory ASAP
-      //Executor engine = (Executor)appDomain.CreateInstanceFromAndUnwrap(@"C:\Program Files\HeuristicLab 3.0\plugins\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll", "HeuristicLab.Hive.Client.ExecutionEngine.Executor");
-      
-      Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-      //ExecutionEngine.Executor engine = new ExecutionEngine.Executor();
-      engine.Job = job;
-      engine.JobId = 1L;
-      engine.Queue = queue;      
-      engine.Start();
-      engines.Add(engine.JobId, engine);
-
-      Thread.Sleep(15000);
-      engine.RequestSnapshot();
+      queue.AddMessage(MessageContainer.MessageType.FetchJob);     
       while (true) {
         MessageContainer container = queue.GetMessage();
+        Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
         Logging.getInstance().Info(this.ToString(), container.Message.ToString()); 
         DetermineAction(container);
-
-        
       }
-    }
-
-    Assembly appDomain_TypeResolve(object sender, ResolveEventArgs args) {
-      throw new NotImplementedException();
     }
 
     private AppDomain CreateNewAppDomain(bool sandboxed) {
@@ -115,16 +89,56 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     private void DetermineAction(MessageContainer container) {
-      if(container.Message == MessageContainer.MessageType.AbortJob)
-        engines[container.JobId].Abort();
-      else if (container.Message == MessageContainer.MessageType.JobAborted)
-        //kill appdomain
-        Console.WriteLine("tmp");
-      else if (container.Message == MessageContainer.MessageType.RequestSnapshot)
-        engines[container.JobId].RequestSnapshot();
-      else if (container.Message == MessageContainer.MessageType.SnapshotReady)
-        // must be async!
-        engines[container.JobId].GetSnapshot();
-    }        
+      switch (container.Message) {
+        case MessageContainer.MessageType.AbortJob:
+          engines[container.JobId].Abort();
+          break;
+        case MessageContainer.MessageType.JobAborted:
+          Debug.WriteLine("-- Job Aborted Message received");
+          break;
+        
+        
+        case MessageContainer.MessageType.RequestSnapshot:
+          engines[container.JobId].RequestSnapshot();
+          break;
+        case MessageContainer.MessageType.SnapshotReady:
+          engines[container.JobId].GetSnapshot();
+          break;
+        
+        
+        case MessageContainer.MessageType.FetchJob:
+          IJob job = CreateNewJob();
+          
+          AppDomain appDomain = CreateNewAppDomain(false);
+          appDomains.Add(job.JobId, appDomain);
+          
+          Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
+          engine.Job = job;
+          engine.JobId = job.JobId;
+          engine.Queue = MessageQueue.GetInstance();
+          engine.Start();
+          engines.Add(engine.JobId, engine);
+          break;
+
+        case MessageContainer.MessageType.FinishedJob:
+          engines[container.JobId].GetFinishedJob();
+          AppDomain.Unload(appDomains[container.JobId]);
+          appDomains.Remove(container.JobId);
+          engines.Remove(container.JobId);
+          break;
+
+      }
+    }
+    
+    /// <summary>
+    /// Simulator Class for new Jobs. will be replaced with fetching Jobs from the Interface
+    /// </summary>
+    /// <returns></returns>
+    private IJob CreateNewJob() {
+      Random random = new Random();
+      IJob job = new TestJob();
+      job.JobId = random.Next();
+      return job;
+    }
   }
 }

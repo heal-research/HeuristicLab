@@ -31,7 +31,7 @@ using System.IO;
 namespace HeuristicLab.Hive.Client.ExecutionEngine {
   public class Executor: MarshalByRefObject {
     public long JobId { get; set; }
-    public TestJob Job { get; set; }
+    public IJob Job { get; set; }
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
         Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobAborted, JobId));
     }
 
-    public XmlNode GetSnapshot() {
+    public String GetSnapshot() {
       //if the job is still running, something went VERY bad.
       if (Job.Running) {
         return null;
@@ -62,21 +62,20 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
         // Clear the Status message
         CurrentMessage = MessageContainer.MessageType.NoMessage;
         // Pack the whole job inside an xml document
-        String job = SerializeJobObject();
-        XmlNode node = Job.GetXmlNode();        
+        String job = SerializeJobObject();        
         // Restart the job
         Job.Start();
         // Return the Snapshot
-        return node;
+        return job;
       }
     }
 
-    public XmlNode GetFinishedJob() {
+    public String GetFinishedJob() {
       //Job isn't finished!
       if (Job.Running) {
         return null;
       } else {
-        return Job.GetXmlNode();
+        return SerializeJobObject();
       }
     }
 

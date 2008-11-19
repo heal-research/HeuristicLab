@@ -26,10 +26,13 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Hive.Client.Common;
 
 namespace HeuristicLab.Hive.Client.Common {
   [Serializable]
-  abstract public class JobBase {
+  abstract public class JobBase : IJob {
+
+    public long JobId { get; set; }
 
     private Thread thread = null;
     

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace HeuristicLab.Hive.Client.Common {
   [Serializable]
@@ -32,11 +33,11 @@ namespace HeuristicLab.Hive.Client.Common {
         for (int y = 0; y < Int32.MaxValue; y++) ;
         if (abort == true) {
           Logging.getInstance().Info(this.ToString(), "Job Processing aborted");
-          //Console.WriteLine("Job Abort Processing");
+          Debug.WriteLine("Job Abort Processing");
           break;
         }
         Logging.getInstance().Info(this.ToString(), "Iteration " + x + " done");
-        //Console.WriteLine("Iteration " + x + " done");
+        Debug.WriteLine("Iteration " + x + " done");
       }      
       OnJobStopped();
     }

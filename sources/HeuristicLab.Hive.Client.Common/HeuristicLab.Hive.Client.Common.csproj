@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonPlugin.cs" />
+    <Compile Include="Interfaces\IJob.cs" />
     <Compile Include="JobBase.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MessageContainer.cs" />
