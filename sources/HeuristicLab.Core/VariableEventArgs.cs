@@ -24,11 +24,25 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected variable.
+  /// </summary>
   public class VariableEventArgs : ItemEventArgs {
+    /// <summary>
+    /// Gets the affected variable.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ItemEventArgs.Item"/> of base class <see cref="ItemEventArgs"/>.
+    /// No own data storage present.</remarks>
     public IVariable Variable {
       get { return (IVariable)Item; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableEventArgs"/> with the specified 
+    /// <paramref name="variable"/>.
+    /// </summary>
+    /// <remarks>Calls constructor of base class <see cref="ItemEventArgs"/>.</remarks>
+    /// <param name="variable">The affected variable.</param>
     public VariableEventArgs(IVariable variable)
       : base(variable) {
     }

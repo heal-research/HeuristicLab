@@ -24,12 +24,25 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected item at a specified index.
+  /// </summary>
   public class ItemIndexEventArgs : ItemEventArgs {
     private int myIndex;
+    /// <summary>
+    /// Gets the affected index.
+    /// </summary>
     public int Index {
       get { return myIndex; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ItemIndexEventArgs"/> with the given <paramref name="item"/>
+    /// and the given <paramref name="index"/>.
+    /// </summary>
+    /// <remarks>Calls constructor of base class <see cref="ItemEventArgs"/>.</remarks>
+    /// <param name="item">The affected item.</param>
+    /// <param name="index">The affected index.</param>
     public ItemIndexEventArgs(IItem item, int index)
       : base(item) {
       myIndex = index;

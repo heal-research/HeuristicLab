@@ -24,7 +24,14 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent items that can displayed visually.
+  /// </summary>
   public interface IViewable {
+    /// <summary>
+    /// Creates a view to display the current instance.
+    /// </summary>
+    /// <returns>The created view.</returns>
     IView CreateView();
   }
 }

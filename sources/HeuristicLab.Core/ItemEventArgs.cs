@@ -24,12 +24,22 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected item.
+  /// </summary>
   public class ItemEventArgs : EventArgs {
     private IItem myItem;
+    /// <summary>
+    /// Gets the affected item.
+    /// </summary>
     public IItem Item {
       get { return myItem; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ItemEventArgs"/> with the given <paramref name="item"/>.
+    /// </summary>
+    /// <param name="item">The affected item.</param>
     public ItemEventArgs(IItem item) {
       myItem = item;
     }

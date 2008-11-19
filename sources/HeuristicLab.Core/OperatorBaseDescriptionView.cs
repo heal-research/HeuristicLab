@@ -28,21 +28,40 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of the description of operators.
+  /// </summary>
   public partial class OperatorBaseDescriptionView : ViewBase {
+    /// <summary>
+    /// Gets or sets the operator whose description should be displayed.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.</remarks>
     public IOperator Operator {
       get { return (IOperator)Item; }
       set { base.Item = value; }
     }
-
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseDescriptionView"/> with caption "Operator".
+    /// </summary>
     public OperatorBaseDescriptionView() {
       InitializeComponent();
       Caption = "Operator";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseDescriptionView"/> 
+    /// with the operator <paramref name="op"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBaseDescriptionView()"/>.</remarks>
+    /// <param name="op">The operator whose description to display.</param>
     public OperatorBaseDescriptionView(IOperator op)
       : this() {
       Operator = op;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (Operator == null) {

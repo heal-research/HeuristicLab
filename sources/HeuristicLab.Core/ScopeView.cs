@@ -29,19 +29,34 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual represenation of <see cref="IScope"/>.
+  /// </summary>
   public partial class ScopeView : ViewBase {
     private Dictionary<IScope, TreeNode> scopeNodeTable;
     private Dictionary<IScope, bool> scopeExpandedTable;
 
+    /// <summary>
+    /// Gets or sets the scope to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IScope Scope {
       get { return (IScope)Item; }
       set { base.Item = value; }
     }
     private bool myAutomaticUpdating;
+    /// <summary>
+    /// Gets information whether the scope is automatically updating. 
+    /// </summary>
     public bool AutomaticUpdating {
       get { return myAutomaticUpdating; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ScopeView"/> with caption "Scope" and 
+    /// property <see cref="AutomaticUpdating"/> set to <c>false</c>.
+    /// </summary>
     public ScopeView() {
       InitializeComponent();
       Caption = "Scope";
@@ -49,11 +64,20 @@ namespace HeuristicLab.Core {
       scopeExpandedTable = new Dictionary<IScope, bool>();
       myAutomaticUpdating = false;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ScopeView"/> with the given <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ScopeView()"/>.</remarks>
+    /// <param name="scope">The scope to represent visually.</param>
     public ScopeView(IScope scope)
       : this() {
       Scope = scope;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (scopesTreeView.Nodes.Count > 0)

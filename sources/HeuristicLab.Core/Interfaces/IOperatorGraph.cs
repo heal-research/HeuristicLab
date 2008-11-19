@@ -25,17 +25,51 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent an operator graph.
+  /// </summary>
   public interface IOperatorGraph : IItem {
+    /// <summary>
+    /// Gets all operators of the current instance.
+    /// </summary>
     ICollection<IOperator> Operators { get; }
+    /// <summary>
+    /// Gets or sets the initial operator (the starting one) of the current instance.
+    /// </summary>
     IOperator InitialOperator { get; set; }
 
+    /// <summary>
+    /// Adds the given operator to the current instance.
+    /// </summary>
+    /// <param name="op">The operator to add.</param>
     void AddOperator(IOperator op);
+    /// <summary>
+    /// Removes an operator with the specified <paramref name="guid"/> from the current instance.
+    /// </summary>
+    /// <param name="guid">The unique id of the operator to remove.</param>
     void RemoveOperator(Guid guid);
+    /// <summary>
+    /// Gets the operator with the specified <paramref name="guid"/>.
+    /// </summary>
+    /// <param name="guid">The unique id of the operator.</param>
+    /// <returns>The searched operator.</returns>
     IOperator GetOperator(Guid guid);
+    /// <summary>
+    /// Clears the current instance.
+    /// </summary>
     void Clear();
 
+    /// <summary>
+    /// Occurs when a new operator has been added to the current instance.
+    /// </summary>
     event EventHandler<OperatorEventArgs> OperatorAdded;
+    /// <summary>
+    /// Occurs when an operator has been deleted from the current instance.
+    /// </summary>
     event EventHandler<OperatorEventArgs> OperatorRemoved;
+    /// <summary>
+    /// Occurs when the initial operator (the starting one) has been changed.
+    /// </summary>
     event EventHandler InitialOperatorChanged;
   }
 }

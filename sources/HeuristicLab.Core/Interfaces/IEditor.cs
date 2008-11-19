@@ -24,9 +24,19 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent an editor.
+  /// </summary>
   public interface IEditor : IView {
+
+    /// <summary>
+    /// Gets or sets the filename.
+    /// </summary>
     string Filename { get; set; }
 
+    /// <summary>
+    /// Occurs when the filename was changed.
+    /// </summary>
     event EventHandler FilenameChanged;
   }
 }

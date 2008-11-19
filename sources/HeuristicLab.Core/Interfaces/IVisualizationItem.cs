@@ -24,5 +24,8 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Marker interface for items that can be visualized.
+  /// </summary>
   public interface IVisualizationItem : IItem { }
 }

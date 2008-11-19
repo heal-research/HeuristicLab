@@ -24,12 +24,23 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected exception.
+  /// </summary>
   public class ExceptionEventArgs : EventArgs {
     private Exception myException;
+    /// <summary>
+    /// Gets the affected exception.
+    /// </summary>
     public Exception Exception {
       get { return myException; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ExceptionEventArgs"/> 
+    /// with the given <paramref name="exception"/>.
+    /// </summary>
+    /// <param name="exception">The affected exception.</param>
     public ExceptionEventArgs(Exception exception) {
       myException = exception;
     }

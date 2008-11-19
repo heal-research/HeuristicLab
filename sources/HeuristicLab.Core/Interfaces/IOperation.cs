@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent an operation (Executes a defined number of operators on a defined scope). 
+  /// </summary>
   public interface IOperation : IItem {
   }
 }

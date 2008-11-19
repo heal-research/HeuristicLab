@@ -28,11 +28,23 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of the information of the variables of an operator.
+  /// </summary>
   public partial class OperatorBaseVariableInfosView : ViewBase {
+    /// <summary>
+    /// Gets or sets the operator whose variable infos should be represented visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IOperator Operator {
       get { return (IOperator)Item; }
       set { base.Item = value; }
     }
+    /// <summary>
+    /// Gets all selected variable infos.
+    /// <note type="caution"> Variable infos are returned read-only!</note>
+    /// </summary>
     public ICollection<IVariableInfo> SelectedVariableInfos {
       get {
         List<IVariableInfo> selected = new List<IVariableInfo>();
@@ -42,27 +54,48 @@ namespace HeuristicLab.Core {
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseVariableInfosView"/> with caption "Operator".
+    /// </summary>
     public OperatorBaseVariableInfosView() {
       InitializeComponent();
       variableInfosListView.Columns[0].Width = Math.Max(0, variableInfosListView.Width - 25);
       Caption = "Operator";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseVariableInfosView"/> with the given operator
+    /// <paramref name="op"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBaseVariableInfosView()"/>.</remarks>
+    /// <param name="op">The operator whose variable infos should be displayed.</param>
     public OperatorBaseVariableInfosView(IOperator op)
       : this() {
       Operator = op;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Operator.VariableInfoAdded -= new EventHandler<VariableInfoEventArgs>(OperatorBase_VariableInfoAdded);
       Operator.VariableInfoRemoved -= new EventHandler<VariableInfoEventArgs>(OperatorBase_VariableInfoRemoved);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Operator.VariableInfoAdded += new EventHandler<VariableInfoEventArgs>(OperatorBase_VariableInfoAdded);
       Operator.VariableInfoRemoved += new EventHandler<VariableInfoEventArgs>(OperatorBase_VariableInfoRemoved);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       variableInfoDetailsGroupBox.Controls.Clear();
@@ -104,7 +137,13 @@ namespace HeuristicLab.Core {
       OnSelectedVariableInfosChanged();
     }
 
+    /// <summary>
+    /// Occurs when the variables were changed, whose infos should be displayed.
+    /// </summary>
     public event EventHandler SelectedVariableInfosChanged;
+    /// <summary>
+    /// Fires a new <c>SelectedVariableInfosChanged</c>.
+    /// </summary>
     protected virtual void OnSelectedVariableInfosChanged() {
       if (SelectedVariableInfosChanged != null)
         SelectedVariableInfosChanged(this, new EventArgs());

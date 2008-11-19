@@ -24,9 +24,18 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent (almost) every HeuristicLab object (an object, an operator,...).
+  /// </summary>
   public interface IItem : IStorable, IViewable {
+    /// <summary>
+    /// Fires a new <c>Changed</c> event.
+    /// </summary>
     void FireChanged();
 
+    /// <summary>
+    /// Occurs when the current instance has changed.
+    /// </summary>
     event EventHandler Changed;
   }
 }

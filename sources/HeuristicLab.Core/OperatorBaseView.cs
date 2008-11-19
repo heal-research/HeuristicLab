@@ -28,21 +28,42 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The base class for visual representation of operators (contains description view, variable view, 
+  /// variable info view,...).
+  /// </summary>
   public partial class OperatorBaseView : ViewBase {
+    /// <summary>
+    /// Gets or sets the operator to represent visually. 
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IOperator Operator {
       get { return (IOperator)Item; }
       set {base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseView"/> with caption "Operator".
+    /// </summary>
     public OperatorBaseView() {
       InitializeComponent();
       Caption = "Operator";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseView"/> 
+    /// with the given operator <paramref name="op"/>. 
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBaseView()"/>.</remarks>
+    /// <param name="op">The operator to represent visually.</param>
     public OperatorBaseView(IOperator op)
       : this() {
       Operator = op;
     }
 
+    /// <summary>
+    /// Removes event handlers in all children.
+    /// </summary>
     protected override void RemoveItemEvents() {
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseVariablesView.Operator = null;
@@ -50,6 +71,9 @@ namespace HeuristicLab.Core {
       operatorBaseDescriptionView.Operator = null;
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers in all children.
+    /// </summary>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       operatorBaseVariableInfosView.Operator = Operator;
@@ -58,6 +82,10 @@ namespace HeuristicLab.Core {
       operatorBaseDescriptionView.Operator = Operator;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (Operator == null) {

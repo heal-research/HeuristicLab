@@ -29,32 +29,57 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of an <see cref="IOperatorGraph"/>.
+  /// </summary>
   public partial class OperatorGraphView : ViewBase {
     private ChooseOperatorDialog chooseOperatorDialog;
     private Dictionary<IOperator, IList<TreeNode>> operatorNodeTable;
 
+    /// <summary>
+    /// Gets or sets the operator graph to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IOperatorGraph OperatorGraph {
       get { return (IOperatorGraph)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorGraphView"/> with caption "Operator Graph".
+    /// </summary>
     public OperatorGraphView() {
       InitializeComponent();
       operatorNodeTable = new Dictionary<IOperator, IList<TreeNode>>();
       operatorsListView.Columns[0].Width = Math.Max(0, operatorsListView.Width - 25);
       Caption = "Operator Graph";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorGraphView"/> 
+    /// with the given <paramref name="operatorGraph"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorGraphView()"/>.</remarks>
+    /// <param name="operatorGraph">The operator graph to represent visually.</param>
     public OperatorGraphView(IOperatorGraph operatorGraph)
       : this() {
       OperatorGraph = operatorGraph;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IOperatorGraph"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       OperatorGraph.OperatorAdded -= new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorAdded);
       OperatorGraph.OperatorRemoved -= new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorRemoved);
       OperatorGraph.InitialOperatorChanged -= new EventHandler(OperatorGraph_InitialOperatorChanged);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IOperatorGraph"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       OperatorGraph.OperatorAdded += new EventHandler<OperatorEventArgs>(OperatorGraph_OperatorAdded);
@@ -62,6 +87,10 @@ namespace HeuristicLab.Core {
       OperatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (graphTreeView.Nodes.Count > 0)

@@ -24,11 +24,25 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected constraint.
+  /// </summary>
   public class ConstraintEventArgs : ItemEventArgs {
+    /// <summary>
+    /// Gets the affected constraint.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ItemEventArgs.Item"/> of base class <see cref="ItemEventArgs"/>.
+    /// No own data storage present.</remarks>
     public IConstraint Constraint {
       get { return (IConstraint)Item; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ConstraintEventArgs"/> with the given
+    /// <paramref name="constraint"/>.
+    /// </summary>
+    /// <remarks>Only calls the constructor of base class <see cref="ItemEventArgs"/>.</remarks>
+    /// <param name="constraint">The affected constraint.</param>
     public ConstraintEventArgs(IConstraint constraint)
       : base(constraint) {
     }

@@ -27,11 +27,21 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.Core { 
+  /// <summary>
+  /// The base class for visual representations of items.
+  /// </summary>
   public partial class ItemBaseView : ViewBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ItemBaseView"/>.
+    /// </summary>
     public ItemBaseView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Intializes a new instance of <see cref="ItemBaseView"/> with the given <paramref name="item"/>.
+    /// </summary>
+    /// <param name="item">The item that should be displayed.</param>
     public ItemBaseView(IItem item)
       : this() {
       Item = item;

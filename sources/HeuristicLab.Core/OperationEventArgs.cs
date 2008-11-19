@@ -24,12 +24,23 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected operation.
+  /// </summary>
   public class OperationEventArgs : EventArgs {
     private IOperation myOperation;
+    /// <summary>
+    /// Gets the affected operation.
+    /// </summary>
     public IOperation Operation {
       get { return myOperation; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperationEventArgs"/> with the given 
+    /// <paramref name="operation"/>.
+    /// </summary>
+    /// <param name="operation">The affected operation.</param>
     public OperationEventArgs(IOperation operation) {
       myOperation = operation;
     }

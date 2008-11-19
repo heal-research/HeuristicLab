@@ -24,11 +24,24 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected operator.
+  /// </summary>
   public class OperatorEventArgs : ItemEventArgs {
+    /// <summary>
+    /// Gets the affected operator.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ItemEventArgs.Item"/> of base class <see cref="ItemEventArgs"/>.
+    /// No own data storage present.</remarks>
     public IOperator Operator {
       get { return (IOperator)Item; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorEventArgs"/> with the specified operator.
+    /// </summary>
+    /// <remarks>Calls constructor of base class <see cref="ItemEventArgs"/>.</remarks>
+    /// <param name="op">The affected operator.</param>
     public OperatorEventArgs(IOperator op)
       : base(op) {
     }

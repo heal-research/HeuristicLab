@@ -28,8 +28,15 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Base class for views that can load and save data.
+  /// </summary>
   public partial class EditorBase : ViewBase, IEditor {
     private string myFilename;
+    /// <summary>
+    /// Gets or sets the filename of the current editor.
+    /// </summary>
+    /// <remarks>Calls <see cref="OnFilenameChanged"/> in the setter if the filename is new.</remarks>
     public string Filename {
       get { return myFilename; }
       set {
@@ -40,11 +47,18 @@ namespace HeuristicLab.Core {
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EditorBase"/> with the caption "Editor".
+    /// </summary>
     public EditorBase() {
       InitializeComponent();
       Caption = "Editor";
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (Item == null)
@@ -53,7 +67,13 @@ namespace HeuristicLab.Core {
         Caption = "Editor (" + Item.GetType().Name + ")";
     }
 
+    /// <summary>
+    /// Occurs when the filename is changed.
+    /// </summary>
     public event EventHandler FilenameChanged;
+    /// <summary>
+    /// Fires a new <c>FilenameChanged</c> event.
+    /// </summary>
     protected virtual void OnFilenameChanged() {
       if (FilenameChanged != null)
         FilenameChanged(this, new EventArgs());

@@ -25,7 +25,13 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent a library of operators.
+  /// </summary>
   public interface IOperatorLibrary : IItem {
+    /// <summary>
+    /// Gets the operator group of the current instance.
+    /// </summary>
     IOperatorGroup Group { get; }
   }
 }

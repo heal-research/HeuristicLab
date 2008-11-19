@@ -24,9 +24,20 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent restrictions.
+  /// </summary>
   public interface IConstraint : IItem {
+    /// <summary>
+    /// Gets the description of the current instance.
+    /// </summary>
     string Description { get; }
 
+    /// <summary>
+    /// Checks whether the given <paramref name="data"/> fulfills the current constraint.
+    /// </summary>
+    /// <param name="data">The item to check.</param>
+    /// <returns><c>true</c> if the current instance could be fulfilled, <c>false</c> otherwise.</returns>
     bool Check(IItem data);
   }
 }

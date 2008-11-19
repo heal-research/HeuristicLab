@@ -28,34 +28,63 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of all variables in a specified scope.
+  /// </summary>
   public partial class VariablesScopeView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
+    /// <summary>
+    /// Gets or sets the scope whose variables to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No won data storage present.</remarks>
     public IScope Scope {
       get { return (IScope)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
+    /// </summary>
     public VariablesScopeView() {
       InitializeComponent();
       Caption = "Variables Scope View";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariablesScopeView"/> with 
+    /// the given <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="VariablesScopeView()"/>.</remarks>
+    /// <param name="scope">The scope whose variables should be represented visually.</param>
     public VariablesScopeView(IScope scope)
       : this() {
       Scope = scope;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IScope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Scope.VariableAdded -= new EventHandler<VariableEventArgs>(Scope_VariableAdded);
       Scope.VariableRemoved -= new EventHandler<VariableEventArgs>(Scope_VariableRemoved);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IScope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Scope.VariableAdded += new EventHandler<VariableEventArgs>(Scope_VariableAdded);
       Scope.VariableRemoved += new EventHandler<VariableEventArgs>(Scope_VariableRemoved);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       detailsGroupBox.Controls.Clear();

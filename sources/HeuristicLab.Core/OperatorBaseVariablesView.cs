@@ -28,35 +28,64 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of the variables of an operator.
+  /// </summary>
   public partial class OperatorBaseVariablesView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
+    /// <summary>
+    /// Gets or sets the operator whose variables to represent.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IOperator Operator {
       get { return (IOperator)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseVariablesView"/> with caption "Operator".
+    /// </summary>
     public OperatorBaseVariablesView() {
       InitializeComponent();
       variablesListView.Columns[0].Width = Math.Max(0, variablesListView.Width - 25);
       Caption = "Operator";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorBaseVariablesView"/> with the given 
+    /// operator <paramref name="op"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBaseVariablesView"/>.</remarks>
+    /// <param name="op">The operator whose variables should be represented visually.</param>
     public OperatorBaseVariablesView(IOperator op)
       : this() {
       Operator = op;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the unterlying <see cref="IOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Operator.VariableAdded -= new EventHandler<VariableEventArgs>(OperatorBase_VariableAdded);
       Operator.VariableRemoved -= new EventHandler<VariableEventArgs>(OperatorBase_VariableRemoved);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Operator.VariableAdded += new EventHandler<VariableEventArgs>(OperatorBase_VariableAdded);
       Operator.VariableRemoved += new EventHandler<VariableEventArgs>(OperatorBase_VariableRemoved);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       variableDetailsGroupBox.Controls.Clear();

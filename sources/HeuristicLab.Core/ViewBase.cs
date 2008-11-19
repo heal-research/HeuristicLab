@@ -29,8 +29,17 @@ using System.Xml;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Base class for all visual representations.
+  /// </summary>
   public partial class ViewBase : UserControl, IView {
     private IItem myItem;
+    /// <summary>
+    /// Gets or sets the item to represent visually.
+    /// </summary>
+    /// <remarks>Calls <see cref="OnItemChanged"/>, <see cref="Refresh"/>, 
+    /// <see cref="RemoveItemEvents"/> (if the current item is not null) and 
+    /// <see cref="AddItemEvents"/> (if the new item is not null) in the setter.</remarks>
     public IItem Item {
       get { return myItem; }
       protected set {
@@ -46,6 +55,10 @@ namespace HeuristicLab.Core {
       }
     }
     private string myCaption;
+    /// <summary>
+    /// Gets or sets the caption of the current instance.
+    /// </summary>
+    /// <remarks>Call <see cref="OnCaptionChanged"/> in the setter if a new item is set.</remarks>
     public string Caption {
       get { return myCaption; }
       set {
@@ -56,14 +69,30 @@ namespace HeuristicLab.Core {
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ViewBase"/> with the caption "View".
+    /// </summary>
     public ViewBase() {
       InitializeComponent();
       Caption = "View";
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the current instance.
+    /// </summary>
     protected virtual void RemoveItemEvents() { }
+    /// <summary>
+    /// Adds eventhandlers to the current instance.
+    /// </summary>
     protected virtual void AddItemEvents() { }
 
+    /// <summary>
+    /// Refreshes the current view.
+    /// </summary>
+    /// <remarks>Creates a new <see cref="MethodInvoker"/> if an invoke is required 
+    /// (see <see cref="Control.InvokeRequired"/>.<br/>
+    /// Otherwise calls <see cref="UpdateControls"/> and <see cref="Control.Refresh"/> of base class 
+    /// <see cref="System.Windows.Forms.UserControl"/>.</remarks>
     public override void Refresh() {
       if (InvokeRequired) {
         Invoke(new MethodInvoker(Refresh));
@@ -72,6 +101,9 @@ namespace HeuristicLab.Core {
         base.Refresh();
       }
     }
+    /// <summary>
+    /// Updates the controls with the latest values of the model.
+    /// </summary>
     protected virtual void UpdateControls() {
       if (Item == null)
         Caption = "View";
@@ -80,17 +112,33 @@ namespace HeuristicLab.Core {
       
     }
 
+    /// <summary>
+    /// Occurs when the current item was changed.
+    /// </summary>
     public event EventHandler ItemChanged;
+    /// <summary>
+    /// Fires a new <c>ItemChanged</c> event.
+    /// </summary>
     protected virtual void OnItemChanged() {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs());
     }
+    /// <summary>
+    /// Occurs when the current caption was changed.
+    /// </summary>
     public event EventHandler CaptionChanged;
+    /// <summary>
+    /// Fires a new <c>CaptionChanged</c> event.
+    /// </summary>
     protected virtual void OnCaptionChanged() {
       if (CaptionChanged != null)
         CaptionChanged(this, new EventArgs());
     }
 
+    /// <summary>
+    /// Asynchron call of GUI updating.
+    /// </summary>
+    /// <param name="method">The delegate to invoke.</param>
     protected new void Invoke(Delegate method) {
       // enforce context switch to improve GUI response time
       System.Threading.Thread.Sleep(0);
@@ -100,6 +148,11 @@ namespace HeuristicLab.Core {
       while ((!result.AsyncWaitHandle.WaitOne(100, false)) && (!IsDisposed)) { }
       if (!IsDisposed) EndInvoke(result);
     }
+    /// <summary>
+    /// Asynchron call of GUI updating.
+    /// </summary>
+    /// <param name="method">The delegate to invoke.</param>
+    /// <param name="args">The invoke arguments.</param>
     protected new void Invoke(Delegate method, params object[] args) {
       // enforce context switch to improve GUI response time
       System.Threading.Thread.Sleep(0);

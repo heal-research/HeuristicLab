@@ -24,11 +24,23 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected scope.
+  /// </summary>
   public class ScopeEventArgs : ItemEventArgs {
+    /// <summary>
+    /// Gets the affected scope.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ItemEventArgs.Item"/> of base class <see cref="ItemEventArgs"/>.
+    /// No own data storage present.</remarks>
     public IScope Scope {
       get { return (IScope)Item; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ScopeEventArgs"/> with the specified scope.
+    /// </summary>
+    /// <param name="scope">The affected scope.</param>
     public ScopeEventArgs(IScope scope)
       : base(scope) {
     }

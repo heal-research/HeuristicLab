@@ -24,7 +24,14 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent editable items.
+  /// </summary>
   public interface IEditable : IViewable {
+    /// <summary>
+    /// Creates an editor.
+    /// </summary>
+    /// <returns>The created editor as <see cref="IEditor"/>.</returns>
     IEditor CreateEditor();
   }
 }

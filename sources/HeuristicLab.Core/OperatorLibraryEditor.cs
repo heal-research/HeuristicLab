@@ -30,19 +30,35 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Visual representation of the class <see cref="IOperatorLibrary"/>.
+  /// </summary>
   public partial class OperatorLibraryEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
 
+    /// <summary>
+    /// Gets or sets the operator library that should be displayed.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.</remarks>
     public IOperatorLibrary OperatorLibrary {
       get { return (IOperatorLibrary)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorLibraryEditor"/> with caption 
+    /// <c>Operator Library</c>.
+    /// </summary>
     public OperatorLibraryEditor() {
       InitializeComponent();
       operatorsTreeView.TreeViewNodeSorter = new NodeSorter();
       Caption = "Operator Library";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OperatorLibraryEditor"/> with the 
+    /// specified <paramref name="operatorLibrary"/>.
+    /// </summary>
+    /// <param name="operatorLibrary">The operator library to display.</param>
     public OperatorLibraryEditor(IOperatorLibrary operatorLibrary)
       : this() {
       OperatorLibrary = operatorLibrary;
@@ -60,6 +76,10 @@ namespace HeuristicLab.Core {
       }
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       operatorsTreeView.Nodes.Clear();

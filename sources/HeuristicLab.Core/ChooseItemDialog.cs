@@ -30,6 +30,9 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// A dialog to select an item. 
+  /// </summary>
   public partial class ChooseItemDialog : Form {
     #region Inner Class TreeNodeSorter
     private class TreeNodeSorter : IComparer {
@@ -45,20 +48,37 @@ namespace HeuristicLab.Core {
     }
     #endregion
 
+    /// <summary>
+    /// Gets or sets the caption of the dialog.
+    /// </summary>
+    /// <remarks>Uses property <see cref="Form.Text"/> of base class <see cref="System.Windows.Forms.Form"/>.
+    /// No own data storage present.</remarks>
     public string Caption {
       get { return Text; }
       set { Text = value; }
     }
 
     private IItem myItem;
+    /// <summary>
+    /// Gets the selected item.
+    /// </summary>
     public IItem Item {
       get { return myItem; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ChooseItemDialog"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ChooseItemDialog(System.Type)"/> with the type of <see cref="IItem"/>
+    /// as parameter.</remarks>
     public ChooseItemDialog()
       : this(typeof(IItem)) {
     }
-
+    /// <summary>
+    /// Initializes a new instance of <see cref="ChooseItemDialog"/> with 
+    /// the given <paramref name="itemType"/>.
+    /// </summary>
+    /// <param name="itemType">The type of the items to choose from.</param>
     public ChooseItemDialog(Type itemType) {
       InitializeComponent();
 

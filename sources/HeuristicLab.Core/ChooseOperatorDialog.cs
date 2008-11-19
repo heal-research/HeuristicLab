@@ -30,6 +30,9 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// A dialog to select an operator out of a library.
+  /// </summary>
   public partial class ChooseOperatorDialog : Form {
     #region Inner Class TreeNodeSorter
     private class TreeNodeSorter : IComparer {
@@ -48,10 +51,16 @@ namespace HeuristicLab.Core {
     private IOperatorLibrary operatorLibrary;
 
     private IOperator myOperator;
+    /// <summary>
+    /// Gets the selected operator.
+    /// </summary>
     public IOperator Operator {
       get { return myOperator; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ChooseOperatorDialog"/>.
+    /// </summary>
     public ChooseOperatorDialog() {
       InitializeComponent();
       operatorLibrary = null;

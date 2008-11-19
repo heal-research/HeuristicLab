@@ -25,11 +25,26 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// An interface for all kinds visual representations of items (objects, operators...).
+  /// </summary>
   public interface IView : IControl {
+    /// <summary>
+    /// Gets the current item instance.
+    /// </summary>
     IItem Item { get; }
+    /// <summary>
+    /// Gets or sets the caption of the current instance. 
+    /// </summary>
     string Caption { get; set; }
 
+    /// <summary>
+    /// Occurs when the item was changed.
+    /// </summary>
     event EventHandler ItemChanged;
+    /// <summary>
+    /// Occurs when the caption was changed.
+    /// </summary>
     event EventHandler CaptionChanged;
   }
 }

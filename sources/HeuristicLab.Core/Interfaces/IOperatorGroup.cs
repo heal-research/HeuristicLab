@@ -25,16 +25,47 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent a group of operators.
+  /// </summary>
   public interface IOperatorGroup : IStorable {
+    /// <summary>
+    /// Gets or sets the name of the current instance.
+    /// </summary>
     string Name { get; set; }
+    /// <summary>
+    /// Gets all sub groups of operators of the current instance.
+    /// </summary>
     ICollection<IOperatorGroup> SubGroups { get; }
+    /// <summary>
+    /// Gets all operators of the current operator group.
+    /// </summary>
     ICollection<IOperator> Operators { get; }
 
+    /// <summary>
+    /// Adds the specified sub group of operators to the current operator group.
+    /// </summary>
+    /// <param name="group">The operator group to add.</param>
     void AddSubGroup(IOperatorGroup group);
+    /// <summary>
+    /// Deletes the specified sub group of operators from the current instance.
+    /// </summary>
+    /// <param name="group">The sub group to delete.</param>
     void RemoveSubGroup(IOperatorGroup group);
+    /// <summary>
+    /// Adds the specified operator to the current instance.
+    /// </summary>
+    /// <param name="op">The operator to add.</param>
     void AddOperator(IOperator op);
+    /// <summary>
+    /// Deletes the specified operator from the current instance.
+    /// </summary>
+    /// <param name="op">The operator to remove.</param>
     void RemoveOperator(IOperator op);
 
+    /// <summary>
+    /// Occurs when the name of the operator group has been changed.
+    /// </summary>
     event EventHandler NameChanged;
   }
 }

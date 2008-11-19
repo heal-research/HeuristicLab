@@ -25,14 +25,37 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Interface to represent a variable (of an operator) having a name and a value.
+  /// </summary>
   public interface IVariable : IItem {
+    /// <summary>
+    /// Gets or sets the name of the variable.
+    /// </summary>
     string Name { get; set; }
+    /// <summary>
+    /// Gets or sets the value of the variable.
+    /// </summary>
     IItem Value { get; set; }
 
+    /// <summary>
+    /// Gets the value of the variable.
+    /// </summary>
+    /// <typeparam name="T">The type of the variable's value.</typeparam>
+    /// <returns>The value of the current instance.</returns>
     T GetValue<T>() where T : class, IItem;
 
+    /// <summary>
+    /// Occurs when the name of the variable is currently changing.
+    /// </summary>
     event EventHandler<NameChangingEventArgs> NameChanging;
+    /// <summary>
+    /// Occurs when the name of the current instance has been changed.
+    /// </summary>
     event EventHandler NameChanged;
+    /// <summary>
+    /// Occurs when the value of the current instance has been changed.
+    /// </summary>
     event EventHandler ValueChanged;
   }
 }

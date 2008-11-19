@@ -25,46 +25,71 @@ using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Hierarchical container of variables (and of subscopes).
+  /// </summary>
   public class Scope : ItemBase, IScope {
     private IScope parent;
 
-    private string myName;
+    private string myName; 
+    /// <summary>
+    /// Gets the name of the current scope.
+    /// </summary>
     public string Name {
       get { return myName; }
     }
 
     private IDictionary<string, IVariable> myVariables;
+    /// <inheritdoc/>
     public ICollection<IVariable> Variables {
       get { return myVariables.Values; }
     }
     private IDictionary<string, string> myAliases;
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, string>> Aliases {
       get { return myAliases; }
     }
     private List<IScope> mySubScopes;
+    /// <summary>
+    /// Gets all subscopes of the current instance.
+    /// <note type="caution"> The subscopes are returned as read-only.</note>
+    /// </summary>
     public IList<IScope> SubScopes {
       get { return mySubScopes.AsReadOnly(); }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="Scope"/> having "Anonymous" as default name.
+    /// </summary>
     public Scope() {
       myName = "Anonymous";
       myVariables = new Dictionary<string, IVariable>();
       myAliases = new Dictionary<string, string>();
       mySubScopes = new List<IScope>();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="Scope"/> with the given <paramref name="name"/>.
+    /// </summary>
+    /// <param name="name">The name of the scope.</param>
     public Scope(string name)
       : this() {
       if (name != null) myName = name;
     }
 
+    /// <inheritdoc/>
     public void SetParent(IScope scope) {
       parent = scope;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="ScopeView"/> to represent the current instance visually.
+    /// </summary>
+    /// <returns>The created view as <see cref="ScopeView"/>.</returns>
     public override IView CreateView() {
       return new ScopeView(this);
     }
 
+    /// <inheritdoc/>
     public IVariable GetVariable(string name) {
       IVariable variable;
       if (myVariables.TryGetValue(name, out variable))
@@ -72,6 +97,7 @@ namespace HeuristicLab.Core {
       else
         return null;
     }
+    /// <inheritdoc/>
     public void AddVariable(IVariable variable) {
       myVariables.Add(variable.Name, variable);
       variable.NameChanging += new EventHandler<NameChangingEventArgs>(Variable_NameChanging);
@@ -79,6 +105,7 @@ namespace HeuristicLab.Core {
       OnVariableAdded(variable);
     }
 
+    /// <inheritdoc/>
     public void RemoveVariable(string name) {
       IVariable variable;
       if (myVariables.TryGetValue(name, out variable)) {
@@ -101,15 +128,19 @@ namespace HeuristicLab.Core {
       myVariables.Remove(oldName);
       myVariables.Add(variable.Name, variable);
     }
+    /// <inheritdoc cref="IScope.GetVariableValue&lt;T&gt;(string, bool)"/>
     public T GetVariableValue<T>(string name, bool recursiveLookup) where T : class, IItem {
       return GetVariableValue<T>(name, recursiveLookup, true);
     }
+    /// <inheritdoc cref="IScope.GetVariableValue&lt;T&gt;(string, bool, bool)"/>
     public T GetVariableValue<T>(string name, bool recursiveLookup, bool throwOnError) where T : class, IItem {
       return (T)GetVariableValue(name, recursiveLookup, throwOnError);
     }
+    /// <inheritdoc cref="IScope.GetVariableValue(string, bool)"/>
     public IItem GetVariableValue(string name, bool recursiveLookup) {
       return GetVariableValue(name, recursiveLookup, true);
     }
+    /// <inheritdoc cref="IScope.GetVariableValue(string, bool, bool)"/>
     public IItem GetVariableValue(string name, bool recursiveLookup, bool throwOnError) {
       IVariable variable;
       name = TranslateName(name);
@@ -126,7 +157,7 @@ namespace HeuristicLab.Core {
         }
       }
     }
-
+    /// <inheritdoc/>
     public string TranslateName(string name) {
       while (myAliases.ContainsKey(name))
         name = myAliases[name];
@@ -134,6 +165,7 @@ namespace HeuristicLab.Core {
         name = parent.TranslateName(name);
       return name;
     }
+    /// <inheritdoc/>
     public void AddAlias(string alias, string name) {
       RemoveAlias(alias);
       if (alias != name) {
@@ -141,6 +173,7 @@ namespace HeuristicLab.Core {
         OnAliasAdded(alias);
       }
     }
+    /// <inheritdoc/>
     public void RemoveAlias(string alias) {
       if (myAliases.ContainsKey(alias)) {
         myAliases.Remove(alias);
@@ -148,11 +181,13 @@ namespace HeuristicLab.Core {
       }
     }
 
+    /// <inheritdoc/>
     public void AddSubScope(IScope scope) {
       scope.SetParent(this);
       mySubScopes.Add(scope);
       OnSubScopeAdded(scope, mySubScopes.Count - 1);
     }
+    /// <inheritdoc/>
     public void RemoveSubScope(IScope scope) {
       int index = mySubScopes.IndexOf(scope);
       if (mySubScopes.Remove(scope)) {
@@ -160,6 +195,7 @@ namespace HeuristicLab.Core {
         OnSubScopeRemoved(scope, index);
       }
     }
+    /// <inheritdoc/>
     public void ReorderSubScopes(int[] sequence) {
       IScope[] scopes = mySubScopes.ToArray();
       mySubScopes.Clear();
@@ -167,6 +203,7 @@ namespace HeuristicLab.Core {
         mySubScopes.Add(scopes[sequence[i]]);
       OnSubScopesReordered();
     }
+    /// <inheritdoc/>
     public IScope GetScope(Guid guid) {
       if (Guid == guid) return this;
       else {
@@ -177,6 +214,7 @@ namespace HeuristicLab.Core {
       }
       return null;
     }
+    /// <inheritdoc/>
     public IScope GetScope(string name) {
       if (Name == name) return this;
       else {
@@ -188,6 +226,7 @@ namespace HeuristicLab.Core {
       return null;
     }
 
+    /// <inheritdoc/>
     public void Clear() {
       string[] variableNames = new string[Variables.Count];
       int i = 0;
@@ -207,6 +246,7 @@ namespace HeuristicLab.Core {
         RemoveSubScope(SubScopes[0]);
     }
 
+    /// <inheritdoc/>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Scope clone = (Scope)base.Clone(clonedObjects);
       clone.myName = Name;
@@ -221,43 +261,113 @@ namespace HeuristicLab.Core {
       return clone;
     }
 
+    /// <inheritdoc />
     public event EventHandler<VariableEventArgs> VariableAdded;
+    /// <summary>
+    /// Fires a new <c>VariableAdded</c> event.
+    /// </summary>
+    /// <param name="variable">The variable that has been added.</param>
     protected virtual void OnVariableAdded(IVariable variable) {
       if (VariableAdded != null)
         VariableAdded(this, new VariableEventArgs(variable));
     }
+    /// <inheritdoc />
     public event EventHandler<VariableEventArgs> VariableRemoved;
+    /// <summary>
+    /// Fires a new <c>VariableRemoved</c>.
+    /// </summary>
+    /// <param name="variable">The variable that has been deleted.</param>
     protected virtual void OnVariableRemoved(IVariable variable) {
       if (VariableRemoved != null)
         VariableRemoved(this, new VariableEventArgs(variable));
     }
+    /// <inheritdoc /> 
     public event EventHandler<AliasEventArgs> AliasAdded;
+    /// <summary>
+    /// Fires a new <c>AliasAdded</c> event.
+    /// </summary>
+    /// <param name="alias">The alias that has been added.</param>
     protected virtual void OnAliasAdded(string alias) {
       if (AliasAdded != null)
         AliasAdded(this, new AliasEventArgs(alias));
     }
+    /// <inheritdoc/>
     public event EventHandler<AliasEventArgs> AliasRemoved;
+    /// <summary>
+    /// Fires a new <c>AliasRemoved</c> event.
+    /// </summary>
+    /// <param name="alias">The alias that has been deleted.</param>
     protected virtual void OnAliasRemoved(string alias) {
       if (AliasRemoved != null)
         AliasRemoved(this, new AliasEventArgs(alias));
     }
+    /// <inheritdoc/>
     public event EventHandler<ScopeIndexEventArgs> SubScopeAdded;
+    /// <summary>
+    /// Fires a new <c>SubScopeAdded</c> event.
+    /// </summary>
+    /// <param name="scope">The sub scope that has been added.</param>
+    /// <param name="index">The index where the scope has been added.</param>
     protected virtual void OnSubScopeAdded(IScope scope, int index) {
       if (SubScopeAdded != null)
         SubScopeAdded(this, new ScopeIndexEventArgs(scope, index));
     }
+    /// <inheritdoc/>
     public event EventHandler<ScopeIndexEventArgs> SubScopeRemoved;
+    /// <summary>
+    /// Fires a new <c>SubScopeRemoved</c> event.
+    /// </summary>
+    /// <param name="scope">The sub scope that has been deleted.</param>
+    /// <param name="index">The position of the sub scope.</param>
     protected virtual void OnSubScopeRemoved(IScope scope, int index) {
       if (SubScopeRemoved != null)
         SubScopeRemoved(this, new ScopeIndexEventArgs(scope, index));
     }
+    /// <inheritdoc />
     public event EventHandler SubScopesReordered;
+    /// <summary>
+    /// Fires a new <c>SubScopesReordered</c> event
+    /// </summary>
     protected virtual void OnSubScopesReordered() {
       if (SubScopesReordered != null)
         SubScopesReordered(this, new EventArgs());
     }
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the given <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>
+    /// Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>.<br/>
+    /// A quick overview how the single elements of the current instance are saved:
+    /// <list type="bullet">
+    /// <item>
+    /// <term>Name: </term>
+    /// <description>Saved as an <see cref="XmlAttribute"/> having the tag name <c>Name</c>.</description>
+    /// </item>
+    /// <item>
+    /// <term>Variables: </term>
+    /// <description>A child node is created with the tag name <c>Variables</c>. Beyond this child node,
+    /// all variables are saved as child nodes.</description>
+    /// </item>
+    /// <item>
+    /// <term>Aliases: </term>
+    /// <description>A child node is created with the tag name <c>Aliases</c>. Beyond this child node, 
+    /// all aliases are saved as child nodes with the tag name <c>Alias</c>. Each alias has an
+    /// <see cref="XmlAttribute"/> with the tag name "Alias", holding the alias, and an attribute 
+    /// with the tag name <c>Name</c>, holding the name of the alias.</description>
+    /// </item>
+    /// <item>
+    /// <term>Sub scopes: </term>
+    /// <description>A child node is created with the tag name <c>SubScopes</c>. Beyond this child node,
+    /// all sub scopes are saved as child nodes.</description>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute nameAttribute = document.CreateAttribute("Name");
@@ -289,6 +399,15 @@ namespace HeuristicLab.Core {
 
       return node;
     }
+    /// <summary>
+    /// Loads the persisted scope from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>See <see cref="GetXmlNode"/> to get further information on how the current instance must
+    /// be saved. <br/>
+    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the boolean value is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myName = node.Attributes["Name"].Value;

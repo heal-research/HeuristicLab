@@ -29,18 +29,32 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Base class for editors of engines.
+  /// </summary>
   public partial class EngineBaseEditor : EditorBase {
     private int executionTimeCounter;
 
+    /// <summary>
+    /// Gets or sets the current engine.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.</remarks>
     public IEngine Engine {
       get { return (IEngine)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EngineBaseEditor"/>.
+    /// </summary>
     public EngineBaseEditor() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Removes the event handlers from the underlying <see cref="IEngine"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Engine.Initialized -= new EventHandler(Engine_Initialized);
       Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
@@ -50,6 +64,10 @@ namespace HeuristicLab.Core {
       scopeView.Scope = null;
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="IEngine"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Engine.Initialized += new EventHandler(Engine_Initialized);
@@ -60,6 +78,10 @@ namespace HeuristicLab.Core {
       scopeView.Scope = Engine.GlobalScope;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       abortButton.Enabled = false;

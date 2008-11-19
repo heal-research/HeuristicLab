@@ -24,12 +24,30 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Represents the type of a variable (input, output,...).
+  /// </summary>
   [FlagsAttribute]
   public enum VariableKind {
+    /// <summary>
+    /// Flag for doing nothing with the variable.
+    /// </summary>
     None = 0,
+    /// <summary>
+    /// Flag for creating a new variable.
+    /// </summary>
     New = 1,
+    /// <summary>
+    /// Flag for changing value of a variable.
+    /// </summary>
     Out = 2,
+    /// <summary>
+    /// Flag for reading value of a variable.
+    /// </summary>
     In = 4,
+    /// <summary>
+    /// Flag for deleting a variable.
+    /// </summary>
     Deleted = 8
   }
 }

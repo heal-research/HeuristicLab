@@ -28,34 +28,62 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of an <see cref="IVariable"/>.
+  /// </summary>
   public partial class VariableView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
+    /// <summary>
+    /// Gets or sets the variable to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IVariable Variable {
       get { return (IVariable)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
+    /// </summary>
     public VariableView() {
       InitializeComponent();
       Caption = "Variable";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableView"/> with the given <paramref name="variable"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="VariableView()"/>.</remarks>
+    /// <param name="variable">The variable to represent visually.</param>
     public VariableView(IVariable variable)
       : this() {
       Variable = variable;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IVariable"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       Variable.NameChanged -= new EventHandler(Variable_NameChanged);
       Variable.ValueChanged -= new EventHandler(Variable_ValueChanged);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IVariable"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       Variable.NameChanged += new EventHandler(Variable_NameChanged);
       Variable.ValueChanged += new EventHandler(Variable_ValueChanged);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       valueTextBox.Text = "-";

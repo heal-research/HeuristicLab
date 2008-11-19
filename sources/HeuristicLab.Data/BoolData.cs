@@ -92,7 +92,8 @@ namespace HeuristicLab.Data {
     /// <remarks> The boolean value must be saved as string in the node's inner text 
     /// (see <see cref="GetXmlNode"/>).</remarks>
     /// <param name="node">The <see cref="XmlNode"/> where the boolean value is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       Data = bool.Parse(node.InnerText);

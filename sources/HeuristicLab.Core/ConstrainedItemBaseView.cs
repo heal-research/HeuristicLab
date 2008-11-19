@@ -28,35 +28,62 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// The visual representation of an <see cref="IConstrainedItem"/>.
+  /// </summary>
   public partial class ConstrainedItemBaseView : ViewBase {
     private ChooseItemDialog chooseItemDialog;
 
+    /// <summary>
+    /// Gets or sets the current item to represent visually.
+    /// </summary>
     public IConstrainedItem ConstrainedItem {
       get { return (IConstrainedItem)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ConstrainedItemBaseView"/> 
+    /// with the caption "Constrained Item".
+    /// </summary>
     public ConstrainedItemBaseView() {
       InitializeComponent();
       constraintsListView.Columns[0].Width = Math.Max(0, constraintsListView.Width - 25);
       Caption = "Constrained Item";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ConstrainedItemBaseView"/> with the given 
+    /// <paramref name="constraintItem"/>.
+    /// </summary>
+    /// <param name="constraintItem">The item to represent visually.</param>
     public ConstrainedItemBaseView(IConstrainedItem constraintItem)
       : this() {
       ConstrainedItem = constraintItem;
     }
 
+    /// <summary>
+    /// Removes the event handlers from the underlying <see cref="IConstrainedItem"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       ConstrainedItem.ConstraintAdded -= new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintAdded);
       ConstrainedItem.ConstraintRemoved -= new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintRemoved);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="IConstrainedItem"/>. 
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ConstrainedItem.ConstraintAdded += new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintAdded);
       ConstrainedItem.ConstraintRemoved += new EventHandler<ConstraintEventArgs>(ConstrainedItemBase_ConstraintRemoved);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       constraintDetailsGroupBox.Controls.Clear();

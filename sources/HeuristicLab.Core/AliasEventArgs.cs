@@ -24,12 +24,22 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected alias. 
+  /// </summary>
   public class AliasEventArgs : EventArgs {
     private string myAlias;
+    /// <summary>
+    /// Gets the affected alias.
+    /// </summary>
     public string Alias {
       get { return myAlias; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AliasEventArgs"/> with the given <paramref name="alias"/>.
+    /// </summary>
+    /// <param name="alias">The affected alias.</param>
     public AliasEventArgs(string alias) {
       myAlias = alias;
     }

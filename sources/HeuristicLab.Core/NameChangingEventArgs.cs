@@ -25,16 +25,34 @@ using System.Text;
 using System.ComponentModel;
 
 namespace HeuristicLab.Core {
+  /// <summary>
+  /// Event arguments to be able to specify the affected name.
+  /// </summary>
   public class NameChangingEventArgs : CancelEventArgs {
     private string myName;
+    /// <summary>
+    /// Gets the affected name.
+    /// </summary>
     public string Name {
       get { return myName; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NameChangingEventArgs"/> 
+    /// with the specified <paramref name="name"/>.
+    /// </summary>
+    /// <param name="name">The affected name.</param>
     public NameChangingEventArgs(string name)
       : base() {
       myName = name;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="NameChangingEventArgs"/> 
+    /// with the specified <paramref name="name"/> and a flag whether the event has been canceled.
+    /// </summary>
+    /// <remarks>Calls constructor of base class <see cref="CancelEventArgs"/>.</remarks> 
+    /// <param name="name">The affected name.</param>
+    /// <param name="cancel">Flag, whether the event has been canceled.</param>
     public NameChangingEventArgs(string name, bool cancel)
       : base(cancel) {
       myName = name;
