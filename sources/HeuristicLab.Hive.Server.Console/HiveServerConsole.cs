@@ -33,6 +33,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
   public partial class HiveServerConsole : Form {
 
+    HiveServerConsoleInformation information = null;
 
     public HiveServerConsole() {
       InitializeComponent();
@@ -46,14 +47,20 @@ namespace HeuristicLab.Hive.Server.Console {
     private void btnLogin_Click(object sender, EventArgs e) {
       if (ipIsValid()) {
         this.Visible = false;
-        // Form information = new HiveServerConsoleInformation();
-        // Application.Run(information);
-        this.Visible = true;
+        information = new HiveServerConsoleInformation();
+        information.closeFormEvent += new closeForm(enableForm);
+        information.Show();
       }
     }
 
     private static bool ipIsValid() {
       return true;
+    }
+
+    private void enableForm(bool cf) {
+      if (cf) {
+        this.Visible = true;
+      }
     }
   }
 }
