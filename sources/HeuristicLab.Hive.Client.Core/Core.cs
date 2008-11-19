@@ -60,14 +60,14 @@ namespace HeuristicLab.Hive.Client.Core {
     public void Start() {      
       Heartbeat beat = new Heartbeat();
       beat.Interval = 5000;
-      beat.StartHeartbeat();
+      beat.StartHeartbeat();  
 
       MessageQueue queue = MessageQueue.GetInstance();
       queue.AddMessage(MessageContainer.MessageType.FetchJob);     
       while (true) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
-        Logging.getInstance().Info(this.ToString(), container.Message.ToString()); 
+        Logging.GetInstance().Info(this.ToString(), container.Message.ToString()); 
         DetermineAction(container);
       }
     }
@@ -76,7 +76,7 @@ namespace HeuristicLab.Hive.Client.Core {
       PermissionSet pset;
       if (sandboxed) {
         pset = new PermissionSet(PermissionState.None);
-        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));        
       } else {
         pset = new PermissionSet(PermissionState.Unrestricted);
       }
@@ -107,9 +107,11 @@ namespace HeuristicLab.Hive.Client.Core {
         
         
         case MessageContainer.MessageType.FetchJob:
+          bool sandboxed = true;
+
           IJob job = CreateNewJob();
           
-          AppDomain appDomain = CreateNewAppDomain(false);
+          AppDomain appDomain = CreateNewAppDomain(true);
           appDomains.Add(job.JobId, appDomain);
           
           Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);

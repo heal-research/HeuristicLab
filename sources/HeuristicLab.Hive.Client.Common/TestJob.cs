@@ -32,11 +32,11 @@ namespace HeuristicLab.Hive.Client.Common {
       for (int x = 0; x < 10; x++) {
         for (int y = 0; y < Int32.MaxValue; y++) ;
         if (abort == true) {
-          Logging.getInstance().Info(this.ToString(), "Job Processing aborted");
+          Logging.GetInstance().Info(this.ToString(), "Job Processing aborted");
           Debug.WriteLine("Job Abort Processing");
           break;
         }
-        Logging.getInstance().Info(this.ToString(), "Iteration " + x + " done");
+        Logging.GetInstance().Info(this.ToString(), "Iteration " + x + " done");
         Debug.WriteLine("Iteration " + x + " done");
       }      
       OnJobStopped();

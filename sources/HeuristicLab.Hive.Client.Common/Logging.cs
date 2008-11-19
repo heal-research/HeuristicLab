@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// This is an implementation of the singleton design pattern.
     /// </summary>
     /// <returns>the instance of the logger</returns>
-    public static Logging getInstance() {
+    public static Logging GetInstance() {
       if (instance == null)
         instance = new Logging();
       return instance;
