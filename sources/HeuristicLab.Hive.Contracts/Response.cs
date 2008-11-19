@@ -23,14 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Server {
+namespace HeuristicLab.Hive.Contracts {
   /// <summary>
   /// Server response class
   /// </summary>
+  [DataContract]
   public class Response {
+    [DataMember]
     public bool Success { get; set; }
-
+    [DataMember]
     public string StatusMessage { get; set; } 
   }
 }

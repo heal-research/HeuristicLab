@@ -30,6 +30,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [DataContract]
   public class Job {
     [DataMember]
+    public long JobId { get; set; }
+    [DataMember]
     public State State { get; set; }
     [DataMember]
     public Client Client { get; set; }

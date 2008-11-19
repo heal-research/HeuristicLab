@@ -26,7 +26,7 @@ using System.Text;
 using System.ServiceModel;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Server.Interfaces {
+namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// <summary>
   /// This is the facade for the client communication
   /// </summary>
@@ -34,5 +34,13 @@ namespace HeuristicLab.Hive.Server.Interfaces {
   public interface IClientCommunicator {
     [OperationContract]
     Response Login(Client clientInfo);
+    [OperationContract]
+    ResponseHB SendHeartBeat(HeartBeatData hbData);
+    [OperationContract]
+    ResponseJob PullJob(Guid clientId);
+    [OperationContract]
+    Response SendJobResult(JobResult Result, bool finished);
+    [OperationContract]
+    Response Logout(Guid clientId);
   }
 }

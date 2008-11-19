@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="BusinessObjects\GrantedPermissions.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
+    <Compile Include="BusinessObjects\HeartBeatData.cs" />
     <Compile Include="BusinessObjects\Job.cs" />
     <Compile Include="BusinessObjects\JobResult.cs" />
     <Compile Include="BusinessObjects\Permission.cs" />
@@ -65,10 +66,12 @@
     <Compile Include="BusinessObjects\ClientConfig.cs" />
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
+    <Compile Include="ResponseJob.cs" />
     <Compile Include="HiveContractPlugin.cs" />
     <Compile Include="Interfaces\IClientCommunicator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="ResponseHB.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">

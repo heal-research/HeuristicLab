@@ -28,7 +28,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Net;
 using HeuristicLab.Hive.Contracts;
-using HeuristicLab.Hive.Server.Interfaces;
+using HeuristicLab.Hive.Contracts.Interfaces;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive Server",
