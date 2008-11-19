@@ -66,6 +66,7 @@
     <Compile Include="BusinessObjects\ClientConfig.cs" />
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
+    <Compile Include="MessageContainer.cs" />
     <Compile Include="ResponseJob.cs" />
     <Compile Include="HiveContractPlugin.cs" />
     <Compile Include="Interfaces\IClientCommunicator.cs" />
