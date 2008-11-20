@@ -10,7 +10,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// This is the faced for the management console
   /// </summary>
   [ServiceContract]
-  interface IClientManager {
+  public interface IClientManager {
     [OperationContract]
     List<ClientInfo> GetAllClients();
     [OperationContract]

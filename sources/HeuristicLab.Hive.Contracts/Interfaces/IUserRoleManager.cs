@@ -10,7 +10,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// This is the facade for the User/Role Manager used by the Management Console
   /// </summary>
   [ServiceContract]
-  interface IUserRoleManager {
+  public interface IUserRoleManager {
     [OperationContract]
     List<User> GetAllUsers();
     [OperationContract]

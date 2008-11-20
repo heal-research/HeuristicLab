@@ -10,7 +10,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// This is the facade for the Job Manager used by the Management Console
   /// </summary>
   [ServiceContract]
-  interface IJobManager {
+  public interface IJobManager {
     [OperationContract]
     List<Job> GetAllJobs();
   }
