@@ -63,7 +63,7 @@ namespace HeuristicLab.Hive.Client.Core {
       Heartbeat beat = new Heartbeat { Interval = 5000 };
       beat.StartHeartbeat();
 
-      BO.Client clientInfo = new BO.Client { ClientId = Guid.NewGuid() };
+      BO.ClientInfo clientInfo = new BO.ClientInfo { ClientId = Guid.NewGuid() };
 
       ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);

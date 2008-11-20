@@ -11,7 +11,7 @@ namespace HeuristicLab.Hive.Server.Core {
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
-    List<Client> clients;
+    List<ClientInfo> clients;
     List<long> jobs;
     int nrOfJobs = 10;
 
@@ -24,9 +24,9 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IClientCommunicator Members
 
-    public Response Login(Client clientInfo) {
+    public Response Login(ClientInfo clientInfo) {
       if (clients == null)
-        clients = new List<Client>();
+        clients = new List<ClientInfo>();
 
       clients.Add(clientInfo);
 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public Response Logout(Guid clientId) {
       bool clientRemoved = false;
-      foreach (Client client in clients) {
+      foreach (ClientInfo client in clients) {
         if (client.ClientId.Equals(clientId)) {
           clients.Remove(client);
           clientRemoved = true;

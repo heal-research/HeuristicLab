@@ -33,7 +33,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IClientCommunicator {
     [OperationContract]
-    Response Login(Client clientInfo);
+    Response Login(ClientInfo clientInfo);
     [OperationContract]
     ResponseHB SendHeartBeat(HeartBeatData hbData);
     [OperationContract]

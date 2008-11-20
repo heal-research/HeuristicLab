@@ -9,10 +9,10 @@ namespace HeuristicLab.Hive.Client.Communication {
   public interface IClientCommunicator {
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IClientCommunicator/Login", ReplyAction = "http://tempuri.org/IClientCommunicator/LoginResponse")]
-    HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo);
+    HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo);
 
     [System.ServiceModel.OperationContractAttribute(AsyncPattern = true, Action = "http://tempuri.org/IClientCommunicator/Login", ReplyAction = "http://tempuri.org/IClientCommunicator/LoginResponse")]
-    System.IAsyncResult BeginLogin(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo, System.AsyncCallback callback, object asyncState);
+    System.IAsyncResult BeginLogin(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo, System.AsyncCallback callback, object asyncState);
 
     HeuristicLab.Hive.Contracts.Response EndLogin(System.IAsyncResult result);
 
@@ -211,12 +211,12 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public event System.EventHandler<LogoutCompletedEventArgs> LogoutCompleted;
 
-    public HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo) {
+    public HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo) {
       return base.Channel.Login(clientInfo);
     }
 
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    public System.IAsyncResult BeginLogin(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo, System.AsyncCallback callback, object asyncState) {
+    public System.IAsyncResult BeginLogin(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo, System.AsyncCallback callback, object asyncState) {
       return base.Channel.BeginLogin(clientInfo, callback, asyncState);
     }
 
@@ -226,7 +226,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     private System.IAsyncResult OnBeginLogin(object[] inValues, System.AsyncCallback callback, object asyncState) {
-      HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo = ((HeuristicLab.Hive.Contracts.BusinessObjects.Client)(inValues[0]));
+      HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo = ((HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo)(inValues[0]));
       return this.BeginLogin(clientInfo, callback, asyncState);
     }
 
@@ -243,11 +243,11 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
-    public void LoginAsync(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo) {
+    public void LoginAsync(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo) {
       this.LoginAsync(clientInfo, null);
     }
 
-    public void LoginAsync(HeuristicLab.Hive.Contracts.BusinessObjects.Client clientInfo, object userState) {
+    public void LoginAsync(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo, object userState) {
       if ((this.onBeginLoginDelegate == null)) {
         this.onBeginLoginDelegate = new BeginOperationDelegate(this.OnBeginLogin);
       }

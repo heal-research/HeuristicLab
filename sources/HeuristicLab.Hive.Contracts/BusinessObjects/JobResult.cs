@@ -34,7 +34,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public String Result { get; set; } // TODO DataStructure for Result needs to be defined
     [DataMember]
-    public Client Client { get; set; }
+    public ClientInfo Client { get; set; }
 
   }
 }

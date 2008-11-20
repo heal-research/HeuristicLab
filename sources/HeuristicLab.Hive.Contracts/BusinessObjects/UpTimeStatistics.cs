@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [DataContract]
   public class UpTimeStatistics {
     [DataMember]
-    public Client Client { get; set; }
+    public ClientInfo Client { get; set; }
     [DataMember]
     public DateTime Login { get; set; }
     [DataMember]

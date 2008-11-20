@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   public enum State { idle, calculating };
 
   [DataContract]
-  public class Client : Resource {
+  public class ClientInfo : Resource {
     [DataMember]
     public Guid ClientId { get; set; }
     [DataMember]
