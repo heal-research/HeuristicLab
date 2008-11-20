@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.Common {
 

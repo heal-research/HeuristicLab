@@ -28,6 +28,7 @@ using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Client.Communication;
 using System.Diagnostics;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 //using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -46,6 +47,8 @@ namespace HeuristicLab.Hive.Client.Core {
       Interval = interval;      
     }
 
+    private ClientCommunicatorClient clientCommunicator;
+
     /// <summary>
     /// Starts the Heartbeat signal.
     /// </summary>
@@ -54,7 +57,9 @@ namespace HeuristicLab.Hive.Client.Core {
       heartbeatTimer.Interval = this.Interval;
       heartbeatTimer.AutoReset = true;
       heartbeatTimer.Elapsed += new ElapsedEventHandler(heartbeatTimer_Elapsed);
-      heartbeatTimer.Start();               
+      clientCommunicator = ServiceLocator.GetClientCommunicator();
+      clientCommunicator.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(ClientCommunicator_SendHeartBeatCompleted);
+      heartbeatTimer.Start();
     }
 
     /// <summary>
@@ -64,22 +69,19 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");
-      ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
       HeartBeatData heartBeatData = new HeartBeatData { ClientId = Guid.NewGuid(), 
                                                               freeCores = 4, 
                                                               freeMemory = 1000, 
                                                               jobProgress = 1};
-
-      clientCommunicator.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(ClientCommunicator_SendHeartBeatCompleted);
       clientCommunicator.SendHeartBeatAsync(heartBeatData);
-
-      //MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.FetchJob);
-
     }
 
     void ClientCommunicator_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
-      System.Diagnostics.Debug.WriteLine("Heartbeat received");
-    }
+      System.Diagnostics.Debug.WriteLine("Heartbeat received! " + e.Result.ActionRequest.ToString());
+      foreach (MessageContainer mc in e.Result.ActionRequest) {
+        MessageQueue.GetInstance().AddMessage(mc);
 
+      }
+    }
   }
 }

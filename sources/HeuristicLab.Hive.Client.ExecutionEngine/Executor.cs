@@ -27,6 +27,7 @@ using HeuristicLab.Hive.Client.Common;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.ExecutionEngine {
   public class Executor: MarshalByRefObject {

@@ -32,7 +32,8 @@ using System.Security.Permissions;
 using System.Security.Policy;
 using System.Security;
 using HeuristicLab.Hive.Client.Communication;
-using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -63,7 +64,7 @@ namespace HeuristicLab.Hive.Client.Core {
       Heartbeat beat = new Heartbeat { Interval = 5000 };
       beat.StartHeartbeat();
 
-      BO.ClientInfo clientInfo = new BO.ClientInfo { ClientId = Guid.NewGuid() };
+      ClientInfo clientInfo = new ClientInfo { ClientId = Guid.NewGuid() };
 
       ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
