@@ -25,6 +25,10 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using HeuristicLab.Hive.Client.Common;
+using HeuristicLab.Hive.Client.Communication;
+using System.Diagnostics;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
+//using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
@@ -60,7 +64,21 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");
+      ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
+      HeartBeatData heartBeatData = new HeartBeatData { ClientId = Guid.NewGuid(), 
+                                                              freeCores = 4, 
+                                                              freeMemory = 1000, 
+                                                              jobProgress = 1};
+
+      clientCommunicator.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(ClientCommunicator_SendHeartBeatCompleted);
+      clientCommunicator.SendHeartBeatAsync(heartBeatData);
+
       //MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.FetchJob);
+
+    }
+
+    void ClientCommunicator_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
+      System.Diagnostics.Debug.WriteLine("Heartbeat received");
     }
 
   }

@@ -127,6 +127,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Settings", "He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.ExecutionEngine", "HeuristicLab.Hive.Client.ExecutionEngine\HeuristicLab.Hive.Client.ExecutionEngine.csproj", "{1605256A-1CB3-44AB-AAFF-577093EE5789}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Communication", "HeuristicLab.Hive.Client.Communication\HeuristicLab.Hive.Client.Communication.csproj", "{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.Console", "HeuristicLab.Hive.Server.Console\HeuristicLab.Hive.Server.Console.csproj", "{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}"
 EndProject
 Global
@@ -582,12 +584,21 @@ Global
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Release|x86.ActiveCfg = Release|Any CPU
+<<<<<<< .mine
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}.Release|x86.ActiveCfg = Release|Any CPU
+=======
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Release|Any CPU.Build.0 = Release|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Release|x86.ActiveCfg = Release|Any CPU
+>>>>>>> .r781
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

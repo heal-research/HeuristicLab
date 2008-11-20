@@ -69,4 +69,6 @@ copy %1\HeuristicLab.Hive.Client.Core\%2\HeuristicLab.Hive.Client.Core-3.2.dll .
 copy %1\HeuristicLab.Hive.Client.Common\%2\HeuristicLab.Hive.Client.Common-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Client.Console\%2\HeuristicLab.Hive.Client.Console-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Client.ExecutionEngine\%2\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll .\plugins
+copy %1\HeuristicLab.Hive.Client.Communication\%2\HeuristicLab.Hive.Client.Communication-3.2.dll .\plugins
+copy %1\HeuristicLab.Hive.Client.ExecutionEngine\%2\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll .\plugins
 copy %1\HeuristicLab.Hive.Server.Console\%2\HeuristicLab.Hive.Server.Console-3.2.dll .\plugins

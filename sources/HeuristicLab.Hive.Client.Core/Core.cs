@@ -31,6 +31,8 @@ using System.Diagnostics;
 using System.Security.Permissions;
 using System.Security.Policy;
 using System.Security;
+using HeuristicLab.Hive.Client.Communication;
+using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -57,26 +59,40 @@ namespace HeuristicLab.Hive.Client.Core {
       return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
     }
 
-    public void Start() {      
-      Heartbeat beat = new Heartbeat();
-      beat.Interval = 5000;
-      beat.StartHeartbeat();  
+    public void Start() {
+      Heartbeat beat = new Heartbeat { Interval = 5000 };
+      beat.StartHeartbeat();
+
+      BO.Client clientInfo = new BO.Client { ClientId = Guid.NewGuid() };
+
+      ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
+      clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
+      clientCommunicator.LoginAsync(clientInfo);
 
       MessageQueue queue = MessageQueue.GetInstance();
-      queue.AddMessage(MessageContainer.MessageType.FetchJob);     
+      queue.AddMessage(MessageContainer.MessageType.FetchJob);
       while (true) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
-        Logging.GetInstance().Info(this.ToString(), container.Message.ToString()); 
+        Logging.GetInstance().Info(this.ToString(), container.Message.ToString());
         DetermineAction(container);
       }
+    }
+
+    void ClientCommunicator_LoginCompleted(object sender, LoginCompletedEventArgs e) {     
+      if (e.Result.Success) {
+        Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
+        Status.LoginTime = DateTime.Now;
+        Status.LoggedIn = true;
+      } else
+        Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
     }
 
     private AppDomain CreateNewAppDomain(bool sandboxed) {
       PermissionSet pset;
       if (sandboxed) {
         pset = new PermissionSet(PermissionState.None);
-        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));        
+        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
       } else {
         pset = new PermissionSet(PermissionState.Unrestricted);
       }
@@ -84,7 +100,7 @@ namespace HeuristicLab.Hive.Client.Core {
       setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
       //Temp Fix!
       setup.PrivateBinPath = "plugins";
-      return System.AppDomain.CreateDomain("appD", AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly())); 
+      return System.AppDomain.CreateDomain("appD", AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
 
     }
 
@@ -96,24 +112,24 @@ namespace HeuristicLab.Hive.Client.Core {
         case MessageContainer.MessageType.JobAborted:
           Debug.WriteLine("-- Job Aborted Message received");
           break;
-        
-        
+
+
         case MessageContainer.MessageType.RequestSnapshot:
           engines[container.JobId].RequestSnapshot();
           break;
         case MessageContainer.MessageType.SnapshotReady:
           engines[container.JobId].GetSnapshot();
           break;
-        
-        
+
+
         case MessageContainer.MessageType.FetchJob:
           bool sandboxed = true;
 
           IJob job = CreateNewJob();
-          
-          AppDomain appDomain = CreateNewAppDomain(true);
+
+          AppDomain appDomain = CreateNewAppDomain(false);
           appDomains.Add(job.JobId, appDomain);
-          
+
           Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
           engine.Job = job;
           engine.JobId = job.JobId;
@@ -131,7 +147,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
       }
     }
-    
+
     /// <summary>
     /// Simulator Class for new Jobs. will be replaced with fetching Jobs from the Interface
     /// </summary>
