@@ -77,11 +77,8 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void ClientCommunicator_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
-      System.Diagnostics.Debug.WriteLine("Heartbeat received! " + e.Result.ActionRequest.ToString());
-      foreach (MessageContainer mc in e.Result.ActionRequest) {
-        MessageQueue.GetInstance().AddMessage(mc);
-
-      }
+      System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
+      e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
     }
   }
 }

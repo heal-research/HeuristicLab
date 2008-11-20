@@ -60,18 +60,19 @@ namespace HeuristicLab.Hive.Client.Core {
       return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
     }
 
+    private ClientCommunicatorClient clientCommunicator;
+
     public void Start() {
       Heartbeat beat = new Heartbeat { Interval = 5000 };
       beat.StartHeartbeat();
 
       ClientInfo clientInfo = new ClientInfo { ClientId = Guid.NewGuid() };
 
-      ClientCommunicatorClient clientCommunicator = ServiceLocator.GetClientCommunicator();
+      clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.LoginAsync(clientInfo);
 
       MessageQueue queue = MessageQueue.GetInstance();
-      queue.AddMessage(MessageContainer.MessageType.FetchJob);
       while (true) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
@@ -80,7 +81,7 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
-    void ClientCommunicator_LoginCompleted(object sender, LoginCompletedEventArgs e) {     
+    void ClientCommunicator_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
         Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
         Status.LoginTime = DateTime.Now;
@@ -114,7 +115,6 @@ namespace HeuristicLab.Hive.Client.Core {
           Debug.WriteLine("-- Job Aborted Message received");
           break;
 
-
         case MessageContainer.MessageType.RequestSnapshot:
           engines[container.JobId].RequestSnapshot();
           break;
@@ -124,19 +124,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
 
         case MessageContainer.MessageType.FetchJob:
-          bool sandboxed = true;
-
-          IJob job = CreateNewJob();
-
-          AppDomain appDomain = CreateNewAppDomain(false);
-          appDomains.Add(job.JobId, appDomain);
-
-          Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-          engine.Job = job;
-          engine.JobId = job.JobId;
-          engine.Queue = MessageQueue.GetInstance();
-          engine.Start();
-          engines.Add(engine.JobId, engine);
+          clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
+          clientCommunicator.PullJobAsync(Guid.NewGuid());
           break;
 
         case MessageContainer.MessageType.FinishedJob:
@@ -144,9 +133,30 @@ namespace HeuristicLab.Hive.Client.Core {
           AppDomain.Unload(appDomains[container.JobId]);
           appDomains.Remove(container.JobId);
           engines.Remove(container.JobId);
+          Status.CurrentJobs--;
+          Debug.WriteLine("Decrement CurrentJobs to:"+Status.CurrentJobs.ToString());
           break;
-
       }
+    }
+
+    void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
+      bool sandboxed = false;
+
+      IJob job = new TestJob { JobId = e.Result.JobId };
+
+      AppDomain appDomain = CreateNewAppDomain(sandboxed);
+      appDomains.Add(job.JobId, appDomain);
+
+      Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
+      engine.Job = job;
+      engine.JobId = job.JobId;
+      engine.Queue = MessageQueue.GetInstance();
+      engine.Start();
+      engines.Add(engine.JobId, engine);
+
+      Status.CurrentJobs++;
+
+      Debug.WriteLine("Increment CurrentJobs to:"+Status.CurrentJobs.ToString());
     }
 
     /// <summary>
