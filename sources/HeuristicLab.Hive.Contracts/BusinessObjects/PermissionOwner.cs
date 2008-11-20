@@ -29,6 +29,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
   public class PermissionOwner {
-
+    [DataMember]
+    public long PermissionOwnerId { get; set; }
+    
   }
 }

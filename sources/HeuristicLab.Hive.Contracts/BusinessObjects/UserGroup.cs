@@ -29,5 +29,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
   public class UserGroup {
+    [DataMember]
+    public long UserGroupId { get; set; }
   }
 }

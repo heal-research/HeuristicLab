@@ -29,5 +29,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
   public class Resource {
+    [DataMember]
+    public long ResourceId { get; set; }
   }
 }

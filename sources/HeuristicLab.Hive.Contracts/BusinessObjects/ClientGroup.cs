@@ -30,6 +30,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [DataContract]
   public class ClientGroup : Resource {
     [DataMember]
+    public long ClientGroupId { get; set; }
+    [DataMember]
     public String Name { get; set; }
   }
 }

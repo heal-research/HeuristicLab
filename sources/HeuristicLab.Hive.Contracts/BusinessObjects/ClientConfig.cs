@@ -30,6 +30,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [DataContract]
   public class ClientConfig {
     [DataMember]
+    public long ClientConfigId { get; set; }
+    [DataMember]
     public String UpDownTimeCalendar { get; set; } // TODO define DataStructure
     [DataMember]
     public int HeartBeatIntervall { get; set; }
