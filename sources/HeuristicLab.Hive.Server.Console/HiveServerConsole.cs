@@ -27,6 +27,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -36,7 +38,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public HiveServerConsole() {
       InitializeComponent();
-      tbIp.Text = "010.020.053.006";
+      tbIp.Text = "10.20.53.1";
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -51,6 +53,18 @@ namespace HeuristicLab.Hive.Server.Console {
     /// <param name="e"></param>
     private void btnLogin_Click(object sender, EventArgs e) {
       if (ipIsValid()) {
+        string newIp = tbIp.Text;
+        newIp = newIp.Replace(" ", "");
+
+        ServiceLocator.Address = newIp;
+        ServiceLocator.Port = this.tbPort.Text;
+
+        IClientManager clientManager =
+          ServiceLocator.GetClientManager();
+
+        List<ClientInfo> clients = 
+          clientManager.GetAllClients();
+
         this.Visible = false;
         information = new HiveServerManagementConsole();
         information.closeFormEvent += new closeForm(enableForm);
@@ -60,6 +74,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
 
     private static bool ipIsValid() {
+      
       // TODO IP-Adress validation
       return true;
     }
