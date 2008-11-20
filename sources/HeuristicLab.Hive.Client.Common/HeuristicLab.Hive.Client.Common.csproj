@@ -71,6 +71,7 @@
     <Compile Include="MessageContainer.cs" />
     <Compile Include="MessageQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Status.cs" />
     <Compile Include="TestJob.cs" />
   </ItemGroup>
   <ItemGroup>
