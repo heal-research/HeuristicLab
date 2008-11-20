@@ -10,10 +10,12 @@ using System.Windows.Forms;
 namespace HeuristicLab.Hive.Server
 {
     public partial class MainForm : Form {
-        public MainForm(Uri address) {
+        public MainForm(Uri address1, Uri address2) {
           InitializeComponent();
-          if(address != null)
-            this.lblAddress.Text = address.ToString();
+          if(address1 != null)
+            this.lblAddress1.Text = address1.ToString();
+          if (address2 != null)
+            this.lblAddress2.Text = address2.ToString();
         }
     }
 }

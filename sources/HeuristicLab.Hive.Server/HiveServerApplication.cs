@@ -35,26 +35,36 @@ namespace HeuristicLab.Hive.Server {
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
   class HiveServerApplication : ApplicationBase {
-    const int port = 9000;
+    const int port = 
+      9000;
 
-    public override void Run() {
-      IPHostEntry IPHost = Dns.GetHostEntry(Dns.GetHostName());
-      string externalIP = IPHost.AddressList[0].ToString();
-
-      DiscoveryService discService =
+    DiscoveryService discService =
         new DiscoveryService();
-      IClientCommunicator[] instances = 
+
+    private bool AddMexEndpoint(ServiceHost serviceHost) {
+      if(serviceHost != null) {
+        ServiceMetadataBehavior behavior =
+            new ServiceMetadataBehavior();
+          serviceHost.Description.Behaviors.Add(behavior);
+
+          return serviceHost.AddServiceEndpoint(
+            typeof(IMetadataExchange),
+            MetadataExchangeBindings.CreateMexTcpBinding(),
+            "mex") != null;
+      } else
+        return false;
+    }
+
+    private ServiceHost StartClientCommunicator(Uri uriTcp) {
+      IClientCommunicator[] clientCommunicatorInstances =
         discService.GetInstances<IClientCommunicator>();
 
-      if (instances.Length > 0) {
-        Uri uriTcp =
-          new Uri("net.tcp://" + externalIP + ":" + port +"/HiveServer/"); 
-
+      if (clientCommunicatorInstances.Length > 0) {
         ServiceHost serviceHost =
-                new ServiceHost(instances[0].GetType(),
+                new ServiceHost(clientCommunicatorInstances[0].GetType(),
                   uriTcp);
 
-        System.ServiceModel.Channels.Binding binding = 
+        System.ServiceModel.Channels.Binding binding =
           new NetTcpBinding();
 
         serviceHost.AddServiceEndpoint(
@@ -62,24 +72,74 @@ namespace HeuristicLab.Hive.Server {
               binding,
               "ClientCommunicator");
 
-        ServiceMetadataBehavior behavior =
-          new ServiceMetadataBehavior();
-        serviceHost.Description.Behaviors.Add(behavior);
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IMetadataExchange),
-          MetadataExchangeBindings.CreateMexTcpBinding(),
-          "mex");
+        AddMexEndpoint(serviceHost);
 
         serviceHost.Open();
 
-        Form mainForm = new MainForm(serviceHost.BaseAddresses[0]);
-        Application.Run(mainForm);
+        return serviceHost;
+      } else
+        return null;
+    }
 
-        serviceHost.Close();
-      } else {
-        MessageBox.Show("Error - no ClientCommunicator instance");
-      }
+    private ServiceHost StartServerConsoleFacade(Uri uriTcp) {
+      IServerConsoleFacade[] serverConsoleInstances =
+        discService.GetInstances<IServerConsoleFacade>();
+
+      if (serverConsoleInstances.Length > 0) {
+        ServiceHost serviceHost =
+                new ServiceHost(serverConsoleInstances[0].GetType(),
+                  uriTcp);
+
+        System.ServiceModel.Channels.Binding binding =
+          new NetTcpBinding();
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IClientManager),
+              binding,
+              "ClientManager");
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IJobManager),
+              binding,
+              "JobManager");
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IUserRoleManager),
+              binding,
+              "UserRoleManager");
+
+        AddMexEndpoint(serviceHost);
+
+        serviceHost.Open();
+
+        return serviceHost;
+      } else
+        return null;
+    }
+
+    public override void Run() {
+      string externalIP =
+        Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
+
+      Uri uriTcp =
+          new Uri("net.tcp://" + externalIP + ":" + port + "/HiveServer/");
+
+      ServiceHost clientCommunicator = 
+        StartClientCommunicator(uriTcp);
+
+      uriTcp =
+        new Uri("net.tcp://" + externalIP + ":" + port + "/HiveServerConsole/");
+
+      ServiceHost serverConsoleFacade =
+        StartServerConsoleFacade(uriTcp);
+
+      Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
+        serverConsoleFacade.BaseAddresses[0]);
+
+      Application.Run(mainForm);
+
+      clientCommunicator.Close();
+      serverConsoleFacade.Close();
     }
   }
 }

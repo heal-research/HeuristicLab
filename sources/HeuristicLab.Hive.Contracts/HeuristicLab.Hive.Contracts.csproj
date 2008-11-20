@@ -68,6 +68,7 @@
     <Compile Include="BusinessObjects\UserGroup.cs" />
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IJobManager.cs" />
+    <Compile Include="Interfaces\IServerConsoleFacade.cs" />
     <Compile Include="Interfaces\IUserRoleManager.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="ResponseJob.cs" />

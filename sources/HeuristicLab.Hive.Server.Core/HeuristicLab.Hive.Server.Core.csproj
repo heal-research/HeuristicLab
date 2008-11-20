@@ -48,8 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientCommunicator.cs" />
+    <Compile Include="ClientManager.cs" />
     <Compile Include="HiveServerCorePlugin.cs" />
+    <Compile Include="JobManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerConsoleFacade.cs" />
+    <Compile Include="UserRoleManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
