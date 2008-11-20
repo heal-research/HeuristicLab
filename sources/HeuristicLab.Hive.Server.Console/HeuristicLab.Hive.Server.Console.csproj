@@ -59,11 +59,11 @@
       <DependentUpon>HiveServerConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="HiveServerConsoleApplication.cs" />
-    <Compile Include="HiveServerConsoleInformation.cs">
+    <Compile Include="HiveServerManagementConsole.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HiveServerConsoleInformation.Designer.cs">
-      <DependentUpon>HiveServerConsoleInformation.cs</DependentUpon>
+    <Compile Include="HiveServerManagementConsole.Designer.cs">
+      <DependentUpon>HiveServerManagementConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="HiveServerConsolePlugin.cs" />
     <Compile Include="IPAdressTextBox.cs">
@@ -73,8 +73,8 @@
     <EmbeddedResource Include="HiveServerConsole.resx">
       <DependentUpon>HiveServerConsole.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HiveServerConsoleInformation.resx">
-      <DependentUpon>HiveServerConsoleInformation.cs</DependentUpon>
+    <EmbeddedResource Include="HiveServerManagementConsole.resx">
+      <DependentUpon>HiveServerManagementConsole.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

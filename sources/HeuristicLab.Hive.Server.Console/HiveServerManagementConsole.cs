@@ -32,19 +32,36 @@ namespace HeuristicLab.Hive.Server.Console {
 
   public delegate void closeForm(bool cf);
 
-  public partial class HiveServerConsoleInformation : Form {
+  public partial class HiveServerManagementConsole : Form {
 
     public event closeForm closeFormEvent;
 
-    public HiveServerConsoleInformation() {
+    public HiveServerManagementConsole() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Send event to Login-GUI when closing
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void close_Click(object sender, EventArgs e) {
       if (closeFormEvent != null) {
         closeFormEvent(true);
       }
       this.Close();
+    }
+
+    /// <summary>
+    /// Send evnt to Login-GUI when closing
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void HiveServerConsoleInformation_FormClosing(object sender, FormClosingEventArgs e) {
+      if (closeFormEvent != null) {
+        closeFormEvent(true);
+      }
+
     }
   }
 }

@@ -27,13 +27,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Threading;
 
 namespace HeuristicLab.Hive.Server.Console {
 
   public partial class HiveServerConsole : Form {
 
-    HiveServerConsoleInformation information = null;
+    HiveServerManagementConsole information = null;
 
     public HiveServerConsole() {
       InitializeComponent();
@@ -44,16 +43,24 @@ namespace HeuristicLab.Hive.Server.Console {
       this.Close();
     }
 
+    /// <summary>
+    /// When login button is clicked, the ManagementConsole
+    /// will be opened
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void btnLogin_Click(object sender, EventArgs e) {
       if (ipIsValid()) {
         this.Visible = false;
-        information = new HiveServerConsoleInformation();
+        information = new HiveServerManagementConsole();
         information.closeFormEvent += new closeForm(enableForm);
         information.Show();
       }
     }
 
+
     private static bool ipIsValid() {
+      // TODO IP-Adress validation
       return true;
     }
 
