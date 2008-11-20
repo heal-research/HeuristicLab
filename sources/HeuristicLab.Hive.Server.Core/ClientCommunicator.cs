@@ -42,6 +42,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
       response.Success = true;
       response.StatusMessage = "HeartBeat received";
+      response.ActionRequest = new List<MessageContainer>();
       if (jobs.Count > 0) 
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
