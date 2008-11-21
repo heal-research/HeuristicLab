@@ -27,15 +27,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Operator to check whether an item is greater than another one.
+  /// </summary>
   public class GreaterThanComparator : ComparatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="GreaterThanComparator"/>.
+    /// </summary>
     public GreaterThanComparator()
       : base() {
     }
 
+    /// <summary>
+    /// Checks whether the <paramref name="left"/> item is greater than the <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left">The left side of the comparison.</param>
+    /// <param name="right">The right side of the comparison.</param>
+    /// <returns><c>true</c> if the <paramref name="left"/> item is greater than the 
+    /// <paramref name="right"/>, <c>false</c> otherwise.</returns>
     protected override bool Compare(IComparable left, IItem right) {
       return left.CompareTo(right) > 0;
     }

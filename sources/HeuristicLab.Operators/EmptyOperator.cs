@@ -25,15 +25,27 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Placeholder and also used for testing; Does nothing.
+  /// </summary>
   public class EmptyOperator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "An empty operator just does nothing. Useful for testing and as a place holder for sub-operators of SequentialSubScopesProcessor and ParallelSubScopesProcessor."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EmptyOperator"/>.
+    /// </summary>
     public EmptyOperator()
       : base() {
     }
 
+    /// <summary>
+    /// Does nothing.
+    /// </summary>
+    /// <param name="scope">The scope to apply the operator on.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       return null;
     }

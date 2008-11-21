@@ -26,20 +26,34 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Class to inject local variables into the scope.
+  /// </summary>
   public class VariableInjector : OperatorBase {
     private Dictionary<IVariable, IVariableInfo> variableVariableInfoTable;
     private Dictionary<IVariableInfo, IVariable> variableInfoVariableTable;
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableInjector"/>.
+    /// </summary>
     public VariableInjector()
       : base() {
       variableVariableInfoTable = new Dictionary<IVariable, IVariableInfo>();
       variableInfoVariableTable = new Dictionary<IVariableInfo, IVariable>();
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Deep clone performed with <see cref="Auxiliary.Clone"/> of helper class
+    /// <see cref="Auxiliary"/>.</remarks>
+    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="VariableInjector"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       VariableInjector clone = new VariableInjector();
       clonedObjects.Add(Guid, clone);
@@ -49,16 +63,34 @@ namespace HeuristicLab.Operators {
       return clone;
     }
 
+    /// <summary>
+    /// Adds the specified <paramref name="variable"/> to the current instance to get injected.
+    /// </summary>
+    /// <param name="variable">The variable to add.</param>
+    /// <remarks>Calls private method <see cref="CreateVariableInfo"/> and <see cref="OperatorBase.AddVariable"/>
+    /// of base class <see cref="OperatorBase"/>.</remarks>
     public override void AddVariable(IVariable variable) {
       base.AddVariable(variable);
       CreateVariableInfo(variable);
     }
 
+    /// <summary>
+    /// Removes a variable with the specified <paramref name="name"/> from the current injector.
+    /// </summary>
+    /// <remarks>Calls private method <see cref="DeleteVariableInfo"/> and <see cref="OperatorBase.RemoveVariable"/>
+    /// of base class <see cref="OperatorBase"/>.</remarks>
+    /// <param name="name">The name of the </param>
     public override void RemoveVariable(string name) {
       DeleteVariableInfo(name);
       base.RemoveVariable(name);
     }
 
+    /// <summary>
+    /// Adds the specified variables to the given <paramref name="scope"/> (and removes them first,
+    /// if they already exist in the current scope).
+    /// </summary>
+    /// <param name="scope">The scope where to inject the variables.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       foreach (IVariable variable in Variables) {
         if (scope.GetVariable(variable.Name) != null)
@@ -68,6 +100,10 @@ namespace HeuristicLab.Operators {
       return null;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="VariableInjectorView"/> to display the current instance.
+    /// </summary>
+    /// <returns>The created view as <see cref="VariableInjectorView"/>.</returns>
     public override IView CreateView() {
       return new VariableInjectorView(this);
     }
@@ -107,6 +143,15 @@ namespace HeuristicLab.Operators {
     #endregion
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// <note type="caution"> Variable infos are not persisted!</note>
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBase.GetXmlNode"/> of base class <see cref="OperatorBase"/>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       // variable infos should not be persisted

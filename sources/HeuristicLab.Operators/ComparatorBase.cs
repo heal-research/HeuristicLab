@@ -26,13 +26,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Base class for operators which perform comparisons between two items.
+  /// </summary>
   public abstract class ComparatorBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ComparatorBase"/> with three 
+    /// variable infos (<c>LeftSide</c>, <c>RightSide</c> and <c>Result</c>).
+    /// </summary>
     protected ComparatorBase() {
       AddVariableInfo(new VariableInfo("LeftSide", "Variable on the left side of the comparison", typeof(IItem), VariableKind.In));
       AddVariableInfo(new VariableInfo("RightSide", "Variable on the right side of the comparison", typeof(IItem), VariableKind.In));
       AddVariableInfo(new VariableInfo("Result", "Result of the comparison", typeof(BoolData), VariableKind.Out | VariableKind.New));
     }
 
+    /// <summary>
+    /// Compares two items with each other and injects the <c>Result</c> variable - if it is no local one - into
+    /// the specified <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Compare"/>.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown when left side of the comparison does not
+    /// implement <see cref="IComparable"/>.</exception>
+    /// <param name="scope">The scope where to apply the compare operation.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       BoolData result = GetVariableValue<BoolData>("Result", scope, false, false);
       if (result == null) {
@@ -51,6 +67,12 @@ namespace HeuristicLab.Operators {
       return null;
     }
 
+    /// <summary>
+    /// Compares two variables with each other.
+    /// </summary>
+    /// <param name="left">The variable on the left side of the comparison.</param>
+    /// <param name="right">The variable on the right side of the comparison.</param>
+    /// <returns><c>true</c> if the comparison query was successful, <c>false</c> otherwise.</returns>
     protected abstract bool Compare(IComparable left, IItem right);
   }
 }

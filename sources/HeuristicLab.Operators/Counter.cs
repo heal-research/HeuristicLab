@@ -26,16 +26,30 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Class to increment an int variable by 1.
+  /// </summary>
   public class Counter : OperatorBase {
+    /// <summary>
+    /// Gets the description of the current instance.
+    /// </summary>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="Counter"/> with one variable info (<c>Value</c>).
+    /// </summary>
     public Counter()
       : base() {
       AddVariableInfo(new VariableInfo("Value", "Counter value", typeof(IntData), VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Increments an int value of the specified <paramref name="scope"/> by one.
+    /// </summary>
+    /// <param name="scope">The scope whose variable should be incremented.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IntData value = GetVariableValue<IntData>("Value", scope, true);
       value.Data++;

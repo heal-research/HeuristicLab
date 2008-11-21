@@ -26,11 +26,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Performs the same operator on all existing sub scopes of a given scope, 
+  /// must be executed sequentially.
+  /// </summary>
   public class UniformSequentialSubScopesProcessor : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Applies one operator on all the sub scopes of the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope on whose sub scopes the operator is applied.</param>
+    /// <returns>A new <see cref="CompositeOperation"/> with one operator and all sub scopes.</returns>
     public override IOperation Apply(IScope scope) {
       CompositeOperation next = new CompositeOperation();
       for (int i = 0; i < scope.SubScopes.Count; i++)

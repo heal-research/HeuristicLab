@@ -68,7 +68,7 @@ namespace HeuristicLab.Core {
       myValue = null;
     }
     /// <summary>
-    /// Initializes a new instance of <see cref="Variable"/> with the specififed <paramref name="name"/>
+    /// Initializes a new instance of <see cref="Variable"/> with the specified <paramref name="name"/>
     /// and the specified <paramref name="value"/>.
     /// </summary>
     /// <param name="name">The name of the current instance.</param>

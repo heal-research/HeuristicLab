@@ -26,11 +26,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Performs <c>n</c> operators on <c>n</c> subscopes, operations can be executed in parallel.
+  /// </summary>
   public class ParallelSubScopesProcessor : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Applies <c>n</c> operators on all the <c>n</c> sub scopes of the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope on whose sub scopes the operators are applied.</param>
+    /// <returns>A new <see cref="CompositeOperation"/> with the <c>i</c>th operator applied
+    /// on the <c>i</c>th sub scope, the <c>ExecuteInParallel</c> flag set to <c>true</c>.</returns>
     public override IOperation Apply(IScope scope) {
       CompositeOperation next = new CompositeOperation();
       next.ExecuteInParallel = true;

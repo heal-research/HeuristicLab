@@ -29,16 +29,32 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Visual representation of <see cref="VariableInjector"/>.
+  /// </summary>
   public partial class VariableInjectorView : OperatorBaseView {
+    /// <summary>
+    /// Gets or sets the <see cref="HeuristicLab.Operators.VariableInjector"/> to display.
+    /// </summary>
+    /// <remarks>Uses property <see cref="OperatorBaseView.Operator"/> of base class
+    /// <see cref="OperatorBaseView"/>. No own data storage present.</remarks>
     public VariableInjector VariableInjector {
-      get { return (VariableInjector)Item; }
+      get { return (VariableInjector)Operator; }
       set { base.Operator = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableInjectorView"/>.
+    /// </summary>
     public VariableInjectorView() {
       InitializeComponent();
       tabControl.SelectedTab = variablesTabPage;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableInjectorView"/> with the specified 
+    /// <paramref name="variableInjector"/>.
+    /// </summary>
+    /// <param name="variableInjector">The variable injector to display.</param>
     public VariableInjectorView(VariableInjector variableInjector)
       : this() {
       VariableInjector = variableInjector;

@@ -58,6 +58,8 @@ namespace HeuristicLab.Operators {
     /// In the end the new sorting of the sub scopes is 1-5-9-2-6-10-3-7-11-4-8-12. 
     /// </example>
     /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when the number of sub scopes cannot be divided by
+    /// the number of partitions without remainder.</exception>
     /// <param name="scope">The scope whose sub scopes should be mixed.</param>
     /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {

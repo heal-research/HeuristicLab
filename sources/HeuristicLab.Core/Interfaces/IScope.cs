@@ -95,7 +95,7 @@ namespace HeuristicLab.Core {
     IItem GetVariableValue(string name, bool recursiveLookup, bool throwOnError);
 
     /// <summary>
-    /// Gets the actual name the given alias.
+    /// Gets the actual name of the given alias.
     /// </summary>
     /// <param name="name">The alias whose actual name is searched.</param>
     /// <returns>The actual name.</returns>

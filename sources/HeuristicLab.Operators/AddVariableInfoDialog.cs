@@ -30,12 +30,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Dialog to add a variable info.
+  /// </summary>
   public partial class AddVariableInfoDialog : Form {
     private IVariableInfo myVariableInfo;
+    /// <summary>
+    /// Gets the current variable info.
+    /// </summary>
     public IVariableInfo VariableInfo {
       get { return myVariableInfo; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AddVariableInfoDialog"/>.
+    /// </summary>
     public AddVariableInfoDialog() {
       InitializeComponent();
       dataTypeTextBox.Text = typeof(BoolData).FullName;

@@ -26,17 +26,32 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Branch of (one or) two operators that have different probabilities to get executed.
+  /// </summary>
   public class StochasticBranch : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="StochasticBranch"/> with two variable infos
+    /// (<c>Random</c> and <c>Probability</c>).
+    /// </summary>
     public StochasticBranch()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("Probability", "Probability to choose first branch", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Applies the operator of branch one with a specific probability on the given 
+    /// <paramref name="scope"/>, or - if existent - with another probability operator of branch two.  
+    /// </summary>
+    /// <param name="scope">The scope to apply the operators on.</param>
+    /// <returns>A new <see cref="AtomicOperation"/> with either operator 1 or operator 2 applied
+    /// to the given <paramref name="scope"/> or <c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       DoubleData probability = GetVariableValue<DoubleData>("Probability", scope, true);

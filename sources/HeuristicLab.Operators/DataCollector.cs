@@ -26,11 +26,19 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Collects values of specific variable names in a given scope.
+  /// </summary>
   public class DataCollector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DataCollector"/> with two variable infos 
+    /// (<c>VariableNames</c> and <c>Values</c>).
+    /// </summary>
     public DataCollector() {
       IVariableInfo variableNamesVariableInfo = new VariableInfo("VariableNames", "Names of variables whose values should be collected", typeof(ItemList<StringData>), VariableKind.In);
       variableNamesVariableInfo.Local = true;
@@ -40,6 +48,11 @@ namespace HeuristicLab.Operators {
       AddVariableInfo(new VariableInfo("Values", "Collected values", typeof(ItemList), VariableKind.New | VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Collects the values of a specified list of variable names in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to collect the values from.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("VariableNames", scope, false);
       ItemList values = GetVariableValue<ItemList>("Values", scope, true, false);

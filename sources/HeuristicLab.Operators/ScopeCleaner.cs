@@ -26,11 +26,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Operator that removes all variables in the given scope and deletes also all subscopes.
+  /// </summary>
   public class ScopeCleaner : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Removes all variables in the current scope and deletes all subscopes"; }
     }
 
+    /// <summary>
+    /// Deletes all variable and sub scopes from the given <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="IScope.Clear"/> of interface <see cref="IScope"/>.</remarks>
+    /// <param name="scope">The scope to clear.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       scope.Clear();
       return null;

@@ -26,16 +26,28 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Operator to create sub scopes in a given scope.
+  /// </summary>
   public class SubScopesCreater : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubScopesCreater"/> with one variable info (<c>SubScopes</c>).
+    /// </summary>
     public SubScopesCreater()
       : base() {
       AddVariableInfo(new VariableInfo("SubScopes", "Number of sub-scopes", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Creates a specified number of sub scopes in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to create the sub scopes.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IntData count = GetVariableValue<IntData>("SubScopes", scope, true);
 

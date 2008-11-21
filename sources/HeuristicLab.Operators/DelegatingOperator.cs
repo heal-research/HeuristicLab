@@ -26,7 +26,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Base class for operators that call other operators.
+  /// </summary>
   public abstract class DelegatingOperator : OperatorBase {
+    /// <summary>
+    /// Executes the specified operator in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBase.OnExecuted"/>.<br/>
+    /// Will be executed two times: First to execute the operation where the local variables 
+    /// are added to the global scope and a second time to remove the local variables again.</remarks>
+    /// <param name="scope">The scope where to apply the operation.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Execute(IScope scope) {
       myCanceled = false;
 

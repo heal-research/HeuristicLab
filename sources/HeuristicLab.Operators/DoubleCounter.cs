@@ -26,17 +26,32 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Class to add a specified interval to a double value.
+  /// </summary>
   public class DoubleCounter : OperatorBase {
+    /// <summary>
+    /// Gets the description of the current instance.
+    /// </summary>
     public override string Description {
       get { return @"Adds a given interval to a double value"; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleCounter"/>, including two variable infos 
+    /// (<c>Value</c> and <c>Interval</c>).
+    /// </summary>
     public DoubleCounter()
       : base() {
       AddVariableInfo(new VariableInfo("Value", "Counter value", typeof(DoubleData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("Interval", "Interval value", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Adds to a double value of the given <paramref name="scope"/> a specified interval.
+    /// </summary>
+    /// <param name="scope">The scope whose variable should be incremented.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       DoubleData value = GetVariableValue<DoubleData>("Value", scope, true);
       double interval = GetVariableValue<DoubleData>("Interval", scope, true).Data;

@@ -27,15 +27,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Operator to check whether two items are equal to each other.
+  /// </summary>
   public class EqualToComparator : ComparatorBase {
+
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EqualToComparator"/>.
+    /// </summary>
     public EqualToComparator()
       : base() {
     }
 
+    /// <summary>
+    /// Checks whether the two specified items are equal to each other.
+    /// </summary>
+    /// <param name="left">The left side of the comparison.</param>
+    /// <param name="right">The right side of the comparison.</param>
+    /// <returns><c>true</c> if the two elements are equal to each other, <c>false otherwise</c>.</returns>
     protected override bool Compare(IComparable left, IItem right) {
       return left.CompareTo(right) == 0;
     }

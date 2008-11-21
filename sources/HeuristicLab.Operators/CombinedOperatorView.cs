@@ -29,12 +29,24 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// The visual representation of a <see cref="CombinedOperator"/>.
+  /// </summary>
   public partial class CombinedOperatorView : ViewBase {
+    /// <summary>
+    /// Gets or sets the combined operator to display.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public CombinedOperator CombinedOperator {
       get { return (CombinedOperator)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Removes the eventhandlers in all children and from the underlying <see cref="CombinedOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       operatorGraphView.OperatorGraph = null;
       operatorBaseVariableInfosView.Operator = null;
@@ -43,7 +55,11 @@ namespace HeuristicLab.Operators {
       CombinedOperator.DescriptionChanged -= new EventHandler(CombinedOperator_DescriptionChanged);
       base.RemoveItemEvents();
     }
-
+    
+    /// <summary>
+    /// Adds event handlers in all children and to the underlying <see cref="CombinedOperator"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       operatorGraphView.OperatorGraph = CombinedOperator.OperatorGraph;
@@ -53,14 +69,25 @@ namespace HeuristicLab.Operators {
       CombinedOperator.DescriptionChanged += new EventHandler(CombinedOperator_DescriptionChanged);
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="CombinedOperatorView"/>.
+    /// </summary>
     public CombinedOperatorView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="CombinedOperatorView"/> with the specified 
+    /// <paramref name="combinedOperator"/>.
+    /// </summary>
+    /// <param name="combinedOperator">The combined operator to display.</param>
     public CombinedOperatorView(CombinedOperator combinedOperator)
       : this() {
       CombinedOperator = combinedOperator;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (CombinedOperator == null) {

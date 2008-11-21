@@ -26,18 +26,34 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Removes one specified or - if nothing specified - all operators from the given scope.
+  /// </summary>
   public class SubScopesRemover : OperatorBase {
+    /// <inheritdoc/>
     public override string Description {
       get {
         return @"This operator either removes the subscope specified in the variable SubScopeIndex or if this variable is absent, removes all subscopes.";
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubScopesRemover"/> with one variable info
+    /// (<c>SubScopeIndex</c>).
+    /// </summary>
     public SubScopesRemover()
       : base() {
       AddVariableInfo(new VariableInfo("SubScopeIndex", "(Optional) the index of the subscope to remove", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Removes one sub scope with a specified index from the given <paramref name="scope"/>, or if no
+    /// index has been specified, all sub scopes are removed.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when no sub scope with the specified index 
+    /// exists.</exception>
+    /// <param name="scope">The scope whose sub scope(s) to remove.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IntData index = GetVariableValue<IntData>("SubScopeIndex", scope, true, false);
       if (index == null) { // remove all scopes

@@ -26,17 +26,31 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Operators {
+  /// <summary>
+  /// Sorts all sub scopes of a given scope.
+  /// </summary>
   public class Sorter : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="Sorter"/> with two variable infos
+    /// (<c>Descending</c> and <c>Value</c>).
+    /// </summary>
     public Sorter()
       : base() {
       AddVariableInfo(new VariableInfo("Descending", "Sort in descending order", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Value", "Sorting value", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Sorts all sub scopes of the given <paramref name="scope"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="IScope.ReorderSubScopes"/>.</remarks>
+    /// <param name="scope">The scope where to apply the sorting.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       bool descending = GetVariableValue<BoolData>("Descending", scope, true).Data;
       double[] keys = new double[scope.SubScopes.Count];
