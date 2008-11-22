@@ -70,6 +70,7 @@
     <Compile Include="EqualiserController.cs" />
     <Compile Include="Logging\TreeArityAnalyser.cs" />
     <Compile Include="OffspringEqualiser.cs" />
+    <Compile Include="Recombination\UniformCrossover.cs" />
     <Compile Include="UnknownFunctionException.cs" />
     <Compile Include="IFunctionTreeNameGenerator.cs" />
     <Compile Include="IFunctionTreeExporter.cs" />
