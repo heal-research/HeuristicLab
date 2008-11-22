@@ -34,10 +34,13 @@ using System.Security;
 using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using System.Runtime.Remoting.Messaging;
 
 
 namespace HeuristicLab.Hive.Client.Core {
   public class Core {
+
+    public delegate string GetASnapshotDelegate();
 
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
@@ -119,7 +122,10 @@ namespace HeuristicLab.Hive.Client.Core {
           engines[container.JobId].RequestSnapshot();
           break;
         case MessageContainer.MessageType.SnapshotReady:
-          engines[container.JobId].GetSnapshot();
+          //Grabbing of the snapshot will need some time, so let's make this functun async
+          GetASnapshotDelegate ssd = new GetASnapshotDelegate(engines[container.JobId].GetSnapshot);
+          ssd.BeginInvoke(new AsyncCallback(SnapshotReceived), null);
+          //engines[container.JobId].GetSnapshot();
           break;
 
 
@@ -137,6 +143,12 @@ namespace HeuristicLab.Hive.Client.Core {
           Debug.WriteLine("Decrement CurrentJobs to:"+Status.CurrentJobs.ToString());
           break;
       }
+    }
+
+    void SnapshotReceived(IAsyncResult res) {
+      AsyncResult ar = (AsyncResult) res;
+      GetASnapshotDelegate gss = (GetASnapshotDelegate) ar.AsyncDelegate;
+      String objectRepr = gss.EndInvoke(res);
     }
 
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {

@@ -118,17 +118,22 @@ namespace HeuristicLab.Hive.Server {
     }
 
     public override void Run() {
-      string externalIP =
-        Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
+        IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+ 	      int index = 0;
+ 	      if (System.Environment.OSVersion.Version.Major >= 6) {
+ 	        for (index = addresses.Length - 1; index >= 0; index--)
+ 	          if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+ 	            break;
+ 	      }
 
       Uri uriTcp =
-          new Uri("net.tcp://" + externalIP + ":" + port + "/HiveServer/");
+          new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServer/");
 
       ServiceHost clientCommunicator = 
         StartClientCommunicator(uriTcp);
 
       uriTcp =
-        new Uri("net.tcp://" + externalIP + ":" + port + "/HiveServerConsole/");
+        new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServerConsole/");
 
       ServiceHost serverConsoleFacade =
         StartServerConsoleFacade(uriTcp);
