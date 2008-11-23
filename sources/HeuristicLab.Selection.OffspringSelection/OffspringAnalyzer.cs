@@ -72,31 +72,37 @@ namespace HeuristicLab.Selection.OffspringSelection {
         next.AddOperation(new AtomicOperation(this, scope));
         return next;
       } else {
-        // analyze offspring
-        for (int i = 0; i < scope.SubScopes.Count; i++) {
-          double parent1 = double.MaxValue; // lowest quality parent
-          double parent2 = double.MinValue; // highest quality parent
-          for (int y = 0 ; y < parentsCount ; y++) {
-            if (qualities.Data[parentsCount * i + y] < parent1) parent1 = qualities.Data[parentsCount * i + y];
-            if (qualities.Data[parentsCount * i + y] > parent2) parent2 = qualities.Data[parentsCount * i + y];
+        int crossoverEvents = qualities.Data.Length / parentsCount;
+        int childrenPerCrossoverEvent = scope.SubScopes.Count / crossoverEvents;
+        if (scope.SubScopes.Count % crossoverEvents != 0 ||
+          childrenPerCrossoverEvent < 1) throw new InvalidOperationException("OffspringAnalyzer: The number of children per crossover event has to be constant and >= 1");
+        // analyze offspring of all crossoverEvents
+        for (int i = 0; i < crossoverEvents; i++) {
+          double worstParent = double.MaxValue; // lowest quality parent
+          double bestParent = double.MinValue; // highest quality parent
+          for (int y = 0; y < parentsCount; y++) {
+            if (qualities.Data[i * parentsCount + y] < worstParent) worstParent = qualities.Data[i * parentsCount + y];
+            if (qualities.Data[i * parentsCount + y] > bestParent) bestParent = qualities.Data[i * parentsCount + y];
           }
-          IVariableInfo qualityInfo = GetVariableInfo("Quality");
-          double child = scope.SubScopes[i].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
-          double threshold;
+          for (int j = 0; j < childrenPerCrossoverEvent; j++) {
+            IVariableInfo qualityInfo = GetVariableInfo("Quality");
+            double child = scope.SubScopes[i * childrenPerCrossoverEvent + j].GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
+            double threshold;
 
-          if (!maximize)
-            threshold = parent2 + (parent1 - parent2) * compFact;
-          else
-            threshold = parent1 + (parent2 - parent1) * compFact;
+            if (!maximize)
+              threshold = bestParent + (worstParent - bestParent) * compFact;
+            else
+              threshold = worstParent + (bestParent - worstParent) * compFact;
 
-          IVariableInfo successfulInfo = GetVariableInfo("SuccessfulChild");
-          BoolData successful;
-          if (((!maximize) && (child < threshold)) ||
-              ((maximize) && (child > threshold)))
-            successful = new BoolData(true);
-          else
-            successful = new BoolData(false);
-          scope.SubScopes[i].AddVariable(new Variable(scope.TranslateName(successfulInfo.FormalName), successful));
+            IVariableInfo successfulInfo = GetVariableInfo("SuccessfulChild");
+            BoolData successful;
+            if (((!maximize) && (child < threshold)) ||
+                ((maximize) && (child > threshold)))
+              successful = new BoolData(true);
+            else
+              successful = new BoolData(false);
+            scope.SubScopes[i * childrenPerCrossoverEvent + j].AddVariable(new Variable(scope.TranslateName(successfulInfo.FormalName), successful));
+          }
         }
 
         // remove parent qualities again
