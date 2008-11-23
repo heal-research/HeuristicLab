@@ -73,6 +73,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
+      clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
       clientCommunicator.LoginAsync(clientInfo);
 
       MessageQueue queue = MessageQueue.GetInstance();
@@ -129,8 +130,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
 
 
-        case MessageContainer.MessageType.FetchJob:
-          clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
+        case MessageContainer.MessageType.FetchJob:          
           clientCommunicator.PullJobAsync(Guid.NewGuid());
           break;
 
