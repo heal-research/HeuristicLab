@@ -66,7 +66,7 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-      Heartbeat beat = new Heartbeat { Interval = 5000 };
+      Heartbeat beat = new Heartbeat { Interval = 30000 };
       beat.StartHeartbeat();
 
       ClientInfo clientInfo = new ClientInfo { ClientId = Guid.NewGuid() };

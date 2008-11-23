@@ -12,13 +12,13 @@ namespace HeuristicLab.Hive.Server.Core {
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
     List<ClientInfo> clients;
-    List<long> jobs;
+    LinkedList<long> jobs;
     int nrOfJobs = 10;
 
     public ClientCommunicator() {
-      jobs = new List<long>();
-      for (int i = 1; i < nrOfJobs; i++) {
-        jobs.Add(i);
+      jobs = new LinkedList<long>();
+      for (long i = 1; i < nrOfJobs; i++) {
+        jobs.AddFirst(i);
       }
     }
 
@@ -53,12 +53,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
-
-      response.JobId = jobs.ElementAt(jobs.Count);
+      lock (this) {
+        response.JobId = jobs.Last.Value;
+        jobs.RemoveLast(); 
+      }
+      
       response.Success = true;
-      response.StatusMessage = "Job with id " + jobs.Count + " sent";
-      jobs.Remove(jobs.Count);
-
+      response.StatusMessage = "Job with id " + jobs.Count + " sent";     
       return response;
     }
 
@@ -69,7 +70,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
       return response;
     }
-
+                           
     public Response Logout(Guid clientId) {
       bool clientRemoved = false;
       foreach (ClientInfo client in clients) {

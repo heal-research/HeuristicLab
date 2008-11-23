@@ -35,22 +35,22 @@ namespace HeuristicLab.Hive.Server {
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
   class HiveServerApplication : ApplicationBase {
-    const int port = 
+    const int port =
       9000;
 
     DiscoveryService discService =
         new DiscoveryService();
 
     private bool AddMexEndpoint(ServiceHost serviceHost) {
-      if(serviceHost != null) {
+      if (serviceHost != null) {
         ServiceMetadataBehavior behavior =
             new ServiceMetadataBehavior();
-          serviceHost.Description.Behaviors.Add(behavior);
+        serviceHost.Description.Behaviors.Add(behavior);
 
-          return serviceHost.AddServiceEndpoint(
-            typeof(IMetadataExchange),
-            MetadataExchangeBindings.CreateMexTcpBinding(),
-            "mex") != null;
+        return serviceHost.AddServiceEndpoint(
+          typeof(IMetadataExchange),
+          MetadataExchangeBindings.CreateMexTcpBinding(),
+          "mex") != null;
       } else
         return false;
     }
@@ -118,18 +118,18 @@ namespace HeuristicLab.Hive.Server {
     }
 
     public override void Run() {
-        IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
- 	      int index = 0;
- 	      if (System.Environment.OSVersion.Version.Major >= 6) {
- 	        for (index = addresses.Length - 1; index >= 0; index--)
- 	          if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
- 	            break;
- 	      }
+      IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+      int index = 0;
+      if (System.Environment.OSVersion.Version.Major >= 6) {
+        for (index = addresses.Length - 1; index >= 0; index--)
+          if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            break;
+      }
 
       Uri uriTcp =
           new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServer/");
 
-      ServiceHost clientCommunicator = 
+      ServiceHost clientCommunicator =
         StartClientCommunicator(uriTcp);
 
       uriTcp =
