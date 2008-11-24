@@ -66,7 +66,7 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-      Heartbeat beat = new Heartbeat { Interval = 30000 };
+      Heartbeat beat = new Heartbeat { Interval = 5000 };
       beat.StartHeartbeat();
 
       ClientInfo clientInfo = new ClientInfo { ClientId = Guid.NewGuid() };
@@ -123,32 +123,35 @@ namespace HeuristicLab.Hive.Client.Core {
           engines[container.JobId].RequestSnapshot();
           break;
         case MessageContainer.MessageType.SnapshotReady:
-          //Grabbing of the snapshot will need some time, so let's make this functun async
-          GetASnapshotDelegate ssd = new GetASnapshotDelegate(engines[container.JobId].GetSnapshot);
-          ssd.BeginInvoke(new AsyncCallback(SnapshotReceived), null);
-          //engines[container.JobId].GetSnapshot();
+          Thread ssr = new Thread(new ParameterizedThreadStart(GetSnapshot));
+          ssr.Start(container.JobId);          
           break;
 
-
-        case MessageContainer.MessageType.FetchJob:          
+        case MessageContainer.MessageType.FetchJob: 
           clientCommunicator.PullJobAsync(Guid.NewGuid());
-          break;
-
+          break;          
         case MessageContainer.MessageType.FinishedJob:
-          engines[container.JobId].GetFinishedJob();
-          AppDomain.Unload(appDomains[container.JobId]);
-          appDomains.Remove(container.JobId);
-          engines.Remove(container.JobId);
-          Status.CurrentJobs--;
-          Debug.WriteLine("Decrement CurrentJobs to:"+Status.CurrentJobs.ToString());
-          break;
+          Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
+          finThread.Start(container.JobId);          
+          break;      
       }
     }
 
-    void SnapshotReceived(IAsyncResult res) {
-      AsyncResult ar = (AsyncResult) res;
-      GetASnapshotDelegate gss = (GetASnapshotDelegate) ar.AsyncDelegate;
-      String objectRepr = gss.EndInvoke(res);
+    private void GetFinishedJob(object jobId) {
+      long jId = (long)jobId;
+      String obj = engines[jId].GetFinishedJob();
+      engines[jId].GetFinishedJob();
+      AppDomain.Unload(appDomains[jId]);
+      appDomains.Remove(jId);
+      engines.Remove(jId);
+
+      Status.CurrentJobs--;
+      Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());      
+    }
+
+    private void GetSnapshot(object jobId) {
+      long jId = (long)jobId;
+      String obj = engines[jId].GetSnapshot();
     }
 
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
