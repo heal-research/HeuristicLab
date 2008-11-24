@@ -63,46 +63,37 @@ namespace HeuristicLab.GP {
 
       TreeGardener gardener = new TreeGardener(random, opLibrary);
 
-      if((scope.SubScopes.Count % 2) != 0)
+      if ((scope.SubScopes.Count % 2) != 0)
         throw new InvalidOperationException("Number of parents is not even");
 
-      CompositeOperation initOperations = new CompositeOperation();
-
       int children = scope.SubScopes.Count / 2;
-      for(int i = 0; i < children; i++) {
+      for (int i = 0; i < children; i++) {
         IScope parent1 = scope.SubScopes[0];
         scope.RemoveSubScope(parent1);
         IScope parent2 = scope.SubScopes[0];
         scope.RemoveSubScope(parent2);
         IScope child = new Scope(i.ToString());
-        IOperation childInitOperation = Cross(gardener, maxTreeSize, maxTreeHeight, scope, random, parent1, parent2, child);
-        initOperations.AddOperation(childInitOperation);
+        Cross(gardener, maxTreeSize, maxTreeHeight, scope, random, parent1, parent2, child);
         scope.AddSubScope(child);
       }
 
-      return initOperations;
+      return null;
     }
 
-    private IOperation Cross(TreeGardener gardener, int maxTreeSize, int maxTreeHeight,
+    private void Cross(TreeGardener gardener, int maxTreeSize, int maxTreeHeight,
       IScope scope, MersenneTwister random, IScope parent1, IScope parent2, IScope child) {
-      List<IFunctionTree> newBranches;
       IFunctionTree newTree = Cross(gardener, parent1, parent2,
-        random, maxTreeSize, maxTreeHeight, out newBranches);
+        random, maxTreeSize, maxTreeHeight);
 
-
-      int newTreeSize = newTree.Size;
-      int newTreeHeight = newTree.Height;
       child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), newTree));
-      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(newTreeSize)));
-      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTreeHeight)));
+      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(newTree.Size)));
+      child.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(newTree.Height)));
 
-      // check if the new tree is valid and if the height of is still in the allowed bounds (we are not so strict for the max-size)
-      Debug.Assert(gardener.IsValidTree(newTree) && newTreeHeight <= maxTreeHeight && newTreeSize <= maxTreeSize);
-      return gardener.CreateInitializationOperation(newBranches, child);
+      // check if the new tree is valid and if the size and height are still in the allowed bounds
+      Debug.Assert(gardener.IsValidTree(newTree) && newTree.Height <= maxTreeHeight && newTree.Size <= maxTreeSize);
     }
 
-
-    private IFunctionTree Cross(TreeGardener gardener, IScope f, IScope g, MersenneTwister random, int maxTreeSize, int maxTreeHeight, out List<IFunctionTree> newBranches) {
+    private IFunctionTree Cross(TreeGardener gardener, IScope f, IScope g, MersenneTwister random, int maxTreeSize, int maxTreeHeight) {
       IFunctionTree tree0 = f.GetVariableValue<IFunctionTree>("FunctionTree", false);
       int tree0Height = f.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree0Size = f.GetVariableValue<IntData>("TreeSize", false).Data;
@@ -111,25 +102,44 @@ namespace HeuristicLab.GP {
       int tree1Height = g.GetVariableValue<IntData>("TreeHeight", false).Data;
       int tree1Size = g.GetVariableValue<IntData>("TreeSize", false).Data;
 
-      if(tree0Size == 1 && tree1Size == 1) {
-        return CombineTerminals(gardener, tree0, tree1, random, maxTreeHeight, out newBranches);
-      } else {
-        newBranches = new List<IFunctionTree>();
+      // we are going to insert tree1 into tree0 at a random place so we have to make sure that tree0 is not a terminal
+      // in case both trees are higher than 1 we swap the trees with probability 50%
+      if (tree0Height == 1 || (tree1Height > 1 && random.Next(2) == 0)) {
+        IFunctionTree tmp = tree0; tree0 = tree1; tree1 = tmp;
+        int tmpHeight = tree0Height; tree0Height = tree1Height; tree1Height = tmpHeight;
+        int tmpSize = tree0Size; tree0Size = tree1Size; tree1Size = tmpSize;
+      }
 
-        // we are going to insert tree1 into tree0 at a random place so we have to make sure that tree0 is not a terminal
-        // in case both trees are higher than 1 we swap the trees with probability 50%
-        if(tree0Height == 1 || (tree1Height > 1 && random.Next(2) == 0)) {
-          IFunctionTree tmp = tree0; tree0 = tree1; tree1 = tmp;
-          int tmpHeight = tree0Height; tree0Height = tree1Height; tree1Height = tmpHeight;
-          int tmpSize = tree0Size; tree0Size = tree1Size; tree1Size = tmpSize;
+      // select a random suboperator of the 'receiving' tree
+      IFunctionTree crossoverPoint = gardener.GetRandomParentNode(tree0);
+      int removedBranchIndex;
+      IFunctionTree removedBranch;
+      IList<IFunction> allowedFunctions;
+      if (crossoverPoint == null) {
+        removedBranchIndex = 0;
+        removedBranch = tree0;
+        allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
+      } else {
+        removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
+        removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
+        allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
+      }
+      int removedBranchSize = removedBranch.Size;
+      int maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
+      int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch) + 1;
+      List<int> removedBranchThread = GetThread(removedBranch, tree0);
+      IFunctionTree insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchThread, removedBranchSize, maxBranchSize, maxBranchHeight);
+
+      int tries = 0;
+      while (insertedBranch == null) {
+        if (tries++ > MAX_RECOMBINATION_TRIES) {
+          if (random.Next() > 0.5) return tree1;
+          else return tree0;
         }
 
-        // select a random suboperator of the 'receiving' tree
-        IFunctionTree crossoverPoint = gardener.GetRandomParentNode(tree0);
-        int removedBranchIndex;
-        IFunctionTree removedBranch;
-        IList<IFunction> allowedFunctions;
-        if(crossoverPoint == null) {
+        // retry with a different crossoverPoint        
+        crossoverPoint = gardener.GetRandomParentNode(tree0);
+        if (crossoverPoint == null) {
           removedBranchIndex = 0;
           removedBranch = tree0;
           allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
@@ -138,44 +148,19 @@ namespace HeuristicLab.GP {
           removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
           allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
         }
-        int removedBranchSize = removedBranch.Size;
-        int maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
-        int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch);
-        List<int> removedBranchThread = GetThread(removedBranch, tree0);
-        IFunctionTree insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchThread, removedBranchSize, maxBranchSize, maxBranchHeight);
-
-        int tries = 0;
-        while(insertedBranch == null) {
-          if(tries++ > MAX_RECOMBINATION_TRIES) {
-            if(random.Next() > 0.5) return tree1;
-            else return tree0;
-          }
-
-          // retry with a different crossoverPoint        
-          crossoverPoint = gardener.GetRandomParentNode(tree0);
-          if(crossoverPoint == null) {
-            removedBranchIndex = 0;
-            removedBranch = tree0;
-            allowedFunctions = gardener.GetAllowedSubFunctions(null, 0);
-          } else {
-            removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
-            removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
-            allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
-          }
-          removedBranchSize = removedBranch.Size;
-          maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
-          maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch) + 1;
-          removedBranchThread = GetThread(removedBranch, tree0);
-          insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchThread, removedBranchSize, maxBranchSize, maxBranchHeight);
-        }
-        if(crossoverPoint != null) {
-          // replace the branch below the crossoverpoint with the selected branch from root1
-          crossoverPoint.RemoveSubTree(removedBranchIndex);
-          crossoverPoint.InsertSubTree(removedBranchIndex, insertedBranch);
-          return tree0;
-        } else {
-          return insertedBranch;
-        }
+        removedBranchSize = removedBranch.Size;
+        maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
+        maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, removedBranch) + 1;
+        removedBranchThread = GetThread(removedBranch, tree0);
+        insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchThread, removedBranchSize, maxBranchSize, maxBranchHeight);
+      }
+      if (crossoverPoint != null) {
+        // replace the branch below the crossoverpoint with the selected branch from root1
+        crossoverPoint.RemoveSubTree(removedBranchIndex);
+        crossoverPoint.InsertSubTree(removedBranchIndex, insertedBranch);
+        return tree0;
+      } else {
+        return insertedBranch;
       }
     }
 
@@ -187,8 +172,8 @@ namespace HeuristicLab.GP {
       var longerBranches = branches.Where(t => t.Size > removedBranchSize);
       var equalLengthBranches = branches.Where(t => t.Size == removedBranchSize);
 
-      if(shorterBranches.Count() == 0 || longerBranches.Count() == 0) {
-        if(equalLengthBranches.Count() == 0) {
+      if (shorterBranches.Count() == 0 || longerBranches.Count() == 0) {
+        if (equalLengthBranches.Count() == 0) {
           return null;
         } else {
           return equalLengthBranches.OrderBy(t => MatchingSteps(removedBranchThread, t.Thread)).Last().Tree;
@@ -200,9 +185,9 @@ namespace HeuristicLab.GP {
         double pShorter = (1.0 - pEqualLength - pLonger);
 
         double r = random.NextDouble();
-        if(r < pLonger) {
+        if (r < pLonger) {
           return longerBranches.OrderBy(t => MatchingSteps(removedBranchThread, t.Thread)).Last().Tree;
-        } else if(r < pLonger + pShorter) {
+        } else if (r < pLonger + pShorter) {
           return shorterBranches.OrderBy(t => MatchingSteps(removedBranchThread, t.Thread)).Last().Tree;
         } else {
           return equalLengthBranches.OrderBy(t => MatchingSteps(removedBranchThread, t.Thread)).Last().Tree;
@@ -212,84 +197,25 @@ namespace HeuristicLab.GP {
 
     private int MatchingSteps(List<int> removedBranchThread, List<int> list) {
       int n = Math.Min(removedBranchThread.Count, list.Count);
-      for(int i = 0; i < n; i++) if(removedBranchThread[i] != list[i]) return i;
+      for (int i = 0; i < n; i++) if (removedBranchThread[i] != list[i]) return i;
       return n;
     }
 
     private List<int> GetThread(IFunctionTree t, IFunctionTree tree) {
       List<int> thread = new List<int>();
-      for(int i = 0; i < tree.SubTrees.Count; i++) {
-        if(t == tree.SubTrees[i]) {
+      for (int i = 0; i < tree.SubTrees.Count; i++) {
+        if (t == tree.SubTrees[i]) {
           thread.Add(i);
           return thread;
         } else {
           thread.AddRange(GetThread(t, tree.SubTrees[i]));
-          if(thread.Count > 0) {
+          if (thread.Count > 0) {
             thread.Insert(0, i);
             return thread;
           }
         }
       }
       return thread;
-    }
-
-
-    // take f and g and create a tree that has f and g as sub-trees 
-    // example
-    //       O
-    //      /|\
-    //     g 2 f 
-    //
-    private IFunctionTree CombineTerminals(TreeGardener gardener, IFunctionTree f, IFunctionTree g, MersenneTwister random, int maxTreeHeight, out List<IFunctionTree> newBranches) {
-      newBranches = new List<IFunctionTree>();
-      // determine the set of possible parent functions
-      ICollection<IFunction> possibleParents = gardener.GetPossibleParents(new List<IFunction>() { f.Function, g.Function });
-      if(possibleParents.Count == 0) throw new InvalidProgramException();
-      // and select a random one
-      IFunctionTree parent = possibleParents.ElementAt(random.Next(possibleParents.Count())).GetTreeNode();
-
-      int nSlots = Math.Max(2, parent.Function.MinArity);
-      // determine which slot can take which sub-trees
-      List<IFunctionTree>[] slots = new List<IFunctionTree>[nSlots];
-      for(int slot = 0; slot < nSlots; slot++) {
-        ICollection<IFunction> allowedSubFunctions = gardener.GetAllowedSubFunctions(parent.Function, slot);
-        List<IFunctionTree> allowedTrees = new List<IFunctionTree>();
-        if(allowedSubFunctions.Contains(f.Function)) allowedTrees.Add(f);
-        if(allowedSubFunctions.Contains(g.Function)) allowedTrees.Add(g);
-        slots[slot] = allowedTrees;
-      }
-      // fill the slots in the order of degrees of freedom
-      int[] slotSequence = Enumerable.Range(0, slots.Count()).OrderBy(slot => slots[slot].Count()).ToArray();
-
-      // tmp arry to store the tree for each sub-tree slot of the parent
-      IFunctionTree[] selectedFunctionTrees = new IFunctionTree[nSlots];
-
-      // fill the sub-tree slots of the parent starting with the slots that can take potentially both functions (f and g)
-      for(int i = 0; i < slotSequence.Length; i++) {
-        int slot = slotSequence[i];
-        List<IFunctionTree> allowedTrees = slots[slot];
-        // when neither f nor g fit into the slot => create a new random tree
-        if(allowedTrees.Count() == 0) {
-          var allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, slot);
-          selectedFunctionTrees[slot] = gardener.CreateRandomTree(allowedFunctions, 1, 1);
-          newBranches.AddRange(gardener.GetAllSubTrees(selectedFunctionTrees[slot]));
-        } else {
-          // select randomly which tree to insert into this slot
-          IFunctionTree selectedTree = allowedTrees[random.Next(allowedTrees.Count())];
-          selectedFunctionTrees[slot] = selectedTree;
-          // remove the tree that we used in this slot from following function-sets
-          for(int j = i + 1; j < slotSequence.Length; j++) {
-            int otherSlot = slotSequence[j];
-            slots[otherSlot].Remove(selectedTree);
-          }
-        }
-      }
-      // actually append the sub-trees to the parent tree
-      for(int i = 0; i < selectedFunctionTrees.Length; i++) {
-        parent.InsertSubTree(i, selectedFunctionTrees[i]);
-      }
-
-      return parent;
     }
   }
 }
