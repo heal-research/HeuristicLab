@@ -67,8 +67,8 @@ namespace HeuristicLab.GP {
         scope.RemoveSubScope(parent1);
         IScope parent2 = scope.SubScopes[0];
         scope.RemoveSubScope(parent2);
-        IScope child0 = new Scope((i*2).ToString());
-        IScope child1 = new Scope((i*2+1).ToString());
+        IScope child0 = new Scope((i * 2).ToString());
+        IScope child1 = new Scope((i * 2 + 1).ToString());
         Cross(scope, random, gardener, parent1, parent2, child0, child1);
         scope.AddSubScope(child0);
         scope.AddSubScope(child1);
@@ -158,13 +158,8 @@ namespace HeuristicLab.GP {
           }
         }
       }
-      if (random.NextDouble() < 0.5) {
-        child0 = tree0;
-        child1 = tree1;
-      } else {
-        child0 = tree1;
-        child1 = tree0;
-      }
+      child0 = tree0;
+      child1 = tree1;
     }
 
     class CrossoverPoint {
