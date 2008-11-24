@@ -109,13 +109,8 @@ namespace HeuristicLab.GP {
         parent1.InsertSubTree(crossOverPoint.childIndex, branch0);
       }
 
-      if (random.NextDouble() < 0.5) {
-        child0 = tree0;
-        child1 = tree1;
-      } else {
-        child0 = tree1;
-        child1 = tree0;
-      }
+      child0 = tree0;
+      child1 = tree1;
     }
     class CrossoverPoint {
       public IFunctionTree parent0;
