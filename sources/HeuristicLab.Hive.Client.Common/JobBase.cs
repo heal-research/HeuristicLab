@@ -30,18 +30,16 @@ using HeuristicLab.Hive.Client.Common;
 
 namespace HeuristicLab.Hive.Client.Common {
   [Serializable]
-  abstract public class JobBase : IJob {
-
-    public long JobId { get; set; }
+  abstract public class JobBase : StorableBase, IJob {
 
     private Thread thread = null;
-    
-    public int Progress { get; set; }
-    
-    protected bool abort = false;
-    public bool Running { get; set; }
-
     public event EventHandler JobStopped;
+    
+    public long JobId { get; set; }    
+    public double Progress { get; set; }        
+    public bool Running { get; set; }
+    
+    protected bool abort = false;    
 
     abstract public void Run();
 
@@ -62,9 +60,20 @@ namespace HeuristicLab.Hive.Client.Common {
         JobStopped(this, new EventArgs());
     }
 
-    public XmlNode GetXmlNode() {
-      XmlDocument doc = PersistenceManager.CreateXmlDocument();
-      return doc.CreateNode(XmlNodeType.Element, "testnode", null);      
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+
+      XmlNode progr = document.CreateNode(XmlNodeType.Element, "Progress", null);
+      progr.InnerText = Convert.ToString(Progress);
+
+      node.AppendChild(progr);
+      return node;
+    }
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+
+      XmlNode progr = node.SelectSingleNode("Progress");
+      Progress = Convert.ToDouble(progr.InnerText);
     }
 
     public JobBase() {    

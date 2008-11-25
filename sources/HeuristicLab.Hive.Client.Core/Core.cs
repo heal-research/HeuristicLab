@@ -35,6 +35,7 @@ using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using System.Runtime.Remoting.Messaging;
+using HeuristicLab.PluginInfrastructure;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -139,8 +140,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private void GetFinishedJob(object jobId) {
       long jId = (long)jobId;
-      String obj = engines[jId].GetFinishedJob();
-      engines[jId].GetFinishedJob();
+      byte[] obj = engines[jId].GetFinishedJob();
+      
       AppDomain.Unload(appDomains[jId]);
       appDomains.Remove(jId);
       engines.Remove(jId);
@@ -151,7 +152,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private void GetSnapshot(object jobId) {
       long jId = (long)jobId;
-      String obj = engines[jId].GetSnapshot();
+      byte[] obj = engines[jId].GetSnapshot();
     }
 
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
@@ -159,11 +160,13 @@ namespace HeuristicLab.Hive.Client.Core {
 
       IJob job = new TestJob { JobId = e.Result.JobId };
 
-      AppDomain appDomain = CreateNewAppDomain(sandboxed);
+      PluginManager pm = PluginManager.Manager;
+      AppDomain appDomain =  pm.CreateAndInitAppDomain("AppDomain");
+
+      //AppDomain appDomain = CreateNewAppDomain(sandboxed);
       appDomains.Add(job.JobId, appDomain);
 
       Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-      engine.Job = job;
       engine.JobId = job.JobId;
       engine.Queue = MessageQueue.GetInstance();
       engine.Start();

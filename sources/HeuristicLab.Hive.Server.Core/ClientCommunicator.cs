@@ -13,7 +13,7 @@ namespace HeuristicLab.Hive.Server.Core {
   public class ClientCommunicator: IClientCommunicator {
     List<ClientInfo> clients;
     LinkedList<long> jobs;
-    int nrOfJobs = 3;
+    int nrOfJobs = 1;
 
     public ClientCommunicator() {
       jobs = new LinkedList<long>();

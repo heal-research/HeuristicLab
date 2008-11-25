@@ -28,6 +28,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Client.ExecutionEngine {
   public class Executor: MarshalByRefObject {
@@ -55,7 +56,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
         Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobAborted, JobId));
     }
 
-    public String GetSnapshot() {
+    public byte[] GetSnapshot() {
       //if the job is still running, something went VERY bad.
       if (Job.Running) {
         return null;
@@ -63,7 +64,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
         // Clear the Status message
         CurrentMessage = MessageContainer.MessageType.NoMessage;
         // Pack the whole job inside an xml document
-        String job = SerializeJobObject();        
+        byte[] job = SerializeJobObject();        
         // Restart the job
         Job.Start();
         // Return the Snapshot
@@ -71,7 +72,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
       }
     }
 
-    public String GetFinishedJob() {
+    public byte[] GetFinishedJob() {
       //Job isn't finished!
       if (Job.Running) {
         return null;
@@ -86,24 +87,17 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
       Job.Stop();
     }
 
-    private String SerializeJobObject() {
-      XmlSerializer serializer = new XmlSerializer(typeof(TestJob));
-      MemoryStream ms = new MemoryStream();
-      serializer.Serialize(ms, Job);
-      StreamReader reader = new StreamReader(ms);
-      return reader.ReadToEnd();       
+    private byte[] SerializeJobObject() {
+      return PersistenceManager.SaveToGZip(Job);
     }
 
-    private void RestoreJobObject(String serializedJob) {
-      System.Text.ASCIIEncoding  encoding=new System.Text.ASCIIEncoding();
-      XmlSerializer serializer = new XmlSerializer(typeof(TestJob));
-      MemoryStream ms = new MemoryStream();
-      ms.Write(encoding.GetBytes(serializedJob), 0, serializedJob.Length);
-      Job = (TestJob) serializer.Deserialize(ms);      
+    private void RestoreJobObject(byte[] sjob) {
+      Job = (IJob)PersistenceManager.RestoreFromGZip(sjob);
     }
 
     public Executor() {
       CurrentMessage = MessageContainer.MessageType.NoMessage;
+      Job = new TestJob();
     }    
   }
 }

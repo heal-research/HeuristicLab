@@ -24,22 +24,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Xml;
 
 namespace HeuristicLab.Hive.Client.Common {
   [Serializable]
   public class TestJob: JobBase {
+
+    private int runValue = 0;
+
     public override void Run() {
-      for (int x = 0; x < 10; x++) {
+      int max = 10;
+      while(runValue < max && abort == false) {
         for (int y = 0; y < Int32.MaxValue; y++) ;
-        if (abort == true) {
-          Logging.GetInstance().Info(this.ToString(), "Job Processing aborted");
-          Debug.WriteLine("Job Abort Processing");
-          break;
-        }
-        Logging.GetInstance().Info(this.ToString(), "Iteration " + x + " done");
-        Debug.WriteLine("Iteration " + x + " done");
+          if (abort == true) {
+            Logging.GetInstance().Info(this.ToString(), "Job Processing aborted");
+            Debug.WriteLine("Job Abort Processing");
+           break;
+          }
+        runValue++;
+        Progress = runValue / max;
+        Logging.GetInstance().Info(this.ToString(), "Iteration " + runValue + " done");
+        Debug.WriteLine("Iteration " + runValue + " done");
+        Debug.WriteLine("Progress " + Progress*100 + " Percent");
       }      
       OnJobStopped();
     }
+    public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, HeuristicLab.Core.IStorable> persistedObjects) {      
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+    
+      XmlNode startValue = document.CreateNode(XmlNodeType.Element, "StartValue", null);
+      startValue.InnerText = Convert.ToString(runValue);
+      
+      node.AppendChild(startValue);
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, HeuristicLab.Core.IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+
+      XmlNode startValue = node.SelectSingleNode("StartValue");
+      runValue = Convert.ToInt32(startValue.InnerText);
+    }
+
+
   }
 }
