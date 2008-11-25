@@ -36,167 +36,127 @@ namespace HeuristicLab.GP {
   /// R. Poli and W. B. Langdon.  On the Search Properties of Different Crossover Operators in Genetic Programming.
   /// In Proceedings of Genetic Programming '98, Madison, Wisconsin, 1998.
   /// </summary>
-  public class UniformCrossover : OperatorBase {
+  public class UniformCrossover : GPCrossoverBase {
+    // internal datastructure to represent crossover points
+    private class CrossoverPoint {
+      public IFunctionTree Parent0;
+      public IFunctionTree Parent1;
+      public int ChildIndex;
+      public bool IsInternal;
+    }
+
     public override string Description {
       get {
         return @"Uniform crossover as defined by Poli and Langdon";
       }
     }
-    public UniformCrossover()
-      : base() {
-      AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(MersenneTwister), VariableKind.In));
-      AddVariableInfo(new VariableInfo("OperatorLibrary", "The operator library containing all available operators", typeof(GPOperatorLibrary), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FunctionTree", "The tree to mutate", typeof(IFunctionTree), VariableKind.In | VariableKind.New));
-      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.In | VariableKind.New));
-      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.In | VariableKind.New));
-    }
 
-    public override IOperation Apply(IScope scope) {
-      MersenneTwister random = GetVariableValue<MersenneTwister>("Random", scope, true);
-      GPOperatorLibrary opLibrary = GetVariableValue<GPOperatorLibrary>("OperatorLibrary", scope, true);
-      TreeGardener gardener = new TreeGardener(random, opLibrary);
-
-      if ((scope.SubScopes.Count % 2) != 0)
-        throw new InvalidOperationException("Number of parents is not even");
-
-      CompositeOperation initOperations = new CompositeOperation();
-
-      int crossoverEvents = scope.SubScopes.Count / 2;
-      for (int i = 0; i < crossoverEvents; i++) {
-        IScope parent1 = scope.SubScopes[0];
-        scope.RemoveSubScope(parent1);
-        IScope parent2 = scope.SubScopes[0];
-        scope.RemoveSubScope(parent2);
-        IScope child0 = new Scope((i * 2).ToString());
-        IScope child1 = new Scope((i * 2 + 1).ToString());
-        Cross(scope, random, gardener, parent1, parent2, child0, child1);
-        scope.AddSubScope(child0);
-        scope.AddSubScope(child1);
-      }
-
-      return null;
-    }
-
-    private void Cross(IScope scope, MersenneTwister random, TreeGardener gardener, IScope parent1, IScope parent2, IScope child0, IScope child1) {
-      IFunctionTree childTree0;
-      IFunctionTree childTree1;
-      Cross(random, gardener, parent1, parent2, out childTree0, out childTree1);
-      Debug.Assert(gardener.IsValidTree(childTree0));
-      Debug.Assert(gardener.IsValidTree(childTree1));
-      child0.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), childTree0));
-      child0.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(childTree0.Size)));
-      child0.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(childTree0.Height)));
-
-      child1.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), childTree1));
-      child1.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(childTree1.Size)));
-      child1.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(childTree1.Height)));
-    }
-
-
-    private void Cross(MersenneTwister random, TreeGardener gardener, IScope f, IScope g, out IFunctionTree child0, out IFunctionTree child1) {
-      IFunctionTree tree0 = f.GetVariableValue<IFunctionTree>("FunctionTree", false);
-      int tree0Height = f.GetVariableValue<IntData>("TreeHeight", false).Data;
-      int tree0Size = f.GetVariableValue<IntData>("TreeSize", false).Data;
-
-      IFunctionTree tree1 = g.GetVariableValue<IFunctionTree>("FunctionTree", false);
-      int tree1Height = g.GetVariableValue<IntData>("TreeHeight", false).Data;
-      int tree1Size = g.GetVariableValue<IntData>("TreeSize", false).Data;
-
-      List<CrossoverPoint> allowedCrossOverPoints = GetCrossOverPoints(gardener, tree0, tree1);
-      foreach (CrossoverPoint p in allowedCrossOverPoints) {
-        Debug.Assert(gardener.GetAllowedSubFunctions(p.parent0.Function, p.childIndex).Contains(p.parent1.SubTrees[p.childIndex].Function));
-        Debug.Assert(gardener.GetAllowedSubFunctions(p.parent1.Function, p.childIndex).Contains(p.parent0.SubTrees[p.childIndex].Function));
-      }
+    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
+      List<CrossoverPoint> allowedCrossOverPoints = new List<CrossoverPoint>();
+      GetCrossOverPoints(gardener, tree0, tree1, allowedCrossOverPoints);
       // iterate through the list of crossover points and swap nodes with p=0.5
       foreach (CrossoverPoint crossoverPoint in allowedCrossOverPoints) {
         if (random.NextDouble() < 0.5) {
-          IFunctionTree parent0 = crossoverPoint.parent0;
-          IFunctionTree parent1 = crossoverPoint.parent1;
-          IFunctionTree branch0 = crossoverPoint.parent0.SubTrees[crossoverPoint.childIndex];
-          IFunctionTree branch1 = crossoverPoint.parent1.SubTrees[crossoverPoint.childIndex];
-
-          // if we are at an internal node of the common region swap only the node but not the subtrees
-          if (branch0.SubTrees.Count == branch1.SubTrees.Count) {
-            if (parent0 != null) {
-              Debug.Assert(parent1 != null); Debug.Assert(branch0 != null); Debug.Assert(branch0 != null);
-              Debug.Assert(gardener.GetAllowedSubFunctions(parent0.Function, crossoverPoint.childIndex).Contains(branch1.Function));
-              Debug.Assert(gardener.GetAllowedSubFunctions(parent1.Function, crossoverPoint.childIndex).Contains(branch0.Function));
-              // we are not at the root => exchange the branches in the parent
-              parent0.RemoveSubTree(crossoverPoint.childIndex);
-              parent1.RemoveSubTree(crossoverPoint.childIndex);
-              parent0.InsertSubTree(crossoverPoint.childIndex, branch1);
-              parent1.InsertSubTree(crossoverPoint.childIndex, branch0);
-            }
-            // always exchange all children
-            List<IFunctionTree> branch0Children = new List<IFunctionTree>(branch0.SubTrees); // create backup lists
-            List<IFunctionTree> branch1Children = new List<IFunctionTree>(branch1.SubTrees);
-            while (branch0.SubTrees.Count > 0) branch0.RemoveSubTree(0); // remove all children
-            while (branch1.SubTrees.Count > 0) branch1.RemoveSubTree(0);
-            foreach (IFunctionTree subTree in branch1Children) {
-              Debug.Assert(gardener.GetAllowedSubFunctions(branch0.Function, branch0.SubTrees.Count).Contains(subTree.Function));
-              branch0.AddSubTree(subTree); // append children of branch1 to branch0
-            }
-            foreach (IFunctionTree subTree in branch0Children) {
-              Debug.Assert(gardener.GetAllowedSubFunctions(branch1.Function, branch1.SubTrees.Count).Contains(subTree.Function));
-              branch1.AddSubTree(subTree); // and vice versa
-            }
+          if (crossoverPoint.IsInternal) {
+            ExchangeNodes(crossoverPoint);
           } else {
-            // If we are at a node at the border of the common region then exchange the whole branch.
-            // If we are at the root node and the number of children is already different we can't do anything now but
-            // at the end either tree0 or tree1 must be returned with p=0.5.
-
-            // However if we are not at the root => exchange the branches in the parent
-            if (parent0 != null) {
-              Debug.Assert(parent1 != null); Debug.Assert(branch0 != null); Debug.Assert(branch1 != null);
-              Debug.Assert(gardener.GetAllowedSubFunctions(parent0.Function, crossoverPoint.childIndex).Contains(branch1.Function));
-              Debug.Assert(gardener.GetAllowedSubFunctions(parent1.Function, crossoverPoint.childIndex).Contains(branch0.Function));
-              parent0.RemoveSubTree(crossoverPoint.childIndex);
-              parent1.RemoveSubTree(crossoverPoint.childIndex);
-              parent0.InsertSubTree(crossoverPoint.childIndex, branch1);
-              parent1.InsertSubTree(crossoverPoint.childIndex, branch0);
-            }
+            SwapSubtrees(crossoverPoint);
           }
         }
       }
-      child0 = tree0;
-      child1 = tree1;
+      return tree0;
     }
 
-    class CrossoverPoint {
-      public IFunctionTree parent0;
-      public IFunctionTree parent1;
-      public int childIndex;
-    }
-
-    private List<CrossoverPoint> GetCrossOverPoints(TreeGardener gardener, IFunctionTree branch0, IFunctionTree branch1) {
-      List<CrossoverPoint> results = new List<CrossoverPoint>();
-      if (branch0.SubTrees.Count != branch1.SubTrees.Count) return results;
-
+    private void GetCrossOverPoints(TreeGardener gardener, IFunctionTree branch0, IFunctionTree branch1, List<CrossoverPoint> crossoverPoints) {
+      if (branch0.SubTrees.Count != branch1.SubTrees.Count) return; // branches have to have same number of sub-trees to be valid crossover points
+      // iterate over all sub-trees
       for (int i = 0; i < branch0.SubTrees.Count; i++) {
-        // if the branches fit to the parent
-        if (gardener.GetAllowedSubFunctions(branch0.Function, i).Contains(branch1.SubTrees[i].Function) &&
-          gardener.GetAllowedSubFunctions(branch1.Function, i).Contains(branch0.SubTrees[i].Function)) {
-          // if the point is at the border of the common region we don't care about the children
-          // however if the point is not on the border of the common region we also have to check if
-          // the children of the branches fit together
-          bool fit = true;
-          if (branch0.SubTrees[i].SubTrees.Count == branch1.SubTrees[i].SubTrees.Count) {
-            for (int j = 0; j < branch0.SubTrees[i].SubTrees.Count; j++) {
-              fit = fit & gardener.GetAllowedSubFunctions(branch0.SubTrees[i].Function, j).Contains(branch1.SubTrees[i].SubTrees[j].Function);
-              fit = fit & gardener.GetAllowedSubFunctions(branch1.SubTrees[i].Function, j).Contains(branch0.SubTrees[i].SubTrees[j].Function);
+        IFunctionTree currentSubTree0 = branch0.SubTrees[i];
+        IFunctionTree currentSubTree1 = branch1.SubTrees[i];
+        // when the current sub-tree in branch1 can be attached as a child of branch0
+        // and the sub-tree of branch0 can be attached as child of branch1.
+        // note: we have to check both cases because either branch0 or branch1 can end up in the result tree
+        if (gardener.GetAllowedSubFunctions(branch0.Function, i).Contains(currentSubTree1.Function) &&
+          gardener.GetAllowedSubFunctions(branch1.Function, i).Contains(currentSubTree0.Function)) {
+          // and the sub-tree is at the border of the common region 
+          if (currentSubTree0.SubTrees.Count != currentSubTree1.SubTrees.Count) {
+            // then we have found a valid crossover point
+            CrossoverPoint p = new CrossoverPoint();
+            p.ChildIndex = i;
+            p.Parent0 = branch0;
+            p.Parent1 = branch1;
+            p.IsInternal = false;
+            crossoverPoints.Add(p);
+          } else {
+            // when the sub-trees are not on the border of the common region
+            // we also have to check if the children of the current sub-trees of branch0 and branch1 can be exchanged 
+            if (CanHaveSubTrees(gardener, currentSubTree0, currentSubTree1.SubTrees) &&
+              CanHaveSubTrees(gardener, currentSubTree1, currentSubTree0.SubTrees)) {
+              CrossoverPoint p = new CrossoverPoint();
+              p.ChildIndex = i;
+              p.Parent0 = branch0;
+              p.Parent1 = branch1;
+              p.IsInternal = true;
+              crossoverPoints.Add(p);
             }
           }
-          if (fit) {
-            CrossoverPoint p = new CrossoverPoint();
-            p.childIndex = i;
-            p.parent0 = branch0;
-            p.parent1 = branch1;
-            results.Add(p);
-          }
         }
-        results.AddRange(GetCrossOverPoints(gardener, branch0.SubTrees[i], branch1.SubTrees[i]));
+        GetCrossOverPoints(gardener, currentSubTree0, currentSubTree1, crossoverPoints);
       }
-      return results;
+    }
+
+    private bool CanHaveSubTrees(TreeGardener gardener, IFunctionTree parent, IList<IFunctionTree> subTrees) {
+      for (int i = 0; i < subTrees.Count; i++) {
+        if (!gardener.GetAllowedSubFunctions(parent.Function, i).Contains(subTrees[i].Function)) return false;
+      }
+      return true;
+    }
+
+    private void ExchangeNodes(CrossoverPoint crossoverPoint) {
+      IFunctionTree parent0 = crossoverPoint.Parent0;
+      IFunctionTree parent1 = crossoverPoint.Parent1;
+      int childIndex = crossoverPoint.ChildIndex;
+      IFunctionTree branch0 = crossoverPoint.Parent0.SubTrees[childIndex];
+      IFunctionTree branch1 = crossoverPoint.Parent1.SubTrees[childIndex];
+      // exchange the branches in the parent
+      parent0.RemoveSubTree(childIndex);
+      parent0.InsertSubTree(childIndex, branch1);
+      parent1.RemoveSubTree(childIndex);
+      parent1.InsertSubTree(childIndex, branch0);
+
+      ExchangeChildren(branch0, branch1);
+    }
+
+    private void SwapSubtrees(CrossoverPoint crossoverPoint) {
+      IFunctionTree parent0 = crossoverPoint.Parent0;
+      IFunctionTree parent1 = crossoverPoint.Parent1;
+      int childIndex = crossoverPoint.ChildIndex;
+      IFunctionTree branch0 = crossoverPoint.Parent0.SubTrees[childIndex];
+      IFunctionTree branch1 = crossoverPoint.Parent1.SubTrees[childIndex];
+      // insert branch1 into parent0 replacing branch0
+      parent0.RemoveSubTree(childIndex);
+      parent0.InsertSubTree(childIndex, branch1);
+      // insert branch0 into parent1 replacing branch1
+      parent1.RemoveSubTree(childIndex);
+      parent1.InsertSubTree(childIndex, branch0);
+    }
+
+    private void ExchangeChildren(IFunctionTree branch0, IFunctionTree branch1) {
+      List<IFunctionTree> branch0Children = new List<IFunctionTree>(branch0.SubTrees); // lists to backup subtrees
+      List<IFunctionTree> branch1Children = new List<IFunctionTree>(branch1.SubTrees);
+
+      // remove children of branch0 and branch1
+      while (branch1.SubTrees.Count > 0) branch1.RemoveSubTree(0);
+      while (branch0.SubTrees.Count > 0) branch0.RemoveSubTree(0);
+
+      // add original children of branch0 to branch1
+      foreach (IFunctionTree subTree in branch0Children) {
+        branch1.AddSubTree(subTree);
+      }
+      // add original children of branch1 to branch0
+      foreach (IFunctionTree subTree in branch1Children) {
+        branch0.AddSubTree(subTree);
+      }
     }
   }
 }
