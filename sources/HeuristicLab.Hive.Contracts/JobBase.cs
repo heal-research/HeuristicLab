@@ -26,9 +26,9 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using HeuristicLab.Core;
-using HeuristicLab.Hive.Client.Common;
+using HeuristicLab.Hive.Contracts;
 
-namespace HeuristicLab.Hive.Client.Common {
+namespace HeuristicLab.Hive.Contracts {
   [Serializable]
   abstract public class JobBase : StorableBase, IJob {
 

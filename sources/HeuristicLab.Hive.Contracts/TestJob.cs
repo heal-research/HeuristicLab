@@ -26,7 +26,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Xml;
 
-namespace HeuristicLab.Hive.Client.Common {
+namespace HeuristicLab.Hive.Contracts {
   [Serializable]
   public class TestJob: JobBase {
 

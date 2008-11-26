@@ -1,6 +1,6 @@
 ﻿using System;
 using HeuristicLab.Core;
-namespace HeuristicLab.Hive.Client.Common {
+namespace HeuristicLab.Hive.Contracts {
   public interface IJob: IStorable {
     event EventHandler JobStopped;
     long JobId { get; set; }
