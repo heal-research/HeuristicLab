@@ -29,6 +29,14 @@ namespace HeuristicLab.Selection {
   /// <summary>
   /// Reduces the sub scopes by one level, so that the right sub scope contains also the right child scopes
   /// of the left sub scope and the left sub scope represents its left child scope.
+  ///     
+  ///                   scope             scope
+  ///                   / | \             /   \
+  ///                  L ... R   =>      A     R                 
+  ///                / | \    \              / /\ \
+  ///               A ... LR   C             C D E F
+  ///                     /|\                   
+  ///                    D E F                  
   /// </summary>
   public class RightChildReducer : ReducerBase {
     /// <inheritdoc select="summary"/>
