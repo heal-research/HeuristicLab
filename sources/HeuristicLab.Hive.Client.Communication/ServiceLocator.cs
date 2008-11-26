@@ -12,7 +12,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (proxy == null) {
         proxy = new ClientCommunicatorClient(
           new NetTcpBinding(),
-          new EndpointAddress("net.tcp://192.168.132.1:9000/HiveServer/ClientCommunicator")
+          new EndpointAddress("net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator")
           );
       }
 

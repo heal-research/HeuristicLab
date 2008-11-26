@@ -36,14 +36,12 @@ namespace HeuristicLab.Hive.Client.Common {
       int max = 10;
       while(runValue < max && abort == false) {
         for (int y = 0; y < Int32.MaxValue; y++) ;
-          if (abort == true) {
-            Logging.GetInstance().Info(this.ToString(), "Job Processing aborted");
+          if (abort == true) {            
             Debug.WriteLine("Job Abort Processing");
            break;
           }
         runValue++;
-        Progress = runValue / max;
-        Logging.GetInstance().Info(this.ToString(), "Iteration " + runValue + " done");
+        Progress = (double)runValue / max;        
         Debug.WriteLine("Iteration " + runValue + " done");
         Debug.WriteLine("Progress " + Progress*100 + " Percent");
       }      
