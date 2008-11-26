@@ -60,7 +60,7 @@ namespace HeuristicLab.Hive.Server.Console {
      // foreach (ClientGroup cg in clients) {
      //   tvClientControl.Nodes.Add(cg.Name);
         foreach (ClientInfo ci in clientManager.GetAllClients()) {
-          tvClientControl.SelectedNode.Nodes.Add(ci.name);
+          tvClientControl.SelectedNode.Nodes.Add(ci.Name);
         }
      // }
       foreach (Job job in jobs) {
