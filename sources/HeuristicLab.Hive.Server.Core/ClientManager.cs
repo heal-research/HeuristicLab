@@ -24,6 +24,7 @@ namespace HeuristicLab.Hive.Server.Core {
       clients.Add(c3);
 
       ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup", ClientGroupId = 1 };
+      cg.Resources = new List<Resource>();
       cg.Resources.Add(c1);      
       cg.Resources.Add(c2);
       cg.Resources.Add(c3);
