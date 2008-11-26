@@ -47,15 +47,15 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Gets a new random number between 0 and <paramref name="maxVal"/>.
     /// </summary>
-    /// <param name="maxVal">The maximal value of the random number.</param>
-    /// <returns>A random integer number smaller than or equal to <paramref name="maxVal"/>.</returns>
+    /// <param name="maxVal">The maximal value of the random number (exclusive).</param>
+    /// <returns>A random integer number smaller than <paramref name="maxVal"/>.</returns>
     int Next(int maxVal);
     /// <summary>
     /// Gets a new random number between <paramref name="minVal"/> and <paramref name="maxVal"/>.
     /// </summary>
-    /// <param name="maxVal">The maximal value of the random number.</param>
-    /// <param name="minVal">The minimal value of the random number.</param>
-    /// <returns>A random integer number. (<paramref name="minVal"/> &lt;= x &lt;= <paramref name="maxVal"/>.</returns>
+    /// <param name="maxVal">The maximal value of the random number (exclusive).</param>
+    /// <param name="minVal">The minimal value of the random number (inclusive).</param>
+    /// <returns>A random integer number. (<paramref name="minVal"/> &lt;= x &lt; <paramref name="maxVal"/>).</returns>
     int Next(int minVal, int maxVal);
     /// <summary>
     /// Gets a new double random number.

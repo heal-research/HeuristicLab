@@ -26,11 +26,22 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Reduces the sub scopes by one level, so that the right sub scope contains also the right child scopes
+  /// of the left sub scope and the left sub scope represents its left child scope.
+  /// </summary>
   public class RightChildReducer : ReducerBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Reduces the right child of the left sub scope and adds its sub scopes to the right sub scope.
+    /// The left sub scope is also narrowed, which means it represents then its left child.
+    /// </summary>
+    /// <param name="scope">The current scope to reduce.</param>
+    /// <returns>A list of the new reduced sub scopes.</returns>
     protected override ICollection<IScope> Reduce(IScope scope) {
       IScope rightChild = scope.SubScopes[scope.SubScopes.Count - 1];
       IScope leftChild = scope.SubScopes[0];

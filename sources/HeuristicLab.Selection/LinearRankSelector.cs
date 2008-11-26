@@ -26,15 +26,33 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Selects scopes based on their rank, which has been determined through their quality.
+  /// </summary>
   public class LinearRankSelector : StochasticSelectorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="LinearRankSelector"/> with the <c>CopySelected</c> flag
+    /// set to <c>true</c>.
+    /// </summary>
     public LinearRankSelector() {
       GetVariable("CopySelected").GetValue<BoolData>().Data = true;
     }
 
+    /// <summary>
+    /// Copies or moves sub scopes from the given <paramref name="source"/> to the specified
+    /// <paramref name="target"/> according to their rank which is determined through their quality.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when no source sub scopes are available.</exception>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
+    /// <param name="selected">The number of sub scopes to copy/move.</param>
+    /// <param name="target">The target scope where to add the sub scopes.</param>
+    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
     protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
       int subScopes = source.SubScopes.Count;
       int lotSum = (subScopes * (subScopes + 1)) / 2;

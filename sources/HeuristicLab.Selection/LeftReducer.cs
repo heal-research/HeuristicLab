@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Takes only sub scopes from the left child of the tree.
+  /// </summary>
   public class LeftReducer : ReducerBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Takes only the sub scopes from the left sub scope of the tree.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <returns>All sub scopes from the left part of the tree.</returns>
     protected override ICollection<IScope> Reduce(IScope scope) {
       List<IScope> subScopes = new List<IScope>();
 

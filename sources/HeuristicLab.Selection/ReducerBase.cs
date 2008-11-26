@@ -26,7 +26,17 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Base class for all reducers.
+  /// </summary>
   public abstract class ReducerBase : OperatorBase {
+    /// <summary>
+    /// Reduces the given <paramref name="scope"/> so that it contains in the end only the reduced
+    /// elements.
+    /// </summary>
+    /// <remarks>Calls <see cref="Reduce"/>.</remarks>
+    /// <param name="scope">The scope to reduce.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       ICollection<IScope> subScopes = Reduce(scope);
 
@@ -39,6 +49,11 @@ namespace HeuristicLab.Selection {
       return null;
     }
 
+    /// <summary>
+    /// Reduces the current <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope to reduce.</param>
+    /// <returns>The reduced list of scopes, that should be kept.</returns>
     protected abstract ICollection<IScope> Reduce(IScope scope);
   }
 }

@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Merges all sub scopes of the children to one list.
+  /// </summary>
   public class MergingReducer : ReducerBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Merges all sub scopes of the sub scopes of the current <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope whose sub scopes to merge.</param>
+    /// <returns>A list of all merged subscopes of the given <paramref name="scope"/>.</returns>
     protected override ICollection<IScope> Reduce(IScope scope) {
       List<IScope> subScopes = new List<IScope>();
 

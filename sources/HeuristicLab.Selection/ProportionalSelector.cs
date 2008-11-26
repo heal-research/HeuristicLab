@@ -26,11 +26,21 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Copies or moves a number of sub scopes from a source scope to a target scope, their probability
+  /// to be selected depending on their quality.
+  /// </summary>
   public class ProportionalSelector : StochasticSelectorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ProportionalSelector"/> with three variable infos 
+    /// (<c>Maximization</c>, <c>Quality</c> and <c>Windowing</c>, being a local variable and initialized 
+    /// with <c>true</c>) and the <c>CopySelected</c> flag set to <c>true</c>.
+    /// </summary>
     public ProportionalSelector() {
       AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
@@ -40,6 +50,16 @@ namespace HeuristicLab.Selection {
       GetVariable("CopySelected").GetValue<BoolData>().Data = true;
     }
 
+    /// <summary>
+    /// Copies or movies a number of sub scopes (<paramref name="selected"/>) in the given 
+    /// <paramref name="source"/> to the given <paramref name="target"/>, selection takes place with respect
+    /// to the quality of the scope.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
+    /// <param name="selected">The number of sub scopes to copy/move.</param>
+    /// <param name="target">The target scope where to add the sub scopes.</param>
+    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
     protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
       bool maximization = GetVariableValue<BoolData>("Maximization", source, true).Data;
       IVariableInfo qualityInfo = GetVariableInfo("Quality");
@@ -73,6 +93,18 @@ namespace HeuristicLab.Selection {
       }
     }
 
+    /// <summary>
+    /// Calculates the qualities of the sub scopes of the given <paramref name="source"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the sub scopes are not sorted according
+    /// to their solution qualities or if the quality value is beyond zero and the <c>windowing</c>
+    /// flag is set to <c>false</c>.</exception>
+    /// <param name="source">The scource scope where to calculate the qualities.</param>
+    /// <param name="maximization">Boolean flag whether is a maximization problem.</param>
+    /// <param name="qualityInfo">The quality variable info.</param>
+    /// <param name="windowing">Boolean flag whether the windowing strategy shall be applied.</param>
+    /// <param name="qualities">Output parameter; contains all qualities of the sub scopes.</param>
+    /// <param name="qualitySum">Output parameter; the sum of all qualities.</param>
     private void GenerateQualitiesArray(IScope source, bool maximization, IVariableInfo qualityInfo, bool windowing, out double[] qualities, out double qualitySum) {
       int subScopes = source.SubScopes.Count;
       qualities = new double[subScopes];

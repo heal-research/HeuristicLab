@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Moves or copies a defined number of the best sub scopes from a source scope to a target scope.
+  /// </summary>
   public class TournamentSelector : StochasticSelectorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TournamentSelector"/> with three variable infos 
+    /// (<c>Maximization</c>, <c>Quality</c> and <c>GroupSize</c>, being a local variable and set to 
+    /// <c>2</c>) with <c>CopySelected</c> set to <c>true</c>.
+    /// </summary>
     public TournamentSelector() {
       AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
@@ -40,6 +49,16 @@ namespace HeuristicLab.Selection {
       GetVariable("CopySelected").GetValue<BoolData>().Data = true;
     }
 
+    /// <summary>
+    /// Copies or moves the best sub scopes from the given <paramref name="source"/> to the specified
+    /// <paramref name="target"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when no source sub scopes are available.</exception>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
+    /// <param name="selected">The number of sub scopes to copy/move.</param>
+    /// <param name="target">The target scope where to add the sub scopes.</param>
+    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
     protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
       IVariableInfo qualityInfo = GetVariableInfo("Quality");
       bool maximization = GetVariableValue<BoolData>("Maximization", source, true).Data;

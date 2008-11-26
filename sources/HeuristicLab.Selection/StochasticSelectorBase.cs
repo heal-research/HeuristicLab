@@ -27,13 +27,29 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Selection {
+  /// <summary>
+  /// Base class for all selectors that use a random number generator.
+  /// </summary>
   public abstract class StochasticSelectorBase : SelectorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="StochasticSelectorBase"/> with two variable infos
+    /// (<c>Random</c> and <c>Selected</c>).
+    /// </summary>
     public StochasticSelectorBase()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("Selected", "Number of selected sub-scopes", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Copies or moves randomly chosen sub scopes from the given <paramref name="source"/> to the specified 
+    /// <paramref name="target"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Select(HeuristicLab.Core.IRandom, HeuristicLab.Core.IScope, int,
+    /// HeuristicLab.Core.IScope, bool)"/></remarks>
+    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
+    /// <param name="target">The target scope where to add the sub scopes.</param>
+    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
     protected sealed override void Select(IScope source, IScope target, bool copySelected) {
       IRandom random = GetVariableValue<IRandom>("Random", source, true);
       IntData selected = GetVariableValue<IntData>("Selected", source, true);
@@ -41,6 +57,15 @@ namespace HeuristicLab.Selection {
       Select(random, source, selected.Data, target, copySelected);
     }
 
+    /// <summary>
+    /// Copies or moves randomly chosen sub scopes from the given <paramref name="source"/> to the specified 
+    /// <paramref name="target"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="source">The source scope from where to copy/move the sub scopes.</param>
+    /// <param name="selected">The number of sub scopes to copy/move.</param>
+    /// <param name="target">The target scope where to add the sub scopes.</param>
+    /// <param name="copySelected">Boolean flag whether the sub scopes shall be moved or copied.</param>
     protected abstract void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected);
   }
 }
