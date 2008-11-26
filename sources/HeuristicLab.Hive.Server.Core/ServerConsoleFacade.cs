@@ -8,6 +8,8 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 namespace HeuristicLab.Hive.Server.Core {
   public class ServerConsoleFacade: IServerConsoleFacade {
     private IClientManager clientManager = new ClientManager();
+    private IJobManager jobManager = new JobManager();
+    private IUserRoleManager userRoleManager = new UserRoleManager();
     
     #region IClientManager Members
 
@@ -28,7 +30,7 @@ namespace HeuristicLab.Hive.Server.Core {
     #region IJobManager Members
 
     public List<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetAllJobs() {
-      throw new NotImplementedException();
+      return jobManager.GetAllJobs();
     }
 
     #endregion
@@ -36,11 +38,11 @@ namespace HeuristicLab.Hive.Server.Core {
     #region IUserRoleManager Members
 
     public List<HeuristicLab.Hive.Contracts.BusinessObjects.User> GetAllUsers() {
-      throw new NotImplementedException();
+      return userRoleManager.GetAllUsers();
     }
 
     public List<HeuristicLab.Hive.Contracts.BusinessObjects.UserGroup> GetAllUserGroups() {
-      throw new NotImplementedException();
+      return userRoleManager.GetAllUserGroups();
     }
 
     #endregion
