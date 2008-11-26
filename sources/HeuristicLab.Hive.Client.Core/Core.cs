@@ -75,6 +75,7 @@ namespace HeuristicLab.Hive.Client.Core {
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
+      clientCommunicator.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(ClientCommunicator_SendJobResultCompleted);
       clientCommunicator.LoginAsync(clientInfo);
 
       MessageQueue queue = MessageQueue.GetInstance();
@@ -140,14 +141,17 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private void GetFinishedJob(object jobId) {
       long jId = (long)jobId;
-      byte[] obj = engines[jId].GetFinishedJob();
+      byte[] sJob = engines[jId].GetFinishedJob();
       
+      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = null };
+      clientCommunicator.SendJobResultAsync(jobResult, true);
+
       AppDomain.Unload(appDomains[jId]);
       appDomains.Remove(jId);
       engines.Remove(jId);
-
       Status.CurrentJobs--;
-      Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());      
+      Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());        
+
     }
 
     private void GetSnapshot(object jobId) {
@@ -158,34 +162,27 @@ namespace HeuristicLab.Hive.Client.Core {
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
       bool sandboxed = false;
 
-      IJob job = new TestJob { JobId = e.Result.JobId };
+      //IJob job = new TestJob { JobId = e.Result.JobId };
 
       PluginManager pm = PluginManager.Manager;
       AppDomain appDomain =  pm.CreateAndInitAppDomain("AppDomain");
 
       //AppDomain appDomain = CreateNewAppDomain(sandboxed);
-      appDomains.Add(job.JobId, appDomain);
+      appDomains.Add(e.Result.JobId, appDomain);
 
       Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-      engine.JobId = job.JobId;
+      engine.JobId = e.Result.JobId;
       engine.Queue = MessageQueue.GetInstance();
-      engine.Start();
-      engines.Add(engine.JobId, engine);
+      engine.Start(e.Result.SerializedJob);
+      engines.Add(e.Result.JobId, engine);
 
       Status.CurrentJobs++;
 
       Debug.WriteLine("Increment CurrentJobs to:"+Status.CurrentJobs.ToString());
     }
 
-    /// <summary>
-    /// Simulator Class for new Jobs. will be replaced with fetching Jobs from the Interface
-    /// </summary>
-    /// <returns></returns>
-    private IJob CreateNewJob() {
-      Random random = new Random();
-      IJob job = new TestJob();
-      job.JobId = random.Next();
-      return job;
+    void ClientCommunicator_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {      
+      // TODO Removing of the Engines & AppDomains should happen here, not in the GetFinishedJob Method.
     }
   }
 }

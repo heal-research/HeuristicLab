@@ -37,7 +37,8 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }
 
-    public void Start() {
+    public void Start(byte[] serializedJob) {      
+      Job = (IJob)PersistenceManager.RestoreFromGZip(serializedJob);
       Job.JobStopped += new EventHandler(Job_JobStopped);
       Job.Start();
     }
