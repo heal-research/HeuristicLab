@@ -37,89 +37,110 @@ namespace HeuristicLab.GP {
   /// Size Fair and Homologous Tree Genetic Programming Crossovers, 
   /// Genetic Programming and Evolvable Machines, Vol. 1, Number 1/2, pp. 95-119, April 2000
   /// </summary>
-  public class SizeFairCrossOver : GPCrossoverBase {
+  public class SizeFairCrossOver : SizeConstrictedGPCrossoverBase {
     private const int MAX_RECOMBINATION_TRIES = 20;
-    public override string Description {
-      get {
-        return @"";
-      }
-    }
-    public SizeFairCrossOver()
-      : base() {
-      AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
+    // private data structure for crossover points
+    protected class CrossoverPoint {
+      public IFunctionTree tree;
+      public int branchSize;
+      public List<int> trail;
     }
 
-    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
-      int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
-      int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
-
-      // when tree0 is terminal then try to cross into tree1, when tree1 is also terminal just return tree0 unchanged.
-      IFunctionTree newTree;
-      if(tree0.SubTrees.Count > 0) {
-        newTree = Cross(gardener, tree0, tree1, random, maxTreeSize, maxTreeHeight);
-      } else if(tree1.SubTrees.Count > 0) {
-        newTree = Cross(gardener, tree1, tree0, random, maxTreeSize, maxTreeHeight);
-      } else newTree = tree0;
-
-      // check if the height and size of the new tree are still in the allowed bounds
-      Debug.Assert(newTree.Height <= maxTreeHeight);
-      Debug.Assert(newTree.Size <= maxTreeSize);
-      return newTree;
-    }
-
-    private IFunctionTree Cross(TreeGardener gardener, IFunctionTree tree0, IFunctionTree tree1, MersenneTwister random, int maxTreeSize, int maxTreeHeight) {
+    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       int tries = 0;
       IFunctionTree insertedBranch = null;
-      IFunctionTree crossoverPoint = null;
+      IFunctionTree parent = null;
       int removedBranchIndex = 0;
       do {
         // select a random suboperator of the 'receiving' tree
-        while(crossoverPoint == null) crossoverPoint = gardener.GetRandomParentNode(tree0);
-        removedBranchIndex = random.Next(crossoverPoint.SubTrees.Count);
-        IFunctionTree removedBranch = crossoverPoint.SubTrees[removedBranchIndex];
-        IList<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(crossoverPoint.Function, removedBranchIndex);
-        int removedBranchSize = removedBranch.Size;
-        int maxBranchSize = maxTreeSize - (tree0.Size - removedBranchSize);
-        int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(tree0, crossoverPoint);
-        insertedBranch = GetReplacementBranch(random, gardener, allowedFunctions, tree1, removedBranchSize, maxBranchSize, maxBranchHeight);
-      } while(insertedBranch == null && tries++ < MAX_RECOMBINATION_TRIES);
+        while (parent == null) parent = gardener.GetRandomParentNode(tree0);
+        removedBranchIndex = random.Next(parent.SubTrees.Count);
+        insertedBranch = GetReplacementBranch(random, gardener, tree0, parent, removedBranchIndex, tree1, maxTreeSize, maxTreeHeight);
+      } while (insertedBranch == null && tries++ < MAX_RECOMBINATION_TRIES);
 
-      if(insertedBranch != null) {
+      if (insertedBranch != null) {
         // replace the branch below the crossoverpoint with the selected branch from root1
-        crossoverPoint.RemoveSubTree(removedBranchIndex);
-        crossoverPoint.InsertSubTree(removedBranchIndex, insertedBranch);
+        parent.RemoveSubTree(removedBranchIndex);
+        parent.InsertSubTree(removedBranchIndex, insertedBranch);
       }
       return tree0;
     }
 
-    private IFunctionTree GetReplacementBranch(IRandom random, TreeGardener gardener, IList<IFunction> allowedFunctions, IFunctionTree tree, int removedBranchSize, int maxBranchSize, int maxBranchHeight) {
-      var branches = gardener.GetAllSubTrees(tree).Where(t => allowedFunctions.Contains(t.Function) && t.Size <= maxBranchSize && t.Height <= maxBranchHeight)
-        .Select(t => new { Tree = t, Size = t.Size }).Where(s => s.Size < 2 * removedBranchSize + 1);
+    private IFunctionTree GetReplacementBranch(MersenneTwister random, TreeGardener gardener, IFunctionTree intoTree, IFunctionTree parent, int replacedBranchIndex, IFunctionTree fromTree, int maxTreeSize, int maxTreeHeight) {
+      IList<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent.Function, replacedBranchIndex);
+      int removedBranchSize = parent.SubTrees[replacedBranchIndex].Size;
+      int maxBranchSize = maxTreeSize - (intoTree.Size - removedBranchSize);
+      int maxBranchHeight = maxTreeHeight - gardener.GetBranchLevel(intoTree, parent);  // returns 1 if intoTree==parent and 2 if parent is a child of intoTree
+      List<int> replacedTrail = GetTrail(intoTree, parent);
+      replacedTrail.Add(replacedBranchIndex);
 
-      var shorterBranches = branches.Where(t => t.Size < removedBranchSize);
-      var longerBranches = branches.Where(t => t.Size > removedBranchSize);
-      var equalLengthBranches = branches.Where(t => t.Size == removedBranchSize);
+      List<CrossoverPoint> shorterBranches = new List<CrossoverPoint>();
+      List<CrossoverPoint> longerBranches = new List<CrossoverPoint>();
+      List<CrossoverPoint> equalLengthBranches = new List<CrossoverPoint>();
 
-      if(shorterBranches.Count() == 0 || longerBranches.Count() == 0) {
-        if(equalLengthBranches.Count() == 0) {
-          return null;
-        } else {
-          return equalLengthBranches.ElementAt(random.Next(equalLengthBranches.Count())).Tree;
-        }
-      } else {
-        // invariant: |shorterBranches| > 0  and |longerBranches| > 0
-        double pEqualLength = equalLengthBranches.Count() > 0 ? 1.0 / removedBranchSize : 0.0;
-        double pLonger = (1.0 - pEqualLength) / (longerBranches.Count() * (1.0 + longerBranches.Average(t => t.Size) / shorterBranches.Average(t => t.Size)));
+      FindPossibleBranches(fromTree, allowedFunctions, maxBranchSize, maxBranchHeight, removedBranchSize, shorterBranches, equalLengthBranches, longerBranches, new List<int>());
+
+      if (shorterBranches.Count > 0 && longerBranches.Count > 0) {
+        double pEqualLength = equalLengthBranches.Count > 0 ? 1.0 / removedBranchSize : 0.0;
+        double pLonger = (1.0 - pEqualLength) / (longerBranches.Count * (1.0 + longerBranches.Average(p => p.branchSize) / shorterBranches.Average(p => p.branchSize)));
         double pShorter = (1.0 - pEqualLength - pLonger);
 
         double r = random.NextDouble();
-        if(r < pLonger) {
-          return longerBranches.ElementAt(random.Next(longerBranches.Count())).Tree;
-        } else if(r < pLonger + pShorter) {
-          return shorterBranches.ElementAt(random.Next(shorterBranches.Count())).Tree;
+        if (r < pLonger) {
+          return SelectReplacement(random, replacedTrail, longerBranches);
+        } else if (r < pLonger + pShorter) {
+          return SelectReplacement(random, replacedTrail, shorterBranches);
         } else {
-          return equalLengthBranches.ElementAt(random.Next(equalLengthBranches.Count())).Tree;
+          return SelectReplacement(random, replacedTrail, equalLengthBranches);
+        }
+      } else if (equalLengthBranches.Count > 0) {
+        return SelectReplacement(random, replacedTrail, equalLengthBranches);
+      } else {
+        return null;
+      }
+    }
+
+    protected virtual IFunctionTree SelectReplacement(MersenneTwister random, List<int> replacedTrail, List<CrossoverPoint> crossoverPoints) {
+      return crossoverPoints[random.Next(crossoverPoints.Count)].tree;
+    }
+
+    private void FindPossibleBranches(IFunctionTree tree, IList<IFunction> allowedFunctions, int maxBranchSize, int maxBranchHeight, int removedBranchSize,
+      List<CrossoverPoint> shorterBranches, List<CrossoverPoint> equalLengthBranches, List<CrossoverPoint> longerBranches, List<int> trail) {
+      int treeSize = tree.Size;
+      if (allowedFunctions.Contains(tree.Function) && treeSize <= maxBranchSize && tree.Height <= maxBranchHeight) {
+        CrossoverPoint p = new CrossoverPoint();
+        p.branchSize = treeSize;
+        p.tree = tree;
+        p.trail = new List<int>(trail);
+        if (treeSize < removedBranchSize) shorterBranches.Add(p);
+        else if (treeSize > removedBranchSize) longerBranches.Add(p);
+        else equalLengthBranches.Add(p);
+      }
+      for (int i = 0; i < tree.SubTrees.Count; i++) {
+        trail.Add(i);
+        FindPossibleBranches(tree.SubTrees[i], allowedFunctions, maxBranchSize, maxBranchHeight, removedBranchSize, shorterBranches, equalLengthBranches, longerBranches, trail);
+        trail.RemoveAt(trail.Count - 1);
+      }
+    }
+
+    private List<int> GetTrail(IFunctionTree root, IFunctionTree branch) {
+      List<int> trail = new List<int>();
+      GetTrail(root, branch, trail);
+      trail.Reverse();
+      trail.RemoveAt(trail.Count - 1);
+      return trail;
+    }
+    private void GetTrail(IFunctionTree root, IFunctionTree branch, List<int> trail) {
+      if (root == branch) {
+        trail.Add(-1); // add flag that there was a match
+        return;
+      }
+
+      for (int i = 0; i < root.SubTrees.Count; i++) {
+        GetTrail(root.SubTrees[i], branch, trail);
+        if (trail.Count>0) {
+          trail.Add(i);
+          return;
         }
       }
     }

@@ -31,8 +31,8 @@ using HeuristicLab.Constraints;
 using System.Diagnostics;
 
 namespace HeuristicLab.GP {
-  public class StandardCrossOver : GPCrossoverBase {
-    private const int MAX_RECOMBINATION_TRIES = 100;
+  public class StandardCrossOver : SizeConstrictedGPCrossoverBase {
+    private const int MAX_RECOMBINATION_TRIES = 20;
 
     public override string Description {
       get {
@@ -42,32 +42,8 @@ When recombination with N0 and N1 would create a tree that is too large or inval
 until a valid configuration is found.";
       }
     }
-    public StandardCrossOver()
-      : base() {
-      AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
-    }
 
-    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
-      int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
-      int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
-
-      // when tree0 is terminal then try to cross into tree1, when tree1 is also terminal just return tree0 unchanged.
-      IFunctionTree newTree;
-      if(tree0.SubTrees.Count > 0) {
-        newTree = Cross(gardener, tree0, tree1, random, maxTreeSize, maxTreeHeight);
-      } else if(tree1.SubTrees.Count > 0) {
-        newTree = Cross(gardener, tree1, tree0, random, maxTreeSize, maxTreeHeight);
-      } else newTree = tree0;
-
-      // check if the size and height of the new tree are still within the allowed bounds
-      Debug.Assert(newTree.Height <= maxTreeHeight);
-      Debug.Assert(newTree.Size <= maxTreeSize);
-      return newTree;
-    }
-
-
-    private IFunctionTree Cross(TreeGardener gardener, IFunctionTree tree0, IFunctionTree tree1, MersenneTwister random, int maxTreeSize, int maxTreeHeight) {
+    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       int tries = 0;
       List<IFunctionTree> allowedCrossoverPoints = null;
       IFunctionTree parent0;

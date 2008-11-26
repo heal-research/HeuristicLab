@@ -32,8 +32,6 @@ using System.Diagnostics;
 
 namespace HeuristicLab.GP {
   public abstract class GPCrossoverBase : OperatorBase {
-    private const int MAX_RECOMBINATION_TRIES = 100;
-
     public GPCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(MersenneTwister), VariableKind.In));
