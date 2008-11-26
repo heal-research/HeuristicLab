@@ -29,15 +29,15 @@
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
-      this.treeView1 = new System.Windows.Forms.TreeView();
+      this.tvClientControl = new System.Windows.Forms.TreeView();
       this.listView1 = new System.Windows.Forms.ListView();
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
-      this.treeView3 = new System.Windows.Forms.TreeView();
+      this.tvJobControl = new System.Windows.Forms.TreeView();
       this.listView3 = new System.Windows.Forms.ListView();
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
-      this.treeView4 = new System.Windows.Forms.TreeView();
+      this.tvUserControl = new System.Windows.Forms.TreeView();
       this.listView4 = new System.Windows.Forms.ListView();
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
@@ -78,7 +78,7 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.close_Click);
       // 
@@ -114,7 +114,7 @@
       // 
       // scClientControl.Panel1
       // 
-      this.scClientControl.Panel1.Controls.Add(this.treeView1);
+      this.scClientControl.Panel1.Controls.Add(this.tvClientControl);
       // 
       // scClientControl.Panel2
       // 
@@ -123,13 +123,13 @@
       this.scClientControl.SplitterDistance = 139;
       this.scClientControl.TabIndex = 0;
       // 
-      // treeView1
+      // tvClientControl
       // 
-      this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView1.Location = new System.Drawing.Point(0, 0);
-      this.treeView1.Name = "treeView1";
-      this.treeView1.Size = new System.Drawing.Size(139, 346);
-      this.treeView1.TabIndex = 0;
+      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.tvClientControl.Name = "tvClientControl";
+      this.tvClientControl.Size = new System.Drawing.Size(139, 346);
+      this.tvClientControl.TabIndex = 0;
       // 
       // listView1
       // 
@@ -159,7 +159,7 @@
       // 
       // scJobControl.Panel1
       // 
-      this.scJobControl.Panel1.Controls.Add(this.treeView3);
+      this.scJobControl.Panel1.Controls.Add(this.tvJobControl);
       // 
       // scJobControl.Panel2
       // 
@@ -168,13 +168,13 @@
       this.scJobControl.SplitterDistance = 139;
       this.scJobControl.TabIndex = 1;
       // 
-      // treeView3
+      // tvJobControl
       // 
-      this.treeView3.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView3.Location = new System.Drawing.Point(0, 0);
-      this.treeView3.Name = "treeView3";
-      this.treeView3.Size = new System.Drawing.Size(139, 346);
-      this.treeView3.TabIndex = 2;
+      this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.tvJobControl.Name = "tvJobControl";
+      this.tvJobControl.Size = new System.Drawing.Size(139, 346);
+      this.tvJobControl.TabIndex = 2;
       // 
       // listView3
       // 
@@ -204,7 +204,7 @@
       // 
       // scUserControl.Panel1
       // 
-      this.scUserControl.Panel1.Controls.Add(this.treeView4);
+      this.scUserControl.Panel1.Controls.Add(this.tvUserControl);
       // 
       // scUserControl.Panel2
       // 
@@ -213,13 +213,13 @@
       this.scUserControl.SplitterDistance = 139;
       this.scUserControl.TabIndex = 1;
       // 
-      // treeView4
+      // tvUserControl
       // 
-      this.treeView4.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView4.Location = new System.Drawing.Point(0, 0);
-      this.treeView4.Name = "treeView4";
-      this.treeView4.Size = new System.Drawing.Size(139, 346);
-      this.treeView4.TabIndex = 1;
+      this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvUserControl.Location = new System.Drawing.Point(0, 0);
+      this.tvUserControl.Name = "tvUserControl";
+      this.tvUserControl.Size = new System.Drawing.Size(139, 346);
+      this.tvUserControl.TabIndex = 1;
       // 
       // listView4
       // 
@@ -289,15 +289,15 @@
     private System.Windows.Forms.TabPage tpJobControl;
     private System.Windows.Forms.SplitContainer scClientControl;
     private System.Windows.Forms.TabPage tpUserControl;
-    private System.Windows.Forms.TreeView treeView1;
+    private System.Windows.Forms.TreeView tvClientControl;
     private System.Windows.Forms.ListView listView1;
     private System.Windows.Forms.SplitContainer scJobControl;
     private System.Windows.Forms.ListView listView3;
     private System.Windows.Forms.SplitContainer scUserControl;
     private System.Windows.Forms.TreeView treeView2;
     private System.Windows.Forms.ListView listView2;
-    private System.Windows.Forms.TreeView treeView3;
-    private System.Windows.Forms.TreeView treeView4;
+    private System.Windows.Forms.TreeView tvJobControl;
+    private System.Windows.Forms.TreeView tvUserControl;
     private System.Windows.Forms.ListView listView4;
   }
 }

@@ -59,12 +59,6 @@ namespace HeuristicLab.Hive.Server.Console {
         ServiceLocator.Address = newIp;
         ServiceLocator.Port = this.tbPort.Text;
 
-        IClientManager clientManager =
-          ServiceLocator.GetClientManager();
-
-        List<ClientInfo> clients = 
-          clientManager.GetAllClients();
-
         this.Visible = false;
         information = new HiveServerManagementConsole();
         information.closeFormEvent += new closeForm(enableForm);

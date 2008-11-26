@@ -27,6 +27,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -36,8 +38,38 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public event closeForm closeFormEvent;
 
+    List<ClientGroup> clients = null;
+    List<Job> jobs = null;
+    List<UserGroup> userGroups = null;
+    
     public HiveServerManagementConsole() {
       InitializeComponent();
+
+      IClientManager clientManager =
+        ServiceLocator.GetClientManager();
+
+      IJobManager jobManager =
+        ServiceLocator.GetJobManager();
+
+      IUserRoleManager userRoleManager =
+        ServiceLocator.GetUserRoleManager();
+
+     // clients = clientManager.GetAllClientGroups();
+      jobs = jobManager.GetAllJobs();
+      userGroups = userRoleManager.GetAllUserGroups();
+     // foreach (ClientGroup cg in clients) {
+     //   tvClientControl.Nodes.Add(cg.Name);
+        foreach (ClientInfo ci in clientManager.GetAllClients()) {
+          tvClientControl.SelectedNode.Nodes.Add(ci.name);
+        }
+     // }
+      foreach (Job job in jobs) {
+        tvJobControl.Nodes.Add(job.JobId.ToString());
+      }
+      foreach (UserGroup ug in userGroups) {
+        tvUserControl.Nodes.Add(ug.UserGroupId.ToString());
+      }
+
     }
 
     /// <summary>
