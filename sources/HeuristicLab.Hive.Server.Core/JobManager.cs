@@ -7,10 +7,21 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager {
+
+    List<Job> jobs;
+
     #region IJobManager Members
 
+    public JobManager() {
+      jobs = new List<Job>();
+
+      jobs.Add(new Job { JobId = 1, State = State.idle });
+      jobs.Add(new Job { JobId = 2, State = State.idle });
+      jobs.Add(new Job { JobId = 3, State = State.idle });
+    }
+
     public List<Job> GetAllJobs() {
-      throw new NotImplementedException();
+      return jobs;
     }
 
     #endregion
