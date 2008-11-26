@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public long ResourceId { get; set; }
     [DataMember]
-    public string name { get; set; }
+    public string Name { get; set; }
 
   }
 }

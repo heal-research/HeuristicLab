@@ -15,11 +15,20 @@ namespace HeuristicLab.Hive.Server.Core {
       clients = new List<ClientInfo>();
       clientGroups = new List<ClientGroup>();
 
-      clients.Add(new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2500, Memory=4096, ResourceId=1, State=State.idle });
-      clients.Add(new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2100, Memory=2048, ResourceId=2, State=State.idle });
-      clients.Add(new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=3400, Memory=4096, ResourceId=3, State=State.calculating });
+      ClientInfo c1 = new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2500, Memory=4096, ResourceId=1, State=State.idle }
+      ClientInfo c2 = new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2100, Memory=2048, ResourceId=2, State=State.idle }
+      ClientInfo c3 = new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=3400, Memory=4096, ResourceId=3, State=State.calculating }
 
-      clientGroups.Add(new ClientGroup { ResourceId = 4, Name = "SuperGroup", ClientGroupId = 1 });
+      clients.Add(c1);
+      clients.Add(c2);
+      clients.Add(c3);
+
+      ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup", ClientGroupId = 1 };
+      cg.Resources.Add(c1);      
+      cg.Resources.Add(c2);
+      cg.Resources.Add(c3);
+
+      clientGroups.Add(cg);
     }
 
     #region IClientManager Members
