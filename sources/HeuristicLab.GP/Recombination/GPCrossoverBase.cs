@@ -63,7 +63,7 @@ namespace HeuristicLab.GP {
           parent1 = tmp;
         }
 
-        IFunctionTree child = Cross(gardener, random, parent0, parent1);
+        IFunctionTree child = Cross(scope, gardener, random, parent0, parent1);
         Debug.Assert(gardener.IsValidTree(child));
         IScope childScope = new Scope(i.ToString());
         childScope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), child));
@@ -75,7 +75,7 @@ namespace HeuristicLab.GP {
       return null;
     }
 
-    internal abstract IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1);
+    internal abstract IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1);
 
     private IFunctionTree TakeNextParent(IScope scope) {
       IFunctionTree parent = GetVariableValue<IFunctionTree>("FunctionTree", scope.SubScopes[0], false);
