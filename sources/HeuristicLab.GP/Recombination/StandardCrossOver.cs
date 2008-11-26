@@ -60,8 +60,9 @@ until a valid configuration is found.";
         newTree = Cross(gardener, tree1, tree0, random, maxTreeSize, maxTreeHeight);
       } else newTree = tree0;
 
-      // check if the new tree is valid and if the height of is still in the allowed bounds (we are not so strict for the max-size)
-      Debug.Assert(gardener.IsValidTree(newTree) && newTree.Height <= maxTreeHeight && newTree.Size <= maxTreeSize);
+      // check if the size and height of the new tree are still within the allowed bounds
+      Debug.Assert(newTree.Height <= maxTreeHeight);
+      Debug.Assert(newTree.Size <= maxTreeSize);
       return newTree;
     }
 
