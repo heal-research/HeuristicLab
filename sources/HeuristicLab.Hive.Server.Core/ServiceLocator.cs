@@ -19,19 +19,27 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Hive.Server.ADODataAccess {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.ADODataAccess-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.ADODataAccess-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Server.Core-3.2")]
-  public class HiveServerADODataAccessPlugin : PluginBase {
+/// <summary>
+/// The service locator for the server core
+/// </summary>
+class ServiceLocator {
+  private static DiscoveryService discoveryService =
+    new DiscoveryService();
 
-    static HiveServerADODataAccessPlugin() {
+  private static IClientAdapter clientAdapter = null;
+  
+  /// <summary>
+  /// Gets the client database adapter
+  /// </summary>
+  /// <returns></returns>
+  internal static IClientAdapter GetClientAdapter() {
+    if (clientAdapter == null) {
+      clientAdapter = discoveryService.GetInstances<IClientAdapter>()[0];
     }
+
+    return clientAdapter;
   }
 }

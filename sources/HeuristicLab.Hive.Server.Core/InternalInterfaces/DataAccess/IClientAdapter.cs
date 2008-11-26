@@ -21,17 +21,38 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Server.ADODataAccess {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.ADODataAccess-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.ADODataAccess-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Server.Core-3.2")]
-  public class HiveServerADODataAccessPlugin : PluginBase {
+namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+  /// <summary>
+  /// The client database adapter
+  /// </summary>
+  public interface IClientAdapter {
+    /// <summary>
+    /// Save or update the client
+    /// </summary>
+    /// <param name="client"></param>
+    void UpdateClient(ClientInfo client);
 
-    static HiveServerADODataAccessPlugin() {
-    }
+    /// <summary>
+    /// Get the client with the specified ID
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    ClientInfo GetClientById(Guid clientId);
+
+    /// <summary>
+    /// Get all clients
+    /// </summary>
+    /// <returns></returns>
+    ICollection<ClientInfo> GetAllClients();
+
+    /// <summary>
+    /// Deletes the client
+    /// </summary>
+    /// <param name="client"></param>
+    bool DeleteClient(ClientInfo client);
   }
 }

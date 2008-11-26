@@ -21,17 +21,38 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Server.ADODataAccess {
-  [ClassInfo(Name = "HeuristicLab.Hive.Server.ADODataAccess-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Hive.Server.ADODataAccess-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Hive.Server.Core-3.2")]
-  public class HiveServerADODataAccessPlugin : PluginBase {
+namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+  /// <summary>
+  /// The resource database adapter
+  /// </summary>
+  public interface IResourceAdapter {
+    /// <summary>
+    /// Save or update the resource
+    /// </summary>
+    /// <param name="client"></param>
+    void UpdateResource(Resource resource);
 
-    static HiveServerADODataAccessPlugin() {
-    }
+    /// <summary>
+    /// Get the resource with the specified ID
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    ClientInfo GetResourceById(long resourceId);
+
+    /// <summary>
+    /// Get all resuorces
+    /// </summary>
+    /// <returns></returns>
+    ICollection<Resource> GetAllResources();
+
+    /// <summary>
+    /// Deletes the resource
+    /// </summary>
+    /// <param name="client"></param>
+    bool DeleteResource(Resource resource);
   }
 }
