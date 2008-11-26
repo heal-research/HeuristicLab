@@ -15,5 +15,7 @@ namespace HeuristicLab.Hive.Contracts {
   public class ResponseJob : Response {
     [DataMember]
     public long JobId { get; set; }
+    [DataMember]
+    public byte[] SerializedJob { get; set; }
   }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -55,7 +56,8 @@ namespace HeuristicLab.Hive.Server.Core {
       ResponseJob response = new ResponseJob();
       lock (this) {
         response.JobId = jobs.Last.Value;
-        jobs.RemoveLast(); 
+        jobs.RemoveLast();
+        response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
       }
       
       response.Success = true;
