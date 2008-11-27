@@ -36,6 +36,9 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using System.Runtime.Remoting.Messaging;
 using HeuristicLab.PluginInfrastructure;
+using System.ServiceModel;
+using HeuristicLab.Hive.Client.Communication.Interfaces;
+using System.ServiceModel.Description;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -67,6 +70,36 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
+       DiscoveryService discService =
+        new DiscoveryService();
+      IClientConsoleCommunicator[] clientCommunicatorInstances =
+        discService.GetInstances<IClientConsoleCommunicator>();
+
+      if (clientCommunicatorInstances.Length > 0) {
+        ServiceHost serviceHost =
+                new ServiceHost(clientCommunicatorInstances[0].GetType(),
+                  new Uri("http://localhost:9000/ClientConsole"));
+
+        System.ServiceModel.Channels.Binding binding =
+          new NetNamedPipeBinding();
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IClientConsoleCommunicator),
+              binding,
+              "ClientConsoleCommunicator");
+
+        ServiceMetadataBehavior behavior =
+              new ServiceMetadataBehavior();
+        serviceHost.Description.Behaviors.Add(behavior);
+
+        serviceHost.AddServiceEndpoint(
+            typeof(IMetadataExchange),
+            MetadataExchangeBindings.CreateMexNamedPipeBinding(),
+            "mex");
+
+        serviceHost.Open();
+      }
+
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);

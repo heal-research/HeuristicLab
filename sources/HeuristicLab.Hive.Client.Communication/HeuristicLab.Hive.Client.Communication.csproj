@@ -50,7 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientConsoleCommunicator.cs" />
+    <Compile Include="ClientConsole\ConnectionContainer.cs" />
+    <Compile Include="ClientConsole\JobStatus.cs" />
+    <Compile Include="ClientConsole\StatusCommons.cs" />
     <Compile Include="CommunicationsPlugin.cs" />
+    <Compile Include="Interfaces\IClientConsoleCommunicator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerProxy.cs" />
     <Compile Include="ServiceLocator.cs" />
