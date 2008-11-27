@@ -41,6 +41,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return userRoleManager.GetAllUsers();
     }
 
+    public void AddNewUser(User user) {
+      userRoleManager.AddNewUser(user);
+    }
+
     public List<HeuristicLab.Hive.Contracts.BusinessObjects.UserGroup> GetAllUserGroups() {
       return userRoleManager.GetAllUserGroups();
     }

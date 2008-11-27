@@ -6,6 +6,9 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Core;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using System.Resources;
+using System.Reflection;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -16,7 +19,13 @@ namespace HeuristicLab.Hive.Server.Core {
     LinkedList<long> jobs;
     int nrOfJobs = 1;
 
+    IClientAdapter clientAdapter;
+    ResourceManager rm;
+
     public ClientCommunicator() {
+      clientAdapter = ServiceLocator.GetClientAdapter();
+      rm = new ResourceManager("HiveServerMessages.resx", Assembly.GetExecutingAssembly()); 
+
       jobs = new LinkedList<long>();
       for (long i = 0; i < nrOfJobs; i++) {
         jobs.AddFirst(i);
@@ -26,14 +35,26 @@ namespace HeuristicLab.Hive.Server.Core {
     #region IClientCommunicator Members
 
     public Response Login(ClientInfo clientInfo) {
-      if (clients == null)
-        clients = new List<ClientInfo>();
-
-      clients.Add(clientInfo);
-
       Response response = new Response();
       response.Success = true;
-      response.StatusMessage = "Client with GUID " + clientInfo.ClientId + " successuflly logged in";
+
+      ICollection<ClientInfo> allClients = clientAdapter.GetAllClients();
+      foreach (ClientInfo client in allClients) {
+        if (client.ClientId.Equals(clientInfo.ClientId)) {
+          if (client.State != State.offline) {
+            response.Success = false;
+            response.StatusMessage = rm.GetString("UserAllreadyOnline");
+            break;
+          } else
+            break; // searching for clients can be stopped, because it was found and it's state is offline
+        } 
+      }
+
+      if (response.Success) {
+        clientAdapter.UpdateClient(clientInfo);
+        response.Success = true;
+        response.StatusMessage = rm.GetString("LoginSuccess");
+      }
 
       return response;
     }

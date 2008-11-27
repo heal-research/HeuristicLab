@@ -29,6 +29,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return users;      
     }
 
+    public void AddNewUser(User user) {
+
+    }
+
     public List<UserGroup> GetAllUserGroups() {
       return userGroups;
     }

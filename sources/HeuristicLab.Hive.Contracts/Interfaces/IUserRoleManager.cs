@@ -14,6 +14,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     List<User> GetAllUsers();
     [OperationContract]
+    void AddNewUser(User user);
+    [OperationContract]
     List<UserGroup> GetAllUserGroups();
   }
 }
