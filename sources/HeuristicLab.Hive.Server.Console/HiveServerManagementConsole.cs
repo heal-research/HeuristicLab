@@ -41,12 +41,15 @@ namespace HeuristicLab.Hive.Server.Console {
     List<ClientGroup> clients = null;
     List<Job> jobs = null;
     List<UserGroup> userGroups = null;
-    
+
     public HiveServerManagementConsole() {
       InitializeComponent();
+      addItems();
+    }
 
+    private void addItems() {
       IClientManager clientManager =
-        ServiceLocator.GetClientManager();
+          ServiceLocator.GetClientManager();
 
       IJobManager jobManager =
         ServiceLocator.GetJobManager();
@@ -54,22 +57,28 @@ namespace HeuristicLab.Hive.Server.Console {
       IUserRoleManager userRoleManager =
         ServiceLocator.GetUserRoleManager();
 
-     // clients = clientManager.GetAllClientGroups();
+      clientManager.GetAllUpTimeStatistics();
+      clients = clientManager.GetAllClientGroups();
       jobs = jobManager.GetAllJobs();
       userGroups = userRoleManager.GetAllUserGroups();
-     // foreach (ClientGroup cg in clients) {
-     //   tvClientControl.Nodes.Add(cg.Name);
+      lvClientControl.Items.Clear();
+      int count = 0;
+      foreach (ClientGroup cg in clients) {
+        tvClientControl.Nodes.Add(cg.Name);
+        ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
+        lvClientControl.Groups.Add(lvg);
         foreach (ClientInfo ci in clientManager.GetAllClients()) {
-          tvClientControl.SelectedNode.Nodes.Add(ci.Name);
+          tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
+          lvClientControl.Groups[lvClientControl.Groups.Count].Items.Add(new ListViewItem(ci.Name, count));
+          count = (count + 1) % 3;
         }
-     // }
+      }
       foreach (Job job in jobs) {
         tvJobControl.Nodes.Add(job.JobId.ToString());
       }
       foreach (UserGroup ug in userGroups) {
         tvUserControl.Nodes.Add(ug.UserGroupId.ToString());
       }
-
     }
 
     /// <summary>

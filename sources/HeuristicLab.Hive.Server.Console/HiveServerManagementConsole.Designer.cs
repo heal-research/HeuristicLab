@@ -23,6 +23,11 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "",
+            "Test"}, -1);
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.informationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -30,7 +35,7 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
-      this.listView1 = new System.Windows.Forms.ListView();
+      this.lvClientControl = new System.Windows.Forms.ListView();
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
@@ -41,6 +46,7 @@
       this.listView4 = new System.Windows.Forms.ListView();
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
+      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
@@ -118,7 +124,7 @@
       // 
       // scClientControl.Panel2
       // 
-      this.scClientControl.Panel2.Controls.Add(this.listView1);
+      this.scClientControl.Panel2.Controls.Add(this.lvClientControl);
       this.scClientControl.Size = new System.Drawing.Size(637, 346);
       this.scClientControl.SplitterDistance = 139;
       this.scClientControl.TabIndex = 0;
@@ -131,14 +137,18 @@
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
       // 
-      // listView1
+      // lvClientControl
       // 
-      this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.listView1.Location = new System.Drawing.Point(0, 0);
-      this.listView1.Name = "listView1";
-      this.listView1.Size = new System.Drawing.Size(494, 346);
-      this.listView1.TabIndex = 0;
-      this.listView1.UseCompatibleStateImageBehavior = false;
+      this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
+      this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+      this.lvClientControl.LargeImageList = this.imageList1;
+      this.lvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.lvClientControl.Name = "lvClientControl";
+      this.lvClientControl.Size = new System.Drawing.Size(494, 346);
+      this.lvClientControl.TabIndex = 0;
+      this.lvClientControl.UseCompatibleStateImageBehavior = false;
       // 
       // tpJobControl
       // 
@@ -248,6 +258,14 @@
       this.listView2.TabIndex = 0;
       this.listView2.UseCompatibleStateImageBehavior = false;
       // 
+      // imageList1
+      // 
+      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList1.Images.SetKeyName(0, "Monitor_red.png");
+      this.imageList1.Images.SetKeyName(1, "Monitor_yellow.png");
+      this.imageList1.Images.SetKeyName(2, "Monitor_green.png");
+      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,7 +308,7 @@
     private System.Windows.Forms.SplitContainer scClientControl;
     private System.Windows.Forms.TabPage tpUserControl;
     private System.Windows.Forms.TreeView tvClientControl;
-    private System.Windows.Forms.ListView listView1;
+    private System.Windows.Forms.ListView lvClientControl;
     private System.Windows.Forms.SplitContainer scJobControl;
     private System.Windows.Forms.ListView listView3;
     private System.Windows.Forms.SplitContainer scUserControl;
@@ -299,5 +317,6 @@
     private System.Windows.Forms.TreeView tvJobControl;
     private System.Windows.Forms.TreeView tvUserControl;
     private System.Windows.Forms.ListView listView4;
+    private System.Windows.Forms.ImageList imageList1;
   }
 }

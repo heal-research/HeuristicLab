@@ -23,7 +23,7 @@ namespace HeuristicLab.Hive.Server.Console {
           new ChannelFactory<IClientManager>(
             new NetTcpBinding(),
             new EndpointAddress("net.tcp://" + Address + ":" + Port + "/HiveServerConsole/ClientManager"));
-
+        
         clientManager = factory.CreateChannel();
       }
 
