@@ -14,6 +14,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     List<ClientInfo> GetAllClients();
     [OperationContract]
+    [ServiceKnownType(typeof (Resource))]
+    [ServiceKnownType(typeof(ClientInfo))]
     List<ClientGroup> GetAllClientGroups();
     [OperationContract]
     List<UpTimeStatistics> GetAllUpTimeStatistics();
