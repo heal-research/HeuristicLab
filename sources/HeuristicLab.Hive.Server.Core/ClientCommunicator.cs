@@ -65,10 +65,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public Response SendJobResult(JobResult Result, bool finished) {
-      Response response = new Response();
+    public ResponseResultReceived SendJobResult(JobResult Result, bool finished) {
+      ResponseResultReceived response = new ResponseResultReceived();
       response.Success = true;
       response.StatusMessage = "Thanks for calculating";
+      response.JobId = Result.JobId;
 
       return response;
     }

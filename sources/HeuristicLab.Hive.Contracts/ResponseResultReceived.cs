@@ -27,7 +27,7 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.Hive.Contracts {
   [DataContract]
-  class ResponseResultReceived : Response {
+  public class ResponseResultReceived : Response {
     [DataMember]
     public long JobId { get; set; }
   }
