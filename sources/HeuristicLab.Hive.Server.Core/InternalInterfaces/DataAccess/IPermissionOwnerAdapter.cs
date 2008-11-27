@@ -27,32 +27,32 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
-  /// The resource database adapter
+  /// The permission owner database adapter
   /// </summary>
-  public interface IResourceAdapter {
+  public interface IPermissionOwner {
     /// <summary>
-    /// Save or update the resource
+    /// Save or update the permission owner
     /// </summary>
     /// <param name="client"></param>
-    void UpdateResource(Resource resource);
+    void UpdatePermissionOwner(PermissionOwner permOwner);
 
     /// <summary>
-    /// Get the resource with the specified ID
+    /// Get the permission owner with the specified ID
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    Resource GetResourceById(long resourceId);
+    PermissionOwner GetPermissionOwnerById(long resourceId);
 
     /// <summary>
-    /// Get all resuorces
+    /// Get all permission owners
     /// </summary>
     /// <returns></returns>
-    ICollection<Resource> GetAllResources();
+    ICollection<PermissionOwner> GetAllPermissionOwners();
 
     /// <summary>
-    /// Deletes the resource
+    /// Deletes the permission owner
     /// </summary>
-    /// <param name="client"></param>
-    bool DeleteResource(Resource resource);
+    /// <param name="permOwner"></param>
+    bool DeletePermissionOwner(PermissionOwner permOwner);
   }
 }

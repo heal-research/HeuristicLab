@@ -23,16 +23,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+  /// <summary>
+  /// The user database adapter
+  /// </summary>
+  public interface IUserAdapter {
+    /// <summary>
+    /// Save or update the user
+    /// </summary>
+    /// <param name="user"></param>
+    void UpdateUser(User user);
 
-  [DataContract]
-  public class PermissionOwner {
-    [DataMember]
-    public long PermissionOwnerId { get; set; }
-    [DataMember]
-    public string Name { get; set; }
-    
+    /// <summary>
+    /// Get the user with the specified ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    ClientInfo GetUserById(long userId);
+
+    /// <summary>
+    /// Get all users
+    /// </summary>
+    /// <returns></returns>
+    ICollection<User> GetAllUsers();
+
+    /// <summary>
+    /// Deletes the user
+    /// </summary>
+    /// <param name="user"></param>
+    bool DeleteUser(User user);
   }
 }

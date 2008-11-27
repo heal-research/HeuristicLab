@@ -59,7 +59,9 @@
       <DependentUpon>HiveServerMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="InternalInterfaces\DataAccess\IClientAdapter.cs" />
+    <Compile Include="InternalInterfaces\DataAccess\IPermissionOwnerAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
+    <Compile Include="InternalInterfaces\DataAccess\IUserAdapter.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConsoleFacade.cs" />

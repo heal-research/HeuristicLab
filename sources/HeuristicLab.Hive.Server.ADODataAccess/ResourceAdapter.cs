@@ -32,6 +32,27 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServerTableAdapters.ResourceTableAdapter adapter =
       new dsHiveServerTableAdapters.ResourceTableAdapter();
 
+    private Resource Convert(dsHiveServer.ResourceRow row) {
+      if (row != null) {
+        Resource resource = new Resource();
+
+        resource.ResourceId = row.ResourceId;
+        resource.Name = row.Name;
+
+        return resource;
+      } else
+        return null;
+    }
+
+    private dsHiveServer.ResourceRow Convert(Resource resource,
+      dsHiveServer.ResourceRow row) {
+      if (resource != null && row != null) {
+        row.Name = resource.Name;
+      }
+
+      return row;
+    }
+
     public void UpdateResource(Resource resource) {
       if (resource != null) {
         dsHiveServer.ResourceDataTable data =
@@ -45,8 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row = data[0];
         }
 
-        //missing
-        row.Name = "test";
+        Convert(resource, row);
 
         adapter.Update(data);
 
@@ -54,26 +74,47 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    public ClientInfo GetResourceById(long resourceId) {
-      throw new NotImplementedException();
+    public Resource GetResourceById(long resourceId) {
+      dsHiveServer.ResourceDataTable data =
+          adapter.GetDataById(resourceId);
+      if (data.Count == 1) {
+        dsHiveServer.ResourceRow row =
+          data[0];
+        return Convert(row);
+      } else {
+        return null;
+      }
     }
 
     public ICollection<Resource> GetAllResources() {
-      throw new NotImplementedException();
+      ICollection<Resource> allResources =
+        new List<Resource>();
+
+      dsHiveServer.ResourceDataTable data =
+          adapter.GetData();
+
+      foreach (dsHiveServer.ResourceRow row in data) {
+        allResources.Add(Convert(row));
+      }
+
+      return allResources;
     }
 
     public bool DeleteResource(Resource resource) {
-      dsHiveServer.ResourceDataTable data =
-         adapter.GetDataById(resource.ResourceId);
+      if(resource != null) {
 
-      if (data.Count == 1) {
-        dsHiveServer.ResourceRow row = data[0];
+        dsHiveServer.ResourceDataTable data =
+           adapter.GetDataById(resource.ResourceId);
 
-        row.Delete();
-        return adapter.Update(data) > 0;
-      } else {
-        return false;
+        if (data.Count == 1) {
+          dsHiveServer.ResourceRow row = data[0];
+
+          row.Delete();
+          return adapter.Update(data) > 0;
+        } 
       }
+       
+      return false;
     }
 
     #endregion

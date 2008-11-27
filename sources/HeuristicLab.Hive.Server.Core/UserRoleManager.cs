@@ -15,9 +15,9 @@ namespace HeuristicLab.Hive.Server.Core {
       users = new List<User>();
       userGroups = new List<UserGroup>();
 
-      users.Add(new User { UserId = 1, Name = "Hugo", Password = "hUg0" });
-      users.Add(new User { UserId = 2, Name = "Seppl", Password = "seppl" });
-      users.Add(new User { UserId = 3, Name = "Greg", Password = "greg" });
+      users.Add(new User { PermissionOwnerId = 1, Name = "Hugo", Password = "hUg0" });
+      users.Add(new User { PermissionOwnerId = 2, Name = "Seppl", Password = "seppl" });
+      users.Add(new User { PermissionOwnerId = 3, Name = "Greg", Password = "greg" });
 
       userGroups.Add(new UserGroup { UserGroupId = 1 });
       userGroups.Add(new UserGroup { UserGroupId = 2 });

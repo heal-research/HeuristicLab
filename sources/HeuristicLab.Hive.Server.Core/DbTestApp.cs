@@ -40,6 +40,7 @@ namespace HeuristicLab.Hive.Server {
         ServiceLocator.GetClientAdapter();
 
       ClientInfo client = new ClientInfo();
+      client.Login = DateTime.Now;
       client.ClientId = Guid.NewGuid();
       clientAdapter.UpdateClient(client); 
 

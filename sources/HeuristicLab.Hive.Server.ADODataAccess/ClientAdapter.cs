@@ -28,12 +28,60 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientAdapter: IClientAdapter {
-    #region IClientAdapter Members
     private dsHiveServerTableAdapters.ClientTableAdapter adapter =
         new dsHiveServerTableAdapters.ClientTableAdapter();
 
     private ResourceAdapter resAdapter = 
       new ResourceAdapter();
+    
+    #region IClientAdapter Members
+    private ClientInfo Convert(dsHiveServer.ClientRow row) {
+      if(row != null) {
+        ClientInfo client = new ClientInfo();
+       
+        /*Parent - resource*/
+        Resource resource =
+          resAdapter.GetResourceById(row.ResourceId);
+        client.ResourceId = resource.ResourceId;
+        client.Name = resource.Name;
+
+        /*ClientInfo*/
+        client.ClientId = row.GUID;
+        client.CpuSpeedPerCore = row.CPUSpeed;
+        client.Memory = row.Memory;
+        client.Login = row.Login;
+        if (row.Status != null)
+          client.State = (State)Enum.Parse(typeof(State), row.Status, true);
+        client.NrOfCores = row.NumberOfCores;
+
+        //todo: config adapter (client.config)
+
+        return client;
+      }
+      else
+        return null;
+    }
+
+    private dsHiveServer.ClientRow Convert(ClientInfo client,
+      dsHiveServer.ClientRow row) {
+      if (client != null && row != null) {      
+        row.ResourceId = client.ResourceId;
+        row.GUID = client.ClientId;
+        row.CPUSpeed = client.CpuSpeedPerCore;
+        row.Memory = client.Memory;
+        row.Login = client.Login;
+        row.Status = client.State.ToString();
+        row.NumberOfCores = client.NrOfCores;
+
+        //todo: config adapter
+        /*if (client.Config != null)
+          row.ClientConfigId = client.Config.ClientConfigId;
+         else
+          row.ClientConfigId = null;*/
+      }
+
+      return row;
+    }
 
     public void UpdateClient(ClientInfo client) {
       if (client != null) {
@@ -51,37 +99,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row = data[0];
         }
 
-        row.ResourceId = client.ResourceId;
-        row.GUID = client.ClientId;
-        row.CPUSpeed = client.CpuSpeedPerCore;
-        //row.Memory = client.Memory;
-        /*if(client.Login != null)
-          row.Login = client.Login.ToString();*/
-        row.Status = client.State.ToString();
-        
-        //todo: config adapter
-        /*if (client.Config != null)
-          row.ClientConfigId = client.Config.ClientConfigId;*/
-        
-        row.NumberOfCores = client.NrOfCores;
+        Convert(client, row);
 
         adapter.Update(data);
       }
-    }
-
-    private ClientInfo Convert(dsHiveServer.ClientRow row) {
-      ClientInfo client = new ClientInfo();
-
-      client.ResourceId = row.ResourceId;
-      client.ClientId = row.GUID;
-      client.CpuSpeedPerCore = row.CPUSpeed;
-      //client.Memory = row.Memory;
-      //client.Login = row.Login;
-      //client.State =;
-      //client.Config
-      client.NrOfCores = row.NumberOfCores;
-
-      return client;
     }
 
     public ClientInfo GetClientById(Guid clientId) {
