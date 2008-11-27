@@ -33,12 +33,12 @@ namespace HeuristicLab.Hive.Client.Communication {
     HeuristicLab.Hive.Contracts.ResponseJob EndPullJob(System.IAsyncResult result);
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction = "http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-    HeuristicLab.Hive.Contracts.Response SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished);
+    HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished);
 
     [System.ServiceModel.OperationContractAttribute(AsyncPattern = true, Action = "http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction = "http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
     System.IAsyncResult BeginSendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished, System.AsyncCallback callback, object asyncState);
 
-    HeuristicLab.Hive.Contracts.Response EndSendJobResult(System.IAsyncResult result);
+    HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result);
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IClientCommunicator/Logout", ReplyAction = "http://tempuri.org/IClientCommunicator/LogoutResponse")]
     HeuristicLab.Hive.Contracts.Response Logout(System.Guid clientId);
@@ -121,10 +121,10 @@ namespace HeuristicLab.Hive.Client.Communication {
       this.results = results;
     }
 
-    public HeuristicLab.Hive.Contracts.Response Result {
+    public HeuristicLab.Hive.Contracts.ResponseResultReceived Result {
       get {
         base.RaiseExceptionIfNecessary();
-        return ((HeuristicLab.Hive.Contracts.Response)(this.results[0]));
+        return ((HeuristicLab.Hive.Contracts.ResponseResultReceived)(this.results[0]));
       }
     }
   }
@@ -361,7 +361,7 @@ namespace HeuristicLab.Hive.Client.Communication {
                     clientId}, this.onEndPullJobDelegate, this.onPullJobCompletedDelegate, userState);
     }
 
-    public HeuristicLab.Hive.Contracts.Response SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished) {
+    public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished) {
       return base.Channel.SendJobResult(Result, finished);
     }
 
@@ -371,7 +371,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    public HeuristicLab.Hive.Contracts.Response EndSendJobResult(System.IAsyncResult result) {
+    public HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result) {
       return base.Channel.EndSendJobResult(result);
     }
 
@@ -382,7 +382,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     private object[] OnEndSendJobResult(System.IAsyncResult result) {
-      HeuristicLab.Hive.Contracts.Response retVal = this.EndSendJobResult(result);
+      HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndSendJobResult(result);
       return new object[] {
                 retVal};
     }
@@ -464,4 +464,3 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
   }
 }
-

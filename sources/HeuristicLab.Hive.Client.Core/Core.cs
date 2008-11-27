@@ -145,13 +145,6 @@ namespace HeuristicLab.Hive.Client.Core {
       
       JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = null };
       clientCommunicator.SendJobResultAsync(jobResult, true);
-
-      AppDomain.Unload(appDomains[jId]);
-      appDomains.Remove(jId);
-      engines.Remove(jId);
-      Status.CurrentJobs--;
-      Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());        
-
     }
 
     private void GetSnapshot(object jobId) {
@@ -181,8 +174,16 @@ namespace HeuristicLab.Hive.Client.Core {
       Debug.WriteLine("Increment CurrentJobs to:"+Status.CurrentJobs.ToString());
     }
 
-    void ClientCommunicator_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {      
-      // TODO Removing of the Engines & AppDomains should happen here, not in the GetFinishedJob Method.
+    void ClientCommunicator_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
+      if (e.Result.Success) {
+        AppDomain.Unload(appDomains[e.Result.JobId]);
+        appDomains.Remove(e.Result.JobId);
+        engines.Remove(e.Result.JobId);
+        Status.CurrentJobs--;
+        Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());
+      } else {
+        Debug.WriteLine("Job sending FAILED!");
+      }
     }
   }
 }
