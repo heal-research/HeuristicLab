@@ -15,9 +15,9 @@ namespace HeuristicLab.Hive.Server.Core {
       clients = new List<ClientInfo>();
       clientGroups = new List<ClientGroup>();
 
-      ClientInfo c1 = new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2500, Memory=4096, ResourceId=1, State=State.idle };
-      ClientInfo c2 = new ClientInfo { ClientId=Guid.NewGuid(), CpuSpeedPerCore=2100, Memory=2048, ResourceId=2, State=State.idle };
-      ClientInfo c3 = new ClientInfo { ClientId = Guid.NewGuid(), CpuSpeedPerCore = 3400, Memory = 4096, ResourceId = 3, State = State.calculating };
+      ClientInfo c1 = new ClientInfo { ClientId=Guid.NewGuid(), Name="Client1", CpuSpeedPerCore=2500, Memory=4096, ResourceId=1, State=State.idle };
+      ClientInfo c2 = new ClientInfo { ClientId=Guid.NewGuid(), Name="Client2",  CpuSpeedPerCore=2100, Memory=2048, ResourceId=2, State=State.idle };
+      ClientInfo c3 = new ClientInfo { ClientId = Guid.NewGuid(), Name="Client3", CpuSpeedPerCore = 3400, Memory = 4096, ResourceId = 3, State = State.calculating };
 
       clients.Add(c1);
       clients.Add(c2);
