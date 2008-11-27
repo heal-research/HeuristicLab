@@ -67,16 +67,14 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-      Heartbeat beat = new Heartbeat { Interval = 5000 };
-      beat.StartHeartbeat();
-
-      ClientInfo clientInfo = new ClientInfo { ClientId = Guid.NewGuid() };
-
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
       clientCommunicator.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(ClientCommunicator_SendJobResultCompleted);
-      clientCommunicator.LoginAsync(clientInfo);
+      clientCommunicator.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
+
+      Heartbeat beat = new Heartbeat { Interval = 5000 };
+      beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
       while (true) {
@@ -90,6 +88,7 @@ namespace HeuristicLab.Hive.Client.Core {
     void ClientCommunicator_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
         Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
+        ConfigurationManager.GetInstance().Loggedin();
         Status.LoginTime = DateTime.Now;
         Status.LoggedIn = true;
       } else
@@ -143,7 +142,7 @@ namespace HeuristicLab.Hive.Client.Core {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
       
-      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = null };
+      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = ConfigurationManager.GetInstance().GetClientInfo() };
       clientCommunicator.SendJobResultAsync(jobResult, true);
     }
 

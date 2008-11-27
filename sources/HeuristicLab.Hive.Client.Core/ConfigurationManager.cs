@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
@@ -30,6 +31,8 @@ namespace HeuristicLab.Hive.Client.Core {
   /// </summary>
   public class ConfigurationManager {
     private static ConfigurationManager instance = null;
+
+    private ClientInfo clientInfo;
     private Guid guid;
 
     public static ConfigurationManager GetInstance() {
@@ -46,6 +49,22 @@ namespace HeuristicLab.Hive.Client.Core {
       //retrive GUID from XML file, or burn in hell. as in hell. not heaven.
       //this won't work this way. We need a plugin for XML Handling.
       guid = Guid.NewGuid();
+      clientInfo = new ClientInfo();
+      clientInfo.ClientId = Guid.NewGuid();
+      clientInfo.NrOfCores = Environment.ProcessorCount;
+      clientInfo.Memory = 1024;
+      clientInfo.Name = Environment.MachineName;
+    }
+
+    public ClientInfo GetClientInfo() {
+      return clientInfo;          
+    }
+
+    public void Loggedin() {
+      if (clientInfo == null) {
+        clientInfo = new ClientInfo();
+      }
+      clientInfo.Login = DateTime.Now;
     }
 
     public void Connect(Guid guid) {
