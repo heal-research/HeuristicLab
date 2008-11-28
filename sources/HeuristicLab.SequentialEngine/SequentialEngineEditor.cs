@@ -29,15 +29,31 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.SequentialEngine {
+  /// <summary>
+  /// Visual representation of a <see cref="SequentialEngine"/>.
+  /// </summary>
   public partial class SequentialEngineEditor : EngineBaseEditor {
+    /// <summary>
+    /// Gets or set the engine to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="EngineBaseEditor.Engine"/> of base class 
+    /// <see cref="EngineBaseEditor"/>. No own data storage present.</remarks>
     public SequentialEngine SequentialEngine {
       get { return (SequentialEngine)Engine; }
       set { base.Engine = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SequentialEngineEditor"/>.
+    /// </summary>
     public SequentialEngineEditor() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="SequentialEngineEditor"/> with the given
+    /// <paramref name="sequentialEngine"/>.
+    /// </summary>
+    /// <param name="sequentialEngine">The engine to display.</param>
     public SequentialEngineEditor(SequentialEngine sequentialEngine)
       : this() {
       SequentialEngine = sequentialEngine;
