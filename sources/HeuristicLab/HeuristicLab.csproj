@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{623FB817-8371-4A9A-A491-4DECC87B2BBB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -124,6 +124,7 @@
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="app.config" />
     <None Include="CopyAssemblies.cmd" />
+    <None Include="MergeConfigs.cmd" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Resources\LargeIcons.gif" />
     <None Include="Resources\Details.gif" />
@@ -140,8 +141,19 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>cmd /c ""$(ProjectDir)CopyAssemblies.cmd" "$(SolutionDir)." "$(Outdir).""
-cmd /c ""$(ProjectDir)UpdateLocalInstallation.cmd" "$(Outdir).""</PostBuildEvent>
-    <PreBuildEvent>cmd /c ""$(SolutionDir)PreBuildEvent.cmd" "$(ProjectDir).""</PreBuildEvent>
+    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call MergeConfigs.cmd
+call CopyAssemblies.cmd
+call UpdateLocalInstallation.cmd</PostBuildEvent>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
 </Project>
