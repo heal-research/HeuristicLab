@@ -1,0 +1,1 @@
+SubWCRev %1 %1\Properties\AssemblyInfo.frame %1\Properties\AssemblyInfo.cs
