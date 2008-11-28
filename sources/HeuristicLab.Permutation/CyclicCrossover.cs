@@ -26,11 +26,32 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Performs a cross over permutation between two int arrays by taking first a whole cycle and then the
+  /// missing ones from the second parent.
+  /// </summary>
+  /// <remarks>A whole cycle means: <br/>
+  /// Start at a randomly chosen position x in parent1 and transfer it to the child at the same position.
+  /// Now this position x is no longer available for the node on position x in parent2, so
+  /// the value of the node at position x in parent2 is searched in parent1 and is then transferred
+  /// to the child preserving the position. Now this new position y is no longer available for the node in parent2 ....<br/>
+  /// This procedure is repeated till it is again at position x, then the cycle is over.
+  /// </remarks>
   public class CyclicCrossover : PermutationCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// by copying a whole cycle starting at a randomly chosen position in parent1 and taking the rest
+    /// from parent2.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -57,6 +78,17 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// by copying a whole cycle starting at a randomly chosen position in parent1 and taking the rest
+    /// from parent2.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

@@ -26,11 +26,27 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Performs a cross over permutation between two permutation arrays by taking randomly chosen 
+  /// reverse and forward intervals from the first permutation array inserting 
+  /// it in the child on different positions depending on the second permutation array.
+  /// </summary>
   public class CosaCrossover : PermutationCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// by taking first the reverse elements of a randomly chosen interval of parent1 
+    /// and inserting it in the result at a position specified by the permutation of parent2. 
+    /// The remaining elements to be inserted are taken again from parent1 in the forward direction.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -68,6 +84,18 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// by taking first the reverse elements of a randomly chosen interval of parent1 
+    /// and inserting it in the result at a position specified by the permutation of parent2. 
+    /// The remaining elements to be inserted are taken again from parent1 in the forward direction.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

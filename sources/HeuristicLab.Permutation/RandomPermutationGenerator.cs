@@ -26,11 +26,19 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Generates a randomly shuffled permuation.
+  /// </summary>
   public class RandomPermutationGenerator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="RandomPermutationGenerator"/> with three variable infos
+    /// (<c>Length</c>, <c>Random</c> and <c>Permutation</c>).
+    /// </summary>
     public RandomPermutationGenerator()
       : base() {
       AddVariableInfo(new VariableInfo("Length", "Permutation length", typeof(IntData), VariableKind.In));
@@ -38,6 +46,12 @@ namespace HeuristicLab.Permutation {
       AddVariableInfo(new VariableInfo("Permutation", "Created random permutation", typeof(Permutation), VariableKind.New));
     }
 
+    /// <summary>
+    /// Generates a randomly shuffled permutation.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="length">The length of the permutation to create.</param>
+    /// <returns>The generated permuation as int array.</returns>
     public static int[] Apply(IRandom random, int length) {
       int[] perm = new int[length];
 
@@ -55,6 +69,12 @@ namespace HeuristicLab.Permutation {
       return perm;
     }
 
+    /// <summary>
+    /// Generates a randomly shuffled permutation.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply(HeuristicLab.Core.IRandom, int)"/>.</remarks>
+    /// <param name="scope">The current scope with the variables.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       IntData length = GetVariableValue<IntData>("Length", scope, true);

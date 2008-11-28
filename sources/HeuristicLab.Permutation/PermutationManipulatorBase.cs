@@ -25,13 +25,27 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Base class for manipulation permutation.
+  /// </summary>
   public abstract class PermutationManipulatorBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="PermutationManipulatorBase"/> with two variable infos
+    /// (<c>Random</c> and <c>Permutation</c>).
+    /// </summary>
     public PermutationManipulatorBase()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("Permutation", "Permutation to manipulate", typeof(Permutation), VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Manipulates the permutation data of the given <paramref name="scope"/> according to a
+    /// specified random number generator.
+    /// </summary>
+    /// <remarks>Calls <see cref="Manipulate"/>.</remarks>
+    /// <param name="scope">The scope of the permutation data and the random number generator.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       Permutation perm = GetVariableValue<Permutation>("Permutation", scope, false);
@@ -39,6 +53,14 @@ namespace HeuristicLab.Permutation {
       return null;
     }
 
+    /// <summary>
+    /// Manipulates the given <paramref name="permutation"/> with the specified <paramref name="random"/> 
+    /// number generator.
+    /// </summary>
+    /// <param name="scope">The scope of the variables.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="permutation">The permutation to manipulate.</param>
+    /// <returns>The manipulated permutation as int array.</returns>
     protected abstract int[] Manipulate(IScope scope, IRandom random, int[] permutation);
   }
 }

@@ -25,11 +25,22 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval.
+  /// </summary>
   public class ScrambleManipulator : PermutationManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Mixes the elements of the given <paramref name="permutation"/> randomly 
+    /// in a randomly chosen interval.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="permutation">The permutation array to manipulate.</param>
+    /// <returns>The new permuation array with the manipulated data.</returns>
     public static int[] Apply(IRandom random, int[] permutation) {
       int[] result = (int[])permutation.Clone();
       int breakPoint1, breakPoint2;
@@ -66,6 +77,15 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Mixes the elements of the given <paramref name="permutation"/> randomly 
+    /// in a randomly chosen interval.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="permutation">The permutation array to manipulate.</param>
+    /// <returns>The new permuation array with the manipulated data.</returns>
     protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
       return Apply(random, permutation);
     }

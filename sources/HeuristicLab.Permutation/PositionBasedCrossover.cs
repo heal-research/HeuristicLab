@@ -26,11 +26,23 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Performs a cross over permutation between two permutation arrays based on randomly chosen positions.
+  /// </summary>
   public class PositionBasedCrossover : PermutationCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// based on randomly chosen positions to define which position to take from where.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The permutation array of parent 1.</param>
+    /// <param name="parent2">The permutation array of parent 2.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -64,6 +76,16 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// based on randomly chosen positions to define which position to take from where.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The permutation array of parent 1.</param>
+    /// <param name="parent2">The permutation array of parent 2.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

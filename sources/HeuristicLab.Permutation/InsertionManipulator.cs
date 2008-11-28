@@ -25,11 +25,22 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Manipulates a permutation array by moving randomly one element to another position in the array.
+  /// </summary>
   public class InsertionManipulator : PermutationManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Moves an randomly chosen element in the specified <paramref name="permutation"/> array 
+    /// to another randomly generated position.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="permutation">The array to manipulate.</param>
+    /// <returns>The new permuation array with the manipulated data.</returns>
     public static int[] Apply(IRandom random, int[] permutation) {
       int[] result = (int[])permutation.Clone();
       int cutIndex, insertIndex, number;
@@ -57,6 +68,15 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Moves an randomly chosen element in the specified <paramref name="permutation"/> array 
+    /// to another randomly generated position.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="permutation">The array to manipulate.</param>
+    /// <returns>The new permuation array with the manipulated data.</returns>
     protected override int[] Manipulate(IScope scope, IRandom random, int[] permutation) {
       return Apply(random, permutation);
     }

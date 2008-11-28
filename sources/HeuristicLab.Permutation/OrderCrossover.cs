@@ -26,11 +26,27 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Performs a cross over permutation between two permuation arrays
+  /// by taking a randomly chosen interval from the frist, preserving the positions,
+  /// then the missing values from the second array in the order they occur in the second array.
+  /// </summary>
   public class OrderCrossover : PermutationCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and 
+    /// <paramref name="parent2"/> by taking a randomly chosen interval from <paramref name="parent1"/>,
+    /// preserving the positions and then the missing values from <paramref name="parent2"/> in the 
+    /// order they occur in <paramref name="parent2"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int[] result = new int[parent1.Length];
       bool[] copied = new bool[result.Length];
@@ -56,6 +72,17 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Performs a cross over permuation of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// by taking a randomly chosen interval from <paramref name="parent1"/> and the rest from 
+    /// <paramref name="parent2"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

@@ -26,11 +26,29 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Permutation {
+  /// <summary>
+  /// Performs a cross over permutation between two permutation arrays by calculating the edges (neighbours)
+  /// of each element. Starts at a randomly chosen position, the next element is a neighbour with the least 
+  /// number of neighbours, the next again a neighbour and so on.
+  /// </summary>
   public class EdgeRecombinationCrossover : PermutationCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="2"/>
+    /// by calculating the edges of each element. Starts at a randomly chosen position, 
+    /// the next element is a neighbour with the least 
+    /// number of neighbours, the next again a neighbour and so on.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the permutation lacks a number.
+    /// </exception>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -119,6 +137,20 @@ namespace HeuristicLab.Permutation {
       return result;
     }
 
+    /// <summary>
+    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="2"/>
+    /// by calculating the edges of each element. Starts at a randomly chosen position, 
+    /// the next element is a neighbour with the least 
+    /// number of neighbours, the next again a neighbour and so on.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the permutation lacks a number.
+    /// </exception>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <returns>The created cross over permutation as int array.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }
