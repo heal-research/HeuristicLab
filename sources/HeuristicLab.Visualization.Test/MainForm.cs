@@ -114,5 +114,10 @@ namespace HeuristicLab.Visualization.Test {
       mouseEventDemonstrationGraphics.DrawLine(Pens.Blue, lastActualPoint, actualPoint);
       lastActualPoint = actualPoint;
     }
+
+    private void legendButton_Click(object sender, System.EventArgs e) {
+      LegendForm form = new LegendForm();
+      form.Show();
+    }
   }
 }
