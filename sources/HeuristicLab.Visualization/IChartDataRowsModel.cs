@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization {
-  public interface IChartDataRowsModel {
+  public interface IChartDataRowsModel : IItem {
     string Title { get; set; }
     string XAxisLabel { get; set; }
     List<string> XLabels { get; }
