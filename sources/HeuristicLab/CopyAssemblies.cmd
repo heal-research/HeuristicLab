@@ -49,7 +49,6 @@ copy "%SolutionDir%\HeuristicLab.Scheduling.JSSP\%Outdir%\HeuristicLab.Schedulin
 copy "%SolutionDir%\HeuristicLab.Selection\%Outdir%\HeuristicLab.Selection-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SequentialEngine\%Outdir%\HeuristicLab.SequentialEngine-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Settings\%Outdir%\HeuristicLab.Settings-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SGA\%Outdir%\HeuristicLab.SGA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins

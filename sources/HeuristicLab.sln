@@ -124,8 +124,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.Boolean", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Contracts", "HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj", "{134F93D7-E7C8-4ECD-9923-7F63259A60D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Settings", "HeuristicLab.Settings\HeuristicLab.Settings.csproj", "{1446E01A-0948-4E72-A77C-FD13FD63C3E3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.ExecutionEngine", "HeuristicLab.Hive.Client.ExecutionEngine\HeuristicLab.Hive.Client.ExecutionEngine.csproj", "{1605256A-1CB3-44AB-AAFF-577093EE5789}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Communication", "HeuristicLab.Hive.Client.Communication\HeuristicLab.Hive.Client.Communication.csproj", "{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}"
@@ -604,14 +602,6 @@ Global
 		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|x86.ActiveCfg = Release|x86
 		{134F93D7-E7C8-4ECD-9923-7F63259A60D8}.Release|x86.Build.0 = Release|x86
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Debug|x86.ActiveCfg = Debug|x86
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Debug|x86.Build.0 = Debug|x86
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Release|x86.ActiveCfg = Release|x86
-		{1446E01A-0948-4E72-A77C-FD13FD63C3E3}.Release|x86.Build.0 = Release|x86
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1605256A-1CB3-44AB-AAFF-577093EE5789}.Debug|x86.ActiveCfg = Debug|x86
