@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
 
@@ -128,58 +129,14 @@ namespace HeuristicLab.Visualization{
       }
     }
 
-    
-
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       throw new NotImplementedException();
-
-//      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-//
-//      foreach (ChartDataRowsModelColumn column in Columns){
-//        XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "column", null);
-//
-//        XmlAttribute idAttr = document.CreateAttribute("id");
-//        idAttr.Value = (column.ColumnId).ToString();
-//        columnElement.Attributes.Append(idAttr);
-//
-//        for (int i = 0; i < column.Values.Length; i++){
-//          if (i == 0){
-//            columnElement.InnerText += column.Values[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-//          } else{
-//            columnElement.InnerText += ";" + column.Values[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-//          }
-//        }
-//        node.AppendChild(columnElement);
-//      }
-//      
-//      return node;
+      
     }
 
-
-    
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       throw new NotImplementedException();
 
-//      base.Populate(node, restoredObjects);
-//
-//      foreach (XmlNode column in node.ChildNodes){
-//        XmlAttributeCollection attrs = column.Attributes;
-//        XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("id");
-//        int rowId = int.Parse(rowIdAttr.Value);
-//        AddDataRow(rowId);
-//        string[] tokens = column.InnerText.Split(';');
-//        double[] data = new double[tokens.Length];
-//        for (int i = 0; i < data.Length; i++){
-//          if (tokens[i].Length != 0){
-//            if (
-//              double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
-//              false){
-//              throw new FormatException("Can't parse " + tokens[i] + " as double value.");
-//            }
-//          }
-//        }
-//        Columns[rowId-1].Values = data;
-//      }
     }
   }
 }
