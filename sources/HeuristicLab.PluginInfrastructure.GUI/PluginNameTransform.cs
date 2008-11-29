@@ -32,7 +32,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
   /// </summary>
   class PluginNameTransform : INameTransform{
 
-    private string pluginDir = Application.StartupPath + "\\" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir + "\\";    
+    private string pluginDir = Application.StartupPath + "\\" + HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir + "\\";    
     #region INameTransform Members
 
     public string TransformDirectory(string name) {

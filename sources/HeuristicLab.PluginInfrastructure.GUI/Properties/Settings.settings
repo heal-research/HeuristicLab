@@ -8,16 +8,13 @@
   &lt;string&gt;http://update.heuristiclab.com/hl-nextgen/&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="CacheDir" Type="System.String" Scope="User">
+    <Setting Name="CacheDir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">plugins\cache</Value>
     </Setting>
-    <Setting Name="PluginDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)">plugins</Value>
-    </Setting>
-    <Setting Name="BackupDir" Type="System.String" Scope="User">
+    <Setting Name="BackupDir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">plugins\backup</Value>
     </Setting>
-    <Setting Name="TempDir" Type="System.String" Scope="User">
+    <Setting Name="TempDir" Type="System.String" Scope="Application">
       <Value Profile="(Default)">plugins\temp</Value>
     </Setting>
   </Settings>

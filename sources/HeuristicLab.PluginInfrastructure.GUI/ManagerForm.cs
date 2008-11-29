@@ -36,7 +36,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     private List<PluginTag> allTags = new List<PluginTag>();
     private Dictionary<PluginTag, PluginAction> actions = new Dictionary<PluginTag, PluginAction>();
     private List<PluginDescription> allAvailablePlugins = new List<PluginDescription>();
-    private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.PluginDir;
+    private string pluginDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
     private string cacheDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.CacheDir;
     private string backupDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.BackupDir;
     private string tempDir = Application.StartupPath + "/" + HeuristicLab.PluginInfrastructure.GUI.Properties.Settings.Default.TempDir;
