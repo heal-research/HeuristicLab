@@ -67,15 +67,35 @@ namespace HeuristicLab.Tools.ConfigMerger {
     private static void Merge(XmlNode source, XmlNode destination, XmlDocument document, string root) {
       if (source != null) {
         if (destination == null) {
-          XmlNode clone = document.ImportNode(source, true);
-          document.SelectSingleNode(root).AppendChild(clone);
+          XmlNode newNode = document.ImportNode(source, true);
+          document.SelectSingleNode(root).AppendChild(newNode);
         } else {
           foreach (XmlNode node in source.ChildNodes) {
-            XmlNode clone = document.ImportNode(node, true);
-            destination.AppendChild(clone);
+            XmlNode newNode = document.ImportNode(node, true);
+            XmlNode oldNode = destination.SelectSingleNode(BuildXPathString(newNode));
+            if (oldNode != null)
+              destination.ReplaceChild(newNode, oldNode);
+            else
+              destination.AppendChild(newNode);
           }
         }
       }
+    }
+
+    private static string BuildXPathString(XmlNode node) {
+      StringBuilder builder = new StringBuilder();
+      builder.Append(node.Name);
+      if (node.Attributes.Count > 0) {
+        XmlAttribute attrib = node.Attributes[0];
+        builder.Append("[");
+        builder.Append("@" + attrib.Name + "='" + attrib.Value + "'");
+        for (int i = 1; i < node.Attributes.Count; i++) {
+          attrib = node.Attributes[i];
+          builder.Append(" and @" + attrib.Name + "='" + attrib.Value + "'");
+        }
+        builder.Append("]");
+      }
+      return builder.ToString();
     }
   }
 }
