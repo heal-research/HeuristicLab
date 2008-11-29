@@ -20,6 +20,8 @@ namespace HeuristicLab.Visualization {
     private DrawingStyle style = DrawingStyle.Solid;
     private List<double> dataRow = new List<double>();
 
+    public DataRow() {
+    }
 
     public DataRow(string label) {
       this.Label = label;
