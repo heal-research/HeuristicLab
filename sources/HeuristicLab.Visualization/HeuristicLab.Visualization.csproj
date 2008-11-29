@@ -79,6 +79,7 @@
     <Compile Include="ChartDataRowsModel.cs" />
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
+    <Compile Include="LegendShape.cs" />
     <Compile Include="DataRow.cs" />
     <Compile Include="DrawingStyle.cs" />
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />
