@@ -116,6 +116,9 @@
     <EmbeddedResource Include="LineChartTestForm.resx">
       <DependentUpon>LineChartTestForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LegendForm.resx">
+      <DependentUpon>LegendForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
