@@ -23,11 +23,32 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
+      this.canvasUI = new HeuristicLab.Visualization.CanvasUI();
+      this.SuspendLayout();
+      // 
+      // canvasUI
+      // 
+      this.canvasUI.Location = new System.Drawing.Point(12, 12);
+      this.canvasUI.MouseEventListener = null;
+      this.canvasUI.Name = "canvasUI";
+      this.canvasUI.Size = new System.Drawing.Size(260, 240);
+      this.canvasUI.TabIndex = 0;
+      this.canvasUI.Text = "canvasUI";
+      // 
+      // LegendForm
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(284, 264);
+      this.Controls.Add(this.canvasUI);
+      this.Name = "LegendForm";
       this.Text = "LegendForm";
+      this.ResumeLayout(false);
+
     }
 
     #endregion
+
+    private CanvasUI canvasUI;
   }
 }
