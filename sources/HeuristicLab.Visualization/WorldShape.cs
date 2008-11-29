@@ -28,10 +28,17 @@ namespace HeuristicLab.Visualization {
       graphics.Restore(gstate);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public RectangleD BoundingBox {
       get { return boundingBox; }
     }
 
+    /// <summary>
+    /// adds a shape to the WorldShape
+    /// </summary>
+    /// <param name="shape">shape to add</param>
     public void AddShape(IShape shape) {
       shapes.Add(shape);
     }

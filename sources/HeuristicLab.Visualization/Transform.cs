@@ -2,7 +2,14 @@
 
 namespace HeuristicLab.Visualization {
   public static class Transform {
-    // Screen to world transformations
+
+    /// <summary>
+    /// Screen to world transformations
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="viewport"></param>
+    /// <param name="clippingArea"></param>
+    /// <returns></returns>
     public static RectangleD ToWorld(Rectangle rect, Rectangle viewport, RectangleD clippingArea) {
       double x1 = ToWorldX(rect.Left, viewport, clippingArea);
       double y1 = ToWorldY(rect.Bottom, viewport, clippingArea);
@@ -25,7 +32,13 @@ namespace HeuristicLab.Visualization {
       return clippingArea.Y1 - clippingArea.Height/viewport.Height*(y - viewport.Bottom);
     }
 
-    // World to screen transformations
+    /// <summary>
+    /// World to screen transformations
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="viewport"></param>
+    /// <param name="clippingArea"></param>
+    /// <returns></returns>
     public static Rectangle ToScreen(RectangleD rect, Rectangle viewport, RectangleD clippingArea) {
       int left = ToScreenX(rect.X1, viewport, clippingArea);
       int bottom = ToScreenY(rect.Y1, viewport, clippingArea);
