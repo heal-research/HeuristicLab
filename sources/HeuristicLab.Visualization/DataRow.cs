@@ -3,9 +3,15 @@ using System.Drawing;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
+  public enum Action {
+    Added,
+    Modified,
+    Deleted
+  }
+
   public delegate void DataRowChangedHandler(IDataRow row);
-  public delegate void ValuesChangedHandler(IDataRow row, double[] values, int index);
-  public delegate void ValueChangedHandler(IDataRow row, double value, int index);
+  public delegate void ValuesChangedHandler(IDataRow row, double[] values, int index, Action action);
+  public delegate void ValueChangedHandler(IDataRow row, double value, int index, Action action);
 
   public class DataRow : IDataRow {
     private string label = "";
@@ -13,6 +19,19 @@ namespace HeuristicLab.Visualization {
     private int thickness = 2;
     private DrawingStyle style = DrawingStyle.Solid;
     private List<double> dataRow = new List<double>();
+
+
+    public DataRow(string label) {
+      this.Label = label;
+    }
+
+    public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
+      this.Label = label;
+      this.Color = color;
+      this.Thickness = thickness;
+      this.Style = style;
+      this.dataRow = dataRow;
+    }
 
     /// <summary>
     /// Raised when data row data changed. Should cause redraw in the view.
@@ -27,17 +46,17 @@ namespace HeuristicLab.Visualization {
 
     public event ValuesChangedHandler ValuesChanged;
 
-    protected void OnValuesChanged(double[] values, int index) {
+    protected void OnValuesChanged(double[] values, int index, Action action) {
       if (ValuesChanged != null) {
-        ValuesChanged(this, values, index);
+        ValuesChanged(this, values, index, action);
       }
     }
 
     public event ValueChangedHandler ValueChanged;
 
-    protected void OnValueChanged(double value, int index) {
+    protected void OnValueChanged(double value, int index, Action action) {
       if (ValueChanged != null) {
-        ValueChanged(this, value, index);
+        ValueChanged(this, value, index, action);
       }
     }
 
@@ -75,12 +94,17 @@ namespace HeuristicLab.Visualization {
 
     public void AddValue(double value) {
       dataRow.Add(value);
-      OnValueChanged(value, dataRow.Count - 1);
+      OnValueChanged(value, dataRow.Count - 1, Action.Added);
     }
 
     public void AddValue(double value, int index) {
-      dataRow.Add(value);
-      OnValueChanged(value, index);
+      //check if index is valid
+      if (index >= 0 && index < dataRow.Count) {
+        dataRow.Insert(index, value);
+        OnValueChanged(value, index, Action.Added);
+      } else {
+        throw new System.IndexOutOfRangeException();
+      }   
     }
 
     public void AddValues(double[] values) {
@@ -89,40 +113,81 @@ namespace HeuristicLab.Visualization {
       foreach (double d in values) {
         dataRow.Add(d);
       }
-
-      OnValuesChanged(values, startInd); 
+      OnValuesChanged(values, startInd, Action.Added); 
     }
 
     public void AddValues(double[] values, int index) {
+      int j = index;
+
       //check if index to start changes is valid
-      if (index + values.Length < dataRow.Count) {
+      if (index >=0 && (index + values.Length) < dataRow.Count) {
         foreach (double d in values) {
-          dataRow.Add(d);
+          dataRow.Insert(j, d);
+          j++;
         }
-        OnValuesChanged(values, index);
+        OnValuesChanged(values, index, Action.Added);
       } else {
         throw new System.IndexOutOfRangeException();
       }
     }
 
     public void ModifyValue(double value, int index) {
-      throw new NotImplementedException();
-      // TODO ValueChangedEvent auslösen
+      //check if index is valid
+      if (index >= 0 && index < dataRow.Count) {
+        dataRow[index] = value;
+        OnValueChanged(value, index, Action.Modified);
+      } else {
+        throw new System.IndexOutOfRangeException();
+      }
     }
 
     public void ModifyValues(double[] values, int index) {
-      throw new NotImplementedException();
-      // TODO ValuesChangedEvent auslösen
+      int startInd = index;
+      int modInd = index;
+
+      //check if index to start modification is valid
+      if (startInd >=0 && startInd + values.Length < dataRow.Count) {
+        foreach (double d in values) {
+          dataRow[modInd] = d;
+          modInd++;
+        }
+        OnValuesChanged(values, startInd, Action.Modified);
+      } else {
+        throw new System.IndexOutOfRangeException();
+      }
     }
 
     public void RemoveValue(int index) {
-      throw new NotImplementedException();
-      // TODO ValueChangedEvent auslösen
+      double remVal = dataRow[index];
+      //check if index is valid
+      if (index >= 0 && index < dataRow.Count) {
+        dataRow.RemoveAt(index);
+        OnValueChanged(remVal, index, Action.Deleted);
+      } else {
+        throw new System.IndexOutOfRangeException();
+      }
     }
 
     public void RemoveValues(int index, int count) {
-      throw new NotImplementedException();
-      // TODO ValuesChangedEvent auslösen
+      double[] remValues = new double[count]; //removed values
+      int j = 0;
+
+      //check if count is valid
+      if (count > 0) {
+        //check if index is valid
+        if ((index >= 0) && (index + count <= dataRow.Count)) {
+          for (int i = index; i < (index + count); i++) {
+            remValues.SetValue(i, j);
+            dataRow.RemoveAt(i);
+            j++;
+          }
+          OnValuesChanged(remValues, index, Action.Deleted);
+        } else {
+          throw new System.IndexOutOfRangeException();
+        }
+      } else {
+        throw new System.Exception("parameter count must be > 0!");
+      }
     }
 
     public int Count {
@@ -133,7 +198,7 @@ namespace HeuristicLab.Visualization {
       get { return dataRow[index]; }
       set {
         dataRow[index] = value;
-        OnValueChanged(value, index);
+        OnValueChanged(value, index, Action.Modified);
       }
     }
   }
