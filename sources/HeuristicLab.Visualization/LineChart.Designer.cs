@@ -33,10 +33,11 @@
           // 
           // canvasUI1
           // 
-          this.canvasUI1.Location = new System.Drawing.Point(3, 3);
+          this.canvasUI1.Dock = System.Windows.Forms.DockStyle.Fill;
+          this.canvasUI1.Location = new System.Drawing.Point(0, 0);
           this.canvasUI1.MouseEventListener = null;
           this.canvasUI1.Name = "canvasUI1";
-          this.canvasUI1.Size = new System.Drawing.Size(546, 384);
+          this.canvasUI1.Size = new System.Drawing.Size(552, 390);
           this.canvasUI1.TabIndex = 0;
           this.canvasUI1.Text = "canvasUI1";
           // 

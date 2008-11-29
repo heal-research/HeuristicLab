@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization {
@@ -25,6 +26,8 @@ namespace HeuristicLab.Visualization {
       try {
         Graphics g = pe.Graphics;
 
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+
         g.FillRectangle(Brushes.White, ClientRectangle);
 
         mainCanvas.Draw(g, ClientRectangle);
@@ -35,6 +38,12 @@ namespace HeuristicLab.Visualization {
       } catch (Exception e) {
        Debug.WriteLine(e);
       }
+    }
+
+    protected override void OnResize(EventArgs e) {
+      Invalidate();
+
+      base.OnResize(e);
     }
 
     private void CanvasUI_MouseMove(object sender, MouseEventArgs e) {

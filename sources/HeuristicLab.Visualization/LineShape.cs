@@ -5,6 +5,7 @@ namespace HeuristicLab.Visualization {
     private RectangleD boundingBox;
     private double z;
     private Color color;
+    private int thickness;
 
     /// <summary>
     /// Initializes the LineShape.
@@ -14,10 +15,11 @@ namespace HeuristicLab.Visualization {
     /// <param name="x2">x coordinate of right lineEndPoind</param>
     /// <param name="y2">y coordinate of right lineEndPoind</param>
     /// <param name="color">color for the LineShape</param>
-    public LineShape(double x1, double y1, double x2, double y2, double z, Color color) {
+    public LineShape(double x1, double y1, double x2, double y2, double z, Color color, int thickness) {
       this.boundingBox = new RectangleD(x1, y1, x2, y2);
       this.z = z;
       this.color = color;
+      this.thickness = thickness;
     }
 
     public RectangleD BoundingBox {
@@ -51,7 +53,7 @@ namespace HeuristicLab.Visualization {
     /// <param name="viewport">rectangle in value-coordinates to display</param>
     /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      using (Pen pen = new Pen(color, 3)){
+      using (Pen pen = new Pen(color, thickness)){
         Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
         graphics.DrawLine(pen,screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
       }
