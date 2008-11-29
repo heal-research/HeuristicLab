@@ -64,6 +64,7 @@ namespace HeuristicLab.Visualization {
       for (int i = 1; i < row.Count; i++) {
         LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness);
         lineShapes.Add(lineShape);
+        // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
       }
 
@@ -79,6 +80,7 @@ namespace HeuristicLab.Visualization {
 
     private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes = new Dictionary<IDataRow, List<LineShape>>();
 
+    // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       List<LineShape> lineShapes = rowToLineShapes[row];
 
@@ -89,6 +91,7 @@ namespace HeuristicLab.Visualization {
       if (index > 0 && index == lineShapes.Count+1) {
         LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness);
         lineShapes.Add(lineShape);
+        // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
       }
 
@@ -103,6 +106,7 @@ namespace HeuristicLab.Visualization {
       canvasUI1.Invalidate();
     }
 
+    // TODO use action parameter
     private void OnRowValuesChanged(IDataRow row, double[] values, int index, Action action) {
       foreach (double value in values) {
         OnRowValueChanged(row, value, index++, action);

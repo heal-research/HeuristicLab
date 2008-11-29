@@ -54,6 +54,7 @@ namespace HeuristicLab.Visualization {
     /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
       using (Pen pen = new Pen(color, thickness)){
+        // TODO there seems to be a bug with drawing straight lines.
         Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
         graphics.DrawLine(pen,screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
       }
