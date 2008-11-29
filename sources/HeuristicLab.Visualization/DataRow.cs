@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
   public delegate void DataRowChangedHandler(IDataRow row);
@@ -11,6 +12,7 @@ namespace HeuristicLab.Visualization {
     private Color color = Color.Black;
     private int thickness = 2;
     private DrawingStyle style = DrawingStyle.Solid;
+    private List<double> dataRow = new List<double>();
 
     /// <summary>
     /// Raised when data row data changed. Should cause redraw in the view.
@@ -72,23 +74,35 @@ namespace HeuristicLab.Visualization {
     }
 
     public void AddValue(double value) {
-      throw new NotImplementedException();
-      // TODO ValueChangedEvent auslösen
+      dataRow.Add(value);
+      OnValueChanged(value, dataRow.Count - 1);
     }
 
     public void AddValue(double value, int index) {
-      throw new NotImplementedException();
-      // TODO ValueChangedEvent auslösen
+      dataRow.Add(value);
+      OnValueChanged(value, index);
     }
 
     public void AddValues(double[] values) {
-      throw new NotImplementedException();
-      // TODO ValuesChangedEvent auslösen
+      int startInd = dataRow.Count;
+
+      foreach (double d in values) {
+        dataRow.Add(d);
+      }
+
+      OnValuesChanged(values, startInd); 
     }
 
     public void AddValues(double[] values, int index) {
-      throw new NotImplementedException();
-      // TODO ValuesChangedEvent auslösen
+      //check if index to start changes is valid
+      if (index + values.Length < dataRow.Count) {
+        foreach (double d in values) {
+          dataRow.Add(d);
+        }
+        OnValuesChanged(values, index);
+      } else {
+        throw new System.IndexOutOfRangeException();
+      }
     }
 
     public void ModifyValue(double value, int index) {
@@ -112,14 +126,14 @@ namespace HeuristicLab.Visualization {
     }
 
     public int Count {
-      get { throw new NotImplementedException(); }
+      get { return dataRow.Count; }
     }
 
     public double this[int index] {
-      get { throw new NotImplementedException(); }
+      get { return dataRow[index]; }
       set {
-        throw new NotImplementedException();
-        // TODO ValueChangedEvent auslösen
+        dataRow[index] = value;
+        OnValueChanged(value, index);
       }
     }
   }
