@@ -6,52 +6,21 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Visualization{
   public delegate void DataRowAddedHandler(IDataRow row);
   public delegate void DataRowRemovedHandler(IDataRow row);
-
   public delegate void ModelChangedHandler();
 
-  public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel {
+  public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
     private string title;
     private string xAxisLabel;
-    private string yAxisLabel;
 
-    public void AddLabel(string label) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
+    private readonly List<IDataRow> rows = new List<IDataRow>();
+    private readonly List<string> xLabels = new List<string>();
+
+    public List<string> XLabels{
+      get { return xLabels; }
     }
 
-    public void AddLabel(string label, int index) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void AddLabels(string[] labels) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void AddLabels(string[] labels, int index) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void ModifyLabel(string label, int index) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void ModifyLabels(string[] labels, int index) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void RemoveLabel(int index) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
-    }
-
-    public void RemoveLabels(int index, int count) {
-      throw new NotImplementedException();
-      // TODO ModelChangedEvent auslösen
+    public List<IDataRow> Rows{
+      get { return rows; }
     }
 
     public string Title {
@@ -61,7 +30,6 @@ namespace HeuristicLab.Visualization{
         OnModelChanged();
       }
     }
-
     public string XAxisLabel {
       get { return xAxisLabel; }
       set {
@@ -70,26 +38,60 @@ namespace HeuristicLab.Visualization{
       }
     }
 
-    public string YAxisLabel {
-      get { return yAxisLabel; }
-      set {
-        yAxisLabel = value;
-        OnModelChanged();
-      }
+    public override IView CreateView() {
+      return new LineChart(this);
     }
 
-    public event ModelChangedHandler ModelChanged;
-
-    protected void OnModelChanged() {
-      if (ModelChanged != null) {
-        ModelChanged();
-      }
+    public void AddLabel(string label) {
+      xLabels.Add(label);
+      OnModelChanged();
     }
 
-    private readonly List<IDataRow> rows = new List<IDataRow>();
-    
-    public static IDataRow CreateDataRow() {
-      throw new NotImplementedException();
+    public void AddLabel(string label, int index) {
+      xLabels[index] = label;
+      OnModelChanged();
+    }
+
+    public void AddLabels(string[] labels) {
+      foreach (var s in labels){
+        AddLabel(s);
+      }
+      //OnModelChanged();
+    }
+
+    public void AddLabels(string[] labels, int index) {
+      int i = 0;
+      foreach (var s in labels){
+        AddLabel(s, index + i);
+        i++;
+      }
+      //OnModelChanged();
+    }
+
+    public void ModifyLabel(string label, int index) {
+      xLabels[index] = label;
+      OnModelChanged();
+    }
+
+    public void ModifyLabels(string[] labels, int index) {
+      int i = 0;
+      foreach (var s in labels){
+        ModifyLabel(s, index + i);
+        i++;
+      }
+      //OnModelChanged();
+    }
+
+    public void RemoveLabel(int index) {
+      xLabels.RemoveAt(index);
+      OnModelChanged();
+    }
+
+    public void RemoveLabels(int index, int count) {
+      for (int i = index; i < index + count; i++ ){
+        RemoveLabel(i);
+      }
+      //OnModelChanged();
     }
 
     public void AddDataRow(IDataRow row) {
@@ -100,6 +102,14 @@ namespace HeuristicLab.Visualization{
     public void RemoveDataRow(IDataRow row) {
       rows.Remove(row);
       OnDataRowRemoved(row);
+    }
+
+    public event ModelChangedHandler ModelChanged;
+
+    protected void OnModelChanged() {
+      if (ModelChanged != null) {
+        ModelChanged();
+      }
     }
 
     public event DataRowAddedHandler DataRowAdded;
@@ -118,9 +128,7 @@ namespace HeuristicLab.Visualization{
       }
     }
 
-    public override IView CreateView() {
-      return new LineChart(this); //when LineChart is implemented
-    }
+    
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       throw new NotImplementedException();

@@ -1,8 +1,11 @@
-﻿namespace HeuristicLab.Visualization {
+﻿using System.Collections.Generic;
+
+namespace HeuristicLab.Visualization {
   public interface IChartDataRowsModel {
     string Title { get; set; }
     string XAxisLabel { get; set; }
-    string YAxisLabel { get; set; }
+    List<string> XLabels { get; }
+    List<IDataRow> Rows { get; }
 
     void AddDataRow(IDataRow row);
     void RemoveDataRow(IDataRow row);
