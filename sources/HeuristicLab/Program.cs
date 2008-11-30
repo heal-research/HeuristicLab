@@ -29,10 +29,31 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab {
   static class Program {
     [STAThread]
-    static void Main() {
-      Application.EnableVisualStyles();
-      Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new MainForm());
+    static void Main(string[] args) {
+      if (args.Length == 0) {  // normal mode
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new MainForm());
+      } else if (args.Length == 1) {  // start specific application
+        PluginManager.Manager.Initialize();
+
+        ApplicationInfo app = null;
+        foreach (ApplicationInfo info in PluginManager.Manager.InstalledApplications) {
+          if (info.Name == args[0])
+            app = info;
+        }
+        if (app == null) {  // application not found
+          MessageBox.Show("Cannot start application.\nApplication " + args[0] + " is not installed.\n\nStarting HeuristicLab in normal mode ...",
+                          "HeuristicLab",
+                          MessageBoxButtons.OK,
+                          MessageBoxIcon.Warning);
+          Application.EnableVisualStyles();
+          Application.SetCompatibleTextRenderingDefault(false);
+          Application.Run(new MainForm());
+        } else {
+          PluginManager.Manager.Run(app);
+        }
+      }
     }
   }
 }
