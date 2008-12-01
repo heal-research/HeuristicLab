@@ -49,28 +49,10 @@ namespace HeuristicLab.Hive.Client.Core {
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
 
-    public static StrongName CreateStrongName(Assembly assembly) {
-      if (assembly == null)
-        throw new ArgumentNullException("assembly");
-
-      AssemblyName assemblyName = assembly.GetName();
-      Debug.Assert(assemblyName != null, "Could not get assembly name");
-
-      // get the public key blob
-      byte[] publicKey = assemblyName.GetPublicKey();
-      if (publicKey == null || publicKey.Length == 0)
-        throw new InvalidOperationException("Assembly is not strongly named");
-
-      StrongNamePublicKeyBlob keyBlob = new StrongNamePublicKeyBlob(publicKey);
-
-      // and create the StrongName
-      return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
-    }
-
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-       DiscoveryService discService =
+       /*DiscoveryService discService =
         new DiscoveryService();
       IClientConsoleCommunicator[] clientCommunicatorInstances =
         discService.GetInstances<IClientConsoleCommunicator>();
@@ -98,13 +80,13 @@ namespace HeuristicLab.Hive.Client.Core {
             "mex");
 
         serviceHost.Open();
-      }
+      }*/
 
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
       clientCommunicator.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(ClientCommunicator_SendJobResultCompleted);
-      clientCommunicator.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
+      //clientCommunicator.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
 
       Heartbeat beat = new Heartbeat { Interval = 5000 };
       beat.StartHeartbeat();     
@@ -126,22 +108,6 @@ namespace HeuristicLab.Hive.Client.Core {
         Status.LoggedIn = true;
       } else
         Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
-    }
-
-    private AppDomain CreateNewAppDomain(bool sandboxed) {
-      PermissionSet pset;
-      if (sandboxed) {
-        pset = new PermissionSet(PermissionState.None);
-        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-      } else {
-        pset = new PermissionSet(PermissionState.Unrestricted);
-      }
-      AppDomainSetup setup = new AppDomainSetup();
-      setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-      //Temp Fix!
-      setup.PrivateBinPath = "plugins";
-      return System.AppDomain.CreateDomain("appD", AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
-
     }
 
     private void DetermineAction(MessageContainer container) {
@@ -187,12 +153,8 @@ namespace HeuristicLab.Hive.Client.Core {
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
       bool sandboxed = false;
 
-      //IJob job = new TestJob { JobId = e.Result.JobId };
-
-      PluginManager pm = PluginManager.Manager;
-      AppDomain appDomain =  pm.CreateAndInitAppDomain("AppDomain");
-
-      //AppDomain appDomain = CreateNewAppDomain(sandboxed);
+      AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed);
+      
       appDomains.Add(e.Result.JobId, appDomain);
 
       Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);

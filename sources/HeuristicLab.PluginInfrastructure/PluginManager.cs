@@ -21,6 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
+using System.Reflection;
+using System.Diagnostics;
+using System.Security.Permissions;
+using System.Security;
 
 namespace HeuristicLab.PluginInfrastructure {
 
@@ -131,6 +136,53 @@ namespace HeuristicLab.PluginInfrastructure {
       return applicationDomain;
     }
 
+    /// <summary>
+    /// Creates a new AppDomain with all plugins preloaded and Sandboxing capability
+    /// </summary>
+    /// <param name="assembly">Assembly reference</param>
+    /// <returns>the strongname of the assembly</returns>
+    private StrongName CreateStrongName(Assembly assembly) {
+      if (assembly == null)
+        throw new ArgumentNullException("assembly");
+
+      AssemblyName assemblyName = assembly.GetName();
+      Debug.Assert(assemblyName != null, "Could not get assembly name");
+
+      // get the public key blob
+      byte[] publicKey = assemblyName.GetPublicKey();
+      if (publicKey == null || publicKey.Length == 0)
+        throw new InvalidOperationException("Assembly is not strongly named");
+
+      StrongNamePublicKeyBlob keyBlob = new StrongNamePublicKeyBlob(publicKey);
+
+      // and create the StrongName
+      return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
+    }
+
+    public AppDomain CreateAndInitAppDomainWithSandbox(string friendlyName, bool sandboxed) {
+
+      PermissionSet pset;
+      if (sandboxed) {
+        pset = new PermissionSet(PermissionState.None);
+        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));        
+      } else {
+        pset = new PermissionSet(PermissionState.Unrestricted);
+      }
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.PrivateBinPath = pluginDir;
+      setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;      
+      AppDomain applicationDomain = AppDomain.CreateDomain(friendlyName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
+                      
+      Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
+      NotifyListeners(PluginManagerAction.Initializing, "All plugins");
+      if (remoteLoader != null) {
+        remoteRunner.LoadPlugins(remoteLoader.ActivePlugins);
+      } else if (LoadedPlugins != null && LoadedPlugins.Count > 0) {
+        remoteRunner.LoadPlugins(LoadedPlugins);
+      }
+      NotifyListeners(PluginManagerAction.Initialized, "All plugins");
+      return applicationDomain;
+    }
 
     /// <summary>
     /// Calculates a set of plugins that directly or transitively depend on the plugin given in the argument.
