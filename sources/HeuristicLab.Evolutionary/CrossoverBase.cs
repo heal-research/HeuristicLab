@@ -26,12 +26,26 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Base class for crossing over operators.
+  /// </summary>
   public abstract class CrossoverBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="CrossoverBase"/> with one variable info (<c>Random</c>).
+    /// </summary>
     public CrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
     }
 
+    /// <summary>
+    /// Replaces the parents (the sub scopes of the current <paramref name="scope"/>) with created children
+    /// by crossing over of two adjacent sub scopes.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the size of the mating pool 
+    /// is not even.</exception>
+    /// <param name="scope">The current scope whose sub scopes shall be parents.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
 
@@ -52,6 +66,15 @@ namespace HeuristicLab.Evolutionary {
       return null;
     }
 
+    /// <summary>
+    /// Performs a cross over of <paramref name="parent1"/> and <paramref name="parent2"/>
+    /// to create a new <paramref name="child"/>.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The parent scope 1 to cross over.</param>
+    /// <param name="parent2">The parent scope 2 to cross over.</param>
+    /// <param name="child">The resulting child of the cross over.</param>
     protected abstract void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child);
   }
 }

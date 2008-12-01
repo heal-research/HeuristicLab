@@ -26,11 +26,27 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Operator class that migrates one sub scope of each child to its left neighbour sub scope, like a ring.
+  /// </summary>
   public class UnidirectionalRingMigrator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Migrates every first sub scope of each child to its left neighbour (like a ring).
+    /// <pre>                                                               
+    ///                    scope                    scope             
+    ///                /     |     \            /     |     \         
+    ///               A      B      C    =>    A      B      C           
+    ///              /|\    /|\    /|\        /|\    /|\    /|\       
+    ///             G H I  J K L  M N O      H I J  K L M  N O G     
+    /// </pre>
+    /// </summary>
+    /// <param name="scope">The scope whose sub scopes of the children should migrate.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IList<IScope> emigrantsList = new List<IScope>();
 

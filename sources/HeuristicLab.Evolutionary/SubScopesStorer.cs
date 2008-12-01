@@ -27,17 +27,34 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Stores the sub scopes of the right sub scope until enough newly created child scopes are available
+  /// (for example to replace a generation).
+  /// </summary>
   public class SubScopesStorer : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubScopesStorer"/> with two variable infos 
+    /// (<c>SubScopes</c> and <c>SubScopesStore</c>).
+    /// </summary>
     public SubScopesStorer()
       : base() {
       AddVariableInfo(new VariableInfo("SubScopes", "Number of sub-scopes that should be available", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SubScopesStore", "Temporarily stored sub-scopes", typeof(ItemList<IScope>), VariableKind.New | VariableKind.In | VariableKind.Out | VariableKind.Deleted));
     }
 
+    /// <summary>
+    /// Stores all sub scopes of the right branch to get the required number of sub scopes. Shifts the left
+    /// branch one level up, if sub scopes are still missing (so that another selection and mutation circle
+    /// can take place). 
+    /// </summary>
+    /// <param name="scope">The current scope whose sub scopes to store.</param>
+    /// <returns><c>null</c> if the required number of sub scopes is available, the next 
+    /// <see cref="AtomicOperation"/> if sub scopes are still missing.</returns>
     public override IOperation Apply(IScope scope) {
       IntData subScopes = GetVariableValue<IntData>("SubScopes", scope, true);
       ItemList<IScope> subScopesStore = GetVariableValue<ItemList<IScope>>("SubScopesStore", scope, false);

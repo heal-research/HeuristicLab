@@ -26,11 +26,23 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Joins all sub sub scopes of a specified scope, reduces the number of sub 
+  /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
+  /// </summary>
   public class SASEGASAReunificator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Joins all sub sub scopes of the given <paramref name="scope"/>, reduces the number of sub 
+    /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when only 0 or 1 sub scope is available.</exception>
+    /// <param name="scope">The current scope whose sub scopes to reduce.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int subScopes = scope.SubScopes.Count;
       if (subScopes <= 1)

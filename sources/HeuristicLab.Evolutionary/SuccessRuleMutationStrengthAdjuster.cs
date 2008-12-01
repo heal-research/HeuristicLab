@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Adjusts the mutation strength based on the ratio of successful offsprings.
+  /// </summary>
   public class SuccessRuleMutationStrengthAdjuster : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Adjusts the mutation strength based on the ratio of successful offsprings"; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SuccessRuleMutationStrengthAdjuster"/> with six variable
+    /// infos (<c>ShakingFactor</c>, <c>SuccessfulChild</c>, <c>TargetSuccessProbability</c>, 
+    /// <c>SuccessProbability</c>, <c>LearningRate</c> and <c>DampeningFactor</c>).
+    /// </summary>
     public SuccessRuleMutationStrengthAdjuster() {
       AddVariableInfo(new VariableInfo("ShakingFactor", "The mutation strength to adjust", typeof(DoubleData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("SuccessfulChild", "Variable that tells if a child has become better than its parent", typeof(BoolData), VariableKind.In | VariableKind.Deleted));
@@ -40,6 +49,11 @@ namespace HeuristicLab.Evolutionary {
       AddVariableInfo(new VariableInfo("DampeningFactor", "Influences the strength of the adjustment to the mutation strength", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Adjusts the mutation strength based on the ratio of successful offsprings.
+    /// </summary>
+    /// <param name="scope">The current scope where to adjust the mutation strength.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       DoubleData shakingFactor = GetVariableValue<DoubleData>("ShakingFactor", scope, true);
       DoubleData targetSuccessProb = GetVariableValue<DoubleData>("TargetSuccessProbability", scope, true);

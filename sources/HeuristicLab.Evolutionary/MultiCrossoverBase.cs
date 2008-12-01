@@ -27,13 +27,29 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Base class for cross over operators that use more than two parents.
+  /// </summary>
   public abstract class MultiCrossoverBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="MultiCrossoverBase"/> with two variable infos
+    /// (<c>Parents</c> and <c>Random</c>).
+    /// </summary>
     public MultiCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("Parents", "Number of parents that should be crossed", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
     }
 
+    /// <summary>
+    /// Replaces the parents (sub scopes of the given <paramref name="scope"/>) with created children
+    /// by crossing over a specified number of parents.
+    /// </summary>
+    /// <remarks>Adds the children to the given <paramref name="scope"/> and removes the parents.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown when the size of the mating pool and the 
+    /// number of parents don't match.</exception>
+    /// <param name="scope">The scope whose sub scopes shall be crossed over.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       int parents = GetVariableValue<IntData>("Parents", scope, true).Data;
@@ -56,7 +72,14 @@ namespace HeuristicLab.Evolutionary {
       }
       return null;
     }
-
+    /// <summary>
+    /// Performs a cross over of a number of <paramref name="parents"/>
+    /// to create a new <paramref name="child"/>.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">The scopes to cross over.</param>
+    /// <param name="child">The result of the cross over.</param>
     protected abstract void Cross(IScope scope, IRandom random, IScope[] parents, IScope child);
   }
 }
