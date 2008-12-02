@@ -23,16 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Security.Permissions;
+using System.Security;
 
 namespace HeuristicLab.PluginInfrastructure {
   internal class Runner : MarshalByRefObject {
 
     public void LoadPlugins(ICollection<PluginInfo> plugins) {
+      //FileIOPermission fileperm = new FileIOPermission(FileIOPermissionAccess.AllAccess, @"C:\Program Files\HeuristicLab 3.0\plugins\");
+      //fileperm.Assert();
       foreach(PluginInfo pluginInfo in plugins) {
         foreach(string assemblyName in pluginInfo.Assemblies) {
           Assembly.LoadFrom(assemblyName);
         }
       }
+      //CodeAccessPermission.RevertAssert();
       PluginManager.Manager.LoadedPlugins = plugins;
     }
 

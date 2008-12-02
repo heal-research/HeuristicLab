@@ -88,7 +88,7 @@ namespace HeuristicLab.Hive.Client.Core {
       clientCommunicator.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(ClientCommunicator_SendJobResultCompleted);
       //clientCommunicator.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
 
-      Heartbeat beat = new Heartbeat { Interval = 5000 };
+      Heartbeat beat = new Heartbeat { Interval = 30000 };
       beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
@@ -153,7 +153,8 @@ namespace HeuristicLab.Hive.Client.Core {
     void ClientCommunicator_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
       bool sandboxed = false;
 
-      AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed);
+      PluginManager.Manager.Initialize();
+      AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));
       
       appDomains.Add(e.Result.JobId, appDomain);
 
