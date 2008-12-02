@@ -28,11 +28,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Injects a new TSP in a given scope with all its needed variables....
+  /// </summary>
   public class TSPInjector : OperatorBase {
+    /// <inheritdoc/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPInjector"/> with four variable infos 
+    /// (<c>Maximization</c>, <c>Cities</c>, <c>Coordinates</c> and <c>BestKnownQuality</c>).
+    /// </summary>
     public TSPInjector()
       : base() {
       AddVariableInfo(new VariableInfo("Maximization", "Set to false as TSP is a minimization problem", typeof(BoolData), VariableKind.New));
@@ -45,10 +53,19 @@ namespace HeuristicLab.Routing.TSP {
       AddVariable(new Variable("BestKnownQuality", new DoubleData(0)));
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="TSPInjectorView"/> to display the current instance.
+    /// </summary>
+    /// <returns>The created view as <see cref="TSPInjectorView"/>.</returns>
     public override IView CreateView() {
       return new TSPInjectorView(this);
     }
 
+    /// <summary>
+    /// Adds a new TSP to the given <paramref name="scope"/>, through adding the needed variables.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the variables.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       scope.AddVariable(new Variable(scope.TranslateName("Maximization"), new BoolData(false)));
       scope.AddVariable(new Variable(scope.TranslateName("Cities"), (IItem)GetVariable("Cities").Value.Clone()));

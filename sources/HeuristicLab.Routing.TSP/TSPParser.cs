@@ -26,6 +26,9 @@ using System.IO;
 using System.Globalization;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Parses a *.tsp file and extracts its information about a TSP.
+  /// </summary>
   public class TSPParser {
     private const int EOF = 0;
     private const int NAME = 1;
@@ -38,18 +41,33 @@ namespace HeuristicLab.Routing.TSP {
     private StreamReader source;
 
     private string myName;
+    /// <summary>
+    /// Gets the name of the parsed TSP.
+    /// </summary>
     public string Name {
       get { return myName; }
     }
     private double[,] myVertices;
+    /// <summary>
+    /// Gets the vertices of the parsed TSP.
+    /// </summary>
     public double[,] Vertices {
       get { return myVertices; }
     }
     private int myWeightType;
+    /// <summary>
+    /// Gets the weight type of the parsed TSP.
+    /// </summary>
     public int WeightType {
       get { return myWeightType; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPParser"/> with the given <paramref name="path"/>.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the input file name is not in TSP format (*.tsp)
+    /// </exception>
+    /// <param name="path">The path where the TSP is stored.</param>
     public TSPParser(String path) {
       if (!path.EndsWith(".tsp"))
         throw new ArgumentException("Input file name has to be in TSP format (*.tsp)");
@@ -60,6 +78,10 @@ namespace HeuristicLab.Routing.TSP {
       myWeightType = -1;
     }
 
+    /// <summary>
+    /// Reads the TSP file and parses the elements.
+    /// </summary>
+    /// <exception cref="InvalidDataException">Thrown when file contains unknown (edge) types.</exception>
     public void Parse() {
       int section = -1;
       string str = null;

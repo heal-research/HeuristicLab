@@ -32,34 +32,61 @@ using HeuristicLab.Permutation;
 using HeuristicLab.Charting;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Class for the visual representation of a <see cref="TSPTour"/>.
+  /// </summary>
   public partial class TSPTourView : ViewBase {
+    /// <summary>
+    /// Gets or sets the <see cref="TSPTour"/> to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public TSPTour TSPTour {
       get { return (TSPTour)base.Item; }
       set { base.Item = value; }
     }
 
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPTourView"/> with caption "TSP Tour View".
+    /// </summary>
     public TSPTourView() {
       InitializeComponent();
       Caption = "TSP Tour View";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPTourView"/> with the given <paramref name="tspTour"/>.
+    /// </summary>
+    /// <param name="tspTour">The tour to display.</param>
     public TSPTourView(TSPTour tspTour)
       : this() {
       TSPTour = tspTour;
     }
 
 
+    /// <summary>
+    /// Removes all event handlers from the underlying <see cref="TSPTour"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks> 
     protected override void RemoveItemEvents() {
       TSPTour.CoordinatesChanged -= new EventHandler(TSPTour_CoordinatesChanged);
       TSPTour.TourChanged -= new EventHandler(TSPTour_TourChanged);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="TSPTour"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       TSPTour.CoordinatesChanged += new EventHandler(TSPTour_CoordinatesChanged);
       TSPTour.TourChanged += new EventHandler(TSPTour_TourChanged);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       Chart chart = new Chart(0, 0, 10, 10);

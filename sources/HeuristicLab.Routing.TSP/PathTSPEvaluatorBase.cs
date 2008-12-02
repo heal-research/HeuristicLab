@@ -28,13 +28,25 @@ using HeuristicLab.Operators;
 using HeuristicLab.Permutation;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Base class for TSP path evaluation, based on length calculation.
+  /// </summary>
   public abstract class PathTSPEvaluatorBase : SingleObjectiveEvaluatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="PathTSPEvaluatorBase"/> with two variable infos
+    /// (<c>Coordinates</c> and <c>Permutation</c>).
+    /// </summary>
     public PathTSPEvaluatorBase()
       : base() {
       AddVariableInfo(new VariableInfo("Coordinates", "City coordinates", typeof(DoubleMatrixData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Permutation", "Permutation representing a TSP solution in path encoding", typeof(Permutation.Permutation), VariableKind.In));
     }
 
+    /// <summary>
+    /// Calculates the length of a whole path of the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to evaluate the path.</param>
+    /// <returns>The calculated length.</returns>
     protected sealed override double Evaluate(IScope scope) {
       double[,] coordinates = GetVariableValue<DoubleMatrixData>("Coordinates", scope, true).Data;
       int[] perm = GetVariableValue<Permutation.Permutation>("Permutation", scope, false).Data;
@@ -52,6 +64,14 @@ namespace HeuristicLab.Routing.TSP {
       return length;
     }
 
+    /// <summary>
+    /// Calculates the distance between two given points.
+    /// </summary>
+    /// <param name="x1">The x coordinate of point 1.</param>
+    /// <param name="y1">The y coordinate of point 1.</param>
+    /// <param name="x2">The x coordinate of point 2.</param>
+    /// <param name="y2">The y coordinate of point 2.</param>
+    /// <returns>The calculated distance.</returns>
     protected abstract double CalculateDistance(double x1, double y1, double x2, double y2);
   }
 }

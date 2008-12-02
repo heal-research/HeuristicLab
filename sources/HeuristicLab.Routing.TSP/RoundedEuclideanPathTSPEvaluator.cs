@@ -28,11 +28,23 @@ using HeuristicLab.Operators;
 using HeuristicLab.Permutation;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Evaluates the TSP path by using the euclidean distance between two points.
+  /// </summary>
   public class RoundedEuclideanPathTSPEvaluator : PathTSPEvaluatorBase {
+    /// <inheritdoc/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Calculates the distance between two points by using the euclidean distance.
+    /// </summary>
+    /// <param name="x1">The x coordinate of point 1.</param>
+    /// <param name="y1">The y coordinate of point 1.</param>
+    /// <param name="x2">The x coordinate of point 2.</param>
+    /// <param name="y2">The y coordinate of point 2.</param>
+    /// <returns>The euclidean distance between the two points.</returns>
     protected override double CalculateDistance(double x1, double y1, double x2, double y2) {
       return Math.Round(Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
     }

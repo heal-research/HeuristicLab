@@ -27,7 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Base class to inject the calculated distance matrix of the TSP path into the current scope.
+  /// </summary>
   public abstract class TSPDistanceMatrixInjectorBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPDistanceMatrixInjectorBase"/> with three variable infos
+    /// (<c>Cities</c>, <c>Coordinates</c> and <c>DistanceMatrix</c>).
+    /// </summary>
     public TSPDistanceMatrixInjectorBase()
       : base() {
       AddVariableInfo(new VariableInfo("Cities", "Number of cities", typeof(IntData), VariableKind.In));
@@ -35,6 +42,11 @@ namespace HeuristicLab.Routing.TSP {
       AddVariableInfo(new VariableInfo("DistanceMatrix", "Distance matrix containing all distances between cities", typeof(DoubleMatrixData), VariableKind.New));
     }
 
+    /// <summary>
+    /// Generates a distance matrix with the distances between all cities in the current path.
+    /// </summary>
+    /// <param name="scope">The current scope with the path.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int cities = GetVariableValue<IntData>("Cities", scope, true).Data;
       double[,] coordinates = GetVariableValue<DoubleMatrixData>("Coordinates", scope, true).Data;
@@ -53,6 +65,14 @@ namespace HeuristicLab.Routing.TSP {
       return null;
     }
 
+    /// <summary>
+    /// Calculates the distance between two points in the path.
+    /// </summary>
+    /// <param name="x1">The x coordinate of point 1.</param>
+    /// <param name="y1">The y coordinate of point 1.</param>
+    /// <param name="x2">The x coordinate of point 2.</param>
+    /// <param name="y2">The y coordinate of point 2.</param>
+    /// <returns>The calculated distance.</returns>
     protected abstract double CalculateDistance(double x1, double y1, double x2, double y2);
   }
 }

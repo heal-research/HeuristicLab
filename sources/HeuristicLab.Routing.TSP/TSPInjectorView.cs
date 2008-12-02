@@ -31,31 +31,59 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Class to represent a <see cref="TSPInjector"/> visually.
+  /// </summary>
   public partial class TSPInjectorView : ViewBase {
+    /// <summary>
+    /// Gets or set the <see cref="TSPInjector"/> to represent visually.
+    /// </summary>        
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public TSPInjector TSPInjector {
       get { return (TSPInjector)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPInjectorView"/>.
+    /// </summary>
     public TSPInjectorView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="TSPInjectorView"/> with the given 
+    /// <paramref name="tspInjector"/>.
+    /// </summary>
+    /// <param name="tspInjector">The <see cref="TSPInjector"/> to display.</param>
     public TSPInjectorView(TSPInjector tspInjector)
       : this() {
       TSPInjector = tspInjector;
     }
 
+    /// <summary>
+    /// Removes the event handlers in all children.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       operatorBaseVariableInfosView.Operator = null;
       operatorBaseDescriptionView.Operator = null;
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers in all children.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       operatorBaseVariableInfosView.Operator = TSPInjector;
       operatorBaseDescriptionView.Operator = TSPInjector;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (TSPInjector == null) {

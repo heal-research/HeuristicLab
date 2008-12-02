@@ -28,17 +28,31 @@ using HeuristicLab.Operators;
 using HeuristicLab.Permutation;
 
 namespace HeuristicLab.Routing.TSP {
+  /// <summary>
+  /// Evaluates the TSP path by using values in the distance matrix.
+  /// </summary>
   public class DistanceMatrixPathTSPEvaluator : SingleObjectiveEvaluatorBase {
+    /// <inheritdoc/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DistanceMatrixPathTSPEvaluator"/> with two variable 
+    /// infos (<c>Permutation</c>, <c>DistanceMatrix</c>).
+    /// </summary>
     public DistanceMatrixPathTSPEvaluator()
       : base() {
       AddVariableInfo(new VariableInfo("Permutation", "Permutation representing a TSP solution in path encoding", typeof(Permutation.Permutation), VariableKind.In));
       AddVariableInfo(new VariableInfo("DistanceMatrix", "Distance matrix containing all distances between cities", typeof(DoubleMatrixData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Calculates the length of the path in the given <paramref name="scope"/> by taking the 
+    /// values of the distance matrix.
+    /// </summary>
+    /// <param name="scope">The current scope with the permutation and the distance matrix.</param>
+    /// <returns>The calculated length.</returns>
     protected override double Evaluate(IScope scope) {
       double[,] distanceMatrix = GetVariableValue<DoubleMatrixData>("DistanceMatrix", scope, true).Data;
       int[] perm = GetVariableValue<Permutation.Permutation>("Permutation", scope, false).Data;
