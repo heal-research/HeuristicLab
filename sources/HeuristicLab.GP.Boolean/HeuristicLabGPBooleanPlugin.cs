@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.SantaFe {
+namespace HeuristicLab.GP.Boolean {
   [ClassInfo(Name = "HeuristicLab.GP.Boolean-1.0")]
   [PluginFile(Filename = "HeuristicLab.GP.Boolean-1.0.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.GP-3.2")]

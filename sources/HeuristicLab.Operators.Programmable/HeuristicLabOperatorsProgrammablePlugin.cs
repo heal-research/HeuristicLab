@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Operators.Programmable {
   [ClassInfo(Name = "HeuristicLab.Operators.Programmable-3.2")]
   [PluginFile(Filename = "HeuristicLab.Operators.Programmable-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
