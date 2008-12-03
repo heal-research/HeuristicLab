@@ -125,7 +125,7 @@ namespace HeuristicLab.Operators.Programmable {
         string[] source = writer.ToString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < source.Length; i++)
-          builder.AppendLine((i + 1).ToString("###") + "     " + source[i]);
+          builder.AppendLine((i + 3).ToString("###") + "     " + source[i]);
         builder.AppendLine();
         builder.AppendLine();
         builder.AppendLine();
