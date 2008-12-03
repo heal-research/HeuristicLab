@@ -43,11 +43,10 @@ namespace HeuristicLab.Constraints {
     }
     public NotConstraint()
       : base() {
-      subConstraint = new FalseConstraint();
     }
 
     public override bool Check(IItem data) {
-      return !subConstraint.Check(data);
+      return (subConstraint == null) || (!subConstraint.Check(data));
     }
 
     public override IView CreateView() {
@@ -57,21 +56,26 @@ namespace HeuristicLab.Constraints {
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       NotConstraint clone = new NotConstraint();
       clonedObjects.Add(Guid, clone);
-      clone.SubConstraint = (ConstraintBase)SubConstraint.Clone();
+      if (subConstraint != null)
+        clone.SubConstraint = (ConstraintBase)SubConstraint.Clone();
       return clone;
     }
 
     #region persistence
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode sub = PersistenceManager.Persist("SubConstraint", SubConstraint, document, persistedObjects);
-      node.AppendChild(sub);
+      if (subConstraint != null) {
+        XmlNode sub = PersistenceManager.Persist("SubConstraint", SubConstraint, document, persistedObjects);
+        node.AppendChild(sub);
+      }
       return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      subConstraint = (ConstraintBase)PersistenceManager.Restore(node.SelectSingleNode("SubConstraint"), restoredObjects);
+      XmlNode subNode =  node.SelectSingleNode("SubConstraint");
+      if(subNode!=null) 
+        subConstraint = (ConstraintBase)PersistenceManager.Restore(subNode, restoredObjects);
     }
     #endregion
   }

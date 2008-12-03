@@ -98,7 +98,7 @@ namespace HeuristicLab.Constraints {
         try {
           NotConstraint.SubConstraint = (ConstraintBase)Activator.CreateInstance(itemTypes[subConstraintComboBox.SelectedIndex]);
         } catch (Exception) {
-          NotConstraint.SubConstraint = new FalseConstraint();
+          NotConstraint.SubConstraint = null;
         }
       }
     }

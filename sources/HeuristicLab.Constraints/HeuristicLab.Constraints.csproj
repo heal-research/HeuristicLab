@@ -83,12 +83,6 @@
       <DependentUpon>DoubleBoundedConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="IntBoundedConstraint.cs" />
-    <Compile Include="FalseConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FalseConstraintView.Designer.cs">
-      <DependentUpon>FalseConstraintView.cs</DependentUpon>
-    </Compile>
     <Compile Include="IntBoundedConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -124,7 +118,6 @@
     <Compile Include="OrConstraintView.Designer.cs">
       <DependentUpon>OrConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="FalseConstraint.cs" />
     <Compile Include="SubOperatorsConstraintAnalyser.cs" />
     <Compile Include="SubOperatorsTypeConstraint.cs" />
     <Compile Include="SubOperatorsTypeConstraintView.cs">
@@ -133,15 +126,8 @@
     <Compile Include="SubOperatorsTypeConstraintView.designer.cs">
       <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrueConstraint.cs" />
     <Compile Include="HeuristicLabConstraintsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TrueConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TrueConstraintView.Designer.cs">
-      <DependentUpon>TrueConstraintView.cs</DependentUpon>
-    </Compile>
     <Compile Include="VariableComparisonConstraint.cs" />
     <Compile Include="VariableComparisonConstraintView.cs">
       <SubType>UserControl</SubType>
@@ -181,10 +167,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>DoubleBoundedConstraintView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FalseConstraintView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FalseConstraintView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="IntBoundedConstraintView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>IntBoundedConstraintView.cs</DependentUpon>
@@ -208,10 +190,6 @@
     <EmbeddedResource Include="SubOperatorsTypeConstraintView.resx">
       <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TrueConstraintView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>TrueConstraintView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VariableComparisonConstraintView.resx">
       <DependentUpon>VariableComparisonConstraintView.cs</DependentUpon>
