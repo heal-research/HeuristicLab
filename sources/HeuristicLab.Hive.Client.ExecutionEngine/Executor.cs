@@ -36,8 +36,16 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     public IJob Job { get; set; }
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }
+    public double Progress {
+      get {
+        return Job.Progress;
+      }
+    }
 
-    public void Start(byte[] serializedJob) {      
+    public DateTime CreationTime { get; set; }
+
+    public void Start(byte[] serializedJob) {
+      CreationTime = DateTime.Now;
       Job = (IJob)PersistenceManager.RestoreFromGZip(serializedJob);
       Job.JobStopped += new EventHandler(Job_JobStopped);
       Job.Start();

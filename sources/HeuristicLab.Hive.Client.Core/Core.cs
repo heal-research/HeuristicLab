@@ -56,6 +56,9 @@ namespace HeuristicLab.Hive.Client.Core {
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
 
+      ConfigurationManager manager = ConfigurationManager.GetInstance();
+      manager.Core = this;
+
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
       clientCommunicator.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(ClientCommunicator_PullJobCompleted);
@@ -153,6 +156,10 @@ namespace HeuristicLab.Hive.Client.Core {
       } else {
         Debug.WriteLine("Job sending FAILED!");
       }
+    }
+
+    public Dictionary<long, Executor> GetExecutionEngines() {
+      return engines;
     }
   }
 }

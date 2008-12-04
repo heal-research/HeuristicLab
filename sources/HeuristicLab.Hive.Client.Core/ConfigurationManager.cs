@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Client.Communication.ClientConsole;
+using HeuristicLab.Hive.Client.ExecutionEngine;
 
 namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
@@ -32,7 +34,8 @@ namespace HeuristicLab.Hive.Client.Core {
   public class ConfigurationManager {
     private static ConfigurationManager instance = null;
 
-    private ClientInfo clientInfo;
+    public Core Core { get; set; }
+    private ClientInfo clientInfo;    
     private Guid guid;
 
     public static ConfigurationManager GetInstance() {
@@ -41,6 +44,8 @@ namespace HeuristicLab.Hive.Client.Core {
       }
       return instance;
     }
+
+   
 
     /// <summary>
     /// Constructor for the singleton, must recover Guid, Calendar, ...
@@ -54,10 +59,29 @@ namespace HeuristicLab.Hive.Client.Core {
       clientInfo.NrOfCores = Environment.ProcessorCount;
       clientInfo.Memory = 1024;
       clientInfo.Name = Environment.MachineName;
+
     }
 
     public ClientInfo GetClientInfo() {
       return clientInfo;          
+    }
+
+    public StatusCommons GetStatusForClient() {
+      StatusCommons st = new StatusCommons();
+      st.ClientGuid = guid;
+      st.ConnectedSince = clientInfo.Login;
+      //This is just Temporary!
+      st.JobsAborted = 0;
+      st.JobsDone = 0;
+      st.JobsFetched = 0;
+      st.Status = StatusCommons.ClientStatusEnum.Connected;
+
+      Dictionary<long, Executor> engines = Core.GetExecutionEngines();
+      foreach (KeyValuePair<long, Executor> kvp in engines) {
+        Executor e = kvp.Value;
+        st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
+      }
+      return st;      
     }
 
     public void Loggedin() {
