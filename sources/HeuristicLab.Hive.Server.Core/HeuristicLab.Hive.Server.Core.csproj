@@ -69,6 +69,7 @@
     <Compile Include="ClientManager.cs" />
     <Compile Include="DbTestApp.cs" />
     <Compile Include="HiveServerCorePlugin.cs" />
+    <Compile Include="HiveServerMessages.Designer.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IClientAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IPermissionOwnerAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
@@ -96,6 +97,9 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HiveServerMessages.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
