@@ -30,10 +30,11 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using ZedGraph;
+using HeuristicLab.Hive.Client.Communication.ClientConsole;
 
 namespace HeuristicLab.Hive.Client.Console {
 
-  delegate void UpdateTextDelegate(EventLog ev);
+  delegate void UpdateTextDelegate(EventLogEntry ev);
 
   public partial class HiveClientConsole : Form {
 
@@ -43,6 +44,9 @@ namespace HeuristicLab.Hive.Client.Console {
     public HiveClientConsole() {
       InitializeComponent();
       GetEventLog();
+
+      ClientConsoleCommunicatorClient cccc = ServiceLocator.ClientConsoleCommunicatorClient();
+      StatusCommons curClientStatus = cccc.GetStatusInfos();
     }
 
     private void GetEventLog() {
@@ -56,7 +60,7 @@ namespace HeuristicLab.Hive.Client.Console {
         curEventLogEntry = new ListViewItem("", 0);
         if(eve.EntryType == EventLogEntryType.Error)
           curEventLogEntry = new ListViewItem("", 1);
-        curEventLogEntry.SubItems.Add(eve.EventID.ToString());
+        curEventLogEntry.SubItems.Add(eve.InstanceId.ToString());
         curEventLogEntry.SubItems.Add(eve.Message);
         curEventLogEntry.SubItems.Add(eve.TimeGenerated.Date.ToString());
         curEventLogEntry.SubItems.Add(eve.TimeGenerated.TimeOfDay.ToString());
@@ -69,42 +73,26 @@ namespace HeuristicLab.Hive.Client.Console {
       //SetSize();
     }
 
-    private void UpdateText(EventLog ev) {
+    private void UpdateText(EventLogEntry ev) {
       if (this.lvLog.InvokeRequired) {
         this.lvLog.Invoke(new
           UpdateTextDelegate(UpdateText), new object[] { ev });
       } else {
-        //string str = ev.Entries[numEntries].TimeWritten + " -> " + ev.Entries[numEntries].Message;
-        //numEntries++;
-        //lbEventLog.Items.Add(str);
-        //lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
+        ListViewItem curEventLogEntry;
+        curEventLogEntry = new ListViewItem("", 0);
+        if (ev.EntryType == EventLogEntryType.Error)
+          curEventLogEntry = new ListViewItem("", 1);
+        curEventLogEntry.SubItems.Add(ev.EventID.ToString());
+        curEventLogEntry.SubItems.Add(ev.Message);
+        curEventLogEntry.SubItems.Add(ev.TimeGenerated.Date.ToString());
+        curEventLogEntry.SubItems.Add(ev.TimeGenerated.TimeOfDay.ToString());
+
 
       }
     }
 
-    //private void tsmiExit_Click(object sender, EventArgs e) {
-    //  this.Close();
-    //}
-
-    //private void btnConnect_Click(object sender, EventArgs e) {
-    //  btnConnect.Enabled = false;
-    //  btnDisconnect.Enabled = true;
-    //  tbIp.Enabled = false;
-    //  tbPort.Enabled = false;
-    //  tbUuid.Enabled = false;
-    //  lbEventLog.Items.Add(tbIp.Text);
-    //}
-
-    //private void btnDisconnect_Click(object sender, EventArgs e) {
-    //  btnDisconnect.Enabled = false;
-    //  btnConnect.Enabled = true;
-    //  tbIp.Enabled = true;
-    //  tbPort.Enabled = true;
-    //  tbUuid.Enabled = true;
-    //}
-
     public void OnEntryWritten(object source, EntryWrittenEventArgs e) {
-      UpdateText((EventLog)source);
+      UpdateText(e.Entry);
     }
 
     private void SetSize() {
@@ -135,7 +123,6 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void lvLog_DoubleClick(object sender, EventArgs e) {
       ListViewItem lvi = lvLog.SelectedItems[0];
-
       HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text, lvi.SubItems[1].Text);
       
       Form EventlogDetails = new EventLogEntryForm(hee);
