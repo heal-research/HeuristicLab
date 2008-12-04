@@ -33,6 +33,32 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServerTableAdapters.PermissionOwnerTableAdapter adapter =
      new dsHiveServerTableAdapters.PermissionOwnerTableAdapter();
 
+    private PermissionOwner Convert(dsHiveServer.PermissionOwnerRow row, 
+      PermissionOwner permOwner) {
+      if (row != null && permOwner != null) {
+        permOwner.PermissionOwnerId = row.PermissionOwnerId;
+
+        if (!row.IsNameNull())
+          permOwner.Name = row.Name;
+        else
+          permOwner.Name = String.Empty;
+
+        return permOwner;
+      } else
+        return null;
+    }
+
+    private dsHiveServer.PermissionOwnerRow Convert(PermissionOwner permOwner,
+      dsHiveServer.PermissionOwnerRow row) {
+      if (row != null && permOwner != null) {
+        row.PermissionOwnerId = permOwner.PermissionOwnerId;
+        row.Name = permOwner.Name;
+
+        return row;
+      } else
+        return null;
+    }
+
     public void UpdatePermissionOwner(PermissionOwner permOwner) {
       if (permOwner != null) {
         dsHiveServer.PermissionOwnerDataTable data =
@@ -56,18 +82,44 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     internal bool FillPermissionOwner(PermissionOwner permOwner) {
       if (permOwner != null) {
+        dsHiveServer.PermissionOwnerDataTable data =
+          adapter.GetDataById(permOwner.PermissionOwnerId);
+        if (data.Count == 1) {
+          dsHiveServer.PermissionOwnerRow row =
+            data[0];
+          Convert(row, permOwner);
+
           return true;
+        }
       }
 
       return false;
     }
 
-    public PermissionOwner GetPermissionOwnerById(long resourceId) {
-      throw new NotImplementedException();
+    public PermissionOwner GetPermissionOwnerById(long permOwnerId) {
+      PermissionOwner permOwner = new PermissionOwner();
+      permOwner.PermissionOwnerId = permOwnerId;
+
+      if (FillPermissionOwner(permOwner))
+        return permOwner;
+      else
+        return null;
     }
 
     public ICollection<PermissionOwner> GetAllPermissionOwners() {
-      throw new NotImplementedException();
+      ICollection<PermissionOwner> allPermissionOwners =
+        new List<PermissionOwner>();
+
+      dsHiveServer.PermissionOwnerDataTable data =
+          adapter.GetData();
+
+      foreach (dsHiveServer.PermissionOwnerRow row in data) {
+        PermissionOwner permOwner = new PermissionOwner();
+        Convert(row, permOwner);
+        allPermissionOwners.Add(permOwner);
+      }
+
+      return allPermissionOwners;
     }
 
     public bool DeletePermissionOwner(PermissionOwner permOwner) {

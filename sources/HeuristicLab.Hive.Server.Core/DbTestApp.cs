@@ -35,16 +35,16 @@ namespace HeuristicLab.Hive.Server {
       Description = "Test Application for the Hive DataAccess Layer",
       AutoRestart = true)]
   class HiveDbTestApplication : ApplicationBase {
-    public override void Run() {
+    private void TestClientAdapter() {
       IClientAdapter clientAdapter =
         ServiceLocator.GetClientAdapter();
 
       ClientInfo client = new ClientInfo();
       client.Login = DateTime.Now;
       client.ClientId = Guid.NewGuid();
-      clientAdapter.UpdateClient(client); 
+      clientAdapter.UpdateClient(client);
 
-      ClientInfo clientRead = 
+      ClientInfo clientRead =
         clientAdapter.GetClientById(client.ClientId);
       Debug.Assert(
         clientRead != null &&
@@ -56,7 +56,7 @@ namespace HeuristicLab.Hive.Server {
         clientAdapter.GetClientById(client.ClientId);
       Debug.Assert(
        clientRead != null &&
-       client.ClientId == clientRead.ClientId && 
+       client.ClientId == clientRead.ClientId &&
        clientRead.CpuSpeedPerCore == 2000);
 
       ICollection<ClientInfo> clients = clientAdapter.GetAllClients();
@@ -66,6 +66,44 @@ namespace HeuristicLab.Hive.Server {
 
       clients = clientAdapter.GetAllClients();
       Debug.Assert(count - 1 == clients.Count);
+    }
+
+    private void TestUserAdapter() {
+      IUserAdapter userAdapter =
+        ServiceLocator.GetUserAdapter();
+
+      User user = new User();
+      user.Name = "Stefan";
+
+      userAdapter.UpdateUser(user);
+
+      User userRead =
+        userAdapter.GetUserById(user.PermissionOwnerId);
+      Debug.Assert(
+        userRead != null &&
+        user.PermissionOwnerId == userRead.PermissionOwnerId);
+
+      user.Password = "passme";
+      userAdapter.UpdateUser(user);
+      userRead =
+        userAdapter.GetUserByName(user.Name);
+      Debug.Assert(
+       userRead != null &&
+       userRead.Name == user.Name &&
+       userRead.Password == user.Password);
+
+      ICollection<User> users = userAdapter.GetAllUsers();
+      int count = users.Count;
+
+      userAdapter.DeleteUser(user);
+
+      users = userAdapter.GetAllUsers();
+      Debug.Assert(count - 1 == users.Count);
+    }
+
+    public override void Run() {
+      TestClientAdapter();
+      TestUserAdapter();
     }
   }
 }

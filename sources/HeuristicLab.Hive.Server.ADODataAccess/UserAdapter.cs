@@ -67,23 +67,78 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #region IUserAdapter Members
 
     public void UpdateUser(User user) {
-      throw new NotImplementedException();
+      if (user != null) {
+        permOwnerAdapter.UpdatePermissionOwner(user);
+
+        dsHiveServer.HiveUserDataTable data =
+          adapter.GetDataById(user.PermissionOwnerId);
+
+        dsHiveServer.HiveUserRow row;
+        if (data.Count == 0) {
+          row = data.NewHiveUserRow();
+          row.PermissionOwnerId = user.PermissionOwnerId;
+          data.AddHiveUserRow(row);
+        } else {
+          row = data[0];
+        }
+
+        Convert(user, row);
+
+        adapter.Update(data);
+      }
     }
 
     public User GetUserById(long userId) {
-      throw new NotImplementedException();
+      User user = new User();
+
+      dsHiveServer.HiveUserDataTable data =
+          adapter.GetDataById(userId);
+      if (data.Count == 1) {
+        dsHiveServer.HiveUserRow row =
+          data[0];
+        Convert(row, user);
+
+        return user;
+      } else {
+        return null;
+      }
     }
 
     public User GetUserByName(String name) {
-      throw new NotImplementedException();
+      User user = new User();
+
+      dsHiveServer.HiveUserDataTable data =
+          adapter.GetDataByName(name);
+      if (data.Count == 1) {
+        dsHiveServer.HiveUserRow row =
+          data[0];
+        Convert(row, user);
+
+        return user;
+      } else {
+        return null;
+      }
     }
 
     public ICollection<User> GetAllUsers() {
-      throw new NotImplementedException();
+      ICollection<User> allUsers =
+        new List<User>();
+
+      dsHiveServer.HiveUserDataTable data =
+          adapter.GetData();
+
+      foreach (dsHiveServer.HiveUserRow row in data) {
+        User user = new User();
+        Convert(row, user);
+        allUsers.Add(user);
+      }
+
+      return allUsers;
     }
 
     public bool DeleteUser(User user) {
-      throw new NotImplementedException();
+      //referential integrity will delete the client object
+      return permOwnerAdapter.DeletePermissionOwner(user);
     }
 
     #endregion

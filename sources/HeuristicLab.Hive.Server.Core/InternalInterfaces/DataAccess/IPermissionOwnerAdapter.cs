@@ -41,7 +41,7 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    PermissionOwner GetPermissionOwnerById(long resourceId);
+    PermissionOwner GetPermissionOwnerById(long permOwnerId);
 
     /// <summary>
     /// Get all permission owners
