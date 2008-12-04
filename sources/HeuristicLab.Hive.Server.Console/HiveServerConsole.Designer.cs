@@ -51,10 +51,17 @@ namespace HeuristicLab.Hive.Server.Console {
       this.lblPort = new System.Windows.Forms.Label();
       this.lblIp = new System.Windows.Forms.Label();
       this.tbPort = new System.Windows.Forms.TextBox();
-      this.tbIp = new HeuristicLab.Hive.Server.Console.IPAddressTextBox();
       this.btnLogin = new System.Windows.Forms.Button();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.lblPwd = new System.Windows.Forms.Label();
+      this.lblUsername = new System.Windows.Forms.Label();
+      this.tbPwd = new System.Windows.Forms.TextBox();
+      this.tbUserName = new System.Windows.Forms.TextBox();
+      this.lblError = new System.Windows.Forms.Label();
+      this.tbIp = new HeuristicLab.Hive.Server.Console.IPAddressTextBox();
       this.msServerConsole.SuspendLayout();
       this.gbManager.SuspendLayout();
+      this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // msServerConsole
@@ -78,7 +85,7 @@ namespace HeuristicLab.Hive.Server.Console {
       // tsmiExit
       // 
       this.tsmiExit.Name = "tsmiExit";
-      this.tsmiExit.Size = new System.Drawing.Size(152, 22);
+      this.tsmiExit.Size = new System.Drawing.Size(103, 22);
       this.tsmiExit.Text = "Exit";
       this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
       // 
@@ -88,7 +95,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.gbManager.Controls.Add(this.lblIp);
       this.gbManager.Controls.Add(this.tbPort);
       this.gbManager.Controls.Add(this.tbIp);
-      this.gbManager.Location = new System.Drawing.Point(12, 37);
+      this.gbManager.Location = new System.Drawing.Point(16, 124);
       this.gbManager.Name = "gbManager";
       this.gbManager.Size = new System.Drawing.Size(283, 82);
       this.gbManager.TabIndex = 1;
@@ -115,21 +122,14 @@ namespace HeuristicLab.Hive.Server.Console {
       // 
       // tbPort
       // 
-      this.tbPort.Location = new System.Drawing.Point(57, 47);
+      this.tbPort.Location = new System.Drawing.Point(77, 47);
       this.tbPort.Name = "tbPort";
-      this.tbPort.Size = new System.Drawing.Size(209, 20);
+      this.tbPort.Size = new System.Drawing.Size(189, 20);
       this.tbPort.TabIndex = 1;
-      // 
-      // tbIp
-      // 
-      this.tbIp.Location = new System.Drawing.Point(57, 19);
-      this.tbIp.Name = "tbIp";
-      this.tbIp.Size = new System.Drawing.Size(211, 20);
-      this.tbIp.TabIndex = 0;
       // 
       // btnLogin
       // 
-      this.btnLogin.Location = new System.Drawing.Point(179, 127);
+      this.btnLogin.Location = new System.Drawing.Point(183, 212);
       this.btnLogin.Name = "btnLogin";
       this.btnLogin.Size = new System.Drawing.Size(116, 23);
       this.btnLogin.TabIndex = 2;
@@ -137,11 +137,74 @@ namespace HeuristicLab.Hive.Server.Console {
       this.btnLogin.UseVisualStyleBackColor = true;
       this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
       // 
+      // groupBox1
+      // 
+      this.groupBox1.Controls.Add(this.tbUserName);
+      this.groupBox1.Controls.Add(this.lblPwd);
+      this.groupBox1.Controls.Add(this.lblUsername);
+      this.groupBox1.Controls.Add(this.tbPwd);
+      this.groupBox1.Location = new System.Drawing.Point(16, 36);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(283, 82);
+      this.groupBox1.TabIndex = 4;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "Manager";
+      // 
+      // lblPwd
+      // 
+      this.lblPwd.AutoSize = true;
+      this.lblPwd.Location = new System.Drawing.Point(16, 54);
+      this.lblPwd.Name = "lblPwd";
+      this.lblPwd.Size = new System.Drawing.Size(53, 13);
+      this.lblPwd.TabIndex = 3;
+      this.lblPwd.Text = "Password";
+      // 
+      // lblUsername
+      // 
+      this.lblUsername.AutoSize = true;
+      this.lblUsername.Location = new System.Drawing.Point(16, 26);
+      this.lblUsername.Name = "lblUsername";
+      this.lblUsername.Size = new System.Drawing.Size(55, 13);
+      this.lblUsername.TabIndex = 2;
+      this.lblUsername.Text = "Username";
+      // 
+      // tbPwd
+      // 
+      this.tbPwd.Location = new System.Drawing.Point(77, 47);
+      this.tbPwd.Name = "tbPwd";
+      this.tbPwd.Size = new System.Drawing.Size(189, 20);
+      this.tbPwd.TabIndex = 1;
+      // 
+      // tbUserName
+      // 
+      this.tbUserName.Location = new System.Drawing.Point(77, 19);
+      this.tbUserName.Name = "tbUserName";
+      this.tbUserName.Size = new System.Drawing.Size(189, 20);
+      this.tbUserName.TabIndex = 4;
+      // 
+      // lblError
+      // 
+      this.lblError.AutoSize = true;
+      this.lblError.ForeColor = System.Drawing.Color.Red;
+      this.lblError.Location = new System.Drawing.Point(16, 238);
+      this.lblError.Name = "lblError";
+      this.lblError.Size = new System.Drawing.Size(0, 13);
+      this.lblError.TabIndex = 5;
+      // 
+      // tbIp
+      // 
+      this.tbIp.Location = new System.Drawing.Point(77, 19);
+      this.tbIp.Name = "tbIp";
+      this.tbIp.Size = new System.Drawing.Size(191, 20);
+      this.tbIp.TabIndex = 0;
+      // 
       // HiveServerConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(311, 162);
+      this.ClientSize = new System.Drawing.Size(311, 263);
+      this.Controls.Add(this.lblError);
+      this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.btnLogin);
       this.Controls.Add(this.gbManager);
       this.Controls.Add(this.msServerConsole);
@@ -152,6 +215,8 @@ namespace HeuristicLab.Hive.Server.Console {
       this.msServerConsole.PerformLayout();
       this.gbManager.ResumeLayout(false);
       this.gbManager.PerformLayout();
+      this.groupBox1.ResumeLayout(false);
+      this.groupBox1.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -168,6 +233,12 @@ namespace HeuristicLab.Hive.Server.Console {
     private System.Windows.Forms.TextBox tbPort;
     private IPAddressTextBox tbIp;
     private System.Windows.Forms.Button btnLogin;
+    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.TextBox tbUserName;
+    private System.Windows.Forms.Label lblPwd;
+    private System.Windows.Forms.Label lblUsername;
+    private System.Windows.Forms.TextBox tbPwd;
+    private System.Windows.Forms.Label lblError;
   }
 }
 

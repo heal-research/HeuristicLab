@@ -29,6 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -39,6 +40,7 @@ namespace HeuristicLab.Hive.Server.Console {
     public HiveServerConsole() {
       InitializeComponent();
       tbIp.Text = "10.20.53.1";
+      tbPort.Text = "9000";
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -52,7 +54,7 @@ namespace HeuristicLab.Hive.Server.Console {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void btnLogin_Click(object sender, EventArgs e) {
-      if (ipIsValid()) {
+      if (isValid()) {
         string newIp = tbIp.Text;
         newIp = newIp.Replace(" ", "");
 
@@ -67,10 +69,25 @@ namespace HeuristicLab.Hive.Server.Console {
     }
 
 
-    private static bool ipIsValid() {
-      
+    private bool isValid() {
+      if ((tbUserName.Text != "") &&
+          (tbPwd.Text != "") &&
+          (tbIp.Text != "") &&
+          (tbPort.Text != "")) {
+        try {
+          IJobManager jobManager =
+        ServiceLocator.GetJobManager();
+          ResponseList<Job> jobs = jobManager.GetAllJobs();
+          jobs = jobManager.GetAllJobs();
+        }
+        catch (Exception ex) {
+          lblError.Text = "Server not online";
+          return false;
+        }
+        return true;
+      }
       // TODO IP-Adress validation
-      return true;
+      return false;
     }
 
     private void enableForm(bool cf) {
