@@ -36,6 +36,7 @@
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
       this.lvClientControl = new System.Windows.Forms.ListView();
+      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
@@ -46,7 +47,6 @@
       this.listView4 = new System.Windows.Forms.ListView();
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
-      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
@@ -149,6 +149,14 @@
       this.lvClientControl.Size = new System.Drawing.Size(494, 346);
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
+      // 
+      // imageList1
+      // 
+      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList1.Images.SetKeyName(0, "monitor-green.png");
+      this.imageList1.Images.SetKeyName(1, "monitor-orange.png");
+      this.imageList1.Images.SetKeyName(2, "monitor-red.png");
       // 
       // tpJobControl
       // 
@@ -257,14 +265,6 @@
       this.listView2.Size = new System.Drawing.Size(494, 346);
       this.listView2.TabIndex = 0;
       this.listView2.UseCompatibleStateImageBehavior = false;
-      // 
-      // imageList1
-      // 
-      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList1.Images.SetKeyName(0, "Monitor_red.png");
-      this.imageList1.Images.SetKeyName(1, "Monitor_yellow.png");
-      this.imageList1.Images.SetKeyName(2, "Monitor_green.png");
       // 
       // HiveServerManagementConsole
       // 

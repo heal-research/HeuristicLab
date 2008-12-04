@@ -29,6 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -38,9 +39,9 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public event closeForm closeFormEvent;
 
-    List<ClientGroup> clients = null;
-    List<Job> jobs = null;
-    List<UserGroup> userGroups = null;
+    ResponseList<ClientGroup> clients = null;
+    ResponseList<Job> jobs = null;
+    ResponseList<UserGroup> userGroups = null;
 
     public HiveServerManagementConsole() {
       InitializeComponent();
@@ -63,20 +64,20 @@ namespace HeuristicLab.Hive.Server.Console {
       userGroups = userRoleManager.GetAllUserGroups();
       lvClientControl.Items.Clear();
       int count = 0;
-      foreach (ClientGroup cg in clients) {
+      foreach (ClientGroup cg in clients.List) {
         tvClientControl.Nodes.Add(cg.Name);
         ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
-        lvClientControl.Groups.Add(lvg);
-        foreach (ClientInfo ci in clientManager.GetAllClients()) {
+        foreach (ClientInfo ci in clientManager.GetAllClients().List) {
           tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
-          lvClientControl.Groups[lvClientControl.Groups.Count].Items.Add(new ListViewItem(ci.Name, count));
+          lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvg));
           count = (count + 1) % 3;
         }
+        lvClientControl.Groups.Add(lvg);
       }
-      foreach (Job job in jobs) {
+      foreach (Job job in jobs.List) {
         tvJobControl.Nodes.Add(job.JobId.ToString());
       }
-      foreach (UserGroup ug in userGroups) {
+      foreach (UserGroup ug in userGroups.List) {
         tvUserControl.Nodes.Add(ug.UserGroupId.ToString());
       }
     }
