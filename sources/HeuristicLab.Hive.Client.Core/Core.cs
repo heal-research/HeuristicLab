@@ -52,42 +52,9 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-      Uri baseAddress = new Uri("http://localhost:8000/ClientConsole");
-      string address = "net.pipe://localhost/ClientConsole/ClientConsoleCommunicator";
 
-      DiscoveryService discService =
-        new DiscoveryService();
-      IClientConsoleCommunicator[] clientCommunicatorInstances =
-        discService.GetInstances<IClientConsoleCommunicator>();
-
-      if (clientCommunicatorInstances.Length > 0) {
-        ServiceHost serviceHost =
-                new ServiceHost(clientCommunicatorInstances[0].GetType(),
-                  baseAddress);
-
-        System.ServiceModel.Channels.Binding binding =
-          new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IClientConsoleCommunicator),
-              binding,
-              address);
-
-        /*serviceHost.AddServiceEndpoint(
-            typeof(IMetadataExchange),
-            MetadataExchangeBindings.CreateMexNamedPipeBinding(),
-            "mex");
-
-        serviceHost.Open();*/
-
-        ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-        smb.HttpGetEnabled = true;
-        smb.HttpGetUrl = new Uri("http://localhost:8001/ClientConsole/");
-        serviceHost.Description.Behaviors.Add(smb);
-
-        serviceHost.Open();
-
-      }
+      ClientConsoleServer server = new ClientConsoleServer();
+      server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
 
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);

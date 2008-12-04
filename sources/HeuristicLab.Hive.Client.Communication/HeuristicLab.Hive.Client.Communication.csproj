@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientConsoleCommunicator.cs" />
+    <Compile Include="ClientConsoleServer.cs" />
     <Compile Include="ClientConsole\ConnectionContainer.cs" />
     <Compile Include="ClientConsole\JobStatus.cs" />
     <Compile Include="ClientConsole\StatusCommons.cs" />
