@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// Removes one specified or - if nothing specified - all operators from the given scope.
   /// </summary>
   public class SubScopesRemover : OperatorBase {
-    /// <inheritdoc/>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"This operator either removes the subscope specified in the variable SubScopeIndex or if this variable is absent, removes all subscopes.";

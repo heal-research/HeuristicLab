@@ -27,11 +27,20 @@ using HeuristicLab.Data;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Mutates the endogenous strategy parameters.
+  /// </summary>
   public class SelfAdaptiveMutationStrengthAdjuster : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Mutates the endogenous strategy parameters"; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SelfAdaptiveMutationStrengthAdjuster"/> with four 
+    /// variable infos (<c>Random</c>, <c>StrategyVector</c>, <c>GeneralLearningRate</c> and
+    /// <c>LearningRate</c>).
+    /// </summary>
     public SelfAdaptiveMutationStrengthAdjuster()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
@@ -40,6 +49,12 @@ namespace HeuristicLab.ES {
       AddVariableInfo(new VariableInfo("LearningRate", "Learning parameter defines the strength of the adaption of each component in the object parameter vector", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Mutates the endogenous strategy parameters.
+    /// </summary>
+    /// <remarks>Calls <see cref="OperatorBase.Apply"/> of base class <see cref="OperatorBase"/>.</remarks>
+    /// <param name="scope">The current scope to mutate.</param>
+    /// <inheritdoc select="returns"/>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       double[] strategyParams = GetVariableValue<DoubleArrayData>("StrategyVector", scope, false).Data;

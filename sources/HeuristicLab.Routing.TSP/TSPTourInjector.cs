@@ -32,7 +32,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Injects a new TSP tour in a given scope with all its neccessary variables.
   /// </summary>
   public class TSPTourInjector : OperatorBase {
-    /// <inheritdoc/>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }

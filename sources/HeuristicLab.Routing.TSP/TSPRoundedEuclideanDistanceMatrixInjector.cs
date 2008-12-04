@@ -31,7 +31,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Injects a distance matrix with euclidean distances of a TSP path into the current scope.
   /// </summary>
   public class TSPRoundedEuclideanDistanceMatrixInjector : TSPDistanceMatrixInjectorBase {
-    /// <inheritdoc/>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }

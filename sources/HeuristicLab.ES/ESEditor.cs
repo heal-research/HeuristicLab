@@ -30,22 +30,41 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Class for visual representation of an <see cref="ES"/>.
+  /// </summary>
   public partial class ESEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
 
+    /// <summary>
+    /// Gets or sets the evolution strategy to display.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>. 
+    /// No own data storage present.</remarks>
     public ES ES {
       get { return (ES)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ESEditor"/>.
+    /// </summary>
     public ESEditor() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ESEditor"/> with the given <paramref name="es"/>.
+    /// </summary>
+    /// <param name="es">The evolution strategy to display.</param>
     public ESEditor(ES es)
       : this() {
       ES = es;
     }
 
+    /// <summary>
+    /// Removes all event handlers from the underlying <see cref="ES"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       ES.Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
       ES.Engine.Finished -= new EventHandler(Engine_Finished);
@@ -53,6 +72,10 @@ namespace HeuristicLab.ES {
       scopeView.Scope = null;
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="ES"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ES.Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
@@ -71,6 +94,10 @@ namespace HeuristicLab.ES {
       learningRateTextBox.Text = ES.LearningRate.ToString();
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (ES == null) {

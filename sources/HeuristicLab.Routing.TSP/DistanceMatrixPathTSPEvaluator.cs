@@ -32,7 +32,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Evaluates the TSP path by using values in the distance matrix.
   /// </summary>
   public class DistanceMatrixPathTSPEvaluator : SingleObjectiveEvaluatorBase {
-    /// <inheritdoc/>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }

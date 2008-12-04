@@ -27,13 +27,22 @@ using HeuristicLab.Data;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Selects rho*lambda individuals with each rho successing individuals being selected 
+  /// from the parent population without repetitions.
+  /// </summary>
   public class ESRandomSelector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"Selects rho*lambda individuals with each rho successing individuals being selected from the parent population without repetitions.";
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ESRandomSelector"/> with three variable infos 
+    /// (<c>Random</c>, <c>Lambda</c> and <c>Rho</c>).
+    /// </summary>
     public ESRandomSelector()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
@@ -41,6 +50,13 @@ namespace HeuristicLab.ES {
       AddVariableInfo(new VariableInfo("Rho", "The amount of parents per child", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Separates the sub scopes of the given <paramref name="scope"/> in <c>Selected</c> and 
+    /// <c>Remaining</c> and selects rho*lambda individuals with each rho successing individuals 
+    /// being selected from the parent population without repetitions.
+    /// </summary>
+    /// <param name="scope">The current scope where to perform the selection.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IScope source = new Scope("Remaining");
       while (scope.SubScopes.Count > 0) {
@@ -57,6 +73,14 @@ namespace HeuristicLab.ES {
       return null;
     }
 
+    /// <summary>
+    /// Selects rho*lambda individuals with each rho successing individuals being selected 
+    /// from the parent population (<paramref name="source"/>) without repetitions.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when more parents than available should be
+    /// selected per child.</exception>
+    /// <param name="source">The scope where to select the individuals.</param>
+    /// <param name="target">The target scope where to insert the selected individuals.</param>
     protected virtual void Select(IScope source, IScope target) {
       IRandom random = GetVariableValue<IRandom>("Random", source, true);
       int children = GetVariableValue<IntData>("Lambda", source, true).Data;

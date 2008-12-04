@@ -28,17 +28,31 @@ using HeuristicLab.Data;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Applies its sub operator a number of times depending on the <c>ShakingFactor</c>.
+  /// </summary>
   public class VariableStrengthRepeatingManipulator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Applies its suboperator a number of times depending on the ShakingFactor"; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableStrengthRepeatingManipulator"/> with two variable
+    /// infos (<c>Random</c> and <c>ShakingFactor</c>).
+    /// </summary>
     public VariableStrengthRepeatingManipulator()
       : base() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the strength of the mutation (repeated application of the operator)", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Applies its suboperator a number of times depending on the <c>ShakingFactor</c>.
+    /// </summary>
+    /// <param name="scope">The current scope where to apply the operator.</param>
+    /// <returns>A new <see cref="CompositeOperation"/>, containing a specified number of 
+    /// the same operations with the same operator, the number depending on the <c>ShakingFactor</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       double shakingFactor = scope.GetVariableValue<DoubleData>("ShakingFactor", true).Data;

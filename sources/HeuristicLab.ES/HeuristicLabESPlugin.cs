@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Plugin class for HeuristicLab.ES plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.ES-3.2")]
   [PluginFile(Filename = "HeuristicLab.ES-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

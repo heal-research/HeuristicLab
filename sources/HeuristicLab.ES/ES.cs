@@ -34,8 +34,15 @@ using HeuristicLab.Selection.OffspringSelection;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.ES {
+  /// <summary>
+  /// Class for the heuristic optimization technique "evolution strategy".
+  /// </summary>
   public class ES : ItemBase, IEditable {
     #region Create Operators
+    /// <summary>
+    /// Creates a new evolution strategy.
+    /// </summary>
+    /// <param name="engine">The engine of the ES to create.</param>
     public static void Create(IEngine engine) {
       engine.OperatorGraph.Clear();
 
@@ -372,15 +379,26 @@ namespace HeuristicLab.ES {
 
     #region Properties
     private IEngine myEngine;
+    /// <summary>
+    /// Gets the engine of the current instance.
+    /// </summary>
     public IEngine Engine {
       get { return myEngine; }
     }
     private BoolData mySetSeedRandomly;
+    /// <summary>
+    /// Gets or sets the boolean flag whether to set the seed randomly or not.
+    /// </summary>
     public bool SetSeedRandomly {
       get { return mySetSeedRandomly.Data; }
       set { mySetSeedRandomly.Data = value; }
     }
     private IntData mySeed;
+    /// <summary>
+    /// Gets or sets the seed of the current instance.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
     public int Seed {
       get { return mySeed.Data; }
       set {
@@ -389,6 +407,11 @@ namespace HeuristicLab.ES {
       }
     }
     private IntData myMu;
+    /// <summary>
+    /// Gets or sets the µ value of the current instance.
+    /// </summary>
+    /// <remarks>Sets also the lambda and the rho value. Calls <see cref="ItemBase.OnChanged"/> of
+    /// base class <see cref="ItemBase"/>.</remarks>
     public int Mu {
       get { return myMu.Data; }
       set {
@@ -401,6 +424,11 @@ namespace HeuristicLab.ES {
       }
     }
     private IntData myRho;
+    /// <summary>
+    /// Gets or sets the rho value of the current instance.
+    /// </summary>
+    /// <remarks>Sets also the µ value. Calls <see cref="ItemBase.OnChanged"/> of
+    /// base class <see cref="ItemBase"/>.</remarks>
     public int Rho {
       get { return myRho.Data; }
       set {
@@ -412,6 +440,11 @@ namespace HeuristicLab.ES {
       }
     }
     private IntData myLambda;
+    /// <summary>
+    /// Gets or sets the lambda value of the current instance.
+    /// </summary>
+    /// <remarks>May also change the µ value under certain circumstances. 
+    /// Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/>.</remarks>
     public int Lambda {
       get { return myLambda.Data; }
       set {
@@ -433,6 +466,11 @@ namespace HeuristicLab.ES {
       }
     }
     private BoolData myPlusNotation;
+    /// <summary>
+    /// Gets or sets the boolean flag whether it is a plus notation or not.
+    /// </summary>
+    /// <remarks>May also set the lambda value under certain circumstances. 
+    /// Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/>.</remarks>
     public bool PlusNotation {
       get { return myPlusNotation.Data; }
       set {
@@ -446,12 +484,20 @@ namespace HeuristicLab.ES {
       }
     }
     private DoubleData myShakingFactor;
+    /// <summary>
+    /// Gets or sets the shaking factor of the current instance.
+    /// </summary>
     public double ShakingFactor {
       get { return myShakingFactor.Data; }
       set { myShakingFactor.Data = value; }
     }
     private DoubleData mySuccessProbability;
+    
     private DoubleData myTargetSuccessProbability;
+    /// <summary>
+    /// Gets or sets the success probability.
+    /// </summary>
+    /// <remarks>Gets the target success probability and sets also the target success probability.</remarks>
     public double SuccessProbability {
       get { return myTargetSuccessProbability.Data; }
       set {
@@ -460,6 +506,11 @@ namespace HeuristicLab.ES {
       }
     }
     private DoubleData myLearningRate;
+    /// <summary>
+    /// Gets or sets the learning rate.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
     public double LearningRate {
       get { return myLearningRate.Data; }
       set {
@@ -470,6 +521,11 @@ namespace HeuristicLab.ES {
       }
     }
     private DoubleData myDampeningFactor;
+    /// <summary>
+    /// Gets or sets the dampening factor.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
     public double DampeningFactor {
       get { return myDampeningFactor.Data; }
       set {
@@ -480,11 +536,17 @@ namespace HeuristicLab.ES {
       }
     }
     private IntData myMaximumGenerations;
+    /// <summary>
+    /// Gets or sets the maximum number of generations.
+    /// </summary>
     public int MaximumGenerations {
       get { return myMaximumGenerations.Data; }
       set { myMaximumGenerations.Data = value; }
     }
     private BoolData myUseSuccessRule;
+    /// <summary>
+    /// Gets or sets the boolean flag whether to use the success rule or not.
+    /// </summary>
     public bool UseSuccessRule {
       get { return myUseSuccessRule.Data; }
       set { myUseSuccessRule.Data = value; }
@@ -492,6 +554,9 @@ namespace HeuristicLab.ES {
     private CombinedOperator myES;
     private IOperator myESMain;
     private IOperator myVariableInjection;
+    /// <summary>
+    /// Gets or sets the problem injection operator.
+    /// </summary>
     public IOperator ProblemInjector {
       get { return myVariableInjection.SubOperators[0]; }
       set {
@@ -502,6 +567,9 @@ namespace HeuristicLab.ES {
       }
     }
     private IOperator myPopulationInitialization;
+    /// <summary>
+    /// Gets or sets the solution generation operator.
+    /// </summary>
     public IOperator SolutionGenerator {
       get { return myPopulationInitialization.SubOperators[0]; }
       set {
@@ -511,6 +579,9 @@ namespace HeuristicLab.ES {
         myPopulationInitialization.AddSubOperator(value, 0);
       }
     }
+    /// <summary>
+    /// Gets or sets the evaluation operator.
+    /// </summary>
     public IOperator Evaluator {
       get { return myPopulationInitialization.SubOperators[1]; }
       set {
@@ -521,6 +592,9 @@ namespace HeuristicLab.ES {
         myESMain.AddSubOperator(value, 1);
       }
     }
+    /// <summary>
+    /// Gets or sets the mutation operator. 
+    /// </summary>
     public IOperator Mutator {
       get { return myESMain.SubOperators[0]; }
       set {
@@ -530,6 +604,9 @@ namespace HeuristicLab.ES {
         myESMain.AddSubOperator(value, 0);
       }
     }
+    /// <summary>
+    /// Gets or sets the recombination operator.
+    /// </summary>
     public IOperator Recombinator {
       get { return myESMain.SubOperators[2]; }
       set {
@@ -541,19 +618,38 @@ namespace HeuristicLab.ES {
     }
     #endregion
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ES"/> having a <see cref="SequentialEngine"/> as engine.
+    /// </summary>
     public ES() {
       myEngine = new SequentialEngine.SequentialEngine();
       Create(myEngine);
       SetReferences();
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="ESEditor"/> to display the current instance.
+    /// </summary>
+    /// <returns>The created view as <see cref="ESEditor"/>.</returns>
     public override IView CreateView() {
       return new ESEditor(this);
     }
+    /// <summary>
+    /// Creates a new instance of <see cref="ESEditor"/> to display the current instance.
+    /// </summary>
+    /// <returns>The created editor as <see cref="ESEditor"/>.</returns>
     public virtual IEditor CreateEditor() {
       return new ESEditor(this);
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Uses <see cref="Auxiliary.Clone"/> method of the <see cref="Auxiliary"/> class to 
+    /// clone the engine.</remarks>
+    /// <param name="clonedObjects">A dictionary of all already cloned objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="ES"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ES clone = new ES();
       clonedObjects.Add(Guid, clone);
@@ -600,11 +696,30 @@ namespace HeuristicLab.ES {
     #endregion
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>. 
+    /// <br/>The engine of the current instance is saved as child node with tag name <c>Engine</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
       return node;
     }
+    /// <summary>
+    /// Loads the persisted ES from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.<br/>
+    /// The engine must be saved as child node with tag name <c>Engine</c> (see 
+    /// <see cref="GetXmlNode"/>).</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the value is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myEngine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);

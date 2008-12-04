@@ -32,7 +32,7 @@ namespace HeuristicLab.Routing.TSP {
   /// Evaluates the TSP path by using the euclidean distance between two points.
   /// </summary>
   public class RoundedEuclideanPathTSPEvaluator : PathTSPEvaluatorBase {
-    /// <inheritdoc/>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
