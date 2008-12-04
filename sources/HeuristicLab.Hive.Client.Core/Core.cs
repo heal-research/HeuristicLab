@@ -52,7 +52,10 @@ namespace HeuristicLab.Hive.Client.Core {
     private ClientCommunicatorClient clientCommunicator;
 
     public void Start() {
-       /*DiscoveryService discService =
+      Uri baseAddress = new Uri("http://localhost:8000/ClientConsole");
+      string address = "net.pipe://localhost/ClientConsole/ClientConsoleCommunicator";
+
+      DiscoveryService discService =
         new DiscoveryService();
       IClientConsoleCommunicator[] clientCommunicatorInstances =
         discService.GetInstances<IClientConsoleCommunicator>();
@@ -60,27 +63,31 @@ namespace HeuristicLab.Hive.Client.Core {
       if (clientCommunicatorInstances.Length > 0) {
         ServiceHost serviceHost =
                 new ServiceHost(clientCommunicatorInstances[0].GetType(),
-                  new Uri("http://localhost:9000/ClientConsole"));
+                  baseAddress);
 
         System.ServiceModel.Channels.Binding binding =
-          new NetNamedPipeBinding();
+          new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
 
         serviceHost.AddServiceEndpoint(
           typeof(IClientConsoleCommunicator),
               binding,
-              "ClientConsoleCommunicator");
+              address);
 
-        ServiceMetadataBehavior behavior =
-              new ServiceMetadataBehavior();
-        serviceHost.Description.Behaviors.Add(behavior);
-
-        serviceHost.AddServiceEndpoint(
+        /*serviceHost.AddServiceEndpoint(
             typeof(IMetadataExchange),
             MetadataExchangeBindings.CreateMexNamedPipeBinding(),
             "mex");
 
+        serviceHost.Open();*/
+
+        ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+        smb.HttpGetEnabled = true;
+        smb.HttpGetUrl = new Uri("http://localhost:8001/ClientConsole/");
+        serviceHost.Description.Behaviors.Add(smb);
+
         serviceHost.Open();
-      }*/
+
+      }
 
       clientCommunicator = ServiceLocator.GetClientCommunicator();
       clientCommunicator.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(ClientCommunicator_LoginCompleted);
@@ -88,7 +95,7 @@ namespace HeuristicLab.Hive.Client.Core {
       clientCommunicator.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(ClientCommunicator_SendJobResultCompleted);
       //clientCommunicator.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
 
-      Heartbeat beat = new Heartbeat { Interval = 30000 };
+      Heartbeat beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
