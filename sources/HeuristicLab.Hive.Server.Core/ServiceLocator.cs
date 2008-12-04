@@ -31,7 +31,11 @@ class ServiceLocator {
 
   private static IClientAdapter clientAdapter = null;
 
+  private static IClientGroupAdapter clientGroupAdapter = null;
+
   private static IUserAdapter userAdapter = null;
+
+  private static IUserGroupAdapter userGroupAdapter = null;
   
   /// <summary>
   /// Gets the client database adapter
@@ -46,6 +50,18 @@ class ServiceLocator {
   }
 
   /// <summary>
+  /// Gets the client group database adapter
+  /// </summary>
+  /// <returns></returns>
+  internal static IClientGroupAdapter GetClientGroupAdapter() {
+    if (clientGroupAdapter == null) {
+      clientGroupAdapter = discoveryService.GetInstances<IClientGroupAdapter>()[0];
+    }
+
+    return clientGroupAdapter;
+  }
+
+  /// <summary>
   /// Gets the user database adapter
   /// </summary>
   /// <returns></returns>
@@ -55,5 +71,17 @@ class ServiceLocator {
     }
 
     return userAdapter;
+  }
+
+  /// <summary>
+  /// Gets the user group database adapter
+  /// </summary>
+  /// <returns></returns>
+  internal static IUserGroupAdapter GetUserGroupAdapter() {
+    if (userGroupAdapter == null) {
+      userGroupAdapter = discoveryService.GetInstances<IUserGroupAdapter>()[0];
+    }
+
+    return userGroupAdapter;
   }
 }

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientAdapter.cs" />
+    <Compile Include="ClientGroupAdapter.cs" />
     <Compile Include="dsHiveServer.cs">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -83,6 +84,7 @@
     </Compile>
     <Compile Include="ResourceAdapter.cs" />
     <Compile Include="UserAdapter.cs" />
+    <Compile Include="UserGroupAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dsHiveServer.xsc">
