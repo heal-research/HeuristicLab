@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Contracts {
   [DataContract]
   public class ResponseList<T> : Response {
     [DataMember]
-    public List<T> list { get; set; }
+    public List<T> List { get; set; }
 
   }
 }
