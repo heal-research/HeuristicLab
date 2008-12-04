@@ -43,7 +43,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (client.ClientId.Equals(clientInfo.ClientId)) {
           if (client.State != State.offline) {
             response.Success = false;
-            response.StatusMessage = rm.GetString("UserAllreadyOnline");
+            response.StatusMessage = rm.GetString(ApplicationConstants.RESPONSE_LOGIN_USER_ALLREADY_ONLINE);
             break;
           } else
             break; // searching for clients can be stopped, because it was found and it's state is offline
@@ -53,7 +53,7 @@ namespace HeuristicLab.Hive.Server.Core {
       if (response.Success) {
         clientAdapter.UpdateClient(clientInfo);
         response.Success = true;
-        response.StatusMessage = rm.GetString("LoginSuccess");
+        response.StatusMessage = rm.GetString(ApplicationConstants.RESPONSE_LOGIN_SUCCESS);
       }
 
       return response;
@@ -96,22 +96,20 @@ namespace HeuristicLab.Hive.Server.Core {
     }
                            
     public Response Logout(Guid clientId) {
-      bool clientRemoved = false;
-      foreach (ClientInfo client in clients) {
-        if (client.ClientId.Equals(clientId)) {
-          clients.Remove(client);
-          clientRemoved = true;
-        }
-      }
       Response response = new Response();
       
-      if (clientRemoved) {
-        response.Success = true;
-        response.StatusMessage = "Successfully logged out. Good bye";
-      } else {
+      ClientInfo client = clientAdapter.GetClientById(clientId);
+      if (client == null) {
         response.Success = false;
-        response.StatusMessage = "Sorry, but you weren't logged in";
+        response.StatusMessage = rm.GetString(ApplicationConstants.RESPONSE_LOGOUT_CLIENT_NOT_REGISTERED);
+        return response;
       }
+      client.State = State.offline;
+      clientAdapter.UpdateClient(client);
+
+      response.Success = true;
+      response.StatusMessage = rm.GetString(ApplicationConstants.RESPONSE_LOGOUT_SUCCESS);
+      
       return response;
     }
 

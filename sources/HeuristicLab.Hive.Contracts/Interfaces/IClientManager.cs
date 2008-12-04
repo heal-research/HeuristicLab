@@ -12,12 +12,12 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IClientManager {
     [OperationContract]
-    List<ClientInfo> GetAllClients();
+    ResponseList<ClientInfo> GetAllClients();
     [OperationContract]
     [ServiceKnownType(typeof (Resource))]
     [ServiceKnownType(typeof(ClientInfo))]
-    List<ClientGroup> GetAllClientGroups();
+    ResponseList<ClientGroup> GetAllClientGroups();
     [OperationContract]
-    List<UpTimeStatistics> GetAllUpTimeStatistics();
+    ResponseList<UpTimeStatistics> GetAllUpTimeStatistics();
   }
 }

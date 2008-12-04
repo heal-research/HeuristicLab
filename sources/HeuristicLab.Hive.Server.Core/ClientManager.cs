@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
@@ -34,16 +35,16 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IClientManager Members
 
-    public List<ClientInfo> GetAllClients() {
-      return clients;
+    public ResponseList<ClientInfo> GetAllClients() {
+      return null;
     }
 
-    public List<ClientGroup> GetAllClientGroups() {
-      return clientGroups;
+    public ResponseList<ClientGroup> GetAllClientGroups() {
+      return null;
     }
 
-    public List<UpTimeStatistics> GetAllUpTimeStatistics() {
-      return new List<UpTimeStatistics>();
+    public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
+      return null;
     }
 
     #endregion

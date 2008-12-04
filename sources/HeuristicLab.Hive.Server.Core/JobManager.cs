@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager {
@@ -20,8 +21,8 @@ namespace HeuristicLab.Hive.Server.Core {
       jobs.Add(new Job { JobId = 3, State = State.idle });
     }
 
-    public List<Job> GetAllJobs() {
-      return jobs;
+    public ResponseList<Job> GetAllJobs() {
+      return null;
     }
 
     #endregion

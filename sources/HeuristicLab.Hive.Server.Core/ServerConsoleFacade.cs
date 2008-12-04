@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Core {
   public class ServerConsoleFacade: IServerConsoleFacade {
@@ -13,15 +14,15 @@ namespace HeuristicLab.Hive.Server.Core {
     
     #region IClientManager Members
 
-    public List<ClientInfo> GetAllClients() {
+    public ResponseList<ClientInfo> GetAllClients() {
       return clientManager.GetAllClients();
     }
 
-    public List<ClientGroup> GetAllClientGroups() {
+    public ResponseList<ClientGroup> GetAllClientGroups() {
       return clientManager.GetAllClientGroups();
     }
 
-    public List<UpTimeStatistics> GetAllUpTimeStatistics() {
+    public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
       return clientManager.GetAllUpTimeStatistics();
     }
 
@@ -29,7 +30,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IJobManager Members
 
-    public List<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetAllJobs() {
+    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetAllJobs() {
       return jobManager.GetAllJobs();
     }
 
@@ -37,18 +38,39 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IUserRoleManager Members
 
-    public List<HeuristicLab.Hive.Contracts.BusinessObjects.User> GetAllUsers() {
+    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.User> GetAllUsers() {
       return userRoleManager.GetAllUsers();
     }
 
-    public void AddNewUser(User user) {
-      userRoleManager.AddNewUser(user);
+    public Response AddNewUser(User user) {
+      return userRoleManager.AddNewUser(user);
     }
 
-    public List<HeuristicLab.Hive.Contracts.BusinessObjects.UserGroup> GetAllUserGroups() {
+    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.UserGroup> GetAllUserGroups() {
       return userRoleManager.GetAllUserGroups();
     }
 
+    public Response RemoveUser(long userId) {
+      throw new NotImplementedException();
+    }
+
+    public Response AddNewUserGroup(UserGroup userGroup) {
+      throw new NotImplementedException();
+    }
+
+    public Response RemoveUserGroup(long groupId) {
+      throw new NotImplementedException();
+    }
+
+    public Response AddUserToGroup(long groupId, long userId) {
+      throw new NotImplementedException();
+    }
+
+    public Response RemoveUserFromGroup(long groupId, long userId) {
+      throw new NotImplementedException();
+    }
+
     #endregion
+
   }
 }

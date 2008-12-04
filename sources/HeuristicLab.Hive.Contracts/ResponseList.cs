@@ -25,11 +25,12 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+namespace HeuristicLab.Hive.Contracts {
 
   [DataContract]
-  public class UserGroup : PermissionOwner {
+  public class ResponseList<T> : Response {
     [DataMember]
-    public long UserGroupId { get; set; }
+    public List<T> list { get; set; }
+
   }
 }

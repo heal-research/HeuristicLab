@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationConstants.cs" />
     <Compile Include="BusinessObjects\GrantedPermissions.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
     <Compile Include="BusinessObjects\HeartBeatData.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="ResponseHB.cs" />
+    <Compile Include="ResponseList.cs" />
     <Compile Include="ResponseResultReceived.cs" />
     <Compile Include="TestJob.cs" />
   </ItemGroup>

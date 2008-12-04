@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LoginSuccess" xml:space="preserve">
+  <data name="Login.ClientNotRegistered" xml:space="preserve">
+    <value>Sorry this client was not registered yet</value>
+  </data>
+  <data name="Login.Success" xml:space="preserve">
     <value>The Login was successfull</value>
   </data>
-  <data name="UserAllreadyOnline" xml:space="preserve">
+  <data name="Logout.Success" xml:space="preserve">
+    <value>You where logged out successfully. Good bye</value>
+  </data>
+  <data name="Logout.UserAllreadyOnline" xml:space="preserve">
     <value>A User with this GUID is allready logged in</value>
   </data>
 </root>

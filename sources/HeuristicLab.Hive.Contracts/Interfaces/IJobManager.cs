@@ -12,6 +12,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IJobManager {
     [OperationContract]
-    List<Job> GetAllJobs();
+    ResponseList<Job> GetAllJobs();
   }
 }

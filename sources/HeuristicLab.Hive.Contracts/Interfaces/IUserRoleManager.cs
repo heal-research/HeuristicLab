@@ -12,10 +12,20 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IUserRoleManager {
     [OperationContract]
-    List<User> GetAllUsers();
+    ResponseList<User> GetAllUsers();
     [OperationContract]
-    void AddNewUser(User user);
+    Response AddNewUser(User user);
     [OperationContract]
-    List<UserGroup> GetAllUserGroups();
+    Response RemoveUser(long userId);
+    [OperationContract]
+    Response AddNewUserGroup(UserGroup userGroup);
+    [OperationContract]
+    Response RemoveUserGroup(long groupId);
+    [OperationContract]
+    ResponseList<UserGroup> GetAllUserGroups();
+    [OperationContract]
+    Response AddUserToGroup(long groupId, long userId);
+    [OperationContract]
+    Response RemoveUserFromGroup(long groupId, long userId);
   }
 }
