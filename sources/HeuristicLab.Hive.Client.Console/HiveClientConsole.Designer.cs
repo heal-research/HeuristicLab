@@ -44,236 +44,437 @@ namespace HeuristicLab.Hive.Client.Console {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.msClientConsole = new System.Windows.Forms.MenuStrip();
-      this.tsmiConsole = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
+      this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
       this.tcClientConsole = new System.Windows.Forms.TabControl();
       this.tpConnection = new System.Windows.Forms.TabPage();
-      this.btnDisconnect = new System.Windows.Forms.Button();
-      this.btnConnect = new System.Windows.Forms.Button();
-      this.gbUser = new System.Windows.Forms.GroupBox();
-      this.tbUuid = new System.Windows.Forms.TextBox();
-      this.lblUuid = new System.Windows.Forms.Label();
-      this.gbManager = new System.Windows.Forms.GroupBox();
-      this.lblPort = new System.Windows.Forms.Label();
-      this.lblIp = new System.Windows.Forms.Label();
-      this.tbPort = new System.Windows.Forms.TextBox();
+      this.gbJobCommon = new System.Windows.Forms.GroupBox();
+      this.lvJobDetail = new System.Windows.Forms.ListView();
+      this.chJobId = new System.Windows.Forms.ColumnHeader();
+      this.chSince = new System.Windows.Forms.ColumnHeader();
+      this.chProgress = new System.Windows.Forms.ColumnHeader();
+      this.gbCommon = new System.Windows.Forms.GroupBox();
+      this.zGJobs = new ZedGraph.ZedGraphControl();
+      this.lbConnectionStatusCaption = new System.Windows.Forms.Label();
+      this.lbJobsAbortedCaption = new System.Windows.Forms.Label();
+      this.lbJobdoneCaption = new System.Windows.Forms.Label();
+      this.lbGuidCaption = new System.Windows.Forms.Label();
+      this.lbJobsFetchedCaption = new System.Windows.Forms.Label();
+      this.lbCsCaption = new System.Windows.Forms.Label();
+      this.gbEventLog = new System.Windows.Forms.GroupBox();
+      this.lvLog = new System.Windows.Forms.ListView();
+      this.chType = new System.Windows.Forms.ColumnHeader();
+      this.chId = new System.Windows.Forms.ColumnHeader();
+      this.chMessage = new System.Windows.Forms.ColumnHeader();
+      this.chDate = new System.Windows.Forms.ColumnHeader();
+      this.chTime = new System.Windows.Forms.ColumnHeader();
+      this.ilEventLog = new System.Windows.Forms.ImageList(this.components);
       this.tabPage2 = new System.Windows.Forms.TabPage();
-      this.lbEventLog = new System.Windows.Forms.ListBox();
-      this.tbIp = new HeuristicLab.Hive.Client.Console.IPAddressTextBox();
-      this.msClientConsole.SuspendLayout();
+      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.gbResources = new System.Windows.Forms.GroupBox();
+      this.textBox2 = new System.Windows.Forms.TextBox();
+      this.lbMem = new System.Windows.Forms.Label();
+      this.gbServerConnection = new System.Windows.Forms.GroupBox();
+      this.btnDisconnect = new System.Windows.Forms.Button();
+      this.btConnect = new System.Windows.Forms.Button();
+      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.tbIPAdress = new System.Windows.Forms.TextBox();
+      this.lbServerIPCaption = new System.Windows.Forms.Label();
+      this.lbPortCaption = new System.Windows.Forms.Label();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
-      this.gbUser.SuspendLayout();
-      this.gbManager.SuspendLayout();
+      this.gbJobCommon.SuspendLayout();
+      this.gbCommon.SuspendLayout();
+      this.gbEventLog.SuspendLayout();
+      this.tabPage2.SuspendLayout();
+      this.gbResources.SuspendLayout();
+      this.gbServerConnection.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // msClientConsole
-      // 
-      this.msClientConsole.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiConsole});
-      this.msClientConsole.Location = new System.Drawing.Point(0, 0);
-      this.msClientConsole.Name = "msClientConsole";
-      this.msClientConsole.Size = new System.Drawing.Size(434, 24);
-      this.msClientConsole.TabIndex = 0;
-      this.msClientConsole.Text = "menuStrip1";
-      // 
-      // tsmiConsole
-      // 
-      this.tsmiConsole.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiExit});
-      this.tsmiConsole.Name = "tsmiConsole";
-      this.tsmiConsole.Size = new System.Drawing.Size(82, 20);
-      this.tsmiConsole.Text = "Clientconsole";
-      // 
-      // tsmiExit
-      // 
-      this.tsmiExit.Name = "tsmiExit";
-      this.tsmiExit.Size = new System.Drawing.Size(103, 22);
-      this.tsmiExit.Text = "Exit";
-      this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
       // 
       // tcClientConsole
       // 
       this.tcClientConsole.Controls.Add(this.tpConnection);
       this.tcClientConsole.Controls.Add(this.tabPage2);
       this.tcClientConsole.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tcClientConsole.Location = new System.Drawing.Point(0, 24);
+      this.tcClientConsole.Location = new System.Drawing.Point(0, 0);
       this.tcClientConsole.Name = "tcClientConsole";
       this.tcClientConsole.SelectedIndex = 0;
-      this.tcClientConsole.Size = new System.Drawing.Size(434, 481);
+      this.tcClientConsole.Size = new System.Drawing.Size(437, 508);
       this.tcClientConsole.TabIndex = 1;
       // 
       // tpConnection
       // 
-      this.tpConnection.Controls.Add(this.lbEventLog);
-      this.tpConnection.Controls.Add(this.btnDisconnect);
-      this.tpConnection.Controls.Add(this.btnConnect);
-      this.tpConnection.Controls.Add(this.gbUser);
-      this.tpConnection.Controls.Add(this.gbManager);
+      this.tpConnection.Controls.Add(this.gbJobCommon);
+      this.tpConnection.Controls.Add(this.gbCommon);
+      this.tpConnection.Controls.Add(this.gbEventLog);
       this.tpConnection.Location = new System.Drawing.Point(4, 22);
       this.tpConnection.Name = "tpConnection";
       this.tpConnection.Padding = new System.Windows.Forms.Padding(3);
       this.tpConnection.RightToLeft = System.Windows.Forms.RightToLeft.No;
-      this.tpConnection.Size = new System.Drawing.Size(426, 455);
+      this.tpConnection.Size = new System.Drawing.Size(429, 482);
       this.tpConnection.TabIndex = 0;
-      this.tpConnection.Text = "Connection";
+      this.tpConnection.Text = "Status";
       this.tpConnection.UseVisualStyleBackColor = true;
       // 
-      // btnDisconnect
+      // gbJobCommon
       // 
-      this.btnDisconnect.Enabled = false;
-      this.btnDisconnect.Location = new System.Drawing.Point(213, 182);
-      this.btnDisconnect.Name = "btnDisconnect";
-      this.btnDisconnect.Size = new System.Drawing.Size(134, 23);
-      this.btnDisconnect.TabIndex = 4;
-      this.btnDisconnect.Text = "Disconnect";
-      this.btnDisconnect.UseVisualStyleBackColor = true;
-      this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
+      this.gbJobCommon.Controls.Add(this.lvJobDetail);
+      this.gbJobCommon.Location = new System.Drawing.Point(8, 100);
+      this.gbJobCommon.Name = "gbJobCommon";
+      this.gbJobCommon.Size = new System.Drawing.Size(412, 158);
+      this.gbJobCommon.TabIndex = 13;
+      this.gbJobCommon.TabStop = false;
+      this.gbJobCommon.Text = "Jobs detail";
       // 
-      // btnConnect
+      // lvJobDetail
       // 
-      this.btnConnect.Location = new System.Drawing.Point(66, 182);
-      this.btnConnect.Name = "btnConnect";
-      this.btnConnect.Size = new System.Drawing.Size(131, 23);
-      this.btnConnect.TabIndex = 3;
-      this.btnConnect.Text = "Connect";
-      this.btnConnect.UseVisualStyleBackColor = true;
-      this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+      this.lvJobDetail.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chJobId,
+            this.chSince,
+            this.chProgress});
+      this.lvJobDetail.Location = new System.Drawing.Point(6, 19);
+      this.lvJobDetail.Name = "lvJobDetail";
+      this.lvJobDetail.Size = new System.Drawing.Size(398, 132);
+      this.lvJobDetail.TabIndex = 0;
+      this.lvJobDetail.UseCompatibleStateImageBehavior = false;
+      this.lvJobDetail.View = System.Windows.Forms.View.Details;
       // 
-      // gbUser
+      // chJobId
       // 
-      this.gbUser.Controls.Add(this.tbUuid);
-      this.gbUser.Controls.Add(this.lblUuid);
-      this.gbUser.Location = new System.Drawing.Point(67, 117);
-      this.gbUser.Name = "gbUser";
-      this.gbUser.Size = new System.Drawing.Size(281, 51);
-      this.gbUser.TabIndex = 2;
-      this.gbUser.TabStop = false;
-      this.gbUser.Text = "User";
+      this.chJobId.Text = "ID";
       // 
-      // tbUuid
+      // chSince
       // 
-      this.tbUuid.Location = new System.Drawing.Point(56, 22);
-      this.tbUuid.Name = "tbUuid";
-      this.tbUuid.Size = new System.Drawing.Size(209, 20);
-      this.tbUuid.TabIndex = 2;
+      this.chSince.Text = "Since";
+      this.chSince.Width = 74;
       // 
-      // lblUuid
+      // chProgress
       // 
-      this.lblUuid.AutoSize = true;
-      this.lblUuid.Location = new System.Drawing.Point(15, 25);
-      this.lblUuid.Name = "lblUuid";
-      this.lblUuid.Size = new System.Drawing.Size(34, 13);
-      this.lblUuid.TabIndex = 0;
-      this.lblUuid.Text = "UUID";
+      this.chProgress.Text = "Progress";
+      this.chProgress.Width = 256;
       // 
-      // gbManager
+      // gbCommon
       // 
-      this.gbManager.Controls.Add(this.lblPort);
-      this.gbManager.Controls.Add(this.lblIp);
-      this.gbManager.Controls.Add(this.tbPort);
-      this.gbManager.Controls.Add(this.tbIp);
-      this.gbManager.Location = new System.Drawing.Point(66, 19);
-      this.gbManager.Name = "gbManager";
-      this.gbManager.Size = new System.Drawing.Size(283, 82);
-      this.gbManager.TabIndex = 0;
-      this.gbManager.TabStop = false;
-      this.gbManager.Text = "Manager";
+      this.gbCommon.Controls.Add(this.zGJobs);
+      this.gbCommon.Controls.Add(this.lbConnectionStatusCaption);
+      this.gbCommon.Controls.Add(this.lbJobsAbortedCaption);
+      this.gbCommon.Controls.Add(this.lbJobdoneCaption);
+      this.gbCommon.Controls.Add(this.lbGuidCaption);
+      this.gbCommon.Controls.Add(this.lbJobsFetchedCaption);
+      this.gbCommon.Controls.Add(this.lbCsCaption);
+      this.gbCommon.Location = new System.Drawing.Point(8, 6);
+      this.gbCommon.Name = "gbCommon";
+      this.gbCommon.Size = new System.Drawing.Size(410, 88);
+      this.gbCommon.TabIndex = 14;
+      this.gbCommon.TabStop = false;
+      this.gbCommon.Text = "Common";
       // 
-      // lblPort
+      // zGJobs
       // 
-      this.lblPort.AutoSize = true;
-      this.lblPort.Location = new System.Drawing.Point(16, 54);
-      this.lblPort.Name = "lblPort";
-      this.lblPort.Size = new System.Drawing.Size(26, 13);
-      this.lblPort.TabIndex = 3;
-      this.lblPort.Text = "Port";
+      this.zGJobs.Location = new System.Drawing.Point(309, 11);
+      this.zGJobs.Name = "zGJobs";
+      this.zGJobs.ScrollGrace = 0;
+      this.zGJobs.ScrollMaxX = 0;
+      this.zGJobs.ScrollMaxY = 0;
+      this.zGJobs.ScrollMaxY2 = 0;
+      this.zGJobs.ScrollMinX = 0;
+      this.zGJobs.ScrollMinY = 0;
+      this.zGJobs.ScrollMinY2 = 0;
+      this.zGJobs.Size = new System.Drawing.Size(95, 68);
+      this.zGJobs.TabIndex = 14;
       // 
-      // lblIp
+      // lbConnectionStatusCaption
       // 
-      this.lblIp.AutoSize = true;
-      this.lblIp.Location = new System.Drawing.Point(16, 26);
-      this.lblIp.Name = "lblIp";
-      this.lblIp.Size = new System.Drawing.Size(17, 13);
-      this.lblIp.TabIndex = 2;
-      this.lblIp.Text = "IP";
+      this.lbConnectionStatusCaption.AutoSize = true;
+      this.lbConnectionStatusCaption.Location = new System.Drawing.Point(9, 42);
+      this.lbConnectionStatusCaption.Name = "lbConnectionStatusCaption";
+      this.lbConnectionStatusCaption.Size = new System.Drawing.Size(93, 13);
+      this.lbConnectionStatusCaption.TabIndex = 13;
+      this.lbConnectionStatusCaption.Text = "Connected status:";
       // 
-      // tbPort
+      // lbJobsAbortedCaption
       // 
-      this.tbPort.Location = new System.Drawing.Point(57, 47);
-      this.tbPort.Name = "tbPort";
-      this.tbPort.Size = new System.Drawing.Size(209, 20);
-      this.tbPort.TabIndex = 1;
+      this.lbJobsAbortedCaption.AutoSize = true;
+      this.lbJobsAbortedCaption.Location = new System.Drawing.Point(147, 66);
+      this.lbJobsAbortedCaption.Name = "lbJobsAbortedCaption";
+      this.lbJobsAbortedCaption.Size = new System.Drawing.Size(71, 13);
+      this.lbJobsAbortedCaption.TabIndex = 11;
+      this.lbJobsAbortedCaption.Text = "Jobs aborted:";
+      // 
+      // lbJobdoneCaption
+      // 
+      this.lbJobdoneCaption.AutoSize = true;
+      this.lbJobdoneCaption.Location = new System.Drawing.Point(159, 42);
+      this.lbJobdoneCaption.Name = "lbJobdoneCaption";
+      this.lbJobdoneCaption.Size = new System.Drawing.Size(59, 13);
+      this.lbJobdoneCaption.TabIndex = 10;
+      this.lbJobdoneCaption.Text = "Jobs done:";
+      // 
+      // lbGuidCaption
+      // 
+      this.lbGuidCaption.AutoSize = true;
+      this.lbGuidCaption.Location = new System.Drawing.Point(9, 19);
+      this.lbGuidCaption.Name = "lbGuidCaption";
+      this.lbGuidCaption.Size = new System.Drawing.Size(37, 13);
+      this.lbGuidCaption.TabIndex = 8;
+      this.lbGuidCaption.Text = "GUID:";
+      // 
+      // lbJobsFetchedCaption
+      // 
+      this.lbJobsFetchedCaption.AutoSize = true;
+      this.lbJobsFetchedCaption.Location = new System.Drawing.Point(147, 16);
+      this.lbJobsFetchedCaption.Name = "lbJobsFetchedCaption";
+      this.lbJobsFetchedCaption.Size = new System.Drawing.Size(71, 13);
+      this.lbJobsFetchedCaption.TabIndex = 12;
+      this.lbJobsFetchedCaption.Text = "Jobs fetched:";
+      // 
+      // lbCsCaption
+      // 
+      this.lbCsCaption.AutoSize = true;
+      this.lbCsCaption.Location = new System.Drawing.Point(9, 66);
+      this.lbCsCaption.Name = "lbCsCaption";
+      this.lbCsCaption.Size = new System.Drawing.Size(90, 13);
+      this.lbCsCaption.TabIndex = 9;
+      this.lbCsCaption.Text = "Connected since:";
+      // 
+      // gbEventLog
+      // 
+      this.gbEventLog.Controls.Add(this.lvLog);
+      this.gbEventLog.Location = new System.Drawing.Point(8, 264);
+      this.gbEventLog.Name = "gbEventLog";
+      this.gbEventLog.Size = new System.Drawing.Size(412, 207);
+      this.gbEventLog.TabIndex = 7;
+      this.gbEventLog.TabStop = false;
+      this.gbEventLog.Text = "Hive Client Log";
+      // 
+      // lvLog
+      // 
+      this.lvLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chType,
+            this.chId,
+            this.chMessage,
+            this.chDate,
+            this.chTime});
+      this.lvLog.FullRowSelect = true;
+      this.lvLog.GridLines = true;
+      this.lvLog.LargeImageList = this.ilEventLog;
+      this.lvLog.Location = new System.Drawing.Point(6, 14);
+      this.lvLog.MultiSelect = false;
+      this.lvLog.Name = "lvLog";
+      this.lvLog.Size = new System.Drawing.Size(398, 187);
+      this.lvLog.SmallImageList = this.ilEventLog;
+      this.lvLog.TabIndex = 6;
+      this.lvLog.UseCompatibleStateImageBehavior = false;
+      this.lvLog.View = System.Windows.Forms.View.Details;
+      this.lvLog.DoubleClick += new System.EventHandler(this.lvLog_DoubleClick);
+      // 
+      // chType
+      // 
+      this.chType.Text = "Type";
+      this.chType.Width = 42;
+      // 
+      // chId
+      // 
+      this.chId.Text = "ID";
+      // 
+      // chMessage
+      // 
+      this.chMessage.Text = "Message";
+      this.chMessage.Width = 163;
+      // 
+      // chDate
+      // 
+      this.chDate.Text = "Date";
+      this.chDate.Width = 63;
+      // 
+      // chTime
+      // 
+      this.chTime.Text = "Time";
+      this.chTime.Width = 65;
+      // 
+      // ilEventLog
+      // 
+      this.ilEventLog.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilEventLog.ImageStream")));
+      this.ilEventLog.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilEventLog.Images.SetKeyName(0, "Info.png");
+      this.ilEventLog.Images.SetKeyName(1, "Error.png");
       // 
       // tabPage2
       // 
+      this.tabPage2.Controls.Add(this.groupBox1);
+      this.tabPage2.Controls.Add(this.gbResources);
+      this.tabPage2.Controls.Add(this.gbServerConnection);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(426, 455);
+      this.tabPage2.Size = new System.Drawing.Size(429, 482);
       this.tabPage2.TabIndex = 1;
-      this.tabPage2.Text = "tabPage2";
+      this.tabPage2.Text = "Settings";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
-      // listBox1
+      // groupBox1
       // 
-      this.lbEventLog.FormattingEnabled = true;
-      this.lbEventLog.Location = new System.Drawing.Point(23, 226);
-      this.lbEventLog.Name = "listBox1";
-      this.lbEventLog.Size = new System.Drawing.Size(382, 212);
-      this.lbEventLog.TabIndex = 5;
+      this.groupBox1.Location = new System.Drawing.Point(9, 185);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(409, 286);
+      this.groupBox1.TabIndex = 4;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "Online time";
       // 
-      // tbIp
+      // gbResources
       // 
-      this.tbIp.Location = new System.Drawing.Point(57, 19);
-      this.tbIp.Name = "tbIp";
-      this.tbIp.Size = new System.Drawing.Size(211, 20);
-      this.tbIp.TabIndex = 0;
+      this.gbResources.Controls.Add(this.textBox2);
+      this.gbResources.Controls.Add(this.lbMem);
+      this.gbResources.Location = new System.Drawing.Point(8, 118);
+      this.gbResources.Name = "gbResources";
+      this.gbResources.Size = new System.Drawing.Size(410, 60);
+      this.gbResources.TabIndex = 3;
+      this.gbResources.TabStop = false;
+      this.gbResources.Text = "Resources";
+      // 
+      // textBox2
+      // 
+      this.textBox2.Location = new System.Drawing.Point(174, 25);
+      this.textBox2.Name = "textBox2";
+      this.textBox2.Size = new System.Drawing.Size(72, 20);
+      this.textBox2.TabIndex = 1;
+      // 
+      // lbMem
+      // 
+      this.lbMem.AutoSize = true;
+      this.lbMem.Location = new System.Drawing.Point(17, 25);
+      this.lbMem.Name = "lbMem";
+      this.lbMem.Size = new System.Drawing.Size(150, 13);
+      this.lbMem.TabIndex = 0;
+      this.lbMem.Text = "Maximum memory usage [MB]:";
+      // 
+      // gbServerConnection
+      // 
+      this.gbServerConnection.Controls.Add(this.btnDisconnect);
+      this.gbServerConnection.Controls.Add(this.btConnect);
+      this.gbServerConnection.Controls.Add(this.textBox1);
+      this.gbServerConnection.Controls.Add(this.tbIPAdress);
+      this.gbServerConnection.Controls.Add(this.lbServerIPCaption);
+      this.gbServerConnection.Controls.Add(this.lbPortCaption);
+      this.gbServerConnection.Location = new System.Drawing.Point(8, 6);
+      this.gbServerConnection.Name = "gbServerConnection";
+      this.gbServerConnection.Size = new System.Drawing.Size(410, 105);
+      this.gbServerConnection.TabIndex = 2;
+      this.gbServerConnection.TabStop = false;
+      this.gbServerConnection.Text = "Server connection";
+      // 
+      // btnDisconnect
+      // 
+      this.btnDisconnect.Location = new System.Drawing.Point(257, 51);
+      this.btnDisconnect.Name = "btnDisconnect";
+      this.btnDisconnect.Size = new System.Drawing.Size(147, 23);
+      this.btnDisconnect.TabIndex = 5;
+      this.btnDisconnect.Text = "Disconnect from server";
+      this.btnDisconnect.UseVisualStyleBackColor = true;
+      // 
+      // btConnect
+      // 
+      this.btConnect.Location = new System.Drawing.Point(257, 23);
+      this.btConnect.Name = "btConnect";
+      this.btConnect.Size = new System.Drawing.Size(147, 23);
+      this.btConnect.TabIndex = 4;
+      this.btConnect.Text = "Connect to server";
+      this.btConnect.UseVisualStyleBackColor = true;
+      // 
+      // textBox1
+      // 
+      this.textBox1.Location = new System.Drawing.Point(77, 51);
+      this.textBox1.Name = "textBox1";
+      this.textBox1.Size = new System.Drawing.Size(143, 20);
+      this.textBox1.TabIndex = 3;
+      // 
+      // tbIPAdress
+      // 
+      this.tbIPAdress.Location = new System.Drawing.Point(77, 25);
+      this.tbIPAdress.Name = "tbIPAdress";
+      this.tbIPAdress.Size = new System.Drawing.Size(143, 20);
+      this.tbIPAdress.TabIndex = 2;
+      // 
+      // lbServerIPCaption
+      // 
+      this.lbServerIPCaption.AutoSize = true;
+      this.lbServerIPCaption.Location = new System.Drawing.Point(17, 28);
+      this.lbServerIPCaption.Name = "lbServerIPCaption";
+      this.lbServerIPCaption.Size = new System.Drawing.Size(54, 13);
+      this.lbServerIPCaption.TabIndex = 0;
+      this.lbServerIPCaption.Text = "IP adress:";
+      // 
+      // lbPortCaption
+      // 
+      this.lbPortCaption.AutoSize = true;
+      this.lbPortCaption.Location = new System.Drawing.Point(17, 54);
+      this.lbPortCaption.Name = "lbPortCaption";
+      this.lbPortCaption.Size = new System.Drawing.Size(29, 13);
+      this.lbPortCaption.TabIndex = 1;
+      this.lbPortCaption.Text = "Port:";
       // 
       // HiveClientConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(434, 505);
+      this.ClientSize = new System.Drawing.Size(437, 508);
       this.Controls.Add(this.tcClientConsole);
-      this.Controls.Add(this.msClientConsole);
-      this.MainMenuStrip = this.msClientConsole;
       this.Name = "HiveClientConsole";
       this.Text = "Client Console";
-      this.msClientConsole.ResumeLayout(false);
-      this.msClientConsole.PerformLayout();
+      this.Load += new System.EventHandler(this.HiveClientConsole_Load);
+      this.Resize += new System.EventHandler(this.HiveClientConsole_Resize);
       this.tcClientConsole.ResumeLayout(false);
       this.tpConnection.ResumeLayout(false);
-      this.gbUser.ResumeLayout(false);
-      this.gbUser.PerformLayout();
-      this.gbManager.ResumeLayout(false);
-      this.gbManager.PerformLayout();
-      //((System.ComponentModel.ISupportInitialize)(this.performanceCounter1)).EndInit();
+      this.gbJobCommon.ResumeLayout(false);
+      this.gbCommon.ResumeLayout(false);
+      this.gbCommon.PerformLayout();
+      this.gbEventLog.ResumeLayout(false);
+      this.tabPage2.ResumeLayout(false);
+      this.gbResources.ResumeLayout(false);
+      this.gbResources.PerformLayout();
+      this.gbServerConnection.ResumeLayout(false);
+      this.gbServerConnection.PerformLayout();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
     #endregion
 
-    private System.Windows.Forms.MenuStrip msClientConsole;
-    private System.Windows.Forms.ToolStripMenuItem tsmiConsole;
     private System.Windows.Forms.TabControl tcClientConsole;
     private System.Windows.Forms.TabPage tpConnection;
     private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.GroupBox gbManager;
-    private System.Windows.Forms.TextBox tbPort;
-    private HeuristicLab.Hive.Client.Console.IPAddressTextBox tbIp;
-    private System.Windows.Forms.Label lblIp;
-    private System.Windows.Forms.GroupBox gbUser;
-    private System.Windows.Forms.Label lblUuid;
-    private System.Windows.Forms.Label lblPort;
+    private System.Windows.Forms.ListView lvLog;
+    private System.Windows.Forms.ColumnHeader chType;
+    private System.Windows.Forms.ColumnHeader chMessage;
+    private System.Windows.Forms.ColumnHeader chDate;
+    private System.Windows.Forms.ColumnHeader chTime;
+    private System.Windows.Forms.Label lbJobdoneCaption;
+    private System.Windows.Forms.Label lbCsCaption;
+    private System.Windows.Forms.Label lbGuidCaption;
+    private System.Windows.Forms.GroupBox gbEventLog;
+    private System.Windows.Forms.Label lbJobsFetchedCaption;
+    private System.Windows.Forms.Label lbJobsAbortedCaption;
+    private System.Windows.Forms.GroupBox gbJobCommon;
+    private System.Windows.Forms.GroupBox gbCommon;
+    private System.Windows.Forms.ListView lvJobDetail;
+    private System.Windows.Forms.ColumnHeader chJobId;
+    private System.Windows.Forms.ColumnHeader chSince;
+    private System.Windows.Forms.ColumnHeader chProgress;
+    private System.Windows.Forms.Label lbConnectionStatusCaption;
+    private System.Windows.Forms.GroupBox gbResources;
+    private System.Windows.Forms.GroupBox gbServerConnection;
+    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.TextBox tbIPAdress;
+    private System.Windows.Forms.Label lbServerIPCaption;
+    private System.Windows.Forms.Label lbPortCaption;
+    private System.Windows.Forms.Label lbMem;
+    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.TextBox textBox2;
     private System.Windows.Forms.Button btnDisconnect;
-    private System.Windows.Forms.Button btnConnect;
-    private System.Windows.Forms.TextBox tbUuid;
-    private System.Windows.Forms.ToolStripMenuItem tsmiExit;
-    private System.Windows.Forms.ListBox lbEventLog;
+    private System.Windows.Forms.Button btConnect;
+    private ZedGraph.ZedGraphControl zGJobs;
+    private System.Windows.Forms.ColumnHeader chId;
+    private System.Windows.Forms.ImageList ilEventLog;
   }
 }
 

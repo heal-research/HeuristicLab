@@ -29,6 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
+using ZedGraph;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -36,59 +37,109 @@ namespace HeuristicLab.Hive.Client.Console {
 
   public partial class HiveClientConsole : Form {
 
-    int numEntries = 0;
+    EventLog HiveClientEventLog;
+    int selectedEventLogId;
 
     public HiveClientConsole() {
       InitializeComponent();
-      tbIp.Text = "010.020.053.006";
-      EventLog ev = new EventLog("Hive Client");
-      ev.Source = "Hive Client";
-      string str = ev.Entries[ev.Entries.Count - 1].Message;
-      foreach (System.Diagnostics.EventLogEntry entry in ev.Entries) {
-        lbEventLog.Items.Add(entry.TimeWritten + " -> " + entry.Message);
+      GetEventLog();
+    }
+
+    private void GetEventLog() {
+      HiveClientEventLog = new EventLog("Hive Client");
+      HiveClientEventLog.Source = "Hive Client";
+      HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
+      HiveClientEventLog.EnableRaisingEvents = true;
+
+      ListViewItem curEventLogEntry;
+      foreach (EventLogEntry eve in HiveClientEventLog.Entries) {
+        curEventLogEntry = new ListViewItem("", 0);
+        if(eve.EntryType == EventLogEntryType.Error)
+          curEventLogEntry = new ListViewItem("", 1);
+        curEventLogEntry.SubItems.Add(eve.EventID.ToString());
+        curEventLogEntry.SubItems.Add(eve.Message);
+        curEventLogEntry.SubItems.Add(eve.TimeGenerated.Date.ToString());
+        curEventLogEntry.SubItems.Add(eve.TimeGenerated.TimeOfDay.ToString());
+        lvLog.Items.Add(curEventLogEntry);
       }
-      lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
-      numEntries = ev.Entries.Count;
-      ev.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
-      ev.EnableRaisingEvents = true;
+    }
+
+    private void HiveClientConsole_Load(object sender, EventArgs e) {
+      CreateGraph(zGJobs);
+      //SetSize();
     }
 
     private void UpdateText(EventLog ev) {
-      if (this.lbEventLog.InvokeRequired) {
-        this.lbEventLog.Invoke(new
+      if (this.lvLog.InvokeRequired) {
+        this.lvLog.Invoke(new
           UpdateTextDelegate(UpdateText), new object[] { ev });
       } else {
-        string str = ev.Entries[numEntries].TimeWritten + " -> " + ev.Entries[numEntries].Message;
-        numEntries++;
-        lbEventLog.Items.Add(str);
-        lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
+        //string str = ev.Entries[numEntries].TimeWritten + " -> " + ev.Entries[numEntries].Message;
+        //numEntries++;
+        //lbEventLog.Items.Add(str);
+        //lbEventLog.SelectedIndex = lbEventLog.Items.Count - 1;
 
       }
     }
 
-    private void tsmiExit_Click(object sender, EventArgs e) {
-      this.Close();
-    }
+    //private void tsmiExit_Click(object sender, EventArgs e) {
+    //  this.Close();
+    //}
 
-    private void btnConnect_Click(object sender, EventArgs e) {
-      btnConnect.Enabled = false;
-      btnDisconnect.Enabled = true;
-      tbIp.Enabled = false;
-      tbPort.Enabled = false;
-      tbUuid.Enabled = false;
-      lbEventLog.Items.Add(tbIp.Text);
-    }
+    //private void btnConnect_Click(object sender, EventArgs e) {
+    //  btnConnect.Enabled = false;
+    //  btnDisconnect.Enabled = true;
+    //  tbIp.Enabled = false;
+    //  tbPort.Enabled = false;
+    //  tbUuid.Enabled = false;
+    //  lbEventLog.Items.Add(tbIp.Text);
+    //}
 
-    private void btnDisconnect_Click(object sender, EventArgs e) {
-      btnDisconnect.Enabled = false;
-      btnConnect.Enabled = true;
-      tbIp.Enabled = true;
-      tbPort.Enabled = true;
-      tbUuid.Enabled = true;
-    }
+    //private void btnDisconnect_Click(object sender, EventArgs e) {
+    //  btnDisconnect.Enabled = false;
+    //  btnConnect.Enabled = true;
+    //  tbIp.Enabled = true;
+    //  tbPort.Enabled = true;
+    //  tbUuid.Enabled = true;
+    //}
 
     public void OnEntryWritten(object source, EntryWrittenEventArgs e) {
       UpdateText((EventLog)source);
+    }
+
+    private void SetSize() {
+      zGJobs.Location = new Point(10, 10);
+      // Leave a small margin around the outside of the control
+
+      zGJobs.Size = new Size(ClientRectangle.Width - 20,
+                              ClientRectangle.Height - 20);
+    }
+
+
+    private void CreateGraph(ZedGraphControl zgc) {
+      GraphPane myPane = zgc.GraphPane;
+
+      // Set the titles and axis labels
+      myPane.Legend.IsVisible = false;
+      myPane.Title.IsVisible = false;
+
+      myPane.AddPieSlice(40, Color.Red, 0, "Jobs aborted");
+      myPane.AddPieSlice(60, Color.Green, 0.1, "Jobs done");
+
+      myPane.AxisChange();
+    }
+
+    private void HiveClientConsole_Resize(object sender, EventArgs e) {
+      //SetSize();
+    }
+
+    private void lvLog_DoubleClick(object sender, EventArgs e) {
+      ListViewItem lvi = lvLog.SelectedItems[0];
+
+      HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text, lvi.SubItems[1].Text);
+      
+      Form EventlogDetails = new EventLogEntryForm(hee);
+      EventlogDetails.Show();
     }
   }
 }
