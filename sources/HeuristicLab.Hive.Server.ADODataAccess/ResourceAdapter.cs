@@ -32,15 +32,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServerTableAdapters.ResourceTableAdapter adapter =
       new dsHiveServerTableAdapters.ResourceTableAdapter();
 
-    private Resource Convert(dsHiveServer.ResourceRow row) {
-      if (row != null) {
-        Resource resource = new Resource();
-
+    private Resource Convert(dsHiveServer.ResourceRow row, 
+      Resource resource) {
+      if (row != null && resource != null) {
         resource.ResourceId = row.ResourceId;
-        resource.Name = row.Name;
+        if (!row.IsNameNull())
+          resource.Name = row.Name;
+        else
+          resource.Name = String.Empty;
 
         return resource;
-      } else
+      } else 
         return null;
     }
 
@@ -48,9 +50,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.ResourceRow row) {
       if (resource != null && row != null) {
         row.Name = resource.Name;
-      }
 
-      return row;
+        return row;
+      } else
+        return null;
     }
 
     public void UpdateResource(Resource resource) {
@@ -74,16 +77,30 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    public Resource GetResourceById(long resourceId) {
-      dsHiveServer.ResourceDataTable data =
-          adapter.GetDataById(resourceId);
-      if (data.Count == 1) {
-        dsHiveServer.ResourceRow row =
-          data[0];
-        return Convert(row);
-      } else {
-        return null;
+    internal bool FillResource(Resource resource) {
+      if (resource != null) {
+        dsHiveServer.ResourceDataTable data =
+          adapter.GetDataById(resource.ResourceId);
+        if (data.Count == 1) {
+          dsHiveServer.ResourceRow row =
+            data[0];
+          Convert(row, resource);
+
+          return true;
+        }
       }
+
+      return false;
+    }
+
+    public Resource GetResourceById(long resourceId) {
+      Resource resource = new Resource();
+      resource.ResourceId = resourceId;
+
+      if(FillResource(resource)) 
+        return resource;
+      else 
+        return null;
     }
 
     public ICollection<Resource> GetAllResources() {
@@ -94,7 +111,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           adapter.GetData();
 
       foreach (dsHiveServer.ResourceRow row in data) {
-        allResources.Add(Convert(row));
+        Resource resource = new Resource();
+        Convert(row, resource);
+        allResources.Add(resource);
       }
 
       return allResources;

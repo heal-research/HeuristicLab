@@ -35,18 +35,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private PermissionOwnerAdapter permOwnerAdapter =
       new PermissionOwnerAdapter();
 
-    private User Convert(dsHiveServer.HiveUserRow row) {
-      if (row != null) {
-        User user = new User();
-
-        /*Parent - resource*/
-        PermissionOwner permOwner =
-          permOwnerAdapter.GetPermissionOwnerById(row.PermissionOwnerId);
-        user.PermissionOwnerId = permOwner.PermissionOwnerId;
-        user.Name = permOwner.Name;
+    private User Convert(dsHiveServer.HiveUserRow row, 
+      User user) {
+      if (row != null && user != null) {
+        /*Parent - PermissionOwner*/
+        user.PermissionOwnerId = row.PermissionOwnerId;
+        permOwnerAdapter.FillPermissionOwner(user);
 
         /*User*/
-        user.Password = row.Password;
+        if (!row.IsPasswordNull())
+          user.Password = row.Password;
+        else
+          user.Password = String.Empty;
 
         return user;
       } else
@@ -58,9 +58,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (user != null && row != null) {
         row.PermissionOwnerId = user.PermissionOwnerId;
         row.Password = user.Password;
-      }
 
-      return row;
+        return row;
+      } else
+        return null;     
     }
 
     #region IUserAdapter Members
@@ -69,7 +70,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       throw new NotImplementedException();
     }
 
-    public ClientInfo GetUserById(long userId) {
+    public User GetUserById(long userId) {
+      throw new NotImplementedException();
+    }
+
+    public User GetUserByName(String name) {
       throw new NotImplementedException();
     }
 

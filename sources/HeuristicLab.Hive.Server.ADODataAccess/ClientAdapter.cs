@@ -35,24 +35,40 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       new ResourceAdapter();
     
     #region IClientAdapter Members
-    private ClientInfo Convert(dsHiveServer.ClientRow row) {
-      if(row != null) {
-        ClientInfo client = new ClientInfo();
-       
+    private ClientInfo Convert(dsHiveServer.ClientRow row, 
+      ClientInfo client) {
+      if(row != null && client != null) {      
         /*Parent - resource*/
-        Resource resource =
-          resAdapter.GetResourceById(row.ResourceId);
-        client.ResourceId = resource.ResourceId;
-        client.Name = resource.Name;
+        client.ResourceId = row.ResourceId;
+        resAdapter.FillResource(client);
 
         /*ClientInfo*/
         client.ClientId = row.GUID;
-        client.CpuSpeedPerCore = row.CPUSpeed;
-        client.Memory = row.Memory;
-        client.Login = row.Login;
-        if (row.Status != null)
+       
+        if (!row.IsCPUSpeedNull())
+          client.CpuSpeedPerCore = row.CPUSpeed;
+        else
+          client.CpuSpeedPerCore = 0;
+
+        if (!row.IsMemoryNull())
+          client.Memory = row.Memory;
+        else
+          client.Memory = 0;
+
+        if (!row.IsLoginNull())
+          client.Login = row.Login;
+        else
+          client.Login = DateTime.MinValue;
+
+        if (!row.IsStatusNull())
           client.State = (State)Enum.Parse(typeof(State), row.Status, true);
-        client.NrOfCores = row.NumberOfCores;
+        else
+          client.State = State.idle;
+
+        if (!row.IsNumberOfCoresNull())
+          client.NrOfCores = row.NumberOfCores;
+        else
+          client.NrOfCores = 0;
 
         //todo: config adapter (client.config)
 
@@ -106,12 +122,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ClientInfo GetClientById(Guid clientId) {
+      ClientInfo client = new ClientInfo();
+      
       dsHiveServer.ClientDataTable data =
           adapter.GetDataById(clientId);
       if (data.Count == 1) {
         dsHiveServer.ClientRow row = 
           data[0];
-        return Convert(row);
+        Convert(row, client);
+
+        return client;
       } else {
         return null;
       }
@@ -125,7 +145,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           adapter.GetData();
 
       foreach (dsHiveServer.ClientRow row in data) {
-        allClients.Add(Convert(row));
+        ClientInfo client = new ClientInfo();
+        Convert(row, client);
+        allClients.Add(client);
       }
 
       return allClients;

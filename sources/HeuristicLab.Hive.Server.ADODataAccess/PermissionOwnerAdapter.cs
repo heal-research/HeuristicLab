@@ -54,6 +54,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    internal bool FillPermissionOwner(PermissionOwner permOwner) {
+      if (permOwner != null) {
+          return true;
+      }
+
+      return false;
+    }
+
     public PermissionOwner GetPermissionOwnerById(long resourceId) {
       throw new NotImplementedException();
     }

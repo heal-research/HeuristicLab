@@ -30,6 +30,8 @@ class ServiceLocator {
     new DiscoveryService();
 
   private static IClientAdapter clientAdapter = null;
+
+  private static IUserAdapter userAdapter = null;
   
   /// <summary>
   /// Gets the client database adapter
@@ -41,5 +43,17 @@ class ServiceLocator {
     }
 
     return clientAdapter;
+  }
+
+  /// <summary>
+  /// Gets the user database adapter
+  /// </summary>
+  /// <returns></returns>
+  internal static IUserAdapter GetUserAdapter() {
+    if (userAdapter == null) {
+      userAdapter = discoveryService.GetInstances<IUserAdapter>()[0];
+    }
+
+    return userAdapter;
   }
 }

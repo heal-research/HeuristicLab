@@ -41,7 +41,14 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    ClientInfo GetUserById(long userId);
+    User GetUserById(long userId);
+
+    /// <summary>
+    /// Get the user with the specified name
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    User GetUserByName(string name);
 
     /// <summary>
     /// Get all users
