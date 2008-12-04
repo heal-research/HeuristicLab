@@ -99,7 +99,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response Login(string userName, string password) {
       Response response = new Response();
       response.Success = true;
-      retrurn response;
+      return response;
     }
 
     #endregion

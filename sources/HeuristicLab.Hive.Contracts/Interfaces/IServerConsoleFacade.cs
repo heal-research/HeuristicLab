@@ -32,7 +32,5 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// </summary>
   [ServiceContract]
   public interface IServerConsoleFacade : IClientManager, IJobManager, IUserRoleManager {
-    [DataContract]
-    Response Login(String userName, String password);
   }
 }
