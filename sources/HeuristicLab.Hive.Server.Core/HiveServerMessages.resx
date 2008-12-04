@@ -129,4 +129,19 @@
   <data name="Logout.UserAllreadyOnline" xml:space="preserve">
     <value>A User with this GUID is allready logged in</value>
   </data>
+  <data name="UserRole.GetAllUsers" xml:space="preserve">
+    <value>All Users returned</value>
+  </data>
+  <data name="UserRole.UserDoesntExist" xml:space="preserve">
+    <value>Sorry, but this user doesn't exist</value>
+  </data>
+  <data name="UserRole.UserExistsAllready" xml:space="preserve">
+    <value>Sorry, but a user with this name exists allready in database</value>
+  </data>
+  <data name="UserRole.UserRemoved" xml:space="preserve">
+    <value>User sucessfully removed from database</value>
+  </data>
+  <data name="UserRole.UserSuccessfullyAdded" xml:space="preserve">
+    <value>User successfully added to database</value>
+  </data>
 </root>

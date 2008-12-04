@@ -36,21 +36,50 @@ namespace HeuristicLab.Hive.Server.Core {
     #region IUserRoleManager Members
 
     public ResponseList<User> GetAllUsers() {
-      return null;      
+      ResponseList<User> response = new ResponseList<User>();
+
+      List<User> allUsers = new List<User>(userAdapter.GetAllUsers());
+      response.List = allUsers;
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_GET_ALL_USERS;
+
+      return response;
     }
 
     public Response AddNewUser(User user) {
-      User dbUser = userAdapter.GetUserByName(user.Name);
+      Response response = new Response();
 
-      return null;
+      User dbUser = userAdapter.GetUserByName(user.Name);
+      if (dbUser != null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_EXISTS_ALLREADY;
+        return response;
+      }
+      userAdapter.UpdateUser(user);
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_SUCCESSFULLY_ADDED;
+      
+      return response;
     }
 
     public ResponseList<UserGroup> GetAllUserGroups() {
-      return null;
+      ResponseList<UserGroup> response = new ResponseList<UserGroup>();
+
+      return response;
     }
 
     public Response RemoveUser(long userId) {
-      return null;
+      Response response = new Response();
+      User user = userAdapter.GetUserById(userId);
+      if (user == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_DOESNT_EXIST;
+        return response;
+      }
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_REMOVED;
+
+      return response;
     }
 
     public Response AddNewUserGroup(UserGroup userGroup) {
