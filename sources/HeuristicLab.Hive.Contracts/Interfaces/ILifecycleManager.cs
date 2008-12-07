@@ -23,43 +23,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// <summary>
-  /// The resource database adapter
+  /// Manages the lifecycle of the application
   /// </summary>
-  public interface IResourceAdapter {
+  public interface ILifecycleManager {
     /// <summary>
-    /// Save or update the resource
+    /// Initializes the application
     /// </summary>
-    /// <param name="client"></param>
-    void UpdateResource(Resource resource);
+    void Init();
 
     /// <summary>
-    /// Get the resource with the specified ID
+    /// Shuts the application down
     /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    Resource GetResourceById(long resourceId);
-
-    /// <summary>
-    /// Gets the resource and updates the values of the object
-    /// </summary>
-    /// <param name="resource"></param>
-    /// <returns></returns>
-    bool GetResourceById(Resource resource);
-
-    /// <summary>
-    /// Get all resuorces
-    /// </summary>
-    /// <returns></returns>
-    ICollection<Resource> GetAllResources();
-
-    /// <summary>
-    /// Deletes the resource
-    /// </summary>
-    /// <param name="client"></param>
-    bool DeleteResource(Resource resource);
+    void Shtudown();
   }
 }

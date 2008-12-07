@@ -21,27 +21,48 @@
 
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.PluginInfrastructure;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// The service locator for the server core
 /// </summary>
-class ServiceLocator {
+public class ServiceLocator {
   private static DiscoveryService discoveryService =
     new DiscoveryService();
+
+  private static ITransactionManager transManager = null;
 
   private static IClientAdapter clientAdapter = null;
 
   private static IClientGroupAdapter clientGroupAdapter = null;
 
+  private static IResourceAdapter resourceAdapter = null;
+
   private static IUserAdapter userAdapter = null;
 
   private static IUserGroupAdapter userGroupAdapter = null;
-  
+
+  private static IPermissionOwnerAdapter permOwnerAdapter = null;
+
+  /// <summary>
+  /// Gets the db transaction manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static ITransactionManager GetTransactionManager() {
+    if (transManager == null) {
+      transManager = discoveryService.GetInstances<ITransactionManager>()[0];
+    }
+
+    return transManager;
+  }
+
   /// <summary>
   /// Gets the client database adapter
   /// </summary>
   /// <returns></returns>
-  internal static IClientAdapter GetClientAdapter() {
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IClientAdapter GetClientAdapter() {
     if (clientAdapter == null) {
       clientAdapter = discoveryService.GetInstances<IClientAdapter>()[0];
     }
@@ -53,7 +74,8 @@ class ServiceLocator {
   /// Gets the client group database adapter
   /// </summary>
   /// <returns></returns>
-  internal static IClientGroupAdapter GetClientGroupAdapter() {
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IClientGroupAdapter GetClientGroupAdapter() {
     if (clientGroupAdapter == null) {
       clientGroupAdapter = discoveryService.GetInstances<IClientGroupAdapter>()[0];
     }
@@ -62,10 +84,24 @@ class ServiceLocator {
   }
 
   /// <summary>
+  /// Gets the resource database adapter
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IResourceAdapter GetResourceAdapter() {
+    if (resourceAdapter == null) {
+      resourceAdapter = discoveryService.GetInstances<IResourceAdapter>()[0];
+    }
+
+    return resourceAdapter;
+  }
+
+  /// <summary>
   /// Gets the user database adapter
   /// </summary>
   /// <returns></returns>
-  internal static IUserAdapter GetUserAdapter() {
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IUserAdapter GetUserAdapter() {
     if (userAdapter == null) {
       userAdapter = discoveryService.GetInstances<IUserAdapter>()[0];
     }
@@ -77,11 +113,25 @@ class ServiceLocator {
   /// Gets the user group database adapter
   /// </summary>
   /// <returns></returns>
-  internal static IUserGroupAdapter GetUserGroupAdapter() {
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IUserGroupAdapter GetUserGroupAdapter() {
     if (userGroupAdapter == null) {
       userGroupAdapter = discoveryService.GetInstances<IUserGroupAdapter>()[0];
     }
 
     return userGroupAdapter;
+  }
+
+  /// <summary>
+  /// Gets the permission owner database adapter
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IPermissionOwnerAdapter GetPermissionOwnerAdapter() {
+    if (permOwnerAdapter == null) {
+      permOwnerAdapter = discoveryService.GetInstances<IPermissionOwnerAdapter>()[0];
+    }
+
+    return permOwnerAdapter;
   }
 }

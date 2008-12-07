@@ -93,15 +93,5 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #endregion
 
-
-    #region IServerConsoleFacade Members
-
-    public Response Login(string userName, string password) {
-      Response response = new Response();
-      response.Success = true;
-      return response;
-    }
-
-    #endregion
   }
 }

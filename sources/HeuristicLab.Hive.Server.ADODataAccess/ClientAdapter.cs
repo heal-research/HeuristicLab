@@ -25,22 +25,34 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ClientAdapter: IClientAdapter {
+  class ClientAdapter: DataAdapterBase, IClientAdapter {
     private dsHiveServerTableAdapters.ClientTableAdapter adapter =
         new dsHiveServerTableAdapters.ClientTableAdapter();
 
-    private ResourceAdapter resAdapter = 
-      new ResourceAdapter();
+    private dsHiveServer.ClientDataTable data =
+      new dsHiveServer.ClientDataTable();
+
+    private IResourceAdapter resAdapter =
+      ServiceLocator.GetResourceAdapter();
+
+    public ClientAdapter() {
+      adapter.Fill(data);
+    }
+
+    protected override void Update() {
+      this.adapter.Update(this.data);
+    }
     
-    #region IClientAdapter Members
     private ClientInfo Convert(dsHiveServer.ClientRow row, 
       ClientInfo client) {
       if(row != null && client != null) {      
         /*Parent - resource*/
         client.ResourceId = row.ResourceId;
-        resAdapter.FillResource(client);
+        resAdapter.GetResourceById(client);
 
         /*ClientInfo*/
         client.ClientId = row.GUID;
@@ -81,7 +93,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServer.ClientRow Convert(ClientInfo client,
       dsHiveServer.ClientRow row) {
       if (client != null && row != null) {      
-        row.ResourceId = client.ResourceId;
         row.GUID = client.ClientId;
         row.CPUSpeed = client.CpuSpeedPerCore;
         row.Memory = client.Memory;
@@ -99,36 +110,33 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
+    #region IClientAdapter Members
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateClient(ClientInfo client) {
       if (client != null) {
         resAdapter.UpdateResource(client);
 
-        dsHiveServer.ClientDataTable data =
-          adapter.GetDataById(client.ClientId);
+        dsHiveServer.ClientRow row = 
+          data.FindByResourceId(client.ResourceId);
 
-        dsHiveServer.ClientRow row;
-        if (data.Count == 0) {
+        if (row == null) {
           row = data.NewClientRow();
           row.ResourceId = client.ResourceId;
           data.AddClientRow(row);
-        } else {
-          row = data[0];
-        }
+        } 
 
         Convert(client, row);
-
-        adapter.Update(data);
       }
     }
 
     public ClientInfo GetClientById(Guid clientId) {
       ClientInfo client = new ClientInfo();
-      
-      dsHiveServer.ClientDataTable data =
-          adapter.GetDataById(clientId);
-      if (data.Count == 1) {
-        dsHiveServer.ClientRow row = 
-          data[0];
+
+      dsHiveServer.ClientRow row =
+        data.Single<dsHiveServer.ClientRow>(
+          r => !r.IsGUIDNull() && r.GUID == clientId);
+
+      if (row != null) {
         Convert(row, client);
 
         return client;
@@ -141,9 +149,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       ICollection<ClientInfo> allClients =
         new List<ClientInfo>();
 
-      dsHiveServer.ClientDataTable data =
-          adapter.GetData();
-
       foreach (dsHiveServer.ClientRow row in data) {
         ClientInfo client = new ClientInfo();
         Convert(row, client);
@@ -153,9 +158,21 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return allClients;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public bool DeleteClient(ClientInfo client) {
-      //referential integrity will delete the client object
-      return resAdapter.DeleteResource(client);
+      if (client != null) {
+        dsHiveServer.ClientRow row =
+          data.Single<dsHiveServer.ClientRow>(
+            r => r.GUID == client.ClientId);
+
+        if (row != null) {
+          data.RemoveClientRow(row);
+
+          return resAdapter.DeleteResource(client);
+        }
+      }
+
+      return false;
     }
 
     #endregion

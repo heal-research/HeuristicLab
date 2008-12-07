@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Server {
 
       if (serverConsoleInstances.Length > 0) {
         ServiceHost serviceHost =
-                new ServiceHost(serverConsoleInstances[0].GetType(),
+            new ServiceHost(serverConsoleInstances[0].GetType(),
                   uriTcp);
 
         System.ServiceModel.Channels.Binding binding =
@@ -138,13 +138,27 @@ namespace HeuristicLab.Hive.Server {
       ServiceHost serverConsoleFacade =
         StartServerConsoleFacade(uriTcp);
 
-      Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
-        serverConsoleFacade.BaseAddresses[0]);
+      ILifecycleManager[] lifecycleManagers =
+         discService.GetInstances<ILifecycleManager>();
 
-      Application.Run(mainForm);
+      if (lifecycleManagers.Length > 0) {
+        ILifecycleManager lifecycleManager = 
+          lifecycleManagers[0];
+
+        lifecycleManager.Init();
+
+        Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
+            serverConsoleFacade.BaseAddresses[0]);
+
+         Application.Run(mainForm);
+
+         lifecycleManager.Shtudown();
+      }
 
       clientCommunicator.Close();
       serverConsoleFacade.Close();
+
+      
     }
   }
 }

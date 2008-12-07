@@ -104,6 +104,11 @@ namespace HeuristicLab.Hive.Server {
     public override void Run() {
       TestClientAdapter();
       TestUserAdapter();
+
+      ITransactionManager transactionManager =
+        ServiceLocator.GetTransactionManager();
+
+      transactionManager.UpdateDB();
     }
   }
 }

@@ -26,21 +26,33 @@ using System.Text;
 
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class UserAdapter: IUserAdapter {
+  class UserAdapter : DataAdapterBase, IUserAdapter {
     private dsHiveServerTableAdapters.HiveUserTableAdapter adapter =
         new dsHiveServerTableAdapters.HiveUserTableAdapter();
 
-    private PermissionOwnerAdapter permOwnerAdapter =
-      new PermissionOwnerAdapter();
+    private dsHiveServer.HiveUserDataTable data =
+        new dsHiveServer.HiveUserDataTable();
+
+    private IPermissionOwnerAdapter permOwnerAdapter =
+       ServiceLocator.GetPermissionOwnerAdapter();
+
+    public UserAdapter() {
+      adapter.Fill(data);
+    }
+
+    protected override void Update() {
+      this.adapter.Update(this.data);
+    }
 
     private User Convert(dsHiveServer.HiveUserRow row, 
       User user) {
       if (row != null && user != null) {
         /*Parent - PermissionOwner*/
         user.PermissionOwnerId = row.PermissionOwnerId;
-        permOwnerAdapter.FillPermissionOwner(user);
+        permOwnerAdapter.GetPermissionOwnerById(user);
 
         /*User*/
         if (!row.IsPasswordNull())
@@ -56,7 +68,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServer.HiveUserRow Convert(User user,
       dsHiveServer.HiveUserRow row) {
       if (user != null && row != null) {
-        row.PermissionOwnerId = user.PermissionOwnerId;
         row.Password = user.Password;
 
         return row;
@@ -66,36 +77,30 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     #region IUserAdapter Members
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateUser(User user) {
       if (user != null) {
         permOwnerAdapter.UpdatePermissionOwner(user);
 
-        dsHiveServer.HiveUserDataTable data =
-          adapter.GetDataById(user.PermissionOwnerId);
-
-        dsHiveServer.HiveUserRow row;
-        if (data.Count == 0) {
+        dsHiveServer.HiveUserRow row = 
+          data.FindByPermissionOwnerId(user.PermissionOwnerId);
+        if (row == null) {
           row = data.NewHiveUserRow();
           row.PermissionOwnerId = user.PermissionOwnerId;
           data.AddHiveUserRow(row);
-        } else {
-          row = data[0];
-        }
+        } 
 
         Convert(user, row);
-
-        adapter.Update(data);
       }
     }
 
     public User GetUserById(long userId) {
       User user = new User();
 
-      dsHiveServer.HiveUserDataTable data =
-          adapter.GetDataById(userId);
-      if (data.Count == 1) {
-        dsHiveServer.HiveUserRow row =
-          data[0];
+      dsHiveServer.HiveUserRow row =
+          data.FindByPermissionOwnerId(userId);
+
+      if(row != null) {
         Convert(row, user);
 
         return user;
@@ -107,25 +112,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     public User GetUserByName(String name) {
       User user = new User();
 
-      dsHiveServer.HiveUserDataTable data =
-          adapter.GetDataByName(name);
-      if (data.Count == 1) {
-        dsHiveServer.HiveUserRow row =
-          data[0];
-        Convert(row, user);
+      PermissionOwner permOwner =
+        permOwnerAdapter.GetPermissionOwnerByName(name);
 
-        return user;
-      } else {
-        return null;
+      if (permOwner != null) {
+        dsHiveServer.HiveUserRow row =
+          data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
+
+        if (row != null) {
+          Convert(row, user);
+
+          return user;
+        }
       }
+
+      return null;
     }
 
     public ICollection<User> GetAllUsers() {
       ICollection<User> allUsers =
         new List<User>();
-
-      dsHiveServer.HiveUserDataTable data =
-          adapter.GetData();
 
       foreach (dsHiveServer.HiveUserRow row in data) {
         User user = new User();
@@ -136,9 +142,20 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return allUsers;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public bool DeleteUser(User user) {
-      //referential integrity will delete the client object
-      return permOwnerAdapter.DeletePermissionOwner(user);
+      if (user != null) {
+        dsHiveServer.HiveUserRow row =
+          data.FindByPermissionOwnerId(user.PermissionOwnerId);
+
+        if (row != null) {
+          data.RemoveHiveUserRow(row);
+
+          return permOwnerAdapter.DeletePermissionOwner(user);
+        }
+      }
+
+      return false;
     }
 
     #endregion

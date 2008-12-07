@@ -29,7 +29,7 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The permission owner database adapter
   /// </summary>
-  public interface IPermissionOwner {
+  public interface IPermissionOwnerAdapter {
     /// <summary>
     /// Save or update the permission owner
     /// </summary>
@@ -37,11 +37,25 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     void UpdatePermissionOwner(PermissionOwner permOwner);
 
     /// <summary>
+    /// Gets the permission owner and updates the values of the object
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <returns></returns>
+    bool GetPermissionOwnerById(PermissionOwner permOwner);
+
+    /// <summary>
     /// Get the permission owner with the specified ID
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
     PermissionOwner GetPermissionOwnerById(long permOwnerId);
+
+    /// <summary>
+    /// Get the permission owner with the specified name
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    PermissionOwner GetPermissionOwnerByName(String name);
 
     /// <summary>
     /// Get all permission owners

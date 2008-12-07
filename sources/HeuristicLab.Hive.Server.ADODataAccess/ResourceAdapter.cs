@@ -25,14 +25,25 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ResourceAdapter: IResourceAdapter {
-    #region IResourceAdapter Members
+  class ResourceAdapter: DataAdapterBase, IResourceAdapter {
     private dsHiveServerTableAdapters.ResourceTableAdapter adapter =
-      new dsHiveServerTableAdapters.ResourceTableAdapter();
+        new dsHiveServerTableAdapters.ResourceTableAdapter();
 
-    private Resource Convert(dsHiveServer.ResourceRow row, 
+    private dsHiveServer.ResourceDataTable data =
+        new dsHiveServer.ResourceDataTable();
+
+    public ResourceAdapter() {
+      adapter.Fill(data);
+    }
+
+    protected override void Update() {
+      this.adapter.Update(this.data);
+    }
+
+    private Resource Convert(dsHiveServer.ResourceRow row,
       Resource resource) {
       if (row != null && resource != null) {
         resource.ResourceId = row.ResourceId;
@@ -42,7 +53,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           resource.Name = String.Empty;
 
         return resource;
-      } else 
+      } else
         return null;
     }
 
@@ -56,34 +67,31 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
+    #region IResourceAdapter Members
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateResource(Resource resource) {
       if (resource != null) {
-        dsHiveServer.ResourceDataTable data =
-          adapter.GetDataById(resource.ResourceId);
+        dsHiveServer.ResourceRow row =
+          data.FindByResourceId(resource.ResourceId);
 
-        dsHiveServer.ResourceRow row;
-        if (data.Count == 0) {
+        if (row == null) {
           row = data.NewResourceRow();
           data.AddResourceRow(row);
-        } else {
-          row = data[0];
-        }
+
+          //write row to db to get primary key
+          adapter.Update(row);
+        } 
 
         Convert(resource, row);
-
-        adapter.Update(data);
-
         resource.ResourceId = row.ResourceId;
       }
     }
 
-    internal bool FillResource(Resource resource) {
+    public bool GetResourceById(Resource resource) {
       if (resource != null) {
-        dsHiveServer.ResourceDataTable data =
-          adapter.GetDataById(resource.ResourceId);
-        if (data.Count == 1) {
-          dsHiveServer.ResourceRow row =
-            data[0];
+        dsHiveServer.ResourceRow row =
+          data.FindByResourceId(resource.ResourceId);
+        if (row != null) {
           Convert(row, resource);
 
           return true;
@@ -97,19 +105,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       Resource resource = new Resource();
       resource.ResourceId = resourceId;
 
-      if(FillResource(resource)) 
+      if(GetResourceById(resource)) 
         return resource;
       else 
         return null;
     }
 
     public ICollection<Resource> GetAllResources() {
-      ICollection<Resource> allResources =
+      IList<Resource> allResources =
         new List<Resource>();
-
-      dsHiveServer.ResourceDataTable data =
-          adapter.GetData();
-
+      
       foreach (dsHiveServer.ResourceRow row in data) {
         Resource resource = new Resource();
         Convert(row, resource);
@@ -119,17 +124,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return allResources;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public bool DeleteResource(Resource resource) {
       if(resource != null) {
+        dsHiveServer.ResourceRow row =
+          data.FindByResourceId(resource.ResourceId);
 
-        dsHiveServer.ResourceDataTable data =
-           adapter.GetDataById(resource.ResourceId);
+        if (row != null) {
+          data.RemoveResourceRow(row);
 
-        if (data.Count == 1) {
-          dsHiveServer.ResourceRow row = data[0];
-
-          row.Delete();
-          return adapter.Update(data) > 0;
+          return true;
         } 
       }
        
