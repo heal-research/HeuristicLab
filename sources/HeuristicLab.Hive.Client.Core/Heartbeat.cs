@@ -47,7 +47,7 @@ namespace HeuristicLab.Hive.Client.Core {
       Interval = interval;      
     }
 
-    private ClientCommunicatorClient clientCommunicator;
+    private WcfService wcfService;
 
     /// <summary>
     /// Starts the Heartbeat signal.
@@ -57,8 +57,8 @@ namespace HeuristicLab.Hive.Client.Core {
       heartbeatTimer.Interval = this.Interval;
       heartbeatTimer.AutoReset = true;
       heartbeatTimer.Elapsed += new ElapsedEventHandler(heartbeatTimer_Elapsed);
-      clientCommunicator = ServiceLocator.GetClientCommunicator();
-      clientCommunicator.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(ClientCommunicator_SendHeartBeatCompleted);
+      wcfService = WcfService.Instance;
+      wcfService.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(wcfService_SendHeartBeatCompleted);
       heartbeatTimer.Start();
     }
 
@@ -73,10 +73,14 @@ namespace HeuristicLab.Hive.Client.Core {
                                                               freeCores = 4, 
                                                               freeMemory = 1000, 
                                                               jobProgress = 1};
-      clientCommunicator.SendHeartBeatAsync(heartBeatData);
+      if (wcfService.ConnState == WcfService.ConnectionState.failed) {
+        wcfService.Connect();
+      } else if (wcfService.ConnState == WcfService.ConnectionState.connected) {
+        wcfService.SendHeartBeatAsync(heartBeatData);
+      }
     }
 
-    void ClientCommunicator_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
+    void wcfService_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
       System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
     }
