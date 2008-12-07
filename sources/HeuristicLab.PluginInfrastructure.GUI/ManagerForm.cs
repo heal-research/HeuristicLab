@@ -990,7 +990,14 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
       // dumb solution to automatically select the node on right clicks which opens the context menu because 
       // per default the treeview doesn't select nodes on right click
       if(e.Button == MouseButtons.Right) {
-        listView.GetItemAt(e.X, e.Y).Selected = true;
+        ListViewItem clickedItem = listView.GetItemAt(e.X, e.Y);
+        if (clickedItem != null) {
+          // clear previous selection
+          while (listView.SelectedItems.Count > 0)
+            listView.SelectedItems[0].Selected = false;
+          // select clicked item
+          clickedItem.Selected = true;
+        }
       }
     }
 
@@ -999,11 +1006,14 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         UpdateActionButtons((PluginTag)e.Item.Tag);
         // display the plugin details in the lower pane
         DisplayPluginInfo(((PluginTag)e.Item.Tag).GetPluginDetails());
-      } else {
+      } else if(e.Item.Tag!=null) {
         // when an item was 'unselected' or was selected but doesn't represent a plugin then install and remove are not possible
         publishButton.Enabled = false;
         installButton.Enabled = false;
         deleteButton.Enabled = false;
+        publishMenuItem.Enabled = false;
+        installMenuItem.Enabled = false;
+        deleteMenuItem.Enabled = false;
       }
     }
   }
