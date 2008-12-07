@@ -65,6 +65,7 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
       wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
 
       wcfService.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
 
@@ -125,6 +126,10 @@ namespace HeuristicLab.Hive.Client.Core {
     #endregion
 
     #region wcfService Events
+
+    void wcfService_ConnectionRestored(object sender, EventArgs e) {
+      //Do some fancy new things here... e.g: check all appdomains if there are still active Jobs that need to be transmitted
+    }
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {

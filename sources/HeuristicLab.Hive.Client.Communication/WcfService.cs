@@ -21,12 +21,12 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
-    public enum ConnectionState { connected, disconnected, failed };
-
-    private ClientCommunicatorClient proxy = null;
-
+    public enum ConnectionState { connected, disconnected, failed }  
     public ConnectionState ConnState { get; set; }
 
+    public event EventHandler ConnectionRestored;    
+
+    private ClientCommunicatorClient proxy = null;
     private string serverIP;
     private string serverPort;
 
@@ -45,6 +45,11 @@ namespace HeuristicLab.Hive.Client.Communication {
         proxy.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(proxy_PullJobCompleted);
         proxy.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(proxy_SendJobResultCompleted);
         proxy.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(proxy_SendHeartBeatCompleted);
+
+        if (ConnState == ConnectionState.failed)
+          ConnectionRestored(this, new EventArgs());
+        ConnState = ConnectionState.connected;
+
       }
       catch (Exception ex) {
         NetworkErrorHandling(ex);
