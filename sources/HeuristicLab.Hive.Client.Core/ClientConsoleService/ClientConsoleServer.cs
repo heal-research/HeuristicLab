@@ -5,9 +5,9 @@ using System.Text;
 using System.ServiceModel.Description;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Hive.Client.Communication.Interfaces;
+using HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces;
 
-namespace HeuristicLab.Hive.Client.Communication {
+namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleServer {
 
     DiscoveryService discService = new DiscoveryService();

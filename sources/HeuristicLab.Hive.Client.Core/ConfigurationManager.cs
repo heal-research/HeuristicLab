@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using HeuristicLab.Hive.Client.Communication.ClientConsole;
 using HeuristicLab.Hive.Client.ExecutionEngine;
+using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 
 namespace HeuristicLab.Hive.Client.Core {
   /// <summary>

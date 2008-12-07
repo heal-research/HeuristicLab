@@ -69,6 +69,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientConsoleService\ClientConsoleCommunicator.cs" />
+    <Compile Include="ClientConsoleService\ClientConsoleServer.cs" />
+    <Compile Include="ClientConsoleService\Interfaces\IClientConsoleCommunicator.cs" />
+    <Compile Include="ClientConsoleService\TransferObjects\ConnectionContainer.cs" />
+    <Compile Include="ClientConsoleService\TransferObjects\JobStatus.cs" />
+    <Compile Include="ClientConsoleService\TransferObjects\StatusCommons.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreApplication.cs" />

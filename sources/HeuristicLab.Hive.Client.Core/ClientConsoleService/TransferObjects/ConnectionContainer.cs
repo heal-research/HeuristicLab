@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HeuristicLab.Hive.Client.Communication.ClientConsole {
+namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   [Serializable]
   public class ConnectionContainer {
     public string IPAdress { get; set; }

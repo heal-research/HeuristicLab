@@ -37,8 +37,8 @@ using HeuristicLab.Hive.Contracts;
 using System.Runtime.Remoting.Messaging;
 using HeuristicLab.PluginInfrastructure;
 using System.ServiceModel;
-using HeuristicLab.Hive.Client.Communication.Interfaces;
 using System.ServiceModel.Description;
+using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 
 
 namespace HeuristicLab.Hive.Client.Core {
