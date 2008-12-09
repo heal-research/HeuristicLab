@@ -33,6 +33,7 @@ using HeuristicLab.Charting.Data;
 
 namespace HeuristicLab.Logging {
   public partial class LinechartView : ViewBase {
+    private double maxY = double.MinValue, minY = double.MaxValue;
     private static int[] colors = new int[] {
       182,182,255, 
       218,255,182,
@@ -85,7 +86,6 @@ namespace HeuristicLab.Logging {
       dataChartControl.Chart = datachart;
       datachart.Group.Clear();
       datachart.Group.Add(new Axis(datachart, 0, 0, AxisType.Both));
-      double maxY = double.MinValue, minY = double.MaxValue;
       if(Linechart != null) {
         datachart.UpdateEnabled = false;
         for(int i = 0; i < Linechart.NumberOfLines; i++) {
@@ -99,7 +99,9 @@ namespace HeuristicLab.Logging {
         for(int i = 0; i < Linechart.Values.Count; i++) {
           ItemList list = (ItemList)Linechart.Values[i];
           for(int j = 0; j < list.Count; j++) {
-            double value = ((DoubleData)list[j]).Data;
+            double value = 0.0;
+            if (list[j] is IntData) value = (double)((IntData)list[j]).Data;
+            else value = ((DoubleData)list[j]).Data;
             if(!double.IsInfinity(value) && !double.IsNaN(value)) {
               if(value < minY) minY = value;
               if(value > maxY) maxY = value;
@@ -129,8 +131,15 @@ namespace HeuristicLab.Logging {
         Datachart datachart = dataChartControl.Chart;
         ItemList list = (ItemList)e.Item;
         datachart.UpdateEnabled = false;
-        for(int i = 0; i < list.Count; i++)
-          datachart.AddDataPoint(i, e.Index, ((DoubleData)list[i]).Data);
+        for (int i = 0; i < list.Count; i++) {
+          double value = 0.0;
+          if (list[i] is IntData) value = (double)((IntData)list[i]).Data;
+          else value = ((DoubleData)list[i]).Data;
+          datachart.AddDataPoint(i, e.Index, value);
+          if (value < minY) minY = value;
+          if (value > maxY) maxY = value;
+        }
+        datachart.ZoomIn(-Linechart.Values.Count * 0.05, minY - (minY * 0.1), Linechart.Values.Count * 1.05, maxY * 1.05);
         datachart.UpdateEnabled = true;
         datachart.EnforceUpdate();
       }
