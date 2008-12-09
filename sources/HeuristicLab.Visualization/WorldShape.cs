@@ -35,6 +35,11 @@ namespace HeuristicLab.Visualization {
       get { return boundingBox; }
     }
 
+    public RectangleD ClippingArea {
+      get { return clippingArea; }
+      set { clippingArea = value; }
+    }
+
     /// <summary>
     /// adds a shape to the WorldShape
     /// </summary>

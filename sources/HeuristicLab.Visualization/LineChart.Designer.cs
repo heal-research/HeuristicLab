@@ -40,6 +40,7 @@
           this.canvasUI1.Size = new System.Drawing.Size(552, 390);
           this.canvasUI1.TabIndex = 0;
           this.canvasUI1.Text = "canvasUI1";
+          this.canvasUI1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           // 
           // LineChart
           // 
