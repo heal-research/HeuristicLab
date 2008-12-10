@@ -180,6 +180,7 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
 
       List<PluginInfo> depPlugins = GetDependentPlugins(jobPlugin);
+      depPlugins.Add(jobPlugin);
 
       if (depPlugins != null && depPlugins.Count > 0) {
         remoteRunner.LoadPlugins(depPlugins);
