@@ -44,7 +44,7 @@ namespace HeuristicLab.Visualization {
       int bottom = ToScreenY(rect.Y1, viewport, clippingArea);
       int right = ToScreenX(rect.X2, viewport, clippingArea);
       int top = ToScreenY(rect.Y2, viewport, clippingArea);
-      return new Rectangle(left, top, right - left + 1, bottom - top + 1);
+      return new Rectangle(left, top, right - left , bottom - top );
     }
 
     public static Point ToScreen(PointD point, Rectangle viewport, RectangleD clippingArea) {
