@@ -61,8 +61,10 @@ namespace HeuristicLab.Hive.Client.Core {
       manager.Core = this;
 
       wcfService = WcfService.Instance;
-      wcfService.Connect("10.20.53.1", 9000);
-
+      ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
+      if (cc.IPAdress == String.Empty || cc.Port == 0) {
+        wcfService.Connect("10.20.53.3", 9000);
+      }
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
       wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
@@ -135,8 +137,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
-        Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
-        ConfigManager.Instance.Loggedin();        
+        Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);        
       } else
         Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
     }    

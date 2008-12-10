@@ -57,10 +57,10 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     public void Connect(String serverIP, int serverPort) {
-      if(!(this.ServerIP == serverIP) && !(this.ServerPort == ServerPort))
+      if(this.ServerIP != serverIP || this.ServerPort != ServerPort)
         ServerChanged(this, new EventArgs());
       this.ServerIP = serverIP;
-      this.ServerPort = serverPort;
+      this.ServerPort = serverPort;      
       Connect();
     }
 

@@ -27,6 +27,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.ExecutionEngine;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Communication;
+using HeuristicLab.Hive.Client.Core.Properties;
 
 namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
   /// <summary>
@@ -52,8 +53,13 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     private ConfigManager() {
       //retrive GUID from XML file, or burn in hell. as in hell. not heaven.
       //this won't work this way. We need a plugin for XML Handling.      
-      hardwareInfo = new ClientInfo();
-      hardwareInfo.ClientId = Guid.NewGuid();
+      hardwareInfo = new ClientInfo();      
+
+      if (Settings.Default.Guid == Guid.Empty)
+        hardwareInfo.ClientId = Guid.NewGuid();
+      else
+        hardwareInfo.ClientId = Settings.Default.Guid;
+      
       hardwareInfo.NrOfCores = Environment.ProcessorCount;
       hardwareInfo.Memory = 1024;
       hardwareInfo.Name = Environment.MachineName;
@@ -61,6 +67,18 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
 
     public ClientInfo GetClientInfo() {
       return hardwareInfo;          
+    }
+
+    public ConnectionContainer GetServerIPAndPort() {
+      ConnectionContainer cc = new ConnectionContainer();
+      cc.IPAdress = Settings.Default.ServerIP;
+      cc.Port = Settings.Default.ServerPort;
+      return cc;
+    }
+
+    public void SetServerIPAndPort(ConnectionContainer cc) {
+      Settings.Default.ServerIP = cc.IPAdress;
+      Settings.Default.ServerPort = cc.Port;
     }
 
     public StatusCommons GetStatusForClientConsole() {
@@ -80,13 +98,6 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
         st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
       }
       return st;      
-    }
-
-    public void Loggedin() {
-      if (hardwareInfo == null) {
-        hardwareInfo = new ClientInfo();
-      }
-      hardwareInfo.Login = DateTime.Now;
     }
   }
 }

@@ -19,6 +19,7 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
     }
 
     public void SetConnection(ConnectionContainer container) {
+      ConfigManager.Instance.SetServerIPAndPort(container);
       WcfService.Instance.Connect(container.IPAdress, container.Port);
     }
 
