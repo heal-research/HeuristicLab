@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// <summary>
   /// Transaction manager for the DB access layer
   /// </summary>

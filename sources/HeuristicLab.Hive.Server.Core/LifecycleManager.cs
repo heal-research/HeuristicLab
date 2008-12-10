@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   class LifecycleManager: ILifecycleManager {
@@ -33,7 +34,11 @@ namespace HeuristicLab.Hive.Server.Core {
       //nothing to do
     }
 
-    public void Shtudown() {
+    public ITransactionManager GetTransactionManager() {
+      return ServiceLocator.GetTransactionManager();
+    }
+
+    public void Shutdown() {
       ServiceLocator.GetTransactionManager().UpdateDB();
     }
 

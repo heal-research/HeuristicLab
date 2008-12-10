@@ -43,11 +43,27 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServer.PermissionOwner_UserGroupDataTable permOwnerUserGroupData =
       new dsHiveServer.PermissionOwner_UserGroupDataTable();
 
-    private IPermissionOwnerAdapter permOwnerAdapter =
-      ServiceLocator.GetPermissionOwnerAdapter();
+    private IPermissionOwnerAdapter permOwnerAdapter = null;
 
-    private IUserAdapter userAdapter =
-      ServiceLocator.GetUserAdapter();
+    private IPermissionOwnerAdapter PermOwnerAdapter {
+      get {
+        if (permOwnerAdapter == null)
+          permOwnerAdapter = ServiceLocator.GetPermissionOwnerAdapter();
+
+        return permOwnerAdapter;
+      }
+    }
+
+    private IUserAdapter userAdapter = null;
+
+    private IUserAdapter UserAdapter {
+      get {
+        if (userAdapter == null)
+          userAdapter = ServiceLocator.GetUserAdapter();
+
+        return userAdapter;
+      }
+    }
 
     public UserGroupAdapter() {
       adapter.Fill(data);
@@ -64,7 +80,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row != null && userGroup != null) {
         /*Parent - Permission Owner*/
         userGroup.PermissionOwnerId = row.PermissionOwnerId;
-        permOwnerAdapter.GetPermissionOwnerById(userGroup);
+        PermOwnerAdapter.GetPermissionOwnerById(userGroup);
 
         //first check for created references
         IEnumerable<dsHiveServer.PermissionOwner_UserGroupRow> userGroupRows =
@@ -87,7 +103,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           if (permOwner == null) {
             PermissionOwner permissionOwner = 
-              userAdapter.GetUserById(permOwnerUserGroupRow.PermissionOwnerId);
+              UserAdapter.GetUserById(permOwnerUserGroupRow.PermissionOwnerId);
 
             if (permissionOwner == null) {
               //is a user group
@@ -132,7 +148,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         foreach (PermissionOwner permOwner in userGroup.Members) {          
           //first update the member to make sure it exists in the DB
           if (permOwner is User) {
-            userAdapter.UpdateUser(permOwner as User);
+            UserAdapter.UpdateUser(permOwner as User);
           } else if (permOwner is UserGroup) {
             UpdateUserGroup(permOwner as UserGroup);
           }
@@ -200,7 +216,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateUserGroup(UserGroup group) {
       if (group != null) {
-        permOwnerAdapter.UpdatePermissionOwner(group);
+        PermOwnerAdapter.UpdatePermissionOwner(group);
 
         dsHiveServer.UserGroupRow row =
           data.FindByPermissionOwnerId(group.PermissionOwnerId);
@@ -291,7 +307,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
           
           data.RemoveUserGroupRow(row);
-          return permOwnerAdapter.DeletePermissionOwner(group);
+          return PermOwnerAdapter.DeletePermissionOwner(group);
         }
       }
 

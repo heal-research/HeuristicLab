@@ -88,6 +88,7 @@
     <Compile Include="Interfaces\IJobManager.cs" />
     <Compile Include="Interfaces\ILifecycleManager.cs" />
     <Compile Include="Interfaces\IServerConsoleFacade.cs" />
+    <Compile Include="Interfaces\ITransactionManager.cs" />
     <Compile Include="Interfaces\IUserRoleManager.cs" />
     <Compile Include="JobBase.cs" />
     <Compile Include="MessageContainer.cs" />

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using System.Timers;
+using HeuristicLab.Hive.Contracts.Interfaces;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class TransactionManager: ITransactionManager {

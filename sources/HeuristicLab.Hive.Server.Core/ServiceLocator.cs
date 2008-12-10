@@ -22,6 +22,7 @@
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 using System.Runtime.CompilerServices;
+using HeuristicLab.Hive.Contracts.Interfaces;
 
 /// <summary>
 /// The service locator for the server core

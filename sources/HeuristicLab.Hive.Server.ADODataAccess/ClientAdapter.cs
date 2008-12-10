@@ -36,8 +36,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServer.ClientDataTable data =
       new dsHiveServer.ClientDataTable();
 
-    private IResourceAdapter resAdapter =
-      ServiceLocator.GetResourceAdapter();
+    private IResourceAdapter resAdapter = null;
+
+    private IResourceAdapter ResAdapter {
+      get {
+        if (resAdapter == null)
+          resAdapter = ServiceLocator.GetResourceAdapter();
+
+        return resAdapter;
+      }
+    }
 
     public ClientAdapter() {
       adapter.Fill(data);
@@ -52,7 +60,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if(row != null && client != null) {      
         /*Parent - resource*/
         client.ResourceId = row.ResourceId;
-        resAdapter.GetResourceById(client);
+        ResAdapter.GetResourceById(client);
 
         /*ClientInfo*/
         client.ClientId = row.GUID;
@@ -114,7 +122,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateClient(ClientInfo client) {
       if (client != null) {
-        resAdapter.UpdateResource(client);
+        ResAdapter.UpdateResource(client);
 
         dsHiveServer.ClientRow row = 
           data.FindByResourceId(client.ResourceId);
@@ -178,7 +186,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (row != null) {
           data.RemoveClientRow(row);
 
-          return resAdapter.DeleteResource(client);
+          return ResAdapter.DeleteResource(client);
         }
       }
 

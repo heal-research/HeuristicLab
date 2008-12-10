@@ -36,10 +36,28 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private dsHiveServer.HiveUserDataTable data =
         new dsHiveServer.HiveUserDataTable();
 
-    private IPermissionOwnerAdapter permOwnerAdapter =
-       ServiceLocator.GetPermissionOwnerAdapter();
+    private IPermissionOwnerAdapter permOwnerAdapter = null;
+
+    private IPermissionOwnerAdapter PermOwnerAdapter {
+      get {
+        if (permOwnerAdapter == null)
+          permOwnerAdapter = ServiceLocator.GetPermissionOwnerAdapter();
+
+        return permOwnerAdapter;
+      }
+    }
 
     private IUserGroupAdapter userGroupAdapter = null;
+
+    private IUserGroupAdapter UserGroupAdapter {
+      get {
+        if(userGroupAdapter == null) {
+          userGroupAdapter = ServiceLocator.GetUserGroupAdapter();
+        }
+
+        return userGroupAdapter;
+      }
+    }
 
     public UserAdapter() {
       adapter.Fill(data);
@@ -54,7 +72,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row != null && user != null) {
         /*Parent - PermissionOwner*/
         user.PermissionOwnerId = row.PermissionOwnerId;
-        permOwnerAdapter.GetPermissionOwnerById(user);
+        PermOwnerAdapter.GetPermissionOwnerById(user);
 
         /*User*/
         if (!row.IsPasswordNull())
@@ -82,7 +100,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateUser(User user) {
       if (user != null) {
-        permOwnerAdapter.UpdatePermissionOwner(user);
+        PermOwnerAdapter.UpdatePermissionOwner(user);
 
         dsHiveServer.HiveUserRow row = 
           data.FindByPermissionOwnerId(user.PermissionOwnerId);
@@ -115,7 +133,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       User user = new User();
 
       PermissionOwner permOwner =
-        permOwnerAdapter.GetPermissionOwnerByName(name);
+        PermOwnerAdapter.GetPermissionOwnerByName(name);
 
       if (permOwner != null) {
         dsHiveServer.HiveUserRow row =
@@ -151,21 +169,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           data.FindByPermissionOwnerId(user.PermissionOwnerId);
 
         if (row != null) {
-          if (userGroupAdapter == null)
-            userGroupAdapter =
-              ServiceLocator.GetUserGroupAdapter();
-
           ICollection<UserGroup> userGroups =
-            userGroupAdapter.MemberOf(user);
+            UserGroupAdapter.MemberOf(user);
 
           foreach (UserGroup group in userGroups) {
             group.Members.Remove(user);
-            userGroupAdapter.UpdateUserGroup(group);
+            UserGroupAdapter.UpdateUserGroup(group);
           }
 
           data.RemoveHiveUserRow(row);
 
-          return permOwnerAdapter.DeletePermissionOwner(user);
+          return PermOwnerAdapter.DeletePermissionOwner(user);
         }
       }
 

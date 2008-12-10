@@ -35,8 +35,14 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     void Init();
 
     /// <summary>
+    /// Gets the transaction manager
+    /// </summary>
+    /// <returns></returns>
+    ITransactionManager GetTransactionManager();
+
+    /// <summary>
     /// Shuts the application down
     /// </summary>
-    void Shtudown();
+    void Shutdown();
   }
 }
