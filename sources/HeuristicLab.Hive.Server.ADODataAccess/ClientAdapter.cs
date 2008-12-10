@@ -132,9 +132,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     public ClientInfo GetClientById(Guid clientId) {
       ClientInfo client = new ClientInfo();
 
-      dsHiveServer.ClientRow row =
-        data.Single<dsHiveServer.ClientRow>(
-          r => !r.IsGUIDNull() && r.GUID == clientId);
+      dsHiveServer.ClientRow row = null;
+      IEnumerable<dsHiveServer.ClientRow> clients =
+            from c in
+              data.AsEnumerable<dsHiveServer.ClientRow>()
+            where !c.IsGUIDNull() && c.GUID == clientId
+            select c;
+      if (clients.Count<dsHiveServer.ClientRow>() == 1)
+        row = clients.First<dsHiveServer.ClientRow>();
 
       if (row != null) {
         Convert(row, client);
@@ -161,9 +166,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public bool DeleteClient(ClientInfo client) {
       if (client != null) {
-        dsHiveServer.ClientRow row =
-          data.Single<dsHiveServer.ClientRow>(
-            r => r.GUID == client.ClientId);
+        dsHiveServer.ClientRow row = null;
+        IEnumerable<dsHiveServer.ClientRow> clients =
+              from c in
+                data.AsEnumerable<dsHiveServer.ClientRow>()
+              where !c.IsGUIDNull() && c.GUID == client.ClientId
+              select c;
+        if (clients.Count<dsHiveServer.ClientRow>() == 1)
+          row = clients.First<dsHiveServer.ClientRow>();
 
         if (row != null) {
           data.RemoveClientRow(row);

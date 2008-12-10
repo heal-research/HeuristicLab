@@ -101,9 +101,60 @@ namespace HeuristicLab.Hive.Server {
       Debug.Assert(count - 1 == users.Count);
     }
 
+    private void TestUserGroupAdapter() {
+      IUserGroupAdapter userGroupAdapter =
+       ServiceLocator.GetUserGroupAdapter();
+
+      User user =
+        new User();
+      user.Name = "Stefan";
+
+      User user2 =
+        new User();
+      user2.Name = "Martin";
+
+      UserGroup group =
+        new UserGroup();
+
+      UserGroup subGroup =
+        new UserGroup();
+      subGroup.Members.Add(user);
+
+      group.Members.Add(user2);
+      group.Members.Add(subGroup);
+
+      userGroupAdapter.UpdateUserGroup(group);
+
+      UserGroup read =
+        userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+
+      ICollection<UserGroup> userGroups =
+        userGroupAdapter.GetAllUserGroups();
+
+      userGroupAdapter.DeleteUserGroup(subGroup);
+
+      userGroups =
+        userGroupAdapter.GetAllUserGroups();
+
+      read =
+        userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+
+      userGroupAdapter.DeleteUserGroup(group);
+
+      userGroups =
+        userGroupAdapter.GetAllUserGroups();
+
+      IUserAdapter userAdapter =
+        ServiceLocator.GetUserAdapter();
+
+      userAdapter.DeleteUser(user);
+      userAdapter.DeleteUser(user2);
+    }
+
     public override void Run() {
       TestClientAdapter();
       TestUserAdapter();
+      TestUserGroupAdapter();
 
       ITransactionManager transactionManager =
         ServiceLocator.GetTransactionManager();
