@@ -34,8 +34,8 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public Response AddNewUser(User user) {
-      Response response = new Response();
+    public ResponseObject<User> AddNewUser(User user) {
+      ResponseObject<User> response = new ResponseObject<User>();
 
       if (user.PermissionOwnerId != 0) {
         response.Success = false;
@@ -43,6 +43,7 @@ namespace HeuristicLab.Hive.Server.Core {
         return response;
       }
       userAdapter.UpdateUser(user);
+      response.Obj = user;
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_SUCCESSFULLY_ADDED;
       
@@ -74,8 +75,8 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public Response AddNewUserGroup(UserGroup userGroup) {
-      Response response = new Response();
+    public ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup) {
+      ResponseObject<UserGroup> response = new ResponseObject<UserGroup>();
       
       if (userGroup.PermissionOwnerId != 0) {
         response.Success = false;
@@ -83,6 +84,7 @@ namespace HeuristicLab.Hive.Server.Core {
         return response;
       }
       userGroupAdapter.UpdateUserGroup(userGroup);
+      response.Obj = userGroup;
       response.Success = false;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED;
 

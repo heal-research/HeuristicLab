@@ -83,6 +83,7 @@
     <Compile Include="BusinessObjects\ClientConfig.cs" />
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
+    <Compile Include="ResponseObject.cs" />
     <Compile Include="Interfaces\IJob.cs" />
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IJobManager.cs" />

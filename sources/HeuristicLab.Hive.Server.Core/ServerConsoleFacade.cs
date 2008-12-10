@@ -75,11 +75,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return userRoleManager.GetAllUsers();
     }
 
-    public Response AddNewUser(User user) {
+    public ResponseObject<User> AddNewUser(User user) {
       return userRoleManager.AddNewUser(user);
     }
 
-    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.UserGroup> GetAllUserGroups() {
+    public ResponseList<UserGroup> GetAllUserGroups() {
       return userRoleManager.GetAllUserGroups();
     }
 
@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return userRoleManager.RemoveUser(userId);
     }
 
-    public Response AddNewUserGroup(UserGroup userGroup) {
+    public ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup) {
       return userRoleManager.AddNewUserGroup(userGroup);
     }
 

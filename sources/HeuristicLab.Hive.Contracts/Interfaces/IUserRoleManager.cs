@@ -14,11 +14,11 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseList<User> GetAllUsers();
     [OperationContract]
-    Response AddNewUser(User user);
+    ResponseObject<User> AddNewUser(User user);
     [OperationContract]
     Response RemoveUser(long userId);
     [OperationContract]
-    Response AddNewUserGroup(UserGroup userGroup);
+    ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup);
     [OperationContract]
     Response RemoveUserGroup(long groupId);
     [OperationContract]
