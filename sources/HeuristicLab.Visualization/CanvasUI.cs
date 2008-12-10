@@ -11,6 +11,8 @@ namespace HeuristicLab.Visualization {
 
     public CanvasUI() {
       InitializeComponent();
+
+      DoubleBuffered = true;
     }
 
     public Canvas MainCanvas {
