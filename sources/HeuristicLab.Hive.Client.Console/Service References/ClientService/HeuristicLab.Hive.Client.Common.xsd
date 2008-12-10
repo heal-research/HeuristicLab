@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Common" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Common" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="NetworkEnum.WcfConnState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Connected" />
+      <xs:enumeration value="Disconnected" />
+      <xs:enumeration value="Failed" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="NetworkEnum.WcfConnState" nillable="true" type="tns:NetworkEnum.WcfConnState" />
+</xs:schema>

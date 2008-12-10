@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Common" />
+  <xs:complexType name="StatusCommons">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientGuid" type="ser:guid" />
+      <xs:element minOccurs="0" name="ConnectedSince" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Jobs" nillable="true" type="tns:ArrayOfJobStatus" />
+      <xs:element minOccurs="0" name="JobsAborted" type="xs:int" />
+      <xs:element minOccurs="0" name="JobsDone" type="xs:int" />
+      <xs:element minOccurs="0" name="JobsFetched" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Common" minOccurs="0" name="Status" type="q1:NetworkEnum.WcfConnState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatusCommons" nillable="true" type="tns:StatusCommons" />
+  <xs:complexType name="ArrayOfJobStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="JobStatus" nillable="true" type="tns:JobStatus" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfJobStatus" nillable="true" type="tns:ArrayOfJobStatus" />
+  <xs:complexType name="JobStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="JobId" type="xs:long" />
+      <xs:element minOccurs="0" name="Progress" type="xs:double" />
+      <xs:element minOccurs="0" name="Since" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="JobStatus" nillable="true" type="tns:JobStatus" />
+  <xs:complexType name="ConnectionContainer">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IPAdress" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Port" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConnectionContainer" nillable="true" type="tns:ConnectionContainer" />
+</xs:schema>
