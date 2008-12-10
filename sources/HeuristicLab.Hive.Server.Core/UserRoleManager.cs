@@ -133,6 +133,18 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
       Response response = new Response();
 
+      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
+      UserGroup userGroupToAdd = userGroupAdapter.GetUserGroupById(groupToAddId);
+
+      if (userGroup == null || userGroupToAdd == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
+        return response;
+      }
+      userGroup.Members.Add(userGroupToAdd);
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED_TO_USERGROUP;
+
       return response;
     }
 

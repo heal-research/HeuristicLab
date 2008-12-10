@@ -19,6 +19,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_USERROLE_PERMISSIONOWNER_ADDED = "UserRole.PermissionOwnerAdded";
     public static string RESPONSE_USERROLE_GET_ALL_USERGROUPS = "UserRole.AllUserGroupsReturned";
     public static string RESPONSE_USERROLE_ID_MUST_NOT_BE_SET = "UserRole.IdMustNotBeSet";
+    public static string RESPONSE_USERROLE_USERGROUP_ADDED_TO_USERGROUP = "UserRole.UserGroupAddedToUserGroup";
 
     public static string RESPONSE_CLIENT_GET_ALL_CLIENTS = "Client.GetAllClients";
     public static string RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS = "Client.GetAllClientGroups";
@@ -36,7 +37,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE = "Communicator.LoginUserAllreadyOnline";
     public static string RESPONSE_COMMUNICATOR_LOGIN_SUCCESS = "Communicator.LoginSuccess";
     public static string RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED = "Communicator.LogoutClientNotRegistered";
-    public static string RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS = "Logout.Success";
+    public static string RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS = "Communicator.LogoutSuccess";
     public static string RESPONSE_COMMUNICATOR_NO_JOBS_LEFT = "Communicator.NoJobsLeft";
 
   }

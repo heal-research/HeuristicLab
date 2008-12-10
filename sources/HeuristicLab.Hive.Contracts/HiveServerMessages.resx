@@ -141,7 +141,7 @@
   <data name="Communicator.LogoutSuccess" xml:space="preserve">
     <value>You where logged out successfully. Good bye</value>
   </data>
-  <data name="Logout.UserAllreadyOnline" xml:space="preserve">
+  <data name="Communicator.LogoutUserAllreadyOnline" xml:space="preserve">
     <value>A User with this GUID is allready logged in</value>
   </data>
   <data name="UserRole.AllUserGroupsReturned" xml:space="preserve">
