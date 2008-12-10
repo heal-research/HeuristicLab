@@ -26,14 +26,19 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
+
+    IClientAdapter clientAdapter;
 
     List<ClientInfo> clients;
     List<ClientGroup> clientGroups;
 
     public ClientManager() {
+      clientAdapter = ServiceLocator.GetClientAdapter();
+
       clients = new List<ClientInfo>();
       clientGroups = new List<ClientGroup>();
 
@@ -58,8 +63,11 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseList<ClientInfo> GetAllClients() {
       ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
-      response.List = clients;
+
+      response.List = new List<ClientInfo>(clientAdapter.GetAllClients());
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTS;
       response.Success = true;
+
       return response;
     }
 

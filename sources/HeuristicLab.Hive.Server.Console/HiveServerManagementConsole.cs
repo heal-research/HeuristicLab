@@ -78,7 +78,7 @@ namespace HeuristicLab.Hive.Server.Console {
         tvJobControl.Nodes.Add(job.JobId.ToString());
       }
       foreach (UserGroup ug in userGroups.List) {
-        tvUserControl.Nodes.Add(ug.UserGroupId.ToString());
+        tvUserControl.Nodes.Add(ug.PermissionOwnerId.ToString());
       }
     }
 

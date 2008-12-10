@@ -20,11 +20,9 @@ namespace HeuristicLab.Hive.Server.Core {
     int nrOfJobs = 1;
 
     IClientAdapter clientAdapter;
-    ResourceManager rm;
 
     public ClientCommunicator() {
-      clientAdapter = ServiceLocator.GetClientAdapter();
-      rm = new ResourceManager("HiveServerMessages.resx", Assembly.GetExecutingAssembly()); 
+      clientAdapter = ServiceLocator.GetClientAdapter(); 
 
       jobs = new LinkedList<long>();
       for (long i = 0; i < nrOfJobs; i++) {
@@ -39,21 +37,17 @@ namespace HeuristicLab.Hive.Server.Core {
       response.Success = true;
 
       ICollection<ClientInfo> allClients = clientAdapter.GetAllClients();
-      foreach (ClientInfo client in allClients) {
-        if (client.ClientId.Equals(clientInfo.ClientId)) {
-          if (client.State != State.offline) {
-            response.Success = false;
-            response.StatusMessage = ApplicationConstants.RESPONSE_LOGIN_USER_ALLREADY_ONLINE;
-            break;
-          } else
-            break; // searching for clients can be stopped, because it was found and it's state is offline
-        } 
-      }
+      ClientInfo client = clientAdapter.GetClientById(clientInfo.ClientId);
+      if (client != null) {
+        if (client.State != State.offline) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
+        }
+      } 
 
       if (response.Success) {
         clientAdapter.UpdateClient(clientInfo);
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_LOGIN_SUCCESS;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
       }
 
       return response;
@@ -63,7 +57,7 @@ namespace HeuristicLab.Hive.Server.Core {
       ResponseHB response = new ResponseHB();
 
       response.Success = true;
-      response.StatusMessage = "HeartBeat received";
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
       response.ActionRequest = new List<MessageContainer>();
       if (jobs.Count > 0) 
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
@@ -82,14 +76,14 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       
       response.Success = true;
-      response.StatusMessage = "Job with id " + jobs.Count + " sent";     
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
       return response;
     }
 
     public ResponseResultReceived SendJobResult(JobResult Result, bool finished) {
       ResponseResultReceived response = new ResponseResultReceived();
       response.Success = true;
-      response.StatusMessage = "Thanks for calculating";
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
       response.JobId = Result.JobId;
 
       return response;
@@ -101,14 +95,14 @@ namespace HeuristicLab.Hive.Server.Core {
       ClientInfo client = clientAdapter.GetClientById(clientId);
       if (client == null) {
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_LOGOUT_CLIENT_NOT_REGISTERED;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
         return response;
       }
       client.State = State.offline;
       clientAdapter.UpdateClient(client);
 
       response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_LOGOUT_SUCCESS;
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
       
       return response;
     }

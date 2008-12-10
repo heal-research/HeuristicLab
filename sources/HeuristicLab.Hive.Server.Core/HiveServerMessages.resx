@@ -117,13 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Login.ClientNotRegistered" xml:space="preserve">
+  <data name="Client.GetAllClients" xml:space="preserve">
+    <value>All Clients returned</value>
+  </data>
+  <data name="Communicator.HeardbeatReceived" xml:space="preserve">
+    <value>Heartbeat received</value>
+  </data>
+  <data name="Communicator.JobPulled" xml:space="preserve">
+    <value>Job sent</value>
+  </data>
+  <data name="Communicator.JobResultReceived" xml:space="preserve">
+    <value>JobResult received, thanks for calculating</value>
+  </data>
+  <data name="Communicator.LoginClientNotRegistered" xml:space="preserve">
     <value>Sorry this client was not registered yet</value>
   </data>
-  <data name="Login.Success" xml:space="preserve">
+  <data name="Communicator.LoginSuccess" xml:space="preserve">
     <value>The Login was successfull</value>
   </data>
-  <data name="Logout.Success" xml:space="preserve">
+  <data name="Communicator.LogoutSuccess" xml:space="preserve">
     <value>You where logged out successfully. Good bye</value>
   </data>
   <data name="Logout.UserAllreadyOnline" xml:space="preserve">

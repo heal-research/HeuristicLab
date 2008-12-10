@@ -16,11 +16,9 @@ namespace HeuristicLab.Hive.Server.Core {
     List<UserGroup> userGroups;
 
     IUserAdapter userAdapter;
-    ResourceManager rm;
 
     public UserRoleManager() {
       userAdapter = ServiceLocator.GetUserAdapter();
-      rm = new ResourceManager("HiveServerMessages.resx", Assembly.GetExecutingAssembly()); 
 
       users = new List<User>();
       userGroups = new List<UserGroup>();
@@ -29,8 +27,8 @@ namespace HeuristicLab.Hive.Server.Core {
       users.Add(new User { PermissionOwnerId = 2, Name = "Seppl", Password = "seppl" });
       users.Add(new User { PermissionOwnerId = 3, Name = "Greg", Password = "greg" });
 
-      userGroups.Add(new UserGroup { UserGroupId = 1 });
-      userGroups.Add(new UserGroup { UserGroupId = 2 });
+      userGroups.Add(new UserGroup { PermissionOwnerId = 4 });
+      userGroups.Add(new UserGroup { PermissionOwnerId = 5 });
     }
 
     #region IUserRoleManager Members
@@ -78,7 +76,7 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_REMOVED;
-
+                         
       return response;
     }
 
