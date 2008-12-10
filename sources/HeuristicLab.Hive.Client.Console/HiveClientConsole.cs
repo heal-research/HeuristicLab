@@ -30,7 +30,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using ZedGraph;
-using HeuristicLab.Hive.Client.Communication.ClientConsole;
+using HeuristicLab.Hive.Client.Console.ClientWCFService;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -45,8 +45,8 @@ namespace HeuristicLab.Hive.Client.Console {
       InitializeComponent();
       GetEventLog();
 
-      ClientConsoleCommunicatorClient cccc = ServiceLocator.ClientConsoleCommunicatorClient();
-      StatusCommons curClientStatus = cccc.GetStatusInfos();
+      ClientConsoleCommunicatorClient cccc = new ClientConsoleCommunicatorClient();
+      cccc.GetStatusInfos();
     }
 
     private void GetEventLog() {
@@ -110,6 +110,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // Set the titles and axis labels
       myPane.Legend.IsVisible = false;
       myPane.Title.IsVisible = false;
+      myPane.Fill.Type = FillType.None;
 
       myPane.AddPieSlice(40, Color.Red, 0, "Jobs aborted");
       myPane.AddPieSlice(60, Color.Green, 0.1, "Jobs done");

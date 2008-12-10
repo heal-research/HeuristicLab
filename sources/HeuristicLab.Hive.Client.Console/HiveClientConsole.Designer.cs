@@ -132,6 +132,8 @@ namespace HeuristicLab.Hive.Client.Console {
             this.chJobId,
             this.chSince,
             this.chProgress});
+      this.lvJobDetail.FullRowSelect = true;
+      this.lvJobDetail.GridLines = true;
       this.lvJobDetail.Location = new System.Drawing.Point(6, 19);
       this.lvJobDetail.Name = "lvJobDetail";
       this.lvJobDetail.Size = new System.Drawing.Size(398, 132);
@@ -151,7 +153,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // chProgress
       // 
       this.chProgress.Text = "Progress";
-      this.chProgress.Width = 256;
+      this.chProgress.Width = 260;
       // 
       // gbCommon
       // 

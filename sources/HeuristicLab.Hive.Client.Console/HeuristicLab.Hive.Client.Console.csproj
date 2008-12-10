@@ -59,10 +59,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\HeuristicLab.Charting.Data\bin\Debug\HeuristicLab.Charting.Data-3.2.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Core-3.2, Version=3.2.0.817, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Core\bin\Debug\HeuristicLab.Core-3.2.dll</HintPath>
-    </Reference>
     <Reference Include="HeuristicLab.Data-3.2, Version=3.2.0.776, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\HeuristicLab.Data\bin\Debug\HeuristicLab.Data-3.2.dll</HintPath>
@@ -74,6 +70,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -142,18 +141,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ServerProxy.cs" />
-    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Service References\ClientWCFService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Hive.Client.Communication\HeuristicLab.Hive.Client.Communication.csproj">
-      <Project>{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}</Project>
-      <Name>HeuristicLab.Hive.Client.Communication</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
-      <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
-      <Name>HeuristicLab.Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
@@ -163,7 +157,36 @@
     <None Include="Resources\Error.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\Info.png" />
+    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Core.ClientConsoleService.xsd" />
+    <None Include="Service References\ClientWCFService\service.wsdl" />
+    <None Include="Service References\ClientWCFService\service.xsd" />
+    <None Include="Service References\ClientWCFService\service1.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ClientWCFService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientWCFService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientWCFService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Console.ClientWCFService.ConnectionContainer.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Console.ClientWCFService.StatusCommons.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ClientWCFService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

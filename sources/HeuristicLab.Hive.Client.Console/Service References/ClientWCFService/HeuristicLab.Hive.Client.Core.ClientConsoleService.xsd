@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="StatusCommons">
+    <xs:sequence>
+      <xs:element name="_x003C_ClientGuid_x003E_k__BackingField" type="ser:guid" />
+      <xs:element name="_x003C_ConnectedSince_x003E_k__BackingField" type="xs:dateTime" />
+      <xs:element name="_x003C_JobsAborted_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_JobsDone_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_JobsFetched_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_Jobs_x003E_k__BackingField" nillable="true" type="tns:ArrayOfJobStatus" />
+      <xs:element name="_x003C_Status_x003E_k__BackingField" type="tns:StatusCommons.ClientStatusEnum" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatusCommons" nillable="true" type="tns:StatusCommons" />
+  <xs:complexType name="ArrayOfJobStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="JobStatus" nillable="true" type="tns:JobStatus" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfJobStatus" nillable="true" type="tns:ArrayOfJobStatus" />
+  <xs:complexType name="JobStatus">
+    <xs:sequence>
+      <xs:element name="_x003C_JobId_x003E_k__BackingField" type="xs:long" />
+      <xs:element name="_x003C_Progress_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Since_x003E_k__BackingField" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="JobStatus" nillable="true" type="tns:JobStatus" />
+  <xs:simpleType name="StatusCommons.ClientStatusEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Connected" />
+      <xs:enumeration value="Disconnected" />
+      <xs:enumeration value="ConnInterrupted" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="StatusCommons.ClientStatusEnum" nillable="true" type="tns:StatusCommons.ClientStatusEnum" />
+  <xs:complexType name="ConnectionContainer">
+    <xs:sequence>
+      <xs:element name="_x003C_IPAdress_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Port_x003E_k__BackingField" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConnectionContainer" nillable="true" type="tns:ConnectionContainer" />
+</xs:schema>
