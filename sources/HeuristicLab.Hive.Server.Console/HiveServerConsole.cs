@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using System.Security.Cryptography;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -39,6 +40,8 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public HiveServerConsole() {
       InitializeComponent();
+      tbUserName.Text = "Anita";
+      tbPwd.Text = "Anita";
       tbIp.Text = "10.20.53.1";
       tbPort.Text = "9000";
     }
@@ -102,5 +105,11 @@ namespace HeuristicLab.Hive.Server.Console {
         this.Visible = true;
       }
     }
+
+    string md5sum(byte[] FileOrText) { //Output: String<-> Input: Byte[]
+       return BitConverter.ToString(new
+          MD5CryptoServiceProvider().ComputeHash(FileOrText)).Replace("-", "").ToLower();
+    } 
+
   }
 }

@@ -71,6 +71,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddNewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddNewForm.Designer.cs">
+      <DependentUpon>AddNewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HiveServerConsole.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddNewForm.resx">
+      <DependentUpon>AddNewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HiveServerConsole.resx">
       <DependentUpon>HiveServerConsole.cs</DependentUpon>
       <SubType>Designer</SubType>

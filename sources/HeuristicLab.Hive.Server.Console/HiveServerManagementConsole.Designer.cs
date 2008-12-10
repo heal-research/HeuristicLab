@@ -31,6 +31,13 @@
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.informationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.jobToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.groupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.userToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.userToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.groupToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
@@ -44,7 +51,7 @@
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
-      this.listView4 = new System.Windows.Forms.ListView();
+      this.lvUserControl = new System.Windows.Forms.ListView();
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
       this.menuStrip1.SuspendLayout();
@@ -66,7 +73,8 @@
       // menuStrip1
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.informationToolStripMenuItem});
+            this.informationToolStripMenuItem,
+            this.addToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(651, 24);
@@ -87,6 +95,58 @@
       this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.close_Click);
+      // 
+      // addToolStripMenuItem
+      // 
+      this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.jobToolStripMenuItem,
+            this.userToolStripMenuItem});
+      this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+      this.addToolStripMenuItem.Text = "Add";
+      // 
+      // jobToolStripMenuItem
+      // 
+      this.jobToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.jobToolStripMenuItem1,
+            this.groupToolStripMenuItem1});
+      this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.jobToolStripMenuItem.Text = "Job";
+      // 
+      // jobToolStripMenuItem1
+      // 
+      this.jobToolStripMenuItem1.Name = "jobToolStripMenuItem1";
+      this.jobToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.jobToolStripMenuItem1.Text = "Job";
+      this.jobToolStripMenuItem1.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
+      // 
+      // groupToolStripMenuItem1
+      // 
+      this.groupToolStripMenuItem1.Name = "groupToolStripMenuItem1";
+      this.groupToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.groupToolStripMenuItem1.Text = "Group";
+      // 
+      // userToolStripMenuItem
+      // 
+      this.userToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.userToolStripMenuItem1,
+            this.groupToolStripMenuItem2});
+      this.userToolStripMenuItem.Name = "userToolStripMenuItem";
+      this.userToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.userToolStripMenuItem.Text = "User";
+      // 
+      // userToolStripMenuItem1
+      // 
+      this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
+      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+      this.userToolStripMenuItem1.Text = "User";
+      // 
+      // groupToolStripMenuItem2
+      // 
+      this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
+      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
+      this.groupToolStripMenuItem2.Text = "Group";
       // 
       // tcManagementConsole
       // 
@@ -226,7 +286,7 @@
       // 
       // scUserControl.Panel2
       // 
-      this.scUserControl.Panel2.Controls.Add(this.listView4);
+      this.scUserControl.Panel2.Controls.Add(this.lvUserControl);
       this.scUserControl.Size = new System.Drawing.Size(637, 346);
       this.scUserControl.SplitterDistance = 139;
       this.scUserControl.TabIndex = 1;
@@ -239,14 +299,14 @@
       this.tvUserControl.Size = new System.Drawing.Size(139, 346);
       this.tvUserControl.TabIndex = 1;
       // 
-      // listView4
+      // lvUserControl
       // 
-      this.listView4.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.listView4.Location = new System.Drawing.Point(0, 0);
-      this.listView4.Name = "listView4";
-      this.listView4.Size = new System.Drawing.Size(494, 346);
-      this.listView4.TabIndex = 1;
-      this.listView4.UseCompatibleStateImageBehavior = false;
+      this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvUserControl.Location = new System.Drawing.Point(0, 0);
+      this.lvUserControl.Name = "lvUserControl";
+      this.lvUserControl.Size = new System.Drawing.Size(494, 346);
+      this.lvUserControl.TabIndex = 1;
+      this.lvUserControl.UseCompatibleStateImageBehavior = false;
       // 
       // treeView2
       // 
@@ -316,7 +376,14 @@
     private System.Windows.Forms.ListView listView2;
     private System.Windows.Forms.TreeView tvJobControl;
     private System.Windows.Forms.TreeView tvUserControl;
-    private System.Windows.Forms.ListView listView4;
+    private System.Windows.Forms.ListView lvUserControl;
     private System.Windows.Forms.ImageList imageList1;
+    private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem1;
+    private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem1;
+    private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem1;
+    private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem2;
   }
 }

@@ -50,7 +50,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
     private void addItems() {
       IClientManager clientManager =
-          ServiceLocator.GetClientManager();
+        ServiceLocator.GetClientManager();
 
       IJobManager jobManager =
         ServiceLocator.GetJobManager();
@@ -58,10 +58,24 @@ namespace HeuristicLab.Hive.Server.Console {
       IUserRoleManager userRoleManager =
         ServiceLocator.GetUserRoleManager();
 
-      clientManager.GetAllUpTimeStatistics();
+      //UserGroup usergr = new UserGroup { Name = "testusers" };
+      //User u = new User { Name = "Anita", Password = "Anita" };
+
+      //ResponseObject<User> respUser = userRoleManager.AddNewUser(u);
+      //ResponseObject<UserGroup> respUserGroup = userRoleManager.AddNewUserGroup(usergr);
+      //u = respUser.Obj;
+      //usergr = respUserGroup.Obj;
+      //userRoleManager.AddUserToGroup(usergr.PermissionOwnerId, u.PermissionOwnerId);
+
       clients = clientManager.GetAllClientGroups();
       jobs = jobManager.GetAllJobs();
       userGroups = userRoleManager.GetAllUserGroups();
+
+
+     // Response resp = userRoleManager.RemoveUserGroup(userGroups.List[userGroups.List.Count - 1].PermissionOwnerId);
+
+      userGroups = userRoleManager.GetAllUserGroups();
+      ResponseList<User> respList = userRoleManager.GetAllUsers();
       lvClientControl.Items.Clear();
       int count = 0;
       foreach (ClientGroup cg in clients.List) {
@@ -74,11 +88,20 @@ namespace HeuristicLab.Hive.Server.Console {
         }
         lvClientControl.Groups.Add(lvg);
       }
+
+
       foreach (Job job in jobs.List) {
         tvJobControl.Nodes.Add(job.JobId.ToString());
       }
       foreach (UserGroup ug in userGroups.List) {
-        tvUserControl.Nodes.Add(ug.PermissionOwnerId.ToString());
+        tvUserControl.Nodes.Add(ug.Name);
+        ListViewGroup lvg = new ListViewGroup(ug.Name, HorizontalAlignment.Left);
+
+        foreach (User users in ug.Members) {
+          tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
+          lvUserControl.Items.Add(new ListViewItem(users.Name, count, lvg));
+        }
+        lvUserControl.Groups.Add(lvg);
       }
     }
 
@@ -105,5 +128,11 @@ namespace HeuristicLab.Hive.Server.Console {
       }
 
     }
+
+    private void jobToolStripMenuItem1_Click(object sender, EventArgs e) {
+      AddNewForm newForm = new AddNewForm("Job", false);
+      newForm.Show();
+    }
+
   }
 }
