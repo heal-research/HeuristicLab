@@ -29,6 +29,7 @@ using HeuristicLab.Hive.Client.Communication;
 using System.Diagnostics;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 //using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -69,10 +70,11 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");
-      HeartBeatData heartBeatData = new HeartBeatData { ClientId = Guid.NewGuid(), 
-                                                              freeCores = 4, 
+      ClientInfo info = ConfigManager.Instance.GetClientInfo();
+      HeartBeatData heartBeatData = new HeartBeatData { ClientId = info.ClientId, 
+                                                              freeCores = info.NrOfCores, 
                                                               freeMemory = 1000, 
-                                                              jobProgress = 1};
+                                                              jobProgress = ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed};
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
       } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Connected) {
