@@ -69,14 +69,17 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
       lock (this) {
-        response.JobId = jobs.Last.Value;
-        jobs.RemoveLast();
-        response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+        if (jobs.Last != null) {
+          response.JobId = jobs.Last.Value;
+          jobs.RemoveLast();
+          response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+          return response;
+        } 
       }
-      
       response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
-      return response;
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
     }
 
     public ResponseResultReceived SendJobResult(JobResult Result, bool finished) {

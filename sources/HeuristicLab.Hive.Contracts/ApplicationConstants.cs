@@ -30,6 +30,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_LOGIN_SUCCESS = "Communicator.LoginSuccess";
     public static string RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED = "Communicator.LogoutClientNotRegistered";
     public static string RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS = "Logout.Success";
+    public static string RESPONSE_COMMUNICATOR_NO_JOBS_LEFT = "Communicator.NoJobsLeft";
 
   }
 }
