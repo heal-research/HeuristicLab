@@ -36,10 +36,9 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddNewUser(User user) {
       Response response = new Response();
 
-      User dbUser = userAdapter.GetUserByName(user.Name);
-      if (dbUser != null) {
+      if (user.PermissionOwnerId != null) {
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_EXISTS_ALLREADY;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
       userAdapter.UpdateUser(user);
@@ -76,11 +75,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public Response AddNewUserGroup(UserGroup userGroup) {
       Response response = new Response();
-
-      UserGroup userGroupFromDb = userGroupAdapter.GetUserGroupById(userGroup.PermissionOwnerId);
-      if (userGroupFromDb != null) {
+      
+      if (userGroup.PermissionOwnerId != null) {
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_EXISTS_ALLREADY;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
       userGroupAdapter.UpdateUserGroup(userGroup);
@@ -108,7 +106,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
       Response response = new Response();
-      
+
+      if (permissionOwner.PermissionOwnerId != null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
+        return response;
+      }
+
       UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
       if (userGroup == null) {
         response.Success = false;

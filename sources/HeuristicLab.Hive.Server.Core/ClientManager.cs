@@ -42,7 +42,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
       clientGroups = new List<ClientGroup>();
 
-      ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup", ClientGroupId = 1 };
+      ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup" };
       cg.Resources = new List<Resource>();
 
       clientGroups.Add(cg);
@@ -77,7 +77,12 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public Response AddClientGroup(ClientGroup clientGroup) {
-      throw new NotImplementedException();
+      Response response = new Response();
+
+      ClientGroup clientGroupFromDb = clientGroupAdapter.GetClientGroupById(clientGroup.ResourceId);
+      
+
+      return response;
     }
 
     public Response AddResourceToGroup(long clientGroupId, Resource resource) {

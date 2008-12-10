@@ -18,6 +18,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_USERROLE_PERMISSIONOWNER_REMOVED = "UserRole.PermissionOwnerRemoved";
     public static string RESPONSE_USERROLE_PERMISSIONOWNER_ADDED = "UserRole.PermissionOwnerAdded";
     public static string RESPONSE_USERROLE_GET_ALL_USERGROUPS = "UserRole.AllUserGroupsReturned";
+    public static string RESPONSE_USERROLE_ID_MUST_NOT_BE_SET = "UserRole.IdMustNotBeSet";
 
     public static string RESPONSE_CLIENT_GET_ALL_CLIENTS = "Client.GetAllClients";
     public static string RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS = "Client.GetAllClientGroups";

@@ -177,4 +177,7 @@
   <data name="UserRole.UserSuccessfullyAdded" xml:space="preserve">
     <value>User successfully added to database</value>
   </data>
+  <data name="UserRole.IdMustNotBeSet" xml:space="preserve">
+    <value>In this context the id must not be set</value>
+  </data>
 </root>
