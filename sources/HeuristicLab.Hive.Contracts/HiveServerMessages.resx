@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Client.GetAllClientGroups" xml:space="preserve">
+    <value>All ClientGroups returned</value>
+  </data>
   <data name="Client.GetAllClients" xml:space="preserve">
     <value>All Clients returned</value>
   </data>
@@ -141,14 +144,32 @@
   <data name="Logout.UserAllreadyOnline" xml:space="preserve">
     <value>A User with this GUID is allready logged in</value>
   </data>
+  <data name="UserRole.AllUserGroupsReturned" xml:space="preserve">
+    <value>All UserGroups returned</value>
+  </data>
   <data name="UserRole.GetAllUsers" xml:space="preserve">
     <value>All Users returned</value>
+  </data>
+  <data name="UserRole.PermissionOwnerAdded" xml:space="preserve">
+    <value>PermissionOwner successfully added</value>
+  </data>
+  <data name="UserRole.PermissionOwnerDoesntExist" xml:space="preserve">
+    <value>PermissionOwner doesnt exist</value>
+  </data>
+  <data name="UserRole.PermissionOwnerRemoved" xml:space="preserve">
+    <value>PermissionOwner successfully removed</value>
   </data>
   <data name="UserRole.UserDoesntExist" xml:space="preserve">
     <value>Sorry, but this user doesn't exist</value>
   </data>
   <data name="UserRole.UserExistsAllready" xml:space="preserve">
     <value>Sorry, but a user with this name exists allready in database</value>
+  </data>
+  <data name="UserRole.UserGroupAdded" xml:space="preserve">
+    <value>UserGroup successfully added to database</value>
+  </data>
+  <data name="UserRole.UsergroupExistsAllready" xml:space="preserve">
+    <value>The UserGroup exists allready</value>
   </data>
   <data name="UserRole.UserRemoved" xml:space="preserve">
     <value>User sucessfully removed from database</value>

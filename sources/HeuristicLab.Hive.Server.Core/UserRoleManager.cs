@@ -12,23 +12,12 @@ using HeuristicLab.Hive.Contracts;
 namespace HeuristicLab.Hive.Server.Core {
   class UserRoleManager: IUserRoleManager {
 
-    List<User> users;
-    List<UserGroup> userGroups;
-
     IUserAdapter userAdapter;
+    IUserGroupAdapter userGroupAdapter;
 
     public UserRoleManager() {
       userAdapter = ServiceLocator.GetUserAdapter();
-
-      users = new List<User>();
-      userGroups = new List<UserGroup>();
-
-      users.Add(new User { PermissionOwnerId = 1, Name = "Hugo", Password = "hUg0" });
-      users.Add(new User { PermissionOwnerId = 2, Name = "Seppl", Password = "seppl" });
-      users.Add(new User { PermissionOwnerId = 3, Name = "Greg", Password = "greg" });
-
-      userGroups.Add(new UserGroup { PermissionOwnerId = 4 });
-      userGroups.Add(new UserGroup { PermissionOwnerId = 5 });
+      userGroupAdapter = ServiceLocator.GetUserGroupAdapter();
     }
 
     #region IUserRoleManager Members
@@ -63,6 +52,10 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<UserGroup> GetAllUserGroups() {
       ResponseList<UserGroup> response = new ResponseList<UserGroup>();
 
+      response.List = new List<UserGroup>(userGroupAdapter.GetAllUserGroups());
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_GET_ALL_USERGROUPS;
+
       return response;
     }
 
@@ -74,6 +67,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_DOESNT_EXIST;
         return response;
       }
+      userAdapter.DeleteUser(user);
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_REMOVED;
                          
@@ -81,19 +75,83 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public Response AddNewUserGroup(UserGroup userGroup) {
-      return null;
+      Response response = new Response();
+
+      UserGroup userGroupFromDb = userGroupAdapter.GetUserGroupById(userGroup.PermissionOwnerId);
+      if (userGroupFromDb != null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_EXISTS_ALLREADY;
+        return response;
+      }
+      userGroupAdapter.UpdateUserGroup(userGroup);
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED;
+
+      return response;
     }
 
     public Response RemoveUserGroup(long groupId) {
-      return null;
+      Response response = new Response();
+
+      UserGroup userGroupFromDb = userGroupAdapter.GetUserGroupById(groupId);
+      if (userGroupFromDb == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
+        return response;
+      }
+      userGroupAdapter.DeleteUserGroup(userGroupFromDb);
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED;
+
+      return response;
     }
 
-    public Response AddUserToGroup(long groupId, long userId) {
-      throw new NotImplementedException();
+    public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
+      Response response = new Response();
+      
+      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
+      if (userGroup == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
+        return response;
+      }
+      userGroup.Members.Add(permissionOwner);
+      userGroupAdapter.UpdateUserGroup(userGroup);
+
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_ADDED;
+
+      return response;
     }
 
-    public Response RemoveUserFromGroup(long groupId, long userId) {
-      throw new NotImplementedException();
+    public Response RemovePermissionOwnerFromGroup(long groupId, long permissionOwnerId) {
+      Response response = new Response();
+
+      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
+      if (userGroup == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
+        return response;
+      }
+      User user = userAdapter.GetUserById(permissionOwnerId);
+      if (user == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_DOESNT_EXIST;
+        return response;
+      }
+      foreach (PermissionOwner permissionOwner in userGroup.Members) {
+        if (permissionOwner.PermissionOwnerId == permissionOwnerId) {
+          userGroup.Members.Remove(permissionOwner);
+          userGroupAdapter.UpdateUserGroup(userGroup);
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_REMOVED;
+          return response;
+        }
+      }
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_DOESNT_EXIST;
+      
+      return response;
     }
 
     #endregion

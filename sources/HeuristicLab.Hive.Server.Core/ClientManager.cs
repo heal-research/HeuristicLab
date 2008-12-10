@@ -32,29 +32,18 @@ namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
 
     IClientAdapter clientAdapter;
+    IClientGroupAdapter clientGroupAdapter;
 
-    List<ClientInfo> clients;
     List<ClientGroup> clientGroups;
 
     public ClientManager() {
       clientAdapter = ServiceLocator.GetClientAdapter();
+      clientGroupAdapter = ServiceLocator.GetClientGroupAdapter();
 
-      clients = new List<ClientInfo>();
       clientGroups = new List<ClientGroup>();
-
-      ClientInfo c1 = new ClientInfo { ClientId=Guid.NewGuid(), Name="Client1", CpuSpeedPerCore=2500, Memory=4096, ResourceId=1, State=State.idle };
-      ClientInfo c2 = new ClientInfo { ClientId=Guid.NewGuid(), Name="Client2",  CpuSpeedPerCore=2100, Memory=2048, ResourceId=2, State=State.idle };
-      ClientInfo c3 = new ClientInfo { ClientId = Guid.NewGuid(), Name="Client3", CpuSpeedPerCore = 3400, Memory = 4096, ResourceId = 3, State = State.calculating };
-
-      clients.Add(c1);
-      clients.Add(c2);
-      clients.Add(c3);
 
       ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup", ClientGroupId = 1 };
       cg.Resources = new List<Resource>();
-      cg.Resources.Add(c1);      
-      cg.Resources.Add(c2);
-      cg.Resources.Add(c3);
 
       clientGroups.Add(cg);
     }
@@ -73,8 +62,11 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseList<ClientGroup> GetAllClientGroups() {
       ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
-      response.List = clientGroups;
+
+      response.List = new List<ClientGroup>(clientGroupAdapter.GetAllClientGroups());
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS;
       response.Success = true;
+
       return response;
     }
 
@@ -84,6 +76,17 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    public Response AddClientGroup(ClientGroup clientGroup) {
+      throw new NotImplementedException();
+    }
+
+    public Response AddResourceToGroup(long clientGroupId, Resource resource) {
+      throw new NotImplementedException();
+    }
+
+    public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

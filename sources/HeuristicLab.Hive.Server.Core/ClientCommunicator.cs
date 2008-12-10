@@ -15,7 +15,6 @@ namespace HeuristicLab.Hive.Server.Core {
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
-    List<ClientInfo> clients;
     LinkedList<long> jobs;
     int nrOfJobs = 1;
 

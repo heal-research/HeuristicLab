@@ -24,8 +24,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseList<UserGroup> GetAllUserGroups();
     [OperationContract]
-    Response AddUserToGroup(long groupId, long userId);
+    Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner);
     [OperationContract]
-    Response RemoveUserFromGroup(long groupId, long userId);
+    Response RemovePermissionOwnerFromGroup(long groupId, long userId);
   }
 }

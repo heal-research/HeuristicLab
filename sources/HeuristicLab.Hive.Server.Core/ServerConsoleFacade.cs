@@ -47,6 +47,18 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientManager.GetAllUpTimeStatistics();
     }
 
+    public Response AddClientGroup(ClientGroup clientGroup) {
+      return clientManager.AddClientGroup(clientGroup);
+    }
+
+    public Response AddResourceToGroup(long clientGroupId, Resource resource) {
+      return clientManager.AddResourceToGroup(clientGroupId, resource);
+    }
+
+    public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
+      return clientManager.DeleteResourceFromGroup(clientGroupId, resourceId);
+    }
+
     #endregion
 
     #region IJobManager Members
@@ -72,26 +84,25 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public Response RemoveUser(long userId) {
-      throw new NotImplementedException();
+      return userRoleManager.RemoveUser(userId);
     }
 
     public Response AddNewUserGroup(UserGroup userGroup) {
-      throw new NotImplementedException();
+      return userRoleManager.AddNewUserGroup(userGroup);
     }
 
     public Response RemoveUserGroup(long groupId) {
-      throw new NotImplementedException();
+      return userRoleManager.RemoveUserGroup(groupId);
     }
 
-    public Response AddUserToGroup(long groupId, long userId) {
-      throw new NotImplementedException();
+    public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
+      return userRoleManager.AddPermissionOwnerToGroup(groupId, permissionOwner);
     }
 
-    public Response RemoveUserFromGroup(long groupId, long userId) {
-      throw new NotImplementedException();
+    public Response RemovePermissionOwnerFromGroup(long groupId, long userId) {
+      return userRoleManager.RemovePermissionOwnerFromGroup(groupId, userId);
     }
 
     #endregion
-
   }
 }

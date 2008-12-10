@@ -18,6 +18,12 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [ServiceKnownType(typeof(ClientInfo))]
     ResponseList<ClientGroup> GetAllClientGroups();
     [OperationContract]
+    Response AddClientGroup(ClientGroup clientGroup);
+    [OperationContract]
+    Response AddResourceToGroup(long clientGroupId, Resource resource);
+    [OperationContract]
+    Response DeleteResourceFromGroup(long clientGroupId, long resourceId);
+    [OperationContract]
     ResponseList<UpTimeStatistics> GetAllUpTimeStatistics();
   }
 }
