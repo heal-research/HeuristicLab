@@ -62,8 +62,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
       wcfService = WcfService.Instance;
       ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
-      if (cc.IPAdress == String.Empty || cc.Port == 0) {
-        wcfService.Connect("10.20.53.3", 9000);
+      if (cc.IPAdress != String.Empty && cc.Port != 0) {
+        wcfService.Connect(cc.IPAdress, cc.Port);
       }
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);

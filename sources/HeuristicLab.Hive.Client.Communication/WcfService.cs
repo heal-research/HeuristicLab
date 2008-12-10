@@ -31,6 +31,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     private ClientCommunicatorClient proxy = null;
 
     private WcfService() {
+      ConnState = NetworkEnum.WcfConnState.Disconnected;
     }
     public void Connect() {
       try {
