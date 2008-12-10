@@ -24,13 +24,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.ServiceModel;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Contracts {
 
   [DataContract]
   public class ResponseList<T> : Response {
     [DataMember]
-    public List<T> List { get; set; }
+    public IList<T> List { get; set; }
 
   }
 }
