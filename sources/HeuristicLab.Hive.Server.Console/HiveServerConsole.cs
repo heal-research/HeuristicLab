@@ -54,13 +54,13 @@ namespace HeuristicLab.Hive.Server.Console {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void btnLogin_Click(object sender, EventArgs e) {
+      string newIp = tbIp.Text;
+      newIp = newIp.Replace(" ", "");
+
+      ServiceLocator.Address = newIp;
+      ServiceLocator.Port = this.tbPort.Text;
+ 
       if (isValid()) {
-        string newIp = tbIp.Text;
-        newIp = newIp.Replace(" ", "");
-
-        ServiceLocator.Address = newIp;
-        ServiceLocator.Port = this.tbPort.Text;
-
         this.Visible = false;
         information = new HiveServerManagementConsole();
         information.closeFormEvent += new closeForm(enableForm);
@@ -85,9 +85,16 @@ namespace HeuristicLab.Hive.Server.Console {
           return false;
         }
         return true;
+      } else {
+        if (tbUserName.Text == "") {
+          lblError.Text = "Please type in Username";
+        } else if (tbPwd.Text == "") {
+          lblError.Text = "Please type in Password";
+        } else if (tbPort.Text == "") {
+          lblError.Text = "Please type in Port";
+        }
+        return false;
       }
-      // TODO IP-Adress validation
-      return false;
     }
 
     private void enableForm(bool cf) {
