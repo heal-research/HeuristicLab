@@ -80,6 +80,7 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
+      return response;
     }
 
     public ResponseResultReceived SendJobResult(JobResult Result, bool finished) {
