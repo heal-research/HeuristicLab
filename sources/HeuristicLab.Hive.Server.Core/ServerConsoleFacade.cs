@@ -95,8 +95,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return userRoleManager.RemoveUserGroup(groupId);
     }
 
-    public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
-      return userRoleManager.AddPermissionOwnerToGroup(groupId, permissionOwner);
+    public Response AddUserToGroup(long groupId, long userId) {
+      return userRoleManager.AddUserToGroup(groupId, userId);
+    }
+
+    public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
+      return userRoleManager.AddUserGroupToGroup(groupId, groupToAddId);
     }
 
     public Response RemovePermissionOwnerFromGroup(long groupId, long userId) {

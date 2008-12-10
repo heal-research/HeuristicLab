@@ -14,6 +14,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     IUserAdapter userAdapter;
     IUserGroupAdapter userGroupAdapter;
+    IPermissionOwnerAdapter permissionOwnerAdapter;
 
     public UserRoleManager() {
       userAdapter = ServiceLocator.GetUserAdapter();
@@ -104,12 +105,13 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
+    public Response AddUserToGroup(long groupId, long userId) {
       Response response = new Response();
 
-      if (permissionOwner.PermissionOwnerId != 0) {
+      User user = userAdapter.GetUserById(userId);
+      if (user == null) {
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_DOESNT_EXIST;
         return response;
       }
 
@@ -119,11 +121,17 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
         return response;
       }
-      userGroup.Members.Add(permissionOwner);
+      userGroup.Members.Add(user);
       userGroupAdapter.UpdateUserGroup(userGroup);
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_ADDED;
+
+      return response;
+    }
+
+    public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
+      Response response = new Response();
 
       return response;
     }
