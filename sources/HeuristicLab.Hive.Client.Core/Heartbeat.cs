@@ -73,9 +73,9 @@ namespace HeuristicLab.Hive.Client.Core {
                                                               freeCores = 4, 
                                                               freeMemory = 1000, 
                                                               jobProgress = 1};
-      if (wcfService.ConnState == WcfService.ConnectionState.failed) {
+      if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
-      } else if (wcfService.ConnState == WcfService.ConnectionState.connected) {
+      } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Connected) {
         wcfService.SendHeartBeatAsync(heartBeatData);
       }
     }

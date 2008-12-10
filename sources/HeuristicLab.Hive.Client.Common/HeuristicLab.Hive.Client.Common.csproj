@@ -67,8 +67,8 @@
     <Compile Include="CommonPlugin.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MessageQueue.cs" />
+    <Compile Include="NetworkEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Status.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">

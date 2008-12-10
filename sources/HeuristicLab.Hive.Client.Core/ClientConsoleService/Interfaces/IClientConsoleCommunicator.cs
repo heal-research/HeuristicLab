@@ -13,5 +13,7 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces {
     ConnectionContainer GetConnection();
     [OperationContract]
     void SetConnection(ConnectionContainer container);
+    [OperationContract]
+    void Disconnect();
   }
 }

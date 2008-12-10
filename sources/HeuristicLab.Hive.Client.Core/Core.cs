@@ -39,6 +39,7 @@ using HeuristicLab.PluginInfrastructure;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
+using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -56,18 +57,19 @@ namespace HeuristicLab.Hive.Client.Core {
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
 
-      ConfigurationManager manager = ConfigurationManager.GetInstance();
+      ConfigManager manager = ConfigManager.Instance;
       manager.Core = this;
 
       wcfService = WcfService.Instance;
-      wcfService.Connect("192.168.132.1", "9000");
+      wcfService.Connect("10.20.53.1", 9000);
 
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
       wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
+      wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
 
-      wcfService.LoginAsync(ConfigurationManager.GetInstance().GetClientInfo());
+      wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
 
       Heartbeat beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
@@ -114,7 +116,7 @@ namespace HeuristicLab.Hive.Client.Core {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
       
-      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = ConfigurationManager.GetInstance().GetClientInfo() };
+      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = ConfigManager.Instance.GetClientInfo() };
       wcfService.SendJobResultAsync(jobResult, true);
     }
 
@@ -134,9 +136,7 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
         Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);
-        ConfigurationManager.GetInstance().Loggedin();
-        Status.LoginTime = DateTime.Now;
-        Status.LoggedIn = true;
+        ConfigManager.Instance.Loggedin();        
       } else
         Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
     }    
@@ -155,9 +155,9 @@ namespace HeuristicLab.Hive.Client.Core {
       engine.Start(e.Result.SerializedJob);
       engines.Add(e.Result.JobId, engine);
 
-      Status.CurrentJobs++;
+      ClientStatusInfo.JobsFetched++;
 
-      Debug.WriteLine("Increment CurrentJobs to:"+Status.CurrentJobs.ToString());
+      Debug.WriteLine("Increment FetchedJobs to:"+ClientStatusInfo.JobsFetched);
     }
 
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
@@ -165,12 +165,20 @@ namespace HeuristicLab.Hive.Client.Core {
         AppDomain.Unload(appDomains[e.Result.JobId]);
         appDomains.Remove(e.Result.JobId);
         engines.Remove(e.Result.JobId);
-        Status.CurrentJobs--;
-        Debug.WriteLine("Decrement CurrentJobs to:" + Status.CurrentJobs.ToString());
+        ClientStatusInfo.JobsProcessed++;
+        Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
       } else {
         Debug.WriteLine("Job sending FAILED!");
       }
     }
+
+    void wcfService_ServerChanged(object sender, EventArgs e) {
+      foreach(KeyValuePair<long, AppDomain> entries in appDomains)
+        AppDomain.Unload(appDomains[entries.Key]);
+      appDomains = new Dictionary<long, AppDomain>();
+      engines = new Dictionary<long, Executor>();
+    }
+
 
     #endregion
 

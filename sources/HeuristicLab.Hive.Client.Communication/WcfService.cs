@@ -8,7 +8,6 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.Common;
 
-
 namespace HeuristicLab.Hive.Client.Communication {
   public class WcfService {
     private static WcfService instance;
@@ -21,14 +20,15 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
-    public enum ConnectionState { connected, disconnected, failed }  
-    public ConnectionState ConnState { get; set; }
+    public DateTime ConnectedSince { get; private set; }    
+    public NetworkEnum.WcfConnState ConnState { get; private set; }
+    public string ServerIP { get; private set; }
+    public int ServerPort { get; private set; }
 
     public event EventHandler ConnectionRestored;    
+    public event EventHandler ServerChanged;    
 
     private ClientCommunicatorClient proxy = null;
-    private string serverIP;
-    private string serverPort;
 
     private WcfService() {
     }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Client.Communication {
         if (proxy == null) {
           proxy = new ClientCommunicatorClient(
             new NetTcpBinding(),
-            new EndpointAddress("net.tcp://" + serverIP + ":" + serverPort + "/HiveServer/ClientCommunicator")
+            new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
             );
         }
 
@@ -46,31 +46,37 @@ namespace HeuristicLab.Hive.Client.Communication {
         proxy.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(proxy_SendJobResultCompleted);
         proxy.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(proxy_SendHeartBeatCompleted);
 
-        if (ConnState == ConnectionState.failed)
+        if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());
-        ConnState = ConnectionState.connected;
-
+        ConnState = NetworkEnum.WcfConnState.Connected;
+        ConnectedSince = DateTime.Now;
       }
       catch (Exception ex) {
         NetworkErrorHandling(ex);
       }
     }
 
-    public void Connect(String serverIP, String serverPort) {
-      this.serverIP = serverIP;
-      this.serverPort = serverPort;
+    public void Connect(String serverIP, int serverPort) {
+      if(!(this.ServerIP == serverIP) && !(this.ServerPort == ServerPort))
+        ServerChanged(this, new EventArgs());
+      this.ServerIP = serverIP;
+      this.ServerPort = serverPort;
       Connect();
     }
 
+    public void Disconnect() {
+      ConnState = NetworkEnum.WcfConnState.Disconnected;
+    }
+
     private void NetworkErrorHandling(Exception e) {
-      ConnState = ConnectionState.failed;
+      ConnState = NetworkEnum.WcfConnState.Failed;
       Logging.GetInstance().Error(this.ToString(), "exception: ", e);
     }
 
     #region Login
     public event System.EventHandler<LoginCompletedEventArgs> LoginCompleted;
     public void LoginAsync(ClientInfo clientInfo) {
-      if (ConnState == ConnectionState.connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected)
         proxy.LoginAsync(clientInfo);
     }
     private void proxy_LoginCompleted(object sender, LoginCompletedEventArgs e) {
@@ -84,7 +90,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region PullJob
     public event System.EventHandler<PullJobCompletedEventArgs> PullJobCompleted;
     public void PullJobAsync(Guid guid) {
-      if (ConnState == ConnectionState.connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected)
         proxy.PullJobAsync(guid);
     }
     void proxy_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
@@ -98,7 +104,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region SendJobResults
     public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
     public void SendJobResultAsync(JobResult result, bool finished) {
-      if (ConnState == ConnectionState.connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected)
         proxy.SendJobResult(result, finished);
     }
     private void proxy_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
@@ -114,7 +120,7 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public event System.EventHandler<SendHeartBeatCompletedEventArgs> SendHeartBeatCompleted;
     public void SendHeartBeatAsync(HeartBeatData hbd) {
-      if (ConnState == ConnectionState.connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected)
         proxy.SendHeartBeatAsync(hbd);
     }
 
@@ -126,5 +132,6 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     #endregion
+
   }
 }

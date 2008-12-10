@@ -26,55 +26,53 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.ExecutionEngine;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
+using HeuristicLab.Hive.Client.Communication;
 
-namespace HeuristicLab.Hive.Client.Core {
+namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
   /// <summary>
   /// accesses the Server and sends his data (uuid, uptimes, hardware config) 
   /// </summary>
-  public class ConfigurationManager {
-    private static ConfigurationManager instance = null;
-
-    public Core Core { get; set; }
-    private ClientInfo clientInfo;    
-    private Guid guid;
-
-    public static ConfigurationManager GetInstance() {
-      if (instance == null) {
-        instance = new ConfigurationManager();
+  public class ConfigManager {
+    private static ConfigManager instance = null;
+    public static ConfigManager Instance {
+      get {
+        if (instance == null) {
+          instance = new ConfigManager();
+        }
+        return instance;
       }
-      return instance;
     }
 
-   
+    public Core Core { get; set; }    
+    private ClientInfo hardwareInfo;        
 
     /// <summary>
     /// Constructor for the singleton, must recover Guid, Calendar, ...
     /// </summary>
-    private ConfigurationManager() {
+    private ConfigManager() {
       //retrive GUID from XML file, or burn in hell. as in hell. not heaven.
-      //this won't work this way. We need a plugin for XML Handling.
-      guid = Guid.NewGuid();
-      clientInfo = new ClientInfo();
-      clientInfo.ClientId = Guid.NewGuid();
-      clientInfo.NrOfCores = Environment.ProcessorCount;
-      clientInfo.Memory = 1024;
-      clientInfo.Name = Environment.MachineName;
-
+      //this won't work this way. We need a plugin for XML Handling.      
+      hardwareInfo = new ClientInfo();
+      hardwareInfo.ClientId = Guid.NewGuid();
+      hardwareInfo.NrOfCores = Environment.ProcessorCount;
+      hardwareInfo.Memory = 1024;
+      hardwareInfo.Name = Environment.MachineName;
     }
 
     public ClientInfo GetClientInfo() {
-      return clientInfo;          
+      return hardwareInfo;          
     }
 
-    public StatusCommons GetStatusForClient() {
+    public StatusCommons GetStatusForClientConsole() {
       StatusCommons st = new StatusCommons();
-      st.ClientGuid = guid;
-      st.ConnectedSince = clientInfo.Login;
-      //This is just Temporary!
-      st.JobsAborted = 0;
-      st.JobsDone = 0;
-      st.JobsFetched = 0;
-      st.Status = StatusCommons.ClientStatusEnum.Connected;
+      st.ClientGuid = hardwareInfo.ClientId;
+      
+      st.Status = WcfService.Instance.ConnState;
+      st.ConnectedSince = WcfService.Instance.ConnectedSince;
+
+      st.JobsAborted = ClientStatusInfo.JobsAborted;
+      st.JobsDone = ClientStatusInfo.JobsProcessed;
+      st.JobsFetched = ClientStatusInfo.JobsFetched;      
 
       Dictionary<long, Executor> engines = Core.GetExecutionEngines();
       foreach (KeyValuePair<long, Executor> kvp in engines) {
@@ -85,14 +83,10 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     public void Loggedin() {
-      if (clientInfo == null) {
-        clientInfo = new ClientInfo();
+      if (hardwareInfo == null) {
+        hardwareInfo = new ClientInfo();
       }
-      clientInfo.Login = DateTime.Now;
+      hardwareInfo.Login = DateTime.Now;
     }
-
-    public void Connect(Guid guid) {
-    }
-
   }
 }

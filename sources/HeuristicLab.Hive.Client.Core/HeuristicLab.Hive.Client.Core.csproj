@@ -75,7 +75,8 @@
     <Compile Include="ClientConsoleService\TransferObjects\ConnectionContainer.cs" />
     <Compile Include="ClientConsoleService\TransferObjects\JobStatus.cs" />
     <Compile Include="ClientConsoleService\TransferObjects\StatusCommons.cs" />
-    <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="ConfigurationManager\ClientStatusInfo.cs" />
+    <Compile Include="ConfigurationManager\ConfigManager.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreApplication.cs" />
     <Compile Include="CorePlugin.cs" />
