@@ -30,7 +30,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using ZedGraph;
-using HeuristicLab.Hive.Client.Console.ClientWCFService;
+//using HeuristicLab.Hive.Client.Console.ClientWCFService;
+using System.ServiceModel;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -45,8 +46,9 @@ namespace HeuristicLab.Hive.Client.Console {
       InitializeComponent();
       GetEventLog();
 
-      ClientConsoleCommunicatorClient cccc = new ClientConsoleCommunicatorClient();
-      cccc.GetStatusInfos();
+      //ClientConsoleCommunicatorClient cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(),
+      //    new EndpointAddress("net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator"));
+      //StatusCommons sc = cccc.GetStatusInfos();
     }
 
     private void GetEventLog() {
@@ -86,8 +88,6 @@ namespace HeuristicLab.Hive.Client.Console {
         curEventLogEntry.SubItems.Add(ev.Message);
         curEventLogEntry.SubItems.Add(ev.TimeGenerated.Date.ToString());
         curEventLogEntry.SubItems.Add(ev.TimeGenerated.TimeOfDay.ToString());
-
-
       }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ServiceModel;
-//using HeuristicLab.Hive.Client.Communication.ClientConsole;
+//using HeuristicLab.Hive.Client.ClientConsole;
 
 namespace HeuristicLab.Hive.Client.Console {
   public class ServiceLocator {

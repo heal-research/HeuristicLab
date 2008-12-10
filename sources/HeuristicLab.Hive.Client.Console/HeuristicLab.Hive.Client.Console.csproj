@@ -141,7 +141,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Service References\ClientWCFService\Reference.cs">
+    <Compile Include="Service References\ClientService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -157,33 +157,34 @@
     <None Include="Resources\Error.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Resources\Info.png" />
-    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Core.ClientConsoleService.xsd" />
-    <None Include="Service References\ClientWCFService\service.wsdl" />
-    <None Include="Service References\ClientWCFService\service.xsd" />
-    <None Include="Service References\ClientWCFService\service1.xsd" />
+    <None Include="Service References\ClientService\HeuristicLab.Hive.Client.Common.xsd" />
+    <None Include="Service References\ClientService\HeuristicLab.Hive.Client.Core.ClientConsoleService.xsd" />
+    <None Include="Service References\ClientService\service.wsdl" />
+    <None Include="Service References\ClientService\service.xsd" />
+    <None Include="Service References\ClientService\service1.xsd" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\ClientWCFService\" />
+    <WCFMetadataStorage Include="Service References\ClientService\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ClientWCFService\configuration91.svcinfo" />
+    <None Include="Service References\ClientService\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ClientWCFService\configuration.svcinfo" />
+    <None Include="Service References\ClientService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Console.ClientWCFService.ConnectionContainer.datasource">
+    <None Include="app.config" />
+    <None Include="Service References\ClientService\HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ClientWCFService\HeuristicLab.Hive.Client.Console.ClientWCFService.StatusCommons.datasource">
+    <None Include="Service References\ClientService\HeuristicLab.Hive.Client.Console.ClientService.StatusCommons.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ClientWCFService\Reference.svcmap">
+    <None Include="Service References\ClientService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
