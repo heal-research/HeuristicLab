@@ -79,18 +79,62 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddClientGroup(ClientGroup clientGroup) {
       Response response = new Response();
 
-      ClientGroup clientGroupFromDb = clientGroupAdapter.GetClientGroupById(clientGroup.ResourceId);
-      
+      if (clientGroup.ResourceId != 0) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+        return response;
+      }
+      clientGroupAdapter.UpdateClientGroup(clientGroup);
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
 
       return response;
     }
 
     public Response AddResourceToGroup(long clientGroupId, Resource resource) {
-      throw new NotImplementedException();
+      Response response = new Response();
+
+      if (resource.ResourceId != 0) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+        return response;
+      }
+
+      ClientGroup clientGroup = clientGroupAdapter.GetClientGroupById(clientGroupId);
+      if (clientGroup == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
+        return response;
+      }
+      clientGroup.Resources.Add(resource);
+
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
+
+      return response;
     }
 
     public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
-      throw new NotImplementedException();
+      Response response = new Response();
+
+      ClientGroup clientGroup = clientGroupAdapter.GetClientGroupById(clientGroupId);
+      if (clientGroup == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
+        return response;
+      }
+      foreach (Resource resource in clientGroup.Resources) {
+        if (resource.ResourceId == resourceId) {
+          clientGroup.Resources.Remove(resource);
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
+          return response;
+        }
+      }
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
+
+      return response;
     }
     #endregion
   }

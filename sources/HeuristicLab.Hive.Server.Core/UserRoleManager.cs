@@ -36,7 +36,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddNewUser(User user) {
       Response response = new Response();
 
-      if (user.PermissionOwnerId != null) {
+      if (user.PermissionOwnerId != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
@@ -76,7 +76,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddNewUserGroup(UserGroup userGroup) {
       Response response = new Response();
       
-      if (userGroup.PermissionOwnerId != null) {
+      if (userGroup.PermissionOwnerId != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
@@ -107,7 +107,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddPermissionOwnerToGroup(long groupId, PermissionOwner permissionOwner) {
       Response response = new Response();
 
-      if (permissionOwner.PermissionOwnerId != null) {
+      if (permissionOwner.PermissionOwnerId != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
