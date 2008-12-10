@@ -33,6 +33,17 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public long PermissionOwnerId { get; set; }
     [DataMember]
     public string Name { get; set; }
-    
+
+    public override bool Equals(object obj) {
+      if (obj is PermissionOwner) 
+        return this.PermissionOwnerId.Equals(
+          (obj as PermissionOwner).PermissionOwnerId);
+      else
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return this.PermissionOwnerId.GetHashCode();
+    }
   }
 }

@@ -27,6 +27,7 @@ using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Runtime.CompilerServices;
+using System.Data;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class UserGroupAdapter: DataAdapterBase, IUserGroupAdapter {
@@ -168,8 +169,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
           userGroupRows) {
-          PermissionOwner permOwner = userGroup.Members.Single<PermissionOwner>(
-            p => p.PermissionOwnerId == permOwnerUserGroupRow.PermissionOwnerId);
+          PermissionOwner permOwner = null;
+
+          IEnumerable<PermissionOwner> permOwners =
+            from p in
+              userGroup.Members
+            where p.PermissionOwnerId == permOwnerUserGroupRow.PermissionOwnerId
+            select p;
+
+          if (permOwners.Count<PermissionOwner>() == 1)
+            permOwner = permOwners.First<PermissionOwner>();
 
           if (permOwner == null) {
             deleted.Add(permOwnerUserGroupRow);
@@ -235,6 +244,28 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return allUserGroups;
     }
 
+    public ICollection<UserGroup> MemberOf(PermissionOwner permOwner) {
+      ICollection<UserGroup> userGroups =
+        new List<UserGroup>();
+      
+      if (permOwner != null) {
+        IEnumerable<dsHiveServer.PermissionOwner_UserGroupRow> userGroupRows =
+         from userGroup in
+           permOwnerUserGroupData.AsEnumerable<dsHiveServer.PermissionOwner_UserGroupRow>()
+         where userGroup.PermissionOwnerId == permOwner.PermissionOwnerId
+         select userGroup;
+
+        foreach (dsHiveServer.PermissionOwner_UserGroupRow userGroupRow in
+          userGroupRows) {
+          UserGroup userGroup = 
+            GetUserGroupById(userGroupRow.UserGroupId);
+          userGroups.Add(userGroup);
+        }
+      }
+
+      return userGroups;
+    }
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public bool DeleteUserGroup(UserGroup group) {
       if (group != null) {
@@ -248,7 +279,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
             permOwnerUserGroupData) {
             if (permOwnerUserGroupRow.UserGroupId == group.PermissionOwnerId || 
-                permOwnerUserGroupRow.PermissionOwnerId == group.PermissionOwnerId) {
+              permOwnerUserGroupRow.PermissionOwnerId == group.PermissionOwnerId) {
               deleted.Add(permOwnerUserGroupRow);
             }
           }

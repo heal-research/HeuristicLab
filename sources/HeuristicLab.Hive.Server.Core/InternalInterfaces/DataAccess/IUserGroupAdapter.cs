@@ -50,6 +50,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ICollection<UserGroup> GetAllUserGroups();
 
     /// <summary>
+    /// Gets all user groups where the permission owner is member of
+    /// </summary>
+    /// <param name="permOwner"></param>
+    /// <returns></returns>
+    ICollection<UserGroup> MemberOf(PermissionOwner permOwner);
+
+    /// <summary>
     /// Deletes the user group
     /// </summary>
     /// <param name="client"></param>

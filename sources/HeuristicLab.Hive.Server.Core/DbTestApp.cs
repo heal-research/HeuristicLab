@@ -113,6 +113,10 @@ namespace HeuristicLab.Hive.Server {
         new User();
       user2.Name = "Martin";
 
+      User user3 =
+        new User();
+      user3.Name = "Heinz";
+
       UserGroup group =
         new UserGroup();
 
@@ -120,6 +124,7 @@ namespace HeuristicLab.Hive.Server {
         new UserGroup();
       subGroup.Members.Add(user);
 
+      group.Members.Add(user3);
       group.Members.Add(user2);
       group.Members.Add(subGroup);
 
@@ -131,21 +136,26 @@ namespace HeuristicLab.Hive.Server {
       ICollection<UserGroup> userGroups =
         userGroupAdapter.GetAllUserGroups();
 
+      IUserAdapter userAdapter =
+        ServiceLocator.GetUserAdapter();
+
+      userAdapter.DeleteUser(user3);
+      
+      read =
+         userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+
       userGroupAdapter.DeleteUserGroup(subGroup);
+
+      read =
+         userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
 
       userGroups =
         userGroupAdapter.GetAllUserGroups();
-
-      read =
-        userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
 
       userGroupAdapter.DeleteUserGroup(group);
 
       userGroups =
         userGroupAdapter.GetAllUserGroups();
-
-      IUserAdapter userAdapter =
-        ServiceLocator.GetUserAdapter();
 
       userAdapter.DeleteUser(user);
       userAdapter.DeleteUser(user2);
