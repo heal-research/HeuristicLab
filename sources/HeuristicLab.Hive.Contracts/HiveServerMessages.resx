@@ -213,4 +213,7 @@
   <data name="JobDoesntExist" xml:space="preserve">
     <value>The specified job doesn't exist</value>
   </data>
+  <data name="UserRole.UsernameExistsAllready" xml:space="preserve">
+    <value>A user with this username exists allready</value>
+  </data>
 </root>

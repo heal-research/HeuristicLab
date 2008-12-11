@@ -42,6 +42,12 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
+      if (userAdapter.GetUserByName(user.Name) != null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERNAME_EXISTS_ALLREADY;
+        return response;
+      }
+
       userAdapter.UpdateUser(user);
       response.Obj = user;
       response.Success = true;
@@ -83,6 +89,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
+
       userGroupAdapter.UpdateUserGroup(userGroup);
       response.Obj = userGroup;
       response.Success = false;
