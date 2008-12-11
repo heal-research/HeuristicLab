@@ -73,9 +73,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         job.JobId = row.JobId;
 
         if (!row.IsParentJobIdNull())
-          job.parentJob = GetJobById(row.ParentJobId);
+          job.ParentJob = GetJobById(row.ParentJobId);
         else
-          job.parentJob = null;
+          job.ParentJob = null;
 
         if (!row.IsResourceIdNull())
           job.Client = ClientAdapter.GetClientById(row.ResourceId);
@@ -101,9 +101,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         } else
           row.SetResourceIdNull();
 
-        if (job.parentJob != null) {
-          UpdateJob(job.parentJob);
-          row.ParentJobId = job.parentJob.JobId;
+        if (job.ParentJob != null) {
+          UpdateJob(job.ParentJob);
+          row.ParentJobId = job.ParentJob.JobId;
         } else
           row.SetParentJobIdNull();
 
