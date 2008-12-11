@@ -65,6 +65,12 @@
   <wsdl:message name="IClientConsoleCommunicator_Disconnect_OutputMessage">
     <wsdl:part name="parameters" element="tns:DisconnectResponse" />
   </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_GetCurrentConnection_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentConnection" />
+  </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_GetCurrentConnection_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentConnectionResponse" />
+  </wsdl:message>
   <wsdl:portType name="IClientConsoleCommunicator">
     <wsdl:operation name="GetStatusInfos">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos" message="tns:IClientConsoleCommunicator_GetStatusInfos_InputMessage" />
@@ -81,6 +87,10 @@
     <wsdl:operation name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/Disconnect" message="tns:IClientConsoleCommunicator_Disconnect_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/DisconnectResponse" message="tns:IClientConsoleCommunicator_Disconnect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentConnection">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnection" message="tns:IClientConsoleCommunicator_GetCurrentConnection_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnectionResponse" message="tns:IClientConsoleCommunicator_GetCurrentConnection_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IClientConsoleCommunicator" type="tns:IClientConsoleCommunicator">
@@ -116,6 +126,15 @@
     </wsdl:operation>
     <wsdl:operation name="Disconnect">
       <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/Disconnect" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentConnection">
+      <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnection" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

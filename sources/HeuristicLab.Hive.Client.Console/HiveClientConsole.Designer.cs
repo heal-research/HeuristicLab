@@ -54,11 +54,17 @@ namespace HeuristicLab.Hive.Client.Console {
       this.chSince = new System.Windows.Forms.ColumnHeader();
       this.chProgress = new System.Windows.Forms.ColumnHeader();
       this.gbCommon = new System.Windows.Forms.GroupBox();
+      this.lbJobsAborted = new System.Windows.Forms.Label();
+      this.lbJobdone = new System.Windows.Forms.Label();
+      this.lbJobsFetched = new System.Windows.Forms.Label();
+      this.lbGuid = new System.Windows.Forms.Label();
+      this.lbGuidCaption = new System.Windows.Forms.Label();
+      this.lbCs = new System.Windows.Forms.Label();
+      this.lbConnectionStatus = new System.Windows.Forms.Label();
       this.zGJobs = new ZedGraph.ZedGraphControl();
       this.lbConnectionStatusCaption = new System.Windows.Forms.Label();
       this.lbJobsAbortedCaption = new System.Windows.Forms.Label();
       this.lbJobdoneCaption = new System.Windows.Forms.Label();
-      this.lbGuidCaption = new System.Windows.Forms.Label();
       this.lbJobsFetchedCaption = new System.Windows.Forms.Label();
       this.lbCsCaption = new System.Windows.Forms.Label();
       this.gbEventLog = new System.Windows.Forms.GroupBox();
@@ -70,24 +76,24 @@ namespace HeuristicLab.Hive.Client.Console {
       this.chTime = new System.Windows.Forms.ColumnHeader();
       this.ilEventLog = new System.Windows.Forms.ImageList(this.components);
       this.tabPage2 = new System.Windows.Forms.TabPage();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.gbResources = new System.Windows.Forms.GroupBox();
-      this.textBox2 = new System.Windows.Forms.TextBox();
-      this.lbMem = new System.Windows.Forms.Label();
+      this.gbOnlineTime = new System.Windows.Forms.GroupBox();
       this.gbServerConnection = new System.Windows.Forms.GroupBox();
+      this.lbStatus = new System.Windows.Forms.Label();
+      this.lbStatusCaption = new System.Windows.Forms.Label();
       this.btnDisconnect = new System.Windows.Forms.Button();
       this.btConnect = new System.Windows.Forms.Button();
-      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.tbPort = new System.Windows.Forms.TextBox();
       this.tbIPAdress = new System.Windows.Forms.TextBox();
       this.lbServerIPCaption = new System.Windows.Forms.Label();
       this.lbPortCaption = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.gbJobCommon.SuspendLayout();
       this.gbCommon.SuspendLayout();
       this.gbEventLog.SuspendLayout();
       this.tabPage2.SuspendLayout();
-      this.gbResources.SuspendLayout();
+      this.gbOnlineTime.SuspendLayout();
       this.gbServerConnection.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -119,9 +125,9 @@ namespace HeuristicLab.Hive.Client.Console {
       // gbJobCommon
       // 
       this.gbJobCommon.Controls.Add(this.lvJobDetail);
-      this.gbJobCommon.Location = new System.Drawing.Point(8, 100);
+      this.gbJobCommon.Location = new System.Drawing.Point(8, 152);
       this.gbJobCommon.Name = "gbJobCommon";
-      this.gbJobCommon.Size = new System.Drawing.Size(412, 158);
+      this.gbJobCommon.Size = new System.Drawing.Size(412, 106);
       this.gbJobCommon.TabIndex = 13;
       this.gbJobCommon.TabStop = false;
       this.gbJobCommon.Text = "Jobs detail";
@@ -136,7 +142,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lvJobDetail.GridLines = true;
       this.lvJobDetail.Location = new System.Drawing.Point(6, 19);
       this.lvJobDetail.Name = "lvJobDetail";
-      this.lvJobDetail.Size = new System.Drawing.Size(398, 132);
+      this.lvJobDetail.Size = new System.Drawing.Size(398, 76);
       this.lvJobDetail.TabIndex = 0;
       this.lvJobDetail.UseCompatibleStateImageBehavior = false;
       this.lvJobDetail.View = System.Windows.Forms.View.Details;
@@ -157,23 +163,92 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // gbCommon
       // 
+      this.gbCommon.Controls.Add(this.lbJobsAborted);
+      this.gbCommon.Controls.Add(this.lbJobdone);
+      this.gbCommon.Controls.Add(this.lbJobsFetched);
+      this.gbCommon.Controls.Add(this.lbGuid);
+      this.gbCommon.Controls.Add(this.lbGuidCaption);
+      this.gbCommon.Controls.Add(this.lbCs);
+      this.gbCommon.Controls.Add(this.lbConnectionStatus);
       this.gbCommon.Controls.Add(this.zGJobs);
       this.gbCommon.Controls.Add(this.lbConnectionStatusCaption);
       this.gbCommon.Controls.Add(this.lbJobsAbortedCaption);
       this.gbCommon.Controls.Add(this.lbJobdoneCaption);
-      this.gbCommon.Controls.Add(this.lbGuidCaption);
       this.gbCommon.Controls.Add(this.lbJobsFetchedCaption);
       this.gbCommon.Controls.Add(this.lbCsCaption);
       this.gbCommon.Location = new System.Drawing.Point(8, 6);
       this.gbCommon.Name = "gbCommon";
-      this.gbCommon.Size = new System.Drawing.Size(410, 88);
+      this.gbCommon.Size = new System.Drawing.Size(410, 133);
       this.gbCommon.TabIndex = 14;
       this.gbCommon.TabStop = false;
       this.gbCommon.Text = "Common";
       // 
+      // lbJobsAborted
+      // 
+      this.lbJobsAborted.AutoSize = true;
+      this.lbJobsAborted.Location = new System.Drawing.Point(195, 114);
+      this.lbJobsAborted.Name = "lbJobsAborted";
+      this.lbJobsAborted.Size = new System.Drawing.Size(54, 13);
+      this.lbJobsAborted.TabIndex = 20;
+      this.lbJobsAborted.Text = "undefined";
+      // 
+      // lbJobdone
+      // 
+      this.lbJobdone.AutoSize = true;
+      this.lbJobdone.Location = new System.Drawing.Point(62, 114);
+      this.lbJobdone.Name = "lbJobdone";
+      this.lbJobdone.Size = new System.Drawing.Size(54, 13);
+      this.lbJobdone.TabIndex = 19;
+      this.lbJobdone.Text = "undefined";
+      // 
+      // lbJobsFetched
+      // 
+      this.lbJobsFetched.AutoSize = true;
+      this.lbJobsFetched.Location = new System.Drawing.Point(74, 90);
+      this.lbJobsFetched.Name = "lbJobsFetched";
+      this.lbJobsFetched.Size = new System.Drawing.Size(54, 13);
+      this.lbJobsFetched.TabIndex = 18;
+      this.lbJobsFetched.Text = "undefined";
+      // 
+      // lbGuid
+      // 
+      this.lbGuid.AutoSize = true;
+      this.lbGuid.Location = new System.Drawing.Point(41, 16);
+      this.lbGuid.Name = "lbGuid";
+      this.lbGuid.Size = new System.Drawing.Size(39, 13);
+      this.lbGuid.TabIndex = 15;
+      this.lbGuid.Text = "not set";
+      // 
+      // lbGuidCaption
+      // 
+      this.lbGuidCaption.AutoSize = true;
+      this.lbGuidCaption.Location = new System.Drawing.Point(9, 16);
+      this.lbGuidCaption.Name = "lbGuidCaption";
+      this.lbGuidCaption.Size = new System.Drawing.Size(37, 13);
+      this.lbGuidCaption.TabIndex = 8;
+      this.lbGuidCaption.Text = "GUID:";
+      // 
+      // lbCs
+      // 
+      this.lbCs.AutoSize = true;
+      this.lbCs.Location = new System.Drawing.Point(94, 40);
+      this.lbCs.Name = "lbCs";
+      this.lbCs.Size = new System.Drawing.Size(54, 13);
+      this.lbCs.TabIndex = 17;
+      this.lbCs.Text = "undefined";
+      // 
+      // lbConnectionStatus
+      // 
+      this.lbConnectionStatus.AutoSize = true;
+      this.lbConnectionStatus.Location = new System.Drawing.Point(97, 66);
+      this.lbConnectionStatus.Name = "lbConnectionStatus";
+      this.lbConnectionStatus.Size = new System.Drawing.Size(54, 13);
+      this.lbConnectionStatus.TabIndex = 16;
+      this.lbConnectionStatus.Text = "undefined";
+      // 
       // zGJobs
       // 
-      this.zGJobs.Location = new System.Drawing.Point(309, 11);
+      this.zGJobs.Location = new System.Drawing.Point(277, 16);
       this.zGJobs.Name = "zGJobs";
       this.zGJobs.ScrollGrace = 0;
       this.zGJobs.ScrollMaxX = 0;
@@ -182,13 +257,13 @@ namespace HeuristicLab.Hive.Client.Console {
       this.zGJobs.ScrollMinX = 0;
       this.zGJobs.ScrollMinY = 0;
       this.zGJobs.ScrollMinY2 = 0;
-      this.zGJobs.Size = new System.Drawing.Size(95, 68);
+      this.zGJobs.Size = new System.Drawing.Size(127, 103);
       this.zGJobs.TabIndex = 14;
       // 
       // lbConnectionStatusCaption
       // 
       this.lbConnectionStatusCaption.AutoSize = true;
-      this.lbConnectionStatusCaption.Location = new System.Drawing.Point(9, 42);
+      this.lbConnectionStatusCaption.Location = new System.Drawing.Point(9, 66);
       this.lbConnectionStatusCaption.Name = "lbConnectionStatusCaption";
       this.lbConnectionStatusCaption.Size = new System.Drawing.Size(93, 13);
       this.lbConnectionStatusCaption.TabIndex = 13;
@@ -197,7 +272,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // lbJobsAbortedCaption
       // 
       this.lbJobsAbortedCaption.AutoSize = true;
-      this.lbJobsAbortedCaption.Location = new System.Drawing.Point(147, 66);
+      this.lbJobsAbortedCaption.Location = new System.Drawing.Point(129, 114);
       this.lbJobsAbortedCaption.Name = "lbJobsAbortedCaption";
       this.lbJobsAbortedCaption.Size = new System.Drawing.Size(71, 13);
       this.lbJobsAbortedCaption.TabIndex = 11;
@@ -206,25 +281,16 @@ namespace HeuristicLab.Hive.Client.Console {
       // lbJobdoneCaption
       // 
       this.lbJobdoneCaption.AutoSize = true;
-      this.lbJobdoneCaption.Location = new System.Drawing.Point(159, 42);
+      this.lbJobdoneCaption.Location = new System.Drawing.Point(9, 114);
       this.lbJobdoneCaption.Name = "lbJobdoneCaption";
       this.lbJobdoneCaption.Size = new System.Drawing.Size(59, 13);
       this.lbJobdoneCaption.TabIndex = 10;
       this.lbJobdoneCaption.Text = "Jobs done:";
       // 
-      // lbGuidCaption
-      // 
-      this.lbGuidCaption.AutoSize = true;
-      this.lbGuidCaption.Location = new System.Drawing.Point(9, 19);
-      this.lbGuidCaption.Name = "lbGuidCaption";
-      this.lbGuidCaption.Size = new System.Drawing.Size(37, 13);
-      this.lbGuidCaption.TabIndex = 8;
-      this.lbGuidCaption.Text = "GUID:";
-      // 
       // lbJobsFetchedCaption
       // 
       this.lbJobsFetchedCaption.AutoSize = true;
-      this.lbJobsFetchedCaption.Location = new System.Drawing.Point(147, 16);
+      this.lbJobsFetchedCaption.Location = new System.Drawing.Point(9, 90);
       this.lbJobsFetchedCaption.Name = "lbJobsFetchedCaption";
       this.lbJobsFetchedCaption.Size = new System.Drawing.Size(71, 13);
       this.lbJobsFetchedCaption.TabIndex = 12;
@@ -233,7 +299,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // lbCsCaption
       // 
       this.lbCsCaption.AutoSize = true;
-      this.lbCsCaption.Location = new System.Drawing.Point(9, 66);
+      this.lbCsCaption.Location = new System.Drawing.Point(9, 40);
       this.lbCsCaption.Name = "lbCsCaption";
       this.lbCsCaption.Size = new System.Drawing.Size(90, 13);
       this.lbCsCaption.TabIndex = 9;
@@ -303,8 +369,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // tabPage2
       // 
-      this.tabPage2.Controls.Add(this.groupBox1);
-      this.tabPage2.Controls.Add(this.gbResources);
+      this.tabPage2.Controls.Add(this.gbOnlineTime);
       this.tabPage2.Controls.Add(this.gbServerConnection);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
@@ -314,47 +379,23 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tabPage2.Text = "Settings";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
-      // groupBox1
+      // gbOnlineTime
       // 
-      this.groupBox1.Location = new System.Drawing.Point(9, 185);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(409, 286);
-      this.groupBox1.TabIndex = 4;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Online time";
-      // 
-      // gbResources
-      // 
-      this.gbResources.Controls.Add(this.textBox2);
-      this.gbResources.Controls.Add(this.lbMem);
-      this.gbResources.Location = new System.Drawing.Point(8, 118);
-      this.gbResources.Name = "gbResources";
-      this.gbResources.Size = new System.Drawing.Size(410, 60);
-      this.gbResources.TabIndex = 3;
-      this.gbResources.TabStop = false;
-      this.gbResources.Text = "Resources";
-      // 
-      // textBox2
-      // 
-      this.textBox2.Location = new System.Drawing.Point(174, 25);
-      this.textBox2.Name = "textBox2";
-      this.textBox2.Size = new System.Drawing.Size(72, 20);
-      this.textBox2.TabIndex = 1;
-      // 
-      // lbMem
-      // 
-      this.lbMem.AutoSize = true;
-      this.lbMem.Location = new System.Drawing.Point(17, 25);
-      this.lbMem.Name = "lbMem";
-      this.lbMem.Size = new System.Drawing.Size(150, 13);
-      this.lbMem.TabIndex = 0;
-      this.lbMem.Text = "Maximum memory usage [MB]:";
+      this.gbOnlineTime.Controls.Add(this.label1);
+      this.gbOnlineTime.Location = new System.Drawing.Point(9, 117);
+      this.gbOnlineTime.Name = "gbOnlineTime";
+      this.gbOnlineTime.Size = new System.Drawing.Size(409, 354);
+      this.gbOnlineTime.TabIndex = 4;
+      this.gbOnlineTime.TabStop = false;
+      this.gbOnlineTime.Text = "Online time";
       // 
       // gbServerConnection
       // 
+      this.gbServerConnection.Controls.Add(this.lbStatus);
+      this.gbServerConnection.Controls.Add(this.lbStatusCaption);
       this.gbServerConnection.Controls.Add(this.btnDisconnect);
       this.gbServerConnection.Controls.Add(this.btConnect);
-      this.gbServerConnection.Controls.Add(this.textBox1);
+      this.gbServerConnection.Controls.Add(this.tbPort);
       this.gbServerConnection.Controls.Add(this.tbIPAdress);
       this.gbServerConnection.Controls.Add(this.lbServerIPCaption);
       this.gbServerConnection.Controls.Add(this.lbPortCaption);
@@ -365,6 +406,24 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbServerConnection.TabStop = false;
       this.gbServerConnection.Text = "Server connection";
       // 
+      // lbStatus
+      // 
+      this.lbStatus.AutoSize = true;
+      this.lbStatus.Location = new System.Drawing.Point(74, 80);
+      this.lbStatus.Name = "lbStatus";
+      this.lbStatus.Size = new System.Drawing.Size(54, 13);
+      this.lbStatus.TabIndex = 7;
+      this.lbStatus.Text = "undefined";
+      // 
+      // lbStatusCaption
+      // 
+      this.lbStatusCaption.AutoSize = true;
+      this.lbStatusCaption.Location = new System.Drawing.Point(17, 80);
+      this.lbStatusCaption.Name = "lbStatusCaption";
+      this.lbStatusCaption.Size = new System.Drawing.Size(40, 13);
+      this.lbStatusCaption.TabIndex = 6;
+      this.lbStatusCaption.Text = "Status:";
+      // 
       // btnDisconnect
       // 
       this.btnDisconnect.Location = new System.Drawing.Point(257, 51);
@@ -373,6 +432,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.btnDisconnect.TabIndex = 5;
       this.btnDisconnect.Text = "Disconnect from server";
       this.btnDisconnect.UseVisualStyleBackColor = true;
+      this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
       // 
       // btConnect
       // 
@@ -382,13 +442,14 @@ namespace HeuristicLab.Hive.Client.Console {
       this.btConnect.TabIndex = 4;
       this.btConnect.Text = "Connect to server";
       this.btConnect.UseVisualStyleBackColor = true;
+      this.btConnect.Click += new System.EventHandler(this.btConnect_Click);
       // 
-      // textBox1
+      // tbPort
       // 
-      this.textBox1.Location = new System.Drawing.Point(77, 51);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(143, 20);
-      this.textBox1.TabIndex = 3;
+      this.tbPort.Location = new System.Drawing.Point(77, 51);
+      this.tbPort.Name = "tbPort";
+      this.tbPort.Size = new System.Drawing.Size(143, 20);
+      this.tbPort.TabIndex = 3;
       // 
       // tbIPAdress
       // 
@@ -415,6 +476,16 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lbPortCaption.TabIndex = 1;
       this.lbPortCaption.Text = "Port:";
       // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label1.Location = new System.Drawing.Point(98, 154);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(184, 25);
+      this.label1.TabIndex = 0;
+      this.label1.Text = "comming soon...";
+      // 
       // HiveClientConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -432,8 +503,8 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbCommon.PerformLayout();
       this.gbEventLog.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
-      this.gbResources.ResumeLayout(false);
-      this.gbResources.PerformLayout();
+      this.gbOnlineTime.ResumeLayout(false);
+      this.gbOnlineTime.PerformLayout();
       this.gbServerConnection.ResumeLayout(false);
       this.gbServerConnection.PerformLayout();
       this.ResumeLayout(false);
@@ -463,20 +534,26 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.ColumnHeader chSince;
     private System.Windows.Forms.ColumnHeader chProgress;
     private System.Windows.Forms.Label lbConnectionStatusCaption;
-    private System.Windows.Forms.GroupBox gbResources;
     private System.Windows.Forms.GroupBox gbServerConnection;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.TextBox tbPort;
     private System.Windows.Forms.TextBox tbIPAdress;
     private System.Windows.Forms.Label lbServerIPCaption;
     private System.Windows.Forms.Label lbPortCaption;
-    private System.Windows.Forms.Label lbMem;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.TextBox textBox2;
+    private System.Windows.Forms.GroupBox gbOnlineTime;
     private System.Windows.Forms.Button btnDisconnect;
     private System.Windows.Forms.Button btConnect;
     private ZedGraph.ZedGraphControl zGJobs;
     private System.Windows.Forms.ColumnHeader chId;
     private System.Windows.Forms.ImageList ilEventLog;
+    private System.Windows.Forms.Label lbStatus;
+    private System.Windows.Forms.Label lbStatusCaption;
+    private System.Windows.Forms.Label lbCs;
+    private System.Windows.Forms.Label lbConnectionStatus;
+    private System.Windows.Forms.Label lbGuid;
+    private System.Windows.Forms.Label lbJobsFetched;
+    private System.Windows.Forms.Label lbJobdone;
+    private System.Windows.Forms.Label lbJobsAborted;
+    private System.Windows.Forms.Label label1;
   }
 }
 

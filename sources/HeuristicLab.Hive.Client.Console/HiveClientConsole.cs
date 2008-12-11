@@ -30,8 +30,9 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using ZedGraph;
-//using HeuristicLab.Hive.Client.Console.ClientWCFService;
+using HeuristicLab.Hive.Client.Console.ClientService;
 using System.ServiceModel;
+using System.Net;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -40,15 +41,92 @@ namespace HeuristicLab.Hive.Client.Console {
   public partial class HiveClientConsole : Form {
 
     EventLog HiveClientEventLog;
-    int selectedEventLogId;
+    ClientConsoleCommunicatorClient cccc;
+    System.Windows.Forms.Timer refreshTimer;
 
     public HiveClientConsole() {
       InitializeComponent();
+      InitTimer();
+      ConnectToClient();
+      RefreshGui();
       GetEventLog();
+    }
 
-      //ClientConsoleCommunicatorClient cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(),
-      //    new EndpointAddress("net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator"));
-      //StatusCommons sc = cccc.GetStatusInfos();
+    private void InitTimer() {
+      refreshTimer = new System.Windows.Forms.Timer();
+      refreshTimer.Interval = 1000;
+      refreshTimer.Tick += new EventHandler(refreshTimer_Tick);
+      refreshTimer.Start();
+    }
+
+    void refreshTimer_Tick(object sender, EventArgs e) {
+      RefreshGui();
+    }
+    
+    private void RefreshGui() {
+      StatusCommons sc = new StatusCommons();
+      
+      try {
+        sc = cccc.GetStatusInfos();
+      }
+      catch (Exception ex) {
+        refreshTimer.Stop();
+        DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (res == DialogResult.OK)
+          this.Close();
+      }
+
+      lbGuid.Text = sc.ClientGuid.ToString();
+      lbCs.Text = sc.ConnectedSince.ToString();
+      lbConnectionStatus.Text = sc.Status.ToString();
+      lbJobdone.Text = sc.JobsDone.ToString();
+      lbJobsAborted.Text = sc.JobsAborted.ToString();
+      lbJobsFetched.Text = sc.JobsFetched.ToString();
+
+      this.Text = "Client Console (" + sc.Status.ToString() + ")";
+      lbStatus.Text = sc.Status.ToString();
+
+      ListViewItem curJobStatusItem;
+
+      if (sc.Jobs != null) {
+        lvJobDetail.Items.Clear();
+        double progress;
+        foreach (JobStatus curJob in sc.Jobs) {
+          curJobStatusItem = new ListViewItem(curJob.JobId.ToString());
+          curJobStatusItem.SubItems.Add(curJob.Since.ToString());
+          progress = curJob.Progress * 100;
+          curJobStatusItem.SubItems.Add(progress.ToString());
+          lvJobDetail.Items.Add(curJobStatusItem);
+        }
+      }
+
+      UpdateGraph(zGJobs, sc.JobsDone, sc.JobsAborted);
+ 
+      if (sc.Status == NetworkEnumWcfConnState.Connected) {
+        btConnect.Enabled = false;
+        btnDisconnect.Enabled = true;
+        ConnectionContainer curConnection = cccc.GetCurrentConnection();
+        tbIPAdress.Text = curConnection.IPAdress;
+        tbPort.Text = curConnection.Port.ToString();
+      } else if (sc.Status == NetworkEnumWcfConnState.Disconnected) {
+        btConnect.Enabled = true;
+        btnDisconnect.Enabled = false;
+      } else if (sc.Status == NetworkEnumWcfConnState.Failed) {
+        btConnect.Enabled = true;
+        btnDisconnect.Enabled = false;
+      }
+    }
+
+    private void ConnectToClient() {
+      try {
+        cccc = new ClientConsoleCommunicatorClient();
+      }
+      catch (Exception) {
+        refreshTimer.Stop();
+        DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (res == DialogResult.OK)
+          this.Close();
+      }
     }
 
     private void GetEventLog() {
@@ -71,7 +149,6 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     private void HiveClientConsole_Load(object sender, EventArgs e) {
-      CreateGraph(zGJobs);
       //SetSize();
     }
 
@@ -88,6 +165,7 @@ namespace HeuristicLab.Hive.Client.Console {
         curEventLogEntry.SubItems.Add(ev.Message);
         curEventLogEntry.SubItems.Add(ev.TimeGenerated.Date.ToString());
         curEventLogEntry.SubItems.Add(ev.TimeGenerated.TimeOfDay.ToString());
+        lvLog.Items.Add(curEventLogEntry);
       }
     }
 
@@ -95,16 +173,8 @@ namespace HeuristicLab.Hive.Client.Console {
       UpdateText(e.Entry);
     }
 
-    private void SetSize() {
-      zGJobs.Location = new Point(10, 10);
-      // Leave a small margin around the outside of the control
-
-      zGJobs.Size = new Size(ClientRectangle.Width - 20,
-                              ClientRectangle.Height - 20);
-    }
-
-
-    private void CreateGraph(ZedGraphControl zgc) {
+    private void UpdateGraph(ZedGraphControl zgc, int jobsDone, int jobsAborted) {
+      zgc.GraphPane.GraphObjList.Clear();
       GraphPane myPane = zgc.GraphPane;
 
       // Set the titles and axis labels
@@ -112,9 +182,12 @@ namespace HeuristicLab.Hive.Client.Console {
       myPane.Title.IsVisible = false;
       myPane.Fill.Type = FillType.None;
 
-      myPane.AddPieSlice(40, Color.Red, 0, "Jobs aborted");
-      myPane.AddPieSlice(60, Color.Green, 0.1, "Jobs done");
+      double sum = jobsDone + jobsAborted;
+      double perDone = jobsDone / sum * 100;
+      double perAborted = jobsAborted / sum * 100;
 
+      myPane.AddPieSlice(perAborted, Color.Red, 0, "Jobs aborted");
+      myPane.AddPieSlice(perDone, Color.Green, 0.1, "Jobs done");
       myPane.AxisChange();
     }
 
@@ -128,6 +201,25 @@ namespace HeuristicLab.Hive.Client.Console {
       
       Form EventlogDetails = new EventLogEntryForm(hee);
       EventlogDetails.Show();
+    }
+
+    private void btConnect_Click(object sender, EventArgs e) {
+      IPAddress ipAdress;
+      int port;
+      ConnectionContainer cc = new ConnectionContainer();
+      //IPAddress.TryParse(tbIPAdress.Text.ToString(), ipAdress);
+      if (IPAddress.TryParse(tbIPAdress.Text, out ipAdress) && int.TryParse(tbPort.Text, out port)) {
+        cc.IPAdress = tbIPAdress.Text;
+        cc.Port = port;
+        cccc.SetConnection(cc);
+      } else {
+        MessageBox.Show("IP Adress and/or Port Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+      
+    }
+
+    private void btnDisconnect_Click(object sender, EventArgs e) {
+      cccc.Disconnect();
     }
   }
 }

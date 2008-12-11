@@ -324,6 +324,9 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/Disconnect", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/DisconnectResponse")]
         void Disconnect();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnectionResponse")]
+        HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetCurrentConnection();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -367,6 +370,10 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         
         public void Disconnect() {
             base.Channel.Disconnect();
+        }
+        
+        public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetCurrentConnection() {
+            return base.Channel.GetCurrentConnection();
         }
     }
 }

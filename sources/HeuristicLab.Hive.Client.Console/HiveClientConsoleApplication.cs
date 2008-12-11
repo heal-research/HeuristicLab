@@ -26,7 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Client.Console {
-  [ClassInfo(Name = "Hive Client Console", Description = "Console Application for the Hive Client.", AutoRestart = true)]
+  [ClassInfo(Name = "Hive Client Console", Description = "Console Application for the Hive Client.", AutoRestart = false)]
   class HiveClientConsoleApplication : ApplicationBase {
     public override void Run() {
       Form mainForm = new HiveClientConsole();
