@@ -143,22 +143,23 @@ namespace HeuristicLab.Hive.Client.Core {
     }    
 
     void wcfService_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
-      bool sandboxed = false;
+      if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
+        bool sandboxed = false;
 
-      PluginManager.Manager.Initialize();
-      AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));
-      
-      appDomains.Add(e.Result.JobId, appDomain);
+        PluginManager.Manager.Initialize();
+        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));      
+        appDomains.Add(e.Result.JobId, appDomain);
 
-      Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-      engine.JobId = e.Result.JobId;
-      engine.Queue = MessageQueue.GetInstance();
-      engine.Start(e.Result.SerializedJob);
-      engines.Add(e.Result.JobId, engine);
+        Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
+        engine.JobId = e.Result.JobId;
+        engine.Queue = MessageQueue.GetInstance();
+        engine.Start(e.Result.SerializedJob);
+        engines.Add(e.Result.JobId, engine);
 
-      ClientStatusInfo.JobsFetched++;
+        ClientStatusInfo.JobsFetched++;
 
-      Debug.WriteLine("Increment FetchedJobs to:"+ClientStatusInfo.JobsFetched);
+        Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
+      }
     }
 
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
