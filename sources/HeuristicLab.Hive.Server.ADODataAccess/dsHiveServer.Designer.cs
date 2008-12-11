@@ -37,6 +37,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         private PermissionOwner_UserGroupDataTable tablePermissionOwner_UserGroup;
         
+        private ClientGroupDataTable tableClientGroup;
+        
+        private ClientGroup_ResourceDataTable tableClientGroup_Resource;
+        
         private global::System.Data.DataRelation relationClient_is_a_Resource;
         
         private global::System.Data.DataRelation relationUser_is_a_PermissionOwner;
@@ -46,6 +50,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         private global::System.Data.DataRelation relationR_44;
         
         private global::System.Data.DataRelation relationR_57;
+        
+        private global::System.Data.DataRelation relationClientGroup_is_a_Resource;
+        
+        private global::System.Data.DataRelation relationR_52;
+        
+        private global::System.Data.DataRelation relationR_59;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -90,6 +100,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 if ((ds.Tables["PermissionOwner_UserGroup"] != null)) {
                     base.Tables.Add(new PermissionOwner_UserGroupDataTable(ds.Tables["PermissionOwner_UserGroup"]));
+                }
+                if ((ds.Tables["ClientGroup"] != null)) {
+                    base.Tables.Add(new ClientGroupDataTable(ds.Tables["ClientGroup"]));
+                }
+                if ((ds.Tables["ClientGroup_Resource"] != null)) {
+                    base.Tables.Add(new ClientGroup_ResourceDataTable(ds.Tables["ClientGroup_Resource"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -160,6 +176,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         public PermissionOwner_UserGroupDataTable PermissionOwner_UserGroup {
             get {
                 return this.tablePermissionOwner_UserGroup;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ClientGroupDataTable ClientGroup {
+            get {
+                return this.tableClientGroup;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ClientGroup_ResourceDataTable ClientGroup_Resource {
+            get {
+                return this.tableClientGroup_Resource;
             }
         }
         
@@ -240,6 +274,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 if ((ds.Tables["PermissionOwner_UserGroup"] != null)) {
                     base.Tables.Add(new PermissionOwner_UserGroupDataTable(ds.Tables["PermissionOwner_UserGroup"]));
                 }
+                if ((ds.Tables["ClientGroup"] != null)) {
+                    base.Tables.Add(new ClientGroupDataTable(ds.Tables["ClientGroup"]));
+                }
+                if ((ds.Tables["ClientGroup_Resource"] != null)) {
+                    base.Tables.Add(new ClientGroup_ResourceDataTable(ds.Tables["ClientGroup_Resource"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -306,11 +346,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     this.tablePermissionOwner_UserGroup.InitVars();
                 }
             }
+            this.tableClientGroup = ((ClientGroupDataTable)(base.Tables["ClientGroup"]));
+            if ((initTable == true)) {
+                if ((this.tableClientGroup != null)) {
+                    this.tableClientGroup.InitVars();
+                }
+            }
+            this.tableClientGroup_Resource = ((ClientGroup_ResourceDataTable)(base.Tables["ClientGroup_Resource"]));
+            if ((initTable == true)) {
+                if ((this.tableClientGroup_Resource != null)) {
+                    this.tableClientGroup_Resource.InitVars();
+                }
+            }
             this.relationClient_is_a_Resource = this.Relations["Client_is_a_Resource"];
             this.relationUser_is_a_PermissionOwner = this.Relations["User_is_a_PermissionOwner"];
             this.relationUserGroup_is_a_PermissionOwner = this.Relations["UserGroup_is_a_PermissionOwner"];
             this.relationR_44 = this.Relations["R_44"];
             this.relationR_57 = this.Relations["R_57"];
+            this.relationClientGroup_is_a_Resource = this.Relations["ClientGroup_is_a_Resource"];
+            this.relationR_52 = this.Relations["R_52"];
+            this.relationR_59 = this.Relations["R_59"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -332,6 +387,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             base.Tables.Add(this.tableUserGroup);
             this.tablePermissionOwner_UserGroup = new PermissionOwner_UserGroupDataTable();
             base.Tables.Add(this.tablePermissionOwner_UserGroup);
+            this.tableClientGroup = new ClientGroupDataTable();
+            base.Tables.Add(this.tableClientGroup);
+            this.tableClientGroup_Resource = new ClientGroup_ResourceDataTable();
+            base.Tables.Add(this.tableClientGroup_Resource);
             this.relationClient_is_a_Resource = new global::System.Data.DataRelation("Client_is_a_Resource", new global::System.Data.DataColumn[] {
                         this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
                         this.tableClient.ResourceIdColumn}, false);
@@ -352,6 +411,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         this.tableUserGroup.PermissionOwnerIdColumn}, new global::System.Data.DataColumn[] {
                         this.tablePermissionOwner_UserGroup.UserGroupIdColumn}, false);
             this.Relations.Add(this.relationR_57);
+            this.relationClientGroup_is_a_Resource = new global::System.Data.DataRelation("ClientGroup_is_a_Resource", new global::System.Data.DataColumn[] {
+                        this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableClientGroup.ResourceIdColumn}, false);
+            this.Relations.Add(this.relationClientGroup_is_a_Resource);
+            this.relationR_52 = new global::System.Data.DataRelation("R_52", new global::System.Data.DataColumn[] {
+                        this.tableClientGroup.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableClientGroup_Resource.ClientGroupResourceColumn}, false);
+            this.Relations.Add(this.relationR_52);
+            this.relationR_59 = new global::System.Data.DataRelation("R_59", new global::System.Data.DataColumn[] {
+                        this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableClientGroup_Resource.ResourceIdColumn}, false);
+            this.Relations.Add(this.relationR_59);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -381,6 +452,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private bool ShouldSerializePermissionOwner_UserGroup() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private bool ShouldSerializeClientGroup() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private bool ShouldSerializeClientGroup_Resource() {
             return false;
         }
         
@@ -448,6 +529,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         public delegate void UserGroupRowChangeEventHandler(object sender, UserGroupRowChangeEvent e);
         
         public delegate void PermissionOwner_UserGroupRowChangeEventHandler(object sender, PermissionOwner_UserGroupRowChangeEvent e);
+        
+        public delegate void ClientGroupRowChangeEventHandler(object sender, ClientGroupRowChangeEvent e);
+        
+        public delegate void ClientGroup_ResourceRowChangeEventHandler(object sender, ClientGroup_ResourceRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -2020,6 +2105,496 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ClientGroupDataTable : global::System.Data.TypedTableBase<ClientGroupRow> {
+            
+            private global::System.Data.DataColumn columnResourceId;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupDataTable() {
+                this.TableName = "ClientGroup";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ClientGroupDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected ClientGroupDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn ResourceIdColumn {
+                get {
+                    return this.columnResourceId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow this[int index] {
+                get {
+                    return ((ClientGroupRow)(this.Rows[index]));
+                }
+            }
+            
+            public event ClientGroupRowChangeEventHandler ClientGroupRowChanging;
+            
+            public event ClientGroupRowChangeEventHandler ClientGroupRowChanged;
+            
+            public event ClientGroupRowChangeEventHandler ClientGroupRowDeleting;
+            
+            public event ClientGroupRowChangeEventHandler ClientGroupRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void AddClientGroupRow(ClientGroupRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow AddClientGroupRow(ResourceRow parentResourceRowByClientGroup_is_a_Resource) {
+                ClientGroupRow rowClientGroupRow = ((ClientGroupRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        null};
+                if ((parentResourceRowByClientGroup_is_a_Resource != null)) {
+                    columnValuesArray[0] = parentResourceRowByClientGroup_is_a_Resource[0];
+                }
+                rowClientGroupRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowClientGroupRow);
+                return rowClientGroupRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow FindByResourceId(long ResourceId) {
+                return ((ClientGroupRow)(this.Rows.Find(new object[] {
+                            ResourceId})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public override global::System.Data.DataTable Clone() {
+                ClientGroupDataTable cln = ((ClientGroupDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ClientGroupDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal void InitVars() {
+                this.columnResourceId = base.Columns["ResourceId"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            private void InitClass() {
+                this.columnResourceId = new global::System.Data.DataColumn("ResourceId", typeof(long), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnResourceId);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnResourceId}, true));
+                this.columnResourceId.AllowDBNull = false;
+                this.columnResourceId.Unique = true;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow NewClientGroupRow() {
+                return ((ClientGroupRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ClientGroupRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Type GetRowType() {
+                return typeof(ClientGroupRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ClientGroupRowChanged != null)) {
+                    this.ClientGroupRowChanged(this, new ClientGroupRowChangeEvent(((ClientGroupRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ClientGroupRowChanging != null)) {
+                    this.ClientGroupRowChanging(this, new ClientGroupRowChangeEvent(((ClientGroupRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ClientGroupRowDeleted != null)) {
+                    this.ClientGroupRowDeleted(this, new ClientGroupRowChangeEvent(((ClientGroupRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ClientGroupRowDeleting != null)) {
+                    this.ClientGroupRowDeleting(this, new ClientGroupRowChangeEvent(((ClientGroupRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void RemoveClientGroupRow(ClientGroupRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsHiveServer ds = new dsHiveServer();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ClientGroupDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ClientGroup_ResourceDataTable : global::System.Data.TypedTableBase<ClientGroup_ResourceRow> {
+            
+            private global::System.Data.DataColumn columnClientGroupResource;
+            
+            private global::System.Data.DataColumn columnResourceId;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceDataTable() {
+                this.TableName = "ClientGroup_Resource";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ClientGroup_ResourceDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected ClientGroup_ResourceDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn ClientGroupResourceColumn {
+                get {
+                    return this.columnClientGroupResource;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn ResourceIdColumn {
+                get {
+                    return this.columnResourceId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow this[int index] {
+                get {
+                    return ((ClientGroup_ResourceRow)(this.Rows[index]));
+                }
+            }
+            
+            public event ClientGroup_ResourceRowChangeEventHandler ClientGroup_ResourceRowChanging;
+            
+            public event ClientGroup_ResourceRowChangeEventHandler ClientGroup_ResourceRowChanged;
+            
+            public event ClientGroup_ResourceRowChangeEventHandler ClientGroup_ResourceRowDeleting;
+            
+            public event ClientGroup_ResourceRowChangeEventHandler ClientGroup_ResourceRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void AddClientGroup_ResourceRow(ClientGroup_ResourceRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow AddClientGroup_ResourceRow(ClientGroupRow parentClientGroupRowByR_52, ResourceRow parentResourceRowByR_59) {
+                ClientGroup_ResourceRow rowClientGroup_ResourceRow = ((ClientGroup_ResourceRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        null,
+                        null};
+                if ((parentClientGroupRowByR_52 != null)) {
+                    columnValuesArray[0] = parentClientGroupRowByR_52[0];
+                }
+                if ((parentResourceRowByR_59 != null)) {
+                    columnValuesArray[1] = parentResourceRowByR_59[0];
+                }
+                rowClientGroup_ResourceRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowClientGroup_ResourceRow);
+                return rowClientGroup_ResourceRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow FindByClientGroupResourceResourceId(long ClientGroupResource, long ResourceId) {
+                return ((ClientGroup_ResourceRow)(this.Rows.Find(new object[] {
+                            ClientGroupResource,
+                            ResourceId})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public override global::System.Data.DataTable Clone() {
+                ClientGroup_ResourceDataTable cln = ((ClientGroup_ResourceDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ClientGroup_ResourceDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal void InitVars() {
+                this.columnClientGroupResource = base.Columns["ClientGroupResource"];
+                this.columnResourceId = base.Columns["ResourceId"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            private void InitClass() {
+                this.columnClientGroupResource = new global::System.Data.DataColumn("ClientGroupResource", typeof(long), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnClientGroupResource);
+                this.columnResourceId = new global::System.Data.DataColumn("ResourceId", typeof(long), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnResourceId);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnClientGroupResource,
+                                this.columnResourceId}, true));
+                this.columnClientGroupResource.AllowDBNull = false;
+                this.columnResourceId.AllowDBNull = false;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow NewClientGroup_ResourceRow() {
+                return ((ClientGroup_ResourceRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ClientGroup_ResourceRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Type GetRowType() {
+                return typeof(ClientGroup_ResourceRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ClientGroup_ResourceRowChanged != null)) {
+                    this.ClientGroup_ResourceRowChanged(this, new ClientGroup_ResourceRowChangeEvent(((ClientGroup_ResourceRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ClientGroup_ResourceRowChanging != null)) {
+                    this.ClientGroup_ResourceRowChanging(this, new ClientGroup_ResourceRowChangeEvent(((ClientGroup_ResourceRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ClientGroup_ResourceRowDeleted != null)) {
+                    this.ClientGroup_ResourceRowDeleted(this, new ClientGroup_ResourceRowChangeEvent(((ClientGroup_ResourceRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ClientGroup_ResourceRowDeleting != null)) {
+                    this.ClientGroup_ResourceRowDeleting(this, new ClientGroup_ResourceRowChangeEvent(((ClientGroup_ResourceRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void RemoveClientGroup_ResourceRow(ClientGroup_ResourceRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsHiveServer ds = new dsHiveServer();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ClientGroup_ResourceDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -2075,6 +2650,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 else {
                     return ((ClientRow[])(base.GetChildRows(this.Table.ChildRelations["Client_is_a_Resource"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow[] GetClientGroupRows() {
+                if ((this.Table.ChildRelations["ClientGroup_is_a_Resource"] == null)) {
+                    return new ClientGroupRow[0];
+                }
+                else {
+                    return ((ClientGroupRow[])(base.GetChildRows(this.Table.ChildRelations["ClientGroup_is_a_Resource"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow[] GetClientGroup_ResourceRows() {
+                if ((this.Table.ChildRelations["R_59"] == null)) {
+                    return new ClientGroup_ResourceRow[0];
+                }
+                else {
+                    return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_59"])));
                 }
             }
         }
@@ -2530,6 +3125,106 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public partial class ClientGroupRow : global::System.Data.DataRow {
+            
+            private ClientGroupDataTable tableClientGroup;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ClientGroupRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableClientGroup = ((ClientGroupDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public long ResourceId {
+                get {
+                    return ((long)(this[this.tableClientGroup.ResourceIdColumn]));
+                }
+                set {
+                    this[this.tableClientGroup.ResourceIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ResourceRow ResourceRow {
+                get {
+                    return ((ResourceRow)(this.GetParentRow(this.Table.ParentRelations["ClientGroup_is_a_Resource"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["ClientGroup_is_a_Resource"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow[] GetClientGroup_ResourceRows() {
+                if ((this.Table.ChildRelations["R_52"] == null)) {
+                    return new ClientGroup_ResourceRow[0];
+                }
+                else {
+                    return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_52"])));
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public partial class ClientGroup_ResourceRow : global::System.Data.DataRow {
+            
+            private ClientGroup_ResourceDataTable tableClientGroup_Resource;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ClientGroup_ResourceRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableClientGroup_Resource = ((ClientGroup_ResourceDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public long ClientGroupResource {
+                get {
+                    return ((long)(this[this.tableClientGroup_Resource.ClientGroupResourceColumn]));
+                }
+                set {
+                    this[this.tableClientGroup_Resource.ClientGroupResourceColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public long ResourceId {
+                get {
+                    return ((long)(this[this.tableClientGroup_Resource.ResourceIdColumn]));
+                }
+                set {
+                    this[this.tableClientGroup_Resource.ResourceIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow ClientGroupRow {
+                get {
+                    return ((ClientGroupRow)(this.GetParentRow(this.Table.ParentRelations["R_52"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_52"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ResourceRow ResourceRow {
+                get {
+                    return ((ResourceRow)(this.GetParentRow(this.Table.ParentRelations["R_59"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_59"]);
+                }
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -2702,6 +3397,68 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public PermissionOwner_UserGroupRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public class ClientGroupRowChangeEvent : global::System.EventArgs {
+            
+            private ClientGroupRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRowChangeEvent(ClientGroupRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public class ClientGroup_ResourceRowChangeEvent : global::System.EventArgs {
+            
+            private ClientGroup_ResourceRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRowChangeEvent(ClientGroup_ResourceRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow Row {
                 get {
                     return this.eventRow;
                 }
@@ -4925,6 +5682,559 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
     }
     
     /// <summary>
+    ///Represents the connection and commands used to retrieve and save data.
+    ///</summary>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+    [global::System.ComponentModel.DesignerCategoryAttribute("code")]
+    [global::System.ComponentModel.ToolboxItem(true)]
+    [global::System.ComponentModel.DataObjectAttribute(true)]
+    [global::System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterDesigner, Microsoft.VSDesigner" +
+        ", Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+    [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+    public partial class ClientGroupTableAdapter : global::System.ComponentModel.Component {
+        
+        private global::System.Data.SqlClient.SqlDataAdapter _adapter;
+        
+        private global::System.Data.SqlClient.SqlConnection _connection;
+        
+        private global::System.Data.SqlClient.SqlTransaction _transaction;
+        
+        private global::System.Data.SqlClient.SqlCommand[] _commandCollection;
+        
+        private bool _clearBeforeFill;
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public ClientGroupTableAdapter() {
+            this.ClearBeforeFill = true;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected internal global::System.Data.SqlClient.SqlDataAdapter Adapter {
+            get {
+                if ((this._adapter == null)) {
+                    this.InitAdapter();
+                }
+                return this._adapter;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlConnection Connection {
+            get {
+                if ((this._connection == null)) {
+                    this.InitConnection();
+                }
+                return this._connection;
+            }
+            set {
+                this._connection = value;
+                if ((this.Adapter.InsertCommand != null)) {
+                    this.Adapter.InsertCommand.Connection = value;
+                }
+                if ((this.Adapter.DeleteCommand != null)) {
+                    this.Adapter.DeleteCommand.Connection = value;
+                }
+                if ((this.Adapter.UpdateCommand != null)) {
+                    this.Adapter.UpdateCommand.Connection = value;
+                }
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    if ((this.CommandCollection[i] != null)) {
+                        ((global::System.Data.SqlClient.SqlCommand)(this.CommandCollection[i])).Connection = value;
+                    }
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlTransaction Transaction {
+            get {
+                return this._transaction;
+            }
+            set {
+                this._transaction = value;
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    this.CommandCollection[i].Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.DeleteCommand != null))) {
+                    this.Adapter.DeleteCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.InsertCommand != null))) {
+                    this.Adapter.InsertCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.UpdateCommand != null))) {
+                    this.Adapter.UpdateCommand.Transaction = this._transaction;
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected global::System.Data.SqlClient.SqlCommand[] CommandCollection {
+            get {
+                if ((this._commandCollection == null)) {
+                    this.InitCommandCollection();
+                }
+                return this._commandCollection;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool ClearBeforeFill {
+            get {
+                return this._clearBeforeFill;
+            }
+            set {
+                this._clearBeforeFill = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitAdapter() {
+            this._adapter = new global::System.Data.SqlClient.SqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "ClientGroup";
+            tableMapping.ColumnMappings.Add("ResourceId", "ResourceId");
+            this._adapter.TableMappings.Add(tableMapping);
+            this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.DeleteCommand.Connection = this.Connection;
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[ClientGroup] WHERE (([ResourceId] = @Original_ResourceId))";
+            this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.InsertCommand.Connection = this.Connection;
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[ClientGroup] ([ResourceId]) VALUES (@ResourceId);\r\nSELECT Reso" +
+                "urceId FROM ClientGroup WHERE (ResourceId = @ResourceId)";
+            this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.UpdateCommand.Connection = this.Connection;
+            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[ClientGroup] SET [ResourceId] = @ResourceId WHERE (([ResourceId] = " +
+                "@Original_ResourceId));\r\nSELECT ResourceId FROM ClientGroup WHERE (ResourceId = " +
+                "@ResourceId)";
+            this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitConnection() {
+            this._connection = new global::System.Data.SqlClient.SqlConnection();
+            this._connection.ConnectionString = global::HeuristicLab.Hive.Server.ADODataAccess.Properties.Settings.Default.HiveServerConnectionString;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitCommandCollection() {
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[0].Connection = this.Connection;
+            this._commandCollection[0].CommandText = "SELECT ResourceId FROM dbo.ClientGroup";
+            this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
+        public virtual int Fill(dsHiveServer.ClientGroupDataTable dataTable) {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
+        public virtual dsHiveServer.ClientGroupDataTable GetData() {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsHiveServer.ClientGroupDataTable dataTable = new dsHiveServer.ClientGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer.ClientGroupDataTable dataTable) {
+            return this.Adapter.Update(dataTable);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer dataSet) {
+            return this.Adapter.Update(dataSet, "ClientGroup");
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow dataRow) {
+            return this.Adapter.Update(new global::System.Data.DataRow[] {
+                        dataRow});
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow[] dataRows) {
+            return this.Adapter.Update(dataRows);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
+        public virtual int Delete(long Original_ResourceId) {
+            this.Adapter.DeleteCommand.Parameters[0].Value = ((long)(Original_ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
+            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.DeleteCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.DeleteCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
+        public virtual int Insert(long ResourceId) {
+            this.Adapter.InsertCommand.Parameters[0].Value = ((long)(ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
+            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.InsertCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(long ResourceId, long Original_ResourceId) {
+            this.Adapter.UpdateCommand.Parameters[0].Value = ((long)(ResourceId));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((long)(Original_ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
+            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.UpdateCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.UpdateCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(long Original_ResourceId) {
+            return this.Update(Original_ResourceId, Original_ResourceId);
+        }
+    }
+    
+    /// <summary>
+    ///Represents the connection and commands used to retrieve and save data.
+    ///</summary>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+    [global::System.ComponentModel.DesignerCategoryAttribute("code")]
+    [global::System.ComponentModel.ToolboxItem(true)]
+    [global::System.ComponentModel.DataObjectAttribute(true)]
+    [global::System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterDesigner, Microsoft.VSDesigner" +
+        ", Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+    [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+    public partial class ClientGroup_ResourceTableAdapter : global::System.ComponentModel.Component {
+        
+        private global::System.Data.SqlClient.SqlDataAdapter _adapter;
+        
+        private global::System.Data.SqlClient.SqlConnection _connection;
+        
+        private global::System.Data.SqlClient.SqlTransaction _transaction;
+        
+        private global::System.Data.SqlClient.SqlCommand[] _commandCollection;
+        
+        private bool _clearBeforeFill;
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public ClientGroup_ResourceTableAdapter() {
+            this.ClearBeforeFill = true;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected internal global::System.Data.SqlClient.SqlDataAdapter Adapter {
+            get {
+                if ((this._adapter == null)) {
+                    this.InitAdapter();
+                }
+                return this._adapter;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlConnection Connection {
+            get {
+                if ((this._connection == null)) {
+                    this.InitConnection();
+                }
+                return this._connection;
+            }
+            set {
+                this._connection = value;
+                if ((this.Adapter.InsertCommand != null)) {
+                    this.Adapter.InsertCommand.Connection = value;
+                }
+                if ((this.Adapter.DeleteCommand != null)) {
+                    this.Adapter.DeleteCommand.Connection = value;
+                }
+                if ((this.Adapter.UpdateCommand != null)) {
+                    this.Adapter.UpdateCommand.Connection = value;
+                }
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    if ((this.CommandCollection[i] != null)) {
+                        ((global::System.Data.SqlClient.SqlCommand)(this.CommandCollection[i])).Connection = value;
+                    }
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlTransaction Transaction {
+            get {
+                return this._transaction;
+            }
+            set {
+                this._transaction = value;
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    this.CommandCollection[i].Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.DeleteCommand != null))) {
+                    this.Adapter.DeleteCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.InsertCommand != null))) {
+                    this.Adapter.InsertCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.UpdateCommand != null))) {
+                    this.Adapter.UpdateCommand.Transaction = this._transaction;
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected global::System.Data.SqlClient.SqlCommand[] CommandCollection {
+            get {
+                if ((this._commandCollection == null)) {
+                    this.InitCommandCollection();
+                }
+                return this._commandCollection;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool ClearBeforeFill {
+            get {
+                return this._clearBeforeFill;
+            }
+            set {
+                this._clearBeforeFill = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitAdapter() {
+            this._adapter = new global::System.Data.SqlClient.SqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "ClientGroup_Resource";
+            tableMapping.ColumnMappings.Add("ClientGroupResource", "ClientGroupResource");
+            tableMapping.ColumnMappings.Add("ResourceId", "ResourceId");
+            this._adapter.TableMappings.Add(tableMapping);
+            this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.DeleteCommand.Connection = this.Connection;
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[ClientGroup_Resource] WHERE (([ClientGroupResource] = @Origina" +
+                "l_ClientGroupResource) AND ([ResourceId] = @Original_ResourceId))";
+            this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ClientGroupResource", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ClientGroupResource", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.InsertCommand.Connection = this.Connection;
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[ClientGroup_Resource] ([ClientGroupResource], [ResourceId]) VALUES (@ClientGroupResource, @ResourceId);
+SELECT ClientGroupResource, ResourceId FROM ClientGroup_Resource WHERE (ClientGroupResource = @ClientGroupResource) AND (ResourceId = @ResourceId)";
+            this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ClientGroupResource", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ClientGroupResource", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.UpdateCommand.Connection = this.Connection;
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[ClientGroup_Resource] SET [ClientGroupResource] = @ClientGroupResource, [ResourceId] = @ResourceId WHERE (([ClientGroupResource] = @Original_ClientGroupResource) AND ([ResourceId] = @Original_ResourceId));
+SELECT ClientGroupResource, ResourceId FROM ClientGroup_Resource WHERE (ClientGroupResource = @ClientGroupResource) AND (ResourceId = @ResourceId)";
+            this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ClientGroupResource", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ClientGroupResource", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ClientGroupResource", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ClientGroupResource", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitConnection() {
+            this._connection = new global::System.Data.SqlClient.SqlConnection();
+            this._connection.ConnectionString = global::HeuristicLab.Hive.Server.ADODataAccess.Properties.Settings.Default.HiveServerConnectionString;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitCommandCollection() {
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[0].Connection = this.Connection;
+            this._commandCollection[0].CommandText = "SELECT ClientGroupResource, ResourceId FROM dbo.ClientGroup_Resource";
+            this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
+        public virtual int Fill(dsHiveServer.ClientGroup_ResourceDataTable dataTable) {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
+        public virtual dsHiveServer.ClientGroup_ResourceDataTable GetData() {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsHiveServer.ClientGroup_ResourceDataTable dataTable = new dsHiveServer.ClientGroup_ResourceDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer.ClientGroup_ResourceDataTable dataTable) {
+            return this.Adapter.Update(dataTable);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer dataSet) {
+            return this.Adapter.Update(dataSet, "ClientGroup_Resource");
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow dataRow) {
+            return this.Adapter.Update(new global::System.Data.DataRow[] {
+                        dataRow});
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow[] dataRows) {
+            return this.Adapter.Update(dataRows);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
+        public virtual int Delete(long Original_ClientGroupResource, long Original_ResourceId) {
+            this.Adapter.DeleteCommand.Parameters[0].Value = ((long)(Original_ClientGroupResource));
+            this.Adapter.DeleteCommand.Parameters[1].Value = ((long)(Original_ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
+            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.DeleteCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.DeleteCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
+        public virtual int Insert(long ClientGroupResource, long ResourceId) {
+            this.Adapter.InsertCommand.Parameters[0].Value = ((long)(ClientGroupResource));
+            this.Adapter.InsertCommand.Parameters[1].Value = ((long)(ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
+            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.InsertCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(long ClientGroupResource, long ResourceId, long Original_ClientGroupResource, long Original_ResourceId) {
+            this.Adapter.UpdateCommand.Parameters[0].Value = ((long)(ClientGroupResource));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((long)(ResourceId));
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((long)(Original_ClientGroupResource));
+            this.Adapter.UpdateCommand.Parameters[3].Value = ((long)(Original_ResourceId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
+            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.UpdateCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.UpdateCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(long Original_ClientGroupResource, long Original_ResourceId) {
+            return this.Update(Original_ClientGroupResource, Original_ResourceId, Original_ClientGroupResource, Original_ResourceId);
+        }
+    }
+    
+    /// <summary>
     ///TableAdapterManager is used to coordinate TableAdapters in the dataset to enable Hierarchical Update scenarios
     ///</summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -4948,6 +6258,10 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
         private UserGroupTableAdapter _userGroupTableAdapter;
         
         private PermissionOwner_UserGroupTableAdapter _permissionOwner_UserGroupTableAdapter;
+        
+        private ClientGroupTableAdapter _clientGroupTableAdapter;
+        
+        private ClientGroup_ResourceTableAdapter _clientGroup_ResourceTableAdapter;
         
         private bool _backupDataSetBeforeUpdate;
         
@@ -5042,6 +6356,32 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterManagerPropertyEditor, Microso" +
+            "ft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" +
+            "", "System.Drawing.Design.UITypeEditor")]
+        public ClientGroupTableAdapter ClientGroupTableAdapter {
+            get {
+                return this._clientGroupTableAdapter;
+            }
+            set {
+                this._clientGroupTableAdapter = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterManagerPropertyEditor, Microso" +
+            "ft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" +
+            "", "System.Drawing.Design.UITypeEditor")]
+        public ClientGroup_ResourceTableAdapter ClientGroup_ResourceTableAdapter {
+            get {
+                return this._clientGroup_ResourceTableAdapter;
+            }
+            set {
+                this._clientGroup_ResourceTableAdapter = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public bool BackupDataSetBeforeUpdate {
             get {
                 return this._backupDataSetBeforeUpdate;
@@ -5082,6 +6422,14 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                             && (this._permissionOwner_UserGroupTableAdapter.Connection != null))) {
                     return this._permissionOwner_UserGroupTableAdapter.Connection;
                 }
+                if (((this._clientGroupTableAdapter != null) 
+                            && (this._clientGroupTableAdapter.Connection != null))) {
+                    return this._clientGroupTableAdapter.Connection;
+                }
+                if (((this._clientGroup_ResourceTableAdapter != null) 
+                            && (this._clientGroup_ResourceTableAdapter.Connection != null))) {
+                    return this._clientGroup_ResourceTableAdapter.Connection;
+                }
                 return null;
             }
             set {
@@ -5112,6 +6460,12 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                 if ((this._permissionOwner_UserGroupTableAdapter != null)) {
                     count = (count + 1);
                 }
+                if ((this._clientGroupTableAdapter != null)) {
+                    count = (count + 1);
+                }
+                if ((this._clientGroup_ResourceTableAdapter != null)) {
+                    count = (count + 1);
+                }
                 return count;
             }
         }
@@ -5131,6 +6485,24 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allChangedRows.AddRange(updatedRows);
                 }
             }
+            if ((this._resourceTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._resourceTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._clientGroupTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
             if ((this._userGroupTableAdapter != null)) {
                 global::System.Data.DataRow[] updatedRows = dataSet.UserGroup.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
@@ -5140,12 +6512,12 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allChangedRows.AddRange(updatedRows);
                 }
             }
-            if ((this._resourceTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+            if ((this._clientGroup_ResourceTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.ClientGroup_Resource.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
-                    result = (result + this._resourceTableAdapter.Update(updatedRows));
+                    result = (result + this._clientGroup_ResourceTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -5158,21 +6530,21 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allChangedRows.AddRange(updatedRows);
                 }
             }
-            if ((this._clientTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
-                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
-                if (((updatedRows != null) 
-                            && (0 < updatedRows.Length))) {
-                    result = (result + this._clientTableAdapter.Update(updatedRows));
-                    allChangedRows.AddRange(updatedRows);
-                }
-            }
             if ((this._hiveUserTableAdapter != null)) {
                 global::System.Data.DataRow[] updatedRows = dataSet.HiveUser.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
                     result = (result + this._hiveUserTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
+            if ((this._clientTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._clientTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -5193,6 +6565,22 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allAddedRows.AddRange(addedRows);
                 }
             }
+            if ((this._resourceTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._resourceTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._clientGroupTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
             if ((this._userGroupTableAdapter != null)) {
                 global::System.Data.DataRow[] addedRows = dataSet.UserGroup.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
@@ -5201,11 +6589,11 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allAddedRows.AddRange(addedRows);
                 }
             }
-            if ((this._resourceTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.Added);
+            if ((this._clientGroup_ResourceTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.ClientGroup_Resource.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
-                    result = (result + this._resourceTableAdapter.Update(addedRows));
+                    result = (result + this._clientGroup_ResourceTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -5217,19 +6605,19 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allAddedRows.AddRange(addedRows);
                 }
             }
-            if ((this._clientTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.Added);
-                if (((addedRows != null) 
-                            && (0 < addedRows.Length))) {
-                    result = (result + this._clientTableAdapter.Update(addedRows));
-                    allAddedRows.AddRange(addedRows);
-                }
-            }
             if ((this._hiveUserTableAdapter != null)) {
                 global::System.Data.DataRow[] addedRows = dataSet.HiveUser.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
                     result = (result + this._hiveUserTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
+            if ((this._clientTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._clientTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -5242,19 +6630,19 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private int UpdateDeletedRows(dsHiveServer dataSet, global::System.Collections.Generic.List<global::System.Data.DataRow> allChangedRows) {
             int result = 0;
-            if ((this._hiveUserTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.HiveUser.Select(null, null, global::System.Data.DataViewRowState.Deleted);
-                if (((deletedRows != null) 
-                            && (0 < deletedRows.Length))) {
-                    result = (result + this._hiveUserTableAdapter.Update(deletedRows));
-                    allChangedRows.AddRange(deletedRows);
-                }
-            }
             if ((this._clientTableAdapter != null)) {
                 global::System.Data.DataRow[] deletedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
                     result = (result + this._clientTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
+            if ((this._hiveUserTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.HiveUser.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._hiveUserTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -5266,11 +6654,11 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                     allChangedRows.AddRange(deletedRows);
                 }
             }
-            if ((this._resourceTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+            if ((this._clientGroup_ResourceTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.ClientGroup_Resource.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
-                    result = (result + this._resourceTableAdapter.Update(deletedRows));
+                    result = (result + this._clientGroup_ResourceTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -5279,6 +6667,22 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
                     result = (result + this._userGroupTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._clientGroupTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
+            if ((this._resourceTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.Resource.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._resourceTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -5354,6 +6758,16 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
             }
             if (((this._permissionOwner_UserGroupTableAdapter != null) 
                         && (this.MatchTableAdapterConnection(this._permissionOwner_UserGroupTableAdapter.Connection) == false))) {
+                throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
+                        "tring.");
+            }
+            if (((this._clientGroupTableAdapter != null) 
+                        && (this.MatchTableAdapterConnection(this._clientGroupTableAdapter.Connection) == false))) {
+                throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
+                        "tring.");
+            }
+            if (((this._clientGroup_ResourceTableAdapter != null) 
+                        && (this.MatchTableAdapterConnection(this._clientGroup_ResourceTableAdapter.Connection) == false))) {
                 throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
                         "tring.");
             }
@@ -5443,6 +6857,24 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                         adaptersWithAcceptChangesDuringUpdate.Add(this._permissionOwner_UserGroupTableAdapter.Adapter);
                     }
                 }
+                if ((this._clientGroupTableAdapter != null)) {
+                    revertConnections.Add(this._clientGroupTableAdapter, this._clientGroupTableAdapter.Connection);
+                    this._clientGroupTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(workConnection));
+                    this._clientGroupTableAdapter.Transaction = ((global::System.Data.SqlClient.SqlTransaction)(workTransaction));
+                    if (this._clientGroupTableAdapter.Adapter.AcceptChangesDuringUpdate) {
+                        this._clientGroupTableAdapter.Adapter.AcceptChangesDuringUpdate = false;
+                        adaptersWithAcceptChangesDuringUpdate.Add(this._clientGroupTableAdapter.Adapter);
+                    }
+                }
+                if ((this._clientGroup_ResourceTableAdapter != null)) {
+                    revertConnections.Add(this._clientGroup_ResourceTableAdapter, this._clientGroup_ResourceTableAdapter.Connection);
+                    this._clientGroup_ResourceTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(workConnection));
+                    this._clientGroup_ResourceTableAdapter.Transaction = ((global::System.Data.SqlClient.SqlTransaction)(workTransaction));
+                    if (this._clientGroup_ResourceTableAdapter.Adapter.AcceptChangesDuringUpdate) {
+                        this._clientGroup_ResourceTableAdapter.Adapter.AcceptChangesDuringUpdate = false;
+                        adaptersWithAcceptChangesDuringUpdate.Add(this._clientGroup_ResourceTableAdapter.Adapter);
+                    }
+                }
                 // 
                 //---- Perform updates -----------
                 //
@@ -5524,6 +6956,14 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
                 if ((this._permissionOwner_UserGroupTableAdapter != null)) {
                     this._permissionOwner_UserGroupTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._permissionOwner_UserGroupTableAdapter]));
                     this._permissionOwner_UserGroupTableAdapter.Transaction = null;
+                }
+                if ((this._clientGroupTableAdapter != null)) {
+                    this._clientGroupTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._clientGroupTableAdapter]));
+                    this._clientGroupTableAdapter.Transaction = null;
+                }
+                if ((this._clientGroup_ResourceTableAdapter != null)) {
+                    this._clientGroup_ResourceTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._clientGroup_ResourceTableAdapter]));
+                    this._clientGroup_ResourceTableAdapter.Transaction = null;
                 }
                 if ((0 < adaptersWithAcceptChangesDuringUpdate.Count)) {
                     global::System.Data.Common.DataAdapter[] adapters = new System.Data.Common.DataAdapter[adaptersWithAcceptChangesDuringUpdate.Count];

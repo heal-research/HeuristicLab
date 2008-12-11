@@ -47,6 +47,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    private IClientGroupAdapter clientGroupAdapter = null;
+
+    private IClientGroupAdapter ClientGroupAdapter {
+      get {
+        if (clientGroupAdapter == null) {
+          clientGroupAdapter = ServiceLocator.GetClientGroupAdapter();
+        }
+
+        return clientGroupAdapter;
+      }
+    }
+
     public ClientAdapter() {
       adapter.Fill(data);
     }
@@ -158,6 +170,20 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    public ClientInfo GetClientById(long id) {
+      ClientInfo client = new ClientInfo();
+
+      dsHiveServer.ClientRow row = data.FindByResourceId(id);
+
+      if (row != null) {
+        Convert(row, client);
+
+        return client;
+      } else {
+        return null;
+      }
+    }
+
     public ICollection<ClientInfo> GetAllClients() {
       ICollection<ClientInfo> allClients =
         new List<ClientInfo>();
@@ -172,7 +198,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteClient(ClientInfo client) {
+    public bool DeleteClient(ClientInfo client) {      
       if (client != null) {
         dsHiveServer.ClientRow row = null;
         IEnumerable<dsHiveServer.ClientRow> clients =
@@ -184,6 +210,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row = clients.First<dsHiveServer.ClientRow>();
 
         if (row != null) {
+          ICollection<ClientGroup> clientGroups =
+            ClientGroupAdapter.MemberOf(client);
+
+          foreach (ClientGroup group in clientGroups) {
+            group.Resources.Remove(client);
+            ClientGroupAdapter.UpdateClientGroup(group);
+          }
+
           data.RemoveClientRow(row);
 
           return ResAdapter.DeleteResource(client);

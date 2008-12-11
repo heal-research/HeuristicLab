@@ -50,6 +50,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ICollection<ClientGroup> GetAllClientGroups();
 
     /// <summary>
+    /// Gets all client groups where the resource is member of
+    /// </summary>
+    /// <param name="permOwner"></param>
+    /// <returns></returns>
+    ICollection<ClientGroup> MemberOf(Resource resource);
+
+    /// <summary>
     /// Deletes the client group
     /// </summary>
     /// <param name="client"></param>

@@ -111,7 +111,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 GetUserGroupById(permOwnerUserGroupRow.PermissionOwnerId);
             }
 
-            userGroup.Members.Add(permissionOwner);
+            if(permissionOwner != null)
+              userGroup.Members.Add(permissionOwner);
           }
         }
 

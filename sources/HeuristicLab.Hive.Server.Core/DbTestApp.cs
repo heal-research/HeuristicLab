@@ -161,10 +161,74 @@ namespace HeuristicLab.Hive.Server {
       userAdapter.DeleteUser(user2);
     }
 
+    private void TestClientGroupAdapter() {
+      IClientGroupAdapter clientGroupAdapter =
+       ServiceLocator.GetClientGroupAdapter();
+
+      ClientInfo client =
+        new ClientInfo();
+      client.Name = "Stefan";
+      client.ClientId = Guid.NewGuid();
+
+      ClientInfo client2 =
+        new ClientInfo();
+      client2.Name = "Martin";
+      client2.ClientId = Guid.NewGuid();
+
+      ClientInfo client3 =
+        new ClientInfo();
+      client3.Name = "Heinz";
+      client3.ClientId = Guid.NewGuid();
+
+      ClientGroup group =
+        new ClientGroup();
+
+      ClientGroup subGroup =
+        new ClientGroup();
+      subGroup.Resources.Add(client);
+
+      group.Resources.Add(client3);
+      group.Resources.Add(client2);
+      group.Resources.Add(subGroup);
+
+      clientGroupAdapter.UpdateClientGroup(group);
+
+      ClientGroup read =
+        clientGroupAdapter.GetClientGroupById(group.ResourceId);
+
+      ICollection<ClientGroup> clientGroups =
+        clientGroupAdapter.GetAllClientGroups();
+
+      IClientAdapter clientAdapter =
+        ServiceLocator.GetClientAdapter();
+
+      clientAdapter.DeleteClient(client3);
+
+      read =
+         clientGroupAdapter.GetClientGroupById(group.ResourceId);
+
+      clientGroupAdapter.DeleteClientGroup(subGroup);
+
+      read =
+         clientGroupAdapter.GetClientGroupById(group.ResourceId);
+
+      clientGroups =
+        clientGroupAdapter.GetAllClientGroups();
+
+      clientGroupAdapter.DeleteClientGroup(group);
+
+      clientGroups =
+        clientGroupAdapter.GetAllClientGroups();
+
+      clientAdapter.DeleteClient(client);
+      clientAdapter.DeleteClient(client2);
+    }
+
     public override void Run() {
       TestClientAdapter();
       TestUserAdapter();
       TestUserGroupAdapter();
+      TestClientGroupAdapter();
 
       ITransactionManager transactionManager =
         ServiceLocator.GetTransactionManager();
