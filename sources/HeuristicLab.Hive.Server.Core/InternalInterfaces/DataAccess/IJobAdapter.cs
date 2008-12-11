@@ -38,7 +38,7 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    ClientInfo GetJobById(long id);
+    Job GetJobById(long id);
 
     /// <summary>
     /// Get all jobs
