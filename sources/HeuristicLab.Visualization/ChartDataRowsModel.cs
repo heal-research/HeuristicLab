@@ -130,13 +130,52 @@ namespace HeuristicLab.Visualization{
     }
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      throw new NotImplementedException();
-      
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+
+      foreach (var row in rows) {
+        XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
+
+        XmlAttribute idAttr = document.CreateAttribute("label");
+        idAttr.Value = row.Label.ToString();
+        columnElement.Attributes.Append(idAttr);
+
+        for (int i = 0; i < row.Count; i++) {
+          if (i == 0) {
+            columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+          } else {
+            columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+          }
+        }
+        node.AppendChild(columnElement);
+      }
+      return node;    
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      throw new NotImplementedException();
+      base.Populate(node, restoredObjects);
 
+      foreach (XmlNode dataRow in node.ChildNodes) {
+        XmlAttributeCollection attrs = dataRow.Attributes;
+        XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
+        string rowLabel = rowIdAttr.Value;
+        DataRow row = new DataRow();
+        row.Label = rowLabel;
+
+        string[] tokens = dataRow.InnerText.Split(';');
+        double[] data = new double[tokens.Length];
+        for (int i = 0; i < data.Length; i++) {
+          if (tokens[i].Length != 0) {
+            if (
+              double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
+              false) {
+              throw new FormatException("Can't parse " + tokens[i] + " as double value.");
+            }
+          }
+        }
+        row.AddValues(data);
+
+        AddDataRow(row);
+      }
     }
   }
 }
