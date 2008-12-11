@@ -24,6 +24,13 @@ namespace HeuristicLab.Hive.Server.Core {
       clientAdapter = ServiceLocator.GetClientAdapter();
       jobAdapter = ServiceLocator.GetJobAdapter();
 
+      for (int i = 0; i < 10; i++) {
+        Job job = new Job();
+        job.JobId = i;
+        job.State = State.offline;
+        jobAdapter.UpdateJob(job);
+      }
+
     }
 
     #region IClientCommunicator Members
@@ -56,7 +63,7 @@ namespace HeuristicLab.Hive.Server.Core {
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
       response.ActionRequest = new List<MessageContainer>();
       List<Job> allJobs = new List<Job>(jobAdapter.GetAllJobs());
-      if (allJobs.Count > 0) 
+      if (allJobs.Count > 0 && hbData.freeCores > 0) 
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));

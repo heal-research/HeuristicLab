@@ -148,7 +148,7 @@ namespace HeuristicLab.Hive.Server {
         lifecycleManager.Init();
         //sync with db every 5 minutes
         lifecycleManager.GetTransactionManager().EnableAutoUpdate(
-          new TimeSpan(0, 5, 0));
+          new TimeSpan(0, 0, 10));
 
         Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
             serverConsoleFacade.BaseAddresses[0]);
