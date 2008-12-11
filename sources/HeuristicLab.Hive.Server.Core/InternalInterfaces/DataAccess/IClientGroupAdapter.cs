@@ -44,6 +44,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ClientGroup GetClientGroupById(long clientGroupId);
 
     /// <summary>
+    /// Get the client group with the specified name
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    ClientGroup GetClientGroupByName(string name);
+
+    /// <summary>
     /// Get all client groups
     /// </summary>
     /// <returns></returns>

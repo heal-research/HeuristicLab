@@ -44,6 +44,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ClientInfo GetClientById(Guid clientId);
 
     /// <summary>
+    /// Get the client with the specified name
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    ClientInfo GetClientByName(string name);
+
+    /// <summary>
     /// Get the client with the specified ID
     /// </summary>
     /// <param name="clientId"></param>

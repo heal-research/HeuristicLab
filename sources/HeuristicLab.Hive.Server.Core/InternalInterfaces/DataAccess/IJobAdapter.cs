@@ -47,6 +47,33 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ICollection<Job> GetAllJobs();
 
     /// <summary>
+    /// Gets all subjobs of the specified job
+    /// </summary>
+    /// <returns></returns>
+    ICollection<Job> GetAllSubjobs(Job job);
+
+    /// <summary>
+    /// Gets the result of a job
+    /// </summary>
+    /// <param name="job"></param>
+    /// <returns></returns>
+    JobResult GetResult(Job job);
+
+    /// <summary>
+    /// Gets all jobs of the client
+    /// </summary>
+    /// <param name="client"></param>
+    /// <returns></returns>
+    ICollection<Job> GetJobsOf(ClientInfo client);
+
+    /// <summary>
+    /// Gets all jobs of the user
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    ICollection<Job> GetJobsOf(User user);
+
+    /// <summary>
     /// Deletes the job
     /// </summary>
     /// <param name="client"></param>

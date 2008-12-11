@@ -247,6 +247,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    public UserGroup GetUserGroupByName(string name) {
+      UserGroup group = new UserGroup();
+
+      PermissionOwner permOwner =
+        PermOwnerAdapter.GetPermissionOwnerByName(name);
+
+      if (permOwner != null) {
+        dsHiveServer.UserGroupRow row =
+          data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
+
+        if (row != null) {
+          Convert(row, group);
+
+          return group;
+        }
+      }
+
+      return null;
+    }
+
     public ICollection<UserGroup> GetAllUserGroups() {
       ICollection<UserGroup> allUserGroups =
         new List<UserGroup>();

@@ -111,6 +111,22 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
+    public Resource GetResourceByName(string name) {
+      Resource resource = new Resource();
+
+      dsHiveServer.ResourceRow row =
+        data.Single<dsHiveServer.ResourceRow>(
+          r => !r.IsNameNull() && r.Name == name);
+
+      if (row != null) {
+        Convert(row, resource);
+
+        return resource;
+      } else {
+        return null;
+      }
+    }
+
     public ICollection<Resource> GetAllResources() {
       IList<Resource> allResources =
         new List<Resource>();

@@ -169,16 +169,19 @@ namespace HeuristicLab.Hive.Server {
         new ClientInfo();
       client.Name = "Stefan";
       client.ClientId = Guid.NewGuid();
+      client.Login = DateTime.Now;
 
       ClientInfo client2 =
         new ClientInfo();
       client2.Name = "Martin";
       client2.ClientId = Guid.NewGuid();
+      client2.Login = DateTime.Now;
 
       ClientInfo client3 =
         new ClientInfo();
       client3.Name = "Heinz";
       client3.ClientId = Guid.NewGuid();
+      client3.Login = DateTime.Now;
 
       ClientGroup group =
         new ClientGroup();
@@ -224,11 +227,31 @@ namespace HeuristicLab.Hive.Server {
       clientAdapter.DeleteClient(client2);
     }
 
+    private void TestJobAdapter() {
+      IJobAdapter jobAdapter = ServiceLocator.GetJobAdapter();
+
+      Job job = new Job();
+
+      ClientInfo client = new ClientInfo();
+      client.ClientId = Guid.NewGuid();
+      client.Login = DateTime.Now;
+
+      job.Client = client;
+      jobAdapter.UpdateJob(job);
+
+      ICollection<Job> jobs = jobAdapter.GetAllJobs();
+
+      jobAdapter.DeleteJob(job);
+
+      jobs = jobAdapter.GetAllJobs();
+    }
+
     public override void Run() {
       TestClientAdapter();
       TestUserAdapter();
       TestUserGroupAdapter();
       TestClientGroupAdapter();
+      TestJobAdapter();
 
       ITransactionManager transactionManager =
         ServiceLocator.GetTransactionManager();

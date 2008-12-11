@@ -59,6 +59,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    private IJobAdapter jobAdapter = null;
+
+    private IJobAdapter JobAdapter {
+      get {
+        if (jobAdapter == null) {
+          jobAdapter = ServiceLocator.GetJobAdapter();
+        }
+
+        return jobAdapter;
+      }
+    }
+
     public UserAdapter() {
       adapter.Fill(data);
     }
@@ -169,12 +181,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           data.FindByPermissionOwnerId(user.PermissionOwnerId);
 
         if (row != null) {
+          //Referential integrity with user groups
           ICollection<UserGroup> userGroups =
             UserGroupAdapter.MemberOf(user);
-
           foreach (UserGroup group in userGroups) {
             group.Members.Remove(user);
             UserGroupAdapter.UpdateUserGroup(group);
+          }
+
+          //Referential integrity with jobs
+          ICollection<Job> jobs =
+            JobAdapter.GetJobsOf(user);
+          foreach (Job job in jobs) {
+            JobAdapter.DeleteJob(job);
           }
 
           data.RemoveHiveUserRow(row);

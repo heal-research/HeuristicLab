@@ -59,6 +59,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    private IJobAdapter jobAdapter = null;
+
+    private IJobAdapter JobAdapter {
+      get {
+        if (jobAdapter == null) {
+          jobAdapter = ServiceLocator.GetJobAdapter();
+        }
+
+        return jobAdapter;
+      }
+    }
+
     public ClientAdapter() {
       adapter.Fill(data);
     }
@@ -184,6 +196,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    public ClientInfo GetClientByName(string name) {
+      ClientInfo client = new ClientInfo();
+
+      Resource res =
+        ResAdapter.GetResourceByName(name);
+
+      if (res != null) {
+        dsHiveServer.ClientRow row =
+          data.FindByResourceId(res.ResourceId);
+
+        if (row != null) {
+          Convert(row, client);
+
+          return client;
+        }
+      }
+
+      return null;
+    }
+
     public ICollection<ClientInfo> GetAllClients() {
       ICollection<ClientInfo> allClients =
         new List<ClientInfo>();
@@ -210,12 +242,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row = clients.First<dsHiveServer.ClientRow>();
 
         if (row != null) {
+          //Referential integrity with client groups
           ICollection<ClientGroup> clientGroups =
             ClientGroupAdapter.MemberOf(client);
-
           foreach (ClientGroup group in clientGroups) {
             group.Resources.Remove(client);
             ClientGroupAdapter.UpdateClientGroup(group);
+          }
+
+          //Referential integrity with jobs
+          ICollection<Job> jobs =
+            JobAdapter.GetJobsOf(client);
+          foreach (Job job in jobs) {
+            JobAdapter.DeleteJob(job);
           }
 
           data.RemoveClientRow(row);

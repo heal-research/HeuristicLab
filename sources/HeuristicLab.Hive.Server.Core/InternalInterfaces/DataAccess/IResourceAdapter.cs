@@ -44,6 +44,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     Resource GetResourceById(long resourceId);
 
     /// <summary>
+    /// Get the resource with the specified name
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    Resource GetResourceByName(string name);
+
+    /// <summary>
     /// Gets the resource and updates the values of the object
     /// </summary>
     /// <param name="resource"></param>

@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     private IResourceAdapter resourceAdapter = null;
 
-    private IResourceAdapter ResourceAdapter {
+    private IResourceAdapter ResAdapter {
       get {
         if (resourceAdapter == null)
           resourceAdapter = ServiceLocator.GetResourceAdapter();
@@ -80,7 +80,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row != null && clientGroup != null) {
         /*Parent - Permission Owner*/
         clientGroup.ResourceId = row.ResourceId;
-        ResourceAdapter.GetResourceById(clientGroup);
+        ResAdapter.GetResourceById(clientGroup);
 
         //first check for created references
         IEnumerable<dsHiveServer.ClientGroup_ResourceRow> clientGroupRows =
@@ -217,7 +217,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public void UpdateClientGroup(ClientGroup group) {
       if (group != null) {
-        ResourceAdapter.UpdateResource(group);
+        ResAdapter.UpdateResource(group);
 
         dsHiveServer.ClientGroupRow row =
           data.FindByResourceId(group.ResourceId);
@@ -245,6 +245,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } else {
         return null;
       }
+    }
+
+    public ClientGroup GetClientGroupByName(string name) {
+      ClientGroup group = new ClientGroup();
+
+      Resource res =
+        ResAdapter.GetResourceByName(name);
+
+      if (res != null) {
+        dsHiveServer.ClientGroupRow row =
+          data.FindByResourceId(res.ResourceId);
+
+        if (row != null) {
+          Convert(row, group);
+
+          return group;
+        }
+      }
+
+      return null;
     }
 
     public ICollection<ClientGroup> GetAllClientGroups() {
@@ -308,7 +328,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
 
           data.RemoveClientGroupRow(row);
-          return ResourceAdapter.DeleteResource(group);
+          return ResAdapter.DeleteResource(group);
         }
       }
 
