@@ -42,6 +42,8 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
+      this.cmsAddDelete = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
@@ -52,14 +54,17 @@
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
       this.lvUserControl = new System.Windows.Forms.ListView();
+      this.imageList2 = new System.Windows.Forms.ImageList(this.components);
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
+      this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
+      this.cmsAddDelete.SuspendLayout();
       this.tpJobControl.SuspendLayout();
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
@@ -92,7 +97,7 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.close_Click);
       // 
@@ -117,14 +122,14 @@
       // jobToolStripMenuItem1
       // 
       this.jobToolStripMenuItem1.Name = "jobToolStripMenuItem1";
-      this.jobToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.jobToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.jobToolStripMenuItem1.Text = "Job";
       this.jobToolStripMenuItem1.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
       // 
       // groupToolStripMenuItem1
       // 
       this.groupToolStripMenuItem1.Name = "groupToolStripMenuItem1";
-      this.groupToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.groupToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.groupToolStripMenuItem1.Text = "Group";
       // 
       // userToolStripMenuItem
@@ -139,14 +144,16 @@
       // userToolStripMenuItem1
       // 
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
-      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+      this.userToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.userToolStripMenuItem1.Text = "User";
+      this.userToolStripMenuItem1.Click += new System.EventHandler(this.userToolStripMenuItem1_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
-      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
+      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
       this.groupToolStripMenuItem2.Text = "Group";
+      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.groupToolStripMenuItem2_Click);
       // 
       // tcManagementConsole
       // 
@@ -191,11 +198,25 @@
       // 
       // tvClientControl
       // 
+      this.tvClientControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvClientControl.Location = new System.Drawing.Point(0, 0);
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
+      // 
+      // cmsAddDelete
+      // 
+      this.cmsAddDelete.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiDelete});
+      this.cmsAddDelete.Name = "cmsAddDelete";
+      this.cmsAddDelete.Size = new System.Drawing.Size(117, 26);
+      // 
+      // tsmiDelete
+      // 
+      this.tsmiDelete.Name = "tsmiDelete";
+      this.tsmiDelete.Size = new System.Drawing.Size(116, 22);
+      this.tsmiDelete.Text = "Delete";
       // 
       // lvClientControl
       // 
@@ -248,6 +269,7 @@
       // 
       // tvJobControl
       // 
+      this.tvJobControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvJobControl.Location = new System.Drawing.Point(0, 0);
       this.tvJobControl.Name = "tvJobControl";
@@ -293,6 +315,7 @@
       // 
       // tvUserControl
       // 
+      this.tvUserControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvUserControl.Location = new System.Drawing.Point(0, 0);
       this.tvUserControl.Name = "tvUserControl";
@@ -302,11 +325,18 @@
       // lvUserControl
       // 
       this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvUserControl.LargeImageList = this.imageList2;
       this.lvUserControl.Location = new System.Drawing.Point(0, 0);
       this.lvUserControl.Name = "lvUserControl";
       this.lvUserControl.Size = new System.Drawing.Size(494, 346);
       this.lvUserControl.TabIndex = 1;
       this.lvUserControl.UseCompatibleStateImageBehavior = false;
+      // 
+      // imageList2
+      // 
+      this.imageList2.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList2.ImageStream")));
+      this.imageList2.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList2.Images.SetKeyName(0, "Users.png");
       // 
       // treeView2
       // 
@@ -326,6 +356,12 @@
       this.listView2.TabIndex = 0;
       this.listView2.UseCompatibleStateImageBehavior = false;
       // 
+      // directorySearcher1
+      // 
+      this.directorySearcher1.ClientTimeout = System.TimeSpan.Parse("-00:00:01");
+      this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
+      this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
+      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -344,6 +380,7 @@
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
+      this.cmsAddDelete.ResumeLayout(false);
       this.tpJobControl.ResumeLayout(false);
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
@@ -385,5 +422,9 @@
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem2;
+    private System.Windows.Forms.ContextMenuStrip cmsAddDelete;
+    private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
+    private System.Windows.Forms.ImageList imageList2;
+    private System.DirectoryServices.DirectorySearcher directorySearcher1;
   }
 }

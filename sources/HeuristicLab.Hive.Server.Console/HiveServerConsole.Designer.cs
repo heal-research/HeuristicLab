@@ -232,7 +232,7 @@ namespace HeuristicLab.Hive.Server.Console {
     private System.Windows.Forms.Label lblPort;
     private System.Windows.Forms.Label lblIp;
     private System.Windows.Forms.TextBox tbPort;
-    private IPAddressTextBox tbIp;
+    private System.Windows.Forms.TextBox tbIp;
     private System.Windows.Forms.Button btnLogin;
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.TextBox tbUserName;

@@ -31,6 +31,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using System.Security.Cryptography;
+using System.Net;
 
 namespace HeuristicLab.Hive.Server.Console {
 
@@ -62,7 +63,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
       ServiceLocator.Address = newIp;
       ServiceLocator.Port = this.tbPort.Text;
- 
+
       if (isValid()) {
         this.Visible = false;
         information = new HiveServerManagementConsole();
@@ -78,10 +79,17 @@ namespace HeuristicLab.Hive.Server.Console {
           (tbIp.Text != "") &&
           (tbPort.Text != "")) {
         try {
-          IJobManager jobManager =
-        ServiceLocator.GetJobManager();
-          ResponseList<Job> jobs = jobManager.GetAllJobs();
-          jobs = jobManager.GetAllJobs();
+          IPAddress ipAdress;
+          int port;
+          if ((IPAddress.TryParse(tbIp.Text, out ipAdress)) &&
+            int.TryParse(tbPort.Text, out port)) {
+            IUserRoleManager userManager =
+          ServiceLocator.GetUserRoleManager();
+            ResponseList<User> user = userManager.GetAllUsers();
+            user = userManager.GetAllUsers();
+          } else {
+            lblError.Text = "IP or Port not valid";
+          }
         }
         catch (Exception ex) {
           lblError.Text = "Server not online";
@@ -107,9 +115,9 @@ namespace HeuristicLab.Hive.Server.Console {
     }
 
     string md5sum(byte[] FileOrText) { //Output: String<-> Input: Byte[]
-       return BitConverter.ToString(new
-          MD5CryptoServiceProvider().ComputeHash(FileOrText)).Replace("-", "").ToLower();
-    } 
+      return BitConverter.ToString(new
+         MD5CryptoServiceProvider().ComputeHash(FileOrText)).Replace("-", "").ToLower();
+    }
 
   }
 }
