@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
-  interface IJobAdapter {
+  public interface IJobAdapter {
     /// <summary>
     /// Save or update the job
     /// </summary>

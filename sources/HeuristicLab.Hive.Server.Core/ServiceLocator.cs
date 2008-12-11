@@ -45,6 +45,8 @@ public class ServiceLocator {
 
   private static IPermissionOwnerAdapter permOwnerAdapter = null;
 
+  private static IJobAdapter jobAdapter = null;
+
   /// <summary>
   /// Gets the db transaction manager
   /// </summary>
@@ -134,5 +136,18 @@ public class ServiceLocator {
     }
 
     return permOwnerAdapter;
+  }
+
+  /// <summary>
+  /// Gets the job database adapter
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IJobAdapter GetJobAdapter() {
+    if (jobAdapter == null) {
+      jobAdapter = discoveryService.GetInstances<IJobAdapter>()[0];
+    }
+
+    return jobAdapter;
   }
 }
