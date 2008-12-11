@@ -26,25 +26,63 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager {
 
-    List<Job> jobs;
+    IJobAdapter jobAdapter;
 
     #region IJobManager Members
 
     public JobManager() {
-      jobs = new List<Job>();
-
-      jobs.Add(new Job { JobId = 1, State = State.idle });
-      jobs.Add(new Job { JobId = 2, State = State.idle });
-      jobs.Add(new Job { JobId = 3, State = State.idle });
+      jobAdapter = ServiceLocator.GetJobAdapter();
     }
 
     public ResponseList<Job> GetAllJobs() {
       ResponseList<Job> response = new ResponseList<Job>();
-      response.List = jobs;
+
+      response.List = new List<Job>(jobAdapter.GetAllJobs());
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ALL_JOBS;
+      
+      return response;
+    }
+
+    public ResponseObject<Job> AddNewJob(Job job) {
+      ResponseObject<Job> response = new ResponseObject<Job>();
+
+      if (job != null) {
+        if (job.JobId != 0) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
+          return response;
+        }
+        jobAdapter.UpdateJob(job);
+        response.Success = true;
+        response.Obj = job;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
+        return response;
+      }
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
+
+      return response;
+    }
+
+    public Response RemoveJob(long jobId) {
+      Response response = new Response();
+
+      Job job = jobAdapter.GetJobById(jobId);
+      if (job == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+        return response;
+      }
+      jobAdapter.DeleteJob(job);
+      response.Success = false;
+      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_REMOVED;
+
       return response;
     }
 

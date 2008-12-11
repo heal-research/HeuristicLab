@@ -195,4 +195,22 @@
   <data name="UserRole.IdMustNotBeSet" xml:space="preserve">
     <value>In this context the id must not be set</value>
   </data>
+  <data name="Job.AllJobs" xml:space="preserve">
+    <value>All Jobs returned</value>
+  </data>
+  <data name="Job.IdMustNotBeSet" xml:space="preserve">
+    <value>Id must not be set in this context</value>
+  </data>
+  <data name="Job.JobAdded" xml:space="preserve">
+    <value>Job successfully added to database</value>
+  </data>
+  <data name="Job.JobNull" xml:space="preserve">
+    <value>The job you sent was null</value>
+  </data>
+  <data name="Job.JobRemoved" xml:space="preserve">
+    <value>Job successfully removed</value>
+  </data>
+  <data name="JobDoesntExist" xml:space="preserve">
+    <value>The specified job doesn't exist</value>
+  </data>
 </root>

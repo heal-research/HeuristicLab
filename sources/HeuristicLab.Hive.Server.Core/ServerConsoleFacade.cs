@@ -66,6 +66,13 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetAllJobs() {
       return jobManager.GetAllJobs();
     }
+    public ResponseObject<Job> AddNewJob(Job job) {
+      throw new NotImplementedException();
+    }
+
+    public Response RemoveJob(long jobId) {
+      throw new NotImplementedException();
+    }
 
     #endregion
 
@@ -108,5 +115,6 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     #endregion
+
   }
 }

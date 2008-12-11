@@ -37,6 +37,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public byte[] Result { get; set; } // TODO DataStructure for Result needs to be defined
     [DataMember]
     public ClientInfo Client { get; set; }
-
+    [DataMember]
+    public Exception Exception { get; set; }
   }
 }

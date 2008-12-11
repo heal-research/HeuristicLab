@@ -36,6 +36,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]
-    public Job parentJob { get; set; }
+    public Job ParentJob { get; set; }
   }
 }
