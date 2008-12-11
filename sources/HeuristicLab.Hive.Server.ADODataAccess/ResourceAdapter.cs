@@ -112,16 +112,22 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public Resource GetResourceByName(string name) {
-      Resource resource = new Resource();
+      dsHiveServer.ResourceRow row = null;
 
-      dsHiveServer.ResourceRow row =
-        data.Single<dsHiveServer.ResourceRow>(
-          r => !r.IsNameNull() && r.Name == name);
+      IEnumerable<dsHiveServer.ResourceRow> permOwners =
+        from r in
+          data.AsEnumerable<dsHiveServer.ResourceRow>()
+        where !r.IsNameNull() && r.Name == name
+        select r;
+
+      if (permOwners.Count<dsHiveServer.ResourceRow>() == 1)
+        row = permOwners.First<dsHiveServer.ResourceRow>();
 
       if (row != null) {
-        Convert(row, resource);
+        Resource res = new Resource();
+        Convert(row, res);
 
-        return resource;
+        return res;
       } else {
         return null;
       }

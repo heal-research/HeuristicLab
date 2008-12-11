@@ -115,13 +115,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public PermissionOwner GetPermissionOwnerByName(String name) {
-      PermissionOwner permOwner = new PermissionOwner();
+       dsHiveServer.PermissionOwnerRow row = null;
 
-      dsHiveServer.PermissionOwnerRow row =
-        data.Single<dsHiveServer.PermissionOwnerRow>(
-          r => !r.IsNameNull() && r.Name == name);
+      IEnumerable<dsHiveServer.PermissionOwnerRow> permOwners =
+        from r in
+          data.AsEnumerable<dsHiveServer.PermissionOwnerRow>()
+        where !r.IsNameNull() && r.Name == name
+        select r;
+
+      if (permOwners.Count<dsHiveServer.PermissionOwnerRow>() == 1)
+        row = permOwners.First<dsHiveServer.PermissionOwnerRow>();
 
       if (row != null) {
+        PermissionOwner permOwner = new PermissionOwner();
         Convert(row, permOwner);
 
         return permOwner;
