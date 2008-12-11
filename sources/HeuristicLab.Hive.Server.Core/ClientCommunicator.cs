@@ -15,18 +15,15 @@ namespace HeuristicLab.Hive.Server.Core {
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
-    LinkedList<long> jobs;
     int nrOfJobs = 1;
 
     IClientAdapter clientAdapter;
+    IJobAdapter jobAdapter;
 
     public ClientCommunicator() {
-      clientAdapter = ServiceLocator.GetClientAdapter(); 
+      clientAdapter = ServiceLocator.GetClientAdapter();
+      jobAdapter = ServiceLocator.GetJobAdapter();
 
-      jobs = new LinkedList<long>();
-      for (long i = 0; i < nrOfJobs; i++) {
-        jobs.AddFirst(i);
-      }
     }
 
     #region IClientCommunicator Members
@@ -58,7 +55,8 @@ namespace HeuristicLab.Hive.Server.Core {
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
       response.ActionRequest = new List<MessageContainer>();
-      if (jobs.Count > 0) 
+      List<Job> allJobs = new List<Job>(jobAdapter.GetAllJobs());
+      if (allJobs.Count > 0) 
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
@@ -69,9 +67,10 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
       lock (this) {
-        if (jobs.Last != null) {
-          response.JobId = jobs.Last.Value;
-          jobs.RemoveLast();
+        LinkedList<Job> allJobs = new LinkedList<Job>(jobAdapter.GetAllJobs());
+        if (allJobs.Last != null) {
+          response.JobId = allJobs.Last.Value.JobId;
+          jobAdapter.DeleteJob(allJobs.Last.Value);   
           response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
