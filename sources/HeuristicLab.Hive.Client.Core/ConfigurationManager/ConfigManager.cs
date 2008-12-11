@@ -93,6 +93,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       st.JobsFetched = ClientStatusInfo.JobsFetched;      
 
       Dictionary<long, Executor> engines = Core.GetExecutionEngines();
+      st.Jobs = new List<JobStatus>();
       foreach (KeyValuePair<long, Executor> kvp in engines) {
         Executor e = kvp.Value;
         st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
