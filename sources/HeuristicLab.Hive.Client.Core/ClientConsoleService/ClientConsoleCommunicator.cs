@@ -25,6 +25,10 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
 
     public void Disconnect() {
       WcfService.Instance.Disconnect();
+    }   
+
+    public ConnectionContainer GetCurrentConnection() {
+      return new ConnectionContainer { IPAdress = WcfService.Instance.ServerIP, Port = WcfService.Instance.ServerPort };
     }
 
     #endregion
