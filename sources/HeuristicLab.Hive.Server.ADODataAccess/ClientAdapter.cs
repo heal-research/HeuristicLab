@@ -257,7 +257,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             JobAdapter.DeleteJob(job);
           }
 
-          data.RemoveClientRow(row);
+          row.Delete();
+          adapter.Update(row);
 
           return ResAdapter.DeleteResource(client);
         }

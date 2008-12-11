@@ -327,7 +327,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
               resourceClientGroupRow);
           }
 
-          data.RemoveClientGroupRow(row);
+          row.Delete();
+          adapter.Update(row);
+
           return ResAdapter.DeleteResource(group);
         }
       }

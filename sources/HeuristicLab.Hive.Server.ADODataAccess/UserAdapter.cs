@@ -196,7 +196,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             JobAdapter.DeleteJob(job);
           }
 
-          data.RemoveHiveUserRow(row);
+          row.Delete();
+          adapter.Update(row);
 
           return PermOwnerAdapter.DeletePermissionOwner(user);
         }

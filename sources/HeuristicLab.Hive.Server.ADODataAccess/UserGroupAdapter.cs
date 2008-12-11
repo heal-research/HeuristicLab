@@ -326,8 +326,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             permOwnerUserGroupData.RemovePermissionOwner_UserGroupRow(
               permOwnerUserGroupRow);
           }
-          
-          data.RemoveUserGroupRow(row);
+
+          row.Delete();
+          adapter.Update(row);
           return PermOwnerAdapter.DeletePermissionOwner(group);
         }
       }

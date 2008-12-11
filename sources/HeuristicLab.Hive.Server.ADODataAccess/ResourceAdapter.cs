@@ -147,7 +147,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           data.FindByResourceId(resource.ResourceId);
 
         if (row != null) {
-          data.RemoveResourceRow(row);
+          row.Delete();
+          adapter.Update(row);
 
           return true;
         } 

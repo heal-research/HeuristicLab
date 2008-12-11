@@ -150,7 +150,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
 
           if(row != null) {
-            data.RemovePermissionOwnerRow(row);
+            row.Delete();
+            adapter.Update(row);
           
             return true;
           }
