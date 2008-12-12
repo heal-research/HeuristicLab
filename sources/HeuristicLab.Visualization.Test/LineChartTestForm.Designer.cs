@@ -41,7 +41,7 @@
       // 
       // btnResetView
       // 
-      this.btnResetView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnResetView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.btnResetView.Location = new System.Drawing.Point(544, 346);
       this.btnResetView.Name = "btnResetView";
       this.btnResetView.Size = new System.Drawing.Size(75, 23);
@@ -55,8 +55,8 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(631, 395);
-      this.Controls.Add(this.btnResetView);
       this.Controls.Add(this.lineChartGroupBox);
+      this.Controls.Add(this.btnResetView);
       this.Name = "LineChartTestForm";
       this.Text = "LineChartTestForm";
       this.ResumeLayout(false);
