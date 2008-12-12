@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using NUnit.Framework;
 
@@ -45,6 +46,36 @@ namespace HeuristicLab.Visualization.Test {
       row3.AddValue(2);
       row3.AddValue(2);
       row3.AddValue(2);
+
+      Random rand = new Random();
+
+      for (int i = 0; i < 1000; i++) {
+        row1.AddValue(rand.NextDouble()*10);
+        row2.AddValue(rand.NextDouble()*10);
+        row3.AddValue(rand.NextDouble()*10);
+      }
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestAxes() {
+      LineChartTestForm f = new LineChartTestForm();
+
+      IDataRow row1 = new DataRow();
+
+      row1.Color = Color.Red;
+      row1.Thickness = 3;
+      row1.Style = DrawingStyle.Solid;
+
+      f.Model.AddDataRow(row1);
+
+      row1.AddValue(10);
+      row1.AddValue(5);
+      row1.AddValue(7);
+      row1.AddValue(3);
+      row1.AddValue(10);
+      row1.AddValue(2);
 
       f.ShowDialog();
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -12,6 +11,9 @@ namespace HeuristicLab.Visualization {
     private Boolean zoomFullView;
     private double minDataValue;
     private double maxDataValue;
+
+    private readonly WorldShape root;
+    private readonly XAxis xAxis;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -31,12 +33,18 @@ namespace HeuristicLab.Visualization {
 
       //TODO: correct Rectangle to fit
       RectangleD clientRectangle = new RectangleD(-1, -1, 1, 1);
-      canvasUI1.MainCanvas.WorldShape = new WorldShape(clientRectangle, clientRectangle);
+
+      root = new WorldShape(clientRectangle, clientRectangle);
+
+      xAxis = new XAxis();
+      root.AddShape(xAxis);
+
+      canvasUI1.MainCanvas.WorldShape = root;
           
       CreateMouseEventListeners();
          
       this.model = model;
-      Item = (IItem)model;
+      Item = model;
       maxDataRowCount = 0; 
       //The whole data rows are shown per default
       zoomFullView = true;
@@ -83,7 +91,7 @@ namespace HeuristicLab.Visualization {
         minDataValue-((maxDataValue-minDataValue)*0.05),
         maxDataRowCount-0.9,
         maxDataValue + ((maxDataValue - minDataValue) * 0.05));
-      canvasUI1.MainCanvas.WorldShape.ClippingArea = newClippingArea;
+      root.ClippingArea = newClippingArea;
     }
 
     private void InitShapes(IDataRow row) {
@@ -91,29 +99,21 @@ namespace HeuristicLab.Visualization {
        
       List<LineShape> lineShapes = new List<LineShape>();
       if (row.Count > 0) {
-        maxDataValue = Max(row[0], this.maxDataValue);
-        minDataValue = Min(row[0], minDataValue);
+        maxDataValue = Math.Max(row[0], this.maxDataValue);
+        minDataValue = Math.Min(row[0], minDataValue);
       }
       for (int i = 1; i < row.Count; i++) {
         LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
-        maxDataValue = Max(row[i], maxDataValue);
-        minDataValue = Min(row[i], minDataValue);
+        root.AddShape(lineShape);
+        maxDataValue = Math.Max(row[i], maxDataValue);
+        minDataValue = Math.Min(row[i], minDataValue);
       }
 
       rowToLineShapes[row] = lineShapes;
       ZoomToFullView();
       canvasUI1.Invalidate();
-    }
-
-    private double Min(double d, double value) {
-      return d < value ? d : value;
-    }
-
-    private double Max(double d, double value) {
-      return d>value ? d : value;
     }
 
     private void OnDataRowRemoved(IDataRow row) {
@@ -126,8 +126,8 @@ namespace HeuristicLab.Visualization {
     // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       List<LineShape> lineShapes = rowToLineShapes[row];
-      maxDataValue = Max(value, maxDataValue);
-      minDataValue = Min(value, minDataValue);
+      maxDataValue = Math.Max(value, maxDataValue);
+      minDataValue = Math.Min(value, minDataValue);
 
       if (index > lineShapes.Count + 1) {
         throw new NotImplementedException();
@@ -205,7 +205,7 @@ namespace HeuristicLab.Visualization {
       panListener.StartPoint = e.Location;
       canvasUI1.MouseEventListener = panListener;
 
-      startClippingArea = canvasUI1.MainCanvas.WorldShape.ClippingArea;
+      startClippingArea = root.ClippingArea;
     }
 
     private void Pan_OnMouseUp(Point startPoint, Point actualPoint) {
@@ -227,7 +227,7 @@ namespace HeuristicLab.Visualization {
       newClippingArea.Y1 = startClippingArea.Y1 - yDiff;
       newClippingArea.Y2 = startClippingArea.Y2 - yDiff;
 
-      canvasUI1.MainCanvas.WorldShape.ClippingArea = newClippingArea;
+      root.ClippingArea = newClippingArea;
       panListener.StartPoint = startPoint;
 
       this.zoomFullView = false; //user wants to pan => no full view
