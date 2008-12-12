@@ -20,11 +20,11 @@ namespace HeuristicLab.Visualization {
       Rectangle innerViewport = Transform.ToScreen(boundingBox, viewport, clippingArea);
 
       graphics.SetClip(innerViewport);
-      
+
       foreach (IShape shape in shapes) {
         shape.Draw(graphics, innerViewport, this.clippingArea);
       }
-      
+
       graphics.Restore(gstate);
     }
 
@@ -46,6 +46,10 @@ namespace HeuristicLab.Visualization {
     /// <param name="shape">shape to add</param>
     public void AddShape(IShape shape) {
       shapes.Add(shape);
+    }
+
+    public bool RemoveShape(IShape shape) {
+      return shapes.Remove(shape);
     }
   }
 }

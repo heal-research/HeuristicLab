@@ -191,25 +191,39 @@ namespace HeuristicLab.Visualization {
     #endregion
 
     private MouseEventListener panListener;
+    private MouseEventListener zoomListener;
 
     private void CreateMouseEventListeners() {
       panListener = new MouseEventListener();
       panListener.OnMouseMove += Pan_OnMouseMove;
       panListener.OnMouseUp += Pan_OnMouseUp;
-    }
 
+      zoomListener = new MouseEventListener();
+      zoomListener.OnMouseMove += Zoom_OnMouseMove;
+      zoomListener.OnMouseUp += Zoom_OnMouseUp;
+    }
 
     private RectangleD startClippingArea;
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
-      panListener.StartPoint = e.Location;
-      canvasUI1.MouseEventListener = panListener;
+      if (ModifierKeys == Keys.Control) {
+        zoomListener.StartPoint = e.Location;
+        canvasUI1.MouseEventListener = zoomListener;
 
-      startClippingArea = root.ClippingArea;
+        r = Rectangle.Empty;
+        rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, 1000, Color.Blue);
+
+        root.AddShape(rectangleShape);
+      } else {
+        panListener.StartPoint = e.Location;
+        canvasUI1.MouseEventListener = panListener;
+
+        startClippingArea = root.ClippingArea;
+      }
     }
 
     private void Pan_OnMouseUp(Point startPoint, Point actualPoint) {
-       canvasUI1.MouseEventListener = null;
+      canvasUI1.MouseEventListener = null;
     }
 
     private void Pan_OnMouseMove(Point startPoint, Point actualPoint) {
@@ -230,8 +244,46 @@ namespace HeuristicLab.Visualization {
       root.ClippingArea = newClippingArea;
       panListener.StartPoint = startPoint;
 
-      this.zoomFullView = false; //user wants to pan => no full view
+      zoomFullView = false; //user wants to pan => no full view
 
+      canvasUI1.Invalidate();
+    }
+
+    private void Zoom_OnMouseUp(Point startPoint, Point actualPoint) {
+      canvasUI1.MouseEventListener = null;
+
+      RectangleD newClippingArea = Transform.ToWorld(r, canvasUI1.ClientRectangle, root.ClippingArea);
+      root.ClippingArea = newClippingArea;
+      root.RemoveShape(rectangleShape);
+
+      zoomFullView = false; //user wants to pan => no full view
+
+      canvasUI1.Invalidate();
+    }
+
+    private Rectangle r;
+    private RectangleShape rectangleShape;
+
+    private void Zoom_OnMouseMove(Point startPoint, Point actualPoint) {
+      r = new Rectangle();
+
+      if (startPoint.X < actualPoint.X) {
+        r.X = startPoint.X;
+        r.Width = actualPoint.X - startPoint.X;
+      } else {
+        r.X = actualPoint.X;
+        r.Width = startPoint.X - actualPoint.X;
+      }
+
+      if (startPoint.Y < actualPoint.Y) {
+        r.Y = startPoint.Y;
+        r.Height = actualPoint.Y - startPoint.Y;
+      } else {
+        r.Y = actualPoint.Y;
+        r.Height = startPoint.Y - actualPoint.Y;
+      }
+
+      rectangleShape.Rectangle = Transform.ToWorld(r, canvasUI1.ClientRectangle, root.ClippingArea);
       canvasUI1.Invalidate();
     }
   }

@@ -2,24 +2,27 @@ using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class RectangleShape : IShape {
-    private RectangleD rect;
+    private RectangleD rectangle;
     private double z;
     private Color color;
+    private int opacity = 100;
 
     public RectangleShape(double x1, double y1, double x2, double y2, double z, Color color) {
-      this.rect = new RectangleD(x1, y1, x2, y2);
+      rectangle = new RectangleD(x1, y1, x2, y2);
       this.z = z;
       this.color = color;
     }
 
     public RectangleD BoundingBox {
-      get { return rect; }
+      get { return rectangle; }
     }
 
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+      Color brushColor = Color.FromArgb(50, color);
+
       using (Pen pen = new Pen(color, 1))
-      using (Brush brush = new SolidBrush(color)) {
-        Rectangle screenRect = Transform.ToScreen(rect, viewport, clippingArea);
+      using (Brush brush = new SolidBrush(brushColor)) {
+        Rectangle screenRect = Transform.ToScreen(rectangle, viewport, clippingArea);
 
         graphics.DrawRectangle(pen, screenRect);
         graphics.FillRectangle(brush, screenRect);
@@ -29,6 +32,11 @@ namespace HeuristicLab.Visualization {
     public double Z {
       get { return z; }
       set { z = value; }
+    }
+
+    public RectangleD Rectangle {
+      get { return rectangle; }
+      set { rectangle = value; }
     }
   }
 }
