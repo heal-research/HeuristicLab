@@ -4,13 +4,15 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Visualization.Test {
   public partial class LineChartTestForm : Form {
     private ChartDataRowsModel model;
+    private IView view;
 
     public LineChartTestForm() {
       InitializeComponent();
 
       model = new ChartDataRowsModel();
 
-      IView view = model.CreateView();
+      
+      view = model.CreateView();
 
       Control viewControl = (Control)view;
       viewControl.Dock = DockStyle.Fill;
@@ -20,6 +22,11 @@ namespace HeuristicLab.Visualization.Test {
 
     public ChartDataRowsModel Model {
       get { return model; }
+    }
+
+    private void btnResetView_Click(object sender, System.EventArgs e) {
+      LineChart lineChart = (LineChart)view;
+      lineChart.ResetView();
     }
   }
 }

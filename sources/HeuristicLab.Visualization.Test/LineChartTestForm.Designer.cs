@@ -24,6 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.lineChartGroupBox = new System.Windows.Forms.GroupBox();
+      this.btnResetView = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // lineChartGroupBox
@@ -38,11 +39,23 @@
       this.lineChartGroupBox.TabStop = false;
       this.lineChartGroupBox.Text = "Line Chart";
       // 
+      // btnResetView
+      // 
+      this.btnResetView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnResetView.Location = new System.Drawing.Point(544, 346);
+      this.btnResetView.Name = "btnResetView";
+      this.btnResetView.Size = new System.Drawing.Size(75, 23);
+      this.btnResetView.TabIndex = 1;
+      this.btnResetView.Text = "Reset View";
+      this.btnResetView.UseVisualStyleBackColor = true;
+      this.btnResetView.Click += new System.EventHandler(this.btnResetView_Click);
+      // 
       // LineChartTestForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(631, 395);
+      this.Controls.Add(this.btnResetView);
       this.Controls.Add(this.lineChartGroupBox);
       this.Name = "LineChartTestForm";
       this.Text = "LineChartTestForm";
@@ -53,6 +66,7 @@
     #endregion
 
     private System.Windows.Forms.GroupBox lineChartGroupBox;
+    private System.Windows.Forms.Button btnResetView;
 
   }
 }

@@ -53,6 +53,12 @@ namespace HeuristicLab.Visualization {
 
     }
 
+    public void ResetView() {
+      zoomFullView = true;
+      ZoomToFullView();
+      canvasUI1.Invalidate();
+    }
+
     #region Add-/RemoveItemEvents
 
     protected override void AddItemEvents() {
