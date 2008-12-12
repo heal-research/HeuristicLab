@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Visualization {
   public class LineShape : IShape {
@@ -6,6 +7,7 @@ namespace HeuristicLab.Visualization {
     private double z;
     private Color color;
     private int thickness;
+    private DashStyle dashStyle;
 
     /// <summary>
     /// Initializes the LineShape.
@@ -15,11 +17,17 @@ namespace HeuristicLab.Visualization {
     /// <param name="x2">x coordinate of right lineEndPoind</param>
     /// <param name="y2">y coordinate of right lineEndPoind</param>
     /// <param name="color">color for the LineShape</param>
-    public LineShape(double x1, double y1, double x2, double y2, double z, Color color, int thickness) {
+    public LineShape(double x1, double y1, double x2, double y2, double z, Color color, int thickness, DrawingStyle style) {
       this.boundingBox = new RectangleD(x1, y1, x2, y2);
       this.z = z;
       this.color = color;
       this.thickness = thickness;
+      if (style==DrawingStyle.Dashed) {
+        this.dashStyle = DashStyle.Dash;
+      }
+      else {
+        this.dashStyle = DashStyle.Solid;        //default
+      }
     }
 
     public RectangleD BoundingBox {
@@ -54,7 +62,7 @@ namespace HeuristicLab.Visualization {
     /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
       using (Pen pen = new Pen(color, thickness)){
-        // TODO there seems to be a bug with drawing straight lines.
+        pen.DashStyle = this.dashStyle;
         Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
         graphics.DrawLine(pen,screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
       }

@@ -20,6 +20,11 @@ namespace HeuristicLab.Visualization.Test {
       row2.Thickness = 4;
       row3.Thickness = 5;
 
+      row1.Style = DrawingStyle.Solid;
+      row2.Style = DrawingStyle.Solid;
+      row3.Style = DrawingStyle.Dashed;
+      
+
       f.Model.AddDataRow(row1);
       f.Model.AddDataRow(row2);
       f.Model.AddDataRow(row3);

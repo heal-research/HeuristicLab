@@ -68,7 +68,7 @@ namespace HeuristicLab.Visualization {
       List<LineShape> lineShapes = new List<LineShape>();
 
       for (int i = 1; i < row.Count; i++) {
-        LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness);
+        LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
@@ -96,7 +96,7 @@ namespace HeuristicLab.Visualization {
 
       // new value was added
       if (index > 0 && index == lineShapes.Count + 1) {
-        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness);
+        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
