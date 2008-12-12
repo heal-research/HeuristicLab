@@ -34,12 +34,15 @@ namespace HeuristicLab.Visualization {
     }
 
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      using (var pen = new Pen(color, 1))
-      using (Brush brush = new SolidBrush(color)) {
-        Rectangle screenRect = Transform.ToScreen(rect, viewport, clippingArea);
-
-        graphics.DrawRectangle(pen, screenRect);
-        graphics.FillRectangle(brush, screenRect);
+      int startY = 10;
+      foreach (LegendItem i in legendItems) {
+        using (Pen pen = new Pen(i.Color, 5)) {
+          graphics.DrawLine(pen, 10, startY+10, 30, startY+10);
+        }
+        using (Brush brush = new SolidBrush(Color.Black)) {
+          graphics.DrawString(i.Label, new Font("Arial", 12), brush, 35, startY);
+        }
+        startY += 15;
       }
     }
 

@@ -15,6 +15,7 @@ namespace HeuristicLab.Visualization.Test {
       WorldShape mainShape = canvasUI.MainCanvas.WorldShape;
       LegendShape ls = new LegendShape(0, 0, 100, 100, 0, Color.White);
       ls.AddLegendItem(new LegendItem("test", Color.Black));
+      ls.AddLegendItem(new LegendItem("test2", Color.Red));
 
       mainShape.AddShape(ls);
     }
