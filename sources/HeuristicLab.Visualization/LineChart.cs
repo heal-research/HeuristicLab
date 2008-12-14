@@ -50,7 +50,6 @@ namespace HeuristicLab.Visualization {
       zoomFullView = true;
       minDataValue = Double.PositiveInfinity;
       maxDataValue = Double.NegativeInfinity;
-
     }
 
     public void ResetView() {
@@ -87,7 +86,22 @@ namespace HeuristicLab.Visualization {
       if (row.Count > maxDataRowCount)
         maxDataRowCount = row.Count;
       
-      InitShapes(row);
+      InitLineShapes(row);
+      InitXAxis();
+    }
+
+    private void InitXAxis() {
+      int numLabels = 0;
+
+      foreach (IDataRow row in model.Rows) {
+        numLabels = Math.Max(numLabels, row.Count);
+      }
+
+      xAxis.ClearLabels();
+
+      for (int i = 0; i < numLabels; i++) {
+        xAxis.SetLabel(i, i.ToString());
+      }
     }
 
     private void ZoomToFullView() {
@@ -100,9 +114,7 @@ namespace HeuristicLab.Visualization {
       root.ClippingArea = newClippingArea;
     }
 
-    private void InitShapes(IDataRow row) {
-      
-       
+    private void InitLineShapes(IDataRow row) {
       List<LineShape> lineShapes = new List<LineShape>();
       if (row.Count > 0) {
         maxDataValue = Math.Max(row[0], this.maxDataValue);
@@ -131,6 +143,8 @@ namespace HeuristicLab.Visualization {
 
     // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
+      xAxis.SetLabel(index, index.ToString());
+
       List<LineShape> lineShapes = rowToLineShapes[row];
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
@@ -141,13 +155,12 @@ namespace HeuristicLab.Visualization {
 
       // new value was added
       if (index > 0 && index == lineShapes.Count + 1) {
-        
         if (maxDataRowCount < row.Count)
           maxDataRowCount = row.Count;
         LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        canvasUI1.MainCanvas.WorldShape.AddShape(lineShape);
+        root.AddShape(lineShape);
       }
 
       // not the first value
@@ -170,7 +183,9 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    private void OnModelChanged() {}
+    private void OnModelChanged() {
+      InitXAxis();
+    }
 
     #endregion
 

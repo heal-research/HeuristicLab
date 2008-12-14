@@ -23,6 +23,11 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    public void ClearShapes() {
+      shapes.Clear();
+      boundingBox = RectangleD.Empty;
+    }
+
     public void AddShape(IShape shape) {
       if (shapes.Count == 0) {
         boundingBox = shape.BoundingBox;
