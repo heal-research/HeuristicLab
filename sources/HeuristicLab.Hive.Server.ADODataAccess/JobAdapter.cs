@@ -195,7 +195,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         IEnumerable<dsHiveServer.JobRow> clientJobs =
          from job in
            data.AsEnumerable<dsHiveServer.JobRow>()
-         where job.ResourceId == client.ResourceId
+         where !job.IsResourceIdNull() && 
+          job.ResourceId == client.ResourceId
          select job;
 
         foreach (dsHiveServer.JobRow row in
@@ -217,7 +218,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         IEnumerable<dsHiveServer.JobRow> userJobs =
         from job in
           data.AsEnumerable<dsHiveServer.JobRow>()
-        where job.PermissionOwnerId == user.PermissionOwnerId
+        where
+          !job.IsPermissionOwnerIdNull() &&
+          job.PermissionOwnerId == user.PermissionOwnerId
         select job;
 
         foreach (dsHiveServer.JobRow row in

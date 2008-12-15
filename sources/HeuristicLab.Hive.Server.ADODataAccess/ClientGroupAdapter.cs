@@ -86,7 +86,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         IEnumerable<dsHiveServer.ClientGroup_ResourceRow> clientGroupRows =
           from resource in
             resourceClientGroupData.AsEnumerable<dsHiveServer.ClientGroup_ResourceRow>()
-          where resource.ClientGroupResource == clientGroup.ResourceId
+          where resource.ClientGroupId == clientGroup.ResourceId
           select resource;
 
         foreach (dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow in
@@ -122,7 +122,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         foreach (Resource resource in clientGroup.Resources) {
           dsHiveServer.ClientGroup_ResourceRow permOwnerUserGroupRow =
-            resourceClientGroupData.FindByClientGroupResourceResourceId(
+            resourceClientGroupData.FindByClientGroupIdResourceId(
               clientGroup.ResourceId,
               resource.ResourceId);
 
@@ -156,7 +156,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           //secondly check for created references
           dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow =
-            resourceClientGroupData.FindByClientGroupResourceResourceId(
+            resourceClientGroupData.FindByClientGroupIdResourceId(
                             clientGroup.ResourceId,
                             resource.ResourceId);
 
@@ -166,7 +166,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
             resourceClientGroupRow.ResourceId =
               resource.ResourceId;
-            resourceClientGroupRow.ClientGroupResource =
+            resourceClientGroupRow.ClientGroupId =
               clientGroup.ResourceId;
 
             resourceClientGroupData.AddClientGroup_ResourceRow(
@@ -178,7 +178,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         IEnumerable<dsHiveServer.ClientGroup_ResourceRow> clientGroupRows =
           from permOwner in
             resourceClientGroupData.AsEnumerable<dsHiveServer.ClientGroup_ResourceRow>()
-          where permOwner.ClientGroupResource == clientGroup.ResourceId
+          where permOwner.ClientGroupId == clientGroup.ResourceId
           select permOwner;
 
         ICollection<dsHiveServer.ClientGroup_ResourceRow> deleted =
@@ -295,7 +295,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         foreach (dsHiveServer.ClientGroup_ResourceRow clientGroupRow in
           clientGroupRows) {
           ClientGroup clientGroup =
-            GetClientGroupById(clientGroupRow.ClientGroupResource);
+            GetClientGroupById(clientGroupRow.ClientGroupId);
           clientGroups.Add(clientGroup);
         }
       }
@@ -315,7 +315,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           foreach (dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow in
             resourceClientGroupData) {
-            if (resourceClientGroupRow.ClientGroupResource == group.ResourceId ||
+            if (resourceClientGroupRow.ClientGroupId == group.ResourceId ||
               resourceClientGroupRow.ResourceId == group.ResourceId) {
               deleted.Add(resourceClientGroupRow);
             }
