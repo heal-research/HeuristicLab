@@ -7,6 +7,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.Common;
+using HeuristicLab.Hive.Client.Communication.ServerService;
 
 namespace HeuristicLab.Hive.Client.Communication {
   public class WcfService {
@@ -28,7 +29,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event EventHandler ConnectionRestored;    
     public event EventHandler ServerChanged;    
 
-    private ClientCommunicatorClient proxy = null;
+    public ClientCommunicatorClient proxy = null;
 
     private WcfService() {
       ConnState = NetworkEnum.WcfConnState.Disconnected;
@@ -50,7 +51,7 @@ namespace HeuristicLab.Hive.Client.Communication {
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());
         ConnState = NetworkEnum.WcfConnState.Connected;
-        ConnectedSince = DateTime.Now;
+        ConnectedSince = DateTime.Now;        
       }
       catch (Exception ex) {
         NetworkErrorHandling(ex);
@@ -58,11 +59,13 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
 
     public void Connect(String serverIP, int serverPort) {
-      if(this.ServerIP != serverIP || this.ServerPort != ServerPort)
-        ServerChanged(this, new EventArgs());
+      String oldIp = this.ServerIP;
+      int oldPort = this.ServerPort;
       this.ServerIP = serverIP;
       this.ServerPort = serverPort;      
       Connect();
+      if (oldIp != serverIP || oldPort != ServerPort)
+        ServerChanged(this, new EventArgs());
     }
 
     public void Disconnect() {
@@ -106,7 +109,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
     public void SendJobResultAsync(JobResult result, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Connected)
-        proxy.SendJobResult(result, finished);
+        proxy.SendJobResultAsync(result, finished);
     }
     private void proxy_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Error == null)

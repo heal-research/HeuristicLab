@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="3fe193d1-38a2-4be6-ae78-516031e30e9f" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://10.0.0.64:9000/HiveServer/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="6bbba849-1ffe-4854-bdd4-448cdc7c1f27" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="04d8adba-75fa-43ec-be1a-4f47d65b127a" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="e737465f-b816-4df8-ab5d-42997bd9ec5b" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts.BusinessObjects.xsd" MetadataType="Schema" ID="22f23fdc-ce32-4813-bd0e-41b0b8ddadf7" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts.xsd" MetadataType="Schema" ID="2cc94d25-09bb-43c9-8f01-06f3f08714e7" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+    <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="51f1a63c-0cce-4736-a71c-4fbdca1926b4" SourceId="1" SourceUrl="net.tcp://10.0.0.64:9000/HiveServer/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -40,6 +40,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
+using HeuristicLab.Hive.Client.Communication.ServerService;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -50,6 +51,7 @@ namespace HeuristicLab.Hive.Client.Core {
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
 
+    private ClientCommunicatorClient ccc;
     private WcfService wcfService;
 
     public void Start() {
@@ -65,14 +67,13 @@ namespace HeuristicLab.Hive.Client.Core {
       if (cc.IPAdress != String.Empty && cc.Port != 0) {
         wcfService.Connect(cc.IPAdress, cc.Port);
       }
+
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
-      wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);      
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
-
-      wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
-
+       
       Heartbeat beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
 
@@ -119,7 +120,7 @@ namespace HeuristicLab.Hive.Client.Core {
       byte[] sJob = engines[jId].GetFinishedJob();
       
       JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = ConfigManager.Instance.GetClientInfo() };
-      wcfService.SendJobResultAsync(jobResult, true);
+      wcfService.SendJobResultAsync(jobResult, true);      
     }
 
     private void GetSnapshot(object jobId) {
@@ -179,6 +180,7 @@ namespace HeuristicLab.Hive.Client.Core {
         AppDomain.Unload(appDomains[entries.Key]);
       appDomains = new Dictionary<long, AppDomain>();
       engines = new Dictionary<long, Executor>();
+      wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
     }
 
 

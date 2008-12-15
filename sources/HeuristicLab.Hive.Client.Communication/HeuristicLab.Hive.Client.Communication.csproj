@@ -53,6 +53,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -68,12 +71,23 @@
   <ItemGroup>
     <Compile Include="CommunicationsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerProxy.cs" />
+    <Compile Include="Service References\ServerService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="WcfService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.BusinessObjects.xsd" />
+    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.xsd" />
+    <None Include="Service References\ServerService\service.wsdl" />
+    <None Include="Service References\ServerService\service.xsd" />
+    <None Include="Service References\ServerService\service1.xsd" />
+    <None Include="Service References\ServerService\System.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
@@ -92,6 +106,28 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServerService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServerService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServerService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.Response.datasource" />
+    <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseHB.datasource" />
+    <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseJob.datasource" />
+    <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseResultReceived.datasource" />
+    <None Include="Service References\ServerService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

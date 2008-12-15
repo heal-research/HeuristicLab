@@ -30,6 +30,7 @@ using System.Diagnostics;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
+using HeuristicLab.Hive.Client.Communication.ServerService;
 //using BO = HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {

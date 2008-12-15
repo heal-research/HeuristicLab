@@ -66,6 +66,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     }
 
     public ClientInfo GetClientInfo() {
+      hardwareInfo.Login = WcfService.Instance.ConnectedSince;
       return hardwareInfo;          
     }
 
