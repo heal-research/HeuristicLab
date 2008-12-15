@@ -127,7 +127,7 @@ namespace HeuristicLab.Hive.Server {
       }
 
       Uri uriTcp =
-          new Uri("net.tcp://10.0.0.64:9000/HiveServer/");
+          new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServer/"); 
 
       ServiceHost clientCommunicator =
         StartClientCommunicator(uriTcp);
