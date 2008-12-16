@@ -44,14 +44,12 @@ using HeuristicLab.Hive.Client.Communication.ServerService;
 
 
 namespace HeuristicLab.Hive.Client.Core {
-  public class Core {
-
+  public class Core: MarshalByRefObject {
     public delegate string GetASnapshotDelegate();
 
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
-
-    private ClientCommunicatorClient ccc;
+    
     private WcfService wcfService;
 
     public void Start() {
@@ -145,10 +143,12 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
-        bool sandboxed = false;
+        bool sandboxed = true;
 
         PluginManager.Manager.Initialize();
-        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));      
+        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));
+        appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+
         appDomains.Add(e.Result.JobId, appDomain);
 
         Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
@@ -188,6 +188,10 @@ namespace HeuristicLab.Hive.Client.Core {
 
     public Dictionary<long, Executor> GetExecutionEngines() {
       return engines;
+    }
+
+    void appDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+      Logging.GetInstance().Error(this.ToString(), " Exception: " + e.ExceptionObject.ToString());
     }
   }
 }

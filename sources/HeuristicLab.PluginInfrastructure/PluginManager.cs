@@ -160,11 +160,26 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     public AppDomain CreateAndInitAppDomainWithSandbox(string friendlyName, bool sandboxed, Type jobType) {
-
       PermissionSet pset;
+
+      DiscoveryService dService = new DiscoveryService();
+      //get the declaring plugin of the job
+      PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
+
+      //get all the plugins that have dependencies with the jobplugin
+      List<PluginInfo> depPlugins = GetDependentPlugins(jobPlugin);
+      //insert all jobs into one list
+      depPlugins.Add(jobPlugin);
+      
       if (sandboxed) {
         pset = new PermissionSet(PermissionState.None);
-        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));        
+        pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+        pset.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
+        /*foreach (PluginInfo plugin in depPlugins) {
+            foreach(String assemblies in plugin.Assemblies)
+              pset.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read, assemblies));
+        }*/
+        pset.AddPermission(new FileIOPermission(PermissionState.Unrestricted));
       } else {
         pset = new PermissionSet(PermissionState.Unrestricted);
       }
@@ -175,12 +190,6 @@ namespace HeuristicLab.PluginInfrastructure {
                       
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
-
-      DiscoveryService dService = new DiscoveryService();
-      PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
-
-      List<PluginInfo> depPlugins = GetDependentPlugins(jobPlugin);
-      depPlugins.Add(jobPlugin);
 
       if (depPlugins != null && depPlugins.Count > 0) {
         remoteRunner.LoadPlugins(depPlugins);

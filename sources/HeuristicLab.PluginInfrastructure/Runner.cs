@@ -27,7 +27,7 @@ using System.Security.Permissions;
 using System.Security;
 
 namespace HeuristicLab.PluginInfrastructure {
-  internal class Runner : MarshalByRefObject {
+  public class Runner : MarshalByRefObject {
 
     public void LoadPlugins(ICollection<PluginInfo> plugins) {
       //FileIOPermission fileperm = new FileIOPermission(FileIOPermissionAccess.AllAccess, @"C:\Program Files\HeuristicLab 3.0\plugins\");
