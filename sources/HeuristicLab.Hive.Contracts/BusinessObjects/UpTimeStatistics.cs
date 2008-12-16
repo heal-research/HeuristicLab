@@ -28,9 +28,9 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class UpTimeStatistics {
+  public class UpTimeStatistics: IHiveObject {
     [DataMember]
-    public long UpTimeStatisticsId { get; set; }
+    public long Id { get; set; }
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]

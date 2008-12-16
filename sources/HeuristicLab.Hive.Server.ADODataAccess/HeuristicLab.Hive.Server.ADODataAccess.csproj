@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CachedDataAdapter.cs" />
     <Compile Include="ClientAdapter.cs" />
     <Compile Include="ClientGroupAdapter.cs" />
     <Compile Include="DataAdapterBase.cs" />
@@ -76,6 +77,7 @@
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
     </Compile>
     <Compile Include="HiveServerADODataAccessPlugin.cs" />
+    <Compile Include="ICachedDataAdapter.cs" />
     <Compile Include="JobAdapter.cs" />
     <Compile Include="PermissionOwnerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

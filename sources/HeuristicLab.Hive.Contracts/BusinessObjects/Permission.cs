@@ -28,9 +28,9 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Permission {
+  public class Permission: IHiveObject {
     [DataMember]
-    public long PermissionId { get; set; }
+    public long Id { get; set; }
     [DataMember]
     public String Name { get; set; }
   }

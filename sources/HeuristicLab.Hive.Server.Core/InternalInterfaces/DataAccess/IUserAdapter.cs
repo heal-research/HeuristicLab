@@ -29,37 +29,12 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The user database adapter
   /// </summary>
-  public interface IUserAdapter {
-    /// <summary>
-    /// Save or update the user
-    /// </summary>
-    /// <param name="user"></param>
-    void UpdateUser(User user);
-
-    /// <summary>
-    /// Get the user with the specified ID
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <returns></returns>
-    User GetUserById(long userId);
-
+  public interface IUserAdapter: IDataAdapter<User> {
     /// <summary>
     /// Get the user with the specified name
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    User GetUserByName(string name);
-
-    /// <summary>
-    /// Get all users
-    /// </summary>
-    /// <returns></returns>
-    ICollection<User> GetAllUsers();
-
-    /// <summary>
-    /// Deletes the user
-    /// </summary>
-    /// <param name="user"></param>
-    bool DeleteUser(User user);
+    User GetByName(string name);
   }
 }

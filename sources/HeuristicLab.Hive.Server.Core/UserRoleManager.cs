@@ -26,7 +26,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<User> GetAllUsers() {
       ResponseList<User> response = new ResponseList<User>();
 
-      List<User> allUsers = new List<User>(userAdapter.GetAllUsers());
+      List<User> allUsers = new List<User>(userAdapter.GetAll());
       response.List = allUsers;
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_GET_ALL_USERS;
@@ -37,18 +37,18 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseObject<User> AddNewUser(User user) {
       ResponseObject<User> response = new ResponseObject<User>();
 
-      if (user.PermissionOwnerId != 0) {
+      if (user.Id != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
-      if (userAdapter.GetUserByName(user.Name) != null) {
+      if (userAdapter.GetByName(user.Name) != null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERNAME_EXISTS_ALLREADY;
         return response;
       }
 
-      userAdapter.UpdateUser(user);
+      userAdapter.Update(user);
       response.Obj = user;
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_SUCCESSFULLY_ADDED;
@@ -59,7 +59,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<UserGroup> GetAllUserGroups() {
       ResponseList<UserGroup> response = new ResponseList<UserGroup>();
 
-      response.List = new List<UserGroup>(userGroupAdapter.GetAllUserGroups());
+      response.List = new List<UserGroup>(userGroupAdapter.GetAll());
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_GET_ALL_USERGROUPS;
 
@@ -68,13 +68,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public Response RemoveUser(long userId) {
       Response response = new Response();
-      User user = userAdapter.GetUserById(userId);
+      User user = userAdapter.GetById(userId);
       if (user == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_DOESNT_EXIST;
         return response;
       }
-      userAdapter.DeleteUser(user);
+      userAdapter.Delete(user);
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_REMOVED;
                          
@@ -84,13 +84,13 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup) {
       ResponseObject<UserGroup> response = new ResponseObject<UserGroup>();
       
-      if (userGroup.PermissionOwnerId != 0) {
+      if (userGroup.Id != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_ID_MUST_NOT_BE_SET;
         return response;
       }
 
-      userGroupAdapter.UpdateUserGroup(userGroup);
+      userGroupAdapter.Update(userGroup);
       response.Obj = userGroup;
       response.Success = false;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED;
@@ -101,13 +101,13 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response RemoveUserGroup(long groupId) {
       Response response = new Response();
 
-      UserGroup userGroupFromDb = userGroupAdapter.GetUserGroupById(groupId);
+      UserGroup userGroupFromDb = userGroupAdapter.GetById(groupId);
       if (userGroupFromDb == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
         return response;
       }
-      userGroupAdapter.DeleteUserGroup(userGroupFromDb);
+      userGroupAdapter.Delete(userGroupFromDb);
       response.Success = false;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_ADDED;
 
@@ -117,21 +117,21 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddUserToGroup(long groupId, long userId) {
       Response response = new Response();
 
-      User user = userAdapter.GetUserById(userId);
+      User user = userAdapter.GetById(userId);
       if (user == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USER_DOESNT_EXIST;
         return response;
       }
 
-      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
+      UserGroup userGroup = userGroupAdapter.GetById(groupId);
       if (userGroup == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
         return response;
       }
       userGroup.Members.Add(user);
-      userGroupAdapter.UpdateUserGroup(userGroup);
+      userGroupAdapter.Update(userGroup);
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_ADDED;
@@ -142,8 +142,8 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
       Response response = new Response();
 
-      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
-      UserGroup userGroupToAdd = userGroupAdapter.GetUserGroupById(groupToAddId);
+      UserGroup userGroup = userGroupAdapter.GetById(groupId);
+      UserGroup userGroupToAdd = userGroupAdapter.GetById(groupToAddId);
 
       if (userGroup == null || userGroupToAdd == null) {
         response.Success = false;
@@ -160,22 +160,22 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response RemovePermissionOwnerFromGroup(long groupId, long permissionOwnerId) {
       Response response = new Response();
 
-      UserGroup userGroup = userGroupAdapter.GetUserGroupById(groupId);
+      UserGroup userGroup = userGroupAdapter.GetById(groupId);
       if (userGroup == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_USERGROUP_DOESNT_EXIST;
         return response;
       }
-      User user = userAdapter.GetUserById(permissionOwnerId);
+      User user = userAdapter.GetById(permissionOwnerId);
       if (user == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_DOESNT_EXIST;
         return response;
       }
       foreach (PermissionOwner permissionOwner in userGroup.Members) {
-        if (permissionOwner.PermissionOwnerId == permissionOwnerId) {
+        if (permissionOwner.Id == permissionOwnerId) {
           userGroup.Members.Remove(permissionOwner);
-          userGroupAdapter.UpdateUserGroup(userGroup);
+          userGroupAdapter.Update(userGroup);
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_USERROLE_PERMISSIONOWNER_REMOVED;
           return response;

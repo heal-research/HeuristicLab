@@ -29,25 +29,22 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class PermissionOwnerAdapter: DataAdapterBase, IPermissionOwnerAdapter {
-    private dsHiveServerTableAdapters.PermissionOwnerTableAdapter adapter =
-     new dsHiveServerTableAdapters.PermissionOwnerTableAdapter();
+  class PermissionOwnerAdapter: 
+    DataAdapterBase<
+      dsHiveServerTableAdapters.PermissionOwnerTableAdapter, 
+      PermissionOwner, 
+      dsHiveServer.PermissionOwnerRow>, 
+    IPermissionOwnerAdapter {
+    #region Fields
+    dsHiveServer.PermissionOwnerDataTable data =
+        new dsHiveServer.PermissionOwnerDataTable();
+    #endregion
 
-    private dsHiveServer.PermissionOwnerDataTable data =
-      new dsHiveServer.PermissionOwnerDataTable();
-
-    public PermissionOwnerAdapter() {
-      adapter.Fill(data);
-    }
-
-    protected override void Update() {
-      this.adapter.Update(this.data);
-    }
-
-    private PermissionOwner Convert(dsHiveServer.PermissionOwnerRow row,
+    #region Overrides
+    protected override PermissionOwner Convert(dsHiveServer.PermissionOwnerRow row,
       PermissionOwner permOwner) {
       if (row != null && permOwner != null) {
-        permOwner.PermissionOwnerId = row.PermissionOwnerId;
+        permOwner.Id = row.PermissionOwnerId;
 
         if (!row.IsNameNull())
           permOwner.Name = row.Name;
@@ -59,7 +56,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    private dsHiveServer.PermissionOwnerRow Convert(PermissionOwner permOwner,
+    protected override dsHiveServer.PermissionOwnerRow Convert(PermissionOwner permOwner,
       dsHiveServer.PermissionOwnerRow row) {
       if (row != null && permOwner != null) {
         row.Name = permOwner.Name;
@@ -68,31 +65,39 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } else
         return null;
     }
-    
-    #region IPermissionOwner Members
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdatePermissionOwner(PermissionOwner permOwner) {
-      if (permOwner != null) {
-        dsHiveServer.PermissionOwnerRow row = 
-          data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
-        
-        if (row == null) {
-          row = data.NewPermissionOwnerRow();
-          data.AddPermissionOwnerRow(row);
 
-          //write row to db to get primary key
-          adapter.Update(row);
-        }
+    protected override dsHiveServer.PermissionOwnerRow
+      InsertNewRow(PermissionOwner permOwner) {
+      dsHiveServer.PermissionOwnerRow row =
+        data.NewPermissionOwnerRow();
 
-        Convert(permOwner, row);
-        permOwner.PermissionOwnerId = row.PermissionOwnerId;
-      }
+      data.AddPermissionOwnerRow(row);
+
+      return row;
     }
 
-    public bool GetPermissionOwnerById(PermissionOwner permOwner) {
+    protected override void
+      UpdateRow(dsHiveServer.PermissionOwnerRow row) {
+      adapter.Update(row);
+    }
+
+    protected override IEnumerable<dsHiveServer.PermissionOwnerRow>
+      FindById(long id) {
+      return adapter.GetDataById(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.PermissionOwnerRow>
+      FindAll() {
+      return adapter.GetData();
+    }
+    #endregion
+
+    #region IPermissionOwner Members
+
+    public bool GetById(PermissionOwner permOwner) {
       if (permOwner != null) {
-          dsHiveServer.PermissionOwnerRow row =
-            data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
+        dsHiveServer.PermissionOwnerRow row = 
+          base.GetRowById(permOwner.Id);
 
         if(row != null) {
           Convert(row, permOwner);
@@ -103,67 +108,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       return false;
     }
-
-    public PermissionOwner GetPermissionOwnerById(long permOwnerId) {
-      PermissionOwner permOwner = new PermissionOwner();
-      permOwner.PermissionOwnerId = permOwnerId;
-
-      if (GetPermissionOwnerById(permOwner))
-        return permOwner;
-      else
-        return null;
-    }
-
-    public PermissionOwner GetPermissionOwnerByName(String name) {
-       dsHiveServer.PermissionOwnerRow row = null;
-
-      IEnumerable<dsHiveServer.PermissionOwnerRow> permOwners =
-        from r in
-          data.AsEnumerable<dsHiveServer.PermissionOwnerRow>()
-        where !r.IsNameNull() && r.Name == name
-        select r;
-
-      if (permOwners.Count<dsHiveServer.PermissionOwnerRow>() == 1)
-        row = permOwners.First<dsHiveServer.PermissionOwnerRow>();
-
-      if (row != null) {
-        PermissionOwner permOwner = new PermissionOwner();
-        Convert(row, permOwner);
-
-        return permOwner;
-      } else {
-        return null;
-      }
-    }
-
-    public ICollection<PermissionOwner> GetAllPermissionOwners() {
-      ICollection<PermissionOwner> allPermissionOwners =
-        new List<PermissionOwner>();
-
-      foreach (dsHiveServer.PermissionOwnerRow row in data) {
-        PermissionOwner permOwner = new PermissionOwner();
-        Convert(row, permOwner);
-        allPermissionOwners.Add(permOwner);
+    
+    public PermissionOwner GetByName(String name) {
+      if (name != null) {
+        return base.FindSingle(
+          delegate() {
+            return adapter.GetDataByName(name);
+          });
       }
 
-      return allPermissionOwners;
-    }
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeletePermissionOwner(PermissionOwner permOwner) {
-      if (permOwner != null) {
-          dsHiveServer.PermissionOwnerRow row = 
-            data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
-
-          if(row != null) {
-            row.Delete();
-            adapter.Update(row);
-          
-            return true;
-          }
-        }
-
-      return false;
+      return null;
     }
 
     #endregion

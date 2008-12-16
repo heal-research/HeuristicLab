@@ -42,7 +42,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<Job> GetAllJobs() {
       ResponseList<Job> response = new ResponseList<Job>();
 
-      response.List = new List<Job>(jobAdapter.GetAllJobs());
+      response.List = new List<Job>(jobAdapter.GetAll());
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ALL_JOBS;
       
@@ -53,12 +53,12 @@ namespace HeuristicLab.Hive.Server.Core {
       ResponseObject<Job> response = new ResponseObject<Job>();
 
       if (job != null) {
-        if (job.JobId != 0) {
+        if (job.Id != 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
           return response;
         }
-        jobAdapter.UpdateJob(job);
+        jobAdapter.Update(job);
         response.Success = true;
         response.Obj = job;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
@@ -73,13 +73,13 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response RemoveJob(long jobId) {
       Response response = new Response();
 
-      Job job = jobAdapter.GetJobById(jobId);
+      Job job = jobAdapter.GetById(jobId);
       if (job == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
         return response;
       }
-      jobAdapter.DeleteJob(job);
+      jobAdapter.Delete(job);
       response.Success = false;
       response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_REMOVED;
 

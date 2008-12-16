@@ -28,14 +28,25 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Job {
+  public class Job: IHiveObject {
     [DataMember]
-    public long JobId { get; set; }
+    public long Id { get; set; }
     [DataMember]
     public State State { get; set; }
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]
     public Job ParentJob { get; set; }
+
+    public override bool Equals(object obj) {
+      if (obj is Job) {
+        return (obj as Job).Id.Equals(Id);
+      } else      
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return Id.GetHashCode();
+    }
   }
 }

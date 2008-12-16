@@ -42,7 +42,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
       clientGroups = new List<ClientGroup>();
 
-      ClientGroup cg = new ClientGroup { ResourceId = 4, Name = "SuperGroup" };
+      ClientGroup cg = new ClientGroup { Id = 4, Name = "SuperGroup" };
       cg.Resources = new List<Resource>();
 
       clientGroups.Add(cg);
@@ -53,7 +53,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<ClientInfo> GetAllClients() {
       ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
 
-      response.List = new List<ClientInfo>(clientAdapter.GetAllClients());
+      response.List = new List<ClientInfo>(clientAdapter.GetAll());
       response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTS;
       response.Success = true;
 
@@ -63,7 +63,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseList<ClientGroup> GetAllClientGroups() {
       ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
 
-      response.List = new List<ClientGroup>(clientGroupAdapter.GetAllClientGroups());
+      response.List = new List<ClientGroup>(clientGroupAdapter.GetAll());
       response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS;
       response.Success = true;
 
@@ -79,12 +79,12 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddClientGroup(ClientGroup clientGroup) {
       Response response = new Response();
 
-      if (clientGroup.ResourceId != 0) {
+      if (clientGroup.Id != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
         return response;
       }
-      clientGroupAdapter.UpdateClientGroup(clientGroup);
+      clientGroupAdapter.Update(clientGroup);
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
 
@@ -94,13 +94,13 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response AddResourceToGroup(long clientGroupId, Resource resource) {
       Response response = new Response();
 
-      if (resource.ResourceId != 0) {
+      if (resource.Id != 0) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
         return response;
       }
 
-      ClientGroup clientGroup = clientGroupAdapter.GetClientGroupById(clientGroupId);
+      ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
       if (clientGroup == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
@@ -117,14 +117,14 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
       Response response = new Response();
 
-      ClientGroup clientGroup = clientGroupAdapter.GetClientGroupById(clientGroupId);
+      ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
       if (clientGroup == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
         return response;
       }
       foreach (Resource resource in clientGroup.Resources) {
-        if (resource.ResourceId == resourceId) {
+        if (resource.Id == resourceId) {
           clientGroup.Resources.Remove(resource);
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;

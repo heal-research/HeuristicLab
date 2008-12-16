@@ -42,29 +42,30 @@ namespace HeuristicLab.Hive.Server {
       ClientInfo client = new ClientInfo();
       client.Login = DateTime.Now;
       client.ClientId = Guid.NewGuid();
-      clientAdapter.UpdateClient(client);
+      clientAdapter.Update(client);
 
       ClientInfo clientRead =
-        clientAdapter.GetClientById(client.ClientId);
+        clientAdapter.GetById(client.ClientId);
       Debug.Assert(
         clientRead != null &&
         client.ClientId == clientRead.ClientId);
 
       client.CpuSpeedPerCore = 2000;
-      clientAdapter.UpdateClient(client);
+      clientAdapter.Update(client);
       clientRead =
-        clientAdapter.GetClientById(client.ClientId);
+        clientAdapter.GetById(client.ClientId);
       Debug.Assert(
        clientRead != null &&
        client.ClientId == clientRead.ClientId &&
        clientRead.CpuSpeedPerCore == 2000);
 
-      ICollection<ClientInfo> clients = clientAdapter.GetAllClients();
+      ICollection<ClientInfo> clients = 
+        clientAdapter.GetAll();
       int count = clients.Count;
 
-      clientAdapter.DeleteClient(client);
+      clientAdapter.Delete(client);
 
-      clients = clientAdapter.GetAllClients();
+      clients = clientAdapter.GetAll();
       Debug.Assert(count - 1 == clients.Count);
     }
 
@@ -73,31 +74,32 @@ namespace HeuristicLab.Hive.Server {
         ServiceLocator.GetUserAdapter();
 
       User user = new User();
-      user.Name = "Stefan";
+      user.Name = "TestDummy";
 
-      userAdapter.UpdateUser(user);
+      userAdapter.Update(user);
 
       User userRead =
-        userAdapter.GetUserById(user.PermissionOwnerId);
+        userAdapter.GetById(user.Id);
       Debug.Assert(
         userRead != null &&
-        user.PermissionOwnerId == userRead.PermissionOwnerId);
+        user.Id == userRead.Id);
 
       user.Password = "passme";
-      userAdapter.UpdateUser(user);
+      userAdapter.Update(user);
       userRead =
-        userAdapter.GetUserByName(user.Name);
+        userAdapter.GetByName(user.Name);
       Debug.Assert(
        userRead != null &&
        userRead.Name == user.Name &&
        userRead.Password == user.Password);
 
-      ICollection<User> users = userAdapter.GetAllUsers();
+      ICollection<User> users = 
+       userAdapter.GetAll();
       int count = users.Count;
 
-      userAdapter.DeleteUser(user);
+      userAdapter.Delete(user);
 
-      users = userAdapter.GetAllUsers();
+      users = userAdapter.GetAll();
       Debug.Assert(count - 1 == users.Count);
     }
 
@@ -128,37 +130,37 @@ namespace HeuristicLab.Hive.Server {
       group.Members.Add(user2);
       group.Members.Add(subGroup);
 
-      userGroupAdapter.UpdateUserGroup(group);
+      userGroupAdapter.Update(group);
 
       UserGroup read =
-        userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+        userGroupAdapter.GetById(group.Id);
 
       ICollection<UserGroup> userGroups =
-        userGroupAdapter.GetAllUserGroups();
+        userGroupAdapter.GetAll();
 
       IUserAdapter userAdapter =
         ServiceLocator.GetUserAdapter();
 
-      userAdapter.DeleteUser(user3);
+      userAdapter.Delete(user3);
       
       read =
-         userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+         userGroupAdapter.GetById(group.Id);
 
-      userGroupAdapter.DeleteUserGroup(subGroup);
+      userGroupAdapter.Delete(subGroup);
 
       read =
-         userGroupAdapter.GetUserGroupById(group.PermissionOwnerId);
+         userGroupAdapter.GetById(group.Id);
 
       userGroups =
-        userGroupAdapter.GetAllUserGroups();
+        userGroupAdapter.GetAll();
 
-      userGroupAdapter.DeleteUserGroup(group);
+      userGroupAdapter.Delete(group);
 
       userGroups =
-        userGroupAdapter.GetAllUserGroups();
+        userGroupAdapter.GetAll();
 
-      userAdapter.DeleteUser(user);
-      userAdapter.DeleteUser(user2);
+      userAdapter.Delete(user);
+      userAdapter.Delete(user2);
     }
 
     private void TestClientGroupAdapter() {
@@ -194,37 +196,37 @@ namespace HeuristicLab.Hive.Server {
       group.Resources.Add(client2);
       group.Resources.Add(subGroup);
 
-      clientGroupAdapter.UpdateClientGroup(group);
+      clientGroupAdapter.Update(group);
 
       ClientGroup read =
-        clientGroupAdapter.GetClientGroupById(group.ResourceId);
+        clientGroupAdapter.GetById(group.Id);
 
       ICollection<ClientGroup> clientGroups =
-        clientGroupAdapter.GetAllClientGroups();
+        clientGroupAdapter.GetAll();
 
       IClientAdapter clientAdapter =
         ServiceLocator.GetClientAdapter();
 
-      clientAdapter.DeleteClient(client3);
+      clientAdapter.Delete(client3);
 
       read =
-         clientGroupAdapter.GetClientGroupById(group.ResourceId);
+         clientGroupAdapter.GetById(group.Id);
 
-      clientGroupAdapter.DeleteClientGroup(subGroup);
+      clientGroupAdapter.Delete(subGroup);
 
       read =
-         clientGroupAdapter.GetClientGroupById(group.ResourceId);
+         clientGroupAdapter.GetById(group.Id);
 
       clientGroups =
-        clientGroupAdapter.GetAllClientGroups();
+        clientGroupAdapter.GetAll();
 
-      clientGroupAdapter.DeleteClientGroup(group);
+      clientGroupAdapter.Delete(group);
 
       clientGroups =
-        clientGroupAdapter.GetAllClientGroups();
+        clientGroupAdapter.GetAll();
 
-      clientAdapter.DeleteClient(client);
-      clientAdapter.DeleteClient(client2);
+      clientAdapter.Delete(client);
+      clientAdapter.Delete(client2);
     }
 
     private void TestJobAdapter() {
@@ -237,26 +239,33 @@ namespace HeuristicLab.Hive.Server {
       client.Login = DateTime.Now;
 
       job.Client = client;
-      jobAdapter.UpdateJob(job);
+      jobAdapter.Update(job);
 
-      ICollection<Job> jobs = jobAdapter.GetAllJobs();
+      ICollection<Job> jobs = jobAdapter.GetAll();
 
-      jobAdapter.DeleteJob(job);
+      jobAdapter.Delete(job);
 
-      jobs = jobAdapter.GetAllJobs();
+      jobs = jobAdapter.GetAll();
     }
 
     public override void Run() {
-      TestClientAdapter();
-      TestUserAdapter();
-      TestUserGroupAdapter();
-      TestClientGroupAdapter();
-      TestJobAdapter();
-
       ITransactionManager transactionManager =
         ServiceLocator.GetTransactionManager();
-
+      
+      TestClientAdapter();
       transactionManager.UpdateDB();
+
+      TestUserAdapter();
+      transactionManager.UpdateDB();
+
+      TestUserGroupAdapter();
+      transactionManager.UpdateDB();
+
+      TestClientGroupAdapter();
+      transactionManager.UpdateDB();  
+
+      TestJobAdapter();
+      transactionManager.UpdateDB();     
     }
   }
 }

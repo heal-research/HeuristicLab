@@ -28,25 +28,34 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ResourceAdapter: DataAdapterBase, IResourceAdapter {
-    private dsHiveServerTableAdapters.ResourceTableAdapter adapter =
-        new dsHiveServerTableAdapters.ResourceTableAdapter();
-
-    private dsHiveServer.ResourceDataTable data =
+  class ResourceAdapter: 
+    CachedDataAdapter<
+      dsHiveServerTableAdapters.ResourceTableAdapter, 
+      Resource, 
+      dsHiveServer.ResourceRow, 
+      dsHiveServer.ResourceDataTable>,  
+    IResourceAdapter {
+    #region Fields
+    dsHiveServer.ResourceDataTable data =
         new dsHiveServer.ResourceDataTable();
 
-    public ResourceAdapter() {
-      adapter.Fill(data);
-    }
+    private IClientAdapter clientAdapter = null;
 
-    protected override void Update() {
-      this.adapter.Update(this.data);
+    private IClientAdapter ClientAdapter {
+      get {
+        if (clientAdapter == null)
+          clientAdapter = ServiceLocator.GetClientAdapter();
+        
+        return clientAdapter;
+      }
     }
+    #endregion
 
-    private Resource Convert(dsHiveServer.ResourceRow row,
+    #region Overrides
+    protected override Resource Convert(dsHiveServer.ResourceRow row,
       Resource resource) {
       if (row != null && resource != null) {
-        resource.ResourceId = row.ResourceId;
+        resource.Id = row.ResourceId;
         if (!row.IsNameNull())
           resource.Name = row.Name;
         else
@@ -57,7 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    private dsHiveServer.ResourceRow Convert(Resource resource,
+    protected override dsHiveServer.ResourceRow Convert(Resource resource,
       dsHiveServer.ResourceRow row) {
       if (resource != null && row != null) {
         row.Name = resource.Name;
@@ -67,30 +76,63 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    #region IResourceAdapter Members
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdateResource(Resource resource) {
-      if (resource != null) {
-        dsHiveServer.ResourceRow row =
-          data.FindByResourceId(resource.ResourceId);
-
-        if (row == null) {
-          row = data.NewResourceRow();
-          data.AddResourceRow(row);
-
-          //write row to db to get primary key
-          adapter.Update(row);
-        } 
-
-        Convert(resource, row);
-        resource.ResourceId = row.ResourceId;
-      }
+    protected override void UpdateRow(dsHiveServer.ResourceRow row) {
+      adapter.Update(row);
     }
 
-    public bool GetResourceById(Resource resource) {
+    protected override dsHiveServer.ResourceRow
+      InsertNewRow(Resource resource) {
+      dsHiveServer.ResourceRow row = data.NewResourceRow();
+      data.AddResourceRow(row);
+
+      return row;
+    }
+
+    protected override dsHiveServer.ResourceRow
+      InsertNewRowInCache(Resource resource) {
+      dsHiveServer.ResourceRow row = cache.NewResourceRow();
+      cache.AddResourceRow(row);
+
+      return row;
+    }
+
+    protected override void FillCache() {
+      cache = adapter.GetDataByActive();
+    }
+
+    public override void SyncWithDb() {
+      adapter.Update(cache);
+    }
+
+    protected override bool PutInCache(Resource obj) {
+      return (obj is ClientInfo &&
+        (obj as ClientInfo).State != State.offline);
+    }
+
+    protected override IEnumerable<dsHiveServer.ResourceRow>
+      FindById(long id) {
+      return adapter.GetDataById(id);
+    }
+
+    protected override dsHiveServer.ResourceRow
+      FindCachedById(long id) {
+      return cache.FindByResourceId(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.ResourceRow>
+      FindAll() {
+      return FindMultipleRows(
+        new Selector(adapter.GetData),
+        new Selector(cache.AsEnumerable<dsHiveServer.ResourceRow>));
+    }
+    #endregion
+
+    #region IResourceAdapter Members
+    public bool GetById(Resource resource) {
       if (resource != null) {
         dsHiveServer.ResourceRow row =
-          data.FindByResourceId(resource.ResourceId);
+          GetRowById(resource.Id);
+
         if (row != null) {
           Convert(row, resource);
 
@@ -101,27 +143,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return false;
     }
 
-    public Resource GetResourceById(long resourceId) {
-      Resource resource = new Resource();
-      resource.ResourceId = resourceId;
-
-      if(GetResourceById(resource)) 
-        return resource;
-      else 
-        return null;
-    }
-
-    public Resource GetResourceByName(string name) {
-      dsHiveServer.ResourceRow row = null;
-
-      IEnumerable<dsHiveServer.ResourceRow> permOwners =
-        from r in
-          data.AsEnumerable<dsHiveServer.ResourceRow>()
-        where !r.IsNameNull() && r.Name == name
-        select r;
-
-      if (permOwners.Count<dsHiveServer.ResourceRow>() == 1)
-        row = permOwners.First<dsHiveServer.ResourceRow>();
+    public Resource GetByName(string name) {
+      dsHiveServer.ResourceRow row =
+        base.FindSingleRow(
+          delegate() {
+            return adapter.GetDataByName(name);
+          },
+          delegate() {
+            return from r in
+                     cache.AsEnumerable<dsHiveServer.ResourceRow>()
+                   where !r.IsNameNull() && 
+                          r.Name == name
+                   select r;
+          });
 
       if (row != null) {
         Resource res = new Resource();
@@ -131,36 +165,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } else {
         return null;
       }
-    }
-
-    public ICollection<Resource> GetAllResources() {
-      IList<Resource> allResources =
-        new List<Resource>();
-      
-      foreach (dsHiveServer.ResourceRow row in data) {
-        Resource resource = new Resource();
-        Convert(row, resource);
-        allResources.Add(resource);
-      }
-
-      return allResources;
-    }
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteResource(Resource resource) {
-      if(resource != null) {
-        dsHiveServer.ResourceRow row =
-          data.FindByResourceId(resource.ResourceId);
-
-        if (row != null) {
-          row.Delete();
-          adapter.Update(row);
-
-          return true;
-        } 
-      }
-       
-      return false;
     }
 
     #endregion

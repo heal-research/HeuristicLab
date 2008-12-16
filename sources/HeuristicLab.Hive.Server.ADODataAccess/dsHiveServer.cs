@@ -2,6 +2,8 @@
     
     
     public partial class dsHiveServer {
+      partial class ClientGroup_ResourceDataTable {
+      }
     }
 }
 

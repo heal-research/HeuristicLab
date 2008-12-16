@@ -28,11 +28,21 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Resource {
+  public class Resource: IHiveObject {
     [DataMember]
-    public long ResourceId { get; set; }
+    public long Id { get; set; }
     [DataMember]
     public string Name { get; set; }
 
+    public override bool Equals(object obj) {
+      if (obj is Resource)
+        return (obj as Resource).Id.Equals(Id);
+      else
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return Id.GetHashCode();
+    }
   }
 }

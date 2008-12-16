@@ -29,11 +29,14 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class UserAdapter : DataAdapterBase, IUserAdapter {
-    private dsHiveServerTableAdapters.HiveUserTableAdapter adapter =
-        new dsHiveServerTableAdapters.HiveUserTableAdapter();
-
-    private dsHiveServer.HiveUserDataTable data =
+  class UserAdapter :
+    DataAdapterBase<
+      dsHiveServerTableAdapters.HiveUserTableAdapter,
+      User,
+      dsHiveServer.HiveUserRow>,
+    IUserAdapter {
+    #region Fields
+    dsHiveServer.HiveUserDataTable data =
         new dsHiveServer.HiveUserDataTable();
 
     private IPermissionOwnerAdapter permOwnerAdapter = null;
@@ -51,9 +54,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     private IUserGroupAdapter UserGroupAdapter {
       get {
-        if(userGroupAdapter == null) {
+        if (userGroupAdapter == null)
           userGroupAdapter = ServiceLocator.GetUserGroupAdapter();
-        }
 
         return userGroupAdapter;
       }
@@ -63,28 +65,21 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     private IJobAdapter JobAdapter {
       get {
-        if (jobAdapter == null) {
+        if (jobAdapter == null)
           jobAdapter = ServiceLocator.GetJobAdapter();
-        }
 
         return jobAdapter;
       }
     }
+    #endregion
 
-    public UserAdapter() {
-      adapter.Fill(data);
-    }
-
-    protected override void Update() {
-      this.adapter.Update(this.data);
-    }
-
-    private User Convert(dsHiveServer.HiveUserRow row, 
+    #region Overrides
+    protected override User Convert(dsHiveServer.HiveUserRow row,
       User user) {
       if (row != null && user != null) {
         /*Parent - PermissionOwner*/
-        user.PermissionOwnerId = row.PermissionOwnerId;
-        PermOwnerAdapter.GetPermissionOwnerById(user);
+        user.Id = row.PermissionOwnerId;
+        PermOwnerAdapter.GetById(user);
 
         /*User*/
         if (!row.IsPasswordNull())
@@ -97,110 +92,89 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    private dsHiveServer.HiveUserRow Convert(User user,
+    protected override dsHiveServer.HiveUserRow Convert(User user,
       dsHiveServer.HiveUserRow row) {
       if (user != null && row != null) {
-        row.Password = user.Password;
+        if (user.Password == null)
+          row.SetPasswordNull();
+        else
+          row.Password = user.Password;
 
         return row;
       } else
-        return null;     
+        return null;
     }
+
+    protected override dsHiveServer.HiveUserRow
+      InsertNewRow(User user) {
+      dsHiveServer.HiveUserRow row =
+        data.NewHiveUserRow();
+
+      row.PermissionOwnerId = user.Id;
+
+      data.AddHiveUserRow(row);
+
+      return row;
+    }
+
+    protected override void
+      UpdateRow(dsHiveServer.HiveUserRow row) {
+      adapter.Update(row);
+    }
+
+    protected override IEnumerable<dsHiveServer.HiveUserRow>
+      FindById(long id) {
+      return adapter.GetDataById(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.HiveUserRow>
+      FindAll() {
+      return adapter.GetData();
+    }
+    #endregion
 
     #region IUserAdapter Members
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdateUser(User user) {
+    public override void Update(User user) {
       if (user != null) {
-        PermOwnerAdapter.UpdatePermissionOwner(user);
+        PermOwnerAdapter.Update(user);
 
-        dsHiveServer.HiveUserRow row = 
-          data.FindByPermissionOwnerId(user.PermissionOwnerId);
-        if (row == null) {
-          row = data.NewHiveUserRow();
-          row.PermissionOwnerId = user.PermissionOwnerId;
-          data.AddHiveUserRow(row);
-        } 
-
-        Convert(user, row);
+        base.Update(user);
       }
     }
 
-    public User GetUserById(long userId) {
-      User user = new User();
-
-      dsHiveServer.HiveUserRow row =
-          data.FindByPermissionOwnerId(userId);
-
-      if(row != null) {
-        Convert(row, user);
-
-        return user;
-      } else {
-        return null;
-      }
-    }
-
-    public User GetUserByName(String name) {
-      User user = new User();
-
-      PermissionOwner permOwner =
-        PermOwnerAdapter.GetPermissionOwnerByName(name);
-
-      if (permOwner != null) {
-        dsHiveServer.HiveUserRow row =
-          data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
-
-        if (row != null) {
-          Convert(row, user);
-
-          return user;
-        }
+    public User GetByName(String name) {
+      if (name != null) {
+        return base.FindSingle(
+          delegate() {
+            return adapter.GetDataByName(name);
+          });
       }
 
       return null;
     }
 
-    public ICollection<User> GetAllUsers() {
-      ICollection<User> allUsers =
-        new List<User>();
-
-      foreach (dsHiveServer.HiveUserRow row in data) {
-        User user = new User();
-        Convert(row, user);
-        allUsers.Add(user);
-      }
-
-      return allUsers;
-    }
-
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteUser(User user) {
+    public override bool Delete(User user) {
       if (user != null) {
-        dsHiveServer.HiveUserRow row =
-          data.FindByPermissionOwnerId(user.PermissionOwnerId);
-
-        if (row != null) {
-          //Referential integrity with user groups
-          ICollection<UserGroup> userGroups =
-            UserGroupAdapter.MemberOf(user);
-          foreach (UserGroup group in userGroups) {
-            group.Members.Remove(user);
-            UserGroupAdapter.UpdateUserGroup(group);
-          }
-
-          //Referential integrity with jobs
-          ICollection<Job> jobs =
-            JobAdapter.GetJobsOf(user);
-          foreach (Job job in jobs) {
-            JobAdapter.DeleteJob(job);
-          }
-
-          row.Delete();
-          adapter.Update(row);
-
-          return PermOwnerAdapter.DeletePermissionOwner(user);
+        //Referential integrity with user groups
+        ICollection<UserGroup> userGroups =
+          UserGroupAdapter.MemberOf(user);
+        foreach (UserGroup group in userGroups) {
+          group.Members.Remove(user);
+          UserGroupAdapter.Update(group);
         }
+
+        //Referential integrity with jobs
+        ICollection<Job> jobs =
+          JobAdapter.GetJobsOf(user);
+        foreach (Job job in jobs) {
+          JobAdapter.Delete(job);
+        }
+
+        return base.Delete(user) &&
+            PermOwnerAdapter.Delete(user);
       }
 
       return false;

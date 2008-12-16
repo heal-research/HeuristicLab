@@ -23,25 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
 
-namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
-  /// <summary>
-  /// The client group database adapter
-  /// </summary>
-  public interface IClientGroupAdapter: IDataAdapter<ClientGroup> {
-    /// <summary>
-    /// Get the client group with the specified name
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    ClientGroup GetByName(string name);
-
-    /// <summary>
-    /// Gets all client groups where the resource is member of
-    /// </summary>
-    /// <param name="permOwner"></param>
-    /// <returns></returns>
-    ICollection<ClientGroup> MemberOf(Resource resource);
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+  public interface IHiveObject {
+    long Id { get; set;  }
   }
 }

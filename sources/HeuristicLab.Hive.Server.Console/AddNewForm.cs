@@ -68,7 +68,7 @@ namespace HeuristicLab.Hive.Server.Console {
             foreach (UserGroup ug in userGroups.List) {
               if (cbGroups.SelectedItem.ToString().Equals(ug.Name)) {
                 Response resp = userRoleManager.AddUserToGroup
-                  (ug.PermissionOwnerId, u.PermissionOwnerId);
+                  (ug.Id, u.Id);
               }
             }
           }
@@ -81,7 +81,7 @@ namespace HeuristicLab.Hive.Server.Console {
           foreach (UserGroup ugs in userGroups.List) {
             if (cbGroups.SelectedText.Equals(ugs.Name)) {
               Response resp = userRoleManager.AddUserGroupToGroup
-                (ug.PermissionOwnerId, ugs.PermissionOwnerId);
+                (ug.Id, ugs.Id);
             }
           }
         }

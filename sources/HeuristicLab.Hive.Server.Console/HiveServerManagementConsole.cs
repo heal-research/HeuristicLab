@@ -79,7 +79,7 @@ namespace HeuristicLab.Hive.Server.Console {
 
 
       foreach (Job job in jobs.List) {
-        tvJobControl.Nodes.Add(job.JobId.ToString());
+        tvJobControl.Nodes.Add(job.Id.ToString());
       } // Jobs
 
       foreach (UserGroup ug in userGroups.List) {

@@ -29,12 +29,16 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ClientAdapter: DataAdapterBase, IClientAdapter {
-    private dsHiveServerTableAdapters.ClientTableAdapter adapter =
-        new dsHiveServerTableAdapters.ClientTableAdapter();
-
-    private dsHiveServer.ClientDataTable data =
-      new dsHiveServer.ClientDataTable();
+  class ClientAdapter: 
+    CachedDataAdapter<
+      dsHiveServerTableAdapters.ClientTableAdapter, 
+      ClientInfo, 
+      dsHiveServer.ClientRow, 
+      dsHiveServer.ClientDataTable>,
+    IClientAdapter {
+    #region Fields
+    dsHiveServer.ClientDataTable data =
+        new dsHiveServer.ClientDataTable();
 
     private IResourceAdapter resAdapter = null;
 
@@ -70,24 +74,25 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return jobAdapter;
       }
     }
+    #endregion
 
     public ClientAdapter() {
-      adapter.Fill(data);
+      parentAdapters.Add(this.ResAdapter as ICachedDataAdapter);
     }
 
-    protected override void Update() {
-      this.adapter.Update(this.data);
-    }
-    
-    private ClientInfo Convert(dsHiveServer.ClientRow row, 
+    #region Overrides
+    protected override ClientInfo Convert(dsHiveServer.ClientRow row, 
       ClientInfo client) {
       if(row != null && client != null) {      
         /*Parent - resource*/
-        client.ResourceId = row.ResourceId;
-        ResAdapter.GetResourceById(client);
+        client.Id = row.ResourceId;
+        ResAdapter.GetById(client);
 
         /*ClientInfo*/
-        client.ClientId = row.GUID;
+        if (!row.IsGUIDNull())
+          client.ClientId = row.GUID;
+        else
+          client.ClientId = Guid.Empty;
        
         if (!row.IsCPUSpeedNull())
           client.CpuSpeedPerCore = row.CPUSpeed;
@@ -107,7 +112,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (!row.IsStatusNull())
           client.State = (State)Enum.Parse(typeof(State), row.Status, true);
         else
-          client.State = State.idle;
+          client.State = State.nullState;
 
         if (!row.IsNumberOfCoresNull())
           client.NrOfCores = row.NumberOfCores;
@@ -122,14 +127,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    private dsHiveServer.ClientRow Convert(ClientInfo client,
+    protected override dsHiveServer.ClientRow Convert(ClientInfo client,
       dsHiveServer.ClientRow row) {
       if (client != null && row != null) {      
         row.GUID = client.ClientId;
         row.CPUSpeed = client.CpuSpeedPerCore;
         row.Memory = client.Memory;
         row.Login = client.Login;
-        row.Status = client.State.ToString();
+        if (client.State != State.nullState)
+          row.Status = client.State.ToString();
+        else
+          row.SetStatusNull();
         row.NumberOfCores = client.NrOfCores;
 
         //todo: config adapter
@@ -142,104 +150,95 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
+    protected override void UpdateRow(dsHiveServer.ClientRow row) {
+      adapter.Update(row);
+    }
+
+    protected override dsHiveServer.ClientRow
+      InsertNewRow(ClientInfo client) {
+      dsHiveServer.ClientRow row = data.NewClientRow();
+      row.ResourceId = client.Id;
+      data.AddClientRow(row);
+
+      return row;
+    }
+
+    protected override dsHiveServer.ClientRow
+      InsertNewRowInCache(ClientInfo client) {
+      dsHiveServer.ClientRow row = cache.NewClientRow();
+      row.ResourceId = client.Id;
+      cache.AddClientRow(row);
+
+      return row;
+    }
+
+    protected override void FillCache() {
+      cache = adapter.GetDataByActive();
+    }
+
+    public override void SyncWithDb() {
+      adapter.Update(cache);
+    }
+
+    protected override bool PutInCache(ClientInfo obj) {
+      return (obj.State != State.offline && obj.State != State.nullState);
+    }
+
+    protected override IEnumerable<dsHiveServer.ClientRow>
+      FindById(long id) {
+      return adapter.GetDataByResourceId(id);
+    }
+
+    protected override dsHiveServer.ClientRow
+      FindCachedById(long id) {
+      return cache.FindByResourceId(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.ClientRow>
+      FindAll() {
+      return FindMultipleRows(
+        new Selector(adapter.GetData),
+        new Selector(cache.AsEnumerable<dsHiveServer.ClientRow>));
+    }
+    #endregion
+
     #region IClientAdapter Members
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdateClient(ClientInfo client) {
+    public override void Update(ClientInfo client) {
       if (client != null) {
-        ResAdapter.UpdateResource(client);
+        ResAdapter.Update(client);
 
-        dsHiveServer.ClientRow row = 
-          data.FindByResourceId(client.ResourceId);
-
-        if (row == null) {
-          row = data.NewClientRow();
-          row.ResourceId = client.ResourceId;
-          data.AddClientRow(row);
-        } 
-
-        Convert(client, row);
+        base.Update(client);
       }
     }
 
-    public ClientInfo GetClientById(Guid clientId) {
-      ClientInfo client = new ClientInfo();
-
-      dsHiveServer.ClientRow row = null;
-      IEnumerable<dsHiveServer.ClientRow> clients =
-            from c in
-              data.AsEnumerable<dsHiveServer.ClientRow>()
-            where !c.IsGUIDNull() && c.GUID == clientId
-            select c;
-      if (clients.Count<dsHiveServer.ClientRow>() == 1)
-        row = clients.First<dsHiveServer.ClientRow>();
-
-      if (row != null) {
-        Convert(row, client);
-
-        return client;
-      } else {
-        return null;
-      }
+    public ClientInfo GetById(Guid clientId) {
+      return base.FindSingle(
+        delegate() {
+          return adapter.GetDataById(clientId);
+        }, 
+        delegate() {
+          return from c in
+                     cache.AsEnumerable<dsHiveServer.ClientRow>()
+                   where !c.IsGUIDNull() && 
+                          c.GUID == clientId
+                   select c; 
+        });
     }
 
-    public ClientInfo GetClientById(long id) {
+    public ClientInfo GetByName(string name) {
       ClientInfo client = new ClientInfo();
-
-      dsHiveServer.ClientRow row = data.FindByResourceId(id);
-
-      if (row != null) {
-        Convert(row, client);
-
-        return client;
-      } else {
-        return null;
-      }
-    }
-
-    public ClientInfo GetClientByName(string name) {
-      ClientInfo client = new ClientInfo();
-
       Resource res =
-        ResAdapter.GetResourceByName(name);
+        ResAdapter.GetByName(name);
 
-      if (res != null) {
-        dsHiveServer.ClientRow row =
-          data.FindByResourceId(res.ResourceId);
-
-        if (row != null) {
-          Convert(row, client);
-
-          return client;
-        }
-      }
-
-      return null;
-    }
-
-    public ICollection<ClientInfo> GetAllClients() {
-      ICollection<ClientInfo> allClients =
-        new List<ClientInfo>();
-
-      foreach (dsHiveServer.ClientRow row in data) {
-        ClientInfo client = new ClientInfo();
-        Convert(row, client);
-        allClients.Add(client);
-      }
-
-      return allClients;
+      return GetById(res.Id);
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteClient(ClientInfo client) {      
+    public override bool Delete(ClientInfo client) {      
       if (client != null) {
-        dsHiveServer.ClientRow row = null;
-        IEnumerable<dsHiveServer.ClientRow> clients =
-              from c in
-                data.AsEnumerable<dsHiveServer.ClientRow>()
-              where !c.IsGUIDNull() && c.GUID == client.ClientId
-              select c;
-        if (clients.Count<dsHiveServer.ClientRow>() == 1)
-          row = clients.First<dsHiveServer.ClientRow>();
+        dsHiveServer.ClientRow row =
+          GetRowById(client.Id);
 
         if (row != null) {
           //Referential integrity with client groups
@@ -247,20 +246,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             ClientGroupAdapter.MemberOf(client);
           foreach (ClientGroup group in clientGroups) {
             group.Resources.Remove(client);
-            ClientGroupAdapter.UpdateClientGroup(group);
+            ClientGroupAdapter.Update(group);
           }
 
           //Referential integrity with jobs
           ICollection<Job> jobs =
             JobAdapter.GetJobsOf(client);
           foreach (Job job in jobs) {
-            JobAdapter.DeleteJob(job);
+            JobAdapter.Delete(job);
           }
 
-          row.Delete();
-          adapter.Update(row);
-
-          return ResAdapter.DeleteResource(client);
+          return base.Delete(client) && 
+            ResAdapter.Delete(client);
         }
       }
 

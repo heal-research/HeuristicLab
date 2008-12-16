@@ -29,44 +29,19 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The client database adapter
   /// </summary>
-  public interface IClientAdapter {
-    /// <summary>
-    /// Save or update the client
-    /// </summary>
-    /// <param name="client"></param>
-    void UpdateClient(ClientInfo client);
-
-    /// <summary>
-    /// Get the client with the specified ID
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    ClientInfo GetClientById(Guid clientId);
-
+  public interface IClientAdapter : IDataAdapter<ClientInfo> {
     /// <summary>
     /// Get the client with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    ClientInfo GetClientByName(string name);
+    ClientInfo GetByName(string name);
 
     /// <summary>
-    /// Get the client with the specified ID
+    /// Get the client with the specified id
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    ClientInfo GetClientById(long id);
-
-    /// <summary>
-    /// Get all clients
-    /// </summary>
-    /// <returns></returns>
-    ICollection<ClientInfo> GetAllClients();
-
-    /// <summary>
-    /// Deletes the client
-    /// </summary>
-    /// <param name="client"></param>
-    bool DeleteClient(ClientInfo client);
+    ClientInfo GetById(Guid id);
   }
 }

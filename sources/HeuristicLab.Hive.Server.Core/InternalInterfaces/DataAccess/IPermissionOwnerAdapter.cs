@@ -29,44 +29,19 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The permission owner database adapter
   /// </summary>
-  public interface IPermissionOwnerAdapter {
-    /// <summary>
-    /// Save or update the permission owner
-    /// </summary>
-    /// <param name="client"></param>
-    void UpdatePermissionOwner(PermissionOwner permOwner);
-
+  public interface IPermissionOwnerAdapter: IDataAdapter<PermissionOwner> {
     /// <summary>
     /// Gets the permission owner and updates the values of the object
     /// </summary>
     /// <param name="resource"></param>
     /// <returns></returns>
-    bool GetPermissionOwnerById(PermissionOwner permOwner);
-
-    /// <summary>
-    /// Get the permission owner with the specified ID
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    PermissionOwner GetPermissionOwnerById(long permOwnerId);
+    bool GetById(PermissionOwner permOwner);
 
     /// <summary>
     /// Get the permission owner with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    PermissionOwner GetPermissionOwnerByName(String name);
-
-    /// <summary>
-    /// Get all permission owners
-    /// </summary>
-    /// <returns></returns>
-    ICollection<PermissionOwner> GetAllPermissionOwners();
-
-    /// <summary>
-    /// Deletes the permission owner
-    /// </summary>
-    /// <param name="permOwner"></param>
-    bool DeletePermissionOwner(PermissionOwner permOwner);
+    PermissionOwner GetByName(String name);
   }
 }

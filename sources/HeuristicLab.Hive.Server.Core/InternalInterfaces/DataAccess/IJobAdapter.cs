@@ -26,26 +26,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
-  public interface IJobAdapter {
-    /// <summary>
-    /// Save or update the job
-    /// </summary>
-    /// <param name="client"></param>
-    void UpdateJob(Job job);
-
-    /// <summary>
-    /// Get the job with the specified ID
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    Job GetJobById(long id);
-
-    /// <summary>
-    /// Get all jobs
-    /// </summary>
-    /// <returns></returns>
-    ICollection<Job> GetAllJobs();
-
+  public interface IJobAdapter: IDataAdapter<Job> {
     /// <summary>
     /// Gets all subjobs of the specified job
     /// </summary>
@@ -72,11 +53,5 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// <param name="user"></param>
     /// <returns></returns>
     ICollection<Job> GetJobsOf(User user);
-
-    /// <summary>
-    /// Deletes the job
-    /// </summary>
-    /// <param name="client"></param>
-    bool DeleteJob(Job job);
   }
 }

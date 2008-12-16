@@ -29,44 +29,19 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The resource database adapter
   /// </summary>
-  public interface IResourceAdapter {
+  public interface IResourceAdapter: IDataAdapter<Resource> {
     /// <summary>
-    /// Save or update the resource
+    /// Gets the resource and updates the values of the object
     /// </summary>
-    /// <param name="client"></param>
-    void UpdateResource(Resource resource);
-
-    /// <summary>
-    /// Get the resource with the specified ID
-    /// </summary>
-    /// <param name="clientId"></param>
+    /// <param name="resource"></param>
     /// <returns></returns>
-    Resource GetResourceById(long resourceId);
+    bool GetById(Resource resource);
 
     /// <summary>
     /// Get the resource with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    Resource GetResourceByName(string name);
-
-    /// <summary>
-    /// Gets the resource and updates the values of the object
-    /// </summary>
-    /// <param name="resource"></param>
-    /// <returns></returns>
-    bool GetResourceById(Resource resource);
-
-    /// <summary>
-    /// Get all resuorces
-    /// </summary>
-    /// <returns></returns>
-    ICollection<Resource> GetAllResources();
-
-    /// <summary>
-    /// Deletes the resource
-    /// </summary>
-    /// <param name="client"></param>
-    bool DeleteResource(Resource resource);
+    Resource GetByName(string name);
   }
 }

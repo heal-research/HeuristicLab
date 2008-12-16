@@ -28,9 +28,9 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class ClientConfig {
+  public class ClientConfig: IHiveObject {
     [DataMember]
-    public long ClientConfigId { get; set; }
+    public long Id { get; set; }
     [DataMember]
     public String UpDownTimeCalendar { get; set; } // TODO define DataStructure
     [DataMember]

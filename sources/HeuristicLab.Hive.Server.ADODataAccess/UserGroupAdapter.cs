@@ -30,18 +30,19 @@ using System.Runtime.CompilerServices;
 using System.Data;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class UserGroupAdapter: DataAdapterBase, IUserGroupAdapter {
-    private dsHiveServerTableAdapters.UserGroupTableAdapter adapter =
-        new dsHiveServerTableAdapters.UserGroupTableAdapter();
+  class UserGroupAdapter: 
+    DataAdapterBase<
+      dsHiveServerTableAdapters.UserGroupTableAdapter, 
+      UserGroup, 
+      dsHiveServer.UserGroupRow>,
+    IUserGroupAdapter {
 
-    private dsHiveServer.UserGroupDataTable data =
-      new dsHiveServer.UserGroupDataTable();
+    #region Fields
+    dsHiveServer.UserGroupDataTable data =
+        new dsHiveServer.UserGroupDataTable();
 
     private dsHiveServerTableAdapters.PermissionOwner_UserGroupTableAdapter permOwnerUserGroupAdapter =
       new dsHiveServerTableAdapters.PermissionOwner_UserGroupTableAdapter();
-
-    private dsHiveServer.PermissionOwner_UserGroupDataTable permOwnerUserGroupData =
-      new dsHiveServer.PermissionOwner_UserGroupDataTable();
 
     private IPermissionOwnerAdapter permOwnerAdapter = null;
 
@@ -64,30 +65,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return userAdapter;
       }
     }
+    #endregion
 
-    public UserGroupAdapter() {
-      adapter.Fill(data);
-      permOwnerUserGroupAdapter.Fill(permOwnerUserGroupData);
-    }
-
-    protected override void Update() {
-      this.adapter.Update(this.data);
-      this.permOwnerUserGroupAdapter.Update(permOwnerUserGroupData);
-    }
-
-    private UserGroup Convert(dsHiveServer.UserGroupRow row,
+    #region Overrides
+    protected override UserGroup Convert(dsHiveServer.UserGroupRow row,
       UserGroup userGroup) {
       if (row != null && userGroup != null) {
         /*Parent - Permission Owner*/
-        userGroup.PermissionOwnerId = row.PermissionOwnerId;
-        PermOwnerAdapter.GetPermissionOwnerById(userGroup);
+        userGroup.Id = row.PermissionOwnerId;
+        PermOwnerAdapter.GetById(userGroup);
 
         //first check for created references
-        IEnumerable<dsHiveServer.PermissionOwner_UserGroupRow> userGroupRows =
-          from permOwner in
-            permOwnerUserGroupData.AsEnumerable<dsHiveServer.PermissionOwner_UserGroupRow>()
-          where permOwner.UserGroupId == userGroup.PermissionOwnerId
-          select permOwner;
+        dsHiveServer.PermissionOwner_UserGroupDataTable userGroupRows =
+          permOwnerUserGroupAdapter.GetDataByUserGroupId(userGroup.Id);
 
         foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
           userGroupRows) {
@@ -96,19 +86,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           IEnumerable<PermissionOwner> permOwners =
             from p in
               userGroup.Members
-            where p.PermissionOwnerId == permOwnerUserGroupRow.PermissionOwnerId
+            where p.Id == permOwnerUserGroupRow.PermissionOwnerId
             select p;
           if (permOwners.Count<PermissionOwner>() == 1)
             permOwner = permOwners.First<PermissionOwner>();
 
           if (permOwner == null) {
             PermissionOwner permissionOwner = 
-              UserAdapter.GetUserById(permOwnerUserGroupRow.PermissionOwnerId);
+              UserAdapter.GetById(permOwnerUserGroupRow.PermissionOwnerId);
 
             if (permissionOwner == null) {
               //is a user group
               permissionOwner =
-                GetUserGroupById(permOwnerUserGroupRow.PermissionOwnerId);
+                GetById(permOwnerUserGroupRow.PermissionOwnerId);
             }
 
             if(permissionOwner != null)
@@ -121,12 +111,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           new List<PermissionOwner>();
 
         foreach (PermissionOwner permOwner in userGroup.Members) {
-          dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow =
-            permOwnerUserGroupData.FindByPermissionOwnerIdUserGroupId(
-              permOwner.PermissionOwnerId,
-              userGroup.PermissionOwnerId);
-
-          if (permOwnerUserGroupRow == null) {
+          dsHiveServer.PermissionOwner_UserGroupDataTable found =
+            permOwnerUserGroupAdapter.GetDataByPermownerUsergroupId(
+              permOwner.Id,
+              userGroup.Id);
+          if (found.Count != 1) {
             deleted.Add(permOwner);
           }
         }
@@ -140,46 +129,48 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    private dsHiveServer.UserGroupRow Convert(UserGroup userGroup,
+    protected override dsHiveServer.UserGroupRow Convert(UserGroup userGroup,
       dsHiveServer.UserGroupRow row) {
       if (userGroup != null && row != null) {
-        row.PermissionOwnerId = userGroup.PermissionOwnerId;
+        row.PermissionOwnerId = userGroup.Id;
       
         //update references
         foreach (PermissionOwner permOwner in userGroup.Members) {          
           //first update the member to make sure it exists in the DB
           if (permOwner is User) {
-            UserAdapter.UpdateUser(permOwner as User);
+            UserAdapter.Update(permOwner as User);
           } else if (permOwner is UserGroup) {
-            UpdateUserGroup(permOwner as UserGroup);
+            Update(permOwner as UserGroup);
           }
 
           //secondly check for created references
           dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow =
-            permOwnerUserGroupData.FindByPermissionOwnerIdUserGroupId(
-              permOwner.PermissionOwnerId,
-              userGroup.PermissionOwnerId);
+            null;
+          dsHiveServer.PermissionOwner_UserGroupDataTable found = 
+            permOwnerUserGroupAdapter.GetDataByPermownerUsergroupId(
+              permOwner.Id,
+              userGroup.Id);
+          if (found.Count == 1)
+            permOwnerUserGroupRow = found[0];
 
           if (permOwnerUserGroupRow == null) {
             permOwnerUserGroupRow = 
-              permOwnerUserGroupData.NewPermissionOwner_UserGroupRow();
+              found.NewPermissionOwner_UserGroupRow();
 
             permOwnerUserGroupRow.PermissionOwnerId =
-              permOwner.PermissionOwnerId;
+              permOwner.Id;
             permOwnerUserGroupRow.UserGroupId =
-              userGroup.PermissionOwnerId;
+              userGroup.Id;
 
-            permOwnerUserGroupData.AddPermissionOwner_UserGroupRow(
-              permOwnerUserGroupRow);
+            found.AddPermissionOwner_UserGroupRow(permOwnerUserGroupRow);
+
+            permOwnerUserGroupAdapter.Update(permOwnerUserGroupRow);
           }
         }
 
         //thirdly check for deleted references
-        IEnumerable<dsHiveServer.PermissionOwner_UserGroupRow> userGroupRows = 
-          from permOwner in 
-            permOwnerUserGroupData.AsEnumerable<dsHiveServer.PermissionOwner_UserGroupRow>()
-          where permOwner.UserGroupId == userGroup.PermissionOwnerId  
-          select permOwner;
+        dsHiveServer.PermissionOwner_UserGroupDataTable userGroupRows =
+            permOwnerUserGroupAdapter.GetDataByUserGroupId(userGroup.Id);
 
         ICollection<dsHiveServer.PermissionOwner_UserGroupRow> deleted =
           new List<dsHiveServer.PermissionOwner_UserGroupRow>();
@@ -191,7 +182,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           IEnumerable<PermissionOwner> permOwners =
             from p in
               userGroup.Members
-            where p.PermissionOwnerId == permOwnerUserGroupRow.PermissionOwnerId
+            where p.Id == permOwnerUserGroupRow.PermissionOwnerId
             select p;
 
           if (permOwners.Count<PermissionOwner>() == 1)
@@ -202,83 +193,64 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
         }
 
-        foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
-          deleted) {
-          permOwnerUserGroupData.RemovePermissionOwner_UserGroupRow(
-            permOwnerUserGroupRow);
+        foreach (dsHiveServer.PermissionOwner_UserGroupRow 
+          permOwnerUserGroupRow in deleted) {
+          permOwnerUserGroupRow.Delete();
+          permOwnerUserGroupAdapter.Update(permOwnerUserGroupRow);
         }
-
       }
 
       return row;
     }
 
+    protected override dsHiveServer.UserGroupRow
+      InsertNewRow(UserGroup group) {
+      dsHiveServer.UserGroupRow row =
+        data.NewUserGroupRow();
+
+      row.PermissionOwnerId = group.Id;
+
+      data.AddUserGroupRow(row);
+      adapter.Update(row);
+
+      return row;
+    }
+
+    protected override void
+     UpdateRow(dsHiveServer.UserGroupRow row) {
+      adapter.Update(row);
+    }
+
+    protected override IEnumerable<dsHiveServer.UserGroupRow>
+      FindById(long id) {
+      return adapter.GetDataById(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.UserGroupRow>
+      FindAll() {
+      return adapter.GetData();
+    }
+    #endregion
+
     #region IUserGroupAdapter Members
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdateUserGroup(UserGroup group) {
+    public override void Update(UserGroup group) {
       if (group != null) {
-        PermOwnerAdapter.UpdatePermissionOwner(group);
+        PermOwnerAdapter.Update(group);
 
-        dsHiveServer.UserGroupRow row =
-          data.FindByPermissionOwnerId(group.PermissionOwnerId);
-
-        if (row == null) {
-          row = data.NewUserGroupRow();
-          row.PermissionOwnerId = group.PermissionOwnerId;
-          data.AddUserGroupRow(row);
-        }
-
-        Convert(group, row);
+        base.Update(group);
       }
     }
 
-    public UserGroup GetUserGroupById(long userGroupId) {
-      UserGroup userGroup = new UserGroup();
-
-      dsHiveServer.UserGroupRow row =
-        data.FindByPermissionOwnerId(userGroupId);
-
-      if (row != null) {
-        Convert(row, userGroup);
-
-        return userGroup;
-      } else {
-        return null;
-      }
-    }
-
-    public UserGroup GetUserGroupByName(string name) {
-      UserGroup group = new UserGroup();
-
-      PermissionOwner permOwner =
-        PermOwnerAdapter.GetPermissionOwnerByName(name);
-
-      if (permOwner != null) {
-        dsHiveServer.UserGroupRow row =
-          data.FindByPermissionOwnerId(permOwner.PermissionOwnerId);
-
-        if (row != null) {
-          Convert(row, group);
-
-          return group;
-        }
+    public UserGroup GetByName(String name) {
+      if (name != null) {
+        return base.FindSingle(
+          delegate() {
+            return adapter.GetDataByName(name);
+          });
       }
 
       return null;
-    }
-
-    public ICollection<UserGroup> GetAllUserGroups() {
-      ICollection<UserGroup> allUserGroups =
-        new List<UserGroup>();
-
-      foreach (dsHiveServer.UserGroupRow row in data) {
-        UserGroup userGroup = new UserGroup();
-
-        Convert(row, userGroup);
-        allUserGroups.Add(userGroup);
-      }
-
-      return allUserGroups;
     }
 
     public ICollection<UserGroup> MemberOf(PermissionOwner permOwner) {
@@ -286,16 +258,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new List<UserGroup>();
       
       if (permOwner != null) {
-        IEnumerable<dsHiveServer.PermissionOwner_UserGroupRow> userGroupRows =
-         from userGroup in
-           permOwnerUserGroupData.AsEnumerable<dsHiveServer.PermissionOwner_UserGroupRow>()
-         where userGroup.PermissionOwnerId == permOwner.PermissionOwnerId
-         select userGroup;
+        dsHiveServer.PermissionOwner_UserGroupDataTable userGroupRows =
+          permOwnerUserGroupAdapter.GetDataByPermissionOwnerId(permOwner.Id);
 
         foreach (dsHiveServer.PermissionOwner_UserGroupRow userGroupRow in
           userGroupRows) {
           UserGroup userGroup = 
-            GetUserGroupById(userGroupRow.UserGroupId);
+            GetById(userGroupRow.UserGroupId);
           userGroups.Add(userGroup);
         }
       }
@@ -304,33 +273,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteUserGroup(UserGroup group) {
+    public override bool Delete(UserGroup group) {
       if (group != null) {
-        dsHiveServer.UserGroupRow row =
-          data.FindByPermissionOwnerId(group.PermissionOwnerId);
-
-        if (row != null) {
-          ICollection<dsHiveServer.PermissionOwner_UserGroupRow> deleted =
-            new List<dsHiveServer.PermissionOwner_UserGroupRow>();
-          
-          foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
-            permOwnerUserGroupData) {
-            if (permOwnerUserGroupRow.UserGroupId == group.PermissionOwnerId || 
-              permOwnerUserGroupRow.PermissionOwnerId == group.PermissionOwnerId) {
-              deleted.Add(permOwnerUserGroupRow);
-            }
-          }
-
-          foreach (dsHiveServer.PermissionOwner_UserGroupRow permOwnerUserGroupRow in
-            deleted) {
-            permOwnerUserGroupData.RemovePermissionOwner_UserGroupRow(
-              permOwnerUserGroupRow);
-          }
-
-          row.Delete();
-          adapter.Update(row);
-          return PermOwnerAdapter.DeletePermissionOwner(group);
-        }
+        return base.Delete(group) && 
+          PermOwnerAdapter.Delete(group);
       }
 
       return false;

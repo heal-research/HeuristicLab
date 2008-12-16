@@ -29,32 +29,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
   /// <summary>
   /// The user group database adapter
   /// </summary>
-  public interface IUserGroupAdapter {
-    /// <summary>
-    /// Save or update the user group
-    /// </summary>
-    /// <param name="client"></param>
-    void UpdateUserGroup(UserGroup group);
-
-    /// <summary>
-    /// Get the user group with the specified ID
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    UserGroup GetUserGroupById(long userGroupId);
-
+  public interface IUserGroupAdapter: IDataAdapter<UserGroup> {
     /// <summary>
     /// Get the user group with the specified name
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    UserGroup GetUserGroupByName(string name);
-
-    /// <summary>
-    /// Get all user groups
-    /// </summary>
-    /// <returns></returns>
-    ICollection<UserGroup> GetAllUserGroups();
+    UserGroup GetByName(String name);
 
     /// <summary>
     /// Gets all user groups where the permission owner is member of
@@ -62,11 +43,5 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// <param name="permOwner"></param>
     /// <returns></returns>
     ICollection<UserGroup> MemberOf(PermissionOwner permOwner);
-
-    /// <summary>
-    /// Deletes the user group
-    /// </summary>
-    /// <param name="client"></param>
-    bool DeleteUserGroup(UserGroup group);
   }
 }

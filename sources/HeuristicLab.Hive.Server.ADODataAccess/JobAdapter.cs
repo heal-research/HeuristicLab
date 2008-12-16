@@ -29,12 +29,15 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class JobAdapter : DataAdapterBase, IJobAdapter {
-    private dsHiveServerTableAdapters.JobTableAdapter adapter =
-        new dsHiveServerTableAdapters.JobTableAdapter();
-
-    private dsHiveServer.JobDataTable data =
-      new dsHiveServer.JobDataTable();
+  class JobAdapter :
+    CachedDataAdapter<dsHiveServerTableAdapters.JobTableAdapter,
+                      Job, 
+                      dsHiveServer.JobRow, 
+                      dsHiveServer.JobDataTable>, 
+    IJobAdapter {
+    #region Fields
+    dsHiveServer.JobDataTable data =
+        new dsHiveServer.JobDataTable();
 
     private IClientAdapter clientAdapter = null;
 
@@ -58,129 +61,129 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return userAdapter;
       }
     }
+    #endregion
 
-    public JobAdapter() {
-      adapter.Fill(data);
-    }
-
-    protected override void Update() {
-      this.adapter.Update(this.data);
-    }
-
-    private Job Convert(dsHiveServer.JobRow row,
+    #region Overrides
+    protected override Job Convert(dsHiveServer.JobRow row,
       Job job) {
       if (row != null && job != null) {
-        job.JobId = row.JobId;
+        job.Id = row.JobId;
 
         if (!row.IsParentJobIdNull())
-          job.ParentJob = GetJobById(row.ParentJobId);
+          job.ParentJob = GetById(row.ParentJobId);
         else
           job.ParentJob = null;
 
         if (!row.IsResourceIdNull())
-          job.Client = ClientAdapter.GetClientById(row.ResourceId);
+          job.Client = ClientAdapter.GetById(row.ResourceId);
         else
           job.Client = null;
         
         if (!row.IsStatusNull())
           job.State = (State)Enum.Parse(job.State.GetType(), row.Status);
         else
-          job.State = State.idle;
+          job.State = State.nullState;
 
         return job;
       } else
         return null;
     }
 
-    private dsHiveServer.JobRow Convert(Job job,
+    protected override dsHiveServer.JobRow Convert(Job job,
       dsHiveServer.JobRow row) {
       if (job != null && row != null) {
         if (job.Client != null) {
-          ClientAdapter.UpdateClient(job.Client);
-          row.ResourceId = job.Client.ResourceId;
+          ClientAdapter.Update(job.Client);
+          row.ResourceId = job.Client.Id;
         } else
           row.SetResourceIdNull();
 
         if (job.ParentJob != null) {
-          UpdateJob(job.ParentJob);
-          row.ParentJobId = job.ParentJob.JobId;
+          Update(job.ParentJob);
+          row.ParentJobId = job.ParentJob.Id;
         } else
           row.SetParentJobIdNull();
 
-        row.Status = job.State.ToString();
+        if (job.State != State.nullState)
+          row.Status = job.State.ToString();
+        else
+          row.SetStatusNull();
       }
 
       return row;
     }
 
-    #region IJobAdapter Members
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void UpdateJob(Job job) {
-      if (job != null) {
-        dsHiveServer.JobRow row =
-          data.FindByJobId(job.JobId);
-
-        if (row == null) {
-          row = data.NewJobRow();
-          data.AddJobRow(row);
-
-          //write row to db to get primary key
-          adapter.Update(row);
-        }
-
-        Convert(job, row);
-        job.JobId = row.JobId;
-      }
+    protected override void UpdateRow(dsHiveServer.JobRow row) {
+      adapter.Update(row);
     }
 
-    public Job GetJobById(long id) {
-      dsHiveServer.JobRow row =
-        data.FindByJobId(id);
+    protected override dsHiveServer.JobRow 
+      InsertNewRow(Job job) {      
+      dsHiveServer.JobRow row = data.NewJobRow();
+      data.AddJobRow(row);
 
-      if (row != null) {
-        Job job = new Job();
-        
-        Convert(row, job);
+      return row;
+    }
 
-        return job;
+    protected override dsHiveServer.JobRow 
+      InsertNewRowInCache(Job job) {
+      dsHiveServer.JobRow row = cache.NewJobRow();
+      cache.AddJobRow(row);
+
+      return row;
+    }
+
+    protected override void FillCache() {
+      adapter.FillByActive(cache);
+    }
+
+    public override void SyncWithDb() {
+      this.adapter.Update(this.cache);
+    }
+
+    protected override bool PutInCache(Job job) {
+      return job != null
+        && job.State != State.offline 
+        && job.State != State.nullState;
+    }
+
+    protected override IEnumerable<dsHiveServer.JobRow>
+      FindById(long id) {
+      return adapter.GetDataById(id);
+    }
+
+    protected override dsHiveServer.JobRow
+      FindCachedById(long id) {
+      return cache.FindByJobId(id);
+    }
+
+    protected override IEnumerable<dsHiveServer.JobRow>
+      FindAll() {
+      return FindMultipleRows(
+        new Selector(adapter.GetData),
+        new Selector(cache.AsEnumerable<dsHiveServer.JobRow>));
+    }
+
+    #endregion
+
+    #region IJobAdapter Members
+    public ICollection<Job> GetAllSubjobs(Job job) {
+      if (job != null) {
+        return
+          base.FindMultiple(
+            delegate() {
+              return adapter.GetDataBySubjobs(job.Id);
+            },
+            delegate() {
+              return from j in
+                   cache.AsEnumerable<dsHiveServer.JobRow>()
+                 where  !j.IsParentJobIdNull() && 
+                        j.ParentJobId == job.Id
+                 select j;
+            });
       }
 
       return null;
-    }
-
-    public ICollection<Job> GetAllJobs() {
-      IList<Job> allJobs =
-        new List<Job>();
-
-      foreach (dsHiveServer.JobRow row in data) {
-        Job job = new Job();
-        Convert(row, job);
-        allJobs.Add(job);
-      }
-
-      return allJobs;
-    }
-
-    public ICollection<Job> GetAllSubjobs(Job job) {
-      IList<Job> allJobs =
-        new List<Job>();
-
-      if (job != null) {
-        IEnumerable<dsHiveServer.JobRow> clientJobs =
-         from j in
-           data.AsEnumerable<dsHiveServer.JobRow>()
-         where j.ParentJobId == job.JobId
-         select j;
-
-        foreach (dsHiveServer.JobRow row in
-          clientJobs) {
-          Job j = new Job();
-          Convert(row, j);
-          allJobs.Add(j);
-        }
-      }
-
-      return allJobs;
     }
 
     public JobResult GetResult(Job job) {
@@ -188,69 +191,42 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<Job> GetJobsOf(ClientInfo client) {
-      IList<Job> allJobs =
-        new List<Job>();
-
       if (client != null) {
-        IEnumerable<dsHiveServer.JobRow> clientJobs =
-         from job in
-           data.AsEnumerable<dsHiveServer.JobRow>()
-         where !job.IsResourceIdNull() && 
-          job.ResourceId == client.ResourceId
-         select job;
-
-        foreach (dsHiveServer.JobRow row in
-          clientJobs) {
-          Job job = new Job();
-          Convert(row, job);
-          allJobs.Add(job);
-        }
+        return
+          base.FindMultiple(
+            delegate() {
+              return adapter.GetDataByClient(client.Id);
+            },
+            delegate() {
+              return from job in
+                 cache.AsEnumerable<dsHiveServer.JobRow>()
+               where !job.IsResourceIdNull() && 
+                      job.ResourceId == client.Id
+               select job;
+            });
       }
 
-      return allJobs;
+      return null;
     }
 
     public ICollection<Job> GetJobsOf(User user) {
-      IList<Job> allJobs =
-        new List<Job>();
-
       if (user != null) {
-        IEnumerable<dsHiveServer.JobRow> userJobs =
-        from job in
-          data.AsEnumerable<dsHiveServer.JobRow>()
-        where
-          !job.IsPermissionOwnerIdNull() &&
-          job.PermissionOwnerId == user.PermissionOwnerId
-        select job;
-
-        foreach (dsHiveServer.JobRow row in
-          userJobs) {
-          Job job = new Job();
-          Convert(row, job);
-          allJobs.Add(job);
-        }
+        return 
+          base.FindMultiple(
+            delegate() {
+              return adapter.GetDataByUser(user.Id);
+            },
+            delegate() {
+              return from job in
+                cache.AsEnumerable<dsHiveServer.JobRow>()
+              where !job.IsPermissionOwnerIdNull() &&
+                job.PermissionOwnerId == user.Id
+              select job;
+            });
       }
 
-      return allJobs;
+      return null;
     }
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool DeleteJob(Job job) {
-      if (job != null) {
-        dsHiveServer.JobRow row =
-          data.FindByJobId(job.JobId);
-
-        if (row != null) {
-          row.Delete();
-          adapter.Update(row);
-
-          return true;
-        }
-      }
-
-      return false;
-    }
-
     #endregion
   }
 }

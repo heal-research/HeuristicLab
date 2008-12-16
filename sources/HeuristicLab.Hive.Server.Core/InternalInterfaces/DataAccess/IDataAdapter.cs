@@ -23,25 +23,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
-  /// <summary>
-  /// The client group database adapter
-  /// </summary>
-  public interface IClientGroupAdapter: IDataAdapter<ClientGroup> {
+  public interface IDataAdapter<ObjT> {
     /// <summary>
-    /// Get the client group with the specified name
+    /// Save or update the object
     /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    ClientGroup GetByName(string name);
+    /// <param name="user"></param>
+    void Update(ObjT ob);
 
     /// <summary>
-    /// Gets all client groups where the resource is member of
+    /// Get the object with the specified ID
     /// </summary>
-    /// <param name="permOwner"></param>
+    /// <param name="userId"></param>
     /// <returns></returns>
-    ICollection<ClientGroup> MemberOf(Resource resource);
+    ObjT GetById(long id);
+
+    /// <summary>
+    /// Get all objects
+    /// </summary>
+    /// <returns></returns>
+    ICollection<ObjT> GetAll();
+
+    /// <summary>
+    /// Deletes the object
+    /// </summary>
+    /// <param name="user"></param>
+    bool Delete(ObjT obj);
   }
 }
