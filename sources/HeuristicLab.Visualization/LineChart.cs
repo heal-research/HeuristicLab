@@ -233,6 +233,7 @@ namespace HeuristicLab.Visualization {
 
         r = Rectangle.Empty;
         rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, 1000, Color.Blue);
+        rectangleShape.Opacity = 50;
 
         root.AddShape(rectangleShape);
       } else {

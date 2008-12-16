@@ -5,7 +5,7 @@ namespace HeuristicLab.Visualization {
     private RectangleD rectangle;
     private double z;
     private Color color;
-    private int opacity = 100;
+    private int opacity = 255;
 
     public RectangleShape(double x1, double y1, double x2, double y2, double z, Color color) {
       rectangle = new RectangleD(x1, y1, x2, y2);
@@ -18,7 +18,7 @@ namespace HeuristicLab.Visualization {
     }
 
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      Color brushColor = Color.FromArgb(50, color);
+      Color brushColor = Color.FromArgb(opacity, color);
 
       using (Pen pen = new Pen(color, 1))
       using (Brush brush = new SolidBrush(brushColor)) {
@@ -32,6 +32,11 @@ namespace HeuristicLab.Visualization {
     public double Z {
       get { return z; }
       set { z = value; }
+    }
+
+    public int Opacity {
+      get { return opacity; }
+      set { opacity = value; }
     }
 
     public RectangleD Rectangle {
