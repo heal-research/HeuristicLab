@@ -241,15 +241,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           GetRowById(client.Id);
 
         if (row != null) {
-          //Referential integrity with client groups
-          ICollection<ClientGroup> clientGroups =
-            ClientGroupAdapter.MemberOf(client);
-          foreach (ClientGroup group in clientGroups) {
-            group.Resources.Remove(client);
-            ClientGroupAdapter.Update(group);
-          }
-
-          //Referential integrity with jobs
+          //Referential integrity with jobs - they are cached
           ICollection<Job> jobs =
             JobAdapter.GetJobsOf(client);
           foreach (Job job in jobs) {

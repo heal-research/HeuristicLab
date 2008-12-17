@@ -158,15 +158,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public override bool Delete(User user) {
       if (user != null) {
-        //Referential integrity with user groups
-        ICollection<UserGroup> userGroups =
-          UserGroupAdapter.MemberOf(user);
-        foreach (UserGroup group in userGroups) {
-          group.Members.Remove(user);
-          UserGroupAdapter.Update(group);
-        }
-
-        //Referential integrity with jobs
+        //Referential integrity with jobs - they are cached
         ICollection<Job> jobs =
           JobAdapter.GetJobsOf(user);
         foreach (Job job in jobs) {
