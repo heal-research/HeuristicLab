@@ -52,8 +52,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetJobResultNull();
 
-        if (result.Client != null)
-          row.ResourceId = result.Client.Id;
+        if (result.Client != null)  {
+          ClientInfo client = 
+                 ClientAdapter.GetById(result.Client.ClientId);
+
+          if (client != null)
+            row.ResourceId = client.Id;
+          else
+            row.SetResourceIdNull();
+        }           
         else
           row.SetResourceIdNull();
 
