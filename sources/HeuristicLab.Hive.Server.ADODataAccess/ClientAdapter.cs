@@ -206,6 +206,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(ClientInfo client) {
       if (client != null) {
+        if (client.Id == default(long)) {
+          ClientInfo found = GetById(client.ClientId);
+          if (found != null)
+            client = found;
+        }
+
         ResAdapter.Update(client);
 
         base.Update(client);
