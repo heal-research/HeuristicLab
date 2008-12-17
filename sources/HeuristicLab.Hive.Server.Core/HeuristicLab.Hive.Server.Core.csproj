@@ -99,7 +99,7 @@
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
       <Name>HeuristicLab.Hive.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Job\HeuristicLab.Hive.JobBase.csproj">
+    <ProjectReference Include="..\HeuristicLab.Hive.JobBase\HeuristicLab.Hive.JobBase.csproj">
       <Project>{21187322-52DD-4243-80A4-A85F0263E63B}</Project>
       <Name>HeuristicLab.Hive.JobBase</Name>
     </ProjectReference>

@@ -129,7 +129,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.Console", "HeuristicLab.Hive.Server.Console\HeuristicLab.Hive.Server.Console.csproj", "{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.JobBase", "HeuristicLab.Hive.Job\HeuristicLab.Hive.JobBase.csproj", "{21187322-52DD-4243-80A4-A85F0263E63B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.JobBase", "HeuristicLab.Hive.JobBase\HeuristicLab.Hive.JobBase.csproj", "{21187322-52DD-4243-80A4-A85F0263E63B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
