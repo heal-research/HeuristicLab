@@ -74,6 +74,7 @@
     <Compile Include="InternalInterfaces\DataAccess\IClientGroupAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IDataAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IJobAdapter.cs" />
+    <Compile Include="InternalInterfaces\DataAccess\IJobResultsAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IPermissionOwnerAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IUserAdapter.cs" />

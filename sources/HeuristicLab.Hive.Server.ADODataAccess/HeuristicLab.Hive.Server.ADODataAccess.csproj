@@ -79,6 +79,7 @@
     <Compile Include="HiveServerADODataAccessPlugin.cs" />
     <Compile Include="ICachedDataAdapter.cs" />
     <Compile Include="JobAdapter.cs" />
+    <Compile Include="JobResultsAdapter.cs" />
     <Compile Include="PermissionOwnerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

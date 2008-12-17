@@ -26,31 +26,12 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
-  public interface IJobAdapter: IDataAdapter<Job> {
+  public interface IJobResultsAdapter: IDataAdapter<JobResult> {
     /// <summary>
-    /// Gets all subjobs of the specified job
+    /// Gets all results for the specified job
     /// </summary>
+    /// <param name="job"></param>
     /// <returns></returns>
-    ICollection<Job> GetAllSubjobs(Job job);
-
-    /// <summary>
-    /// Gets all Jobs with the specified state
-    /// </summary>
-    /// <returns></returns>
-    ICollection<Job> GetJobsByState(State state);
-
-    /// <summary>
-    /// Gets all jobs of the client
-    /// </summary>
-    /// <param name="client"></param>
-    /// <returns></returns>
-    ICollection<Job> GetJobsOf(ClientInfo client);
-
-    /// <summary>
-    /// Gets all jobs of the user
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns></returns>
-    ICollection<Job> GetJobsOf(User user);
+    ICollection<JobResult> GetResultsOf(Job job);
   }
 }

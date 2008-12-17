@@ -201,10 +201,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
-    public JobResult GetResult(Job job) {
-      throw new NotImplementedException();
-    }
-
     public ICollection<Job> GetJobsOf(ClientInfo client) {
       if (client != null) {
         return
