@@ -83,7 +83,7 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void ConnectToClient() {
       try {
-        cccc = new ClientConsoleCommunicatorClient();
+        cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress("net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator"));
         cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
         cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
       }
@@ -109,7 +109,6 @@ namespace HeuristicLab.Hive.Client.Console {
         StatusCommons sc = e.Result;
 
         lbGuid.Text = sc.ClientGuid.ToString();
-        lbCs.Text = sc.ConnectedSince.ToString();
         lbConnectionStatus.Text = sc.Status.ToString();
         lbJobdone.Text = sc.JobsDone.ToString();
         lbJobsAborted.Text = sc.JobsAborted.ToString();
@@ -138,13 +137,16 @@ namespace HeuristicLab.Hive.Client.Console {
         if (sc.Status == NetworkEnumWcfConnState.Connected) {
           btConnect.Enabled = false;
           btnDisconnect.Enabled = true;
+          lbCs.Text = sc.ConnectedSince.ToString();
           cccc.GetCurrentConnectionAsync();
         } else if (sc.Status == NetworkEnumWcfConnState.Disconnected) {
           btConnect.Enabled = true;
           btnDisconnect.Enabled = false;
+          lbCs.Text = String.Empty;
         } else if (sc.Status == NetworkEnumWcfConnState.Failed) {
           btConnect.Enabled = true;
           btnDisconnect.Enabled = false;
+          lbCs.Text = String.Empty;
         }
       }
     }

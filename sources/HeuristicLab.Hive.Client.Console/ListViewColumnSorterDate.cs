@@ -53,7 +53,7 @@ namespace HeuristicLab.Hive.Client.Console {
       DateTime listviewDateX = new DateTime();
       DateTime listviewDateY = new DateTime();
 
-      if (DateTime.TryParse(listviewX.SubItems[ColumnToSort].Text, out listviewDateX) && DateTime.TryParse(listviewY.SubItems[ColumnToSort].Text, out listviewDateX)) {
+      if (DateTime.TryParse(listviewX.SubItems[ColumnToSort].Text, out listviewDateX) && DateTime.TryParse(listviewY.SubItems[ColumnToSort].Text, out listviewDateY)) {
         compareResult = DateTime.Compare(listviewDateX, listviewDateY);
       } else {
         // Compare the two items
