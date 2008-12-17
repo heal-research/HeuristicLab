@@ -316,17 +316,42 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfosResponse")]
         HeuristicLab.Hive.Client.Console.ClientService.StatusCommons GetStatusInfos();
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfosResponse")]
+        System.IAsyncResult BeginGetStatusInfos(System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Client.Console.ClientService.StatusCommons EndGetStatusInfos(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/GetConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetConnectionResponse")]
         HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetConnection();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/GetConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetConnectionResponse")]
+        System.IAsyncResult BeginGetConnection(System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer EndGetConnection(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/SetConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/SetConnectionResponse")]
         void SetConnection(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container);
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/SetConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/SetConnectionResponse")]
+        System.IAsyncResult BeginSetConnection(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container, System.AsyncCallback callback, object asyncState);
+        
+        void EndSetConnection(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/Disconnect", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/DisconnectResponse")]
         void Disconnect();
         
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/Disconnect", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/DisconnectResponse")]
+        System.IAsyncResult BeginDisconnect(System.AsyncCallback callback, object asyncState);
+        
+        void EndDisconnect(System.IAsyncResult result);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnectionResponse")]
         HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetCurrentConnection();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnection", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetCurrentConnectionResponse")]
+        System.IAsyncResult BeginGetCurrentConnection(System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer EndGetCurrentConnection(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -335,7 +360,94 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetStatusInfosCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStatusInfosCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Client.Console.ClientService.StatusCommons Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Client.Console.ClientService.StatusCommons)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetConnectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetConnectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetCurrentConnectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetCurrentConnectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class ClientConsoleCommunicatorClient : System.ServiceModel.ClientBase<HeuristicLab.Hive.Client.Console.ClientService.IClientConsoleCommunicator>, HeuristicLab.Hive.Client.Console.ClientService.IClientConsoleCommunicator {
+        
+        private BeginOperationDelegate onBeginGetStatusInfosDelegate;
+        
+        private EndOperationDelegate onEndGetStatusInfosDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStatusInfosCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetConnectionDelegate;
+        
+        private EndOperationDelegate onEndGetConnectionDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetConnectionCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginSetConnectionDelegate;
+        
+        private EndOperationDelegate onEndSetConnectionDelegate;
+        
+        private System.Threading.SendOrPostCallback onSetConnectionCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginDisconnectDelegate;
+        
+        private EndOperationDelegate onEndDisconnectDelegate;
+        
+        private System.Threading.SendOrPostCallback onDisconnectCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetCurrentConnectionDelegate;
+        
+        private EndOperationDelegate onEndGetCurrentConnectionDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetCurrentConnectionCompletedDelegate;
         
         public ClientConsoleCommunicatorClient() {
         }
@@ -356,24 +468,254 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
                 base(binding, remoteAddress) {
         }
         
+        public event System.EventHandler<GetStatusInfosCompletedEventArgs> GetStatusInfosCompleted;
+        
+        public event System.EventHandler<GetConnectionCompletedEventArgs> GetConnectionCompleted;
+        
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> SetConnectionCompleted;
+        
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DisconnectCompleted;
+        
+        public event System.EventHandler<GetCurrentConnectionCompletedEventArgs> GetCurrentConnectionCompleted;
+        
         public HeuristicLab.Hive.Client.Console.ClientService.StatusCommons GetStatusInfos() {
             return base.Channel.GetStatusInfos();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStatusInfos(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStatusInfos(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Client.Console.ClientService.StatusCommons EndGetStatusInfos(System.IAsyncResult result) {
+            return base.Channel.EndGetStatusInfos(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStatusInfos(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetStatusInfos(callback, asyncState);
+        }
+        
+        private object[] OnEndGetStatusInfos(System.IAsyncResult result) {
+            HeuristicLab.Hive.Client.Console.ClientService.StatusCommons retVal = this.EndGetStatusInfos(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStatusInfosCompleted(object state) {
+            if ((this.GetStatusInfosCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStatusInfosCompleted(this, new GetStatusInfosCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStatusInfosAsync() {
+            this.GetStatusInfosAsync(null);
+        }
+        
+        public void GetStatusInfosAsync(object userState) {
+            if ((this.onBeginGetStatusInfosDelegate == null)) {
+                this.onBeginGetStatusInfosDelegate = new BeginOperationDelegate(this.OnBeginGetStatusInfos);
+            }
+            if ((this.onEndGetStatusInfosDelegate == null)) {
+                this.onEndGetStatusInfosDelegate = new EndOperationDelegate(this.OnEndGetStatusInfos);
+            }
+            if ((this.onGetStatusInfosCompletedDelegate == null)) {
+                this.onGetStatusInfosCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStatusInfosCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStatusInfosDelegate, null, this.onEndGetStatusInfosDelegate, this.onGetStatusInfosCompletedDelegate, userState);
         }
         
         public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetConnection() {
             return base.Channel.GetConnection();
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetConnection(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetConnection(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer EndGetConnection(System.IAsyncResult result) {
+            return base.Channel.EndGetConnection(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetConnection(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetConnection(callback, asyncState);
+        }
+        
+        private object[] OnEndGetConnection(System.IAsyncResult result) {
+            HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer retVal = this.EndGetConnection(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetConnectionCompleted(object state) {
+            if ((this.GetConnectionCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetConnectionCompleted(this, new GetConnectionCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetConnectionAsync() {
+            this.GetConnectionAsync(null);
+        }
+        
+        public void GetConnectionAsync(object userState) {
+            if ((this.onBeginGetConnectionDelegate == null)) {
+                this.onBeginGetConnectionDelegate = new BeginOperationDelegate(this.OnBeginGetConnection);
+            }
+            if ((this.onEndGetConnectionDelegate == null)) {
+                this.onEndGetConnectionDelegate = new EndOperationDelegate(this.OnEndGetConnection);
+            }
+            if ((this.onGetConnectionCompletedDelegate == null)) {
+                this.onGetConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetConnectionCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetConnectionDelegate, null, this.onEndGetConnectionDelegate, this.onGetConnectionCompletedDelegate, userState);
+        }
+        
         public void SetConnection(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container) {
             base.Channel.SetConnection(container);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginSetConnection(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSetConnection(container, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndSetConnection(System.IAsyncResult result) {
+            base.Channel.EndSetConnection(result);
+        }
+        
+        private System.IAsyncResult OnBeginSetConnection(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container = ((HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer)(inValues[0]));
+            return this.BeginSetConnection(container, callback, asyncState);
+        }
+        
+        private object[] OnEndSetConnection(System.IAsyncResult result) {
+            this.EndSetConnection(result);
+            return null;
+        }
+        
+        private void OnSetConnectionCompleted(object state) {
+            if ((this.SetConnectionCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.SetConnectionCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void SetConnectionAsync(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container) {
+            this.SetConnectionAsync(container, null);
+        }
+        
+        public void SetConnectionAsync(HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer container, object userState) {
+            if ((this.onBeginSetConnectionDelegate == null)) {
+                this.onBeginSetConnectionDelegate = new BeginOperationDelegate(this.OnBeginSetConnection);
+            }
+            if ((this.onEndSetConnectionDelegate == null)) {
+                this.onEndSetConnectionDelegate = new EndOperationDelegate(this.OnEndSetConnection);
+            }
+            if ((this.onSetConnectionCompletedDelegate == null)) {
+                this.onSetConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSetConnectionCompleted);
+            }
+            base.InvokeAsync(this.onBeginSetConnectionDelegate, new object[] {
+                        container}, this.onEndSetConnectionDelegate, this.onSetConnectionCompletedDelegate, userState);
         }
         
         public void Disconnect() {
             base.Channel.Disconnect();
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginDisconnect(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDisconnect(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndDisconnect(System.IAsyncResult result) {
+            base.Channel.EndDisconnect(result);
+        }
+        
+        private System.IAsyncResult OnBeginDisconnect(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginDisconnect(callback, asyncState);
+        }
+        
+        private object[] OnEndDisconnect(System.IAsyncResult result) {
+            this.EndDisconnect(result);
+            return null;
+        }
+        
+        private void OnDisconnectCompleted(object state) {
+            if ((this.DisconnectCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.DisconnectCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void DisconnectAsync() {
+            this.DisconnectAsync(null);
+        }
+        
+        public void DisconnectAsync(object userState) {
+            if ((this.onBeginDisconnectDelegate == null)) {
+                this.onBeginDisconnectDelegate = new BeginOperationDelegate(this.OnBeginDisconnect);
+            }
+            if ((this.onEndDisconnectDelegate == null)) {
+                this.onEndDisconnectDelegate = new EndOperationDelegate(this.OnEndDisconnect);
+            }
+            if ((this.onDisconnectCompletedDelegate == null)) {
+                this.onDisconnectCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDisconnectCompleted);
+            }
+            base.InvokeAsync(this.onBeginDisconnectDelegate, null, this.onEndDisconnectDelegate, this.onDisconnectCompletedDelegate, userState);
+        }
+        
         public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer GetCurrentConnection() {
             return base.Channel.GetCurrentConnection();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetCurrentConnection(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetCurrentConnection(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer EndGetCurrentConnection(System.IAsyncResult result) {
+            return base.Channel.EndGetCurrentConnection(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetCurrentConnection(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetCurrentConnection(callback, asyncState);
+        }
+        
+        private object[] OnEndGetCurrentConnection(System.IAsyncResult result) {
+            HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer retVal = this.EndGetCurrentConnection(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetCurrentConnectionCompleted(object state) {
+            if ((this.GetCurrentConnectionCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetCurrentConnectionCompleted(this, new GetCurrentConnectionCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetCurrentConnectionAsync() {
+            this.GetCurrentConnectionAsync(null);
+        }
+        
+        public void GetCurrentConnectionAsync(object userState) {
+            if ((this.onBeginGetCurrentConnectionDelegate == null)) {
+                this.onBeginGetCurrentConnectionDelegate = new BeginOperationDelegate(this.OnBeginGetCurrentConnection);
+            }
+            if ((this.onEndGetCurrentConnectionDelegate == null)) {
+                this.onEndGetCurrentConnectionDelegate = new EndOperationDelegate(this.OnEndGetCurrentConnection);
+            }
+            if ((this.onGetCurrentConnectionCompletedDelegate == null)) {
+                this.onGetCurrentConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetCurrentConnectionCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetCurrentConnectionDelegate, null, this.onEndGetCurrentConnectionDelegate, this.onGetCurrentConnectionCompletedDelegate, userState);
         }
     }
 }

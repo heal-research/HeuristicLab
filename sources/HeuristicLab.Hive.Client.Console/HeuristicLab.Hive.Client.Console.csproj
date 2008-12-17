@@ -112,6 +112,7 @@
     <Compile Include="IPAdressTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ListViewColumnSorterDate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EventLogEntryForm.resx">
       <DependentUpon>EventLogEntryForm.cs</DependentUpon>

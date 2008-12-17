@@ -40,12 +40,18 @@ namespace HeuristicLab.Hive.Client.Console {
 
   public partial class HiveClientConsole : Form {
 
-    EventLog HiveClientEventLog;
-    ClientConsoleCommunicatorClient cccc;
-    System.Windows.Forms.Timer refreshTimer;
+    private EventLog HiveClientEventLog;
+    private ClientConsoleCommunicatorClient cccc;
+    private System.Windows.Forms.Timer refreshTimer;
+    private ListViewColumnSorterDate lvwColumnSorter;
+
 
     public HiveClientConsole() {
       InitializeComponent();
+      lvwColumnSorter = new ListViewColumnSorterDate();
+      lvLog.ListViewItemSorter = lvwColumnSorter;
+      lvwColumnSorter.SortColumn = 3;
+      lvwColumnSorter.Order = SortOrder.Descending;
       InitTimer();
       ConnectToClient();
       RefreshGui();
@@ -64,10 +70,8 @@ namespace HeuristicLab.Hive.Client.Console {
     }
     
     private void RefreshGui() {
-      StatusCommons sc = new StatusCommons();
-      
       try {
-        sc = cccc.GetStatusInfos();
+        cccc.GetStatusInfosAsync();
       }
       catch (Exception ex) {
         refreshTimer.Stop();
@@ -75,57 +79,73 @@ namespace HeuristicLab.Hive.Client.Console {
         if (res == DialogResult.OK)
           this.Close();
       }
-
-      lbGuid.Text = sc.ClientGuid.ToString();
-      lbCs.Text = sc.ConnectedSince.ToString();
-      lbConnectionStatus.Text = sc.Status.ToString();
-      lbJobdone.Text = sc.JobsDone.ToString();
-      lbJobsAborted.Text = sc.JobsAborted.ToString();
-      lbJobsFetched.Text = sc.JobsFetched.ToString();
-
-      this.Text = "Client Console (" + sc.Status.ToString() + ")";
-      lbStatus.Text = sc.Status.ToString();
-
-      ListViewItem curJobStatusItem;
-
-      if (sc.Jobs != null) {
-        lvJobDetail.Items.Clear();
-        double progress;
-        foreach (JobStatus curJob in sc.Jobs) {
-          curJobStatusItem = new ListViewItem(curJob.JobId.ToString());
-          curJobStatusItem.SubItems.Add(curJob.Since.ToString());
-          progress = curJob.Progress * 100;
-          curJobStatusItem.SubItems.Add(progress.ToString());
-          lvJobDetail.Items.Add(curJobStatusItem);
-        }
-      }
-
-      UpdateGraph(zGJobs, sc.JobsDone, sc.JobsAborted);
- 
-      if (sc.Status == NetworkEnumWcfConnState.Connected) {
-        btConnect.Enabled = false;
-        btnDisconnect.Enabled = true;
-        ConnectionContainer curConnection = cccc.GetCurrentConnection();
-        tbIPAdress.Text = curConnection.IPAdress;
-        tbPort.Text = curConnection.Port.ToString();
-      } else if (sc.Status == NetworkEnumWcfConnState.Disconnected) {
-        btConnect.Enabled = true;
-        btnDisconnect.Enabled = false;
-      } else if (sc.Status == NetworkEnumWcfConnState.Failed) {
-        btConnect.Enabled = true;
-        btnDisconnect.Enabled = false;
-      }
     }
 
     private void ConnectToClient() {
       try {
         cccc = new ClientConsoleCommunicatorClient();
+        cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
+        cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
       }
       catch (Exception) {
         refreshTimer.Stop();
         DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         if (res == DialogResult.OK)
           this.Close();
+      }
+    }
+
+    void cccc_GetCurrentConnectionCompleted(object sender, GetCurrentConnectionCompletedEventArgs e) {
+      if (e.Error == null) {
+        ConnectionContainer curConnection = e.Result;
+        tbIPAdress.Text = curConnection.IPAdress;
+        tbPort.Text = curConnection.Port.ToString();
+      }
+    }
+
+    void cccc_GetStatusInfosCompleted(object sender, GetStatusInfosCompletedEventArgs e) {
+
+      if (e.Error == null) {
+        StatusCommons sc = e.Result;
+
+        lbGuid.Text = sc.ClientGuid.ToString();
+        lbCs.Text = sc.ConnectedSince.ToString();
+        lbConnectionStatus.Text = sc.Status.ToString();
+        lbJobdone.Text = sc.JobsDone.ToString();
+        lbJobsAborted.Text = sc.JobsAborted.ToString();
+        lbJobsFetched.Text = sc.JobsFetched.ToString();
+
+        this.Text = "Client Console (" + sc.Status.ToString() + ")";
+        lbStatus.Text = sc.Status.ToString();
+
+        ListViewItem curJobStatusItem;
+
+        if (sc.Jobs != null) {
+          lvJobDetail.Items.Clear();
+          double progress;
+          foreach (JobStatus curJob in sc.Jobs) {
+            curJobStatusItem = new ListViewItem(curJob.JobId.ToString());
+            curJobStatusItem.SubItems.Add(curJob.Since.ToString());
+            progress = curJob.Progress * 100;
+            curJobStatusItem.SubItems.Add(progress.ToString());
+            lvJobDetail.Items.Add(curJobStatusItem);
+          }
+          lvJobDetail.Sort();
+        }
+
+        UpdateGraph(zGJobs, sc.JobsDone, sc.JobsAborted);
+
+        if (sc.Status == NetworkEnumWcfConnState.Connected) {
+          btConnect.Enabled = false;
+          btnDisconnect.Enabled = true;
+          cccc.GetCurrentConnectionAsync();
+        } else if (sc.Status == NetworkEnumWcfConnState.Disconnected) {
+          btConnect.Enabled = true;
+          btnDisconnect.Enabled = false;
+        } else if (sc.Status == NetworkEnumWcfConnState.Failed) {
+          btConnect.Enabled = true;
+          btnDisconnect.Enabled = false;
+        }
       }
     }
 
@@ -142,10 +162,10 @@ namespace HeuristicLab.Hive.Client.Console {
           curEventLogEntry = new ListViewItem("", 1);
         curEventLogEntry.SubItems.Add(eve.InstanceId.ToString());
         curEventLogEntry.SubItems.Add(eve.Message);
-        curEventLogEntry.SubItems.Add(eve.TimeGenerated.Date.ToString());
-        curEventLogEntry.SubItems.Add(eve.TimeGenerated.TimeOfDay.ToString());
+        curEventLogEntry.SubItems.Add(eve.TimeGenerated.ToString());
         lvLog.Items.Add(curEventLogEntry);
       }
+      lvJobDetail.Sort();
     }
 
     private void HiveClientConsole_Load(object sender, EventArgs e) {
@@ -161,11 +181,11 @@ namespace HeuristicLab.Hive.Client.Console {
         curEventLogEntry = new ListViewItem("", 0);
         if (ev.EntryType == EventLogEntryType.Error)
           curEventLogEntry = new ListViewItem("", 1);
-        curEventLogEntry.SubItems.Add(ev.EventID.ToString());
+        curEventLogEntry.SubItems.Add(ev.InstanceId.ToString());
         curEventLogEntry.SubItems.Add(ev.Message);
-        curEventLogEntry.SubItems.Add(ev.TimeGenerated.Date.ToString());
-        curEventLogEntry.SubItems.Add(ev.TimeGenerated.TimeOfDay.ToString());
+        curEventLogEntry.SubItems.Add(ev.TimeGenerated.ToString());
         lvLog.Items.Add(curEventLogEntry);
+        lvJobDetail.Sort();
       }
     }
 
@@ -174,20 +194,34 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     private void UpdateGraph(ZedGraphControl zgc, int jobsDone, int jobsAborted) {
-      zgc.GraphPane.GraphObjList.Clear();
       GraphPane myPane = zgc.GraphPane;
+      myPane.GraphObjList.Clear();
 
-      // Set the titles and axis labels
-      myPane.Legend.IsVisible = false;
-      myPane.Title.IsVisible = false;
+
+      myPane.Title.IsVisible = false;  // no title
+      myPane.Border.IsVisible = false; // no border
+      myPane.Chart.Border.IsVisible = false; // no border around the chart
+      myPane.XAxis.IsVisible = false;  // no x-axis
+      myPane.YAxis.IsVisible = false;  // no y-axis
+      myPane.Legend.IsVisible = false; // no legend
+      
+      myPane.Chart.Fill.Type = FillType.None;
       myPane.Fill.Type = FillType.None;
 
-      double sum = jobsDone + jobsAborted;
-      double perDone = jobsDone / sum * 100;
-      double perAborted = jobsAborted / sum * 100;
+      //// Set the titles and axis labels
+      //myPane.Legend.IsVisible = false;
+      //myPane.Title.IsVisible = false;
+      ////myPane.Fill.Type = FillType.None;
+      ////myPane.Fill = new Fill();
+      ////myPane.Fill.Color = Color.Transparent;
 
-      myPane.AddPieSlice(perAborted, Color.Red, 0, "Jobs aborted");
+      double sum = (double)jobsDone + jobsAborted;
+      double perDone = (double)jobsDone / sum * 100;
+      double perAborted = (double)jobsAborted / sum * 100;
+
       myPane.AddPieSlice(perDone, Color.Green, 0.1, "Jobs done");
+      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "Jobs aborted");
+      
       myPane.AxisChange();
     }
 
@@ -197,7 +231,7 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void lvLog_DoubleClick(object sender, EventArgs e) {
       ListViewItem lvi = lvLog.SelectedItems[0];
-      HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text, lvi.SubItems[1].Text);
+      HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
       
       Form EventlogDetails = new EventLogEntryForm(hee);
       EventlogDetails.Show();
@@ -220,6 +254,25 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void btnDisconnect_Click(object sender, EventArgs e) {
       cccc.Disconnect();
+    }
+
+    private void lvLog_ColumnClick(object sender, ColumnClickEventArgs e) {
+      // Determine if clicked column is already the column that is being sorted.
+      if (e.Column == lvwColumnSorter.SortColumn) {
+        // Reverse the current sort direction for this column.
+        if (lvwColumnSorter.Order == SortOrder.Ascending) {
+          lvwColumnSorter.Order = SortOrder.Descending;
+        } else {
+          lvwColumnSorter.Order = SortOrder.Ascending;
+        }
+      } else {
+        // Set the column number that is to be sorted; default to ascending.
+        lvwColumnSorter.SortColumn = e.Column;
+        lvwColumnSorter.Order = SortOrder.Ascending;
+      }
+
+      // Perform the sort with these new sort options.
+      lvLog.Sort();
     }
   }
 }

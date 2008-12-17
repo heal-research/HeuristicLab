@@ -13,9 +13,8 @@ namespace HeuristicLab.Hive.Client.Console {
     public EventLogEntryForm(HiveEventEntry curEventEntry) {
       InitializeComponent();
       lbDate.Text = curEventEntry.EventDate;
-      lbTime.Text = curEventEntry.EventTime;
       lbId.Text = curEventEntry.ID;
-      lbMessage.Items.Add(curEventEntry.Message);
+      txtMessage.Text = curEventEntry.Message;
     }
   }
 }
