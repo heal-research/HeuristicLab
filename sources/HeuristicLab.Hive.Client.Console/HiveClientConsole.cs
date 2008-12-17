@@ -216,6 +216,9 @@ namespace HeuristicLab.Hive.Client.Console {
 
       myPane.AddPieSlice(perDone, Color.Green, 0.1, "");
       myPane.AddPieSlice(perAborted, Color.Red, 0.1, "");
+
+      //Hides the slice labels
+      PieItem.Default.LabelType = PieLabelType.None;
       
       myPane.AxisChange();
 
