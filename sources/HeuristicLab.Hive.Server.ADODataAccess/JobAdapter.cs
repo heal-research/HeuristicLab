@@ -61,6 +61,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return userAdapter;
       }
     }
+
+    private IJobResultsAdapter resultsAdapter = null;
+
+    private IJobResultsAdapter ResultsAdapter {
+      get {
+        if (resultsAdapter == null) {
+          resultsAdapter = ServiceLocator.GetJobResultsAdapter();
+        }
+
+        return resultsAdapter;
+      }
+    }
     #endregion
 
     #region Overrides
@@ -237,6 +249,28 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
 
       return null;
+    }
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public override bool Delete(Job job) {
+      if (job != null) {
+        dsHiveServer.JobRow row =
+          GetRowById(job.Id);
+
+        if (row != null) {
+          //Referential integrity with job results
+          ICollection<JobResult> results =
+            ResultsAdapter.GetResultsOf(job);
+
+          foreach (JobResult result in results) {
+            ResultsAdapter.Delete(result);
+          }
+
+          return base.Delete(job);
+        }
+      }
+
+      return false;
     }
     #endregion
   }

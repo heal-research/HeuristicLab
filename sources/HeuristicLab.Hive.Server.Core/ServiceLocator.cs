@@ -47,6 +47,8 @@ public class ServiceLocator {
 
   private static IJobAdapter jobAdapter = null;
 
+  private static IJobResultsAdapter jobResultsAdapter = null;
+
   /// <summary>
   /// Gets the db transaction manager
   /// </summary>
@@ -149,5 +151,18 @@ public class ServiceLocator {
     }
 
     return jobAdapter;
+  }
+
+  /// <summary>
+  /// Gets the job results database adapter
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IJobResultsAdapter GetJobResultsAdapter() {
+    if (jobResultsAdapter == null) {
+      jobResultsAdapter = discoveryService.GetInstances<IJobResultsAdapter>()[0];
+    }
+
+    return jobResultsAdapter;
   }
 }

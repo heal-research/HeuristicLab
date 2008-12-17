@@ -15,7 +15,7 @@
     <Shape ID="DesignTable:ClientGroup" ZOrder="9" X="78" Y="417" Height="106" Width="209" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="42" />
     <Shape ID="DesignTable:Job" ZOrder="11" X="-22" Y="543" Height="224" Width="281" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="109" />
     <Shape ID="DesignTable:ClientGroup_Resource" ZOrder="6" X="150" Y="207" Height="156" Width="300" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="58" />
-    <Shape ID="DesignTable:JobResult" ZOrder="2" X="-274" Y="567" Height="139" Width="197" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="92" />
+    <Shape ID="DesignTable:JobResult" ZOrder="2" X="-274" Y="567" Height="173" Width="206" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="92" />
   </Shapes>
   <Connectors>
     <Connector ID="DesignRelation:Client_is_a_Resource" ZOrder="21" LineWidth="11">
@@ -162,15 +162,15 @@
       <RoutePoints>
         <Point>
           <X>-22</X>
-          <Y>732</Y>
+          <Y>748</Y>
         </Point>
         <Point>
           <X>-124</X>
-          <Y>732</Y>
+          <Y>748</Y>
         </Point>
         <Point>
           <X>-124</X>
-          <Y>706</Y>
+          <Y>740</Y>
         </Point>
       </RoutePoints>
     </Connector>

@@ -50,7 +50,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
-    
+    Dictionary<long, Job> jobs = new Dictionary<long, Job>();
+
     private WcfService wcfService;
 
     public void Start() {
@@ -117,8 +118,8 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetFinishedJob(object jobId) {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
-      
-      JobResult jobResult = new JobResult { JobId = jId, Result = sJob, Client = ConfigManager.Instance.GetClientInfo() };
+
+      JobResult jobResult = new JobResult { Job = jobs[jId], Result = sJob, Client = ConfigManager.Instance.GetClientInfo() };
       wcfService.SendJobResultAsync(jobResult, true);      
     }
 
@@ -147,16 +148,17 @@ namespace HeuristicLab.Hive.Client.Core {
         bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
-        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));
+        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
 
-        appDomains.Add(e.Result.JobId, appDomain);
+        jobs.Add(e.Result.Job.Id, e.Result.Job);
+        appDomains.Add(e.Result.Job.Id, appDomain);
 
         Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-        engine.JobId = e.Result.JobId;
+        engine.JobId = e.Result.Job.Id;
         engine.Queue = MessageQueue.GetInstance();
         engine.Start(e.Result.SerializedJob);
-        engines.Add(e.Result.JobId, engine);
+        engines.Add(e.Result.Job.Id, engine);
 
         ClientStatusInfo.JobsFetched++;
 
@@ -166,9 +168,9 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Result.Success) {
-        AppDomain.Unload(appDomains[e.Result.JobId]);
-        appDomains.Remove(e.Result.JobId);
-        engines.Remove(e.Result.JobId);
+        AppDomain.Unload(appDomains[e.Result.Job.Id]);
+        appDomains.Remove(e.Result.Job.Id);
+        engines.Remove(e.Result.Job.Id);
         ClientStatusInfo.JobsProcessed++;
         Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
       } else {

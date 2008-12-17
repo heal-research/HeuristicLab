@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     /// Save or update the object
     /// </summary>
     /// <param name="user"></param>
-    void Update(ObjT ob);
+    void Update(ObjT obj);
 
     /// <summary>
     /// Get the object with the specified ID

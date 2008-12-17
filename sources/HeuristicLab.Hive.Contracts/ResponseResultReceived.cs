@@ -24,11 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Contracts {
   [DataContract]
   public class ResponseResultReceived : Response {
     [DataMember]
-    public long JobId { get; set; }
+    public Job Job { get; set; }
   }
 }

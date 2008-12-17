@@ -76,7 +76,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
           Job job2Calculate = allOfflineJobs.First.Value;
           job2Calculate.State = State.calculating;
-          response.JobId = job2Calculate.Id;
+          response.Job = job2Calculate;
           jobAdapter.Update(job2Calculate);          
           response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
           response.Success = true;
@@ -96,7 +96,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_ID_MUST_NOT_BE_SET;
         return response;
       }
-      Job job = jobAdapter.GetById(result.JobId);
+      Job job = jobAdapter.GetById(result.Job.Id);
       if (job == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JO_WITH_THIS_ID;
@@ -119,7 +119,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
-      response.JobId = result.JobId;
+      response.Job = result.Job;
 
       return response;
     }

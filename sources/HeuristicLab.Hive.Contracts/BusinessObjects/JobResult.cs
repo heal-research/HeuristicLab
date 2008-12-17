@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public long Id { get; set; }
     [DataMember]
-    public long JobId { get; set; }
+    public Job Job { get; set; }
     [DataMember]
     public byte[] Result { get; set; } // TODO DataStructure for Result needs to be defined
     [DataMember]

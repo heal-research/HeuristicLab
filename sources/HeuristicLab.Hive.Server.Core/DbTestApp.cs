@@ -248,6 +248,46 @@ namespace HeuristicLab.Hive.Server {
       jobs = jobAdapter.GetAll();
     }
 
+    private void TestJobResultsAdapter() {
+      Job job = new Job();
+
+      ClientInfo client = new ClientInfo();
+      client.ClientId = Guid.NewGuid();
+      client.Login = DateTime.Now;
+
+      job.Client = client;
+
+      IJobResultsAdapter resultsAdapter = 
+        ServiceLocator.GetJobResultsAdapter();
+
+      byte[] resultByte = {0x0f, 0x1f, 0x2f, 0x3f, 0x4f};
+
+      JobResult result = new JobResult();
+      result.Client = client;
+      result.Job = job;
+      result.Result = resultByte;
+
+      resultsAdapter.Update(result);
+
+      JobResult read =
+        resultsAdapter.GetById(result.Id);
+      Debug.Assert(
+        read.Id == result.Id &&
+        result.Client.Id == read.Client.Id &&
+        result.Job.Id == read.Job.Id &&
+        result.Result == result.Result);
+
+      int count =
+        resultsAdapter.GetAll().Count;
+
+      resultsAdapter.Delete(result);
+
+      ICollection<JobResult> allResults =
+        resultsAdapter.GetAll();
+
+      Debug.Assert(allResults.Count == count - 1);
+    }
+
     public override void Run() {
       ITransactionManager transactionManager =
         ServiceLocator.GetTransactionManager();
@@ -265,7 +305,10 @@ namespace HeuristicLab.Hive.Server {
       transactionManager.UpdateDB();  
 
       TestJobAdapter();
-      transactionManager.UpdateDB();     
+      transactionManager.UpdateDB();  
+
+      TestJobResultsAdapter();
+      transactionManager.UpdateDB();
     }
   }
 }
