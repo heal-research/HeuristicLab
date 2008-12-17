@@ -105,14 +105,20 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.JobRow row) {
       if (job != null && row != null) {
         if (job.Client != null) {
-          ClientAdapter.Update(job.Client);
-          row.ResourceId = job.Client.Id;
+          if (row.IsResourceIdNull() ||
+            row.ResourceId != job.Client.Id) {
+            ClientAdapter.Update(job.Client);
+            row.ResourceId = job.Client.Id;
+          }
         } else
           row.SetResourceIdNull();
 
         if (job.ParentJob != null) {
-          Update(job.ParentJob);
-          row.ParentJobId = job.ParentJob.Id;
+          if (row.IsParentJobIdNull() ||
+            row.ParentJobId != job.ParentJob.Id) {
+            Update(job.ParentJob);
+            row.ParentJobId = job.ParentJob.Id;
+          }
         } else
           row.SetParentJobIdNull();
 

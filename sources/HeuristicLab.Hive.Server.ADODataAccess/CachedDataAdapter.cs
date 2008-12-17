@@ -170,6 +170,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           //remove from cache
           UpdateRow(row);
           RemoveRowFromCache(row);
+        } else if (!IsCached(row) &&
+          PutInCache(obj)) {
+          //add to cache
+          cache.Rows.Add(row);
         }
 
         obj.Id = (long)row[row.Table.PrimaryKey[0]];
