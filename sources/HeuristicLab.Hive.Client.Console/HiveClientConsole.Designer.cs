@@ -61,7 +61,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lbGuidCaption = new System.Windows.Forms.Label();
       this.lbCs = new System.Windows.Forms.Label();
       this.lbConnectionStatus = new System.Windows.Forms.Label();
-      this.zGJobs = new ZedGraph.ZedGraphControl();
       this.lbConnectionStatusCaption = new System.Windows.Forms.Label();
       this.lbJobsAbortedCaption = new System.Windows.Forms.Label();
       this.lbJobdoneCaption = new System.Windows.Forms.Label();
@@ -86,6 +85,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tbIPAdress = new System.Windows.Forms.TextBox();
       this.lbServerIPCaption = new System.Windows.Forms.Label();
       this.lbPortCaption = new System.Windows.Forms.Label();
+      this.pbGraph = new System.Windows.Forms.PictureBox();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.gbJobCommon.SuspendLayout();
@@ -94,6 +94,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tabPage2.SuspendLayout();
       this.gbOnlineTime.SuspendLayout();
       this.gbServerConnection.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbGraph)).BeginInit();
       this.SuspendLayout();
       // 
       // tcClientConsole
@@ -162,6 +163,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // gbCommon
       // 
+      this.gbCommon.Controls.Add(this.pbGraph);
       this.gbCommon.Controls.Add(this.lbJobsAborted);
       this.gbCommon.Controls.Add(this.lbJobdone);
       this.gbCommon.Controls.Add(this.lbJobsFetched);
@@ -169,7 +171,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbCommon.Controls.Add(this.lbGuidCaption);
       this.gbCommon.Controls.Add(this.lbCs);
       this.gbCommon.Controls.Add(this.lbConnectionStatus);
-      this.gbCommon.Controls.Add(this.zGJobs);
       this.gbCommon.Controls.Add(this.lbConnectionStatusCaption);
       this.gbCommon.Controls.Add(this.lbJobsAbortedCaption);
       this.gbCommon.Controls.Add(this.lbJobdoneCaption);
@@ -244,22 +245,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lbConnectionStatus.Size = new System.Drawing.Size(50, 13);
       this.lbConnectionStatus.TabIndex = 16;
       this.lbConnectionStatus.Text = "loading...";
-      // 
-      // zGJobs
-      // 
-      this.zGJobs.BackColor = System.Drawing.SystemColors.Control;
-      this.zGJobs.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-      this.zGJobs.Location = new System.Drawing.Point(255, 14);
-      this.zGJobs.Name = "zGJobs";
-      this.zGJobs.ScrollGrace = 0;
-      this.zGJobs.ScrollMaxX = 0;
-      this.zGJobs.ScrollMaxY = 0;
-      this.zGJobs.ScrollMaxY2 = 0;
-      this.zGJobs.ScrollMinX = 0;
-      this.zGJobs.ScrollMinY = 0;
-      this.zGJobs.ScrollMinY2 = 0;
-      this.zGJobs.Size = new System.Drawing.Size(149, 111);
-      this.zGJobs.TabIndex = 14;
       // 
       // lbConnectionStatusCaption
       // 
@@ -378,6 +363,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // gbOnlineTime
       // 
+      this.gbOnlineTime.BackColor = System.Drawing.SystemColors.Control;
       this.gbOnlineTime.Controls.Add(this.label1);
       this.gbOnlineTime.Location = new System.Drawing.Point(9, 117);
       this.gbOnlineTime.Name = "gbOnlineTime";
@@ -483,10 +469,20 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lbPortCaption.TabIndex = 1;
       this.lbPortCaption.Text = "Port:";
       // 
+      // pbGraph
+      // 
+      this.pbGraph.Location = new System.Drawing.Point(292, 19);
+      this.pbGraph.Name = "pbGraph";
+      this.pbGraph.Size = new System.Drawing.Size(112, 108);
+      this.pbGraph.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+      this.pbGraph.TabIndex = 21;
+      this.pbGraph.TabStop = false;
+      // 
       // HiveClientConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.BackColor = System.Drawing.SystemColors.Control;
       this.ClientSize = new System.Drawing.Size(437, 508);
       this.Controls.Add(this.tcClientConsole);
       this.Name = "HiveClientConsole";
@@ -504,6 +500,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbOnlineTime.PerformLayout();
       this.gbServerConnection.ResumeLayout(false);
       this.gbServerConnection.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbGraph)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -538,7 +535,6 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.GroupBox gbOnlineTime;
     private System.Windows.Forms.Button btnDisconnect;
     private System.Windows.Forms.Button btConnect;
-    private ZedGraph.ZedGraphControl zGJobs;
     private System.Windows.Forms.ColumnHeader chId;
     private System.Windows.Forms.ImageList ilEventLog;
     private System.Windows.Forms.Label lbStatus;
@@ -550,6 +546,7 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Label lbJobdone;
     private System.Windows.Forms.Label lbJobsAborted;
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.PictureBox pbGraph;
   }
 }
 

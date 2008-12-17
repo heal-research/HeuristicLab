@@ -133,7 +133,7 @@ namespace HeuristicLab.Hive.Client.Console {
           lvJobDetail.Sort();
         }
 
-        UpdateGraph(zGJobs, sc.JobsDone, sc.JobsAborted);
+        UpdateGraph(sc.JobsDone, sc.JobsAborted);
 
         if (sc.Status == NetworkEnumWcfConnState.Connected) {
           btConnect.Enabled = false;
@@ -193,10 +193,10 @@ namespace HeuristicLab.Hive.Client.Console {
       UpdateText(e.Entry);
     }
 
-    private void UpdateGraph(ZedGraphControl zgc, int jobsDone, int jobsAborted) {
+    private void UpdateGraph(int jobsDone, int jobsAborted) {
+      ZedGraphControl zgc = new ZedGraphControl();
       GraphPane myPane = zgc.GraphPane;
       myPane.GraphObjList.Clear();
-
 
       myPane.Title.IsVisible = false;  // no title
       myPane.Border.IsVisible = false; // no border
@@ -204,25 +204,22 @@ namespace HeuristicLab.Hive.Client.Console {
       myPane.XAxis.IsVisible = false;  // no x-axis
       myPane.YAxis.IsVisible = false;  // no y-axis
       myPane.Legend.IsVisible = false; // no legend
-      
-      myPane.Chart.Fill.Type = FillType.None;
-      myPane.Fill.Type = FillType.None;
 
-      //// Set the titles and axis labels
-      //myPane.Legend.IsVisible = false;
-      //myPane.Title.IsVisible = false;
-      ////myPane.Fill.Type = FillType.None;
-      ////myPane.Fill = new Fill();
-      ////myPane.Fill.Color = Color.Transparent;
+      myPane.Fill.Color = Color.FromKnownColor(KnownColor.Control);
+
+      myPane.Chart.Fill.Type = FillType.None;
+      myPane.Fill.Type = FillType.Solid;
 
       double sum = (double)jobsDone + jobsAborted;
       double perDone = (double)jobsDone / sum * 100;
       double perAborted = (double)jobsAborted / sum * 100;
 
-      myPane.AddPieSlice(perDone, Color.Green, 0.1, "Jobs done");
-      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "Jobs aborted");
+      myPane.AddPieSlice(perDone, Color.Green, 0.1, "");
+      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "");
       
       myPane.AxisChange();
+
+      pbGraph.Image = zgc.GetImage();
     }
 
     private void HiveClientConsole_Resize(object sender, EventArgs e) {
@@ -245,15 +242,14 @@ namespace HeuristicLab.Hive.Client.Console {
       if (IPAddress.TryParse(tbIPAdress.Text, out ipAdress) && int.TryParse(tbPort.Text, out port)) {
         cc.IPAdress = tbIPAdress.Text;
         cc.Port = port;
-        cccc.SetConnection(cc);
+        cccc.SetConnectionAsync(cc);
       } else {
         MessageBox.Show("IP Adress and/or Port Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-      
     }
 
     private void btnDisconnect_Click(object sender, EventArgs e) {
-      cccc.Disconnect();
+      cccc.DisconnectAsync();
     }
 
     private void lvLog_ColumnClick(object sender, ColumnClickEventArgs e) {
