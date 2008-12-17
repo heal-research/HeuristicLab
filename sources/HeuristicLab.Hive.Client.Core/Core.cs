@@ -41,6 +41,7 @@ using System.ServiceModel.Description;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication.ServerService;
+using HeuristicLab.Hive.JobBase;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -143,7 +144,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
-        bool sandboxed = true;
+        bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
         AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.JobId.ToString(), sandboxed, typeof(TestJob));

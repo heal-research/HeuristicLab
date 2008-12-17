@@ -36,6 +36,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
     public void Connect() {
       try {
+        proxy = null;
         if (proxy == null) {
           proxy = new ClientCommunicatorClient(
             new NetTcpBinding(),

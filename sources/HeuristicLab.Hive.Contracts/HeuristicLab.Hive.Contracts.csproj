@@ -85,14 +85,12 @@
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
     <Compile Include="ResponseObject.cs" />
-    <Compile Include="Interfaces\IJob.cs" />
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IJobManager.cs" />
     <Compile Include="Interfaces\ILifecycleManager.cs" />
     <Compile Include="Interfaces\IServerConsoleFacade.cs" />
     <Compile Include="Interfaces\ITransactionManager.cs" />
     <Compile Include="Interfaces\IUserRoleManager.cs" />
-    <Compile Include="JobBase.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="ResponseJob.cs" />
     <Compile Include="HiveContractPlugin.cs" />
@@ -102,7 +100,6 @@
     <Compile Include="ResponseHB.cs" />
     <Compile Include="ResponseList.cs" />
     <Compile Include="ResponseResultReceived.cs" />
-    <Compile Include="TestJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">

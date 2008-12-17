@@ -9,6 +9,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using System.Resources;
 using System.Reflection;
+using HeuristicLab.Hive.JobBase;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>

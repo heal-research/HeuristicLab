@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{898B31CF-81DC-453B-AEB3-BDF83197A7EE}</ProjectGuid>
+    <ProjectGuid>{21187322-52DD-4243-80A4-A85F0263E63B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Hive.Server.Core</RootNamespace>
-    <AssemblyName>HeuristicLab.Hive.Server.Core-3.2</AssemblyName>
+    <RootNamespace>HeuristicLab.Hive.JobBase</RootNamespace>
+    <AssemblyName>HeuristicLab.Hive.JobBase-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -32,29 +32,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -65,48 +47,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientCommunicator.cs" />
-    <Compile Include="ClientManager.cs" />
-    <Compile Include="DbTestApp.cs" />
-    <Compile Include="HiveServerCorePlugin.cs" />
-    <Compile Include="HiveServerMessages.Designer.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IClientAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IClientGroupAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IDataAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IJobAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IJobResultsAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IPermissionOwnerAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IUserAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IUserGroupAdapter.cs" />
-    <Compile Include="JobManager.cs" />
-    <Compile Include="LifecycleManager.cs" />
+    <Compile Include="Interfaces\IJob.cs" />
+    <Compile Include="JobBase.cs" />
+    <Compile Include="JobPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerConsoleFacade.cs" />
-    <Compile Include="ServiceLocator.cs" />
-    <Compile Include="UserRoleManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="TestJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">
-      <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
-      <Name>HeuristicLab.Hive.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Job\HeuristicLab.Hive.JobBase.csproj">
-      <Project>{21187322-52DD-4243-80A4-A85F0263E63B}</Project>
-      <Name>HeuristicLab.Hive.JobBase</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
