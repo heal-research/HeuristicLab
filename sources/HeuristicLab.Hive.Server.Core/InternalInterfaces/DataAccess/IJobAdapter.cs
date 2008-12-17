@@ -41,6 +41,12 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     JobResult GetResult(Job job);
 
     /// <summary>
+    /// Gets all Jobs with the specified state
+    /// </summary>
+    /// <returns></returns>
+    ICollection<Job> GetJobsByState(State state);
+
+    /// <summary>
     /// Gets all jobs of the client
     /// </summary>
     /// <param name="client"></param>

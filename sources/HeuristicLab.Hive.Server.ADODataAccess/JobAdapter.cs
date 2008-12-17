@@ -186,6 +186,21 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
+    public ICollection<Job> GetJobsByState(State state) {
+      return
+         base.FindMultiple(
+           delegate() {
+             return adapter.GetDataByState(state.ToString());
+           },
+           delegate() {
+             return from job in
+                      cache.AsEnumerable<dsHiveServer.JobRow>()
+                    where !job.IsStatusNull() &&
+                           job.Status == state.ToString()
+                    select job;
+           });
+    }
+
     public JobResult GetResult(Job job) {
       throw new NotImplementedException();
     }
