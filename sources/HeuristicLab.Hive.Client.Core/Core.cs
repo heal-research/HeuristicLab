@@ -171,6 +171,7 @@ namespace HeuristicLab.Hive.Client.Core {
         AppDomain.Unload(appDomains[e.Result.Job.Id]);
         appDomains.Remove(e.Result.Job.Id);
         engines.Remove(e.Result.Job.Id);
+        jobs.Remove(e.Result.Job.Id);
         ClientStatusInfo.JobsProcessed++;
         Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
       } else {
