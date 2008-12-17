@@ -97,7 +97,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_ID_MUST_NOT_BE_SET;
         return response;
       }
-      Job job = jobAdapter.GetById(result.Job.Id);
+      Job job = result.Job;
       if (job == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JO_WITH_THIS_ID;
