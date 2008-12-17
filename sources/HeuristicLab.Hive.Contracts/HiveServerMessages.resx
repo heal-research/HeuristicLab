@@ -216,4 +216,10 @@
   <data name="UserRole.UsernameExistsAllready" xml:space="preserve">
     <value>A user with this username exists allready</value>
   </data>
+  <data name="Communicator.IdMustNotBeSet" xml:space="preserve">
+    <value>The id must not be set in this context</value>
+  </data>
+  <data name="Communicator.NoJobWithThisId" xml:space="preserve">
+    <value>There exists no job with this id</value>
+  </data>
 </root>

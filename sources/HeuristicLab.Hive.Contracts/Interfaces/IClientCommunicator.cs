@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseJob PullJob(Guid clientId);
     [OperationContract]
-    ResponseResultReceived SendJobResult(JobResult Result, bool finished);
+    ResponseResultReceived SendJobResult(JobResult result, bool finished);
     [OperationContract]
     Response Logout(Guid clientId);
   }
