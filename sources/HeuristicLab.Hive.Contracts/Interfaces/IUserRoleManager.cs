@@ -24,6 +24,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     [ServiceKnownType(typeof(PermissionOwner))]
     [ServiceKnownType(typeof(User))]
+    [ServiceKnownType(typeof(UserGroup))]
     ResponseList<UserGroup> GetAllUserGroups();
     [OperationContract]
     Response AddUserToGroup(long groupId, long userId);

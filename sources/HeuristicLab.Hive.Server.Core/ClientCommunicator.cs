@@ -25,6 +25,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ClientCommunicator() {
       clientAdapter = ServiceLocator.GetClientAdapter();
       jobAdapter = ServiceLocator.GetJobAdapter();
+      jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
 
       for (int i = 0; i < nrOfJobs; i++) {
         Job job = new Job();
