@@ -67,11 +67,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.GetAllJobs();
     }
     public ResponseObject<Job> AddNewJob(Job job) {
-      throw new NotImplementedException();
+      return jobManager.AddNewJob(job);
     }
 
     public Response RemoveJob(long jobId) {
-      throw new NotImplementedException();
+      return jobManager.RemoveJob(jobId);
     }
 
     #endregion
