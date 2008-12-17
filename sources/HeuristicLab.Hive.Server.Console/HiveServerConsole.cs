@@ -103,6 +103,8 @@ namespace HeuristicLab.Hive.Server.Console {
           lblError.Text = "Please type in Password";
         } else if (tbPort.Text == "") {
           lblError.Text = "Please type in Port";
+        } else if (tbIp.Text == "") {
+          lblError.Text = "Please type in IP-Adress";
         }
         return false;
       }

@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             "Test"}, -1);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
@@ -33,8 +33,6 @@
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.jobToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-      this.groupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.userToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.userToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.groupToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,14 +40,12 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
-      this.cmsAddDelete = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.imageList1 = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
-      this.listView3 = new System.Windows.Forms.ListView();
+      this.lvJobControl = new System.Windows.Forms.ListView();
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
@@ -58,13 +54,14 @@
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
       this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
+      this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
+      this.imageList3 = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
-      this.cmsAddDelete.SuspendLayout();
       this.tpJobControl.SuspendLayout();
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
@@ -97,7 +94,7 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.close_Click);
       // 
@@ -112,25 +109,10 @@
       // 
       // jobToolStripMenuItem
       // 
-      this.jobToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jobToolStripMenuItem1,
-            this.groupToolStripMenuItem1});
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
       this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.jobToolStripMenuItem.Text = "Job";
-      // 
-      // jobToolStripMenuItem1
-      // 
-      this.jobToolStripMenuItem1.Name = "jobToolStripMenuItem1";
-      this.jobToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
-      this.jobToolStripMenuItem1.Text = "Job";
-      this.jobToolStripMenuItem1.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
-      // 
-      // groupToolStripMenuItem1
-      // 
-      this.groupToolStripMenuItem1.Name = "groupToolStripMenuItem1";
-      this.groupToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
-      this.groupToolStripMenuItem1.Text = "Group";
+      this.jobToolStripMenuItem.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
       // 
       // userToolStripMenuItem
       // 
@@ -138,20 +120,20 @@
             this.userToolStripMenuItem1,
             this.groupToolStripMenuItem2});
       this.userToolStripMenuItem.Name = "userToolStripMenuItem";
-      this.userToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.userToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.userToolStripMenuItem.Text = "User";
       // 
       // userToolStripMenuItem1
       // 
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
-      this.userToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.userToolStripMenuItem1.Text = "User";
       this.userToolStripMenuItem1.Click += new System.EventHandler(this.userToolStripMenuItem1_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
-      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
       this.groupToolStripMenuItem2.Text = "Group";
       this.groupToolStripMenuItem2.Click += new System.EventHandler(this.groupToolStripMenuItem2_Click);
       // 
@@ -198,32 +180,18 @@
       // 
       // tvClientControl
       // 
-      this.tvClientControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvClientControl.Location = new System.Drawing.Point(0, 0);
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
       // 
-      // cmsAddDelete
-      // 
-      this.cmsAddDelete.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiDelete});
-      this.cmsAddDelete.Name = "cmsAddDelete";
-      this.cmsAddDelete.Size = new System.Drawing.Size(117, 26);
-      // 
-      // tsmiDelete
-      // 
-      this.tsmiDelete.Name = "tsmiDelete";
-      this.tsmiDelete.Size = new System.Drawing.Size(116, 22);
-      this.tsmiDelete.Text = "Delete";
-      // 
       // lvClientControl
       // 
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
       this.lvClientControl.LargeImageList = this.imageList1;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.Name = "lvClientControl";
@@ -262,28 +230,28 @@
       // 
       // scJobControl.Panel2
       // 
-      this.scJobControl.Panel2.Controls.Add(this.listView3);
+      this.scJobControl.Panel2.Controls.Add(this.lvJobControl);
       this.scJobControl.Size = new System.Drawing.Size(637, 346);
       this.scJobControl.SplitterDistance = 139;
       this.scJobControl.TabIndex = 1;
       // 
       // tvJobControl
       // 
-      this.tvJobControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvJobControl.Location = new System.Drawing.Point(0, 0);
       this.tvJobControl.Name = "tvJobControl";
       this.tvJobControl.Size = new System.Drawing.Size(139, 346);
       this.tvJobControl.TabIndex = 2;
       // 
-      // listView3
+      // lvJobControl
       // 
-      this.listView3.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.listView3.Location = new System.Drawing.Point(0, 0);
-      this.listView3.Name = "listView3";
-      this.listView3.Size = new System.Drawing.Size(494, 346);
-      this.listView3.TabIndex = 0;
-      this.listView3.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvJobControl.LargeImageList = this.imageList3;
+      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.lvJobControl.Name = "lvJobControl";
+      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
+      this.lvJobControl.TabIndex = 0;
+      this.lvJobControl.UseCompatibleStateImageBehavior = false;
       // 
       // tpUserControl
       // 
@@ -315,7 +283,6 @@
       // 
       // tvUserControl
       // 
-      this.tvUserControl.ContextMenuStrip = this.cmsAddDelete;
       this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tvUserControl.Location = new System.Drawing.Point(0, 0);
       this.tvUserControl.Name = "tvUserControl";
@@ -362,6 +329,16 @@
       this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
       this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
       // 
+      // timerSyncronize
+      // 
+      this.timerSyncronize.Interval = 10000;
+      // 
+      // imageList3
+      // 
+      this.imageList3.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList3.ImageStream")));
+      this.imageList3.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList3.Images.SetKeyName(0, "PlayHS.bmp");
+      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -380,7 +357,6 @@
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
-      this.cmsAddDelete.ResumeLayout(false);
       this.tpJobControl.ResumeLayout(false);
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
@@ -407,7 +383,7 @@
     private System.Windows.Forms.TreeView tvClientControl;
     private System.Windows.Forms.ListView lvClientControl;
     private System.Windows.Forms.SplitContainer scJobControl;
-    private System.Windows.Forms.ListView listView3;
+    private System.Windows.Forms.ListView lvJobControl;
     private System.Windows.Forms.SplitContainer scUserControl;
     private System.Windows.Forms.TreeView treeView2;
     private System.Windows.Forms.ListView listView2;
@@ -418,13 +394,11 @@
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem1;
-    private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem2;
-    private System.Windows.Forms.ContextMenuStrip cmsAddDelete;
-    private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
     private System.Windows.Forms.ImageList imageList2;
     private System.DirectoryServices.DirectorySearcher directorySearcher1;
+    private System.Windows.Forms.Timer timerSyncronize;
+    private System.Windows.Forms.ImageList imageList3;
   }
 }

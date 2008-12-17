@@ -58,7 +58,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.lblUsername = new System.Windows.Forms.Label();
       this.tbPwd = new System.Windows.Forms.TextBox();
       this.lblError = new System.Windows.Forms.Label();
-      this.tbIp = new HeuristicLab.Hive.Server.Console.IPAddressTextBox();
+      this.tbIp = new System.Windows.Forms.TextBox();
       this.msServerConsole.SuspendLayout();
       this.gbManager.SuspendLayout();
       this.groupBox1.SuspendLayout();

@@ -72,11 +72,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddNewForm.cs">
+    <Compile Include="AddUserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddNewForm.Designer.cs">
-      <DependentUpon>AddNewForm.cs</DependentUpon>
+    <Compile Include="AddUserForm.Designer.cs">
+      <DependentUpon>AddUserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddJobForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddJobForm.Designer.cs">
+      <DependentUpon>AddJobForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HiveServerConsole.cs">
       <SubType>Form</SubType>
@@ -93,11 +99,13 @@
     </Compile>
     <Compile Include="HiveServerConsolePlugin.cs" />
     <Compile Include="IPAdressTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AddNewForm.resx">
-      <DependentUpon>AddNewForm.cs</DependentUpon>
+    <EmbeddedResource Include="AddUserForm.resx">
+      <DependentUpon>AddUserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddJobForm.resx">
+      <DependentUpon>AddJobForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HiveServerConsole.resx">
       <DependentUpon>HiveServerConsole.cs</DependentUpon>

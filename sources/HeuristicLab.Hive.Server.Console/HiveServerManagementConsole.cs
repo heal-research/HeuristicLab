@@ -40,31 +40,35 @@ namespace HeuristicLab.Hive.Server.Console {
     public event closeForm closeFormEvent;
 
     ResponseList<ClientGroup> clients = null;
+    ResponseList<ClientInfo> clientInfo = null;
     ResponseList<Job> jobs = null;
     ResponseList<UserGroup> userGroups = null;
+    ResponseList<User> usersList = null;
 
     public HiveServerManagementConsole() {
       InitializeComponent();
-      addItems();
+      addClients();
+      addJobs();
+      addUsers();
+
+      timerSyncronize.Tick += new EventHandler(tickSync);
+      timerSyncronize.Start();
     }
 
-    private void addItems() {
+    private void tickSync(object obj, EventArgs e) {
+      addClients();
+      addJobs();
+      addUsers();
+    }
+
+    private void addClients() {
       IClientManager clientManager =
         ServiceLocator.GetClientManager();
 
-      IJobManager jobManager =
-        ServiceLocator.GetJobManager();
-
-      IUserRoleManager userRoleManager =
-        ServiceLocator.GetUserRoleManager();
-
-
       clients = clientManager.GetAllClientGroups();
-      jobs = jobManager.GetAllJobs();
-
-      userGroups = userRoleManager.GetAllUserGroups();
 
       lvClientControl.Items.Clear();
+      tvClientControl.Nodes.Clear();
       int count = 0;
       foreach (ClientGroup cg in clients.List) {
         tvClientControl.Nodes.Add(cg.Name);
@@ -77,21 +81,61 @@ namespace HeuristicLab.Hive.Server.Console {
         lvClientControl.Groups.Add(lvg);
       } // Groups
 
+      clientInfo = clientManager.GetAllClients();
+      ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
+      foreach (ClientInfo ci in clientInfo.List) {
+        tvClientControl.Nodes.Add(ci.Name);
+        lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvunsorted));
+        count = (count + 1) % 3;
+      }
+      lvClientControl.Groups.Add(lvunsorted);
+    }
+
+    private void addJobs() {
+      IJobManager jobManager =
+        ServiceLocator.GetJobManager();
+      jobs = jobManager.GetAllJobs();
+
+      lvJobControl.Items.Clear();
+      tvJobControl.Nodes.Clear();
 
       foreach (Job job in jobs.List) {
         tvJobControl.Nodes.Add(job.Id.ToString());
+        lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0));
       } // Jobs
+
+    }
+
+    private void addUsers() {
+      IUserRoleManager userRoleManager =
+        ServiceLocator.GetUserRoleManager();
+
+      userGroups = userRoleManager.GetAllUserGroups();
+
+      lvUserControl.Items.Clear();
+      tvUserControl.Nodes.Clear();
 
       foreach (UserGroup ug in userGroups.List) {
         tvUserControl.Nodes.Add(ug.Name);
         ListViewGroup lvg = new ListViewGroup(ug.Name, HorizontalAlignment.Left);
 
-        foreach (User users in ug.Members) {
-          tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
-          lvUserControl.Items.Add(new ListViewItem(users.Name, count, lvg));
+        foreach (PermissionOwner permOwner in ug.Members) {
+          if (permOwner is User) {
+            User users = permOwner as User;
+            tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
+            lvUserControl.Items.Add(new ListViewItem(users.Name, 0, lvg));
+          }
         }
         lvUserControl.Groups.Add(lvg);
+
       } // Users
+      usersList = userRoleManager.GetAllUsers();
+      ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
+      foreach (User u in usersList.List) {
+        tvUserControl.Nodes.Add(u.Name);
+        lvUserControl.Items.Add(new ListViewItem(u.Name, 0, lvunsorted));
+      }
+      lvUserControl.Groups.Add(lvunsorted);
     }
 
     /// <summary>
@@ -119,17 +163,17 @@ namespace HeuristicLab.Hive.Server.Console {
     }
 
     private void jobToolStripMenuItem1_Click(object sender, EventArgs e) {
-      AddNewForm newForm = new AddNewForm("Job", false);
+      AddJobForm newForm = new AddJobForm();
       newForm.Show();
     }
 
     private void userToolStripMenuItem1_Click(object sender, EventArgs e) {
-      AddNewForm newForm = new AddNewForm("User", false);
+      AddUserForm newForm = new AddUserForm("User", false);
       newForm.Show();
     }
 
     private void groupToolStripMenuItem2_Click(object sender, EventArgs e) {
-      AddNewForm newForm = new AddNewForm("User", true);
+      AddUserForm newForm = new AddUserForm("User", true);
       newForm.Show();
 
     }
