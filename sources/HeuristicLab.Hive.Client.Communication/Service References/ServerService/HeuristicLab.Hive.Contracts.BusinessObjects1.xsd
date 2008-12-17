@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:complexType name="ClientInfo">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Resource">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ClientId" type="ser:guid" />
+          <xs:element minOccurs="0" name="ClientInfoId" type="xs:long" />
+          <xs:element minOccurs="0" name="Config" nillable="true" type="tns:ClientConfig" />
+          <xs:element minOccurs="0" name="CpuSpeedPerCore" type="xs:int" />
+          <xs:element minOccurs="0" name="Login" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Memory" type="xs:int" />
+          <xs:element minOccurs="0" name="NrOfCores" type="xs:int" />
+          <xs:element minOccurs="0" name="State" type="tns:State" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ClientInfo" nillable="true" type="tns:ClientInfo" />
+  <xs:complexType name="Resource">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:long" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Resource" nillable="true" type="tns:Resource" />
+  <xs:complexType name="ClientConfig">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="HeartBeatIntervall" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:long" />
+      <xs:element minOccurs="0" name="UpDownTimeCalendar" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientConfig" nillable="true" type="tns:ClientConfig" />
+  <xs:simpleType name="State">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="nullState" />
+      <xs:enumeration value="idle" />
+      <xs:enumeration value="calculating" />
+      <xs:enumeration value="offline" />
+      <xs:enumeration value="finished" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="State" nillable="true" type="tns:State" />
+  <xs:complexType name="HeartBeatData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientId" type="ser:guid" />
+      <xs:element minOccurs="0" name="freeCores" type="xs:int" />
+      <xs:element minOccurs="0" name="freeMemory" type="xs:int" />
+      <xs:element minOccurs="0" name="jobProgress" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="HeartBeatData" nillable="true" type="tns:HeartBeatData" />
+  <xs:complexType name="Job">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
+      <xs:element minOccurs="0" name="Id" type="xs:long" />
+      <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:Job" />
+      <xs:element minOccurs="0" name="State" type="tns:State" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Job" nillable="true" type="tns:Job" />
+  <xs:complexType name="JobResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="Exception" nillable="true" type="q1:Exception" />
+      <xs:element minOccurs="0" name="Id" type="xs:long" />
+      <xs:element minOccurs="0" name="Job" nillable="true" type="tns:Job" />
+      <xs:element minOccurs="0" name="Result" nillable="true" type="xs:base64Binary" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="JobResult" nillable="true" type="tns:JobResult" />
+</xs:schema>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="emH4xWqYQm4GeIAMUhWYPT4/tzs=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="kpA4Ej4a4mSz8NqKwKcNB68tDr0=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IClientCommunicator">
       <properties>
@@ -106,10 +106,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IClientCommunicator" contract="ServerService.IClientCommunicator" bindingType="netTcpBinding" address="net.tcp://10.0.0.64:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientCommunicator">
+    <endpoint name="NetTcpBinding_IClientCommunicator" contract="ServerService.IClientCommunicator" bindingType="netTcpBinding" address="net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientCommunicator">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://10.0.0.64:9000/HiveServer/ClientCommunicator</serializedValue>
+          <serializedValue>net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -136,7 +136,7 @@
           <serializedValue>System.ServiceModel.Configuration.UserPrincipalNameElement</serializedValue>
         </property>
         <property path="/identity/userPrincipalName/value" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>sem-PC\sem</serializedValue>
+          <serializedValue>mse08003@fhs-hagenberg.ac.at</serializedValue>
         </property>
         <property path="/identity/servicePrincipalName" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.ServicePrincipalNameElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.ServicePrincipalNameElement</serializedValue>

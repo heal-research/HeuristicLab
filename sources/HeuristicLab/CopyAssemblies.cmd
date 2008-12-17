@@ -60,7 +60,7 @@ copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\%Outdir%\HeuristicLab.Thre
 copy "%SolutionDir%\HeuristicLab.ES\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization\%Outdir%\HeuristicLab.Visualization-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization.Test\%Outdir%\HeuristicLab.Visualization.Test-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Job\%Outdir%\HeuristicLab.Hive.Job-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.JobBase\%Outdir%\HeuristicLab.Hive.JobBase-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server\%Outdir%\HeuristicLab.Hive.Server-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.ADODataAccess\%Outdir%\HeuristicLab.Hive.Server.ADODataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\%Outdir%\HeuristicLab.Hive.Server.Core-3.2.dll" .\plugins

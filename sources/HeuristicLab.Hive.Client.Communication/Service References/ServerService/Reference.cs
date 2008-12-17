@@ -43,10 +43,10 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         HeuristicLab.Hive.Contracts.ResponseJob EndPullJob(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished);
+        HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        System.IAsyncResult BeginSendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished, System.AsyncCallback callback, object asyncState);
         
         HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result);
         
@@ -374,13 +374,13 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         clientId}, this.onEndPullJobDelegate, this.onPullJobCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished) {
-            return base.Channel.SendJobResult(Result, finished);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished) {
+            return base.Channel.SendJobResult(result, finished);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginSendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSendJobResult(Result, finished, callback, asyncState);
+        public System.IAsyncResult BeginSendJobResult(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSendJobResult(result, finished, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -389,9 +389,9 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         }
         
         private System.IAsyncResult OnBeginSendJobResult(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result = ((HeuristicLab.Hive.Contracts.BusinessObjects.JobResult)(inValues[0]));
+            HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result = ((HeuristicLab.Hive.Contracts.BusinessObjects.JobResult)(inValues[0]));
             bool finished = ((bool)(inValues[1]));
-            return this.BeginSendJobResult(Result, finished, callback, asyncState);
+            return this.BeginSendJobResult(result, finished, callback, asyncState);
         }
         
         private object[] OnEndSendJobResult(System.IAsyncResult result) {
@@ -407,11 +407,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
             }
         }
         
-        public void SendJobResultAsync(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished) {
-            this.SendJobResultAsync(Result, finished, null);
+        public void SendJobResultAsync(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished) {
+            this.SendJobResultAsync(result, finished, null);
         }
         
-        public void SendJobResultAsync(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult Result, bool finished, object userState) {
+        public void SendJobResultAsync(HeuristicLab.Hive.Contracts.BusinessObjects.JobResult result, bool finished, object userState) {
             if ((this.onBeginSendJobResultDelegate == null)) {
                 this.onBeginSendJobResultDelegate = new BeginOperationDelegate(this.OnBeginSendJobResult);
             }
@@ -422,7 +422,7 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                 this.onSendJobResultCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSendJobResultCompleted);
             }
             base.InvokeAsync(this.onBeginSendJobResultDelegate, new object[] {
-                        Result,
+                        result,
                         finished}, this.onEndSendJobResultDelegate, this.onSendJobResultCompletedDelegate, userState);
         }
         

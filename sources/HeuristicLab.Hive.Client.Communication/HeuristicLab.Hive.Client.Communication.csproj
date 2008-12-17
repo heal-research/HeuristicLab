@@ -82,12 +82,6 @@
     <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
-    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.BusinessObjects.xsd" />
-    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.xsd" />
-    <None Include="Service References\ServerService\service.wsdl" />
-    <None Include="Service References\ServerService\service.xsd" />
-    <None Include="Service References\ServerService\service1.xsd" />
-    <None Include="Service References\ServerService\System.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
@@ -124,10 +118,16 @@
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseHB.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseJob.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseResultReceived.datasource" />
+    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" />
+    <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts1.xsd" />
     <None Include="Service References\ServerService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Service References\ServerService\service1.wsdl" />
+    <None Include="Service References\ServerService\service2.xsd" />
+    <None Include="Service References\ServerService\service21.xsd" />
+    <None Include="Service References\ServerService\System1.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

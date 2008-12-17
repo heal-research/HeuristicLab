@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" />
+  <xs:complexType name="Response">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="StatusMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Success" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Response" nillable="true" type="tns:Response" />
+  <xs:complexType name="ResponseHB">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Response">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ActionRequest" nillable="true" type="tns:ArrayOfMessageContainer" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResponseHB" nillable="true" type="tns:ResponseHB" />
+  <xs:complexType name="ArrayOfMessageContainer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MessageContainer" nillable="true" type="tns:MessageContainer" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMessageContainer" nillable="true" type="tns:ArrayOfMessageContainer" />
+  <xs:complexType name="MessageContainer">
+    <xs:sequence>
+      <xs:element name="_x003C_JobId_x003E_k__BackingField" type="xs:long" />
+      <xs:element name="_x003C_Message_x003E_k__BackingField" type="tns:MessageContainer.MessageType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MessageContainer" nillable="true" type="tns:MessageContainer" />
+  <xs:simpleType name="MessageContainer.MessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FetchJob" />
+      <xs:enumeration value="AbortJob" />
+      <xs:enumeration value="JobAborted" />
+      <xs:enumeration value="RequestSnapshot" />
+      <xs:enumeration value="FinishedJob" />
+      <xs:enumeration value="NoMessage" />
+      <xs:enumeration value="SnapshotReady" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MessageContainer.MessageType" nillable="true" type="tns:MessageContainer.MessageType" />
+  <xs:complexType name="ResponseJob">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Response">
+        <xs:sequence>
+          <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" minOccurs="0" name="Job" nillable="true" type="q1:Job" />
+          <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResponseJob" nillable="true" type="tns:ResponseJob" />
+  <xs:complexType name="ResponseResultReceived">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Response">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" minOccurs="0" name="Job" nillable="true" type="q2:Job" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResponseResultReceived" nillable="true" type="tns:ResponseResultReceived" />
+</xs:schema>

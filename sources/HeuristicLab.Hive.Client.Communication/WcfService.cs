@@ -95,7 +95,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region PullJob
     public event System.EventHandler<PullJobCompletedEventArgs> PullJobCompleted;
     public void PullJobAsync(Guid guid) {
-      if (ConnState == NetworkEnum.WcfConnState.Connected)
+      if (ConnState == NetworkEnum.WcfConnState.Connected)        
         proxy.PullJobAsync(guid);
     }
     void proxy_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
