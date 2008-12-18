@@ -36,15 +36,27 @@ using System.Net;
 
 namespace HeuristicLab.Hive.Client.Console {
 
+  #region Delegates
+
   delegate void UpdateTextDelegate(EventLogEntry ev);
 
+  #endregion
+
   public partial class HiveClientConsole : Form {
+
+    #region Declarations
+
+    private const string ENDPOINTADRESS = "net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator";
+    private const string EVENTLOGNAME = "Hive Client";
 
     private EventLog HiveClientEventLog;
     private ClientConsoleCommunicatorClient cccc;
     private System.Windows.Forms.Timer refreshTimer;
     private ListViewColumnSorterDate lvwColumnSorter;
 
+    #endregion
+
+    #region Constructor
 
     public HiveClientConsole() {
       InitializeComponent();
@@ -58,6 +70,10 @@ namespace HeuristicLab.Hive.Client.Console {
       GetEventLog();
     }
 
+    #endregion
+
+    #region Methods
+
     private void InitTimer() {
       refreshTimer = new System.Windows.Forms.Timer();
       refreshTimer.Interval = 1000;
@@ -65,10 +81,6 @@ namespace HeuristicLab.Hive.Client.Console {
       refreshTimer.Start();
     }
 
-    void refreshTimer_Tick(object sender, EventArgs e) {
-      RefreshGui();
-    }
-    
     private void RefreshGui() {
       try {
         cccc.GetStatusInfosAsync();
@@ -83,7 +95,7 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void ConnectToClient() {
       try {
-        cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress("net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator"));
+        cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress(ENDPOINTADRESS));
         cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
         cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
       }
@@ -95,7 +107,73 @@ namespace HeuristicLab.Hive.Client.Console {
       }
     }
 
-    void cccc_GetCurrentConnectionCompleted(object sender, GetCurrentConnectionCompletedEventArgs e) {
+    private void GetEventLog() {
+      HiveClientEventLog = new EventLog(EVENTLOGNAME);
+      HiveClientEventLog.Source = EVENTLOGNAME;
+      HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
+      HiveClientEventLog.EnableRaisingEvents = true;
+
+      ListViewItem curEventLogEntry;
+
+      foreach (EventLogEntry ele in HiveClientEventLog.Entries) {
+        curEventLogEntry = GenerateEventEntry(ele);
+        lvLog.Items.Add(curEventLogEntry);
+      }
+      lvJobDetail.Sort();
+    }
+
+    private ListViewItem GenerateEventEntry(EventLogEntry ele) {
+      ListViewItem curEventLogEntry;
+      curEventLogEntry = new ListViewItem("", 0);
+      if (ele.EntryType == EventLogEntryType.Error)
+        curEventLogEntry = new ListViewItem("", 1);
+      curEventLogEntry.SubItems.Add(ele.InstanceId.ToString());
+      curEventLogEntry.SubItems.Add(ele.Message);
+      curEventLogEntry.SubItems.Add(ele.TimeGenerated.ToString());
+      return curEventLogEntry;
+    }
+
+    private void UpdateGraph(int jobsDone, int jobsAborted) {
+      ZedGraphControl zgc = new ZedGraphControl();
+      GraphPane myPane = zgc.GraphPane;
+      myPane.GraphObjList.Clear();
+
+      myPane.Title.IsVisible = false;  // no title
+      myPane.Border.IsVisible = false; // no border
+      myPane.Chart.Border.IsVisible = false; // no border around the chart
+      myPane.XAxis.IsVisible = false;  // no x-axis
+      myPane.YAxis.IsVisible = false;  // no y-axis
+      myPane.Legend.IsVisible = false; // no legend
+
+      myPane.Fill.Color = Color.FromKnownColor(KnownColor.Control);
+
+      myPane.Chart.Fill.Type = FillType.None;
+      myPane.Fill.Type = FillType.Solid;
+
+      double sum = (double)jobsDone + jobsAborted;
+      double perDone = (double)jobsDone / sum * 100;
+      double perAborted = (double)jobsAborted / sum * 100;
+
+      myPane.AddPieSlice(perDone, Color.Green, 0.1, "");
+      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "");
+
+      //Hides the slice labels
+      PieItem.Default.LabelType = PieLabelType.None;
+
+      myPane.AxisChange();
+
+      pbGraph.Image = zgc.GetImage();
+    }
+
+    #endregion
+
+    #region Events
+
+    private void refreshTimer_Tick(object sender, EventArgs e) {
+      RefreshGui();
+    }
+
+    private void cccc_GetCurrentConnectionCompleted(object sender, GetCurrentConnectionCompletedEventArgs e) {
       if (e.Error == null) {
         ConnectionContainer curConnection = e.Result;
         tbIPAdress.Text = curConnection.IPAdress;
@@ -103,7 +181,7 @@ namespace HeuristicLab.Hive.Client.Console {
       }
     }
 
-    void cccc_GetStatusInfosCompleted(object sender, GetStatusInfosCompletedEventArgs e) {
+    private void cccc_GetStatusInfosCompleted(object sender, GetStatusInfosCompletedEventArgs e) {
 
       if (e.Error == null) {
         StatusCommons sc = e.Result;
@@ -151,27 +229,8 @@ namespace HeuristicLab.Hive.Client.Console {
       }
     }
 
-    private void GetEventLog() {
-      HiveClientEventLog = new EventLog("Hive Client");
-      HiveClientEventLog.Source = "Hive Client";
-      HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
-      HiveClientEventLog.EnableRaisingEvents = true;
-
-      ListViewItem curEventLogEntry;
-      foreach (EventLogEntry eve in HiveClientEventLog.Entries) {
-        curEventLogEntry = new ListViewItem("", 0);
-        if(eve.EntryType == EventLogEntryType.Error)
-          curEventLogEntry = new ListViewItem("", 1);
-        curEventLogEntry.SubItems.Add(eve.InstanceId.ToString());
-        curEventLogEntry.SubItems.Add(eve.Message);
-        curEventLogEntry.SubItems.Add(eve.TimeGenerated.ToString());
-        lvLog.Items.Add(curEventLogEntry);
-      }
-      lvJobDetail.Sort();
-    }
-
     private void HiveClientConsole_Load(object sender, EventArgs e) {
-      //SetSize();
+      //nothing to do
     }
 
     private void UpdateText(EventLogEntry ev) {
@@ -179,13 +238,7 @@ namespace HeuristicLab.Hive.Client.Console {
         this.lvLog.Invoke(new
           UpdateTextDelegate(UpdateText), new object[] { ev });
       } else {
-        ListViewItem curEventLogEntry;
-        curEventLogEntry = new ListViewItem("", 0);
-        if (ev.EntryType == EventLogEntryType.Error)
-          curEventLogEntry = new ListViewItem("", 1);
-        curEventLogEntry.SubItems.Add(ev.InstanceId.ToString());
-        curEventLogEntry.SubItems.Add(ev.Message);
-        curEventLogEntry.SubItems.Add(ev.TimeGenerated.ToString());
+        ListViewItem curEventLogEntry = GenerateEventEntry(ev);
         lvLog.Items.Add(curEventLogEntry);
         lvJobDetail.Sort();
       }
@@ -195,46 +248,14 @@ namespace HeuristicLab.Hive.Client.Console {
       UpdateText(e.Entry);
     }
 
-    private void UpdateGraph(int jobsDone, int jobsAborted) {
-      ZedGraphControl zgc = new ZedGraphControl();
-      GraphPane myPane = zgc.GraphPane;
-      myPane.GraphObjList.Clear();
-
-      myPane.Title.IsVisible = false;  // no title
-      myPane.Border.IsVisible = false; // no border
-      myPane.Chart.Border.IsVisible = false; // no border around the chart
-      myPane.XAxis.IsVisible = false;  // no x-axis
-      myPane.YAxis.IsVisible = false;  // no y-axis
-      myPane.Legend.IsVisible = false; // no legend
-
-      myPane.Fill.Color = Color.FromKnownColor(KnownColor.Control);
-
-      myPane.Chart.Fill.Type = FillType.None;
-      myPane.Fill.Type = FillType.Solid;
-
-      double sum = (double)jobsDone + jobsAborted;
-      double perDone = (double)jobsDone / sum * 100;
-      double perAborted = (double)jobsAborted / sum * 100;
-
-      myPane.AddPieSlice(perDone, Color.Green, 0.1, "");
-      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "");
-
-      //Hides the slice labels
-      PieItem.Default.LabelType = PieLabelType.None;
-      
-      myPane.AxisChange();
-
-      pbGraph.Image = zgc.GetImage();
-    }
-
     private void HiveClientConsole_Resize(object sender, EventArgs e) {
-      //SetSize();
+      //nothing to do
     }
 
     private void lvLog_DoubleClick(object sender, EventArgs e) {
       ListViewItem lvi = lvLog.SelectedItems[0];
       HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
-      
+
       Form EventlogDetails = new EventLogEntryForm(hee);
       EventlogDetails.Show();
     }
@@ -243,7 +264,6 @@ namespace HeuristicLab.Hive.Client.Console {
       IPAddress ipAdress;
       int port;
       ConnectionContainer cc = new ConnectionContainer();
-      //IPAddress.TryParse(tbIPAdress.Text.ToString(), ipAdress);
       if (IPAddress.TryParse(tbIPAdress.Text, out ipAdress) && int.TryParse(tbPort.Text, out port)) {
         cc.IPAdress = tbIPAdress.Text;
         cc.Port = port;
@@ -275,5 +295,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // Perform the sort with these new sort options.
       lvLog.Sort();
     }
+
+    #endregion
   }
 }
