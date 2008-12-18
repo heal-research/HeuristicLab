@@ -137,6 +137,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (row != null) {
           row.Delete();
           UpdateRow(row);
+
+          return true;
         }
       }
 

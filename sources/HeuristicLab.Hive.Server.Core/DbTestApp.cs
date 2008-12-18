@@ -230,7 +230,10 @@ namespace HeuristicLab.Hive.Server {
     }
 
     private void TestJobAdapter() {
-      IJobAdapter jobAdapter = ServiceLocator.GetJobAdapter();
+      IJobAdapter jobAdapter = 
+        ServiceLocator.GetJobAdapter();
+      IClientAdapter clientAdapter =
+        ServiceLocator.GetClientAdapter();
 
       Job job = new Job();
 
@@ -244,6 +247,7 @@ namespace HeuristicLab.Hive.Server {
       ICollection<Job> jobs = jobAdapter.GetAll();
 
       jobAdapter.Delete(job);
+      clientAdapter.Delete(client);
 
       jobs = jobAdapter.GetAll();
     }
@@ -286,6 +290,13 @@ namespace HeuristicLab.Hive.Server {
         resultsAdapter.GetAll();
 
       Debug.Assert(allResults.Count == count - 1);
+
+      IJobAdapter jboAdapter =
+        ServiceLocator.GetJobAdapter();
+      jboAdapter.Delete(job);
+      IClientAdapter clientAdapter =
+        ServiceLocator.GetClientAdapter();
+      clientAdapter.Delete(client);
     }
 
     public override void Run() {
@@ -302,13 +313,13 @@ namespace HeuristicLab.Hive.Server {
       transactionManager.UpdateDB();
 
       TestClientGroupAdapter();
-      transactionManager.UpdateDB();  
+      transactionManager.UpdateDB();   
 
       TestJobAdapter();
       transactionManager.UpdateDB();  
 
       TestJobResultsAdapter();
-      transactionManager.UpdateDB();
+      transactionManager.UpdateDB();     
     }
   }
 }
