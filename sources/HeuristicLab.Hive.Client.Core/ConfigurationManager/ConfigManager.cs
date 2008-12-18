@@ -53,11 +53,13 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     private ConfigManager() {
       //retrive GUID from XML file, or burn in hell. as in hell. not heaven.
       //this won't work this way. We need a plugin for XML Handling.      
-      hardwareInfo = new ClientInfo();      
+      hardwareInfo = new ClientInfo();
 
-      if (Settings.Default.Guid == Guid.Empty)
+      if (Settings.Default.Guid == Guid.Empty) {
         hardwareInfo.ClientId = Guid.NewGuid();
-      else
+        Settings.Default.Guid = hardwareInfo.ClientId;
+        Settings.Default.Save();
+      } else
         hardwareInfo.ClientId = Settings.Default.Guid;
       
       hardwareInfo.NrOfCores = Environment.ProcessorCount;
@@ -80,6 +82,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     public void SetServerIPAndPort(ConnectionContainer cc) {
       Settings.Default.ServerIP = cc.IPAdress;
       Settings.Default.ServerPort = cc.Port;
+      Settings.Default.Save();
     }
 
     public StatusCommons GetStatusForClientConsole() {
