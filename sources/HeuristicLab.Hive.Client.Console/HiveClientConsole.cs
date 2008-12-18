@@ -178,6 +178,11 @@ namespace HeuristicLab.Hive.Client.Console {
         ConnectionContainer curConnection = e.Result;
         tbIPAdress.Text = curConnection.IPAdress;
         tbPort.Text = curConnection.Port.ToString();
+      } else {
+               refreshTimer.Stop();
+        DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (res == DialogResult.OK)
+          this.Close();
       }
     }
 
@@ -226,6 +231,11 @@ namespace HeuristicLab.Hive.Client.Console {
           btnDisconnect.Enabled = false;
           lbCs.Text = String.Empty;
         }
+      } else {
+        refreshTimer.Stop();
+        DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (res == DialogResult.OK)
+          this.Close();
       }
     }
 
