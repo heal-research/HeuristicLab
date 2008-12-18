@@ -222,4 +222,7 @@
   <data name="Communicator.NoJobWithThisId" xml:space="preserve">
     <value>There exists no job with this id</value>
   </data>
+  <data name="Job.JobStateMustBeOffline" xml:space="preserve">
+    <value>The state of the job must be offline</value>
+  </data>
 </root>

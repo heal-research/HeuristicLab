@@ -53,6 +53,11 @@ namespace HeuristicLab.Hive.Server.Core {
       ResponseObject<Job> response = new ResponseObject<Job>();
 
       if (job != null) {
+        if (job.State != State.offline) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE;
+          return response;
+        }
         if (job.Id != 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
