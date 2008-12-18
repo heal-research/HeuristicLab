@@ -66,17 +66,17 @@ namespace HeuristicLab.Hive.Client.Core {
       manager.Core = this;
 
       wcfService = WcfService.Instance;
+      wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
+      wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
+      wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
+      wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
+
       ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
       if (cc.IPAdress != String.Empty && cc.Port != 0) {
         wcfService.Connect(cc.IPAdress, cc.Port);
       }
-
-      wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
-      wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
-      wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);      
-      wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
-      wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
-       
+   
       Heartbeat beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
 

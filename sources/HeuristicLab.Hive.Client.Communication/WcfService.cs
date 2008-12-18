@@ -66,7 +66,8 @@ namespace HeuristicLab.Hive.Client.Communication {
       this.ServerPort = serverPort;      
       Connect();
       if (oldIp != serverIP || oldPort != ServerPort)
-        ServerChanged(this, new EventArgs());
+        if(ServerChanged != null) 
+          ServerChanged(this, new EventArgs());
     }
 
     public void Disconnect() {
