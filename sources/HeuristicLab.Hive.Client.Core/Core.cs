@@ -55,7 +55,7 @@ namespace HeuristicLab.Hive.Client.Core {
     private WcfService wcfService;
 
     public void Start() {
-
+      Logging.GetInstance().Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
 
