@@ -77,7 +77,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.tbOne.Location = new System.Drawing.Point(120, 7);
       this.tbOne.Name = "tbOne";
       this.tbOne.Size = new System.Drawing.Size(212, 20);
-      this.tbOne.TabIndex = 2;
+      this.tbOne.TabIndex = 1;
       // 
       // cbGroups
       // 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.btnAdd.TabIndex = 4;
       this.btnAdd.Text = "Add";
       this.btnAdd.UseVisualStyleBackColor = true;
-      this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+      this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
       // 
       // btnClose
       // 
@@ -105,14 +105,15 @@ namespace HeuristicLab.Hive.Server.Console {
       this.btnClose.TabIndex = 5;
       this.btnClose.Text = "Close";
       this.btnClose.UseVisualStyleBackColor = true;
-      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+      this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
       // 
       // tbPwd
       // 
       this.tbPwd.Location = new System.Drawing.Point(120, 37);
       this.tbPwd.Name = "tbPwd";
       this.tbPwd.Size = new System.Drawing.Size(212, 20);
-      this.tbPwd.TabIndex = 7;
+      this.tbPwd.TabIndex = 2;
+      this.tbPwd.UseSystemPasswordChar = true;
       // 
       // lblPassword
       // 
@@ -120,7 +121,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.lblPassword.Location = new System.Drawing.Point(12, 44);
       this.lblPassword.Name = "lblPassword";
       this.lblPassword.Size = new System.Drawing.Size(53, 13);
-      this.lblPassword.TabIndex = 6;
+      this.lblPassword.TabIndex = 0;
       this.lblPassword.Text = "Password";
       // 
       // AddUserForm
@@ -138,7 +139,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.Controls.Add(this.lblGroup);
       this.Controls.Add(this.lblOne);
       this.Name = "AddUserForm";
-      this.Text = "AddNewForm";
+      this.Text = "AddUserForm";
       this.ResumeLayout(false);
       this.PerformLayout();
 

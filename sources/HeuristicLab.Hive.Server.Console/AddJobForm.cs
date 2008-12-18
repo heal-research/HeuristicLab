@@ -39,10 +39,10 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public AddJobForm() {
       InitializeComponent();
-      addJob();
+      AddJob();
     }
 
-    private void addJob() {
+    private void AddJob() {
       jobManager =
         ServiceLocator.GetJobManager();
       jobGroups = jobManager.GetAllJobs();
@@ -54,7 +54,7 @@ namespace HeuristicLab.Hive.Server.Console {
     }
 
 
-    private void btnAdd_Click(object sender, EventArgs e) {
+    private void BtnAdd_Click(object sender, EventArgs e) {
       try {
         lblError.Text = "";
         int numJobs = Convert.ToInt32(tbNumJobs.Text);
@@ -83,8 +83,10 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void btnClose_Click(object sender, EventArgs e) {
+    private void BtnClose_Click(object sender, EventArgs e) {
       this.Close();
     }
+
+
   }
 }

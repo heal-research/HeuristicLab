@@ -51,11 +51,11 @@ namespace HeuristicLab.Hive.Server.Console {
       lblGroup.Text = addForm + " Groups";
 
       if (addForm == "User") {
-        addUser();
+        AddUser();
       }
     }
 
-    private void addUser() {
+    private void AddUser() {
      userRoleManager = ServiceLocator.GetUserRoleManager();
       userGroups = userRoleManager.GetAllUserGroups();
       cbGroups.Items.Add("none");
@@ -65,7 +65,7 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void btnAdd_Click(object sender, EventArgs e) {
+    private void BtnAdd_Click(object sender, EventArgs e) {
       if (!group) {
         if (tbOne.Text != "") {
           User u = new User() { Name = tbOne.Text, Password = tbPwd.Text };
@@ -100,7 +100,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.Close();
     }
 
-    private void btnClose_Click(object sender, EventArgs e) {
+    private void BtnClose_Click(object sender, EventArgs e) {
       this.Close();
     }
   }

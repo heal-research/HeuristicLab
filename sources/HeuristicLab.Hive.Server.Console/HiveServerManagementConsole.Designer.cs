@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             "Test"}, -1);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
@@ -41,20 +41,19 @@
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
       this.lvClientControl = new System.Windows.Forms.ListView();
-      this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+      this.ilClientControl = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
       this.lvJobControl = new System.Windows.Forms.ListView();
-      this.imageList3 = new System.Windows.Forms.ImageList(this.components);
+      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
       this.lvUserControl = new System.Windows.Forms.ListView();
-      this.imageList2 = new System.Windows.Forms.ImageList(this.components);
+      this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
-      this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
@@ -94,9 +93,9 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.closeToolStripMenuItem.Text = "Close";
-      this.closeToolStripMenuItem.Click += new System.EventHandler(this.close_Click);
+      this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
       // addToolStripMenuItem
       // 
@@ -110,9 +109,9 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.jobToolStripMenuItem.Text = "Job";
-      this.jobToolStripMenuItem.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
+      this.jobToolStripMenuItem.Click += new System.EventHandler(this.JobToolStripMenuItem1_Click);
       // 
       // userToolStripMenuItem
       // 
@@ -120,22 +119,22 @@
             this.userToolStripMenuItem1,
             this.groupToolStripMenuItem2});
       this.userToolStripMenuItem.Name = "userToolStripMenuItem";
-      this.userToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.userToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.userToolStripMenuItem.Text = "User";
       // 
       // userToolStripMenuItem1
       // 
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
-      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+      this.userToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.userToolStripMenuItem1.Text = "User";
-      this.userToolStripMenuItem1.Click += new System.EventHandler(this.userToolStripMenuItem1_Click);
+      this.userToolStripMenuItem1.Click += new System.EventHandler(this.UserToolStripMenuItem1_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
-      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
+      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
       this.groupToolStripMenuItem2.Text = "Group";
-      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.groupToolStripMenuItem2_Click);
+      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.GroupToolStripMenuItem2_Click);
       // 
       // tcManagementConsole
       // 
@@ -192,21 +191,21 @@
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
-      this.lvClientControl.LargeImageList = this.imageList1;
+            listViewItem2});
+      this.lvClientControl.LargeImageList = this.ilClientControl;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(494, 346);
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
       // 
-      // imageList1
+      // ilClientControl
       // 
-      this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-      this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList1.Images.SetKeyName(0, "monitor-green.png");
-      this.imageList1.Images.SetKeyName(1, "monitor-orange.png");
-      this.imageList1.Images.SetKeyName(2, "monitor-red.png");
+      this.ilClientControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilClientControl.ImageStream")));
+      this.ilClientControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilClientControl.Images.SetKeyName(0, "monitor-green.png");
+      this.ilClientControl.Images.SetKeyName(1, "monitor-orange.png");
+      this.ilClientControl.Images.SetKeyName(2, "monitor-red.png");
       // 
       // tpJobControl
       // 
@@ -248,18 +247,18 @@
       // 
       this.lvJobControl.AllowDrop = true;
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.imageList3;
+      this.lvJobControl.LargeImageList = this.ilJobControl;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
       this.lvJobControl.Name = "lvJobControl";
       this.lvJobControl.Size = new System.Drawing.Size(494, 346);
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
       // 
-      // imageList3
+      // ilJobControl
       // 
-      this.imageList3.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList3.ImageStream")));
-      this.imageList3.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList3.Images.SetKeyName(0, "PlayHS.bmp");
+      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
+      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilJobControl.Images.SetKeyName(0, "PlayHS.bmp");
       // 
       // tpUserControl
       // 
@@ -301,18 +300,18 @@
       // 
       this.lvUserControl.AllowDrop = true;
       this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvUserControl.LargeImageList = this.imageList2;
+      this.lvUserControl.LargeImageList = this.ilUserControl;
       this.lvUserControl.Location = new System.Drawing.Point(0, 0);
       this.lvUserControl.Name = "lvUserControl";
       this.lvUserControl.Size = new System.Drawing.Size(494, 346);
       this.lvUserControl.TabIndex = 1;
       this.lvUserControl.UseCompatibleStateImageBehavior = false;
       // 
-      // imageList2
+      // ilUserControl
       // 
-      this.imageList2.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList2.ImageStream")));
-      this.imageList2.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList2.Images.SetKeyName(0, "Users.png");
+      this.ilUserControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilUserControl.ImageStream")));
+      this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilUserControl.Images.SetKeyName(0, "Users.png");
       // 
       // treeView2
       // 
@@ -331,12 +330,6 @@
       this.listView2.Size = new System.Drawing.Size(494, 346);
       this.listView2.TabIndex = 0;
       this.listView2.UseCompatibleStateImageBehavior = false;
-      // 
-      // directorySearcher1
-      // 
-      this.directorySearcher1.ClientTimeout = System.TimeSpan.Parse("-00:00:01");
-      this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
-      this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
       // 
       // timerSyncronize
       // 
@@ -393,15 +386,14 @@
     private System.Windows.Forms.TreeView tvJobControl;
     private System.Windows.Forms.TreeView tvUserControl;
     private System.Windows.Forms.ListView lvUserControl;
-    private System.Windows.Forms.ImageList imageList1;
+    private System.Windows.Forms.ImageList ilClientControl;
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem2;
-    private System.Windows.Forms.ImageList imageList2;
-    private System.DirectoryServices.DirectorySearcher directorySearcher1;
+    private System.Windows.Forms.ImageList ilUserControl;
     private System.Windows.Forms.Timer timerSyncronize;
-    private System.Windows.Forms.ImageList imageList3;
+    private System.Windows.Forms.ImageList ilJobControl;
   }
 }

@@ -41,10 +41,6 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public HiveServerConsole() {
       InitializeComponent();
-      tbUserName.Text = "Anita";
-      tbPwd.Text = "Anita";
-      tbIp.Text = "10.20.53.1";
-      tbPort.Text = "9000";
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -57,23 +53,23 @@ namespace HeuristicLab.Hive.Server.Console {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void btnLogin_Click(object sender, EventArgs e) {
+    private void BtnLogin_Click(object sender, EventArgs e) {
       string newIp = tbIp.Text;
       newIp = newIp.Replace(" ", "");
 
         ServiceLocator.Address = newIp;
         ServiceLocator.Port = this.tbPort.Text;
 
-        if (isValid()) {
+        if (IsValid()) {
           this.Visible = false;
           information = new HiveServerManagementConsole();
-          information.closeFormEvent += new closeForm(enableForm);
+          information.closeFormEvent += new closeForm(EnableForm);
           information.Show();
         }
     }
 
 
-    private bool isValid() {
+    private bool IsValid() {
       if ((tbUserName.Text != "") &&
           (tbPwd.Text != "") &&
           (tbIp.Text != "") &&
@@ -110,7 +106,7 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void enableForm(bool cf, bool error) {
+    private void EnableForm(bool cf, bool error) {
       if (cf) {
         this.Visible = true;
         if (error == true) {
@@ -118,11 +114,5 @@ namespace HeuristicLab.Hive.Server.Console {
         }
       }
     }
-
-    string md5sum(byte[] FileOrText) { //Output: String<-> Input: Byte[]
-      return BitConverter.ToString(new
-         MD5CryptoServiceProvider().ComputeHash(FileOrText)).Replace("-", "").ToLower();
-    }
-
   }
 }

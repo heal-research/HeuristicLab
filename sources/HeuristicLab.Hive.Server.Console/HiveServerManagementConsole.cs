@@ -47,21 +47,21 @@ namespace HeuristicLab.Hive.Server.Console {
 
     public HiveServerManagementConsole() {
       InitializeComponent();
-      addClients();
-      addJobs();
-      addUsers();
+      AddClients();
+      AddJobs();
+      AddUsers();
 
-      timerSyncronize.Tick += new EventHandler(tickSync);
+      timerSyncronize.Tick += new EventHandler(TickSync);
       timerSyncronize.Start();
     }
 
-    private void tickSync(object obj, EventArgs e) {
-      addClients();
-      addJobs();
-      addUsers();
+    private void TickSync(object obj, EventArgs e) {
+      AddClients();
+      AddJobs();
+      AddUsers();
     }
 
-    private void addClients() {
+    private void AddClients() {
       try {
         IClientManager clientManager =
           ServiceLocator.GetClientManager();
@@ -97,7 +97,7 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void addJobs() {
+    private void AddJobs() {
       try {
         IJobManager jobManager =
           ServiceLocator.GetJobManager();
@@ -106,27 +106,27 @@ namespace HeuristicLab.Hive.Server.Console {
         lvJobControl.Items.Clear();
         tvJobControl.Nodes.Clear();
 
-        ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
-        ListViewGroup lvJobOffline = new ListViewGroup("offline", HorizontalAlignment.Left);
         ListViewGroup lvJobCalculating = new ListViewGroup("calculating", HorizontalAlignment.Left);
-        tvJobControl.Nodes.Add("finished");
-        tvJobControl.Nodes.Add("offline");
+        ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
+        ListViewGroup lvJobPending = new ListViewGroup("pending", HorizontalAlignment.Left);
         tvJobControl.Nodes.Add("calculating");
+        tvJobControl.Nodes.Add("finished");
+        tvJobControl.Nodes.Add("pending");
         foreach (Job job in jobs.List) {
-          if (job.State == State.finished) {
+          if (job.State == State.calculating) {
             tvJobControl.Nodes[0].Nodes.Add(job.Id.ToString());
+            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobCalculating));
+          } else if (job.State == State.finished) {
+            tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
             lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobFinished));
           } else if (job.State == State.offline) {
-            tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
-            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobOffline));
-          } else if (job.State == State.calculating) {
             tvJobControl.Nodes[2].Nodes.Add(job.Id.ToString());
-            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobCalculating));
+            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobPending));
           }
         } // Jobs
-        lvJobControl.Groups.Add(lvJobFinished);
-        lvJobControl.Groups.Add(lvJobOffline);
         lvJobControl.Groups.Add(lvJobCalculating);
+        lvJobControl.Groups.Add(lvJobFinished);
+        lvJobControl.Groups.Add(lvJobPending);
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -134,7 +134,7 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void addUsers() {
+    private void AddUsers() {
       try {
         IUserRoleManager userRoleManager =
           ServiceLocator.GetUserRoleManager();
@@ -178,7 +178,7 @@ namespace HeuristicLab.Hive.Server.Console {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void close_Click(object sender, EventArgs e) {
+    private void Close_Click(object sender, EventArgs e) {
       if (closeFormEvent != null) {
         closeFormEvent(true, false);
       }
@@ -197,17 +197,17 @@ namespace HeuristicLab.Hive.Server.Console {
 
     }
 
-    private void jobToolStripMenuItem1_Click(object sender, EventArgs e) {
+    private void JobToolStripMenuItem1_Click(object sender, EventArgs e) {
       AddJobForm newForm = new AddJobForm();
       newForm.Show();
     }
 
-    private void userToolStripMenuItem1_Click(object sender, EventArgs e) {
+    private void UserToolStripMenuItem1_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", false);
       newForm.Show();
     }
 
-    private void groupToolStripMenuItem2_Click(object sender, EventArgs e) {
+    private void GroupToolStripMenuItem2_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", true);
       newForm.Show();
 

@@ -68,27 +68,27 @@ namespace HeuristicLab.Hive.Server.Console {
       this.cbParJob.Location = new System.Drawing.Point(117, 33);
       this.cbParJob.Name = "cbParJob";
       this.cbParJob.Size = new System.Drawing.Size(212, 21);
-      this.cbParJob.TabIndex = 3;
+      this.cbParJob.TabIndex = 2;
       // 
       // btnAdd
       // 
       this.btnAdd.Location = new System.Drawing.Point(12, 65);
       this.btnAdd.Name = "btnAdd";
       this.btnAdd.Size = new System.Drawing.Size(75, 23);
-      this.btnAdd.TabIndex = 4;
+      this.btnAdd.TabIndex = 3;
       this.btnAdd.Text = "Add";
       this.btnAdd.UseVisualStyleBackColor = true;
-      this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+      this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
       // 
       // btnClose
       // 
       this.btnClose.Location = new System.Drawing.Point(254, 65);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(75, 23);
-      this.btnClose.TabIndex = 5;
+      this.btnClose.TabIndex = 4;
       this.btnClose.Text = "Close";
       this.btnClose.UseVisualStyleBackColor = true;
-      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+      this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
       // 
       // lblNumJobs
       // 
@@ -104,7 +104,7 @@ namespace HeuristicLab.Hive.Server.Console {
       this.tbNumJobs.Location = new System.Drawing.Point(117, 6);
       this.tbNumJobs.Name = "tbNumJobs";
       this.tbNumJobs.Size = new System.Drawing.Size(212, 20);
-      this.tbNumJobs.TabIndex = 7;
+      this.tbNumJobs.TabIndex = 1;
       this.tbNumJobs.Text = "1";
       // 
       // lblError
