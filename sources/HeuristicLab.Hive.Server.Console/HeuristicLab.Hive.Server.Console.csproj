@@ -98,8 +98,6 @@
       <DependentUpon>HiveServerManagementConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="HiveServerConsolePlugin.cs" />
-    <Compile Include="IPAdressTextBox.cs">
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AddUserForm.resx">
       <DependentUpon>AddUserForm.cs</DependentUpon>

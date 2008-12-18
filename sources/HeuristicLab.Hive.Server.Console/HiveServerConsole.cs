@@ -61,15 +61,15 @@ namespace HeuristicLab.Hive.Server.Console {
       string newIp = tbIp.Text;
       newIp = newIp.Replace(" ", "");
 
-      ServiceLocator.Address = newIp;
-      ServiceLocator.Port = this.tbPort.Text;
+        ServiceLocator.Address = newIp;
+        ServiceLocator.Port = this.tbPort.Text;
 
-      if (isValid()) {
-        this.Visible = false;
-        information = new HiveServerManagementConsole();
-        information.closeFormEvent += new closeForm(enableForm);
-        information.Show();
-      }
+        if (isValid()) {
+          this.Visible = false;
+          information = new HiveServerManagementConsole();
+          information.closeFormEvent += new closeForm(enableForm);
+          information.Show();
+        }
     }
 
 
@@ -110,9 +110,12 @@ namespace HeuristicLab.Hive.Server.Console {
       }
     }
 
-    private void enableForm(bool cf) {
+    private void enableForm(bool cf, bool error) {
       if (cf) {
         this.Visible = true;
+        if (error == true) {
+          lblError.Text = "Something went wrong with the server";
+        }
       }
     }
 

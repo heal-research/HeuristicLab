@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             "Test"}, -1);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
@@ -46,6 +46,7 @@
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
       this.lvJobControl = new System.Windows.Forms.ListView();
+      this.imageList3 = new System.Windows.Forms.ImageList(this.components);
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
@@ -55,7 +56,6 @@
       this.listView2 = new System.Windows.Forms.ListView();
       this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
-      this.imageList3 = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
@@ -110,7 +110,7 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.jobToolStripMenuItem1_Click);
       // 
@@ -188,10 +188,11 @@
       // 
       // lvClientControl
       // 
+      this.lvClientControl.AllowDrop = true;
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
       this.lvClientControl.LargeImageList = this.imageList1;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.Name = "lvClientControl";
@@ -245,6 +246,7 @@
       // 
       // lvJobControl
       // 
+      this.lvJobControl.AllowDrop = true;
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvJobControl.LargeImageList = this.imageList3;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
@@ -252,6 +254,12 @@
       this.lvJobControl.Size = new System.Drawing.Size(494, 346);
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      // 
+      // imageList3
+      // 
+      this.imageList3.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList3.ImageStream")));
+      this.imageList3.TransparentColor = System.Drawing.Color.Transparent;
+      this.imageList3.Images.SetKeyName(0, "PlayHS.bmp");
       // 
       // tpUserControl
       // 
@@ -291,6 +299,7 @@
       // 
       // lvUserControl
       // 
+      this.lvUserControl.AllowDrop = true;
       this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvUserControl.LargeImageList = this.imageList2;
       this.lvUserControl.Location = new System.Drawing.Point(0, 0);
@@ -332,12 +341,6 @@
       // timerSyncronize
       // 
       this.timerSyncronize.Interval = 10000;
-      // 
-      // imageList3
-      // 
-      this.imageList3.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList3.ImageStream")));
-      this.imageList3.TransparentColor = System.Drawing.Color.Transparent;
-      this.imageList3.Images.SetKeyName(0, "PlayHS.bmp");
       // 
       // HiveServerManagementConsole
       // 

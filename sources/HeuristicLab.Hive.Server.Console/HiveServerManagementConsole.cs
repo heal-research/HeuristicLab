@@ -33,7 +33,7 @@ using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Console {
 
-  public delegate void closeForm(bool cf);
+  public delegate void closeForm(bool cf, bool error);
 
   public partial class HiveServerManagementConsole : Form {
 
@@ -62,80 +62,115 @@ namespace HeuristicLab.Hive.Server.Console {
     }
 
     private void addClients() {
-      IClientManager clientManager =
-        ServiceLocator.GetClientManager();
+      try {
+        IClientManager clientManager =
+          ServiceLocator.GetClientManager();
 
-      clients = clientManager.GetAllClientGroups();
+        clients = clientManager.GetAllClientGroups();
 
-      lvClientControl.Items.Clear();
-      tvClientControl.Nodes.Clear();
-      int count = 0;
-      foreach (ClientGroup cg in clients.List) {
-        tvClientControl.Nodes.Add(cg.Name);
-        ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
-        foreach (ClientInfo ci in clientManager.GetAllClients().List) {
-          tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
-          lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvg));
+        lvClientControl.Items.Clear();
+        tvClientControl.Nodes.Clear();
+        int count = 0;
+        foreach (ClientGroup cg in clients.List) {
+          tvClientControl.Nodes.Add(cg.Name);
+          ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
+          foreach (ClientInfo ci in clientManager.GetAllClients().List) {
+            tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
+            lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvg));
+            count = (count + 1) % 3;
+          }
+          lvClientControl.Groups.Add(lvg);
+        } // Groups
+
+        clientInfo = clientManager.GetAllClients();
+        ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
+        foreach (ClientInfo ci in clientInfo.List) {
+          tvClientControl.Nodes.Add(ci.Name);
+          lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvunsorted));
           count = (count + 1) % 3;
         }
-        lvClientControl.Groups.Add(lvg);
-      } // Groups
-
-      clientInfo = clientManager.GetAllClients();
-      ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
-      foreach (ClientInfo ci in clientInfo.List) {
-        tvClientControl.Nodes.Add(ci.Name);
-        lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvunsorted));
-        count = (count + 1) % 3;
+        lvClientControl.Groups.Add(lvunsorted);
       }
-      lvClientControl.Groups.Add(lvunsorted);
+      catch (Exception ex) {
+        closeFormEvent(true, true);
+        this.Close();
+      }
     }
 
     private void addJobs() {
-      IJobManager jobManager =
-        ServiceLocator.GetJobManager();
-      jobs = jobManager.GetAllJobs();
+      try {
+        IJobManager jobManager =
+          ServiceLocator.GetJobManager();
+        jobs = jobManager.GetAllJobs();
 
-      lvJobControl.Items.Clear();
-      tvJobControl.Nodes.Clear();
+        lvJobControl.Items.Clear();
+        tvJobControl.Nodes.Clear();
 
-      foreach (Job job in jobs.List) {
-        tvJobControl.Nodes.Add(job.Id.ToString());
-        lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0));
-      } // Jobs
-
+        ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
+        ListViewGroup lvJobOffline = new ListViewGroup("offline", HorizontalAlignment.Left);
+        ListViewGroup lvJobCalculating = new ListViewGroup("calculating", HorizontalAlignment.Left);
+        tvJobControl.Nodes.Add("finished");
+        tvJobControl.Nodes.Add("offline");
+        tvJobControl.Nodes.Add("calculating");
+        foreach (Job job in jobs.List) {
+          if (job.State == State.finished) {
+            tvJobControl.Nodes[0].Nodes.Add(job.Id.ToString());
+            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobFinished));
+          } else if (job.State == State.offline) {
+            tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
+            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobOffline));
+          } else if (job.State == State.calculating) {
+            tvJobControl.Nodes[2].Nodes.Add(job.Id.ToString());
+            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobCalculating));
+          }
+        } // Jobs
+        lvJobControl.Groups.Add(lvJobFinished);
+        lvJobControl.Groups.Add(lvJobOffline);
+        lvJobControl.Groups.Add(lvJobCalculating);
+      }
+      catch (Exception ex) {
+        closeFormEvent(true, true);
+        this.Close();
+      }
     }
 
     private void addUsers() {
-      IUserRoleManager userRoleManager =
-        ServiceLocator.GetUserRoleManager();
+      try {
+        IUserRoleManager userRoleManager =
+          ServiceLocator.GetUserRoleManager();
 
-      userGroups = userRoleManager.GetAllUserGroups();
+        userGroups = userRoleManager.GetAllUserGroups();
 
-      lvUserControl.Items.Clear();
-      tvUserControl.Nodes.Clear();
+        lvUserControl.Items.Clear();
+        tvUserControl.Nodes.Clear();
 
-      foreach (UserGroup ug in userGroups.List) {
-        tvUserControl.Nodes.Add(ug.Name);
-        ListViewGroup lvg = new ListViewGroup(ug.Name, HorizontalAlignment.Left);
+        foreach (UserGroup ug in userGroups.List) {
+          tvUserControl.Nodes.Add(ug.Name);
+          ListViewGroup lvg = new ListViewGroup(ug.Name, HorizontalAlignment.Left);
 
-        foreach (PermissionOwner permOwner in ug.Members) {
-          if (permOwner is User) {
-            User users = permOwner as User;
-            tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
-            lvUserControl.Items.Add(new ListViewItem(users.Name, 0, lvg));
+          foreach (PermissionOwner permOwner in ug.Members) {
+            if (permOwner is User) {
+              User users = permOwner as User;
+              tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
+              lvUserControl.Items.Add(new ListViewItem(users.Name, 0, lvg));
+            }
           }
-        }
-        lvUserControl.Groups.Add(lvg);
+          lvUserControl.Groups.Add(lvg);
 
-      } // Users
-      usersList = userRoleManager.GetAllUsers();
-      ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
-      foreach (User u in usersList.List) {
-        tvUserControl.Nodes.Add(u.Name);
-        lvUserControl.Items.Add(new ListViewItem(u.Name, 0, lvunsorted));
+        } // Users
+        usersList = userRoleManager.GetAllUsers();
+        ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
+        foreach (User u in usersList.List) {
+          tvUserControl.Nodes.Add(u.Name);
+          lvUserControl.Items.Add(new ListViewItem(u.Name, 0, lvunsorted));
+        }
+        lvUserControl.Groups.Add(lvunsorted);
       }
-      lvUserControl.Groups.Add(lvunsorted);
+      catch (Exception ex) {
+        closeFormEvent(true, true);
+        this.Close();
+      }
+
     }
 
     /// <summary>
@@ -145,7 +180,7 @@ namespace HeuristicLab.Hive.Server.Console {
     /// <param name="e"></param>
     private void close_Click(object sender, EventArgs e) {
       if (closeFormEvent != null) {
-        closeFormEvent(true);
+        closeFormEvent(true, false);
       }
       this.Close();
     }
@@ -157,7 +192,7 @@ namespace HeuristicLab.Hive.Server.Console {
     /// <param name="e"></param>
     private void HiveServerConsoleInformation_FormClosing(object sender, FormClosingEventArgs e) {
       if (closeFormEvent != null) {
-        closeFormEvent(true);
+        closeFormEvent(true, false);
       }
 
     }
