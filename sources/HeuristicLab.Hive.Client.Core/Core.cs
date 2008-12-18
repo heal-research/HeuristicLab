@@ -48,6 +48,8 @@ namespace HeuristicLab.Hive.Client.Core {
   public class Core: MarshalByRefObject {
     public delegate string GetASnapshotDelegate();
 
+    public static Object Locker { get; set; }
+
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
     Dictionary<long, Job> jobs = new Dictionary<long, Job>();
@@ -148,32 +150,36 @@ namespace HeuristicLab.Hive.Client.Core {
         bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
-        AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-        if (!jobs.ContainsKey(e.Result.Job.Id)) {
-          jobs.Add(e.Result.Job.Id, e.Result.Job);
-          appDomains.Add(e.Result.Job.Id, appDomain);
+        lock (Locker) {
+          if (!jobs.ContainsKey(e.Result.Job.Id)) {
+            jobs.Add(e.Result.Job.Id, e.Result.Job);
+            appDomains.Add(e.Result.Job.Id, appDomain);
 
-          Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-          engine.JobId = e.Result.Job.Id;
-          engine.Queue = MessageQueue.GetInstance();
-          engine.Start(e.Result.SerializedJob);
-          engines.Add(e.Result.Job.Id, engine);
+            Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
+            engine.JobId = e.Result.Job.Id;
+            engine.Queue = MessageQueue.GetInstance();
+            engine.Start(e.Result.SerializedJob);
+            engines.Add(e.Result.Job.Id, engine);
 
-          ClientStatusInfo.JobsFetched++;
+            ClientStatusInfo.JobsFetched++;
 
-          Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
+            Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
+          }
         }
       }
     }
 
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Result.Success) {
-        AppDomain.Unload(appDomains[e.Result.Job.Id]);
-        appDomains.Remove(e.Result.Job.Id);
-        engines.Remove(e.Result.Job.Id);
-        jobs.Remove(e.Result.Job.Id);
-        ClientStatusInfo.JobsProcessed++;
+        lock (Locker) {
+          AppDomain.Unload(appDomains[e.Result.Job.Id]);
+          appDomains.Remove(e.Result.Job.Id);
+          engines.Remove(e.Result.Job.Id);
+          jobs.Remove(e.Result.Job.Id);
+          ClientStatusInfo.JobsProcessed++;
+        }
         Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
       } else {
         Debug.WriteLine("Job sending FAILED!");
