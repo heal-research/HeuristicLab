@@ -38,8 +38,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected CacheT cache = 
       new CacheT();
 
-    protected IDictionary<RowT, DataTable> parentTable =
-      new Dictionary<RowT, DataTable>();
+    protected IDictionary<long, DataTable> dataTable =
+      new Dictionary<long, DataTable>();
 
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
@@ -130,17 +130,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       this.SyncWithDb();
     }
 
-    protected virtual void RemoveRowFromCache(RowT row) {
-      if (parentTable.ContainsKey(row)) {
-        parentTable[row].Rows.Add(row);
-        parentTable.Remove(row);
-      }
-      
+    protected virtual void RemoveRowFromCache(RowT row) {      
       cache.Rows.Remove(row);
     }
 
     protected virtual bool IsCached(RowT row) {
-      return cache.Contains<RowT>(row);
+      if (row == null)
+        return false;
+     else
+        return FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
     }
 
     protected override RowT GetRowById(long id) {
@@ -172,27 +170,29 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           UpdateRow(row);
         }
 
-        Convert(obj, row);
-
-        if (IsCached(row) &&
-            !PutInCache(obj)) {
-          //remove from cache
-          RemoveRowFromCache(row);
-          UpdateRow(row);
-        } else if (!IsCached(row) &&
-          PutInCache(obj)) {
-          //add to cache
-          if (row.Table != null) {
-            parentTable[row] = row.Table;
-            row.Table.Rows.Remove(row);
-          }
-          cache.Rows.Add(row);
-        }
-
         obj.Id = (long)row[row.Table.PrimaryKey[0]];
+
+        Convert(obj, row);
 
         if (!IsCached(row))
           UpdateRow(row);
+        
+        if (IsCached(row) &&
+            !PutInCache(obj)) {
+          //remove from cache
+          dataTable[obj.Id].ImportRow(row);
+          dataTable.Remove(obj.Id);
+
+          UpdateRow(row);
+          RemoveRowFromCache(row);
+        } else if (!IsCached(row) &&
+          PutInCache(obj)) {
+          //add to cache
+          cache.ImportRow(row);
+
+          dataTable[obj.Id] = row.Table;
+          row.Table.Rows.Remove(row);
+        }
       }
     }
   }

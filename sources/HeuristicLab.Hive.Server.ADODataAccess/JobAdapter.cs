@@ -155,14 +155,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       adapter.FillByActive(cache);
     }
 
-    public override void SyncWithDb() {
+    public override void SyncWithDb() { 
       this.adapter.Update(this.cache);
     }
 
     protected override bool PutInCache(Job job) {
       return job != null
-        && job.State != State.offline 
-        && job.State != State.nullState;
+        && (job.State == State.calculating
+            || job.State == State.idle);
     }
 
     protected override IEnumerable<dsHiveServer.JobRow>
