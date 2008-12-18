@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Xml;
+using System.Threading;
 
 namespace HeuristicLab.Hive.JobBase {
   [Serializable]
@@ -35,11 +36,12 @@ namespace HeuristicLab.Hive.JobBase {
     public override void Run() {
       int max = 10;
       while(runValue < max && abort == false) {
-        for (int y = 0; y < Int32.MaxValue; y++) ;
-          if (abort == true) {            
-            Debug.WriteLine("Job Abort Processing");
-           break;
-          }
+        //for (int y = 0; y < Int32.MaxValue; y++) ;
+        Thread.Sleep(2000);   
+        if (abort == true) {            
+          Debug.WriteLine("Job Abort Processing");
+          break;
+        }
         runValue++;
         Progress = (double)runValue / max;        
         Debug.WriteLine("Iteration " + runValue + " done");
