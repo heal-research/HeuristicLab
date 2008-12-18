@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Runtime.CompilerServices;
+using System.Data;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   abstract class CachedDataAdapter<AdapterT, ObjT, RowT, CacheT> :
@@ -36,6 +37,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     where ObjT : IHiveObject, new() {
     protected CacheT cache = 
       new CacheT();
+
+    protected IDictionary<RowT, DataTable> parentTable =
+      new Dictionary<RowT, DataTable>();
 
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
@@ -127,6 +131,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected virtual void RemoveRowFromCache(RowT row) {
+      if (parentTable.ContainsKey(row)) {
+        parentTable[row].Rows.Add(row);
+        parentTable.Remove(row);
+      }
+      
       cache.Rows.Remove(row);
     }
 
@@ -168,11 +177,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (IsCached(row) &&
             !PutInCache(obj)) {
           //remove from cache
-          UpdateRow(row);
           RemoveRowFromCache(row);
+          UpdateRow(row);
         } else if (!IsCached(row) &&
           PutInCache(obj)) {
           //add to cache
+          if (row.Table != null) {
+            parentTable[row] = row.Table;
+            row.Table.Rows.Remove(row);
+          }
           cache.Rows.Add(row);
         }
 
