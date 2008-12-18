@@ -150,19 +150,20 @@ namespace HeuristicLab.Hive.Client.Core {
         PluginManager.Manager.Initialize();
         AppDomain appDomain =  PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+        if (!jobs.ContainsKey(e.Result.Job.Id)) {
+          jobs.Add(e.Result.Job.Id, e.Result.Job);
+          appDomains.Add(e.Result.Job.Id, appDomain);
 
-        jobs.Add(e.Result.Job.Id, e.Result.Job);
-        appDomains.Add(e.Result.Job.Id, appDomain);
+          Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
+          engine.JobId = e.Result.Job.Id;
+          engine.Queue = MessageQueue.GetInstance();
+          engine.Start(e.Result.SerializedJob);
+          engines.Add(e.Result.Job.Id, engine);
 
-        Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-        engine.JobId = e.Result.Job.Id;
-        engine.Queue = MessageQueue.GetInstance();
-        engine.Start(e.Result.SerializedJob);
-        engines.Add(e.Result.Job.Id, engine);
+          ClientStatusInfo.JobsFetched++;
 
-        ClientStatusInfo.JobsFetched++;
-
-        Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
+          Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
+        }
       }
     }
 

@@ -70,9 +70,10 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
-      Console.WriteLine("tick");
+      Console.WriteLine("tick");  
       ClientInfo info = ConfigManager.Instance.GetClientInfo();
       // Todo: remove tempfix for free cores.
+      // TODO: change jobProgress from int to Dictionary of Job and Double
       HeartBeatData heartBeatData = new HeartBeatData { ClientId = info.ClientId, 
                                                               freeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed), 
                                                               freeMemory = 1000, 
