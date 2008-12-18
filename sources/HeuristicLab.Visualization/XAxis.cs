@@ -4,17 +4,23 @@ using System.Drawing;
 namespace HeuristicLab.Visualization {
   // TODO move to own file
   public class TextShape : IShape {
-    private readonly double x;
-    private readonly double y;
+    private double x;
+    private double y;
     private string text;
 
-    private Font font = new Font("Arial", 8);
-    private Brush brush = new SolidBrush(Color.Blue);
+    private Font font;
+    private Color color;
+    private Brush brush;
 
-    public TextShape(double x, double y, string text) {
+    public TextShape(double x, double y, string text) : this(x, y, text, 8) {}
+
+    public TextShape(double x, double y, string text, int fontSize) {
       this.x = x;
       this.y = y;
       this.text = text;
+      this.font = new Font("Arial", fontSize);
+
+      this.Color = Color.Blue;
     }
 
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
@@ -32,33 +38,58 @@ namespace HeuristicLab.Visualization {
       get { return text; }
       set { text = value; }
     }
-  }
 
-  public class XAxis : CompositeShape {
-    private readonly List<TextShape> labels = new List<TextShape>();
-    private readonly LineShape axisLine = new LineShape(0, 0, 0, 0, 0, Color.Black, 1, DrawingStyle.Solid);
-
-    public void ClearLabels() {
-      shapes.Clear();
-      labels.Clear();
-
-      shapes.Add(axisLine);
+    public double X {
+      get { return x; }
+      set { x = value; }
     }
 
-    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      axisLine.X1 = Transform.ToWorldX(viewport.Left, viewport, clippingArea);
-      axisLine.X2 = Transform.ToWorldX(viewport.Right, viewport, clippingArea);
+    public double Y {
+      get { return y; }
+      set { y = value; }
+    }
 
-      base.Draw(graphics, viewport, clippingArea);
+    public Color Color {
+      get { return color; }
+      set {
+        this.color = value;
+        this.brush = new SolidBrush(color);
+      }
+    }
+  }
+
+  public class XAxis : WorldShape {
+    private readonly IDictionary<int, TextShape> labels = new Dictionary<int, TextShape>();
+
+    public XAxis(RectangleD clippingArea, RectangleD boundingBox)
+      : base(clippingArea, boundingBox) {}
+
+    public void ClearLabels() {
+      labels.Clear();
     }
 
     public void SetLabel(int i, string text) {
-      while (i >= labels.Count) {
-        TextShape label = new TextShape(i, 0, i.ToString());
-        labels.Add(label);
-        AddShape(label);
+      labels[i] = new TextShape(i, 0, text);
+    }
+
+    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+      shapes.Clear();
+
+      for (int i = (int)(ClippingArea.X1 - 1); i <= ClippingArea.X2 + 1; i++) {
+        TextShape label;
+
+        if (labels.ContainsKey(i)) {
+          label = labels[i];
+        } else {
+          label = new TextShape(i, 0, i.ToString());
+        }
+
+        label.Y = ClippingArea.Height - 3;
+
+        shapes.Add(label);
       }
-      labels[i].Text = text;
+
+      base.Draw(graphics, viewport, clippingArea);
     }
   }
 }

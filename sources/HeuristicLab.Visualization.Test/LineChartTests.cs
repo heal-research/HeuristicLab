@@ -5,9 +5,16 @@ using NUnit.Framework;
 namespace HeuristicLab.Visualization.Test {
   [TestFixture]
   public class LineChartTests {
+    private ChartDataRowsModel model;
+
+    [SetUp]
+    public void SetUp() {
+      model = new ChartDataRowsModel();
+    }
+
     [Test]
     public void TestLineChart() {
-      LineChartTestForm f = new LineChartTestForm();
+      LineChartTestForm f = new LineChartTestForm(model);
 
       IDataRow row1 = new DataRow();
       IDataRow row2 = new DataRow();
@@ -26,9 +33,9 @@ namespace HeuristicLab.Visualization.Test {
       row3.Style = DrawingStyle.Dashed;
       
 
-      f.Model.AddDataRow(row1);
-      f.Model.AddDataRow(row2);
-      f.Model.AddDataRow(row3);
+      model.AddDataRow(row1);
+      model.AddDataRow(row2);
+      model.AddDataRow(row3);
 
       row1.AddValue(10);
       row1.AddValue(5);
@@ -49,7 +56,7 @@ namespace HeuristicLab.Visualization.Test {
 
       Random rand = new Random();
 
-      for (int i = 0; i < 1000; i++) {
+      for (int i = 0; i < 10000; i++) {
         row1.AddValue(rand.NextDouble()*10);
         row2.AddValue(rand.NextDouble()*10);
         row3.AddValue(rand.NextDouble()*10);
@@ -60,7 +67,7 @@ namespace HeuristicLab.Visualization.Test {
 
     [Test]
     public void TestAxes() {
-      LineChartTestForm f = new LineChartTestForm();
+      LineChartTestForm f = new LineChartTestForm(model);
 
       IDataRow row1 = new DataRow();
 
@@ -68,7 +75,7 @@ namespace HeuristicLab.Visualization.Test {
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
 
-      f.Model.AddDataRow(row1);
+      model.AddDataRow(row1);
 
       row1.AddValue(10);
       row1.AddValue(5);

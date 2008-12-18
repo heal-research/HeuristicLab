@@ -28,25 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-          this.canvasUI1 = new HeuristicLab.Visualization.CanvasUI();
+          this.canvas = new HeuristicLab.Visualization.CanvasUI();
           this.SuspendLayout();
           // 
-          // canvasUI1
+          // canvas
           // 
-          this.canvasUI1.Dock = System.Windows.Forms.DockStyle.Fill;
-          this.canvasUI1.Location = new System.Drawing.Point(0, 0);
-          this.canvasUI1.MouseEventListener = null;
-          this.canvasUI1.Name = "canvasUI1";
-          this.canvasUI1.Size = new System.Drawing.Size(552, 390);
-          this.canvasUI1.TabIndex = 0;
-          this.canvasUI1.Text = "canvasUI1";
-          this.canvasUI1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
+          this.canvas.Dock = System.Windows.Forms.DockStyle.Fill;
+          this.canvas.Location = new System.Drawing.Point(0, 0);
+          this.canvas.MouseEventListener = null;
+          this.canvas.Name = "canvas";
+          this.canvas.Size = new System.Drawing.Size(552, 390);
+          this.canvas.TabIndex = 0;
+          this.canvas.Text = "canvas";
+          this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           // 
           // LineChart
           // 
           this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
           this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-          this.Controls.Add(this.canvasUI1);
+          this.Controls.Add(this.canvas);
           this.Name = "LineChart";
           this.Size = new System.Drawing.Size(552, 390);
           this.ResumeLayout(false);
@@ -55,6 +55,6 @@
 
         #endregion
 
-        private CanvasUI canvasUI1;
+        private CanvasUI canvas;
     }
 }

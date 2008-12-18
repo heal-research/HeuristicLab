@@ -38,7 +38,7 @@ namespace HeuristicLab.Visualization {
 
         base.OnPaint(pe);
       } catch (Exception e) {
-       Debug.WriteLine(e);
+       Trace.WriteLine(e);
       }
     }
 

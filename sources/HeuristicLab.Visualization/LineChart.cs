@@ -5,6 +5,24 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization {
+  public class LinesShape : WorldShape {
+    private readonly RectangleShape background = new RectangleShape(0, 0, 1, 1, Color.FromArgb(240, 240, 240));
+
+    public LinesShape(RectangleD clippingArea, RectangleD boundingBox)
+      : base(clippingArea, boundingBox) {
+      AddShape(background);
+    }
+
+    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+      UpdateLayout();
+      base.Draw(graphics, viewport, clippingArea);
+    }
+
+    private void UpdateLayout() {
+      background.Rectangle = ClippingArea;
+    }
+  }
+
   public partial class LineChart : ViewBase {
     private readonly IChartDataRowsModel model;
     private int maxDataRowCount;
@@ -13,6 +31,9 @@ namespace HeuristicLab.Visualization {
     private double maxDataValue;
 
     private readonly WorldShape root;
+    private readonly TextShape titleShape;
+    private readonly LinesShape linesShape;
+
     private readonly XAxis xAxis;
 
     /// <summary>
@@ -27,35 +48,63 @@ namespace HeuristicLab.Visualization {
     /// </summary>
     /// <param name="model">Referenz to the model, for data</param>
     public LineChart(IChartDataRowsModel model) : this() {
-      if (model == null) {
+      if (model == null)
         throw new NullReferenceException("Model cannot be null.");
-      }
 
       //TODO: correct Rectangle to fit
-      RectangleD clientRectangle = new RectangleD(-1, -1, 1, 1);
 
-      root = new WorldShape(clientRectangle, clientRectangle);
+      RectangleD dummy = new RectangleD(0, 0, 1, 1);
 
-      xAxis = new XAxis();
+      root = new WorldShape(dummy, dummy);
+
+      linesShape = new LinesShape(dummy, dummy);
+      root.AddShape(linesShape);
+
+      xAxis = new XAxis(dummy, dummy);
       root.AddShape(xAxis);
 
-      canvasUI1.MainCanvas.WorldShape = root;
-          
+      titleShape = new TextShape(0, 0, "Title", 15);
+      root.AddShape(titleShape);
+
+      canvas.MainCanvas.WorldShape = root;
+      canvas.Resize += delegate { UpdateLayout(); };
+
+      UpdateLayout();
+
       CreateMouseEventListeners();
-         
+
       this.model = model;
       Item = model;
-      maxDataRowCount = 0; 
+
+      maxDataRowCount = 0;
       //The whole data rows are shown per default
       zoomFullView = true;
       minDataValue = Double.PositiveInfinity;
       maxDataValue = Double.NegativeInfinity;
     }
 
+    /// <summary>
+    /// Layout management - arranges the inner shapes.
+    /// </summary>
+    private void UpdateLayout() {
+      root.ClippingArea = new RectangleD(0, 0, canvas.Width, canvas.Height);
+
+      titleShape.X = 10;
+      titleShape.Y = canvas.Height - 10;
+
+      linesShape.BoundingBox = new RectangleD(0, 20, canvas.Width, canvas.Height);
+
+      xAxis.BoundingBox = new RectangleD(linesShape.BoundingBox.X1,
+                                         0,
+                                         linesShape.BoundingBox.X2,
+                                         linesShape.BoundingBox.Y1);
+    }
+
     public void ResetView() {
       zoomFullView = true;
       ZoomToFullView();
-      canvasUI1.Invalidate();
+
+      canvas.Invalidate();
     }
 
     #region Add-/RemoveItemEvents
@@ -67,9 +116,8 @@ namespace HeuristicLab.Visualization {
       model.DataRowRemoved += OnDataRowRemoved;
       model.ModelChanged += OnModelChanged;
 
-      foreach (IDataRow row in model.Rows) {
+      foreach (IDataRow row in model.Rows)
         OnDataRowAdded(row);
-      }
     }
 
     protected override void RemoveItemEvents() {
@@ -85,33 +133,31 @@ namespace HeuristicLab.Visualization {
       row.ValuesChanged += OnRowValuesChanged;
       if (row.Count > maxDataRowCount)
         maxDataRowCount = row.Count;
-      
+
       InitLineShapes(row);
-      InitXAxis();
-    }
-
-    private void InitXAxis() {
-      int numLabels = 0;
-
-      foreach (IDataRow row in model.Rows) {
-        numLabels = Math.Max(numLabels, row.Count);
-      }
-
-      xAxis.ClearLabels();
-
-      for (int i = 0; i < numLabels; i++) {
-        xAxis.SetLabel(i, i.ToString());
-      }
     }
 
     private void ZoomToFullView() {
-      if(!zoomFullView)
+      if (!zoomFullView)
         return;
-      RectangleD newClippingArea =  new RectangleD(-0.1,
-        minDataValue-((maxDataValue-minDataValue)*0.05),
-        maxDataRowCount-0.9,
-        maxDataValue + ((maxDataValue - minDataValue) * 0.05));
-      root.ClippingArea = newClippingArea;
+      RectangleD newClippingArea = new RectangleD(-0.1,
+                                                  minDataValue - ((maxDataValue - minDataValue)*0.05),
+                                                  maxDataRowCount - 0.9,
+                                                  maxDataValue + ((maxDataValue - minDataValue)*0.05));
+
+      SetLineClippingArea(newClippingArea);
+    }
+
+    /// <summary>
+    /// Sets the clipping area of the data to display.
+    /// </summary>
+    /// <param name="clippingArea"></param>
+    private void SetLineClippingArea(RectangleD clippingArea) {
+      linesShape.ClippingArea = clippingArea;
+      xAxis.ClippingArea = new RectangleD(linesShape.ClippingArea.X1,
+                                          xAxis.BoundingBox.Y1,
+                                          linesShape.ClippingArea.X2,
+                                          xAxis.BoundingBox.Y2);
     }
 
     private void InitLineShapes(IDataRow row) {
@@ -124,14 +170,15 @@ namespace HeuristicLab.Visualization {
         LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        root.AddShape(lineShape);
+        linesShape.AddShape(lineShape);
         maxDataValue = Math.Max(row[i], maxDataValue);
         minDataValue = Math.Min(row[i], minDataValue);
       }
 
       rowToLineShapes[row] = lineShapes;
       ZoomToFullView();
-      canvasUI1.Invalidate();
+
+      canvas.Invalidate();
     }
 
     private void OnDataRowRemoved(IDataRow row) {
@@ -149,9 +196,8 @@ namespace HeuristicLab.Visualization {
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
 
-      if (index > lineShapes.Count + 1) {
+      if (index > lineShapes.Count + 1)
         throw new NotImplementedException();
-      }
 
       // new value was added
       if (index > 0 && index == lineShapes.Count + 1) {
@@ -160,32 +206,28 @@ namespace HeuristicLab.Visualization {
         LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        root.AddShape(lineShape);
+        linesShape.AddShape(lineShape);
       }
 
       // not the first value
-      if (index > 0) {
+      if (index > 0)
         lineShapes[index - 1].Y2 = value;
-      }
 
       // not the last value
-      if (index > 0 && index < row.Count - 1) {
+      if (index > 0 && index < row.Count - 1)
         lineShapes[index].Y1 = value;
-      }
       ZoomToFullView();
-      canvasUI1.Invalidate();
+
+      canvas.Invalidate();
     }
 
     // TODO use action parameter
     private void OnRowValuesChanged(IDataRow row, double[] values, int index, Action action) {
-      foreach (double value in values) {
+      foreach (double value in values)
         OnRowValueChanged(row, value, index++, action);
-      }
     }
 
-    private void OnModelChanged() {
-      InitXAxis();
-    }
+    private void OnModelChanged() {}
 
     #endregion
 
@@ -198,15 +240,13 @@ namespace HeuristicLab.Visualization {
     }
 
     public void EndUpdate() {
-      if (beginUpdateCount == 0) {
+      if (beginUpdateCount == 0)
         throw new InvalidOperationException("Too many EndUpdates.");
-      }
 
       beginUpdateCount--;
 
-      if (beginUpdateCount == 0) {
-        Invalidate();
-      }
+      if (beginUpdateCount == 0)
+        canvas.Invalidate();
     }
 
     #endregion
@@ -229,27 +269,27 @@ namespace HeuristicLab.Visualization {
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       if (ModifierKeys == Keys.Control) {
         zoomListener.StartPoint = e.Location;
-        canvasUI1.MouseEventListener = zoomListener;
+        canvas.MouseEventListener = zoomListener;
 
         r = Rectangle.Empty;
-        rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, 1000, Color.Blue);
+        rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, Color.Blue);
         rectangleShape.Opacity = 50;
 
-        root.AddShape(rectangleShape);
+        linesShape.AddShape(rectangleShape);
       } else {
         panListener.StartPoint = e.Location;
-        canvasUI1.MouseEventListener = panListener;
+        canvas.MouseEventListener = panListener;
 
-        startClippingArea = root.ClippingArea;
+        startClippingArea = linesShape.ClippingArea;
       }
     }
 
     private void Pan_OnMouseUp(Point startPoint, Point actualPoint) {
-      canvasUI1.MouseEventListener = null;
+      canvas.MouseEventListener = null;
     }
 
     private void Pan_OnMouseMove(Point startPoint, Point actualPoint) {
-      Rectangle viewPort = canvasUI1.ClientRectangle;
+      Rectangle viewPort = canvas.ClientRectangle;
 
       PointD worldStartPoint = Transform.ToWorld(startPoint, viewPort, startClippingArea);
       PointD worldActualPoint = Transform.ToWorld(actualPoint, viewPort, startClippingArea);
@@ -263,24 +303,24 @@ namespace HeuristicLab.Visualization {
       newClippingArea.Y1 = startClippingArea.Y1 - yDiff;
       newClippingArea.Y2 = startClippingArea.Y2 - yDiff;
 
-      root.ClippingArea = newClippingArea;
+      SetLineClippingArea(newClippingArea);
       panListener.StartPoint = startPoint;
 
       zoomFullView = false; //user wants to pan => no full view
 
-      canvasUI1.Invalidate();
+      canvas.Invalidate();
     }
 
     private void Zoom_OnMouseUp(Point startPoint, Point actualPoint) {
-      canvasUI1.MouseEventListener = null;
+      canvas.MouseEventListener = null;
 
-      RectangleD newClippingArea = Transform.ToWorld(r, canvasUI1.ClientRectangle, root.ClippingArea);
-      root.ClippingArea = newClippingArea;
-      root.RemoveShape(rectangleShape);
+      RectangleD newClippingArea = Transform.ToWorld(r, canvas.ClientRectangle, linesShape.ClippingArea);
+      SetLineClippingArea(newClippingArea);
+      linesShape.RemoveShape(rectangleShape);
 
       zoomFullView = false; //user wants to pan => no full view
 
-      canvasUI1.Invalidate();
+      canvas.Invalidate();
     }
 
     private Rectangle r;
@@ -305,8 +345,9 @@ namespace HeuristicLab.Visualization {
         r.Height = startPoint.Y - actualPoint.Y;
       }
 
-      rectangleShape.Rectangle = Transform.ToWorld(r, canvasUI1.ClientRectangle, root.ClippingArea);
-      canvasUI1.Invalidate();
+      rectangleShape.Rectangle = Transform.ToWorld(r, canvas.ClientRectangle, linesShape.ClippingArea);
+      
+      canvas.Invalidate();
     }
   }
 }

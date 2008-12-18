@@ -1,17 +1,18 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization.Test {
   public partial class LineChartTestForm : Form {
+    private readonly IView view;
     private ChartDataRowsModel model;
-    private IView view;
 
     public LineChartTestForm() {
       InitializeComponent();
+    }
 
-      model = new ChartDataRowsModel();
-
-      
+    public LineChartTestForm(ChartDataRowsModel model) : this() {
+      this.model = model;
       view = model.CreateView();
 
       Control viewControl = (Control)view;
@@ -20,13 +21,18 @@ namespace HeuristicLab.Visualization.Test {
       lineChartGroupBox.Controls.Add(viewControl);
     }
 
-    public ChartDataRowsModel Model {
-      get { return model; }
+    private void btnResetView_Click(object sender, EventArgs e) {
+      if (view != null) {
+        LineChart lineChart = (LineChart)view;
+        lineChart.ResetView();
+      }
     }
 
-    private void btnResetView_Click(object sender, System.EventArgs e) {
-      LineChart lineChart = (LineChart)view;
-      lineChart.ResetView();
+    private void btnAddRandomValue_Click(object sender, EventArgs e) {
+      Random rand = new Random();
+
+      foreach (IDataRow row in model.Rows)
+        row.AddValue(rand.NextDouble()*100);
     }
   }
 }

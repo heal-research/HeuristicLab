@@ -7,14 +7,14 @@ namespace HeuristicLab.Visualization {
     private RectangleD clippingArea;
     private RectangleD boundingBox;
 
-    private readonly List<IShape> shapes = new List<IShape>();
+    protected readonly List<IShape> shapes = new List<IShape>();
 
     public WorldShape(RectangleD clippingArea, RectangleD boundingBox) {
       this.clippingArea = clippingArea;
       this.boundingBox = boundingBox;
     }
 
-    public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+    public virtual void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
       GraphicsState gstate = graphics.Save();
 
       Rectangle innerViewport = Transform.ToScreen(boundingBox, viewport, clippingArea);
@@ -28,11 +28,9 @@ namespace HeuristicLab.Visualization {
       graphics.Restore(gstate);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public RectangleD BoundingBox {
       get { return boundingBox; }
+      set { boundingBox = value; }
     }
 
     public RectangleD ClippingArea {
@@ -40,10 +38,6 @@ namespace HeuristicLab.Visualization {
       set { clippingArea = value; }
     }
 
-    /// <summary>
-    /// adds a shape to the WorldShape
-    /// </summary>
-    /// <param name="shape">shape to add</param>
     public void AddShape(IShape shape) {
       shapes.Add(shape);
     }
