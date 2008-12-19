@@ -86,5 +86,26 @@ namespace HeuristicLab.Visualization.Test {
 
       f.ShowDialog();
     }
+
+    [Test]
+    public void TestAutoZoomInConstructor() {
+      IDataRow row1 = new DataRow();
+
+      row1.Color = Color.Red;
+      row1.Thickness = 3;
+      row1.Style = DrawingStyle.Solid;
+
+      model.AddDataRow(row1);
+
+      row1.AddValue(10);
+      row1.AddValue(5);
+      row1.AddValue(7);
+      row1.AddValue(3);
+      row1.AddValue(10);
+      row1.AddValue(2);
+
+      LineChartTestForm f = new LineChartTestForm(model);
+      f.ShowDialog();
+    }
   }
 }
