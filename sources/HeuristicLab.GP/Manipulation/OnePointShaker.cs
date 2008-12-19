@@ -51,6 +51,9 @@ namespace HeuristicLab.GP {
 
       // get all nodes for which a manipulation is defined
       var parametricBranches = gardener.GetAllSubTrees(tree).Where(branch => branch.Function.GetVariable(FunctionBase.MANIPULATION) != null);
+
+      if(parametricBranches.Count() == 0) return null; // don't manipulate anything if there are no nodes with a manipulation operator
+
       IFunctionTree selectedBranch = parametricBranches.ElementAt(mt.Next(parametricBranches.Count()));
       IOperator mutation = (IOperator)selectedBranch.Function.GetVariable(FunctionBase.MANIPULATION).Value;
       CompositeOperation next = new CompositeOperation();
