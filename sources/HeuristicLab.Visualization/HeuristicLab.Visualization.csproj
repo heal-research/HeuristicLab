@@ -80,6 +80,7 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
+    <Compile Include="TextShape.cs" />
     <Compile Include="LegendShape.cs" />
     <Compile Include="DataRow.cs" />
     <Compile Include="DrawingStyle.cs" />
