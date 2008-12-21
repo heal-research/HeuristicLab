@@ -48,8 +48,9 @@ namespace HeuristicLab.Visualization {
     /// </summary>
     /// <param name="model">Referenz to the model, for data</param>
     public LineChart(IChartDataRowsModel model) : this() {
-      if (model == null)
+      if (model == null) {
         throw new NullReferenceException("Model cannot be null.");
+      }
 
       //TODO: correct Rectangle to fit
 
@@ -70,8 +71,6 @@ namespace HeuristicLab.Visualization {
       canvas.Resize += delegate { UpdateLayout(); };
 
       UpdateLayout();
-
-      CreateMouseEventListeners();
 
       this.model = model;
       Item = model;
@@ -116,8 +115,9 @@ namespace HeuristicLab.Visualization {
       model.DataRowRemoved += OnDataRowRemoved;
       model.ModelChanged += OnModelChanged;
 
-      foreach (IDataRow row in model.Rows)
+      foreach (IDataRow row in model.Rows) {
         OnDataRowAdded(row);
+      }
     }
 
     protected override void RemoveItemEvents() {
@@ -131,15 +131,17 @@ namespace HeuristicLab.Visualization {
     private void OnDataRowAdded(IDataRow row) {
       row.ValueChanged += OnRowValueChanged;
       row.ValuesChanged += OnRowValuesChanged;
-      if (row.Count > maxDataRowCount)
+      if (row.Count > maxDataRowCount) {
         maxDataRowCount = row.Count;
+      }
 
       InitLineShapes(row);
     }
 
     private void ZoomToFullView() {
-      if (!zoomFullView)
+      if (!zoomFullView) {
         return;
+      }
       RectangleD newClippingArea = new RectangleD(-0.1,
                                                   minDataValue - ((maxDataValue - minDataValue)*0.05),
                                                   maxDataRowCount - 0.9,
@@ -163,7 +165,7 @@ namespace HeuristicLab.Visualization {
     private void InitLineShapes(IDataRow row) {
       List<LineShape> lineShapes = new List<LineShape>();
       if (row.Count > 0) {
-        maxDataValue = Math.Max(row[0], this.maxDataValue);
+        maxDataValue = Math.Max(row[0], maxDataValue);
         minDataValue = Math.Min(row[0], minDataValue);
       }
       for (int i = 1; i < row.Count; i++) {
@@ -196,13 +198,15 @@ namespace HeuristicLab.Visualization {
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
 
-      if (index > lineShapes.Count + 1)
+      if (index > lineShapes.Count + 1) {
         throw new NotImplementedException();
+      }
 
       // new value was added
       if (index > 0 && index == lineShapes.Count + 1) {
-        if (maxDataRowCount < row.Count)
+        if (maxDataRowCount < row.Count) {
           maxDataRowCount = row.Count;
+        }
         LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
@@ -210,12 +214,14 @@ namespace HeuristicLab.Visualization {
       }
 
       // not the first value
-      if (index > 0)
+      if (index > 0) {
         lineShapes[index - 1].Y2 = value;
+      }
 
       // not the last value
-      if (index > 0 && index < row.Count - 1)
+      if (index > 0 && index < row.Count - 1) {
         lineShapes[index].Y1 = value;
+      }
       ZoomToFullView();
 
       canvas.Invalidate();
@@ -223,8 +229,9 @@ namespace HeuristicLab.Visualization {
 
     // TODO use action parameter
     private void OnRowValuesChanged(IDataRow row, double[] values, int index, Action action) {
-      foreach (double value in values)
+      foreach (double value in values) {
         OnRowValueChanged(row, value, index++, action);
+      }
     }
 
     private void OnModelChanged() {}
@@ -240,113 +247,71 @@ namespace HeuristicLab.Visualization {
     }
 
     public void EndUpdate() {
-      if (beginUpdateCount == 0)
+      if (beginUpdateCount == 0) {
         throw new InvalidOperationException("Too many EndUpdates.");
+      }
 
       beginUpdateCount--;
 
-      if (beginUpdateCount == 0)
+      if (beginUpdateCount == 0) {
         canvas.Invalidate();
+      }
     }
 
     #endregion
 
-    private MouseEventListener panListener;
-    private MouseEventListener zoomListener;
-
-    private void CreateMouseEventListeners() {
-      panListener = new MouseEventListener();
-      panListener.OnMouseMove += Pan_OnMouseMove;
-      panListener.OnMouseUp += Pan_OnMouseUp;
-
-      zoomListener = new MouseEventListener();
-      zoomListener.OnMouseMove += Zoom_OnMouseMove;
-      zoomListener.OnMouseUp += Zoom_OnMouseUp;
-    }
-
-    private RectangleD startClippingArea;
+    private RectangleShape rectangleShape;
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       if (ModifierKeys == Keys.Control) {
-        zoomListener.StartPoint = e.Location;
-        canvas.MouseEventListener = zoomListener;
-
-        r = Rectangle.Empty;
-        rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, Color.Blue);
-        rectangleShape.Opacity = 50;
-
-        linesShape.AddShape(rectangleShape);
+        CreateZoomListener(e);
       } else {
-        panListener.StartPoint = e.Location;
-        canvas.MouseEventListener = panListener;
-
-        startClippingArea = linesShape.ClippingArea;
+        CreatePanListener(e);
       }
     }
 
-    private void Pan_OnMouseUp(Point startPoint, Point actualPoint) {
-      canvas.MouseEventListener = null;
+    private void CreateZoomListener(MouseEventArgs e) {
+      ZoomListener zoomListener = new ZoomListener(e.Location);
+      zoomListener.DrawRectangle += DrawRectangle;
+      zoomListener.OnMouseUp += OnZoom_MouseUp;
+
+      canvas.MouseEventListener = zoomListener;
+
+      rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, Color.Blue);
+      rectangleShape.Opacity = 50;
+
+      linesShape.AddShape(rectangleShape);
     }
 
-    private void Pan_OnMouseMove(Point startPoint, Point actualPoint) {
-      Rectangle viewPort = canvas.ClientRectangle;
-
-      PointD worldStartPoint = Transform.ToWorld(startPoint, viewPort, startClippingArea);
-      PointD worldActualPoint = Transform.ToWorld(actualPoint, viewPort, startClippingArea);
-
-      double xDiff = worldActualPoint.X - worldStartPoint.X;
-      double yDiff = worldActualPoint.Y - worldStartPoint.Y;
-
-      RectangleD newClippingArea = new RectangleD();
-      newClippingArea.X1 = startClippingArea.X1 - xDiff;
-      newClippingArea.X2 = startClippingArea.X2 - xDiff;
-      newClippingArea.Y1 = startClippingArea.Y1 - yDiff;
-      newClippingArea.Y2 = startClippingArea.Y2 - yDiff;
-
-      SetLineClippingArea(newClippingArea);
-      panListener.StartPoint = startPoint;
-
-      zoomFullView = false; //user wants to pan => no full view
-
-      canvas.Invalidate();
-    }
-
-    private void Zoom_OnMouseUp(Point startPoint, Point actualPoint) {
+    private void OnZoom_MouseUp(object sender, MouseEventArgs e) {
       canvas.MouseEventListener = null;
 
-      RectangleD newClippingArea = Transform.ToWorld(r, canvas.ClientRectangle, linesShape.ClippingArea);
-      SetLineClippingArea(newClippingArea);
+      SetLineClippingArea(rectangleShape.Rectangle);
       linesShape.RemoveShape(rectangleShape);
 
-      zoomFullView = false; //user wants to pan => no full view
+      zoomFullView = false; //user wants to zoom => no full view
 
       canvas.Invalidate();
     }
 
-    private Rectangle r;
-    private RectangleShape rectangleShape;
+    private void DrawRectangle(Rectangle rectangle) {
+      rectangleShape.Rectangle = Transform.ToWorld(rectangle, canvas.ClientRectangle, linesShape.ClippingArea);
+      canvas.Invalidate();
+    }
 
-    private void Zoom_OnMouseMove(Point startPoint, Point actualPoint) {
-      r = new Rectangle();
+    private void CreatePanListener(MouseEventArgs e) {
+      PanListener panListener = new PanListener(canvas.ClientRectangle, linesShape.ClippingArea, e.Location);
 
-      if (startPoint.X < actualPoint.X) {
-        r.X = startPoint.X;
-        r.Width = actualPoint.X - startPoint.X;
-      } else {
-        r.X = actualPoint.X;
-        r.Width = startPoint.X - actualPoint.X;
-      }
+      panListener.SetNewClippingArea += SetNewClippingArea;
+      panListener.OnMouseUp += delegate { canvas.MouseEventListener = null; };
 
-      if (startPoint.Y < actualPoint.Y) {
-        r.Y = startPoint.Y;
-        r.Height = actualPoint.Y - startPoint.Y;
-      } else {
-        r.Y = actualPoint.Y;
-        r.Height = startPoint.Y - actualPoint.Y;
-      }
+      canvas.MouseEventListener = panListener;
+    }
 
-      rectangleShape.Rectangle = Transform.ToWorld(r, canvas.ClientRectangle, linesShape.ClippingArea);
-      
+    private void SetNewClippingArea(RectangleD newClippingArea) {
+      SetLineClippingArea(newClippingArea);
+
+      zoomFullView = false;
       canvas.Invalidate();
     }
   }

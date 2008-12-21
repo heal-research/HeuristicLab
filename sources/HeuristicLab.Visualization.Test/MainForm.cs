@@ -3,12 +3,8 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization.Test {
   public partial class MainForm : Form {
-    private MouseEventListener dragDropListener;
-
     public MainForm() {
       InitializeComponent();
-
-      CreateMouseEventListeners();
 
       canvasUI.MainCanvas.WorldShape = new WorldShape(new RectangleD(0, 0, 800, 600), new RectangleD(0, 0, 800, 600));
 
@@ -18,12 +14,6 @@ namespace HeuristicLab.Visualization.Test {
       CreateSimpleRectangleShape();
 
       canvasUI.Invalidate();
-    }
-
-    private void CreateMouseEventListeners() {
-      dragDropListener = new MouseEventListener();
-      dragDropListener.OnMouseMove += DragDrop_OnMouseMove;
-      dragDropListener.OnMouseUp += DragDrop_OnMouseUp;
     }
 
     private void CreateSimpleRectangleShape() {
@@ -89,30 +79,6 @@ namespace HeuristicLab.Visualization.Test {
       leftWorld.AddShape(comp1);
 
       mainWorld.AddShape(leftWorld);
-    }
-
-    private void canvasUI_MouseDown(object sender, MouseEventArgs e) {
-      mouseEventDemonstrationGraphics = canvasUI.CreateGraphics();
-
-      dragDropListener.StartPoint = e.Location;
-      lastActualPoint = e.Location;
-
-      canvasUI.MouseEventListener = dragDropListener;
-    }
-
-    private Point lastActualPoint;
-    private Graphics mouseEventDemonstrationGraphics;
-
-    private void DragDrop_OnMouseUp(Point startPoint, Point actualPoint) {
-      canvasUI.MouseEventListener = null;
-
-      canvasUI.Invalidate();
-      mouseEventDemonstrationGraphics.Dispose();
-    }
-
-    private void DragDrop_OnMouseMove(Point startPoint, Point actualPoint) {
-      mouseEventDemonstrationGraphics.DrawLine(Pens.Blue, lastActualPoint, actualPoint);
-      lastActualPoint = actualPoint;
     }
 
     private void legendButton_Click(object sender, System.EventArgs e) {
