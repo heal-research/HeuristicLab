@@ -28,6 +28,10 @@ namespace HeuristicLab.Visualization.Test {
       row2.Thickness = 4;
       row3.Thickness = 5;
 
+      row1.Label = "Simon";
+      row2.Label = "Gertschi";
+      row3.Label = "Maxi";
+
       row1.Style = DrawingStyle.Solid;
       row2.Style = DrawingStyle.Solid;
       row3.Style = DrawingStyle.Dashed;

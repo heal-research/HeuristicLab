@@ -33,6 +33,7 @@ namespace HeuristicLab.Visualization {
     private readonly WorldShape root;
     private readonly TextShape titleShape;
     private readonly LinesShape linesShape;
+    private readonly LegendShape legendShape;
 
     private readonly XAxis xAxis;
 
@@ -61,11 +62,19 @@ namespace HeuristicLab.Visualization {
       linesShape = new LinesShape(dummy, dummy);
       root.AddShape(linesShape);
 
+      legendShape = new LegendShape(0,0,0,0,0,Color.Black);
+      //legendShape.AddLegendItem(new LegendItem("test", Color.Red, 5));
+      //legendShape.AddLegendItem(new LegendItem("test1", Color.Blue, 5));
+      //legendShape.AddLegendItem(new LegendItem("test2", Color.Pink, 5));
+      root.AddShape(legendShape);
+
       xAxis = new XAxis(dummy, dummy);
       root.AddShape(xAxis);
 
       titleShape = new TextShape(0, 0, "Title", 15);
       root.AddShape(titleShape);
+
+
 
       canvas.MainCanvas.WorldShape = root;
       canvas.Resize += delegate { UpdateLayout(); };
@@ -97,6 +106,8 @@ namespace HeuristicLab.Visualization {
                                          0,
                                          linesShape.BoundingBox.X2,
                                          linesShape.BoundingBox.Y1);
+
+      legendShape.BoundingBox = new RectangleD(10, 10, 110, canvas.Height - 50);
     }
 
     public void ResetView() {
@@ -135,6 +146,8 @@ namespace HeuristicLab.Visualization {
         maxDataRowCount = row.Count;
       }
 
+      legendShape.AddLegendItem(new LegendItem(row.Label, row.Color, row.Thickness));
+      legendShape.CreateLegend();
       InitLineShapes(row);
     }
 
