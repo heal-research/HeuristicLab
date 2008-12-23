@@ -39,8 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscreteCrossover.cs" />
+    <Compile Include="UniformAllPositionsManipulator.cs" />
+    <Compile Include="IntVectorCrossoverBase.cs" />
+    <Compile Include="IntVectorManipulatorBase.cs" />
+    <Compile Include="UniformOnePositionManipulator.cs" />
     <Compile Include="HeuristicLabIntVectorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UniformRandomIntVectorGenerator.cs" />
+    <Compile Include="SinglePointCrossover.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
