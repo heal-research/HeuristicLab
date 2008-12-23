@@ -80,6 +80,8 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
+    <Compile Include="IMouseEventListener.cs" />
+    <Compile Include="PanListener.cs" />
     <Compile Include="TextShape.cs" />
     <Compile Include="LegendShape.cs" />
     <Compile Include="DataRow.cs" />
@@ -97,7 +99,6 @@
       <DependentUpon>LineChart.cs</DependentUpon>
     </Compile>
     <Compile Include="LineShape.cs" />
-    <Compile Include="MouseEventListener.cs" />
     <Compile Include="Offset.cs" />
     <Compile Include="PointD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Transform.cs" />
     <Compile Include="WorldShape.cs" />
     <Compile Include="XAxis.cs" />
+    <Compile Include="ZoomListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
