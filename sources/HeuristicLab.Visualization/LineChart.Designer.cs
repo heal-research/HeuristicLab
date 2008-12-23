@@ -1,4 +1,6 @@
-﻿namespace HeuristicLab.Visualization
+﻿using System.Windows.Forms;
+
+namespace HeuristicLab.Visualization
 {
     partial class LineChart
     {
@@ -41,6 +43,7 @@
           this.canvas.TabIndex = 0;
           this.canvas.Text = "canvas";
           this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
+          this.canvas.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseWheel);
           // 
           // LineChart
           // 

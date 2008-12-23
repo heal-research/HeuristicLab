@@ -52,5 +52,19 @@ namespace HeuristicLab.Visualization {
     }
 
     #endregion
+
+    public static RectangleD ZoomClippingArea(RectangleD clippingArea, double zoomFactor) {
+      double x1, x2, y1, y2, width, height;
+
+      width = clippingArea.Width * zoomFactor;
+      height = clippingArea.Height * zoomFactor;
+
+      x1 = clippingArea.X1 - (width - clippingArea.Width) / 2;
+      y1 = clippingArea.Y1 - (height - clippingArea.Height) / 2;
+      x2 = width + x1;
+      y2 = height + y1;
+
+      return new RectangleD(x1, y1, x2, y2);
+    }
   }
 }

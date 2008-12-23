@@ -62,7 +62,7 @@ namespace HeuristicLab.Visualization {
       linesShape = new LinesShape(dummy, dummy);
       root.AddShape(linesShape);
 
-      legendShape = new LegendShape(0,0,0,0,0,Color.Black);
+      legendShape = new LegendShape(0, 0, 0, 0, 0, Color.Black);
       //legendShape.AddLegendItem(new LegendItem("test", Color.Red, 5));
       //legendShape.AddLegendItem(new LegendItem("test1", Color.Blue, 5));
       //legendShape.AddLegendItem(new LegendItem("test2", Color.Pink, 5));
@@ -73,7 +73,6 @@ namespace HeuristicLab.Visualization {
 
       titleShape = new TextShape(0, 0, "Title", 15);
       root.AddShape(titleShape);
-
 
 
       canvas.MainCanvas.WorldShape = root;
@@ -276,10 +275,23 @@ namespace HeuristicLab.Visualization {
     private RectangleShape rectangleShape;
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
+      Focus();
+
       if (ModifierKeys == Keys.Control) {
         CreateZoomListener(e);
       } else {
         CreatePanListener(e);
+      }
+    }
+
+    private void canvasUI1_MouseWheel(object sender, MouseEventArgs e) {
+      if (ModifierKeys == Keys.Control) {
+        double zoomFactor = (e.Delta > 0) ? 0.9 : 1.1;
+
+        RectangleD clippingArea = ZoomListener.ZoomClippingArea(linesShape.ClippingArea, zoomFactor);
+
+        SetLineClippingArea(clippingArea);
+        canvas.Invalidate();
       }
     }
 
