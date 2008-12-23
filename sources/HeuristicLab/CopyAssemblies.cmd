@@ -35,6 +35,7 @@ copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification\%Outdir%\HeuristicLa
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.Classification\%Outdir%\HeuristicLab.GP.StructureIdentification.Classification-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.TimeSeries\%Outdir%\HeuristicLab.GP.StructureIdentification.TimeSeries-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Grid\%Outdir%\HeuristicLab.Grid-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.IntVector\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Metaprogramming\%Outdir%\HeuristicLab.Operators.Metaprogramming-3.2.dll" .\plugins
