@@ -44,6 +44,7 @@ namespace HeuristicLab.Visualization
           this.canvas.Text = "canvas";
           this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           this.canvas.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseWheel);
+          this.canvas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.canvasUI1_KeyDown);
           // 
           // LineChart
           // 

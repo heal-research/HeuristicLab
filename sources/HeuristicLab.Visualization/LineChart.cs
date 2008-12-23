@@ -160,6 +160,7 @@ namespace HeuristicLab.Visualization {
                                                   maxDataValue + ((maxDataValue - minDataValue)*0.05));
 
       SetLineClippingArea(newClippingArea);
+      historyStack.Push(newClippingArea);
     }
 
     /// <summary>
@@ -272,7 +273,21 @@ namespace HeuristicLab.Visualization {
 
     #endregion
 
+    #region Zooming / Panning
+
+    private readonly Stack<RectangleD> historyStack = new Stack<RectangleD>();
     private RectangleShape rectangleShape;
+
+    private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {
+      if(e.KeyCode == Keys.Back && historyStack.Count > 1) {
+        historyStack.Pop();
+
+        RectangleD clippingArea = historyStack.Peek();
+  
+        SetNewClippingArea(clippingArea);
+        canvas.Invalidate();
+      }
+    }
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
@@ -311,7 +326,11 @@ namespace HeuristicLab.Visualization {
     private void OnZoom_MouseUp(object sender, MouseEventArgs e) {
       canvas.MouseEventListener = null;
 
-      SetLineClippingArea(rectangleShape.Rectangle);
+      RectangleD clippingArea = rectangleShape.Rectangle;
+
+      SetLineClippingArea(clippingArea);
+      historyStack.Push(clippingArea);
+
       linesShape.RemoveShape(rectangleShape);
 
       zoomFullView = false; //user wants to zoom => no full view
@@ -328,7 +347,10 @@ namespace HeuristicLab.Visualization {
       PanListener panListener = new PanListener(canvas.ClientRectangle, linesShape.ClippingArea, e.Location);
 
       panListener.SetNewClippingArea += SetNewClippingArea;
-      panListener.OnMouseUp += delegate { canvas.MouseEventListener = null; };
+      panListener.OnMouseUp += delegate {
+        historyStack.Push(linesShape.ClippingArea);
+        canvas.MouseEventListener = null;
+      };
 
       canvas.MouseEventListener = panListener;
     }
@@ -339,5 +361,7 @@ namespace HeuristicLab.Visualization {
       zoomFullView = false;
       canvas.Invalidate();
     }
+
+    #endregion
   }
 }
