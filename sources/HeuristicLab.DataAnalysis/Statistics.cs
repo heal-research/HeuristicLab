@@ -157,14 +157,14 @@ namespace HeuristicLab.DataAnalysis {
     public static double Mean(double[] values, int start, int end) {
       if(values.Length == 0) throw new InvalidOperationException();
       double sum = 0.0;
-      int n = end - start;
+      int n = 0;
       for(int i = start; i < end; i++) {
-        if(double.IsNaN(values[i])) {
-          throw new NotFiniteNumberException();
-        } else {
+        if(!double.IsNaN(values[i])) {
           sum += values[i];
+          n++;
         }
       }
+      if (n == 0) throw new InvalidOperationException();
       return sum / n;
     }
 
@@ -220,24 +220,24 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="end">end index (exclusive)</param>
     /// <returns></returns>
     public static double Variance(double[] values, int start, int end) {
-      int n = end - start;
-      if(n == 0) {
-        throw new InvalidOperationException();
-      }
-      if(n == 1)
+      if (end - start == 1)
         return 0.0;
 
       double mean = Mean(values, start, end);
       double squaredErrorsSum = 0.0;
 
-      for(int i = start; i < end; i++) {
-        if(double.IsNaN(values[i])) {
-          throw new NotFiniteNumberException();
+      int n = 0;
+      for (int i = start; i < end; i++) {
+        if (!double.IsNaN(values[i])) {
+          double d = values[i] - mean;
+          squaredErrorsSum += d * d;
+          n++;
         }
-        double d = values[i] - mean;
-        squaredErrorsSum += d * d;
       }
-      return squaredErrorsSum / (n - 1);      
+      if (n < 2) {
+        throw new InvalidOperationException();
+      }
+      return squaredErrorsSum / (n - 1);
     }
   }
 }
