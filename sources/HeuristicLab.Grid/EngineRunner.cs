@@ -48,9 +48,10 @@ namespace HeuristicLab.Grid {
         currentEngine.Abort();
       }
 
+      // when the engine executed without error it's OK to clear the operator graph because
+      // it is not needed to gather the results of the eninge (kept in scope-tree)
       if(!currentEngine.Canceled && !currentEngine.Suspended) {
         currentEngine.OperatorGraph.Clear();
-        currentEngine.GlobalScope.Clear();
       }
 
       return PersistenceManager.SaveToGZip(currentEngine);
