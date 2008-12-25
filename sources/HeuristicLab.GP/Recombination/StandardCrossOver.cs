@@ -61,7 +61,7 @@ until a valid configuration is found.";
 
         IList<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent0.Function, replacedChildIndex);
         allowedCrossoverPoints = GetPossibleCrossoverPoints(gardener, tree1, maxInsertedBranchSize, maxInsertedBranchHeight, allowedFunctions);
-      } while(allowedCrossoverPoints.Count == 0 || tries++ > MAX_RECOMBINATION_TRIES);
+      } while(allowedCrossoverPoints.Count == 0 && tries++ < MAX_RECOMBINATION_TRIES);
 
       if(allowedCrossoverPoints.Count > 0) {
         IFunctionTree branch1 = allowedCrossoverPoints[random.Next(allowedCrossoverPoints.Count)];
