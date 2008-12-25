@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
+using System.Text;
 
 namespace HeuristicLab.Visualization{
   public delegate void DataRowAddedHandler(IDataRow row);
@@ -139,13 +140,18 @@ namespace HeuristicLab.Visualization{
         idAttr.Value = row.Label.ToString();
         columnElement.Attributes.Append(idAttr);
 
+        StringBuilder builder = new StringBuilder();
+
         for (int i = 0; i < row.Count; i++) {
           if (i == 0) {
-            columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+            builder.Append(row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
+            //columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
           } else {
-            columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+            builder.Append(";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
+            //columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
           }
         }
+        columnElement.InnerText += builder.ToString();
         node.AppendChild(columnElement);
       }
       return node;    
