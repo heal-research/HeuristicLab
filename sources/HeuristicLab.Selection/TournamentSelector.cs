@@ -66,9 +66,9 @@ namespace HeuristicLab.Selection {
       for (int i = 0; i < selected; i++) {
         if (source.SubScopes.Count < 1) throw new InvalidOperationException("No source scopes available to select.");
 
-        double best = maximization ? double.MinValue : double.MaxValue;
-        IScope selectedScope = null;
-        for (int j = 0; j < groupSize; j++) {
+        IScope selectedScope = source.SubScopes[random.Next(source.SubScopes.Count)];
+        double best = selectedScope.GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
+        for (int j = 1; j < groupSize; j++) {
           IScope scope = source.SubScopes[random.Next(source.SubScopes.Count)];
           double quality = scope.GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
           if (((maximization) && (quality > best)) ||
