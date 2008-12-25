@@ -161,8 +161,13 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.DIFFERENTIAL: {
             int row = sampleIndex + currInstr.i_arg1;
-            if (row < 1 || row >= dataset.Rows) return double.NaN;
-            else return currInstr.d_arg0 * (dataset.GetValue(row, currInstr.i_arg0) - dataset.GetValue(row - 1, currInstr.i_arg0));
+            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            else if (row < 1) return 0.0;
+            else {
+              double prevValue = dataset.GetValue(row - 1, currInstr.i_arg0);
+              if (double.IsNaN(prevValue) || double.IsInfinity(prevValue)) return 0.0;
+              else return currInstr.d_arg0 * (dataset.GetValue(row, currInstr.i_arg0) - prevValue);
+            }
           }
         case EvaluatorSymbolTable.MULTIPLICATION: {
             double result = EvaluateBakedCode();
