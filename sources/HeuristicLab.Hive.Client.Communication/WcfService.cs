@@ -46,13 +46,14 @@ namespace HeuristicLab.Hive.Client.Communication {
         proxy.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(proxy_PullJobCompleted);
         proxy.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(proxy_SendJobResultCompleted);
         proxy.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(proxy_SendHeartBeatCompleted);
-        proxy.Open();        
-        if (Connected != null)
-          Connected(this, new EventArgs());           
+        proxy.Open();
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());
+
         ConnState = NetworkEnum.WcfConnState.Connected;
         ConnectedSince = DateTime.Now;        
+        if (Connected != null)
+          Connected(this, new EventArgs());                               
       }
       catch (Exception ex) {
         NetworkErrorHandling(ex);
