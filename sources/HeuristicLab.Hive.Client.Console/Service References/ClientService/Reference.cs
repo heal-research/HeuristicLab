@@ -352,6 +352,14 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         System.IAsyncResult BeginGetCurrentConnection(System.AsyncCallback callback, object asyncState);
         
         HeuristicLab.Hive.Client.Console.ClientService.ConnectionContainer EndGetCurrentConnection(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/ShutdownClient", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/ShutdownClientResponse")]
+        void ShutdownClient();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/ShutdownClient", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/ShutdownClientResponse")]
+        System.IAsyncResult BeginShutdownClient(System.AsyncCallback callback, object asyncState);
+        
+        void EndShutdownClient(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -449,6 +457,12 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         
         private System.Threading.SendOrPostCallback onGetCurrentConnectionCompletedDelegate;
         
+        private BeginOperationDelegate onBeginShutdownClientDelegate;
+        
+        private EndOperationDelegate onEndShutdownClientDelegate;
+        
+        private System.Threading.SendOrPostCallback onShutdownClientCompletedDelegate;
+        
         public ClientConsoleCommunicatorClient() {
         }
         
@@ -477,6 +491,8 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DisconnectCompleted;
         
         public event System.EventHandler<GetCurrentConnectionCompletedEventArgs> GetCurrentConnectionCompleted;
+        
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> ShutdownClientCompleted;
         
         public HeuristicLab.Hive.Client.Console.ClientService.StatusCommons GetStatusInfos() {
             return base.Channel.GetStatusInfos();
@@ -716,6 +732,53 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
                 this.onGetCurrentConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetCurrentConnectionCompleted);
             }
             base.InvokeAsync(this.onBeginGetCurrentConnectionDelegate, null, this.onEndGetCurrentConnectionDelegate, this.onGetCurrentConnectionCompletedDelegate, userState);
+        }
+        
+        public void ShutdownClient() {
+            base.Channel.ShutdownClient();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginShutdownClient(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginShutdownClient(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndShutdownClient(System.IAsyncResult result) {
+            base.Channel.EndShutdownClient(result);
+        }
+        
+        private System.IAsyncResult OnBeginShutdownClient(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginShutdownClient(callback, asyncState);
+        }
+        
+        private object[] OnEndShutdownClient(System.IAsyncResult result) {
+            this.EndShutdownClient(result);
+            return null;
+        }
+        
+        private void OnShutdownClientCompleted(object state) {
+            if ((this.ShutdownClientCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.ShutdownClientCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void ShutdownClientAsync() {
+            this.ShutdownClientAsync(null);
+        }
+        
+        public void ShutdownClientAsync(object userState) {
+            if ((this.onBeginShutdownClientDelegate == null)) {
+                this.onBeginShutdownClientDelegate = new BeginOperationDelegate(this.OnBeginShutdownClient);
+            }
+            if ((this.onEndShutdownClientDelegate == null)) {
+                this.onEndShutdownClientDelegate = new EndOperationDelegate(this.OnEndShutdownClient);
+            }
+            if ((this.onShutdownClientCompletedDelegate == null)) {
+                this.onShutdownClientCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnShutdownClientCompleted);
+            }
+            base.InvokeAsync(this.onBeginShutdownClientDelegate, null, this.onEndShutdownClientDelegate, this.onShutdownClientCompletedDelegate, userState);
         }
     }
 }

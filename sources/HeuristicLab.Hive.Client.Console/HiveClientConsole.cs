@@ -165,8 +165,8 @@ namespace HeuristicLab.Hive.Client.Console {
 
         done = allProgress / jobs.Length;
 
-        myPane.AddPieSlice(done, Color.Green, 0.1, "");
-        myPane.AddPieSlice(1-done, Color.Red, 0.1, "");
+        myPane.AddPieSlice(done, Color.Green, 0, "");
+        myPane.AddPieSlice(1-done, Color.Red, 0, "");
       }
       //Hides the slice labels
       PieItem.Default.LabelType = PieLabelType.None;
@@ -317,6 +317,15 @@ namespace HeuristicLab.Hive.Client.Console {
       lvLog.Sort();
     }
 
+    private void btn_clientShutdown_Click(object sender, EventArgs e) {
+      DialogResult res = MessageBox.Show("Do you really want to shutdown the Hive Client?", "Hive Client Console", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+      if (res == DialogResult.Yes) {
+        cccc.ShutdownClient();
+        this.Close();
+      }
+    }
+
     #endregion
+
   }
 }
