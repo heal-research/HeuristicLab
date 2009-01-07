@@ -71,7 +71,7 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
-
+      wcfService.Connected += new EventHandler(wcfService_Connected);
       ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
       if (cc.IPAdress != String.Empty && cc.Port != 0) {
         wcfService.Connect(cc.IPAdress, cc.Port);
@@ -188,10 +188,15 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void wcfService_ServerChanged(object sender, EventArgs e) {
-      foreach(KeyValuePair<long, AppDomain> entries in appDomains)
-        AppDomain.Unload(appDomains[entries.Key]);
-      appDomains = new Dictionary<long, AppDomain>();
-      engines = new Dictionary<long, Executor>();
+      lock (Locker) {
+        foreach (KeyValuePair<long, AppDomain> entries in appDomains)
+          AppDomain.Unload(appDomains[entries.Key]);
+        appDomains = new Dictionary<long, AppDomain>();
+        engines = new Dictionary<long, Executor>();
+      }
+    }
+
+    void wcfService_Connected(object sender, EventArgs e) {
       wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
     }
 

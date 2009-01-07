@@ -27,7 +27,8 @@ namespace HeuristicLab.Hive.Client.Communication {
     public int ServerPort { get; private set; }
 
     public event EventHandler ConnectionRestored;    
-    public event EventHandler ServerChanged;    
+    public event EventHandler ServerChanged;
+    public event EventHandler Connected;    
 
     public ClientCommunicatorClient proxy = null;
 
@@ -36,19 +37,18 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
     public void Connect() {
       try {
-        proxy = null;
-        if (proxy == null) {
-          proxy = new ClientCommunicatorClient(
-            new NetTcpBinding(),
-            new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
-            );
-        }
+        proxy = new ClientCommunicatorClient(
+          new NetTcpBinding(),
+          new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
+        );
 
         proxy.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(proxy_LoginCompleted);
         proxy.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(proxy_PullJobCompleted);
         proxy.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(proxy_SendJobResultCompleted);
         proxy.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(proxy_SendHeartBeatCompleted);
-
+        proxy.Open();        
+        if (Connected != null)
+          Connected(this, new EventArgs());           
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());
         ConnState = NetworkEnum.WcfConnState.Connected;
