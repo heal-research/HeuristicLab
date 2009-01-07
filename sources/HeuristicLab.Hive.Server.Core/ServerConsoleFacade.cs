@@ -37,10 +37,16 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IServerConsoleFacade Members
 
-    public bool Login(string username, string password) {
+    public Response Login(string username, string password) {
+      Response resp = new Response();
+
       loginName = username;
 
-      return true;
+      resp.Success = true;
+      resp.StatusMessage =
+        ApplicationConstants.RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS;
+
+      return resp;
     }
 
     #endregion

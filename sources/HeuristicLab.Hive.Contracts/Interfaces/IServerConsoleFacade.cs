@@ -35,6 +35,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     IJobManager, 
     IUserRoleManager {
     [OperationContract]
-    bool Login(String username, String password); 
+    Response Login(String username, String password); 
   }
 }

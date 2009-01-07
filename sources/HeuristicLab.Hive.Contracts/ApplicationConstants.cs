@@ -6,6 +6,9 @@ using System.Text;
 namespace HeuristicLab.Hive.Contracts {
   public class ApplicationConstants {
 
+    public static string RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS = "Logged in";
+    public static string RESPONSE_SERVERCONSOLE_LOGIN_FAILED = "Login failed";
+
     public static string RESPONSE_USERROLE_GET_ALL_USERS = "UserRole.GetAllUsers";
     public static string RESPONSE_USERROLE_USER_EXISTS_ALLREADY = "UserRole.UserExistsAllready";
     public static string RESPONSE_USERROLE_USER_SUCCESSFULLY_ADDED = "UserRole.UserSuccessfullyAdded";
