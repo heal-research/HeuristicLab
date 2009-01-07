@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             "Test"}, -1);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
@@ -93,7 +93,7 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
@@ -109,7 +109,7 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.JobToolStripMenuItem1_Click);
       // 
@@ -119,20 +119,20 @@
             this.userToolStripMenuItem1,
             this.groupToolStripMenuItem2});
       this.userToolStripMenuItem.Name = "userToolStripMenuItem";
-      this.userToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.userToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.userToolStripMenuItem.Text = "User";
       // 
       // userToolStripMenuItem1
       // 
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
-      this.userToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.userToolStripMenuItem1.Text = "User";
       this.userToolStripMenuItem1.Click += new System.EventHandler(this.UserToolStripMenuItem1_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
-      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
       this.groupToolStripMenuItem2.Text = "Group";
       this.groupToolStripMenuItem2.Click += new System.EventHandler(this.GroupToolStripMenuItem2_Click);
       // 
@@ -191,7 +191,7 @@
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
       this.lvClientControl.LargeImageList = this.ilClientControl;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.Name = "lvClientControl";
@@ -258,7 +258,7 @@
       // 
       this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
       this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilJobControl.Images.SetKeyName(0, "PlayHS.bmp");
+      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
       // 
       // tpUserControl
       // 
