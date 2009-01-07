@@ -30,7 +30,11 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// <summary>
   /// Facade for the server management console
   /// </summary>
-  [ServiceContract]
-  public interface IServerConsoleFacade : IClientManager, IJobManager, IUserRoleManager {
+  [ServiceContract(SessionMode=SessionMode.Required)]
+  public interface IServerConsoleFacade : IClientManager, 
+    IJobManager, 
+    IUserRoleManager {
+    [OperationContract]
+    bool Login(String username, String password); 
   }
 }

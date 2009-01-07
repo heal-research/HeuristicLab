@@ -32,7 +32,19 @@ namespace HeuristicLab.Hive.Server.Core {
     private IClientManager clientManager = new ClientManager();
     private IJobManager jobManager = new JobManager();
     private IUserRoleManager userRoleManager = new UserRoleManager();
-    
+
+    private String loginName = null;
+
+    #region IServerConsoleFacade Members
+
+    public bool Login(string username, string password) {
+      loginName = username;
+
+      return true;
+    }
+
+    #endregion
+
     #region IClientManager Members
 
     public ResponseList<ClientInfo> GetAllClients() {
@@ -115,6 +127,5 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     #endregion
-
   }
 }

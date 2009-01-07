@@ -94,19 +94,9 @@ namespace HeuristicLab.Hive.Server {
           new NetTcpBinding();
 
         serviceHost.AddServiceEndpoint(
-          typeof(IClientManager),
-              binding,
-              "ClientManager");
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IJobManager),
-              binding,
-              "JobManager");
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IUserRoleManager),
-              binding,
-              "UserRoleManager");
+          typeof(IServerConsoleFacade),
+            binding,
+            "ServerConsoleFacade");
 
         AddMexEndpoint(serviceHost);
 
