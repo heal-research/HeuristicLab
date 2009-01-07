@@ -115,11 +115,14 @@ namespace HeuristicLab.Hive.Client.Console {
 
       ListViewItem curEventLogEntry;
 
-      foreach (EventLogEntry ele in HiveClientEventLog.Entries) {
-        curEventLogEntry = GenerateEventEntry(ele);
-        lvLog.Items.Add(curEventLogEntry);
+      //databinding on listview?
+      if (HiveClientEventLog != null && HiveClientEventLog.Entries != null) {
+        foreach (EventLogEntry ele in HiveClientEventLog.Entries) {
+          curEventLogEntry = GenerateEventEntry(ele);
+          lvLog.Items.Add(curEventLogEntry);
+        }
+        lvJobDetail.Sort();
       }
-      lvJobDetail.Sort();
     }
 
     private ListViewItem GenerateEventEntry(EventLogEntry ele) {
@@ -133,7 +136,7 @@ namespace HeuristicLab.Hive.Client.Console {
       return curEventLogEntry;
     }
 
-    private void UpdateGraph(int jobsDone, int jobsAborted) {
+    private void UpdateGraph(JobStatus[] jobs) {
       ZedGraphControl zgc = new ZedGraphControl();
       GraphPane myPane = zgc.GraphPane;
       myPane.GraphObjList.Clear();
@@ -145,18 +148,26 @@ namespace HeuristicLab.Hive.Client.Console {
       myPane.YAxis.IsVisible = false;  // no y-axis
       myPane.Legend.IsVisible = false; // no legend
 
-      myPane.Fill.Color = Color.FromKnownColor(KnownColor.Control);
+      myPane.Fill.Color = this.BackColor;
 
       myPane.Chart.Fill.Type = FillType.None;
       myPane.Fill.Type = FillType.Solid;
 
-      double sum = (double)jobsDone + jobsAborted;
-      double perDone = (double)jobsDone / sum * 100;
-      double perAborted = (double)jobsAborted / sum * 100;
+      double allProgress = 0;
+      double done = 0;
 
-      myPane.AddPieSlice(perDone, Color.Green, 0.1, "");
-      myPane.AddPieSlice(perAborted, Color.Red, 0.1, "");
+      if (jobs.Length == 0) {
+        myPane.AddPieSlice(100, Color.Green, 0.1, "");
+      } else {
+        for (int i = 0; i < jobs.Length; i++) {
+          allProgress += jobs[i].Progress;         
+        }
 
+        done = allProgress / jobs.Length;
+
+        myPane.AddPieSlice(done, Color.Green, 0.1, "");
+        myPane.AddPieSlice(1-done, Color.Red, 0.1, "");
+      }
       //Hides the slice labels
       PieItem.Default.LabelType = PieLabelType.None;
 
@@ -215,7 +226,7 @@ namespace HeuristicLab.Hive.Client.Console {
           lvJobDetail.Sort();
         }
 
-        UpdateGraph(sc.JobsDone, sc.JobsAborted);
+        UpdateGraph(sc.Jobs);
 
         if (sc.Status == NetworkEnumWcfConnState.Connected) {
           btConnect.Enabled = false;
