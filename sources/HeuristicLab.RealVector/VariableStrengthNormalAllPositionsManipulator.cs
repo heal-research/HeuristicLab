@@ -46,7 +46,7 @@ namespace HeuristicLab.RealVector {
     }
 
     protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
-      double shakingFactor = scope.GetVariableValue<DoubleData>("ShakingFactor", true).Data;
+      double shakingFactor = GetVariableValue<DoubleData>("ShakingFactor", scope, true).Data;
       return Apply(shakingFactor, random, vector);
     }
   }
