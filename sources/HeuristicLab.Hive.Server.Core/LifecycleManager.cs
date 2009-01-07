@@ -25,13 +25,28 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using System.Timers;
 
 namespace HeuristicLab.Hive.Server.Core {
   class LifecycleManager: ILifecycleManager {
+    private static Timer timer =
+      new Timer();
+
     #region ILifecycleManager Members
+    public event EventHandler OnServerHeartbeat;
+
+    public LifecycleManager() {
+      timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+    }
 
     public void Init() {
-      //nothing to do
+      timer.Interval = new TimeSpan(0, 0, 10).TotalMilliseconds; // TODO: global constant needed
+      timer.Start();
+    }
+
+    void timer_Elapsed(object sender, ElapsedEventArgs e) {
+      if (OnServerHeartbeat != null)
+        OnServerHeartbeat(this, null);
     }
 
     public ITransactionManager GetTransactionManager() {

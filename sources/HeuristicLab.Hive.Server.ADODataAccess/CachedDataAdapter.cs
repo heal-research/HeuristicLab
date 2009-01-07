@@ -51,6 +51,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new EventHandler(CachedDataAdapter_OnUpdate);
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual RowT FindSingleRow(Selector dbSelector, 
       Selector cacheSelector) {
       RowT row =
@@ -65,6 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual IEnumerable<RowT> FindMultipleRows(Selector dbSelector,
         Selector cacheSelector) {
       IList<RowT> result =
@@ -82,6 +84,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return result;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ObjT FindSingle(Selector dbSelector,
       Selector cacheSelector) {
       RowT row = FindSingleRow(dbSelector, cacheSelector);
@@ -96,6 +99,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ICollection<ObjT> FindMultiple(Selector dbSelector,
       Selector cacheSelector) {
       ICollection<ObjT> result =
@@ -141,6 +145,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected override RowT GetRowById(long id) {
       RowT row =
         FindCachedById(id);

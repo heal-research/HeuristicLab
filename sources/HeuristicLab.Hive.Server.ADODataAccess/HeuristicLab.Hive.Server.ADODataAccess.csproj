@@ -93,6 +93,7 @@
     <Compile Include="UserGroupAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="dsHiveServer.xsc">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
     </None>

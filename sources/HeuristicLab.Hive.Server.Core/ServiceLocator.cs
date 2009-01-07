@@ -49,6 +49,8 @@ public class ServiceLocator {
 
   private static IJobResultsAdapter jobResultsAdapter = null;
 
+  private static ILifecycleManager lifecycleManager = null;
+
   /// <summary>
   /// Gets the db transaction manager
   /// </summary>
@@ -164,5 +166,18 @@ public class ServiceLocator {
     }
 
     return jobResultsAdapter;
+  }
+
+  /// <summary>
+  /// Gets the lifecycle manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static ILifecycleManager GetLifecycleManager() {
+    if (lifecycleManager == null) {
+      lifecycleManager = discoveryService.GetInstances<ILifecycleManager>()[0];
+    }
+
+    return lifecycleManager;
   }
 }

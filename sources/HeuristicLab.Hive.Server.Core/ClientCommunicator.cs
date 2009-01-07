@@ -17,15 +17,21 @@ namespace HeuristicLab.Hive.Server.Core {
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
     int nrOfJobs = 0;
+    Dictionary<Guid, DateTime> lastHeartbeats;
 
     IClientAdapter clientAdapter;
     IJobAdapter jobAdapter;
     IJobResultsAdapter jobResultAdapter;
+    ILifecycleManager lifecycleManager;
 
     public ClientCommunicator() {
       clientAdapter = ServiceLocator.GetClientAdapter();
       jobAdapter = ServiceLocator.GetJobAdapter();
       jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
+      lifecycleManager = ServiceLocator.GetLifecycleManager();
+
+      lifecycleManager.OnServerHeartbeat += 
+        new EventHandler(lifecycleManager_OnServerHeartbeat);
 
       for (int i = 0; i < nrOfJobs; i++) {
         Job job = new Job();
@@ -33,7 +39,16 @@ namespace HeuristicLab.Hive.Server.Core {
         job.State = State.offline;
         jobAdapter.Update(job);
       }
+      lastHeartbeats = new Dictionary<Guid, DateTime>();
 
+    }
+
+    void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
+      List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
+
+      foreach (ClientInfo client in allClients) {
+        
+      }
     }
 
     #region IClientCommunicator Members
@@ -57,6 +72,12 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseHB SendHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
+
+      if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
+        lastHeartbeats[hbData.ClientId] = DateTime.Now;
+      } else {
+        lastHeartbeats.Add(hbData.ClientId, DateTime.Now);
+      }
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;

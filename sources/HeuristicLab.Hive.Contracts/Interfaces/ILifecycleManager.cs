@@ -24,15 +24,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HeuristicLab.Hive.Contracts.Interfaces {
+namespace HeuristicLab.Hive.Contracts.Interfaces {    
   /// <summary>
   /// Manages the lifecycle of the application
   /// </summary>
-  public interface ILifecycleManager {
+  public interface ILifecycleManager {    
     /// <summary>
     /// Initializes the application
     /// </summary>
     void Init();
+
+    /// <summary>
+    /// The server heartbeat
+    /// </summary>
+    event EventHandler OnServerHeartbeat;
 
     /// <summary>
     /// Gets the transaction manager
