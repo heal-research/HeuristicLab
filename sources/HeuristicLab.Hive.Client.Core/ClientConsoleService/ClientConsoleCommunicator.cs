@@ -5,6 +5,8 @@ using System.Text;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication;
+using HeuristicLab.Hive.Client.Common;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleCommunicator: IClientConsoleCommunicator {
@@ -34,7 +36,7 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
     }
 
     public void ShutdownClient() {
-      Core.ShutdownFlag = true;
+      MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.Shutdown);
     }
 
     #endregion

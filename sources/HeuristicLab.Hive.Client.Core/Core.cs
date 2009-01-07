@@ -116,7 +116,10 @@ namespace HeuristicLab.Hive.Client.Core {
         case MessageContainer.MessageType.FinishedJob:
           Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
           finThread.Start(container.JobId);          
-          break;      
+          break;     
+        case MessageContainer.MessageType.Shutdown:
+          ShutdownFlag = true;
+          break;
       }
     }
 
