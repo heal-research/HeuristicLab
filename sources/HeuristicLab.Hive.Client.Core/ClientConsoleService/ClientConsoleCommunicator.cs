@@ -33,6 +33,10 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
       return new ConnectionContainer { IPAdress = WcfService.Instance.ServerIP, Port = WcfService.Instance.ServerPort };
     }
 
+    public void ShutdownClient() {
+      Core.ShutdownFlag = true;
+    }
+
     #endregion
   }
 }

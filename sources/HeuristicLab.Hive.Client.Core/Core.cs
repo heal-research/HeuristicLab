@@ -50,6 +50,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
     public static Object Locker { get; set; }
 
+    public static bool ShutdownFlag { get; set; }
+
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
     Dictionary<long, Job> jobs = new Dictionary<long, Job>();
@@ -58,6 +60,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
     public void Start() {
       Core.Locker = new Object();
+      ShutdownFlag = false;
+
       Logging.GetInstance().Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
@@ -81,7 +85,7 @@ namespace HeuristicLab.Hive.Client.Core {
       beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
-      while (true) {
+      while (!ShutdownFlag) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
         Logging.GetInstance().Info(this.ToString(), container.Message.ToString());
@@ -134,10 +138,6 @@ namespace HeuristicLab.Hive.Client.Core {
     #endregion
 
     #region wcfService Events
-
-    void wcfService_ConnectionRestored(object sender, EventArgs e) {
-      //Do some fancy new things here... e.g: check all appdomains if there are still active Jobs that need to be transmitted
-    }
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
@@ -200,6 +200,9 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
     }
 
+    void wcfService_ConnectionRestored(object sender, EventArgs e) {
+      //Do some fancy new things here... e.g: check all appdomains if there are still active Jobs that need to be transmitted
+    }
 
     #endregion
 
