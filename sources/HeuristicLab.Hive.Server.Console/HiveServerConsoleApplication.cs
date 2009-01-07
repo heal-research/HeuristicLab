@@ -25,7 +25,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
   [ClassInfo(Name = "Hive Server Console", Description = "Console Application for the Hive Server.", AutoRestart = true)]
   class HiveServerConsoleApplication : ApplicationBase {
     public override void Run() {

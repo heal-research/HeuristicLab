@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.Hive.Server.Console.Properties {
+namespace HeuristicLab.Hive.Server.ServerConsole.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.Server.Console.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.Hive.Server.Console.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.Hive.Server.ServerConsole.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

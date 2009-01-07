@@ -6,7 +6,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using System.ServiceModel;
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
   internal class ServiceLocator {
     private static IServerConsoleFacade serverConsoleFacade = null;
 

@@ -33,7 +33,7 @@ using HeuristicLab.Hive.Contracts;
 using System.Security.Cryptography;
 using System.Net;
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
 
   public partial class HiveServerConsole : Form {
 
@@ -79,10 +79,8 @@ namespace HeuristicLab.Hive.Server.Console {
           int port;
           if ((IPAddress.TryParse(tbIp.Text, out ipAdress)) &&
             int.TryParse(tbPort.Text, out port)) {
-            IUserRoleManager userManager =
-          ServiceLocator.GetUserRoleManager();
-            ResponseList<User> user = userManager.GetAllUsers();
-            user = userManager.GetAllUsers();
+            IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
+            Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
           } else {
             lblError.Text = "IP or Port not valid";
           }

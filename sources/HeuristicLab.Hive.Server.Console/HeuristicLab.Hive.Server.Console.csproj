@@ -8,7 +8,7 @@
     <ProjectGuid>{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Hive.Server.Console</RootNamespace>
+    <RootNamespace>HeuristicLab.Hive.Server.ServerConsole</RootNamespace>
     <AssemblyName>HeuristicLab.Hive.Server.Console-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

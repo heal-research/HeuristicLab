@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.Hive.Server.Console.Properties {
+namespace HeuristicLab.Hive.Server.ServerConsole.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -31,7 +31,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
 
   public delegate void closeForm(bool cf, bool error);
 
@@ -44,6 +44,7 @@ namespace HeuristicLab.Hive.Server.Console {
     ResponseList<Job> jobs = null;
     ResponseList<UserGroup> userGroups = null;
     ResponseList<User> usersList = null;
+    ListView lvClientDetails = null;
 
     public HiveServerManagementConsole() {
       InitializeComponent();
@@ -90,6 +91,7 @@ namespace HeuristicLab.Hive.Server.Console {
           count = (count + 1) % 3;
         }
         lvClientControl.Groups.Add(lvunsorted);
+        lvClientControl.Sorting = SortOrder.Ascending;
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -170,7 +172,6 @@ namespace HeuristicLab.Hive.Server.Console {
         closeFormEvent(true, true);
         this.Close();
       }
-
     }
 
     /// <summary>
@@ -194,7 +195,6 @@ namespace HeuristicLab.Hive.Server.Console {
       if (closeFormEvent != null) {
         closeFormEvent(true, false);
       }
-
     }
 
     private void JobToolStripMenuItem1_Click(object sender, EventArgs e) {
@@ -212,6 +212,22 @@ namespace HeuristicLab.Hive.Server.Console {
       newForm.Show();
 
     }
+
+    private void OnClientClicked(object sender, EventArgs e) {
+      scClientControl.Panel2.Controls.Clear();
+      scClientControl.Panel2.Controls.Add(plClientDetails);
+      pbClientControl.Image = ilClientControl.Images[0];
+      lblClientName.Text = sender.ToString();
+
+      
+    }
+
+    private void btnClose_Click(object sender, EventArgs e) {
+      scClientControl.Panel2.Controls.Clear();
+      scClientControl.Panel2.Controls.Add(lvClientControl);
+    }
+
+
 
   }
 }

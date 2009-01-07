@@ -31,7 +31,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
   public partial class AddJobForm : Form {
 
     ResponseList<Job> jobGroups = null;

@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Hive.Server.Console {
+﻿namespace HeuristicLab.Hive.Server.ServerConsole {
   partial class HiveServerManagementConsole {
     /// <summary>
     /// Required designer variable.
@@ -24,9 +24,6 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "",
-            "Test"}, -1);
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.informationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,6 +37,8 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
+      this.plClientDetails = new System.Windows.Forms.Panel();
+      this.pbClientControl = new System.Windows.Forms.PictureBox();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.ilClientControl = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
@@ -55,12 +54,17 @@
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
+      this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+      this.btnClose = new System.Windows.Forms.Button();
+      this.lblClientName = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
+      this.plClientDetails.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
       this.tpJobControl.SuspendLayout();
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
@@ -69,6 +73,7 @@
       this.scUserControl.Panel1.SuspendLayout();
       this.scUserControl.Panel2.SuspendLayout();
       this.scUserControl.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -172,6 +177,7 @@
       // 
       // scClientControl.Panel2
       // 
+      //this.scClientControl.Panel2.Controls.Add(this.plClientDetails);
       this.scClientControl.Panel2.Controls.Add(this.lvClientControl);
       this.scClientControl.Size = new System.Drawing.Size(637, 346);
       this.scClientControl.SplitterDistance = 139;
@@ -185,19 +191,38 @@
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
       // 
+      // plClientDetails
+      // 
+      this.plClientDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plClientDetails.Controls.Add(this.lblClientName);
+      this.plClientDetails.Controls.Add(this.btnClose);
+      this.plClientDetails.Controls.Add(this.pbClientControl);
+      this.plClientDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.plClientDetails.Location = new System.Drawing.Point(0, 0);
+      this.plClientDetails.Name = "plClientDetails";
+      this.plClientDetails.Size = new System.Drawing.Size(494, 346);
+      this.plClientDetails.TabIndex = 1;
+      // 
+      // pbClientControl
+      // 
+      this.pbClientControl.Location = new System.Drawing.Point(3, 4);
+      this.pbClientControl.Name = "pbClientControl";
+      this.pbClientControl.Size = new System.Drawing.Size(60, 50);
+      this.pbClientControl.TabIndex = 0;
+      this.pbClientControl.TabStop = false;
+      // 
       // lvClientControl
       // 
       this.lvClientControl.AllowDrop = true;
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
-      this.lvClientControl.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
       this.lvClientControl.LargeImageList = this.ilClientControl;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(494, 346);
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
+      this.lvClientControl.Click += new System.EventHandler(this.OnClientClicked);
       // 
       // ilClientControl
       // 
@@ -335,6 +360,25 @@
       // 
       this.timerSyncronize.Interval = 10000;
       // 
+      // btnClose
+      // 
+      this.btnClose.Location = new System.Drawing.Point(414, 4);
+      this.btnClose.Name = "btnClose";
+      this.btnClose.Size = new System.Drawing.Size(75, 23);
+      this.btnClose.TabIndex = 1;
+      this.btnClose.Text = "Close";
+      this.btnClose.UseVisualStyleBackColor = true;
+      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+      // 
+      // lblClientName
+      // 
+      this.lblClientName.AutoSize = true;
+      this.lblClientName.Location = new System.Drawing.Point(79, 19);
+      this.lblClientName.Name = "lblClientName";
+      this.lblClientName.Size = new System.Drawing.Size(35, 13);
+      this.lblClientName.TabIndex = 2;
+      this.lblClientName.Text = "label1";
+      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -353,6 +397,9 @@
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
+      this.plClientDetails.ResumeLayout(false);
+      this.plClientDetails.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).EndInit();
       this.tpJobControl.ResumeLayout(false);
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
@@ -361,6 +408,7 @@
       this.scUserControl.Panel1.ResumeLayout(false);
       this.scUserControl.Panel2.ResumeLayout(false);
       this.scUserControl.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -395,5 +443,10 @@
     private System.Windows.Forms.ImageList ilUserControl;
     private System.Windows.Forms.Timer timerSyncronize;
     private System.Windows.Forms.ImageList ilJobControl;
+    private System.Windows.Forms.BindingSource bindingSource1;
+    private System.Windows.Forms.Panel plClientDetails;
+    private System.Windows.Forms.PictureBox pbClientControl;
+    private System.Windows.Forms.Button btnClose;
+    private System.Windows.Forms.Label lblClientName;
   }
 }

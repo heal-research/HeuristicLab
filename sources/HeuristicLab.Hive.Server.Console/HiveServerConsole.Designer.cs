@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Hive.Server.Console {
+namespace HeuristicLab.Hive.Server.ServerConsole {
   partial class HiveServerConsole {
     /// <summary>
     /// Required designer variable.
