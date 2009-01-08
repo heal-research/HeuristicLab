@@ -91,10 +91,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.Client = null;
         
-        if (!row.IsStatusNull())
-          job.State = (State)Enum.Parse(job.State.GetType(), row.Status);
+        if (!row.IsJobStateNull())
+          job.State = (State)Enum.Parse(job.State.GetType(), row.JobState);
         else
           job.State = State.nullState;
+
+        if (!row.IsPercentageNull())
+          job.Percentage = row.Percentage;
+        else
+          job.Percentage = 0.0;
 
         return job;
       } else
@@ -123,9 +128,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetParentJobIdNull();
 
         if (job.State != State.nullState)
-          row.Status = job.State.ToString();
+          row.JobState = job.State.ToString();
         else
-          row.SetStatusNull();
+          row.SetJobStateNull();
+
+        row.Percentage = job.Percentage;
       }
 
       return row;
@@ -213,8 +220,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            delegate() {
              return from job in
                       cache.AsEnumerable<dsHiveServer.JobRow>()
-                    where !job.IsStatusNull() &&
-                           job.Status == state.ToString()
+                    where !job.IsJobStateNull() &&
+                           job.JobState == state.ToString()
                     select job;
            });
     }
