@@ -36,10 +36,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
       }
     }
 
-    private static String pw = "hive";
+  /*  private static String pw = "hive";
     private static String un = "hive";
     private static String address = "10.22.20.84";
-    private static String catalog = "HiveServer";
+    private static String catalog = "HiveServer"; */
 
     public static String GetConnString(String adress, String catalog, String un, String pw) {
       return "Data Source=" + adress + ";Initial Catalog=" + catalog + ";MultipleActiveResultSets=True;" +
@@ -49,7 +49,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
     [global::System.Configuration.ApplicationScopedSettingAttribute()]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-    [global::System.Configuration.DefaultSettingValueAttribute(""))]
+    [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.22.20.84;Initial Catalog=HiveServer;MultipleActiveResultSets=True;" +
+        "Persist Security Info=True;User ID=hive;Password=hive")]
     public string HiveServerConnectionString {
       get {
         return ((string)(this["HiveServerConnectionString"]));
