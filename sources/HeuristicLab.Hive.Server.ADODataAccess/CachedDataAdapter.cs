@@ -199,7 +199,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           //add to cache
           cache.ImportRow(row);
 
-          GetDataTable().Rows.Remove(row);
+          row.Table.Rows.Remove(row);
         }
       }
     }
