@@ -47,13 +47,15 @@ namespace HeuristicLab.Hive.Client.Communication {
         proxy.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(proxy_SendJobResultCompleted);
         proxy.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(proxy_SendHeartBeatCompleted);
         proxy.Open();
-        if (ConnState == NetworkEnum.WcfConnState.Failed)
-          ConnectionRestored(this, new EventArgs());
 
         ConnState = NetworkEnum.WcfConnState.Connected;
-        ConnectedSince = DateTime.Now;        
+        ConnectedSince = DateTime.Now;
+        
         if (Connected != null)
           Connected(this, new EventArgs());                               
+        
+        if (ConnState == NetworkEnum.WcfConnState.Failed)
+          ConnectionRestored(this, new EventArgs());        
       }
       catch (Exception ex) {
         NetworkErrorHandling(ex);
@@ -92,6 +94,19 @@ namespace HeuristicLab.Hive.Client.Communication {
       else
         NetworkErrorHandling(e.Error.InnerException);
     }
+
+    public void LoginSync(ClientInfo clientInfo) {
+      try {
+        if (ConnState == NetworkEnum.WcfConnState.Connected) {
+          Response res = proxy.Login(clientInfo);
+          Logging.GetInstance().Info(this.ToString(), res.StatusMessage);
+        }
+      }
+      catch (Exception e) {
+        NetworkErrorHandling(e);
+      }
+    }
+
     #endregion
 
     #region PullJob
@@ -138,7 +153,6 @@ namespace HeuristicLab.Hive.Client.Communication {
         NetworkErrorHandling(e.Error);
     }
 
-    #endregion
-
+    #endregion  
   }
 }

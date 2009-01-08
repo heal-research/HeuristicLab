@@ -89,5 +89,9 @@ namespace HeuristicLab.Hive.Client.Core {
       System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
     }
+
+    public void StopHeartBeat() {
+      heartbeatTimer.Dispose();
+    }
   }
 }

@@ -37,6 +37,11 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     public IJob Job { get; set; }
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }
+    public bool Running {
+      get {
+        return Job.Running;
+      }
+    }
     public double Progress {
       get {
         return Job.Progress;

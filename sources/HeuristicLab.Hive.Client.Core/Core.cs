@@ -57,6 +57,7 @@ namespace HeuristicLab.Hive.Client.Core {
     Dictionary<long, Job> jobs = new Dictionary<long, Job>();
 
     private WcfService wcfService;
+    private Heartbeat beat;
 
     public void Start() {
       Core.Locker = new Object();
@@ -81,7 +82,7 @@ namespace HeuristicLab.Hive.Client.Core {
         wcfService.Connect(cc.IPAdress, cc.Port);
       }
    
-      Heartbeat beat = new Heartbeat { Interval = 10000 };
+      beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
@@ -119,6 +120,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;     
         case MessageContainer.MessageType.Shutdown:
           ShutdownFlag = true;
+          beat.StopHeartBeat();
           break;
       }
     }
@@ -191,6 +193,7 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void wcfService_ServerChanged(object sender, EventArgs e) {
+      Logging.GetInstance().Info(this.ToString(), "ServerChanged has been called");
       lock (Locker) {
         foreach (KeyValuePair<long, AppDomain> entries in appDomains)
           AppDomain.Unload(appDomains[entries.Key]);
@@ -200,11 +203,20 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void wcfService_Connected(object sender, EventArgs e) {
-      wcfService.LoginAsync(ConfigManager.Instance.GetClientInfo());
+      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
     }
 
+    //this is a little bit tricky - 
     void wcfService_ConnectionRestored(object sender, EventArgs e) {
-      //Do some fancy new things here... e.g: check all appdomains if there are still active Jobs that need to be transmitted
+      Logging.GetInstance().Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");                 
+
+      foreach (KeyValuePair<long, Executor> execKVP in engines) {
+        if (!execKVP.Value.Running && execKVP.Value.CurrentMessage == MessageContainer.MessageType.NoMessage) {
+          Logging.GetInstance().Info(this.ToString(), "Checking for JobId: " + execKVP.Value.JobId);
+          Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
+          finThread.Start(execKVP.Value.JobId);
+        }
+      }
     }
 
     #endregion
