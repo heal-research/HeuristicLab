@@ -23,6 +23,7 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 using System.Runtime.CompilerServices;
 using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Server.Core;
 
 /// <summary>
 /// The service locator for the server core
@@ -32,6 +33,16 @@ public class ServiceLocator {
     new DiscoveryService();
 
   private static ITransactionManager transManager = null;
+
+  private static IClientManager clientManager = null;
+
+  private static IJobManager jobManager = null;
+
+  private static IUserRoleManager userRoleManager = null;
+
+  private static IClientCommunicator clientCommunicator = null;
+
+  private static ILifecycleManager lifecycleManager = null;
 
   private static IClientAdapter clientAdapter = null;
 
@@ -49,7 +60,6 @@ public class ServiceLocator {
 
   private static IJobResultsAdapter jobResultsAdapter = null;
 
-  private static ILifecycleManager lifecycleManager = null;
 
   /// <summary>
   /// Gets the db transaction manager
@@ -62,6 +72,67 @@ public class ServiceLocator {
     }
 
     return transManager;
+  }
+
+  /// <summary>
+  /// Gets the client manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IClientManager GetClientManager() {
+    if (clientManager == null)
+      clientManager = new ClientManager();
+
+    return clientManager;
+  }
+
+  /// <summary>
+  /// Gets the job manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IJobManager GetJobManager() {
+    if (jobManager == null)
+      jobManager = new JobManager();
+
+    return jobManager;
+  }
+
+  /// <summary>
+  /// Gets the user role manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IUserRoleManager GetUserRoleManager() {
+    if (userRoleManager == null)
+      userRoleManager = new UserRoleManager();
+
+    return userRoleManager;
+  }
+
+  /// <summary>
+  /// Gets the client Communicator
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IClientCommunicator GetClientCommunicator() {
+    if (clientCommunicator == null)
+      clientCommunicator = new ClientCommunicator();
+
+    return clientCommunicator;
+  }
+
+  /// <summary>
+  /// Gets the lifecycle manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static ILifecycleManager GetLifecycleManager() {
+    if (lifecycleManager == null) {
+      lifecycleManager = new LifecycleManager();
+    }
+
+    return lifecycleManager;
   }
 
   /// <summary>
@@ -166,18 +237,5 @@ public class ServiceLocator {
     }
 
     return jobResultsAdapter;
-  }
-
-  /// <summary>
-  /// Gets the lifecycle manager
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static ILifecycleManager GetLifecycleManager() {
-    if (lifecycleManager == null) {
-      lifecycleManager = discoveryService.GetInstances<ILifecycleManager>()[0];
-    }
-
-    return lifecycleManager;
   }
 }

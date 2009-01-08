@@ -29,9 +29,14 @@ using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.Core {
   public class ServerConsoleFacade: IServerConsoleFacade {
-    private IClientManager clientManager = new ClientManager();
-    private IJobManager jobManager = new JobManager();
-    private IUserRoleManager userRoleManager = new UserRoleManager();
+    private IClientManager clientManager = 
+      ServiceLocator.GetClientManager();
+
+    private IJobManager jobManager = 
+      ServiceLocator.GetJobManager();
+
+    private IUserRoleManager userRoleManager = 
+      ServiceLocator.GetUserRoleManager();
 
     private String loginName = null;
 

@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientCommunicator.cs" />
+    <Compile Include="ClientFacade.cs" />
     <Compile Include="ClientManager.cs" />
     <Compile Include="DbTestApp.cs" />
     <Compile Include="HiveServerCorePlugin.cs" />

@@ -18,7 +18,8 @@ namespace HeuristicLab.Hive.Server.Core {
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
     int nrOfJobs = 0;
-    Dictionary<Guid, DateTime> lastHeartbeats;
+    Dictionary<Guid, DateTime> lastHeartbeats = 
+      new Dictionary<Guid,DateTime>();
 
     IClientAdapter clientAdapter;
     IJobAdapter jobAdapter;
@@ -56,8 +57,8 @@ namespace HeuristicLab.Hive.Server.Core {
             clientAdapter.Update(client);
           } else {
             DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
-            int diff = lastHbOfClient.CompareTo(DateTime.Now);
-            Console.WriteLine(diff);
+            TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
+            Console.WriteLine(dif);
           }
         } else {
           if (lastHeartbeats.ContainsKey(client.ClientId))
@@ -123,6 +124,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
       lock (this) {
@@ -143,6 +145,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseResultReceived SendJobResult(JobResult result, bool finished) {
       ResponseResultReceived response = new ResponseResultReceived();
       if (result.Id != 0) {

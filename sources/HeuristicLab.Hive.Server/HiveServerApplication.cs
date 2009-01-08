@@ -56,8 +56,8 @@ namespace HeuristicLab.Hive.Server {
     }
 
     private ServiceHost StartClientCommunicator(Uri uriTcp) {
-      IClientCommunicator[] clientCommunicatorInstances =
-        discService.GetInstances<IClientCommunicator>();
+      IClientFacade[] clientCommunicatorInstances =
+        discService.GetInstances<IClientFacade>();
 
       if (clientCommunicatorInstances.Length > 0) {
         ServiceHost serviceHost =
