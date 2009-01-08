@@ -126,9 +126,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new Selector(cache.AsEnumerable<dsHiveServer.ResourceRow>));
     }
 
-    protected override System.Data.DataTable GetDataTable() {
-      return data;
-    }
     #endregion
 
     #region IResourceAdapter Members

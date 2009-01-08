@@ -46,6 +46,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_ID_MUST_NOT_BE_SET = "Communicator.IdMustNotBeSet";
     public static string RESPONSE_COMMUNICATOR_NO_JO_WITH_THIS_ID = "Communicator.NoJobWithThisId";
     public static string RESPONSE_COMMUNICATOR_WRONG_JOB_STATE = "Communicator.WrongJobState";
+    public static string RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN = "Communicator.UserNotLoggedIn";
 
     public static string RESPONSE_JOB_ALL_JOBS = "Job.AllJobs";
     public static string RESPONSE_JOB_ID_MUST_NOT_BE_SET = "Job.IdMustNotBeSet";

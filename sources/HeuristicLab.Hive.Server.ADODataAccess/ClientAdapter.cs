@@ -201,9 +201,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new Selector(cache.AsEnumerable<dsHiveServer.ClientRow>));
     }
 
-    protected override System.Data.DataTable GetDataTable() {
-      return data;
-    }
     #endregion
 
     #region IClientAdapter Members
@@ -213,7 +210,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (client.Id == default(long)) {
           ClientInfo found = GetById(client.ClientId);
           if (found != null)
-            client = found;
+            client.Id = found.Id;
         }
 
         ResAdapter.Update(client);

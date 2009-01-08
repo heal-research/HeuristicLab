@@ -10,6 +10,7 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using System.Resources;
 using System.Reflection;
 using HeuristicLab.Hive.JobBase;
+using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -43,26 +44,48 @@ namespace HeuristicLab.Hive.Server.Core {
 
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
       List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
+      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
 
       foreach (ClientInfo client in allClients) {
-        
+        if (client.State != State.offline && client.State != State.nullState) {
+          if (!lastHeartbeats.ContainsKey(client.ClientId)) {
+            client.State = State.offline;
+            clientAdapter.Update(client);
+          } else {
+            DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
+            int diff = lastHbOfClient.CompareTo(DateTime.Now);
+            Console.WriteLine(diff);
+          }
+        } else {
+          if (lastHeartbeats.ContainsKey(client.ClientId))
+            lastHeartbeats.Remove(client.ClientId);
+        }
       }
     }
 
     #region IClientCommunicator Members
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public Response Login(ClientInfo clientInfo) {
       Response response = new Response();
 
+      if (lastHeartbeats.ContainsKey(clientInfo.ClientId)) {
+        lastHeartbeats[clientInfo.ClientId] = DateTime.Now;
+      } else {
+        lastHeartbeats.Add(clientInfo.ClientId, DateTime.Now);
+      }
+
       ICollection<ClientInfo> allClients = clientAdapter.GetAll();
       ClientInfo client = clientAdapter.GetById(clientInfo.ClientId);
-      if (client != null && client.State != State.offline) {
+      if (client != null && client.State != State.offline && client.State != State.nullState) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
         return response;
       }
+      clientInfo.State = State.idle;
       clientAdapter.Update(clientInfo);
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
@@ -70,8 +93,18 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseHB SendHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
+
+      response.ActionRequest = new List<MessageContainer>();
+      if (clientAdapter.GetById(hbData.ClientId).State == State.offline ||
+          clientAdapter.GetById(hbData.ClientId).State == State.nullState) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;
+        response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
+        return response;
+      }
 
       if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
         lastHeartbeats[hbData.ClientId] = DateTime.Now;
@@ -81,7 +114,6 @@ namespace HeuristicLab.Hive.Server.Core {
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
-      response.ActionRequest = new List<MessageContainer>();
       List<Job> allOfflineJobs = new List<Job>(jobAdapter.GetJobsByState(State.offline));
       if (allOfflineJobs.Count > 0 && hbData.freeCores > 0) 
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
@@ -145,10 +177,14 @@ namespace HeuristicLab.Hive.Server.Core {
 
       return response;
     }
-                           
+
+    [MethodImpl(MethodImplOptions.Synchronized)]                       
     public Response Logout(Guid clientId) {
       Response response = new Response();
-      
+
+      if (lastHeartbeats.ContainsKey(clientId))
+        lastHeartbeats.Remove(clientId);
+
       ClientInfo client = clientAdapter.GetById(clientId);
       if (client == null) {
         response.Success = false;

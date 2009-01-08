@@ -189,10 +189,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new Selector(cache.AsEnumerable<dsHiveServer.JobRow>));
     }
 
-    protected override System.Data.DataTable GetDataTable() {
-      return data;
-    }
-
     #endregion
 
     #region IJobAdapter Members

@@ -41,6 +41,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
 
+    private DataTable temp = new DataTable();
+
     protected CachedDataAdapter() {
       FillCache();
 
@@ -127,8 +129,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT FindCachedById(long id);
 
-    protected abstract DataTable GetDataTable();
-
     [MethodImpl(MethodImplOptions.Synchronized)]
     void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
       foreach (ICachedDataAdapter parent in this.parentAdapters) {
@@ -190,7 +190,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (IsCached(row) &&
             !PutInCache(obj)) {
           //remove from cache
-          GetDataTable().ImportRow(row);
+          temp.ImportRow(row);
 
           UpdateRow(row);
           RemoveRowFromCache(row);

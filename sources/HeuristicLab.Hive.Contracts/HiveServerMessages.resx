@@ -225,4 +225,7 @@
   <data name="Job.JobStateMustBeOffline" xml:space="preserve">
     <value>The state of the job must be offline</value>
   </data>
+  <data name="Communicator.UserNotLoggedIn" xml:space="preserve">
+    <value>User is not logged in, you must login before sending Heartbeats</value>
+  </data>
 </root>
