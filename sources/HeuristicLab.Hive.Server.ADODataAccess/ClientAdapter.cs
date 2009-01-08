@@ -200,6 +200,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new Selector(adapter.GetData),
         new Selector(cache.AsEnumerable<dsHiveServer.ClientRow>));
     }
+
+    protected override System.Data.DataTable GetDataTable() {
+      return data;
+    }
     #endregion
 
     #region IClientAdapter Members
