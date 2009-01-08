@@ -131,8 +131,11 @@ namespace HeuristicLab.Hive.Client.Core {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
 
-      JobResult jobResult = new JobResult { Job = jobs[jId], Result = sJob, Client = ConfigManager.Instance.GetClientInfo() };
-      wcfService.SendJobResultAsync(jobResult, true);      
+      wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+        jId,
+        sJob,
+        null,
+        true);
     }
 
     private void GetSnapshot(object jobId) {
@@ -180,10 +183,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Result.Success) {
         lock (Locker) {
-          AppDomain.Unload(appDomains[e.Result.Job.Id]);
-          appDomains.Remove(e.Result.Job.Id);
-          engines.Remove(e.Result.Job.Id);
-          jobs.Remove(e.Result.Job.Id);
+          AppDomain.Unload(appDomains[e.Result.JobId]);
+          appDomains.Remove(e.Result.JobId);
+          engines.Remove(e.Result.JobId);
+          jobs.Remove(e.Result.JobId);
           ClientStatusInfo.JobsProcessed++;
         }
         Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);

@@ -40,6 +40,7 @@
       <xs:enumeration value="FinishedJob" />
       <xs:enumeration value="NoMessage" />
       <xs:enumeration value="SnapshotReady" />
+      <xs:enumeration value="Shutdown" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="MessageContainer.MessageType" nillable="true" type="tns:MessageContainer.MessageType" />
@@ -58,7 +59,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Response">
         <xs:sequence>
-          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" minOccurs="0" name="Job" nillable="true" type="q2:Job" />
+          <xs:element minOccurs="0" name="JobId" type="xs:long" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

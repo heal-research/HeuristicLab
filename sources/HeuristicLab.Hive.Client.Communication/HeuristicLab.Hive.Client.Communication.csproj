@@ -126,7 +126,7 @@
     </None>
     <None Include="Service References\ServerService\service1.wsdl" />
     <None Include="Service References\ServerService\service2.xsd" />
-    <None Include="Service References\ServerService\service21.xsd" />
+    <None Include="Service References\ServerService\service3.xsd" />
     <None Include="Service References\ServerService\System1.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

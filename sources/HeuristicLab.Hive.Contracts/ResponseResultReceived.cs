@@ -30,6 +30,6 @@ namespace HeuristicLab.Hive.Contracts {
   [DataContract]
   public class ResponseResultReceived : Response {
     [DataMember]
-    public Job Job { get; set; }
+    public long JobId { get; set; }
   }
 }

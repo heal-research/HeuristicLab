@@ -146,14 +146,17 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public ResponseResultReceived SendJobResult(JobResult result, bool finished) {
+    public ResponseResultReceived SendJobResult(Guid clientId, 
+      long jobId, 
+      byte[] result, 
+      Exception exception,  
+      bool finished) {
       ResponseResultReceived response = new ResponseResultReceived();
-      if (result.Id != 0) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_ID_MUST_NOT_BE_SET;
-        return response;
-      }
-      Job job = result.Job;
+      ClientInfo client =
+        clientAdapter.GetById(clientId);
+
+      Job job = 
+        jobAdapter.GetById(jobId);
       if (job == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JO_WITH_THIS_ID;
@@ -172,11 +175,19 @@ namespace HeuristicLab.Hive.Server.Core {
         foreach (JobResult currentResult in jobResults) 
           jobResultAdapter.Delete(currentResult);
       }
-      jobResultAdapter.Update(result);    
+
+      JobResult jobResult =
+        new JobResult();
+      jobResult.Client = client;
+      jobResult.Job = job;
+      jobResult.Result = result;
+      jobResult.Exception = exception;
+
+      jobResultAdapter.Update(jobResult);    
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
-      response.Job = result.Job;
+      response.JobId = jobId;
 
       return response;
     }

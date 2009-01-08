@@ -64,8 +64,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetResourceIdNull();
 
-        if (result.Message != null)
-          row.Message = result.Message;
+        if (result.Exception != null)
+          row.Message = result.Exception.ToString();
         else
           row.SetMessageNull();
 
@@ -95,9 +95,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           result.Client = null;
 
         if (!row.IsMessageNull())
-          result.Message = row.Message;
+          result.Exception = new Exception(row.Message);
         else
-          result.Message = null;
+          result.Exception = null;
 
         return result;
       } else
