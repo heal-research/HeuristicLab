@@ -46,6 +46,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     ResponseList<User> usersList = null;
     ListView lvClientDetails = null;
 
+    Job currentJob = null;
+    ClientInfo currentClient = null;
+    User currentUser = null;
+
     public HiveServerManagementConsole() {
       InitializeComponent();
       AddClients();
@@ -91,7 +95,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           count = (count + 1) % 3;
         }
         lvClientControl.Groups.Add(lvunsorted);
-        lvClientControl.Sorting = SortOrder.Ascending;
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -213,21 +216,62 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     }
 
-    private void OnClientClicked(object sender, EventArgs e) {
+    private void OnLVClientClicked(object sender, EventArgs e) {
+      currentClient = clientInfo.List[lvClientControl.SelectedItems[0].Index];
+      ClientClicked();
+    }
+
+    private void OnTVClientClicked(object sender, EventArgs e) {
+     // currentClient = clientInfo.List[tvClientControl.SelectedNode.Index];
+     // ClientClicked();
+    }
+
+    private void ClientClicked() {
       scClientControl.Panel2.Controls.Clear();
       scClientControl.Panel2.Controls.Add(plClientDetails);
       pbClientControl.Image = ilClientControl.Images[0];
-      lblClientName.Text = sender.ToString();
-
-      
+      lblClientName.Text = currentClient.Name;
+      lblLogin.Text = currentClient.Login.ToString();
     }
 
-    private void btnClose_Click(object sender, EventArgs e) {
+    private void btnClientClose_Click(object sender, EventArgs e) {
       scClientControl.Panel2.Controls.Clear();
       scClientControl.Panel2.Controls.Add(lvClientControl);
     }
 
+    private void OnLVJobControlClicked(object sender, EventArgs e) {
+      currentJob = jobs.List[lvJobControl.SelectedItems[0].Index];
+      JobClicked();
 
+    }
+    private void JobClicked() {
+      scJobControl.Panel2.Controls.Clear();
+      scJobControl.Panel2.Controls.Add(plJobDetails);
+      pbJobControl.Image = ilJobControl.Images[0];
+      lblJobName.Text = currentJob.Id.ToString();
+    }
+
+    private void btnJobDetailClose_Click(object sender, EventArgs e) {
+      scJobControl.Panel2.Controls.Clear();
+      scJobControl.Panel2.Controls.Add(lvJobControl);
+    }
+
+    private void OnLVUserControlClicked(object sender, EventArgs e) {
+      currentUser = usersList.List[lvUserControl.SelectedItems[0].Index];
+      UserClicked();
+    }
+
+    private void UserClicked() {
+      scUserControl.Panel2.Controls.Clear();
+      scUserControl.Panel2.Controls.Add(plUserDetails);
+      pbUserControl.Image = ilUserControl.Images[0];
+      lblUserName.Text = currentUser.Id.ToString();
+    }
+
+    private void btnUserControlClose_Click(object sender, EventArgs e) {
+      scUserControl.Panel2.Controls.Clear();
+      scUserControl.Panel2.Controls.Add(lvUserControl);
+    }
 
   }
 }

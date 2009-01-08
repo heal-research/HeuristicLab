@@ -37,8 +37,6 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.tvClientControl = new System.Windows.Forms.TreeView();
-      this.plClientDetails = new System.Windows.Forms.Panel();
-      this.pbClientControl = new System.Windows.Forms.PictureBox();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.ilClientControl = new System.Windows.Forms.ImageList(this.components);
       this.tpJobControl = new System.Windows.Forms.TabPage();
@@ -49,22 +47,31 @@
       this.tpUserControl = new System.Windows.Forms.TabPage();
       this.scUserControl = new System.Windows.Forms.SplitContainer();
       this.tvUserControl = new System.Windows.Forms.TreeView();
+      this.plUserDetails = new System.Windows.Forms.Panel();
+      this.lblUserName = new System.Windows.Forms.Label();
+      this.btnUserControlClose = new System.Windows.Forms.Button();
+      this.pbUserControl = new System.Windows.Forms.PictureBox();
       this.lvUserControl = new System.Windows.Forms.ListView();
       this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
+      this.plJobDetails = new System.Windows.Forms.Panel();
+      this.lblJobName = new System.Windows.Forms.Label();
+      this.btnJobDetailClose = new System.Windows.Forms.Button();
+      this.pbJobControl = new System.Windows.Forms.PictureBox();
+      this.plClientDetails = new System.Windows.Forms.Panel();
+      this.lblLogin = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
+      this.lblClientName = new System.Windows.Forms.Label();
+      this.btnClientDetailClose = new System.Windows.Forms.Button();
+      this.pbClientControl = new System.Windows.Forms.PictureBox();
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
-      this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-      this.btnClose = new System.Windows.Forms.Button();
-      this.lblClientName = new System.Windows.Forms.Label();
       this.menuStrip1.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.tpClientControl.SuspendLayout();
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
-      this.plClientDetails.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
       this.tpJobControl.SuspendLayout();
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
@@ -73,7 +80,12 @@
       this.scUserControl.Panel1.SuspendLayout();
       this.scUserControl.Panel2.SuspendLayout();
       this.scUserControl.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+      this.plUserDetails.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbUserControl)).BeginInit();
+      this.plJobDetails.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).BeginInit();
+      this.plClientDetails.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -177,7 +189,6 @@
       // 
       // scClientControl.Panel2
       // 
-      //this.scClientControl.Panel2.Controls.Add(this.plClientDetails);
       this.scClientControl.Panel2.Controls.Add(this.lvClientControl);
       this.scClientControl.Size = new System.Drawing.Size(637, 346);
       this.scClientControl.SplitterDistance = 139;
@@ -190,26 +201,7 @@
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
-      // 
-      // plClientDetails
-      // 
-      this.plClientDetails.BackColor = System.Drawing.SystemColors.Window;
-      this.plClientDetails.Controls.Add(this.lblClientName);
-      this.plClientDetails.Controls.Add(this.btnClose);
-      this.plClientDetails.Controls.Add(this.pbClientControl);
-      this.plClientDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.plClientDetails.Location = new System.Drawing.Point(0, 0);
-      this.plClientDetails.Name = "plClientDetails";
-      this.plClientDetails.Size = new System.Drawing.Size(494, 346);
-      this.plClientDetails.TabIndex = 1;
-      // 
-      // pbClientControl
-      // 
-      this.pbClientControl.Location = new System.Drawing.Point(3, 4);
-      this.pbClientControl.Name = "pbClientControl";
-      this.pbClientControl.Size = new System.Drawing.Size(60, 50);
-      this.pbClientControl.TabIndex = 0;
-      this.pbClientControl.TabStop = false;
+      this.tvClientControl.Click += new System.EventHandler(this.OnTVClientClicked);
       // 
       // lvClientControl
       // 
@@ -218,11 +210,12 @@
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.LargeImageList = this.ilClientControl;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.lvClientControl.MultiSelect = false;
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(494, 346);
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
-      this.lvClientControl.Click += new System.EventHandler(this.OnClientClicked);
+      this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
       // 
       // ilClientControl
       // 
@@ -274,10 +267,12 @@
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvJobControl.LargeImageList = this.ilJobControl;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.lvJobControl.MultiSelect = false;
       this.lvJobControl.Name = "lvJobControl";
       this.lvJobControl.Size = new System.Drawing.Size(494, 346);
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
       // 
       // ilJobControl
       // 
@@ -321,6 +316,45 @@
       this.tvUserControl.Size = new System.Drawing.Size(139, 346);
       this.tvUserControl.TabIndex = 1;
       // 
+      // plUserDetails
+      // 
+      this.plUserDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plUserDetails.Controls.Add(this.lblUserName);
+      this.plUserDetails.Controls.Add(this.btnUserControlClose);
+      this.plUserDetails.Controls.Add(this.pbUserControl);
+      this.plUserDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.plUserDetails.Location = new System.Drawing.Point(0, 0);
+      this.plUserDetails.Name = "plUserDetails";
+      this.plUserDetails.Size = new System.Drawing.Size(494, 346);
+      this.plUserDetails.TabIndex = 2;
+      // 
+      // lblUserName
+      // 
+      this.lblUserName.AutoSize = true;
+      this.lblUserName.Location = new System.Drawing.Point(41, 13);
+      this.lblUserName.Name = "lblUserName";
+      this.lblUserName.Size = new System.Drawing.Size(35, 13);
+      this.lblUserName.TabIndex = 5;
+      this.lblUserName.Text = "label1";
+      // 
+      // btnUserControlClose
+      // 
+      this.btnUserControlClose.Location = new System.Drawing.Point(414, 3);
+      this.btnUserControlClose.Name = "btnUserControlClose";
+      this.btnUserControlClose.Size = new System.Drawing.Size(75, 23);
+      this.btnUserControlClose.TabIndex = 4;
+      this.btnUserControlClose.Text = "Close";
+      this.btnUserControlClose.UseVisualStyleBackColor = true;
+      this.btnUserControlClose.Click += new System.EventHandler(this.btnUserControlClose_Click);
+      // 
+      // pbUserControl
+      // 
+      this.pbUserControl.Location = new System.Drawing.Point(3, 3);
+      this.pbUserControl.Name = "pbUserControl";
+      this.pbUserControl.Size = new System.Drawing.Size(32, 32);
+      this.pbUserControl.TabIndex = 3;
+      this.pbUserControl.TabStop = false;
+      // 
       // lvUserControl
       // 
       this.lvUserControl.AllowDrop = true;
@@ -331,12 +365,111 @@
       this.lvUserControl.Size = new System.Drawing.Size(494, 346);
       this.lvUserControl.TabIndex = 1;
       this.lvUserControl.UseCompatibleStateImageBehavior = false;
+      this.lvUserControl.Click += new System.EventHandler(this.OnLVUserControlClicked);
       // 
       // ilUserControl
       // 
       this.ilUserControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilUserControl.ImageStream")));
       this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
       this.ilUserControl.Images.SetKeyName(0, "Users.png");
+      // 
+      // plJobDetails
+      // 
+      this.plJobDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plJobDetails.Controls.Add(this.lblJobName);
+      this.plJobDetails.Controls.Add(this.btnJobDetailClose);
+      this.plJobDetails.Controls.Add(this.pbJobControl);
+      this.plJobDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.plJobDetails.Location = new System.Drawing.Point(0, 0);
+      this.plJobDetails.Name = "plJobDetails";
+      this.plJobDetails.Size = new System.Drawing.Size(494, 346);
+      this.plJobDetails.TabIndex = 1;
+      // 
+      // lblJobName
+      // 
+      this.lblJobName.AutoSize = true;
+      this.lblJobName.Location = new System.Drawing.Point(41, 13);
+      this.lblJobName.Name = "lblJobName";
+      this.lblJobName.Size = new System.Drawing.Size(35, 13);
+      this.lblJobName.TabIndex = 5;
+      this.lblJobName.Text = "label1";
+      // 
+      // btnJobDetailClose
+      // 
+      this.btnJobDetailClose.Location = new System.Drawing.Point(414, 3);
+      this.btnJobDetailClose.Name = "btnJobDetailClose";
+      this.btnJobDetailClose.Size = new System.Drawing.Size(75, 23);
+      this.btnJobDetailClose.TabIndex = 4;
+      this.btnJobDetailClose.Text = "Close";
+      this.btnJobDetailClose.UseVisualStyleBackColor = true;
+      this.btnJobDetailClose.Click += new System.EventHandler(this.btnJobDetailClose_Click);
+      // 
+      // pbJobControl
+      // 
+      this.pbJobControl.Location = new System.Drawing.Point(3, 3);
+      this.pbJobControl.Name = "pbJobControl";
+      this.pbJobControl.Size = new System.Drawing.Size(32, 32);
+      this.pbJobControl.TabIndex = 3;
+      this.pbJobControl.TabStop = false;
+      // 
+      // plClientDetails
+      // 
+      this.plClientDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plClientDetails.Controls.Add(this.lblLogin);
+      this.plClientDetails.Controls.Add(this.label1);
+      this.plClientDetails.Controls.Add(this.lblClientName);
+      this.plClientDetails.Controls.Add(this.btnClientDetailClose);
+      this.plClientDetails.Controls.Add(this.pbClientControl);
+      this.plClientDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.plClientDetails.Location = new System.Drawing.Point(0, 0);
+      this.plClientDetails.Name = "plClientDetails";
+      this.plClientDetails.Size = new System.Drawing.Size(494, 346);
+      this.plClientDetails.TabIndex = 1;
+      // 
+      // lblLogin
+      // 
+      this.lblLogin.AutoSize = true;
+      this.lblLogin.Location = new System.Drawing.Point(100, 55);
+      this.lblLogin.Name = "lblLogin";
+      this.lblLogin.Size = new System.Drawing.Size(35, 13);
+      this.lblLogin.TabIndex = 4;
+      this.lblLogin.Text = "label2";
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(29, 55);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(65, 13);
+      this.label1.TabIndex = 3;
+      this.label1.Text = "logged in on";
+      // 
+      // lblClientName
+      // 
+      this.lblClientName.AutoSize = true;
+      this.lblClientName.Location = new System.Drawing.Point(41, 14);
+      this.lblClientName.Name = "lblClientName";
+      this.lblClientName.Size = new System.Drawing.Size(35, 13);
+      this.lblClientName.TabIndex = 2;
+      this.lblClientName.Text = "label1";
+      // 
+      // btnClientDetailClose
+      // 
+      this.btnClientDetailClose.Location = new System.Drawing.Point(414, 4);
+      this.btnClientDetailClose.Name = "btnClientDetailClose";
+      this.btnClientDetailClose.Size = new System.Drawing.Size(75, 23);
+      this.btnClientDetailClose.TabIndex = 1;
+      this.btnClientDetailClose.Text = "Close";
+      this.btnClientDetailClose.UseVisualStyleBackColor = true;
+      this.btnClientDetailClose.Click += new System.EventHandler(this.btnClientClose_Click);
+      // 
+      // pbClientControl
+      // 
+      this.pbClientControl.Location = new System.Drawing.Point(3, 4);
+      this.pbClientControl.Name = "pbClientControl";
+      this.pbClientControl.Size = new System.Drawing.Size(32, 32);
+      this.pbClientControl.TabIndex = 0;
+      this.pbClientControl.TabStop = false;
       // 
       // treeView2
       // 
@@ -360,25 +493,6 @@
       // 
       this.timerSyncronize.Interval = 10000;
       // 
-      // btnClose
-      // 
-      this.btnClose.Location = new System.Drawing.Point(414, 4);
-      this.btnClose.Name = "btnClose";
-      this.btnClose.Size = new System.Drawing.Size(75, 23);
-      this.btnClose.TabIndex = 1;
-      this.btnClose.Text = "Close";
-      this.btnClose.UseVisualStyleBackColor = true;
-      this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-      // 
-      // lblClientName
-      // 
-      this.lblClientName.AutoSize = true;
-      this.lblClientName.Location = new System.Drawing.Point(79, 19);
-      this.lblClientName.Name = "lblClientName";
-      this.lblClientName.Size = new System.Drawing.Size(35, 13);
-      this.lblClientName.TabIndex = 2;
-      this.lblClientName.Text = "label1";
-      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -397,9 +511,6 @@
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
-      this.plClientDetails.ResumeLayout(false);
-      this.plClientDetails.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).EndInit();
       this.tpJobControl.ResumeLayout(false);
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
@@ -408,7 +519,15 @@
       this.scUserControl.Panel1.ResumeLayout(false);
       this.scUserControl.Panel2.ResumeLayout(false);
       this.scUserControl.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+      this.plUserDetails.ResumeLayout(false);
+      this.plUserDetails.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbUserControl)).EndInit();
+      this.plJobDetails.ResumeLayout(false);
+      this.plJobDetails.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).EndInit();
+      this.plClientDetails.ResumeLayout(false);
+      this.plClientDetails.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -443,10 +562,19 @@
     private System.Windows.Forms.ImageList ilUserControl;
     private System.Windows.Forms.Timer timerSyncronize;
     private System.Windows.Forms.ImageList ilJobControl;
-    private System.Windows.Forms.BindingSource bindingSource1;
     private System.Windows.Forms.Panel plClientDetails;
     private System.Windows.Forms.PictureBox pbClientControl;
-    private System.Windows.Forms.Button btnClose;
+    private System.Windows.Forms.Button btnClientDetailClose;
     private System.Windows.Forms.Label lblClientName;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label lblLogin;
+    private System.Windows.Forms.Panel plJobDetails;
+    private System.Windows.Forms.Label lblJobName;
+    private System.Windows.Forms.Button btnJobDetailClose;
+    private System.Windows.Forms.PictureBox pbJobControl;
+    private System.Windows.Forms.Panel plUserDetails;
+    private System.Windows.Forms.Label lblUserName;
+    private System.Windows.Forms.Button btnUserControlClose;
+    private System.Windows.Forms.PictureBox pbUserControl;
   }
 }
