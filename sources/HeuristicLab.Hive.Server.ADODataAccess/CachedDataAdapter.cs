@@ -84,7 +84,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return result;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ObjT FindSingle(Selector dbSelector,
       Selector cacheSelector) {
       RowT row = FindSingleRow(dbSelector, cacheSelector);
@@ -116,16 +115,22 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return result;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT InsertNewRowInCache(ObjT obj);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void FillCache();
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public abstract void SyncWithDb();
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract bool PutInCache(ObjT obj);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT FindCachedById(long id);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
       foreach (ICachedDataAdapter parent in this.parentAdapters) {
         parent.SyncWithDb();
@@ -134,6 +139,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       this.SyncWithDb();
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual void RemoveRowFromCache(RowT row) {      
       cache.Rows.Remove(row);
     }

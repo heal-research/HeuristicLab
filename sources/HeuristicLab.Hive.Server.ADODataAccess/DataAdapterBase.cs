@@ -39,12 +39,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected abstract ObjT Convert(RowT row, ObjT obj);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT InsertNewRow(ObjT obj);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void UpdateRow(RowT row);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindById(long id);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindAll();
     #endregion
 
@@ -63,7 +67,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ObjT FindSingle(Selector selector) {
       RowT row = FindSingleRow(selector);
 
@@ -94,7 +97,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return result;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual RowT GetRowById(long id) {
       return FindSingleRow(
         delegate() {
@@ -120,14 +122,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public virtual ObjT GetById(long id) {
       return FindSingle(delegate() {
         return FindById(id);
       });
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public virtual ICollection<ObjT> GetAll() {
       return new List<ObjT>(
         FindMultiple(
