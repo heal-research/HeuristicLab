@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -47,7 +47,7 @@ namespace HeuristicLab.ES {
       engine.OperatorGraph.Clear();
 
       CombinedOperator co = CreateES();
-      co.Name = "ES";
+      co.Name = "σSA-ES";
       engine.OperatorGraph.AddOperator(co);
       engine.OperatorGraph.InitialOperator = co;
 
@@ -133,12 +133,8 @@ namespace HeuristicLab.ES {
       vi.AddVariable(new Variable("PlusNotation", new BoolData(true)));
       vi.AddVariable(new Variable("Generations", new IntData()));
       vi.AddVariable(new Variable("MaximumGenerations", new IntData(1000)));
+      vi.AddVariable(new Variable("GeneralLearningRate", new DoubleData(0.1)));
       vi.AddVariable(new Variable("LearningRate", new DoubleData(0.1)));
-      vi.AddVariable(new Variable("DampeningFactor", new DoubleData(10.0)));
-      vi.AddVariable(new Variable("ShakingFactor", new DoubleData(5.0)));
-      vi.AddVariable(new Variable("TargetSuccessProbability", new DoubleData(0.2)));
-      vi.AddVariable(new Variable("SuccessProbability", new DoubleData(0.2)));
-      vi.AddVariable(new Variable("UseSuccessRule", new BoolData(true)));
       op.OperatorGraph.AddOperator(vi);
       sp.AddSubOperator(vi);
 
@@ -179,6 +175,11 @@ namespace HeuristicLab.ES {
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
       op.OperatorGraph.AddOperator(c);
       sp2.AddSubOperator(c);
+
+      VariableInjector vi = new VariableInjector();
+      vi.AddVariable(new Variable("ShakingFactors", new DoubleArrayData(new double[] { 5.0 })));
+      op.OperatorGraph.AddOperator(vi);
+      sp2.AddSubOperator(vi);
 
       Sorter s = new Sorter();
       s.GetVariableInfo("Descending").ActualName = "Maximization";
@@ -284,62 +285,36 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(sp1);
       op.OperatorGraph.InitialOperator = sp1;
 
-      ConditionalBranch cb = new ConditionalBranch();
-      cb.GetVariableInfo("Condition").ActualName = "UseSuccessRule";
-      op.OperatorGraph.AddOperator(cb);
-      sp1.AddSubOperator(cb);
-
-      SequentialProcessor sp2 = new SequentialProcessor();
-      op.OperatorGraph.AddOperator(sp2);
-      cb.AddSubOperator(sp2);
-
-      OffspringAnalyzer oa = new OffspringAnalyzer();
-      oa.Name = "Offspring Analyzer";
-      oa.GetVariable("ParentsCount").Value = new IntData(1);
-      oa.GetVariable("ComparisonFactor").Value = new DoubleData(0.0);
-      op.OperatorGraph.AddOperator(oa);
-      sp2.AddSubOperator(oa);
-
-      SequentialProcessor sp3 = new SequentialProcessor();
-      op.OperatorGraph.AddOperator(sp3);
-      oa.AddSubOperator(sp3);
-      cb.AddSubOperator(sp3);
-
       OperatorExtractor oe1 = new OperatorExtractor();
       oe1.Name = "Recombinator";
       oe1.GetVariableInfo("Operator").ActualName = "Recombinator";
       op.OperatorGraph.AddOperator(oe1);
-      sp3.AddSubOperator(oe1);
+      sp1.AddSubOperator(oe1);
 
       UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
       op.OperatorGraph.AddOperator(ussp);
-      sp3.AddSubOperator(ussp);
+      sp1.AddSubOperator(ussp);
 
-      SequentialProcessor sp4 = new SequentialProcessor();
-      op.OperatorGraph.AddOperator(sp4);
-      ussp.AddSubOperator(sp4);
+      SequentialProcessor sp2 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp2);
+      ussp.AddSubOperator(sp2);
 
       OperatorExtractor oe2 = new OperatorExtractor();
       oe2.Name = "Mutator";
       oe2.GetVariableInfo("Operator").ActualName = "Mutator";
       op.OperatorGraph.AddOperator(oe2);
-      sp4.AddSubOperator(oe2);
+      sp2.AddSubOperator(oe2);
 
       OperatorExtractor oe3 = new OperatorExtractor();
       oe3.Name = "Evaluator";
       oe3.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe3);
-      sp4.AddSubOperator(oe3);
+      sp2.AddSubOperator(oe3);
 
       Counter c = new Counter();
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
       op.OperatorGraph.AddOperator(c);
-      sp4.AddSubOperator(c);
-
-      SuccessRuleMutationStrengthAdjuster srmsa = new SuccessRuleMutationStrengthAdjuster();
-      srmsa.Name = "SuccessRuleMutationStrengthAdjuster";
-      op.OperatorGraph.AddOperator(srmsa);
-      sp2.AddSubOperator(srmsa);
+      sp2.AddSubOperator(c);
 
       Sorter s = new Sorter();
       s.GetVariableInfo("Value").ActualName = "Quality";
@@ -410,7 +385,7 @@ namespace HeuristicLab.ES {
     /// <summary>
     /// Gets or sets the µ value of the current instance.
     /// </summary>
-    /// <remarks>Sets also the lambda and the rho value. Calls <see cref="ItemBase.OnChanged"/> of
+    /// <remarks>Sets also the λ and the ρ value if necessary. Using the comma notation it must hold that λ >= µ and generally µ >= ρ must hold as well. Calls <see cref="ItemBase.OnChanged"/> of
     /// base class <see cref="ItemBase"/>.</remarks>
     public int Mu {
       get { return myMu.Data; }
@@ -425,9 +400,9 @@ namespace HeuristicLab.ES {
     }
     private IntData myRho;
     /// <summary>
-    /// Gets or sets the rho value of the current instance.
+    /// Gets or sets the ρ value of the current instance.
     /// </summary>
-    /// <remarks>Sets also the µ value. Calls <see cref="ItemBase.OnChanged"/> of
+    /// <remarks>Sets also the µ value to be as large as the new ρ value if it was smaller before. Calls <see cref="ItemBase.OnChanged"/> of
     /// base class <see cref="ItemBase"/>.</remarks>
     public int Rho {
       get { return myRho.Data; }
@@ -441,9 +416,9 @@ namespace HeuristicLab.ES {
     }
     private IntData myLambda;
     /// <summary>
-    /// Gets or sets the lambda value of the current instance.
+    /// Gets or sets the λ value of the current instance.
     /// </summary>
-    /// <remarks>May also change the µ value under certain circumstances. 
+    /// <remarks>If the comma notation is used, it also changes the µ value to be as large as the new λ value if it was larger before. Note that in general for good optimization results it needs to be fairly larger than mu.
     /// Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/>.</remarks>
     public int Lambda {
       get { return myLambda.Data; }
@@ -451,12 +426,9 @@ namespace HeuristicLab.ES {
         if (value > 0) {
           if (PlusNotation) myLambda.Data = value;
           else {
-            if (value > 1 && value < Mu) {
+            if (value >= 1 && value < Mu) {
               myLambda.Data = value;
-              myMu.Data = value - 1;
-            } else if (value == 1) {
-              myMu.Data = 1;
-              myLambda.Data = 2;
+              myMu.Data = value;
             } else if (value > Mu) {
               myLambda.Data = value;
             }
@@ -467,47 +439,50 @@ namespace HeuristicLab.ES {
     }
     private BoolData myPlusNotation;
     /// <summary>
-    /// Gets or sets the boolean flag whether it is a plus notation or not.
+    /// Gets or sets the boolean flag whether the plus notation is used (true) or the comma notation (false).
     /// </summary>
-    /// <remarks>May also set the lambda value under certain circumstances. 
+    /// <remarks>If set to false (comma notation) it sets λ to be as large as µ if is lower. Note that in general for good optimization results it needs to be fairly larger than µ. 
     /// Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/>.</remarks>
     public bool PlusNotation {
       get { return myPlusNotation.Data; }
       set {
         if (!value && myPlusNotation.Data) { // from plus to point
-          if (Lambda <= Mu) {
-            myLambda.Data = Mu + 1;
+          if (Lambda < Mu) {
+            myLambda.Data = Mu;
           }
         }
         myPlusNotation.Data = value;
         OnChanged();
       }
     }
-    private DoubleData myShakingFactor;
+    private DoubleArrayData myShakingFactors;
     /// <summary>
-    /// Gets or sets the shaking factor of the current instance.
+    /// Gets or sets the initial strategy vector s(0).
     /// </summary>
-    public double ShakingFactor {
-      get { return myShakingFactor.Data; }
-      set { myShakingFactor.Data = value; }
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
+    public double[] ShakingFactors {
+      get { return myShakingFactors.Data; }
+      set { myShakingFactors.Data = value; }
     }
-    private DoubleData mySuccessProbability;
-    
-    private DoubleData myTargetSuccessProbability;
+    private DoubleData myGeneralLearningRate;
     /// <summary>
-    /// Gets or sets the success probability.
+    /// Gets or sets the general learning rate (tau0).
     /// </summary>
-    /// <remarks>Gets the target success probability and sets also the target success probability.</remarks>
-    public double SuccessProbability {
-      get { return myTargetSuccessProbability.Data; }
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
+    public double GeneralLearningRate {
+      get { return myGeneralLearningRate.Data; }
       set {
-        myTargetSuccessProbability.Data = value;
-        mySuccessProbability.Data = value;
+        if (value > 0.0 && value <= 1.0) {
+          myGeneralLearningRate.Data = value;
+          OnChanged();
+        }
       }
     }
     private DoubleData myLearningRate;
     /// <summary>
-    /// Gets or sets the learning rate.
+    /// Gets or sets the learning rate (tau).
     /// </summary>
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
     /// in the setter.</remarks>
@@ -520,21 +495,6 @@ namespace HeuristicLab.ES {
         }
       }
     }
-    private DoubleData myDampeningFactor;
-    /// <summary>
-    /// Gets or sets the dampening factor.
-    /// </summary>
-    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
-    /// in the setter.</remarks>
-    public double DampeningFactor {
-      get { return myDampeningFactor.Data; }
-      set {
-        if (value >= 1.0) {
-          myDampeningFactor.Data = value;
-          OnChanged();
-        }
-      }
-    }
     private IntData myMaximumGenerations;
     /// <summary>
     /// Gets or sets the maximum number of generations.
@@ -542,14 +502,6 @@ namespace HeuristicLab.ES {
     public int MaximumGenerations {
       get { return myMaximumGenerations.Data; }
       set { myMaximumGenerations.Data = value; }
-    }
-    private BoolData myUseSuccessRule;
-    /// <summary>
-    /// Gets or sets the boolean flag whether to use the success rule or not.
-    /// </summary>
-    public bool UseSuccessRule {
-      get { return myUseSuccessRule.Data; }
-      set { myUseSuccessRule.Data = value; }
     }
     private CombinedOperator myES;
     private IOperator myESMain;
@@ -680,15 +632,14 @@ namespace HeuristicLab.ES {
       myLambda = vi.GetVariable("ESlambda").GetValue<IntData>();
       myMaximumGenerations = vi.GetVariable("MaximumGenerations").GetValue<IntData>();
       myPlusNotation = vi.GetVariable("PlusNotation").GetValue<BoolData>();
-      myShakingFactor = vi.GetVariable("ShakingFactor").GetValue<DoubleData>();
-      myTargetSuccessProbability = vi.GetVariable("TargetSuccessProbability").GetValue<DoubleData>();
-      mySuccessProbability = vi.GetVariable("SuccessProbability").GetValue<DoubleData>();
+      myGeneralLearningRate = vi.GetVariable("GeneralLearningRate").GetValue<DoubleData>();
       myLearningRate = vi.GetVariable("LearningRate").GetValue<DoubleData>();
-      myDampeningFactor = vi.GetVariable("DampeningFactor").GetValue<DoubleData>();
-      myUseSuccessRule = vi.GetVariable("UseSuccessRule").GetValue<BoolData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
       myPopulationInitialization = co3;
+      // Variable Injector
+      VariableInjector vi2 = (VariableInjector)co3.OperatorGraph.InitialOperator.SubOperators[1].SubOperators[0].SubOperators[3];
+      myShakingFactors = vi2.GetVariable("ShakingFactors").GetValue<DoubleArrayData>();
       // ES Main
       CombinedOperator co4 = (CombinedOperator)sp1.SubOperators[2];
       myESMain = co4;
