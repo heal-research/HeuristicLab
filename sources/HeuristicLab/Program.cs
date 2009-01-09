@@ -24,36 +24,60 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
 using System.Threading;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab {
   static class Program {
     [STAThread]
     static void Main(string[] args) {
-      if (args.Length == 0) {  // normal mode
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new MainForm());
-      } else if (args.Length == 1) {  // start specific application
-        PluginManager.Manager.Initialize();
-
-        ApplicationInfo app = null;
-        foreach (ApplicationInfo info in PluginManager.Manager.InstalledApplications) {
-          if (info.Name == args[0])
-            app = info;
-        }
-        if (app == null) {  // application not found
-          MessageBox.Show("Cannot start application.\nApplication " + args[0] + " is not installed.\n\nStarting HeuristicLab in normal mode ...",
-                          "HeuristicLab",
-                          MessageBoxButtons.OK,
-                          MessageBoxIcon.Warning);
+      try {
+        if (args.Length == 0) {  // normal mode
           Application.EnableVisualStyles();
           Application.SetCompatibleTextRenderingDefault(false);
           Application.Run(new MainForm());
-        } else {
-          PluginManager.Manager.Run(app);
+        } else if (args.Length == 1) {  // start specific application
+          PluginManager.Manager.Initialize();
+
+          ApplicationInfo app = null;
+          foreach (ApplicationInfo info in PluginManager.Manager.InstalledApplications) {
+            if (info.Name == args[0])
+              app = info;
+          }
+          if (app == null) {  // application not found
+            MessageBox.Show("Cannot start application.\nApplication " + args[0] + " is not installed.\n\nStarting HeuristicLab in normal mode ...",
+                            "HeuristicLab",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+          } else {
+            PluginManager.Manager.Run(app);
+          }
         }
       }
+      catch (Exception ex) {
+        ShowErrorMessageBox(ex);
+      }
+    }
+
+    public static void ShowErrorMessageBox(Exception ex) {
+      MessageBox.Show(BuildErrorMessage(ex),
+                      "Error - " + ex.GetType().Name,
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Error);
+    }
+
+    private static string BuildErrorMessage(Exception ex) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+
+      while (ex.InnerException != null) {
+        ex = ex.InnerException;
+        sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
+      }
+      return sb.ToString();
     }
   }
 }
