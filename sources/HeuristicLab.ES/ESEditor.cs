@@ -60,6 +60,8 @@ namespace HeuristicLab.ES {
     public ESEditor(ES es)
       : this() {
       ES = es;
+      int dimension = es.ShakingFactors.Length;
+      problemDimensionTextBox.Text = dimension.ToString();
     }
 
     /// <summary>
@@ -267,6 +269,7 @@ namespace HeuristicLab.ES {
       int dim = int.Parse(problemDimensionTextBox.Text);
       if (ES.ShakingFactors.Length != dim) {
         problemDimensionTextBox.Text = ES.ShakingFactors.Length.ToString();
+        UpdateLearningRates();
       }
       Refresh();
     }
@@ -286,7 +289,16 @@ namespace HeuristicLab.ES {
           shakingFactors[i] = tmp[i % tmp.Length];
         }
         ES.ShakingFactors = shakingFactors;
+        UpdateLearningRates();
         Refresh();
+      }
+    }
+
+    private void UpdateLearningRates() {
+      if (ES != null) {
+        int dimension = int.Parse(problemDimensionTextBox.Text);
+        ES.GeneralLearningRate = 1 / Math.Sqrt(2 * dimension);
+        ES.LearningRate = 1 / Math.Sqrt(2 * Math.Sqrt(dimension));
       }
     }
   }
