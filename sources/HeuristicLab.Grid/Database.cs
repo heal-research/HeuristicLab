@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
-using System.Data.SQLite;
 using System.Data.Common;
 using System.Threading;
 
@@ -32,16 +31,19 @@ namespace HeuristicLab.Grid {
   class Database {
     private string connectionString;
     private ReaderWriterLockSlim rwLock;
+    private DbProviderFactory factory;
     public Database(string connectionString) {
       this.connectionString = connectionString;
       rwLock = new ReaderWriterLockSlim();
+      factory = DbProviderFactories.GetFactory("System.Data.SQLite");
     }
 
     #region create empty database
     public void CreateNew() {
       rwLock.EnterWriteLock();
       try {
-        using(DbConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand cmd = cnn.CreateCommand()) {
@@ -61,7 +63,8 @@ namespace HeuristicLab.Grid {
     internal void InsertJob(Guid guid, JobState jobState, byte[] rawData) {
       rwLock.EnterWriteLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
@@ -103,7 +106,8 @@ namespace HeuristicLab.Grid {
     internal JobEntry GetNextWaitingJob() {
       rwLock.EnterUpgradeableReadLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           JobEntry job = new JobEntry();
           using(DbTransaction t = cnn.BeginTransaction()) {
@@ -158,7 +162,8 @@ namespace HeuristicLab.Grid {
     internal void SetJobResult(Guid guid, byte[] result) {
       rwLock.EnterWriteLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
@@ -189,7 +194,8 @@ namespace HeuristicLab.Grid {
     internal void UpdateJobState(Guid guid, JobState jobState) {
       rwLock.EnterWriteLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           using(DbTransaction t = cnn.BeginTransaction()) {
             using(DbCommand c = cnn.CreateCommand()) {
@@ -224,7 +230,8 @@ namespace HeuristicLab.Grid {
     internal JobEntry GetJob(Guid guid) {
       rwLock.EnterReadLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           DbCommand c = cnn.CreateCommand();
           c.CommandText = "Select Status, CreationTime, StartTime, Rawdata from Job where Guid=@Guid";
@@ -254,7 +261,8 @@ namespace HeuristicLab.Grid {
     internal JobState GetJobState(Guid guid) {
       rwLock.EnterReadLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           DbCommand c = cnn.CreateCommand();
           c.CommandText = "Select Status from Job where Guid=@Guid";
@@ -278,7 +286,8 @@ namespace HeuristicLab.Grid {
     internal long GetJobCount(JobState status) {
       rwLock.EnterReadLock();
       try {
-        using(SQLiteConnection cnn = new SQLiteConnection(connectionString)) {
+        using (DbConnection cnn = factory.CreateConnection()) {
+          cnn.ConnectionString = connectionString;
           cnn.Open();
           DbCommand c = cnn.CreateCommand();
           c.CommandText = "Select Count(id) from Job where Status=@Status";
