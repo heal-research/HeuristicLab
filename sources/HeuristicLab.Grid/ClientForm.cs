@@ -39,9 +39,6 @@ namespace HeuristicLab.Grid {
   public partial class ClientForm : Form {
     private GridClient client;
     public ClientForm() {
-      Trace.Listeners.Clear();
-      Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
-
       InitializeComponent();
 
       client = new GridClient();

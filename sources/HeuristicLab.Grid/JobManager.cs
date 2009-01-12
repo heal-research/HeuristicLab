@@ -67,8 +67,6 @@ namespace HeuristicLab.Grid {
     private ChannelFactory<IGridServer> factory;
 
     public JobManager(string address) {
-      Trace.Listeners.Clear();
-      Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
       this.address = address;
       Thread starterThread = new Thread(StartEngines);
       Thread resultsGatheringThread = new Thread(GetResults);

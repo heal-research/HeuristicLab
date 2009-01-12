@@ -62,9 +62,6 @@ namespace HeuristicLab.Grid {
     }
 
     private void Start() {
-      Trace.Listeners.Clear();
-      Trace.Listeners.Add(new EventLogTraceListener("HeuristicLab.Grid"));
-
       externalHost = new ServiceHost(server, new Uri(externalAddressTextBox.Text));
       internalHost = new ServiceHost(jobStore, new Uri(internalAddressTextBox.Text));
       ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
