@@ -42,7 +42,7 @@ namespace HeuristicLab.Logging {
       ObjectData[] values = new ObjectData[scope.SubScopes.Count];
 
       for (int i = 0; i < scope.SubScopes.Count; i++)
-        values[i] = scope.SubScopes[i].GetVariableValue<ObjectData>("Value", false);
+        values[i] = (ObjectData)scope.SubScopes[i].GetVariableValue<ObjectData>("Value", false).Clone();
 
       Log log = GetVariableValue<Log>("Log", scope, false, false);
       if (log == null) {
