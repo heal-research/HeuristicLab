@@ -80,6 +80,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       parentAdapters.Add(this.ResAdapter as ICachedDataAdapter);
     }
 
+    private void Preprocess(ClientInfo client) {
+      if (client != null) {
+        if (client.Id == default(long)) {
+          ClientInfo found = GetById(client.ClientId);
+          if (found != null)
+            client.Id = found.Id;
+        }
+      }
+    }
+
     #region Overrides
     protected override ClientInfo Convert(dsHiveServer.ClientRow row, 
       ClientInfo client) {
@@ -207,11 +217,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(ClientInfo client) {
       if (client != null) {
-        if (client.Id == default(long)) {
-          ClientInfo found = GetById(client.ClientId);
-          if (found != null)
-            client.Id = found.Id;
-        }
+        Preprocess(client);
 
         ResAdapter.Update(client);
 
@@ -244,6 +250,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public override bool Delete(ClientInfo client) {      
       if (client != null) {
+        Preprocess(client);
+
         dsHiveServer.ClientRow row =
           GetRowById(client.Id);
 
