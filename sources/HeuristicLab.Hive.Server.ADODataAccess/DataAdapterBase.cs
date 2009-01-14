@@ -28,9 +28,9 @@ using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   abstract class DataAdapterBase<AdapterT, ObjT, RowT>
-    where AdapterT: new() 
-    where RowT: System.Data.DataRow
-    where ObjT: IHiveObject, new() {
+    where AdapterT : new()
+    where RowT : System.Data.DataRow
+    where ObjT : IHiveObject, new() {
     protected AdapterT adapter =
       new AdapterT();
 
@@ -45,13 +45,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void UpdateRow(RowT row);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindById(long id);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindAll();
     #endregion
 
     protected delegate IEnumerable<RowT> Selector();
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual RowT FindSingleRow(Selector selector) {
       RowT row = default(RowT);
 
@@ -77,6 +80,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ICollection<ObjT> FindMultiple(Selector selector) {
       IEnumerable<RowT> found =
         selector();
@@ -148,3 +152,4 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
   }
 }
+

@@ -29,19 +29,20 @@ using System.Data;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   abstract class CachedDataAdapter<AdapterT, ObjT, RowT, CacheT> :
-    DataAdapterBase<AdapterT, ObjT, RowT>, 
+    DataAdapterBase<AdapterT, ObjT, RowT>,
     ICachedDataAdapter
-    where CacheT: System.Data.TypedTableBase<RowT>, new()
+    where CacheT : System.Data.TypedTableBase<RowT>, new()
     where AdapterT : new()
     where RowT : System.Data.DataRow
     where ObjT : IHiveObject, new() {
-    protected CacheT cache = 
+    protected CacheT cache =
       new CacheT();
+
+    protected IDictionary<long, DataTable> dataTable =
+      new Dictionary<long, DataTable>();
 
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
-
-    private DataTable temp = new DataTable();
 
     protected CachedDataAdapter() {
       FillCache();
@@ -50,7 +51,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new EventHandler(CachedDataAdapter_OnUpdate);
     }
 
-    protected virtual RowT FindSingleRow(Selector dbSelector, 
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    protected virtual RowT FindSingleRow(Selector dbSelector,
       Selector cacheSelector) {
       RowT row =
          FindSingleRow(cacheSelector);
@@ -64,6 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual IEnumerable<RowT> FindMultipleRows(Selector dbSelector,
         Selector cacheSelector) {
       IList<RowT> result =
@@ -95,6 +98,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ICollection<ObjT> FindMultiple(Selector dbSelector,
       Selector cacheSelector) {
       ICollection<ObjT> result =
@@ -123,6 +127,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract bool PutInCache(ObjT obj);
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT FindCachedById(long id);
 
     [MethodImpl(MethodImplOptions.Synchronized)]
@@ -135,22 +140,23 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
-    protected virtual void RemoveRowFromCache(RowT row) {      
+    protected virtual void RemoveRowFromCache(RowT row) {
       cache.Rows.Remove(row);
     }
 
     protected virtual bool IsCached(RowT row) {
       if (row == null)
         return false;
-     else
+      else
         return FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     protected override RowT GetRowById(long id) {
       RowT row =
         FindCachedById(id);
-      
-      if(row == null)
+
+      if (row == null)
         row = FindSingleRow(
           delegate() {
             return FindById(id);
@@ -162,7 +168,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(ObjT obj) {
       if (obj != null) {
-        RowT row = 
+        RowT row =
           GetRowById(obj.Id);
 
         if (row == null) {
@@ -181,11 +187,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         if (!IsCached(row))
           UpdateRow(row);
-        
+
         if (IsCached(row) &&
             !PutInCache(obj)) {
           //remove from cache
-          temp.ImportRow(row);
+          dataTable[obj.Id].ImportRow(row);
+          dataTable.Remove(obj.Id);
 
           UpdateRow(row);
           RemoveRowFromCache(row);
@@ -194,9 +201,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           //add to cache
           cache.ImportRow(row);
 
+          dataTable[obj.Id] = row.Table;
           row.Table.Rows.Remove(row);
         }
       }
     }
   }
 }
+
