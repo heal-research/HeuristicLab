@@ -202,6 +202,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
           Job job2Calculate = allOfflineJobs.First.Value;
           job2Calculate.State = State.calculating;
+          job2Calculate.Client = clientAdapter.GetById(clientId);
           response.Job = job2Calculate;
           jobAdapter.Update(job2Calculate);
           response.Success = true;
@@ -291,6 +292,19 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
         return response;
       }
+      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
+      if (client.State == State.calculating) {
+        // check wich job the client was calculating and reset it
+        foreach (Job job in allJobs) {
+          if (job.Client.ClientId == client.ClientId) {
+            // TODO check for job results
+            job.Client = null;
+            job.Percentage = 0;
+            job.State = State.idle;
+          }
+        }
+      }
+
       client.State = State.offline;
       clientAdapter.Update(client);
 
