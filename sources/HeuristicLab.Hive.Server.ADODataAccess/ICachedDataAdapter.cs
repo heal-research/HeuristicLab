@@ -23,9 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   internal interface ICachedDataAdapter {
+    [MethodImpl(MethodImplOptions.Synchronized)]
     void SyncWithDb();
   }
 }
