@@ -177,6 +177,14 @@ namespace HeuristicLab.Hive.Server.Core {
       else
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
+      if (hbData.jobProgress != null) {
+        foreach (KeyValuePair<long, double> jobProgress in hbData.jobProgress) {
+          Job curJob = jobAdapter.GetById(jobProgress.Key);
+          curJob.Percentage = jobProgress.Value;
+          jobAdapter.Update(curJob);
+        }
+      }
+
       return response;
     }
    
