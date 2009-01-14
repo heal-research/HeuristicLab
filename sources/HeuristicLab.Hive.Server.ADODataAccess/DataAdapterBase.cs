@@ -45,16 +45,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void UpdateRow(RowT row);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindById(long id);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindAll();
     #endregion
 
     protected delegate IEnumerable<RowT> Selector();
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual RowT FindSingleRow(Selector selector) {
       RowT row = default(RowT);
 
@@ -80,7 +77,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ICollection<ObjT> FindMultiple(Selector selector) {
       IEnumerable<RowT> found =
         selector();
