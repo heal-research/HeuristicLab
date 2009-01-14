@@ -119,14 +119,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         tvJobControl.Nodes.Add("pending");
         foreach (Job job in jobs.List) {
           if (job.State == State.calculating) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobCalculating);
             tvJobControl.Nodes[0].Nodes.Add(job.Id.ToString());
-            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobCalculating));
+            lvJobControl.Items.Add(lvi);
+            lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
           } else if (job.State == State.finished) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
             tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
-            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobFinished));
+            lvJobControl.Items.Add(lvi);
           } else if (job.State == State.offline) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobPending);
             tvJobControl.Nodes[2].Nodes.Add(job.Id.ToString());
-            lvJobControl.Items.Add(new ListViewItem(job.Id.ToString(), 0, lvJobPending));
+            lvJobControl.Items.Add(lvi);
           }
         } // Jobs
         lvJobControl.Groups.Add(lvJobCalculating);
@@ -249,6 +253,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       scJobControl.Panel2.Controls.Add(plJobDetails);
       pbJobControl.Image = ilJobControl.Images[0];
       lblJobName.Text = currentJob.Id.ToString();
+      progressJob.Value = (int)(currentJob.Percentage * 100);
+      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
+      lblUserCreatedJob.Text = /* currentJob.User.Name + */ " created Job";
+      lblJobCreated.Text = "Created at "/* + currentJob.User.CreatedJob + */;
+      if (currentJob.ParentJob != null)   
+        lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
+      lblPriorityJob.Text = "Priority of job is " /* + currentJob.Priority */;
+      if (currentJob.Client != null) {
+        lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
+      lblJobCalculationBegin.Text = "Startet calculation at " /* + currentJob.User.CalculationBegin */;
+      lblJobCalculationEnd.Text = "Calculation endet at " /* + currentJob.User.CalculationEnd */;
+      }
     }
 
     private void btnJobDetailClose_Click(object sender, EventArgs e) {
@@ -271,6 +287,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void btnUserControlClose_Click(object sender, EventArgs e) {
       scUserControl.Panel2.Controls.Clear();
       scUserControl.Panel2.Controls.Add(lvUserControl);
+    }
+
+    ToolTip tt = new ToolTip();
+    private void lvJobControl_MouseMove(object sender, MouseEventArgs e) {
+      if ((lvJobControl.GetItemAt(e.X, e.Y) != null) &&
+        (lvJobControl.GetItemAt(e.X, e.Y).ToolTipText != null)) {
+        tt.SetToolTip(lvJobControl, lvJobControl.GetItemAt(e.X, e.Y).ToolTipText);
+      }
     }
 
   }
