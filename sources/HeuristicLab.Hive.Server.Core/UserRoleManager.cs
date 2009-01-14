@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +44,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IUserRoleManager Members
 
+    /// <summary>
+    /// returns all users from the database
+    /// </summary>
+    /// <returns></returns>
     public ResponseList<User> GetAllUsers() {
       ResponseList<User> response = new ResponseList<User>();
 
@@ -34,6 +59,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Adds a new user to the database
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public ResponseObject<User> AddNewUser(User user) {
       ResponseObject<User> response = new ResponseObject<User>();
 
@@ -56,6 +86,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// returns all usergroups from the database
+    /// </summary>
+    /// <returns></returns>
     public ResponseList<UserGroup> GetAllUserGroups() {
       ResponseList<UserGroup> response = new ResponseList<UserGroup>();
 
@@ -66,6 +100,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Removes a user from the database
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public Response RemoveUser(long userId) {
       Response response = new Response();
       User user = userAdapter.GetById(userId);
@@ -81,6 +120,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Adds a new usergroup to the database
+    /// </summary>
+    /// <param name="userGroup"></param>
+    /// <returns></returns>
     public ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup) {
       ResponseObject<UserGroup> response = new ResponseObject<UserGroup>();
       
@@ -98,6 +142,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Removes a user group from the database
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <returns></returns>
     public Response RemoveUserGroup(long groupId) {
       Response response = new Response();
 
@@ -114,6 +163,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Adds a user into a user group
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public Response AddUserToGroup(long groupId, long userId) {
       Response response = new Response();
 
@@ -139,6 +194,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Adds a user group to a user group
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="groupToAddId"></param>
+    /// <returns></returns>
     public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
       Response response = new Response();
 
@@ -157,6 +218,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Removes a permission owner (user, user group) from a user group
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="permissionOwnerId"></param>
+    /// <returns></returns>
     public Response RemovePermissionOwnerFromGroup(long groupId, long permissionOwnerId) {
       Response response = new Response();
 

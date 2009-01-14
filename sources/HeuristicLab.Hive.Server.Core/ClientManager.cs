@@ -50,6 +50,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IClientManager Members
 
+    /// <summary>
+    /// Returns all clients stored in the database
+    /// </summary>
+    /// <returns></returns>
     public ResponseList<ClientInfo> GetAllClients() {
       ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
 
@@ -60,6 +64,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// returns all client groups stored in the database
+    /// </summary>
+    /// <returns></returns>
     public ResponseList<ClientGroup> GetAllClientGroups() {
       ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
 
@@ -76,6 +84,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Add a client group into the database
+    /// </summary>
+    /// <param name="clientGroup"></param>
+    /// <returns></returns>
     public Response AddClientGroup(ClientGroup clientGroup) {
       Response response = new Response();
 
@@ -91,6 +104,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    ///  Add a resource to a group
+    /// </summary>
+    /// <param name="clientGroupId"></param>
+    /// <param name="resource"></param>
+    /// <returns></returns>
     public Response AddResourceToGroup(long clientGroupId, Resource resource) {
       Response response = new Response();
 
@@ -114,6 +133,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Remove a resource from a group
+    /// </summary>
+    /// <param name="clientGroupId"></param>
+    /// <param name="resourceId"></param>
+    /// <returns></returns>
     public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
       Response response = new Response();
 

@@ -39,6 +39,10 @@ namespace HeuristicLab.Hive.Server.Core {
       jobAdapter = ServiceLocator.GetJobAdapter();
     }
 
+    /// <summary>
+    /// returns all jobs stored in the database
+    /// </summary>
+    /// <returns></returns>
     public ResponseList<Job> GetAllJobs() {
       ResponseList<Job> response = new ResponseList<Job>();
 
@@ -49,6 +53,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Adds a new job into the database
+    /// </summary>
+    /// <param name="job"></param>
+    /// <returns></returns>
     public ResponseObject<Job> AddNewJob(Job job) {
       ResponseObject<Job> response = new ResponseObject<Job>();
 
@@ -81,6 +90,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// Removes a job from the database
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
     public Response RemoveJob(long jobId) {
       Response response = new Response();
 

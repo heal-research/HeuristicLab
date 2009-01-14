@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +38,6 @@ namespace HeuristicLab.Hive.Server.Core {
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
-    int nrOfJobs = 0;
     Dictionary<Guid, DateTime> lastHeartbeats = 
       new Dictionary<Guid,DateTime>();
 
@@ -26,6 +46,11 @@ namespace HeuristicLab.Hive.Server.Core {
     IJobResultsAdapter jobResultAdapter;
     ILifecycleManager lifecycleManager;
 
+    /// <summary>
+    /// Initialization of the Adapters to the database
+    /// Initialization of Eventhandler for the lifecycle management
+    /// Initialization of lastHearbeats Dictionary
+    /// </summary>
     public ClientCommunicator() {
       clientAdapter = ServiceLocator.GetClientAdapter();
       jobAdapter = ServiceLocator.GetJobAdapter();
@@ -35,16 +60,15 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager.OnServerHeartbeat += 
         new EventHandler(lifecycleManager_OnServerHeartbeat);
 
-      for (int i = 0; i < nrOfJobs; i++) {
-        Job job = new Job();
-        job.Id = i;
-        job.State = State.offline;
-        jobAdapter.Update(job);
-      }
       lastHeartbeats = new Dictionary<Guid, DateTime>();
-
     }
 
+    /// <summary>
+    /// Check if online clients send their hearbeats
+    /// if not -> set them offline and check if they where calculating a job
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     [MethodImpl(MethodImplOptions.Synchronized)]
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
       List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
@@ -88,6 +112,12 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IClientCommunicator Members
 
+    /// <summary>
+    /// Login process for the client
+    /// A hearbeat entry is created as well (login is the first hearbeat)
+    /// </summary>
+    /// <param name="clientInfo"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.Synchronized)]
     public Response Login(ClientInfo clientInfo) {
       Response response = new Response();
@@ -113,6 +143,13 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// The client has to send regulary heartbeats
+    /// this hearbeats will be stored in the heartbeats dictionary
+    /// check if there is work for the client and send the client a response if he should pull a job
+    /// </summary>
+    /// <param name="hbData"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseHB SendHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
@@ -142,7 +179,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
       return response;
     }
-
+   
+    /// <summary>
+    /// if the client asked to pull a job he calls this method
+    /// the server selects a job and sends it to the client
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
@@ -163,6 +206,17 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// the client can send job results during calculating 
+    /// and will send a final job result when he finished calculating
+    /// these job results will be stored in the database
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <param name="jobId"></param>
+    /// <param name="result"></param>
+    /// <param name="exception"></param>
+    /// <param name="finished"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseResultReceived SendJobResult(Guid clientId, 
       long jobId, 
@@ -210,6 +264,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
+    /// <summary>
+    /// when a client logs out the state will be set
+    /// and the entry in the last hearbeats dictionary will be removed
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.Synchronized)]                       
     public Response Logout(Guid clientId) {
       Response response = new Response();
