@@ -91,7 +91,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     #region Overrides
-    protected override ClientInfo Convert(dsHiveServer.ClientRow row, 
+    protected override ClientInfo ConvertRow(dsHiveServer.ClientRow row, 
       ClientInfo client) {
       if(row != null && client != null) {      
         /*Parent - resource*/
@@ -137,7 +137,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ClientRow Convert(ClientInfo client,
+    protected override dsHiveServer.ClientRow ConvertObj(ClientInfo client,
       dsHiveServer.ClientRow row) {
       if (client != null && row != null) {      
         row.GUID = client.ClientId;
@@ -161,7 +161,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void UpdateRow(dsHiveServer.ClientRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override dsHiveServer.ClientRow
@@ -175,7 +175,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.ClientRow
       InsertNewRowInCache(ClientInfo client) {
-      dsHiveServer.ClientRow row = cache.NewClientRow();
+      dsHiveServer.ClientRow row = data.NewClientRow();
       row.ResourceId = client.Id;
       cache.AddClientRow(row);
 
@@ -183,11 +183,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void FillCache() {
-      cache = adapter.GetDataByActive();
+      Adapter.FillByActive(cache);
     }
 
     public override void SyncWithDb() {
-      adapter.Update(cache);
+      Adapter.Update(cache);
     }
 
     protected override bool PutInCache(ClientInfo obj) {
@@ -196,7 +196,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override IEnumerable<dsHiveServer.ClientRow>
       FindById(long id) {
-      return adapter.GetDataByResourceId(id);
+      return Adapter.GetDataByResourceId(id);
     }
 
     protected override dsHiveServer.ClientRow
@@ -207,7 +207,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override IEnumerable<dsHiveServer.ClientRow>
       FindAll() {
       return FindMultipleRows(
-        new Selector(adapter.GetData),
+        new Selector(Adapter.GetData),
         new Selector(cache.AsEnumerable<dsHiveServer.ClientRow>));
     }
 
@@ -228,7 +228,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     public ClientInfo GetById(Guid clientId) {
       return base.FindSingle(
         delegate() {
-          return adapter.GetDataById(clientId);
+          return Adapter.GetDataById(clientId);
         }, 
         delegate() {
           return from c in

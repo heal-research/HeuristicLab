@@ -52,7 +52,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region Overrides
-    protected override Resource Convert(dsHiveServer.ResourceRow row,
+    protected override Resource ConvertRow(dsHiveServer.ResourceRow row,
       Resource resource) {
       if (row != null && resource != null) {
         resource.Id = row.ResourceId;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ResourceRow Convert(Resource resource,
+    protected override dsHiveServer.ResourceRow ConvertObj(Resource resource,
       dsHiveServer.ResourceRow row) {
       if (resource != null && row != null) {
         row.Name = resource.Name;
@@ -77,7 +77,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void UpdateRow(dsHiveServer.ResourceRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override dsHiveServer.ResourceRow
@@ -97,11 +97,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void FillCache() {
-      cache = adapter.GetDataByActive();
+      Adapter.FillByActive(cache);
     }
 
     public override void SyncWithDb() {
-      adapter.Update(cache);
+      Adapter.Update(cache);
     }
 
     protected override bool PutInCache(Resource obj) {
@@ -111,7 +111,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override IEnumerable<dsHiveServer.ResourceRow>
       FindById(long id) {
-      return adapter.GetDataById(id);
+      return Adapter.GetDataById(id);
     }
 
     protected override dsHiveServer.ResourceRow
@@ -122,7 +122,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override IEnumerable<dsHiveServer.ResourceRow>
       FindAll() {
       return FindMultipleRows(
-        new Selector(adapter.GetData),
+        new Selector(Adapter.GetData),
         new Selector(cache.AsEnumerable<dsHiveServer.ResourceRow>));
     }
 
@@ -148,7 +148,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.ResourceRow row =
         base.FindSingleRow(
           delegate() {
-            return adapter.GetDataByName(name);
+            return Adapter.GetDataByName(name);
           },
           delegate() {
             return from r in
@@ -160,7 +160,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       if (row != null) {
         Resource res = new Resource();
-        Convert(row, res);
+        res = Convert(row, res);
 
         return res;
       } else {

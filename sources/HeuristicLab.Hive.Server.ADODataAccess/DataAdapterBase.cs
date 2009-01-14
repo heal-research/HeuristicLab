@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,13 +32,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     where AdapterT : new()
     where RowT : System.Data.DataRow
     where ObjT : IHiveObject, new() {
-    protected AdapterT adapter =
-      new AdapterT();
+    protected AdapterT Adapter {
+      get {
+        return new AdapterT();
+      }
+    }
 
     #region Abstract methods
-    protected abstract RowT Convert(ObjT obj, RowT row);
+    protected abstract RowT ConvertObj(ObjT obj, RowT row);
 
-    protected abstract ObjT Convert(RowT row, ObjT obj);
+    protected abstract ObjT ConvertRow(RowT row, ObjT obj);
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT InsertNewRow(ObjT obj);
@@ -45,16 +49,26 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void UpdateRow(RowT row);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindById(long id);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract IEnumerable<RowT> FindAll();
     #endregion
 
     protected delegate IEnumerable<RowT> Selector();
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
+    protected ObjT Convert(RowT row, ObjT obj) {
+      try {
+        obj = ConvertRow(row, obj);
+        return obj;
+      }
+      catch (DeletedRowInaccessibleException) {
+        return default(ObjT);
+      }
+      catch (RowNotInTableException) {
+        return default(ObjT);
+      }
+    }
+
     protected virtual RowT FindSingleRow(Selector selector) {
       RowT row = default(RowT);
 
@@ -72,7 +86,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       if (row != null) {
         ObjT obj = new ObjT();
-        Convert(row, obj);
+        obj = Convert(row, obj);
 
         return obj;
       } else {
@@ -80,7 +94,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected virtual ICollection<ObjT> FindMultiple(Selector selector) {
       IEnumerable<RowT> found =
         selector();
@@ -90,8 +103,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       foreach (RowT row in found) {
         ObjT obj = new ObjT();
-        Convert(row, obj);
-        result.Add(obj);
+        obj = Convert(row, obj);
+        if(obj != null)
+          result.Add(obj);
       }
 
       return result;
@@ -114,7 +128,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row = InsertNewRow(obj);
         }
 
-        Convert(obj, row);
+        ConvertObj(obj, row);
 
         UpdateRow(row);
 

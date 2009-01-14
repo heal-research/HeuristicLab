@@ -43,7 +43,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
 
     public static String GetConnString(String adress, String catalog, String un, String pw) {
       return "Data Source=" + adress + ";Initial Catalog=" + catalog + ";MultipleActiveResultSets=True;" +
-        "Persist Security Info=True;User ID=" + un + ";Password=" + pw;
+        "Asynchronous Processing=True;Persist Security Info=True;User ID=" + un + ";Password=" + pw;
     }
 
     private static string connString =

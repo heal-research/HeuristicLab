@@ -68,7 +68,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region Overrides
-    protected override UserGroup Convert(dsHiveServer.UserGroupRow row,
+    protected override UserGroup ConvertRow(dsHiveServer.UserGroupRow row,
       UserGroup userGroup) {
       if (row != null && userGroup != null) {
         /*Parent - Permission Owner*/
@@ -129,7 +129,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.UserGroupRow Convert(UserGroup userGroup,
+    protected override dsHiveServer.UserGroupRow ConvertObj(UserGroup userGroup,
       dsHiveServer.UserGroupRow row) {
       if (userGroup != null && row != null) {
         row.PermissionOwnerId = userGroup.Id;
@@ -211,24 +211,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       row.PermissionOwnerId = group.Id;
 
       data.AddUserGroupRow(row);
-      adapter.Update(row);
+      Adapter.Update(row);
 
       return row;
     }
 
     protected override void
      UpdateRow(dsHiveServer.UserGroupRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override IEnumerable<dsHiveServer.UserGroupRow>
       FindById(long id) {
-      return adapter.GetDataById(id);
+      return Adapter.GetDataById(id);
     }
 
     protected override IEnumerable<dsHiveServer.UserGroupRow>
       FindAll() {
-      return adapter.GetData();
+      return Adapter.GetData();
     }
     #endregion
 
@@ -246,7 +246,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (name != null) {
         return base.FindSingle(
           delegate() {
-            return adapter.GetDataByName(name);
+            return Adapter.GetDataByName(name);
           });
       }
 

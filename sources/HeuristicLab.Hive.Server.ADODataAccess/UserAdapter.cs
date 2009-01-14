@@ -74,7 +74,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region Overrides
-    protected override User Convert(dsHiveServer.HiveUserRow row,
+    protected override User ConvertRow(dsHiveServer.HiveUserRow row,
       User user) {
       if (row != null && user != null) {
         /*Parent - PermissionOwner*/
@@ -92,7 +92,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.HiveUserRow Convert(User user,
+    protected override dsHiveServer.HiveUserRow ConvertObj(User user,
       dsHiveServer.HiveUserRow row) {
       if (user != null && row != null) {
         if (user.Password == null)
@@ -119,17 +119,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override void
       UpdateRow(dsHiveServer.HiveUserRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override IEnumerable<dsHiveServer.HiveUserRow>
       FindById(long id) {
-      return adapter.GetDataById(id);
+      return Adapter.GetDataById(id);
     }
 
     protected override IEnumerable<dsHiveServer.HiveUserRow>
       FindAll() {
-      return adapter.GetData();
+      return Adapter.GetData();
     }
     #endregion
 
@@ -148,7 +148,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (name != null) {
         return base.FindSingle(
           delegate() {
-            return adapter.GetDataByName(name);
+            return Adapter.GetDataByName(name);
           });
       }
 

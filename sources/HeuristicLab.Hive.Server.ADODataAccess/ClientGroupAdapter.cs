@@ -66,7 +66,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region Overrides
-    protected override ClientGroup Convert(dsHiveServer.ClientGroupRow row,
+    protected override ClientGroup ConvertRow(dsHiveServer.ClientGroupRow row,
       ClientGroup clientGroup) {
       if (row != null && clientGroup != null) {
         /*Parent - Permission Owner*/
@@ -128,7 +128,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override dsHiveServer.ClientGroupRow Convert(ClientGroup clientGroup,
+    protected override dsHiveServer.ClientGroupRow ConvertObj(ClientGroup clientGroup,
       dsHiveServer.ClientGroupRow row) {
       if (clientGroup != null && row != null) {
         row.ResourceId = clientGroup.Id;
@@ -210,24 +210,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       row.ResourceId = group.Id;
 
       data.AddClientGroupRow(row);
-      adapter.Update(row);
+      Adapter.Update(row);
 
       return row;
     }
 
     protected override void
       UpdateRow(dsHiveServer.ClientGroupRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override IEnumerable<dsHiveServer.ClientGroupRow>
       FindById(long id) {
-      return adapter.GetDataById(id);
+      return Adapter.GetDataById(id);
     }
 
     protected override IEnumerable<dsHiveServer.ClientGroupRow>
       FindAll() {
-      return adapter.GetData();
+      return Adapter.GetData();
     }
     #endregion
 

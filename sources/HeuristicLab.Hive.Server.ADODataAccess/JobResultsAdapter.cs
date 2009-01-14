@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region Overrides
-    protected override dsHiveServer.JobResultRow Convert(JobResult result,
+    protected override dsHiveServer.JobResultRow ConvertObj(JobResult result,
       dsHiveServer.JobResultRow row) {
       if (row != null && result != null) {
         if (result.Job != null)
@@ -74,7 +74,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return null;
     }
 
-    protected override JobResult Convert(dsHiveServer.JobResultRow row, 
+    protected override JobResult ConvertRow(dsHiveServer.JobResultRow row, 
       JobResult result) {
       if (row != null && result != null) {
         result.Id = row.JobResultId;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void UpdateRow(dsHiveServer.JobResultRow row) {
-      adapter.Update(row);
+      Adapter.Update(row);
     }
 
     protected override dsHiveServer.JobResultRow InsertNewRow(JobResult obj) {
@@ -116,11 +116,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override IEnumerable<dsHiveServer.JobResultRow> FindById(long id) {
-      return adapter.GetDataById(id);
+      return Adapter.GetDataById(id);
     }
 
     protected override IEnumerable<dsHiveServer.JobResultRow> FindAll() {
-      return adapter.GetData();
+      return Adapter.GetData();
     }
     #endregion
 
@@ -139,7 +139,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return 
           base.FindMultiple(
             delegate() {
-              return adapter.GetDataByJob(job.Id);
+              return Adapter.GetDataByJob(job.Id);
             });
       }
 
