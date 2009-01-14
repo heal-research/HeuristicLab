@@ -58,7 +58,26 @@ namespace HeuristicLab.Hive.Server.Core {
           } else {
             DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
             TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
-            Console.WriteLine(dif);
+            // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
+            if (dif.Seconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
+              // if client calculated jobs, the job must be reset
+              if (client.State == State.calculating) {
+                // check wich job the client was calculating and reset it
+                foreach (Job job in allJobs) {
+                  if (job.Client.ClientId == client.ClientId) {
+                    // TODO check for job results
+                    job.Client = null;
+                    job.Percentage = 0;
+                    job.State = State.idle;
+                  }
+                }
+              }
+              
+              // client must be set offline
+              client.State = State.offline;
+              clientAdapter.Update(client);
+              lastHeartbeats.Remove(client.ClientId);
+            }
           }
         } else {
           if (lastHeartbeats.ContainsKey(client.ClientId))
