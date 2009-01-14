@@ -30,6 +30,8 @@ using System.Windows.Forms;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.Hive.JobBase;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
   public partial class AddJobForm : Form {
@@ -64,11 +66,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
               foreach (Job pjob in jobGroups.List) {
                 if (cbParJob.SelectedItem.ToString().Equals(pjob.Id.ToString())) {
                   Job job = new Job { ParentJob = pjob, State = State.offline };
+                  job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
                   Response resp = jobManager.AddNewJob(job);
                 }
               }
             } else {
               Job job = new Job { State = State.offline };
+              job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
               Response resp = jobManager.AddNewJob(job);
             }
           }

@@ -101,6 +101,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.Percentage = 0.0;
 
+        if (!row.IsSerializedJobNull())
+          job.SerializedJob = row.SerializedJob;
+        else
+          job.SerializedJob = null;
+
         return job;
       } else
         return null;
@@ -133,6 +138,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetJobStateNull();
 
         row.Percentage = job.Percentage;
+
+        row.SerializedJob = job.SerializedJob;
       }
 
       return row;

@@ -39,6 +39,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public Job ParentJob { get; set; }
     [DataMember]
     public double Percentage { get; set; }
+    [DataMember]
+    public byte[] SerializedJob { get; set; }
 
     public override bool Equals(object obj) {
       if (obj is Job) {

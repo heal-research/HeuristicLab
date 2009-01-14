@@ -83,6 +83,11 @@
     <Compile Include="JobResultsAdapter.cs" />
     <Compile Include="PermissionOwnerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </None>
     <Compile Include="ResourceAdapter.cs" />
     <Compile Include="TransactionManager.cs" />
     <Compile Include="UserAdapter.cs" />
@@ -102,6 +107,10 @@
     </None>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">

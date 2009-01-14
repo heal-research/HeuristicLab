@@ -85,6 +85,7 @@
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
     <Compile Include="Interfaces\IClientFacade.cs" />
+    <Compile Include="Interfaces\IExecutionEngineFacade.cs" />
     <Compile Include="ResponseObject.cs" />
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IJobManager.cs" />

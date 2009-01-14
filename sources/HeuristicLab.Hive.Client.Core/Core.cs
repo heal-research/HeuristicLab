@@ -169,7 +169,7 @@ namespace HeuristicLab.Hive.Client.Core {
             Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
             engine.JobId = e.Result.Job.Id;
             engine.Queue = MessageQueue.GetInstance();
-            engine.Start(e.Result.SerializedJob);
+            engine.Start(e.Result.Job.SerializedJob);
             engines.Add(e.Result.Job.Id, engine);
 
             ClientStatusInfo.JobsFetched++;

@@ -26,8 +26,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.22.20.84;Initial Catalog=HiveServer;MultipleActiveResultSets=True;" +
-            "Persist Security Info=True;User ID=hive;Password=hive")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.22.20.84;Initial Catalog=HiveServer;Persist Security Info=True;Use" +
+            "r ID=hive;Password=hive")]
         public string HiveServerConnectionString {
             get {
                 return ((string)(this["HiveServerConnectionString"]));

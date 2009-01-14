@@ -152,8 +152,7 @@ namespace HeuristicLab.Hive.Server.Core {
           Job job2Calculate = allOfflineJobs.First.Value;
           job2Calculate.State = State.calculating;
           response.Job = job2Calculate;
-          jobAdapter.Update(job2Calculate);          
-          response.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+          jobAdapter.Update(job2Calculate);
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
           return response;

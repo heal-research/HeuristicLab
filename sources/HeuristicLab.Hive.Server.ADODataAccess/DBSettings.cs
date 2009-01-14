@@ -26,7 +26,7 @@ using System.Text;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
 
-  internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+  internal sealed class Settings : global::System.Configuration.ApplicationSettingsBase {
 
     private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
 
@@ -36,28 +36,29 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.Properties {
       }
     }
 
-  /*  private static String pw = "hive";
+    private static String pw = "hive";
     private static String un = "hive";
     private static String address = "10.22.20.84";
-    private static String catalog = "HiveServer"; */
+    private static String catalog = "HiveServer"; 
 
     public static String GetConnString(String adress, String catalog, String un, String pw) {
       return "Data Source=" + adress + ";Initial Catalog=" + catalog + ";MultipleActiveResultSets=True;" +
         "Persist Security Info=True;User ID=" + un + ";Password=" + pw;
     }
 
+    private static string connString =
+      GetConnString(address, catalog, un, pw);
+
     [global::System.Configuration.ApplicationScopedSettingAttribute()]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-    [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.22.20.84;Initial Catalog=HiveServer;MultipleActiveResultSets=True;" +
-        "Persist Security Info=True;User ID=hive;Password=hive")]
     public string HiveServerConnectionString {
       get {
-        return ((string)(this["HiveServerConnectionString"]));
+        return connString;
       }
 
       private set {
-        this["HiveServerConnectionString"] = value;
+        connString = value;
       }
     }
   }

@@ -63,14 +63,20 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
           return response;
         }
+        if (job.SerializedJob == null) {
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
+          response.Success = false;
+          return response;
+        }
+
         jobAdapter.Update(job);
         response.Success = true;
         response.Obj = job;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
-        return response;
+      } else {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
       }
-      response.Success = false;
-      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
 
       return response;
     }

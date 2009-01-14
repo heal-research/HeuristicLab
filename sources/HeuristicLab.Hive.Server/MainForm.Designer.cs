@@ -32,6 +32,8 @@
           this.lblAddress1 = new System.Windows.Forms.Label();
           this.label2 = new System.Windows.Forms.Label();
           this.lblAddress2 = new System.Windows.Forms.Label();
+          this.label3 = new System.Windows.Forms.Label();
+          this.lblAddress3 = new System.Windows.Forms.Label();
           this.SuspendLayout();
           // 
           // label1
@@ -70,11 +72,31 @@
           this.lblAddress2.TabIndex = 3;
           this.lblAddress2.Text = "address";
           // 
+          // label3
+          // 
+          this.label3.AutoSize = true;
+          this.label3.Location = new System.Drawing.Point(18, 131);
+          this.label3.Name = "label3";
+          this.label3.Size = new System.Drawing.Size(206, 13);
+          this.label3.TabIndex = 4;
+          this.label3.Text = "Hive Execution Engine Facade running @";
+          // 
+          // lblAddress3
+          // 
+          this.lblAddress3.AutoSize = true;
+          this.lblAddress3.Location = new System.Drawing.Point(18, 159);
+          this.lblAddress3.Name = "lblAddress3";
+          this.lblAddress3.Size = new System.Drawing.Size(44, 13);
+          this.lblAddress3.TabIndex = 5;
+          this.lblAddress3.Text = "address";
+          // 
           // MainForm
           // 
           this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
           this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-          this.ClientSize = new System.Drawing.Size(304, 128);
+          this.ClientSize = new System.Drawing.Size(304, 181);
+          this.Controls.Add(this.lblAddress3);
+          this.Controls.Add(this.label3);
           this.Controls.Add(this.lblAddress2);
           this.Controls.Add(this.label2);
           this.Controls.Add(this.lblAddress1);
@@ -92,5 +114,7 @@
         private System.Windows.Forms.Label lblAddress1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblAddress2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblAddress3;
     }
 }

@@ -107,6 +107,32 @@ namespace HeuristicLab.Hive.Server {
         return null;
     }
 
+    private ServiceHost StartExecutionEngineFacade(Uri uriTcp) {
+      IExecutionEngineFacade[] serverConsoleInstances =
+        discService.GetInstances<IExecutionEngineFacade>();
+
+      if (serverConsoleInstances.Length > 0) {
+        ServiceHost serviceHost =
+            new ServiceHost(serverConsoleInstances[0].GetType(),
+                  uriTcp);
+
+        System.ServiceModel.Channels.Binding binding =
+          new NetTcpBinding();
+
+        serviceHost.AddServiceEndpoint(
+          typeof(IExecutionEngineFacade),
+            binding,
+            "ExecutionEngineFacade");
+
+        AddMexEndpoint(serviceHost);
+
+        serviceHost.Open();
+
+        return serviceHost;
+      } else
+        return null;
+    }
+
     public override void Run() {
       IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
       int index = 0;
@@ -128,6 +154,12 @@ namespace HeuristicLab.Hive.Server {
       ServiceHost serverConsoleFacade =
         StartServerConsoleFacade(uriTcp);
 
+      uriTcp =
+        new Uri("net.tcp://" + addresses[index] + ":" + port + "/ExecutionEngine/");
+
+      ServiceHost executionEngineFacade =
+        StartExecutionEngineFacade(uriTcp);
+
       ILifecycleManager[] lifecycleManagers =
          discService.GetInstances<ILifecycleManager>();
 
@@ -141,7 +173,8 @@ namespace HeuristicLab.Hive.Server {
           new TimeSpan(0, 0, 10));
 
         Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
-            serverConsoleFacade.BaseAddresses[0]);
+            serverConsoleFacade.BaseAddresses[0], 
+            executionEngineFacade.BaseAddresses[0]);
 
          Application.Run(mainForm);
 
@@ -150,8 +183,7 @@ namespace HeuristicLab.Hive.Server {
 
       clientCommunicator.Close();
       serverConsoleFacade.Close();
-
-      
+      executionEngineFacade.Close();      
     }
   }
 }
