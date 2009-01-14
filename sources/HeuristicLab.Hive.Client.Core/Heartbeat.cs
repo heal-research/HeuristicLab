@@ -73,11 +73,13 @@ namespace HeuristicLab.Hive.Client.Core {
       Console.WriteLine("tick");  
       ClientInfo info = ConfigManager.Instance.GetClientInfo();
       // Todo: remove tempfix for free cores.
-      // TODO: change jobProgress from int to Dictionary of Job and Double
-      HeartBeatData heartBeatData = new HeartBeatData { ClientId = info.ClientId, 
-                                                              freeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed), 
-                                                              freeMemory = 1000, 
-                                                              jobProgress = ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed};
+
+      HeartBeatData heartBeatData = new HeartBeatData {
+        ClientId = info.ClientId,
+        freeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
+        freeMemory = 1000,
+        jobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
+      };
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
       } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Connected) {

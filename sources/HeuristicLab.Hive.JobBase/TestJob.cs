@@ -66,6 +66,9 @@ namespace HeuristicLab.Hive.JobBase {
       runValue = Convert.ToInt32(startValue.InnerText);
     }
 
+    public TestJob() {
+    }
+
 
   }
 }

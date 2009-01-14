@@ -105,5 +105,16 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       }
       return st;      
     }
+
+    public Dictionary<long, double> GetProgressOfAllJobs() {
+      Dictionary<long,double> prog = new Dictionary<long,double>();
+      Dictionary<long, Executor> engines = Core.GetExecutionEngines();
+      foreach (KeyValuePair<long, Executor> kvp in engines) {
+        Executor e = kvp.Value;
+        prog[e.JobId] = e.Progress;
+      }
+      return prog;
+    }
+
   }
 }

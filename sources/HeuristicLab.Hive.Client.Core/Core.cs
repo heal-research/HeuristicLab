@@ -161,7 +161,7 @@ namespace HeuristicLab.Hive.Client.Core {
         PluginManager.Manager.Initialize();
         AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-        lock (Locker) {
+        lock (Locker) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
             jobs.Add(e.Result.Job.Id, e.Result.Job);
             appDomains.Add(e.Result.Job.Id, appDomain);

@@ -15,6 +15,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public int freeCores { get; set; }
     [DataMember]
-    public int jobProgress { get; set; } // TODO: define Type 
+    public Dictionary<long, double> jobProgress { get; set; } // TODO: define Type 
   }
 }
