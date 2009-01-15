@@ -77,6 +77,10 @@ namespace HeuristicLab.Tools.ConfigMerger {
       destinationNode = destination.SelectSingleNode("/configuration/userSettings");
       Merge(sourceNode, destinationNode, destination, "/configuration");
 
+      sourceNode = source.SelectSingleNode("/configuration/connectionStrings");
+      destinationNode = destination.SelectSingleNode("/configuration/connectionStrings");
+      Merge(sourceNode, destinationNode, destination, "/configuration");
+
       destination.Save(destinationFile);
     }
 
