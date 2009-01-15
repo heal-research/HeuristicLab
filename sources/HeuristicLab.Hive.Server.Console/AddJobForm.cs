@@ -55,7 +55,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-
     private void BtnAdd_Click(object sender, EventArgs e) {
       try {
         lblError.Text = "";

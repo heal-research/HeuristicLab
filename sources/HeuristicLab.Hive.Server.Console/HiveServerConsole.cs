@@ -68,7 +68,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
     }
 
-
+    /// <summary>
+    /// if the input is correct and the login-method returns a 
+    /// valid response
+    /// </summary>
+    /// <returns></returns>
     private bool IsValid() {
       if ((tbUserName.Text != "") &&
           (tbPwd.Text != "") &&
@@ -81,6 +85,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             int.TryParse(tbPort.Text, out port)) {
             IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
             Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
+            string str = resp.StatusMessage;
           } else {
             lblError.Text = "IP or Port not valid";
           }

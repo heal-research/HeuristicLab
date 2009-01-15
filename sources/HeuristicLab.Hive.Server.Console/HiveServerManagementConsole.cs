@@ -49,9 +49,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private Job currentJob = null;
     private ClientInfo currentClient = null;
     private User currentUser = null;
-    private int idxCurrentJob = 0;
-    private int idxCurrentClient = 0;
-    private int idxCurrentUser = 0;
+    private string nameCurrentJob = "";
+    private string nameCurrentClient = "";
+    private string nameCurrentUser = "";
     private bool flagJob = false;
     private bool flagClient = false;
     private bool flagUser = false;
@@ -215,7 +215,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// if one client is clicked, a panel is opened with the details
     /// </summary>
     private void ClientClicked() {
-      currentClient = clientInfo.List[idxCurrentClient];
+      int i = 0;
+      while (usersList.List[i].Name != nameCurrentUser) {
+        i++;
+      }
+      currentClient = clientInfo.List[i];
       scClientControl.Panel2.Controls.Clear();
       scClientControl.Panel2.Controls.Add(plClientDetails);
       pbClientControl.Image = ilClientControl.Images[0];
@@ -227,8 +231,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// if one job is clicked, a panel is opened with the details
     /// </summary>
     private void JobClicked() {
+      int i = 0;
+      while (jobs.List[i].Id.ToString() != nameCurrentJob) {
+        i++;
+      }
+      lvSnapshots.Enabled = false;
       int yPos = 0;
-      currentJob = jobs.List[idxCurrentJob];
+      currentJob = jobs.List[i];
       scJobControl.Panel2.Controls.Clear();
       scJobControl.Panel2.Controls.Add(plJobDetails);
       pbJobControl.Image = ilJobControl.Images[0];
@@ -269,7 +278,15 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         yPos += 20;
         lblJobCalculationEnd.Location = new Point(
           lblJobCalculationEnd.Location.X, yPos);
-        lblJobCalculationEnd.Text = "Calculation endet at " /* + currentJob.User.CalculationEnd */;
+        lblJobCalculationEnd.Text = "Calculation ended at " /* + currentJob.User.CalculationEnd */;
+      }
+      if (currentJob.State != State.offline) {
+        yPos += 30;
+        lvSnapshots.Location = new Point(
+          lvSnapshots.Location.X, yPos);
+        lvSnapshots.Size = new Size(lvSnapshots.Size.Width,
+          plJobDetails.Size.Height - 10 - yPos);
+        lvSnapshots.Enabled = true;
       }
     }
 
@@ -277,14 +294,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// if one user is clicked, a panel is opened with the details
     /// </summary>
     private void UserClicked() {
-      currentUser = usersList.List[idxCurrentUser];
+      int i = 0;
+      while (usersList.List[i].Name != nameCurrentUser) {
+        i++;
+      }
+      currentUser = usersList.List[i];
       scUserControl.Panel2.Controls.Clear();
       scUserControl.Panel2.Controls.Add(plUserDetails);
       pbUserControl.Image = ilUserControl.Images[0];
       lblUserName.Text = currentUser.Id.ToString();
     }
 
-    #region Eventhandler
+    #region Eventhandlers
     /// <summary>
     /// Send event to Login-GUI when closing
     /// </summary>
@@ -324,19 +345,29 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
-      idxCurrentClient = lvClientControl.SelectedItems[0].Index;
+      nameCurrentClient = lvClientControl.SelectedItems[0].Text;
       flagClient = true;
       ClientClicked();
     }
 
     private void OnLVJobControlClicked(object sender, EventArgs e) {
-      idxCurrentJob = lvJobControl.SelectedItems[0].Index;
+      nameCurrentJob = lvJobControl.SelectedItems[0].Text;
       flagJob = true;
       JobClicked();
     }
 
+    private void OnTVJobControlClicked(object sender, EventArgs e) {
+      try {
+        nameCurrentJob = Convert.ToInt32(tvJobControl.SelectedNode.Text).ToString();
+        flagJob = true;
+        JobClicked();
+      }
+      catch (Exception ex) { }
+
+    }
+
     private void OnLVUserControlClicked(object sender, EventArgs e) {
-      idxCurrentUser = lvUserControl.SelectedItems[0].Index;
+      nameCurrentUser = lvUserControl.SelectedItems[0].Name;
       flagUser = true;
       UserClicked();
     }

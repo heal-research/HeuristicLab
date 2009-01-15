@@ -42,7 +42,18 @@
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.tvJobControl = new System.Windows.Forms.TreeView();
+      this.lvJobControl = new System.Windows.Forms.ListView();
+      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
+      this.tpUserControl = new System.Windows.Forms.TabPage();
+      this.scUserControl = new System.Windows.Forms.SplitContainer();
+      this.tvUserControl = new System.Windows.Forms.TreeView();
+      this.lvUserControl = new System.Windows.Forms.ListView();
+      this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
       this.plJobDetails = new System.Windows.Forms.Panel();
+      this.lvSnapshots = new System.Windows.Forms.ListView();
+      this.chJobId = new System.Windows.Forms.ColumnHeader();
+      this.chTimeCalculated = new System.Windows.Forms.ColumnHeader();
+      this.chProgress = new System.Windows.Forms.ColumnHeader();
       this.lblPriorityJob = new System.Windows.Forms.Label();
       this.lblParentJob = new System.Windows.Forms.Label();
       this.lblClientCalculating = new System.Windows.Forms.Label();
@@ -56,13 +67,6 @@
       this.lblJobName = new System.Windows.Forms.Label();
       this.btnJobDetailClose = new System.Windows.Forms.Button();
       this.pbJobControl = new System.Windows.Forms.PictureBox();
-      this.tpUserControl = new System.Windows.Forms.TabPage();
-      this.scUserControl = new System.Windows.Forms.SplitContainer();
-      this.tvUserControl = new System.Windows.Forms.TreeView();
-      this.lvUserControl = new System.Windows.Forms.ListView();
-      this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
-      this.lvJobControl = new System.Windows.Forms.ListView();
-      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
       this.plClientDetails = new System.Windows.Forms.Panel();
       this.lblLogin = new System.Windows.Forms.Label();
       this.lblLoginOn = new System.Windows.Forms.Label();
@@ -87,12 +91,12 @@
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
       this.scJobControl.SuspendLayout();
-      this.plJobDetails.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).BeginInit();
       this.tpUserControl.SuspendLayout();
       this.scUserControl.Panel1.SuspendLayout();
       this.scUserControl.Panel2.SuspendLayout();
       this.scUserControl.SuspendLayout();
+      this.plJobDetails.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).BeginInit();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
       this.plUserDetails.SuspendLayout();
@@ -271,10 +275,86 @@
       this.tvJobControl.Name = "tvJobControl";
       this.tvJobControl.Size = new System.Drawing.Size(139, 346);
       this.tvJobControl.TabIndex = 2;
+      this.tvJobControl.Click += new System.EventHandler(this.OnTVJobControlClicked);
+      // 
+      // lvJobControl
+      // 
+      this.lvJobControl.AllowDrop = true;
+      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvJobControl.LargeImageList = this.ilJobControl;
+      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.lvJobControl.MultiSelect = false;
+      this.lvJobControl.Name = "lvJobControl";
+      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
+      this.lvJobControl.TabIndex = 0;
+      this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
+      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
+      // 
+      // ilJobControl
+      // 
+      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
+      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
+      // 
+      // tpUserControl
+      // 
+      this.tpUserControl.Controls.Add(this.scUserControl);
+      this.tpUserControl.Location = new System.Drawing.Point(4, 22);
+      this.tpUserControl.Name = "tpUserControl";
+      this.tpUserControl.Padding = new System.Windows.Forms.Padding(3);
+      this.tpUserControl.Size = new System.Drawing.Size(643, 352);
+      this.tpUserControl.TabIndex = 2;
+      this.tpUserControl.Text = "User Control";
+      this.tpUserControl.UseVisualStyleBackColor = true;
+      // 
+      // scUserControl
+      // 
+      this.scUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scUserControl.Location = new System.Drawing.Point(3, 3);
+      this.scUserControl.Name = "scUserControl";
+      // 
+      // scUserControl.Panel1
+      // 
+      this.scUserControl.Panel1.Controls.Add(this.tvUserControl);
+      // 
+      // scUserControl.Panel2
+      // 
+      this.scUserControl.Panel2.Controls.Add(this.lvUserControl);
+      this.scUserControl.Size = new System.Drawing.Size(637, 346);
+      this.scUserControl.SplitterDistance = 139;
+      this.scUserControl.TabIndex = 1;
+      // 
+      // tvUserControl
+      // 
+      this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvUserControl.Location = new System.Drawing.Point(0, 0);
+      this.tvUserControl.Name = "tvUserControl";
+      this.tvUserControl.Size = new System.Drawing.Size(139, 346);
+      this.tvUserControl.TabIndex = 1;
+      // 
+      // lvUserControl
+      // 
+      this.lvUserControl.AllowDrop = true;
+      this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvUserControl.LargeImageList = this.ilUserControl;
+      this.lvUserControl.Location = new System.Drawing.Point(0, 0);
+      this.lvUserControl.Name = "lvUserControl";
+      this.lvUserControl.Size = new System.Drawing.Size(494, 346);
+      this.lvUserControl.TabIndex = 1;
+      this.lvUserControl.UseCompatibleStateImageBehavior = false;
+      this.lvUserControl.Click += new System.EventHandler(this.OnLVUserControlClicked);
+      // 
+      // ilUserControl
+      // 
+      this.ilUserControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilUserControl.ImageStream")));
+      this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilUserControl.Images.SetKeyName(0, "Users.png");
       // 
       // plJobDetails
       // 
       this.plJobDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plJobDetails.Controls.Add(this.lvSnapshots);
       this.plJobDetails.Controls.Add(this.lblPriorityJob);
       this.plJobDetails.Controls.Add(this.lblParentJob);
       this.plJobDetails.Controls.Add(this.lblClientCalculating);
@@ -293,6 +373,34 @@
       this.plJobDetails.Name = "plJobDetails";
       this.plJobDetails.Size = new System.Drawing.Size(494, 346);
       this.plJobDetails.TabIndex = 1;
+      // 
+      // lvSnapshots
+      // 
+      this.lvSnapshots.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chJobId,
+            this.chTimeCalculated,
+            this.chProgress});
+      this.lvSnapshots.Enabled = false;
+      this.lvSnapshots.FullRowSelect = true;
+      this.lvSnapshots.GridLines = true;
+      this.lvSnapshots.Location = new System.Drawing.Point(20, 271);
+      this.lvSnapshots.Name = "lvSnapshots";
+      this.lvSnapshots.Size = new System.Drawing.Size(449, 70);
+      this.lvSnapshots.TabIndex = 16;
+      this.lvSnapshots.UseCompatibleStateImageBehavior = false;
+      this.lvSnapshots.View = System.Windows.Forms.View.Details;
+      // 
+      // chJobId
+      // 
+      this.chJobId.Text = "Job-ID";
+      // 
+      // chTimeCalculated
+      // 
+      this.chTimeCalculated.Text = "Calculated At";
+      // 
+      // chProgress
+      // 
+      this.chProgress.Text = "Progress";
       // 
       // lblPriorityJob
       // 
@@ -353,6 +461,7 @@
       // lblProgress
       // 
       this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblProgress.BackColor = System.Drawing.Color.Transparent;
       this.lblProgress.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.lblProgress.Location = new System.Drawing.Point(326, 99);
       this.lblProgress.Name = "lblProgress";
@@ -364,6 +473,7 @@
       // lblStatus
       // 
       this.lblStatus.AutoSize = true;
+      this.lblStatus.BackColor = System.Drawing.Color.Transparent;
       this.lblStatus.Location = new System.Drawing.Point(14, 57);
       this.lblStatus.Name = "lblStatus";
       this.lblStatus.Size = new System.Drawing.Size(88, 13);
@@ -403,80 +513,6 @@
       this.pbJobControl.Size = new System.Drawing.Size(32, 32);
       this.pbJobControl.TabIndex = 3;
       this.pbJobControl.TabStop = false;
-      // 
-      // tpUserControl
-      // 
-      this.tpUserControl.Controls.Add(this.scUserControl);
-      this.tpUserControl.Location = new System.Drawing.Point(4, 22);
-      this.tpUserControl.Name = "tpUserControl";
-      this.tpUserControl.Padding = new System.Windows.Forms.Padding(3);
-      this.tpUserControl.Size = new System.Drawing.Size(643, 352);
-      this.tpUserControl.TabIndex = 2;
-      this.tpUserControl.Text = "User Control";
-      this.tpUserControl.UseVisualStyleBackColor = true;
-      // 
-      // scUserControl
-      // 
-      this.scUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scUserControl.Location = new System.Drawing.Point(3, 3);
-      this.scUserControl.Name = "scUserControl";
-      // 
-      // scUserControl.Panel1
-      // 
-      this.scUserControl.Panel1.Controls.Add(this.tvUserControl);
-      // 
-      // scUserControl.Panel2
-      // 
-      this.scUserControl.Panel2.Controls.Add(this.lvUserControl);
-      this.scUserControl.Size = new System.Drawing.Size(637, 346);
-      this.scUserControl.SplitterDistance = 139;
-      this.scUserControl.TabIndex = 1;
-      // 
-      // tvUserControl
-      // 
-      this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tvUserControl.Location = new System.Drawing.Point(0, 0);
-      this.tvUserControl.Name = "tvUserControl";
-      this.tvUserControl.Size = new System.Drawing.Size(139, 346);
-      this.tvUserControl.TabIndex = 1;
-      // 
-      // lvUserControl
-      // 
-      this.lvUserControl.AllowDrop = true;
-      this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvUserControl.LargeImageList = this.ilUserControl;
-      this.lvUserControl.Location = new System.Drawing.Point(0, 0);
-      this.lvUserControl.Name = "lvUserControl";
-      this.lvUserControl.Size = new System.Drawing.Size(494, 346);
-      this.lvUserControl.TabIndex = 1;
-      this.lvUserControl.UseCompatibleStateImageBehavior = false;
-      this.lvUserControl.Click += new System.EventHandler(this.OnLVUserControlClicked);
-      // 
-      // ilUserControl
-      // 
-      this.ilUserControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilUserControl.ImageStream")));
-      this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilUserControl.Images.SetKeyName(0, "Users.png");
-      // 
-      // lvJobControl
-      // 
-      this.lvJobControl.AllowDrop = true;
-      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.ilJobControl;
-      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
-      this.lvJobControl.MultiSelect = false;
-      this.lvJobControl.Name = "lvJobControl";
-      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
-      this.lvJobControl.TabIndex = 0;
-      this.lvJobControl.UseCompatibleStateImageBehavior = false;
-      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
-      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
-      // 
-      // ilJobControl
-      // 
-      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
-      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
       // 
       // plClientDetails
       // 
@@ -626,13 +662,13 @@
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
       this.scJobControl.ResumeLayout(false);
-      this.plJobDetails.ResumeLayout(false);
-      this.plJobDetails.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).EndInit();
       this.tpUserControl.ResumeLayout(false);
       this.scUserControl.Panel1.ResumeLayout(false);
       this.scUserControl.Panel2.ResumeLayout(false);
       this.scUserControl.ResumeLayout(false);
+      this.plJobDetails.ResumeLayout(false);
+      this.plJobDetails.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).EndInit();
       this.plClientDetails.ResumeLayout(false);
       this.plClientDetails.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).EndInit();
@@ -699,5 +735,9 @@
     private System.Windows.Forms.Label lblJobCalculationEnd;
     private System.Windows.Forms.Label lblPriorityJob;
     private System.Windows.Forms.Label lblParentJob;
+    private System.Windows.Forms.ListView lvSnapshots;
+    private System.Windows.Forms.ColumnHeader chJobId;
+    private System.Windows.Forms.ColumnHeader chTimeCalculated;
+    private System.Windows.Forms.ColumnHeader chProgress;
   }
 }
