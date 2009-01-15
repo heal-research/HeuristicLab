@@ -63,12 +63,12 @@ namespace HeuristicLab.Hive.Server.Core {
       if (lastJobResult != null) {
         job.Client = null;
         job.Percentage = lastJobResult.Percentage;
-        job.State = State.idle;
+        job.State = State.offline;
         job.SerializedJob = lastJobResult.Result;
       } else {
         job.Client = null;
         job.Percentage = 0;
-        job.State = State.idle;
+        job.State = State.offline;
       }
       jobAdapter.Update(job);
     }

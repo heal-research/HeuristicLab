@@ -186,7 +186,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       Adapter.FillByActive(cache);
     }
 
-    public override void SyncWithDb() {
+    protected override void SynchronizeWithDb() {
       Adapter.Update(cache);
     }
 

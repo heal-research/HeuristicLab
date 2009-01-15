@@ -140,29 +140,40 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected abstract void FillCache();
 
-    public abstract void SyncWithDb();
+    protected abstract void SynchronizeWithDb();
 
     protected abstract bool PutInCache(ObjT obj);
 
     protected abstract RowT FindCachedById(long id);
 
-    void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
-      foreach (ICachedDataAdapter parent in this.parentAdapters) {
+    public void SyncWithDb() {
+      foreach (ICachedDataAdapter parent in this.parentAdapters) {        
         parent.SyncWithDb();
       }
 
       cacheLock.AcquireReaderLock(Timeout.Infinite);
 
-      this.SyncWithDb();
+      this.SynchronizeWithDb();
 
       cacheLock.ReleaseReaderLock();
+    }
+
+    void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
+      this.SyncWithDb();
     }
 
     protected virtual bool IsCached(RowT row) {
       if (row == null)
         return false;
-      else
-        return FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
+      else {
+        cacheLock.AcquireReaderLock(Timeout.Infinite);
+
+        bool cached = FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
+
+        cacheLock.ReleaseReaderLock();
+
+        return cached;
+      }
     }
 
     protected override RowT GetRowById(long id) {
