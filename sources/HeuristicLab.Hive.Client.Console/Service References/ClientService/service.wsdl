@@ -47,12 +47,6 @@
   <wsdl:message name="IClientConsoleCommunicator_GetStatusInfos_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetStatusInfosResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientConsoleCommunicator_GetConnection_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetConnection" />
-  </wsdl:message>
-  <wsdl:message name="IClientConsoleCommunicator_GetConnection_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetConnectionResponse" />
-  </wsdl:message>
   <wsdl:message name="IClientConsoleCommunicator_SetConnection_InputMessage">
     <wsdl:part name="parameters" element="tns:SetConnection" />
   </wsdl:message>
@@ -82,10 +76,6 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos" message="tns:IClientConsoleCommunicator_GetStatusInfos_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfosResponse" message="tns:IClientConsoleCommunicator_GetStatusInfos_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetConnection">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetConnection" message="tns:IClientConsoleCommunicator_GetConnection_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetConnectionResponse" message="tns:IClientConsoleCommunicator_GetConnection_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="SetConnection">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/SetConnection" message="tns:IClientConsoleCommunicator_SetConnection_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/SetConnectionResponse" message="tns:IClientConsoleCommunicator_SetConnection_OutputMessage" />
@@ -109,15 +99,6 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="GetStatusInfos">
       <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetConnection">
-      <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/GetConnection" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -168,7 +149,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08004@fhs-hagenberg.ac.at</Upn>
+          <Upn>mse08003@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

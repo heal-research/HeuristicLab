@@ -18,10 +18,6 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
       }
     }
 
-    public ConnectionContainer GetConnection() {
-      return new ConnectionContainer{IPAdress = WcfService.Instance.ServerIP, Port = WcfService.Instance.ServerPort } ;
-    }
-
     public void SetConnection(ConnectionContainer container) {
       ConfigManager.Instance.SetServerIPAndPort(container);
       WcfService.Instance.Connect(container.IPAdress, container.Port);

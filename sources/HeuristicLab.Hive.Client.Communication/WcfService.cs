@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +31,15 @@ using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Client.Communication.ServerService;
 
 namespace HeuristicLab.Hive.Client.Communication {
+  /// <summary>
+  /// WcfService class is implemented as a Singleton and works as a communication Layer with the Server
+  /// </summary>
   public class WcfService {
     private static WcfService instance;
+    /// <summary>
+    /// Getter for the Instance of the WcfService
+    /// </summary>
+    /// <returns>the Instance of the WcfService class</returns>
     public static WcfService Instance {
       get {
         if (instance == null) {
@@ -32,9 +60,16 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public ClientCommunicatorClient proxy = null;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     private WcfService() {
       ConnState = NetworkEnum.WcfConnState.Disconnected;
     }
+
+    /// <summary>
+    /// Connects with the Server, registers the events and fires the Connected (and quiet possibly the ConnectionRestored) Event.
+    /// </summary>
     public void Connect() {
       try {
         proxy = new ClientCommunicatorClient(
@@ -62,6 +97,11 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
+    /// <summary>
+    /// Changes the Connectionsettings (serverIP & serverPort) and reconnects
+    /// </summary>
+    /// <param name="serverIP">current Server IP</param>
+    /// <param name="serverPort">current Server Port</param>
     public void Connect(String serverIP, int serverPort) {
       String oldIp = this.ServerIP;
       int oldPort = this.ServerPort;
@@ -72,16 +112,28 @@ namespace HeuristicLab.Hive.Client.Communication {
         if(ServerChanged != null) 
           ServerChanged(this, new EventArgs());
     }
-
+    
+    /// <summary>
+    /// Disconnects the Client from the Server
+    /// </summary>
     public void Disconnect() {
       ConnState = NetworkEnum.WcfConnState.Disconnected;
     }
 
+    /// <summary>
+    /// Network communication Error Handler - Every network error gets logged and the connection switches to faulted state
+    /// </summary>
+    /// <param name="e">The Exception</param>
     private void NetworkErrorHandling(Exception e) {
       ConnState = NetworkEnum.WcfConnState.Failed;
       Logging.GetInstance().Error(this.ToString(), "exception: ", e);
     }
 
+    
+
+    /// <summary>
+    /// Methods for the Server Login
+    /// </summary>
     #region Login
     public event System.EventHandler<LoginCompletedEventArgs> LoginCompleted;
     public void LoginAsync(ClientInfo clientInfo) {
@@ -109,6 +161,9 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     #endregion
 
+    /// <summary>
+    /// Pull a Job from the Server
+    /// </summary>
     #region PullJob
     public event System.EventHandler<PullJobCompletedEventArgs> PullJobCompleted;
     public void PullJobAsync(Guid guid) {
@@ -123,6 +178,9 @@ namespace HeuristicLab.Hive.Client.Communication {
     }
     #endregion
 
+    /// <summary>
+    /// Send back finished Job Results
+    /// </summary>
     #region SendJobResults
     public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
     public void SendJobResultAsync(Guid clientId,
@@ -146,6 +204,9 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     #endregion
 
+    /// <summary>
+    /// Methods for sending the periodically Heartbeat
+    /// </summary>
     #region Heartbeat
 
     public event System.EventHandler<SendHeartBeatCompletedEventArgs> SendHeartBeatCompleted;

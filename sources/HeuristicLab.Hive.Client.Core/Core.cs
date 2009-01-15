@@ -45,6 +45,9 @@ using HeuristicLab.Hive.JobBase;
 
 
 namespace HeuristicLab.Hive.Client.Core {
+  /// <summary>
+  /// The core component of the Hive Client
+  /// </summary>
   public class Core: MarshalByRefObject {
     public delegate string GetASnapshotDelegate();
 
@@ -58,7 +61,10 @@ namespace HeuristicLab.Hive.Client.Core {
 
     private WcfService wcfService;
     private Heartbeat beat;
-
+    
+    /// <summary>
+    /// Main Method for the client
+    /// </summary>
     public void Start() {
       Core.Locker = new Object();
       ShutdownFlag = false;
@@ -69,7 +75,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
       ConfigManager manager = ConfigManager.Instance;
       manager.Core = this;
-
+      
+      //Register all Wcf Service references
       wcfService = WcfService.Instance;
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
       wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
@@ -77,15 +84,19 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
       wcfService.Connected += new EventHandler(wcfService_Connected);
-      ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();
+      //Recover Server IP and Port from the Settings Framework
+      ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();     
       if (cc.IPAdress != String.Empty && cc.Port != 0) {
         wcfService.Connect(cc.IPAdress, cc.Port);
       }
    
+      //Initialize the heartbeat
       beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
 
       MessageQueue queue = MessageQueue.GetInstance();
+      
+      //Main processing loop
       while (!ShutdownFlag) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
@@ -94,30 +105,39 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
+    /// <summary>
+    /// Reads and analyzes the Messages from the MessageQueue and starts corresponding actions
+    /// </summary>
+    /// <param name="container">The Container, containing the message</param>
     private void DetermineAction(MessageContainer container) {
       switch (container.Message) {
+        //Server requests to abort a job
         case MessageContainer.MessageType.AbortJob:
           engines[container.JobId].Abort();
           break;
+        //Job has been successfully aborted
         case MessageContainer.MessageType.JobAborted:
           Debug.WriteLine("-- Job Aborted Message received");
           break;
-
+        //Request a Snapshot from the Execution Engine
         case MessageContainer.MessageType.RequestSnapshot:
           engines[container.JobId].RequestSnapshot();
           break;
+        //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:
           Thread ssr = new Thread(new ParameterizedThreadStart(GetSnapshot));
           ssr.Start(container.JobId);          
           break;
-
+        //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
           wcfService.PullJobAsync(Guid.NewGuid());
           break;          
+        //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
           Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
           finThread.Start(container.JobId);          
           break;     
+        //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
           ShutdownFlag = true;
           beat.StopHeartBeat();
@@ -125,6 +145,7 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
+    //Asynchronous Threads for interaction with the Execution Engine
     #region Async Threads for the EE
     
     private void GetFinishedJob(object jobId) {
@@ -145,6 +166,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     #endregion
 
+    //Eventhandlers for the communication with the wcf Layer 
     #region wcfService Events
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {

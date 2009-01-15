@@ -50,9 +50,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     /// <summary>
     /// Constructor for the singleton, must recover Guid, Calendar, ...
     /// </summary>
-    private ConfigManager() {
-      //retrive GUID from XML file, or burn in hell. as in hell. not heaven.
-      //this won't work this way. We need a plugin for XML Handling.      
+    private ConfigManager() {      
       hardwareInfo = new ClientInfo();
 
       if (Settings.Default.Guid == Guid.Empty) {
@@ -67,11 +65,19 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       hardwareInfo.Name = Environment.MachineName;
     }
 
+    /// <summary>
+    /// Get all the Information about the client
+    /// </summary>
+    /// <returns>the ClientInfo object</returns>
     public ClientInfo GetClientInfo() {
       hardwareInfo.Login = WcfService.Instance.ConnectedSince;
       return hardwareInfo;          
     }
 
+    /// <summary>
+    /// Returns the connectioncontainer with the IP and Port, storred in the Settings framework
+    /// </summary>
+    /// <returns>The IP and Port of the server</returns>
     public ConnectionContainer GetServerIPAndPort() {
       ConnectionContainer cc = new ConnectionContainer();
       cc.IPAdress = Settings.Default.ServerIP;
@@ -79,12 +85,19 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       return cc;
     }
 
+    /// <summary>
+    /// Sets and saves IP and Port in the Settings framework
+    /// </summary>
+    /// <param name="cc"></param>
     public void SetServerIPAndPort(ConnectionContainer cc) {
       Settings.Default.ServerIP = cc.IPAdress;
       Settings.Default.ServerPort = cc.Port;
       Settings.Default.Save();
     }
-
+    /// <summary>
+    /// collects and returns information that get displayed by the Client Console
+    /// </summary>
+    /// <returns></returns>
     public StatusCommons GetStatusForClientConsole() {
       StatusCommons st = new StatusCommons();
       st.ClientGuid = hardwareInfo.ClientId;

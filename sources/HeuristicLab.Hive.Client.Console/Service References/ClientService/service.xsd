@@ -13,22 +13,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetConnection">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetConnectionResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" minOccurs="0" name="GetConnectionResult" nillable="true" type="q2:ConnectionContainer" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="SetConnection">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" minOccurs="0" name="container" nillable="true" type="q3:ConnectionContainer" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" minOccurs="0" name="container" nillable="true" type="q2:ConnectionContainer" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -55,7 +43,7 @@
   <xs:element name="GetCurrentConnectionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" minOccurs="0" name="GetCurrentConnectionResult" nillable="true" type="q4:ConnectionContainer" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" minOccurs="0" name="GetCurrentConnectionResult" nillable="true" type="q3:ConnectionContainer" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
