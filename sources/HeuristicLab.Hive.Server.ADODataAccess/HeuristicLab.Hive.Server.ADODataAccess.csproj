@@ -67,7 +67,6 @@
     <Compile Include="ClientAdapter.cs" />
     <Compile Include="ClientGroupAdapter.cs" />
     <Compile Include="DataAdapterBase.cs" />
-    <Compile Include="DBSettings.cs" />
     <Compile Include="dsHiveServer.cs">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -83,17 +82,18 @@
     <Compile Include="JobResultsAdapter.cs" />
     <Compile Include="PermissionOwnerAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\Settings.Designer.cs">
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
-    </None>
+    </Compile>
     <Compile Include="ResourceAdapter.cs" />
     <Compile Include="TransactionManager.cs" />
     <Compile Include="UserAdapter.cs" />
     <Compile Include="UserGroupAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="dsHiveServer.xsc">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
     </None>
