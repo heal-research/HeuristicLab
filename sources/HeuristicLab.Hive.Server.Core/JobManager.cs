@@ -32,12 +32,14 @@ namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager {
 
     IJobAdapter jobAdapter;
+    IJobResultsAdapter jobResultAdapter;
     ILifecycleManager lifecycleManager;
 
     #region IJobManager Members
 
     public JobManager() {
       jobAdapter = ServiceLocator.GetJobAdapter();
+      jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
 
       lifecycleManager = ServiceLocator.GetLifecycleManager();
 
@@ -45,14 +47,36 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnShutdown));
     }
 
+    private void resetJobsDependingOnResults(Job job) {
+      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
+      JobResult lastJobResult = null;
+      foreach (JobResult jR in allJobResults) {
+        if (jR.Job != null && jR.Job.Id == job.Id) {
+          if (lastJobResult != null) {
+            // if lastJobResult was before the current jobResult the lastJobResult must be updated
+            if ((jR.timestamp.Subtract(lastJobResult.timestamp)).Seconds > 0)
+              lastJobResult = jR;
+          }
+        }
+      }
+      if (lastJobResult != null) {
+        job.Client = null;
+        job.Percentage = lastJobResult.Percentage;
+        job.State = State.idle;
+        job.SerializedJob = lastJobResult.Result;
+      } else {
+        job.Client = null;
+        job.Percentage = 0;
+        job.State = State.idle;
+      }
+      jobAdapter.Update(job);
+    }
+
     void checkForDeadJobs() {
       List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
       foreach (Job curJob in allJobs) {
         if (curJob.State == State.calculating) {
-          // TODO check for job results
-          curJob.State = State.idle;
-          curJob.Percentage = 0;
-          curJob.Client = null;
+          resetJobsDependingOnResults(curJob);
         }
       }
     }

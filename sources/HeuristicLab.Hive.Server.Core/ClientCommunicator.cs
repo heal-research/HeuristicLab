@@ -129,6 +129,7 @@ namespace HeuristicLab.Hive.Server.Core {
         job.Percentage = 0;
         job.State = State.idle;
       }
+      jobAdapter.Update(job);
     }
 
     #region IClientCommunicator Members
