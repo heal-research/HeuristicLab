@@ -175,7 +175,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.ClientRow
       InsertNewRowInCache(ClientInfo client) {
-      dsHiveServer.ClientRow row = data.NewClientRow();
+      dsHiveServer.ClientRow row = cache.NewClientRow();
       row.ResourceId = client.Id;
       cache.AddClientRow(row);
 

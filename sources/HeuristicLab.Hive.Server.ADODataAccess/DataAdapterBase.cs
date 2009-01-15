@@ -25,13 +25,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   abstract class DataAdapterBase<AdapterT, ObjT, RowT>
     where AdapterT : new()
     where RowT : System.Data.DataRow
     where ObjT : IHiveObject, new() {
+
+    private static Mutex lockersMutex =
+      new Mutex();
+
+    private static IDictionary<long, Mutex> lockers =
+      new Dictionary<long, Mutex>();
+
+    private static IDictionary<long, int> lockCount =
+      new Dictionary<long, int>();
+
+    protected void LockRow(long id) {
+      Mutex rowLock = null;
+
+      /////begin critical section////
+      lockersMutex.WaitOne();
+
+      if (!lockers.ContainsKey(id)) {
+        lockers[id] = new Mutex();
+        lockCount[id] = 0;
+      }
+      rowLock = lockers[id];
+      lockCount[id]++;
+      
+      lockersMutex.ReleaseMutex();
+      /////end critical section////
+
+      rowLock.WaitOne();
+    }
+
+    protected void UnlockRow(long id) {
+      Mutex rowLock = lockers[id];
+      rowLock.ReleaseMutex();
+
+      /////begin critical section////
+      lockersMutex.WaitOne();
+
+      lockCount[id]--;
+      if (lockCount[id] == 0)
+        lockers.Remove(id);
+
+      lockersMutex.ReleaseMutex();
+      /////end critical section////
+    }
+    
     protected AdapterT Adapter {
       get {
         return new AdapterT();
@@ -43,10 +87,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected abstract ObjT ConvertRow(RowT row, ObjT obj);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT InsertNewRow(ObjT obj);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void UpdateRow(RowT row);
 
     protected abstract IEnumerable<RowT> FindById(long id);
@@ -118,7 +160,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         });
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public virtual void Update(ObjT obj) {
       if (obj != null) {
         RowT row =
@@ -126,13 +167,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         if (row == null) {
           row = InsertNewRow(obj);
+          UpdateRow(row);
         }
 
-        ConvertObj(obj, row);
+        obj.Id = (long)row[row.Table.PrimaryKey[0]];
+        LockRow(obj.Id);
 
+        ConvertObj(obj, row);
         UpdateRow(row);
 
-        obj.Id = (long)row[row.Table.PrimaryKey[0]];
+        UnlockRow(obj.Id);
       }
     }
 
@@ -148,9 +192,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           new Selector(FindAll)));
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public virtual bool Delete(ObjT obj) {
+      bool success = false;
+      
       if (obj != null) {
+        LockRow(obj.Id);
+
         RowT row =
           GetRowById(obj.Id);
 
@@ -158,11 +205,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.Delete();
           UpdateRow(row);
 
-          return true;
+          success = true;
         }
+
+        UnlockRow(obj.Id);
       }
 
-      return false;
+      return success;
     }
   }
 }

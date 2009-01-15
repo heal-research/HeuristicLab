@@ -159,7 +159,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.JobRow 
       InsertNewRowInCache(Job job) {
-      dsHiveServer.JobRow row = data.NewJobRow();
+      dsHiveServer.JobRow row = cache.NewJobRow();
       cache.AddJobRow(row);
 
       return row;

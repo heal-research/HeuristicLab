@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.CompilerServices;
 using System.Data;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   abstract class CachedDataAdapter<AdapterT, ObjT, RowT, CacheT> :
@@ -40,18 +40,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     private static bool cacheFilled = false;
 
+    private static ReaderWriterLock cacheLock =
+      new ReaderWriterLock();
+
     protected DataTable dataTable =
       new DataTable();
 
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected CachedDataAdapter() {
+      cacheLock.AcquireWriterLock(Timeout.Infinite);
+
       if (!cacheFilled) {
         FillCache();
         cacheFilled = true;
       }
+
+      cacheLock.ReleaseWriterLock();
 
       ServiceLocator.GetTransactionManager().OnUpdate +=
         new EventHandler(CachedDataAdapter_OnUpdate);
@@ -59,6 +65,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected virtual RowT FindSingleRow(Selector dbSelector,
       Selector cacheSelector) {
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      
       RowT row =
          FindSingleRow(cacheSelector);
 
@@ -68,11 +76,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           FindSingleRow(dbSelector);
       }
 
+      cacheLock.ReleaseReaderLock();
+
       return row;
     }
 
     protected virtual IEnumerable<RowT> FindMultipleRows(Selector dbSelector,
         Selector cacheSelector) {
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+
       IList<RowT> result =
          new List<RowT>(cacheSelector());
 
@@ -84,6 +96,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           result.Add(row);
         }
       }
+
+      cacheLock.ReleaseReaderLock();
 
       return result;
     }
@@ -104,11 +118,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected virtual ICollection<ObjT> FindMultiple(Selector dbSelector,
       Selector cacheSelector) {
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+
       ICollection<ObjT> result =
         FindMultiple(cacheSelector);
 
       ICollection<ObjT> resultDb =
         FindMultiple(dbSelector);
+
+      cacheLock.ReleaseReaderLock();
 
       foreach (ObjT obj in resultDb) {
         if (!result.Contains(obj))
@@ -118,32 +136,22 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return result;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract RowT InsertNewRowInCache(ObjT obj);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract void FillCache();
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public abstract void SyncWithDb();
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     protected abstract bool PutInCache(ObjT obj);
 
     protected abstract RowT FindCachedById(long id);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
       foreach (ICachedDataAdapter parent in this.parentAdapters) {
         parent.SyncWithDb();
       }
 
       this.SyncWithDb();
-    }
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    protected virtual void RemoveRowFromCache(RowT row) {
-      cache.Rows.Remove(row);
     }
 
     protected virtual bool IsCached(RowT row) {
@@ -166,7 +174,36 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
+    private void AddToCache(RowT row) {
+      cacheLock.AcquireWriterLock(Timeout.Infinite);
+
+      cache.ImportRow(row);
+      row.Table.Rows.Remove(row);
+
+      cacheLock.ReleaseWriterLock();
+    }
+
+    private RowT AddToCache(ObjT obj) {
+      cacheLock.AcquireWriterLock(Timeout.Infinite);
+
+      RowT row =  InsertNewRowInCache(obj);
+
+      cacheLock.ReleaseWriterLock();
+
+      return row;
+    }
+
+    private void RemoveRowFromCache(RowT row) {
+      cacheLock.AcquireWriterLock(Timeout.Infinite);
+
+      dataTable.ImportRow(row);
+      cache.Rows.Remove(row);
+
+      cacheLock.ReleaseWriterLock();
+
+      UpdateRow(row);
+    }
+
     public override void Update(ObjT obj) {
       if (obj != null) {
         RowT row =
@@ -174,7 +211,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         if (row == null) {
           if (PutInCache(obj)) {
-            row = InsertNewRowInCache(obj);
+            row = AddToCache(obj);
           } else {
             row = InsertNewRow(obj);
           }
@@ -183,6 +220,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
 
         obj.Id = (long)row[row.Table.PrimaryKey[0]];
+        LockRow(obj.Id);
 
         ConvertObj(obj, row);
 
@@ -190,18 +228,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           UpdateRow(row);
 
         if (IsCached(row) &&
-            !PutInCache(obj)) {
-          //remove from cache
-          dataTable.ImportRow(row);
+            !PutInCache(obj)) {          
           RemoveRowFromCache(row);
-
-          UpdateRow(row);
         } else if (!IsCached(row) &&
           PutInCache(obj)) {
-          //add to cache
-          cache.ImportRow(row);
-          row.Table.Rows.Remove(row);
-        } 
+          AddToCache(row);
+        }
+
+        UnlockRow(obj.Id);
       }
     }
   }
