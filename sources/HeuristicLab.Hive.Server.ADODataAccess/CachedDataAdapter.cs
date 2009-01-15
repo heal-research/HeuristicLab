@@ -151,7 +151,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         parent.SyncWithDb();
       }
 
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+
       this.SyncWithDb();
+
+      cacheLock.ReleaseReaderLock();
     }
 
     protected virtual bool IsCached(RowT row) {
