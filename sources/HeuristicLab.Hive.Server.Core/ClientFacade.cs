@@ -50,9 +50,10 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseResultReceived SendJobResult(Guid clientId,
       long jobId,
       byte[] result,
+      double percentage, 
       Exception exception,
       bool finished) {
-      return clientCommunicator.SendJobResult(clientId, jobId, result, exception, finished);
+      return clientCommunicator.SendJobResult(clientId, jobId, result, percentage, exception, finished);
     }
 
     public Response Logout(Guid clientId) {

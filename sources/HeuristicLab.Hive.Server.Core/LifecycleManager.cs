@@ -32,16 +32,30 @@ namespace HeuristicLab.Hive.Server.Core {
     private static Timer timer =
       new Timer();
 
+    private static event EventHandler OnServerHeartbeat;
+    private static event EventHandler OnStartup;
+    private static event EventHandler OnShutdown;
     #region ILifecycleManager Members
-    public event EventHandler OnServerHeartbeat;
 
-    public LifecycleManager() {
-      timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+    public void RegisterHeartbeat(EventHandler handler) {
+      OnServerHeartbeat += handler;
+    }
+
+    public void RegisterStartup(EventHandler handler) {
+      OnStartup += handler;
+    }
+
+    public void RegisterShutdown(EventHandler handler) {
+      OnShutdown += handler;
     }
 
     public void Init() {
       timer.Interval = new TimeSpan(0, 0, 10).TotalMilliseconds; // TODO: global constant needed
+      timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
       timer.Start();
+
+      if (OnStartup != null)
+        OnStartup(this, null);
     }
 
     void timer_Elapsed(object sender, ElapsedEventArgs e) {
@@ -55,6 +69,9 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public void Shutdown() {
       ServiceLocator.GetTransactionManager().UpdateDB();
+
+      if (OnShutdown != null)
+        OnShutdown(this, null);
     }
 
     #endregion

@@ -37,7 +37,17 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     /// <summary>
     /// The server heartbeat
     /// </summary>
-    event EventHandler OnServerHeartbeat;
+    void RegisterHeartbeat(EventHandler handler);
+
+    /// <summary>
+    /// The startup event
+    /// </summary>
+    void RegisterStartup(EventHandler handler);
+
+    /// <summary>
+    /// The shutdown event
+    /// </summary>
+    void RegisterShutdown(EventHandler handler);
 
     /// <summary>
     /// Gets the transaction manager

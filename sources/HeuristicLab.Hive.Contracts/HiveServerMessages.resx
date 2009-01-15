@@ -228,4 +228,10 @@
   <data name="Communicator.UserNotLoggedIn" xml:space="preserve">
     <value>User is not logged in, you must login before sending Heartbeats</value>
   </data>
+  <data name="Communicator.JobIsNotBeenigCalculated" xml:space="preserve">
+    <value>There is no client registered to calculate this job</value>
+  </data>
+  <data name="Communicator.WrongClientForJob" xml:space="preserve">
+    <value>This client is not registered to calculate this job</value>
+  </data>
 </root>

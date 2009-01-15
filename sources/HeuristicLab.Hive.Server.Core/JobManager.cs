@@ -32,11 +32,37 @@ namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager {
 
     IJobAdapter jobAdapter;
+    ILifecycleManager lifecycleManager;
 
     #region IJobManager Members
 
     public JobManager() {
       jobAdapter = ServiceLocator.GetJobAdapter();
+
+      lifecycleManager = ServiceLocator.GetLifecycleManager();
+
+      lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnStartup));
+      lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnShutdown));
+    }
+
+    void checkForDeadJobs() {
+      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
+      foreach (Job curJob in allJobs) {
+        if (curJob.State == State.calculating) {
+          // TODO check for job results
+          curJob.State = State.idle;
+          curJob.Percentage = 0;
+          curJob.Client = null;
+        }
+      }
+    }
+
+    void lifecycleManager_OnStartup(object sender, EventArgs e) {
+      checkForDeadJobs();
+    }
+
+    void lifecycleManager_OnShutdown(object sender, EventArgs e) {
+      checkForDeadJobs();
     }
 
     /// <summary>

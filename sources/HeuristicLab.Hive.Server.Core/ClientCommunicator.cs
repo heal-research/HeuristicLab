@@ -57,8 +57,8 @@ namespace HeuristicLab.Hive.Server.Core {
       jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
       lifecycleManager = ServiceLocator.GetLifecycleManager();
 
-      lifecycleManager.OnServerHeartbeat += 
-        new EventHandler(lifecycleManager_OnServerHeartbeat);
+      lifecycleManager.RegisterHeartbeat( 
+        new EventHandler(lifecycleManager_OnServerHeartbeat));
 
       lastHeartbeats = new Dictionary<Guid, DateTime>();
     }
@@ -89,7 +89,17 @@ namespace HeuristicLab.Hive.Server.Core {
                 // check wich job the client was calculating and reset it
                 foreach (Job job in allJobs) {
                   if (job.Client.ClientId == client.ClientId) {
-                    // TODO check for job results
+                    List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
+                    foreach (JobResult jR in allJobResults) {
+                      JobResult lastJobResult = null;
+                      if (jR.Job != null && jR.Job.Id == job.Id) {
+                        if (lastJobResult != null) {
+
+                        }
+                      }
+                    }
+
+
                     job.Client = null;
                     job.Percentage = 0;
                     job.State = State.idle;
@@ -230,6 +240,7 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseResultReceived SendJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
+      double percentage,
       Exception exception,  
       bool finished) {
       ResponseResultReceived response = new ResponseResultReceived();
@@ -238,9 +249,20 @@ namespace HeuristicLab.Hive.Server.Core {
 
       Job job = 
         jobAdapter.GetById(jobId);
+
+      if (job.Client == null)    {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+        return response;
+      }
+      if (job.Client.ClientId != clientId) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
+        return response;
+      }
       if (job == null) {
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JO_WITH_THIS_ID;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
         return response;
       }
       if (job.State != State.calculating) {
@@ -248,6 +270,9 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
         return response;
       }
+      job.SerializedJob = result;
+      job.Percentage = percentage;
+
       if (finished) {
         job.State = State.finished;
         jobAdapter.Update(job);
@@ -262,9 +287,11 @@ namespace HeuristicLab.Hive.Server.Core {
       jobResult.Client = client;
       jobResult.Job = job;
       jobResult.Result = result;
+      jobResult.Percentage = percentage;
       jobResult.Exception = exception;
 
-      jobResultAdapter.Update(jobResult);    
+      jobResultAdapter.Update(jobResult);
+      jobAdapter.Update(job);
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;

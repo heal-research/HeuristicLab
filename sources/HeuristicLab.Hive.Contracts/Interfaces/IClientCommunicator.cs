@@ -42,6 +42,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     ResponseResultReceived SendJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
+      double percentage,
       Exception exception,  
       bool finished);
     [OperationContract]
