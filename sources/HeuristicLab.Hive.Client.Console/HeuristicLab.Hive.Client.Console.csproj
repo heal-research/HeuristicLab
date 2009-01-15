@@ -51,6 +51,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Calendar.DayView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Calendar.DayView.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Charting-3.2, Version=3.2.0.582, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\HeuristicLab.Charting\bin\Debug\HeuristicLab.Charting-3.2.dll</HintPath>
@@ -189,6 +193,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\schedule.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

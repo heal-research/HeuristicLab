@@ -33,6 +33,7 @@ using ZedGraph;
 using HeuristicLab.Hive.Client.Console.ClientService;
 using System.ServiceModel;
 using System.Net;
+using Calendar;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -54,6 +55,8 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Timer refreshTimer;
     private ListViewColumnSorterDate lvwColumnSorter;
 
+    private List<Appointment> onlineTimes = new List<Appointment>();
+
     #endregion
 
     #region Constructor
@@ -68,6 +71,7 @@ namespace HeuristicLab.Hive.Client.Console {
       ConnectToClient();
       RefreshGui();
       GetEventLog();
+      InitCalender();
     }
 
     #endregion
@@ -160,13 +164,13 @@ namespace HeuristicLab.Hive.Client.Console {
         myPane.AddPieSlice(100, Color.Green, 0.1, "");
       } else {
         for (int i = 0; i < jobs.Length; i++) {
-          allProgress += jobs[i].Progress;         
+          allProgress += jobs[i].Progress;
         }
 
         done = allProgress / jobs.Length;
 
         myPane.AddPieSlice(done, Color.Green, 0, "");
-        myPane.AddPieSlice(1-done, Color.Red, 0, "");
+        myPane.AddPieSlice(1 - done, Color.Red, 0, "");
       }
       //Hides the slice labels
       PieItem.Default.LabelType = PieLabelType.None;
@@ -174,6 +178,33 @@ namespace HeuristicLab.Hive.Client.Console {
       myPane.AxisChange();
 
       pbGraph.Image = zgc.GetImage();
+    }
+
+    private void InitCalender() {
+
+      dvOnline.StartDate = DateTime.Now;
+      dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(DvOnline_OnNewAppointment);
+      dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(DvOnline_OnResolveAppointments);
+    }
+
+    void DvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
+      List<Appointment> Apps = new List<Appointment>();
+
+      foreach (Appointment m_App in onlineTimes)
+        if ((m_App.StartDate >= e.StartDate) &&
+            (m_App.StartDate <= e.EndDate))
+          Apps.Add(m_App);
+
+      e.Appointments = Apps;
+    }
+
+    void DvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e) {
+      Appointment Appointment = new Appointment();
+
+      Appointment.StartDate = e.StartDate;
+      Appointment.EndDate = e.EndDate;
+
+      onlineTimes.Add(Appointment);
     }
 
     #endregion
@@ -190,7 +221,7 @@ namespace HeuristicLab.Hive.Client.Console {
         tbIPAdress.Text = curConnection.IPAdress;
         tbPort.Text = curConnection.Port.ToString();
       } else {
-               refreshTimer.Stop();
+        refreshTimer.Stop();
         DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         if (res == DialogResult.OK)
           this.Close();
@@ -326,6 +357,53 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     #endregion
+
+    private void mcOnline_DateChanged(object sender, DateRangeEventArgs e) {
+      dvOnline.StartDate = mcOnline.SelectionStart;
+    }
+
+    private void btCreate_Click(object sender, EventArgs e) {
+
+      if (string.IsNullOrEmpty(txtFrom.Text)) {
+        Appointment App = new Appointment();
+        App.StartDate = dvOnline.SelectionStart;
+        App.EndDate = dvOnline.SelectionEnd;
+        App.BorderColor = Color.Red;
+        App.Locked = true;
+        App.Subject = "Online";
+        onlineTimes.Add(App);
+      } else if (string.IsNullOrEmpty(txtTimeTo.Text)) {
+        Appointment App = new Appointment();
+        App.StartDate = DateTime.Parse(txtFrom.Text);
+        App.EndDate = DateTime.Parse(txtTo.Text);
+        App.BorderColor = Color.Red;
+        App.Locked = true;
+        App.Subject = "Online";
+        onlineTimes.Add(App);
+      } else {
+        DateTime from = DateTime.Parse(txtFrom.Text);
+        DateTime to = DateTime.Parse(txtTo.Text);
+
+        while (from.Date != to.Date) {
+          Appointment App = new Appointment();
+          App.StartDate = new DateTime(from.Year, from.Month, from.Day, int.Parse(txttimeFrom.Text), 0,0);
+          App.EndDate = new DateTime(from.Year, from.Month, from.Day, int.Parse(txtTimeTo.Text), 0, 0);
+          App.BorderColor = Color.Red;
+          App.Locked = true;
+          App.Subject = "Online";
+          onlineTimes.Add(App);
+          from = from.AddDays(1);
+        }
+      }
+      
+      dvOnline.Invalidate();
+    }
+
+    private void btbDelete_Click(object sender, EventArgs e) {
+      if (dvOnline.SelectedAppointment != null)
+        onlineTimes.Remove(dvOnline.SelectedAppointment);
+      dvOnline.Invalidate();
+    }
 
   }
 }

@@ -71,6 +71,7 @@ copy "%SolutionDir%\HeuristicLab.Hive.Client.Core\%Outdir%\HeuristicLab.Hive.Cli
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Common\%Outdir%\HeuristicLab.Hive.Client.Common-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\HeuristicLab.Hive.Client.Console-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\ZedGraph.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\Calendar.DayView.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Communication\%Outdir%\HeuristicLab.Hive.Client.Communication-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
