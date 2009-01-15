@@ -183,17 +183,9 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     #region SendJobResults
     public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
-    public void SendJobResultAsync(Guid clientId,
-      long jobId,
-      byte[] result,
-      Exception exception,
-      bool finished) {
+    public void SendJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Connected)
-        proxy.SendJobResultAsync(clientId, 
-           jobId, 
-           result, 
-           exception,  
-           finished);
+        proxy.SendJobResultAsync(clientId, jobId, result, percentage, exception, finished);
     }
     private void proxy_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Error == null)

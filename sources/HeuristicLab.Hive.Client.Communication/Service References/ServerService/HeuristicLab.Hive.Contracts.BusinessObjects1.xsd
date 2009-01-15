@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="ClientInfo">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resource">
@@ -48,7 +49,7 @@
       <xs:element minOccurs="0" name="ClientId" type="ser:guid" />
       <xs:element minOccurs="0" name="freeCores" type="xs:int" />
       <xs:element minOccurs="0" name="freeMemory" type="xs:int" />
-      <xs:element minOccurs="0" name="jobProgress" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="jobProgress" nillable="true" type="q1:ArrayOfKeyValueOflongdouble" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="HeartBeatData" nillable="true" type="tns:HeartBeatData" />
@@ -58,6 +59,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:long" />
       <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:Job" />
       <xs:element minOccurs="0" name="Percentage" type="xs:double" />
+      <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="State" type="tns:State" />
     </xs:sequence>
   </xs:complexType>

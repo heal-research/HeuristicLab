@@ -39,6 +39,7 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
@@ -146,11 +147,11 @@
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
     <wsdl:port name="NetTcpBinding_IClientCommunicator" binding="tns:NetTcpBinding_IClientCommunicator">
-      <soap12:address location="net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>STEFAN-4710DBDB\Stefan</Upn>
+          <Upn>mse08003@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

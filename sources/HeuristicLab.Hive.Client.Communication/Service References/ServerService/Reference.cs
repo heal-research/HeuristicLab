@@ -43,10 +43,10 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         HeuristicLab.Hive.Contracts.ResponseJob EndPullJob(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished);
+        HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState);
         
         HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result);
         
@@ -374,13 +374,13 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         clientId}, this.onEndPullJobDelegate, this.onPullJobCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished) {
-            return base.Channel.SendJobResult(clientId, jobId, result, exception, finished);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
+            return base.Channel.SendJobResult(clientId, jobId, result, percentage, exception, finished);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSendJobResult(clientId, jobId, result, exception, finished, callback, asyncState);
+        public System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSendJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -392,9 +392,10 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
             System.Guid clientId = ((System.Guid)(inValues[0]));
             long jobId = ((long)(inValues[1]));
             byte[] result = ((byte[])(inValues[2]));
-            System.Exception exception = ((System.Exception)(inValues[3]));
-            bool finished = ((bool)(inValues[4]));
-            return this.BeginSendJobResult(clientId, jobId, result, exception, finished, callback, asyncState);
+            double percentage = ((double)(inValues[3]));
+            System.Exception exception = ((System.Exception)(inValues[4]));
+            bool finished = ((bool)(inValues[5]));
+            return this.BeginSendJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
         }
         
         private object[] OnEndSendJobResult(System.IAsyncResult result) {
@@ -410,11 +411,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
             }
         }
         
-        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished) {
-            this.SendJobResultAsync(clientId, jobId, result, exception, finished, null);
+        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
+            this.SendJobResultAsync(clientId, jobId, result, percentage, exception, finished, null);
         }
         
-        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, System.Exception exception, bool finished, object userState) {
+        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, object userState) {
             if ((this.onBeginSendJobResultDelegate == null)) {
                 this.onBeginSendJobResultDelegate = new BeginOperationDelegate(this.OnBeginSendJobResult);
             }
@@ -428,6 +429,7 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         clientId,
                         jobId,
                         result,
+                        percentage,
                         exception,
                         finished}, this.onEndSendJobResultDelegate, this.onSendJobResultCompletedDelegate, userState);
         }

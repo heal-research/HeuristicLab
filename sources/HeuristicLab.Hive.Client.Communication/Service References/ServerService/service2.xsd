@@ -52,6 +52,7 @@
         <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q7:guid" />
         <xs:element minOccurs="0" name="jobId" type="xs:long" />
         <xs:element minOccurs="0" name="result" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="percentage" type="xs:double" />
         <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="exception" nillable="true" type="q8:Exception" />
         <xs:element minOccurs="0" name="finished" type="xs:boolean" />
       </xs:sequence>

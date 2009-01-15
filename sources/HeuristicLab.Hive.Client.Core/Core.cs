@@ -155,6 +155,7 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
         jId,
         sJob,
+        1,
         null,
         true);
     }
@@ -162,6 +163,12 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetSnapshot(object jobId) {
       long jId = (long)jobId;
       byte[] obj = engines[jId].GetSnapshot();
+      wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+        jId,
+        obj,
+        engines[jId].Progress,
+        null,
+        false);
     }
 
     #endregion
@@ -203,17 +210,24 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
-      if (e.Result.Success) {
+      if (e.Result.Success) {        
         lock (Locker) {
-          AppDomain.Unload(appDomains[e.Result.JobId]);
-          appDomains.Remove(e.Result.JobId);
-          engines.Remove(e.Result.JobId);
-          jobs.Remove(e.Result.JobId);
-          ClientStatusInfo.JobsProcessed++;
-        }
-        Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
+          //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
+          //this method has a risk concerning race conditions.
+          //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
+          if (e.Result.finished == false) {
+            Logging.GetInstance().Info(this.ToString(), "Snapshot for Job " + e.Result.JobId + " transmitted");
+          } else {
+            AppDomain.Unload(appDomains[e.Result.JobId]);
+            appDomains.Remove(e.Result.JobId);
+            engines.Remove(e.Result.JobId);
+            jobs.Remove(e.Result.JobId);
+            ClientStatusInfo.JobsProcessed++;
+            Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
+          }
+        }        
       } else {
-        Debug.WriteLine("Job sending FAILED!");
+        Logging.GetInstance().Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
       }
     }
 
