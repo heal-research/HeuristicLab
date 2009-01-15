@@ -307,6 +307,7 @@ namespace HeuristicLab.Hive.Server.Core {
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
       response.JobId = jobId;
+      response.finished = finished;
 
       return response;
     }

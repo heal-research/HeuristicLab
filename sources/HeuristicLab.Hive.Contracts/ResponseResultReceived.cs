@@ -31,5 +31,7 @@ namespace HeuristicLab.Hive.Contracts {
   public class ResponseResultReceived : Response {
     [DataMember]
     public long JobId { get; set; }
+    [DataMember]
+    public bool finished { get; set; }
   }
 }
