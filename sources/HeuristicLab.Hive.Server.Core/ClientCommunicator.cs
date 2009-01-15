@@ -89,20 +89,7 @@ namespace HeuristicLab.Hive.Server.Core {
                 // check wich job the client was calculating and reset it
                 foreach (Job job in allJobs) {
                   if (job.Client.ClientId == client.ClientId) {
-                    List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
-                    foreach (JobResult jR in allJobResults) {
-                      JobResult lastJobResult = null;
-                      if (jR.Job != null && jR.Job.Id == job.Id) {
-                        if (lastJobResult != null) {
-
-                        }
-                      }
-                    }
-
-
-                    job.Client = null;
-                    job.Percentage = 0;
-                    job.State = State.idle;
+                    resetJobsDependingOnResults(job);
                   }
                 }
               }
@@ -117,6 +104,30 @@ namespace HeuristicLab.Hive.Server.Core {
           if (lastHeartbeats.ContainsKey(client.ClientId))
             lastHeartbeats.Remove(client.ClientId);
         }
+      }
+    }
+
+    private void resetJobsDependingOnResults(Job job) {
+      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
+      JobResult lastJobResult = null;
+      foreach (JobResult jR in allJobResults) {
+        if (jR.Job != null && jR.Job.Id == job.Id) {
+          if (lastJobResult != null) {
+            // if lastJobResult was before the current jobResult the lastJobResult must be updated
+            if ((jR.timestamp.Subtract(lastJobResult.timestamp)).Seconds > 0)
+              lastJobResult = jR;
+          }
+        }
+      }
+      if (lastJobResult != null) {
+        job.Client = null;
+        job.Percentage = lastJobResult.Percentage;
+        job.State = State.idle;
+        job.SerializedJob = lastJobResult.Result;
+      } else {
+        job.Client = null;
+        job.Percentage = 0;
+        job.State = State.idle;
       }
     }
 
@@ -324,10 +335,7 @@ namespace HeuristicLab.Hive.Server.Core {
         // check wich job the client was calculating and reset it
         foreach (Job job in allJobs) {
           if (job.Client.ClientId == client.ClientId) {
-            // TODO check for job results
-            job.Client = null;
-            job.Percentage = 0;
-            job.State = State.idle;
+            resetJobsDependingOnResults(job);
           }
         }
       }
