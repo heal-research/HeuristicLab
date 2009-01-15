@@ -130,7 +130,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
-          wcfService.PullJobAsync(Guid.NewGuid());
+          wcfService.PullJobAsync(ConfigManager.Instance.GetClientInfo().ClientId);
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
