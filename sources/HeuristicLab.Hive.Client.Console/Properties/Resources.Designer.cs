@@ -80,5 +80,12 @@ namespace HeuristicLab.Hive.Client.Console.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap shutdown_icon {
+            get {
+                object obj = ResourceManager.GetObject("shutdown_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

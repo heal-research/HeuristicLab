@@ -55,22 +55,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Calendar.DayView.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Charting-3.2, Version=3.2.0.582, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Charting\bin\Debug\HeuristicLab.Charting-3.2.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Charting.Data-3.2, Version=3.2.0.582, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Charting.Data\bin\Debug\HeuristicLab.Charting.Data-3.2.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Data-3.2, Version=3.2.0.776, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Data\bin\Debug\HeuristicLab.Data-3.2.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Operators-3.2, Version=3.2.0.801, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Operators\bin\Debug\HeuristicLab.Operators-3.2.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -196,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\schedule.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shutdown-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

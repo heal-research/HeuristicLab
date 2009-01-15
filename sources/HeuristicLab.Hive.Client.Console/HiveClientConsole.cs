@@ -240,7 +240,6 @@ namespace HeuristicLab.Hive.Client.Console {
         lbJobsFetched.Text = sc.JobsFetched.ToString();
 
         this.Text = "Client Console (" + sc.Status.ToString() + ")";
-        lbStatus.Text = sc.Status.ToString();
 
         ListViewItem curJobStatusItem;
 
