@@ -29,9 +29,15 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (serverConsoleFacade == null &&
         Address != String.Empty &&
         Port != String.Empty) {
+
+        NetTcpBinding binding = 
+             new NetTcpBinding();
+
+        binding.MaxReceivedMessageSize = 5000000;
+
         ChannelFactory<IServerConsoleFacade> factory =
           new ChannelFactory<IServerConsoleFacade>(
-            new NetTcpBinding(),
+            binding,
             new EndpointAddress("net.tcp://" + Address + ":" + Port + "/HiveServerConsole/ServerConsoleFacade"));
 
         serverConsoleFacade = factory.CreateChannel();

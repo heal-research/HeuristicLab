@@ -39,33 +39,48 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public event closeForm closeFormEvent;
 
-    ResponseList<ClientGroup> clients = null;
-    ResponseList<ClientInfo> clientInfo = null;
-    ResponseList<Job> jobs = null;
-    ResponseList<UserGroup> userGroups = null;
-    ResponseList<User> usersList = null;
-    ListView lvClientDetails = null;
+    #region private variables
+    private ResponseList<ClientGroup> clients = null;
+    private ResponseList<ClientInfo> clientInfo = null;
+    private ResponseList<Job> jobs = null;
+    private ResponseList<UserGroup> userGroups = null;
+    private ResponseList<User> usersList = null;
 
-    Job currentJob = null;
-    ClientInfo currentClient = null;
-    User currentUser = null;
+    private Job currentJob = null;
+    private ClientInfo currentClient = null;
+    private User currentUser = null;
+    private int idxCurrentJob = 0;
+    private int idxCurrentClient = 0;
+    private int idxCurrentUser = 0;
+    private bool flagJob = false;
+    private bool flagClient = false;
+    private bool flagUser = false;
+
+    private ToolTip tt = new ToolTip();
+    #endregion
 
     public HiveServerManagementConsole() {
       InitializeComponent();
       AddClients();
       AddJobs();
       AddUsers();
-
-      timerSyncronize.Tick += new EventHandler(TickSync);
       timerSyncronize.Start();
     }
 
+    /// <summary>
+    /// event on Ticker
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="e"></param>
     private void TickSync(object obj, EventArgs e) {
       AddClients();
       AddJobs();
       AddUsers();
     }
 
+    /// <summary>
+    /// Adds clients to ListView and TreeView
+    /// </summary>
     private void AddClients() {
       try {
         IClientManager clientManager =
@@ -95,6 +110,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           count = (count + 1) % 3;
         }
         lvClientControl.Groups.Add(lvunsorted);
+        if (flagClient) {
+          ClientClicked();
+        }
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -102,6 +120,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    /// <summary>
+    /// Adds jobs to ListView and TreeView
+    /// </summary>
     private void AddJobs() {
       try {
         IJobManager jobManager =
@@ -136,6 +157,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lvJobControl.Groups.Add(lvJobCalculating);
         lvJobControl.Groups.Add(lvJobFinished);
         lvJobControl.Groups.Add(lvJobPending);
+        if (flagJob) {
+          JobClicked();
+        }
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -143,6 +167,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    /// <summary>
+    /// Adds users to ListView and TreeView
+    /// </summary>
     private void AddUsers() {
       try {
         IUserRoleManager userRoleManager =
@@ -174,6 +201,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           lvUserControl.Items.Add(new ListViewItem(u.Name, 0, lvunsorted));
         }
         lvUserControl.Groups.Add(lvunsorted);
+        if (flagUser) {
+          UserClicked();
+        }
       }
       catch (Exception ex) {
         closeFormEvent(true, true);
@@ -181,6 +211,80 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    /// <summary>
+    /// if one client is clicked, a panel is opened with the details
+    /// </summary>
+    private void ClientClicked() {
+      currentClient = clientInfo.List[idxCurrentClient];
+      scClientControl.Panel2.Controls.Clear();
+      scClientControl.Panel2.Controls.Add(plClientDetails);
+      pbClientControl.Image = ilClientControl.Images[0];
+      lblClientName.Text = currentClient.Name;
+      lblLogin.Text = currentClient.Login.ToString();
+    }
+
+    /// <summary>
+    /// if one job is clicked, a panel is opened with the details
+    /// </summary>
+    private void JobClicked() {
+      int yPos = 0;
+      currentJob = jobs.List[idxCurrentJob];
+      scJobControl.Panel2.Controls.Clear();
+      scJobControl.Panel2.Controls.Add(plJobDetails);
+      pbJobControl.Image = ilJobControl.Images[0];
+      lblJobName.Text = currentJob.Id.ToString();
+      progressJob.Value = (int)(currentJob.Percentage * 100);
+      yPos = progressJob.Location.Y;
+      yPos += 20;
+      lblProgress.Location = new Point(
+        lblProgress.Location.X, yPos);
+      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
+      yPos += 20;
+      lblUserCreatedJob.Location = new Point(
+        lblUserCreatedJob.Location.X, yPos);
+      lblUserCreatedJob.Text = /* currentJob.User.Name + */ " created Job";
+      yPos += 20;
+      lblJobCreated.Location = new Point(
+        lblJobCreated.Location.X, yPos);
+      lblJobCreated.Text = "Created at "/* + currentJob.User.CreatedJob + */;
+      if (currentJob.ParentJob != null) {
+        yPos += 20;
+        lblParentJob.Location = new Point(
+          lblParentJob.Location.X, yPos);
+        lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
+      }
+      yPos += 20;
+      lblPriorityJob.Location = new Point(
+        lblPriorityJob.Location.X, yPos);
+      lblPriorityJob.Text = "Priority of job is " /* + currentJob.Priority */;
+      if (currentJob.Client != null) {
+        yPos += 20;
+        lblClientCalculating.Location = new Point(
+          lblClientCalculating.Location.X, yPos);
+        lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
+        yPos += 20;
+        lblJobCalculationBegin.Location = new Point(
+          lblJobCalculationBegin.Location.X, yPos);
+        lblJobCalculationBegin.Text = "Startet calculation at " /* + currentJob.User.CalculationBegin */;
+        yPos += 20;
+        lblJobCalculationEnd.Location = new Point(
+          lblJobCalculationEnd.Location.X, yPos);
+        lblJobCalculationEnd.Text = "Calculation endet at " /* + currentJob.User.CalculationEnd */;
+      }
+    }
+
+    /// <summary>
+    /// if one user is clicked, a panel is opened with the details
+    /// </summary>
+    private void UserClicked() {
+      currentUser = usersList.List[idxCurrentUser];
+      scUserControl.Panel2.Controls.Clear();
+      scUserControl.Panel2.Controls.Add(plUserDetails);
+      pbUserControl.Image = ilUserControl.Images[0];
+      lblUserName.Text = currentUser.Id.ToString();
+    }
+
+    #region Eventhandler
     /// <summary>
     /// Send event to Login-GUI when closing
     /// </summary>
@@ -204,98 +308,63 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void JobToolStripMenuItem1_Click(object sender, EventArgs e) {
+    private void AddJob_Click(object sender, EventArgs e) {
       AddJobForm newForm = new AddJobForm();
       newForm.Show();
     }
 
-    private void UserToolStripMenuItem1_Click(object sender, EventArgs e) {
+    private void AddUser_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", false);
       newForm.Show();
     }
 
-    private void GroupToolStripMenuItem2_Click(object sender, EventArgs e) {
+    private void AddUserGroup_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", true);
       newForm.Show();
-
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
-      currentClient = clientInfo.List[lvClientControl.SelectedItems[0].Index];
+      idxCurrentClient = lvClientControl.SelectedItems[0].Index;
+      flagClient = true;
       ClientClicked();
     }
 
-    private void OnTVClientClicked(object sender, EventArgs e) {
-     // currentClient = clientInfo.List[tvClientControl.SelectedNode.Index];
-     // ClientClicked();
+    private void OnLVJobControlClicked(object sender, EventArgs e) {
+      idxCurrentJob = lvJobControl.SelectedItems[0].Index;
+      flagJob = true;
+      JobClicked();
     }
 
-    private void ClientClicked() {
-      scClientControl.Panel2.Controls.Clear();
-      scClientControl.Panel2.Controls.Add(plClientDetails);
-      pbClientControl.Image = ilClientControl.Images[0];
-      lblClientName.Text = currentClient.Name;
-      lblLogin.Text = currentClient.Login.ToString();
+    private void OnLVUserControlClicked(object sender, EventArgs e) {
+      idxCurrentUser = lvUserControl.SelectedItems[0].Index;
+      flagUser = true;
+      UserClicked();
     }
 
     private void btnClientClose_Click(object sender, EventArgs e) {
       scClientControl.Panel2.Controls.Clear();
       scClientControl.Panel2.Controls.Add(lvClientControl);
+      flagClient = false;
     }
-
-    private void OnLVJobControlClicked(object sender, EventArgs e) {
-      currentJob = jobs.List[lvJobControl.SelectedItems[0].Index];
-      JobClicked();
-
-    }
-    private void JobClicked() {
-      scJobControl.Panel2.Controls.Clear();
-      scJobControl.Panel2.Controls.Add(plJobDetails);
-      pbJobControl.Image = ilJobControl.Images[0];
-      lblJobName.Text = currentJob.Id.ToString();
-      progressJob.Value = (int)(currentJob.Percentage * 100);
-      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
-      lblUserCreatedJob.Text = /* currentJob.User.Name + */ " created Job";
-      lblJobCreated.Text = "Created at "/* + currentJob.User.CreatedJob + */;
-      if (currentJob.ParentJob != null)   
-        lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
-      lblPriorityJob.Text = "Priority of job is " /* + currentJob.Priority */;
-      if (currentJob.Client != null) {
-        lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
-      lblJobCalculationBegin.Text = "Startet calculation at " /* + currentJob.User.CalculationBegin */;
-      lblJobCalculationEnd.Text = "Calculation endet at " /* + currentJob.User.CalculationEnd */;
-      }
-    }
-
+ 
     private void btnJobDetailClose_Click(object sender, EventArgs e) {
       scJobControl.Panel2.Controls.Clear();
       scJobControl.Panel2.Controls.Add(lvJobControl);
-    }
-
-    private void OnLVUserControlClicked(object sender, EventArgs e) {
-      currentUser = usersList.List[lvUserControl.SelectedItems[0].Index];
-      UserClicked();
-    }
-
-    private void UserClicked() {
-      scUserControl.Panel2.Controls.Clear();
-      scUserControl.Panel2.Controls.Add(plUserDetails);
-      pbUserControl.Image = ilUserControl.Images[0];
-      lblUserName.Text = currentUser.Id.ToString();
+      flagJob = false;
     }
 
     private void btnUserControlClose_Click(object sender, EventArgs e) {
       scUserControl.Panel2.Controls.Clear();
       scUserControl.Panel2.Controls.Add(lvUserControl);
+      flagUser = false;
     }
 
-    ToolTip tt = new ToolTip();
     private void lvJobControl_MouseMove(object sender, MouseEventArgs e) {
       if ((lvJobControl.GetItemAt(e.X, e.Y) != null) &&
         (lvJobControl.GetItemAt(e.X, e.Y).ToolTipText != null)) {
         tt.SetToolTip(lvJobControl, lvJobControl.GetItemAt(e.X, e.Y).ToolTipText);
       }
     }
-
+    #endregion
   }
 }

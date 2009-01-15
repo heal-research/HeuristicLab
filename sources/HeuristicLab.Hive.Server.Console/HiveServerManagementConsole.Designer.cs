@@ -61,6 +61,8 @@
       this.tvUserControl = new System.Windows.Forms.TreeView();
       this.lvUserControl = new System.Windows.Forms.ListView();
       this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
+      this.lvJobControl = new System.Windows.Forms.ListView();
+      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
       this.plClientDetails = new System.Windows.Forms.Panel();
       this.lblLogin = new System.Windows.Forms.Label();
       this.lblLoginOn = new System.Windows.Forms.Label();
@@ -71,8 +73,6 @@
       this.lblUserName = new System.Windows.Forms.Label();
       this.btnUserControlClose = new System.Windows.Forms.Button();
       this.pbUserControl = new System.Windows.Forms.PictureBox();
-      this.lvJobControl = new System.Windows.Forms.ListView();
-      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.listView2 = new System.Windows.Forms.ListView();
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
@@ -140,7 +140,7 @@
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
       this.jobToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.jobToolStripMenuItem.Text = "Job";
-      this.jobToolStripMenuItem.Click += new System.EventHandler(this.JobToolStripMenuItem1_Click);
+      this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
       // 
       // userToolStripMenuItem
       // 
@@ -156,14 +156,14 @@
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
       this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.userToolStripMenuItem1.Text = "User";
-      this.userToolStripMenuItem1.Click += new System.EventHandler(this.UserToolStripMenuItem1_Click);
+      this.userToolStripMenuItem1.Click += new System.EventHandler(this.AddUser_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
       this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
       this.groupToolStripMenuItem2.Text = "Group";
-      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.GroupToolStripMenuItem2_Click);
+      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.AddUserGroup_Click);
       // 
       // tcManagementConsole
       // 
@@ -213,7 +213,6 @@
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(139, 346);
       this.tvClientControl.TabIndex = 0;
-      this.tvClientControl.Click += new System.EventHandler(this.OnTVClientClicked);
       // 
       // lvClientControl
       // 
@@ -354,11 +353,10 @@
       // lblProgress
       // 
       this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.lblProgress.AutoSize = true;
       this.lblProgress.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.lblProgress.Location = new System.Drawing.Point(361, 99);
+      this.lblProgress.Location = new System.Drawing.Point(326, 99);
       this.lblProgress.Name = "lblProgress";
-      this.lblProgress.Size = new System.Drawing.Size(58, 13);
+      this.lblProgress.Size = new System.Drawing.Size(143, 13);
       this.lblProgress.TabIndex = 8;
       this.lblProgress.Text = "lblProgress";
       this.lblProgress.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -460,6 +458,26 @@
       this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
       this.ilUserControl.Images.SetKeyName(0, "Users.png");
       // 
+      // lvJobControl
+      // 
+      this.lvJobControl.AllowDrop = true;
+      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvJobControl.LargeImageList = this.ilJobControl;
+      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.lvJobControl.MultiSelect = false;
+      this.lvJobControl.Name = "lvJobControl";
+      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
+      this.lvJobControl.TabIndex = 0;
+      this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
+      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
+      // 
+      // ilJobControl
+      // 
+      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
+      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
+      // 
       // plClientDetails
       // 
       this.plClientDetails.BackColor = System.Drawing.SystemColors.Window;
@@ -558,26 +576,6 @@
       this.pbUserControl.TabIndex = 3;
       this.pbUserControl.TabStop = false;
       // 
-      // lvJobControl
-      // 
-      this.lvJobControl.AllowDrop = true;
-      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.ilJobControl;
-      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
-      this.lvJobControl.MultiSelect = false;
-      this.lvJobControl.Name = "lvJobControl";
-      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
-      this.lvJobControl.TabIndex = 0;
-      this.lvJobControl.UseCompatibleStateImageBehavior = false;
-      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
-      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
-      // 
-      // ilJobControl
-      // 
-      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
-      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
-      // 
       // treeView2
       // 
       this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -599,6 +597,7 @@
       // timerSyncronize
       // 
       this.timerSyncronize.Interval = 10000;
+      this.timerSyncronize.Tick += new System.EventHandler(this.TickSync);
       // 
       // fileSystemWatcher1
       // 
