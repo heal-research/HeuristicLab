@@ -32,6 +32,7 @@ using System.Resources;
 using System.Reflection;
 using HeuristicLab.Hive.JobBase;
 using System.Runtime.CompilerServices;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -45,6 +46,7 @@ namespace HeuristicLab.Hive.Server.Core {
     IJobAdapter jobAdapter;
     IJobResultsAdapter jobResultAdapter;
     ILifecycleManager lifecycleManager;
+    IInternalJobManager jobManager;
 
     /// <summary>
     /// Initialization of the Adapters to the database
@@ -56,6 +58,8 @@ namespace HeuristicLab.Hive.Server.Core {
       jobAdapter = ServiceLocator.GetJobAdapter();
       jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
       lifecycleManager = ServiceLocator.GetLifecycleManager();
+      jobManager = ServiceLocator.GetJobManager() as 
+        IInternalJobManager;
 
       lifecycleManager.RegisterHeartbeat( 
         new EventHandler(lifecycleManager_OnServerHeartbeat));
@@ -89,7 +93,7 @@ namespace HeuristicLab.Hive.Server.Core {
                 // check wich job the client was calculating and reset it
                 foreach (Job job in allJobs) {
                   if (job.Client.ClientId == client.ClientId) {
-                    resetJobsDependingOnResults(job);
+                    jobManager.ResetJobsDependingOnResults(job);
                   }
                 }
               }
@@ -105,31 +109,6 @@ namespace HeuristicLab.Hive.Server.Core {
             lastHeartbeats.Remove(client.ClientId);
         }
       }
-    }
-
-    private void resetJobsDependingOnResults(Job job) {
-      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
-      JobResult lastJobResult = null;
-      foreach (JobResult jR in allJobResults) {
-        if (jR.Job != null && jR.Job.Id == job.Id) {
-          if (lastJobResult != null) {
-            // if lastJobResult was before the current jobResult the lastJobResult must be updated
-            if ((jR.timestamp.Subtract(lastJobResult.timestamp)).Seconds > 0)
-              lastJobResult = jR;
-          }
-        }
-      }
-      if (lastJobResult != null) {
-        job.Client = null;
-        job.Percentage = lastJobResult.Percentage;
-        job.State = State.idle;
-        job.SerializedJob = lastJobResult.Result;
-      } else {
-        job.Client = null;
-        job.Percentage = 0;
-        job.State = State.idle;
-      }
-      jobAdapter.Update(job);
     }
 
     #region IClientCommunicator Members
@@ -337,7 +316,7 @@ namespace HeuristicLab.Hive.Server.Core {
         // check wich job the client was calculating and reset it
         foreach (Job job in allJobs) {
           if (job.Client.ClientId == client.ClientId) {
-            resetJobsDependingOnResults(job);
+            jobManager.ResetJobsDependingOnResults(job);
           }
         }
       }

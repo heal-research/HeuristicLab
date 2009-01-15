@@ -27,9 +27,10 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
-  class JobManager: IJobManager {
+  class JobManager: IJobManager, IInternalJobManager {
 
     IJobAdapter jobAdapter;
     IJobResultsAdapter jobResultAdapter;
@@ -47,7 +48,7 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnShutdown));
     }
 
-    private void resetJobsDependingOnResults(Job job) {
+    public void ResetJobsDependingOnResults(Job job) {
       List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
       JobResult lastJobResult = null;
       foreach (JobResult jR in allJobResults) {
@@ -76,7 +77,7 @@ namespace HeuristicLab.Hive.Server.Core {
       List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
       foreach (Job curJob in allJobs) {
         if (curJob.State == State.calculating) {
-          resetJobsDependingOnResults(curJob);
+          ResetJobsDependingOnResults(curJob);
         }
       }
     }

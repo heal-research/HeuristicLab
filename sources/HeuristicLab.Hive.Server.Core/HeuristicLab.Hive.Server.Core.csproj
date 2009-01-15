@@ -81,6 +81,7 @@
     <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IUserAdapter.cs" />
     <Compile Include="InternalInterfaces\DataAccess\IUserGroupAdapter.cs" />
+    <Compile Include="InternalInterfaces\IInternalJobManager.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="LifecycleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
