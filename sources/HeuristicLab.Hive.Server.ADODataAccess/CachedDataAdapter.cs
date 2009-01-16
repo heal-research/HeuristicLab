@@ -104,16 +104,20 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected virtual ObjT FindSingle(Selector dbSelector,
       Selector cacheSelector) {
+      ObjT obj = default(ObjT);
+
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+
       RowT row = FindSingleRow(dbSelector, cacheSelector);
 
       if (row != null) {
-        ObjT obj = new ObjT();
+        obj = new ObjT();
         obj = Convert(row, obj);
-        
-        return obj;
-      } else {
-        return default(ObjT);
       }
+
+      cacheLock.ReleaseReaderLock();
+
+      return obj;
     }
 
     protected virtual ICollection<ObjT> FindMultiple(Selector dbSelector,
@@ -177,14 +181,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override RowT GetRowById(long id) {
+      cacheLock.AcquireReaderLock(Timeout.Infinite);
+
       RowT row =
         FindCachedById(id);
 
+      //not in cache
       if (row == null)
         row = FindSingleRow(
           delegate() {
             return FindById(id);
           });
+
+      cacheLock.ReleaseReaderLock();
 
       return row;
     }
