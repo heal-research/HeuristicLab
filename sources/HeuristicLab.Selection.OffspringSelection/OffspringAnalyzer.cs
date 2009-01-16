@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection.OffspringSelection {
+  /// <summary>
+  /// Analyzes the offspring in a given scope whether it is successful or not.
+  /// </summary>
   public class OffspringAnalyzer : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OffspringAnalyzer"/> with six variable infos 
+    /// (<c>Maximization</c>, <c>Quality</c>, <c>ParentQualities</c>, <c>SuccessfulChild</c>,
+    /// <c>ComparisonFactor</c> and <c>ParentsCount</c>).
+    /// </summary>
     public OffspringAnalyzer() {
       AddVariableInfo(new VariableInfo("Maximization", "Problem is a maximization problem", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
@@ -47,6 +56,14 @@ namespace HeuristicLab.Selection.OffspringSelection {
       AddVariable(new Variable("ParentsCount", new IntData(2)));
     }
 
+    /// <summary>
+    /// Analyzes the offspring in the given scope whether the children are successful or not.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when <c>ParentsCount</c> smaller than 1.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the number of children is not constant or
+    /// smaller than 1.</exception>
+    /// <param name="scope">The scope whose offspring should be analyzed.</param>
+    /// <returns>The next operation or null.</returns>
     public override IOperation Apply(IScope scope) {
       bool maximize = GetVariableValue<BoolData>("Maximization", scope, true).Data;
       double compFact = GetVariableValue<DoubleData>("ComparisonFactor", scope, true).Data;

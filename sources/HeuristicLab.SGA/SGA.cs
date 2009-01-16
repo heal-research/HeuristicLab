@@ -32,8 +32,15 @@ using HeuristicLab.Logging;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.SGA {
+  /// <summary>
+  /// Class for the heuristic optimization technique "simple genetic algorithm".
+  /// </summary>
   public class SGA : ItemBase, IEditable {
     #region Create Operators
+    /// <summary>
+    /// Creates operators for the current instance.
+    /// </summary>
+    /// <param name="engine">The engine where to add the operators.</param>
     public static void Create(IEngine engine) {
       engine.OperatorGraph.Clear();
 
@@ -354,21 +361,34 @@ namespace HeuristicLab.SGA {
 
     #region Properties
     private IEngine myEngine;
+    /// <summary>
+    /// Gets the engine of the current instance.
+    /// </summary>
     public IEngine Engine {
       get { return myEngine; }
     }
     private BoolData mySetSeedRandomly;
+    /// <summary>
+    /// Gets or sets the flag whether to set the seed randomly or not.
+    /// </summary>
     public bool SetSeedRandomly {
       get { return mySetSeedRandomly.Data; }
       set { mySetSeedRandomly.Data = value; }
     }
     private IntData mySeed;
+    /// <summary>
+    /// Gets or sets the value of the seed of the current instance.
+    /// </summary>
     public int Seed {
       get { return mySeed.Data; }
       set { mySeed.Data = value; }
     }
     private IntData myPopulationSize;
     private IntData myParents;
+    /// <summary>
+    /// Gets or sets the population size of the current instance.
+    /// </summary>
+    /// <remarks>The number of parents is set to two times the population size.</remarks>
     public int PopulationSize {
       get { return myPopulationSize.Data; }
       set {
@@ -377,22 +397,34 @@ namespace HeuristicLab.SGA {
       }
     }
     private IntData myMaximumGenerations;
+    /// <summary>
+    /// Gets or sets the number of maximum generations.
+    /// </summary>
     public int MaximumGenerations {
       get { return myMaximumGenerations.Data; }
       set { myMaximumGenerations.Data = value; }
     }
     private DoubleData myMutationRate;
+    /// <summary>
+    /// Gets or sets the mutation rate of the current instance.
+    /// </summary>
     public double MutationRate {
       get { return myMutationRate.Data; }
       set { myMutationRate.Data = value; }
     }
     private IntData myElites;
+    /// <summary>
+    /// Gets or sets the elites of the current instance.
+    /// </summary>
     public int Elites {
       get { return myElites.Data; }
       set { myElites.Data = value; }
     }
     private CombinedOperator mySGA;
     private IOperator myVariableInjection;
+    /// <summary>
+    /// Gets or sets the problem injector of the current instance.
+    /// </summary>
     public IOperator ProblemInjector {
       get { return myVariableInjection.SubOperators[0]; }
       set {
@@ -403,6 +435,9 @@ namespace HeuristicLab.SGA {
       }
     }
     private IOperator myPopulationInitialization;
+    /// <summary>
+    /// Gets or sets the solution generator of the current instance.
+    /// </summary>
     public IOperator SolutionGenerator {
       get { return myPopulationInitialization.SubOperators[0]; }
       set {
@@ -412,6 +447,9 @@ namespace HeuristicLab.SGA {
         myPopulationInitialization.AddSubOperator(value, 0);
       }
     }
+    /// <summary>
+    /// Gets or sets the evaluator of the current instance.
+    /// </summary>
     public IOperator Evaluator {
       get { return myPopulationInitialization.SubOperators[1]; }
       set {
@@ -423,6 +461,9 @@ namespace HeuristicLab.SGA {
       }
     }
     private IOperator mySGAMain;
+    /// <summary>
+    /// Gets or sets the selection operator of the current instance.
+    /// </summary>
     public IOperator Selector {
       get { return mySGAMain.SubOperators[0]; }
       set {
@@ -432,6 +473,9 @@ namespace HeuristicLab.SGA {
         mySGAMain.AddSubOperator(value, 0);
       }
     }
+    /// <summary>
+    /// Gets or sets the crossover operator of the current instance.
+    /// </summary>
     public IOperator Crossover {
       get { return mySGAMain.SubOperators[1]; }
       set {
@@ -441,6 +485,9 @@ namespace HeuristicLab.SGA {
         mySGAMain.AddSubOperator(value, 1);
       }
     }
+    /// <summary>
+    /// Gets or sets the mutation operator of the current instance.
+    /// </summary>
     public IOperator Mutator {
       get { return mySGAMain.SubOperators[2]; }
       set {
@@ -452,19 +499,37 @@ namespace HeuristicLab.SGA {
     }
     #endregion
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SGA"/>.
+    /// </summary>
     public SGA() {
       myEngine = new SequentialEngine.SequentialEngine();
       Create(myEngine);
       SetReferences();
     }
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="SGAEditor"/> class.
+    /// </summary>
+    /// <returns>The created instance of the <see cref="SGAEditor"/>.</returns>
     public override IView CreateView() {
       return new SGAEditor(this);
     }
+    /// <summary>
+    /// Creates a new instance of the <see cref="SGAEditor"/> class.
+    /// </summary>
+    /// <returns>The created instance of the <see cref="SGAEditor"/>.</returns>
     public virtual IEditor CreateEditor() {
       return new SGAEditor(this);
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <see cref="Auxiliary"/>.</remarks>
+    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="SGA"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       SGA clone = new SGA();
       clonedObjects.Add(Guid, clone);
@@ -505,11 +570,27 @@ namespace HeuristicLab.SGA {
     #endregion
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The engine of the current instance is saved as a child node with the tag name 
+    /// <c>Engine</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
       return node;
     }
+    /// <summary>
+    /// Loads the persisted instance from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The elements of the current instance must be saved in a special way, see 
+    /// <see cref="GetXmlNode"/>.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myEngine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);

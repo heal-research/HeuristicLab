@@ -38,6 +38,9 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Random {
+  /// <summary>
+  /// A 623-Dimensionally Equidistributed Uniform Pseudo-Random Number Generator.
+  /// </summary>
   public class MersenneTwister : ItemBase, IRandom {
     private const int n = 624, m = 397;
 
@@ -46,19 +49,36 @@ namespace HeuristicLab.Random {
     private int p = 0;
     private bool init = false;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="MersenneTwister"/>.
+    /// </summary>
     public MersenneTwister() {
       if (!init) seed((uint)DateTime.Now.Ticks);
       init = true;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="MersenneTwister"/> 
+    /// with the given seed <paramref name="s"/>.
+    /// </summary>
+    /// <param name="s">The seed with which to initialize the random number generator.</param>
     public MersenneTwister(uint s) {
       seed(s);
       init = true;
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="MersenneTwister"/> with the given seed array.
+    /// </summary>
+    /// <param name="array">The seed array with which to initialize the random number generator.</param>
     public MersenneTwister(uint[] array) {
       seed(array);
       init = true;
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="MersenneTwister"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       MersenneTwister clone = new MersenneTwister();
       clonedObjects.Add(Guid, clone);
@@ -68,20 +88,38 @@ namespace HeuristicLab.Random {
       return clone;
     }
 
+    /// <summary>
+    /// Resets the current random number generator.
+    /// </summary>
     public void Reset() {
       lock (locker)
         seed((uint)DateTime.Now.Ticks);
     }
+    /// <summary>
+    /// Resets the current random number generator with the given seed <paramref name="s"/>.
+    /// </summary>
+    /// <param name="s">The seed with which to reset the current instance.</param>
     public void Reset(int s) {
       lock (locker)
         seed((uint)s);
     }
 
+    /// <summary>
+    /// Gets a new random number.
+    /// </summary>
+    /// <returns>A new int random number.</returns>
     public int Next() {
       lock (locker) {
         return (int)(rand_int32() >> 1);
       }
     }
+    /// <summary>
+    /// Gets a new random number being smaller than the given <paramref name="maxVal"/>.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when the given maximum value is 
+    /// smaller or equal to zero.</exception>
+    /// <param name="maxVal">The maximum value of the generated random number.</param>
+    /// <returns>A new int random number.</returns>
     public int Next(int maxVal) {
       lock (locker) {
         if (maxVal <= 0)
@@ -92,6 +130,13 @@ namespace HeuristicLab.Random {
         return value % maxVal;
       }
     }
+    /// <summary>
+    /// Gets a new random number being in the given interval <paramref name="minVal"/> and 
+    /// <paramref name="maxVal"/>.
+    /// </summary>
+    /// <param name="minVal">The minimum value of the generated random number.</param>
+    /// <param name="maxVal">The maximum value of the generated random number.</param>
+    /// <returns>A new int random number.</returns>
     public int Next(int minVal, int maxVal) {
       lock (locker) {
         if (maxVal <= minVal)
@@ -99,6 +144,10 @@ namespace HeuristicLab.Random {
         return Next(maxVal - minVal) + minVal;
       }
     }
+    /// <summary>
+    /// Gets a new double random variable.
+    /// </summary>
+    /// <returns></returns>
     public double NextDouble() {
       lock (locker) {
         return rand_double53();
@@ -106,6 +155,16 @@ namespace HeuristicLab.Random {
     }
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The state(s) are saved as child node with the tag <c>State</c>, each state separaated with
+    /// a semicolon. Also the elements <c>p</c> and the <c>init</c> flag are saved as child nodes with 
+    /// tag names <c>P</c> and <c>Init</c> respectively.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
@@ -129,6 +188,13 @@ namespace HeuristicLab.Random {
 
       return node;
     }
+    /// <summary>
+    /// Loads the persisted random number generator from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The elements of the current instance must be saved in a special way, see 
+    /// <see cref="GetXmlNode"/>.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
 
@@ -142,6 +208,10 @@ namespace HeuristicLab.Random {
     #endregion
 
     #region Seed Methods
+    /// <summary>
+    /// Initializes current instance with random seed.
+    /// </summary>
+    /// <param name="s">A starting seed.</param>
     public void seed(uint s) {
       state[0] = s & 0xFFFFFFFFU;
       for (int i = 1; i < n; ++i) {
@@ -150,6 +220,10 @@ namespace HeuristicLab.Random {
       }
       p = n;
     }
+    /// <summary>
+    /// Initializes current instance with random seed.
+    /// </summary>
+    /// <param name="array">A starting seed array.</param>
     public void seed(uint[] array) {
       seed(19650218U);
       int i = 1, j = 0;

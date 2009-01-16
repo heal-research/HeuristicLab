@@ -27,22 +27,40 @@ using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Random {
+  /// <summary>
+  /// Normally distributed random number generator.
+  /// </summary>
   public class NormalRandomizer : OperatorBase {
     private static int MAX_NUMBER_OF_TRIES = 100;
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Initializes the value of variable 'Value' to a random value normally distributed with 'Mu' and 'Sigma'."; }
     }
 
+    /// <summary>
+    /// Gets or sets the value for µ.
+    /// </summary>
+    /// <remarks>Gets or sets the variable with the name <c>Mu</c> through the method 
+    /// <see cref="OperatorBase.GetVariable"/> of class <see cref="OperatorBase"/>.</remarks>
     public double Mu {
       get { return ((DoubleData)GetVariable("Mu").Value).Data; }
       set { ((DoubleData)GetVariable("Mu").Value).Data = value; }
     }
+    /// <summary>
+    /// Gets or sets the value for sigma.
+    /// </summary>
+    /// <remarks>Gets or sets the variable with the name <c>Sigma</c> through the method 
+    /// <see cref="OperatorBase.GetVariable"/> of class <see cref="OperatorBase"/>.</remarks>
     public double Sigma {
       get { return ((DoubleData)GetVariable("Sigma").Value).Data; }
       set { ((DoubleData)GetVariable("Sigma").Value).Data = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NormalRandomizer"/> with four variable infos
+    /// (<c>Mu</c>, <c>Sigma</c>, <c>Value</c> and <c>Random</c>).
+    /// </summary>
     public NormalRandomizer() {
       AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.None));
       GetVariableInfo("Mu").Local = true;
@@ -56,6 +74,12 @@ namespace HeuristicLab.Random {
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
     }
 
+    /// <summary>
+    /// Generates a new normally distributed random variable and assigns it to the specified variable
+    /// in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to assign the new random value to.</param>
+    /// <returns>null.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
@@ -80,6 +104,16 @@ namespace HeuristicLab.Random {
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
     }
 
+    /// <summary>
+    /// Generates a new double random variable based on a continuous, normally distributed random number generator
+    /// <paramref name="normal"/> and checks some contraints.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when with the given settings no valid value in
+    /// 100 tries could be found.
+    /// </exception>
+    /// <param name="data">The double object where to assign the new number to and whose constraints
+    /// must be fulfilled.</param>
+    /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void RandomizeNormal(ConstrainedDoubleData data, NormalDistributedRandom normal) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
         double r = normal.NextDouble();
@@ -93,19 +127,40 @@ namespace HeuristicLab.Random {
       throw new InvalidOperationException("Couldn't find a valid value in 100 tries with mu=" + normal.Mu + " sigma=" + normal.Sigma);
     }
 
+    /// <summary>
+    /// Generates a new int random variable based on a continuous, normally distributed random number 
+    /// generator <paramref name="normal"/> and checks some constraints.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when with the given settings no valid
+    /// value could be found.</exception>
+    /// <param name="data">The int object where to assign the new value to and whose constraints must
+    /// be fulfilled.</param>
+    /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void RandomizeNormal(ConstrainedIntData data, NormalDistributedRandom normal) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
         double r = normal.NextDouble();
-        if (data.TrySetData((int)Math.Round(r))) // since r is a continuous normally distributed random variable rounding should be OK
+        if (data.TrySetData((int)Math.Round(r))) // since r is a continuous, normally distributed random variable rounding should be OK
           return;
       }
       throw new InvalidOperationException("Couldn't find a valid value");
     }
 
+    /// <summary>
+    /// Generates a new double random number based on a continuous, normally distributed random number
+    /// generator <paramref name="normal"/>.
+    /// </summary>
+    /// <param name="data">The double object where to assign the new value to.</param>
+    /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void RandomizeNormal(DoubleData data, NormalDistributedRandom normal) {
       data.Data = normal.NextDouble();
     }
 
+    /// <summary>
+    /// Generates a new int random number based on a continuous, normally distributed random number 
+    /// generator <paramref name="normal"/>.
+    /// </summary>
+    /// <param name="data">The int object where to assign the new value to.</param>
+    /// <param name="normal">The continuous, normally distributed random variable.</param>
     public void RandomizeNormal(IntData data, NormalDistributedRandom normal) {
       data.Data = (int)Math.Round(normal.NextDouble());
     }

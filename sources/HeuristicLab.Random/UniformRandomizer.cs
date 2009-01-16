@@ -27,21 +27,40 @@ using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Random {
+  /// <summary>
+  /// Uniformly distributed random number generator.
+  /// </summary>
   public class UniformRandomizer : OperatorBase {
     private static int MAX_NUMBER_OF_TRIES = 100;
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max' (exclusive)"; }
     }
 
+    /// <summary>
+    /// Gets or sets the maximum value of the random number generator (exclusive).
+    /// </summary>
+    /// <remarks>Gets or sets the variable with name <c>Max</c> through the 
+    /// <see cref="OperatorBase.GetVariable"/> method of class <see cref="OperatorBase"/>.</remarks>
     public double Max {
       get { return ((DoubleData)GetVariable("Max").Value).Data; }
       set { ((DoubleData)GetVariable("Max").Value).Data = value; }
     }
+    /// <summary>
+    /// Gets or sets the minimum value of the random number generator.
+    /// </summary>
+    /// <remarks>Gets or sets the variable with name <c>Min</c> through the 
+    /// <see cref="OperatorBase.GetVariable"/> method of class <see cref="OperatorBase"/>.</remarks>
     public double Min {
       get { return ((DoubleData)GetVariable("Min").Value).Data; }
       set { ((DoubleData)GetVariable("Min").Value).Data = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="UniformRandomizer"/> with four variable infos 
+    /// (<c>Value</c>, <c>Random</c>, <c>Max</c> and <c>Min</c>), being a random number generator 
+    /// between 0.0 and 1.0.
+    /// </summary>
     public UniformRandomizer() {
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
@@ -54,6 +73,11 @@ namespace HeuristicLab.Random {
       AddVariable(new Variable("Max", new DoubleData(1.0)));
     }
 
+    /// <summary>
+    /// Generates a new uniformly distributed random variable.
+    /// </summary>
+    /// <param name="scope">The scope where to apply the random number generator.</param>
+    /// <returns>null.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
@@ -64,6 +88,15 @@ namespace HeuristicLab.Random {
       return null;
     }
 
+    /// <summary>
+    /// Generates a new random number depending on the type of the <paramref name="value"/>.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when an unhandleable type appears.</exception>
+    /// <param name="value">The object whose data should be a new randomly generated number.</param>
+    /// <param name="mt">The MersenneTwister to generate a new random number.</param>
+    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+    /// <param name="max">The right border (exclusive) of the interval in which the next random number
+    /// has to lie.</param>
     private void RandomizeUniform(IObjectData value, MersenneTwister mt, double min, double max) {
       // Dispatch manually based on dynamic type,
       // a bit awkward but necessary until we create a better type hierarchy for numeric types (gkronber 15.11.2008).
@@ -78,15 +111,40 @@ namespace HeuristicLab.Random {
       else throw new ArgumentException("Can't handle type " + value.GetType().Name);
     }
 
-
+      /// <summary>
+      /// Generates a new double random number.
+      /// </summary>
+      /// <param name="data">The double object which the new value is assigned to.</param>
+      /// <param name="mt">The random number generator.</param>
+      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+      /// <param name="max">The right border (exclusive) of the interval in which the next random number
+      /// has to lie.</param>
       public void RandomizeUniform(DoubleData data, MersenneTwister mt, double min, double max) {
         data.Data = mt.NextDouble() * (max - min) + min;
       }
 
+      /// <summary>
+      /// Generates a new int random number.
+      /// </summary>
+      /// <param name="data">The int object which the new value is assigned to.</param>
+      /// <param name="mt">The random number generator.</param>
+      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+      /// <param name="max">The right border (exclusive) of the interval in which the next random number
+      /// has to lie.</param>
       public void RandomizeUniform(IntData data, MersenneTwister mt, double min, double max) {
         data.Data = (int)Math.Floor(mt.NextDouble() * (max - min) + min);
       }
 
+      /// <summary>
+      /// Generates a new double random number, being restricted to some constraints.
+      /// </summary>
+      /// <exception cref="InvalidOperationException">Thrown when no valid value could be found.</exception>
+      /// <param name="data">The double object which the new value is assigned to and whose constraints
+      /// must be fulfilled.</param>
+      /// <param name="mt">The random number generator.</param>
+      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+      /// <param name="max">The right border (exclusive) of the interval in which the next random number
+      /// has to lie.</param>
       public void RandomizeUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           double r = mt.NextDouble() * (max - min) + min;
@@ -99,7 +157,16 @@ namespace HeuristicLab.Random {
         }
         throw new InvalidOperationException("Couldn't find a valid value");
       }
-
+      /// <summary>
+      /// Generates a new int random number, being restricted to some constraints.
+      /// </summary>
+      /// <exception cref="InvalidOperationException">Thrown when no valid value could be found.</exception>
+      /// <param name="data">The int object which the new value is assigned to and whose constraints
+      /// must be fulfilled.</param>
+      /// <param name="mt">The random number generator.</param>
+      /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+      /// <param name="max">The right border (exclusive) of the interval in which the next random number
+      /// has to lie.</param>
       public void RandomizeUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
         for(int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
           int r = (int)Math.Floor(mt.NextDouble() * (max - min) + min);

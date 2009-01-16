@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection.OffspringSelection {
+  /// <summary>
+  /// Selects successful and also according to the selection pressure some unsuccessful children.
+  /// </summary>
   public class OffspringSelector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OffspringSelector"/> with seven variable infos
+    /// (<c>SuccessfulChild</c>, <c>SelectionPressureLimit</c>, <c>SuccessRatioLimit</c>, 
+    /// <c>SelectionPressure</c>, <c>SuccessRatio</c>, <c>GoodChildren</c> and <c>BadChildren</c>).
+    /// </summary>
     public OffspringSelector() {
       AddVariableInfo(new VariableInfo("SuccessfulChild", "True if the child was successful", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SelectionPressureLimit", "Maximum selection pressure", typeof(DoubleData), VariableKind.In));
@@ -41,6 +50,12 @@ namespace HeuristicLab.Selection.OffspringSelection {
       AddVariableInfo(new VariableInfo("BadChildren", "Temporarily store unsuccessful children", typeof(ItemList<IScope>), VariableKind.New | VariableKind.Out | VariableKind.In | VariableKind.Deleted));
     }
 
+    /// <summary>
+    /// Selects successful children and also some bad ones depending on the selection
+    /// pressure out of a population.
+    /// </summary>
+    /// <param name="scope">The current scope of the parents and the children.</param>
+    /// <returns>The next operation or null.</returns>
     public override IOperation Apply(IScope scope) {
       double selectionPressureLimit = GetVariableValue<DoubleData>("SelectionPressureLimit", scope, true).Data;
       double successRatioLimit = GetVariableValue<DoubleData>("SuccessRatioLimit", scope, true).Data;

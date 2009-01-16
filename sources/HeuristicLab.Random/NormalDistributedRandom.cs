@@ -37,12 +37,18 @@ namespace HeuristicLab.Random {
 
     private double mu;
 
+    /// <summary>
+    /// Gets or sets the value for µ.
+    /// </summary>
     public double Mu {
       get { return mu; }
       set { mu = value; }
     }
     private double sigma;
 
+    /// <summary>
+    /// Gets or sets the value for sigma.
+    /// </summary>
     public double Sigma {
       get { return sigma; }
       set { sigma = value; }
@@ -439,12 +445,23 @@ namespace HeuristicLab.Random {
       2.6696291752e-03
     };
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with µ = 0 and sigma = 1
+    /// and a new random number generator.
+    /// </summary>
     public NormalDistributedRandom() {
       this.mu = 0.0;
       this.sigma = 1.0;
       this.uniform = new MersenneTwister();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with the given parameters.
+    /// <note type="caution"> No CopyConstructor! The random number generator is not copied!</note>
+    /// </summary>    
+    /// <param name="uniformRandom">The random number generator.</param>
+    /// <param name="mu">The value for µ.</param>
+    /// <param name="sigma">The value for sigma.</param>
     public NormalDistributedRandom(IRandom uniformRandom, double mu, double sigma) {
       this.mu = mu;
       this.sigma = sigma;
@@ -453,26 +470,47 @@ namespace HeuristicLab.Random {
 
     #region IRandom Members
 
+    /// <inheritdoc cref="IRandom.Reset()"/>
     public void Reset() {
       uniform.Reset();
     }
 
+    /// <inheritdoc cref="IRandom.Reset(int)"/>
     public void Reset(int seed) {
       uniform.Reset(seed);
     }
 
+    /// <summary>
+    /// TODO: The method is not implemented.
+    /// </summary>
+    /// <returns>TODO</returns>
     public int Next() {
       throw new Exception("The method or operation is not implemented.");
     }
 
+    /// <summary>
+    /// TODO: The method is not implemented.
+    /// </summary>
+    /// <param name="maxVal">TODO</param>
+    /// <returns>TODO</returns>
     public int Next(int maxVal) {
       throw new Exception("The method or operation is not implemented.");
     }
 
+    /// <summary>
+    /// TODO: The method is not implemented.
+    /// </summary>
+    /// <param name="minVal">TODO</param>
+    /// <param name="maxVal">TODO</param>
+    /// <returns>TODO</returns>
     public int Next(int minVal, int maxVal) {
       throw new Exception("The method or operation is not implemented.");
     }
 
+    /// <summary>
+    /// Generates a new double random number.
+    /// </summary>
+    /// <returns>A double random number.</returns>
     public double NextDouble() {
       double signFactor = uniform.Next()%2==0?1.0:-1.0;
       return sigma* signFactor * NextPositiveDouble() + mu;
@@ -511,6 +549,15 @@ namespace HeuristicLab.Random {
     #endregion
 
     #region persistence
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The value of µ and sigma are saved as child nodes with tag names <c>Mu</c> and <c>Sigma</c>,
+    /// also the random number generator is saved as a child node with tag name <c>UniformRandom</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
@@ -527,6 +574,13 @@ namespace HeuristicLab.Random {
       return node;
     }
 
+    /// <summary>
+    /// Loads the persisted normally distributed random variable from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The elements of the current instance must be saved in a special way, see 
+    /// <see cref="GetXmlNode"/>.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
 
@@ -535,6 +589,13 @@ namespace HeuristicLab.Random {
       uniform = (IRandom)PersistenceManager.Restore(node.SelectSingleNode("UniformRandom"), restoredObjects);
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <see cref="Auxiliary"/>.</remarks>
+    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       NormalDistributedRandom clone = new NormalDistributedRandom((IRandom)Auxiliary.Clone(uniform, clonedObjects), mu, sigma);
       clonedObjects.Add(Guid, clone);

@@ -27,10 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Random {
+  /// <summary>
+  /// Uniformly distributed random number generator that adds the generated value to the existing one.
+  /// </summary>
   public class UniformRandomAdder : OperatorBase {
 
     private static int MAX_NUMBER_OF_TRIES = 100;
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"Samples a uniformly distributed random variable 'U' with range = [min,max] and E(u) = (max-min)/2
@@ -42,6 +46,11 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="UniformRandomAdder"/> with five variable infos
+    /// (<c>Value</c>, <c>ShakingFactor</c>, <c>Random</c>, <c>Min</c> and <c>Max</c>), having an interval
+    /// of -1.0 to 1.0.
+    /// </summary>
     public UniformRandomAdder() {
       AddVariableInfo(new VariableInfo("Value", "The value to manipulate (type is one of: IntData, ConstrainedIntData, DoubleData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the force of the shaking factor", typeof(DoubleData), VariableKind.In));
@@ -55,6 +64,12 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       AddVariable(new Variable("Max", new DoubleData(1.0)));
     }
 
+    /// <summary>
+    /// Generates a new uniformly distributed random number and adds it to the value in the given
+    /// <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to add the generated random number.</param>
+    /// <returns>null.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
@@ -84,7 +99,16 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
     }
 
-
+    /// <summary>
+    /// Adds a new double random variable being restricted to some constraints to the value of the given 
+    /// <paramref name="data"/>.
+    /// </summary>
+    /// <exception cref="InvalidProgramException">Thrown when no valid value can be found.</exception>
+    /// <param name="data">The data where to add the new variable and where to assign the new value to.</param>
+    /// <param name="mt">The random number generator.</param>
+    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+    /// <param name="max">The right border (exclusive) of the interval in which the next random number
+    /// has to lie.</param>
     public void AddUniform(ConstrainedDoubleData data, MersenneTwister mt, double min, double max) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
         double newValue = data.Data + mt.NextDouble() * (max - min) + min;
@@ -98,6 +122,16 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       throw new InvalidProgramException("Couldn't find a valid value");
     }
 
+    /// <summary>
+    /// Adds a new int random variable being restricted to some constraints to the value of the given
+    /// <paramref name="data"/>.
+    /// </summary>
+    /// <exception cref="InvalidProgramException">Thrown when no valid value could be found.</exception>
+    /// <param name="data">The data where to add the random value and where to assign the new value to.</param>
+    /// <param name="mt">The random number generator.</param>
+    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+    /// <param name="max">The right border (exclusive) of the interval in which the next random number
+    /// has to lie.</param>
     public void AddUniform(ConstrainedIntData data, MersenneTwister mt, double min, double max) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
         int newValue = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
@@ -108,10 +142,28 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       throw new InvalidProgramException("Couldn't find a valid value");
     }
 
+    /// <summary>
+    /// Generates a new double random variable and adds it to the value of 
+    /// the given <paramref name="data"/>.
+    /// </summary>
+    /// <param name="data">The double object where to add the random value.</param>
+    /// <param name="mt">The random number generator.</param>
+    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+    /// <param name="max">The right border (exclusive) of the interval in which the next random number
+    /// has to lie.</param>
     public void AddUniform(DoubleData data, MersenneTwister mt, double min, double max) {
       data.Data = data.Data + mt.NextDouble() * (max - min) + min;
     }
 
+    /// <summary>
+    /// Generates a new int random variable and adds it to the value of the given
+    /// <paramref name="data"/>.
+    /// </summary>
+    /// <param name="data">The int object where to add the random value.</param>
+    /// <param name="mt">The random number generator.</param>
+    /// <param name="min">The left border of the interval in which the next random number has to lie.</param>
+    /// <param name="max">The right border (exclusive) of the interval in which the next random number
+    /// has to lie.</param>
     public void AddUniform(IntData data, MersenneTwister mt, double min, double max) {
       data.Data = (int)Math.Floor(data.Data + mt.NextDouble() * (max - min) + min);
     }

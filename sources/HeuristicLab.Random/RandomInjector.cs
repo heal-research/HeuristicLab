@@ -28,11 +28,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Random {
+  /// <summary>
+  /// Injects a random variable in a given scope.
+  /// </summary>
   public class RandomInjector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="RandomInjector"/> with three variable infos
+    /// (<c>SetSeedRandomly</c>, <c>Seed</c> and <c>Random</c>.)
+    /// </summary>
     public RandomInjector()
       : base() {
       AddVariableInfo(new VariableInfo("SetSeedRandomly", "Initialize random seed randomly", typeof(BoolData), VariableKind.In));
@@ -47,6 +55,11 @@ namespace HeuristicLab.Random {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.New));
     }
 
+    /// <summary>
+    /// Injects a new random variable in the given <paramref name="scope"/> .
+    /// </summary>
+    /// <param name="scope">The scope where to inject the variable.</param>
+    /// <returns>null.</returns>
     public override IOperation Apply(IScope scope) {
       bool setRandomly = GetVariableValue<BoolData>("SetSeedRandomly", scope, true).Data;
       IntData seed = GetVariableValue<IntData>("Seed", scope, true);

@@ -30,28 +30,51 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.SGA {
+  /// <summary>
+  /// Visual representation of the <see cref="SGA"/> class.
+  /// </summary>
   public partial class SGAEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
 
+    /// <summary>
+    /// Gets or sets the <see cref="SGA"/> item to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="EditorBase"/>.
+    /// No own data storage present!</remarks>
     public SGA SGA {
       get { return (SGA)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SGAEditor"/>.
+    /// </summary>
     public SGAEditor() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="SGAEditor"/> with the given <paramref name="sga"/>.
+    /// </summary>
+    /// <param name="sga">The simple genetic algorithm to represent visually.</param>
     public SGAEditor(SGA sga)
       : this() {
       SGA = sga;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="IEngine"/> of the <see cref="SGA"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       SGA.Engine.ExceptionOccurred -= new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
       SGA.Engine.Finished -= new EventHandler(Engine_Finished);
       scopeView.Scope = null;
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="IEngine"/> of the <see cref="SGA"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       SGA.Engine.ExceptionOccurred += new EventHandler<ExceptionEventArgs>(Engine_ExceptionOccurred);
@@ -60,6 +83,10 @@ namespace HeuristicLab.SGA {
       scopeView.Scope = SGA.Engine.GlobalScope;
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="EditorBase.UpdateControls"/> of base class <see cref="EditorBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (SGA == null) {
