@@ -40,8 +40,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     private static bool cacheFilled = false;
 
-    private static ReaderWriterLock cacheLock =
-      new ReaderWriterLock();
+    private static ReaderWriterLockSlim cacheLock =
+      new ReaderWriterLockSlim();
 
     protected DataTable dataTable =
       new DataTable();
@@ -50,14 +50,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       new List<ICachedDataAdapter>();
 
     protected CachedDataAdapter() {
-      cacheLock.AcquireWriterLock(Timeout.Infinite);
+      cacheLock.EnterWriteLock();
 
       if (!cacheFilled) {
         FillCache();
         cacheFilled = true;
       }
 
-      cacheLock.ReleaseWriterLock();
+      cacheLock.ExitWriteLock();
 
       ServiceLocator.GetTransactionManager().OnUpdate +=
         new EventHandler(CachedDataAdapter_OnUpdate);
@@ -65,7 +65,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected virtual RowT FindSingleRow(Selector dbSelector,
       Selector cacheSelector) {
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
       
       RowT row =
          FindSingleRow(cacheSelector);
@@ -76,14 +76,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           FindSingleRow(dbSelector);
       }
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
 
       return row;
     }
 
     protected virtual IEnumerable<RowT> FindMultipleRows(Selector dbSelector,
         Selector cacheSelector) {
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
 
       IList<RowT> result =
          new List<RowT>(cacheSelector());
@@ -97,7 +97,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
       }
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
 
       return result;
     }
@@ -106,7 +106,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       Selector cacheSelector) {
       ObjT obj = default(ObjT);
 
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
 
       RowT row = FindSingleRow(dbSelector, cacheSelector);
 
@@ -115,14 +115,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         obj = Convert(row, obj);
       }
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
 
       return obj;
     }
 
     protected virtual ICollection<ObjT> FindMultiple(Selector dbSelector,
       Selector cacheSelector) {
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
 
       ICollection<ObjT> result =
         FindMultiple(cacheSelector);
@@ -130,7 +130,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       ICollection<ObjT> resultDb =
         FindMultiple(dbSelector);
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
 
       foreach (ObjT obj in resultDb) {
         if (!result.Contains(obj))
@@ -155,11 +155,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         parent.SyncWithDb();
       }
 
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
 
       this.SynchronizeWithDb();
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
     }
 
     void CachedDataAdapter_OnUpdate(object sender, EventArgs e) {
@@ -170,18 +170,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row == null)
         return false;
       else {
-        cacheLock.AcquireReaderLock(Timeout.Infinite);
+        cacheLock.EnterReadLock();
 
         bool cached = FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
 
-        cacheLock.ReleaseReaderLock();
+        cacheLock.ExitReadLock();
 
         return cached;
       }
     }
 
     protected override RowT GetRowById(long id) {
-      cacheLock.AcquireReaderLock(Timeout.Infinite);
+      cacheLock.EnterReadLock();
 
       RowT row =
         FindCachedById(id);
@@ -193,37 +193,37 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             return FindById(id);
           });
 
-      cacheLock.ReleaseReaderLock();
+      cacheLock.ExitReadLock();
 
       return row;
     }
 
     private void AddToCache(RowT row) {
-      cacheLock.AcquireWriterLock(Timeout.Infinite);
+      cacheLock.EnterWriteLock();
 
       cache.ImportRow(row);
       row.Table.Rows.Remove(row);
 
-      cacheLock.ReleaseWriterLock();
+      cacheLock.ExitWriteLock();
     }
 
     private RowT AddToCache(ObjT obj) {
-      cacheLock.AcquireWriterLock(Timeout.Infinite);
+      cacheLock.EnterWriteLock();
 
       RowT row =  InsertNewRowInCache(obj);
 
-      cacheLock.ReleaseWriterLock();
+      cacheLock.ExitWriteLock();
 
       return row;
     }
 
     private void RemoveRowFromCache(RowT row) {
-      cacheLock.AcquireWriterLock(Timeout.Infinite);
+      cacheLock.EnterWriteLock();
 
       dataTable.ImportRow(row);
       cache.Rows.Remove(row);
 
-      cacheLock.ReleaseWriterLock();
+      cacheLock.ExitWriteLock();
 
       UpdateRow(row);
     }
