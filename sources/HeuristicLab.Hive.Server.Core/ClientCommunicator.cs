@@ -31,16 +31,22 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using System.Resources;
 using System.Reflection;
 using HeuristicLab.Hive.JobBase;
-using System.Runtime.CompilerServices;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
   public class ClientCommunicator: IClientCommunicator {
-    Dictionary<Guid, DateTime> lastHeartbeats = 
+    private static Dictionary<Guid, DateTime> lastHeartbeats = 
       new Dictionary<Guid,DateTime>();
+
+    private static ReaderWriterLockSlim heartbeatLock =
+      new ReaderWriterLockSlim();
+
+    private static Mutex jobLock =
+      new Mutex();
 
     IClientAdapter clientAdapter;
     IJobAdapter jobAdapter;
@@ -63,8 +69,6 @@ namespace HeuristicLab.Hive.Server.Core {
 
       lifecycleManager.RegisterHeartbeat( 
         new EventHandler(lifecycleManager_OnServerHeartbeat));
-
-      lastHeartbeats = new Dictionary<Guid, DateTime>();
     }
 
     /// <summary>
@@ -73,18 +77,20 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    [MethodImpl(MethodImplOptions.Synchronized)]
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
       List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
       List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
 
       foreach (ClientInfo client in allClients) {
         if (client.State != State.offline && client.State != State.nullState) {
+          heartbeatLock.EnterUpgradeableReadLock();
+
           if (!lastHeartbeats.ContainsKey(client.ClientId)) {
             client.State = State.offline;
             clientAdapter.Update(client);
           } else {
             DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
+
             TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
             // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
             if (dif.Seconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
@@ -101,12 +107,19 @@ namespace HeuristicLab.Hive.Server.Core {
               // client must be set offline
               client.State = State.offline;
               clientAdapter.Update(client);
+
+              heartbeatLock.EnterWriteLock();
               lastHeartbeats.Remove(client.ClientId);
+              heartbeatLock.ExitWriteLock();
             }
           }
+
+          heartbeatLock.ExitUpgradeableReadLock();
         } else {
+          heartbeatLock.EnterWriteLock();
           if (lastHeartbeats.ContainsKey(client.ClientId))
             lastHeartbeats.Remove(client.ClientId);
+          heartbeatLock.ExitWriteLock();
         }
       }
     }
@@ -119,15 +132,16 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientInfo"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public Response Login(ClientInfo clientInfo) {
       Response response = new Response();
 
+      heartbeatLock.EnterWriteLock();
       if (lastHeartbeats.ContainsKey(clientInfo.ClientId)) {
         lastHeartbeats[clientInfo.ClientId] = DateTime.Now;
       } else {
         lastHeartbeats.Add(clientInfo.ClientId, DateTime.Now);
       }
+      heartbeatLock.ExitWriteLock();
 
       ICollection<ClientInfo> allClients = clientAdapter.GetAll();
       ClientInfo client = clientAdapter.GetById(clientInfo.ClientId);
@@ -151,7 +165,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="hbData"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseHB SendHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
 
@@ -164,11 +177,13 @@ namespace HeuristicLab.Hive.Server.Core {
         return response;
       }
 
+      heartbeatLock.EnterWriteLock();
       if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
         lastHeartbeats[hbData.ClientId] = DateTime.Now;
       } else {
         lastHeartbeats.Add(hbData.ClientId, DateTime.Now);
       }
+      heartbeatLock.ExitWriteLock();
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
@@ -195,22 +210,28 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
-      lock (this) {
-        LinkedList<Job> allOfflineJobs = new LinkedList<Job>(jobAdapter.GetJobsByState(State.offline));
-        if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
-          Job job2Calculate = allOfflineJobs.First.Value;
-          job2Calculate.State = State.calculating;
-          job2Calculate.Client = clientAdapter.GetById(clientId);
-          response.Job = job2Calculate;
-          jobAdapter.Update(job2Calculate);
-          response.Success = true;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
-          return response;
-        } 
+      
+      /// Critical section ///
+      jobLock.WaitOne();
+
+      LinkedList<Job> allOfflineJobs = new LinkedList<Job>(jobAdapter.GetJobsByState(State.offline));
+      if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
+        Job job2Calculate = allOfflineJobs.First.Value;
+        job2Calculate.State = State.calculating;
+        job2Calculate.Client = clientAdapter.GetById(clientId);
+        job2Calculate.Client.State = State.calculating;
+
+        response.Job = job2Calculate;
+        jobAdapter.Update(job2Calculate);
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+        return response;
       }
+
+      jobLock.ReleaseMutex();
+
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
       return response;
@@ -227,7 +248,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="exception"></param>
     /// <param name="finished"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public ResponseResultReceived SendJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
@@ -268,6 +288,9 @@ namespace HeuristicLab.Hive.Server.Core {
         job.State = State.finished;
         jobAdapter.Update(job);
 
+        client.State = State.idle;
+        clientAdapter.Update(client);
+
         List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
         foreach (JobResult currentResult in jobResults) 
           jobResultAdapter.Delete(currentResult);
@@ -297,13 +320,14 @@ namespace HeuristicLab.Hive.Server.Core {
     /// and the entry in the last hearbeats dictionary will be removed
     /// </summary>
     /// <param name="clientId"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]                       
+    /// <returns></returns>                       
     public Response Logout(Guid clientId) {
       Response response = new Response();
 
+      heartbeatLock.EnterWriteLock();
       if (lastHeartbeats.ContainsKey(clientId))
         lastHeartbeats.Remove(clientId);
+      heartbeatLock.ExitWriteLock();
 
       ClientInfo client = clientAdapter.GetById(clientId);
       if (client == null) {
