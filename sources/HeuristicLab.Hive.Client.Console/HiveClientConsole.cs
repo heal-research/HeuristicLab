@@ -34,6 +34,7 @@ using HeuristicLab.Hive.Client.Console.ClientService;
 using System.ServiceModel;
 using System.Net;
 using Calendar;
+using System.Globalization;
 
 namespace HeuristicLab.Hive.Client.Console {
 
@@ -187,24 +188,15 @@ namespace HeuristicLab.Hive.Client.Console {
       dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(DvOnline_OnResolveAppointments);
     }
 
-    void DvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
-      List<Appointment> Apps = new List<Appointment>();
-
-      foreach (Appointment m_App in onlineTimes)
-        if ((m_App.StartDate >= e.StartDate) &&
-            (m_App.StartDate <= e.EndDate))
-          Apps.Add(m_App);
-
-      e.Appointments = Apps;
-    }
-
-    void DvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e) {
-      Appointment Appointment = new Appointment();
-
-      Appointment.StartDate = e.StartDate;
-      Appointment.EndDate = e.EndDate;
-
-      onlineTimes.Add(Appointment);
+    private Appointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay) {
+      Appointment App = new Appointment();
+      App.StartDate = startDate;
+      App.EndDate = endDate;
+      App.AllDayEvent = allDay;
+      App.BorderColor = Color.Red;
+      App.Locked = true;
+      App.Subject = "Online";
+      return App;
     }
 
     #endregion
@@ -355,54 +347,92 @@ namespace HeuristicLab.Hive.Client.Console {
       }
     }
 
-    #endregion
-
-    private void mcOnline_DateChanged(object sender, DateRangeEventArgs e) {
-      dvOnline.StartDate = mcOnline.SelectionStart;
-    }
-
-    private void btCreate_Click(object sender, EventArgs e) {
-
-      if (string.IsNullOrEmpty(txtFrom.Text)) {
-        Appointment App = new Appointment();
-        App.StartDate = dvOnline.SelectionStart;
-        App.EndDate = dvOnline.SelectionEnd;
-        App.BorderColor = Color.Red;
-        App.Locked = true;
-        App.Subject = "Online";
-        onlineTimes.Add(App);
-      } else if (string.IsNullOrEmpty(txtTimeTo.Text)) {
-        Appointment App = new Appointment();
-        App.StartDate = DateTime.Parse(txtFrom.Text);
-        App.EndDate = DateTime.Parse(txtTo.Text);
-        App.BorderColor = Color.Red;
-        App.Locked = true;
-        App.Subject = "Online";
-        onlineTimes.Add(App);
-      } else {
-        DateTime from = DateTime.Parse(txtFrom.Text);
-        DateTime to = DateTime.Parse(txtTo.Text);
-
-        while (from.Date != to.Date) {
-          Appointment App = new Appointment();
-          App.StartDate = new DateTime(from.Year, from.Month, from.Day, int.Parse(txttimeFrom.Text), 0,0);
-          App.EndDate = new DateTime(from.Year, from.Month, from.Day, int.Parse(txtTimeTo.Text), 0, 0);
-          App.BorderColor = Color.Red;
-          App.Locked = true;
-          App.Subject = "Online";
-          onlineTimes.Add(App);
-          from = from.AddDays(1);
-        }
-      }
-      
-      dvOnline.Invalidate();
-    }
-
     private void btbDelete_Click(object sender, EventArgs e) {
       if (dvOnline.SelectedAppointment != null)
         onlineTimes.Remove(dvOnline.SelectedAppointment);
       dvOnline.Invalidate();
     }
 
+    private void chbade_CheckedChanged(object sender, EventArgs e) {
+      if (chbade.Checked) {
+        txttimeFrom.Visible = false;
+        txtTimeTo.Visible = false;
+      } else {
+        txttimeFrom.Visible = true;
+        txtTimeTo.Visible = true;
+      }
+    }
+
+    private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
+      if (dvOnline.Selection == SelectionType.DateRange) {
+        txtFrom.Text = dvOnline.SelectionStart.ToShortDateString();
+        txtTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
+        txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
+        txtTimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
+      }
+    }
+
+    private void Connection_KeyPress(object sender, KeyPressEventArgs e) {
+      if (e.KeyChar == (char)Keys.Return)
+        btConnect_Click(null, null);
+    }
+
+    private void mcOnline_DateChanged(object sender, DateRangeEventArgs e) {
+      dvOnline.StartDate = mcOnline.SelectionStart;
+    }
+
+    private void btCreate_Click(object sender, EventArgs e) {
+      DateTime from, to;
+
+      if (!string.IsNullOrEmpty(txtFrom.Text) && !string.IsNullOrEmpty(txtTo.Text)) {
+        if (chbade.Checked) {
+          //whole day appointment, only dates are visible
+          if (DateTime.TryParse(txtFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(txtTo.Text + " " + txtTimeTo.Text, out to) && from < to)
+            onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
+          else
+            MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txtTimeTo.Text)) {
+          //Timeframe appointment
+          if (DateTime.TryParse(txtFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(txtTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
+            if (from.Date == to.Date)
+              onlineTimes.Add(CreateAppointment(from, to, false));
+            else {
+              //more than 1 day selected
+              while (from.Date != to.Date) {
+                onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+                from = from.AddDays(1);
+              }
+              onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+            }
+          } else
+            MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        dvOnline.Invalidate();
+      } else {
+        MessageBox.Show("Error in create appointment, please fill out all textboxes!", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    void DvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
+      List<Appointment> Apps = new List<Appointment>();
+
+      foreach (Appointment m_App in onlineTimes)
+        if ((m_App.StartDate >= e.StartDate) &&
+            (m_App.StartDate <= e.EndDate))
+          Apps.Add(m_App);
+
+      e.Appointments = Apps;
+    }
+
+    void DvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e) {
+      Appointment Appointment = new Appointment();
+
+      Appointment.StartDate = e.StartDate;
+      Appointment.EndDate = e.EndDate;
+
+      onlineTimes.Add(Appointment);
+    }
+
+    #endregion
   }
 }
