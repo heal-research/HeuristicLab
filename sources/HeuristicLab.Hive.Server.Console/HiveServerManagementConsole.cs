@@ -216,7 +216,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void ClientClicked() {
       int i = 0;
-      while (usersList.List[i].Name != nameCurrentUser) {
+      while (clientInfo.List[i].Name != nameCurrentClient) {
         i++;
       }
       currentClient = clientInfo.List[i];
@@ -225,6 +225,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       pbClientControl.Image = ilClientControl.Images[0];
       lblClientName.Text = currentClient.Name;
       lblLogin.Text = currentClient.Login.ToString();
+      lblState.Text = currentClient.State.ToString();
     }
 
     /// <summary>
@@ -332,16 +333,25 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void AddJob_Click(object sender, EventArgs e) {
       AddJobForm newForm = new AddJobForm();
       newForm.Show();
+      newForm.addJobEvent += new addDelegate(Refresh);
+    }
+
+    private void Refresh() {
+      AddClients();
+      AddJobs();
+      AddUsers();
     }
 
     private void AddUser_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", false);
       newForm.Show();
+      newForm.addUserEvent += new addDelegate(Refresh);
     }
 
     private void AddUserGroup_Click(object sender, EventArgs e) {
       AddUserForm newForm = new AddUserForm("User", true);
       newForm.Show();
+      newForm.addUserEvent += new addDelegate(Refresh);                                             
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
@@ -350,13 +360,28 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       ClientClicked();
     }
 
+    private void OnTVClientClicked(object sender, TreeViewEventArgs e) {
+      bool clientgroup = false;
+      foreach (ClientGroup cg in clients.List) {
+        if (tvClientControl.SelectedNode.Text == cg.Name) {
+          clientgroup = true;
+        }
+      }
+      if (clientgroup == false) {
+        nameCurrentClient = tvClientControl.SelectedNode.Text;
+        flagClient = true;
+        ClientClicked();
+      }
+
+    }
+
     private void OnLVJobControlClicked(object sender, EventArgs e) {
       nameCurrentJob = lvJobControl.SelectedItems[0].Text;
       flagJob = true;
       JobClicked();
     }
 
-    private void OnTVJobControlClicked(object sender, EventArgs e) {
+    private void OnTVJobControlClicked(object sender, TreeViewEventArgs e) {
       try {
         nameCurrentJob = Convert.ToInt32(tvJobControl.SelectedNode.Text).ToString();
         flagJob = true;
@@ -367,10 +392,26 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void OnLVUserControlClicked(object sender, EventArgs e) {
-      nameCurrentUser = lvUserControl.SelectedItems[0].Name;
+      nameCurrentUser = lvUserControl.SelectedItems[0].Text;
       flagUser = true;
       UserClicked();
     }
+
+    private void OnTVUserControlClicked(object sender, TreeViewEventArgs e) {
+      bool usergroup = false;
+      foreach (UserGroup ug in userGroups.List) {
+        if (tvUserControl.SelectedNode.Text == ug.Name) {
+          usergroup = true;
+        }
+      }
+      if (usergroup == false) {
+        nameCurrentUser = tvUserControl.SelectedNode.Text;
+        flagUser = true;
+        UserClicked();
+      }
+
+    }
+
 
     private void btnClientClose_Click(object sender, EventArgs e) {
       scClientControl.Panel2.Controls.Clear();
@@ -397,5 +438,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
     #endregion
+
   }
 }

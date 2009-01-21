@@ -34,7 +34,12 @@ using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
+
+  public delegate void addDelegate();
+
   public partial class AddJobForm : Form {
+
+    public event addDelegate addJobEvent;
 
     ResponseList<Job> jobGroups = null;
     IJobManager jobManager;
@@ -74,6 +79,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
               job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
               Response resp = jobManager.AddNewJob(job);
             }
+          }
+          if (addJobEvent != null) {
+            addJobEvent();
           }
           this.Close();
         } else {

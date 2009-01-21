@@ -117,5 +117,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       }
     }
+
+    private void HiveServerConsole_KeyPress(object sender, KeyPressEventArgs e) {
+      if (e.KeyChar == (char)Keys.Return) {
+        BtnLogin_Click(sender, e);
+      }
+    }
   }
 }

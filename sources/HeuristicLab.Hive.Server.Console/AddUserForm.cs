@@ -34,6 +34,7 @@ using HeuristicLab.Hive.Contracts;
 namespace HeuristicLab.Hive.Server.ServerConsole {
   public partial class AddUserForm : Form {
 
+    public event addDelegate addUserEvent;
     ResponseList<UserGroup> userGroups = null;
     IUserRoleManager userRoleManager;
     bool group;
@@ -96,6 +97,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
           }
         }
+      }
+      if (addUserEvent != null) {
+        addUserEvent();
       }
       this.Close();
     }

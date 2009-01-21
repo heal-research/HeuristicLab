@@ -126,6 +126,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.tbPort.Name = "tbPort";
       this.tbPort.Size = new System.Drawing.Size(189, 20);
       this.tbPort.TabIndex = 6;
+      this.tbPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // tbIp
       // 
@@ -133,6 +134,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.tbIp.Name = "tbIp";
       this.tbIp.Size = new System.Drawing.Size(191, 20);
       this.tbIp.TabIndex = 5;
+      this.tbIp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // btnLogin
       // 
@@ -143,6 +145,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.btnLogin.Text = "Login";
       this.btnLogin.UseVisualStyleBackColor = true;
       this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
+      this.btnLogin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // groupBox1
       // 
@@ -163,6 +166,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.tbUserName.Name = "tbUserName";
       this.tbUserName.Size = new System.Drawing.Size(189, 20);
       this.tbUserName.TabIndex = 2;
+      this.tbUserName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // lblPwd
       // 
@@ -189,6 +193,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.tbPwd.Size = new System.Drawing.Size(189, 20);
       this.tbPwd.TabIndex = 3;
       this.tbPwd.UseSystemPasswordChar = true;
+      this.tbPwd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // lblError
       // 
@@ -212,6 +217,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.MainMenuStrip = this.msServerConsole;
       this.Name = "HiveServerConsole";
       this.Text = "Server Console";
+      this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       this.msServerConsole.ResumeLayout(false);
       this.msServerConsole.PerformLayout();
       this.gbManager.ResumeLayout(false);
