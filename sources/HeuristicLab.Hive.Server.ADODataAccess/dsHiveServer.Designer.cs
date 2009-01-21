@@ -7521,7 +7521,7 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Job] WHERE (([JobId] = @Original_JobId) AND ((@IsNull_ParentJobId = 1 AND [ParentJobId] IS NULL) OR ([ParentJobId] = @Original_ParentJobId)) AND ((@IsNull_JobState = 1 AND [JobState] IS NULL) OR ([JobState] = @Original_JobState)) AND ((@IsNull_PermissionOwnerId = 1 AND [PermissionOwnerId] IS NULL) OR ([PermissionOwnerId] = @Original_PermissionOwnerId)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Job] WHERE (([JobId] = @Original_JobId) AND ((@IsNull_ParentJobId = 1 AND [ParentJobId] IS NULL) OR ([ParentJobId] = @Original_ParentJobId)) AND ((@IsNull_JobState = 1 AND [JobState] IS NULL) OR ([JobState] = @Original_JobState)) AND ((@IsNull_PermissionOwnerId = 1 AND [PermissionOwnerId] IS NULL) OR ([PermissionOwnerId] = @Original_PermissionOwnerId)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_JobId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ParentJobId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -7532,26 +7532,30 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ResourceId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Percentage", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Job] ([ParentJobId], [JobState], [PermissionOwnerId], [ResourceId], [SerializedJob]) VALUES (@ParentJobId, @JobState, @PermissionOwnerId, @ResourceId, @SerializedJob);
-SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob FROM Job WHERE (JobId = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Job] ([ParentJobId], [JobState], [PermissionOwnerId], [ResourceId], [SerializedJob], [Percentage]) VALUES (@ParentJobId, @JobState, @PermissionOwnerId, @ResourceId, @SerializedJob, @Percentage);
+SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob, Percentage FROM Job WHERE (JobId = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentJobId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobState", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SerializedJob", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SerializedJob", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [Job] SET [ParentJobId] = @ParentJobId, [JobState] = @JobState, [PermissionOwnerId] = @PermissionOwnerId, [ResourceId] = @ResourceId, [SerializedJob] = @SerializedJob WHERE (([JobId] = @Original_JobId) AND ((@IsNull_ParentJobId = 1 AND [ParentJobId] IS NULL) OR ([ParentJobId] = @Original_ParentJobId)) AND ((@IsNull_JobState = 1 AND [JobState] IS NULL) OR ([JobState] = @Original_JobState)) AND ((@IsNull_PermissionOwnerId = 1 AND [PermissionOwnerId] IS NULL) OR ([PermissionOwnerId] = @Original_PermissionOwnerId)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)));
-SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob FROM Job WHERE (JobId = @JobId)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Job] SET [ParentJobId] = @ParentJobId, [JobState] = @JobState, [PermissionOwnerId] = @PermissionOwnerId, [ResourceId] = @ResourceId, [SerializedJob] = @SerializedJob, [Percentage] = @Percentage WHERE (([JobId] = @Original_JobId) AND ((@IsNull_ParentJobId = 1 AND [ParentJobId] IS NULL) OR ([ParentJobId] = @Original_ParentJobId)) AND ((@IsNull_JobState = 1 AND [JobState] IS NULL) OR ([JobState] = @Original_JobState)) AND ((@IsNull_PermissionOwnerId = 1 AND [PermissionOwnerId] IS NULL) OR ([PermissionOwnerId] = @Original_PermissionOwnerId)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)));
+SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob, Percentage FROM Job WHERE (JobId = @JobId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentJobId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobState", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SerializedJob", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SerializedJob", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_JobId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ParentJobId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ParentJobId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -7561,6 +7565,8 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ResourceId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Percentage", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -7576,41 +7582,43 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job";
+                ", Percentage FROM Job";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (JobState <> \'offline\')";
+            this._commandCollection[1].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobState = \'calculating\') OR\r\n   " +
+                "                   (JobState = \'idle\')";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (ResourceId = @ResourceId)";
+            this._commandCollection[2].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ResourceId = @ResourceId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (JobId = @Id)";
+            this._commandCollection[3].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobId = @Id)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (JobState = @State)";
+            this._commandCollection[4].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobState = @State)";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[5] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[5].Connection = this.Connection;
-            this._commandCollection[5].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (ParentJobId = @Id)";
+            this._commandCollection[5].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ParentJobId = @Id)";
             this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[6] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[6].Connection = this.Connection;
-            this._commandCollection[6].CommandText = "SELECT JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, SerializedJob" +
-                " FROM Job WHERE (PermissionOwnerId = @PermissionOwnerId)";
+            this._commandCollection[6].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (PermissionOwnerId = @PermissionOw" +
+                "nerId)";
             this._commandCollection[6].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[6].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
@@ -7847,7 +7855,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId) {
+        public virtual int Delete(long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId, global::System.Nullable<double> Original_Percentage) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((long)(Original_JobId));
             if ((Original_ParentJobId.HasValue == true)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
@@ -7881,6 +7889,14 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
                 this.Adapter.DeleteCommand.Parameters[7].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
+            if ((Original_Percentage.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[10].Value = ((double)(Original_Percentage.Value));
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -7900,7 +7916,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob) {
+        public virtual int Insert(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob, global::System.Nullable<double> Percentage) {
             if ((ParentJobId.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = ((long)(ParentJobId.Value));
             }
@@ -7931,6 +7947,12 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
             else {
                 this.Adapter.InsertCommand.Parameters[4].Value = ((byte[])(SerializedJob));
             }
+            if ((Percentage.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((double)(Percentage.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -7950,7 +7972,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob, long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId, long JobId) {
+        public virtual int Update(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob, global::System.Nullable<double> Percentage, long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId, global::System.Nullable<double> Original_Percentage, long JobId) {
             if ((ParentJobId.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[0].Value = ((long)(ParentJobId.Value));
             }
@@ -7981,40 +8003,54 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
             else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = ((byte[])(SerializedJob));
             }
-            this.Adapter.UpdateCommand.Parameters[5].Value = ((long)(Original_JobId));
-            if ((Original_ParentJobId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((long)(Original_ParentJobId.Value));
+            if ((Percentage.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((double)(Percentage.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[6].Value = ((long)(Original_JobId));
+            if ((Original_ParentJobId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((long)(Original_ParentJobId.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             if ((Original_JobState == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_JobState));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_JobState));
             }
             if ((Original_PermissionOwnerId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((long)(Original_PermissionOwnerId.Value));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((long)(Original_PermissionOwnerId.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
             }
             if ((Original_ResourceId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((long)(Original_ResourceId.Value));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((long)(Original_ResourceId.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[14].Value = ((long)(JobId));
+            if ((Original_Percentage.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((double)(Original_Percentage.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[17].Value = ((long)(JobId));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -8034,8 +8070,8 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob, long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId) {
-            return this.Update(ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob, Original_JobId, Original_ParentJobId, Original_JobState, Original_PermissionOwnerId, Original_ResourceId, Original_JobId);
+        public virtual int Update(global::System.Nullable<long> ParentJobId, string JobState, global::System.Nullable<long> PermissionOwnerId, global::System.Nullable<long> ResourceId, byte[] SerializedJob, global::System.Nullable<double> Percentage, long Original_JobId, global::System.Nullable<long> Original_ParentJobId, string Original_JobState, global::System.Nullable<long> Original_PermissionOwnerId, global::System.Nullable<long> Original_ResourceId, global::System.Nullable<double> Original_Percentage) {
+            return this.Update(ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob, Percentage, Original_JobId, Original_ParentJobId, Original_JobState, Original_PermissionOwnerId, Original_ResourceId, Original_Percentage, Original_JobId);
         }
     }
     

@@ -220,12 +220,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private void RemoveRowFromCache(RowT row) {
       cacheLock.EnterWriteLock();
 
+      UpdateRow(row);
+
       dataTable.ImportRow(row);
-      cache.Rows.Remove(row);
+      row.Table.Rows.Remove(row);     
 
       cacheLock.ExitWriteLock();
-
-      UpdateRow(row);
     }
 
     public override void Update(ObjT obj) {

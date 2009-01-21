@@ -102,7 +102,7 @@
           this.Controls.Add(this.lblAddress1);
           this.Controls.Add(this.label1);
           this.Name = "MainForm";
-          this.Text = "Hive Server Console";
+          this.Text = "Hive Server";
           this.ResumeLayout(false);
           this.PerformLayout();
 
