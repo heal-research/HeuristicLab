@@ -90,6 +90,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           job.Client = ClientAdapter.GetById(row.ResourceId);
         else
           job.Client = null;
+
+        if (!row.IsPermissionOwnerIdNull())
+          job.User = UserAdapter.GetById(row.PermissionOwnerId);
+        else
+          job.User = null;
         
         if (!row.IsJobStateNull())
           job.State = (State)Enum.Parse(job.State.GetType(), row.JobState);
@@ -131,6 +136,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
         } else
           row.SetParentJobIdNull();
+
+        if (job.User != null) {
+          if (row.IsPermissionOwnerIdNull() ||
+           row.PermissionOwnerId != job.User.Id) {
+            UserAdapter.Update(job.User);
+            row.PermissionOwnerId = job.User.Id;
+          }
+        } else
+          row.SetPermissionOwnerIdNull();
 
         if (job.State != State.nullState)
           row.JobState = job.State.ToString();
