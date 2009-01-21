@@ -49,19 +49,13 @@ namespace HeuristicLab.Evolutionary {
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
 
-      if ((scope.SubScopes.Count % 2) != 0)
-        throw new InvalidOperationException("Size of mating pool is not even");
+      if (scope.SubScopes.Count != 2)
+        throw new InvalidOperationException("ERROR: Number of parents is != 2");
 
-      int children = scope.SubScopes.Count / 2;
-      for (int i = 0; i < children; i++) {
-        IScope parent1 = scope.SubScopes[0];
-        IScope parent2 = scope.SubScopes[1];
-        IScope child = new Scope(i.ToString());
-        scope.AddSubScope(child);
-        Cross(scope, random, parent1, parent2, child);
-        scope.RemoveSubScope(parent1);
-        scope.RemoveSubScope(parent2);
-      }
+      IScope parent1 = scope.SubScopes[0];
+      IScope parent2 = scope.SubScopes[1];
+      IScope child = scope;
+      Cross(scope, random, parent1, parent2, child);
 
       return null;
     }

@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChildrenInitializer.cs" />
     <Compile Include="MultiCrossoverBase.cs" />
     <Compile Include="SASEGASAReunificator.cs" />
     <Compile Include="CrossoverBase.cs" />

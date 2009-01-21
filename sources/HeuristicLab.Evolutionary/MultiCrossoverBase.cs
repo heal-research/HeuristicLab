@@ -37,7 +37,6 @@ namespace HeuristicLab.Evolutionary {
     /// </summary>
     public MultiCrossoverBase()
       : base() {
-      AddVariableInfo(new VariableInfo("Parents", "Number of parents that should be crossed", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
     }
 
@@ -52,24 +51,17 @@ namespace HeuristicLab.Evolutionary {
     /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
-      int parents = GetVariableValue<IntData>("Parents", scope, true).Data;
+      int parents = scope.SubScopes.Count;
 
-      if ((scope.SubScopes.Count % parents) != 0)
-        throw new InvalidOperationException("Size of mating pool and number of parents don't match");
+      if (parents < 2)
+        throw new InvalidOperationException("ERROR: Number of parents is < 2");
 
-      int children = scope.SubScopes.Count / parents;
-      for (int i = 0; i < children; i++) {
-        IScope[] parentScopes = new IScope[parents];
-        for (int j = 0; j < parentScopes.Length; j++)
-          parentScopes[j] = scope.SubScopes[j];
+      IScope[] parentScopes = new IScope[parents];
+      for (int i = 0; i < parents; i++)
+        parentScopes[i] = scope.SubScopes[i];
+      IScope child = scope;
+      Cross(scope, random, parentScopes, child);
 
-        IScope child = new Scope(i.ToString());
-        scope.AddSubScope(child);
-        Cross(scope, random, parentScopes, child);
-
-        for (int j = 0; j < parentScopes.Length; j++)
-          scope.RemoveSubScope(parentScopes[j]);
-      }
       return null;
     }
     /// <summary>
