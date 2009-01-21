@@ -43,7 +43,7 @@ namespace HeuristicLab.Hive.Server.Core {
       new Dictionary<Guid,DateTime>();
 
     private static ReaderWriterLockSlim heartbeatLock =
-      new ReaderWriterLockSlim();
+      new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
     private static Mutex jobLock =
       new Mutex();

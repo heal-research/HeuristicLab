@@ -41,7 +41,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private static bool cacheFilled = false;
 
     private static ReaderWriterLockSlim cacheLock =
-      new ReaderWriterLockSlim();
+      new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
     protected DataTable dataTable =
       new DataTable();
