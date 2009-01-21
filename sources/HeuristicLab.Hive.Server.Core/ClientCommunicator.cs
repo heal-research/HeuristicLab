@@ -79,7 +79,6 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="e"></param>
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
       List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
-      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
 
       foreach (ClientInfo client in allClients) {
         if (client.State != State.offline && client.State != State.nullState) {
@@ -88,6 +87,9 @@ namespace HeuristicLab.Hive.Server.Core {
           if (!lastHeartbeats.ContainsKey(client.ClientId)) {
             client.State = State.offline;
             clientAdapter.Update(client);
+            foreach (Job job in jobAdapter.GetJobsOf(client)) {
+              jobManager.ResetJobsDependingOnResults(job);
+            }
           } else {
             DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
 
@@ -97,10 +99,8 @@ namespace HeuristicLab.Hive.Server.Core {
               // if client calculated jobs, the job must be reset
               if (client.State == State.calculating) {
                 // check wich job the client was calculating and reset it
-                foreach (Job job in allJobs) {
-                  if (job.Client.ClientId == client.ClientId) {
-                    jobManager.ResetJobsDependingOnResults(job);
-                  }
+                foreach (Job job in jobAdapter.GetJobsOf(client)) {
+                  jobManager.ResetJobsDependingOnResults(job);
                 }
               }
               
@@ -194,10 +194,22 @@ namespace HeuristicLab.Hive.Server.Core {
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
       if (hbData.jobProgress != null) {
+        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetJobsOf(clientAdapter.GetById(hbData.ClientId)));
+        if (jobsOfClient == null || jobsOfClient.Count == 0) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          return response;
+        }
+
         foreach (KeyValuePair<long, double> jobProgress in hbData.jobProgress) {
           Job curJob = jobAdapter.GetById(jobProgress.Key);
-          curJob.Percentage = jobProgress.Value;
-          jobAdapter.Update(curJob);
+          if (curJob.Client == null || curJob.Client.ClientId != hbData.ClientId) {
+            response.Success = false;
+            response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          } else {
+            curJob.Percentage = jobProgress.Value;
+            jobAdapter.Update(curJob);
+          }
         }
       }
 
@@ -227,13 +239,14 @@ namespace HeuristicLab.Hive.Server.Core {
         jobAdapter.Update(job2Calculate);
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
-        return response;
+      } else {
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
       }
 
       jobLock.ReleaseMutex();
+      /// End Critical section ///
 
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
       return response;
     }
 

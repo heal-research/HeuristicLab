@@ -49,27 +49,24 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public void ResetJobsDependingOnResults(Job job) {
-      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetAll());
+      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
       JobResult lastJobResult = null;
       foreach (JobResult jR in allJobResults) {
-        if (jR.Job != null && jR.Job.Id == job.Id) {
-          if (lastJobResult != null) {
-            // if lastJobResult was before the current jobResult the lastJobResult must be updated
-            if ((jR.timestamp.Subtract(lastJobResult.timestamp)).Seconds > 0)
-              lastJobResult = jR;
-          }
-        }
+        // if lastJobResult was before the current jobResult the lastJobResult must be updated
+        if (lastJobResult == null ||          
+            (jR.timestamp > lastJobResult.timestamp))
+          lastJobResult = jR;
       }
       if (lastJobResult != null) {
-        job.Client = null;
         job.Percentage = lastJobResult.Percentage;
-        job.State = State.offline;
         job.SerializedJob = lastJobResult.Result;
       } else {
-        job.Client = null;
         job.Percentage = 0;
-        job.State = State.offline;
       }
+
+      job.Client = null;
+      job.State = State.offline;
+
       jobAdapter.Update(job);
     }
 
