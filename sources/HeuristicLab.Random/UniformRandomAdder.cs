@@ -69,7 +69,7 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     /// <paramref name="scope"/>.
     /// </summary>
     /// <param name="scope">The current scope where to add the generated random number.</param>
-    /// <returns>null.</returns>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);

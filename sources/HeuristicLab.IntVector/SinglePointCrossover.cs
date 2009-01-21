@@ -25,11 +25,23 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.IntVector {
+  /// <summary>
+  /// Single point crossover for integer vectors.
+  /// </summary>
   public class SinglePointCrossover : IntVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Single point crossover for integer vectors."; }
     }
 
+    /// <summary>
+    /// Performs a single point crossover at a randomly chosen position of the two 
+    /// given parent integer vectors.
+    /// </summary>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for crossover.</param>
+    /// <param name="parent2">The second parent for crossover.</param>
+    /// <returns>The newly created integer vector, resulting from the single point crossover.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -43,6 +55,15 @@ namespace HeuristicLab.IntVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a single point crossover at a randomly chosen position of the two 
+    /// given parent integer vectors.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for crossover.</param>
+    /// <param name="parent2">The second parent for crossover.</param>
+    /// <returns>The newly created integer vector, resulting from the single point crossover.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

@@ -63,7 +63,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
     /// <exception cref="InvalidOperationException">Thrown when the number of children is not constant or
     /// smaller than 1.</exception>
     /// <param name="scope">The scope whose offspring should be analyzed.</param>
-    /// <returns>The next operation or null.</returns>
+    /// <returns>The next operation or <c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       bool maximize = GetVariableValue<BoolData>("Maximization", scope, true).Data;
       double compFact = GetVariableValue<DoubleData>("ComparisonFactor", scope, true).Data;

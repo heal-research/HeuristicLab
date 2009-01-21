@@ -25,11 +25,22 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.IntVector {
+  /// <summary>
+  /// Discrete crossover for integer vectors.
+  /// </summary>
   public class DiscreteCrossover : IntVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Discrete crossover for integer vectors."; }
     }
 
+    /// <summary>
+    /// Performs a discrete crossover operation of the two given parents.
+    /// </summary>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     public static int[] Apply(IRandom random, int[] parent1, int[] parent2) {
       int length = parent1.Length;
       int[] result = new int[length];
@@ -43,6 +54,14 @@ namespace HeuristicLab.IntVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a discrete crossover operation of the two given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
       return Apply(random, parent1, parent2);
     }

@@ -55,7 +55,7 @@ namespace HeuristicLab.Selection.OffspringSelection {
     /// pressure out of a population.
     /// </summary>
     /// <param name="scope">The current scope of the parents and the children.</param>
-    /// <returns>The next operation or null.</returns>
+    /// <returns>The next operation or <c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       double selectionPressureLimit = GetVariableValue<DoubleData>("SelectionPressureLimit", scope, true).Data;
       double successRatioLimit = GetVariableValue<DoubleData>("SuccessRatioLimit", scope, true).Data;

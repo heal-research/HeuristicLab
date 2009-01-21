@@ -77,7 +77,7 @@ namespace HeuristicLab.Random {
     /// Generates a new uniformly distributed random variable.
     /// </summary>
     /// <param name="scope">The scope where to apply the random number generator.</param>
-    /// <returns>null.</returns>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);

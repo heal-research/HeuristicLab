@@ -79,7 +79,7 @@ namespace HeuristicLab.Random {
     /// in the given <paramref name="scope"/>.
     /// </summary>
     /// <param name="scope">The scope where to assign the new random value to.</param>
-    /// <returns>null.</returns>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IObjectData value = GetVariableValue<IObjectData>("Value", scope, false);
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);

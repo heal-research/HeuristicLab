@@ -59,7 +59,7 @@ namespace HeuristicLab.Random {
     /// Injects a new random variable in the given <paramref name="scope"/> .
     /// </summary>
     /// <param name="scope">The scope where to inject the variable.</param>
-    /// <returns>null.</returns>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       bool setRandomly = GetVariableValue<BoolData>("SetSeedRandomly", scope, true).Data;
       IntData seed = GetVariableValue<IntData>("Seed", scope, true);

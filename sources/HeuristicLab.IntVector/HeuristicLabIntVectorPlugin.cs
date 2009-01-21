@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.IntVector {
+  /// <summary>
+  /// Plugin class for HeuristicLab.IntVector plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.IntVector-3.2")]
   [PluginFile(Filename = "HeuristicLab.IntVector-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

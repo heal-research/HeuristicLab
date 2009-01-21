@@ -27,12 +27,27 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.IntVector {
+  /// <summary>
+  /// Base class for all integer vector crossover operators.
+  /// </summary>
   public abstract class IntVectorCrossoverBase : CrossoverBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="IntVectorCrossoverBase"/> with one variable info
+    /// (<c>IntVector</c>).
+    /// </summary>
     public IntVectorCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("IntVector", "Parent and child integer vector", typeof(IntArrayData), VariableKind.In | VariableKind.New));
     }
 
+    /// <summary>
+    /// Performs a crossover of two given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for crossover.</param>
+    /// <param name="parent2">The second parent for crossover.</param>
+    /// <param name="child">The resulting child scope.</param>
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
       IVariableInfo intVectorInfo = GetVariableInfo("IntVector");
       IntArrayData vector1 = parent1.GetVariableValue<IntArrayData>(intVectorInfo.FormalName, false);
@@ -44,6 +59,14 @@ namespace HeuristicLab.IntVector {
       child.AddVariable(new Variable(child.TranslateName(intVectorInfo.FormalName), new IntArrayData(result)));
     }
 
+    /// <summary>
+    /// Performs a crossover of two given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for crossover.</param>
+    /// <param name="parent2">The second parent for crossover.</param>
+    /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     protected abstract int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2);
   }
 }
