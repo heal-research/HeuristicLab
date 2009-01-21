@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Server.Core {
           if (!lastHeartbeats.ContainsKey(client.ClientId)) {
             client.State = State.offline;
             clientAdapter.Update(client);
-            foreach (Job job in jobAdapter.GetJobsOf(client)) {
+            foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
               jobManager.ResetJobsDependingOnResults(job);
             }
           } else {
@@ -99,7 +99,7 @@ namespace HeuristicLab.Hive.Server.Core {
               // if client calculated jobs, the job must be reset
               if (client.State == State.calculating) {
                 // check wich job the client was calculating and reset it
-                foreach (Job job in jobAdapter.GetJobsOf(client)) {
+                foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
                   jobManager.ResetJobsDependingOnResults(job);
                 }
               }
@@ -194,7 +194,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
       if (hbData.jobProgress != null) {
-        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetJobsOf(clientAdapter.GetById(hbData.ClientId)));
+        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;

@@ -36,9 +36,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                       dsHiveServer.JobDataTable>, 
     IJobAdapter {
     #region Fields
-    dsHiveServer.JobDataTable data =
-        new dsHiveServer.JobDataTable();
-
     private IClientAdapter clientAdapter = null;
 
     private IClientAdapter ClientAdapter {
@@ -164,7 +161,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override dsHiveServer.JobRow 
-      InsertNewRow(Job job) {      
+      InsertNewRow(Job job) {
+      dsHiveServer.JobDataTable data =
+        new dsHiveServer.JobDataTable();
+
       dsHiveServer.JobRow row = data.NewJobRow();
       data.AddJobRow(row);
 
@@ -260,6 +260,28 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                where !job.IsResourceIdNull() && 
                       job.ResourceId == client.Id
                select job;
+            });
+      }
+
+      return null;
+    }
+
+    public ICollection<Job> GetActiveJobsOf(ClientInfo client) {
+
+      if (client != null) {
+        return
+          base.FindMultiple(
+            delegate() {
+              return Adapter.GetDataByCalculatingClient(client.Id);
+            },
+            delegate() {
+              return from job in
+                       cache.AsEnumerable<dsHiveServer.JobRow>()
+                     where !job.IsResourceIdNull() &&
+                            job.ResourceId == client.Id && 
+                           !job.IsJobStateNull() && 
+                            job.JobState == "calculating"
+                     select job;
             });
       }
 

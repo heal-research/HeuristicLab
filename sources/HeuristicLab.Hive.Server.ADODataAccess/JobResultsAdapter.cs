@@ -12,9 +12,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     dsHiveServer.JobResultRow>,
     IJobResultsAdapter {
     #region Fields
-    dsHiveServer.JobResultDataTable data =
-        new dsHiveServer.JobResultDataTable();
-
     private IClientAdapter clientAdapter = null;
 
     private IClientAdapter ClientAdapter {
@@ -109,6 +106,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override dsHiveServer.JobResultRow InsertNewRow(JobResult obj) {
+      dsHiveServer.JobResultDataTable data =
+        new dsHiveServer.JobResultDataTable();
+
       dsHiveServer.JobResultRow row = data.NewJobResultRow();
       data.AddJobResultRow(row);
 

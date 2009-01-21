@@ -35,11 +35,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       PermissionOwner, 
       dsHiveServer.PermissionOwnerRow>, 
     IPermissionOwnerAdapter {
-    #region Fields
-    dsHiveServer.PermissionOwnerDataTable data =
-        new dsHiveServer.PermissionOwnerDataTable();
-    #endregion
-
     #region Overrides
     protected override PermissionOwner ConvertRow(dsHiveServer.PermissionOwnerRow row,
       PermissionOwner permOwner) {
@@ -68,6 +63,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.PermissionOwnerRow
       InsertNewRow(PermissionOwner permOwner) {
+      dsHiveServer.PermissionOwnerDataTable data =
+        new dsHiveServer.PermissionOwnerDataTable();
+
       dsHiveServer.PermissionOwnerRow row =
         data.NewPermissionOwnerRow();
 

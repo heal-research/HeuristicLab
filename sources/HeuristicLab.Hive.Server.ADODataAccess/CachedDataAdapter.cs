@@ -43,9 +43,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private static ReaderWriterLockSlim cacheLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-    protected DataTable dataTable =
-      new DataTable();
-
     protected ICollection<ICachedDataAdapter> parentAdapters =
       new List<ICachedDataAdapter>();
 
@@ -222,7 +219,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       UpdateRow(row);
 
-      dataTable.ImportRow(row);
       row.Table.Rows.Remove(row);     
 
       cacheLock.ExitWriteLock();

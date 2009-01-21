@@ -36,9 +36,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.ResourceDataTable>,  
     IResourceAdapter {
     #region Fields
-    dsHiveServer.ResourceDataTable data =
-        new dsHiveServer.ResourceDataTable();
-
     private IClientAdapter clientAdapter = null;
 
     private IClientAdapter ClientAdapter {
@@ -82,6 +79,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.ResourceRow
       InsertNewRow(Resource resource) {
+      dsHiveServer.ResourceDataTable data =
+        new dsHiveServer.ResourceDataTable();
+
       dsHiveServer.ResourceRow row = data.NewResourceRow();
       data.AddResourceRow(row);
 

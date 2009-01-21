@@ -38,9 +38,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     IUserGroupAdapter {
 
     #region Fields
-    dsHiveServer.UserGroupDataTable data =
-        new dsHiveServer.UserGroupDataTable();
-
     private dsHiveServerTableAdapters.PermissionOwner_UserGroupTableAdapter permOwnerUserGroupAdapter =
       new dsHiveServerTableAdapters.PermissionOwner_UserGroupTableAdapter();
 
@@ -205,6 +202,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.UserGroupRow
       InsertNewRow(UserGroup group) {
+      dsHiveServer.UserGroupDataTable data =
+        new dsHiveServer.UserGroupDataTable();
+
       dsHiveServer.UserGroupRow row =
         data.NewUserGroupRow();
 

@@ -36,9 +36,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.HiveUserRow>,
     IUserAdapter {
     #region Fields
-    dsHiveServer.HiveUserDataTable data =
-        new dsHiveServer.HiveUserDataTable();
-
     private IPermissionOwnerAdapter permOwnerAdapter = null;
 
     private IPermissionOwnerAdapter PermOwnerAdapter {
@@ -107,6 +104,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.HiveUserRow
       InsertNewRow(User user) {
+      dsHiveServer.HiveUserDataTable data =
+        new dsHiveServer.HiveUserDataTable();
+
       dsHiveServer.HiveUserRow row =
         data.NewHiveUserRow();
 

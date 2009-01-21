@@ -7578,7 +7578,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[7];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[8];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJob" +
@@ -7593,34 +7593,41 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
             this._commandCollection[2].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
-                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ResourceId = @ResourceId)";
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobState = \'calculating\') AND (Re" +
+                "sourceId = @ResourceId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
             this._commandCollection[3].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
-                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobId = @Id)";
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ResourceId = @ResourceId)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[4].Connection = this.Connection;
             this._commandCollection[4].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
-                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobState = @State)";
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobId = @Id)";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[5] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[5].Connection = this.Connection;
             this._commandCollection[5].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
-                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ParentJobId = @Id)";
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (JobState = @State)";
             this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[6] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[6].Connection = this.Connection;
             this._commandCollection[6].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
+                "dJob, Percentage\r\nFROM         Job\r\nWHERE     (ParentJobId = @Id)";
+            this._commandCollection[6].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[6].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[7] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[7].Connection = this.Connection;
+            this._commandCollection[7].CommandText = "SELECT     JobId, JobState, ParentJobId, PermissionOwnerId, ResourceId, Serialize" +
                 "dJob, Percentage\r\nFROM         Job\r\nWHERE     (PermissionOwnerId = @PermissionOw" +
                 "nerId)";
-            this._commandCollection[6].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[6].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[7].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[7].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7670,8 +7677,42 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillByClient(dsHiveServer.JobDataTable dataTable, global::System.Nullable<long> ResourceId) {
+        public virtual int FillByCalculatingClient(dsHiveServer.JobDataTable dataTable, global::System.Nullable<long> ResourceId) {
             this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((ResourceId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((long)(ResourceId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.JobDataTable GetDataByCalculatingClient(global::System.Nullable<long> ResourceId) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((ResourceId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((long)(ResourceId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            dsHiveServer.JobDataTable dataTable = new dsHiveServer.JobDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByClient(dsHiveServer.JobDataTable dataTable, global::System.Nullable<long> ResourceId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
             if ((ResourceId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(ResourceId.Value));
             }
@@ -7689,7 +7730,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataByClient(global::System.Nullable<long> ResourceId) {
-            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand = this.CommandCollection[3];
             if ((ResourceId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(ResourceId.Value));
             }
@@ -7705,7 +7746,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillById(dsHiveServer.JobDataTable dataTable, long Id) {
-            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand = this.CommandCollection[4];
             this.Adapter.SelectCommand.Parameters[0].Value = ((long)(Id));
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
@@ -7718,7 +7759,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataById(long Id) {
-            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand = this.CommandCollection[4];
             this.Adapter.SelectCommand.Parameters[0].Value = ((long)(Id));
             dsHiveServer.JobDataTable dataTable = new dsHiveServer.JobDataTable();
             this.Adapter.Fill(dataTable);
@@ -7729,7 +7770,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillByState(dsHiveServer.JobDataTable dataTable, string State) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((State == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -7747,7 +7788,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataByState(string State) {
-            this.Adapter.SelectCommand = this.CommandCollection[4];
+            this.Adapter.SelectCommand = this.CommandCollection[5];
             if ((State == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -7763,7 +7804,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillBySubjobs(dsHiveServer.JobDataTable dataTable, global::System.Nullable<long> Id) {
-            this.Adapter.SelectCommand = this.CommandCollection[5];
+            this.Adapter.SelectCommand = this.CommandCollection[6];
             if ((Id.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(Id.Value));
             }
@@ -7781,7 +7822,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataBySubjobs(global::System.Nullable<long> Id) {
-            this.Adapter.SelectCommand = this.CommandCollection[5];
+            this.Adapter.SelectCommand = this.CommandCollection[6];
             if ((Id.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(Id.Value));
             }
@@ -7797,7 +7838,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillByUser(dsHiveServer.JobDataTable dataTable, global::System.Nullable<long> PermissionOwnerId) {
-            this.Adapter.SelectCommand = this.CommandCollection[6];
+            this.Adapter.SelectCommand = this.CommandCollection[7];
             if ((PermissionOwnerId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(PermissionOwnerId.Value));
             }
@@ -7815,7 +7856,7 @@ SELECT JobId, ParentJobId, JobState, PermissionOwnerId, ResourceId, SerializedJo
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataByUser(global::System.Nullable<long> PermissionOwnerId) {
-            this.Adapter.SelectCommand = this.CommandCollection[6];
+            this.Adapter.SelectCommand = this.CommandCollection[7];
             if ((PermissionOwnerId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((long)(PermissionOwnerId.Value));
             }

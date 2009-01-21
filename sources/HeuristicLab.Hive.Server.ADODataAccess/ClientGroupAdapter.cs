@@ -36,9 +36,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     dsHiveServer.ClientGroupRow>, 
     IClientGroupAdapter {
     #region Fields
-    dsHiveServer.ClientGroupDataTable data =
-        new dsHiveServer.ClientGroupDataTable();
-
     private dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter resourceClientGroupAdapter =
       new dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter();
 
@@ -204,6 +201,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.ClientGroupRow
       InsertNewRow(ClientGroup group) {
+      dsHiveServer.ClientGroupDataTable data =
+         new dsHiveServer.ClientGroupDataTable();
+
       dsHiveServer.ClientGroupRow row =
         data.NewClientGroupRow();
 

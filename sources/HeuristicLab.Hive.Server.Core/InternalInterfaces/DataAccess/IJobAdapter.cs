@@ -47,6 +47,13 @@ namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
     ICollection<Job> GetJobsOf(ClientInfo client);
 
     /// <summary>
+    /// Gets all active jobs of the client
+    /// </summary>
+    /// <param name="client"></param>
+    /// <returns></returns>
+    ICollection<Job> GetActiveJobsOf(ClientInfo client);
+
+    /// <summary>
     /// Gets all jobs of the user
     /// </summary>
     /// <param name="user"></param>
