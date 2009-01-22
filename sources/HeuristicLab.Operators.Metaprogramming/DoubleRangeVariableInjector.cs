@@ -27,11 +27,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Operators.Metaprogramming {
+  /// <summary>
+  /// Injects a double variable into the current scope being in a specified range.
+  /// </summary>
   public class DoubleRangeVariableInjector: OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "TASK."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleRangeVariableInjector"/> with five variable infos
+    /// (<c>VariableInjectos</c>, <c>VariableName</c>, <c>Min</c>, <c>Max</c> and <c>StepSize</c>).
+    /// </summary>
     public DoubleRangeVariableInjector()
       : base() {
       AddVariableInfo(new VariableInfo("VariableInjector", "The combined operator that should hold the generated variable injector", typeof(CombinedOperator), VariableKind.New));
@@ -41,6 +49,11 @@ namespace HeuristicLab.Operators.Metaprogramming {
       AddVariableInfo(new VariableInfo("StepSize", "The difference of the value of the variable from one injector to the next", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Injects a new double variable in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the variable.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       double min = GetVariableValue<DoubleData>("Min", scope, true).Data;
       double max = GetVariableValue<DoubleData>("Max", scope, true).Data;

@@ -27,11 +27,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Keeps a variable in the global scope that contains the scope representing the best solution.
+  /// </summary>
   public class BestSolutionStorer : DelegatingOperator {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Keeps a variable in the global scope that contains the scope representing the best of run solution."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="BestSolutionStorer"/> with three variable infos
+    /// (<c>Quality</c>, <c>Maximization</c> and <c>BestSolution</c>).
+    /// </summary>
     public BestSolutionStorer()
       : base() {
       AddVariableInfo(new VariableInfo("Quality", "Quality value of a solution", typeof(DoubleData), VariableKind.In));
@@ -39,6 +47,11 @@ namespace HeuristicLab.Logging {
       AddVariableInfo(new VariableInfo("BestSolution", "The best solution of the run", typeof(IScope), VariableKind.New | VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Keeps a variable in the global scope that contains the scope representing the best solution.
+    /// </summary>
+    /// <param name="scope">The scope whose populations to check for the best solution.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       if(scope.GetVariable(Guid.ToString() + "-Active") == null) {
         double[] qualities = new double[scope.SubScopes.Count];

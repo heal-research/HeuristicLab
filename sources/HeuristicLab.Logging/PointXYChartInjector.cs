@@ -27,11 +27,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Injects a new PointXYChart variable into the given scope.
+  /// </summary>
   class PointXYChartInjector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PointXYChartInjector"/> with three variable infos
+    /// (<c>ConnectDots</c>, <c>Values</c> and <c>PointXYChart</c>).
+    /// </summary>
     public PointXYChartInjector() {
       VariableInfo connectDotsInfo = new VariableInfo("ConnectDots", "Number of lines the linechart consists of", typeof(BoolData), VariableKind.In);
       connectDotsInfo.Local = true;
@@ -41,6 +49,11 @@ namespace HeuristicLab.Logging {
       AddVariableInfo(new VariableInfo("PointXYchart", "Object representing a pointXYchart", typeof(PointXYChart), VariableKind.New | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Injects a new PointXYChart variable into the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the variable.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       bool connectDots = GetVariableValue<BoolData>("ConnectDots", scope, true).Data;
       ItemList values = GetVariableValue<ItemList>("Values", scope, true);

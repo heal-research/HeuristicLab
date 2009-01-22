@@ -27,17 +27,30 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Logs a specified value into a specified log object.
+  /// </summary>
   public class Logger : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="Logger"/> with two variable infos 
+    /// (<c>Value</c> and <c>Log</c>).
+    /// </summary>
     public Logger()
       : base() {
       AddVariableInfo(new VariableInfo("Value", "The value that should be logged", typeof(ObjectData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Log", "Log into which the values are written", typeof(Log), VariableKind.In | VariableKind.Out | VariableKind.New));
     }
 
+    /// <summary>
+    /// Logs a specified value into a specified log object.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       ObjectData[] values = new ObjectData[scope.SubScopes.Count];
 

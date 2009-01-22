@@ -27,11 +27,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Injects a new Linechart into the current scope.
+  /// </summary>
   public class LinechartInjector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="LinechartInjector"/> with three variable infos
+    /// (<c>NumberOfLines</c>, <c>Values</c> and <c>Linechart</c>).
+    /// </summary>
     public LinechartInjector() {
       VariableInfo numberOfLinesInfo = new VariableInfo("NumberOfLines", "Number of lines the linechart consists of", typeof(IntData), VariableKind.In);
       numberOfLinesInfo.Local = true;
@@ -41,6 +49,11 @@ namespace HeuristicLab.Logging {
       AddVariableInfo(new VariableInfo("Linechart", "Object representing a linechart", typeof(Linechart), VariableKind.New | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Injects a new Linechart variable into the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the Linechart variable.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int numberOfLines = GetVariableValue<IntData>("NumberOfLines", scope, true).Data;
       ItemList values = GetVariableValue<ItemList>("Values", scope, true);

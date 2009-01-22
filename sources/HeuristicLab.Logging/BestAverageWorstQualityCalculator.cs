@@ -27,11 +27,20 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Captures the best, the average and the worst quality of the current population.
+  /// </summary>
   public class BestAverageWorstQualityCalculator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="BestAverageWorstQualityCalculator"/> with five variable
+    /// infos (<c>Quality</c>, <c>Maximization</c>, <c>BestQuality</c>, <c>AverageQuality</c> 
+    /// and <c>WorstQuality</c>).
+    /// </summary>
     public BestAverageWorstQualityCalculator()
       : base() {
       AddVariableInfo(new VariableInfo("Quality", "Quality value of a solution", typeof(DoubleData), VariableKind.In));
@@ -41,6 +50,11 @@ namespace HeuristicLab.Logging {
       AddVariableInfo(new VariableInfo("WorstQuality", "Quality value of worst solution", typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Captures the best, the average and the worst quality of the current population.
+    /// </summary>
+    /// <param name="scope">The scope whose population to test and where to inject the captured values.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       double[] qualities = new double[scope.SubScopes.Count];
 

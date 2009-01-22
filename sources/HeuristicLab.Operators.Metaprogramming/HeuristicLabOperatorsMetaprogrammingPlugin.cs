@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Metaprogramming {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Operators.Metaprogramming plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.Operators.Metaprogramming-3.2")]
   [PluginFile(Filename = "HeuristicLab.Operators.Metaprogramming-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

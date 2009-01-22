@@ -32,6 +32,9 @@ using HeuristicLab.Charting;
 using HeuristicLab.Charting.Data;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// The visual representation of a <see cref="Linechart"/>.
+  /// </summary>
   public partial class LinechartView : ViewBase {
     private double maxY = double.MinValue, minY = double.MaxValue;
     private static int[] colors = new int[] {
@@ -49,20 +52,36 @@ namespace HeuristicLab.Logging {
       182,218,255
     };
 
+    /// <summary>
+    /// Gets or sets the Linechart object to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public Linechart Linechart {
       get { return (Linechart)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="LinechartView"/>. 
+    /// </summary>
     public LinechartView() {
       InitializeComponent();
       Caption = "Linechart View";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="LinechartView"/> with the given <paramref name="linechart"/>.
+    /// </summary>
+    /// <param name="linechart">The linechart to represent visually.</param>
     public LinechartView(Linechart linechart)
       : this() {
       Linechart = linechart;
     }
 
+    /// <summary>
+    /// Removes the event handlers from the underlying <see cref="Linechart"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       if(Linechart != null) {
         Linechart.Values.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Values_ItemAdded);
@@ -70,6 +89,10 @@ namespace HeuristicLab.Logging {
       }
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="Linechart"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       if(Linechart != null) {
@@ -78,6 +101,10 @@ namespace HeuristicLab.Logging {
       }
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="UpdateControls"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       Datachart datachart = new Datachart(-50, -5000, 1000, 55000);

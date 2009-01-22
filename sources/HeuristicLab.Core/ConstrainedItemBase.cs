@@ -114,7 +114,7 @@ namespace HeuristicLab.Core {
     /// Creates an instance of <see cref="ConstrainedItemBaseView"/> 
     /// to represent the current instance visually.
     /// </summary>
-    /// <returns>The created view as <see cref="ConstrainedItemBase"/>.</returns>
+    /// <returns>The created view as <see cref="ConstrainedItemBaseView"/>.</returns>
     public override IView CreateView() {
       return new ConstrainedItemBaseView(this);
     }
@@ -167,7 +167,7 @@ namespace HeuristicLab.Core {
       return node;
     }
     /// <summary>
-    ///  Loads the persisted item from the specified <paramref name="node"/>.
+    /// Loads the persisted item from the specified <paramref name="node"/>.
     /// </summary>
     /// <remarks>See <see cref="GetXmlNode"/> to get information about how the constrained item must
     /// be saved. <br/>

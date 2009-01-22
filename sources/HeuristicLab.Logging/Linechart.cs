@@ -27,8 +27,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Class to represent a Linechart.
+  /// </summary>
   public class Linechart : ItemBase, IVisualizationItem {
     private IntData myNumberOfLines;
+    /// <summary>
+    /// Gets or sets the number of lines of the current instance.
+    /// </summary>
+    /// <remarks>Calls <see cref="OnNumberOfLinesChanged"/> in the setter.</remarks>
     public int NumberOfLines {
       get { return myNumberOfLines.Data; }
       set {
@@ -39,6 +46,10 @@ namespace HeuristicLab.Logging {
       }
     }
     private ItemList myValues;
+    /// <summary>
+    /// Gets or sets the values of the current instance.
+    /// </summary>
+    /// <remarks>Calls <see cref="OnValuesChanged"/> in the setter.</remarks>
     public ItemList Values {
       get { return myValues; }
       set {
@@ -50,15 +61,30 @@ namespace HeuristicLab.Logging {
     }
 
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="Linechart"/>.
+    /// </summary>
     public Linechart() {
       myNumberOfLines = new IntData(0);
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="Linechart"/> with the given <paramref name="numberOfLines"/>
+    /// and the given <paramref name="values"/>.
+    /// </summary>
+    /// <param name="numberOfLines">The number of lines with which to initialize the current instance.</param>
+    /// <param name="values">The values with which to initialize the current instance.</param>
     public Linechart(int numberOfLines, ItemList values) {
       myNumberOfLines = new IntData(numberOfLines);
       myValues = values;
     }
 
-
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <see cref="Auxiliary"/>.</remarks>
+    /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="Linechart"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Linechart clone = (Linechart)base.Clone(clonedObjects);
       clone.myNumberOfLines = (IntData)Auxiliary.Clone(myNumberOfLines, clonedObjects);
@@ -66,28 +92,61 @@ namespace HeuristicLab.Logging {
       return clone;
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="LinechartView"/> to represent the current instance visually.
+    /// </summary>
+    /// <returns>The created view as <see cref="LinechartView"/>.</returns>
     public override IView CreateView() {
       return new LinechartView(this);
     }
 
+    /// <summary>
+    /// Occurs when the number of lines has been changed.
+    /// </summary>
     public event EventHandler NumberOfLinesChanged;
+    /// <summary>
+    /// Fires a new <c>NumberOfLinesChanged</c> event.
+    /// </summary>
     protected virtual void OnNumberOfLinesChanged() {
       if (NumberOfLinesChanged != null)
         NumberOfLinesChanged(this, new EventArgs());
     }
+    /// <summary>
+    /// Occurs when the values have been changed.
+    /// </summary>
     public event EventHandler ValuesChanged;
+    /// <summary>
+    /// Fires a new <c>ValuesChanged</c> event.
+    /// </summary>
     protected virtual void OnValuesChanged() {
       if (ValuesChanged != null)
         ValuesChanged(this, new EventArgs());
     }
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The number of lines and the values are saved as child nodes with tag 
+    /// name <c>NumberOfLines</c> and <c>Values</c> respectively.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       node.AppendChild(PersistenceManager.Persist("NumberOfLines", myNumberOfLines, document, persistedObjects));
       node.AppendChild(PersistenceManager.Persist("Values", Values, document, persistedObjects));
       return node;
     }
+    /// <summary>
+    /// Loads the persisted item from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>Has to be saved in a special way, see <see cref="GetXmlNode"/> for further information.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the Linechart is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myNumberOfLines = (IntData)PersistenceManager.Restore(node.SelectSingleNode("NumberOfLines"), restoredObjects);

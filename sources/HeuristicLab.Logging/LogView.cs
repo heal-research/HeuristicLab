@@ -30,21 +30,40 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Visual representation of the <see cref="Log"/> class.
+  /// </summary>
   public partial class LogView : ViewBase {
+    /// <summary>
+    /// Gets or sets the Log item to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public Log Log {
       get { return (Log)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="LogView"/>.
+    /// </summary>
     public LogView() {
       InitializeComponent();
       Caption = "Log View";
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="LogView"/> with the given <paramref name="log"/>.
+    /// </summary>
+    /// <param name="log">The log object to represent visually.</param>
     public LogView(Log log)
       : this() {
       Log = log;
     }
 
+    /// <summary>
+    /// Removes the event handlers from the underlying <see cref="Log"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RemoveItemEvents() {
       if (Log != null) {
         Log.Items.ItemAdded -= new EventHandler<ItemIndexEventArgs>(Items_ItemAdded);
@@ -52,6 +71,10 @@ namespace HeuristicLab.Logging {
       }
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds event handlers to the underlying <see cref="Log"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       if (Log != null) {
@@ -60,6 +83,11 @@ namespace HeuristicLab.Logging {
       }
     }
 
+    /// <summary>
+    /// Updates all controls with the latest data of the model.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class 
+    /// <see cref="UpdateControls"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       qualityLogTextBox.Clear();

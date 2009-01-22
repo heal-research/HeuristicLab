@@ -27,17 +27,30 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Operators.Metaprogramming {
+  /// <summary>
+  /// Composes a sequence of <see cref="IOperatorGraph"/>s and injects it into the given scope.
+  /// </summary>
   public class SequentialComposer: OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "TASK."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SequentialComposer"/> with two variable infos
+    /// (<c>CombineOperator</c> and <c>OperatorNames</c>).
+    /// </summary>
     public SequentialComposer()
       : base() {
       AddVariableInfo(new VariableInfo("CombinedOperator", "The combined operator that should hold the resulting sequence of IOperatorGraphs", typeof(CombinedOperator), VariableKind.New));
       AddVariableInfo(new VariableInfo("OperatorNames", "Names of the operators that should be composed to a sequence", typeof(ItemList<StringData>), VariableKind.In));
     }
 
+    /// <summary>
+    /// Composes a sequence <see cref="IOperatorGraph"/>s and injects it into the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the created sequence of operators.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       ItemList<StringData> parts = GetVariableValue<ItemList<StringData>>("OperatorNames", scope, true);
       CombinedOperator combOp = new CombinedOperator();

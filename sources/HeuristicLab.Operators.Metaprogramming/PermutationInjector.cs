@@ -27,11 +27,20 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Operators.Metaprogramming {
+  /// <summary>
+  /// Injects a new permutation variable in the given scope. The number of items contained
+  /// are in a predifined range.
+  /// </summary>
   public class PermutationInjector : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "TASK."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PermutationInjector"/> with five variable infos
+    /// (<c>VariableInjector</c>, <c>VariableName</c>, <c>Items</c>, <c>Min</c> and <c>Max</c>).
+    /// </summary>
     public PermutationInjector()
       : base() {
       AddVariableInfo(new VariableInfo("VariableInjector", "The combined operator that should hold the generated variable injector", typeof(CombinedOperator), VariableKind.New));
@@ -41,6 +50,11 @@ namespace HeuristicLab.Operators.Metaprogramming {
       AddVariableInfo(new VariableInfo("Max", "Maximal number of items to inject", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Injects a new permutation variable into the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the permutation list.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int min = GetVariableValue<IntData>("Min", scope, true).Data;
       int max = GetVariableValue<IntData>("Max", scope, true).Data;

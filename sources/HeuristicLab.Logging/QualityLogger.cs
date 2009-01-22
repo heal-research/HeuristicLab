@@ -27,17 +27,30 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Logs the quality (best, average, worst) of a solution.
+  /// </summary>
   public class QualityLogger : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"TODO\r\nOperator description still missing ..."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="QualityLogger"/> with two variable infos
+    /// (<c>Quality</c> and <c>QualityLog</c>).
+    /// </summary>
     public QualityLogger()
       : base() {
       AddVariableInfo(new VariableInfo("Quality", "Quality value of a solution", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("QualityLog", "Log of best, average and worst quality values", typeof(Log), VariableKind.In | VariableKind.Out | VariableKind.New));
     }
 
+    /// <summary>
+    /// Logs the quality (best, average and worst) of a solution.
+    /// </summary>
+    /// <param name="scope">The current scope where to log the quality.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       double[] qualities = new double[scope.SubScopes.Count];
 

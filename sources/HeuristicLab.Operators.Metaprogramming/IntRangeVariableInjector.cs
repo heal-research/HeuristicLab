@@ -27,11 +27,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Operators.Metaprogramming {
+  /// <summary>
+  /// Injects a new integer variable into the current scope being in a specified range.
+  /// </summary>
   public class IntRangeVariableInjector: OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "TASK."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="IntRangeVariableInjector"/> with four variable infos
+    /// (<c>VariableInjector</c>, <c>VariableName</c>, <c>Min</c> and <c>Max</c>).
+    /// </summary>
     public IntRangeVariableInjector()
       : base() {
       AddVariableInfo(new VariableInfo("VariableInjector", "The combined operator that should hold the generated variable injector", typeof(CombinedOperator), VariableKind.New));
@@ -40,6 +48,11 @@ namespace HeuristicLab.Operators.Metaprogramming {
       AddVariableInfo(new VariableInfo("Max", "Maximal value of the injected variable", typeof(IntData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Injects a new integer variable in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The current scope where to inject the variable.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int min = GetVariableValue<IntData>("Min", scope, true).Data;
       int max = GetVariableValue<IntData>("Max", scope, true).Data;

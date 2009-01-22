@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Logging {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Logging plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.Logging-3.2")]
   [PluginFile(Filename = "HeuristicLab.Logging-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
