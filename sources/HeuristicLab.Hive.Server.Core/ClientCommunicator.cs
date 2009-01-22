@@ -235,6 +235,7 @@ namespace HeuristicLab.Hive.Server.Core {
         job2Calculate.Client = clientAdapter.GetById(clientId);
         job2Calculate.Client.State = State.calculating;
 
+        job2Calculate.DateCalculated = DateTime.Now;
         response.Job = job2Calculate;
         jobAdapter.Update(job2Calculate);
         response.Success = true;
@@ -316,6 +317,7 @@ namespace HeuristicLab.Hive.Server.Core {
       jobResult.Result = result;
       jobResult.Percentage = percentage;
       jobResult.Exception = exception;
+      jobResult.DateFinished = DateTime.Now;
 
       jobResultAdapter.Update(jobResult);
       jobAdapter.Update(job);

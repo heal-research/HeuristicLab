@@ -234,4 +234,7 @@
   <data name="Communicator.WrongClientForJob" xml:space="preserve">
     <value>This client is not registered to calculate this job</value>
   </data>
+  <data name="Job.JobResultSent" xml:space="preserve">
+    <value>Job Result sent successfully</value>
+  </data>
 </root>

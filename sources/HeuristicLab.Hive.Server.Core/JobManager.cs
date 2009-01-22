@@ -48,15 +48,20 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnShutdown));
     }
 
-    public void ResetJobsDependingOnResults(Job job) {
+    private JobResult GetLastJobResult(Job job) {
       List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
       JobResult lastJobResult = null;
       foreach (JobResult jR in allJobResults) {
         // if lastJobResult was before the current jobResult the lastJobResult must be updated
-        if (lastJobResult == null ||          
+        if (lastJobResult == null ||
             (jR.timestamp > lastJobResult.timestamp))
           lastJobResult = jR;
       }
+      return lastJobResult;
+    }
+
+    public void ResetJobsDependingOnResults(Job job) {
+      JobResult lastJobResult = GetLastJobResult(job);
       if (lastJobResult != null) {
         job.Percentage = lastJobResult.Percentage;
         job.SerializedJob = lastJobResult.Result;
@@ -126,6 +131,7 @@ namespace HeuristicLab.Hive.Server.Core {
           return response;
         }
 
+        job.DateCreated = DateTime.Now;
         jobAdapter.Update(job);
         response.Success = true;
         response.Obj = job;
@@ -155,6 +161,15 @@ namespace HeuristicLab.Hive.Server.Core {
       jobAdapter.Delete(job);
       response.Success = false;
       response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_REMOVED;
+
+      return response;
+    }
+
+    public ResponseObject<JobResult> GetLasJobResultOf(long jobId) {
+      ResponseObject<JobResult> response = new ResponseObject<JobResult>();
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
+      response.Obj = GetLastJobResult(jobAdapter.GetById(jobId));
 
       return response;
     }
