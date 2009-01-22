@@ -43,5 +43,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public ClientInfo Client { get; set; }
     [DataMember]
     public Exception Exception { get; set; }
+    [DataMember]
+    public DateTime DateFinished { get; set; }
   }
 }
