@@ -93,8 +93,8 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AddNewJob(job);
     }
 
-    public ResponseObject<JobResult> GetLasJobResultOf(long jobId) {
-      return jobManager.GetLasJobResultOf(jobId);
+    public ResponseObject<JobResult> GetLastJobResultOf(long jobId) {
+      return jobManager.GetLastJobResultOf(jobId);
     }
 
     public Response RemoveJob(long jobId) {

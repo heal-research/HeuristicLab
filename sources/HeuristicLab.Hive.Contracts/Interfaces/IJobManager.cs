@@ -39,6 +39,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response RemoveJob(long jobId);
     [OperationContract]
-    ResponseObject<JobResult> GetLasJobResultOf(long jobId);
+    ResponseObject<JobResult> GetLastJobResultOf(long jobId);
   }
 }

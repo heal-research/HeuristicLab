@@ -165,7 +165,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public ResponseObject<JobResult> GetLasJobResultOf(long jobId) {
+    public ResponseObject<JobResult> GetLastJobResultOf(long jobId) {
       ResponseObject<JobResult> response = new ResponseObject<JobResult>();
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
