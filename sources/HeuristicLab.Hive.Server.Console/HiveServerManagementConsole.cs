@@ -73,9 +73,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// <param name="obj"></param>
     /// <param name="e"></param>
     private void TickSync(object obj, EventArgs e) {
-      AddClients();
-      AddJobs();
-      AddUsers();
+      Refresh();
     }
 
     /// <summary>
@@ -256,7 +254,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       yPos += 20;
       lblJobCreated.Location = new Point(
         lblJobCreated.Location.X, yPos);
-      lblJobCreated.Text = "Created at "/* + currentJob.User.CreatedJob + */;
+      lblJobCreated.Text = "Created at " + currentJob.DateCreated;
       if (currentJob.ParentJob != null) {
         yPos += 20;
         lblParentJob.Location = new Point(
@@ -266,7 +264,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       yPos += 20;
       lblPriorityJob.Location = new Point(
         lblPriorityJob.Location.X, yPos);
-      lblPriorityJob.Text = "Priority of job is " /* + currentJob.Priority */;
+      lblPriorityJob.Text = "Priority of job is " + currentJob.Priority;
       if (currentJob.Client != null) {
         yPos += 20;
         lblClientCalculating.Location = new Point(
@@ -275,14 +273,24 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         yPos += 20;
         lblJobCalculationBegin.Location = new Point(
           lblJobCalculationBegin.Location.X, yPos);
-        lblJobCalculationBegin.Text = "Startet calculation at " /* + currentJob.User.CalculationBegin */;
-        yPos += 20;
-        lblJobCalculationEnd.Location = new Point(
-          lblJobCalculationEnd.Location.X, yPos);
-        lblJobCalculationEnd.Text = "Calculation ended at " /* + currentJob.User.CalculationEnd */;
-      }
+        lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated ;
+        
+        if (currentJob.State == State.finished) {
+          yPos += 20;
+          lblJobCalculationEnd.Location = new Point(
+            lblJobCalculationEnd.Location.X, yPos);
+
+          IJobManager jobManager =
+            ServiceLocator.GetJobManager();
+
+          ResponseObject<JobResult> jobRes = jobManager.GetLasJobResultOf(currentJob.Id);
+
+          
+          lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
+        }
+      }                       
       if (currentJob.State != State.offline) {
-        yPos += 30;
+        yPos += 20;
         lvSnapshots.Location = new Point(
           lvSnapshots.Location.X, yPos);
         lvSnapshots.Size = new Size(lvSnapshots.Size.Width,
