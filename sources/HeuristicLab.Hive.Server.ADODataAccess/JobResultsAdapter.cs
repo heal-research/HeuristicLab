@@ -66,6 +66,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetMessageNull();
 
+        row.Percentage = result.Percentage;
+
+        if (result.DateFinished != DateTime.MinValue)
+          row.DateFinished = result.DateFinished;
+        else
+          row.SetDateFinishedNull();
+
         return row;
       } else
         return null;
@@ -95,6 +102,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           result.Exception = new Exception(row.Message);
         else
           result.Exception = null;
+
+        result.Percentage = row.Percentage;
+
+        if (!row.IsDateFinishedNull())
+          result.DateFinished = row.DateFinished;
+        else
+          result.DateFinished = DateTime.MinValue;
 
         return result;
       } else

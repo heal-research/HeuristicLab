@@ -108,6 +108,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.SerializedJob = null;
 
+        if (!row.IsDateCreatedNull())
+          job.DateCreated = row.DateCreated;
+        else
+          job.DateCreated = DateTime.MinValue;
+
+        if (!row.IsDateCalculatedNull())
+          job.DateCalculated = row.DateCalculated;
+        else
+          job.DateCalculated = DateTime.MinValue;
+
+        job.Priority = row.Priority;
+
         return job;
       } else
         return null;
@@ -151,6 +163,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         row.Percentage = job.Percentage;
 
         row.SerializedJob = job.SerializedJob;
+
+        if (job.DateCreated != DateTime.MinValue)
+          row.DateCreated = job.DateCreated;
+        else
+          row.SetDateCreatedNull();
+
+        if (job.DateCalculated != DateTime.MinValue)
+          row.DateCalculated = job.DateCalculated;
+        else
+          row.SetDateCalculatedNull();
+
+        row.Priority = job.Priority;
       }
 
       return row;
