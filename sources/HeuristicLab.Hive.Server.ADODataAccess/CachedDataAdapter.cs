@@ -226,8 +226,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     public override void Update(ObjT obj) {
       if (obj != null) {
-        RowT row =
-          GetRowById(obj.Id);
+        RowT row = null;
+        long locked = default(long);
+
+        if (obj.Id != default(long)) {
+          LockRow(obj.Id);
+          locked = obj.Id;
+
+          row = GetRowById(obj.Id);
+        }
 
         if (row == null) {
           if (PutInCache(obj)) {
@@ -237,10 +244,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
 
           UpdateRow(row);
+          obj.Id = (long)row[row.Table.PrimaryKey[0]];
         }
 
-        obj.Id = (long)row[row.Table.PrimaryKey[0]];
-        LockRow(obj.Id);
+        if (locked == default(long)) {
+          LockRow(obj.Id);
+          locked = obj.Id;
+        }
 
         ConvertObj(obj, row);
 
@@ -255,7 +265,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           AddToCache(row);
         }
 
-        UnlockRow(obj.Id);
+        UnlockRow(locked);
       }
     }
   }

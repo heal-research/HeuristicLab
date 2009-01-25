@@ -26,7 +26,6 @@ using System.Text;
 
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.CompilerServices;
 using System.Data;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
@@ -233,7 +232,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IUserGroupAdapter Members
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(UserGroup group) {
       if (group != null) {
         PermOwnerAdapter.Update(group);
@@ -272,7 +270,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return userGroups;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override bool Delete(UserGroup group) {
       if (group != null) {
         return base.Delete(group) && 

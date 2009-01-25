@@ -26,7 +26,6 @@ using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientAdapter: 
@@ -78,12 +77,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     private void Preprocess(ClientInfo client) {
-      if (client != null) {
-        if (client.Id == default(long)) {
-          ClientInfo found = GetById(client.ClientId);
-          if (found != null)
-            client.Id = found.Id;
-        }
+      if (client != null && client.Id == default(long)) {
+        ClientInfo found = GetById(client.ClientId);
+        if (found != null)
+          client.Id = found.Id;
       }
     }
 
@@ -214,14 +211,23 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IClientAdapter Members
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(ClientInfo client) {
       if (client != null) {
+        Guid locked = Guid.Empty;
+        if (client.ClientId != Guid.Empty) {
+          LockRow(client.ClientId);
+          locked = client.ClientId;
+        }
+
         Preprocess(client);
 
         ResAdapter.Update(client);
 
         base.Update(client);
+
+        if (locked != Guid.Empty) {
+          UnlockRow(locked);
+        }
       }
     }
 
@@ -247,9 +253,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return GetById(res.Id);
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public override bool Delete(ClientInfo client) {      
+    public override bool Delete(ClientInfo client) {
+      bool success = false;
+      Guid locked = Guid.Empty;
+      
       if (client != null) {
+        if (client.ClientId != Guid.Empty) {
+          LockRow(client.ClientId);
+          locked = client.ClientId;
+        }
+
         Preprocess(client);
 
         dsHiveServer.ClientRow row =
@@ -263,12 +276,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             JobAdapter.Delete(job);
           }
 
-          return base.Delete(client) && 
+          success = base.Delete(client) && 
             ResAdapter.Delete(client);
         }
       }
 
-      return false;
+      if (locked != Guid.Empty) {
+        UnlockRow(locked);
+      }
+
+      return success;
     }
 
     #endregion

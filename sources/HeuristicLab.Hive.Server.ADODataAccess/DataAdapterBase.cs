@@ -36,13 +36,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private static Mutex lockersMutex =
       new Mutex();
 
-    private static IDictionary<long, Mutex> lockers =
-      new Dictionary<long, Mutex>();
+    private static IDictionary<object, Mutex> lockers =
+      new Dictionary<object, Mutex>();
 
-    private static IDictionary<long, int> lockCount =
-      new Dictionary<long, int>();
+    private static IDictionary<object, int> lockCount =
+      new Dictionary<object, int>();
 
-    protected void LockRow(long id) {
+    protected void LockRow(object id) {
       Mutex rowLock = null;
 
       /////begin critical section////
@@ -61,7 +61,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       rowLock.WaitOne();
     }
 
-    protected void UnlockRow(long id) {
+    protected void UnlockRow(object id) {
       Mutex rowLock = lockers[id];
       rowLock.ReleaseMutex();
 
@@ -162,21 +162,32 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     public virtual void Update(ObjT obj) {
       if (obj != null) {
-        RowT row =
-          GetRowById(obj.Id);
+        RowT row = null;
+        long locked = default(long);
+        
+        if (obj.Id != default(long)) {
+           LockRow(obj.Id);
+           locked = obj.Id;
+
+           row = GetRowById(obj.Id);
+        }          
 
         if (row == null) {
           row = InsertNewRow(obj);
           UpdateRow(row);
+
+          obj.Id = (long)row[row.Table.PrimaryKey[0]];
         }
 
-        obj.Id = (long)row[row.Table.PrimaryKey[0]];
-        LockRow(obj.Id);
+        if (locked == default(long)) {
+          LockRow(obj.Id);
+          locked = obj.Id;
+        }
 
         ConvertObj(obj, row);
         UpdateRow(row);
 
-        UnlockRow(obj.Id);
+        UnlockRow(locked);
       }
     }
 

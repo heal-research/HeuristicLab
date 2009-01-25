@@ -26,7 +26,6 @@ using System.Text;
 
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class UserAdapter :
@@ -135,7 +134,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     #region IUserAdapter Members
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override void Update(User user) {
       if (user != null) {
         PermOwnerAdapter.Update(user);
@@ -155,7 +153,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override bool Delete(User user) {
       if (user != null) {
         //Referential integrity with jobs - they are cached

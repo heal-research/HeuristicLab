@@ -28,22 +28,8 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class PermissionOwner: IHiveObject {
-    [DataMember]
-    public long Id { get; set; }
+  public class PermissionOwner: HiveBaseObject {
     [DataMember]
     public string Name { get; set; }
-
-    public override bool Equals(object obj) {
-      if (obj is PermissionOwner) 
-        return this.Id.Equals(
-          (obj as PermissionOwner).Id);
-      else
-        return base.Equals(obj);
-    }
-
-    public override int GetHashCode() {
-      return this.Id.GetHashCode();
-    }
   }
 }

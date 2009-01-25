@@ -73,6 +73,7 @@
     <Compile Include="BusinessObjects\GrantedPermissions.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
     <Compile Include="BusinessObjects\HeartBeatData.cs" />
+    <Compile Include="BusinessObjects\HiveBaseObject.cs" />
     <Compile Include="BusinessObjects\IHiveObject.cs" />
     <Compile Include="BusinessObjects\Job.cs" />
     <Compile Include="BusinessObjects\JobResult.cs" />

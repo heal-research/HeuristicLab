@@ -26,14 +26,21 @@ using System.Text;
 using System.Runtime.Serialization;
 
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
-  
   [DataContract]
-  public class GrantedPermissions: HiveBaseObject {
+  public class HiveBaseObject: IHiveObject {
     [DataMember]
-    public Permission Permission { get; set; }
-    [DataMember]
-    public Resource Resource { get; set; }
-    [DataMember]
-    public PermissionOwner PermissionOwner { get; set; }
+    public long Id { get; set; }
+
+    public override bool Equals(object obj) {
+      if (obj is IHiveObject)
+        return this.Id.Equals(
+          (obj as IHiveObject).Id);
+      else
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return this.Id.GetHashCode();
+    }
   }
 }

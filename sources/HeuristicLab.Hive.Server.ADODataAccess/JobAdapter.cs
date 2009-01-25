@@ -26,7 +26,6 @@ using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class JobAdapter :
@@ -118,7 +117,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.DateCalculated = DateTime.MinValue;
 
-        job.Priority = row.Priority;
+        if (!row.IsPriorityNull())
+          job.Priority = row.Priority;
+        else
+          job.Priority = default(int);
 
         return job;
       } else
@@ -331,7 +333,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public override bool Delete(Job job) {
       if (job != null) {
         dsHiveServer.JobRow row =

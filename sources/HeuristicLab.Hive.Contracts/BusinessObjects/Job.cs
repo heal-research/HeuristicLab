@@ -28,9 +28,7 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Job: IHiveObject {
-    [DataMember]
-    public long Id { get; set; }
+  public class Job : HiveBaseObject {
     [DataMember]
     public State State { get; set; }
     [DataMember]
@@ -49,16 +47,5 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public DateTime DateCalculated { get; set; }
     [DataMember]
     public int Priority { get; set; }
-
-    public override bool Equals(object obj) {
-      if (obj is Job) {
-        return (obj as Job).Id.Equals(Id);
-      } else      
-        return base.Equals(obj);
-    }
-
-    public override int GetHashCode() {
-      return Id.GetHashCode();
-    }
   }
 }

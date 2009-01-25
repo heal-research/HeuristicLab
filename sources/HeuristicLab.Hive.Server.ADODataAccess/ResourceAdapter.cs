@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ResourceAdapter: 
