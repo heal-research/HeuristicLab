@@ -27,13 +27,20 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
+  /// <summary>
+  /// Initializes and prepares the children for crossover
+  /// </summary>
   public class ChildrenInitializer : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"This operator prepares the individuals for crossover.";
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ChildrenInitializer"/> with one variable info: <c>ParentsPerChild</c>.
+    /// </summary>
     public ChildrenInitializer()
       : base() {
       AddVariableInfo(new VariableInfo("ParentsPerChild", "Denotes the number of parents that should be crossed per child. Note that some of the typical crossover operators can only work with 2 parents.", typeof(IntData), VariableKind.In));
@@ -41,6 +48,12 @@ namespace HeuristicLab.Evolutionary {
       AddVariable(new Variable("ParentsPerChild", new IntData(2)));
     }
 
+    /// <summary>
+    /// Initializes the children as new scopes and inserts their parents as subscopes.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the number of selected parents is not a natural multiple of <c>ParentsPerChild</c>.</exception>
+    /// <param name="scope">The scope that houses all the selected parents as subscopes.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       int parents = GetVariableValue<IntData>("ParentsPerChild", scope, true).Data;
       int children = scope.SubScopes.Count;
