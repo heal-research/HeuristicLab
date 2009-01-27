@@ -39,10 +39,8 @@ namespace HeuristicLab.RealVector {
 
     public static double[] Apply(double[] strategyParameters, IRandom random, double[] vector) {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
-      if (strategyParameters.Length != vector.Length)
-        throw new InvalidOperationException("ERROR: Strategy Vector must be as long as parameter vector");
       for (int i = 0; i < vector.Length; i++) {
-        vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i]);
+        vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
       }
       return vector;
     }
