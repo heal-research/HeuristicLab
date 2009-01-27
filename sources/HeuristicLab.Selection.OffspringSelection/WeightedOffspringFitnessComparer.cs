@@ -26,10 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection.OffspringSelection {
+  /// <summary>
+  /// Analyzes the offspring on whether it is successful or not based on its quality in comparison to its parents' qualities.
+  /// </summary>
   public class WeightedOffspringFitnessComparer : OperatorBase  {
-    /// <summary>
-    /// Analyzes the offspring on whether it is successful or not based on its quality in comparison to its parents' qualities.
-    /// </summary>
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"Compares the quality values of the child with a weighted average of the parents'.
