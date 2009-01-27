@@ -63,6 +63,7 @@
     <Compile Include="OffspringAnalyzer.cs" />
     <Compile Include="OffspringSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WeightedOffspringFitnessComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
