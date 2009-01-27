@@ -9,6 +9,9 @@ namespace HeuristicLab.Visualization {
 
     protected readonly List<IShape> shapes = new List<IShape>();
 
+    public WorldShape()
+      : this(new RectangleD(0, 0, 1, 1), new RectangleD(0, 0, 1, 1)) {}
+
     public WorldShape(RectangleD clippingArea, RectangleD boundingBox) {
       this.clippingArea = clippingArea;
       this.boundingBox = boundingBox;

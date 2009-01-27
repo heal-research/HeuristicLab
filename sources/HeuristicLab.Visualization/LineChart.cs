@@ -5,23 +5,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization {
-  public class LinesShape : WorldShape {
-    private readonly RectangleShape background = new RectangleShape(0, 0, 1, 1, Color.FromArgb(240, 240, 240));
-
-    public LinesShape(RectangleD clippingArea, RectangleD boundingBox)
-      : base(clippingArea, boundingBox) {
-      AddShape(background);
-    }
-
-    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      UpdateLayout();
-      base.Draw(graphics, viewport, clippingArea);
-    }
-
-    private void UpdateLayout() {
-      background.Rectangle = ClippingArea;
-    }
-  }
+  public class LinesShape : WorldShape { }
 
   public partial class LineChart : ViewBase {
     private readonly IChartDataRowsModel model;
@@ -36,6 +20,8 @@ namespace HeuristicLab.Visualization {
     private readonly LegendShape legendShape;
 
     private readonly XAxis xAxis;
+    private readonly YAxis yAxis;
+    private readonly Grid grid;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -55,11 +41,12 @@ namespace HeuristicLab.Visualization {
 
       //TODO: correct Rectangle to fit
 
-      RectangleD dummy = new RectangleD(0, 0, 1, 1);
+      root = new WorldShape();
 
-      root = new WorldShape(dummy, dummy);
+      grid = new Grid();
+      root.AddShape(grid);
 
-      linesShape = new LinesShape(dummy, dummy);
+      linesShape = new LinesShape();
       root.AddShape(linesShape);
 
       legendShape = new LegendShape(0, 0, 0, 0, 0, Color.Black);
@@ -68,10 +55,13 @@ namespace HeuristicLab.Visualization {
       //legendShape.AddLegendItem(new LegendItem("test2", Color.Pink, 5));
       root.AddShape(legendShape);
 
-      xAxis = new XAxis(dummy, dummy);
+      xAxis = new XAxis();
       root.AddShape(xAxis);
 
-      titleShape = new TextShape(0, 0, "Title", 15);
+      yAxis = new YAxis();
+      root.AddShape(yAxis);
+
+      titleShape = new TextShape(0, 0, model.Title, 15);
       root.AddShape(titleShape);
 
 
@@ -99,7 +89,20 @@ namespace HeuristicLab.Visualization {
       titleShape.X = 10;
       titleShape.Y = canvas.Height - 10;
 
-      linesShape.BoundingBox = new RectangleD(0, 20, canvas.Width, canvas.Height);
+      const int yAxisWidth = 100;
+      const int xAxisHeight = 20;
+
+      linesShape.BoundingBox = new RectangleD(yAxisWidth,
+                                              xAxisHeight,
+                                              canvas.Width,
+                                              canvas.Height);
+      
+      grid.BoundingBox = linesShape.BoundingBox;
+
+      yAxis.BoundingBox = new RectangleD(0,
+                                         linesShape.BoundingBox.Y1,
+                                         linesShape.BoundingBox.X1,
+                                         linesShape.BoundingBox.Y2);
 
       xAxis.BoundingBox = new RectangleD(linesShape.BoundingBox.X1,
                                          0,
@@ -169,10 +172,18 @@ namespace HeuristicLab.Visualization {
     /// <param name="clippingArea"></param>
     private void SetLineClippingArea(RectangleD clippingArea) {
       linesShape.ClippingArea = clippingArea;
+      
+      grid.ClippingArea = linesShape.ClippingArea;
+
       xAxis.ClippingArea = new RectangleD(linesShape.ClippingArea.X1,
                                           xAxis.BoundingBox.Y1,
                                           linesShape.ClippingArea.X2,
                                           xAxis.BoundingBox.Y2);
+      
+      yAxis.ClippingArea = new RectangleD(yAxis.BoundingBox.X1,
+                                          linesShape.ClippingArea.Y1,
+                                          yAxis.BoundingBox.X2,
+                                          linesShape.ClippingArea.Y2);
     }
 
     private void InitLineShapes(IDataRow row) {
@@ -205,8 +216,6 @@ namespace HeuristicLab.Visualization {
 
     // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
-      xAxis.SetLabel(index, index.ToString());
-
       List<LineShape> lineShapes = rowToLineShapes[row];
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
@@ -247,7 +256,11 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    private void OnModelChanged() {}
+    private void OnModelChanged() {
+      titleShape.Text = model.Title;
+
+      Invalidate();
+    }
 
     #endregion
 

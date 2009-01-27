@@ -11,7 +11,7 @@ namespace HeuristicLab.Visualization{
   public delegate void ModelChangedHandler();
 
   public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
-    private string title;
+    private string title = "Title";
     private string xAxisLabel;
 
     private readonly List<IDataRow> rows = new List<IDataRow>();
