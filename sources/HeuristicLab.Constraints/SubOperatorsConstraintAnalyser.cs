@@ -27,14 +27,26 @@ using HeuristicLab.Constraints;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Analyzes the sub-operators for specific constraints.
+  /// </summary>
   public class SubOperatorsConstraintAnalyser {
     private ICollection<IOperator> allPossibleOperators;
 
+    /// <summary>
+    /// Gets or sets all possible operators. 
+    /// </summary>
     public ICollection<IOperator> AllPossibleOperators {
       get { return allPossibleOperators; }
       set { allPossibleOperators = value; }
     }
-
+    
+    /// <summary>
+    /// Gets all operators that fulfill the expression of the constraints of the given operator. 
+    /// </summary>
+    /// <param name="op">The operator whose constraints to check.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(IOperator op, int childIndex) {
       AndConstraint andConstraint = new AndConstraint();
       foreach (IConstraint constraint in op.Constraints) {
@@ -108,6 +120,12 @@ namespace HeuristicLab.Constraints {
     }
     #endregion
 
+    /// <summary>
+    /// Gets all allowed operators that fulfill the expression of the given <c>AndConstraint</c>.
+    /// </summary>
+    /// <param name="constraint">The constraint that must be fulfilled.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(AndConstraint constraint, int childIndex) {
       IList<IOperator> allowedOperators = new List<IOperator>(allPossibleOperators);
       // keep only the intersection of all subconstraints
@@ -117,6 +135,12 @@ namespace HeuristicLab.Constraints {
       return allowedOperators;
     }
 
+    /// <summary>
+    /// Gets all allowed operators that fulfill the expression of the given <c>OrConstraint</c>.
+    /// </summary>
+    /// <param name="constraint">The constraint that must be fulfilled.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(OrConstraint constraint, int childIndex) {
       IList<IOperator> allowedOperators = new List<IOperator>();
       foreach (ConstraintBase clause in constraint.Clauses) {
@@ -125,14 +149,32 @@ namespace HeuristicLab.Constraints {
       return allowedOperators;
     }
 
+    /// <summary>
+    /// Gets all allowed operators that fulfill the expression of the given <c>NotConstraint</c>.
+    /// </summary>
+    /// <param name="constraint">The constraint that must be fulfilled.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(NotConstraint constraint, int childIndex) {
       return Substract(allPossibleOperators, GetAllowedOperators(constraint.SubConstraint, childIndex));
     }
 
+    /// <summary>
+    /// Gets all allowed operators that fulfill the expression of the given <c>AllSubOperatorsTypeConstraint</c>.
+    /// </summary>
+    /// <param name="constraint">The constraint that must be fulfilled.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(AllSubOperatorsTypeConstraint constraint, int childIndex) {
       return Intersect(allPossibleOperators, constraint.AllowedSubOperators);
     }
 
+    /// <summary>
+    /// Gets all allowed operators that fulfill the expression of the given <c>SubOperatorTypeConstraint</c>.
+    /// </summary>
+    /// <param name="constraint">The constraint that must be fulfilled.</param>
+    /// <param name="childIndex">The index of the child.</param>
+    /// <returns>All allowed operators.</returns>
     public IList<IOperator> GetAllowedOperators(SubOperatorTypeConstraint constraint, int childIndex) {
       if (childIndex != constraint.SubOperatorIndex.Data) {
         return new List<IOperator>(allPossibleOperators);

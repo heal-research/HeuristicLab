@@ -28,31 +28,55 @@ using HeuristicLab.Data;
 using System.Xml;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Constraint where the number of sub-operators must be within a specific range.
+  /// </summary>
   public class NumberOfSubOperatorsConstraint : ConstraintBase {
     private IntData minOperators;
     private IntData maxOperators;
 
+    /// <summary>
+    /// Gets the maximum number of sub-operators.
+    /// </summary>
     public IntData MaxOperators {
       get { return maxOperators; }
     }
 
+    /// <summary>
+    /// Gets the minimum number of sub-operators.
+    /// </summary>
     public IntData MinOperators {
       get { return minOperators; }
     }
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Number of sub-operators has to be between " + MinOperators.ToString() + " and " + MaxOperators.ToString() + "."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NumberOfSubOperatorsConstraint"/>.
+    /// </summary>
     public NumberOfSubOperatorsConstraint()
       : this(0,0) {
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NumberOfSubOperatorsConstraint"/> with the minimum and 
+    /// the maximum number of sub-operators.
+    /// </summary>
+    /// <param name="min">The minimum number of sub-operators.</param>
+    /// <param name="max">The maximum number of sub-operators.</param>
     public NumberOfSubOperatorsConstraint(int min, int max) : base() {
       minOperators = new IntData(min);
       maxOperators = new IntData(max);
     }
 
+    /// <summary>
+    /// Checks whether the given element fulfills the current constraint.
+    /// </summary>
+    /// <param name="data">The item to check.</param>
+    /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
       if (data == null) return false;
@@ -60,6 +84,11 @@ namespace HeuristicLab.Constraints {
       return (op.SubOperators.Count >= minOperators.Data && op.SubOperators.Count <= maxOperators.Data);
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="AndConstraint"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       NumberOfSubOperatorsConstraint clone = new NumberOfSubOperatorsConstraint();
       clonedObjects.Add(Guid, clone);
@@ -68,11 +97,26 @@ namespace HeuristicLab.Constraints {
       return clone;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="NumberOfSubOperatorsConstraintView"/> to represent the current 
+    /// instance visually.
+    /// </summary>
+    /// <returns>The created view as <see cref="NumberOfSubOperatorsConstraintView"/>.</returns>
     public override IView CreateView() {
       return new NumberOfSubOperatorsConstraintView(this);
     }
 
     #region persistence
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The minimum and the maximum number of sub-operators are saved as child nodes with tag
+    /// names <c>min</c> and <c>max</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlNode minNode = PersistenceManager.Persist("min", minOperators, document, persistedObjects);
@@ -82,6 +126,14 @@ namespace HeuristicLab.Constraints {
       return node;
     }
 
+    /// <summary>
+    /// Loads the persisted constraint from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
+    /// more information.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       minOperators = (IntData)PersistenceManager.Restore(node.SelectSingleNode("min"), restoredObjects);

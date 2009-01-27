@@ -28,8 +28,16 @@ using HeuristicLab.Data;
 using System.Globalization;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Constraint where a double value is limited by a one or two sided boundary.
+  /// </summary>
   public class DoubleBoundedConstraint : ConstraintBase {
     private double lowerBound;
+    /// <summary>
+    /// Gets or sets the lower bound of the limit.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public double LowerBound {
       get { return lowerBound; }
       set {
@@ -38,6 +46,11 @@ namespace HeuristicLab.Constraints {
       }
     }
     private bool lowerBoundIncluded;
+    /// <summary>
+    /// Gets or sets the boolean flag whether the lower bound should be included.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public bool LowerBoundIncluded {
       get { return lowerBoundIncluded; }
       set {
@@ -46,6 +59,11 @@ namespace HeuristicLab.Constraints {
       }
     }
     private bool lowerBoundEnabled;
+    /// <summary>
+    /// Gets or sets the boolean flag whether the lower bound should be enabled.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public bool LowerBoundEnabled {
       get { return lowerBoundEnabled; }
       set {
@@ -54,6 +72,11 @@ namespace HeuristicLab.Constraints {
       }
     }
     private double upperBound;
+    /// <summary>
+    /// Gets or sets the upper bound of the limit.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public double UpperBound {
       get { return upperBound; }
       set {
@@ -62,6 +85,11 @@ namespace HeuristicLab.Constraints {
       }
     }
     private bool upperBoundIncluded;
+    /// <summary>
+    /// Gets or sets the boolean flag whether the upper bound should be included.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public bool UpperBoundIncluded {
       get { return upperBoundIncluded; }
       set {
@@ -70,6 +98,11 @@ namespace HeuristicLab.Constraints {
       }
     }
     private bool upperBoundEnabled;
+    /// <summary>
+    /// Gets or sets the boolean flag whether the upper bound should be enabled.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ConstraintBase"/>
+    /// in the setter.</remarks>
     public bool UpperBoundEnabled {
       get { return upperBoundEnabled; }
       set {
@@ -78,18 +111,34 @@ namespace HeuristicLab.Constraints {
       }
     }
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "The double is limited one or two sided by a lower and/or upper boundary"; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleBoundedConstraint"/>.
+    /// </summary>
     public DoubleBoundedConstraint()
       : this(double.MinValue, double.MaxValue) {
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleBoundedConstraint"/> with the two given boundaries.
+    /// </summary>
+    /// <param name="lowerBound">The lower bound of the constraint.</param>
+    /// <param name="upperBound">The upper bound of the constraint.</param>
     public DoubleBoundedConstraint(double lowerBound, double upperBound)
       : this(lowerBound, true, upperBound, true) {
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleBoundedConstraint"/> with the given parameters.
+    /// </summary>
+    /// <param name="lowerBound">The lower bound of the constraint.</param>
+    /// <param name="lowerBoundIncluded">Boolean flag whether the lower bound should be included.</param>
+    /// <param name="upperBound">The upper bound of the constraint.</param>
+    /// <param name="upperBoundIncluded">Boolean flag whether the upper bound should be included.</param>
     public DoubleBoundedConstraint(double lowerBound, bool lowerBoundIncluded, double upperBound, bool upperBoundIncluded)
       : base() {
       this.lowerBound = lowerBound;
@@ -101,6 +150,11 @@ namespace HeuristicLab.Constraints {
     }
 
 
+    /// <summary>
+    /// Checks whether the given element fulfills the current constraint.
+    /// </summary>
+    /// <param name="data">The item to check.</param>
+    /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem data) {
       ConstrainedDoubleData d = (data as ConstrainedDoubleData);
       if (d == null) return false;
@@ -111,10 +165,20 @@ namespace HeuristicLab.Constraints {
       return true;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="DoubleBoundedConstraintView"/> to represent the current 
+    /// instance visually.
+    /// </summary>
+    /// <returns>The created view as <see cref="DoubleBoundedConstraintView"/>.</returns>
     public override IView CreateView() {
       return new DoubleBoundedConstraintView(this);
     }
 
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="DoubleBoundedConstraint"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       DoubleBoundedConstraint clone = new DoubleBoundedConstraint();
       clonedObjects.Add(Guid, clone);
@@ -128,6 +192,15 @@ namespace HeuristicLab.Constraints {
     }
 
     #region persistence
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The properties of the current instance are saved as attributes with special tag names.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute lb = document.CreateAttribute("LowerBound");
@@ -151,6 +224,14 @@ namespace HeuristicLab.Constraints {
       return node;
     }
 
+    /// <summary>
+    /// Loads the persisted constraint from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
+    /// more information.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       lowerBound = double.Parse(node.Attributes["LowerBound"].Value, CultureInfo.InvariantCulture);

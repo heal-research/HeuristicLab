@@ -25,39 +25,53 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.BitVector
-{
-    public class RandomBitVectorGenerator : OperatorBase
-    {
-        public override string Description
-        {
-            get { return "Operator generating a new random bit vector."; }
-        }
-
-        public RandomBitVectorGenerator()
-        {
-            AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
-            AddVariableInfo(new VariableInfo("Length", "Vector length", typeof(IntData), VariableKind.In));
-            AddVariableInfo(new VariableInfo("BitVector", "Created random bit vector", typeof(BoolArrayData), VariableKind.New));
-        }
-
-        public static bool[] Apply(IRandom random, int length)
-        {
-            bool[] result = new bool[length];
-            for (int i = 0; i < length; i++)
-                result[i] = random.Next() < 0.5;
-            return result;
-        }
-
-        public override IOperation Apply(IScope scope)
-        {
-            IRandom random = GetVariableValue<IRandom>("Random", scope, true);
-            int length = GetVariableValue<IntData>("Length", scope, true).Data;
-
-            bool[] vector = Apply(random, length);
-            scope.AddVariable(new Variable(scope.TranslateName("BitVector"), new BoolArrayData(vector)));
-
-            return null;
-        }
+namespace HeuristicLab.BitVector {
+  /// <summary>
+  /// Generates a new random bit vector.
+  /// </summary>
+  public class RandomBitVectorGenerator : OperatorBase {
+    /// <inheritdoc select="summary"/>
+    public override string Description {
+      get { return "Operator generating a new random bit vector."; }
     }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="RandomBitVectorGenerator"/> with three variable infos
+    /// (<c>Random</c>, <c>Length</c> and <c>BitVector</c>).
+    /// </summary>
+    public RandomBitVectorGenerator() {
+      AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Length", "Vector length", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("BitVector", "Created random bit vector", typeof(BoolArrayData), VariableKind.New));
+    }
+
+    /// <summary>
+    /// Generates a new random bit vector with the given <paramref name="length"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="length">The length of the bit vector.</param>
+    /// <returns>The newly created bit vector.</returns>
+    public static bool[] Apply(IRandom random, int length) {
+      bool[] result = new bool[length];
+      for (int i = 0; i < length; i++)
+        result[i] = random.Next() < 0.5;
+      return result;
+    }
+
+    /// <summary>
+    /// Generates a new random bit vector and injects it in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to get the values from and where to inject the newly 
+    /// created bit vector.</param>
+    /// <returns><c>null</c>.</returns>
+    public override IOperation Apply(IScope scope) {
+      IRandom random = GetVariableValue<IRandom>("Random", scope, true);
+      int length = GetVariableValue<IntData>("Length", scope, true).Data;
+
+      bool[] vector = Apply(random, length);
+      scope.AddVariable(new Variable(scope.TranslateName("BitVector"), new BoolArrayData(vector)));
+
+      return null;
+    }
+  }
 }

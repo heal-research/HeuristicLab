@@ -30,31 +30,61 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// The visual representation of a <see cref="DoubleBoundedConstraint"/>.
+  /// </summary>
   public partial class DoubleBoundedConstraintView : ViewBase {
+    /// <summary>
+    /// Gets or sets the DoubleBoundedConstraint to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public DoubleBoundedConstraint DoubleBoundedConstraint {
       get { return (DoubleBoundedConstraint)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleBoundedConstraintView"/>.
+    /// </summary>
     public DoubleBoundedConstraintView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DoubleBoundedConstraintView"/> with the given
+    /// <paramref name="doubleBoundedConstraint"/> to display.
+    /// </summary>
+    /// <param name="doubleBoundedConstraint">The constraint to represent visually.</param>
     public DoubleBoundedConstraintView(DoubleBoundedConstraint doubleBoundedConstraint)
       : this() {
       DoubleBoundedConstraint = doubleBoundedConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="DoubleBoundedConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       DoubleBoundedConstraint.Changed -= new EventHandler(DoubleBoundedConstraint_Changed); 
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="DoubleBoundedConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       DoubleBoundedConstraint.Changed += new EventHandler(DoubleBoundedConstraint_Changed);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (DoubleBoundedConstraint == null) {

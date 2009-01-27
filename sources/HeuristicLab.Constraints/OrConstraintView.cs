@@ -30,29 +30,53 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Visual representation of an <see cref="OrConstraint"/>.
+  /// </summary>
   public partial class OrConstraintView : ViewBase {
     private OrConstraint OrConstraint {
       get { return (OrConstraint)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="OrConstraintView"/>.
+    /// </summary>
     public OrConstraintView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="OrConstraintView"/> with the given
+    /// <paramref name="orConstraint"/> to display.
+    /// </summary>
+    /// <param name="orConstraint">The constraint to represent visually.</param>
     public OrConstraintView(OrConstraint orConstraint)
       : this() {
       OrConstraint = orConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="OrConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       OrConstraint.Changed -= new EventHandler(OrConstraint_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="OrConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       OrConstraint.Changed += new EventHandler(OrConstraint_Changed);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>    
     protected override void UpdateControls() {
       if (OrConstraint == null) {
         clausesItemListView.Enabled = false;

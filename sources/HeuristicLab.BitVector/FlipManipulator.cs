@@ -25,11 +25,21 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.BitVector {
+  /// <summary>
+  /// Single bit flip manipulation for bit vectors.
+  /// </summary>
   public class FlipManipulator : BitVectorManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Single bit flip manipulation for bit vectors."; }
     }
 
+    /// <summary>
+    /// Changes randomly a single position in the given bit <paramref name="vector"/>.
+    /// </summary>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="vector">The bit vector to manipulate.</param>
+    /// <returns>The new bit vector that has been manipulated.</returns>
     public static bool[] Apply(IRandom random, bool[] vector) {
       bool[] result = (bool[])vector.Clone();
       int index = random.Next(result.Length);
@@ -37,6 +47,14 @@ namespace HeuristicLab.BitVector {
       return result;
     }
 
+    /// <summary>
+    /// Changes randomly a single position in the given bit <paramref name="vector"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="vector">The bit vector to manipulate.</param>
+    /// <returns>The new bit vector that has been manipulated.</returns>
     protected override bool[] Manipulate(IScope scope, IRandom random, bool[] vector) {
       return Apply(random, vector);
     }

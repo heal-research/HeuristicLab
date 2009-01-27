@@ -30,31 +30,61 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// The visual representation of an <see cref="IntBoundedConstraint"/>.
+  /// </summary>
   public partial class IntBoundedConstraintView : ViewBase {
+    /// <summary>
+    /// Gets or sets the the IntBoundedConstraint to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public IntBoundedConstraint IntBoundedConstraint {
       get { return (IntBoundedConstraint)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="IntBoundedConstraintView"/>.
+    /// </summary>
     public IntBoundedConstraintView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="IntBoundedConstraintView"/> with the given
+    /// <paramref name="intBoundedConstraint"/> to display.
+    /// </summary>
+    /// <param name="intBoundedConstraint">The constraint to represent visually.</param>
     public IntBoundedConstraintView(IntBoundedConstraint intBoundedConstraint)
       : this() {
       IntBoundedConstraint = intBoundedConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="IntBoundedConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       IntBoundedConstraint.Changed -= new EventHandler(IntBoundedConstraint_Changed);
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="IntBoundedConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       IntBoundedConstraint.Changed += new EventHandler(IntBoundedConstraint_Changed);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (IntBoundedConstraint == null) {

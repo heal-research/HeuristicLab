@@ -27,37 +27,61 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Constraint that compares variables in a <see cref="ConstrainedItemList"/>.
+  /// </summary>
   public class VariableComparisonConstraint : ConstraintBase {
     private StringData leftVarName;
+    /// <summary>
+    /// Gets or sets the variable name of the left item to compare.
+    /// </summary>
     public StringData LeftVarName {
       get { return leftVarName; }
       set { leftVarName = value; }
     }
 
     private StringData rightVarName;
+    /// <summary>
+    /// Gets or sets the variable name of the right item to compare.
+    /// </summary>
     public StringData RightVarName {
       get { return rightVarName; }
       set { rightVarName = value; }
     }
 
     private IntData comparer;
+    /// <summary>
+    /// Gets or sets the comparer.
+    /// </summary>
     public IntData Comparer {
       get { return comparer; }
       set { comparer = value; }
     }
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"Compares variables in a ConstrainedItemList";
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableComparisonConstraint"/>.
+    /// </summary>
     public VariableComparisonConstraint() {
       leftVarName = new StringData();
       rightVarName = new StringData();
       comparer = new IntData(-1);
     }
 
+    /// <summary>
+    /// Checks whether the given element fulfills the current constraint.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the data is no <c>ConstrainedItemList</c>.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the left varible is not of type <c>IComparable</c>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the comparer is undefined.</exception>
+    /// <param name="data">The item to check.</param>
+    /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem data) {
       ConstrainedItemList list = (data as ConstrainedItemList);
       if (list == null) throw new InvalidOperationException("ERROR in VariableComparisonConstraint: Can only be applied on ConstrainedItemLists");
@@ -91,11 +115,23 @@ namespace HeuristicLab.Constraints {
       return true;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="VariableComparisonConstraintView"/> to represent the current 
+    /// instance visually.
+    /// </summary>
+    /// <returns>The created view as <see cref="VariableComparisonConstraintView"/>.</returns>
     public override IView CreateView() {
       return new VariableComparisonConstraintView(this);
     }
 
     #region clone & persistence
+    /// <summary>
+    /// Clones the current instance (deep clone).
+    /// </summary>
+    /// <remarks>Deep clone through <see cref="Auxiliary.Clone"/> method of helper class 
+    /// <see cref="Auxiliary"/>.</remarks>
+    /// <param name="clonedObjects">Dictionary of all already clone objects. (Needed to avoid cycles.)</param>
+    /// <returns>The cloned object as <see cref="VariableComparisonConstraint"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       VariableComparisonConstraint clone = new VariableComparisonConstraint();
       clonedObjects.Add(Guid, clone);
@@ -105,6 +141,16 @@ namespace HeuristicLab.Constraints {
       return clone;
     }
 
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The variable names and the comparer are saved as child nodes with tag names
+    /// <c>LeftVarName</c>, <c>RightVarName</c> and <c>Comparer</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlNode leftNode = PersistenceManager.Persist("LeftVarName", LeftVarName, document, persistedObjects);
@@ -116,6 +162,14 @@ namespace HeuristicLab.Constraints {
       return node;
     }
 
+    /// <summary>
+    /// Loads the persisted constraint from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
+    /// more information.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       leftVarName = (StringData)PersistenceManager.Restore(node.SelectSingleNode("LeftVarName"), restoredObjects);

@@ -26,11 +26,20 @@ using System.Xml;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Base class for all constraints.
+  /// </summary>
   public abstract class ConstraintBase : ItemBase, IConstraint {
+    /// <inheritdoc select="summary"/>
     public virtual string Description {
       get { return "No constraint description available."; }
     }
 
+    /// <summary>
+    /// Checks whether the given data fulfills the current constraint.
+    /// </summary>
+    /// <param name="data">The item to check.</param>
+    /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public abstract bool Check(IItem data);
   }
 }

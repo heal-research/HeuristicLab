@@ -30,26 +30,52 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Visual representation of a <see cref="VariableComparisonConstraint"/>.
+  /// </summary>
   public partial class VariableComparisonConstraintView : ViewBase {
+    /// <summary>
+    /// Gets or sets the VariableComparisonConstraint to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public VariableComparisonConstraint VariableComparisonConstraint {
       get { return (VariableComparisonConstraint)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableComparisonConstraintView"/>.
+    /// </summary>
     public VariableComparisonConstraintView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="VariableComparisonConstraintView"/> with the given
+    /// <paramref name="variableComparisonConstraint"/> to display.
+    /// </summary>
+    /// <param name="variableComparisonConstraint">The constraint to represent visually.</param>
     public VariableComparisonConstraintView(VariableComparisonConstraint variableComparisonConstraint)
       : this() {
       VariableComparisonConstraint = variableComparisonConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="VariableComparisonConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       VariableComparisonConstraint.Changed -= new EventHandler(VariableComparisonConstraint_Changed);
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="VariableComparisonConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       VariableComparisonConstraint.Changed += new EventHandler(VariableComparisonConstraint_Changed);
@@ -59,6 +85,11 @@ namespace HeuristicLab.Constraints {
       Refresh();
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary> 
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (VariableComparisonConstraint == null) {

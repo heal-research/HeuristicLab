@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.BitVector {
+  /// <summary>
+  /// Plugin class for HeuristicLab.BitVector plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.BitVector-3.2")]
   [PluginFile(Filename = "HeuristicLab.BitVector-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

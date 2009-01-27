@@ -26,12 +26,24 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.BitVector {
+  /// <summary>
+  /// Base class for all bit vector manipulators.
+  /// </summary>
   public abstract class BitVectorManipulatorBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="BitVectorManipulatorBase"/> with two variable infos
+    /// (<c>Random</c> and <c>BitVector</c>).
+    /// </summary>
     public BitVectorManipulatorBase() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("BitVector", "Bit vector to manipulate", typeof(BoolArrayData), VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Manipulates the bit vector.
+    /// </summary>
+    /// <param name="scope">The current scope whose bit vector to manipulate.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       BoolArrayData vector = GetVariableValue<BoolArrayData>("BitVector", scope, false);
@@ -39,6 +51,13 @@ namespace HeuristicLab.BitVector {
       return null;
     }
 
+    /// <summary>
+    /// Manipulates the given bit <paramref name="vector"/> with the given random number generator.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="vector">The bit vector to manipulate.</param>
+    /// <returns>The manipulated bit vector.</returns>
     protected abstract bool[] Manipulate(IScope scope, IRandom random, bool[] vector);
   }
 }

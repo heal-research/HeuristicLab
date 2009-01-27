@@ -45,7 +45,7 @@ namespace HeuristicLab.IntVector {
     }
 
     /// <summary>
-    /// Changes all position in the given integer <paramref name="vector"/>.
+    /// Changes all positions in the given integer <paramref name="vector"/>.
     /// </summary>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The integer vector to manipulate.</param>
@@ -60,7 +60,7 @@ namespace HeuristicLab.IntVector {
     }
 
     /// <summary>
-    /// Changes all position in the given integer <paramref name="vector"/>.
+    /// Changes all positions in the given integer <paramref name="vector"/>.
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="scope">The current scope.</param>

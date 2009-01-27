@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Constraint that allows only integer values.
+  /// </summary>
   public class IsIntegerConstraint : ConstraintBase{
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Allows only integer values."; }
     }
 
+    /// <summary>
+    /// Checks whether the given element fulfills the current constraint.
+    /// </summary>
+    /// <param name="item">The item to check.</param>
+    /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem item) {
       // ConstrainedIntData is always integer => just return true
       if(item is ConstrainedIntData)

@@ -29,9 +29,15 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// The visual representation of the <see cref="AllSubOperatorsTypeConstraint"/>.
+  /// </summary>
   public partial class AllSubOperatorsTypeConstraintView : ViewBase {
     private SubOperatorTypeConstraint constraint = new SubOperatorTypeConstraint();
 
+    /// <summary>
+    /// Gets or sets the SubOperatorTypeConstraint to display.
+    /// </summary>
     public SubOperatorTypeConstraint Constraint {
       get { return constraint; }
       set { 
@@ -40,10 +46,18 @@ namespace HeuristicLab.Constraints {
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AllSubOperatorsTypeConstraintView"/>.
+    /// </summary>
     public AllSubOperatorsTypeConstraintView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AllSubOperatorsTypeConstraintView"/> with
+    /// the given <paramref name="constraint"/> to display.
+    /// </summary>
+    /// <param name="constraint">The constraint that should be displayed.</param>
     public AllSubOperatorsTypeConstraintView(SubOperatorTypeConstraint constraint) {
       this.constraint = constraint;
       InitializeComponent();

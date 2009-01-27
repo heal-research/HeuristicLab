@@ -29,13 +29,24 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Visual representation of a <see cref="NumberOfSubOperatorsConstraint"/>.
+  /// </summary>
   public partial class NumberOfSubOperatorsConstraintView : ViewBase {
     private NumberOfSubOperatorsConstraint constraint;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NumberOfSubOperatorsConstraintView"/>.
+    /// </summary>
     public NumberOfSubOperatorsConstraintView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="NumberOfSubOperatorsConstraintView"/>
+    /// with the given <paramref name="constraint"/> to display.
+    /// </summary>
+    /// <param name="constraint">The constraint to represent visually.</param>
     public NumberOfSubOperatorsConstraintView(NumberOfSubOperatorsConstraint constraint) {
       InitializeComponent();
       this.constraint = constraint;

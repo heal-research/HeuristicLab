@@ -30,27 +30,53 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// The visual representation of an <see cref="ItemTypeConstraint"/>.
+  /// </summary>
   public partial class ItemTypeConstraintView : ViewBase {
+    /// <summary>
+    /// Gets or sets the ItemTypeConstraint to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     private ItemTypeConstraint ItemTypeConstraint {
       get { return (ItemTypeConstraint)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ItemTypeConstraintView"/>.
+    /// </summary>
     public ItemTypeConstraintView() {
       InitializeComponent();
       typeTextBox.Enabled = false;
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ItemTypeConstraintView"/> with the given 
+    /// <paramref name="itemTypeConstraint"/> to display.
+    /// </summary>
+    /// <param name="itemTypeConstraint">The constraint to represent visually.</param>
     public ItemTypeConstraintView(ItemTypeConstraint itemTypeConstraint)
       : this() {
       ItemTypeConstraint = itemTypeConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="ItemTypeConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ItemTypeConstraint.Changed -= new EventHandler(ItemTypeConstraint_Changed);
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="ItemTypeConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ItemTypeConstraint.Changed += new EventHandler(ItemTypeConstraint_Changed);
@@ -60,6 +86,10 @@ namespace HeuristicLab.Constraints {
       Refresh();
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (ItemTypeConstraint == null) {

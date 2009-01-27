@@ -30,29 +30,58 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// The visual representation of an <see cref="AndConstraint"/>.
+  /// </summary>
   public partial class AndConstraintView : ViewBase {
+    /// <summary>
+    /// Gets or sets the AndConstraint to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.</remarks>
+    /// No own data storage present. 
     public AndConstraint AndConstraint {
       get { return (AndConstraint)Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AndConstraintView"/>.
+    /// </summary>
     public AndConstraintView() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="AndConstraintView"/> with the given 
+    /// <paramref name="andConstraint"/> to display.
+    /// </summary>
+    /// <param name="andConstraint">The constraint to represent visually.</param>
     public AndConstraintView(AndConstraint andConstraint)
       : this() {
       AndConstraint = andConstraint;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying <see cref="AndConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       AndConstraint.Changed -= new EventHandler(AndConstraint_Changed);
       base.RemoveItemEvents();
     }
+    /// <summary>
+    /// Adds an eventhandler to the underlying <see cref="AndConstraint"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       AndConstraint.Changed += new EventHandler(AndConstraint_Changed);
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>
     protected override void UpdateControls() {
       if (AndConstraint == null) {
         clausesItemListView.Enabled = false;

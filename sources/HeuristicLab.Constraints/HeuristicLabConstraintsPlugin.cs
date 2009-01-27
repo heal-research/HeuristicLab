@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Constraints {
+  /// <summary>
+  /// Plugin class for HeuristicLab.Constraints plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.Constraints-3.2")]
   [PluginFile(Filename = "HeuristicLab.Constraints-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
