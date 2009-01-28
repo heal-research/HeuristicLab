@@ -30,15 +30,29 @@ using WeifenLuo.WinFormsUI.Docking;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// Displays the used editor.
+  /// </summary>
   public partial class EditorForm : DockContent {
     private IEditor myEditor;
+    /// <summary>
+    /// Gets the editor that is displayed.
+    /// </summary>
     public IEditor Editor {
       get { return myEditor; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="EditorForm"/>.
+    /// </summary>
     public EditorForm() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="EditorForm"/> with the given <paramref name="editor"/>
+    /// that should be displayed.
+    /// </summary>
+    /// <param name="editor">The editor that should be displayed.</param>
     public EditorForm(IEditor editor)
       : this() {
       myEditor = editor;

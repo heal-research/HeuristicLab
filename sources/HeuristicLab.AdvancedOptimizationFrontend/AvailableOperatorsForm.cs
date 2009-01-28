@@ -32,6 +32,9 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// Display of all available operators of a specific operator library.
+  /// </summary>
   public partial class AvailableOperatorsForm : DockContent {
     #region Inner Class TreeNodeSorter
     private class TreeNodeSorter : IComparer {
@@ -49,6 +52,9 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
 
     private IOperatorLibrary operatorLibrary;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AvailableOperatorsForm"/>.
+    /// </summary>
     public AvailableOperatorsForm() {
       InitializeComponent();
       operatorLibrary = null;

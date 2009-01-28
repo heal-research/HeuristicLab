@@ -30,15 +30,29 @@ using WeifenLuo.WinFormsUI.Docking;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// Displays the used view.
+  /// </summary>
   public partial class ViewForm : DockContent {
     private IView myView;
+    /// <summary>
+    /// Gets the view that is displayed.
+    /// </summary>
     public IView View {
       get { return myView; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ViewForm"/>.
+    /// </summary>
     public ViewForm() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ViewForm"/> with the given <paramref name="view"/>
+    /// to display.
+    /// </summary>
+    /// <param name="view">The view that should be displayed.</param>
     public ViewForm(IView view)
       : this() {
       myView = view;

@@ -28,7 +28,13 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// The about dialog that presents some basic information about the application.
+  /// </summary>
   public partial class AboutDialog : Form {
+    /// <summary>
+    /// Initializes a new instance of <see cref="AboutDialog"/>.
+    /// </summary>
     public AboutDialog() {
       InitializeComponent();
       textBox1.Text = @"HeuristicLab

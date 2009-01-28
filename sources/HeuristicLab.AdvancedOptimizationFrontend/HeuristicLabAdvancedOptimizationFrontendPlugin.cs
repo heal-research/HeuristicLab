@@ -26,6 +26,9 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// Plugin class for HeuristicLab.AdvancedOptimizationFrontend plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.AdvancedOptimizationFrontend-3.2")]
   [PluginFile(Filename = "HeuristicLab.AdvancedOptimizationFrontend-3.2.dll", Filetype = PluginFileType.Assembly)]
   [PluginFile(Filename = "WeifenLuo.WinFormsUI.Docking.dll", Filetype = PluginFileType.Assembly)]

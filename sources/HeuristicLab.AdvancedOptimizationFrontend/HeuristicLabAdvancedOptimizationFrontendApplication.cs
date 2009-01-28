@@ -26,8 +26,14 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// The HeuristicLab Advanced Optimization Frontend Application.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab 3.2 (dockable)", Description="Next generation heuristic optimization environment.")]
   class HeuristicLabAdvancedOptimizationFrontendApplication : ApplicationBase {
+    /// <summary>
+    /// Runs the application and displays the main window.
+    /// </summary>
     public override void Run() {
       Form mainForm = new MainForm();
       PluginManager.ControlManager = (IControlManager)mainForm;

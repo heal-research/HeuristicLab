@@ -33,6 +33,9 @@ using HeuristicLab.Core;
 using System.IO;
 
 namespace HeuristicLab.AdvancedOptimizationFrontend {
+  /// <summary>
+  /// The main form of the application.
+  /// </summary>
   public partial class MainForm : Form, IControlManager {
     #region Inner Types
     private class Task {
@@ -52,6 +55,9 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     private object locker;
     private int runningTasks;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="MainForm"/>.
+    /// </summary>
     public MainForm() {
       InitializeComponent();
 
@@ -87,6 +93,12 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     }
 
     #region IControlManager Members
+    /// <summary>
+    /// Displays the given <paramref name="control"/>. 
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the given <paramref name="control"/>
+    /// is neither a view nor an editor.</exception>
+    /// <param name="control">The control to display.</param>
     public void ShowControl(IControl control) {
       DockContent content;
       if (control is IEditor)
