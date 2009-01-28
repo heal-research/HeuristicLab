@@ -25,11 +25,23 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Discrete crossover for real vectors: Selects randomly either the value of the first or the 
+  /// second parent.
+  /// </summary>
   public class DiscreteCrossover : RealVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Discrete crossover for real vectors."; }
     }
 
+    /// <summary>
+    /// Performs a discrete crossover operation of the two given parents.
+    /// </summary>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
       int length = parent1.Length;
       double[] result = new double[length];
@@ -43,6 +55,14 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a discrete crossover operation of the two given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
       return Apply(random, parent1, parent2);
     }

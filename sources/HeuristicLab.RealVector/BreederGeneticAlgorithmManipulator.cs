@@ -28,9 +28,11 @@ using HeuristicLab.Data;
 namespace HeuristicLab.RealVector {
   /// <summary>
   /// Mühlenbein, Schlierkamp-Voosen (1993)
-  /// Predictive Models for the Breeder Genetic Algorithm I. Continuous Parameter Optimization
+  /// Predictive Models for the Breeder Genetic Algorithm I. Continuous Parameter Optimization<br/>
+  /// Changes one position of a real vector by adding/substracting a value of the interval [(2^-15)*range, ..., (2^0)*range], where range is SearchIntervalFactor * (max - min).
   /// </summary>
   public class BreederGeneticAlgorithmManipulator : RealVectorManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return
@@ -40,6 +42,10 @@ Mühlenbein, Schlierkamp-Voosen (1993). Predictive Models for the Breeder Geneti
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with three variable
+    /// infos (<c>Minimum</c>, <c>Maximum</c> and <c>SearchIntervalFactor</c>).
+    /// </summary>
     public BreederGeneticAlgorithmManipulator()
       : base() {
       AddVariableInfo(new VariableInfo("Minimum", "Minimum of the sampling range for the vector element (included)", typeof(DoubleData), VariableKind.In));
@@ -50,6 +56,16 @@ Mühlenbein, Schlierkamp-Voosen (1993). Predictive Models for the Breeder Geneti
       AddVariable(new Variable("SearchIntervalFactor", new DoubleData(0.1)));
     }
 
+    /// <summary>
+    /// Performs a Breeder Genetic Algorithm Manipulation on the given <paramref name="vector"/>.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <param name="min">The minimum number of the sampling range for the vector element (inclusive).</param>
+    /// <param name="max">The maximum number of the sampling range for the vector element (exclusive).</param>
+    /// <param name="searchIntervalFactor">The factor determining the size of the search interval.</param>
+    /// <returns>The manipulated real vector.</returns>
     public static double[] Apply(IScope scope, IRandom random, double[] vector, double min, double max, double searchIntervalFactor) {
       int length = vector.Length;
       int pos = random.Next(length);
@@ -79,6 +95,14 @@ Mühlenbein, Schlierkamp-Voosen (1993). Predictive Models for the Breeder Geneti
       return sigma;
     }
 
+    /// <summary>
+    /// Performs a Breeder Genetic Algorithm Manipulation on the given <paramref name="vector"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <returns>The manipulated real vector</returns>
     protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
       double min = GetVariableValue<DoubleData>("Minimum", scope, true).Data;
       double max = GetVariableValue<DoubleData>("Maximum", scope, true).Data;

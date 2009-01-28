@@ -26,11 +26,20 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Checks if all elements of a real vector are inside a given minimum and maximum value. 
+  /// If not, the elements are corrected.
+  /// </summary>
   public class BoundsChecker : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Checks if all elements of a real vector are inside a given minimum and maximum value. If not, elements are corrected."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="BoundsChecker"/> with three variable infos
+    /// (<c>RealVector</c>, <c>Minimum</c> and <c>Maximum</c>).
+    /// </summary>
     public BoundsChecker()
       : base() {
       AddVariableInfo(new VariableInfo("RealVector", "Real vector to check", typeof(DoubleArrayData), VariableKind.In | VariableKind.Out));
@@ -38,6 +47,14 @@ namespace HeuristicLab.RealVector {
       AddVariableInfo(new VariableInfo("Maximum", "Maximum value of each vector element (included).", typeof(DoubleData), VariableKind.In));
     }
 
+    /// <summary>
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the given minimum 
+    /// and maximum value and if not they are corrected.
+    /// </summary>
+    /// <param name="min">The minimum value of the range (inclusive).</param>
+    /// <param name="max">The maximum value of the range (inclusive).</param>
+    /// <param name="vector">The vector to check.</param>
+    /// <returns>The corrected real vector.</returns>
     public static double[] Apply(double min, double max, double[] vector) {
       int length = vector.Length;
       double[] result = (double[])vector.Clone();
@@ -49,6 +66,13 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the given minimum 
+    /// and maximum value and if not they are corrected.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply(double, double, double[])"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       DoubleArrayData vector = GetVariableValue<DoubleArrayData>("RealVector", scope, false);
       double min = GetVariableValue<DoubleData>("Minimum", scope, true).Data;

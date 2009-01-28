@@ -26,7 +26,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Programs <br/>
+  /// Non-uniformly distributed change of all positions of a real vector.
+  /// </summary>
   public class MichalewiczNonUniformAllPositionsManipulator : RealVectorManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return
 @"Non-uniformly distributed change of all positions of a real vector (Michalewicz 1992)
@@ -36,6 +41,11 @@ Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Program
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="MichalewiczNonUniformAllPositionsManipulator"/> with
+    /// five variable infos (<c>Minimum</c>, <c>Maximum</c>, <c>CurrentGeneration</c>, 
+    /// <c>MaximumGenerations</c> and <c>GenerationsDependency</c>).
+    /// </summary>
     public MichalewiczNonUniformAllPositionsManipulator()
       : base() {
       AddVariableInfo(new VariableInfo("Minimum", "Minimum of the sampling range for the vector element (included)", typeof(DoubleData), VariableKind.In));
@@ -48,6 +58,15 @@ Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Program
       AddVariable(new Variable("GenerationsDependency", new IntData(5)));
     }
 
+    /// <summary>
+    /// Performs a non uniformly distributed all position manipulation on the given
+    /// real <paramref name="vector"/>, published by Z. Michalewicz, 1992.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <returns>The manipulated real vector.</returns>
     protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
       double min = GetVariableValue<DoubleData>("Minimum", scope, true).Data;
       double max = GetVariableValue<DoubleData>("Maximum", scope, true).Data;
@@ -57,6 +76,18 @@ Michalewicz, Z. (1992). Genetic Algorithms + Data Structures = Evolution Program
       return Apply(random, vector, min, max, currentGeneration, maximumGenerations, generationsDependency);
     }
 
+    /// <summary>
+    /// Performs a non uniformly distributed all position manipulation on the given
+    /// real <paramref name="vector"/>, published by Z. Michalewicz, 1992.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <param name="min">The minimum value of the sampling range for the vector element (inclusive).</param>
+    /// <param name="max">The maximum value of the sampling range for the vector element (exclusive).</param>
+    /// <param name="currentGeneration">The current generation of the algorithm.</param>
+    /// <param name="maximumGenerations">Maximum number of generations.</param>
+    /// <param name="generationsDependency">Specifies the degree of dependency on the number of generations.</param>
+    /// <returns>The manipulated real vector.</returns>
     public static double[] Apply(IRandom random, double[] vector, double min, double max, int currentGeneration, int maximumGenerations, int generationsDependency) {
       int length = vector.Length;
       double[] result = new double[length];

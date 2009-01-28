@@ -25,11 +25,22 @@ using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Continuous manipulator for real vectors: selects randomly two elements of the vector, 
+  /// calculates its average value and replaces the first selected element with the new value. 
+  /// </summary>
   public class ContinuousManipulator : RealVectorManipulatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "This operator randomly selects two elements of the vector, calculates its average value and replaces the first selected element with the new value."; }
     }
 
+    /// <summary>
+    /// Performs a continuous manipulation of the given <paramref name="vector"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <returns>The manipulated real vector.</returns>
     public static double[] Apply(IRandom random, double[] vector) {
       int length = vector.Length;
       int index1, index2;
@@ -45,6 +56,14 @@ namespace HeuristicLab.RealVector {
       return vector;
     }
 
+    /// <summary>
+    /// Performs a continuous manipulation of the given <paramref name="vector"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <returns>The manipulated real vector.</returns>
     protected override double[] Manipulate(IScope scope, IRandom random, double[] vector) {
       return Apply(random, vector);
     }

@@ -26,11 +26,23 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Local crossover for real vectors: Takes for each element the allele of the first parent times a 
+  /// always newly created randomly chosen factor and adds the allele of the second parent times (1 - the randomly chosen factor).
+  /// </summary>
   public class LocalCrossover : RealVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Local crossover for real vectors."; }
     }
 
+    /// <summary>
+    /// Performs a local crossover on the two given parent vectors.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created real vector, resulting from the local crossover.</returns>
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
       double factor;
       int length = parent1.Length;
@@ -43,6 +55,15 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a local crossover on the two given parent vectors.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created real vector, resulting from the local crossover.</returns>
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
       return Apply(random, parent1, parent2);
     }

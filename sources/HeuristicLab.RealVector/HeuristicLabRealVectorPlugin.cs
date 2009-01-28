@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Plugin class for HeuristicLab.RealVector plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.RealVector-3.2")]
   [PluginFile(Filename = "HeuristicLab.RealVector-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

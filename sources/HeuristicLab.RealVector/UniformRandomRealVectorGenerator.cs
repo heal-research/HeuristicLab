@@ -26,11 +26,19 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Generates a new random real vector with each element uniformly distributed in a specified range.
+  /// </summary>
   public class UniformRandomRealVectorGenerator : OperatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Operator generating a new random real vector with each element uniformly distributed in a specified range."; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="UniformRandomRealVectorGenerator"/> with five variable infos
+    /// (<c>Random</c>, <c>Length</c>, <c>Minimum</c>, <c>Maximum</c> and <c>RealVector</c>).
+    /// </summary>
     public UniformRandomRealVectorGenerator() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("Length", "Vector length", typeof(IntData), VariableKind.In));
@@ -39,6 +47,14 @@ namespace HeuristicLab.RealVector {
       AddVariableInfo(new VariableInfo("RealVector", "Created random real vector", typeof(DoubleArrayData), VariableKind.New));
     }
 
+    /// <summary>
+    /// Generates a new random real vector with the given <paramref name="length"/>.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="length">The length of the real vector.</param>
+    /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
+    /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
+    /// <returns>The newly created real vector.</returns>
     public static double[] Apply(IRandom random, int length, double min, double max) {
       double[] result = new double[length];
       for (int i = 0; i < length; i++)
@@ -46,6 +62,12 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Generates a new random real vector and injects it in the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The scope where to get the values from and where to inject the newly 
+    /// created real vector.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       int length = GetVariableValue<IntData>("Length", scope, true).Data;

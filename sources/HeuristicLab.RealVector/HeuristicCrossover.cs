@@ -27,7 +27,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Heuristic crossover for real vectors: Takes for each position the better parent and adds the difference
+  /// of the two parents times a randomly chosen factor.
+  /// </summary>
   public class HeuristicCrossover : CrossoverBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="HeuristicCrossover"/> with three variable infos
+    /// (<c>Maximization</c>, <c>Quality</c> and <c>RealVector</c>).
+    /// </summary>
     public HeuristicCrossover()
       : base() {
       AddVariableInfo(new VariableInfo("Maximization", "Maximization problem", typeof(BoolData), VariableKind.In));
@@ -35,10 +43,21 @@ namespace HeuristicLab.RealVector {
       AddVariableInfo(new VariableInfo("RealVector", "Parent and child real vector", typeof(DoubleArrayData), VariableKind.In | VariableKind.New));
     }
 
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Heuristic crossover for real vectors."; }
     }
 
+    /// <summary>
+    /// Perfomrs a heuristic crossover on the two given parents.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="maximization">Boolean flag whether it is a maximization problem.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="quality1">The quality of the first parent.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="quality2">The quality of the second parent.</param>
+    /// <returns>The newly created real vector, resulting from the heuristic crossover.</returns>
     public static double[] Apply(IRandom random, bool maximization, double[] parent1, double quality1, double[] parent2, double quality2) {
       int length = parent1.Length;
       double[] result = new double[length];
@@ -53,6 +72,15 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Perfomrs a heuristic crossover on the two given parents.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the parent vectors have different lengths.</exception>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="child">The newly created real vector, resulting from the heuristic crossover.</param>
     protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
       bool maximization = GetVariableValue<BoolData>("Maximization", scope, true).Data;
       DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>("RealVector", false);

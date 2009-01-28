@@ -27,12 +27,26 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Base class for all real vector multiple crossover operators.
+  /// </summary>
   public abstract class RealVectorMultiCrossoverBase : MultiCrossoverBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="RealVectorMultiCrossoverBase"/> with one variable info
+    /// (<c>RealVector</c>).
+    /// </summary>
     public RealVectorMultiCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("RealVector", "Parent and child real vector", typeof(DoubleArrayData), VariableKind.In | VariableKind.New));
     }
 
+    /// <summary>
+    /// Performs a crossover of a number of given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">The parents for crossover.</param>
+    /// <param name="child">The resulting child scope.</param>
     protected sealed override void Cross(IScope scope, IRandom random, IScope[] parents, IScope child) {
       IList<double[]> parentsList = new List<double[]>(parents.Length);
 
@@ -43,6 +57,13 @@ namespace HeuristicLab.RealVector {
       child.AddVariable(new Variable(child.TranslateName("RealVector"), new DoubleArrayData(result)));
     }
 
+    /// <summary>
+    /// Performs a crossover of a number of given parents.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">The parents for crossover.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     protected abstract double[] Cross(IScope scope, IRandom random, IList<double[]> parents);
   }
 }

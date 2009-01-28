@@ -26,13 +26,23 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Intermediate multiple crossover: Creates a new offspring by computing the centroid of a list of
+  /// parents.
+  /// </summary>
   public class IntermediateMultiCrossover : RealVectorMultiCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"This creates a new offspring by computing the centroid of a number of parents";
       }
     }
 
+    /// <summary>
+    /// Performs an intermediate multiple crossover of the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <param name="parents">The list of parents of which to perform the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the intermediate multiple crossover.</returns>
     public static double[] Apply(IList<double[]> parents) {
       int length = parents[0].Length;
       double[] result = new double[length];
@@ -45,6 +55,14 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs an intermediate multiple crossover of the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">The list of parents of which to perform the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the intermediate multiple crossover.</returns>
     protected override double[] Cross(IScope scope, IRandom random, IList<double[]> parents) {
       return Apply(parents);
     }

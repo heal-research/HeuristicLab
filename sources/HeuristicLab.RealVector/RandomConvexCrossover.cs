@@ -26,11 +26,24 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Random convex crossover for real vectors: Takes for each element the allele of the first parent times a 
+  /// once created randomly chosen factor and adds the allele of the second parent times 
+  /// (1 - the randomly chosen factor).
+  /// </summary>
   public class RandomConvexCrossover : RealVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Random convex crossover for real vectors."; }
     }
 
+    /// <summary>
+    /// Performs a random convex crossover on the two given parents.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent vector for the crossover.</param>
+    /// <param name="parent2">The second parent vector for the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the random convex crossover.</returns>
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
       int length = parent1.Length;
       double[] result = new double[length];
@@ -41,6 +54,15 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a random convex crossover on the two given parents.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent vector for the crossover.</param>
+    /// <param name="parent2">The second parent vector for the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the random convex crossover.</returns>
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
       return Apply(random, parent1, parent2);
     }

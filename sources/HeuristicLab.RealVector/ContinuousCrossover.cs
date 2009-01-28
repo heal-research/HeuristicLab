@@ -26,11 +26,23 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Continuous crossover for real vectors: for each element randomly either the element of the first
+  /// parent or the average of both parents is selected.
+  /// </summary>
   public class ContinuousCrossover : RealVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Continuous crossover for real vectors."; }
     }
 
+    /// <summary>
+    /// Performs a continuous crossover of the two given real vectors.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover.</param>
+    /// <param name="parent2">The second parent for the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the continuous crossover.</returns>
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
       int length = parent1.Length;
       double[] result = new double[length];
@@ -45,6 +57,15 @@ namespace HeuristicLab.RealVector {
       return result;
     }
 
+    /// <summary>
+    /// Performs a continuous crossover of the two given real vectors.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover.</param>
+    /// <param name="parent2">The second parent for the crossover.</param>
+    /// <returns>The newly created real vector, resulting from the continuous crossover.</returns>
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
       return Apply(random, parent1, parent2);
     }

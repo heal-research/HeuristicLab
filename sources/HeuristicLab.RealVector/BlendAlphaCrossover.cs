@@ -26,7 +26,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Blend alpha crossover for real vectors. Creates a new offspring by selecting a random value 
+  /// from the interval between the two alleles of the parent solutions. The interval is increased 
+  /// in both directions by the factor alpha.
+  /// </summary>
   public class BlendAlphaCrossover : RealVectorCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return
 @"Blend alpha crossover for real vectors. Creates a new offspring by selecting a random value from the interval between the two alleles of the parent solutions. The interval is increased in both directions by the factor alpha.
@@ -34,6 +40,9 @@ Please use the operator BoundsChecker if necessary.";
       }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one variable info (<c>Alpha</c>).
+    /// </summary>
     public BlendAlphaCrossover()
       : base() {
       VariableInfo alphaVarInfo = new VariableInfo("Alpha", "Value for alpha", typeof(DoubleData), VariableKind.In);
@@ -42,6 +51,14 @@ Please use the operator BoundsChecker if necessary.";
       AddVariable(new Variable("Alpha", new DoubleData(0.5)));
     }
 
+    /// <summary>
+    /// Performs a blend alpha crossover of two real vectors.
+    /// </summary>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="alpha">The alpha value for the crossover.</param>
+    /// <returns>The newly created real vector resulting from the crossover operation.</returns>
     public static double[] Apply(IRandom random, double[] parent1, double[] parent2, double alpha) {
       int length = parent1.Length;
       double[] result = new double[length];
@@ -59,6 +76,15 @@ Please use the operator BoundsChecker if necessary.";
       return result;
     }
 
+    /// <summary>
+    /// Performs a blend alpha crossover of two real vectors.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parent1">The first parent for the crossover operation.</param>
+    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <returns>The newly created real vector, resulting from the blend alpha crossover.</returns>
     protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
       double alpha = GetVariableValue<DoubleData>("Alpha", scope, true).Data;
       return Apply(random, parent1, parent2, alpha);

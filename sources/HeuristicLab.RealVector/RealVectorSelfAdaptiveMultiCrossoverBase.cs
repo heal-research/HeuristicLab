@@ -27,13 +27,28 @@ using HeuristicLab.Data;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Base class for self adaptive multiple crossovers for real vectors.
+  /// </summary>
   public abstract class RealVectorSelfAdaptiveMultiCrossoverBase : MultiCrossoverBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="RealVectorSelfAdaptiveMultiCrossoverBase"/> with two
+    /// variable infos (<c>RealVector</c> and <c>StrategyVector</c>).
+    /// </summary>
     public RealVectorSelfAdaptiveMultiCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("RealVector", "Parent and child real vector", typeof(DoubleArrayData), VariableKind.In | VariableKind.New));
       AddVariableInfo(new VariableInfo("StrategyVector", "Endogenous strategy parameter vector", typeof(DoubleArrayData), VariableKind.In | VariableKind.New));
     }
 
+    /// <summary>
+    /// Performs a self adaptive multiple crossover on the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The list of parents of which to perform the crossover.</param>
+    /// <param name="child">The newly generated real vector, resulting from the self adaptive multiple
+    /// crossover.</param>
     protected sealed override void Cross(IScope scope, IRandom random, IScope[] parents, IScope child) {
       IList<double[]> parentsList = new List<double[]>(parents.Length);
       IList<double[]> strategyParametersList = new List<double[]>(parents.Length);
@@ -49,6 +64,15 @@ namespace HeuristicLab.RealVector {
       child.AddVariable(new Variable(child.TranslateName("StrategyVector"), new DoubleArrayData(strategyParameters)));
     }
 
+    /// <summary>
+    /// Performs a self adaptive multiple crossover on the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The list of parents of which to perform the crossover.</param>
+    /// <param name="strategyParametersList">The strategy parameter list.</param>
+    /// <param name="childIndividual">Output parameter; the created child.</param>
+    /// <param name="strategyParameters">Output parameter; endogenous strategy parameters.</param>
     protected abstract void Cross(IScope scope, IRandom random, IList<double[]> parents, IList<double[]> strategyParametersList, out double[] childIndividual, out double[] strategyParameters);
   }
 }

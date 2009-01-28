@@ -26,13 +26,28 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Creates a new offspring by combining the alleles in the parents such that each allele is 
+  /// randomly selected from one parent. It will also use the same strategy to combine the endogenous 
+  /// strategy parameter vector. 
+  /// </summary>
   public class SelfAdaptiveDiscreteMultiCrossover : RealVectorSelfAdaptiveMultiCrossoverBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get {
         return @"This creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent. It will also use the same strategy to combine the endogenous strategy parameter vector.";
       }
     }
 
+    /// <summary>
+    /// Performs a self adaptive discrete multiple crossover on the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the parent vectors have different lengths.</exception>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The list of parents to crossover.</param>
+    /// <param name="strategyParametersList">The strategy parameter list.</param>
+    /// <param name="childIndividual">Output parameter; the created child.</param>
+    /// <param name="strategyParameters">Output parameter; endogenous strategy parameters.</param>
     public static void Apply(IRandom random, IList<double[]> parents, IList<double[]> strategyParametersList, out double[] childIndividual, out double[] strategyParameters) {
       childIndividual = new double[parents[0].Length];
       strategyParameters = new double[strategyParametersList[0].Length];
@@ -47,6 +62,16 @@ namespace HeuristicLab.RealVector {
       }
     }
 
+    /// <summary>
+    /// Performs a self adaptive discrete multiple crossover on the given list of <paramref name="parents"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">The random number generator.</param>
+    /// <param name="parents">The list of parents to crossover.</param>
+    /// <param name="strategyParametersList">The strategy parameter list.</param>
+    /// <param name="childIndividual">Output parameter; the created child.</param>
+    /// <param name="strategyParameters">Output parameter; endogenous strategy parameters.</param>
     protected override void Cross(IScope scope, IRandom random, IList<double[]> parents, IList<double[]> strategyParametersList, out double[] childIndividual, out double[] strategyParameters) {
       Apply(random, parents, strategyParametersList, out childIndividual, out strategyParameters);
     }

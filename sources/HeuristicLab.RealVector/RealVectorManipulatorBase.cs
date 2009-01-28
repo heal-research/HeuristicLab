@@ -26,12 +26,24 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.RealVector {
+  /// <summary>
+  /// Base class for all real vector manipulators.
+  /// </summary>
   public abstract class RealVectorManipulatorBase : OperatorBase {
+    /// <summary>
+    /// Initializes a new instance of <see cref="RealVectorManipulatorBase"/> with two variable infos
+    /// (<c>Random</c> and <c>RealVector</c>).
+    /// </summary>
     public RealVectorManipulatorBase() {
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("RealVector", "Real vector to manipulate", typeof(DoubleArrayData), VariableKind.In | VariableKind.Out));
     }
 
+    /// <summary>
+    /// Manipulates the real vector.
+    /// </summary>
+    /// <param name="scope">The current scope whose real vector to manipulate.</param>
+    /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
       DoubleArrayData vector = GetVariableValue<DoubleArrayData>("RealVector", scope, false);
@@ -39,6 +51,13 @@ namespace HeuristicLab.RealVector {
       return null;
     }
 
+    /// <summary>
+    /// Manipulates the given real <paramref name="vector"/> with the given random number generator.
+    /// </summary>
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="vector">The real vector to manipulate.</param>
+    /// <returns>The manipulated real vector.</returns>
     protected abstract double[] Manipulate(IScope scope, IRandom random, double[] vector);
   }
 }
