@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HeuristicLab.TestFunctions {
+namespace HeuristicLab.TestFunctions {   
   public class BealeEvaluator : TestFunctionEvaluatorBase {
     public override string Description {
       get { return
@@ -34,12 +34,12 @@ Optimum: 0.0 at (3.0, 0.5)";
           }
     }
 
-    public static double Applay(double[] point) {
+    public static double Apply(double[] point) {
       return Math.Pow(1.5 - point[0] * (1 - point[1]), 2) + Math.Pow(2.25 - point[0] * (1 - (point[1] * point[1])), 2) + Math.Pow((2.625 - point[0] * (1 - (point[1] * point[1] * point[1]))), 2);
     }
 
     protected override double EvaluateFunction(double[] point) {
-      return Applay(point);
+      return Apply(point);
     }
   }
 }

@@ -26,15 +26,16 @@ using System.Text;
 namespace HeuristicLab.TestFunctions {
   public class BoothEvaluator : TestFunctionEvaluatorBase {
     public override string Description {
-      get { return
-@"Booth Function
+      get {
+        return
+          @"Booth Function
 
 Domain:  [-10.0 , 10.0]^2
 Optimum: 0.0 at (1.0, 3.0)";
-          }
+      }
     }
 
-    private double Apply(double[] point) {
+    public static double Apply(double[] point) {
       return Math.Pow(point[0] + 2 * point[1] - 7, 2) + Math.Pow(2 * point[0] + point[1] - 5, 2);
     }
 
