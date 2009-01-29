@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization {
-  public class LinesShape : WorldShape { }
-
   public partial class LineChart : ViewBase {
+    internal class LinesShape : WorldShape {}
+
     private readonly IChartDataRowsModel model;
     private int maxDataRowCount;
     private Boolean zoomFullView;
     private double minDataValue;
     private double maxDataValue;
+    private bool minMaxLineEnabled;
+    private MinMaxLineShape minMaxLineShape;
+    private IShape minLineShape;
 
     private readonly WorldShape root;
     private readonly TextShape titleShape;
@@ -44,6 +48,7 @@ namespace HeuristicLab.Visualization {
       root = new WorldShape();
 
       grid = new Grid();
+      minMaxLineEnabled = true;
       root.AddShape(grid);
 
       linesShape = new LinesShape();
@@ -64,20 +69,19 @@ namespace HeuristicLab.Visualization {
       titleShape = new TextShape(0, 0, model.Title, 15);
       root.AddShape(titleShape);
 
-
+      minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, 0, Color.Yellow, 4, DrawingStyle.Solid);
+      root.AddShape(minMaxLineShape);
       canvas.MainCanvas.WorldShape = root;
       canvas.Resize += delegate { UpdateLayout(); };
 
       UpdateLayout();
-
+      maxDataRowCount = 0;
       this.model = model;
       Item = model;
 
-      maxDataRowCount = 0;
+
       //The whole data rows are shown per default
-      zoomFullView = true;
-      minDataValue = Double.PositiveInfinity;
-      maxDataValue = Double.NegativeInfinity;
+      ResetView();
     }
 
     /// <summary>
@@ -96,8 +100,10 @@ namespace HeuristicLab.Visualization {
                                               xAxisHeight,
                                               canvas.Width,
                                               canvas.Height);
-      
+
       grid.BoundingBox = linesShape.BoundingBox;
+
+      minMaxLineShape.BoundingBox = linesShape.BoundingBox;
 
       yAxis.BoundingBox = new RectangleD(0,
                                          linesShape.BoundingBox.Y1,
@@ -172,14 +178,16 @@ namespace HeuristicLab.Visualization {
     /// <param name="clippingArea"></param>
     private void SetLineClippingArea(RectangleD clippingArea) {
       linesShape.ClippingArea = clippingArea;
-      
+
       grid.ClippingArea = linesShape.ClippingArea;
+
+      minMaxLineShape.ClippingArea = linesShape.ClippingArea;
 
       xAxis.ClippingArea = new RectangleD(linesShape.ClippingArea.X1,
                                           xAxis.BoundingBox.Y1,
                                           linesShape.ClippingArea.X2,
                                           xAxis.BoundingBox.Y2);
-      
+
       yAxis.ClippingArea = new RectangleD(yAxis.BoundingBox.X1,
                                           linesShape.ClippingArea.Y1,
                                           yAxis.BoundingBox.X2,
@@ -188,6 +196,10 @@ namespace HeuristicLab.Visualization {
 
     private void InitLineShapes(IDataRow row) {
       List<LineShape> lineShapes = new List<LineShape>();
+      if (rowToLineShapes.Count == 0) {
+        minDataValue = Double.PositiveInfinity;
+        maxDataValue = Double.NegativeInfinity;
+      }
       if (row.Count > 0) {
         maxDataValue = Math.Max(row[0], maxDataValue);
         minDataValue = Math.Min(row[0], minDataValue);
@@ -200,7 +212,8 @@ namespace HeuristicLab.Visualization {
         maxDataValue = Math.Max(row[i], maxDataValue);
         minDataValue = Math.Min(row[i], minDataValue);
       }
-
+      minMaxLineShape.YMax = maxDataValue;
+      minMaxLineShape.YMin = minDataValue;
       rowToLineShapes[row] = lineShapes;
       ZoomToFullView();
 
@@ -212,14 +225,16 @@ namespace HeuristicLab.Visualization {
       row.ValuesChanged -= OnRowValuesChanged;
     }
 
-    private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes = new Dictionary<IDataRow, List<LineShape>>();
+    private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
+      new Dictionary<IDataRow, List<LineShape>>();
 
     // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       List<LineShape> lineShapes = rowToLineShapes[row];
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
-
+      minMaxLineShape.YMax = maxDataValue;
+      minMaxLineShape.YMin = minDataValue;
       if (index > lineShapes.Count + 1) {
         throw new NotImplementedException();
       }
@@ -229,7 +244,8 @@ namespace HeuristicLab.Visualization {
         if (maxDataRowCount < row.Count) {
           maxDataRowCount = row.Count;
         }
-        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness, row.Style);
+        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness,
+                                            row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         linesShape.AddShape(lineShape);
@@ -248,6 +264,12 @@ namespace HeuristicLab.Visualization {
 
       canvas.Invalidate();
     }
+
+
+    public IList<IDataRow> GetRows() {
+      return model.Rows;
+    }
+
 
     // TODO use action parameter
     private void OnRowValuesChanged(IDataRow row, double[] values, int index, Action action) {
@@ -292,11 +314,11 @@ namespace HeuristicLab.Visualization {
     private RectangleShape rectangleShape;
 
     private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {
-      if(e.KeyCode == Keys.Back && historyStack.Count > 1) {
+      if (e.KeyCode == Keys.Back && historyStack.Count > 1) {
         historyStack.Pop();
 
         RectangleD clippingArea = historyStack.Peek();
-  
+
         SetNewClippingArea(clippingArea);
         canvas.Invalidate();
       }
@@ -304,11 +326,21 @@ namespace HeuristicLab.Visualization {
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
-
-      if (ModifierKeys == Keys.Control) {
-        CreateZoomListener(e);
-      } else {
-        CreatePanListener(e);
+      if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+        if (this.ParentForm != null)
+          this.contextMenuStrip1.Show(e.Location.X + this.ParentForm.Location.X,
+                                      e.Location.Y + this.ParentForm.Location.Y + 50);
+        else {
+          this.contextMenuStrip1.Show(e.Location.X, e.Location.Y);
+        }
+      }
+      else {
+        if (ModifierKeys == Keys.Control) {
+          CreateZoomListener(e);
+        }
+        else {
+          CreatePanListener(e);
+        }
       }
     }
 
@@ -361,9 +393,9 @@ namespace HeuristicLab.Visualization {
 
       panListener.SetNewClippingArea += SetNewClippingArea;
       panListener.OnMouseUp += delegate {
-        historyStack.Push(linesShape.ClippingArea);
-        canvas.MouseEventListener = null;
-      };
+                                 historyStack.Push(linesShape.ClippingArea);
+                                 canvas.MouseEventListener = null;
+                               };
 
       canvas.MouseEventListener = panListener;
     }
@@ -376,5 +408,24 @@ namespace HeuristicLab.Visualization {
     }
 
     #endregion
+
+    private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
+      var optionsdlg = new OptionsDialog(this);
+      optionsdlg.Show();
+    }
+
+    public void ApplyChangesToRow(IDataRow row) {
+      foreach (var ls in rowToLineShapes[row]) {
+        ls.LSColor = row.Color;
+        ls.LSThickness = row.Thickness;
+        if (row.Style == DrawingStyle.Dashed) {
+          ls.LSDashStyle = DashStyle.Dash;
+        }
+        else {
+          ls.LSDashStyle = DashStyle.Solid; //default
+        }
+      }
+      canvas.Invalidate();
+    }
   }
 }

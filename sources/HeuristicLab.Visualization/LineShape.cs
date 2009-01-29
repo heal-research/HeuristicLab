@@ -20,13 +20,13 @@ namespace HeuristicLab.Visualization {
     public LineShape(double x1, double y1, double x2, double y2, double z, Color color, int thickness, DrawingStyle style) {
       this.boundingBox = new RectangleD(x1, y1, x2, y2);
       this.z = z;
-      this.color = color;
-      this.thickness = thickness;
+      this.LSColor = color;
+      this.LSThickness = thickness;
       if (style==DrawingStyle.Dashed) {
-        this.dashStyle = DashStyle.Dash;
+        this.LSDashStyle = DashStyle.Dash;
       }
       else {
-        this.dashStyle = DashStyle.Solid;        //default
+        this.LSDashStyle = DashStyle.Solid;        //default
       }
     }
 
@@ -61,8 +61,8 @@ namespace HeuristicLab.Visualization {
     /// <param name="viewport">rectangle in value-coordinates to display</param>
     /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      using (Pen pen = new Pen(color, thickness)){
-        pen.DashStyle = this.dashStyle;
+      using (Pen pen = new Pen(LSColor, LSThickness)){
+        pen.DashStyle = this.LSDashStyle;
         Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
         graphics.DrawLine(pen,screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
       }
@@ -71,6 +71,21 @@ namespace HeuristicLab.Visualization {
     public double Z {
       get { return z; }
       set { z = value; }
+    }
+
+    public Color LSColor {
+      get { return color; }
+      set { color = value; }
+    }
+
+    public int LSThickness {
+      get { return thickness; }
+      set { thickness = value; }
+    }
+
+    public DashStyle LSDashStyle {
+      get { return dashStyle; }
+      set { dashStyle = value; }
     }
   }
 }

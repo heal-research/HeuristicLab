@@ -30,7 +30,11 @@ namespace HeuristicLab.Visualization
         /// </summary>
         private void InitializeComponent()
         {
+          this.components = new System.ComponentModel.Container();
           this.canvas = new HeuristicLab.Visualization.CanvasUI();
+          this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+          this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+          this.contextMenuStrip1.SuspendLayout();
           this.SuspendLayout();
           // 
           // canvas
@@ -42,9 +46,25 @@ namespace HeuristicLab.Visualization
           this.canvas.Size = new System.Drawing.Size(552, 390);
           this.canvas.TabIndex = 0;
           this.canvas.Text = "canvas";
-          this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           this.canvas.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseWheel);
+          this.canvas.ContextMenuStripChanged += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+          this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           this.canvas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.canvasUI1_KeyDown);
+          // 
+          // contextMenuStrip1
+          // 
+          this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem});
+          this.contextMenuStrip1.Name = "contextMenuStrip1";
+          this.contextMenuStrip1.Size = new System.Drawing.Size(112, 26);
+
+          // 
+          // optionsToolStripMenuItem
+          // 
+          this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+          this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+          this.optionsToolStripMenuItem.Text = "Options";
+          this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
           // 
           // LineChart
           // 
@@ -53,6 +73,7 @@ namespace HeuristicLab.Visualization
           this.Controls.Add(this.canvas);
           this.Name = "LineChart";
           this.Size = new System.Drawing.Size(552, 390);
+          this.contextMenuStrip1.ResumeLayout(false);
           this.ResumeLayout(false);
 
         }
@@ -60,5 +81,7 @@ namespace HeuristicLab.Visualization
         #endregion
 
         private CanvasUI canvas;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem optionsToolStripMenuItem;
     }
 }
