@@ -27,6 +27,9 @@ using System.Threading;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.ThreadParallelEngine {
+  /// <summary>
+  /// Implementation of an engine being able to run in parallel with threads.
+  /// </summary>
   public class ThreadParallelEngine : EngineBase, IEditable {
     #region Inner Class Task
     private class TaskList {
@@ -41,6 +44,10 @@ namespace HeuristicLab.ThreadParallelEngine {
     private int operatorIndex;
 
     private int myWorkers;
+    /// <summary>
+    /// Gets or sets the number of worker threads of the current engine.
+    /// </summary>
+    /// <remarks>Calls <see cref="OnWorkersChanged"/> in the setter.</remarks>
     public int Workers {
       get { return myWorkers; }
       set {
@@ -51,30 +58,51 @@ namespace HeuristicLab.ThreadParallelEngine {
       }
     }
 
-
+    /// <summary>
+    /// Initializes a new instance of <see cref="ThreadParallelEngine"/> with the number of processors
+    /// as number of worker threads.
+    /// </summary>
     public ThreadParallelEngine() {
       myWorkers = Environment.ProcessorCount;
       currentOperators = new IOperator[1000];
     }
 
 
+    /// <inheritdoc/>
+    /// <returns>The cloned object as <see cref="ThreadParallelEngine"/>.</returns>
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ThreadParallelEngine clone = (ThreadParallelEngine)base.Clone(clonedObjects);
       clone.myWorkers = Workers;
       return clone;
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="ThreadParallelEngineEditor"/> to display the current 
+    /// instance.
+    /// </summary>
+    /// <returns>The created instance as <see cref="ThreadParallelEngineEditor"/>.</returns>
     public override IView CreateView() {
       return new ThreadParallelEngineEditor(this);
     }
+    /// <summary>
+    /// Creates a new instance of <see cref="ThreadParallelEngineEditor"/>.
+    /// </summary>
+    /// <returns>The created instance as <see cref="ThreadParallelEngineEditor"/>.</returns>
     public virtual IEditor CreateEditor() {
       return new ThreadParallelEngineEditor(this);
     }
 
+    /// <summary>
+    /// This execution method is not supported by ThreadParallelEngines.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown because the current instance of an engine
+    /// does not support stepwise execution.</exception>
+    /// <param name="steps">The number of steps to execute.</param>
     public override void ExecuteSteps(int steps) {
       throw new InvalidOperationException("ThreadParallelEngine doesn't support stepwise execution");
     }
 
+    /// <inheritdoc/>
     public override void Abort() {
       base.Abort();
       for (int i = 0; i < currentOperators.Length; i++) {
@@ -82,7 +110,10 @@ namespace HeuristicLab.ThreadParallelEngine {
           currentOperators[i].Abort();
       }
     }
-
+    /// <summary>
+    /// Processes the next operation (if it is a compositeOperation and it can be executed in parallel it is 
+    /// done).
+    /// </summary>
     protected override void ProcessNextOperation() {
       operatorIndex = 1;
       ProcessNextOperation(myExecutionStack, 0);
@@ -168,13 +199,29 @@ namespace HeuristicLab.ThreadParallelEngine {
       list.semaphore.Release();
     }
 
+    /// <summary>
+    /// Occurs when the number of workers has been changed.
+    /// </summary>
     public event EventHandler WorkersChanged;
+    /// <summary>
+    /// Fires a new <c>WorkersChanged</c> event.
+    /// </summary>
     protected virtual void OnWorkersChanged() {
       if (WorkersChanged != null)
         WorkersChanged(this, new EventArgs());
     }
 
     #region Persistence Methods
+    /// <summary>
+    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
+    /// </summary>
+    /// <remarks>The number of workers is saved as <see cref="XmlAttribute"/> with attribute name 
+    /// <c>Workers</c>.</remarks>
+    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
+    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
+    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
+    /// (Needed to avoid cycles.)</param>
+    /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute workersAttribute = document.CreateAttribute("Workers");
@@ -182,6 +229,14 @@ namespace HeuristicLab.ThreadParallelEngine {
       node.Attributes.Append(workersAttribute);
       return node;
     }
+    /// <summary>
+    /// Loads the persisted engine from the specified <paramref name="node"/>.
+    /// </summary>
+    /// <remarks>The number of workers must be saved in a specific way, see <see cref="GetXmlNode"/>
+    /// for further information.</remarks>
+    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
+    /// <param name="restoredObjects">The dictionary of all already restored objects. 
+    /// (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       myWorkers = int.Parse(node.Attributes["Workers"].Value);

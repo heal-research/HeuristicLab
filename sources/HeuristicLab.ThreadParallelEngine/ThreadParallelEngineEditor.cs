@@ -29,30 +29,63 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.ThreadParallelEngine {
+  /// <summary>
+  /// Visual representation of a <see cref="ThreadParallelEngine"/>.
+  /// </summary>
   public partial class ThreadParallelEngineEditor : EngineBaseEditor {
+    /// <summary>
+    /// Gets or sets the ThreadParallelEngine to display.
+    /// </summary>
+    /// <remarks>Uses property <see cref="EngineBaseEditor.Engine"/> of base class 
+    /// <see cref="EngineBaseEditor"/>. No own data storage present.</remarks>
     public ThreadParallelEngine ThreadParallelEngine {
       get { return (ThreadParallelEngine)Engine; }
       set { base.Engine = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ThreadParallelEngineEditor"/>.
+    /// </summary>
     public ThreadParallelEngineEditor() {
       InitializeComponent();
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ThreadParallelEngineEditor"/> with the given
+    /// <paramref name="threadParallelEngine"/> to display.
+    /// </summary>
+    /// <param name="threadParallelEngine">The engine to represent visually.</param>
     public ThreadParallelEngineEditor(ThreadParallelEngine threadParallelEngine)
       : this() {
       ThreadParallelEngine = threadParallelEngine;
     }
 
+    /// <summary>
+    /// Removes the eventhandlers from the underlying <see cref="ThreadParallelEngine"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="EngineBaseEditor.RemoveItemEvents"/> of base class 
+    /// <see cref="EngineBaseEditor"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       ThreadParallelEngine.WorkersChanged -= new EventHandler(ThreadParallelEngine_WorkersChanged);
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds eventhandlers to the underlying <see cref="ThreadParallelEngine"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="EngineBaseEditor.AddItemEvents"/> of base class 
+    /// <see cref="EngineBaseEditor"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       ThreadParallelEngine.WorkersChanged += new EventHandler(ThreadParallelEngine_WorkersChanged);
     }
 
+    /// <summary>
+    /// Updates the controls with the latest data.
+    /// </summary>
+    /// <remarks>Calls <see cref="EngineBaseEditor.UpdateControls"/> of base class 
+    /// <see cref="EngineBaseEditor"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (ThreadParallelEngine == null) {
