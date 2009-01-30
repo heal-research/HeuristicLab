@@ -56,7 +56,7 @@ namespace HeuristicLab.Visualization {
     private void OptionsDialogOkButton_Click(object sender, EventArgs e) {
       ((IDataRow) this.LineSelectCB.SelectedValue).Thickness = (int) this.LineThicknessCB.SelectedItem;
       ((IDataRow) this.LineSelectCB.SelectedValue).Color = this.ColorPreviewTB.BackColor;
-      ((IDataRow) this.LineSelectCB.SelectedValue).Style = (DrawingStyle) this.LineThicknessCB.SelectedItem;
+      ((IDataRow) this.LineSelectCB.SelectedValue).Style = (DrawingStyle) this.LinestyleCB.SelectedItem;
       this.lc.ApplyChangesToRow((IDataRow) this.LineSelectCB.SelectedValue);
       this.Close();
     }
