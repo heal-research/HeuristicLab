@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
   public class XAxis : WorldShape {
     public const int PixelsPerInterval = 100;
-    private ILabelProvider labelProvider = new DefaultLabelProvider("0.##");
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.####");
 
     public ILabelProvider LabelProvider {
       get { return labelProvider; }

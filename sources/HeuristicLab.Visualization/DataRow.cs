@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
   public enum Action {
@@ -21,7 +22,7 @@ namespace HeuristicLab.Visualization {
     private DataRowType lineType = DataRowType.Normal;
     private List<double> dataRow = new List<double>();
 
-    private ILabelProvider labelProvider = new DefaultLabelProvider("0.##");
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     public DataRowType LineType{
       get { return lineType; }

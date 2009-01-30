@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Text;
+using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization{
   public delegate void DataRowAddedHandler(IDataRow row);
@@ -13,7 +14,7 @@ namespace HeuristicLab.Visualization{
   public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
     private string title = "Title";
     //private string xAxisLabel;
-    private ILabelProvider labelProvider = new DefaultLabelProvider("0.##");
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     public ILabelProvider XAxisLabelProvider {
       get { return labelProvider; }
@@ -143,11 +144,11 @@ namespace HeuristicLab.Visualization{
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
-      foreach (var row in rows) {
+      foreach (IDataRow row in rows) {
         XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
 
         XmlAttribute idAttr = document.CreateAttribute("label");
-        idAttr.Value = row.Label.ToString();
+        idAttr.Value = row.Label;
         columnElement.Attributes.Append(idAttr);
 
         StringBuilder builder = new StringBuilder();

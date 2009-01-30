@@ -80,10 +80,11 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
-    <Compile Include="DefaultLabelProvider.cs" />
+    <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
+    <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="HorizontalLineShape.cs" />
-    <Compile Include="ILabelProvider.cs" />
+    <Compile Include="LabelProvider\ILabelProvider.cs" />
     <Compile Include="IMouseEventListener.cs" />
     <Compile Include="OptionsDialog.cs">
       <SubType>Form</SubType>
@@ -92,6 +93,7 @@
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="PanListener.cs" />
+    <Compile Include="LabelProvider\StringLabelProvider.cs" />
     <Compile Include="TextShape.cs" />
     <Compile Include="LegendShape.cs" />
     <Compile Include="DataRow.cs" />

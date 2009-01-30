@@ -1,12 +1,12 @@
 using System.Globalization;
 
-namespace HeuristicLab.Visualization {
-  public class DefaultLabelProvider : ILabelProvider {
+namespace HeuristicLab.Visualization.LabelProvider {
+  public class ContinuousLabelProvider : ILabelProvider {
     private readonly string format;
 
-    public DefaultLabelProvider() {}
+    public ContinuousLabelProvider() {}
 
-    public DefaultLabelProvider(string format) {
+    public ContinuousLabelProvider(string format) {
       this.format = format;
     }
 

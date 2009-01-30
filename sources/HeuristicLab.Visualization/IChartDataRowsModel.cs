@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
   public interface IChartDataRowsModel : IItem {

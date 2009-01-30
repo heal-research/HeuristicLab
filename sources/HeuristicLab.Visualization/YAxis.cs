@@ -1,10 +1,11 @@
 using System.Drawing;
+using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
   public class YAxis : WorldShape {
     public const int PixelsPerInterval = 75;
 
-    private ILabelProvider labelProvider = new DefaultLabelProvider("e");
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("e4");
 
     public ILabelProvider LabelProvider {
       get { return labelProvider; }
