@@ -6,6 +6,7 @@ namespace HeuristicLab.Visualization {
     Color Color { get; set; }
     int Thickness { get; set; }
     DrawingStyle Style { get; set; }
+    ILabelProvider YAxisLabelProvider { get; set; }
 
     void AddValue(double value);
     void AddValue(double value, int index);

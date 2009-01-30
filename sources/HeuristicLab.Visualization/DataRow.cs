@@ -20,15 +20,24 @@ namespace HeuristicLab.Visualization {
     private DrawingStyle style = DrawingStyle.Solid;
     private List<double> dataRow = new List<double>();
 
-    public DataRow() {
+    private ILabelProvider labelProvider = new DefaultLabelProvider("0.##");
+
+    public ILabelProvider YAxisLabelProvider {
+      get { return labelProvider; }
+      set { this.labelProvider = value; }
     }
 
+
+    public DataRow() {
+    }
+    
     public DataRow(string label) {
       this.Label = label;
     }
+    
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
-      this.Label = label;
+     this.Label = label;
       this.Color = color;
       this.Thickness = thickness;
       this.Style = style;
@@ -62,6 +71,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+  
     public string Label {
       get { return label; }
       set {
@@ -69,6 +79,7 @@ namespace HeuristicLab.Visualization {
         OnDataRowChanged(this);
       }
     }
+   
 
     public Color Color {
       get { return color; }
