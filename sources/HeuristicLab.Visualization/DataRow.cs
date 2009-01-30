@@ -24,7 +24,10 @@ namespace HeuristicLab.Visualization {
 
     public ILabelProvider YAxisLabelProvider {
       get { return labelProvider; }
-      set { this.labelProvider = value; }
+      set {
+        this.labelProvider = value;
+        OnDataRowChanged(this);
+      }
     }
 
 

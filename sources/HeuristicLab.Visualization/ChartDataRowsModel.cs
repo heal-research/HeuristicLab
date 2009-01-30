@@ -17,7 +17,10 @@ namespace HeuristicLab.Visualization{
 
     public ILabelProvider XAxisLabelProvider {
       get { return labelProvider; }
-      set { this.labelProvider = value; }
+      set{
+        this.labelProvider = value;
+        OnModelChanged();
+      }
     }
 
 
