@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
   public partial class LineChart : ViewBase {
@@ -54,12 +55,6 @@ namespace HeuristicLab.Visualization {
       linesShape = new LinesShape();
       root.AddShape(linesShape);
 
-      legendShape = new LegendShape(0, 0, 0, 0, 0, Color.Black);
-      //legendShape.AddLegendItem(new LegendItem("test", Color.Red, 5));
-      //legendShape.AddLegendItem(new LegendItem("test1", Color.Blue, 5));
-      //legendShape.AddLegendItem(new LegendItem("test2", Color.Pink, 5));
-      root.AddShape(legendShape);
-
       xAxis = new XAxis();
       root.AddShape(xAxis);
 
@@ -71,9 +66,13 @@ namespace HeuristicLab.Visualization {
 
       minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, 0, Color.Yellow, 4, DrawingStyle.Solid);
       root.AddShape(minMaxLineShape);
+
+      legendShape = new LegendShape();
+      root.AddShape(legendShape);
+
       canvas.MainCanvas.WorldShape = root;
       canvas.Resize += delegate { UpdateLayout(); };
-
+      
       UpdateLayout();
       maxDataRowCount = 0;
       this.model = model;
@@ -116,6 +115,8 @@ namespace HeuristicLab.Visualization {
                                          linesShape.BoundingBox.Y1);
 
       legendShape.BoundingBox = new RectangleD(10, 10, 110, canvas.Height - 50);
+      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width,
+                                                legendShape.BoundingBox.Height);
     }
 
     public void ResetView() {

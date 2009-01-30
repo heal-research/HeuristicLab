@@ -15,28 +15,16 @@ namespace HeuristicLab.Visualization {
   }
 
 
-  public class LegendShape : CompositeShape {
-    private RectangleD boundingBox;
-    private Color color;
-
+  public class LegendShape : WorldShape {
     private readonly IList<LegendItem> legendItems = new List<LegendItem>();
-
-    public LegendShape(double x1, double y1, double x2, double y2, double z, Color color) {
-      boundingBox = new RectangleD(x1, y1, x2, y2);
-      Z = z;
-      this.color = color;
+    
+    public LegendShape() {
       CreateLegend();
     }
 
-    public double Z { get; set; }
-
-    public RectangleD BoundingBox {
-      get { return boundingBox; }
-      set { boundingBox = value; }
-    }
-
     public void CreateLegend() {
-      double y = boundingBox.Y2;
+      shapes.Clear();
+      double y = BoundingBox.Y2;
       foreach (LegendItem item in legendItems) {
         AddShape(new LineShape(10, y - 10, 30, y - 10, 0, item.Color, item.Thickness, DrawingStyle.Solid));
         AddShape(new TextShape(35, y, item.Label));
