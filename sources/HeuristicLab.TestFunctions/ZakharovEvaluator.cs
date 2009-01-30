@@ -24,7 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.TestFunctions {
+  /// <summary>
+  /// Zakharov Function<br/>
+  /// Domain:  [-5.0 , 10.0]^n<br/>
+  /// Optimum: 0.0 at (0.0, 0.0, ..., 0.0)
+  /// </summary>
   public class ZakharovEvaluator : TestFunctionEvaluatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return
 @"Zakharov Function
@@ -34,6 +40,11 @@ Optimum: 0.0 at (0.0, 0.0, ..., 0.0)";
           }
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Zakharov function at the given point.</returns>
     public static double Apply(double[] point) {
       int length = point.Length;
       double s1 = 0;
@@ -46,6 +57,12 @@ Optimum: 0.0 at (0.0, 0.0, ..., 0.0)";
       return s1 + s2 * s2 + s2 * s2 * s2 * s2;
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Zakharov function at the given point.</returns>
     protected override double EvaluateFunction(double[] point) {
       return Apply(point);
     }

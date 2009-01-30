@@ -23,8 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HeuristicLab.TestFunctions {   
+namespace HeuristicLab.TestFunctions { 
+  /// <summary>
+  /// Beale Function<br/>
+  /// Domain:  [-4.5 , 4.5]^2<br/>
+  /// Optimum: 0.0 at (3.0, 0.5)
+  /// </summary>
   public class BealeEvaluator : TestFunctionEvaluatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return
 @"Beale Function
@@ -34,10 +40,21 @@ Optimum: 0.0 at (3.0, 0.5)";
           }
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Beale function at the given point.</returns>
     public static double Apply(double[] point) {
       return Math.Pow(1.5 - point[0] * (1 - point[1]), 2) + Math.Pow(2.25 - point[0] * (1 - (point[1] * point[1])), 2) + Math.Pow((2.625 - point[0] * (1 - (point[1] * point[1] * point[1]))), 2);
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Beale function at the given point.</returns>
     protected override double EvaluateFunction(double[] point) {
       return Apply(point);
     }

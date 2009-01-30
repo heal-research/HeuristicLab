@@ -24,7 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.TestFunctions {
+  /// <summary>
+  /// Levy Function<br/>
+  /// Domain:  [-10.0 , 10.0]^n<br/>
+  /// Optimum: 0.0 at (1.0, 1.0, ..., 1.0)
+  /// </summary>
   public class LevyEvaluator : TestFunctionEvaluatorBase {
+    /// <inheritdoc select="summary"/>
     public override string Description {
       get { return
 @"Levy Function
@@ -34,6 +40,11 @@ Optimum: 0.0 at (1.0, 1.0, ..., 1.0)";
           }
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Levy function at the given point.</returns>
     public static double Apply(double[] point) {
       int length = point.Length;
       double[] z = new double[length];
@@ -52,6 +63,12 @@ Optimum: 0.0 at (1.0, 1.0, ..., 1.0)";
       return s + Math.Pow(z[length - 1] - 1, 2) * (1 + Math.Pow(Math.Sin(2 * Math.PI * z[length - 1]), 2));
     }
 
+    /// <summary>
+    /// Evaluates the test function for a specific <paramref name="point"/>.
+    /// </summary>
+    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
+    /// <returns>The result value of the Levy function at the given point.</returns>
     protected override double EvaluateFunction(double[] point) {
       return Apply(point);
     }

@@ -25,6 +25,9 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.TestFunctions {
+  /// <summary>
+  /// Plugin class for HeuristicLab.TestFunctions plugin.
+  /// </summary>
   [ClassInfo(Name = "HeuristicLab.TestFunctions-3.2")]
   [PluginFile(Filename = "HeuristicLab.TestFunctions-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]

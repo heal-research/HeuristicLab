@@ -31,21 +31,42 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.TestFunctions {
+  /// <summary>
+  /// Visual representation of a <see cref="TestFunctionInjector"/>.
+  /// </summary>
   public partial class TestFunctionInjectorView : ViewBase {
+    /// <summary>
+    /// Gets or sets the TestFunctionInjector to represent visually.
+    /// </summary>
+    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
+    /// No own data storage present.</remarks>
     public TestFunctionInjector TestFunctionInjector {
       get { return (TestFunctionInjector)base.Item; }
       set { base.Item = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TestFunctionInjectorView"/>.
+    /// </summary>
     public TestFunctionInjectorView() {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="TestFunctionInjectorView"/> with the given
+    /// <paramref name="testFunctionInjector"/> to display.
+    /// </summary>
+    /// <param name="testFunctionInjector">The injector to represent visually.</param>
     public TestFunctionInjectorView(TestFunctionInjector testFunctionInjector)
       : this() {
       TestFunctionInjector = testFunctionInjector;
     }
 
+    /// <summary>
+    /// Removes the eventhandler from the underlying controls.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void RemoveItemEvents() {
       maximizationCheckBox.DataBindings.Clear();
       dimensionTextBox.DataBindings.Clear();
@@ -54,6 +75,11 @@ namespace HeuristicLab.TestFunctions {
       base.RemoveItemEvents();
     }
 
+    /// <summary>
+    /// Adds eventhandlers to the underlying controls.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.
+    /// </remarks>
     protected override void AddItemEvents() {
       base.AddItemEvents();
       maximizationCheckBox.DataBindings.Add("Checked", TestFunctionInjector, "Maximization");
@@ -62,6 +88,10 @@ namespace HeuristicLab.TestFunctions {
       upperBoundTextBox.DataBindings.Add("Text", TestFunctionInjector, "UpperBound");
     }
 
+    /// <summary>
+    /// Updates all controls with the latest values.
+    /// </summary>
+    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void UpdateControls() {
       base.UpdateControls();
       if (TestFunctionInjector == null) {
