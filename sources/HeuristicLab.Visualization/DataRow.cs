@@ -18,9 +18,18 @@ namespace HeuristicLab.Visualization {
     private Color color = Color.Black;
     private int thickness = 2;
     private DrawingStyle style = DrawingStyle.Solid;
+    private DataRowType lineType = DataRowType.Normal;
     private List<double> dataRow = new List<double>();
 
     private ILabelProvider labelProvider = new DefaultLabelProvider("0.##");
+
+    public DataRowType LineType{
+      get { return lineType; }
+      set { 
+        lineType = value;
+        OnDataRowChanged(this);
+      }
+    }
 
     public ILabelProvider YAxisLabelProvider {
       get { return labelProvider; }

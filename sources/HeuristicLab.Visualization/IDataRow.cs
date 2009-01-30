@@ -1,11 +1,17 @@
 using System.Drawing;
 
 namespace HeuristicLab.Visualization {
+
+  public enum DataRowType {
+    Normal, SingleValue
+  }
+  
   public interface IDataRow {
     string Label { get; set; }
     Color Color { get; set; }
     int Thickness { get; set; }
     DrawingStyle Style { get; set; }
+    DataRowType LineType { get; set; }
     ILabelProvider YAxisLabelProvider { get; set; }
 
     void AddValue(double value);
