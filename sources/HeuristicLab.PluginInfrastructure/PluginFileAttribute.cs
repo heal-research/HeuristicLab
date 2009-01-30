@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Enumerator of available file types for a plugin.
+  /// </summary>
   public enum PluginFileType {
     Assembly,
     Executable,
@@ -31,10 +34,16 @@ namespace HeuristicLab.PluginInfrastructure {
     License
   };
 
+  /// <summary>
+  /// Attribute for plugins providing information about their corresponding files.
+  /// </summary>
   [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
   public class PluginFileAttribute : System.Attribute {
     private string filename;
 
+    /// <summary>
+    /// Gets or sets the filename of the plugin.
+    /// </summary>
     public string Filename {
       get { return filename; }
       set { filename = value; }
@@ -42,11 +51,17 @@ namespace HeuristicLab.PluginInfrastructure {
 
     private PluginFileType filetype = PluginFileType.Data;
 
+    /// <summary>
+    /// Gets or sets the filetype of the plugin file.
+    /// </summary>
     public PluginFileType Filetype {
       get { return filetype; }
       set { filetype = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PluginFileAttribute"/>.
+    /// </summary>
     public PluginFileAttribute() { }
   }
 }

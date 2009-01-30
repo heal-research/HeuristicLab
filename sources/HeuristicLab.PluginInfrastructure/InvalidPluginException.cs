@@ -24,6 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Exception class for invalid plugins.
+  /// </summary>
   class InvalidPluginException : Exception {
   }
 }

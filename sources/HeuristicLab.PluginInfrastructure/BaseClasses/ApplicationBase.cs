@@ -25,12 +25,18 @@ using System.Text;
 using System.Diagnostics;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Default implementation for the IApplication interface.
+  /// </summary>
   public abstract class ApplicationBase : IApplication {
     private string name;
     private Version version;
     private string description;
     private bool autoRestart;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ApplicationBase"/>.
+    /// </summary>
     public ApplicationBase() {
       ReadAttributes();
     }
@@ -74,22 +80,37 @@ namespace HeuristicLab.PluginInfrastructure {
 
     #region IApplication Members
 
+    /// <summary>
+    /// Gets the name of the application.
+    /// </summary>
     public string Name {
       get { return name; }
     }
 
+    /// <summary>
+    /// Gets the version of the application.
+    /// </summary>
     public Version Version {
       get { return version; }
     }
 
+    /// <summary>
+    /// Gets the description of the application.
+    /// </summary>
     public string Description {
       get { return description; }
     }
 
+    /// <summary>
+    /// Gets the boolean flag whether the application should automatically get restarted.
+    /// </summary>
     public bool AutoRestart {
       get { return autoRestart; }
     }
 
+    /// <summary>
+    /// Runs the application.
+    /// </summary>
     public abstract void Run();
 
     #endregion

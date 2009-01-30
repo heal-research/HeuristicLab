@@ -30,21 +30,33 @@ using System.Security;
 namespace HeuristicLab.PluginInfrastructure {
 
   // must extend MarshalByRefObject because of event passing between Loader and PluginManager (each in it's own AppDomain)
+  /// <summary>
+  /// Class to manage different plugins.
+  /// </summary>
   public class PluginManager : MarshalByRefObject {
 
     // singleton: only one manager allowed in each AppDomain
     private static PluginManager manager = new PluginManager();
+    /// <summary>
+    /// Gets the plugin manager (is a singleton).
+    /// </summary>
     public static PluginManager Manager {
       get { return manager; }
     }
 
     // singleton: only one control manager allowed in each applicatoin (i.e. AppDomain)
     private static IControlManager controlManager;
+    /// <summary>
+    /// Gets or sets the control manager (is a singleton).
+    /// </summary>
     public static IControlManager ControlManager {
       get { return controlManager; }
       set { controlManager = value; }
     }
 
+    /// <summary>
+    /// Event handler for actions in the plugin manager.
+    /// </summary>
     public event PluginManagerActionEventHandler Action;
 
     // holds a proxy for the loader in the special AppDomain for PluginManagament
@@ -57,23 +69,42 @@ namespace HeuristicLab.PluginInfrastructure {
       this.pluginDir = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.PluginDir;
     }
 
+    /// <summary>
+    /// Gets all installed plugins.
+    /// </summary>
+    /// <remarks>This information is provided by a <see cref="Loader"/>.</remarks>
     public ICollection<PluginInfo> InstalledPlugins {
       get { return remoteLoader.InstalledPlugins; }
     }
 
+    /// <summary>
+    /// Gets all disabled plugins.
+    /// </summary>
+    /// <remarks>This information is provided by a <see cref="Loader"/>.</remarks>
     public ICollection<PluginInfo> DisabledPlugins {
       get { return remoteLoader.DisabledPlugins; }
     }
 
+    /// <summary>
+    /// Gets all active plugins.
+    /// </summary>
+    /// <remarks>This information is provided by a <see cref="Loader"/>.</remarks>
     public ICollection<PluginInfo> ActivePlugins {
       get { return remoteLoader.ActivePlugins; }
     }
 
+    /// <summary>
+    /// Gets all installed applications.
+    /// </summary>
+    /// <remarks>This information is provided by a <see cref="Loader"/>.</remarks>
     public ICollection<ApplicationInfo> InstalledApplications {
       get { return remoteLoader.InstalledApplications; }
     }
 
     private ICollection<PluginInfo> loadedPlugins;
+    /// <summary>
+    /// Gets or (internally) sets the loaded plugins.
+    /// </summary>
     public ICollection<PluginInfo> LoadedPlugins {
       get { return loadedPlugins; }
       internal set { loadedPlugins = value; }
@@ -137,7 +168,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Creates a new AppDomain with all plugins preloaded and Sandboxing capability
+    /// Creates a new AppDomain with all plugins preloaded and Sandboxing capability.
     /// </summary>
     /// <param name="assembly">Assembly reference</param>
     /// <returns>the strongname of the assembly</returns>
@@ -201,7 +232,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Calculates a set of plugins that directly or transitively depend on the plugin given in the argument.
     /// </summary>
-    /// <param name="pluginInfo"></param>
+    /// <param name="pluginInfo">The plugin the other depend on.</param>
     /// <returns>a list of plugins that are directly of transitively dependent.</returns>
     public List<PluginInfo> GetDependentPlugins(PluginInfo pluginInfo) {
       List<PluginInfo> mergedList = new List<PluginInfo>();
@@ -222,26 +253,36 @@ namespace HeuristicLab.PluginInfrastructure {
       return mergedList;
     }
 
+    /// <summary>
+    /// Unloads all plugins.
+    /// </summary>
     public void UnloadAllPlugins() {
       AppDomain.Unload(pluginDomain);
     }
 
+    /// <summary>
+    /// Loads all plugins.
+    /// </summary>
     public void LoadAllPlugins() {
       Initialize();
     }
 
+    /// <inheritdoc cref="Loader.OnDelete"/>
     public void OnDelete(PluginInfo pluginInfo) {
       remoteLoader.OnDelete(pluginInfo);
     }
 
+    /// <inheritdoc cref="Loader.OnInstall"/>
     public void OnInstall(PluginInfo pluginInfo) {
       remoteLoader.OnInstall(pluginInfo);
     }
 
+    /// <inheritdoc cref="Loader.OnPreUpdate"/>
     public void OnPreUpdate(PluginInfo pluginInfo) {
       remoteLoader.OnPreUpdate(pluginInfo);
     }
 
+    /// <inheritdoc cref="Loader.OnPostUpdate"/>
     public void OnPostUpdate(PluginInfo pluginInfo) {
       remoteLoader.OnPostUpdate(pluginInfo);
     }

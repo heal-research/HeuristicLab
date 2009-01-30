@@ -32,13 +32,16 @@ namespace HeuristicLab.PluginInfrastructure {
     private string dependency;
 
     /// <summary>
-    /// Name of the plugin that is needed to load the assembly.
+    /// Gets or sets the name of the plugin that is needed to load the assembly.
     /// </summary>
     public string Dependency {
       get { return dependency; }
       set { dependency = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DependencyAttribute"/>.
+    /// </summary>
     public DependencyAttribute() {
     }
   }

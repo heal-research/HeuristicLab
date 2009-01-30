@@ -25,7 +25,14 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Interface for control managers.
+  /// </summary>
   public interface IControlManager {
+    /// <summary>
+    /// Shows the given <paramref name="control"/>.
+    /// </summary>
+    /// <param name="control">The control to display.</param>
     void ShowControl(IControl control);
   }
 }

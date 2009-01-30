@@ -25,13 +25,25 @@ using System.Text;
 using System.Globalization;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Attribute of an assembly when it was built.
+  /// </summary>
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
   public class AssemblyBuildDateAttribute : Attribute {
     private DateTime buildDate;
+    /// <summary>
+    /// Gets or sets the date when the assembly has been built.
+    /// </summary>
     public DateTime BuildDate {
       get { return buildDate; }
       set { buildDate = value; }
     }
+    /// <summary>
+    /// Initializes a new instance of <see cref="AssemblyBuildDateAttribute"/> with the given 
+    /// <paramref name="timeStamp"/> as build date.
+    /// </summary>
+    /// <exception cref="FormatException">Thrown when the time stamp could not be parsed as build date.</exception>
+    /// <param name="timeStamp">The build date of the assembly.</param>
     public AssemblyBuildDateAttribute(string timeStamp)
       : base() {
 

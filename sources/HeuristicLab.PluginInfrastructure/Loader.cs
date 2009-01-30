@@ -29,7 +29,12 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
   internal class Loader : MarshalByRefObject {
+    /// <summary>
+    /// Event handler for loaded plugins.
+    /// </summary>
+    /// <param name="pluginName">The plugin that has been loaded.</param>
     public delegate void PluginLoadedEventHandler(string pluginName);
+    
     public delegate void PluginLoadFailedEventHandler(string pluginName, string args);
 
     private Dictionary<PluginInfo, List<string>> pluginDependencies = new Dictionary<PluginInfo, List<string>>();
@@ -90,6 +95,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// 6. The loader builds an acyclic graph of PluginDescriptions (childs are dependencies of a plugin) based on the 
     /// list of assemblies of an plugin and the list of dependencies for each of those assemblies
     /// </summary>
+    /// <exception cref="FileLoadException">Thrown when the file could not be loaded.</exception>
     internal void Init() {
       AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += delegate(object sender, ResolveEventArgs args) {
         try {
@@ -385,7 +391,10 @@ namespace HeuristicLab.PluginInfrastructure {
       return true;
     }
 
-    // infinite lease time
+    /// <summary>
+    /// Initializes the life time service with an infinte lease time.
+    /// </summary>
+    /// <returns><c>null</c>.</returns>
     public override object InitializeLifetimeService() {
       return null;
     }

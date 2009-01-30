@@ -32,7 +32,7 @@ namespace HeuristicLab.PluginInfrastructure {
   public class ClassInfoAttribute : System.Attribute {
     private string name;
     /// <summary>
-    /// Name of the plugin to which the assembly belongs to.
+    /// Gets or sets the name of the plugin to which the assembly belongs to.
     /// </summary>
     public string Name {
       get { return name; }
@@ -40,23 +40,35 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private string version;
+    /// <summary>
+    /// Gets or sets the version of the plugin.
+    /// </summary>
     public string Version {
       get { return version; }
       set { version = value; }
     }
 
     private string description;
+    /// <summary>
+    /// Gets or sets the description of the plugin.
+    /// </summary>
     public string Description {
       get { return description; }
       set { description = value; }
     }
 
     private bool autoRestart;
+    /// <summary>
+    /// Gets or sets the boolean flag whether the plugin should be automatically restarted.
+    /// </summary>
     public bool AutoRestart {
       get { return autoRestart; }
       set { autoRestart = value; }
     }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="ClassInfoAttribute"/>.
+    /// </summary>
     public ClassInfoAttribute() {}
   }
 }

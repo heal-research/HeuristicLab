@@ -35,6 +35,9 @@ namespace HeuristicLab.PluginInfrastructure {
     private string[] files;
     private string description;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PluginBase"/>.
+    /// </summary>
     public PluginBase() {
       ReadAttributes();
     }
@@ -83,39 +86,53 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     #region IPlugin Members
+    /// <summary>
+    /// Gets the name of the plugin.
+    /// </summary>
     public string Name {
       get {
         return name;
       }
     }
 
+    /// <summary>
+    /// Gets the version of the plugin.
+    /// </summary>
     public Version Version {
       get {
         return version;
       }
     }
 
+    /// <summary>
+    /// Gets the description of the plugin.
+    /// </summary>
     public string Description {
       get {
         return description;
       }
     }
 
+    /// <inheritdoc/>
     public  string[] Files {
       get {
         return files;
       }
     }
 
+    /// <inheritdoc/>
     public virtual void OnInstall() {
     }
 
+    /// <inheritdoc/>
     public virtual void OnDelete() {
     }
 
+    /// <inheritdoc/>
     public virtual void OnPreUpdate() {
     }
 
+    /// <inheritdoc/>
     public virtual void OnPostUpdate() {
     }
 

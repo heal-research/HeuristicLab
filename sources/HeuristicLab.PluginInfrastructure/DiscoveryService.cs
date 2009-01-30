@@ -39,10 +39,10 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    ///  Find all types that are subtypes or equal to the specified type.
+    /// Finds all types that are subtypes or equal to the specified type.
     /// </summary>
     /// <param name="type">Most general type for which to find matching types.</param>
-    /// <returns></returns>
+    /// <returns>The found types as array.</returns>
     public Type[] GetTypes(Type type) {
       Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
       List<Type> types = new List<Type>();
@@ -55,10 +55,10 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Create an instance of all types that are subtypes or the same type of the specified type
+    /// Creates an instance of all types that are subtypes or the same type of the specified type
     /// </summary>
     /// <typeparam name="T">Most general type.</typeparam>
-    /// <returns></returns>
+    /// <returns>The created instances as array.</returns>
     public T[] GetInstances<T>() where T : class {
       Type[] types = GetTypes(typeof(T));
       List<T> instances = new List<T>();
@@ -70,6 +70,13 @@ namespace HeuristicLab.PluginInfrastructure {
       return instances.ToArray();
     }
 
+    /// <summary>
+    /// Finds all types that are subtypes or equal to the specified type if they are part of the given
+    /// <paramref name="plugin"/>.
+    /// </summary>
+    /// <param name="type">Most general type for which to find matching types.</param>
+    /// <param name="plugin">The plugin the subtypes must be part of.</param>
+    /// <returns>The found types as array.</returns>
     public Type[] GetTypes(Type type, PluginInfo plugin) {
       Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
       List<Type> types = new List<Type>();
@@ -85,11 +92,11 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Get instances of all types that implement the specified interface only in the given assembly.
+    /// Gets instances of all types that implement the specified interface only in the given assembly.
     /// </summary>
     /// <typeparam name="T">Interface type.</typeparam>
     /// <param name="assembly">Assembly that should be searched for types.</param>
-    /// <returns></returns>
+    /// <returns>The found instances as array.</returns>
     internal T[] GetInstances<T>(Assembly assembly) {
       Type[] types = GetTypes(typeof(T), assembly);
       List<T> instances = new List<T>();
@@ -102,11 +109,11 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Get types that are assignable (same of subtype) to the specified type only from the given assembly.
+    /// Gets types that are assignable (same of subtype) to the specified type only from the given assembly.
     /// </summary>
     /// <param name="type">Most general type we want to find.</param>
     /// <param name="assembly">Assembly that should be searched for types.</param>
-    /// <returns></returns>
+    /// <returns>The found types as array.</returns>
     internal Type[] GetTypes(Type type, Assembly assembly) {
       List<Type> types = new List<Type>();
       foreach(Type t in assembly.GetTypes()) {
@@ -117,6 +124,11 @@ namespace HeuristicLab.PluginInfrastructure {
       return types.ToArray();
     }
 
+    /// <summary>
+    /// Gets the plugin of the given <paramref name="type"/>.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns>The found plugin or <c>null</c>.</returns>
     public PluginInfo GetDeclaringPlugin(Type type) {
       foreach(PluginInfo info in PluginManager.Manager.LoadedPlugins) {
         if(info.Assemblies.Contains(type.Assembly.Location)) return info;

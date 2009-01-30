@@ -24,5 +24,8 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
+  /// <summary>
+  /// Interface for controls.
+  /// </summary>
   public interface IControl { }
 }
