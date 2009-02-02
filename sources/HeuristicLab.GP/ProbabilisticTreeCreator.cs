@@ -29,6 +29,8 @@ using System.Diagnostics;
 
 namespace HeuristicLab.GP {
   public class ProbabilisticTreeCreator : OperatorBase {
+    private int MAX_TRIES { get { return 100; } }
+
     public override string Description {
       get { return @"Generates a new random operator tree."; }
     }
@@ -55,16 +57,25 @@ namespace HeuristicLab.GP {
       TreeGardener gardener = new TreeGardener(random, opLibrary);
 
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
-      IFunctionTree root = gardener.PTC2(random, treeSize, maxTreeHeight);
 
-      int actualTreeSize = root.Size;
-      int actualTreeHeight = root.Height;
+      IFunctionTree root;
+      int actualTreeSize;
+      int actualTreeHeight;
+      int tries = 0;
+      do {
+        root = gardener.PTC2(random, treeSize, maxTreeHeight);
+        actualTreeSize = root.Size;
+        actualTreeHeight = root.Height;
+        if (tries++ >= MAX_TRIES) {
+          // try a different size
+          treeSize = random.Next(minTreeSize, maxTreeSize + 1);
+          tries = 0;
+        }
+      } while (actualTreeSize > maxTreeSize || actualTreeHeight > maxTreeHeight);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), root));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(actualTreeSize)));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(actualTreeHeight)));
-
-      Debug.Assert(gardener.IsValidTree(root) && actualTreeHeight<=maxTreeHeight);
 
       return gardener.CreateInitializationOperation(gardener.GetAllSubTrees(root), scope);
     }
