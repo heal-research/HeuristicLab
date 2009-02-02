@@ -32,7 +32,7 @@ using System.Diagnostics;
 
 namespace HeuristicLab.GP {
   public class StandardCrossOver : SizeConstrictedGPCrossoverBase {
-    private const int MAX_RECOMBINATION_TRIES = 20;
+    private int MaxRecombinationTries { get { return 20; } }
 
     public override string Description {
       get {
@@ -51,7 +51,7 @@ until a valid configuration is found.";
       do {
         // select a random crossover point in the first parent tree0
         parent0 = null;
-        while(parent0 == null) parent0 = gardener.GetRandomParentNode(tree0);
+        while (parent0 == null) parent0 = gardener.GetRandomParentNode(tree0);
         // select a random branch to replace
         replacedChildIndex = random.Next(parent0.SubTrees.Count);
 
@@ -61,9 +61,9 @@ until a valid configuration is found.";
 
         IList<IFunction> allowedFunctions = gardener.GetAllowedSubFunctions(parent0.Function, replacedChildIndex);
         allowedCrossoverPoints = GetPossibleCrossoverPoints(gardener, tree1, maxInsertedBranchSize, maxInsertedBranchHeight, allowedFunctions);
-      } while(allowedCrossoverPoints.Count == 0 && tries++ < MAX_RECOMBINATION_TRIES);
+      } while (allowedCrossoverPoints.Count == 0 && tries++ < MaxRecombinationTries);
 
-      if(allowedCrossoverPoints.Count > 0) {
+      if (allowedCrossoverPoints.Count > 0) {
         IFunctionTree branch1 = allowedCrossoverPoints[random.Next(allowedCrossoverPoints.Count)];
 
         // replace the branch in tree0 with the selected branch from tree1
@@ -75,8 +75,8 @@ until a valid configuration is found.";
 
     private List<IFunctionTree> GetPossibleCrossoverPoints(TreeGardener gardener, IFunctionTree tree, int maxInsertedBranchSize, int maxInsertedBranchHeight, IList<IFunction> allowedFunctions) {
       List<IFunctionTree> crossoverPoints = new List<IFunctionTree>();
-      foreach(IFunctionTree possiblePoint in gardener.GetAllSubTrees(tree)) {
-        if(allowedFunctions.Contains(possiblePoint.Function) && possiblePoint.Size <= maxInsertedBranchSize && possiblePoint.Height <= maxInsertedBranchHeight)
+      foreach (IFunctionTree possiblePoint in gardener.GetAllSubTrees(tree)) {
+        if (allowedFunctions.Contains(possiblePoint.Function) && possiblePoint.Size <= maxInsertedBranchSize && possiblePoint.Height <= maxInsertedBranchHeight)
           crossoverPoints.Add(possiblePoint);
       }
       return crossoverPoints;

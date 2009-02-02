@@ -35,7 +35,7 @@ namespace HeuristicLab.GP {
   /// Implementation of a homologous one point crossover operator as described in: 
   /// W. B. Langdon and R. Poli.  Foundations of Genetic Programming. Springer-Verlag, 2002.
   /// </summary>
-  public class OnePointCrossOver : GPCrossoverBase {
+  public class OnePointCrossOver : SizeConstrictedGPCrossoverBase {
     // internal data structure to represent crossover points
     private class CrossoverPoint {
       public IFunctionTree parent0;
@@ -44,13 +44,13 @@ namespace HeuristicLab.GP {
     }
     public override string Description {
       get {
-        return @"";
+        return @"One point crossover for trees as described in W. B. Langdon and R. Poli. Foundations of Genetic Programming. Springer-Verlag, 2002.";
       }
     }
 
-    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
+    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       List<CrossoverPoint> allowedCrossOverPoints = new List<CrossoverPoint>();
-      GetCrossOverPoints(gardener, tree0, tree1, allowedCrossOverPoints);
+      GetCrossOverPoints(gardener, tree0, tree1, maxTreeSize - tree0.Size, allowedCrossOverPoints);
       if (allowedCrossOverPoints.Count > 0) {
         CrossoverPoint crossOverPoint = allowedCrossOverPoints[random.Next(allowedCrossOverPoints.Count)];
         IFunctionTree parent0 = crossOverPoint.parent0;
@@ -61,19 +61,20 @@ namespace HeuristicLab.GP {
       return tree0;
     }
 
-    private void GetCrossOverPoints(TreeGardener gardener, IFunctionTree branch0, IFunctionTree branch1, List<CrossoverPoint> crossoverPoints) {
+    private void GetCrossOverPoints(TreeGardener gardener, IFunctionTree branch0, IFunctionTree branch1, int maxNewNodes, List<CrossoverPoint> crossoverPoints) {
       if (branch0.SubTrees.Count != branch1.SubTrees.Count) return;
 
       for (int i = 0; i < branch0.SubTrees.Count; i++) {
         // if the current branch can be attached as a sub-tree to branch0
-        if (gardener.GetAllowedSubFunctions(branch0.Function, i).Contains(branch1.SubTrees[i].Function)) {
+        if (gardener.GetAllowedSubFunctions(branch0.Function, i).Contains(branch1.SubTrees[i].Function) &&
+           branch1.SubTrees[i].Size - branch0.SubTrees[i].Size <= maxNewNodes) {
           CrossoverPoint p = new CrossoverPoint();
           p.childIndex = i;
           p.parent0 = branch0;
           p.parent1 = branch1;
           crossoverPoints.Add(p);
         }
-        GetCrossOverPoints(gardener, branch0.SubTrees[i], branch1.SubTrees[i], crossoverPoints);
+        GetCrossOverPoints(gardener, branch0.SubTrees[i], branch1.SubTrees[i], maxNewNodes, crossoverPoints);
       }
     }
   }

@@ -31,7 +31,10 @@ using HeuristicLab.Constraints;
 using System.Diagnostics;
 
 namespace HeuristicLab.GP {
-  public abstract class SizeConstrictedGPCrossoverBase : GPCrossoverBase{
+  public abstract class SizeConstrictedGPCrossoverBase : GPCrossoverBase {
+
+    private int MaxRecombinationTries { get { return 20; } }
+
     public SizeConstrictedGPCrossoverBase()
       : base() {
       AddVariableInfo(new VariableInfo("MaxTreeHeight", "The maximal allowed height of the tree", typeof(IntData), VariableKind.In));
@@ -44,15 +47,16 @@ namespace HeuristicLab.GP {
 
       // when tree0 is terminal then try to cross into tree1, when tree1 is also terminal just return tree0 unchanged.
       IFunctionTree newTree;
-      if (tree0.SubTrees.Count > 0) {
-        newTree = Cross(gardener, random, tree0, tree1, maxTreeSize, maxTreeHeight);
-      } else if (tree1.SubTrees.Count > 0) {
-        newTree = Cross(gardener, random, tree1, tree0, maxTreeSize, maxTreeHeight);
-      } else newTree = tree0;
-
-      // check if the size and height of the new tree are still within the allowed bounds
-      Debug.Assert(newTree.Height <= maxTreeHeight);
-      Debug.Assert(newTree.Size <= maxTreeSize);
+      int tries = 0;
+      do {
+        if (tree0.SubTrees.Count > 0) {
+          newTree = Cross(gardener, random, (IFunctionTree)tree0.Clone(), (IFunctionTree)tree1.Clone(), maxTreeSize, maxTreeHeight);
+        } else if (tree1.SubTrees.Count > 0) {
+          newTree = Cross(gardener, random, (IFunctionTree)tree1.Clone(), (IFunctionTree)tree0.Clone(), maxTreeSize, maxTreeHeight);
+        } else newTree = tree0;
+        if (tries++ > MaxRecombinationTries)
+          throw new InvalidOperationException("Couldn't recombine parents to create a valid child not larger than " + maxTreeSize + " and not higher than " + maxTreeHeight + ".");
+      } while (newTree.Size > maxTreeSize || newTree.Height > maxTreeHeight);
       return newTree;
     }
 

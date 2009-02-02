@@ -38,7 +38,7 @@ namespace HeuristicLab.GP {
   /// Genetic Programming and Evolvable Machines, Vol. 1, Number 1/2, pp. 95-119, April 2000
   /// </summary>
   public class SizeFairCrossOver : SizeConstrictedGPCrossoverBase {
-    private const int MAX_RECOMBINATION_TRIES = 20;
+    private int MaxRecombinationTries { get { return 20; } }
     // private data structure for crossover points
     protected class CrossoverPoint {
       public IFunctionTree tree;
@@ -56,7 +56,7 @@ namespace HeuristicLab.GP {
         while (parent == null) parent = gardener.GetRandomParentNode(tree0);
         removedBranchIndex = random.Next(parent.SubTrees.Count);
         insertedBranch = GetReplacementBranch(random, gardener, tree0, parent, removedBranchIndex, tree1, maxTreeSize, maxTreeHeight);
-      } while (insertedBranch == null && tries++ < MAX_RECOMBINATION_TRIES);
+      } while (insertedBranch == null && tries++ < MaxRecombinationTries);
 
       if (insertedBranch != null) {
         // replace the branch below the crossoverpoint with the selected branch from root1
@@ -138,7 +138,7 @@ namespace HeuristicLab.GP {
 
       for (int i = 0; i < root.SubTrees.Count; i++) {
         GetTrail(root.SubTrees[i], branch, trail);
-        if (trail.Count>0) {
+        if (trail.Count > 0) {
           trail.Add(i);
           return;
         }

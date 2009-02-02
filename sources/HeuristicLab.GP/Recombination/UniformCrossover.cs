@@ -36,7 +36,7 @@ namespace HeuristicLab.GP {
   /// R. Poli and W. B. Langdon.  On the Search Properties of Different Crossover Operators in Genetic Programming.
   /// In Proceedings of Genetic Programming '98, Madison, Wisconsin, 1998.
   /// </summary>
-  public class UniformCrossover : GPCrossoverBase {
+  public class UniformCrossover : SizeConstrictedGPCrossoverBase {
     // internal datastructure to represent crossover points
     private class CrossoverPoint {
       public IFunctionTree Parent0;
@@ -51,7 +51,7 @@ namespace HeuristicLab.GP {
       }
     }
 
-    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
+    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       List<CrossoverPoint> allowedCrossOverPoints = new List<CrossoverPoint>();
       GetCrossOverPoints(gardener, tree0, tree1, allowedCrossOverPoints);
       // iterate through the list of crossover points and swap nodes with p=0.5
