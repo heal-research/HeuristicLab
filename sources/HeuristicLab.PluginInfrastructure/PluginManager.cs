@@ -206,11 +206,15 @@ namespace HeuristicLab.PluginInfrastructure {
         pset = new PermissionSet(PermissionState.None);
         pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
         pset.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
-        /*foreach (PluginInfo plugin in depPlugins) {
+        FileIOPermission fPerm = new FileIOPermission(PermissionState.None);
+             
+        foreach (PluginInfo plugin in depPlugins) {
             foreach(String assemblies in plugin.Assemblies)
-              pset.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read, assemblies));
-        }*/
-        pset.AddPermission(new FileIOPermission(PermissionState.Unrestricted));
+              fPerm.AddPathList(FileIOPermissionAccess.AllAccess, assemblies);
+        }
+        
+        pset.AddPermission(fPerm);
+
       } else {
         pset = new PermissionSet(PermissionState.Unrestricted);
       }

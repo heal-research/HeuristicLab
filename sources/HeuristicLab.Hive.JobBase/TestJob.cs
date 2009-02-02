@@ -26,6 +26,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Xml;
 using System.Threading;
+using System.IO;
+using System.Security.Permissions;
 
 namespace HeuristicLab.Hive.JobBase {
   [Serializable]
