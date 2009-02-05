@@ -60,6 +60,13 @@ If a received ""Message"" is present it will output it as ""Received"" and creat
               message.Destination = message.Source;
               message.Source = peerName;
               message.Timestamp = DateTime.Now;
+            } else { // otherwise delete the message
+              IVariableInfo messageInfo = GetVariableInfo("Message");
+              if (messageInfo.Local) {
+                RemoveVariable(messageInfo.ActualName);
+              } else {
+                scope.RemoveVariable(scope.TranslateName(messageInfo.ActualName));
+              }
             }
           }
         } else throw new InvalidOperationException("ERROR in MessageProcessor: Remote peer is using different protocol");

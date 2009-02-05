@@ -21,7 +21,7 @@ namespace HeuristicLab.Communication.Operators {
       Message message = GetVariableValue<Message>("Message", scope, false);
       if (message.Expect.Count > scope.SubScopes.Count) throw new InvalidOperationException("ERROR in SubScopeMessageDecomposer: There are not enough subscopes to put the contents of the message into");
       int i = 0;
-      foreach (IVariable var in message.Expect) {
+      foreach (IVariable var in message.Give) {
         scope.SubScopes[i].AddVariable(var);
       }
       IVariableInfo info = GetVariableInfo("Message");

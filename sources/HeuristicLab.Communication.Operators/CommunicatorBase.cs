@@ -27,8 +27,9 @@ namespace HeuristicLab.Communication.Operators {
       string peerName = GetVariableValue<StringData>("PeerName", scope, true).Data;
       Message message = GetVariableValue<Message>("Message", scope, false, false);
 
-      if (message == null) { // RECEIVE MODE (no message present or not from this source)
+      if (message == null) { // RECEIVE MODE (no message present)
         message = Receive(scope, protocol, currentState);
+        if (message == null) throw new InvalidOperationException("ERROR in Communicator: Message could not be received");
         if (!info.Local) scope.AddVariable(new Variable(actualName, message));
         else AddVariable(new Variable(actualName, message));
       } else { // SEND MODE (message present)

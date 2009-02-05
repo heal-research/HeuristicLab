@@ -42,7 +42,7 @@ namespace HeuristicLab.Communication.Operators {
 
     private string Encode(Message message) {
       XmlDocument document = new XmlDocument();
-      return message.GetXmlNode("Message", document, new Dictionary<Guid, IStorable>()).ToString();
+      return message.GetXmlNode("Message", document, new Dictionary<Guid, IStorable>()).OuterXml;
     }
 
     private Message Decode(string m) {
@@ -56,12 +56,14 @@ namespace HeuristicLab.Communication.Operators {
     protected override void Send(IScope scope, Protocol protocol, ProtocolState currentState, Message message) {
       IDataStream connection = scope.GetVariableValue<IDataStream>("DataStream", true);
       connection.Write("PROTOCOL_ID " + protocol.Name);
-      if (connection.Read().Equals("ACK")) {
+      string s = connection.Read();
+      if (s.Trim().Equals("ACK")) {
         connection.Write("STATE_ID " + currentState.Name);
-        if (connection.Read().Equals("ACK")) {
+        s = connection.Read();
+        if (s.Trim().Equals("ACK")) {
           connection.Write(Encode(message));
-        }
-      }
+        } else throw new InvalidOperationException("Received unexpected response [2]: " + s);
+      } else throw new InvalidOperationException("Received unexpected response [1]: " + s);
     }
 
     protected override Message Receive(IScope scope, Protocol protocol, ProtocolState currentState) {
@@ -69,11 +71,11 @@ namespace HeuristicLab.Communication.Operators {
       Message message = new Message();
       string rcvd = connection.Read();
       if (rcvd.StartsWith("PROTOCOL_ID ")) {
-        if (rcvd.Substring(12).Equals(protocol.Name)) {
+        if (rcvd.Substring(12).Trim().Equals(protocol.Name)) {
           connection.Write("ACK");
           rcvd = connection.Read();
           if (rcvd.StartsWith("STATE_ID ")) {
-            if (rcvd.Substring(9).Equals(currentState.Name)) {
+            if (rcvd.Substring(9).Trim().Equals(currentState.Name)) {
               connection.Write("ACK");
               message = Decode(connection.Read());
               return message;

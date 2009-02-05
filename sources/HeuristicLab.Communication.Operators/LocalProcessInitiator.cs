@@ -41,6 +41,7 @@ namespace HeuristicLab.Communication.Operators {
       LocalProcessDriverConfiguration config = GetVariableValue<LocalProcessDriverConfiguration>("DriverConfiguration", scope, true);
       ProcessData proc = new ProcessData();
       proc.Initialize(config);
+      proc.Connect();
 
       IVariableInfo info = GetVariableInfo("Process");
       if (info.Local)
