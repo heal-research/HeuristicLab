@@ -46,12 +46,12 @@ namespace HeuristicLab.SimOpt {
       bool delete = GetVariableValue<BoolData>("DeleteItems", scope, true).Data;
       for (int i = 0; i < cil.Count; i++) {
         IScope tmp = new Scope(scope.Name + "_Param" + i.ToString());
+        scope.AddSubScope(tmp);
         try {
-          scope.AddVariable(cil[i].Clone() as Variable);
+          tmp.AddVariable(cil[i].Clone() as Variable);
         } catch (InvalidCastException ice) {
           throw new InvalidCastException("Parameters in the constrained item list have to be encapsulated in a variable!\r\n\r\n" + ice.Message);
         }
-        scope.AddSubScope(tmp);
       }
       if (delete) {
         IVariableInfo info = GetVariableInfo("Items");
