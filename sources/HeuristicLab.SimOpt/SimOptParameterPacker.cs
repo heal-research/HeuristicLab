@@ -68,8 +68,8 @@ If the parameter vector could not be updated due to a constraint violation, the 
 
       // ----- CONSTRAINT HANDLING ----- //
       IVariableInfo info = GetVariableInfo("Items");
-      bool error = tempcil.EndCombinedOperation(out violatedConstraints);
-      if (!error) {
+      bool success = tempcil.EndCombinedOperation(out violatedConstraints);
+      if (success) {
         if (!updateVector) {
           if (info.Local) AddVariable(new Variable(info.ActualName, tempcil));
           else scope.AddVariable(new Variable(scope.TranslateName("Items"), tempcil));
@@ -84,10 +84,10 @@ If the parameter vector could not be updated due to a constraint violation, the 
 
       // ----- DELETE SUBSCOPES ----- //
       if (delete) {
-        scope.SubScopes.Clear();
+        while (scope.SubScopes.Count > 0) scope.RemoveSubScope(scope.SubScopes[0]);
       }
 
-      if (error) return new AtomicOperation(SubOperators[0], scope);
+      if (!success) return new AtomicOperation(SubOperators[0], scope);
       else return null;
     }
   }
