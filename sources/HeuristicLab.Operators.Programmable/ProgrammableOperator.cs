@@ -54,6 +54,8 @@ namespace HeuristicLab.Operators.Programmable {
       }
     }
 
+    private object syncRoot = new object();
+
     public ProgrammableOperator() {
       myCode = "Result.Data = true;";
       myDescription = "An operator that can be programmed for arbitrary needs.";
@@ -151,8 +153,10 @@ namespace HeuristicLab.Operators.Programmable {
     }
 
     public override IOperation Apply(IScope scope) {
-      if (executeMethod == null) {
-        Compile();
+      lock (syncRoot) {
+        if (executeMethod == null) {
+          Compile();
+        }
       }
 
       // collect parameters
