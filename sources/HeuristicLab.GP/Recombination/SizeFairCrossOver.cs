@@ -82,7 +82,12 @@ namespace HeuristicLab.GP {
 
       if (shorterBranches.Count > 0 && longerBranches.Count > 0) {
         double pEqualLength = equalLengthBranches.Count > 0 ? 1.0 / removedBranchSize : 0.0;
-        double pLonger = (1.0 - pEqualLength) / (longerBranches.Count * (1.0 + longerBranches.Average(p => p.branchSize) / shorterBranches.Average(p => p.branchSize)));
+        double pLonger;
+        if (parent.Size == maxTreeSize) {
+          pLonger = 0.0;
+        } else {
+          pLonger = (1.0 - pEqualLength) / (longerBranches.Count * (1.0 + longerBranches.Average(p => p.branchSize) / shorterBranches.Average(p => p.branchSize)));
+        }
         double pShorter = (1.0 - pEqualLength - pLonger);
 
         double r = random.NextDouble();

@@ -49,13 +49,14 @@ namespace HeuristicLab.GP {
       IFunctionTree newTree;
       int tries = 0;
       do {
+        if (tries++ > MaxRecombinationTries)
+          // if after so many tries it was not possible to create a solution within the given size constraints just return the tree without changes.
+          return tree0;
         if (tree0.SubTrees.Count > 0) {
           newTree = Cross(gardener, random, (IFunctionTree)tree0.Clone(), (IFunctionTree)tree1.Clone(), maxTreeSize, maxTreeHeight);
         } else if (tree1.SubTrees.Count > 0) {
           newTree = Cross(gardener, random, (IFunctionTree)tree1.Clone(), (IFunctionTree)tree0.Clone(), maxTreeSize, maxTreeHeight);
         } else newTree = tree0;
-        if (tries++ > MaxRecombinationTries)
-          throw new InvalidOperationException("Couldn't recombine parents to create a valid child not larger than " + maxTreeSize + " and not higher than " + maxTreeHeight + ".");
       } while (newTree.Size > maxTreeSize || newTree.Height > maxTreeHeight);
       return newTree;
     }
