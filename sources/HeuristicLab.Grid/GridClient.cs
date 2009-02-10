@@ -100,7 +100,6 @@ namespace HeuristicLab.Grid {
       binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
       binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
       binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-      binding.Security.Mode = SecurityMode.None;
       factory = new ChannelFactory<IEngineStore>(binding);
       engineStore = factory.CreateChannel(new EndpointAddress(uri));
     }

@@ -72,8 +72,6 @@ namespace HeuristicLab.Grid {
         binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
         binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
         binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-        binding.Security.Mode = SecurityMode.None;
-        
 
         externalHost.AddServiceEndpoint(typeof(IGridServer), binding, externalAddressTextBox.Text);
         externalHost.Open();
