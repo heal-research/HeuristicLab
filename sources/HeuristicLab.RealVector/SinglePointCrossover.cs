@@ -56,16 +56,16 @@ namespace HeuristicLab.RealVector {
     }
 
     /// <summary>
-    /// Performs a single point crossover at a randomly chosen position of the two 
-    /// given parent real vectors.
+    /// Performs a single point crossover operation for two given parent real vectors.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
-    /// <returns>The newly created real vector, resulting from the single point crossover.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
-      return Apply(random, parent1, parent2);
+    /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
+    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("ERROR in SinglePointCrossover: The number of parents is not equal to 2");
+      return Apply(random, parents[0], parents[1]);
     }
   }
 }

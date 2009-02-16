@@ -64,16 +64,12 @@
     <Compile Include="BoundsChecker.cs" />
     <Compile Include="ContinuousManipulator.cs" />
     <Compile Include="DiscreteCrossover.cs" />
-    <Compile Include="DiscreteMultiCrossover.cs" />
     <Compile Include="HeuristicCrossover.cs" />
-    <Compile Include="IntermediateMultiCrossover.cs" />
     <Compile Include="MichalewiczNonUniformAllPositionsManipulator.cs" />
     <Compile Include="MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="RandomConvexCrossover.cs" />
     <Compile Include="LocalCrossover.cs" />
-    <Compile Include="RealVectorMultiCrossoverBase.cs" />
-    <Compile Include="RealVectorSelfAdaptiveMultiCrossoverBase.cs" />
-    <Compile Include="SelfAdaptiveDiscreteMultiCrossover.cs" />
+    <Compile Include="SelfAdaptiveDiscreteCrossover.cs" />
     <Compile Include="SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="UniformAllPositionsManipulator.cs" />
     <Compile Include="UniformRandomRealVectorGenerator.cs" />

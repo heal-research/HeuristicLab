@@ -41,32 +41,32 @@ namespace HeuristicLab.IntVector {
     }
 
     /// <summary>
-    /// Performs a crossover of two given parents.
+    /// Performs a crossover by calling <see cref="Cross(HeuristicLab.Core.IScope, HeuristicLab.Core.IRandom, int[][]"/>
+    /// and adds the created integer vector to the current scope.
     /// </summary>
-    /// <param name="scope">The current scope.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the parents have different lengths.</exception>
+    /// <param name="scope">The current scope which represents a new child.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
-    /// <param name="child">The resulting child scope.</param>
-    protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
-      IVariableInfo intVectorInfo = GetVariableInfo("IntVector");
-      IntArrayData vector1 = parent1.GetVariableValue<IntArrayData>(intVectorInfo.FormalName, false);
-      IntArrayData vector2 = parent2.GetVariableValue<IntArrayData>(intVectorInfo.FormalName, false);
+    protected sealed override void Cross(IScope scope, IRandom random) {
+      int[][] parents = new int[scope.SubScopes.Count][];
+      int length = -1;
+      for (int i = 0; i < scope.SubScopes.Count; i++) {
+        parents[i] = scope.SubScopes[i].GetVariableValue<IntArrayData>("IntVector", false).Data;
+        if (i == 0) length = parents[i].Length;
+        else if (parents[i].Length != length) throw new InvalidOperationException("ERROR in IntVectorCrossoverBase: Cannot apply crossover to integer vectors of different length");
+      }
 
-      if (vector1.Data.Length != vector2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to integer vectors of different length.");
-
-      int[] result = Cross(scope, random, vector1.Data, vector2.Data);
-      child.AddVariable(new Variable(child.TranslateName(intVectorInfo.FormalName), new IntArrayData(result)));
+      int[] result = Cross(scope, random, parents);
+      scope.AddVariable(new Variable(scope.TranslateName("IntVector"), new IntArrayData(result)));
     }
 
     /// <summary>
-    /// Performs a crossover of two given parents.
+    /// Performs a crossover of multiple integer vectors.
     /// </summary>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
+    /// <param name="parents">An array containing all parent integer vectors.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
-    protected abstract int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2);
+    protected abstract int[] Cross(IScope scope, IRandom random, int[][] parents);
   }
 }

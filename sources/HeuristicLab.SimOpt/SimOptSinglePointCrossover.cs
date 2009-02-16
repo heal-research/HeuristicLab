@@ -39,10 +39,10 @@ namespace HeuristicLab.SimOpt {
       AddVariableInfo(new VariableInfo("Item", "The item list to be crossed", typeof(ConstrainedItemList), VariableKind.In));
     }
 
-    protected override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
+    protected override void Cross(IScope scope, IRandom random) {
       ICollection<IConstraint> violated;
-      ConstrainedItemList p1 = parent1.GetVariableValue<ConstrainedItemList>("Item", false);
-      ConstrainedItemList p2 = parent2.GetVariableValue<ConstrainedItemList>("Item", false);
+      ConstrainedItemList p1 = scope.SubScopes[0].GetVariableValue<ConstrainedItemList>("Item", false);
+      ConstrainedItemList p2 = scope.SubScopes[1].GetVariableValue<ConstrainedItemList>("Item", false);
 
       if (p1.Count != p2.Count) throw new InvalidOperationException("ERROR: the lists do not contain the same number of items");
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.SimOpt {
           }
         } while (!childList.EndCombinedOperation(out violated) && ++iter < 100);
         if (violated.Count == 0) {
-          child.AddVariable(new Variable(parent1.TranslateName("Item"), childList));
+          scope.AddVariable(new Variable(scope.SubScopes[0].TranslateName("Item"), childList));
         }
       }
     }

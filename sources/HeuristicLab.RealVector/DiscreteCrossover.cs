@@ -26,45 +26,41 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.RealVector {
   /// <summary>
-  /// Discrete crossover for real vectors: Selects randomly either the value of the first or the 
-  /// second parent.
+  /// Discrete crossover for real vectors: For each position in the new vector an allele
+  /// of one of the parents is randomly selected.
   /// </summary>
   public class DiscreteCrossover : RealVectorCrossoverBase {
     /// <inheritdoc select="summary"/>
     public override string Description {
-      get { return "Discrete crossover for real vectors."; }
+      get { return @"Discrete crossover for real vectors: creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent."; }
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation of the two given parents.
+    /// Performs a discrete crossover operation on multiple given parents.
     /// </summary>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover operation.</param>
-    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="parents">An array containing the parents that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
-      int length = parent1.Length;
+    public static double[] Apply(IRandom random, double[][] parents) {
+      int length = parents[0].Length;
       double[] result = new double[length];
-
       for (int i = 0; i < length; i++) {
-        if (random.NextDouble() < 0.5)
-          result[i] = parent1[i];
-        else
-          result[i] = parent2[i];
+        result[i] = parents[random.Next(parents.Length)][i];
       }
       return result;
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation of the two given parents.
+    /// Performs a discrete crossover operation for multiple given parent real vectors.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if there are less than two parents.</exception>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover operation.</param>
-    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="parents">An array containing the real vectors that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
-      return Apply(random, parent1, parent2);
+    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
+      if (parents.Length < 2) throw new InvalidOperationException("ERROR in DiscreteCrossover: The number of parents is less than 2");
+      return Apply(random, parents);
     }
   }
 }

@@ -77,17 +77,17 @@ Please use the operator BoundsChecker if necessary.";
     }
 
     /// <summary>
-    /// Performs a blend alpha crossover of two real vectors.
+    /// Performs a blend alpha crossover operation for two given parent real vectors.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover operation.</param>
-    /// <param name="parent2">The second parent for the crossover operation.</param>
-    /// <returns>The newly created real vector, resulting from the blend alpha crossover.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">An array containing the two real vectors that should be crossed.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
+    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("ERROR in BlendAlphaCrossover: The number of parents is not equal to 2");
       double alpha = GetVariableValue<DoubleData>("Alpha", scope, true).Data;
-      return Apply(random, parent1, parent2, alpha);
+      return Apply(random, parents[0], parents[1], alpha);
     }
   }
 }

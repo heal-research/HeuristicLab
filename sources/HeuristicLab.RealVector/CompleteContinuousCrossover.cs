@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.RealVector {
   /// <summary>
   /// Complete continuous crossover for real vectors: for each element of the new vector the average
-  /// of both parents is calculated.
+  /// of all parents is calculated.
   /// </summary>
   public class CompleteContinuousCrossover : RealVectorCrossoverBase {
     /// <inheritdoc select="summary"/>
@@ -37,32 +37,34 @@ namespace HeuristicLab.RealVector {
     }
 
     /// <summary>
-    /// Performs a complete continuous crossover of the two given real vectors.
+    /// Performs a complete continuous crossover of multiple given real vectors.
     /// </summary>
     /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover.</param>
-    /// <param name="parent2">The second parent for the crossover.</param>
+    /// <param name="parents">An array containing the parents that should be crossed.</param>
     /// <returns>The newly created real vector, resulting from the complete continuous crossover.</returns>
-    public static double[] Apply(IRandom random, double[] parent1, double[] parent2) {
-      int length = parent1.Length;
+    public static double[] Apply(IRandom random, double[][] parents) {
+      int length = parents[0].Length;
       double[] result = new double[length];
-
-      for (int i = 0; i < length; i++)
-        result[i] = (parent1[i] + parent2[i]) / 2;
+      for (int i = 0; i < length; i++) {
+        double sum = 0.0;
+        for (int j = 0; j < parents.Length; j++)
+          sum += parents[j][i];
+        result[i] = sum / parents.Length;
+      }
       return result;
     }
 
     /// <summary>
-    /// Performs a complete continuous crossover of the two given real vectors.
+    /// Performs a complete continuous crossover operation for multiple given parent real vectors.
     /// </summary>
-    /// <remarks>Calls <see cref="Apply"/>.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown if there are less than two parents.</exception>
     /// <param name="scope">The current scope.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover.</param>
-    /// <param name="parent2">The second parent for the crossover.</param>
-    /// <returns>The newly created real vector, resulting from the complete continuous crossover.</returns>
-    protected override double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2) {
-      return Apply(random, parent1, parent2);
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">An array containing the real vectors that should be crossed.</param>
+    /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
+    protected override double[] Cross(IScope scope, IRandom random, double[][] parents) {
+      if (parents.Length < 2) throw new InvalidOperationException("ERROR in CompleteContinuousCrossover: The number of parents is less than 2");
+      return Apply(random, parents);
     }
   }
 }

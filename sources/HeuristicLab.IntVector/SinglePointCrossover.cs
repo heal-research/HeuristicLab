@@ -56,16 +56,17 @@ namespace HeuristicLab.IntVector {
     }
 
     /// <summary>
-    /// Performs a single point crossover at a randomly chosen position of the two 
+    /// Performs a single point crossover at a randomly chosen position of two 
     /// given parent integer vectors.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if there are not exactly two parents.</exception>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
+    /// <param name="parents">An array containing the two integer vectors that should be crossed.</param>
     /// <returns>The newly created integer vector, resulting from the single point crossover.</returns>
-    protected override int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2) {
-      return Apply(random, parent1, parent2);
+    protected override int[] Cross(IScope scope, IRandom random, int[][] parents) {
+      if (parents.Length != 2) throw new InvalidOperationException("ERROR in SinglePointCrossover: The number of parents is not equal to 2");
+      return Apply(random, parents[0], parents[1]);
     }
   }
 }

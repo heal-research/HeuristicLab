@@ -27,7 +27,7 @@ using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.Permutation {
   /// <summary>
-  /// Base class for cross over permutations.
+  /// Base class for all permutation crossover operators.
   /// </summary>
   public abstract class PermutationCrossoverBase : CrossoverBase {
     /// <summary>
@@ -40,37 +40,32 @@ namespace HeuristicLab.Permutation {
     }
 
     /// <summary>
-    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/> with
-    /// the given random number generator (<paramref name="random"/>) to create a new 
-    /// <paramref name="child"/>.
+    /// Performs a crossover by calling <see cref="Cross(HeuristicLab.Core.IScope, HeuristicLab.Core.IRandom, int[][]"/>
+    /// and adds the created permutation to the current scope.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when the two permutations have a different
-    /// length.</exception>
-    /// <remarks>Calls <see cref="Cross(HeuristicLab.Core.IScope, HeuristicLab.Core.IRandom, int[], int[])"/>.</remarks>
-    /// <param name="scope">The scope where to get the actual child variable name.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The parent scope 1 to cross over.</param>
-    /// <param name="parent2">The parent scope 2 to cross over.</param>
-    /// <param name="child">The child scope which to assign the permutated data.</param>
-    protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
-      Permutation perm1 = parent1.GetVariableValue<Permutation>("Permutation", false);
-      Permutation perm2 = parent2.GetVariableValue<Permutation>("Permutation", false);
+    /// <exception cref="InvalidOperationException">Thrown if the parents have different lengths.</exception>
+    /// <param name="scope">The current scope which represents a new child.</param>
+    /// <param name="random">A random number generator.</param>
+    protected sealed override void Cross(IScope scope, IRandom random) {
+      int[][] parents = new int[scope.SubScopes.Count][];
+      int length = -1;
+      for (int i = 0; i < scope.SubScopes.Count; i++) {
+        parents[i] = scope.SubScopes[i].GetVariableValue<Permutation>("Permutation", false).Data;
+        if (i == 0) length = parents[i].Length;
+        else if (parents[i].Length != length) throw new InvalidOperationException("ERROR in PermutationCrossoverBase: Cannot apply crossover to permutations of different length");
+      }
 
-      if (perm1.Data.Length != perm2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to permutations of different length.");
-
-      int[] result = Cross(scope, random, perm1.Data, perm2.Data);
-      child.AddVariable(new Variable(scope.TranslateName("Permutation"), new Permutation(result)));
+      int[] result = Cross(scope, random, parents);
+      scope.AddVariable(new Variable(scope.TranslateName("Permutation"), new Permutation(result)));
     }
 
     /// <summary>
-    /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/> with
-    /// the given random number generator (<paramref name="random"/>) .
+    /// Performs a crossover of multiple permutations.
     /// </summary>
-    /// <param name="scope">The scope of the variables.</param>
-    /// <param name="random">The random number generator.</param>
-    /// <param name="parent1">The parent scope 1 to cross over.</param>
-    /// <param name="parent2">The parent scope 2 to cross over.</param>
-    /// <returns>The created cross over permutation as int array.</returns>
-    protected abstract int[] Cross(IScope scope, IRandom random, int[] parent1, int[] parent2);
+    /// <param name="scope">The current scope.</param>
+    /// <param name="random">A random number generator.</param>
+    /// <param name="parents">An array containing all parent permutations.</param>
+    /// <returns>The newly created permutation, resulting from the crossover operation.</returns>
+    protected abstract int[] Cross(IScope scope, IRandom random, int[][] parents);
   }
 }

@@ -28,7 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.SimOpt {
-  public class SimOptDiscreteMultiCrossover : MultiCrossoverBase {
+  public class SimOptDiscreteMultiCrossover : CrossoverBase {
 
     public override string Description {
       get { return @"This operator applies a discrete recombination on the variables defined"; }
@@ -39,12 +39,12 @@ namespace HeuristicLab.SimOpt {
       AddVariableInfo(new VariableInfo("Item", "The item list to be recombined", typeof(ConstrainedItemList), VariableKind.In));
     }
 
-    protected override void Cross(IScope scope, IRandom random, IScope[] parents, IScope child) {
+    protected override void Cross(IScope scope, IRandom random) {
       ICollection<IConstraint> violated;
 
-      ConstrainedItemList[] p = new ConstrainedItemList[parents.Length];
+      ConstrainedItemList[] p = new ConstrainedItemList[scope.SubScopes.Count];
       for (int i = 0; i < p.Length; i++) {
-        p[i] = parents[i].GetVariableValue<ConstrainedItemList>("Item", false);
+        p[i] = scope.SubScopes[i].GetVariableValue<ConstrainedItemList>("Item", false);
         if (i > 0 && p[i].Count != p[i-1].Count) throw new InvalidOperationException("ERROR: the lists do not contain the same number of items");
       }
 
@@ -54,12 +54,12 @@ namespace HeuristicLab.SimOpt {
         do {
           childList.BeginCombinedOperation();
           for (int i = 0; i < childList.Count; i++) {
-            int nextParent = random.Next(0, parents.Length);
+            int nextParent = random.Next(0, scope.SubScopes.Count);
             if (nextParent > 0) childList.TrySetAt(i, (IItem)p[nextParent].Clone(), out violated);
           }
         } while (!childList.EndCombinedOperation(out violated) && ++iter < 100);
         if (violated.Count == 0) {
-          child.AddVariable(new Variable(parents[0].TranslateName("Item"), childList));
+          scope.AddVariable(new Variable(scope.SubScopes[0].TranslateName("Item"), childList));
         }
       }
     }

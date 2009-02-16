@@ -27,7 +27,7 @@ using HeuristicLab.Operators;
 
 namespace HeuristicLab.Evolutionary {
   /// <summary>
-  /// Base class for crossing over operators.
+  /// Base class for crossover operators.
   /// </summary>
   public abstract class CrossoverBase : OperatorBase {
     /// <summary>
@@ -39,36 +39,22 @@ namespace HeuristicLab.Evolutionary {
     }
 
     /// <summary>
-    /// Replaces the parents (the sub scopes of the current <paramref name="scope"/>) with created children
-    /// by crossing over of two adjacent sub scopes.
+    /// Retrieves the random number generator and calls <see cref="Cross(HeuristicLab.Core.IScope, HeuristicLab.Core.IRandom)"/>.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when the size of the mating pool 
-    /// is not even.</exception>
-    /// <param name="scope">The current scope whose sub scopes shall be parents.</param>
+    /// <param name="scope">The current scope which represents a new child.</param>
     /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       IRandom random = GetVariableValue<IRandom>("Random", scope, true);
-
-      if (scope.SubScopes.Count != 2)
-        throw new InvalidOperationException("ERROR: Number of parents is != 2");
-
-      IScope parent1 = scope.SubScopes[0];
-      IScope parent2 = scope.SubScopes[1];
-      IScope child = scope;
-      Cross(scope, random, parent1, parent2, child);
-
+      Cross(scope, random);
       return null;
     }
 
     /// <summary>
-    /// Performs a cross over of <paramref name="parent1"/> and <paramref name="parent2"/>
-    /// to create a new <paramref name="child"/>.
+    /// Performs a crossover of all parents (sub-scopes) of <paramref name="scope"/> to create a new child.
+    /// Note that all children have to be prepared using the <see cref="HeuristicLab.Evolutionary.ChildrenInitializer"/>.
     /// </summary>
-    /// <param name="scope">The current scope.</param>
+    /// <param name="scope">The current scope which represents a new child.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The parent scope 1 to cross over.</param>
-    /// <param name="parent2">The parent scope 2 to cross over.</param>
-    /// <param name="child">The resulting child of the cross over.</param>
-    protected abstract void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child);
+    protected abstract void Cross(IScope scope, IRandom random);
   }
 }

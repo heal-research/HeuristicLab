@@ -41,31 +41,32 @@ namespace HeuristicLab.RealVector {
     }
 
     /// <summary>
-    /// Performs a crossover of two given parents.
+    /// Performs a crossover by calling <see cref="Cross(HeuristicLab.Core.IScope, HeuristicLab.Core.IRandom, double[][]"/>
+    /// and adds the created real vector to the current scope.
     /// </summary>
-    /// <param name="scope">The current scope.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the parents have different lengths.</exception>
+    /// <param name="scope">The current scope which represents a new child.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
-    /// <param name="child">The resulting child scope.</param>
-    protected sealed override void Cross(IScope scope, IRandom random, IScope parent1, IScope parent2, IScope child) {
-      DoubleArrayData vector1 = parent1.GetVariableValue<DoubleArrayData>("RealVector", false);
-      DoubleArrayData vector2 = parent2.GetVariableValue<DoubleArrayData>("RealVector", false);
+    protected sealed override void Cross(IScope scope, IRandom random) {
+      double[][] parents = new double[scope.SubScopes.Count][];
+      int length = -1;
+      for (int i = 0; i < scope.SubScopes.Count; i++) {
+        parents[i] = scope.SubScopes[i].GetVariableValue<DoubleArrayData>("RealVector", false).Data;
+        if (i == 0) length = parents[i].Length;
+        else if (parents[i].Length != length) throw new InvalidOperationException("ERROR in RealVectorCrossoverBase: Cannot apply crossover to real vectors of different length");
+      }
 
-      if (vector1.Data.Length != vector2.Data.Length) throw new InvalidOperationException("Cannot apply crossover to real vectors of different length.");
-
-      double[] result = Cross(scope, random, vector1.Data, vector2.Data);
-      child.AddVariable(new Variable(child.TranslateName("RealVector"), new DoubleArrayData(result)));
+      double[] result = Cross(scope, random, parents);
+      scope.AddVariable(new Variable(scope.TranslateName("RealVector"), new DoubleArrayData(result)));
     }
 
     /// <summary>
-    /// Performs a crossover of two given parents.
+    /// Performs a crossover of multiple real vectors.
     /// </summary>
     /// <param name="scope">The current scope.</param>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for crossover.</param>
-    /// <param name="parent2">The second parent for crossover.</param>
+    /// <param name="parents">An array containing all parent real vectors.</param>
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
-    protected abstract double[] Cross(IScope scope, IRandom random, double[] parent1, double[] parent2);
+    protected abstract double[] Cross(IScope scope, IRandom random, double[][] parents);
   }
 }
