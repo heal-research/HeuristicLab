@@ -42,6 +42,7 @@ using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication.ServerService;
 using HeuristicLab.Hive.JobBase;
+using HeuristicLab.Hive.Client.Core.JobStorrage;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -152,12 +153,20 @@ namespace HeuristicLab.Hive.Client.Core {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
 
-      wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
-        jId,
-        sJob,
-        1,
-        null,
-        true);
+      if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Connected) {
+        wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+          jId,
+          sJob,
+          1,
+          null,
+          true);
+      } else {
+        JobStorrageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
+        AppDomain.Unload(appDomains[jId]);
+        appDomains.Remove(jId);
+        engines.Remove(jId);
+        jobs.Remove(jId);
+      }
     }
 
     private void GetSnapshot(object jobId) {
