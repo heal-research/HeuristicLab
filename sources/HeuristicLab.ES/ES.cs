@@ -21,17 +21,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.SequentialEngine;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Logging;
 using HeuristicLab.Selection;
-using HeuristicLab.Selection.OffspringSelection;
-using HeuristicLab.Evolutionary;
+using HeuristicLab.RealVector;
 
 namespace HeuristicLab.ES {
   /// <summary>
@@ -131,10 +128,13 @@ namespace HeuristicLab.ES {
       vi.AddVariable(new Variable("ESlambda", new IntData(1)));
       vi.AddVariable(new Variable("EvaluatedSolutions", new IntData()));
       vi.AddVariable(new Variable("PlusNotation", new BoolData(true)));
+      vi.AddVariable(new Variable("ProblemDimension", new IntData(1)));
+      vi.AddVariable(new Variable("ShakingFactorsMin", new DoubleData(0.1)));
+      vi.AddVariable(new Variable("ShakingFactorsMax", new DoubleData(5.0)));
       vi.AddVariable(new Variable("Generations", new IntData()));
       vi.AddVariable(new Variable("MaximumGenerations", new IntData(1000)));
-      vi.AddVariable(new Variable("GeneralLearningRate", new DoubleData(0.1)));
-      vi.AddVariable(new Variable("LearningRate", new DoubleData(0.1)));
+      vi.AddVariable(new Variable("GeneralLearningRate", new DoubleData(1.0 / Math.Sqrt(2))));
+      vi.AddVariable(new Variable("LearningRate", new DoubleData(1.0 / Math.Sqrt(2))));
       op.OperatorGraph.AddOperator(vi);
       sp.AddSubOperator(vi);
 
@@ -176,10 +176,13 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(c);
       sp2.AddSubOperator(c);
 
-      VariableInjector vi = new VariableInjector();
-      vi.AddVariable(new Variable("ShakingFactors", new DoubleArrayData(new double[] { 5.0 })));
-      op.OperatorGraph.AddOperator(vi);
-      sp2.AddSubOperator(vi);
+      UniformRandomRealVectorGenerator urrvg = new UniformRandomRealVectorGenerator();
+      urrvg.GetVariableInfo("Length").ActualName = "ProblemDimension";
+      urrvg.GetVariableInfo("Minimum").ActualName = "ShakingFactorsMin";
+      urrvg.GetVariableInfo("Maximum").ActualName = "ShakingFactorsMax";
+      urrvg.GetVariableInfo("RealVector").ActualName = "ShakingFactors";
+      op.OperatorGraph.AddOperator(urrvg);
+      sp2.AddSubOperator(urrvg);
 
       Sorter s = new Sorter();
       s.GetVariableInfo("Descending").ActualName = "Maximization";
@@ -455,15 +458,41 @@ namespace HeuristicLab.ES {
         OnChanged();
       }
     }
-    private DoubleArrayData myShakingFactors;
+    private IntData myProblemDimension;
     /// <summary>
-    /// Gets or sets the initial strategy vector s(0).
+    /// Gets or sets the problem dimension which determines the length of the strategy vector.
     /// </summary>
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
     /// in the setter.</remarks>
-    public double[] ShakingFactors {
-      get { return myShakingFactors.Data; }
-      set { myShakingFactors.Data = value; }
+    public int ProblemDimension {
+      get { return myProblemDimension.Data; }
+      set { myProblemDimension.Data = value; }
+    }
+    private DoubleData myShakingFactorsMin;
+    /// <summary>
+    /// Gets or sets the minimal value for each dimension of the strategy vector.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
+    public double ShakingFactorsMin {
+      get { return myShakingFactorsMin.Data; }
+      set {
+        myShakingFactorsMin.Data = value;
+        OnChanged();
+      }
+    }
+    private DoubleData myShakingFactorsMax;
+    /// <summary>
+    /// Gets or sets the maximal value for each dimension of the strategy vector.
+    /// </summary>
+    /// <remarks>Calls <see cref="ItemBase.OnChanged"/> of base class <see cref="ItemBase"/> 
+    /// in the setter.</remarks>
+    public double ShakingFactorsMax {
+      get { return myShakingFactorsMax.Data; }
+      set {
+        myShakingFactorsMax.Data = value;
+        OnChanged();
+      }
     }
     private DoubleData myGeneralLearningRate;
     /// <summary>
@@ -632,14 +661,14 @@ namespace HeuristicLab.ES {
       myLambda = vi.GetVariable("ESlambda").GetValue<IntData>();
       myMaximumGenerations = vi.GetVariable("MaximumGenerations").GetValue<IntData>();
       myPlusNotation = vi.GetVariable("PlusNotation").GetValue<BoolData>();
+      myProblemDimension = vi.GetVariable("ProblemDimension").GetValue<IntData>();
+      myShakingFactorsMin = vi.GetVariable("ShakingFactorsMin").GetValue<DoubleData>();
+      myShakingFactorsMax = vi.GetVariable("ShakingFactorsMax").GetValue<DoubleData>();
       myGeneralLearningRate = vi.GetVariable("GeneralLearningRate").GetValue<DoubleData>();
       myLearningRate = vi.GetVariable("LearningRate").GetValue<DoubleData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
       myPopulationInitialization = co3;
-      // Variable Injector
-      VariableInjector vi2 = (VariableInjector)co3.OperatorGraph.InitialOperator.SubOperators[1].SubOperators[0].SubOperators[3];
-      myShakingFactors = vi2.GetVariable("ShakingFactors").GetValue<DoubleArrayData>();
       // ES Main
       CombinedOperator co4 = (CombinedOperator)sp1.SubOperators[2];
       myESMain = co4;

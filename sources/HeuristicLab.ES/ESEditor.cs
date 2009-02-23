@@ -51,7 +51,6 @@ namespace HeuristicLab.ES {
     /// </summary>
     public ESEditor() {
       InitializeComponent();
-      problemDimensionTextBox.Text = "1";
     }
     /// <summary>
     /// Initializes a new instance of <see cref="ESEditor"/> with the given <paramref name="es"/>.
@@ -60,8 +59,6 @@ namespace HeuristicLab.ES {
     public ESEditor(ES es)
       : this() {
       ES = es;
-      int dimension = es.ShakingFactors.Length;
-      problemDimensionTextBox.Text = dimension.ToString();
     }
 
     /// <summary>
@@ -113,7 +110,8 @@ namespace HeuristicLab.ES {
         mutationTextBox.Text = ES.Mutator.GetType().Name;
         evaluationTextBox.Text = ES.Evaluator.GetType().Name;
         recombinationTextBox.Text = ES.Recombinator.GetType().Name;
-        initialMutationStrengthVectorTextBox.Text = ArrayToString<double>(ES.ShakingFactors);
+        plusRadioButton.Checked = ES.PlusNotation;
+        commaRadioButton.Checked = !ES.PlusNotation;
       }
     }
 
@@ -124,6 +122,9 @@ namespace HeuristicLab.ES {
       rhoTextBox.DataBindings.Add("Text", ES, "Rho");
       lambdaTextBox.DataBindings.Add("Text", ES, "Lambda");
       maximumGenerationsTextBox.DataBindings.Add("Text", ES, "MaximumGenerations");
+      shakingFactorsLowerBoundTextBox.DataBindings.Add("Text", ES, "ShakingFactorsMin");
+      shakingFactorsUpperBoundTextBox.DataBindings.Add("Text", ES, "ShakingFactorsMax");
+      problemDimensionTextBox.DataBindings.Add("Text", ES, "ProblemDimension");
       generalLearningRateTextBox.DataBindings.Add("Text", ES, "GeneralLearningRate");
       learningRateTextBox.DataBindings.Add("Text", ES, "LearningRate");
     }
@@ -240,58 +241,9 @@ namespace HeuristicLab.ES {
     }
     #endregion
 
-    private string ArrayToString<T>(T[] array) {
-      StringBuilder s = new StringBuilder();
-      foreach (T element in array)
-        s.Append(element + "; ");
-      s.Remove(s.Length - 2, 2);
-      return s.ToString();
-    }
-
-    private double[] StringToDoubleArray(string str) {
-      
-      string[] s = str.Split(new char[] { ';' });
-      double[] tmp = new double[s.Length];
-      try {
-        for (int i = 0; i < s.Length; i++) {
-          tmp[i] = double.Parse(s[i]);
-        }
-      } catch (FormatException) {        
-        return null;
-      }
-      return tmp;
-    }
-
-    private void initialMutationStrengthVectorTextBox_Validated(object sender, EventArgs e) {
-      double[] tmp = StringToDoubleArray(initialMutationStrengthVectorTextBox.Text);
-      if (tmp != null) ES.ShakingFactors = tmp;
-      else MessageBox.Show("Please use colons \";\" (without the quotes) to delimite the items like this: " + (1.2).ToString() + ";" + (1.1).ToString() + ";" + (3.453).ToString());
-      int dim = int.Parse(problemDimensionTextBox.Text);
-      if (ES.ShakingFactors.Length != dim) {
-        problemDimensionTextBox.Text = ES.ShakingFactors.Length.ToString();
-        UpdateLearningRates();
-      }
-      Refresh();
-    }
-
     private void problemDimensionTextBox_Validated(object sender, EventArgs e) {
-      double[] tmp = StringToDoubleArray(initialMutationStrengthVectorTextBox.Text);
-      if (tmp != null) {
-        int dim = 0;
-        try {
-          dim = int.Parse(problemDimensionTextBox.Text);
-          if (dim < 1) throw new FormatException();
-        } catch (FormatException) {
-          MessageBox.Show("Problem Dimension must contain an integer > 0");
-        }
-        double[] shakingFactors = new double[dim];
-        for (int i = 0; i < dim; i++) {
-          shakingFactors[i] = tmp[i % tmp.Length];
-        }
-        ES.ShakingFactors = shakingFactors;
-        UpdateLearningRates();
-        Refresh();
-      }
+      UpdateLearningRates();
+      Refresh();
     }
 
     private void UpdateLearningRates() {

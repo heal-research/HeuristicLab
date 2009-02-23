@@ -89,10 +89,6 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Evolutionary\HeuristicLab.Evolutionary.csproj">
-      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
-      <Name>HeuristicLab.Evolutionary</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging</Name>
@@ -109,9 +105,9 @@
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
       <Name>HeuristicLab.Random</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Selection.OffspringSelection\HeuristicLab.Selection.OffspringSelection.csproj">
-      <Project>{205898D3-2717-4686-AF17-52409B7EC0C6}</Project>
-      <Name>HeuristicLab.Selection.OffspringSelection</Name>
+    <ProjectReference Include="..\HeuristicLab.RealVector\HeuristicLab.RealVector.csproj">
+      <Project>{2D4E4565-3ED9-4BEB-AE75-39D871843D24}</Project>
+      <Name>HeuristicLab.RealVector</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Selection\HeuristicLab.Selection.csproj">
       <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
