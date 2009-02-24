@@ -44,17 +44,21 @@ Adds a variable SuccessfulChild into the current scope with the result of the co
     /// </summary>
     public WeightedOffspringFitnessComparer()
       : base() {
-      AddVariableInfo(new VariableInfo("Maximization", "Whether the problem is a maximization or minimization problem", typeof(BoolData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("Quality", "The variable that stores the quality value", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SuccessfulChild", "If the child is successful", typeof(BoolData), VariableKind.New));
-      AddVariableInfo(new VariableInfo("ComparisonFactor", "The comparison factor that weighs between the parents qualities", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Maximization", "True if the problem is a maximization problem", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SuccessfulChild", "True if the child is successful", typeof(BoolData), VariableKind.New));
+
+      VariableInfo compFactorInfo = new VariableInfo("ComparisonFactor", "Factor for comparing the quality of a child with the qualities of its parents (0 = better than worst parent, 1 = better than best parent)", typeof(DoubleData), VariableKind.In);
+      compFactorInfo.Local = true;
+      AddVariableInfo(compFactorInfo);
+      AddVariable(new Variable("ComparisonFactor", new DoubleData(0.5)));
     }
 
     /// <summary>
     /// Weighs the worst and best parent quality with a given factor and decides whether the child is better than this threshold.
     /// The result of this decision is added as variable "SuccessfulChild" into the scope.
     /// </summary>
-    /// <param name="scope">The scope whose offspring should be analyzed.</param>
+    /// <param name="scope">The current scope which represents a new child.</param>
     /// <returns><c>null</c>.</returns>
     public override IOperation Apply(IScope scope) {
       bool maximize = GetVariableValue<BoolData>("Maximization", scope, true).Data;
@@ -81,9 +85,8 @@ Adds a variable SuccessfulChild into the current scope with the result of the co
         successful = new BoolData(true);
       else
         successful = new BoolData(false);
-      
-      scope.AddVariable(new Variable(scope.TranslateName(GetVariableInfo("SuccessfulChild").FormalName), successful));
 
+      scope.AddVariable(new Variable(scope.TranslateName("SuccessfulChild"), successful));
       return null;
     }
   }
