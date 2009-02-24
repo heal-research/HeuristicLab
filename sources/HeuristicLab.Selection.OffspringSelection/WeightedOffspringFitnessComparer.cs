@@ -27,13 +27,13 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Selection.OffspringSelection {
   /// <summary>
-  /// Analyzes the offspring on whether it is successful or not based on its quality in comparison to its parents' qualities.
+  /// Analyzes the offspring on whether it is successful or not based on its quality in comparison to its best and worst parents' qualities.
   /// </summary>
   public class WeightedOffspringFitnessComparer : OperatorBase  {
     /// <inheritdoc select="summary"/>
     public override string Description {
       get {
-        return @"Compares the quality values of the child with a weighted average of the parents'.
+        return @"Compares the quality values of the child with a weighted average of the best and worst parents' qualities.
 Adds a variable SuccessfulChild into the current scope with the result of the comparison.";
       }
     }
@@ -47,11 +47,7 @@ Adds a variable SuccessfulChild into the current scope with the result of the co
       AddVariableInfo(new VariableInfo("Maximization", "True if the problem is a maximization problem", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Quality", "Quality value", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SuccessfulChild", "True if the child is successful", typeof(BoolData), VariableKind.New));
-
-      VariableInfo compFactorInfo = new VariableInfo("ComparisonFactor", "Factor for comparing the quality of a child with the qualities of its parents (0 = better than worst parent, 1 = better than best parent)", typeof(DoubleData), VariableKind.In);
-      compFactorInfo.Local = true;
-      AddVariableInfo(compFactorInfo);
-      AddVariable(new Variable("ComparisonFactor", new DoubleData(0.5)));
+      AddVariableInfo(new VariableInfo("ComparisonFactor", "Factor for comparing the quality of a child with the qualities of its parents (0 = better than worst parent, 1 = better than best parent)", typeof(DoubleData), VariableKind.In));
     }
 
     /// <summary>
