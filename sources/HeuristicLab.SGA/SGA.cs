@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Evolutionary;
 using HeuristicLab.SequentialEngine;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
@@ -265,11 +266,9 @@ namespace HeuristicLab.SGA {
       op.OperatorGraph.AddOperator(sp1);
       op.OperatorGraph.InitialOperator = sp1;
 
-      OperatorExtractor oe1 = new OperatorExtractor();
-      oe1.Name = "Crossover";
-      oe1.GetVariableInfo("Operator").ActualName = "Crossover";
-      op.OperatorGraph.AddOperator(oe1);
-      sp1.AddSubOperator(oe1);
+      ChildrenInitializer ci = new ChildrenInitializer();
+      op.OperatorGraph.AddOperator(ci);
+      sp1.AddSubOperator(ci);
 
       UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
       op.OperatorGraph.AddOperator(ussp);
@@ -278,6 +277,12 @@ namespace HeuristicLab.SGA {
       SequentialProcessor sp2 = new SequentialProcessor();
       op.OperatorGraph.AddOperator(sp2);
       ussp.AddSubOperator(sp2);
+
+      OperatorExtractor oe1 = new OperatorExtractor();
+      oe1.Name = "Crossover";
+      oe1.GetVariableInfo("Operator").ActualName = "Crossover";
+      op.OperatorGraph.AddOperator(oe1);
+      sp2.AddSubOperator(oe1);
 
       StochasticBranch hb = new StochasticBranch();
       hb.GetVariableInfo("Probability").ActualName = "MutationRate";
@@ -295,6 +300,11 @@ namespace HeuristicLab.SGA {
       oe3.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe3);
       sp2.AddSubOperator(oe3);
+
+      SubScopesRemover sr = new SubScopesRemover();
+      sr.GetVariableInfo("SubScopeIndex").Local = true;
+      op.OperatorGraph.AddOperator(sr);
+      sp2.AddSubOperator(sr);
 
       Counter c = new Counter();
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";

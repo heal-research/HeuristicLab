@@ -83,6 +83,10 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Evolutionary\HeuristicLab.Evolutionary.csproj">
+      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
+      <Name>HeuristicLab.Evolutionary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging</Name>
