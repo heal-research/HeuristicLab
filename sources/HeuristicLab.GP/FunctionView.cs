@@ -50,16 +50,9 @@ namespace HeuristicLab.GP {
       representationsMenu = new MenuItem();
       representationsMenu.Text = "Tree representation";
       representationsMenu.Name = "Tree representation";
-      foreach(IFunctionTreeNameGenerator generator in allNameGenerators) {
-        MenuItem mi = new MenuItem(generator.Name, 
-          delegate(object source, EventArgs args) {
-            IFunctionTreeNameGenerator g = (IFunctionTreeNameGenerator)((MenuItem)source).Tag;
-            this.nameGenerator = g;
-            foreach(MenuItem otherMenuItem in representationsMenu.MenuItems) otherMenuItem.Checked = false;
-            ((MenuItem)source).Checked = true;
-            UpdateControls();
-          }, Shortcut.None);
-        if(generator is DefaultFunctionTreeNameGenerator) mi.Checked = true;
+      foreach (IFunctionTreeNameGenerator generator in allNameGenerators) {
+        MenuItem mi = new MenuItem(generator.Name, MakeNameGeneratorDelegate(generator), Shortcut.None);
+        if (generator is DefaultFunctionTreeNameGenerator) mi.Checked = true;
         else mi.Checked = false;
         mi.Tag = generator;
         representationsMenu.MenuItems.Add(mi);
@@ -82,17 +75,13 @@ namespace HeuristicLab.GP {
       treeNodeContextMenu.MenuItems.Add(representationsMenu);
       DiscoveryService discoveryService = new DiscoveryService();
       IFunctionTreeExporter[] exporters = discoveryService.GetInstances<IFunctionTreeExporter>();
-      foreach(IFunctionTreeExporter exporter in exporters) {
+      foreach (IFunctionTreeExporter exporter in exporters) {
         string result;
         // register a menu item for the exporter
-        MenuItem item = new MenuItem("Copy to clip-board (" + exporter.Name + ")", 
-          delegate(object source, EventArgs args) {
-            TreeNode node = funTreeView.SelectedNode;
-            if(node == null || node.Tag == null) return;
-            Clipboard.SetText(exporter.Export((IFunctionTree)node.Tag));
-          }, Shortcut.None);
+        MenuItem item = new MenuItem("Copy to clip-board (" + exporter.Name + ")",
+          MakeExporterDelegate(exporter), Shortcut.None);
         // try to export the whole tree 
-        if(exporter.TryExport(functionTree, out result)) {
+        if (exporter.TryExport(functionTree, out result)) {
           // if it worked enable the context-menu item
           item.Enabled = true;
         } else {
@@ -103,10 +92,28 @@ namespace HeuristicLab.GP {
       rootNode.ContextMenu = treeNodeContextMenu;
       funTreeView.Nodes.Add(rootNode);
 
-      foreach(IFunctionTree subTree in functionTree.SubTrees) {
+      foreach (IFunctionTree subTree in functionTree.SubTrees) {
         CreateTree(rootNode, subTree);
       }
       funTreeView.ExpandAll();
+    }
+
+    private EventHandler MakeNameGeneratorDelegate(IFunctionTreeNameGenerator generator) {
+      return delegate(object source, EventArgs args) {
+        IFunctionTreeNameGenerator g = (IFunctionTreeNameGenerator)((MenuItem)source).Tag;
+        this.nameGenerator = g;
+        foreach (MenuItem otherMenuItem in representationsMenu.MenuItems) otherMenuItem.Checked = false;
+        ((MenuItem)source).Checked = true;
+        UpdateControls();
+      };
+    }
+
+    private EventHandler MakeExporterDelegate(IFunctionTreeExporter exporter) {
+      return delegate(object source, EventArgs args) {
+        TreeNode node = funTreeView.SelectedNode;
+        if (node == null || node.Tag == null) return;
+        Clipboard.SetText(exporter.Export((IFunctionTree)node.Tag));
+      };
     }
 
     private void CreateTree(TreeNode rootNode, IFunctionTree functionTree) {
@@ -116,7 +123,7 @@ namespace HeuristicLab.GP {
       node.Tag = functionTree;
       node.ContextMenu = treeNodeContextMenu;
       rootNode.Nodes.Add(node);
-      foreach(IFunctionTree subTree in functionTree.SubTrees) {
+      foreach (IFunctionTree subTree in functionTree.SubTrees) {
         CreateTree(node, subTree);
       }
     }
@@ -126,7 +133,7 @@ namespace HeuristicLab.GP {
       variablesSplitContainer.Panel2.Controls.Clear();
       templateTextBox.Clear();
       editButton.Enabled = false;
-      if(funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
+      if (funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
         IFunctionTree selectedBranch = (IFunctionTree)funTreeView.SelectedNode.Tag;
         UpdateVariablesList(selectedBranch);
         templateTextBox.Text = nameGenerator.GetName(selectedBranch);
@@ -136,17 +143,17 @@ namespace HeuristicLab.GP {
     }
 
     private void UpdateVariablesList(IFunctionTree functionTree) {
-      foreach(IVariable variable in functionTree.LocalVariables) {
+      foreach (IVariable variable in functionTree.LocalVariables) {
         variablesListBox.Items.Add(variable.Name);
       }
     }
 
     private void variablesListBox_SelectedIndexChanged(object sender, EventArgs e) {
       // in case we had an event-handler registered for a different variable => unregister the event-handler
-      if(selectedVariable != null) {
+      if (selectedVariable != null) {
         selectedVariable.Value.Changed -= new EventHandler(selectedVariable_ValueChanged);
       }
-      if(variablesListBox.SelectedItem != null) {
+      if (variablesListBox.SelectedItem != null) {
         string selectedVariableName = (string)variablesListBox.SelectedItem;
         selectedVariable = selectedBranch.GetLocalVariable(selectedVariableName);
         variablesSplitContainer.Panel2.Controls.Clear();
@@ -161,7 +168,7 @@ namespace HeuristicLab.GP {
     }
 
     void selectedVariable_ValueChanged(object sender, EventArgs e) {
-      if(funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
+      if (funTreeView.SelectedNode != null && funTreeView.SelectedNode.Tag != null) {
         TreeNode node = funTreeView.SelectedNode;
         node.Text = nameGenerator.GetName(functionTree);
       }
@@ -172,7 +179,7 @@ namespace HeuristicLab.GP {
     }
 
     private void funTreeView_MouseUp(object sender, MouseEventArgs e) {
-      if(e.Button == MouseButtons.Right) {
+      if (e.Button == MouseButtons.Right) {
         // Select the clicked node
         funTreeView.SelectedNode = funTreeView.GetNodeAt(e.X, e.Y);
       }

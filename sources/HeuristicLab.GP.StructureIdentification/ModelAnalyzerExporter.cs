@@ -47,7 +47,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public string Export(IFunctionTree tree) {
       string result = ExportFunction(tree.Function, tree);
-      result += "(\n";
+      if(tree.SubTrees.Count>0) 
+        result += "(\n";
       foreach(IFunctionTree subTree in tree.SubTrees) {
         result += Export(subTree);
         result += ";\n";
