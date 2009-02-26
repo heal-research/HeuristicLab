@@ -38,12 +38,18 @@ namespace HeuristicLab.PluginInfrastructure {
         }
       }
       //CodeAccessPermission.RevertAssert();
+      FireOnLoad();
       PluginManager.Manager.LoadedPlugins = plugins;
     }
 
     public void Run(ApplicationInfo appInfo) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.PluginAssembly, appInfo.PluginType).Unwrap();
       runnablePlugin.Run();
+    }
+
+    private void FireOnLoad() {
+      DiscoveryService service = new DiscoveryService();
+      Array.ForEach(service.GetInstances<IPlugin>(), p => p.OnLoad());
     }
 
     // infinite lease time

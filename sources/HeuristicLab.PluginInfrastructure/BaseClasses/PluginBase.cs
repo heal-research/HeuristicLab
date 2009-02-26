@@ -29,7 +29,7 @@ namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
   /// Default implementation of the IPlugin interface.
   /// </summary>
-  public class PluginBase : IPlugin {
+  public abstract class PluginBase : IPlugin {
     private string name;
     private Version version;
     private string[] files;
@@ -46,7 +46,7 @@ namespace HeuristicLab.PluginInfrastructure {
       object[] pluginAttributes = this.GetType().GetCustomAttributes(typeof(ClassInfoAttribute), false);
 
       // exactly one attribute of the type ClassInfoAttribute must be given
-      if(pluginAttributes.Length != 1) {
+      if (pluginAttributes.Length != 1) {
         throw new InvalidPluginException();
       }
 
@@ -54,21 +54,21 @@ namespace HeuristicLab.PluginInfrastructure {
       ClassInfoAttribute pluginAttribute = (ClassInfoAttribute)pluginAttributes[0];
 
       // if the plugin name is not explicitly set in the attribute then the default plugin name is the FullName of the type
-      if(pluginAttribute != null && pluginAttribute.Name != null) {
+      if (pluginAttribute != null && pluginAttribute.Name != null) {
         this.name = pluginAttribute.Name;
       } else {
         this.name = this.GetType().FullName;
       }
 
       // if the version is not explicitly set in the attribute then the version of the assembly is used as default
-      if(pluginAttribute != null && pluginAttribute.Version != null) {
+      if (pluginAttribute != null && pluginAttribute.Version != null) {
         this.version = new Version(pluginAttribute.Version);
       } else {
         this.version = this.GetType().Assembly.GetName().Version;
       }
 
       // if the description is not explicitly set in the attribute then the name of name of the plugin is used as default
-      if(pluginAttribute != null && pluginAttribute.Description != null) {
+      if (pluginAttribute != null && pluginAttribute.Description != null) {
         this.description = pluginAttribute.Description;
       } else {
         this.description = name;
@@ -80,7 +80,7 @@ namespace HeuristicLab.PluginInfrastructure {
       // exctract the file names from the attributes
       this.files = new string[fileAttributes.Length];
       int i = 0;
-      foreach(PluginFileAttribute fileAttr in fileAttributes) {
+      foreach (PluginFileAttribute fileAttr in fileAttributes) {
         files[i++] = fileAttr.Filename;
       }
     }
@@ -120,21 +120,16 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
-    /// <inheritdoc/>
-    public virtual void OnInstall() {
-    }
-
-    /// <inheritdoc/>
-    public virtual void OnDelete() {
-    }
-
-    /// <inheritdoc/>
-    public virtual void OnPreUpdate() {
-    }
-
-    /// <inheritdoc/>
-    public virtual void OnPostUpdate() {
-    }
+    /// <inhertidoc>
+    public virtual void OnLoad() { }
+    /// <inhertidoc>
+    public virtual void OnInstall() { }
+    /// <inhertidoc>
+    public virtual void OnDelete() { }
+    /// <inhertidoc>
+    public virtual void OnPreUpdate() { }
+    /// <inhertidoc>
+    public virtual void OnPostUpdate() { }
 
     #endregion
 

@@ -29,7 +29,7 @@ namespace HeuristicLab.PluginInfrastructure {
   /// Plugin developers have to include exactly one class that implements this interface in one of the
   /// assemblies of the plugin. Plugin developers can use the properties of this interface to store
   /// plugin data (name, version, files, update location ...).
-  /// The methods OnInstall(), OnDelete(), OnPreUpdate(), OnPostUpdate() are called by the framework
+  /// The methods OnLoad(), OnInstall(), OnDelete(), OnPreUpdate(), OnPostUpdate() are called by the framework
   /// when the corresponding actions are executed. This mechanism allows that the plugin reacts to such
   /// events. For instance to store plugin specific settings.
   /// </summary>
@@ -41,6 +41,12 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     string[] Files { get; }
 
+
+    /// <summary>
+    /// Called by the framework whenever the plugin is loaded.
+    /// Plugins are loaded once at startup and then each time a new application is started from the starter.
+    /// </summary>
+    void OnLoad();
     /// <summary>
     /// called by the framework after the plugin was successfully installed
     /// </summary>
