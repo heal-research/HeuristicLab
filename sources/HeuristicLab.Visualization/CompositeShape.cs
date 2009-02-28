@@ -7,9 +7,9 @@ namespace HeuristicLab.Visualization {
     protected readonly List<IShape> shapes = new List<IShape>();
     protected RectangleD boundingBox = RectangleD.Empty;
 
-    public virtual void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+    public virtual void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
       foreach (IShape shape in shapes) {
-        shape.Draw(graphics, viewport, clippingArea);
+        shape.Draw(graphics, parentViewport, parentClippingArea);
       }
     }
 

@@ -20,19 +20,12 @@ namespace HeuristicLab.Visualization {
       shapes.Add(maxLineShape);
     }
 
-
-    /// <summary>
-    /// Draws the HorizontalLineShape.
-    /// </summary>
-    /// <param name="graphics">graphics handle to draw to</param>
-    /// <param name="viewport">rectangle in value-coordinates to display</param>
-    /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
-    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+    public override void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
       minLineShape.X1 = ClippingArea.X1;
       minLineShape.X2 = ClippingArea.X2;
       maxLineShape.X1 = ClippingArea.X1;
       maxLineShape.X2 = ClippingArea.X2;
-      base.Draw(graphics, viewport, clippingArea);
+      base.Draw(graphics, parentViewport, parentClippingArea);
     }
 
 

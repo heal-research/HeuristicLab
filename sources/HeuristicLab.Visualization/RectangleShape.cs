@@ -24,8 +24,8 @@ namespace HeuristicLab.Visualization {
       set { rectangle = value; }
     }
 
-    public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      Rectangle screenRect = Transform.ToScreen(rectangle, viewport, clippingArea);
+    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+      Rectangle screenRect = Transform.ToScreen(rectangle, parentViewport, parentClippingArea);
 
       graphics.DrawRectangle(GetPen(), screenRect);
       graphics.FillRectangle(GetBrush(), screenRect);

@@ -67,9 +67,9 @@ namespace HeuristicLab.Visualization {
 
     #region IShape Members
 
-    public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      int screenX = Transform.ToScreenX(x, viewport, clippingArea);
-      int screenY = Transform.ToScreenY(y, viewport, clippingArea);
+    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+      int screenX = Transform.ToScreenX(x, parentViewport, parentClippingArea);
+      int screenY = Transform.ToScreenY(y, parentViewport, parentClippingArea);
 
       SizeF size = graphics.MeasureString(text, font);
 

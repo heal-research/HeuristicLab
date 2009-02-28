@@ -2,11 +2,11 @@ using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class Grid : WorldShape {
-    public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
+    public override void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
       shapes.Clear();
 
       foreach (double y in AxisTicks.GetTicks(YAxis.PixelsPerInterval,
-                                              viewport.Height,
+                                              parentViewport.Height,
                                               ClippingArea.Height,
                                               ClippingArea.Y1)) {
         LineShape line = new LineShape(ClippingArea.X1, y,
@@ -17,7 +17,7 @@ namespace HeuristicLab.Visualization {
       }
 
       foreach (double x in AxisTicks.GetTicks(XAxis.PixelsPerInterval,
-                                              viewport.Width,
+                                              parentViewport.Width,
                                               ClippingArea.Width,
                                               ClippingArea.X1)) {
         LineShape line = new LineShape(x, ClippingArea.Y1,
@@ -40,7 +40,7 @@ namespace HeuristicLab.Visualization {
       shapes.Add(lineZeroX);
       shapes.Add(lineZeroY);
 
-      base.Draw(graphics, viewport, clippingArea);
+      base.Draw(graphics, parentViewport, parentClippingArea);
     }
   }
 }

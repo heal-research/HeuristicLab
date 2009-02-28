@@ -56,10 +56,10 @@ namespace HeuristicLab.Visualization {
     /// Draws the LineShape.
     /// </summary>
     /// <param name="graphics">graphics handle to draw to</param>
-    /// <param name="viewport">rectangle in value-coordinates to display</param>
-    /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
-    public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
+    /// <param name="parentViewport">rectangle in value-coordinates to display</param>
+    /// <param name="parentClippingArea">rectangle in screen-coordinates to draw</param>
+    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+      Rectangle screenRect = Transform.ToScreen(boundingBox, parentViewport, parentClippingArea);
 
       graphics.DrawLine(GetPen(), screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
     }
