@@ -4,10 +4,12 @@ using System.Drawing.Drawing2D;
 namespace HeuristicLab.Visualization {
   public class LineShape : IShape {
     private RectangleD boundingBox;
-    private double z;
+
     private Color color;
     private int thickness;
-    private DashStyle dashStyle;
+    private DrawingStyle drawingStyle;
+
+    private Pen pen;
 
     /// <summary>
     /// Initializes the LineShape.
@@ -17,17 +19,13 @@ namespace HeuristicLab.Visualization {
     /// <param name="x2">x coordinate of right lineEndPoind</param>
     /// <param name="y2">y coordinate of right lineEndPoind</param>
     /// <param name="color">color for the LineShape</param>
-    public LineShape(double x1, double y1, double x2, double y2, double z, Color color, int thickness, DrawingStyle style) {
+    /// <param name="thickness">tickness of the line in pixels</param>
+    /// <param name="drawingStyle">drawing style of the line (solid, dashed, dotted,...)</param>
+    public LineShape(double x1, double y1, double x2, double y2, Color color, int thickness, DrawingStyle drawingStyle) {
       this.boundingBox = new RectangleD(x1, y1, x2, y2);
-      this.z = z;
       this.LSColor = color;
       this.LSThickness = thickness;
-      if (style==DrawingStyle.Dashed) {
-        this.LSDashStyle = DashStyle.Dash;
-      }
-      else {
-        this.LSDashStyle = DashStyle.Solid;        //default
-      }
+      this.LSDrawingStyle = drawingStyle;
     }
 
     public RectangleD BoundingBox {
@@ -61,31 +59,57 @@ namespace HeuristicLab.Visualization {
     /// <param name="viewport">rectangle in value-coordinates to display</param>
     /// <param name="clippingArea">rectangle in screen-coordinates to draw</param>
     public void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
-      using (Pen pen = new Pen(LSColor, LSThickness)){
-        pen.DashStyle = this.LSDashStyle;
-        Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
-        graphics.DrawLine(pen,screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
-      }
+      Rectangle screenRect = Transform.ToScreen(boundingBox, viewport, clippingArea);
+
+      graphics.DrawLine(GetPen(), screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
     }
 
-    public double Z {
-      get { return z; }
-      set { z = value; }
+    private Pen GetPen() {
+      if (pen == null) {
+        pen = new Pen(LSColor, LSThickness);
+
+        switch (LSDrawingStyle) {
+          case DrawingStyle.Dashed:
+            pen.DashStyle = DashStyle.Dash;
+            break;
+          default:
+            pen.DashStyle = DashStyle.Solid;
+            break;
+        }
+      }
+
+      return pen;
+    }
+
+    private void DisposePen() {
+      if (pen != null) {
+        pen.Dispose();
+        pen = null;
+      }
     }
 
     public Color LSColor {
       get { return color; }
-      set { color = value; }
+      set {
+        color = value;
+        DisposePen();
+      }
     }
 
     public int LSThickness {
       get { return thickness; }
-      set { thickness = value; }
+      set {
+        thickness = value;
+        DisposePen();
+      }
     }
 
-    public DashStyle LSDashStyle {
-      get { return dashStyle; }
-      set { dashStyle = value; }
+    public DrawingStyle LSDrawingStyle {
+      get { return drawingStyle; }
+      set {
+        drawingStyle = value;
+        DisposePen();
+      }
     }
   }
 }

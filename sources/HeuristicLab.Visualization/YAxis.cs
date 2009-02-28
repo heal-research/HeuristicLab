@@ -15,10 +15,9 @@ namespace HeuristicLab.Visualization {
     public override void Draw(Graphics graphics, Rectangle viewport, RectangleD clippingArea) {
       shapes.Clear();
 
-      foreach (double y in XAxis.GetTicks(PixelsPerInterval,
-                                          viewport.Height,
-                                          ClippingArea.Height,
-                                          ClippingArea.Y1)) {
+      foreach (double y in AxisTicks.GetTicks(PixelsPerInterval, viewport.Height,
+                                              ClippingArea.Height,
+                                              ClippingArea.Y1)) {
         TextShape label = new TextShape(ClippingArea.X2 - 3, y,
                                         labelProvider.GetLabel(y));
         label.AnchorPositionX = AnchorPositionX.Right;

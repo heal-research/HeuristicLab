@@ -20,7 +20,7 @@ namespace HeuristicLab.Visualization {
     private int thickness = 2;
     private DrawingStyle style = DrawingStyle.Solid;
     private DataRowType lineType = DataRowType.Normal;
-    private List<double> dataRow = new List<double>();
+    private readonly List<double> dataRow = new List<double>();
 
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
@@ -40,14 +40,12 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-
     public DataRow() {
     }
     
     public DataRow(string label) {
       this.Label = label;
     }
-    
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
      this.Label = label;
@@ -57,9 +55,6 @@ namespace HeuristicLab.Visualization {
       this.dataRow = dataRow;
     }
 
-    /// <summary>
-    /// Raised when data row data changed. Should cause redraw in the view.
-    /// </summary>
     public event DataRowChangedHandler DataRowChanged;
 
     protected void OnDataRowChanged(IDataRow row) {
@@ -129,7 +124,7 @@ namespace HeuristicLab.Visualization {
         dataRow.Insert(index, value);
         OnValueChanged(value, index, Action.Added);
       } else {
-        throw new System.IndexOutOfRangeException();
+        throw new IndexOutOfRangeException();
       }   
     }
 
@@ -153,7 +148,7 @@ namespace HeuristicLab.Visualization {
         }
         OnValuesChanged(values, index, Action.Added);
       } else {
-        throw new System.IndexOutOfRangeException();
+        throw new IndexOutOfRangeException();
       }
     }
 
@@ -163,7 +158,7 @@ namespace HeuristicLab.Visualization {
         dataRow[index] = value;
         OnValueChanged(value, index, Action.Modified);
       } else {
-        throw new System.IndexOutOfRangeException();
+        throw new IndexOutOfRangeException();
       }
     }
 
@@ -179,7 +174,7 @@ namespace HeuristicLab.Visualization {
         }
         OnValuesChanged(values, startInd, Action.Modified);
       } else {
-        throw new System.IndexOutOfRangeException();
+        throw new IndexOutOfRangeException();
       }
     }
 
@@ -190,7 +185,7 @@ namespace HeuristicLab.Visualization {
         dataRow.RemoveAt(index);
         OnValueChanged(remVal, index, Action.Deleted);
       } else {
-        throw new System.IndexOutOfRangeException();
+        throw new IndexOutOfRangeException();
       }
     }
 
@@ -209,10 +204,10 @@ namespace HeuristicLab.Visualization {
           }
           OnValuesChanged(remValues, index, Action.Deleted);
         } else {
-          throw new System.IndexOutOfRangeException();
+          throw new IndexOutOfRangeException();
         }
       } else {
-        throw new System.Exception("parameter count must be > 0!");
+        throw new Exception("parameter count must be > 0!");
       }
     }
 

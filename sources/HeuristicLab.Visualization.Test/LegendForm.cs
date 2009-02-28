@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Visualization.Legend;
 
 namespace HeuristicLab.Visualization.Test {
   public partial class LegendForm : Form {
@@ -8,7 +9,6 @@ namespace HeuristicLab.Visualization.Test {
       canvasUI.MainCanvas.WorldShape = new WorldShape(new RectangleD(0, 0, 800, 600), new RectangleD(0, 0, 800, 600));
 
       CreateLegendShape();
-
     }
 
     private void CreateLegendShape() {

@@ -1,23 +1,21 @@
 ﻿using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Visualization {
   public class MinMaxLineShape : WorldShape {
-    private LineShape minLineShape;
-    private LineShape maxLineShape;
+    private readonly LineShape minLineShape;
+    private readonly LineShape maxLineShape;
 
     /// <summary>
     /// Initializes the HorizontalLineShape.
     /// </summary>
-    /// <param name="z">Z-order</param>
     /// <param name="color">color for the LineShape</param>
     /// <param name="yMin">y value for lower line</param>
     /// <param name="yMax">y value for upper line</param>
     /// <param name="thickness">line thickness</param>
     /// <param name="style">line style</param>
-    public MinMaxLineShape(double yMin, double yMax, double z, Color color, int thickness, DrawingStyle style) {
-      minLineShape = new LineShape(0, yMin, 1, yMin, z, color, thickness, style);
-      maxLineShape = new LineShape(0, yMax, 1, yMax, z, color, thickness, style);
+    public MinMaxLineShape(double yMin, double yMax, Color color, int thickness, DrawingStyle style) {
+      minLineShape = new LineShape(0, yMin, 1, yMin, color, thickness, style);
+      maxLineShape = new LineShape(0, yMax, 1, yMax, color, thickness, style);
       shapes.Add(minLineShape);
       shapes.Add(maxLineShape);
     }

@@ -15,6 +15,11 @@ namespace HeuristicLab.Visualization {
     DataRowType LineType { get; set; }
     ILabelProvider YAxisLabelProvider { get; set; }
 
+    /// <summary>
+    /// Raised when data row data changed. Should cause redraw in the view.
+    /// </summary>
+    event DataRowChangedHandler DataRowChanged;
+
     void AddValue(double value);
     void AddValue(double value, int index);
     void AddValues(double[] values);

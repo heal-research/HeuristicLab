@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Visualization.Legend;
 using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Visualization {
       titleShape = new TextShape(0, 0, model.Title, 15);
       root.AddShape(titleShape);
 
-      minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, 0, Color.Yellow, 4, DrawingStyle.Solid);
+      minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, Color.Yellow, 4, DrawingStyle.Solid);
       root.AddShape(minMaxLineShape);
 
       legendShape = new LegendShape();
@@ -206,7 +206,7 @@ namespace HeuristicLab.Visualization {
         minDataValue = Math.Min(row[0], minDataValue);
       }
       for (int i = 1; i < row.Count; i++) {
-        LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], 0, row.Color, row.Thickness, row.Style);
+        LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
         linesShape.AddShape(lineShape);
@@ -245,7 +245,7 @@ namespace HeuristicLab.Visualization {
         if (maxDataRowCount < row.Count) {
           maxDataRowCount = row.Count;
         }
-        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], 0, row.Color, row.Thickness,
+        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
                                             row.Style);
         lineShapes.Add(lineShape);
         // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
@@ -411,20 +411,15 @@ namespace HeuristicLab.Visualization {
     #endregion
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      var optionsdlg = new OptionsDialog(this);
-      optionsdlg.Show();
+      OptionsDialog optionsdlg = new OptionsDialog(this);
+      optionsdlg.ShowDialog(this);
     }
 
     public void ApplyChangesToRow(IDataRow row) {
-      foreach (var ls in rowToLineShapes[row]) {
+      foreach (LineShape ls in rowToLineShapes[row]) {
         ls.LSColor = row.Color;
         ls.LSThickness = row.Thickness;
-        if (row.Style == DrawingStyle.Dashed) {
-          ls.LSDashStyle = DashStyle.Dash;
-        }
-        else {
-          ls.LSDashStyle = DashStyle.Solid; //default
-        }
+        ls.LSDrawingStyle = row.Style;
       }
       canvas.Invalidate();
     }

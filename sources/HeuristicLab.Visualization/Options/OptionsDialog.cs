@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization.Options {
   public partial class OptionsDialog : Form {
-
     private LineChart lc;
 
     public OptionsDialog(LineChart lc) {
@@ -17,9 +11,8 @@ namespace HeuristicLab.Visualization.Options {
       this.lc = lc;
     }
 
-
     private void button1_Click(object sender, EventArgs e) {
-      var dlg = new ColorDialog();
+      ColorDialog dlg = new ColorDialog();
       dlg.ShowDialog();
       this.ColorPreviewTB.BackColor = dlg.Color;
     }
@@ -43,11 +36,13 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void LineSelectCB_SelectedIndexChanged(object sender, EventArgs e) {
-      int index = this.LineThicknessCB.FindStringExact(((IDataRow) this.LineSelectCB.SelectedValue).Thickness.ToString());
+      IDataRow datarow = (IDataRow)this.LineSelectCB.SelectedValue;
+
+      int index = this.LineThicknessCB.FindStringExact(datarow.Thickness.ToString());
       this.LineThicknessCB.SelectedIndex = index;
-      index = this.LinestyleCB.FindStringExact(((IDataRow) this.LineSelectCB.SelectedValue).Style.ToString());
+      index = this.LinestyleCB.FindStringExact(datarow.Style.ToString());
       LinestyleCB.SelectedIndex = index;
-      this.ColorPreviewTB.BackColor = ((IDataRow) this.LineSelectCB.SelectedValue).Color;
+      this.ColorPreviewTB.BackColor = datarow.Color;
     }
 
     private void OptionsDialogCancelButton_Click(object sender, EventArgs e) {
@@ -55,10 +50,13 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void OptionsDialogOkButton_Click(object sender, EventArgs e) {
-      ((IDataRow) this.LineSelectCB.SelectedValue).Thickness = (int) this.LineThicknessCB.SelectedItem;
-      ((IDataRow) this.LineSelectCB.SelectedValue).Color = this.ColorPreviewTB.BackColor;
-      ((IDataRow) this.LineSelectCB.SelectedValue).Style = (DrawingStyle) this.LineThicknessCB.SelectedItem;
-      this.lc.ApplyChangesToRow((IDataRow) this.LineSelectCB.SelectedValue);
+      IDataRow datarow = (IDataRow)this.LineSelectCB.SelectedValue;
+
+      datarow.Thickness = (int)this.LineThicknessCB.SelectedItem;
+      datarow.Color = this.ColorPreviewTB.BackColor;
+      datarow.Style = (DrawingStyle)this.LineThicknessCB.SelectedItem;
+
+      this.lc.ApplyChangesToRow(datarow);
       this.Close();
     }
   }
