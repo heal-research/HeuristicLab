@@ -24,7 +24,7 @@ namespace HeuristicLab.Visualization {
 
     public void CreateLegend() {
       shapes.Clear();
-      double y = BoundingBox.Y2;
+      double y = ClippingArea.Y2;
       foreach (LegendItem item in legendItems) {
         AddShape(new LineShape(10, y - 10, 30, y - 10, 0, item.Color, item.Thickness, DrawingStyle.Solid));
         AddShape(new TextShape(35, y, item.Label));
