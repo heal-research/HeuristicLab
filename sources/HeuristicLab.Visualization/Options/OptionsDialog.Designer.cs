@@ -36,10 +36,11 @@
       this.LineThicknessCB = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.labelposition = new System.Windows.Forms.Label();
       this.cbLabelPosition = new System.Windows.Forms.ComboBox();
       this.OptionsDialogCancelButton = new System.Windows.Forms.Button();
       this.OptionsDialogOkButton = new System.Windows.Forms.Button();
-      this.labelposition = new System.Windows.Forms.Label();
+      this.OptionsDialogApplyBtn = new System.Windows.Forms.Button();
       this.Optionstabs.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox1.SuspendLayout();
@@ -81,7 +82,7 @@
       this.OptionsDialogSelectColorBt.TabIndex = 7;
       this.OptionsDialogSelectColorBt.Text = "Select";
       this.OptionsDialogSelectColorBt.UseVisualStyleBackColor = true;
-      this.OptionsDialogSelectColorBt.Click += new System.EventHandler(this.button1_Click);
+      this.OptionsDialogSelectColorBt.Click += new System.EventHandler(this.OptionsDialogSelectColorBtn_Click);
       // 
       // ColorPreviewTB
       // 
@@ -102,6 +103,7 @@
       // 
       // LinestyleCB
       // 
+      this.LinestyleCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.LinestyleCB.FormattingEnabled = true;
       this.LinestyleCB.Location = new System.Drawing.Point(146, 73);
       this.LinestyleCB.Name = "LinestyleCB";
@@ -119,6 +121,7 @@
       // 
       // LineSelectCB
       // 
+      this.LineSelectCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.LineSelectCB.FormattingEnabled = true;
       this.LineSelectCB.Location = new System.Drawing.Point(146, 30);
       this.LineSelectCB.Name = "LineSelectCB";
@@ -149,6 +152,7 @@
       // 
       // LineThicknessCB
       // 
+      this.LineThicknessCB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.LineThicknessCB.FormattingEnabled = true;
       this.LineThicknessCB.Location = new System.Drawing.Point(142, 46);
       this.LineThicknessCB.Name = "LineThicknessCB";
@@ -176,8 +180,18 @@
       this.tabPage2.Text = "Legend";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
+      // labelposition
+      // 
+      this.labelposition.AutoSize = true;
+      this.labelposition.Location = new System.Drawing.Point(8, 38);
+      this.labelposition.Name = "labelposition";
+      this.labelposition.Size = new System.Drawing.Size(72, 13);
+      this.labelposition.TabIndex = 1;
+      this.labelposition.Text = "Labelposition:";
+      // 
       // cbLabelPosition
       // 
+      this.cbLabelPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbLabelPosition.FormattingEnabled = true;
       this.cbLabelPosition.Items.AddRange(new object[] {
             "left",
@@ -201,7 +215,7 @@
       // 
       // OptionsDialogOkButton
       // 
-      this.OptionsDialogOkButton.Location = new System.Drawing.Point(132, 232);
+      this.OptionsDialogOkButton.Location = new System.Drawing.Point(43, 232);
       this.OptionsDialogOkButton.Name = "OptionsDialogOkButton";
       this.OptionsDialogOkButton.Size = new System.Drawing.Size(75, 23);
       this.OptionsDialogOkButton.TabIndex = 2;
@@ -209,20 +223,22 @@
       this.OptionsDialogOkButton.UseVisualStyleBackColor = true;
       this.OptionsDialogOkButton.Click += new System.EventHandler(this.OptionsDialogOkButton_Click);
       // 
-      // labelposition
+      // OptionsDialogApplyBtn
       // 
-      this.labelposition.AutoSize = true;
-      this.labelposition.Location = new System.Drawing.Point(8, 38);
-      this.labelposition.Name = "labelposition";
-      this.labelposition.Size = new System.Drawing.Size(72, 13);
-      this.labelposition.TabIndex = 1;
-      this.labelposition.Text = "Labelposition:";
+      this.OptionsDialogApplyBtn.Location = new System.Drawing.Point(128, 231);
+      this.OptionsDialogApplyBtn.Name = "OptionsDialogApplyBtn";
+      this.OptionsDialogApplyBtn.Size = new System.Drawing.Size(75, 23);
+      this.OptionsDialogApplyBtn.TabIndex = 3;
+      this.OptionsDialogApplyBtn.Text = "Apply";
+      this.OptionsDialogApplyBtn.UseVisualStyleBackColor = true;
+      this.OptionsDialogApplyBtn.Click += new System.EventHandler(this.OptionsDialogApplyBtn_Click);
       // 
       // OptionsDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(292, 266);
+      this.Controls.Add(this.OptionsDialogApplyBtn);
       this.Controls.Add(this.OptionsDialogOkButton);
       this.Controls.Add(this.OptionsDialogCancelButton);
       this.Controls.Add(this.Optionstabs);
@@ -261,5 +277,6 @@
     private System.Windows.Forms.Button OptionsDialogOkButton;
     private System.Windows.Forms.ComboBox cbLabelPosition;
     private System.Windows.Forms.Label labelposition;
+    private System.Windows.Forms.Button OptionsDialogApplyBtn;
   }
 }

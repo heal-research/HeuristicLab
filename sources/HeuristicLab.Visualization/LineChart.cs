@@ -151,6 +151,8 @@ namespace HeuristicLab.Visualization {
     private void OnDataRowAdded(IDataRow row) {
       row.ValueChanged += OnRowValueChanged;
       row.ValuesChanged += OnRowValuesChanged;
+      row.DataRowChanged += OnDataRowChanged;
+
       if (row.Count > maxDataRowCount) {
         maxDataRowCount = row.Count;
       }
@@ -224,6 +226,7 @@ namespace HeuristicLab.Visualization {
     private void OnDataRowRemoved(IDataRow row) {
       row.ValueChanged -= OnRowValueChanged;
       row.ValuesChanged -= OnRowValuesChanged;
+      row.DataRowChanged -= OnDataRowChanged;
     }
 
     private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
@@ -327,13 +330,10 @@ namespace HeuristicLab.Visualization {
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
-      if (e.Button == System.Windows.Forms.MouseButtons.Right) {
-        if (this.ParentForm != null)
-          this.contextMenuStrip1.Show(e.Location.X + this.ParentForm.Location.X,
-                                      e.Location.Y + this.ParentForm.Location.Y + 50);
-        else {
-          this.contextMenuStrip1.Show(e.Location.X, e.Location.Y);
-        }
+      if (e.Button == MouseButtons.Right) {
+     
+          this.contextMenuStrip1.Show(PointToScreen(e.Location));
+     
       }
       else {
         if (ModifierKeys == Keys.Control) {
@@ -415,7 +415,7 @@ namespace HeuristicLab.Visualization {
       optionsdlg.ShowDialog(this);
     }
 
-    public void ApplyChangesToRow(IDataRow row) {
+    public void OnDataRowChanged(IDataRow row) {
       foreach (LineShape ls in rowToLineShapes[row]) {
         ls.LSColor = row.Color;
         ls.LSThickness = row.Thickness;
