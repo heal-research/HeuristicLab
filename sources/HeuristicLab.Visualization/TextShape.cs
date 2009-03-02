@@ -11,6 +11,7 @@ namespace HeuristicLab.Visualization {
   }
 
   public class TextShape : IShape {
+    private IShape parent;
     private Font font;
     private Brush brush;
     private Color color;
@@ -67,9 +68,9 @@ namespace HeuristicLab.Visualization {
 
     #region IShape Members
 
-    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
-      int screenX = Transform.ToScreenX(x, parentViewport, parentClippingArea);
-      int screenY = Transform.ToScreenY(y, parentViewport, parentClippingArea);
+    public void Draw(Graphics graphics) {
+      int screenX = Transform.ToScreenX(x, Parent.Viewport, Parent.ClippingArea);
+      int screenY = Transform.ToScreenY(y, Parent.Viewport, Parent.ClippingArea);
 
       SizeF size = graphics.MeasureString(text, font);
 
@@ -104,6 +105,19 @@ namespace HeuristicLab.Visualization {
 
     public RectangleD BoundingBox {
       get { return RectangleD.Empty; }
+    }
+
+    public RectangleD ClippingArea {
+      get { return Parent.ClippingArea; }
+    }
+
+    public Rectangle Viewport {
+      get { return Parent.Viewport; }
+    }
+
+    public IShape Parent {
+      get { return parent; }
+      set { parent = value; }
     }
 
     #endregion

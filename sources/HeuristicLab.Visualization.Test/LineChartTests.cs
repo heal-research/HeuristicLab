@@ -111,5 +111,11 @@ namespace HeuristicLab.Visualization.Test {
       LineChartTestForm f = new LineChartTestForm(model);
       f.ShowDialog();
     }
+
+    [Test]
+    public void TestMainForm() {
+      MainForm f = new MainForm();
+      f.ShowDialog();
+    }
   }
 }

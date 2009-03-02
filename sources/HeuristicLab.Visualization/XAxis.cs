@@ -12,20 +12,20 @@ namespace HeuristicLab.Visualization {
       set { labelProvider = value; }
     }
 
-    public override void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
-      shapes.Clear();
+    public override void Draw(Graphics graphics) {
+      ClearShapes();
 
-      foreach (double x in AxisTicks.GetTicks(PixelsPerInterval, parentViewport.Width,
+      foreach (double x in AxisTicks.GetTicks(PixelsPerInterval, Parent.Viewport.Width,
                                               ClippingArea.Width,
                                               ClippingArea.X1)) {
         TextShape label = new TextShape(x, ClippingArea.Height - 3,
                                         labelProvider.GetLabel(x));
         label.AnchorPositionX = AnchorPositionX.Middle;
         label.AnchorPositionY = AnchorPositionY.Top;
-        shapes.Add(label);
+        AddShape(label);
       }
 
-      base.Draw(graphics, parentViewport, parentClippingArea);
+      base.Draw(graphics);
     }
   }
 }

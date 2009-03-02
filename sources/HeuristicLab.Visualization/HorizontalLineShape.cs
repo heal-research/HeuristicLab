@@ -16,16 +16,16 @@ namespace HeuristicLab.Visualization {
     public MinMaxLineShape(double yMin, double yMax, Color color, int thickness, DrawingStyle style) {
       minLineShape = new LineShape(0, yMin, 1, yMin, color, thickness, style);
       maxLineShape = new LineShape(0, yMax, 1, yMax, color, thickness, style);
-      shapes.Add(minLineShape);
-      shapes.Add(maxLineShape);
+      AddShape(minLineShape);
+      AddShape(maxLineShape);
     }
 
-    public override void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+    public override void Draw(Graphics graphics) {
       minLineShape.X1 = ClippingArea.X1;
       minLineShape.X2 = ClippingArea.X2;
       maxLineShape.X1 = ClippingArea.X1;
       maxLineShape.X2 = ClippingArea.X2;
-      base.Draw(graphics, parentViewport, parentClippingArea);
+      base.Draw(graphics);
     }
 
 

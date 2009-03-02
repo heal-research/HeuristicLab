@@ -10,7 +10,7 @@ namespace HeuristicLab.Visualization.Legend {
     }
 
     public void CreateLegend() {
-      shapes.Clear();
+      ClearShapes();
       double y = ClippingArea.Y2;
       foreach (LegendItem item in legendItems) {
         AddShape(new LineShape(10, y - 10, 30, y - 10, item.Color, item.Thickness, DrawingStyle.Solid));

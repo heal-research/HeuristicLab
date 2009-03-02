@@ -11,6 +11,8 @@ namespace HeuristicLab.Visualization {
     internal class LinesShape : WorldShape {}
 
     private readonly IChartDataRowsModel model;
+    private readonly Canvas canvas;
+
     private int maxDataRowCount;
     private Boolean zoomFullView;
     private double minDataValue;
@@ -19,7 +21,6 @@ namespace HeuristicLab.Visualization {
     private MinMaxLineShape minMaxLineShape;
     private IShape minLineShape;
 
-    private readonly WorldShape root;
     private readonly TextShape titleShape;
     private readonly LinesShape linesShape;
     private readonly LegendShape legendShape;
@@ -27,6 +28,9 @@ namespace HeuristicLab.Visualization {
     private readonly XAxis xAxis;
     private readonly YAxis yAxis;
     private readonly Grid grid;
+
+    private readonly WorldShape berni;
+    private readonly RectangleShape mousePointer;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -44,40 +48,43 @@ namespace HeuristicLab.Visualization {
         throw new NullReferenceException("Model cannot be null.");
       }
 
-      //TODO: correct Rectangle to fit
+      minMaxLineEnabled = true;
 
-      root = new WorldShape();
+      canvas = canvasUI.Canvas;
 
       grid = new Grid();
-      minMaxLineEnabled = true;
-      root.AddShape(grid);
+      canvas.AddShape(grid);
 
       linesShape = new LinesShape();
-      root.AddShape(linesShape);
+      canvas.AddShape(linesShape);
 
       xAxis = new XAxis();
-      root.AddShape(xAxis);
+      canvas.AddShape(xAxis);
 
       yAxis = new YAxis();
-      root.AddShape(yAxis);
+      canvas.AddShape(yAxis);
 
       titleShape = new TextShape(0, 0, model.Title, 15);
-      root.AddShape(titleShape);
+      canvas.AddShape(titleShape);
 
       minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, Color.Yellow, 4, DrawingStyle.Solid);
-      root.AddShape(minMaxLineShape);
+      canvas.AddShape(minMaxLineShape);
 
       legendShape = new LegendShape();
-      root.AddShape(legendShape);
+      canvas.AddShape(legendShape);
 
-      canvas.MainCanvas.WorldShape = root;
-      canvas.Resize += delegate { UpdateLayout(); };
-      
-      UpdateLayout();
+      berni = new WorldShape();
+      canvas.AddShape(berni);
+
+      mousePointer = new RectangleShape(10, 10, 20, 20, Color.Black);
+      berni.AddShape(mousePointer);
+
       maxDataRowCount = 0;
       this.model = model;
       Item = model;
 
+      UpdateLayout();
+      canvasUI.Resize += delegate { UpdateLayout(); };
 
       //The whole data rows are shown per default
       ResetView();
@@ -87,18 +94,19 @@ namespace HeuristicLab.Visualization {
     /// Layout management - arranges the inner shapes.
     /// </summary>
     private void UpdateLayout() {
-      root.ClippingArea = new RectangleD(0, 0, canvas.Width, canvas.Height);
-
       titleShape.X = 10;
-      titleShape.Y = canvas.Height - 10;
+      titleShape.Y = canvasUI.Height - 10;
 
       const int yAxisWidth = 100;
       const int xAxisHeight = 20;
 
       linesShape.BoundingBox = new RectangleD(yAxisWidth,
                                               xAxisHeight,
-                                              canvas.Width,
-                                              canvas.Height);
+                                              canvasUI.Width,
+                                              canvasUI.Height);
+
+      berni.BoundingBox = linesShape.BoundingBox;
+      berni.ClippingArea = new RectangleD(0, 0, berni.BoundingBox.Width, berni.BoundingBox.Height);
 
       grid.BoundingBox = linesShape.BoundingBox;
 
@@ -114,7 +122,7 @@ namespace HeuristicLab.Visualization {
                                          linesShape.BoundingBox.X2,
                                          linesShape.BoundingBox.Y1);
 
-      legendShape.BoundingBox = new RectangleD(10, 10, 110, canvas.Height - 50);
+      legendShape.BoundingBox = new RectangleD(10, 10, 110, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width,
                                                 legendShape.BoundingBox.Height);
     }
@@ -123,7 +131,7 @@ namespace HeuristicLab.Visualization {
       zoomFullView = true;
       ZoomToFullView();
 
-      canvas.Invalidate();
+      canvasUI.Invalidate();
     }
 
     #region Add-/RemoveItemEvents
@@ -161,6 +169,14 @@ namespace HeuristicLab.Visualization {
       legendShape.CreateLegend();
       InitLineShapes(row);
     }
+
+    private void OnDataRowRemoved(IDataRow row) {
+      row.ValueChanged -= OnRowValueChanged;
+      row.ValuesChanged -= OnRowValuesChanged;
+      row.DataRowChanged -= OnDataRowChanged;
+    }
+
+    #endregion
 
     private void ZoomToFullView() {
       if (!zoomFullView) {
@@ -220,13 +236,7 @@ namespace HeuristicLab.Visualization {
       rowToLineShapes[row] = lineShapes;
       ZoomToFullView();
 
-      canvas.Invalidate();
-    }
-
-    private void OnDataRowRemoved(IDataRow row) {
-      row.ValueChanged -= OnRowValueChanged;
-      row.ValuesChanged -= OnRowValuesChanged;
-      row.DataRowChanged -= OnDataRowChanged;
+      canvasUI.Invalidate();
     }
 
     private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
@@ -266,10 +276,10 @@ namespace HeuristicLab.Visualization {
       }
       ZoomToFullView();
 
-      canvas.Invalidate();
+      canvasUI.Invalidate();
     }
 
-
+    // TODO remove (see ticket #501)
     public IList<IDataRow> GetRows() {
       return model.Rows;
     }
@@ -285,10 +295,17 @@ namespace HeuristicLab.Visualization {
     private void OnModelChanged() {
       titleShape.Text = model.Title;
 
-      Invalidate();
+      canvasUI.Invalidate();
     }
 
-    #endregion
+    public void OnDataRowChanged(IDataRow row) {
+      foreach (LineShape ls in rowToLineShapes[row]) {
+        ls.LSColor = row.Color;
+        ls.LSThickness = row.Thickness;
+        ls.LSDrawingStyle = row.Style;
+      }
+      canvasUI.Invalidate();
+    }
 
     #region Begin-/EndUpdate
 
@@ -306,7 +323,7 @@ namespace HeuristicLab.Visualization {
       beginUpdateCount--;
 
       if (beginUpdateCount == 0) {
-        canvas.Invalidate();
+        canvasUI.Invalidate();
       }
     }
 
@@ -324,7 +341,7 @@ namespace HeuristicLab.Visualization {
         RectangleD clippingArea = historyStack.Peek();
 
         SetNewClippingArea(clippingArea);
-        canvas.Invalidate();
+        canvasUI.Invalidate();
       }
     }
 
@@ -345,6 +362,14 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    private void canvas_MouseMove(object sender, MouseEventArgs e) {
+      double x = Transform.ToWorldX(e.X, berni.Viewport, berni.ClippingArea);
+      double y = Transform.ToWorldY(e.Y, berni.Viewport, berni.ClippingArea);
+
+      mousePointer.Rectangle = new RectangleD(x-1, y-1, x+1, y+1);
+      canvasUI.Invalidate();
+    }
+
     private void canvasUI1_MouseWheel(object sender, MouseEventArgs e) {
       if (ModifierKeys == Keys.Control) {
         double zoomFactor = (e.Delta > 0) ? 0.9 : 1.1;
@@ -352,7 +377,7 @@ namespace HeuristicLab.Visualization {
         RectangleD clippingArea = ZoomListener.ZoomClippingArea(linesShape.ClippingArea, zoomFactor);
 
         SetLineClippingArea(clippingArea);
-        canvas.Invalidate();
+        canvasUI.Invalidate();
       }
     }
 
@@ -361,7 +386,7 @@ namespace HeuristicLab.Visualization {
       zoomListener.DrawRectangle += DrawRectangle;
       zoomListener.OnMouseUp += OnZoom_MouseUp;
 
-      canvas.MouseEventListener = zoomListener;
+      canvasUI.MouseEventListener = zoomListener;
 
       rectangleShape = new RectangleShape(e.X, e.Y, e.X, e.Y, Color.Blue);
       rectangleShape.Opacity = 50;
@@ -370,7 +395,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void OnZoom_MouseUp(object sender, MouseEventArgs e) {
-      canvas.MouseEventListener = null;
+      canvasUI.MouseEventListener = null;
 
       RectangleD clippingArea = rectangleShape.Rectangle;
 
@@ -381,31 +406,31 @@ namespace HeuristicLab.Visualization {
 
       zoomFullView = false; //user wants to zoom => no full view
 
-      canvas.Invalidate();
+      canvasUI.Invalidate();
     }
 
     private void DrawRectangle(Rectangle rectangle) {
-      rectangleShape.Rectangle = Transform.ToWorld(rectangle, canvas.ClientRectangle, linesShape.ClippingArea);
-      canvas.Invalidate();
+      rectangleShape.Rectangle = Transform.ToWorld(rectangle, canvasUI.ClientRectangle, linesShape.ClippingArea);
+      canvasUI.Invalidate();
     }
 
     private void CreatePanListener(MouseEventArgs e) {
-      PanListener panListener = new PanListener(canvas.ClientRectangle, linesShape.ClippingArea, e.Location);
+      PanListener panListener = new PanListener(canvasUI.ClientRectangle, linesShape.ClippingArea, e.Location);
 
       panListener.SetNewClippingArea += SetNewClippingArea;
       panListener.OnMouseUp += delegate {
                                  historyStack.Push(linesShape.ClippingArea);
-                                 canvas.MouseEventListener = null;
+                                 canvasUI.MouseEventListener = null;
                                };
 
-      canvas.MouseEventListener = panListener;
+      canvasUI.MouseEventListener = panListener;
     }
 
     private void SetNewClippingArea(RectangleD newClippingArea) {
       SetLineClippingArea(newClippingArea);
 
       zoomFullView = false;
-      canvas.Invalidate();
+      canvasUI.Invalidate();
     }
 
     #endregion
@@ -413,15 +438,6 @@ namespace HeuristicLab.Visualization {
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(this);
       optionsdlg.ShowDialog(this);
-    }
-
-    public void OnDataRowChanged(IDataRow row) {
-      foreach (LineShape ls in rowToLineShapes[row]) {
-        ls.LSColor = row.Color;
-        ls.LSThickness = row.Thickness;
-        ls.LSDrawingStyle = row.Style;
-      }
-      canvas.Invalidate();
     }
   }
 }

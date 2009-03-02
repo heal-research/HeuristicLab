@@ -1,12 +1,15 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization.Test {
   public partial class MainForm : Form {
+    private readonly Canvas canvas;
+
     public MainForm() {
       InitializeComponent();
 
-      canvasUI.MainCanvas.WorldShape = new WorldShape(new RectangleD(0, 0, 800, 600), new RectangleD(0, 0, 800, 600));
+      canvas = canvasUI.Canvas;
 
       CreateLeftWorldShape();
       CreateMiddleCompositeShape();
@@ -17,16 +20,16 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     private void CreateSimpleRectangleShape() {
-      WorldShape mainWorld = canvasUI.MainCanvas.WorldShape;
       // simple rectangle shape
       RectangleShape rect7 = new RectangleShape(5, 5, 50, 50, Color.Black);
-      mainWorld.AddShape(rect7);
+      canvas.AddShape(rect7);
     }
 
     private void CreateRightWorldShape() {
-      WorldShape mainWorld = canvasUI.MainCanvas.WorldShape;
       // right world shape
-      WorldShape rightWorld = new WorldShape(new RectangleD(-1, -1, 1, 1), new RectangleD(600, 10, 780, 600));
+      WorldShape rightWorld = new WorldShape();
+      rightWorld.ClippingArea = new RectangleD(-1, -1, 1, 1);
+      rightWorld.BoundingBox = new RectangleD(600, 10, 780, 600);
 
       double x1 = -3;
       double y1 = -3;
@@ -38,11 +41,10 @@ namespace HeuristicLab.Visualization.Test {
         rightWorld.AddShape(rect);
       }
 
-      mainWorld.AddShape(rightWorld);
+      canvas.AddShape(rightWorld);
     }
 
     private void CreateMiddleCompositeShape() {
-      WorldShape mainWorld = canvasUI.MainCanvas.WorldShape;
       // middle composite shape
       CompositeShape middleComp = new CompositeShape();
 
@@ -52,13 +54,14 @@ namespace HeuristicLab.Visualization.Test {
       middleComp.AddShape(rect5);
       middleComp.AddShape(rect6);
 
-      mainWorld.AddShape(middleComp);
+      canvas.AddShape(middleComp);
     }
 
     private void CreateLeftWorldShape() {
-      WorldShape mainWorld = canvasUI.MainCanvas.WorldShape;
       // left world shape
-      WorldShape leftWorld = new WorldShape(new RectangleD(0, 0, 1000, 1000), new RectangleD(10, 10, 380, 590));
+      WorldShape leftWorld = new WorldShape();
+      leftWorld.ClippingArea = new RectangleD(0, 0, 1000, 1000);
+      leftWorld.BoundingBox = new RectangleD(10, 10, 380, 590);
 
       RectangleShape fillRect = new RectangleShape(0, 0, 1000, 1000, Color.LightBlue);
 
@@ -78,10 +81,10 @@ namespace HeuristicLab.Visualization.Test {
       leftWorld.AddShape(rect2);
       leftWorld.AddShape(comp1);
 
-      mainWorld.AddShape(leftWorld);
+      canvas.AddShape(leftWorld);
     }
 
-    private void legendButton_Click(object sender, System.EventArgs e) {
+    private void legendButton_Click(object sender, EventArgs e) {
       LegendForm form = new LegendForm();
       form.Show();
     }

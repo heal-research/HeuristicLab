@@ -4,12 +4,14 @@ using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class CompositeShape : IShape {
+    private IShape parent;
+
     protected readonly List<IShape> shapes = new List<IShape>();
     protected RectangleD boundingBox = RectangleD.Empty;
 
-    public virtual void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+    public virtual void Draw(Graphics graphics) {
       foreach (IShape shape in shapes) {
-        shape.Draw(graphics, parentViewport, parentClippingArea);
+        shape.Draw(graphics);
       }
     }
 
@@ -23,12 +25,27 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    public RectangleD ClippingArea {
+      get { return Parent.ClippingArea; }
+    }
+
+    public Rectangle Viewport {
+      get { return Parent.Viewport; }
+    }
+
+    public IShape Parent {
+      get { return parent; }
+      set { parent = value; }
+    }
+
     public void ClearShapes() {
       shapes.Clear();
       boundingBox = RectangleD.Empty;
     }
 
     public void AddShape(IShape shape) {
+      shape.Parent = this;
+
       if (shapes.Count == 0) {
         boundingBox = shape.BoundingBox;
       } else {

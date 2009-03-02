@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class RectangleShape : IShape {
+    private IShape parent;
     private RectangleD rectangle;
 
     private Color color;
@@ -19,13 +20,26 @@ namespace HeuristicLab.Visualization {
       get { return rectangle; }
     }
 
+    public RectangleD ClippingArea {
+      get { return Parent.ClippingArea; }
+    }
+
+    public Rectangle Viewport {
+      get { return Parent.Viewport; }
+    }
+
+    public IShape Parent {
+      get { return parent; }
+      set { parent = value; }
+    }
+
     public RectangleD Rectangle {
       get { return rectangle; }
       set { rectangle = value; }
     }
 
-    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
-      Rectangle screenRect = Transform.ToScreen(rectangle, parentViewport, parentClippingArea);
+    public void Draw(Graphics graphics) {
+      Rectangle screenRect = Transform.ToScreen(rectangle, Parent.Viewport, Parent.ClippingArea);
 
       graphics.DrawRectangle(GetPen(), screenRect);
       graphics.FillRectangle(GetBrush(), screenRect);

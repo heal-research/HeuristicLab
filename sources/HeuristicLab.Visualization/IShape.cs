@@ -24,13 +24,16 @@ namespace HeuristicLab.Visualization {
     /// Draws the shape
     /// </summary>
     /// <param name="graphics">The Graphics object used to draw the shape</param>
-    /// <param name="parentViewport">The parent's view port</param>
-    /// <param name="parentClippingArea">The parent's clipping area</param>
-    void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea);
+    void Draw(Graphics graphics);
 
     /// <summary>
     /// The shape's bounding box
     /// </summary>
     RectangleD BoundingBox { get; }
+
+    RectangleD ClippingArea { get; }
+    Rectangle Viewport { get; }
+
+    IShape Parent { get; set; }
   }
 }

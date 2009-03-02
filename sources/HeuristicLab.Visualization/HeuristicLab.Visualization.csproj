@@ -101,7 +101,6 @@
     <Compile Include="DataRow.cs" />
     <Compile Include="DrawingStyle.cs" />
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />
-    <Compile Include="ICanvas.cs" />
     <Compile Include="IChartDataModel.cs" />
     <Compile Include="IChartDataRowsModel.cs" />
     <Compile Include="IDataRow.cs" />

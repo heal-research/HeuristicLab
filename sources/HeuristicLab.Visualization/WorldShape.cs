@@ -10,32 +10,23 @@ namespace HeuristicLab.Visualization {
   public class WorldShape : IShape {
     private RectangleD clippingArea; // own clipping area
     private RectangleD boundingBox;
+    private IShape parent;
 
-    protected readonly List<IShape> shapes = new List<IShape>();
+    private readonly List<IShape> shapes = new List<IShape>();
 
-    public WorldShape()
-      : this(new RectangleD(0, 0, 1, 1), new RectangleD(0, 0, 1, 1)) {}
-
-    /// <param name="clippingArea">The new clipping area of this world shape</param>
-    /// <param name="boundingBox">The location and the size of this world shape in the parent's coordinate system</param>
-    public WorldShape(RectangleD clippingArea, RectangleD boundingBox) {
-      this.clippingArea = clippingArea;
-      this.boundingBox = boundingBox;
+    public WorldShape() {
+      this.clippingArea = new RectangleD(0, 0, 1, 1);
+      this.boundingBox = new RectangleD(0, 0, 1, 1);
     }
 
-    public virtual void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
+    public virtual void Draw(Graphics graphics) {
       GraphicsState gstate = graphics.Save();
 
-      // calculate our drawing area on the screen using our location and
-      // size in the parent (boundingBox), the parent's viewport and the
-      // parent's clipping area
-      Rectangle viewport = Transform.ToScreen(boundingBox, parentViewport, parentClippingArea);
-
-      graphics.SetClip(viewport);
+      graphics.SetClip(Viewport);
 
       foreach (IShape shape in shapes) {
         // draw child shapes using our own clipping area
-        shape.Draw(graphics, viewport, clippingArea);
+        shape.Draw(graphics);
       }
 
       graphics.Restore(gstate);
@@ -55,7 +46,27 @@ namespace HeuristicLab.Visualization {
       set { clippingArea = value; }
     }
 
+    public Rectangle Viewport {
+      get {
+        // calculate our drawing area on the screen using our location and
+        // size in the parent (boundingBox), the parent's viewport and the
+        // parent's clipping area
+        Rectangle viewport = Transform.ToScreen(boundingBox, Parent.Viewport, Parent.ClippingArea);
+        return viewport;
+      }
+    }
+
+    public IShape Parent {
+      get { return parent; }
+      set { parent = value; }
+    }
+
+    public void ClearShapes() {
+      shapes.Clear();
+    }
+
     public void AddShape(IShape shape) {
+      shape.Parent = this;
       shapes.Add(shape);
     }
 

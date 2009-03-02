@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization {
   public partial class CanvasUI : Control {
-    private readonly Canvas mainCanvas = new Canvas();
+    private readonly Canvas canvas = new Canvas();
     private IMouseEventListener mouseEventListener;
 
     public CanvasUI() {
@@ -15,8 +14,8 @@ namespace HeuristicLab.Visualization {
       DoubleBuffered = true;
     }
 
-    public Canvas MainCanvas {
-      get { return mainCanvas; }
+    public Canvas Canvas {
+      get { return canvas; }
     }
 
     public IMouseEventListener MouseEventListener {
@@ -28,13 +27,8 @@ namespace HeuristicLab.Visualization {
       try {
         Graphics g = pe.Graphics;
 
-        g.SmoothingMode = SmoothingMode.AntiAlias;
-
-        g.FillRectangle(Brushes.White, ClientRectangle);
-
-        mainCanvas.Draw(g, ClientRectangle);
-
-        g.DrawRectangle(Pens.Black, 0, 0, Width - 1, Height - 1);
+        canvas.Viewport = ClientRectangle;
+        canvas.Draw(g);
 
         base.OnPaint(pe);
       } catch (Exception e) {
@@ -44,6 +38,8 @@ namespace HeuristicLab.Visualization {
 
     protected override void OnResize(EventArgs e) {
       Invalidate();
+
+      canvas.Viewport = ClientRectangle;
 
       base.OnResize(e);
     }

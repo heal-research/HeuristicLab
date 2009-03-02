@@ -3,6 +3,7 @@ using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Visualization {
   public class LineShape : IShape {
+    private IShape parent;
     private RectangleD boundingBox;
 
     private Color color;
@@ -32,6 +33,19 @@ namespace HeuristicLab.Visualization {
       get { return boundingBox; }
     }
 
+    public RectangleD ClippingArea {
+      get { return Parent.ClippingArea; }
+    }
+
+    public Rectangle Viewport {
+      get { return Parent.Viewport; }
+    }
+
+    public IShape Parent {
+      get { return parent; }
+      set { parent = value; }
+    }
+
     public double Y1 {
       get { return boundingBox.Y1; }
       set { boundingBox.Y1 = value; }
@@ -56,10 +70,8 @@ namespace HeuristicLab.Visualization {
     /// Draws the LineShape.
     /// </summary>
     /// <param name="graphics">graphics handle to draw to</param>
-    /// <param name="parentViewport">rectangle in value-coordinates to display</param>
-    /// <param name="parentClippingArea">rectangle in screen-coordinates to draw</param>
-    public void Draw(Graphics graphics, Rectangle parentViewport, RectangleD parentClippingArea) {
-      Rectangle screenRect = Transform.ToScreen(boundingBox, parentViewport, parentClippingArea);
+    public void Draw(Graphics graphics) {
+      Rectangle screenRect = Transform.ToScreen(boundingBox, Parent.Viewport, Parent.ClippingArea);
 
       graphics.DrawLine(GetPen(), screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);
     }
