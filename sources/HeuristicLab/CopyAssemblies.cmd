@@ -9,6 +9,7 @@ mkdir plugins\backup
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
+copy "%SolutionDir%\HeuristicLab.Assignment.QAP\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Charting\%Outdir%\HeuristicLab.CEDMA.Charting-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Core\%Outdir%\HeuristicLab.CEDMA.Core-3.2.dll" .\plugins
