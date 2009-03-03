@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization.Options {
   public partial class OptionsDialog : Form {
-    private readonly LineChart lc;
+    private readonly IChartDataRowsModel model;
 
-    public OptionsDialog(LineChart lc) {
+    public OptionsDialog(IChartDataRowsModel model) {
       InitializeComponent();
-      this.lc = lc;
+      this.model = model;
     }
 
     private void OptionsDialogSelectColorBtn_Click(object sender, EventArgs e) {
@@ -26,8 +26,8 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void OptionsDialog_Load(object sender, EventArgs e) {
-      if (lc.GetRows().Count != 0) {
-        LineSelectCB.DataSource = lc.GetRows();
+      if (model.Rows.Count != 0) {
+        LineSelectCB.DataSource = model.Rows;
         LineSelectCB.DisplayMember = "Label";
 
         LineThicknessCB.DataSource = GetThicknesses();

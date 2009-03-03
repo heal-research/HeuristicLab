@@ -9,7 +9,6 @@ using HeuristicLab.Visualization.Options;
 namespace HeuristicLab.Visualization {
   public partial class LineChart : ViewBase {
     internal class LinesShape : WorldShape {}
-
     private readonly IChartDataRowsModel model;
     private readonly Canvas canvas;
 
@@ -17,9 +16,7 @@ namespace HeuristicLab.Visualization {
     private Boolean zoomFullView;
     private double minDataValue;
     private double maxDataValue;
-    private bool minMaxLineEnabled;
-    private MinMaxLineShape minMaxLineShape;
-    private IShape minLineShape;
+  
 
     private readonly TextShape titleShape;
     private readonly LinesShape linesShape;
@@ -48,8 +45,7 @@ namespace HeuristicLab.Visualization {
         throw new NullReferenceException("Model cannot be null.");
       }
 
-      minMaxLineEnabled = true;
-
+    
       canvas = canvasUI.Canvas;
 
       grid = new Grid();
@@ -67,8 +63,8 @@ namespace HeuristicLab.Visualization {
       titleShape = new TextShape(0, 0, model.Title, 15);
       canvas.AddShape(titleShape);
 
-      minMaxLineShape = new MinMaxLineShape(this.minDataValue, this.maxDataValue, Color.Yellow, 4, DrawingStyle.Solid);
-      canvas.AddShape(minMaxLineShape);
+      //  horizontalLineShape = new HorizontalLineShape(this.maxDataValue, Color.Yellow, 4, DrawingStyle.Solid);
+      //  root.AddShape(horizontalLineShape);
 
       legendShape = new LegendShape();
       canvas.AddShape(legendShape);
@@ -110,7 +106,6 @@ namespace HeuristicLab.Visualization {
 
       grid.BoundingBox = linesShape.BoundingBox;
 
-      minMaxLineShape.BoundingBox = linesShape.BoundingBox;
 
       yAxis.BoundingBox = new RectangleD(0,
                                          linesShape.BoundingBox.Y1,
@@ -134,7 +129,24 @@ namespace HeuristicLab.Visualization {
       canvasUI.Invalidate();
     }
 
+    private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
+      var optionsdlg = new OptionsDialog(this.model);
+      optionsdlg.ShowDialog(this);
+    }
+
+    public void OnDataRowChanged(IDataRow row) {
+      foreach (LineShape ls in rowToLineShapes[row]) {
+        ls.LSColor = row.Color;
+        ls.LSThickness = row.Thickness;
+        ls.LSDrawingStyle = row.Style;
+      }
+      canvasUI.Invalidate();
+    }
+
     #region Add-/RemoveItemEvents
+
+    private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
+      new Dictionary<IDataRow, List<LineShape>>();
 
     protected override void AddItemEvents() {
       base.AddItemEvents();
@@ -163,6 +175,7 @@ namespace HeuristicLab.Visualization {
 
       if (row.Count > maxDataRowCount) {
         maxDataRowCount = row.Count;
+        //   UpdateSingleValueRows();
       }
 
       legendShape.AddLegendItem(new LegendItem(row.Label, row.Color, row.Thickness));
@@ -182,10 +195,10 @@ namespace HeuristicLab.Visualization {
       if (!zoomFullView) {
         return;
       }
-      RectangleD newClippingArea = new RectangleD(-0.1,
-                                                  minDataValue - ((maxDataValue - minDataValue)*0.05),
-                                                  maxDataRowCount - 0.9,
-                                                  maxDataValue + ((maxDataValue - minDataValue)*0.05));
+      var newClippingArea = new RectangleD(-0.1,
+                                           minDataValue - ((maxDataValue - minDataValue)*0.05),
+                                           maxDataRowCount - 0.9,
+                                           maxDataValue + ((maxDataValue - minDataValue)*0.05));
 
       SetLineClippingArea(newClippingArea);
       historyStack.Push(newClippingArea);
@@ -200,7 +213,8 @@ namespace HeuristicLab.Visualization {
 
       grid.ClippingArea = linesShape.ClippingArea;
 
-      minMaxLineShape.ClippingArea = linesShape.ClippingArea;
+      // horizontalLineShape.ClippingArea = linesShape.ClippingArea;
+
 
       xAxis.ClippingArea = new RectangleD(linesShape.ClippingArea.X1,
                                           xAxis.BoundingBox.Y1,
@@ -214,68 +228,91 @@ namespace HeuristicLab.Visualization {
     }
 
     private void InitLineShapes(IDataRow row) {
-      List<LineShape> lineShapes = new List<LineShape>();
+      var lineShapes = new List<LineShape>();
       if (rowToLineShapes.Count == 0) {
         minDataValue = Double.PositiveInfinity;
         maxDataValue = Double.NegativeInfinity;
       }
-      if (row.Count > 0) {
+      if ((row.Count > 0)) {
         maxDataValue = Math.Max(row[0], maxDataValue);
         minDataValue = Math.Min(row[0], minDataValue);
       }
-      for (int i = 1; i < row.Count; i++) {
-        LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
-        lineShapes.Add(lineShape);
-        // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        linesShape.AddShape(lineShape);
-        maxDataValue = Math.Max(row[i], maxDataValue);
-        minDataValue = Math.Min(row[i], minDataValue);
+      if ((row.LineType == DataRowType.SingleValue)) {
+        if (row.Count > 0) {
+          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
+                                                        row.Style);
+          lineShapes.Add(lineShape);
+          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
+          linesShape.AddShape(lineShape);
+        }
       }
-      minMaxLineShape.YMax = maxDataValue;
-      minMaxLineShape.YMin = minDataValue;
+      else {
+        for (int i = 1; i < row.Count; i++) {
+          var lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
+          lineShapes.Add(lineShape);
+          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
+          linesShape.AddShape(lineShape);
+          maxDataValue = Math.Max(row[i], maxDataValue);
+          minDataValue = Math.Min(row[i], minDataValue);
+        }
+      }
+      //horizontalLineShape.YVal = maxDataValue;
       rowToLineShapes[row] = lineShapes;
       ZoomToFullView();
 
       canvasUI.Invalidate();
     }
 
-    private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
-      new Dictionary<IDataRow, List<LineShape>>();
-
     // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       List<LineShape> lineShapes = rowToLineShapes[row];
       maxDataValue = Math.Max(value, maxDataValue);
       minDataValue = Math.Min(value, minDataValue);
-      minMaxLineShape.YMax = maxDataValue;
-      minMaxLineShape.YMin = minDataValue;
-      if (index > lineShapes.Count + 1) {
-        throw new NotImplementedException();
-      }
-
-      // new value was added
-      if (index > 0 && index == lineShapes.Count + 1) {
-        if (maxDataRowCount < row.Count) {
-          maxDataRowCount = row.Count;
+      if (row.LineType == DataRowType.SingleValue) {
+        if (action == Action.Added) {
+          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
+                                                        row.Style);
+          lineShapes.Add(lineShape);
+          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
+          linesShape.AddShape(lineShape);
         }
-        LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
-                                            row.Style);
-        lineShapes.Add(lineShape);
-        // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-        linesShape.AddShape(lineShape);
+        else {
+          // lineShapes[0].X2 = maxDataRowCount;
+          lineShapes[0].Y1 = value;
+          lineShapes[0].Y2 = value;
+        }
+      }
+      else {
+        //  horizontalLineShape.YVal = maxDataValue;
+        if (index > lineShapes.Count + 1) {
+          throw new NotImplementedException();
+        }
+
+        // new value was added
+        if (index > 0 && index == lineShapes.Count + 1) {
+          if (maxDataRowCount < row.Count) {
+            maxDataRowCount = row.Count;
+            //  UpdateSingleValueRows();
+          }
+          var lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+                                        row.Style);
+          lineShapes.Add(lineShape);
+          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
+          linesShape.AddShape(lineShape);
+        }
+
+        // not the first value
+        if (index > 0) {
+          lineShapes[index - 1].Y2 = value;
+        }
+
+        // not the last value
+        if (index > 0 && index < row.Count - 1) {
+          lineShapes[index].Y1 = value;
+        }
       }
 
-      // not the first value
-      if (index > 0) {
-        lineShapes[index - 1].Y2 = value;
-      }
-
-      // not the last value
-      if (index > 0 && index < row.Count - 1) {
-        lineShapes[index].Y1 = value;
-      }
       ZoomToFullView();
-
       canvasUI.Invalidate();
     }
 
@@ -298,18 +335,10 @@ namespace HeuristicLab.Visualization {
       canvasUI.Invalidate();
     }
 
-    public void OnDataRowChanged(IDataRow row) {
-      foreach (LineShape ls in rowToLineShapes[row]) {
-        ls.LSColor = row.Color;
-        ls.LSThickness = row.Thickness;
-        ls.LSDrawingStyle = row.Style;
-      }
-      canvasUI.Invalidate();
-    }
-
+  
     #region Begin-/EndUpdate
 
-    private int beginUpdateCount = 0;
+    private int beginUpdateCount;
 
     public void BeginUpdate() {
       beginUpdateCount++;
@@ -348,9 +377,7 @@ namespace HeuristicLab.Visualization {
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
       if (e.Button == MouseButtons.Right) {
-     
-          this.contextMenuStrip1.Show(PointToScreen(e.Location));
-     
+        contextMenuStrip1.Show(PointToScreen(e.Location));
       }
       else {
         if (ModifierKeys == Keys.Control) {
@@ -382,7 +409,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void CreateZoomListener(MouseEventArgs e) {
-      ZoomListener zoomListener = new ZoomListener(e.Location);
+      var zoomListener = new ZoomListener(e.Location);
       zoomListener.DrawRectangle += DrawRectangle;
       zoomListener.OnMouseUp += OnZoom_MouseUp;
 
@@ -435,9 +462,6 @@ namespace HeuristicLab.Visualization {
 
     #endregion
 
-    private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      OptionsDialog optionsdlg = new OptionsDialog(this);
-      optionsdlg.ShowDialog(this);
-    }
+   
   }
 }

@@ -31,6 +31,7 @@ namespace HeuristicLab.Visualization {
 
     public RectangleD BoundingBox {
       get { return boundingBox; }
+      set { boundingBox = value; }
     }
 
     public RectangleD ClippingArea {
@@ -70,7 +71,7 @@ namespace HeuristicLab.Visualization {
     /// Draws the LineShape.
     /// </summary>
     /// <param name="graphics">graphics handle to draw to</param>
-    public void Draw(Graphics graphics) {
+    public virtual void Draw(Graphics graphics) {
       Rectangle screenRect = Transform.ToScreen(boundingBox, Parent.Viewport, Parent.ClippingArea);
 
       graphics.DrawLine(GetPen(), screenRect.Left, screenRect.Bottom, screenRect.Right, screenRect.Top);

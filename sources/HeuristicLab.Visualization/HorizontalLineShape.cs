@@ -1,46 +1,25 @@
 ﻿using System.Drawing;
 
 namespace HeuristicLab.Visualization {
-  public class MinMaxLineShape : WorldShape {
-    private readonly LineShape minLineShape;
-    private readonly LineShape maxLineShape;
-
+  public class HorizontalLineShape : LineShape {
     /// <summary>
-    /// Initializes the HorizontalLineShape.
+    /// Initializes the LineShape.
     /// </summary>
+    /// <param name="x1">x coordinate of left lineEndPoind</param>
+    /// <param name="y1">y coordinate of left lineEndPoind</param>
+    /// <param name="x2">x coordinate of right lineEndPoind</param>
+    /// <param name="y2">y coordinate of right lineEndPoind</param>
     /// <param name="color">color for the LineShape</param>
-    /// <param name="yMin">y value for lower line</param>
-    /// <param name="yMax">y value for upper line</param>
-    /// <param name="thickness">line thickness</param>
-    /// <param name="style">line style</param>
-    public MinMaxLineShape(double yMin, double yMax, Color color, int thickness, DrawingStyle style) {
-      minLineShape = new LineShape(0, yMin, 1, yMin, color, thickness, style);
-      maxLineShape = new LineShape(0, yMax, 1, yMax, color, thickness, style);
-      AddShape(minLineShape);
-      AddShape(maxLineShape);
-    }
+    /// <param name="thickness">tickness of the line in pixels</param>
+    /// <param name="drawingStyle">drawing style of the line (solid, dashed, dotted,...)</param>
+    public HorizontalLineShape(double x1, double y1, double x2, double y2, Color color, int thickness,
+                               DrawingStyle drawingStyle) : base(x1, y1, x2, y2, color, thickness, drawingStyle) {}
 
     public override void Draw(Graphics graphics) {
-      minLineShape.X1 = ClippingArea.X1;
-      minLineShape.X2 = ClippingArea.X2;
-      maxLineShape.X1 = ClippingArea.X1;
-      maxLineShape.X2 = ClippingArea.X2;
+      X1 = Parent.ClippingArea.X1;
+      X2 = Parent.ClippingArea.X2;
+      Y2 = Y1;
       base.Draw(graphics);
-    }
-
-
-    public double YMin {
-      set {
-        minLineShape.Y1 = value;
-        minLineShape.Y2 = value;
-      }
-    }
-
-    public double YMax {
-      set {
-        maxLineShape.Y1 = value;
-        maxLineShape.Y2 = value;
-      }
     }
   }
 }
