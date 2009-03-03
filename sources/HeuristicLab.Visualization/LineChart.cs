@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -389,12 +390,18 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    private void canvas_MouseMove(object sender, MouseEventArgs e) {
-      double x = Transform.ToWorldX(e.X, berni.Viewport, berni.ClippingArea);
-      double y = Transform.ToWorldY(e.Y, berni.Viewport, berni.ClippingArea);
+    private Point prevMousePosition = Point.Empty;
 
-      mousePointer.Rectangle = new RectangleD(x-1, y-1, x+1, y+1);
-      canvasUI.Invalidate();
+    private void canvas_MouseMove(object sender, MouseEventArgs e) {
+      if (prevMousePosition != e.Location) {
+        prevMousePosition = e.Location;
+
+        double x = Transform.ToWorldX(e.X, berni.Viewport, berni.ClippingArea);
+        double y = Transform.ToWorldY(e.Y, berni.Viewport, berni.ClippingArea);
+
+        mousePointer.Rectangle = new RectangleD(x - 1, y - 1, x + 1, y + 1);
+        canvasUI.Invalidate();
+      }
     }
 
     private void canvasUI1_MouseWheel(object sender, MouseEventArgs e) {
