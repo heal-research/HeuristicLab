@@ -5,7 +5,8 @@ namespace HeuristicLab.Visualization {
   public class ZoomListener : IMouseEventListener {
     private readonly Point startPoint;
 
-    public event DrawRectangleHandler DrawRectangle;
+    public event RectangleHandler DrawRectangle;
+    public event RectangleHandler SetClippingArea;
 
     public ZoomListener(Point startPoint) {
       this.startPoint = startPoint;
@@ -13,45 +14,41 @@ namespace HeuristicLab.Visualization {
 
     #region IMouseEventListener Members
 
-    public event MouseEventHandler OnMouseMove;
-    public event MouseEventHandler OnMouseUp;
-
     public void MouseMove(object sender, MouseEventArgs e) {
-      Rectangle r = new Rectangle();
-      Point actualPoint = e.Location;
-
-      if (startPoint.X < actualPoint.X) {
-        r.X = startPoint.X;
-        r.Width = actualPoint.X - startPoint.X;
-      } else {
-        r.X = actualPoint.X;
-        r.Width = startPoint.X - actualPoint.X;
-      }
-
-      if (startPoint.Y < actualPoint.Y) {
-        r.Y = startPoint.Y;
-        r.Height = actualPoint.Y - startPoint.Y;
-      } else {
-        r.Y = actualPoint.Y;
-        r.Height = startPoint.Y - actualPoint.Y;
-      }
-
       if(DrawRectangle != null) {
-        DrawRectangle(r);
-      }
-
-      if (OnMouseMove != null) {
-        OnMouseMove(sender, e);
+        DrawRectangle(CalcRectangle(e.Location));
       }
     }
 
     public void MouseUp(object sender, MouseEventArgs e) {
-      if (OnMouseUp != null) {
-        OnMouseUp(sender, e);
-      }
+     if(SetClippingArea != null) {
+       SetClippingArea(CalcRectangle(e.Location));
+     }
     }
 
     #endregion
+
+    private Rectangle CalcRectangle(Point actualPoint) {
+      Rectangle rectangle = new Rectangle();
+
+      if (startPoint.X < actualPoint.X) {
+        rectangle.X = startPoint.X;
+        rectangle.Width = actualPoint.X - startPoint.X;
+      } else {
+        rectangle.X = actualPoint.X;
+        rectangle.Width = startPoint.X - actualPoint.X;
+      }
+
+      if (startPoint.Y < actualPoint.Y) {
+        rectangle.Y = startPoint.Y;
+        rectangle.Height = actualPoint.Y - startPoint.Y;
+      } else {
+        rectangle.Y = actualPoint.Y;
+        rectangle.Height = startPoint.Y - actualPoint.Y;
+      }
+
+      return rectangle;
+    }
 
     public static RectangleD ZoomClippingArea(RectangleD clippingArea, double zoomFactor) {
       double x1, x2, y1, y2, width, height;

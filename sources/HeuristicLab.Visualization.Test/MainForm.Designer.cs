@@ -31,7 +31,6 @@
       // canvasUI
       // 
       this.canvasUI.Location = new System.Drawing.Point(12, 29);
-      this.canvasUI.MouseEventListener = null;
       this.canvasUI.Name = "canvasUI";
       this.canvasUI.Size = new System.Drawing.Size(800, 571);
       this.canvasUI.TabIndex = 3;

@@ -41,15 +41,15 @@ namespace HeuristicLab.Visualization
           // 
           this.canvasUI.Dock = System.Windows.Forms.DockStyle.Fill;
           this.canvasUI.Location = new System.Drawing.Point(0, 0);
-          this.canvasUI.MouseEventListener = null;
           this.canvasUI.Name = "canvasUI";
           this.canvasUI.Size = new System.Drawing.Size(551, 373);
           this.canvasUI.TabIndex = 0;
           this.canvasUI.Text = "canvas";
           this.canvasUI.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseWheel);
-          this.canvasUI.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
+          this.canvasUI.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvasUI_MouseMove);
           this.canvasUI.ContextMenuStripChanged += new System.EventHandler(this.optionsToolStripMenuItem_Click);
           this.canvasUI.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
+          this.canvasUI.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvasUI_MouseUp);
           this.canvasUI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.canvasUI1_KeyDown);
           // 
           // contextMenuStrip1

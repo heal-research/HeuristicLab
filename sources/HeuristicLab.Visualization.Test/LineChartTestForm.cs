@@ -24,7 +24,7 @@ namespace HeuristicLab.Visualization.Test {
     private void btnResetView_Click(object sender, EventArgs e) {
       if (view != null) {
         LineChart lineChart = (LineChart)view;
-        lineChart.ResetView();
+        lineChart.ZoomToFullView();
       }
     }
 

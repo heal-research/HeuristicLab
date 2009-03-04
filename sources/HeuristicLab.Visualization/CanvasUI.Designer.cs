@@ -32,8 +32,6 @@
           // 
           // CanvasUI
           // 
-          this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CanvasUI_MouseMove);
-          this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CanvasUI_MouseUp);
           this.ResumeLayout(false);
 
         }

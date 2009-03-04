@@ -6,7 +6,6 @@ using System.Windows.Forms;
 namespace HeuristicLab.Visualization {
   public partial class CanvasUI : Control {
     private readonly Canvas canvas = new Canvas();
-    private IMouseEventListener mouseEventListener;
 
     public CanvasUI() {
       InitializeComponent();
@@ -16,11 +15,6 @@ namespace HeuristicLab.Visualization {
 
     public Canvas Canvas {
       get { return canvas; }
-    }
-
-    public IMouseEventListener MouseEventListener {
-      get { return mouseEventListener; }
-      set { mouseEventListener = value; }
     }
 
     protected override void OnPaint(PaintEventArgs pe) {
@@ -42,18 +36,6 @@ namespace HeuristicLab.Visualization {
       canvas.Viewport = ClientRectangle;
 
       base.OnResize(e);
-    }
-
-    private void CanvasUI_MouseMove(object sender, MouseEventArgs e) {
-      if (mouseEventListener != null) {
-        mouseEventListener.MouseMove(sender, e);
-      }
-    }
-
-    private void CanvasUI_MouseUp(object sender, MouseEventArgs e) {
-      if (mouseEventListener != null) {
-        mouseEventListener.MouseUp(sender, e);
-      }
     }
   }
 }
