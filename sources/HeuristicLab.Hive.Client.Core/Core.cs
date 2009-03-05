@@ -153,7 +153,7 @@ namespace HeuristicLab.Hive.Client.Core {
       long jId = (long)jobId;
       byte[] sJob = engines[jId].GetFinishedJob();
 
-      if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Connected) {
+      if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
         wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
           jId,
           sJob,

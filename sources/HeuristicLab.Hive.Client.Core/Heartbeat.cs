@@ -82,7 +82,7 @@ namespace HeuristicLab.Hive.Client.Core {
       };
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
-      } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Connected) {
+      } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Loggedin) {
         wcfService.SendHeartBeatAsync(heartBeatData);
       }
     }

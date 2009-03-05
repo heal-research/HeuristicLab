@@ -26,6 +26,6 @@ using System.Text;
 
 namespace HeuristicLab.Hive.Client.Common {
   public class NetworkEnum {
-    public enum WcfConnState { Connected, Disconnected, Failed }  
+    public enum WcfConnState { Connected, Disconnected, Failed, Loggedin }  
   }
 }

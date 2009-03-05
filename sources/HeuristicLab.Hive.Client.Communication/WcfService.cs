@@ -151,6 +151,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       try {
         if (ConnState == NetworkEnum.WcfConnState.Connected) {
           Response res = proxy.Login(clientInfo);
+          ConnState = NetworkEnum.WcfConnState.Loggedin;
           Logging.GetInstance().Info(this.ToString(), res.StatusMessage);
         }
       }
@@ -167,7 +168,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region PullJob
     public event System.EventHandler<PullJobCompletedEventArgs> PullJobCompleted;
     public void PullJobAsync(Guid guid) {
-      if (ConnState == NetworkEnum.WcfConnState.Connected)        
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin)        
         proxy.PullJobAsync(guid);
     }
     void proxy_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
@@ -184,7 +185,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region SendJobResults
     public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
     public void SendJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
-      if (ConnState == NetworkEnum.WcfConnState.Connected)
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin)
         proxy.SendJobResultAsync(clientId, jobId, result, percentage, exception, finished);
     }
     private void proxy_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
@@ -203,7 +204,7 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public event System.EventHandler<SendHeartBeatCompletedEventArgs> SendHeartBeatCompleted;
     public void SendHeartBeatAsync(HeartBeatData hbd) {
-      if (ConnState == NetworkEnum.WcfConnState.Connected)
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin)
         proxy.SendHeartBeatAsync(hbd);
     }
 
