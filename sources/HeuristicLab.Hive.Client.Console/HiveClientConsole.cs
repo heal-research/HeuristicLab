@@ -365,8 +365,8 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
       if (dvOnline.Selection == SelectionType.DateRange) {
-        cmbFrom.Text = dvOnline.SelectionStart.ToShortDateString();
-        cmbTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
+        dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
+        dtpTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
         txtTimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
       }
@@ -384,16 +384,16 @@ namespace HeuristicLab.Hive.Client.Console {
     private void btCreate_Click(object sender, EventArgs e) {
       DateTime from, to;
 
-      if (!string.IsNullOrEmpty(cmbFrom.Text) && !string.IsNullOrEmpty(cmbTo.Text)) {
+      if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text)) {
         if (chbade.Checked) {
           //whole day appointment, only dates are visible
-          if (DateTime.TryParse(cmbFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(cmbTo.Text + " " + txtTimeTo.Text, out to) && from < to)
+          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txtTimeTo.Text, out to) && from < to)
             onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
           else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txtTimeTo.Text)) {
           //Timeframe appointment
-          if (DateTime.TryParse(cmbFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(cmbTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
+          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
             if (from.Date == to.Date)
               onlineTimes.Add(CreateAppointment(from, to, false));
             else {
