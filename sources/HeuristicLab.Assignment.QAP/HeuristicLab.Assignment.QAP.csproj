@@ -42,11 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="QAPEvaluator.cs" />
     <Compile Include="QAPInjector.cs" />
     <Compile Include="QAPInjectorView.cs">
@@ -57,7 +52,6 @@
     </Compile>
     <Compile Include="QAPParser.cs" />
     <Compile Include="QAPPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Charting\HeuristicLab.Charting.csproj">
@@ -90,10 +84,6 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="QAPInjectorView.resx">
       <DependentUpon>QAPInjectorView.cs</DependentUpon>
       <SubType>Designer</SubType>
