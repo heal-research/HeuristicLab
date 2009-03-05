@@ -252,6 +252,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_Connected(object sender, EventArgs e) {
       wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
+      JobStorrageManager.CheckAndSubmitJobsFromDisc();
     }
 
     //this is a little bit tricky - 
