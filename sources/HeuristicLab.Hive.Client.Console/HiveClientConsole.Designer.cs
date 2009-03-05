@@ -89,16 +89,16 @@ namespace HeuristicLab.Hive.Client.Console {
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.chbade = new System.Windows.Forms.CheckBox();
-      this.button1 = new System.Windows.Forms.Button();
+      this.btnRecurrence = new System.Windows.Forms.Button();
       this.txtTimeTo = new System.Windows.Forms.TextBox();
       this.txttimeFrom = new System.Windows.Forms.TextBox();
       this.btbDelete = new System.Windows.Forms.Button();
-      this.txtTo = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
-      this.txtFrom = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.btCreate = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
+      this.cmbFrom = new System.Windows.Forms.ComboBox();
+      this.cmbTo = new System.Windows.Forms.ComboBox();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -514,14 +514,14 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // groupBox1
       // 
+      this.groupBox1.Controls.Add(this.cmbTo);
+      this.groupBox1.Controls.Add(this.cmbFrom);
       this.groupBox1.Controls.Add(this.chbade);
-      this.groupBox1.Controls.Add(this.button1);
+      this.groupBox1.Controls.Add(this.btnRecurrence);
       this.groupBox1.Controls.Add(this.txtTimeTo);
       this.groupBox1.Controls.Add(this.txttimeFrom);
       this.groupBox1.Controls.Add(this.btbDelete);
-      this.groupBox1.Controls.Add(this.txtTo);
       this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Controls.Add(this.txtFrom);
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.btCreate);
       this.groupBox1.Location = new System.Drawing.Point(353, 7);
@@ -541,14 +541,15 @@ namespace HeuristicLab.Hive.Client.Console {
       this.chbade.UseVisualStyleBackColor = true;
       this.chbade.CheckedChanged += new System.EventHandler(this.chbade_CheckedChanged);
       // 
-      // button1
+      // btnRecurrence
       // 
-      this.button1.Location = new System.Drawing.Point(189, 129);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(75, 26);
-      this.button1.TabIndex = 30;
-      this.button1.Text = "Recurrence";
-      this.button1.UseVisualStyleBackColor = true;
+      this.btnRecurrence.Location = new System.Drawing.Point(189, 129);
+      this.btnRecurrence.Name = "btnRecurrence";
+      this.btnRecurrence.Size = new System.Drawing.Size(75, 26);
+      this.btnRecurrence.TabIndex = 30;
+      this.btnRecurrence.Text = "Recurrence";
+      this.btnRecurrence.UseVisualStyleBackColor = true;
+      this.btnRecurrence.Click += new System.EventHandler(this.btnRecurrence_Click);
       // 
       // txtTimeTo
       // 
@@ -574,13 +575,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.btbDelete.UseVisualStyleBackColor = true;
       this.btbDelete.Click += new System.EventHandler(this.btbDelete_Click);
       // 
-      // txtTo
-      // 
-      this.txtTo.Location = new System.Drawing.Point(105, 62);
-      this.txtTo.Name = "txtTo";
-      this.txtTo.Size = new System.Drawing.Size(66, 20);
-      this.txtTo.TabIndex = 24;
-      // 
       // label2
       // 
       this.label2.AutoSize = true;
@@ -589,13 +583,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.label2.Size = new System.Drawing.Size(55, 13);
       this.label2.TabIndex = 23;
       this.label2.Text = "End Time:";
-      // 
-      // txtFrom
-      // 
-      this.txtFrom.Location = new System.Drawing.Point(105, 31);
-      this.txtFrom.Name = "txtFrom";
-      this.txtFrom.Size = new System.Drawing.Size(66, 20);
-      this.txtFrom.TabIndex = 22;
       // 
       // label1
       // 
@@ -623,6 +610,22 @@ namespace HeuristicLab.Hive.Client.Console {
       this.mcOnline.Name = "mcOnline";
       this.mcOnline.TabIndex = 19;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
+      // 
+      // cmbFrom
+      // 
+      this.cmbFrom.FormattingEnabled = true;
+      this.cmbFrom.Location = new System.Drawing.Point(100, 30);
+      this.cmbFrom.Name = "cmbFrom";
+      this.cmbFrom.Size = new System.Drawing.Size(77, 21);
+      this.cmbFrom.TabIndex = 39;
+      // 
+      // cmbTo
+      // 
+      this.cmbTo.FormattingEnabled = true;
+      this.cmbTo.Location = new System.Drawing.Point(100, 62);
+      this.cmbTo.Name = "cmbTo";
+      this.cmbTo.Size = new System.Drawing.Size(77, 21);
+      this.cmbTo.TabIndex = 40;
       // 
       // HiveClientConsole
       // 
@@ -696,17 +699,17 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Button btCreate;
     private System.Windows.Forms.MonthCalendar mcOnline;
     private Calendar.DayView dvOnline;
-    private System.Windows.Forms.TextBox txtTo;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox txtFrom;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.Button btbDelete;
     private System.Windows.Forms.TextBox txttimeFrom;
     private System.Windows.Forms.TextBox txtTimeTo;
     private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.Button btnRecurrence;
     private System.Windows.Forms.CheckBox chbade;
+    private System.Windows.Forms.ComboBox cmbTo;
+    private System.Windows.Forms.ComboBox cmbFrom;
   }
 }
 

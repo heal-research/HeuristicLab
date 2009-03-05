@@ -5,6 +5,7 @@
       <xs:enumeration value="Connected" />
       <xs:enumeration value="Disconnected" />
       <xs:enumeration value="Failed" />
+      <xs:enumeration value="Loggedin" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="NetworkEnum.WcfConnState" nillable="true" type="tns:NetworkEnum.WcfConnState" />

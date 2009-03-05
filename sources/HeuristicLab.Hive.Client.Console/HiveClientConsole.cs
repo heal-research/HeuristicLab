@@ -365,8 +365,8 @@ namespace HeuristicLab.Hive.Client.Console {
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
       if (dvOnline.Selection == SelectionType.DateRange) {
-        txtFrom.Text = dvOnline.SelectionStart.ToShortDateString();
-        txtTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
+        cmbFrom.Text = dvOnline.SelectionStart.ToShortDateString();
+        cmbTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
         txtTimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
       }
@@ -384,16 +384,16 @@ namespace HeuristicLab.Hive.Client.Console {
     private void btCreate_Click(object sender, EventArgs e) {
       DateTime from, to;
 
-      if (!string.IsNullOrEmpty(txtFrom.Text) && !string.IsNullOrEmpty(txtTo.Text)) {
+      if (!string.IsNullOrEmpty(cmbFrom.Text) && !string.IsNullOrEmpty(cmbTo.Text)) {
         if (chbade.Checked) {
           //whole day appointment, only dates are visible
-          if (DateTime.TryParse(txtFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(txtTo.Text + " " + txtTimeTo.Text, out to) && from < to)
+          if (DateTime.TryParse(cmbFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(cmbTo.Text + " " + txtTimeTo.Text, out to) && from < to)
             onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
           else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txtTimeTo.Text)) {
           //Timeframe appointment
-          if (DateTime.TryParse(txtFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(txtTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
+          if (DateTime.TryParse(cmbFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(cmbTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
             if (from.Date == to.Date)
               onlineTimes.Add(CreateAppointment(from, to, false));
             else {
@@ -434,5 +434,10 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     #endregion
+
+    private void btnRecurrence_Click(object sender, EventArgs e) {
+      Form recurrence = new Recurrence();
+      recurrence.Show();
+    }
   }
 }

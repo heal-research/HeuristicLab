@@ -149,7 +149,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08003@fhs-hagenberg.ac.at</Upn>
+          <Upn>mse08004@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>
