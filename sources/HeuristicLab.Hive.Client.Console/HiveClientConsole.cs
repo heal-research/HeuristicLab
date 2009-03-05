@@ -250,7 +250,7 @@ namespace HeuristicLab.Hive.Client.Console {
 
         UpdateGraph(sc.Jobs);
 
-        if (sc.Status == NetworkEnumWcfConnState.Connected) {
+        if (sc.Status == NetworkEnumWcfConnState.Connected || sc.Status == NetworkEnumWcfConnState.Loggedin) {
           btConnect.Enabled = false;
           btnDisconnect.Enabled = true;
           lbCs.Text = sc.ConnectedSince.ToString();
@@ -264,6 +264,8 @@ namespace HeuristicLab.Hive.Client.Console {
           btnDisconnect.Enabled = false;
           lbCs.Text = String.Empty;
         }
+
+        cccc.GetCurrentConnection();
       } else {
         refreshTimer.Stop();
         DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
