@@ -97,8 +97,8 @@ namespace HeuristicLab.Hive.Client.Console {
       this.label1 = new System.Windows.Forms.Label();
       this.btCreate = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
-      this.cmbFrom = new System.Windows.Forms.ComboBox();
-      this.cmbTo = new System.Windows.Forms.ComboBox();
+      this.dtpFrom = new System.Windows.Forms.DateTimePicker();
+      this.dtpTo = new System.Windows.Forms.DateTimePicker();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -514,8 +514,8 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // groupBox1
       // 
-      this.groupBox1.Controls.Add(this.cmbTo);
-      this.groupBox1.Controls.Add(this.cmbFrom);
+      this.groupBox1.Controls.Add(this.dtpTo);
+      this.groupBox1.Controls.Add(this.dtpFrom);
       this.groupBox1.Controls.Add(this.chbade);
       this.groupBox1.Controls.Add(this.btnRecurrence);
       this.groupBox1.Controls.Add(this.txtTimeTo);
@@ -611,21 +611,21 @@ namespace HeuristicLab.Hive.Client.Console {
       this.mcOnline.TabIndex = 19;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
       // 
-      // cmbFrom
+      // dtpFrom
       // 
-      this.cmbFrom.FormattingEnabled = true;
-      this.cmbFrom.Location = new System.Drawing.Point(100, 30);
-      this.cmbFrom.Name = "cmbFrom";
-      this.cmbFrom.Size = new System.Drawing.Size(77, 21);
-      this.cmbFrom.TabIndex = 39;
+      this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpFrom.Location = new System.Drawing.Point(97, 31);
+      this.dtpFrom.Name = "dtpFrom";
+      this.dtpFrom.Size = new System.Drawing.Size(89, 20);
+      this.dtpFrom.TabIndex = 32;
       // 
-      // cmbTo
+      // dtpTo
       // 
-      this.cmbTo.FormattingEnabled = true;
-      this.cmbTo.Location = new System.Drawing.Point(100, 62);
-      this.cmbTo.Name = "cmbTo";
-      this.cmbTo.Size = new System.Drawing.Size(77, 21);
-      this.cmbTo.TabIndex = 40;
+      this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpTo.Location = new System.Drawing.Point(97, 64);
+      this.dtpTo.Name = "dtpTo";
+      this.dtpTo.Size = new System.Drawing.Size(89, 20);
+      this.dtpTo.TabIndex = 33;
       // 
       // HiveClientConsole
       // 
@@ -708,8 +708,8 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.Button btnRecurrence;
     private System.Windows.Forms.CheckBox chbade;
-    private System.Windows.Forms.ComboBox cmbTo;
-    private System.Windows.Forms.ComboBox cmbFrom;
+    private System.Windows.Forms.DateTimePicker dtpTo;
+    private System.Windows.Forms.DateTimePicker dtpFrom;
   }
 }
 
