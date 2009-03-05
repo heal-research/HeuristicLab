@@ -46,6 +46,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private ResponseList<UserGroup> userGroups = null;
     private ResponseList<User> usersList = null;
 
+    private Dictionary<long, ListViewGroup> clientObjects;
+    private Dictionary<long, ListViewItem> clientInfoObjects;
+    private Dictionary<long, ListViewItem> jobObjects;
+    private Dictionary<long, ListViewGroup> userGroupsObjects;
+    private Dictionary<long, ListViewItem> userListObjects;
+
     private Job currentJob = null;
     private ClientInfo currentClient = null;
     private User currentUser = null;
@@ -72,8 +78,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="e"></param>
-    private void TickSync(object obj, EventArgs e) {
-      Refresh();
+    private void TickSync(object obj, EventArgs e) {  
+      updaterWoker.RunWorkerAsync();
     }
 
     /// <summary>
@@ -81,11 +87,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void AddClients() {
       try {
+        clientObjects = new Dictionary<long, ListViewGroup>();
+        clientInfoObjects = new Dictionary<long, ListViewItem>();
         IClientManager clientManager =
           ServiceLocator.GetClientManager();
 
         clients = clientManager.GetAllClientGroups();
-
         lvClientControl.Items.Clear();
         tvClientControl.Nodes.Clear();
         int count = 0;
@@ -94,10 +101,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
           foreach (ClientInfo ci in clientManager.GetAllClients().List) {
             tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
-            lvClientControl.Items.Add(new ListViewItem(ci.Name, count, lvg));
+            ListViewItem item = new ListViewItem(ci.Name, count, lvg);
+            lvClientControl.Items.Add(item);
+            clientInfoObjects.Add(ci.Id, item);
             count = (count + 1) % 3;
           }
           lvClientControl.Groups.Add(lvg);
+          clientObjects.Add(cg.Id, lvg);
         } // Groups
 
         clientInfo = clientManager.GetAllClients();
@@ -123,6 +133,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void AddJobs() {
       try {
+        jobObjects = new Dictionary<long, ListViewItem>();
         IJobManager jobManager =
           ServiceLocator.GetJobManager();
         jobs = jobManager.GetAllJobs();
@@ -139,15 +150,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         foreach (Job job in jobs.List) {
           if (job.State == State.calculating) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobCalculating);
+            jobObjects.Add(job.Id, lvi);
             tvJobControl.Nodes[0].Nodes.Add(job.Id.ToString());
             lvJobControl.Items.Add(lvi);
             lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
           } else if (job.State == State.finished) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
+            jobObjects.Add(job.Id, lvi);
             tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
             lvJobControl.Items.Add(lvi);
           } else if (job.State == State.offline) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobPending);
+            jobObjects.Add(job.Id, lvi);
             tvJobControl.Nodes[2].Nodes.Add(job.Id.ToString());
             lvJobControl.Items.Add(lvi);
           }
@@ -170,6 +184,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void AddUsers() {
       try {
+        userGroupsObjects = new Dictionary<long, ListViewGroup>();
+        userListObjects = new Dictionary<long, ListViewItem>();
         IUserRoleManager userRoleManager =
           ServiceLocator.GetUserRoleManager();
 
@@ -186,10 +202,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if (permOwner is User) {
               User users = permOwner as User;
               tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
-              lvUserControl.Items.Add(new ListViewItem(users.Name, 0, lvg));
+              ListViewItem item = new ListViewItem(users.Name, 0, lvg);
+              lvUserControl.Items.Add(item);
+              userListObjects.Add(users.Id, item);
             }
           }
           lvUserControl.Groups.Add(lvg);
+          userGroupsObjects.Add(ug.Id, lvg);
 
         } // Users
         usersList = userRoleManager.GetAllUsers();
@@ -445,7 +464,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         tt.SetToolTip(lvJobControl, lvJobControl.GetItemAt(e.X, e.Y).ToolTipText);
       }
     }
-    #endregion
 
+    private void updaterWoker_DoWork(object sender, DoWorkEventArgs e) {
+      ResponseList<ClientInfo> clientInfoOld = clientInfo;
+      IClientManager clientManager =
+          ServiceLocator.GetClientManager();
+      clientInfo = clientManager.GetAllClients();
+      foreach (ClientInfo ci in clientInfo.List) {
+        foreach (ClientInfo cio in clientInfoOld.List) {
+          ci.Id.Equals(cio.Id);
+        }
+      }
+      
+    }
+    #endregion
   }
 }
