@@ -24,6 +24,7 @@ using HeuristicLab.PluginInfrastructure;
 using System.Runtime.CompilerServices;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Core;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 
 /// <summary>
 /// The service locator for the server core
@@ -59,6 +60,8 @@ public class ServiceLocator {
   private static IJobAdapter jobAdapter = null;
 
   private static IJobResultsAdapter jobResultsAdapter = null;
+
+  private static IScheduler scheduler = null;
 
 
   /// <summary>
@@ -237,5 +240,18 @@ public class ServiceLocator {
     }
 
     return jobResultsAdapter;
+  }
+
+  /// <summary>
+  /// Gets the scheduler
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IScheduler GetScheduler() {
+    if (scheduler == null) {
+      scheduler = discoveryService.GetInstances<IScheduler>()[0];
+    }
+
+    return scheduler;
   }
 }

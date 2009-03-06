@@ -53,6 +53,7 @@ namespace HeuristicLab.Hive.Server.Core {
     IJobResultsAdapter jobResultAdapter;
     ILifecycleManager lifecycleManager;
     IInternalJobManager jobManager;
+    IScheduler scheduler;
 
     /// <summary>
     /// Initialization of the Adapters to the database
@@ -66,6 +67,7 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager = ServiceLocator.GetLifecycleManager();
       jobManager = ServiceLocator.GetJobManager() as 
         IInternalJobManager;
+      scheduler = ServiceLocator.GetScheduler();
 
       lifecycleManager.RegisterHeartbeat( 
         new EventHandler(lifecycleManager_OnServerHeartbeat));
@@ -186,9 +188,8 @@ namespace HeuristicLab.Hive.Server.Core {
       heartbeatLock.ExitWriteLock();
 
       response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HARDBEAT_RECEIVED;
-      List<Job> allOfflineJobs = new List<Job>(jobAdapter.GetJobsByState(State.offline));
-      if (allOfflineJobs.Count > 0 && hbData.freeCores > 0) 
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
+      if (hbData.freeCores > 0 && scheduler.ExistsJobForClient(hbData))
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
@@ -224,30 +225,17 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>
     public ResponseJob PullJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
-      
-      /// Critical section ///
-      jobLock.WaitOne();
 
-      LinkedList<Job> allOfflineJobs = new LinkedList<Job>(jobAdapter.GetJobsByState(State.offline));
-      if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
-        Job job2Calculate = allOfflineJobs.First.Value;
-        job2Calculate.State = State.calculating;
-        job2Calculate.Client = clientAdapter.GetById(clientId);
-        job2Calculate.Client.State = State.calculating;
-
-        job2Calculate.DateCalculated = DateTime.Now;
+      Job job2Calculate = scheduler.GetNextJobForClient(clientId);
+      if (job2Calculate != null) {
         response.Job = job2Calculate;
-        jobAdapter.Update(job2Calculate);
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
       } else {
-        response.Success = true;
+        response.Success = false;
+        response.Job = null;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
       }
-
-      jobLock.ReleaseMutex();
-      /// End Critical section ///
-
       return response;
     }
 
