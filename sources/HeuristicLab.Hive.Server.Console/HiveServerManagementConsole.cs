@@ -78,8 +78,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="e"></param>
-    private void TickSync(object obj, EventArgs e) {  
-      updaterWoker.RunWorkerAsync();
+    private void TickSync(object obj, EventArgs e) {
+      Refresh();
+      //updaterWoker.RunWorkerAsync();
     }
 
     /// <summary>
