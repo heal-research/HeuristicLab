@@ -82,7 +82,9 @@ namespace HeuristicLab.Visualization {
       canvasUI.Resize += delegate { UpdateLayout(); };
 
       //The whole data rows are shown per default
-      ZoomToFullView();
+      if (zoomToFullView) {
+        ZoomToFullView();
+      }
     }
 
     /// <summary>
