@@ -22,6 +22,8 @@ namespace HeuristicLab.Visualization {
     //void RemoveLabel(int index);
     //void RemoveLabels(int index, int count);
 
+    int MaxDataRowValues { get; }
+
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;
     event DataRowRemovedHandler DataRowRemoved;

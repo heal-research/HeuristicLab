@@ -12,7 +12,7 @@ namespace HeuristicLab.Visualization {
     private RectangleD boundingBox;
     private IShape parent;
 
-    private readonly List<IShape> shapes = new List<IShape>();
+    protected readonly List<IShape> shapes = new List<IShape>();
 
     public WorldShape() {
       this.clippingArea = new RectangleD(0, 0, 1, 1);

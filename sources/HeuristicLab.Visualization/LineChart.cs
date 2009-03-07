@@ -11,22 +11,21 @@ namespace HeuristicLab.Visualization {
     private readonly IChartDataRowsModel model;
     private readonly Canvas canvas;
 
-    private int maxDataRowCount;
-    private double minDataValue;
-    private double maxDataValue;
+    private readonly TextShape titleShape = new TextShape("Title");
+    private readonly LegendShape legendShape = new LegendShape();
+    private readonly XAxis xAxis = new XAxis();
+    private readonly List<RowEntry> rowEntries = new List<RowEntry>();
 
-    private readonly TextShape titleShape;
-    private readonly LinesShape linesShape;
-    private readonly LegendShape legendShape;
+    private readonly Dictionary<IDataRow, RowEntry> rowToRowEntry = new Dictionary<IDataRow, RowEntry>();
 
-    private readonly XAxis xAxis;
-    private readonly YAxis yAxis;
-    private readonly Grid grid;
-
-    private readonly Stack<RectangleD> clippingAreaHistory = new Stack<RectangleD>();
-    private readonly WorldShape userInteractionShape;
-    private readonly RectangleShape rectangleShape;
+//    private readonly Stack<RectangleD> clippingAreaHistory = new Stack<RectangleD>();
+    private readonly WorldShape userInteractionShape = new WorldShape();
+    private readonly RectangleShape rectangleShape = new RectangleShape(0, 0, 0, 0, Color.FromArgb(50, 0, 0, 255));
     private IMouseEventListener mouseEventListener;
+
+    private const int YAxisWidth = 100;
+    private const int XAxisHeight = 20;
+
     private bool zoomToFullView;
 
     /// <summary>
@@ -47,80 +46,84 @@ namespace HeuristicLab.Visualization {
 
       canvas = canvasUI.Canvas;
 
-      grid = new Grid();
-      canvas.AddShape(grid);
-
-      linesShape = new LinesShape();
-      canvas.AddShape(linesShape);
-
-      xAxis = new XAxis();
-      canvas.AddShape(xAxis);
-
-      yAxis = new YAxis();
-      canvas.AddShape(yAxis);
-
-      titleShape = new TextShape(0, 0, model.Title, 15);
-      canvas.AddShape(titleShape);
-
-      //  horizontalLineShape = new HorizontalLineShape(this.maxDataValue, Color.Yellow, 4, DrawingStyle.Solid);
-      //  root.AddShape(horizontalLineShape);
-
-      legendShape = new LegendShape();
-      canvas.AddShape(legendShape);
-
-      userInteractionShape = new WorldShape();
-      canvas.AddShape(userInteractionShape);
-
-      rectangleShape = new RectangleShape(0, 0, 0, 0, Color.Blue);
-      rectangleShape.Opacity = 50;
-
-      maxDataRowCount = 0;
       this.model = model;
+
       Item = model;
 
       UpdateLayout();
       canvasUI.Resize += delegate { UpdateLayout(); };
 
-      //The whole data rows are shown per default
-      if (zoomToFullView) {
-        ZoomToFullView();
-      }
+      ZoomToFullView();
     }
 
     /// <summary>
     /// Layout management - arranges the inner shapes.
     /// </summary>
     private void UpdateLayout() {
+      canvas.ClearShapes();
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        canvas.AddShape(rowEntry.Grid);
+      }
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        canvas.AddShape(rowEntry.LinesShape);
+      }
+
+      canvas.AddShape(xAxis);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        canvas.AddShape(rowEntry.YAxis);
+      }
+
+      canvas.AddShape(titleShape);
+      canvas.AddShape(legendShape);
+
+      canvas.AddShape(userInteractionShape);
+
       titleShape.X = 10;
       titleShape.Y = canvasUI.Height - 10;
 
-      const int yAxisWidth = 100;
-      const int xAxisHeight = 20;
+      int yAxesWidth = 0;
 
-      linesShape.BoundingBox = new RectangleD(yAxisWidth,
-                                              xAxisHeight,
-                                              canvasUI.Width,
-                                              canvasUI.Height);
+      foreach (RowEntry rowEntry in rowEntries) {
+        if (rowEntry.YAxis.Visible) {
+          yAxesWidth += YAxisWidth;
+        }
+      }
 
-      userInteractionShape.BoundingBox = linesShape.BoundingBox;
+      RectangleD linesAreaBoundingBox = new RectangleD(yAxesWidth,
+                                                       XAxisHeight,
+                                                       canvasUI.Width,
+                                                       canvasUI.Height);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        rowEntry.LinesShape.BoundingBox = linesAreaBoundingBox;
+        rowEntry.Grid.BoundingBox = linesAreaBoundingBox;
+      }
+
+      int yAxisLeft = 0;
+      foreach (RowEntry rowEntry in rowEntries) {
+        rowEntry.YAxis.BoundingBox = new RectangleD(yAxisLeft,
+                                                    linesAreaBoundingBox.Y1,
+                                                    yAxisLeft + YAxisWidth,
+                                                    linesAreaBoundingBox.Y2);
+        yAxisLeft += YAxisWidth;
+      }
+
+      userInteractionShape.BoundingBox = linesAreaBoundingBox;
       userInteractionShape.ClippingArea = new RectangleD(0, 0, userInteractionShape.BoundingBox.Width, userInteractionShape.BoundingBox.Height);
 
-      grid.BoundingBox = linesShape.BoundingBox;
-
-
-      yAxis.BoundingBox = new RectangleD(0,
-                                         linesShape.BoundingBox.Y1,
-                                         linesShape.BoundingBox.X1,
-                                         linesShape.BoundingBox.Y2);
-
-      xAxis.BoundingBox = new RectangleD(linesShape.BoundingBox.X1,
+      xAxis.BoundingBox = new RectangleD(linesAreaBoundingBox.X1,
                                          0,
-                                         linesShape.BoundingBox.X2,
-                                         linesShape.BoundingBox.Y1);
+                                         linesAreaBoundingBox.X2,
+                                         linesAreaBoundingBox.Y1);
 
       legendShape.BoundingBox = new RectangleD(10, 10, 110, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width,
                                                 legendShape.BoundingBox.Height);
+
+      canvasUI.Invalidate();
     }
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -129,18 +132,14 @@ namespace HeuristicLab.Visualization {
     }
 
     public void OnDataRowChanged(IDataRow row) {
-      foreach (LineShape ls in rowToLineShapes[row]) {
-        ls.LSColor = row.Color;
-        ls.LSThickness = row.Thickness;
-        ls.LSDrawingStyle = row.Style;
-      }
+      RowEntry rowEntry = rowToRowEntry[row];
+
+      rowEntry.LinesShape.UpdateStyle(row);
+
       canvasUI.Invalidate();
     }
 
     #region Add-/RemoveItemEvents
-
-    private readonly IDictionary<IDataRow, List<LineShape>> rowToLineShapes =
-      new Dictionary<IDataRow, List<LineShape>>();
 
     protected override void AddItemEvents() {
       base.AddItemEvents();
@@ -167,169 +166,139 @@ namespace HeuristicLab.Visualization {
       row.ValuesChanged += OnRowValuesChanged;
       row.DataRowChanged += OnDataRowChanged;
 
-      if (row.Count > maxDataRowCount) {
-        maxDataRowCount = row.Count;
-        //   UpdateSingleValueRows();
-      }
-
       legendShape.AddLegendItem(new LegendItem(row.Label, row.Color, row.Thickness));
       legendShape.CreateLegend();
+
       InitLineShapes(row);
+
+      UpdateLayout();
     }
 
     private void OnDataRowRemoved(IDataRow row) {
       row.ValueChanged -= OnRowValueChanged;
       row.ValuesChanged -= OnRowValuesChanged;
       row.DataRowChanged -= OnDataRowChanged;
+
+      rowToRowEntry.Remove(row);
+      rowEntries.RemoveAll(delegate(RowEntry rowEntry) { return rowEntry.DataRow == row; });
+
+      UpdateLayout();
     }
 
     #endregion
 
     public void ZoomToFullView() {
-      RectangleD newClippingArea = new RectangleD(-0.1,
-                                                  minDataValue - ((maxDataValue - minDataValue)*0.05),
-                                                  maxDataRowCount - 0.9,
-                                                  maxDataValue + ((maxDataValue - minDataValue)*0.05));
+      SetClipX(-0.1, model.MaxDataRowValues - 0.9);
 
-      SetLineClippingArea(newClippingArea, true);
+      foreach (RowEntry rowEntry in rowEntries) {
+        IDataRow row = rowEntry.DataRow;
 
-      zoomToFullView = true;
-    }
-
-    /// <summary>
-    /// Sets the clipping area of the data to display.
-    /// </summary>
-    /// <param name="clippingArea"></param>
-    /// <param name="pushToHistoryStack"></param>
-    private void SetLineClippingArea(RectangleD clippingArea, bool pushToHistoryStack) {
-      zoomToFullView = false;
-
-      if (pushToHistoryStack) {
-        int count = clippingAreaHistory.Count;
-
-        if (count > 40) {
-          RectangleD[] clippingAreas = clippingAreaHistory.ToArray();
-          clippingAreaHistory.Clear();
-
-          for (int i = count - 20; i < count; i++) {
-            clippingAreaHistory.Push(clippingAreas[i]);
-          }
-        }
-
-        clippingAreaHistory.Push(clippingArea);
+        SetClipY(rowEntry,
+                 row.MinValue - ((row.MaxValue - row.MinValue)*0.05),
+                 row.MaxValue + ((row.MaxValue - row.MinValue)*0.05));
       }
 
-      linesShape.ClippingArea = clippingArea;
-
-      grid.ClippingArea = linesShape.ClippingArea;
-
-      // horizontalLineShape.ClippingArea = linesShape.ClippingArea;
-
-
-      xAxis.ClippingArea = new RectangleD(linesShape.ClippingArea.X1,
-                                          xAxis.BoundingBox.Y1,
-                                          linesShape.ClippingArea.X2,
-                                          xAxis.BoundingBox.Y2);
-
-      yAxis.ClippingArea = new RectangleD(yAxis.BoundingBox.X1,
-                                          linesShape.ClippingArea.Y1,
-                                          yAxis.BoundingBox.X2,
-                                          linesShape.ClippingArea.Y2);
+      zoomToFullView = true;
 
       canvasUI.Invalidate();
     }
 
+    private void SetClipX(double x1, double x2) {
+      xAxis.ClippingArea = new RectangleD(x1,
+                                          0,
+                                          x2,
+                                          XAxisHeight);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        rowEntry.LinesShape.ClippingArea = new RectangleD(x1,
+                                                          rowEntry.LinesShape.ClippingArea.Y1,
+                                                          x2,
+                                                          rowEntry.LinesShape.ClippingArea.Y2);
+        rowEntry.Grid.ClippingArea = new RectangleD(x1,
+                                                    rowEntry.Grid.ClippingArea.Y1,
+                                                    x2,
+                                                    rowEntry.Grid.ClippingArea.Y2);
+        rowEntry.YAxis.ClippingArea = new RectangleD(0,
+                                                     rowEntry.YAxis.ClippingArea.Y1,
+                                                     YAxisWidth,
+                                                     rowEntry.YAxis.ClippingArea.Y2);
+      }
+    }
+
+    private static void SetClipY(RowEntry rowEntry, double y1, double y2) {
+      rowEntry.LinesShape.ClippingArea = new RectangleD(rowEntry.LinesShape.ClippingArea.X1,
+                                                        y1,
+                                                        rowEntry.LinesShape.ClippingArea.X2,
+                                                        y2);
+      rowEntry.Grid.ClippingArea = new RectangleD(rowEntry.Grid.ClippingArea.X1,
+                                                  y1,
+                                                  rowEntry.Grid.ClippingArea.X2,
+                                                  y2);
+      rowEntry.YAxis.ClippingArea = new RectangleD(rowEntry.YAxis.ClippingArea.X1,
+                                                   y1,
+                                                   rowEntry.YAxis.ClippingArea.X2,
+                                                   y2);
+    }
+
     private void InitLineShapes(IDataRow row) {
-      List<LineShape> lineShapes = new List<LineShape>();
-      if (rowToLineShapes.Count == 0) {
-        minDataValue = Double.PositiveInfinity;
-        maxDataValue = Double.NegativeInfinity;
-      }
-      if ((row.Count > 0)) {
-        maxDataValue = Math.Max(row[0], maxDataValue);
-        minDataValue = Math.Min(row[0], minDataValue);
-      }
+      RowEntry rowEntry = new RowEntry(row);
+      rowEntries.Add(rowEntry);
+      rowToRowEntry[row] = rowEntry;
+
       if ((row.LineType == DataRowType.SingleValue)) {
         if (row.Count > 0) {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
                                                         row.Style);
-          lineShapes.Add(lineShape);
-          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-          linesShape.AddShape(lineShape);
+          rowEntry.LinesShape.AddShape(lineShape);
         }
       } else {
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
-          lineShapes.Add(lineShape);
-          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-          linesShape.AddShape(lineShape);
-          maxDataValue = Math.Max(row[i], maxDataValue);
-          minDataValue = Math.Min(row[i], minDataValue);
+          rowEntry.LinesShape.AddShape(lineShape);
         }
       }
-      //horizontalLineShape.YVal = maxDataValue;
-      rowToLineShapes[row] = lineShapes;
 
       ZoomToFullView();
     }
 
-    // TODO use action parameter
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
-      List<LineShape> lineShapes = rowToLineShapes[row];
-      maxDataValue = Math.Max(value, maxDataValue);
-      minDataValue = Math.Min(value, minDataValue);
+      RowEntry rowEntry = rowToRowEntry[row];
+
       if (row.LineType == DataRowType.SingleValue) {
         if (action == Action.Added) {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
                                                         row.Style);
-          lineShapes.Add(lineShape);
-          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-          linesShape.AddShape(lineShape);
+          rowEntry.LinesShape.AddShape(lineShape);
         } else {
-          // lineShapes[0].X2 = maxDataRowCount;
-          lineShapes[0].Y1 = value;
-          lineShapes[0].Y2 = value;
+          LineShape lineShape = rowEntry.LinesShape.GetShape(0);
+          lineShape.Y1 = value;
+          lineShape.Y2 = value;
         }
       } else {
-        //  horizontalLineShape.YVal = maxDataValue;
-        if (index > lineShapes.Count + 1) {
+        if (index > rowEntry.LinesShape.Count + 1) {
           throw new NotImplementedException();
         }
 
         // new value was added
-        if (index > 0 && index == lineShapes.Count + 1) {
-          if (maxDataRowCount < row.Count) {
-            maxDataRowCount = row.Count;
-            //  UpdateSingleValueRows();
-          }
-          LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
-                                        row.Style);
-          lineShapes.Add(lineShape);
-          // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
-          linesShape.AddShape(lineShape);
+        if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
+          LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness, row.Style);
+          rowEntry.LinesShape.AddShape(lineShape);
         }
 
         // not the first value
         if (index > 0) {
-          lineShapes[index - 1].Y2 = value;
+          rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
         }
 
         // not the last value
         if (index > 0 && index < row.Count - 1) {
-          lineShapes[index].Y1 = value;
+          rowEntry.LinesShape.GetShape(index).Y1 = value;
         }
       }
 
       ZoomToFullView();
     }
 
-    // TODO remove (see ticket #501)
-    public IList<IDataRow> GetRows() {
-      return model.Rows;
-    }
-
-
-    // TODO use action parameter
     private void OnRowValuesChanged(IDataRow row, double[] values, int index, Action action) {
       foreach (double value in values) {
         OnRowValueChanged(row, value, index++, action);
@@ -367,24 +336,45 @@ namespace HeuristicLab.Visualization {
     #region Zooming / Panning
 
     private void Pan(Point startPoint, Point endPoint) {
-      RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint);
-      SetLineClippingArea(clippingArea, false);
+      zoomToFullView = false;
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
+
+        SetClipX(clippingArea.X1, clippingArea.X1);
+        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+      }
+
+      canvasUI.Invalidate();
     }
 
     private void PanEnd(Point startPoint, Point endPoint) {
-      RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint);
-      SetLineClippingArea(clippingArea, true);
+      zoomToFullView = false;
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
+
+        SetClipX(clippingArea.X1, clippingArea.X1);
+        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+      }
+
+      canvasUI.Invalidate();
     }
 
-    private RectangleD CalcPanClippingArea(Point startPoint, Point endPoint) {
+    private static RectangleD CalcPanClippingArea(Point startPoint, Point endPoint, LinesShape linesShape) {
       return Translate.ClippingArea(startPoint, endPoint, linesShape.ClippingArea, linesShape.Viewport);
     }
 
     private void SetClippingArea(Rectangle rectangle) {
-      RectangleD clippingArea = Transform.ToWorld(rectangle, linesShape.Viewport, linesShape.ClippingArea);
+      foreach (RowEntry rowEntry in rowEntries) {
+        RectangleD clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
 
-      SetLineClippingArea(clippingArea, true);
+        SetClipX(clippingArea.X1, clippingArea.X1);
+        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+      }
+
       userInteractionShape.RemoveShape(rectangleShape);
+      canvasUI.Invalidate();
     }
 
     private void DrawRectangle(Rectangle rectangle) {
@@ -393,13 +383,13 @@ namespace HeuristicLab.Visualization {
     }
 
     private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Back && clippingAreaHistory.Count > 1) {
-        clippingAreaHistory.Pop();
-
-        RectangleD clippingArea = clippingAreaHistory.Peek();
-
-        SetLineClippingArea(clippingArea, false);
-      }
+//      if (e.KeyCode == Keys.Back && clippingAreaHistory.Count > 1) {
+//        clippingAreaHistory.Pop();
+//
+//        RectangleD clippingArea = clippingAreaHistory.Peek();
+//
+//        SetLineClippingArea(clippingArea, false);
+//      }
     }
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
@@ -445,18 +435,64 @@ namespace HeuristicLab.Visualization {
       if (ModifierKeys == Keys.Control) {
         double zoomFactor = (e.Delta > 0) ? 0.9 : 1.1;
 
-        RectangleD clippingArea = ZoomListener.ZoomClippingArea(linesShape.ClippingArea, zoomFactor);
-
-        SetLineClippingArea(clippingArea, true);
+        foreach (RowEntry rowEntry in rowEntries) {
+          RectangleD clippingArea = ZoomListener.ZoomClippingArea(rowEntry.LinesShape.ClippingArea, zoomFactor);
+          
+          SetClipX(clippingArea.X1, clippingArea.X1);
+          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        }
       }
     }
 
     #endregion
 
-    #region Nested type: LinesShape
+    private class LinesShape : WorldShape {
+      public void UpdateStyle(IDataRow row) {
+        foreach (IShape shape in shapes) {
+          LineShape lineShape = shape as LineShape;
+          if (lineShape != null) {
+            lineShape.LSColor = row.Color;
+            lineShape.LSDrawingStyle = row.Style;
+            lineShape.LSThickness = row.Thickness;
+          }
+        }
+      }
 
-    internal class LinesShape : WorldShape {}
+      public int Count {
+        get { return shapes.Count; }
+      }
 
-    #endregion
+      public LineShape GetShape(int index) {
+        return (LineShape)shapes[index];
+      }
+    }
+
+    private class RowEntry {
+      private readonly IDataRow dataRow;
+
+      private readonly Grid grid = new Grid();
+      private readonly YAxis yAxis = new YAxis();
+      private readonly LinesShape linesShape = new LinesShape();
+
+      public RowEntry(IDataRow dataRow) {
+        this.dataRow = dataRow;
+      }
+
+      public IDataRow DataRow {
+        get { return dataRow; }
+      }
+
+      public Grid Grid {
+        get { return grid; }
+      }
+
+      public YAxis YAxis {
+        get { return yAxis; }
+      }
+
+      public LinesShape LinesShape {
+        get { return linesShape; }
+      }
+    }
   }
 }

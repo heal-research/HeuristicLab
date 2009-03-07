@@ -117,6 +117,19 @@ namespace HeuristicLab.Visualization{
       OnDataRowRemoved(row);
     }
 
+    // TODO implement calculation of max data row values
+    public int MaxDataRowValues {
+      get {
+        int max = 0;
+
+        foreach (IDataRow row in rows) {
+          max = Math.Max(max, row.Count);
+        }
+
+        return max;
+      }
+    }
+
     public event ModelChangedHandler ModelChanged;
 
     protected void OnModelChanged() {

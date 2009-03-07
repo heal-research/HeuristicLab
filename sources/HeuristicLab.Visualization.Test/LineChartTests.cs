@@ -74,19 +74,25 @@ namespace HeuristicLab.Visualization.Test {
       LineChartTestForm f = new LineChartTestForm(model);
 
       IDataRow row1 = new DataRow();
+      IDataRow row2 = new DataRow();
 
       row1.Color = Color.Red;
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
 
-      model.AddDataRow(row1);
+      row2.Color = Color.Green;
+      row2.Thickness = 3;
+      row2.Style = DrawingStyle.Solid;
 
-      row1.AddValue(10);
-      row1.AddValue(5);
-      row1.AddValue(7);
-      row1.AddValue(3);
-      row1.AddValue(10);
-      row1.AddValue(2);
+      model.AddDataRow(row1);
+      model.AddDataRow(row2);
+
+      Random rand = new Random(42);
+      
+      for (int i = 0; i < 10; i++) {
+        row1.AddValue(rand.NextDouble()*10);
+        row2.AddValue(rand.NextDouble()*10);
+      }
 
       f.ShowDialog();
     }

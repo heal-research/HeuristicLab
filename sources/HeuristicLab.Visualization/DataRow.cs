@@ -24,6 +24,10 @@ namespace HeuristicLab.Visualization {
 
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
+    // TODO implement calculation of min and max values
+    private double minValue = double.MaxValue;
+    private double maxValue = double.MinValue;
+
     public DataRowType LineType{
       get { return lineType; }
       set { 
@@ -114,6 +118,8 @@ namespace HeuristicLab.Visualization {
     }
 
     public void AddValue(double value) {
+      UpdateMinMaxValue(value);
+
       dataRow.Add(value);
       OnValueChanged(value, dataRow.Count - 1, Action.Added);
     }
@@ -221,6 +227,19 @@ namespace HeuristicLab.Visualization {
         dataRow[index] = value;
         OnValueChanged(value, index, Action.Modified);
       }
+    }
+
+    public double MinValue {
+      get { return minValue; }
+    }
+
+    public double MaxValue {
+      get { return maxValue; }
+    }
+
+    private void UpdateMinMaxValue(double value) {
+      maxValue = Math.Max(value, maxValue);
+      minValue = Math.Min(value, minValue);
     }
   }
 }

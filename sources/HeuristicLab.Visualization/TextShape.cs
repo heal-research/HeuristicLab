@@ -22,6 +22,8 @@ namespace HeuristicLab.Visualization {
     private AnchorPositionX anchorPositionX = AnchorPositionX.Left;
     private AnchorPositionY anchorPositionY = AnchorPositionY.Top;
 
+    public TextShape(string text) : this(0, 0, text, 14) {}
+
     public TextShape(double x, double y, string text) : this(x, y, text, 8) {}
 
     public TextShape(double x, double y, string text, int fontSize) {

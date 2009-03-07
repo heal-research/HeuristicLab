@@ -34,6 +34,9 @@ namespace HeuristicLab.Visualization {
     int Count { get; }
     double this[int index] { get; set; }
 
+    double MinValue { get; }
+    double MaxValue { get; }
+
     event ValuesChangedHandler ValuesChanged;
     event ValueChangedHandler ValueChanged;
   }
