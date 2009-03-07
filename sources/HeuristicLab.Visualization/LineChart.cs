@@ -124,7 +124,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      var optionsdlg = new OptionsDialog(this.model);
+      OptionsDialog optionsdlg = new OptionsDialog(this.model);
       optionsdlg.ShowDialog(this);
     }
 
@@ -240,7 +240,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void InitLineShapes(IDataRow row) {
-      var lineShapes = new List<LineShape>();
+      List<LineShape> lineShapes = new List<LineShape>();
       if (rowToLineShapes.Count == 0) {
         minDataValue = Double.PositiveInfinity;
         maxDataValue = Double.NegativeInfinity;
@@ -259,7 +259,7 @@ namespace HeuristicLab.Visualization {
         }
       } else {
         for (int i = 1; i < row.Count; i++) {
-          var lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
+          LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
           lineShapes.Add(lineShape);
           // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
           linesShape.AddShape(lineShape);
@@ -302,7 +302,7 @@ namespace HeuristicLab.Visualization {
             maxDataRowCount = row.Count;
             //  UpdateSingleValueRows();
           }
-          var lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+          LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
                                         row.Style);
           lineShapes.Add(lineShape);
           // TODO each DataRow needs its own WorldShape so Y Axes can be zoomed independently.
