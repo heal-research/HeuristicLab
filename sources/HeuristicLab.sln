@@ -128,6 +128,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Client.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.Console", "HeuristicLab.Hive.Server.Console\HeuristicLab.Hive.Server.Console.csproj", "{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SA", "HeuristicLab.SA\HeuristicLab.SA.csproj", "{F0F97CBA-61A2-471C-9973-F099202B3BE5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU
@@ -1197,6 +1199,18 @@ Global
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Visualization Debug|x86.ActiveCfg = Debug|x86
 		{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}.Visualization Debug|x86.Build.0 = Debug|x86
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0F97CBA-61A2-471C-9973-F099202B3BE5}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
