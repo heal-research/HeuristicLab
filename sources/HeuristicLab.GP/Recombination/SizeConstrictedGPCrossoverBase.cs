@@ -41,7 +41,7 @@ namespace HeuristicLab.GP {
       AddVariableInfo(new VariableInfo("MaxTreeSize", "The maximal allowed size (number of nodes) of the tree", typeof(IntData), VariableKind.In));
     }
 
-    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1) {
+    internal override IFunctionTree Cross(IScope scope, TreeGardener gardener, IRandom random, IFunctionTree tree0, IFunctionTree tree1) {
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
 
@@ -61,12 +61,12 @@ namespace HeuristicLab.GP {
       return newTree;
     }
 
-    internal abstract IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight);
+    internal abstract IFunctionTree Cross(TreeGardener gardener, IRandom random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight);
 
-    private IFunctionTree TakeNextParent(IScope scope) {
-      IFunctionTree parent = GetVariableValue<IFunctionTree>("FunctionTree", scope.SubScopes[0], false);
-      scope.RemoveSubScope(scope.SubScopes[0]);
-      return parent;
-    }
+    //private IFunctionTree TakeNextParent(IScope scope) {
+    //  IFunctionTree parent = GetVariableValue<IFunctionTree>("FunctionTree", scope.SubScopes[0], false);
+    //  scope.RemoveSubScope(scope.SubScopes[0]);
+    //  return parent;
+    //}
   }
 }

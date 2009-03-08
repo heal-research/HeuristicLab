@@ -51,7 +51,7 @@ namespace HeuristicLab.GP {
       }
     }
 
-    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
+    internal override IFunctionTree Cross(TreeGardener gardener, IRandom random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       List<CrossoverPoint> allowedCrossOverPoints = new List<CrossoverPoint>();
       GetCrossOverPoints(gardener, tree0, tree1, allowedCrossOverPoints);
       // iterate through the list of crossover points and swap nodes with p=0.5

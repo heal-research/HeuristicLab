@@ -43,7 +43,7 @@ until a valid configuration is found.";
       }
     }
 
-    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
+    internal override IFunctionTree Cross(TreeGardener gardener, IRandom random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       int tries = 0;
       List<IFunctionTree> allowedCrossoverPoints = null;
       IFunctionTree parent0;

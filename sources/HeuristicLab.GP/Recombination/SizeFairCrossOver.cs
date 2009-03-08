@@ -46,7 +46,7 @@ namespace HeuristicLab.GP {
       public List<int> trail;
     }
 
-    internal override IFunctionTree Cross(TreeGardener gardener, MersenneTwister random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
+    internal override IFunctionTree Cross(TreeGardener gardener, IRandom random, IFunctionTree tree0, IFunctionTree tree1, int maxTreeSize, int maxTreeHeight) {
       int tries = 0;
       IFunctionTree insertedBranch = null;
       IFunctionTree parent = null;
@@ -55,7 +55,7 @@ namespace HeuristicLab.GP {
         // select a random suboperator of the 'receiving' tree
         while (parent == null) parent = gardener.GetRandomParentNode(tree0);
         removedBranchIndex = random.Next(parent.SubTrees.Count);
-        insertedBranch = GetReplacementBranch(random, gardener, tree0, parent, removedBranchIndex, tree1, maxTreeSize, maxTreeHeight);
+        insertedBranch = GetReplacementBranch((MersenneTwister)random, gardener, tree0, parent, removedBranchIndex, tree1, maxTreeSize, maxTreeHeight);
       } while (insertedBranch == null && tries++ < MaxRecombinationTries);
 
       if (insertedBranch != null) {
