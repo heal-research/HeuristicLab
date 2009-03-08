@@ -72,31 +72,20 @@
     <Compile Include="BubbleChartControl.Designer.cs">
       <DependentUpon>BubbleChartControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Histogram.cs" />
-    <Compile Include="HistogramControl.cs">
+    <Compile Include="BubbleChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HistogramControl.Designer.cs">
-      <DependentUpon>HistogramControl.cs</DependentUpon>
+    <Compile Include="BubbleChartView.Designer.cs">
+      <DependentUpon>BubbleChartView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModelView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ModelView.Designer.cs">
-      <DependentUpon>ModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Record.cs" />
     <Compile Include="HeuristicLabCedmaChartingPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultList.cs" />
-    <Compile Include="ResultListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ResultListView.Designer.cs">
-      <DependentUpon>ResultListView.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.CEDMA.Core\HeuristicLab.CEDMA.Core.csproj">
+      <Project>{C27DDF6C-84DF-45EF-B82F-57A28DD51166}</Project>
+      <Name>HeuristicLab.CEDMA.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.CEDMA.DB.Interfaces\HeuristicLab.CEDMA.DB.Interfaces.csproj">
       <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
       <Name>HeuristicLab.CEDMA.DB.Interfaces</Name>
@@ -121,14 +110,6 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification\HeuristicLab.GP.StructureIdentification.csproj">
-      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
-      <Name>HeuristicLab.GP.StructureIdentification</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
-      <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
-      <Name>HeuristicLab.GP</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging</Name>
@@ -145,19 +126,9 @@
   <ItemGroup>
     <EmbeddedResource Include="BubbleChartControl.resx">
       <DependentUpon>BubbleChartControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="HistogramControl.resx">
-      <DependentUpon>HistogramControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ModelView.resx">
-      <DependentUpon>ModelView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ResultListView.resx">
-      <DependentUpon>ResultListView.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="BubbleChartView.resx">
+      <DependentUpon>BubbleChartView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

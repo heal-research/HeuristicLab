@@ -28,37 +28,24 @@ using System.Xml;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.CEDMA.Charting;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
-    private AgentList agentList;
-    private ResultList resultsList;
-    private DatabaseOperatorLibrary operatorLibary;
-    private ChannelFactory<IDatabase> factory;
-    private IDatabase database;
+    private DataSetList dataSetList;
+    private ChannelFactory<IStore> factory;
+    private IStore store;
     private string serverUri;
     public string ServerUri {
       get { return serverUri; }
     }
 
-    public IAgentList AgentList {
-      get { return agentList; }
-    }
-
-    public ResultList ResultsList {
-      get { return resultsList; }
-    }
-
-    public IOperatorLibrary OperatorLibrary {
-      get { return operatorLibary; }
+    public DataSetList DataSetList {
+      get { return dataSetList; }
     }
 
     public Console()
       : base() {
-      agentList = new AgentList();
-      resultsList = new ResultList();
-      operatorLibary = new DatabaseOperatorLibrary();
+      dataSetList = new DataSetList();
     }
 
     public IEditor CreateEditor() {
@@ -87,18 +74,13 @@ namespace HeuristicLab.CEDMA.Core {
     #region WCF
     private void ResetConnection() {
       NetTcpBinding binding = new NetTcpBinding();
-      binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-      binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-      binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-      binding.Security.Mode = SecurityMode.None;
-      factory = new ChannelFactory<IDatabase>(binding);
-      database = factory.CreateChannel(new EndpointAddress(serverUri));
-      agentList.Database = database;
-      operatorLibary.Database = database;
-
-      ChannelFactory<IStore> storeFactory = new ChannelFactory<IStore>(binding);
-      IStore store = storeFactory.CreateChannel(new EndpointAddress(serverUri + "/RdfStore"));
-      resultsList.Store = store;
+      binding.ReceiveTimeout = new TimeSpan(1, 0, 0);
+      binding.MaxReceivedMessageSize = 1000000000; // 100Mbytes
+      binding.ReaderQuotas.MaxStringContentLength = 1000000000; // also 100M chars
+      binding.ReaderQuotas.MaxArrayLength = 1000000000; // also 100M elements;
+      factory = new ChannelFactory<IStore>(binding);
+      store = factory.CreateChannel(new EndpointAddress(serverUri));
+      dataSetList.Store = store;
     }
     #endregion
 

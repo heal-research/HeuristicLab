@@ -17,7 +17,6 @@ copy "%SolutionDir%\HeuristicLab.CEDMA.DB\%Outdir%\HeuristicLab.CEDMA.DB-3.2.dll
 copy "%SolutionDir%\HeuristicLab.CEDMA.DB\%Outdir%\SemWeb.SqliteStore.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.DB\%Outdir%\SemWeb.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.DB.Interfaces\%Outdir%\HeuristicLab.CEDMA.DB.Interfaces-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.Operators\%Outdir%\HeuristicLab.CEDMA.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Server\%Outdir%\HeuristicLab.CEDMA.Server-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\%Outdir%\HeuristicLab.Charting-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting.Data\%Outdir%\HeuristicLab.Charting.Data-3.2.dll" .\plugins

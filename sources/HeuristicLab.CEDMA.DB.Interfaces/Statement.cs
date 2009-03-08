@@ -31,6 +31,7 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
   [KnownType(typeof(Literal))]
   [KnownType(typeof(Entity))]
   [KnownType(typeof(SerializedLiteral))]
+  [KnownType(typeof(Variable))]
   public class Statement {
     [DataMember]
     public Entity Subject { get; set; }

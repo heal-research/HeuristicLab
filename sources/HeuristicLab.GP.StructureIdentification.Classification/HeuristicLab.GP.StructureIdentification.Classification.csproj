@@ -66,17 +66,16 @@
     <Compile Include="AccuracyEvaluator.cs" />
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
     <Compile Include="ConfusionMatrixEvaluator.cs" />
-    <Compile Include="DatasetShuffler.cs" />
     <Compile Include="GPClassificationEvaluatorBase.cs" />
     <Compile Include="CrossValidation.cs" />
-    <Compile Include="FunctionLibraryInjector.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="HeuristicLabGPClassificationPlugin.cs" />
     <Compile Include="MulticlassModeller.cs" />
     <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
+    <Compile Include="OffspringSelectionGP.cs" />
+    <Compile Include="ProblemInjector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ROCAnalyzer.cs" />
+    <Compile Include="StandardGP.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Constraints\HeuristicLab.Constraints.csproj">
@@ -102,6 +101,10 @@
     <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
       <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
       <Name>HeuristicLab.GP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
+      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
+      <Name>HeuristicLab.Operators</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

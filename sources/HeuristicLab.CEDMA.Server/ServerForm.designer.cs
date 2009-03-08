@@ -44,13 +44,17 @@ namespace HeuristicLab.CEDMA.Server {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.externalAddressLabel = new System.Windows.Forms.Label();
-      this.activeAgentsLabel = new System.Windows.Forms.Label();
-      this.activeAgentsTextBox = new System.Windows.Forms.TextBox();
       this.gridAddressLabel = new System.Windows.Forms.Label();
       this.gridAddress = new System.Windows.Forms.TextBox();
-      this.startButton = new System.Windows.Forms.Button();
+      this.connectButton = new System.Windows.Forms.Button();
+      this.listBox = new System.Windows.Forms.ListBox();
+      this.refreshTimer = new System.Windows.Forms.Timer(this.components);
+      this.maxActiveJobsUpDown = new System.Windows.Forms.NumericUpDown();
+      this.label1 = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobsUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // addressTextBox
@@ -70,25 +74,6 @@ namespace HeuristicLab.CEDMA.Server {
       this.externalAddressLabel.TabIndex = 3;
       this.externalAddressLabel.Text = "&Address:";
       // 
-      // activeAgentsLabel
-      // 
-      this.activeAgentsLabel.AutoSize = true;
-      this.activeAgentsLabel.Location = new System.Drawing.Point(12, 61);
-      this.activeAgentsLabel.Name = "activeAgentsLabel";
-      this.activeAgentsLabel.Size = new System.Drawing.Size(75, 13);
-      this.activeAgentsLabel.TabIndex = 7;
-      this.activeAgentsLabel.Text = "A&ctive agents:";
-      // 
-      // activeAgentsTextBox
-      // 
-      this.activeAgentsTextBox.Location = new System.Drawing.Point(106, 58);
-      this.activeAgentsTextBox.Name = "activeAgentsTextBox";
-      this.activeAgentsTextBox.ReadOnly = true;
-      this.activeAgentsTextBox.Size = new System.Drawing.Size(90, 20);
-      this.activeAgentsTextBox.TabIndex = 6;
-      this.activeAgentsTextBox.Text = "0";
-      this.activeAgentsTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      // 
       // gridAddressLabel
       // 
       this.gridAddressLabel.AutoSize = true;
@@ -102,33 +87,75 @@ namespace HeuristicLab.CEDMA.Server {
       // 
       this.gridAddress.Location = new System.Drawing.Point(106, 32);
       this.gridAddress.Name = "gridAddress";
-      this.gridAddress.Size = new System.Drawing.Size(229, 20);
+      this.gridAddress.Size = new System.Drawing.Size(160, 20);
       this.gridAddress.TabIndex = 8;
       // 
-      // startButton
+      // connectButton
       // 
-      this.startButton.Location = new System.Drawing.Point(15, 84);
-      this.startButton.Name = "startButton";
-      this.startButton.Size = new System.Drawing.Size(75, 23);
-      this.startButton.TabIndex = 10;
-      this.startButton.Text = "Start";
-      this.startButton.UseVisualStyleBackColor = true;
-      this.startButton.Click += new System.EventHandler(this.startButton_Click);
+      this.connectButton.Location = new System.Drawing.Point(272, 30);
+      this.connectButton.Name = "connectButton";
+      this.connectButton.Size = new System.Drawing.Size(75, 23);
+      this.connectButton.TabIndex = 10;
+      this.connectButton.Text = "Connect";
+      this.connectButton.UseVisualStyleBackColor = true;
+      this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+      // 
+      // listBox
+      // 
+      this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.listBox.FormattingEnabled = true;
+      this.listBox.Location = new System.Drawing.Point(12, 84);
+      this.listBox.Name = "listBox";
+      this.listBox.Size = new System.Drawing.Size(350, 251);
+      this.listBox.TabIndex = 11;
+      // 
+      // refreshTimer
+      // 
+      this.refreshTimer.Interval = 1000;
+      this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
+      // 
+      // maxActiveJobsUpDown
+      // 
+      this.maxActiveJobsUpDown.Enabled = false;
+      this.maxActiveJobsUpDown.Location = new System.Drawing.Point(106, 59);
+      this.maxActiveJobsUpDown.Maximum = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+      this.maxActiveJobsUpDown.Name = "maxActiveJobsUpDown";
+      this.maxActiveJobsUpDown.Size = new System.Drawing.Size(120, 20);
+      this.maxActiveJobsUpDown.TabIndex = 12;
+      this.maxActiveJobsUpDown.ValueChanged += new System.EventHandler(this.maxActiveJobsUpDown_ValueChanged);
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Enabled = false;
+      this.label1.Location = new System.Drawing.Point(12, 61);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(84, 13);
+      this.label1.TabIndex = 13;
+      this.label1.Text = "&Max active jobs:";
       // 
       // ServerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(347, 119);
-      this.Controls.Add(this.startButton);
+      this.ClientSize = new System.Drawing.Size(374, 342);
+      this.Controls.Add(this.label1);
+      this.Controls.Add(this.maxActiveJobsUpDown);
+      this.Controls.Add(this.listBox);
+      this.Controls.Add(this.connectButton);
       this.Controls.Add(this.gridAddressLabel);
       this.Controls.Add(this.gridAddress);
-      this.Controls.Add(this.activeAgentsLabel);
-      this.Controls.Add(this.activeAgentsTextBox);
       this.Controls.Add(this.externalAddressLabel);
       this.Controls.Add(this.addressTextBox);
       this.Name = "ServerForm";
-      this.Text = "Agent Server";
+      this.Text = "CEDMA Server";
+      ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobsUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -138,10 +165,12 @@ namespace HeuristicLab.CEDMA.Server {
 
     private System.Windows.Forms.TextBox addressTextBox;
     private System.Windows.Forms.Label externalAddressLabel;
-    private System.Windows.Forms.Label activeAgentsLabel;
-    private System.Windows.Forms.TextBox activeAgentsTextBox;
     private System.Windows.Forms.Label gridAddressLabel;
     private System.Windows.Forms.TextBox gridAddress;
-    private System.Windows.Forms.Button startButton;
+    private System.Windows.Forms.Button connectButton;
+    private System.Windows.Forms.ListBox listBox;
+    private System.Windows.Forms.Timer refreshTimer;
+    private System.Windows.Forms.NumericUpDown maxActiveJobsUpDown;
+    private System.Windows.Forms.Label label1;
   }
 }

@@ -134,8 +134,8 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private string GetColumnName(int index) {
-      if(Dataset.VariableNames.Length == dataGridView.Columns.Count) {
-        return Dataset.VariableNames[index];
+      if(Dataset.Columns == dataGridView.Columns.Count) {
+        return Dataset.GetVariableName(index);
       } else {
         return "Var " + index;
       }

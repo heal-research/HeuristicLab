@@ -27,7 +27,6 @@ using System.Data.Linq;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using System.ServiceModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Data.Common;
 using System.Threading;
 using HeuristicLab.Data;
@@ -42,107 +41,185 @@ namespace HeuristicLab.CEDMA.DB {
     private SemWeb.Store store;
     private object bigLock = new object();
     public Store(string connectionString) {
-      lock(bigLock) {
+      lock (bigLock) {
         this.connectionString = connectionString;
         store = SemWeb.Store.Create(connectionString);
+        InitStore();
+      }
+    }
+
+    private void InitStore() {
+      foreach (Statement s in Ontology.InitialStatements) {
+        Add(s);
       }
     }
 
     public void Add(Statement statement) {
-      lock(bigLock) {
+      lock (bigLock) {
         store.Add(Translate(statement));
       }
     }
 
-    public IList<Statement> Select(Statement template) {
-      SemWeb.SelectResult result;
-      lock(bigLock) {
-        result = store.Select(Translate(template));
-      }
-      List<Statement> r = new List<Statement>();
-      foreach(SemWeb.Statement resultStatement in result) {
-        r.Add(Translate(resultStatement));
-      }
-      return r;
+
+    public ICollection<VariableBindings> Query(string query) {
+      MyQueryResultSink resultSink = new MyQueryResultSink();
+      SemWeb.N3Reader n3Reader = new SemWeb.N3Reader(new StringReader(query));
+      SemWeb.Query.GraphMatch matcher = new SemWeb.Query.GraphMatch(n3Reader);
+      matcher.Run(store, resultSink);
+      return resultSink.Bindings;
     }
 
-    public IList<Statement> Select(SelectFilter filter) {
-      SemWeb.SelectResult result;
-      lock(bigLock) {
-        result = store.Select(Translate(filter));
-      }
-      List<Statement> r = new List<Statement>();
-      foreach(SemWeb.Statement resultStatement in result) {
-        r.Add(Translate(resultStatement));
-      }
-      return r;
+    public ICollection<VariableBindings> Query(ICollection<Statement> query) {
+      MyQueryResultSink resultSink = new MyQueryResultSink();
+      Translate(query).Run(store, resultSink);
+      return resultSink.Bindings;
     }
 
-    private SemWeb.SelectFilter Translate(SelectFilter filter) {
-      SemWeb.SelectFilter f = new SemWeb.SelectFilter();
-      f.Subjects = Array.ConvertAll(filter.Subjects, s => Translate(s));
-      f.Predicates = Array.ConvertAll(filter.Predicates, p => Translate(p));
-      f.Objects = Array.ConvertAll(filter.Properties, prop => Translate(prop));
-      return f;
+    private SemWeb.Query.Query Translate(ICollection<Statement> query) {
+      Dictionary<object, object> translatedObjects = new Dictionary<object, object>();
+      SemWeb.MemoryStore queryStore = new SemWeb.MemoryStore(query.Select(st => Translate(st, translatedObjects)).ToArray());
+
+      return new SemWeb.Query.GraphMatch(queryStore);
     }
 
-    private SemWeb.Entity Translate(Entity e) {
+
+    //public ICollection<Statement> Select(Statement template) {
+    //  SemWeb.MemoryStore memStore = new SemWeb.MemoryStore();
+    //  lock (bigLock) {
+    //    store.Select(Translate(template), memStore);
+    //  }
+    //  return memStore.Select(x=>Translate(x)).ToList();
+    //}
+
+    //public ICollection<Statement> Select(SelectFilter filter) {
+    //  SemWeb.MemoryStore memStore = new SemWeb.MemoryStore();
+    //  lock (bigLock) {
+    //    store.Select(Translate(filter), memStore);
+    //  }
+    //  return memStore.Select(x => Translate(x)).ToList();
+    //}
+
+    //private SemWeb.SelectFilter Translate(SelectFilter filter) {
+    //  SemWeb.SelectFilter f = new SemWeb.SelectFilter();
+    //  f.Subjects = Array.ConvertAll(filter.Subjects, s => Translate(s));
+    //  f.Predicates = Array.ConvertAll(filter.Predicates, p => Translate(p));
+    //  f.Objects = Array.ConvertAll(filter.Properties, prop => Translate(prop));
+    //  return f;
+    //}
+
+    private static SemWeb.Entity Translate(Entity e) {
       return e.Uri == null ? null : new SemWeb.Entity(e.Uri);
     }
 
-    private SemWeb.Resource Translate(Resource prop) {
-      if(prop is Literal) {
+    private static SemWeb.Resource Translate(Resource prop) {
+      if (prop is Literal) {
         return TranslateLiteral((Literal)prop);
-      } else if(prop is SerializedLiteral) {
+      } else if (prop is SerializedLiteral) {
         return TranslateLiteral((SerializedLiteral)prop);
       } else {
         return Translate((Entity)prop);
       }
     }
 
-    private Statement Translate(SemWeb.Statement statement) {
-      if(statement.Object is SemWeb.Literal) {
-        return new Statement(
-          new Entity(statement.Subject.Uri),
-          new Entity(statement.Predicate.Uri),
-          TranslateLiteral((SemWeb.Literal)statement.Object));
-      } else {
-        return new Statement(
-          new Entity(statement.Subject.Uri),
-          new Entity(statement.Predicate.Uri),
-          new Entity(((SemWeb.Entity)statement.Object).Uri));
+    private static Statement Translate(SemWeb.Statement statement) {
+      return Translate(statement, new Dictionary<object, object>());
+    }
+
+    private static Statement Translate(SemWeb.Statement statement, Dictionary<object, object> translatedObjects) {
+      if (!translatedObjects.ContainsKey(statement.Subject)) {
+        translatedObjects[statement.Subject] = new Entity(statement.Subject.Uri);
       }
+      if (!translatedObjects.ContainsKey(statement.Predicate)) {
+        translatedObjects[statement.Predicate] = new Entity(statement.Predicate.Uri);
+      }
+      if (!translatedObjects.ContainsKey(statement.Object)) {
+        if (statement.Object is SemWeb.Literal) {
+          translatedObjects[statement.Object] = TranslateLiteral((SemWeb.Literal)statement.Object);
+        } else {
+          translatedObjects[statement.Object] = new Entity(((SemWeb.Entity)statement.Object).Uri);
+        }
+      }
+
+      Entity subjectEntity = (Entity)translatedObjects[statement.Subject];
+      Entity predicateEntity = (Entity)translatedObjects[statement.Predicate];
+      Resource property = (Resource)translatedObjects[statement.Object];
+
+      return new Statement(
+        subjectEntity,
+        predicateEntity,
+        property);
     }
 
-    private SemWeb.Statement Translate(Statement statement) {
+    private static SemWeb.Statement Translate(Statement statement) {
+      return Translate(statement, new Dictionary<object, object>());
+    }
+
+    private static SemWeb.Statement Translate(Statement statement, Dictionary<object, object> translatedObjects) {
+      if (!translatedObjects.ContainsKey(statement.Subject)) {
+        translatedObjects[statement.Subject] = Translate(statement.Subject);
+      }
+      if (!translatedObjects.ContainsKey(statement.Predicate)) {
+        translatedObjects[statement.Predicate] = Translate(statement.Predicate);
+      }
+      if (!translatedObjects.ContainsKey(statement.Property)) {
+        translatedObjects[statement.Property] = Translate(statement.Property);
+      }
+
+      SemWeb.Entity subject = (SemWeb.Entity)translatedObjects[statement.Subject];
+      SemWeb.Entity predicate = (SemWeb.Entity)translatedObjects[statement.Predicate];
+      SemWeb.Resource property = (SemWeb.Resource)translatedObjects[statement.Property];
+
       return new SemWeb.Statement(
-        Translate(statement.Subject),
-        Translate(statement.Predicate),
-        Translate(statement.Property));
+        subject,
+        predicate,
+        property);
     }
 
-    private SemWeb.Literal TranslateLiteral(SerializedLiteral l) {
-      if(l.RawData == null) return null;
+    private static SemWeb.Literal TranslateLiteral(SerializedLiteral l) {
+      if (l.RawData == null) return null;
       return new SemWeb.Literal(l.RawData, null, "serializedItem");
     }
 
-    private SemWeb.Literal TranslateLiteral(Literal l) {
-      if(l.Value == null) return null;
-      if(l.Value is double) return SemWeb.Literal.FromValue((double)l.Value);
-      else if(l.Value is bool) return SemWeb.Literal.FromValue((bool)l.Value);
-      else if(l.Value is int) return SemWeb.Literal.FromValue((int)l.Value);
-      else if(l.Value is long) return SemWeb.Literal.FromValue((long)l.Value);
-      else if(l.Value is string) return SemWeb.Literal.FromValue((string)l.Value);
+    private static SemWeb.Literal TranslateLiteral(Literal l) {
+      if (l.Value == null) return null;
+      if (l.Value is double) return SemWeb.Literal.FromValue((double)l.Value);
+      else if (l.Value is bool) return SemWeb.Literal.FromValue((bool)l.Value);
+      else if (l.Value is int) return SemWeb.Literal.FromValue((int)l.Value);
+      else if (l.Value is long) return SemWeb.Literal.FromValue((long)l.Value);
+      else if (l.Value is string) return SemWeb.Literal.FromValue((string)l.Value);
       else return new SemWeb.Literal(l.Value.ToString());
     }
 
-    private Resource TranslateLiteral(SemWeb.Literal l) {
-      if(l.DataType == "serializedItem") {
+    private static Resource TranslateLiteral(SemWeb.Literal l) {
+      if (l.DataType == "serializedItem") {
         return new SerializedLiteral(l.Value);
-      } else if(l.DataType != null) {
+      } else if (l.DataType != null) {
         return new Literal(l.ParseValue());
       } else {
         return new Literal(l.Value);
+      }
+    }
+
+    private class MyQueryResultSink : SemWeb.Query.QueryResultSink {
+
+      private List<VariableBindings> bindings = new List<VariableBindings>();
+      public ICollection<VariableBindings> Bindings {
+        get { return bindings.AsReadOnly(); }
+      }
+
+      public override bool Add(SemWeb.Query.VariableBindings result) {
+        VariableBindings varBindings = new VariableBindings();
+        foreach (SemWeb.Variable var in result.Variables) {
+          if (var.LocalName != null && result[var] != null) {
+            if (result[var] is SemWeb.Literal) {
+              varBindings.Add(var.LocalName, TranslateLiteral((SemWeb.Literal)result[var]));
+            } else {
+              varBindings.Add(var.LocalName, new Entity(((SemWeb.Entity)result[var]).Uri));
+            }
+          }
+          bindings.Add(varBindings);
+        }
+        return true;
       }
     }
   }

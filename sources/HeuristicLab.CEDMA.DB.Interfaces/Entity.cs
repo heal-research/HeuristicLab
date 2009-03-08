@@ -34,6 +34,10 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
       this.Uri = uri;
     }
 
+    public override string ToString() {
+      return Uri;
+    }
+
     public override bool Equals(object obj) {
       if(this == obj) return true;
       Entity other = obj as Entity;

@@ -74,7 +74,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RunScheduler.cs" />
+    <Compile Include="DispatcherBase.cs" />
+    <Compile Include="IDispatcher.cs" />
+    <Compile Include="Execution.cs" />
+    <Compile Include="Executer.cs" />
+    <Compile Include="RandomDispatcher.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="ServerApplication.cs" />
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,9 +107,25 @@
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DataAnalysis\HeuristicLab.DataAnalysis.csproj">
+      <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
+      <Name>HeuristicLab.DataAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification.Classification\HeuristicLab.GP.StructureIdentification.Classification.csproj">
+      <Project>{7C20D100-8BEB-433A-9499-F075E2CB9297}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification.Classification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification.TimeSeries\HeuristicLab.GP.StructureIdentification.TimeSeries.csproj">
+      <Project>{6084CFB5-733F-449D-9F92-2E40D13F0514}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification.TimeSeries</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.GP.StructureIdentification\HeuristicLab.GP.StructureIdentification.csproj">
+      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Grid\HeuristicLab.Grid.csproj">
       <Project>{545CE756-98D8-423B-AC2E-6E7D70926E5C}</Project>

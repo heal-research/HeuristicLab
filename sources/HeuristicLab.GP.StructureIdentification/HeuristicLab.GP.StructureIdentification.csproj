@@ -70,6 +70,30 @@
     <Compile Include="Average.cs" />
     <Compile Include="BakedTreeEvaluator.cs" />
     <Compile Include="Constant.cs" />
+    <Compile Include="AlgorithmBase.cs" />
+    <Compile Include="Evaluators\MeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
+    <Compile Include="FunctionLibraryInjector.cs" />
+    <Compile Include="OffspringSelectionGP.cs" />
+    <Compile Include="OffSpringSelectionGpEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OffSpringSelectionGpEditor.Designer.cs">
+      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProblemInjector.cs" />
+    <Compile Include="ProblemInjectorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemInjectorView.Designer.cs">
+      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StandardGpEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StandardGpEditor.Designer.cs">
+      <DependentUpon>StandardGpEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StandardGP.cs" />
     <Compile Include="Cosinus.cs" />
     <Compile Include="Differential.cs" />
     <Compile Include="Division.cs" />
@@ -97,13 +121,6 @@
     <Compile Include="Signum.cs" />
     <Compile Include="Sinus.cs" />
     <Compile Include="Sqrt.cs" />
-    <Compile Include="StructIdProblemInjector.cs" />
-    <Compile Include="StructIdProblemInjectorView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StructIdProblemInjectorView.Designer.cs">
-      <DependentUpon>StructIdProblemInjectorView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Subtraction.cs" />
     <Compile Include="SymbolicExpressionExporter.cs" />
     <Compile Include="SymbolTable.cs" />
@@ -128,9 +145,21 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Evolutionary\HeuristicLab.Evolutionary.csproj">
+      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
+      <Name>HeuristicLab.Evolutionary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
       <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
       <Name>HeuristicLab.GP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
+      <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
+      <Name>HeuristicLab.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Programmable\HeuristicLab.Operators.Programmable.csproj">
+      <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
+      <Name>HeuristicLab.Operators.Programmable</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
@@ -144,10 +173,28 @@
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
       <Name>HeuristicLab.Random</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Selection.OffspringSelection\HeuristicLab.Selection.OffspringSelection.csproj">
+      <Project>{205898D3-2717-4686-AF17-52409B7EC0C6}</Project>
+      <Name>HeuristicLab.Selection.OffspringSelection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Selection\HeuristicLab.Selection.csproj">
+      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
+      <Name>HeuristicLab.Selection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\HeuristicLab.SequentialEngine.csproj">
+      <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
+      <Name>HeuristicLab.SequentialEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="StructIdProblemInjectorView.resx">
-      <DependentUpon>StructIdProblemInjectorView.cs</DependentUpon>
+    <EmbeddedResource Include="OffSpringSelectionGpEditor.resx">
+      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProblemInjectorView.resx">
+      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StandardGpEditor.resx">
+      <DependentUpon>StandardGpEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

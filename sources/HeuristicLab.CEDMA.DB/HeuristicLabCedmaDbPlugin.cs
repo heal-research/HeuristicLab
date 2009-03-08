@@ -27,7 +27,6 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.CEDMA.DB {
   [ClassInfo(Name = "HeuristicLab.CEDMA.DB-3.2")]
   [PluginFile(Filename = "HeuristicLab.CEDMA.DB-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.SQLite-3.2")]
   [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.2")]
   public class HeuristicLabCedmaDbPlugin : PluginBase {
   }

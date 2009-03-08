@@ -34,9 +34,9 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     void Add(Statement statement);
 
     [OperationContract]
-    IList<Statement> Select(Statement template);
+    ICollection<VariableBindings> Query(ICollection<Statement> query);
 
-    [OperationContract(Name = "SelectFiltered")]
-    IList<Statement> Select(SelectFilter filter);
+    [OperationContract(Name="QueryN3")]
+    ICollection<VariableBindings> Query(string query);
   }
 }

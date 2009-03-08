@@ -51,7 +51,12 @@ namespace HeuristicLab.DataAnalysis {
 
     public int Columns {
       get { return columns; }
-      set { columns = value; }
+      set { 
+        columns = value;
+        if (variableNames == null || variableNames.Length != columns) {
+          variableNames = new string[columns];
+        }
+      }
     }
 
     public double[] ScalingFactor {
@@ -89,14 +94,10 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private string[] variableNames;
-    public string[] VariableNames {
-      get { return variableNames; }
-      set { variableNames = value; }
-    }
 
     public Dataset() {
       Name = "-";
-      VariableNames = new string[] { "Var0" };
+      variableNames = new string[] { "Var0" };
       Columns = 1;
       Rows = 1;
       Samples = new double[1];
@@ -114,6 +115,15 @@ namespace HeuristicLab.DataAnalysis {
       }
     }
 
+    public string GetVariableName(int variableIndex) {
+      return variableNames[variableIndex];
+    }
+
+    public void SetVariableName(int variableIndex, string name) {
+      variableNames[variableIndex] = name;
+    }
+
+
     public override IView CreateView() {
       return new DatasetView(this);
     }
@@ -127,8 +137,8 @@ namespace HeuristicLab.DataAnalysis {
       clone.columns = columns;
       clone.Samples = cloneSamples;
       clone.Name = Name;
-      clone.VariableNames = new string[VariableNames.Length];
-      Array.Copy(VariableNames, clone.VariableNames, VariableNames.Length);
+      clone.variableNames = new string[variableNames.Length];
+      Array.Copy(variableNames, clone.variableNames, variableNames.Length);
       Array.Copy(scalingFactor, clone.scalingFactor, columns);
       Array.Copy(scalingOffset, clone.scalingOffset, columns);
       return clone;
@@ -164,7 +174,7 @@ namespace HeuristicLab.DataAnalysis {
       rows = int.Parse(node.Attributes["Dimension1"].Value, CultureInfo.InvariantCulture.NumberFormat);
       columns = int.Parse(node.Attributes["Dimension2"].Value, CultureInfo.InvariantCulture.NumberFormat);
 
-      VariableNames = ParseVariableNamesString(node.Attributes["VariableNames"].Value);
+      variableNames = ParseVariableNamesString(node.Attributes["VariableNames"].Value);
       if(node.Attributes["ScalingFactors"] != null)
         scalingFactor = ParseDoubleString(node.Attributes["ScalingFactors"].Value);
       else {

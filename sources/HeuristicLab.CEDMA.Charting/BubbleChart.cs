@@ -26,9 +26,15 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Charting;
 using System.Windows.Forms;
+using HeuristicLab.CEDMA.Core;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Charting {
   public class BubbleChart : Chart {
+    private const string X_JITTER = "__X_JITTER";
+    private const string Y_JITTER = "__Y_JITTER";
     private const double maxXJitterPercent = 0.05;
     private const double maxYJitterPercent = 0.05;
     private const int minBubbleSize = 5;
@@ -48,23 +54,28 @@ namespace HeuristicLab.CEDMA.Charting {
     private double minY = double.PositiveInfinity;
     private double maxX = double.NegativeInfinity;
     private double maxY = double.NegativeInfinity;
-    private List<Record> records;
-    private ResultList results;
-    private Dictionary<IPrimitive, Record> primitiveToRecordDictionary;
-    private Dictionary<Record, IPrimitive> recordToPrimitiveDictionary;
+    private List<ResultsEntry> records;
+    private Results results;
+    private Dictionary<IPrimitive, ResultsEntry> primitiveToEntryDictionary;
+    private Dictionary<ResultsEntry, IPrimitive> entryToPrimitiveDictionary;
     private Random random = new Random();
     private Group points;
 
-    public BubbleChart(ResultList results, PointD lowerLeft, PointD upperRight)
+    public BubbleChart(Results results, PointD lowerLeft, PointD upperRight)
       : base(lowerLeft, upperRight) {
-      records = new List<Record>();
-      primitiveToRecordDictionary = new Dictionary<IPrimitive, Record>();
-      recordToPrimitiveDictionary = new Dictionary<Record, IPrimitive>();
+      records = new List<ResultsEntry>();
+      primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
+      entryToPrimitiveDictionary = new Dictionary<ResultsEntry, IPrimitive>();
       this.results = results;
-      foreach(Record r in results.Records) {
-        records.Add(r);
-     }
-      results.OnRecordAdded += new EventHandler<RecordAddedEventArgs>(results_OnRecordAdded);
+
+      foreach (var resultsEntry in results.GetEntries()) {
+        if (resultsEntry.Get(X_JITTER) == null)
+          resultsEntry.Set(X_JITTER, random.NextDouble() * 2.0 - 1.0);
+        if (resultsEntry.Get(Y_JITTER) == null)
+          resultsEntry.Set(Y_JITTER, random.NextDouble() * 2.0 - 1.0);
+        records.Add(resultsEntry);
+      }
+
       results.Changed += new EventHandler(results_Changed);
     }
 
@@ -73,14 +84,8 @@ namespace HeuristicLab.CEDMA.Charting {
       EnforceUpdate();
     }
 
-    public BubbleChart(ResultList results, double x1, double y1, double x2, double y2)
+    public BubbleChart(Results results, double x1, double y1, double x2, double y2)
       : this(results, new PointD(x1, y1), new PointD(x2, y2)) {
-    }
-
-    void results_OnRecordAdded(object sender, RecordAddedEventArgs e) {
-      lock(records) {
-        records.Add(e.Record);
-      }
     }
 
     public void SetBubbleSizeDimension(string dimension, bool inverted) {
@@ -91,9 +96,10 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     public void ShowXvsY(string xDimension, string yDimension) {
-      if(this.xDimension != xDimension || this.yDimension != yDimension) {
+      if (this.xDimension != xDimension || this.yDimension != yDimension) {
         this.xDimension = xDimension;
         this.yDimension = yDimension;
+
         ResetViewSize();
         Repaint();
         ZoomToViewSize();
@@ -108,53 +114,69 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void Repaint() {
-      if(xDimension == null || yDimension == null) return;
-      lock(records) {
-        double maxSize = 1;
-        double minSize = 1;
-        if(sizeDimension != null) {
-          var sizes = records.Select(r => r.Get(sizeDimension)).Where(x => !double.IsInfinity(x) && x != double.MaxValue && x != double.MinValue).OrderBy(x=>x);
+      if (xDimension == null || yDimension == null) return;
+      double maxSize = 1;
+      double minSize = 1;
+      try {
+        if (sizeDimension != null && results.OrdinalVariables.Contains(sizeDimension)) {
+          var sizes = records
+            .Select(x => Convert.ToDouble(x.Get(sizeDimension)))
+            .Where(size => !double.IsInfinity(size) && size != double.MaxValue && size != double.MinValue)
+            .OrderBy(r => r);
           minSize = sizes.ElementAt((int)(sizes.Count() * 0.1));
           maxSize = sizes.ElementAt((int)(sizes.Count() * 0.9));
         }
-        UpdateEnabled = false;
-        Group.Clear();
-        primitiveToRecordDictionary.Clear();
-        recordToPrimitiveDictionary.Clear();
-        points = new Group(this);
-        Group.Add(new Axis(this, 0, 0, AxisType.Both));
-        UpdateViewSize(0, 0, 5);
-        foreach(Record r in records) {
-          double x = r.Get(xDimension) + r.Get(Record.X_JITTER) * xJitterFactor;
-          double y = r.Get(yDimension) + r.Get(Record.Y_JITTER) * yJitterFactor;
-          int size = CalculateSize(r.Get(sizeDimension), minSize, maxSize);
-
-          if(double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
-          if(double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
-          if(!double.IsNaN(x) && !double.IsNaN(y)) {
-            UpdateViewSize(x, y, size);
-            int alpha = CalculateAlpha(size);
-            Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
-            Brush brush = pen.Brush;
-            FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
-            c.ToolTipText = r.GetToolTipText();
-            points.Add(c);
-            if(!r.Selected) c.IntoBackground();
-            primitiveToRecordDictionary[c] = r;
-            recordToPrimitiveDictionary[r] = c;
-          }
-        }
-        Group.Add(points);
-        UpdateEnabled = true;
       }
+      catch (InvalidCastException) {
+        minSize = 1;
+        maxSize = 1;
+      }
+      UpdateEnabled = false;
+      Group.Clear();
+      primitiveToEntryDictionary.Clear();
+      entryToPrimitiveDictionary.Clear();
+      points = new Group(this);
+      Group.Add(new Axis(this, 0, 0, AxisType.Both));
+      UpdateViewSize(0, 0, 5);
+      foreach (ResultsEntry r in records) {
+        double x, y;
+        int size;
+        try {
+          x = Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor;
+          y = Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
+          size = CalculateSize(Convert.ToDouble(r.Get(sizeDimension)), minSize, maxSize);
+        }
+        catch (InvalidCastException) {
+          x = double.NaN;
+          y = double.NaN;
+          size = minBubbleSize;
+        }
+        if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
+        if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
+        if (!double.IsNaN(x) && !double.IsNaN(y)) {
+          UpdateViewSize(x, y, size);
+          int alpha = CalculateAlpha(size);
+          Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
+          Brush brush = pen.Brush;
+          FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
+          c.ToolTipText = r.GetToolTipText();
+          points.Add(c);
+          if (!r.Selected) c.IntoBackground();
+          primitiveToEntryDictionary[c] = r;
+          entryToPrimitiveDictionary[r] = c;
+        }
+      }
+      Group.Add(points);
+      UpdateEnabled = true;
     }
 
     private int CalculateSize(double size, double minSize, double maxSize) {
-      if(double.IsNaN(size) || double.IsInfinity(size) || size == double.MaxValue || size == double.MinValue) return minBubbleSize;
-      if(size > maxSize) size = maxSize;
-      if(size < minSize) size = minSize;
+      if (double.IsNaN(size) || double.IsInfinity(size) || size == double.MaxValue || size == double.MinValue) return minBubbleSize;
+      if (size > maxSize) size = maxSize;
+      if (size < minSize) size = minSize;
+      if (Math.Abs(maxSize - minSize) < 1.0E-10) return minBubbleSize;
       double sizeDifference = ((size - minSize) / (maxSize - minSize) * (maxBubbleSize - minBubbleSize));
-      if(invertSize) return maxBubbleSize - (int)sizeDifference;
+      if (invertSize) return maxBubbleSize - (int)sizeDifference;
       else return minBubbleSize + (int)sizeDifference;
     }
 
@@ -163,7 +185,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void ZoomToViewSize() {
-      if(minX < maxX && minY < maxY) {
+      if (minX < maxX && minY < maxY) {
         // enlarge view by 5% on each side
         double width = maxX - minX;
         double height = maxY - minY;
@@ -176,10 +198,10 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void UpdateViewSize(double x, double y, double size) {
-      if(x - size < minX) minX = x - size;
-      if(x + size > maxX) maxX = x + size;
-      if(y - size < minY) minY = y + size;
-      if(y + size > maxY) maxY = y + size;
+      if (x - size < minX) minX = x - size;
+      if (x + size > maxX) maxX = x + size;
+      if (y - size < minY) minY = y + size;
+      if (y + size > maxY) maxY = y + size;
     }
 
     private void ResetViewSize() {
@@ -189,18 +211,18 @@ namespace HeuristicLab.CEDMA.Charting {
       maxY = double.NegativeInfinity;
     }
 
-    internal Record GetRecord(Point point) {
-      Record r = null;
+    internal ResultsEntry GetResultsEntry(Point point) {
+      ResultsEntry r = null;
       IPrimitive p = points.GetPrimitive(TransformPixelToWorld(point));
-      if(p != null) {
-        primitiveToRecordDictionary.TryGetValue(p, out r);
+      if (p != null) {
+        primitiveToEntryDictionary.TryGetValue(p, out r);
       }
       return r;
     }
 
 
     public override void MouseDrag(Point start, Point end, MouseButtons button) {
-      if(button == MouseButtons.Left && Mode == ChartMode.Select) {
+      if (button == MouseButtons.Left && Mode == ChartMode.Select) {
         PointD a = TransformPixelToWorld(start);
         PointD b = TransformPixelToWorld(end);
         double minX = Math.Min(a.X, b.X);
@@ -212,23 +234,23 @@ namespace HeuristicLab.CEDMA.Charting {
         List<IPrimitive> primitives = new List<IPrimitive>();
         primitives.AddRange(points.Primitives);
 
-        foreach(FixedSizeCircle p in primitives) {
-          if(rect.ContainsPoint(p.Point)) {
-            Record r;
-            primitiveToRecordDictionary.TryGetValue(p, out r);
-            if(r != null) r.ToggleSelected();
+        foreach (FixedSizeCircle p in primitives) {
+          if (rect.ContainsPoint(p.Point)) {
+            ResultsEntry r;
+            primitiveToEntryDictionary.TryGetValue(p, out r);
+            if (r != null) r.ToggleSelected();
           }
         }
-        results.FireChanged();
+        if (primitives.Count() > 0) results.FireChanged();
       } else {
         base.MouseDrag(start, end, button);
       }
     }
 
     public override void MouseClick(Point point, MouseButtons button) {
-      if(button == MouseButtons.Left) {
-        Record r = GetRecord(point);
-        if(r != null) r.ToggleSelected();
+      if (button == MouseButtons.Left) {
+        ResultsEntry r = GetResultsEntry(point);
+        if (r != null) r.ToggleSelected();
         results.FireChanged();
       } else {
         base.MouseClick(point, button);
@@ -236,9 +258,13 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     public override void MouseDoubleClick(Point point, MouseButtons button) {
-      if(button == MouseButtons.Left) {
-        Record r = GetRecord(point);
-        if(r != null) r.OpenModel();
+      if (button == MouseButtons.Left) {
+        ResultsEntry entry = GetResultsEntry(point);
+        if (entry != null) {
+          string serializedData = (string)entry.Get(Ontology.PredicateSerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
+          var model = (IItem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String(serializedData));
+          PluginManager.ControlManager.ShowControl(model.CreateView());
+        }
       } else {
         base.MouseDoubleClick(point, button);
       }
