@@ -25,11 +25,16 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Charting {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Charting-3.2")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Charting-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.CEDMA.Charting-3.3")]
+  [PluginFile(Filename = "HeuristicLab.CEDMA.Charting-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.Core-3.3")]
   [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Charting.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.3")]
   public class HeuristicLabCedmaCorePlugin : PluginBase {
   }
 }

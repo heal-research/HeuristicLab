@@ -25,14 +25,16 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
-  [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.2")]
-  [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.3")]
+  [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.GP-3.2")]
-  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.2")]
+  [Dependency(Dependency = "HeuristicLab.GP-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabGPTimeSeriesPlugin : PluginBase {
   }
 }

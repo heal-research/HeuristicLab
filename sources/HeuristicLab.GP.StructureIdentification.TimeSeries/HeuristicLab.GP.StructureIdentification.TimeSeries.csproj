@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.GP.StructureIdentification.TimeSeries</RootNamespace>
-    <AssemblyName>HeuristicLab.GP.StructureIdentification.TimeSeries-3.2</AssemblyName>
+    <AssemblyName>HeuristicLab.GP.StructureIdentification.TimeSeries-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

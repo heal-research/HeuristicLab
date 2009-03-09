@@ -25,9 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.DB {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.DB-3.2")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.DB-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.2")]
+  [ClassInfo(Name = "HeuristicLab.CEDMA.DB-3.3")]
+  [PluginFile(Filename = "HeuristicLab.CEDMA.DB-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   public class HeuristicLabCedmaDbPlugin : PluginBase {
   }
 }

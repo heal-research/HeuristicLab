@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.CEDMA.Charting</RootNamespace>
-    <AssemblyName>HeuristicLab.CEDMA.Charting-3.2</AssemblyName>
+    <AssemblyName>HeuristicLab.CEDMA.Charting-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

@@ -27,10 +27,13 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.GP.Boolean {
   [ClassInfo(Name = "HeuristicLab.GP.Boolean-1.0")]
   [PluginFile(Filename = "HeuristicLab.GP.Boolean-1.0.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.GP-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
+  [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   public class HeuristicLabGPBooleanPlugin : PluginBase {
   }
 }
