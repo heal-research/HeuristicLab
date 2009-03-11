@@ -6,7 +6,7 @@ namespace HeuristicLab.Visualization {
   public enum DataRowType {
     Normal, SingleValue
   }
-  
+
   public interface IDataRow {
     string Label { get; set; }
     Color Color { get; set; }
@@ -18,7 +18,6 @@ namespace HeuristicLab.Visualization {
     /// <summary>
     /// Raised when data row data changed. Should cause redraw in the view.
     /// </summary>
-    event DataRowChangedHandler DataRowChanged;
 
     void AddValue(double value);
     void AddValue(double value, int index);
@@ -39,5 +38,6 @@ namespace HeuristicLab.Visualization {
 
     event ValuesChangedHandler ValuesChanged;
     event ValueChangedHandler ValueChanged;
+    event DataRowChangedHandler DataRowChanged;
   }
 }

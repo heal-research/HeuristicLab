@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvgAggregator.cs" />
+    <Compile Include="AvgLineAggregator.cs" />
     <Compile Include="AxisTicks.cs" />
     <Compile Include="Canvas.cs" />
     <Compile Include="CanvasUI.cs">
@@ -81,6 +83,7 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
+    <Compile Include="IAggregator.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
     <Compile Include="Grid.cs" />
@@ -88,6 +91,8 @@
     <Compile Include="LabelProvider\ILabelProvider.cs" />
     <Compile Include="IMouseEventListener.cs" />
     <Compile Include="Legend\LegendItem.cs" />
+    <Compile Include="MaxAggregator.cs" />
+    <Compile Include="MinAggregator.cs" />
     <Compile Include="Options\OptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
