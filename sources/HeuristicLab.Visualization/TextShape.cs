@@ -58,6 +58,11 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    public Font Font {
+      get { return font; }
+      set { font = value; }
+    }
+
     public AnchorPositionX AnchorPositionX {
       get { return anchorPositionX; }
       set { anchorPositionX = value; }

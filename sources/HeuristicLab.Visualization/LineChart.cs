@@ -35,6 +35,14 @@ namespace HeuristicLab.Visualization {
       InitializeComponent();
     }
 
+    public TextShape Title {
+      get { return titleShape; }
+    }
+
+    public LegendShape Legend {
+      get { return legendShape; }
+    }
+
     /// <summary>
     /// Initializes the chart.
     /// </summary>
@@ -127,7 +135,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      OptionsDialog optionsdlg = new OptionsDialog(this.model);
+      OptionsDialog optionsdlg = new OptionsDialog(this.model, this);
       optionsdlg.ShowDialog(this);
     }
 
