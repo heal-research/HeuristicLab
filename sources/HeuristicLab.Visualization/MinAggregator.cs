@@ -165,6 +165,14 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    public double MinValue {
+      get { throw new System.NotImplementedException(); }
+    }
+
+    public double MaxValue {
+      get { throw new System.NotImplementedException(); }
+    }
+
     public event ValuesChangedHandler ValuesChanged;
 
     protected void OnValuesChanged(double[] values, int index, Action action) {
