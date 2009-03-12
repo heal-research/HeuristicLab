@@ -45,9 +45,6 @@ namespace HeuristicLab.Hive.Server.Core {
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-    private static Mutex jobLock =
-      new Mutex();
-
     IClientAdapter clientAdapter;
     IJobAdapter jobAdapter;
     IJobResultsAdapter jobResultAdapter;
