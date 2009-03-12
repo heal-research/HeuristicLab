@@ -22,5 +22,26 @@ namespace HeuristicLab.Hive.Client.Console {
         gbWeekly.Visible = true;
       }
     }
+
+    private void btCancelRecurrence_Click(object sender, EventArgs e) {
+      this.Close();
+    }
+
+    private void gbAppointment_Enter(object sender, EventArgs e) {
+
+    }
+
+    private void cmbEnd_Click(object sender, EventArgs e) {
+
+    }
+
+    private void dtpToTime_ValueChanged(object sender, EventArgs e) {
+
+    }
+
+    private void chbade_CheckedChanged(object sender, EventArgs e) {
+        dtpFromTime.Visible = !chbade.Checked;
+        dtpToTime.Visible = !chbade.Checked;
+    }
   }
 }

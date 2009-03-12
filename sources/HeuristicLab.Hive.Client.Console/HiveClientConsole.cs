@@ -182,7 +182,6 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     private void InitCalender() {
-
       dvOnline.StartDate = DateTime.Now;
       dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(DvOnline_OnNewAppointment);
       dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(DvOnline_OnResolveAppointments);
@@ -198,6 +197,8 @@ namespace HeuristicLab.Hive.Client.Console {
       App.Subject = "Online";
       return App;
     }
+
+    //private ConvertToAppointments(List<
 
     #endregion
 
@@ -293,10 +294,6 @@ namespace HeuristicLab.Hive.Client.Console {
       UpdateText(e.Entry);
     }
 
-    private void HiveClientConsole_Resize(object sender, EventArgs e) {
-      //nothing to do
-    }
-
     private void lvLog_DoubleClick(object sender, EventArgs e) {
       ListViewItem lvi = lvLog.SelectedItems[0];
       HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
@@ -356,13 +353,15 @@ namespace HeuristicLab.Hive.Client.Console {
     }
 
     private void chbade_CheckedChanged(object sender, EventArgs e) {
-      if (chbade.Checked) {
-        txttimeFrom.Visible = false;
-        txtTimeTo.Visible = false;
-      } else {
-        txttimeFrom.Visible = true;
-        txtTimeTo.Visible = true;
-      }
+      //if (chbade.Checked) {
+      //  txttimeFrom.Visible = false;
+      //  txttimeTo.Visible = false;
+      //} else {
+      //  txttimeFrom.Visible = true;
+      //  txttimeTo.Visible = true;
+      //}
+      txttimeFrom.Visible = !chbade.Checked;
+      txttimeTo.Visible = !chbade.Checked;
     }
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
@@ -370,7 +369,7 @@ namespace HeuristicLab.Hive.Client.Console {
         dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
         dtpTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
-        txtTimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
+        txttimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
       }
     }
 
@@ -389,13 +388,13 @@ namespace HeuristicLab.Hive.Client.Console {
       if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text)) {
         if (chbade.Checked) {
           //whole day appointment, only dates are visible
-          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txtTimeTo.Text, out to) && from < to)
+          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to)
             onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
           else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txtTimeTo.Text)) {
+        } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text)) {
           //Timeframe appointment
-          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txtTimeTo.Text, out to) && from < to) {
+          if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to) {
             if (from.Date == to.Date)
               onlineTimes.Add(CreateAppointment(from, to, false));
             else {
@@ -422,7 +421,6 @@ namespace HeuristicLab.Hive.Client.Console {
         if ((m_App.StartDate >= e.StartDate) &&
             (m_App.StartDate <= e.EndDate))
           Apps.Add(m_App);
-
       e.Appointments = Apps;
     }
 
@@ -435,11 +433,12 @@ namespace HeuristicLab.Hive.Client.Console {
       onlineTimes.Add(Appointment);
     }
 
-    #endregion
-
     private void btnRecurrence_Click(object sender, EventArgs e) {
       Form recurrence = new Recurrence();
       recurrence.Show();
     }
+
+    #endregion
+
   }
 }

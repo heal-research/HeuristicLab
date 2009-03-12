@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
+      Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
       this.dvOnline = new Calendar.DayView();
       this.tcClientConsole = new System.Windows.Forms.TabControl();
@@ -88,17 +88,17 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.txttimeTo = new System.Windows.Forms.DateTimePicker();
+      this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
+      this.dtpTo = new System.Windows.Forms.DateTimePicker();
+      this.dtpFrom = new System.Windows.Forms.DateTimePicker();
       this.chbade = new System.Windows.Forms.CheckBox();
       this.btnRecurrence = new System.Windows.Forms.Button();
-      this.txtTimeTo = new System.Windows.Forms.TextBox();
-      this.txttimeFrom = new System.Windows.Forms.TextBox();
       this.btbDelete = new System.Windows.Forms.Button();
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.btCreate = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
-      this.dtpFrom = new System.Windows.Forms.DateTimePicker();
-      this.dtpTo = new System.Windows.Forms.DateTimePicker();
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -114,9 +114,10 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // dvOnline
       // 
-      drawTool1.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool1;
+      drawTool2.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool2;
       this.dvOnline.AmPmDisplay = false;
+      this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
       this.dvOnline.DayHeadersHeight = 15;
       this.dvOnline.DaysToShow = 7;
@@ -138,13 +139,16 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // tcClientConsole
       // 
+      this.tcClientConsole.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
       this.tcClientConsole.Controls.Add(this.tpConnection);
       this.tcClientConsole.Controls.Add(this.tabPage2);
       this.tcClientConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tcClientConsole.ItemSize = new System.Drawing.Size(410, 21);
       this.tcClientConsole.Location = new System.Drawing.Point(0, 0);
       this.tcClientConsole.Name = "tcClientConsole";
       this.tcClientConsole.SelectedIndex = 0;
       this.tcClientConsole.Size = new System.Drawing.Size(853, 438);
+      this.tcClientConsole.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
       this.tcClientConsole.TabIndex = 1;
       // 
       // tpConnection
@@ -154,11 +158,11 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tpConnection.Controls.Add(this.gbJobCommon);
       this.tpConnection.Controls.Add(this.gbCommon);
       this.tpConnection.Controls.Add(this.gbEventLog);
-      this.tpConnection.Location = new System.Drawing.Point(4, 22);
+      this.tpConnection.Location = new System.Drawing.Point(4, 25);
       this.tpConnection.Name = "tpConnection";
       this.tpConnection.Padding = new System.Windows.Forms.Padding(3);
       this.tpConnection.RightToLeft = System.Windows.Forms.RightToLeft.No;
-      this.tpConnection.Size = new System.Drawing.Size(845, 412);
+      this.tpConnection.Size = new System.Drawing.Size(845, 409);
       this.tpConnection.TabIndex = 0;
       this.tpConnection.Text = "Status";
       this.tpConnection.UseVisualStyleBackColor = true;
@@ -494,10 +498,10 @@ namespace HeuristicLab.Hive.Client.Console {
       this.tabPage2.Controls.Add(this.groupBox1);
       this.tabPage2.Controls.Add(this.mcOnline);
       this.tabPage2.Controls.Add(this.dvOnline);
-      this.tabPage2.Location = new System.Drawing.Point(4, 22);
+      this.tabPage2.Location = new System.Drawing.Point(4, 25);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(845, 412);
+      this.tabPage2.Size = new System.Drawing.Size(845, 409);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Schedule";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -514,12 +518,12 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // groupBox1
       // 
+      this.groupBox1.Controls.Add(this.txttimeTo);
+      this.groupBox1.Controls.Add(this.txttimeFrom);
       this.groupBox1.Controls.Add(this.dtpTo);
       this.groupBox1.Controls.Add(this.dtpFrom);
       this.groupBox1.Controls.Add(this.chbade);
       this.groupBox1.Controls.Add(this.btnRecurrence);
-      this.groupBox1.Controls.Add(this.txtTimeTo);
-      this.groupBox1.Controls.Add(this.txttimeFrom);
       this.groupBox1.Controls.Add(this.btbDelete);
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label1);
@@ -530,10 +534,46 @@ namespace HeuristicLab.Hive.Client.Console {
       this.groupBox1.TabIndex = 21;
       this.groupBox1.TabStop = false;
       // 
+      // txttimeTo
+      // 
+      this.txttimeTo.CustomFormat = "HH:00";
+      this.txttimeTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.txttimeTo.Location = new System.Drawing.Point(189, 64);
+      this.txttimeTo.Name = "txttimeTo";
+      this.txttimeTo.ShowUpDown = true;
+      this.txttimeTo.Size = new System.Drawing.Size(73, 20);
+      this.txttimeTo.TabIndex = 40;
+      // 
+      // txttimeFrom
+      // 
+      this.txttimeFrom.CustomFormat = "HH:00";
+      this.txttimeFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.txttimeFrom.Location = new System.Drawing.Point(189, 31);
+      this.txttimeFrom.Name = "txttimeFrom";
+      this.txttimeFrom.ShowUpDown = true;
+      this.txttimeFrom.Size = new System.Drawing.Size(73, 20);
+      this.txttimeFrom.TabIndex = 39;
+      // 
+      // dtpTo
+      // 
+      this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpTo.Location = new System.Drawing.Point(97, 64);
+      this.dtpTo.Name = "dtpTo";
+      this.dtpTo.Size = new System.Drawing.Size(89, 20);
+      this.dtpTo.TabIndex = 33;
+      // 
+      // dtpFrom
+      // 
+      this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+      this.dtpFrom.Location = new System.Drawing.Point(97, 31);
+      this.dtpFrom.Name = "dtpFrom";
+      this.dtpFrom.Size = new System.Drawing.Size(89, 20);
+      this.dtpFrom.TabIndex = 32;
+      // 
       // chbade
       // 
       this.chbade.AutoSize = true;
-      this.chbade.Location = new System.Drawing.Point(105, 91);
+      this.chbade.Location = new System.Drawing.Point(97, 90);
       this.chbade.Name = "chbade";
       this.chbade.Size = new System.Drawing.Size(90, 17);
       this.chbade.TabIndex = 31;
@@ -550,20 +590,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.btnRecurrence.Text = "Recurrence";
       this.btnRecurrence.UseVisualStyleBackColor = true;
       this.btnRecurrence.Click += new System.EventHandler(this.btnRecurrence_Click);
-      // 
-      // txtTimeTo
-      // 
-      this.txtTimeTo.Location = new System.Drawing.Point(192, 65);
-      this.txtTimeTo.Name = "txtTimeTo";
-      this.txtTimeTo.Size = new System.Drawing.Size(41, 20);
-      this.txtTimeTo.TabIndex = 29;
-      // 
-      // txttimeFrom
-      // 
-      this.txttimeFrom.Location = new System.Drawing.Point(192, 31);
-      this.txttimeFrom.Name = "txttimeFrom";
-      this.txttimeFrom.Size = new System.Drawing.Size(41, 20);
-      this.txttimeFrom.TabIndex = 27;
       // 
       // btbDelete
       // 
@@ -611,22 +637,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.mcOnline.TabIndex = 19;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
       // 
-      // dtpFrom
-      // 
-      this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpFrom.Location = new System.Drawing.Point(97, 31);
-      this.dtpFrom.Name = "dtpFrom";
-      this.dtpFrom.Size = new System.Drawing.Size(89, 20);
-      this.dtpFrom.TabIndex = 32;
-      // 
-      // dtpTo
-      // 
-      this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpTo.Location = new System.Drawing.Point(97, 64);
-      this.dtpTo.Name = "dtpTo";
-      this.dtpTo.Size = new System.Drawing.Size(89, 20);
-      this.dtpTo.TabIndex = 33;
-      // 
       // HiveClientConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -637,7 +647,6 @@ namespace HeuristicLab.Hive.Client.Console {
       this.Name = "HiveClientConsole";
       this.Text = "Client Console (loading...)";
       this.Load += new System.EventHandler(this.HiveClientConsole_Load);
-      this.Resize += new System.EventHandler(this.HiveClientConsole_Resize);
       this.tcClientConsole.ResumeLayout(false);
       this.tpConnection.ResumeLayout(false);
       this.groupBox2.ResumeLayout(false);
@@ -703,13 +712,13 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.Button btbDelete;
-    private System.Windows.Forms.TextBox txttimeFrom;
-    private System.Windows.Forms.TextBox txtTimeTo;
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.Button btnRecurrence;
     private System.Windows.Forms.CheckBox chbade;
     private System.Windows.Forms.DateTimePicker dtpTo;
     private System.Windows.Forms.DateTimePicker dtpFrom;
+    private System.Windows.Forms.DateTimePicker txttimeTo;
+    private System.Windows.Forms.DateTimePicker txttimeFrom;
   }
 }
 
