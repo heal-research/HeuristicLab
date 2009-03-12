@@ -33,6 +33,7 @@ using HeuristicLab.Selection;
 using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
+using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public abstract class AlgorithmBase : ItemBase {
@@ -342,9 +343,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       OperatorExtractor selector = new OperatorExtractor();
       selector.Name = "Selector (extr.)";
       selector.GetVariableInfo("Operator").ActualName = "Selector";
+
       SequentialSubScopesProcessor seqScopesProc = new SequentialSubScopesProcessor();
       EmptyOperator emptyOpt = new EmptyOperator();
       SequentialProcessor selectedProc = new SequentialProcessor();
+      ChildrenInitializer childInitializer = new ChildrenInitializer();
+      ((IntData)childInitializer.GetVariable("ParentsPerChild").Value).Data = 2;
+
       OperatorExtractor crossover = new OperatorExtractor();
       crossover.Name = "Crossover (extr.)";
       crossover.GetVariableInfo("Operator").ActualName = "Crossover";
@@ -364,6 +369,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       validationEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
       Counter evalCounter = new Counter();
       evalCounter.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
+      SubScopesRemover parentRefRemover = new SubScopesRemover();
 
       Sorter sorter = new Sorter();
       sorter.GetVariableInfo("Descending").ActualName = "Maximization";
@@ -374,14 +380,16 @@ namespace HeuristicLab.GP.StructureIdentification {
       seq.AddSubOperator(seqScopesProc);
       seqScopesProc.AddSubOperator(emptyOpt);
       seqScopesProc.AddSubOperator(selectedProc);
-      selectedProc.AddSubOperator(crossover);
+      selectedProc.AddSubOperator(childInitializer);
       selectedProc.AddSubOperator(individualProc);
       individualProc.AddSubOperator(individualSeqProc);
+      individualSeqProc.AddSubOperator(crossover);
       individualSeqProc.AddSubOperator(cond);
       cond.AddSubOperator(manipulator);
       individualSeqProc.AddSubOperator(evaluator);
       individualSeqProc.AddSubOperator(validationEvaluator);
       individualSeqProc.AddSubOperator(evalCounter);
+      individualSeqProc.AddSubOperator(parentRefRemover);
       selectedProc.AddSubOperator(sorter);
 
       childCreater.OperatorGraph.AddOperator(seq);
