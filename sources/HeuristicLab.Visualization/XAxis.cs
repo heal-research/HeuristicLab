@@ -7,6 +7,9 @@ namespace HeuristicLab.Visualization {
     
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.####");
 
+    private Color color = Color.Blue;
+    private Font font = new Font("Arial", 8);
+
     public ILabelProvider LabelProvider {
       get { return labelProvider; }
       set { labelProvider = value; }
@@ -19,13 +22,23 @@ namespace HeuristicLab.Visualization {
                                               ClippingArea.Width,
                                               ClippingArea.X1)) {
         TextShape label = new TextShape(x, ClippingArea.Height - 3,
-                                        labelProvider.GetLabel(x));
+                                        labelProvider.GetLabel(x), Font, Color);
         label.AnchorPositionX = AnchorPositionX.Middle;
         label.AnchorPositionY = AnchorPositionY.Top;
         AddShape(label);
       }
 
       base.Draw(graphics);
+    }
+
+    public Color Color {
+      get { return color; }
+      set { color = value; }
+    }
+
+    public Font Font {
+      get { return font; }
+      set { font = value; }
     }
   }
 }

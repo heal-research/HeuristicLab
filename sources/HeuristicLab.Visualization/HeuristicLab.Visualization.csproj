@@ -99,6 +99,7 @@
     <Compile Include="Options\OptionsDialog.Designer.cs">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Options\ViewPropertiesModel.cs" />
     <Compile Include="PanListener.cs" />
     <Compile Include="LabelProvider\StringLabelProvider.cs" />
     <Compile Include="TextShape.cs" />

@@ -35,6 +35,14 @@ namespace HeuristicLab.Visualization {
       Color = Color.Blue;
     }
 
+    public TextShape(double x, double y, string text, Font font, Color color) {
+      this.x = x;
+      this.y = y;
+      this.text = text;
+      Font = font;
+      Color = color;
+    }
+
     public string Text {
       get { return text; }
       set { text = value; }

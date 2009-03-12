@@ -28,19 +28,13 @@ namespace HeuristicLab.Visualization {
 
     private bool zoomToFullView;
 
+    private readonly ViewPropertiesModel viewPropertiesModel;
+
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
     /// </summary>
     public LineChart() {
       InitializeComponent();
-    }
-
-    public TextShape Title {
-      get { return titleShape; }
-    }
-
-    public LegendShape Legend {
-      get { return legendShape; }
     }
 
     /// <summary>
@@ -55,6 +49,8 @@ namespace HeuristicLab.Visualization {
       canvas = canvasUI.Canvas;
 
       this.model = model;
+      viewPropertiesModel = new ViewPropertiesModel(titleShape.Font, titleShape.Color, legendShape.Font, legendShape.Color, xAxis.Font, xAxis.Color);
+      viewPropertiesModel.OnUpdateProperties += UpdateViewProperties;
 
       Item = model;
 
@@ -62,6 +58,19 @@ namespace HeuristicLab.Visualization {
       canvasUI.Resize += delegate { UpdateLayout(); };
 
       ZoomToFullView();
+    }
+
+    private void UpdateViewProperties() {
+      titleShape.Font = viewPropertiesModel.TitleFont;
+      titleShape.Color = viewPropertiesModel.TitleColor;
+
+      legendShape.Font = viewPropertiesModel.LegendFont;
+      legendShape.Color = viewPropertiesModel.LegendColor;
+
+      xAxis.Font = viewPropertiesModel.XAxisFont;
+      xAxis.Color = viewPropertiesModel.XAxisColor;
+
+      canvasUI.Invalidate();
     }
 
     /// <summary>
@@ -135,7 +144,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      OptionsDialog optionsdlg = new OptionsDialog(this.model, this);
+      OptionsDialog optionsdlg = new OptionsDialog(this.model, viewPropertiesModel);
       optionsdlg.ShowDialog(this);
     }
 
