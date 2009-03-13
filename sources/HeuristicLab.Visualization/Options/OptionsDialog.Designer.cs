@@ -148,11 +148,6 @@
       // 
       this.cbLegendPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbLegendPosition.FormattingEnabled = true;
-      this.cbLegendPosition.Items.AddRange(new object[] {
-            "left",
-            "right",
-            "top",
-            "bottom"});
       this.cbLegendPosition.Location = new System.Drawing.Point(96, 35);
       this.cbLegendPosition.Name = "cbLegendPosition";
       this.cbLegendPosition.Size = new System.Drawing.Size(121, 21);

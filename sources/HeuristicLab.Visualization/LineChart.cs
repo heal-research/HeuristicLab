@@ -71,23 +71,7 @@ namespace HeuristicLab.Visualization {
       xAxis.Font = viewSettings.XAxisFont;
       xAxis.Color = viewSettings.XAxisColor;
 
-      switch (viewSettings.LegendPosition) {
-          case LegendPosition.Bottom:
-            setLegendBottom();
-            break;
-
-          case LegendPosition.Top:
-            setLegendTop();
-            break;
-
-          case LegendPosition.Left:
-            setLegendLeft();
-            break;
-
-          case LegendPosition.Right:
-            setLegendRight();
-            break;
-      }
+      SetLegendPosition();
 
       canvasUI.Invalidate();
     }
@@ -154,7 +138,27 @@ namespace HeuristicLab.Visualization {
                                          linesAreaBoundingBox.X2,
                                          linesAreaBoundingBox.Y1);
 
-      setLegendBottom();
+      SetLegendPosition();
+    }
+
+    private void SetLegendPosition() {
+      switch (viewSettings.LegendPosition) {
+        case LegendPosition.Bottom:
+          setLegendBottom();
+          break;
+
+        case LegendPosition.Top:
+          setLegendTop();
+          break;
+
+        case LegendPosition.Left:
+          setLegendLeft();
+          break;
+
+        case LegendPosition.Right:
+          setLegendRight();
+          break;
+      }
     }
 
     public void setLegendRight() {

@@ -13,6 +13,13 @@ namespace HeuristicLab.Visualization.Options {
 
       this.model = model;
       viewSettings = model.ViewSettings;
+
+      cbLegendPosition.Items.Add(LegendPosition.Top);
+      cbLegendPosition.Items.Add(LegendPosition.Bottom);
+      cbLegendPosition.Items.Add(LegendPosition.Left);
+      cbLegendPosition.Items.Add(LegendPosition.Right);
+
+      cbLegendPosition.SelectedItem = viewSettings.LegendPosition;
     }
 
     private void OptionsDialogSelectColorBtn_Click(object sender, EventArgs e) {
@@ -90,17 +97,7 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void cbLegendPosition_SelectedIndexChanged(object sender, EventArgs e) {
-      string pos = cbLegendPosition.SelectedItem.ToString();
-      if (pos.Equals("left")) {
-        viewSettings.LegendPosition = LegendPosition.Left;
-      } else if (pos.Equals("right")) {
-        viewSettings.LegendPosition = LegendPosition.Right;
-      } else if (pos.Equals("bottom")) {
-        viewSettings.LegendPosition = LegendPosition.Bottom;
-      } else {
-        viewSettings.LegendPosition = LegendPosition.Top;
-      }
-      
+      viewSettings.LegendPosition = (LegendPosition)cbLegendPosition.SelectedItem;
       viewSettings.UpdateView();
     }
 
