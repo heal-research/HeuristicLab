@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using HeuristicLab.Visualization.Legend;
 
 namespace HeuristicLab.Visualization.Options {
   public partial class OptionsDialog : Form {
@@ -71,6 +72,21 @@ namespace HeuristicLab.Visualization.Options {
         ((IDataRow)LineSelectCB.SelectedValue).Color = ColorPreviewTB.BackColor;
         ((IDataRow)LineSelectCB.SelectedValue).Style = (DrawingStyle)LinestyleCB.SelectedItem;
       }
+    }
+
+    private void cbLegendPosition_SelectedIndexChanged(object sender, EventArgs e) {
+      string pos = cbLegendPosition.SelectedItem.ToString();
+      if (pos.Equals("left")) {
+        viewSettings.LegendPosition = LegendPosition.Left;
+      } else if (pos.Equals("right")) {
+        viewSettings.LegendPosition = LegendPosition.Right;
+      } else if (pos.Equals("bottom")) {
+        viewSettings.LegendPosition = LegendPosition.Bottom;
+      } else {
+        viewSettings.LegendPosition = LegendPosition.Top;
+      }
+      
+      viewSettings.UpdateView();
     }
 
     private void btnChangeTitleFont_Click(object sender, EventArgs e) {

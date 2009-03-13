@@ -1,4 +1,5 @@
 using System.Drawing;
+using HeuristicLab.Visualization.Legend;
 
 namespace HeuristicLab.Visualization.Options {
   public class ViewSettings {
@@ -10,6 +11,7 @@ namespace HeuristicLab.Visualization.Options {
     private Color legendColor;
     private Font xAxisFont;
     private Color xAxisColor;
+    private LegendPosition legendPosition;
 
     public ViewSettings() {
       titleFont = new Font("Arial", 8);
@@ -20,6 +22,8 @@ namespace HeuristicLab.Visualization.Options {
 
       xAxisFont = new Font("Arial", 8);
       xAxisColor = Color.Blue;
+
+      legendPosition = LegendPosition.Left;
     }
 
     public void UpdateView() {
@@ -56,6 +60,11 @@ namespace HeuristicLab.Visualization.Options {
     public Color XAxisColor {
       get { return xAxisColor; }
       set { xAxisColor = value; }
+    }
+
+    public LegendPosition LegendPosition {
+      get { return legendPosition; }
+      set { legendPosition = value; }
     }
   }
 

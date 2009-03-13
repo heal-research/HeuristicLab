@@ -31,8 +31,8 @@
       this.btnChangeTitleFont = new System.Windows.Forms.Button();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.btnChangeLegendFont = new System.Windows.Forms.Button();
-      this.labelposition = new System.Windows.Forms.Label();
-      this.cbLabelPosition = new System.Windows.Forms.ComboBox();
+      this.legendposition = new System.Windows.Forms.Label();
+      this.cbLegendPosition = new System.Windows.Forms.ComboBox();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.OptionsDialogSelectColorBt = new System.Windows.Forms.Button();
       this.ColorPreviewTB = new System.Windows.Forms.TextBox();
@@ -112,8 +112,8 @@
       // tabPage2
       // 
       this.tabPage2.Controls.Add(this.btnChangeLegendFont);
-      this.tabPage2.Controls.Add(this.labelposition);
-      this.tabPage2.Controls.Add(this.cbLabelPosition);
+      this.tabPage2.Controls.Add(this.legendposition);
+      this.tabPage2.Controls.Add(this.cbLegendPosition);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -132,28 +132,29 @@
       this.btnChangeLegendFont.UseVisualStyleBackColor = true;
       this.btnChangeLegendFont.Click += new System.EventHandler(this.btnChangeLegendFont_Click);
       // 
-      // labelposition
+      // legendposition
       // 
-      this.labelposition.AutoSize = true;
-      this.labelposition.Location = new System.Drawing.Point(3, 47);
-      this.labelposition.Name = "labelposition";
-      this.labelposition.Size = new System.Drawing.Size(72, 13);
-      this.labelposition.TabIndex = 1;
-      this.labelposition.Text = "Labelposition:";
+      this.legendposition.AutoSize = true;
+      this.legendposition.Location = new System.Drawing.Point(8, 38);
+      this.legendposition.Name = "legendposition";
+      this.legendposition.Size = new System.Drawing.Size(82, 13);
+      this.legendposition.TabIndex = 1;
+      this.legendposition.Text = "Legendposition:";
       // 
-      // cbLabelPosition
+      // cbLegendPosition
       // 
-      this.cbLabelPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cbLabelPosition.FormattingEnabled = true;
-      this.cbLabelPosition.Items.AddRange(new object[] {
+      this.cbLegendPosition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbLegendPosition.FormattingEnabled = true;
+      this.cbLegendPosition.Items.AddRange(new object[] {
             "left",
             "right",
             "top",
             "bottom"});
-      this.cbLabelPosition.Location = new System.Drawing.Point(81, 44);
-      this.cbLabelPosition.Name = "cbLabelPosition";
-      this.cbLabelPosition.Size = new System.Drawing.Size(121, 21);
-      this.cbLabelPosition.TabIndex = 0;
+      this.cbLegendPosition.Location = new System.Drawing.Point(96, 35);
+      this.cbLegendPosition.Name = "cbLegendPosition";
+      this.cbLegendPosition.Size = new System.Drawing.Size(121, 21);
+      this.cbLegendPosition.TabIndex = 0;
+      this.cbLegendPosition.SelectedIndexChanged += new System.EventHandler(this.cbLegendPosition_SelectedIndexChanged);
       // 
       // tabPage1
       // 
@@ -334,8 +335,6 @@
     private System.Windows.Forms.TabPage tpTitle;
     private System.Windows.Forms.Button btnChangeTitleFont;
     private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.Label labelposition;
-    private System.Windows.Forms.ComboBox cbLabelPosition;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.Button OptionsDialogSelectColorBt;
     private System.Windows.Forms.TextBox ColorPreviewTB;
@@ -345,6 +344,8 @@
     private System.Windows.Forms.ComboBox LineSelectCB;
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.ComboBox cbLegendPosition;
+    private System.Windows.Forms.Label legendposition;
     private System.Windows.Forms.ComboBox LineThicknessCB;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.TabControl Optionstabs;

@@ -310,32 +310,46 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row2 = new DataRow();
       IDataRow row3 = new DataRow();
 
+      IDataRow row4 = new DataRow();
+      IDataRow row5 = new DataRow();
+      IDataRow row6 = new DataRow();
+
       row1.Color = Color.Red;
       row2.Color = Color.Green;
       row3.Color = Color.Blue;
+
+      row4.Color = Color.DeepPink;
+      row5.Color = Color.Firebrick;
+      row6.Color = Color.DarkSlateGray;
 
       row1.Thickness = 3;
       row2.Thickness = 4;
       row3.Thickness = 5;
 
+      row4.Thickness = 3;
+      row5.Thickness = 4;
+      row6.Thickness = 5;
+
       row1.Label = "SingleValue";
       row2.Label = "Gertschi";
       row3.Label = "Maxi";
+
+      row4.Label = "Simon";
+      row5.Label = "klausmuellerwesternhagenunddierasperies";
+      row6.Label = "anyways";
 
       row1.Style = DrawingStyle.Solid;
       row2.Style = DrawingStyle.Solid;
       row3.Style = DrawingStyle.Dashed;
 
+      row4.Style = DrawingStyle.Solid;
+      row5.Style = DrawingStyle.Solid;
+      row6.Style = DrawingStyle.Dashed;
+
       row1.LineType = DataRowType.SingleValue;
       row2.LineType = DataRowType.SingleValue;
       row1.AddValue(12);
 
-      model.AddDataRow(row1);
-      model.AddDataRow(row2);
-      model.AddDataRow(row3);
-
-      
-     
       row2.AddValue(5);
      
 
@@ -346,7 +360,16 @@ namespace HeuristicLab.Visualization.Test {
       row3.AddValue(3);
 
 
-    
+      row4.AddValue(10);
+      row5.AddValue(11);
+      row6.AddValue(11);
+
+      model.AddDataRow(row1);
+      model.AddDataRow(row2);
+      model.AddDataRow(row3);
+      model.AddDataRow(row4);
+      model.AddDataRow(row5);
+      model.AddDataRow(row6);
 
       f.ShowDialog();
     }

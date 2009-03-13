@@ -51,7 +51,7 @@ namespace HeuristicLab.Visualization {
 
       this.model = model;
       viewSettings = model.ViewSettings;
-      viewSettings.OnUpdateSettings += UpdateViewProperties;
+      viewSettings.OnUpdateSettings += UpdateViewSettings;
 
       Item = model;
 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Visualization {
       ZoomToFullView();
     }
 
-    private void UpdateViewProperties() {
+    private void UpdateViewSettings() {
       titleShape.Font = viewSettings.TitleFont;
       titleShape.Color = viewSettings.TitleColor;
 
@@ -70,6 +70,24 @@ namespace HeuristicLab.Visualization {
 
       xAxis.Font = viewSettings.XAxisFont;
       xAxis.Color = viewSettings.XAxisColor;
+
+      switch (viewSettings.LegendPosition) {
+          case LegendPosition.Bottom:
+            setLegendBottom();
+            break;
+
+          case LegendPosition.Top:
+            setLegendTop();
+            break;
+
+          case LegendPosition.Left:
+            setLegendLeft();
+            break;
+
+          case LegendPosition.Right:
+            setLegendRight();
+            break;
+      }
 
       canvasUI.Invalidate();
     }
@@ -137,16 +155,50 @@ namespace HeuristicLab.Visualization {
                                          linesAreaBoundingBox.X2,
                                          linesAreaBoundingBox.Y1);
 
+      setLegendBottom();
+    }
+
+    public void setLegendRight() {
+      // legend right
+      legendShape.BoundingBox = new RectangleD(canvasUI.Width - 110, 10, canvasUI.Width, canvasUI.Height - 50);
+      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
+      legendShape.Row = false;
+      legendShape.CreateLegend();
+    }
+
+    public void setLegendLeft() {
+      // legend left
       legendShape.BoundingBox = new RectangleD(10, 10, 110, canvasUI.Height - 50);
-      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width,
-                                                legendShape.BoundingBox.Height);
+      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
+      legendShape.Row = false;
+      legendShape.CreateLegend();
 
       canvasUI.Invalidate();
     }
 
+    public void setLegendTop() {
+      // legend top
+      legendShape.BoundingBox = new RectangleD(100, canvasUI.Height - canvasUI.Height, canvasUI.Width, canvasUI.Height - 10);
+      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
+      legendShape.Row = true;
+      legendShape.Top = true;
+      legendShape.CreateLegend();
+    }
+
+    public void setLegendBottom() {
+      // legend bottom
+      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, 200);
+      legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
+      legendShape.Row = true;
+      legendShape.Top = false;
+      legendShape.CreateLegend();
+    }
+
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(model);
+      //var optionsdlg = new OptionsDialog(model, this);
       optionsdlg.ShowDialog(this);
+      Invalidate();
     }
 
     public void OnDataRowChanged(IDataRow row) {
