@@ -18,6 +18,8 @@ namespace HeuristicLab.Visualization {
 
     private readonly Dictionary<IDataRow, RowEntry> rowToRowEntry = new Dictionary<IDataRow, RowEntry>();
 
+    private readonly ViewSettings viewSettings;
+
 //    private readonly Stack<RectangleD> clippingAreaHistory = new Stack<RectangleD>();
     private readonly WorldShape userInteractionShape = new WorldShape();
     private readonly RectangleShape rectangleShape = new RectangleShape(0, 0, 0, 0, Color.FromArgb(50, 0, 0, 255));
@@ -28,7 +30,6 @@ namespace HeuristicLab.Visualization {
 
     private bool zoomToFullView;
 
-    private readonly ViewPropertiesModel viewPropertiesModel;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -49,8 +50,8 @@ namespace HeuristicLab.Visualization {
       canvas = canvasUI.Canvas;
 
       this.model = model;
-      viewPropertiesModel = new ViewPropertiesModel(titleShape.Font, titleShape.Color, legendShape.Font, legendShape.Color, xAxis.Font, xAxis.Color);
-      viewPropertiesModel.OnUpdateProperties += UpdateViewProperties;
+      viewSettings = model.ViewSettings;
+      viewSettings.OnUpdateSettings += UpdateViewProperties;
 
       Item = model;
 
@@ -61,14 +62,14 @@ namespace HeuristicLab.Visualization {
     }
 
     private void UpdateViewProperties() {
-      titleShape.Font = viewPropertiesModel.TitleFont;
-      titleShape.Color = viewPropertiesModel.TitleColor;
+      titleShape.Font = viewSettings.TitleFont;
+      titleShape.Color = viewSettings.TitleColor;
 
-      legendShape.Font = viewPropertiesModel.LegendFont;
-      legendShape.Color = viewPropertiesModel.LegendColor;
+      legendShape.Font = viewSettings.LegendFont;
+      legendShape.Color = viewSettings.LegendColor;
 
-      xAxis.Font = viewPropertiesModel.XAxisFont;
-      xAxis.Color = viewPropertiesModel.XAxisColor;
+      xAxis.Font = viewSettings.XAxisFont;
+      xAxis.Color = viewSettings.XAxisColor;
 
       canvasUI.Invalidate();
     }
@@ -144,7 +145,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-      OptionsDialog optionsdlg = new OptionsDialog(this.model, viewPropertiesModel);
+      OptionsDialog optionsdlg = new OptionsDialog(model);
       optionsdlg.ShowDialog(this);
     }
 

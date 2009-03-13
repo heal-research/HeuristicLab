@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Visualization.LabelProvider;
+using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
   public interface IChartDataRowsModel : IItem {
@@ -23,6 +24,8 @@ namespace HeuristicLab.Visualization {
     //void RemoveLabels(int index, int count);
 
     int MaxDataRowValues { get; }
+
+    ViewSettings ViewSettings { get; set; }
 
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;

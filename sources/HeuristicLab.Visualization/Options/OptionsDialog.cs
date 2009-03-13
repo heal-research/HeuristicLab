@@ -5,13 +5,13 @@ using System.Windows.Forms;
 namespace HeuristicLab.Visualization.Options {
   public partial class OptionsDialog : Form {
     private readonly IChartDataRowsModel model;
-    private readonly ViewPropertiesModel propertiesModel;
+    private readonly ViewSettings viewSettings;
 
-    public OptionsDialog(IChartDataRowsModel model, ViewPropertiesModel propertiesModel) {
+    public OptionsDialog(IChartDataRowsModel model) {
       InitializeComponent();
 
       this.model = model;
-      this.propertiesModel = propertiesModel;
+      viewSettings = model.ViewSettings;
     }
 
     private void OptionsDialogSelectColorBtn_Click(object sender, EventArgs e) {
@@ -74,44 +74,44 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void btnChangeTitleFont_Click(object sender, EventArgs e) {
-      fdFont.Font = propertiesModel.TitleFont;
-      fdFont.Color = propertiesModel.TitleColor;
+      fdFont.Font = viewSettings.TitleFont;
+      fdFont.Color = viewSettings.TitleColor;
 
       DialogResult dr = fdFont.ShowDialog();
 
       if(dr == DialogResult.OK) {
-        propertiesModel.TitleFont = fdFont.Font;
-        propertiesModel.TitleColor = fdFont.Color;
+        viewSettings.TitleFont = fdFont.Font;
+        viewSettings.TitleColor = fdFont.Color;
 
-        propertiesModel.UpdateView();
+        viewSettings.UpdateView();
       }
     }
 
     private void btnChangeLegendFont_Click(object sender, EventArgs e) {
-      fdFont.Font = propertiesModel.LegendFont;
-      fdFont.Color = propertiesModel.LegendColor;
+      fdFont.Font = viewSettings.LegendFont;
+      fdFont.Color = viewSettings.LegendColor;
 
       DialogResult dr = fdFont.ShowDialog();
 
       if (dr == DialogResult.OK) {
-        propertiesModel.LegendFont = fdFont.Font;
-        propertiesModel.LegendColor = fdFont.Color;
+        viewSettings.LegendFont = fdFont.Font;
+        viewSettings.LegendColor = fdFont.Color;
 
-        propertiesModel.UpdateView();
+        viewSettings.UpdateView();
       }
     }
 
     private void btnChangeXAxisFont_Click(object sender, EventArgs e) {
-      fdFont.Font = propertiesModel.XAxisFont;
-      fdFont.Color = propertiesModel.XAxisColor;
+      fdFont.Font = viewSettings.XAxisFont;
+      fdFont.Color = viewSettings.XAxisColor;
 
       DialogResult dr = fdFont.ShowDialog();
 
       if (dr == DialogResult.OK) {
-        propertiesModel.XAxisFont = fdFont.Font;
-        propertiesModel.XAxisColor = fdFont.Color;
+        viewSettings.XAxisFont = fdFont.Font;
+        viewSettings.XAxisColor = fdFont.Color;
 
-        propertiesModel.UpdateView();
+        viewSettings.UpdateView();
       }
     }
   }

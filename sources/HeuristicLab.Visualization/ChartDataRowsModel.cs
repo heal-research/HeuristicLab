@@ -5,6 +5,7 @@ using System.Xml;
 using HeuristicLab.Core;
 using System.Text;
 using HeuristicLab.Visualization.LabelProvider;
+using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization{
   public delegate void DataRowAddedHandler(IDataRow row);
@@ -15,6 +16,8 @@ namespace HeuristicLab.Visualization{
     private string title = "Title";
     //private string xAxisLabel;
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
+
+    private ViewSettings viewSettings = new ViewSettings();
 
     public ILabelProvider XAxisLabelProvider {
       get { return labelProvider; }
@@ -128,6 +131,11 @@ namespace HeuristicLab.Visualization{
 
         return max;
       }
+    }
+
+    public ViewSettings ViewSettings {
+      get { return viewSettings; }
+      set { viewSettings = value; }
     }
 
     public event ModelChangedHandler ModelChanged;

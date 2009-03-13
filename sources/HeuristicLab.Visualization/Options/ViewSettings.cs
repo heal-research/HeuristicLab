@@ -1,8 +1,8 @@
 using System.Drawing;
 
 namespace HeuristicLab.Visualization.Options {
-  public class ViewPropertiesModel {
-    public event UpdatePropertiesHandler OnUpdateProperties;
+  public class ViewSettings {
+    public event UpdateViewSettingsHandler OnUpdateSettings;
 
     private Font titleFont;
     private Color titleColor;
@@ -11,18 +11,20 @@ namespace HeuristicLab.Visualization.Options {
     private Font xAxisFont;
     private Color xAxisColor;
 
-    public ViewPropertiesModel(Font titleFont, Color titleColor, Font legendFont, Color legendColor, Font xAxisFont, Color xAxisColor) {
-      this.titleFont = titleFont;
-      this.titleColor = titleColor;
-      this.legendFont = legendFont;
-      this.legendColor = legendColor;
-      this.xAxisFont = xAxisFont;
-      this.xAxisColor = xAxisColor;
+    public ViewSettings() {
+      titleFont = new Font("Arial", 8);
+      titleColor = Color.Blue;
+
+      legendFont = new Font("Arial", 8);
+      legendColor = Color.Blue;
+
+      xAxisFont = new Font("Arial", 8);
+      xAxisColor = Color.Blue;
     }
 
     public void UpdateView() {
-      if (OnUpdateProperties != null) {
-        OnUpdateProperties();
+      if (OnUpdateSettings != null) {
+        OnUpdateSettings();
       }
     }
 
@@ -57,5 +59,5 @@ namespace HeuristicLab.Visualization.Options {
     }
   }
 
-  public delegate void UpdatePropertiesHandler();
+  public delegate void UpdateViewSettingsHandler();
 }
