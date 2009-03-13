@@ -72,7 +72,7 @@ namespace HeuristicLab.Hive.Client.Core {
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");  
       ClientInfo info = ConfigManager.Instance.GetClientInfo();
-      // Todo: remove tempfix for free cores.
+      // Todo: remove tempfix for free cores. Fix spelling of freeCores (uppercase)
 
       HeartBeatData heartBeatData = new HeartBeatData {
         ClientId = info.ClientId,

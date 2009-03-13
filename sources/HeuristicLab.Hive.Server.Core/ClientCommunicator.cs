@@ -45,6 +45,7 @@ namespace HeuristicLab.Hive.Server.Core {
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+    // todo: access modifier!
     IClientAdapter clientAdapter;
     IJobAdapter jobAdapter;
     IJobResultsAdapter jobResultAdapter;
@@ -142,6 +143,7 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       heartbeatLock.ExitWriteLock();
 
+      // todo: allClients legacy ?
       ICollection<ClientInfo> allClients = clientAdapter.GetAll();
       ClientInfo client = clientAdapter.GetById(clientInfo.ClientId);
       if (client != null && client.State != State.offline && client.State != State.nullState) {
@@ -164,6 +166,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="hbData"></param>
     /// <returns></returns>
+    // todo: new name for "SendHeartBeat" e.g. ProcessHeartBeat
     public ResponseHB SendHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
 

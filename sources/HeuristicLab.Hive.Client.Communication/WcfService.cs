@@ -88,11 +88,12 @@ namespace HeuristicLab.Hive.Client.Communication {
         
         if (Connected != null)
           Connected(this, new EventArgs());                               
-        
+        //Todo: This won't be hit. EVER        
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());        
       }
       catch (Exception ex) {
+        //Todo: Rename to HandleNetworkError
         NetworkErrorHandling(ex);
       }
     }

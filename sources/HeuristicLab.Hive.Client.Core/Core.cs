@@ -51,11 +51,12 @@ namespace HeuristicLab.Hive.Client.Core {
   /// </summary>
   public class Core: MarshalByRefObject {
     public delegate string GetASnapshotDelegate();
-
+    //Todo: private + getter/setter removen.
     public static Object Locker { get; set; }
-
+    //Todo: ev. Rename to "abortRequested"
     public static bool ShutdownFlag { get; set; }
-
+    
+    //Todo: Access modifier
     Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
     Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
     Dictionary<long, Job> jobs = new Dictionary<long, Job>();
@@ -97,7 +98,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
       MessageQueue queue = MessageQueue.GetInstance();
       
-      //Main processing loop
+      //Main processing loop     
+      //Todo: own thread for message handling
       while (!ShutdownFlag) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
@@ -111,6 +113,8 @@ namespace HeuristicLab.Hive.Client.Core {
     /// </summary>
     /// <param name="container">The Container, containing the message</param>
     private void DetermineAction(MessageContainer container) {
+      //Todo: Threads aus Threadpool verwenden
+      
       switch (container.Message) {
         //Server requests to abort a job
         case MessageContainer.MessageType.AbortJob:
@@ -151,6 +155,7 @@ namespace HeuristicLab.Hive.Client.Core {
     
     private void GetFinishedJob(object jobId) {
       long jId = (long)jobId;
+      //Todo: Don't return null, throw exception!
       byte[] sJob = engines[jId].GetFinishedJob();
 
       if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
@@ -161,6 +166,7 @@ namespace HeuristicLab.Hive.Client.Core {
           null,
           true);
       } else {
+        //Todo: locking
         JobStorrageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
         AppDomain.Unload(appDomains[jId]);
         appDomains.Remove(jId);
@@ -218,6 +224,8 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
+    //Todo: Remove intellgent stuff from the async event and move it to the main thread (message queue)
+    //Todo: Seperate this method into 2: Finished jobs and Snapshots
     void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
       if (e.Result.Success) {        
         lock (Locker) {
@@ -236,10 +244,12 @@ namespace HeuristicLab.Hive.Client.Core {
           }
         }        
       } else {
+        //Todo: don't Java Style! IT'S EVIL!
         Logging.GetInstance().Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
       }
     }
 
+    //Todo: First stop all threads, then terminate
     void wcfService_ServerChanged(object sender, EventArgs e) {
       Logging.GetInstance().Info(this.ToString(), "ServerChanged has been called");
       lock (Locker) {

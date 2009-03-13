@@ -13,3 +13,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters {
     public partial class ClientTableAdapter {
     }
 }
+
+namespace dsHiveServerTableAdapters {
+    
+    
+    public partial class HiveUserTableAdapter {
+    }
+}
