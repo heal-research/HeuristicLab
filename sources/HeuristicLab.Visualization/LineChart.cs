@@ -61,6 +61,9 @@ namespace HeuristicLab.Visualization {
       ZoomToFullView();
     }
 
+    /// <summary>
+    /// updates the view settings
+    /// </summary>
     private void UpdateViewSettings() {
       titleShape.Font = viewSettings.TitleFont;
       titleShape.Color = viewSettings.TitleColor;
@@ -141,6 +144,9 @@ namespace HeuristicLab.Visualization {
       SetLegendPosition();
     }
 
+    /// <summary>
+    /// sets the legend position
+    /// </summary>
     private void SetLegendPosition() {
       switch (viewSettings.LegendPosition) {
         case LegendPosition.Bottom:

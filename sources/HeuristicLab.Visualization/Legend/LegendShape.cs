@@ -71,9 +71,9 @@ namespace HeuristicLab.Visualization.Legend {
     /// <summary>
     /// draws the legend as a row at the top or bottom of the WorldShape
     /// </summary>
-    /// <param name="item"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
+    /// <param name="item">the legenditem to draw</param>
+    /// <param name="x">x axis to draw the item</param>
+    /// <param name="y">y axis to draw the item</param>
     private void CreateRow(LegendItem item, double x, double y) {
       AddShape(new LineShape(x, y - 10, x + 20, y - 10, item.Color, item.Thickness, DrawingStyle.Solid));
       AddShape(new TextShape(x + 25, y, item.Label, Font, Color));
@@ -82,21 +82,32 @@ namespace HeuristicLab.Visualization.Legend {
     /// <summary>
     /// draws the legend as a column on the right or left side of the WorldShape
     /// </summary>
-    /// <param name="item"></param>
-    /// <param name="y"></param>
+    /// <param name="item">the legenditem to draw</param>
+    /// <param name="y">y axis to draw the item</param>
     private void CreateColumn(LegendItem item, double y) {
       AddShape(new LineShape(10, y - 10, 30, y - 10, item.Color, item.Thickness, DrawingStyle.Solid));
       AddShape(new TextShape(35, y, item.Label, Font, Color));
     }
 
+    /// <summary>
+    /// adds a legenditem to the items list
+    /// </summary>
+    /// <param name="item">legenditem to add</param>
     public void AddLegendItem(LegendItem item) {
       legendItems.Add(item);
     }
 
+    /// <summary>
+    /// removes a legenditem from the items list
+    /// </summary>
+    /// <param name="item">legenditem to remove</param>
     public void RemoveLegendItem(LegendItem item) {
       legendItems.Remove(item);
     }
 
+    /// <summary>
+    /// deletes the legenditem list
+    /// </summary>
     public void ClearLegendItems() {
       legendItems.Clear();
     }
@@ -117,6 +128,9 @@ namespace HeuristicLab.Visualization.Legend {
       }
     }
 
+    /// <summary>
+    /// updates the font settings of the legend
+    /// </summary>
     private void UpdateTextShapes() {
       foreach (IShape shape in shapes) {
         TextShape textShape = shape as TextShape;
