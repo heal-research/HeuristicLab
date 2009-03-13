@@ -22,11 +22,11 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     public IList<int> GetThicknesses() {
-      return new List<int> {0, 1, 2, 3, 4, 5, 6, 7, 8};
+      return new List<int>(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8});
     }
 
     public IList<DrawingStyle> GetStyles() {
-      return new List<DrawingStyle> {DrawingStyle.Solid, DrawingStyle.Dashed};
+      return new List<DrawingStyle>(new DrawingStyle[] {DrawingStyle.Solid, DrawingStyle.Dashed});
     }
 
     private void OptionsDialog_Load(object sender, EventArgs e) {
@@ -38,6 +38,21 @@ namespace HeuristicLab.Visualization.Options {
         LinestyleCB.DataSource = GetStyles();
         LineSelectCB.SelectedIndex = 0;
         LineSelectCB_SelectedIndexChanged(this, null);
+      }
+
+      InitTabPageYAxes();
+    }
+
+    private void InitTabPageYAxes() {
+      for (int i = 0; i < model.Rows.Count; i++) {
+        IDataRow row = model.Rows[i];
+
+        CheckBox chkbox = new CheckBox();
+        chkbox.Text = row.Label;
+        chkbox.Checked = row.ShowYAxis;
+        chkbox.CheckedChanged += delegate { row.ShowYAxis = chkbox.Checked; };
+        
+        dataRowsFlowLayout.Controls.Add(chkbox);
       }
     }
 

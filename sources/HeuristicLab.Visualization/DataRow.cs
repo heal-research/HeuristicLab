@@ -82,7 +82,6 @@ namespace HeuristicLab.Visualization {
         ValueChanged(this, value, index, action);
       }
     }
-
   
     public string Label {
       get { return label; }
@@ -113,6 +112,16 @@ namespace HeuristicLab.Visualization {
       get { return style; }
       set {
         style = value;
+        OnDataRowChanged(this);
+      }
+    }
+
+    private bool showYAxis = true;
+
+    public virtual bool ShowYAxis {
+      get { return showYAxis; }
+      set {
+        showYAxis = value;
         OnDataRowChanged(this);
       }
     }

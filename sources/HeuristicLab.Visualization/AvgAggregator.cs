@@ -109,6 +109,16 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    private bool showYAxis = false;
+
+    public bool ShowYAxis {
+      get { return showYAxis; }
+      set {
+        showYAxis = value;
+        OnDataRowChanged(this);
+      }
+    }
+
     public LabelProvider.ILabelProvider YAxisLabelProvider {
       get {
         throw new NotImplementedException();

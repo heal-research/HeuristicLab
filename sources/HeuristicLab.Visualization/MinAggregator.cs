@@ -111,6 +111,17 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+
+    private bool showYAxis = false;
+
+    public bool ShowYAxis {
+      get { return showYAxis; }
+      set {
+        showYAxis = value;
+        OnDataRowChanged(this);
+      }
+    }
+
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
     public ILabelProvider YAxisLabelProvider {
       get { return labelProvider; }

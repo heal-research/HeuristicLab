@@ -80,10 +80,12 @@ namespace HeuristicLab.Visualization.Test {
       row1.Color = Color.Red;
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
+      row1.Label = "Die Rote";
 
       row2.Color = Color.Green;
       row2.Thickness = 3;
       row2.Style = DrawingStyle.Solid;
+      row2.Label = "Die Grüne";
 
       model.AddDataRow(row1);
       model.AddDataRow(row2);

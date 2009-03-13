@@ -47,12 +47,15 @@
       this.Optionstabs = new System.Windows.Forms.TabControl();
       this.tpXAxis = new System.Windows.Forms.TabPage();
       this.btnChangeXAxisFont = new System.Windows.Forms.Button();
+      this.tpYAxes = new System.Windows.Forms.TabPage();
+      this.dataRowsFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
       this.tpTitle.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.Optionstabs.SuspendLayout();
       this.tpXAxis.SuspendLayout();
+      this.tpYAxes.SuspendLayout();
       this.SuspendLayout();
       // 
       // OptionsDialogCancelButton
@@ -273,6 +276,7 @@
       this.Optionstabs.Controls.Add(this.tabPage2);
       this.Optionstabs.Controls.Add(this.tpTitle);
       this.Optionstabs.Controls.Add(this.tpXAxis);
+      this.Optionstabs.Controls.Add(this.tpYAxes);
       this.Optionstabs.Location = new System.Drawing.Point(0, 1);
       this.Optionstabs.Name = "Optionstabs";
       this.Optionstabs.SelectedIndex = 0;
@@ -299,6 +303,26 @@
       this.btnChangeXAxisFont.UseVisualStyleBackColor = true;
       this.btnChangeXAxisFont.Click += new System.EventHandler(this.btnChangeXAxisFont_Click);
       // 
+      // tpYAxes
+      // 
+      this.tpYAxes.Controls.Add(this.dataRowsFlowLayout);
+      this.tpYAxes.Location = new System.Drawing.Point(4, 22);
+      this.tpYAxes.Name = "tpYAxes";
+      this.tpYAxes.Padding = new System.Windows.Forms.Padding(3);
+      this.tpYAxes.Size = new System.Drawing.Size(284, 199);
+      this.tpYAxes.TabIndex = 4;
+      this.tpYAxes.Text = "Y-Axes";
+      this.tpYAxes.UseVisualStyleBackColor = true;
+      // 
+      // dataRowsFlowLayout
+      // 
+      this.dataRowsFlowLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dataRowsFlowLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+      this.dataRowsFlowLayout.Location = new System.Drawing.Point(3, 3);
+      this.dataRowsFlowLayout.Name = "dataRowsFlowLayout";
+      this.dataRowsFlowLayout.Size = new System.Drawing.Size(278, 193);
+      this.dataRowsFlowLayout.TabIndex = 0;
+      // 
       // OptionsDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -322,6 +346,7 @@
       this.groupBox1.PerformLayout();
       this.Optionstabs.ResumeLayout(false);
       this.tpXAxis.ResumeLayout(false);
+      this.tpYAxes.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -352,5 +377,7 @@
     private System.Windows.Forms.Button btnChangeLegendFont;
     private System.Windows.Forms.TabPage tpXAxis;
     private System.Windows.Forms.Button btnChangeXAxisFont;
+    private System.Windows.Forms.TabPage tpYAxes;
+    private System.Windows.Forms.FlowLayoutPanel dataRowsFlowLayout;
   }
 }

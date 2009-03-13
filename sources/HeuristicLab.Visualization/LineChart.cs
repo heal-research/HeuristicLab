@@ -108,8 +108,13 @@ namespace HeuristicLab.Visualization {
 
       canvas.AddShape(xAxis);
 
+      int yAxesWidth = 0;
+
       foreach (RowEntry rowEntry in rowEntries) {
-        canvas.AddShape(rowEntry.YAxis);
+        if (rowEntry.DataRow.ShowYAxis) {
+          canvas.AddShape(rowEntry.YAxis);
+          yAxesWidth += YAxisWidth;
+        }
       }
 
       canvas.AddShape(titleShape);
@@ -119,14 +124,6 @@ namespace HeuristicLab.Visualization {
 
       titleShape.X = 10;
       titleShape.Y = canvasUI.Height - 10;
-
-      int yAxesWidth = 0;
-
-      foreach (RowEntry rowEntry in rowEntries) {
-        if (rowEntry.YAxis.Visible) {
-          yAxesWidth += YAxisWidth;
-        }
-      }
 
       RectangleD linesAreaBoundingBox = new RectangleD(yAxesWidth,
                                                        XAxisHeight,
@@ -140,11 +137,13 @@ namespace HeuristicLab.Visualization {
 
       int yAxisLeft = 0;
       foreach (RowEntry rowEntry in rowEntries) {
-        rowEntry.YAxis.BoundingBox = new RectangleD(yAxisLeft,
-                                                    linesAreaBoundingBox.Y1,
-                                                    yAxisLeft + YAxisWidth,
-                                                    linesAreaBoundingBox.Y2);
-        yAxisLeft += YAxisWidth;
+        if (rowEntry.DataRow.ShowYAxis) {
+          rowEntry.YAxis.BoundingBox = new RectangleD(yAxisLeft,
+                                                      linesAreaBoundingBox.Y1,
+                                                      yAxisLeft + YAxisWidth,
+                                                      linesAreaBoundingBox.Y2);
+          yAxisLeft += YAxisWidth;
+        }
       }
 
       userInteractionShape.BoundingBox = linesAreaBoundingBox;
@@ -205,6 +204,8 @@ namespace HeuristicLab.Visualization {
       RowEntry rowEntry = rowToRowEntry[row];
 
       rowEntry.LinesShape.UpdateStyle(row);
+
+      UpdateLayout();
 
       canvasUI.Invalidate();
     }
