@@ -34,6 +34,7 @@ using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Selection.OffspringSelection;
+using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class OffspringSelectionGP : StandardGP {
@@ -122,6 +123,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected internal override IOperator CreateChildCreater() {
       CombinedOperator childCreater = new CombinedOperator();
       childCreater.Name = "Create children";
+      SequentialProcessor main = new SequentialProcessor();
       SequentialProcessor seq = new SequentialProcessor();
       SequentialProcessor offspringSelectionSeq = new SequentialProcessor();
       OperatorExtractor selector = new OperatorExtractor();
@@ -130,13 +132,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
       EmptyOperator emptyOp = new EmptyOperator();
       OffspringSelector offspringSelector = new OffspringSelector();
-      OffspringAnalyzer offspringAnalyzer = new OffspringAnalyzer();
-      SequentialProcessor selectedProc = new SequentialProcessor();
+      ChildrenInitializer childInitializer = new ChildrenInitializer();
+      UniformSequentialSubScopesProcessor individualProc = new UniformSequentialSubScopesProcessor();
+      SequentialProcessor individualSeqProc = new SequentialProcessor();
       OperatorExtractor crossover = new OperatorExtractor();
       crossover.Name = "Crossover (extr.)";
       crossover.GetVariableInfo("Operator").ActualName = "Crossover";
-      UniformSequentialSubScopesProcessor individualProc = new UniformSequentialSubScopesProcessor();
-      SequentialProcessor individualSeqProc = new SequentialProcessor();
       StochasticBranch cond = new StochasticBranch();
       cond.GetVariableInfo("Probability").ActualName = "MutationRate";
       OperatorExtractor manipulator = new OperatorExtractor();
@@ -147,6 +148,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       evaluator.GetVariableInfo("Operator").ActualName = "Evaluator";
       Counter evalCounter = new Counter();
       evalCounter.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
+      WeightedOffspringFitnessComparer offspringFitnessComparer = new WeightedOffspringFitnessComparer();
+      SubScopesRemover parentScopesRemover = new SubScopesRemover();
 
       Sorter sorter = new Sorter();
       sorter.GetVariableInfo("Descending").ActualName = "Maximization";
@@ -159,26 +162,29 @@ namespace HeuristicLab.GP.StructureIdentification {
       validationQualityEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
       validationQualityEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
 
+      main.AddSubOperator(seq);
+      seq.AddSubOperator(selector);
+      seq.AddSubOperator(seqSubScopesProc);
       seqSubScopesProc.AddSubOperator(emptyOp);
-      seqSubScopesProc.AddSubOperator(offspringAnalyzer);
+      seqSubScopesProc.AddSubOperator(offspringSelectionSeq);
+      seq.AddSubOperator(offspringSelector);
+      offspringSelector.AddSubOperator(seq);
 
-      seq.AddSubOperator(offspringSelectionSeq);
-      offspringSelectionSeq.AddSubOperator(selector);
-      offspringSelectionSeq.AddSubOperator(seqSubScopesProc);
-      offspringSelectionSeq.AddSubOperator(offspringSelector);
-      offspringSelector.AddSubOperator(offspringSelectionSeq);
+      offspringSelectionSeq.AddSubOperator(childInitializer);
+      offspringSelectionSeq.AddSubOperator(individualProc);
+      offspringSelectionSeq.AddSubOperator(sorter);
 
-      offspringAnalyzer.AddSubOperator(selectedProc);
-      selectedProc.AddSubOperator(crossover);
-      selectedProc.AddSubOperator(individualProc);
       individualProc.AddSubOperator(individualSeqProc);
+      individualSeqProc.AddSubOperator(crossover);
       individualSeqProc.AddSubOperator(cond);
       cond.AddSubOperator(manipulator);
       individualSeqProc.AddSubOperator(evaluator);
       individualSeqProc.AddSubOperator(evalCounter);
+      individualSeqProc.AddSubOperator(offspringFitnessComparer);
+      individualSeqProc.AddSubOperator(parentScopesRemover);
 
       SequentialSubScopesProcessor seqSubScopesProc2 = new SequentialSubScopesProcessor();
-      seq.AddSubOperator(seqSubScopesProc2);
+      main.AddSubOperator(seqSubScopesProc2);
       seqSubScopesProc2.AddSubOperator(emptyOp);
 
       SequentialProcessor newGenProc = new SequentialProcessor();
@@ -188,8 +194,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       validationEvaluator.AddSubOperator(validationQualityEvaluator);
 
-      childCreater.OperatorGraph.AddOperator(seq);
-      childCreater.OperatorGraph.InitialOperator = seq;
+      childCreater.OperatorGraph.AddOperator(main);
+      childCreater.OperatorGraph.InitialOperator = main;
       return childCreater;
     }
 
