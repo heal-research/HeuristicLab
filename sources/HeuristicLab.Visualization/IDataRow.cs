@@ -1,8 +1,6 @@
 using System.Drawing;
-using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
-
   public enum DataRowType {
     Normal, SingleValue
   }
@@ -14,12 +12,7 @@ namespace HeuristicLab.Visualization {
     DrawingStyle Style { get; set; }
     DataRowType LineType { get; set; }
  
-    bool ShowYAxis { get; set; }
-    ILabelProvider YAxisLabelProvider { get; set; }
-
-    /// <summary>
-    /// Raised when data row data changed. Should cause redraw in the view.
-    /// </summary>
+    YAxisDescriptor YAxis { get; set; }
 
     void AddValue(double value);
     void AddValue(double value, int index);

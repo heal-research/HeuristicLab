@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace HeuristicLab.Visualization {
-  public class AvgLineAggregator : IAggregator {
+  public class AvgLineAggregator : DataRowBase {
 
     private readonly List<double> dataRow = new List<double>();
 
@@ -76,111 +75,44 @@ namespace HeuristicLab.Visualization {
 
     #region IDataRow Members
 
-    private string label = "";
-    private Color color = Color.Black;
-    private int thickness = 2;
-    private DrawingStyle style = DrawingStyle.Solid;
-    private DataRowType lineType = DataRowType.Normal;
-
-
-    public string Label {
-      get { return label; }
-      set {
-        label = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public Color Color {
-      get { return color; }
-      set {
-        color = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public int Thickness {
-      get { return thickness; }
-      set {
-        thickness = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DrawingStyle Style {
-      get { return style; }
-      set {
-        style = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DataRowType LineType {
-      get { return lineType; }
-      set {
-        lineType = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-
-    private bool showYAxis = false;
-
-    public bool ShowYAxis {
-      get { return showYAxis; }
-      set {
-        showYAxis = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public LabelProvider.ILabelProvider YAxisLabelProvider {
-      get {
-        throw new NotImplementedException();
-      }
-      set {
-        throw new NotImplementedException();
-      }
-    }
-
-    public void AddValue(double value) {
+    public override void AddValue(double value) {
       dataRow.Add(value);
       OnValueChanged(value, dataRow.Count - 1, Action.Added);
     }
 
-    public void AddValue(double value, int index) {
-      throw new System.NotImplementedException();
+    public override void AddValue(double value, int index) {
+      throw new NotImplementedException();
     }
 
-    public void AddValues(double[] values) {
+    public override void AddValues(double[] values) {
       throw new NotSupportedException();
     }
 
-    public void AddValues(double[] values, int index) {
+    public override void AddValues(double[] values, int index) {
       throw new NotSupportedException();
     }
 
-    public void ModifyValue(double value, int index) {
+    public override void ModifyValue(double value, int index) {
       throw new NotSupportedException();
     }
 
-    public void ModifyValues(double[] values, int index) {
+    public override void ModifyValues(double[] values, int index) {
       throw new NotSupportedException();
     }
 
-    public void RemoveValue(int index) {
+    public override void RemoveValue(int index) {
       throw new NotSupportedException();
     }
 
-    public void RemoveValues(int index, int count) {
+    public override void RemoveValues(int index, int count) {
       throw new NotSupportedException();
     }
 
-    public int Count {
+    public override int Count {
       get { return dataRowWatches.Count; }
     }
 
-    public double this[int index] {
+    public override double this[int index] {
       get { return dataRow[index]; }
       set {
         dataRow[index] = value;
@@ -188,36 +120,14 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public double MinValue {
-      get { throw new System.NotImplementedException(); }
+    // TODO calculate min value
+    public override double MinValue {
+      get { return 0; }
     }
 
-    public double MaxValue {
-      get { throw new System.NotImplementedException(); }
-    }
-
-    public event ValuesChangedHandler ValuesChanged;
-
-    protected void OnValuesChanged(double[] values, int index, Action action) {
-      if (ValuesChanged != null) {
-        ValuesChanged(this, values, index, action);
-      }
-    }
-
-    public event ValueChangedHandler ValueChanged;
-
-    protected void OnValueChanged(double value, int index, Action action) {
-      if (ValueChanged != null) {
-        ValueChanged(this, value, index, action);
-      }
-    }
-
-    public event DataRowChangedHandler DataRowChanged;
-
-    protected void OnDataRowChanged(IDataRow row) {
-      if (DataRowChanged != null) {
-        DataRowChanged(this);
-      }
+    // TODO calculate max value
+    public override double MaxValue {
+      get { return 0; }
     }
 
     #endregion

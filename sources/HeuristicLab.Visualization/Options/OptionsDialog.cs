@@ -51,13 +51,13 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void InitTabPageYAxes() {
-      for (int i = 0; i < model.Rows.Count; i++) {
-        IDataRow row = model.Rows[i];
+      for (int i = 0; i < model.YAxes.Count; i++) {
+        YAxisDescriptor yAxisDescriptor = model.YAxes[i];
 
         CheckBox chkbox = new CheckBox();
-        chkbox.Text = row.Label;
-        chkbox.Checked = row.ShowYAxis;
-        chkbox.CheckedChanged += delegate { row.ShowYAxis = chkbox.Checked; };
+        chkbox.Text = yAxisDescriptor.Label;
+        chkbox.Checked = yAxisDescriptor.ShowYAxis;
+        chkbox.CheckedChanged += delegate { yAxisDescriptor.ShowYAxis = chkbox.Checked; };
         
         dataRowsFlowLayout.Controls.Add(chkbox);
       }

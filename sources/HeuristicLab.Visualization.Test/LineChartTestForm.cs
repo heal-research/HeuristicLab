@@ -3,6 +3,8 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization.Test {
+  public delegate void AddValueHandler();
+
   public partial class LineChartTestForm : Form {
     private readonly IView view;
     private ChartDataRowsModel model;
@@ -28,11 +30,17 @@ namespace HeuristicLab.Visualization.Test {
       }
     }
 
-    private void btnAddRandomValue_Click(object sender, EventArgs e) {
-      Random rand = new Random();
+    public event AddValueHandler AddValue;
 
-      foreach (IDataRow row in model.Rows)
-        row.AddValue(rand.NextDouble()*100);
+    private void btnAddRandomValue_Click(object sender, EventArgs e) {
+      if (AddValue != null) {
+        AddValue();
+      } else {
+        Random rand = new Random();
+
+        foreach (IDataRow row in model.Rows)
+          row.AddValue(rand.NextDouble() * 100);
+      }
     }
   }
 }

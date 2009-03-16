@@ -27,6 +27,18 @@ namespace HeuristicLab.Visualization{
       }
     }
 
+    public List<YAxisDescriptor> YAxes {
+      get {
+        Dictionary<YAxisDescriptor, object> yaxes = new Dictionary<YAxisDescriptor, object>();
+
+        foreach (IDataRow row in rows) {
+          yaxes[row.YAxis] = null;
+        }
+
+        return new List<YAxisDescriptor>(yaxes.Keys);
+      }
+    }
+
 
     private readonly List<IDataRow> rows = new List<IDataRow>();
     //private readonly List<string> xLabels = new List<string>();
@@ -110,7 +122,12 @@ namespace HeuristicLab.Visualization{
     //  //OnModelChanged();
     //}
 
+    private readonly YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
+
     public void AddDataRow(IDataRow row) {
+      if (row.YAxis == null) {
+        row.YAxis = defaultYAxisDescriptor;
+      }
       rows.Add(row);
       OnDataRowAdded(row);
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E392A1E2-DC95-4E33-B82E-8ED690EDA1AB}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -83,7 +83,7 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
-    <Compile Include="IAggregator.cs" />
+    <Compile Include="DataRowBase.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
     <Compile Include="Grid.cs" />
@@ -129,6 +129,7 @@
     <Compile Include="WorldShape.cs" />
     <Compile Include="XAxis.cs" />
     <Compile Include="YAxis.cs" />
+    <Compile Include="YAxisDescriptor.cs" />
     <Compile Include="ZoomListener.cs" />
   </ItemGroup>
   <ItemGroup>

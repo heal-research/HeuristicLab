@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace HeuristicLab.Visualization {
-  public class AvgAggregator : IAggregator {
-
-
+  public class AvgAggregator : DataRowBase {
     #region IAggregator Members
 
     public void AddWatch(IDataRow dataRow) {
@@ -16,30 +13,28 @@ namespace HeuristicLab.Visualization {
     }
 
     public void RemoveWatch(IDataRow dataRow) {
-
       dataRowWatches.Remove(dataRow);
       dataRow.DataRowChanged -= dataRow_DataRowChanged;
       dataRow.ValuesChanged -= dataRow_ValuesChanged;
       dataRow.ValueChanged -= dataRow_ValueChanged;
     }
 
-
     #endregion
 
-    List<IDataRow> dataRowWatches = new List<IDataRow>();
-    double curAvgValue;
+    private List<IDataRow> dataRowWatches = new List<IDataRow>();
+    private double curAvgValue;
 
-    void dataRow_ValueChanged(IDataRow row, double value, int index, Action action) {
+    private void dataRow_ValueChanged(IDataRow row, double value, int index, Action action) {
       refreshValue(value);
     }
 
-    void dataRow_ValuesChanged(IDataRow row, double[] values, int index, Action action) {
+    private void dataRow_ValuesChanged(IDataRow row, double[] values, int index, Action action) {
       for (int i = 0; i < values.Length; i++) {
         refreshValue(values[i]);
       }
     }
 
-    void dataRow_DataRowChanged(IDataRow row) {
+    private void dataRow_DataRowChanged(IDataRow row) {
       refreshValue(double.MinValue);
     }
 
@@ -49,7 +44,7 @@ namespace HeuristicLab.Visualization {
       curAvgValue = double.MinValue;
       double tmpSum = 0;
       int count = 0;
-      foreach (var rows in dataRowWatches) {
+      foreach (IDataRow rows in dataRowWatches) {
         for (int i = 0; i < rows.Count; i++) {
           tmpSum += rows[i];
           count++;
@@ -62,147 +57,53 @@ namespace HeuristicLab.Visualization {
 
     #region IDataRow Members
 
-    private string label = "";
-    private Color color = Color.Black;
-    private int thickness = 2;
-    private DrawingStyle style = DrawingStyle.Solid;
-    private DataRowType lineType = DataRowType.Normal;
-
-
-    public string Label {
-      get { return label; }
-      set {
-        label = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public Color Color {
-      get { return color; }
-      set {
-        color = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public int Thickness {
-      get { return thickness; }
-      set {
-        thickness = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DrawingStyle Style {
-      get { return style; }
-      set {
-        style = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DataRowType LineType {
-      get { return lineType; }
-      set {
-        lineType = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    private bool showYAxis = false;
-
-    public bool ShowYAxis {
-      get { return showYAxis; }
-      set {
-        showYAxis = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public LabelProvider.ILabelProvider YAxisLabelProvider {
-      get {
-        throw new NotImplementedException();
-      }
-      set {
-        throw new NotImplementedException();
-      }
-    }
-
-    public void AddValue(double value) {
+    public override void AddValue(double value) {
       throw new NotSupportedException();
     }
 
-    public void AddValue(double value, int index) {
+    public override void AddValue(double value, int index) {
       throw new NotSupportedException();
     }
 
-    public void AddValues(double[] values) {
+    public override void AddValues(double[] values) {
       throw new NotSupportedException();
     }
 
-    public void AddValues(double[] values, int index) {
+    public override void AddValues(double[] values, int index) {
       throw new NotSupportedException();
     }
 
-    public void ModifyValue(double value, int index) {
+    public override void ModifyValue(double value, int index) {
       throw new NotSupportedException();
     }
 
-    public void ModifyValues(double[] values, int index) {
+    public override void ModifyValues(double[] values, int index) {
       throw new NotSupportedException();
     }
 
-    public void RemoveValue(int index) {
+    public override void RemoveValue(int index) {
       throw new NotSupportedException();
     }
 
-    public void RemoveValues(int index, int count) {
+    public override void RemoveValues(int index, int count) {
       throw new NotSupportedException();
     }
 
-    public int Count {
+    public override int Count {
       get { return 1; }
     }
 
-    public double this[int index] {
-      get {
-        return curAvgValue;
-      }
-      set {
-        throw new NotSupportedException();
-      }
+    public override double this[int index] {
+      get { return curAvgValue; }
+      set { throw new NotSupportedException(); }
     }
 
-    public double MinValue {
-      get { throw new System.NotImplementedException(); }
+    public override double MinValue {
+      get { return curAvgValue; }
     }
 
-    public double MaxValue {
-      get { throw new System.NotImplementedException(); }
-    }
-
-    public event ValuesChangedHandler ValuesChanged;
-
-    protected void OnValuesChanged(double[] values, int index, Action action) {
-      if (ValuesChanged != null) {
-        ValuesChanged(this, values, index, action);
-      }
-    }
-
-    public event ValueChangedHandler ValueChanged;
-
-    protected void OnValueChanged(double value, int index, Action action) {
-      if (ValueChanged != null) {
-        ValueChanged(this, value, index, action);
-      }
-    }
-
-    public event DataRowChangedHandler DataRowChanged;
-
-    protected void OnDataRowChanged(IDataRow row) {
-      if (DataRowChanged != null) {
-        DataRowChanged(this);
-      }
+    public override double MaxValue {
+      get { return curAvgValue; }
     }
 
     #endregion

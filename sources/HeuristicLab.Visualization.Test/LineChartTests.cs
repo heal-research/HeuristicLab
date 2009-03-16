@@ -76,6 +76,7 @@ namespace HeuristicLab.Visualization.Test {
 
       IDataRow row1 = new DataRow();
       IDataRow row2 = new DataRow();
+      IDataRow row3 = new DataRow();
 
       row1.Color = Color.Red;
       row1.Thickness = 3;
@@ -87,15 +88,29 @@ namespace HeuristicLab.Visualization.Test {
       row2.Style = DrawingStyle.Solid;
       row2.Label = "Die Grüne";
 
+      row3.Color = Color.Blue;
+      row3.Thickness = 3;
+      row3.Style = DrawingStyle.Solid;
+      row3.Label = "Die Blaue";
+      row3.YAxis = new YAxisDescriptor();
+
       model.AddDataRow(row1);
       model.AddDataRow(row2);
+      model.AddDataRow(row3);
 
       Random rand = new Random(42);
-      
+
       for (int i = 0; i < 10; i++) {
         row1.AddValue(rand.NextDouble()*10);
         row2.AddValue(rand.NextDouble()*10);
+        row3.AddValue(rand.NextDouble()*1);
       }
+
+      f.AddValue += delegate {
+        row1.AddValue(rand.NextDouble()*10);
+        row2.AddValue(rand.NextDouble()*10);
+        row3.AddValue(rand.NextDouble()*1);
+      };
 
       f.ShowDialog();
     }
@@ -113,7 +128,7 @@ namespace HeuristicLab.Visualization.Test {
       model.AddDataRow(row1);
 
 
-      IAggregator aggregator = new MinAggregator();
+      MinAggregator aggregator = new MinAggregator();
       aggregator.Label = "MinAggregator";
       aggregator.Color = Color.Pink;
       aggregator.Thickness = 5;
@@ -172,7 +187,7 @@ namespace HeuristicLab.Visualization.Test {
         model.AddDataRow(row2);
 
 
-        IAggregator aggregator = new MinAggregator();
+        MinAggregator aggregator = new MinAggregator();
         aggregator.Label = "MinAggregator";
         aggregator.Color = Color.Pink;
         aggregator.Thickness = 3;
@@ -181,7 +196,7 @@ namespace HeuristicLab.Visualization.Test {
         aggregator.AddWatch(row1);
         model.AddDataRow(aggregator);
 
-        IAggregator maxAggregator = new MaxAggregator();
+        MaxAggregator maxAggregator = new MaxAggregator();
         maxAggregator.Label = "MaxAggregator";
         maxAggregator.Color = Color.DeepSkyBlue;
         maxAggregator.Thickness = 3;
@@ -191,7 +206,7 @@ namespace HeuristicLab.Visualization.Test {
         model.AddDataRow(maxAggregator);
         
         
-        IAggregator avgAggregator = new AvgAggregator();
+        AvgAggregator avgAggregator = new AvgAggregator();
         avgAggregator.Label = "AvgAggregator";
         avgAggregator.Color = Color.Violet;
         avgAggregator.Thickness = 3;
@@ -200,7 +215,7 @@ namespace HeuristicLab.Visualization.Test {
         avgAggregator.AddWatch(row1);
         model.AddDataRow(avgAggregator);
 
-        IAggregator multiAvgAggregator = new AvgAggregator();
+        AvgAggregator multiAvgAggregator = new AvgAggregator();
         multiAvgAggregator.Label = "MultiAvgAggregator";
         multiAvgAggregator.Color = Color.DarkOliveGreen;
         multiAvgAggregator.Thickness = 3;
@@ -210,7 +225,7 @@ namespace HeuristicLab.Visualization.Test {
         multiAvgAggregator.AddWatch(row2);
         model.AddDataRow(multiAvgAggregator);
 
-        IAggregator multiMaxAggregator = new MaxAggregator();
+        MaxAggregator multiMaxAggregator = new MaxAggregator();
         multiMaxAggregator.Label = "MultiMaxAggregator";
         multiMaxAggregator.Color = Color.DarkKhaki;
         multiMaxAggregator.Thickness = 3;
@@ -220,7 +235,7 @@ namespace HeuristicLab.Visualization.Test {
         multiMaxAggregator.AddWatch(row2);
         model.AddDataRow(multiMaxAggregator);
 
-        IAggregator multiMinAggregator = new MinAggregator();
+        MinAggregator multiMinAggregator = new MinAggregator();
         multiMinAggregator.Label = "MultiMinAggregator";
         multiMinAggregator.Color = Color.DarkRed;
         multiMinAggregator.Thickness = 3;
@@ -230,7 +245,7 @@ namespace HeuristicLab.Visualization.Test {
         multiMinAggregator.AddWatch(row2);
         model.AddDataRow(multiMinAggregator);
 
-        IAggregator multiLineAvgAggregator = new AvgLineAggregator();
+        AvgLineAggregator multiLineAvgAggregator = new AvgLineAggregator();
         multiLineAvgAggregator.Label = "MultiLineAvgAggregator";
         multiLineAvgAggregator.Color = Color.Red;
         multiLineAvgAggregator.Thickness = 4;

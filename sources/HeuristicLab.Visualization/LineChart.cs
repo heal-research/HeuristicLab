@@ -28,9 +28,6 @@ namespace HeuristicLab.Visualization {
     private const int YAxisWidth = 100;
     private const int XAxisHeight = 20;
 
-    private bool zoomToFullView;
-
-
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
     /// </summary>
@@ -85,8 +82,9 @@ namespace HeuristicLab.Visualization {
     private void UpdateLayout() {
       canvas.ClearShapes();
 
-      foreach (RowEntry rowEntry in rowEntries) {
-        canvas.AddShape(rowEntry.Grid);
+      foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
+        YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
+        canvas.AddShape(info.Grid);
       }
 
       foreach (RowEntry rowEntry in rowEntries) {
@@ -97,9 +95,10 @@ namespace HeuristicLab.Visualization {
 
       int yAxesWidth = 0;
 
-      foreach (RowEntry rowEntry in rowEntries) {
-        if (rowEntry.DataRow.ShowYAxis) {
-          canvas.AddShape(rowEntry.YAxis);
+      foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
+        YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
+        if (yAxisDescriptor.ShowYAxis) {
+          canvas.AddShape(info.YAxis);
           yAxesWidth += YAxisWidth;
         }
       }
@@ -119,16 +118,21 @@ namespace HeuristicLab.Visualization {
 
       foreach (RowEntry rowEntry in rowEntries) {
         rowEntry.LinesShape.BoundingBox = linesAreaBoundingBox;
-        rowEntry.Grid.BoundingBox = linesAreaBoundingBox;
+      }
+
+      foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
+        YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
+        info.Grid.BoundingBox = linesAreaBoundingBox;
       }
 
       int yAxisLeft = 0;
-      foreach (RowEntry rowEntry in rowEntries) {
-        if (rowEntry.DataRow.ShowYAxis) {
-          rowEntry.YAxis.BoundingBox = new RectangleD(yAxisLeft,
-                                                      linesAreaBoundingBox.Y1,
-                                                      yAxisLeft + YAxisWidth,
-                                                      linesAreaBoundingBox.Y2);
+      foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
+        YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
+        if (yAxisDescriptor.ShowYAxis) {
+          info.YAxis.BoundingBox = new RectangleD(yAxisLeft,
+                                                 linesAreaBoundingBox.Y1,
+                                                 yAxisLeft + YAxisWidth,
+                                                 linesAreaBoundingBox.Y2);
           yAxisLeft += YAxisWidth;
         }
       }
@@ -142,6 +146,25 @@ namespace HeuristicLab.Visualization {
                                          linesAreaBoundingBox.Y1);
 
       SetLegendPosition();
+    }
+
+    private readonly Dictionary<YAxisDescriptor, YAxisInfo> yAxisInfos = new Dictionary<YAxisDescriptor, YAxisInfo>();
+
+    private YAxisInfo GetYAxisInfo(YAxisDescriptor yAxisDescriptor) {
+      YAxisInfo info;
+
+      if (!yAxisInfos.TryGetValue(yAxisDescriptor, out info)) {
+        info = new YAxisInfo();
+        yAxisInfos[yAxisDescriptor] = info;
+      }
+
+      return info;
+    }
+
+    private void UpdateYAxisInfo(YAxisDescriptor yAxisDescriptor) {
+//      if (yAxisInfos.ContainsKey(yAxisDescriptor)) {
+//        yAxisInfos.Remove(yAxisDescriptor);
+//      }
     }
 
     /// <summary>
@@ -205,12 +228,13 @@ namespace HeuristicLab.Visualization {
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(model);
-      //var optionsdlg = new OptionsDialog(model, this);
       optionsdlg.ShowDialog(this);
       Invalidate();
     }
 
     public void OnDataRowChanged(IDataRow row) {
+      UpdateYAxisInfo(row.YAxis);
+
       RowEntry rowEntry = rowToRowEntry[row];
 
       rowEntry.LinesShape.UpdateStyle(row);
@@ -272,14 +296,12 @@ namespace HeuristicLab.Visualization {
       SetClipX(-0.1, model.MaxDataRowValues - 0.9);
 
       foreach (RowEntry rowEntry in rowEntries) {
-        IDataRow row = rowEntry.DataRow;
+        YAxisDescriptor yAxisDescriptor = rowEntry.DataRow.YAxis;
 
         SetClipY(rowEntry,
-                 row.MinValue - ((row.MaxValue - row.MinValue)*0.05),
-                 row.MaxValue + ((row.MaxValue - row.MinValue)*0.05));
+                 yAxisDescriptor.MinValue - ((yAxisDescriptor.MaxValue - yAxisDescriptor.MinValue)*0.05),
+                 yAxisDescriptor.MaxValue + ((yAxisDescriptor.MaxValue - yAxisDescriptor.MinValue)*0.05));
       }
-
-      zoomToFullView = true;
 
       canvasUI.Invalidate();
     }
@@ -295,30 +317,37 @@ namespace HeuristicLab.Visualization {
                                                           rowEntry.LinesShape.ClippingArea.Y1,
                                                           x2,
                                                           rowEntry.LinesShape.ClippingArea.Y2);
-        rowEntry.Grid.ClippingArea = new RectangleD(x1,
-                                                    rowEntry.Grid.ClippingArea.Y1,
-                                                    x2,
-                                                    rowEntry.Grid.ClippingArea.Y2);
-        rowEntry.YAxis.ClippingArea = new RectangleD(0,
-                                                     rowEntry.YAxis.ClippingArea.Y1,
-                                                     YAxisWidth,
-                                                     rowEntry.YAxis.ClippingArea.Y2);
+      }
+
+      foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
+        YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
+        info.Grid.ClippingArea = new RectangleD(x1,
+                                                info.Grid.ClippingArea.Y1,
+                                                x2,
+                                                info.Grid.ClippingArea.Y2);
+        info.YAxis.ClippingArea = new RectangleD(0,
+                                                 info.YAxis.ClippingArea.Y1,
+                                                 YAxisWidth,
+                                                 info.YAxis.ClippingArea.Y2);
       }
     }
 
-    private static void SetClipY(RowEntry rowEntry, double y1, double y2) {
+    private void SetClipY(RowEntry rowEntry, double y1, double y2) {
       rowEntry.LinesShape.ClippingArea = new RectangleD(rowEntry.LinesShape.ClippingArea.X1,
                                                         y1,
                                                         rowEntry.LinesShape.ClippingArea.X2,
                                                         y2);
-      rowEntry.Grid.ClippingArea = new RectangleD(rowEntry.Grid.ClippingArea.X1,
-                                                  y1,
-                                                  rowEntry.Grid.ClippingArea.X2,
-                                                  y2);
-      rowEntry.YAxis.ClippingArea = new RectangleD(rowEntry.YAxis.ClippingArea.X1,
-                                                   y1,
-                                                   rowEntry.YAxis.ClippingArea.X2,
-                                                   y2);
+
+      YAxisInfo info = GetYAxisInfo(rowEntry.DataRow.YAxis);
+
+      info.Grid.ClippingArea = new RectangleD(info.Grid.ClippingArea.X1,
+                                              y1,
+                                              info.Grid.ClippingArea.X2,
+                                              y2);
+      info.YAxis.ClippingArea = new RectangleD(info.YAxis.ClippingArea.X1,
+                                               y1,
+                                               info.YAxis.ClippingArea.X2,
+                                               y2);
     }
 
     private void InitLineShapes(IDataRow row) {
@@ -417,8 +446,6 @@ namespace HeuristicLab.Visualization {
     #region Zooming / Panning
 
     private void Pan(Point startPoint, Point endPoint) {
-      zoomToFullView = false;
-
       foreach (RowEntry rowEntry in rowEntries) {
         RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
 
@@ -430,8 +457,6 @@ namespace HeuristicLab.Visualization {
     }
 
     private void PanEnd(Point startPoint, Point endPoint) {
-      zoomToFullView = false;
-
       foreach (RowEntry rowEntry in rowEntries) {
         RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
 
@@ -551,8 +576,6 @@ namespace HeuristicLab.Visualization {
     private class RowEntry {
       private readonly IDataRow dataRow;
 
-      private readonly Grid grid = new Grid();
-      private readonly YAxis yAxis = new YAxis();
       private readonly LinesShape linesShape = new LinesShape();
 
       public RowEntry(IDataRow dataRow) {
@@ -563,16 +586,21 @@ namespace HeuristicLab.Visualization {
         get { return dataRow; }
       }
 
+      public LinesShape LinesShape {
+        get { return linesShape; }
+      }
+    }
+
+    private class YAxisInfo {
+      private readonly Grid grid = new Grid();
+      private readonly YAxis yAxis = new YAxis();
+
       public Grid Grid {
         get { return grid; }
       }
 
       public YAxis YAxis {
         get { return yAxis; }
-      }
-
-      public LinesShape LinesShape {
-        get { return linesShape; }
       }
     }
   }

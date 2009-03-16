@@ -14,35 +14,12 @@ namespace HeuristicLab.Visualization {
   public delegate void ValuesChangedHandler(IDataRow row, double[] values, int index, Action action);
   public delegate void ValueChangedHandler(IDataRow row, double value, int index, Action action);
 
-  public class DataRow : IDataRow {
-    private string label = "";
-    private Color color = Color.Black;
-    private int thickness = 2;
-    private DrawingStyle style = DrawingStyle.Solid;
-    private DataRowType lineType = DataRowType.Normal;
+  public class DataRow : DataRowBase {
     private readonly List<double> dataRow = new List<double>();
-
-    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     // TODO implement calculation of min and max values
     private double minValue = double.MaxValue;
     private double maxValue = double.MinValue;
-
-    public DataRowType LineType{
-      get { return lineType; }
-      set { 
-        lineType = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public ILabelProvider YAxisLabelProvider {
-      get { return labelProvider; }
-      set {
-        this.labelProvider = value;
-        OnDataRowChanged(this);
-      }
-    }
 
     public DataRow() {
     }
@@ -59,81 +36,14 @@ namespace HeuristicLab.Visualization {
       this.dataRow = dataRow;
     }
 
-    public event DataRowChangedHandler DataRowChanged;
-
-    protected void OnDataRowChanged(IDataRow row) {
-      if (DataRowChanged != null) {
-        DataRowChanged(this);
-      }
-    }
-
-    public event ValuesChangedHandler ValuesChanged;
-
-    protected void OnValuesChanged(double[] values, int index, Action action) {
-      if (ValuesChanged != null) {
-        ValuesChanged(this, values, index, action);
-      }
-    }
-
-    public event ValueChangedHandler ValueChanged;
-
-    protected void OnValueChanged(double value, int index, Action action) {
-      if (ValueChanged != null) {
-        ValueChanged(this, value, index, action);
-      }
-    }
-  
-    public string Label {
-      get { return label; }
-      set {
-        label = value;
-        OnDataRowChanged(this);
-      }
-    }
-   
-
-    public Color Color {
-      get { return color; }
-      set {
-        color = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public int Thickness {
-      get { return thickness; }
-      set {
-        thickness = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DrawingStyle Style {
-      get { return style; }
-      set {
-        style = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    private bool showYAxis = true;
-
-    public virtual bool ShowYAxis {
-      get { return showYAxis; }
-      set {
-        showYAxis = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public void AddValue(double value) {
+    public override void AddValue(double value) {
       UpdateMinMaxValue(value);
 
       dataRow.Add(value);
       OnValueChanged(value, dataRow.Count - 1, Action.Added);
     }
 
-    public void AddValue(double value, int index) {
+    public override void AddValue(double value, int index) {
       //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
         dataRow.Insert(index, value);
@@ -143,7 +53,7 @@ namespace HeuristicLab.Visualization {
       }   
     }
 
-    public void AddValues(double[] values) {
+    public override void AddValues(double[] values) {
       int startInd = dataRow.Count;
 
       foreach (double d in values) {
@@ -152,7 +62,7 @@ namespace HeuristicLab.Visualization {
       OnValuesChanged(values, startInd, Action.Added); 
     }
 
-    public void AddValues(double[] values, int index) {
+    public override void AddValues(double[] values, int index) {
       int j = index;
 
       //check if index to start changes is valid
@@ -167,7 +77,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public void ModifyValue(double value, int index) {
+    public override void ModifyValue(double value, int index) {
       //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
         dataRow[index] = value;
@@ -177,7 +87,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public void ModifyValues(double[] values, int index) {
+    public override void ModifyValues(double[] values, int index) {
       int startInd = index;
       int modInd = index;
 
@@ -193,7 +103,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public void RemoveValue(int index) {
+    public override void RemoveValue(int index) {
       double remVal = dataRow[index];
       //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
@@ -204,7 +114,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public void RemoveValues(int index, int count) {
+    public override void RemoveValues(int index, int count) {
       double[] remValues = new double[count]; //removed values
       int j = 0;
 
@@ -226,11 +136,11 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public int Count {
+    public override int Count {
       get { return dataRow.Count; }
     }
 
-    public double this[int index] {
+    public override double this[int index] {
       get { return dataRow[index]; }
       set {
         dataRow[index] = value;
@@ -238,11 +148,11 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public double MinValue {
+    public override double MinValue {
       get { return minValue; }
     }
 
-    public double MaxValue {
+    public override double MaxValue {
       get { return maxValue; }
     }
 
