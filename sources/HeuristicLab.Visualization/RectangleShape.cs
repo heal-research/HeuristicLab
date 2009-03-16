@@ -6,7 +6,6 @@ namespace HeuristicLab.Visualization {
     private RectangleD rectangle;
 
     private Color color;
-    private int opacity = 255;
 
     private Pen pen;
     private Brush brush;
@@ -53,16 +52,8 @@ namespace HeuristicLab.Visualization {
 
     private Brush GetBrush() {
       if (brush == null)
-        brush = new SolidBrush(Color.FromArgb(opacity, color));
+        brush = new SolidBrush(color);
       return brush;
-    }
-
-    public int Opacity {
-      get { return opacity; }
-      set {
-        opacity = value;
-        DisposeDrawingTools();
-      }
     }
 
     public Color Color {

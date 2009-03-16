@@ -20,7 +20,6 @@ namespace HeuristicLab.Visualization {
 
     private readonly ViewSettings viewSettings;
 
-//    private readonly Stack<RectangleD> clippingAreaHistory = new Stack<RectangleD>();
     private readonly WorldShape userInteractionShape = new WorldShape();
     private readonly RectangleShape rectangleShape = new RectangleShape(0, 0, 0, 0, Color.FromArgb(50, 0, 0, 255));
     private IMouseEventListener mouseEventListener;
@@ -161,12 +160,6 @@ namespace HeuristicLab.Visualization {
       return info;
     }
 
-    private void UpdateYAxisInfo(YAxisDescriptor yAxisDescriptor) {
-//      if (yAxisInfos.ContainsKey(yAxisDescriptor)) {
-//        yAxisInfos.Remove(yAxisDescriptor);
-//      }
-    }
-
     /// <summary>
     /// sets the legend position
     /// </summary>
@@ -233,8 +226,6 @@ namespace HeuristicLab.Visualization {
     }
 
     public void OnDataRowChanged(IDataRow row) {
-      UpdateYAxisInfo(row.YAxis);
-
       RowEntry rowEntry = rowToRowEntry[row];
 
       rowEntry.LinesShape.UpdateStyle(row);
@@ -446,10 +437,12 @@ namespace HeuristicLab.Visualization {
     #region Zooming / Panning
 
     private void Pan(Point startPoint, Point endPoint) {
-      foreach (RowEntry rowEntry in rowEntries) {
-        RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
+      RectangleD clippingArea = Translate.ClippingArea(startPoint, endPoint, xAxis.ClippingArea, xAxis.Viewport);
 
-        SetClipX(clippingArea.X1, clippingArea.X1);
+      SetClipX(clippingArea.X1, clippingArea.X2);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea, rowEntry.LinesShape.Viewport);
         SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
       }
 
@@ -457,25 +450,17 @@ namespace HeuristicLab.Visualization {
     }
 
     private void PanEnd(Point startPoint, Point endPoint) {
-      foreach (RowEntry rowEntry in rowEntries) {
-        RectangleD clippingArea = CalcPanClippingArea(startPoint, endPoint, rowEntry.LinesShape);
-
-        SetClipX(clippingArea.X1, clippingArea.X1);
-        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
-      }
-
-      canvasUI.Invalidate();
-    }
-
-    private static RectangleD CalcPanClippingArea(Point startPoint, Point endPoint, LinesShape linesShape) {
-      return Translate.ClippingArea(startPoint, endPoint, linesShape.ClippingArea, linesShape.Viewport);
+      Pan(startPoint, endPoint);
     }
 
     private void SetClippingArea(Rectangle rectangle) {
-      foreach (RowEntry rowEntry in rowEntries) {
-        RectangleD clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
+      RectangleD clippingArea = Transform.ToWorld(rectangle, xAxis.Viewport, xAxis.ClippingArea);
 
-        SetClipX(clippingArea.X1, clippingArea.X1);
+      SetClipX(clippingArea.X1, clippingArea.X2);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
+
         SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
       }
 
@@ -489,13 +474,6 @@ namespace HeuristicLab.Visualization {
     }
 
     private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {
-//      if (e.KeyCode == Keys.Back && clippingAreaHistory.Count > 1) {
-//        clippingAreaHistory.Pop();
-//
-//        RectangleD clippingArea = clippingAreaHistory.Peek();
-//
-//        SetLineClippingArea(clippingArea, false);
-//      }
     }
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
@@ -539,14 +517,27 @@ namespace HeuristicLab.Visualization {
 
     private void canvasUI1_MouseWheel(object sender, MouseEventArgs e) {
       if (ModifierKeys == Keys.Control) {
-        double zoomFactor = (e.Delta > 0) ? 0.9 : 1.1;
+        double zoomFactor = (e.Delta > 0) ? 0.7 : 1.3;
+
+        PointD world;
+
+        world = Transform.ToWorld(e.Location, xAxis.Viewport, xAxis.ClippingArea);
+
+        double x1 = world.X - (world.X - xAxis.ClippingArea.X1)*zoomFactor;
+        double x2 = world.X + (xAxis.ClippingArea.X2 - world.X)*zoomFactor;
+
+        SetClipX(x1, x2);
 
         foreach (RowEntry rowEntry in rowEntries) {
-          RectangleD clippingArea = ZoomListener.ZoomClippingArea(rowEntry.LinesShape.ClippingArea, zoomFactor);
-          
-          SetClipX(clippingArea.X1, clippingArea.X1);
-          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+          world = Transform.ToWorld(e.Location, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
+
+          double y1 = world.Y - (world.Y - rowEntry.LinesShape.ClippingArea.Y1) * zoomFactor;
+          double y2 = world.Y + (rowEntry.LinesShape.ClippingArea.Y2 - world.Y)*zoomFactor;
+
+          SetClipY(rowEntry, y1, y2);
         }
+
+        canvasUI.Invalidate();
       }
     }
 
