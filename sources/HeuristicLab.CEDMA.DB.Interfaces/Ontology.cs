@@ -109,6 +109,9 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public static Entity TargetVariable {
       get { return new Entity(CedmaNameSpace + "TargetVariable"); }
     }
+    public static Entity AlgorithmName {
+      get { return new Entity(CedmaNameSpace + "AlgorithmName"); }
+    }
     public static Entity TrainingMeanSquaredError {
       get { return new Entity(CedmaNameSpace + "TrainingMeanSquaredError"); }
     }
@@ -178,6 +181,7 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
       get {
         return new List<Statement> {
           new Statement(TargetVariable, PredicateInstanceOf, TypeCategoricalAttribute),
+          new Statement(AlgorithmName, PredicateInstanceOf, TypeCategoricalAttribute),
           new Statement(TrainingMeanSquaredError, PredicateInstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingMeanSquaredError, PredicateInstanceOf, TypeQualityAttribute),
           new Statement(ValidationMeanSquaredError, PredicateInstanceOf, TypeOrdinalAttribute),

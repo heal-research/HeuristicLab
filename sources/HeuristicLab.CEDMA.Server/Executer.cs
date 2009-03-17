@@ -131,6 +131,7 @@ namespace HeuristicLab.CEDMA.Server {
       store.Add(new Statement(model, Ontology.PredicateInstanceOf, Ontology.TypeGeneticProgrammingFunctionTree));
       store.Add(new Statement(finishedExecution.DataSetEntity, Ontology.PredicateHasModel, model));
       StoreModelAttribute(model, Ontology.TargetVariable, finishedExecution.TargetVariable);
+      StoreModelAttribute(model, Ontology.AlgorithmName, finishedExecution.Description);
       Scope bestModelScope = finishedEngine.GlobalScope.GetVariableValue<Scope>("BestValidationSolution", false);
       StoreModelVariable(model, Ontology.TrainingMeanSquaredError, bestModelScope, "Quality");
       StoreModelVariable(model, Ontology.ValidationMeanSquaredError, bestModelScope, "ValidationQuality");
