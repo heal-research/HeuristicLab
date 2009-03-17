@@ -107,6 +107,7 @@ namespace HeuristicLab.SA {
       maximumIterationsTextBox.DataBindings.Add("Text", SA, "MaximumIterations");
       maximumIterationEffortTextBox.DataBindings.Add("Text", SA, "MaximumIterationEffort");
       temperatureTextBox.DataBindings.Add("Text", SA, "Temperature");
+      minimumTemperatureTextBox.DataBindings.Add("Text", SA, "MinimumTemperature");
       annealingParameterTextBox.DataBindings.Add("Text", SA, "AnnealingParameter");
     }
 

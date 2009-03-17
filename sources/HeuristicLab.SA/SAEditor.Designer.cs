@@ -48,6 +48,8 @@ namespace HeuristicLab.SA {
       this.executeButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.annealingParameterTextBox = new System.Windows.Forms.TextBox();
+      this.annealingParameterLabel = new System.Windows.Forms.Label();
       this.setEvaluationButton = new System.Windows.Forms.Button();
       this.setMutationButton = new System.Windows.Forms.Button();
       this.setAnnealingSchemeButton = new System.Windows.Forms.Button();
@@ -83,8 +85,8 @@ namespace HeuristicLab.SA {
       this.abortButton = new System.Windows.Forms.Button();
       this.resetButton = new System.Windows.Forms.Button();
       this.cloneEngineButton = new System.Windows.Forms.Button();
-      this.annealingParameterTextBox = new System.Windows.Forms.TextBox();
-      this.annealingParameterLabel = new System.Windows.Forms.Label();
+      this.minimumTemperatureTextBox = new System.Windows.Forms.TextBox();
+      this.minimumTemperatureLabel = new System.Windows.Forms.Label();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.scopesTabPage.SuspendLayout();
@@ -93,7 +95,7 @@ namespace HeuristicLab.SA {
       // executeButton
       // 
       this.executeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.executeButton.Location = new System.Drawing.Point(0, 370);
+      this.executeButton.Location = new System.Drawing.Point(0, 397);
       this.executeButton.Name = "executeButton";
       this.executeButton.Size = new System.Drawing.Size(75, 23);
       this.executeButton.TabIndex = 1;
@@ -111,11 +113,13 @@ namespace HeuristicLab.SA {
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(473, 364);
+      this.tabControl.Size = new System.Drawing.Size(473, 391);
       this.tabControl.TabIndex = 0;
       // 
       // parametersTabPage
       // 
+      this.parametersTabPage.Controls.Add(this.minimumTemperatureTextBox);
+      this.parametersTabPage.Controls.Add(this.minimumTemperatureLabel);
       this.parametersTabPage.Controls.Add(this.annealingParameterTextBox);
       this.parametersTabPage.Controls.Add(this.annealingParameterLabel);
       this.parametersTabPage.Controls.Add(this.setEvaluationButton);
@@ -151,15 +155,33 @@ namespace HeuristicLab.SA {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(465, 338);
+      this.parametersTabPage.Size = new System.Drawing.Size(465, 365);
       this.parametersTabPage.TabIndex = 0;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
+      // annealingParameterTextBox
+      // 
+      this.annealingParameterTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.annealingParameterTextBox.Location = new System.Drawing.Point(159, 178);
+      this.annealingParameterTextBox.Name = "annealingParameterTextBox";
+      this.annealingParameterTextBox.Size = new System.Drawing.Size(186, 20);
+      this.annealingParameterTextBox.TabIndex = 31;
+      // 
+      // annealingParameterLabel
+      // 
+      this.annealingParameterLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.annealingParameterLabel.AutoSize = true;
+      this.annealingParameterLabel.Location = new System.Drawing.Point(6, 181);
+      this.annealingParameterLabel.Name = "annealingParameterLabel";
+      this.annealingParameterLabel.Size = new System.Drawing.Size(108, 13);
+      this.annealingParameterLabel.TabIndex = 30;
+      this.annealingParameterLabel.Text = "Annealing Parameter:";
+      // 
       // setEvaluationButton
       // 
       this.setEvaluationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setEvaluationButton.Location = new System.Drawing.Point(410, 303);
+      this.setEvaluationButton.Location = new System.Drawing.Point(410, 323);
       this.setEvaluationButton.Name = "setEvaluationButton";
       this.setEvaluationButton.Size = new System.Drawing.Size(43, 20);
       this.setEvaluationButton.TabIndex = 29;
@@ -170,7 +192,7 @@ namespace HeuristicLab.SA {
       // setMutationButton
       // 
       this.setMutationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setMutationButton.Location = new System.Drawing.Point(410, 277);
+      this.setMutationButton.Location = new System.Drawing.Point(410, 297);
       this.setMutationButton.Name = "setMutationButton";
       this.setMutationButton.Size = new System.Drawing.Size(43, 20);
       this.setMutationButton.TabIndex = 25;
@@ -181,7 +203,7 @@ namespace HeuristicLab.SA {
       // setAnnealingSchemeButton
       // 
       this.setAnnealingSchemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setAnnealingSchemeButton.Location = new System.Drawing.Point(410, 251);
+      this.setAnnealingSchemeButton.Location = new System.Drawing.Point(410, 271);
       this.setAnnealingSchemeButton.Name = "setAnnealingSchemeButton";
       this.setAnnealingSchemeButton.Size = new System.Drawing.Size(43, 20);
       this.setAnnealingSchemeButton.TabIndex = 21;
@@ -192,7 +214,7 @@ namespace HeuristicLab.SA {
       // setSolutionGenerationButton
       // 
       this.setSolutionGenerationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setSolutionGenerationButton.Location = new System.Drawing.Point(410, 225);
+      this.setSolutionGenerationButton.Location = new System.Drawing.Point(410, 245);
       this.setSolutionGenerationButton.Name = "setSolutionGenerationButton";
       this.setSolutionGenerationButton.Size = new System.Drawing.Size(43, 20);
       this.setSolutionGenerationButton.TabIndex = 17;
@@ -203,7 +225,7 @@ namespace HeuristicLab.SA {
       // viewEvaluationButton
       // 
       this.viewEvaluationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewEvaluationButton.Location = new System.Drawing.Point(351, 303);
+      this.viewEvaluationButton.Location = new System.Drawing.Point(351, 323);
       this.viewEvaluationButton.Name = "viewEvaluationButton";
       this.viewEvaluationButton.Size = new System.Drawing.Size(53, 20);
       this.viewEvaluationButton.TabIndex = 28;
@@ -214,7 +236,7 @@ namespace HeuristicLab.SA {
       // viewMutationButton
       // 
       this.viewMutationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewMutationButton.Location = new System.Drawing.Point(351, 277);
+      this.viewMutationButton.Location = new System.Drawing.Point(351, 297);
       this.viewMutationButton.Name = "viewMutationButton";
       this.viewMutationButton.Size = new System.Drawing.Size(53, 20);
       this.viewMutationButton.TabIndex = 24;
@@ -225,7 +247,7 @@ namespace HeuristicLab.SA {
       // viewAnnealingSchemeButton
       // 
       this.viewAnnealingSchemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewAnnealingSchemeButton.Location = new System.Drawing.Point(351, 251);
+      this.viewAnnealingSchemeButton.Location = new System.Drawing.Point(351, 271);
       this.viewAnnealingSchemeButton.Name = "viewAnnealingSchemeButton";
       this.viewAnnealingSchemeButton.Size = new System.Drawing.Size(53, 20);
       this.viewAnnealingSchemeButton.TabIndex = 20;
@@ -236,7 +258,7 @@ namespace HeuristicLab.SA {
       // viewSolutionGenerationButton
       // 
       this.viewSolutionGenerationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewSolutionGenerationButton.Location = new System.Drawing.Point(351, 225);
+      this.viewSolutionGenerationButton.Location = new System.Drawing.Point(351, 245);
       this.viewSolutionGenerationButton.Name = "viewSolutionGenerationButton";
       this.viewSolutionGenerationButton.Size = new System.Drawing.Size(53, 20);
       this.viewSolutionGenerationButton.TabIndex = 16;
@@ -247,7 +269,7 @@ namespace HeuristicLab.SA {
       // viewProblemInitializationButton
       // 
       this.viewProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewProblemInitializationButton.Location = new System.Drawing.Point(351, 199);
+      this.viewProblemInitializationButton.Location = new System.Drawing.Point(351, 219);
       this.viewProblemInitializationButton.Name = "viewProblemInitializationButton";
       this.viewProblemInitializationButton.Size = new System.Drawing.Size(53, 20);
       this.viewProblemInitializationButton.TabIndex = 12;
@@ -258,7 +280,7 @@ namespace HeuristicLab.SA {
       // setProblemInitializationButton
       // 
       this.setProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setProblemInitializationButton.Location = new System.Drawing.Point(410, 199);
+      this.setProblemInitializationButton.Location = new System.Drawing.Point(410, 219);
       this.setProblemInitializationButton.Name = "setProblemInitializationButton";
       this.setProblemInitializationButton.Size = new System.Drawing.Size(43, 20);
       this.setProblemInitializationButton.TabIndex = 13;
@@ -269,7 +291,7 @@ namespace HeuristicLab.SA {
       // evaluationTextBox
       // 
       this.evaluationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.evaluationTextBox.Location = new System.Drawing.Point(159, 303);
+      this.evaluationTextBox.Location = new System.Drawing.Point(159, 323);
       this.evaluationTextBox.Name = "evaluationTextBox";
       this.evaluationTextBox.ReadOnly = true;
       this.evaluationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -278,7 +300,7 @@ namespace HeuristicLab.SA {
       // mutationTextBox
       // 
       this.mutationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.mutationTextBox.Location = new System.Drawing.Point(159, 277);
+      this.mutationTextBox.Location = new System.Drawing.Point(159, 297);
       this.mutationTextBox.Name = "mutationTextBox";
       this.mutationTextBox.ReadOnly = true;
       this.mutationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -287,7 +309,7 @@ namespace HeuristicLab.SA {
       // annealingSchemaTextBox
       // 
       this.annealingSchemaTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.annealingSchemaTextBox.Location = new System.Drawing.Point(159, 251);
+      this.annealingSchemaTextBox.Location = new System.Drawing.Point(159, 271);
       this.annealingSchemaTextBox.Name = "annealingSchemaTextBox";
       this.annealingSchemaTextBox.ReadOnly = true;
       this.annealingSchemaTextBox.Size = new System.Drawing.Size(186, 20);
@@ -296,7 +318,7 @@ namespace HeuristicLab.SA {
       // solutionGenerationTextBox
       // 
       this.solutionGenerationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.solutionGenerationTextBox.Location = new System.Drawing.Point(159, 225);
+      this.solutionGenerationTextBox.Location = new System.Drawing.Point(159, 245);
       this.solutionGenerationTextBox.Name = "solutionGenerationTextBox";
       this.solutionGenerationTextBox.ReadOnly = true;
       this.solutionGenerationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -305,7 +327,7 @@ namespace HeuristicLab.SA {
       // problemInitializationTextBox
       // 
       this.problemInitializationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.problemInitializationTextBox.Location = new System.Drawing.Point(159, 199);
+      this.problemInitializationTextBox.Location = new System.Drawing.Point(159, 219);
       this.problemInitializationTextBox.Name = "problemInitializationTextBox";
       this.problemInitializationTextBox.ReadOnly = true;
       this.problemInitializationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -315,7 +337,7 @@ namespace HeuristicLab.SA {
       // 
       this.setRandomSeedRandomlyCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.setRandomSeedRandomlyCheckBox.AutoSize = true;
-      this.setRandomSeedRandomlyCheckBox.Location = new System.Drawing.Point(159, 21);
+      this.setRandomSeedRandomlyCheckBox.Location = new System.Drawing.Point(159, 15);
       this.setRandomSeedRandomlyCheckBox.Name = "setRandomSeedRandomlyCheckBox";
       this.setRandomSeedRandomlyCheckBox.Size = new System.Drawing.Size(15, 14);
       this.setRandomSeedRandomlyCheckBox.TabIndex = 1;
@@ -325,7 +347,7 @@ namespace HeuristicLab.SA {
       // 
       this.evaluationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.evaluationLabel.AutoSize = true;
-      this.evaluationLabel.Location = new System.Drawing.Point(6, 306);
+      this.evaluationLabel.Location = new System.Drawing.Point(6, 326);
       this.evaluationLabel.Name = "evaluationLabel";
       this.evaluationLabel.Size = new System.Drawing.Size(60, 13);
       this.evaluationLabel.TabIndex = 26;
@@ -335,7 +357,7 @@ namespace HeuristicLab.SA {
       // 
       this.mutationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.mutationLabel.AutoSize = true;
-      this.mutationLabel.Location = new System.Drawing.Point(6, 280);
+      this.mutationLabel.Location = new System.Drawing.Point(6, 300);
       this.mutationLabel.Name = "mutationLabel";
       this.mutationLabel.Size = new System.Drawing.Size(51, 13);
       this.mutationLabel.TabIndex = 22;
@@ -345,7 +367,7 @@ namespace HeuristicLab.SA {
       // 
       this.annealingSchemaLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.annealingSchemaLabel.AutoSize = true;
-      this.annealingSchemaLabel.Location = new System.Drawing.Point(6, 254);
+      this.annealingSchemaLabel.Location = new System.Drawing.Point(6, 274);
       this.annealingSchemaLabel.Name = "annealingSchemaLabel";
       this.annealingSchemaLabel.Size = new System.Drawing.Size(99, 13);
       this.annealingSchemaLabel.TabIndex = 18;
@@ -355,7 +377,7 @@ namespace HeuristicLab.SA {
       // 
       this.solutionGenerationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.solutionGenerationLabel.AutoSize = true;
-      this.solutionGenerationLabel.Location = new System.Drawing.Point(6, 228);
+      this.solutionGenerationLabel.Location = new System.Drawing.Point(6, 248);
       this.solutionGenerationLabel.Name = "solutionGenerationLabel";
       this.solutionGenerationLabel.Size = new System.Drawing.Size(103, 13);
       this.solutionGenerationLabel.TabIndex = 14;
@@ -365,7 +387,7 @@ namespace HeuristicLab.SA {
       // 
       this.problemInitializationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.problemInitializationLabel.AutoSize = true;
-      this.problemInitializationLabel.Location = new System.Drawing.Point(6, 202);
+      this.problemInitializationLabel.Location = new System.Drawing.Point(6, 222);
       this.problemInitializationLabel.Name = "problemInitializationLabel";
       this.problemInitializationLabel.Size = new System.Drawing.Size(105, 13);
       this.problemInitializationLabel.TabIndex = 10;
@@ -374,7 +396,7 @@ namespace HeuristicLab.SA {
       // temperatureTextBox
       // 
       this.temperatureTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.temperatureTextBox.Location = new System.Drawing.Point(159, 132);
+      this.temperatureTextBox.Location = new System.Drawing.Point(159, 126);
       this.temperatureTextBox.Name = "temperatureTextBox";
       this.temperatureTextBox.Size = new System.Drawing.Size(186, 20);
       this.temperatureTextBox.TabIndex = 9;
@@ -383,7 +405,7 @@ namespace HeuristicLab.SA {
       // 
       this.temperatureLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.temperatureLabel.AutoSize = true;
-      this.temperatureLabel.Location = new System.Drawing.Point(6, 135);
+      this.temperatureLabel.Location = new System.Drawing.Point(6, 129);
       this.temperatureLabel.Name = "temperatureLabel";
       this.temperatureLabel.Size = new System.Drawing.Size(70, 13);
       this.temperatureLabel.TabIndex = 8;
@@ -392,7 +414,7 @@ namespace HeuristicLab.SA {
       // maximumIterationEffortTextBox
       // 
       this.maximumIterationEffortTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maximumIterationEffortTextBox.Location = new System.Drawing.Point(159, 106);
+      this.maximumIterationEffortTextBox.Location = new System.Drawing.Point(159, 100);
       this.maximumIterationEffortTextBox.Name = "maximumIterationEffortTextBox";
       this.maximumIterationEffortTextBox.Size = new System.Drawing.Size(186, 20);
       this.maximumIterationEffortTextBox.TabIndex = 7;
@@ -401,7 +423,7 @@ namespace HeuristicLab.SA {
       // 
       this.maximumIterationEffortLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.maximumIterationEffortLabel.AutoSize = true;
-      this.maximumIterationEffortLabel.Location = new System.Drawing.Point(6, 109);
+      this.maximumIterationEffortLabel.Location = new System.Drawing.Point(6, 103);
       this.maximumIterationEffortLabel.Name = "maximumIterationEffortLabel";
       this.maximumIterationEffortLabel.Size = new System.Drawing.Size(141, 13);
       this.maximumIterationEffortLabel.TabIndex = 6;
@@ -410,7 +432,7 @@ namespace HeuristicLab.SA {
       // randomSeedTextBox
       // 
       this.randomSeedTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.randomSeedTextBox.Location = new System.Drawing.Point(159, 41);
+      this.randomSeedTextBox.Location = new System.Drawing.Point(159, 35);
       this.randomSeedTextBox.Name = "randomSeedTextBox";
       this.randomSeedTextBox.Size = new System.Drawing.Size(186, 20);
       this.randomSeedTextBox.TabIndex = 3;
@@ -418,7 +440,7 @@ namespace HeuristicLab.SA {
       // maximumIterationsTextBox
       // 
       this.maximumIterationsTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maximumIterationsTextBox.Location = new System.Drawing.Point(159, 80);
+      this.maximumIterationsTextBox.Location = new System.Drawing.Point(159, 74);
       this.maximumIterationsTextBox.Name = "maximumIterationsTextBox";
       this.maximumIterationsTextBox.Size = new System.Drawing.Size(186, 20);
       this.maximumIterationsTextBox.TabIndex = 5;
@@ -427,7 +449,7 @@ namespace HeuristicLab.SA {
       // 
       this.setRandomSeedRandomlyLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.setRandomSeedRandomlyLabel.AutoSize = true;
-      this.setRandomSeedRandomlyLabel.Location = new System.Drawing.Point(6, 21);
+      this.setRandomSeedRandomlyLabel.Location = new System.Drawing.Point(6, 15);
       this.setRandomSeedRandomlyLabel.Name = "setRandomSeedRandomlyLabel";
       this.setRandomSeedRandomlyLabel.Size = new System.Drawing.Size(147, 13);
       this.setRandomSeedRandomlyLabel.TabIndex = 0;
@@ -437,7 +459,7 @@ namespace HeuristicLab.SA {
       // 
       this.randomSeedLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.randomSeedLabel.AutoSize = true;
-      this.randomSeedLabel.Location = new System.Drawing.Point(6, 44);
+      this.randomSeedLabel.Location = new System.Drawing.Point(6, 38);
       this.randomSeedLabel.Name = "randomSeedLabel";
       this.randomSeedLabel.Size = new System.Drawing.Size(78, 13);
       this.randomSeedLabel.TabIndex = 2;
@@ -447,7 +469,7 @@ namespace HeuristicLab.SA {
       // 
       this.maximumIterationsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.maximumIterationsLabel.AutoSize = true;
-      this.maximumIterationsLabel.Location = new System.Drawing.Point(6, 83);
+      this.maximumIterationsLabel.Location = new System.Drawing.Point(6, 77);
       this.maximumIterationsLabel.Name = "maximumIterationsLabel";
       this.maximumIterationsLabel.Size = new System.Drawing.Size(100, 13);
       this.maximumIterationsLabel.TabIndex = 4;
@@ -459,7 +481,7 @@ namespace HeuristicLab.SA {
       this.scopesTabPage.Location = new System.Drawing.Point(4, 22);
       this.scopesTabPage.Name = "scopesTabPage";
       this.scopesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.scopesTabPage.Size = new System.Drawing.Size(518, 307);
+      this.scopesTabPage.Size = new System.Drawing.Size(465, 338);
       this.scopesTabPage.TabIndex = 2;
       this.scopesTabPage.Text = "Scopes";
       this.scopesTabPage.UseVisualStyleBackColor = true;
@@ -471,14 +493,14 @@ namespace HeuristicLab.SA {
       this.scopeView.Location = new System.Drawing.Point(3, 3);
       this.scopeView.Name = "scopeView";
       this.scopeView.Scope = null;
-      this.scopeView.Size = new System.Drawing.Size(512, 301);
+      this.scopeView.Size = new System.Drawing.Size(459, 332);
       this.scopeView.TabIndex = 0;
       // 
       // abortButton
       // 
       this.abortButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.abortButton.Enabled = false;
-      this.abortButton.Location = new System.Drawing.Point(81, 370);
+      this.abortButton.Location = new System.Drawing.Point(81, 397);
       this.abortButton.Name = "abortButton";
       this.abortButton.Size = new System.Drawing.Size(75, 23);
       this.abortButton.TabIndex = 2;
@@ -489,7 +511,7 @@ namespace HeuristicLab.SA {
       // resetButton
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Location = new System.Drawing.Point(162, 370);
+      this.resetButton.Location = new System.Drawing.Point(162, 397);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(75, 23);
       this.resetButton.TabIndex = 3;
@@ -500,7 +522,7 @@ namespace HeuristicLab.SA {
       // cloneEngineButton
       // 
       this.cloneEngineButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cloneEngineButton.Location = new System.Drawing.Point(367, 370);
+      this.cloneEngineButton.Location = new System.Drawing.Point(367, 397);
       this.cloneEngineButton.Name = "cloneEngineButton";
       this.cloneEngineButton.Size = new System.Drawing.Size(106, 23);
       this.cloneEngineButton.TabIndex = 4;
@@ -508,23 +530,23 @@ namespace HeuristicLab.SA {
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
       // 
-      // annealingParameterTextBox
+      // minimumTemperatureTextBox
       // 
-      this.annealingParameterTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.annealingParameterTextBox.Location = new System.Drawing.Point(159, 158);
-      this.annealingParameterTextBox.Name = "annealingParameterTextBox";
-      this.annealingParameterTextBox.Size = new System.Drawing.Size(186, 20);
-      this.annealingParameterTextBox.TabIndex = 31;
+      this.minimumTemperatureTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.minimumTemperatureTextBox.Location = new System.Drawing.Point(159, 152);
+      this.minimumTemperatureTextBox.Name = "minimumTemperatureTextBox";
+      this.minimumTemperatureTextBox.Size = new System.Drawing.Size(186, 20);
+      this.minimumTemperatureTextBox.TabIndex = 33;
       // 
-      // annealingParameterLabel
+      // minimumTemperatureLabel
       // 
-      this.annealingParameterLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.annealingParameterLabel.AutoSize = true;
-      this.annealingParameterLabel.Location = new System.Drawing.Point(6, 161);
-      this.annealingParameterLabel.Name = "annealingParameterLabel";
-      this.annealingParameterLabel.Size = new System.Drawing.Size(108, 13);
-      this.annealingParameterLabel.TabIndex = 30;
-      this.annealingParameterLabel.Text = "Annealing Parameter:";
+      this.minimumTemperatureLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.minimumTemperatureLabel.AutoSize = true;
+      this.minimumTemperatureLabel.Location = new System.Drawing.Point(6, 155);
+      this.minimumTemperatureLabel.Name = "minimumTemperatureLabel";
+      this.minimumTemperatureLabel.Size = new System.Drawing.Size(114, 13);
+      this.minimumTemperatureLabel.TabIndex = 32;
+      this.minimumTemperatureLabel.Text = "Minimum Temperature:";
       // 
       // SAEditor
       // 
@@ -536,7 +558,7 @@ namespace HeuristicLab.SA {
       this.Controls.Add(this.abortButton);
       this.Controls.Add(this.executeButton);
       this.Name = "SAEditor";
-      this.Size = new System.Drawing.Size(473, 393);
+      this.Size = new System.Drawing.Size(473, 420);
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.parametersTabPage.PerformLayout();
@@ -587,5 +609,7 @@ namespace HeuristicLab.SA {
     private System.Windows.Forms.Button viewProblemInitializationButton;
     private System.Windows.Forms.TextBox annealingParameterTextBox;
     private System.Windows.Forms.Label annealingParameterLabel;
+    private System.Windows.Forms.TextBox minimumTemperatureTextBox;
+    private System.Windows.Forms.Label minimumTemperatureLabel;
   }
 }

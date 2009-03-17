@@ -129,6 +129,7 @@ namespace HeuristicLab.SA {
       vi.AddVariable(new Variable("Iteration", new IntData(0)));
       vi.AddVariable(new Variable("MaximumIterations", new IntData(1000)));
       vi.AddVariable(new Variable("Temperature", new DoubleData(100)));
+      vi.AddVariable(new Variable("MinimumTemperature", new DoubleData(0)));
       vi.AddVariable(new Variable("AnnealingParameter", new DoubleData(0.95)));
       vi.AddVariable(new Variable("SuccessRatioLimit", new DoubleData(1)));
       vi.AddVariable(new Variable("MaximumIterationEffort", new DoubleData(1)));
@@ -277,10 +278,9 @@ namespace HeuristicLab.SA {
       sp.AddSubOperator(oe);
 
       GreaterThanComparator gtc = new GreaterThanComparator();
-      gtc.Name = "Temperature > 0";
+      gtc.Name = "Temperature > MinimumTemperature";
       gtc.GetVariableInfo("LeftSide").ActualName = "Temperature";
-      gtc.GetVariableInfo("RightSide").Local = true;
-      gtc.AddVariable(new Variable("RightSide", new DoubleData(0)));
+      gtc.GetVariableInfo("RightSide").ActualName = "MinimumTemperature";
       gtc.GetVariableInfo("Result").ActualName = "TemperatureCondition";
       op.OperatorGraph.AddOperator(gtc);
       sp.AddSubOperator(gtc);
@@ -403,6 +403,14 @@ namespace HeuristicLab.SA {
     public double Temperature {
       get { return myTemperature.Data; }
       set { myTemperature.Data = value; }
+    }
+    private DoubleData myMinimumTemperature;
+    /// <summary>
+    /// Gets or sets the minimum temperature.
+    /// </summary>
+    public double MinimumTemperature {
+      get { return myMinimumTemperature.Data; }
+      set { myMinimumTemperature.Data = value; }
     }
     private DoubleData myAnnealingParameter;
     /// <summary>
@@ -546,6 +554,7 @@ namespace HeuristicLab.SA {
       myMaximumIterations = vi.GetVariable("MaximumIterations").GetValue<IntData>();
       myMaximumIterationEffort = vi.GetVariable("MaximumIterationEffort").GetValue<DoubleData>();
       myTemperature = vi.GetVariable("Temperature").GetValue<DoubleData>();
+      myMinimumTemperature = vi.GetVariable("MinimumTemperature").GetValue<DoubleData>();
       myAnnealingParameter = vi.GetVariable("AnnealingParameter").GetValue<DoubleData>();
       // Population Initialization
       CombinedOperator co3 = (CombinedOperator)sp1.SubOperators[1];
