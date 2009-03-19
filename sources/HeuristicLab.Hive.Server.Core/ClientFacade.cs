@@ -39,21 +39,21 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.Login(clientInfo);
     }
 
-    public ResponseHB SendHeartBeat(HeartBeatData hbData) {
-      return clientCommunicator.SendHeartBeat(hbData);
+    public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
+      return clientCommunicator.ProcessHeartBeat(hbData);
     }
 
-    public ResponseJob PullJob(Guid clientId) {
-      return clientCommunicator.PullJob(clientId);
+    public ResponseJob SendJob(Guid clientId) {
+      return clientCommunicator.SendJob(clientId);
     }
 
-    public ResponseResultReceived SendJobResult(Guid clientId,
+    public ResponseResultReceived ProcessJobResult(Guid clientId,
       long jobId,
       byte[] result,
       double percentage, 
       Exception exception,
       bool finished) {
-      return clientCommunicator.SendJobResult(clientId, jobId, result, percentage, exception, finished);
+      return clientCommunicator.ProcessJobResult(clientId, jobId, result, percentage, exception, finished);
     }
 
     public Response Logout(Guid clientId) {

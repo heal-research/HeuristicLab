@@ -35,11 +35,11 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response Login(ClientInfo clientInfo);
     [OperationContract]
-    ResponseHB SendHeartBeat(HeartBeatData hbData);
+    ResponseHB ProcessHeartBeat(HeartBeatData hbData);
     [OperationContract]
-    ResponseJob PullJob(Guid clientId);
+    ResponseJob SendJob(Guid clientId);
     [OperationContract]
-    ResponseResultReceived SendJobResult(Guid clientId, 
+    ResponseResultReceived ProcessJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
       double percentage,

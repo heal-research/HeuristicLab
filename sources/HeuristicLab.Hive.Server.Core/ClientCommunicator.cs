@@ -167,7 +167,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="hbData"></param>
     /// <returns></returns>
     // todo: new name for "SendHeartBeat" e.g. ProcessHeartBeat
-    public ResponseHB SendHeartBeat(HeartBeatData hbData) {
+    public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
 
       response.ActionRequest = new List<MessageContainer>();
@@ -223,7 +223,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    public ResponseJob PullJob(Guid clientId) {
+    public ResponseJob SendJob(Guid clientId) {
       ResponseJob response = new ResponseJob();
 
       Job job2Calculate = scheduler.GetNextJobForClient(clientId);
@@ -250,7 +250,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="exception"></param>
     /// <param name="finished"></param>
     /// <returns></returns>
-    public ResponseResultReceived SendJobResult(Guid clientId, 
+    public ResponseResultReceived ProcessJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
       double percentage,
