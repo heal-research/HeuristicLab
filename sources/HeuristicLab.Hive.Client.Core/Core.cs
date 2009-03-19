@@ -68,7 +68,7 @@ namespace HeuristicLab.Hive.Client.Core {
       Core.Locker = new Object();
       abortRequested = false;
 
-      Logging.GetInstance().Info(this.ToString(), "Hive Client started");
+      Logging.Instance.Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
 
@@ -101,7 +101,7 @@ namespace HeuristicLab.Hive.Client.Core {
       while (!abortRequested) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
-        Logging.GetInstance().Info(this.ToString(), container.Message.ToString());
+        Logging.Instance.Info(this.ToString(), container.Message.ToString());
         DetermineAction(container);
       }
     }
@@ -174,7 +174,7 @@ namespace HeuristicLab.Hive.Client.Core {
         }
       }
       catch (InvalidStateException ise) {
-        Logging.GetInstance().Error(this.ToString(), "Exception: ", ise);
+        Logging.Instance.Error(this.ToString(), "Exception: ", ise);
       }
     }
 
@@ -196,9 +196,9 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
-        Logging.GetInstance().Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);        
+        Logging.Instance.Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);        
       } else
-        Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
+        Logging.Instance.Error(this.ToString(), e.Result.StatusMessage);
     }    
 
     void wcfService_PullJobCompleted(object sender, SendJobCompletedEventArgs e) {
@@ -235,7 +235,7 @@ namespace HeuristicLab.Hive.Client.Core {
           //this method has a risk concerning race conditions.
           //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
           if (e.Result.finished == false) {
-            Logging.GetInstance().Info(this.ToString(), "Snapshot for Job " + e.Result.JobId + " transmitted");
+            Logging.Instance.Info(this.ToString(), "Snapshot for Job " + e.Result.JobId + " transmitted");
           } else {
             AppDomain.Unload(appDomains[e.Result.JobId]);
             appDomains.Remove(e.Result.JobId);
@@ -245,15 +245,14 @@ namespace HeuristicLab.Hive.Client.Core {
             Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
           }
         }        
-      } else {
-        //Todo: don't Java Style! IT'S EVIL!
-        Logging.GetInstance().Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
+      } else {        
+        Logging.Instance.Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
       }
     }
 
     //Todo: First stop all threads, then terminate
     void wcfService_ServerChanged(object sender, EventArgs e) {
-      Logging.GetInstance().Info(this.ToString(), "ServerChanged has been called");
+      Logging.Instance.Info(this.ToString(), "ServerChanged has been called");
       lock (Locker) {
         foreach (KeyValuePair<long, AppDomain> entries in appDomains)
           AppDomain.Unload(appDomains[entries.Key]);
@@ -269,11 +268,11 @@ namespace HeuristicLab.Hive.Client.Core {
 
     //this is a little bit tricky - 
     void wcfService_ConnectionRestored(object sender, EventArgs e) {
-      Logging.GetInstance().Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");                 
+      Logging.Instance.Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");                 
 
       foreach (KeyValuePair<long, Executor> execKVP in engines) {
         if (!execKVP.Value.Running && execKVP.Value.CurrentMessage == MessageContainer.MessageType.NoMessage) {
-          Logging.GetInstance().Info(this.ToString(), "Checking for JobId: " + execKVP.Value.JobId);
+          Logging.Instance.Info(this.ToString(), "Checking for JobId: " + execKVP.Value.JobId);
           Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
           finThread.Start(execKVP.Value.JobId);
         }
@@ -287,7 +286,7 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void appDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-      Logging.GetInstance().Error(this.ToString(), " Exception: " + e.ExceptionObject.ToString());
+      Logging.Instance.Error(this.ToString(), " Exception: " + e.ExceptionObject.ToString());
     }
   }
 }

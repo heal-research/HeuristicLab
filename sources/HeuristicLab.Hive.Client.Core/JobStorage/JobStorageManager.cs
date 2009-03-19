@@ -27,11 +27,10 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         jobstream.Write(job, 0, job.Length);
         storedJobsList.Add(info);
         jobstream.Close();
-        Logging.GetInstance().Info("JobStorrageManager", "Job " + info.JobID + " stored on the harddisc");
+        Logging.Instance.Info("JobStorageManager", "Job " + info.JobID + " stored on the harddisc");
       }
       catch (Exception e) {
-        //Todo: Change to logging.exception!
-        Console.WriteLine(e);
+        Logging.Instance.Error("JobStorageManager", "Exception: ", e);
       }       
     }
 
@@ -39,14 +38,14 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
       for(int index=storedJobsList.Count; index > 0; index--) {
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin && (storedJobsList[index-1].ServerIP == WcfService.Instance.ServerIP && storedJobsList[index-1].ServerPort == WcfService.Instance.ServerPort)) {
           String filename = storedJobsList[index-1].ServerIP + "." + storedJobsList[index-1].ServerPort + "." + storedJobsList[index-1].JobID.ToString();
-          Logging.GetInstance().Info("JobStorrageManager", "Sending stored job " + storedJobsList[index-1].JobID + " to the server");
+          Logging.Instance.Info("JobStorrageManager", "Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
           byte[] job = File.ReadAllBytes(path + filename + ".dat");
           
           //Todo: ask server first if he really wants the job...
           ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().ClientId, storedJobsList[index-1].JobID, job, 1.00, null, true);
           //TODO: has to be fixed from server side
           //if (res.Success == true) {
-          Logging.GetInstance().Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");  
+          Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");  
           storedJobsList.Remove(storedJobsList[index - 1]);
           File.Delete(path + filename + ".dat");
             

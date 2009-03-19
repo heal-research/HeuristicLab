@@ -92,9 +92,8 @@ namespace HeuristicLab.Hive.Client.Communication {
         if (ConnState == NetworkEnum.WcfConnState.Failed)
           ConnectionRestored(this, new EventArgs());        
       }
-      catch (Exception ex) {
-        //Todo: Rename to HandleNetworkError
-        NetworkErrorHandling(ex);
+      catch (Exception ex) {      
+        HandleNetworkError(ex);
       }
     }
 
@@ -125,9 +124,9 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Network communication Error Handler - Every network error gets logged and the connection switches to faulted state
     /// </summary>
     /// <param name="e">The Exception</param>
-    private void NetworkErrorHandling(Exception e) {
+    private void HandleNetworkError(Exception e) {
       ConnState = NetworkEnum.WcfConnState.Failed;
-      Logging.GetInstance().Error(this.ToString(), "exception: ", e);
+      Logging.Instance.Error(this.ToString(), "exception: ", e);
     }
 
     
@@ -145,7 +144,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (e.Error == null)
         LoginCompleted(sender, e);
       else
-        NetworkErrorHandling(e.Error.InnerException);
+        HandleNetworkError(e.Error.InnerException);
     }
 
     public void LoginSync(ClientInfo clientInfo) {
@@ -153,11 +152,11 @@ namespace HeuristicLab.Hive.Client.Communication {
         if (ConnState == NetworkEnum.WcfConnState.Connected) {
           Response res = proxy.Login(clientInfo);
           ConnState = NetworkEnum.WcfConnState.Loggedin;
-          Logging.GetInstance().Info(this.ToString(), res.StatusMessage);
+          Logging.Instance.Info(this.ToString(), res.StatusMessage);
         }
       }
       catch (Exception e) {
-        NetworkErrorHandling(e);
+        HandleNetworkError(e);
       }
     }
 
@@ -176,7 +175,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (e.Error == null)
         SendJobCompleted(sender, e);
       else
-        NetworkErrorHandling(e.Error);
+        HandleNetworkError(e.Error);
     }
     #endregion
 
@@ -193,7 +192,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (e.Error == null)
         ProcessJobResultCompleted(sender, e);
       else
-        NetworkErrorHandling(e.Error);
+        HandleNetworkError(e.Error);
     }
 
     #endregion
@@ -213,7 +212,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (e.Error == null)
         SendHeartBeatCompleted(sender, e);
       else
-        NetworkErrorHandling(e.Error);
+        HandleNetworkError(e.Error);
     }
 
     #endregion  
