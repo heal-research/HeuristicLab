@@ -42,7 +42,7 @@ using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication.ServerService;
 using HeuristicLab.Hive.JobBase;
-using HeuristicLab.Hive.Client.Core.JobStorrage;
+using HeuristicLab.Hive.Client.Core.JobStorage;
 
 
 namespace HeuristicLab.Hive.Client.Core {
@@ -167,7 +167,7 @@ namespace HeuristicLab.Hive.Client.Core {
           true);
       } else {
         //Todo: locking
-        JobStorrageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
+        JobStorageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
         AppDomain.Unload(appDomains[jId]);
         appDomains.Remove(jId);
         engines.Remove(jId);
@@ -262,7 +262,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_Connected(object sender, EventArgs e) {
       wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
-      JobStorrageManager.CheckAndSubmitJobsFromDisc();
+      JobStorageManager.CheckAndSubmitJobsFromDisc();
     }
 
     //this is a little bit tricky - 

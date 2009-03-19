@@ -8,10 +8,10 @@ using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Contracts;
 
-namespace HeuristicLab.Hive.Client.Core.JobStorrage {
-  public class JobStorrageManager {
+namespace HeuristicLab.Hive.Client.Core.JobStorage {
+  public class JobStorageManager {
     
-    private static List<JobStorrageInfo> storedJobsList = new List<JobStorrageInfo>();
+    private static List<JobStorageInfo> storedJobsList = new List<JobStorageInfo>();
     //Todo: execution path
     //Todo: Choose a better directory name 
     private static String path = "C:\\Program Files\\HeuristicLab 3.0\\plugins\\jobStorrage\\";
@@ -19,7 +19,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorrage {
     public static void PersistObjectToDisc(String serverIP, long serverPort, long jobId, byte[] job) {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
 
-      JobStorrageInfo info = new JobStorrageInfo { JobID = jobId, ServerIP = serverIP, ServerPort = serverPort, TimeFinished = DateTime.Now };
+      JobStorageInfo info = new JobStorageInfo { JobID = jobId, ServerIP = serverIP, ServerPort = serverPort, TimeFinished = DateTime.Now };
       
       //Todo: Filestream won't be closed if exception occurs
       try {
