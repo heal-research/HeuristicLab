@@ -45,13 +45,12 @@ namespace HeuristicLab.Hive.Server.Core {
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-    // todo: access modifier!
-    IClientAdapter clientAdapter;
-    IJobAdapter jobAdapter;
-    IJobResultsAdapter jobResultAdapter;
-    ILifecycleManager lifecycleManager;
-    IInternalJobManager jobManager;
-    IScheduler scheduler;
+    private IClientAdapter clientAdapter;
+    private IJobAdapter jobAdapter;
+    private IJobResultsAdapter jobResultAdapter;
+    private ILifecycleManager lifecycleManager;
+    private IInternalJobManager jobManager;
+    private IScheduler scheduler;
 
     /// <summary>
     /// Initialization of the Adapters to the database
@@ -144,7 +143,6 @@ namespace HeuristicLab.Hive.Server.Core {
       heartbeatLock.ExitWriteLock();
 
       // todo: allClients legacy ?
-      ICollection<ClientInfo> allClients = clientAdapter.GetAll();
       ClientInfo client = clientAdapter.GetById(clientInfo.ClientId);
       if (client != null && client.State != State.offline && client.State != State.nullState) {
         response.Success = false;
@@ -166,10 +164,10 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="hbData"></param>
     /// <returns></returns>
-    // todo: new name for "SendHeartBeat" e.g. ProcessHeartBeat
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
       ResponseHB response = new ResponseHB();
 
+      // check if the client is logged in
       response.ActionRequest = new List<MessageContainer>();
       if (clientAdapter.GetById(hbData.ClientId).State == State.offline ||
           clientAdapter.GetById(hbData.ClientId).State == State.nullState) {
@@ -179,6 +177,7 @@ namespace HeuristicLab.Hive.Server.Core {
         return response;
       }
 
+      // save timestamp of this heartbeat
       heartbeatLock.EnterWriteLock();
       if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
         lastHeartbeats[hbData.ClientId] = DateTime.Now;
@@ -189,6 +188,8 @@ namespace HeuristicLab.Hive.Server.Core {
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
+      // check if client has a free core for a new job
+      // if true, ask scheduler for a new job for this client
       if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData))
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
@@ -207,7 +208,12 @@ namespace HeuristicLab.Hive.Server.Core {
           if (curJob.Client == null || curJob.Client.ClientId != hbData.ClientId) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          } else if(curJob.State == State.finished) {
+            // another client has finished this job allready
+            // the client can abort it
+            response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));        
           } else {
+            // save job progress
             curJob.Percentage = jobProgress.Value;
             jobAdapter.Update(curJob);
           }
@@ -277,6 +283,11 @@ namespace HeuristicLab.Hive.Server.Core {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
         return response;
+      }
+      if (job.State == State.finished) {
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
+        return response;        
       }
       if (job.State != State.calculating) {
         response.Success = false;
@@ -355,6 +366,37 @@ namespace HeuristicLab.Hive.Server.Core {
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
       
       return response;
+    }
+
+    /// <summary>
+    /// If a client goes offline and restores a job he was calculating 
+    /// he can ask the client if he still needs the job result
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    public Response IsJobStillNeeded(long jobId) {
+      Response response = new Response();
+      Job job = jobAdapter.GetById(jobId);
+      if (job == null) {
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST;
+        return response;
+      }
+      if (job.State == State.finished) {
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED;
+        return response;
+      }
+      job.State = State.finished;
+      jobAdapter.Update(job);
+      
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
+      return response;
+    }
+
+    public ResponsePlugin SendPlugins(List<string> pluginList) {
+      throw new NotImplementedException();
     }
 
     #endregion

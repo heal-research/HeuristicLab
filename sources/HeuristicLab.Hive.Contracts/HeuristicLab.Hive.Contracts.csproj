@@ -102,6 +102,7 @@
     <Compile Include="Response.cs" />
     <Compile Include="ResponseHB.cs" />
     <Compile Include="ResponseList.cs" />
+    <Compile Include="ResponsePlugin.cs" />
     <Compile Include="ResponseResultReceived.cs" />
   </ItemGroup>
   <ItemGroup>

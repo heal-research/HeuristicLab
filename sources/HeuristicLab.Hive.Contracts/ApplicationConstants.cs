@@ -72,6 +72,9 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN = "Communicator.UserNotLoggedIn";
     public static string RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED = "Communicator.JobIsNotBeenigCalculated";
     public static string RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB = "Communicator.WrongClientForJob";
+    public static string RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED = "Job allready finished. Not needed anymore";
+    public static string RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST = "No job exists with this id";
+    public static string RESPONSE_COMMUNICATOR_SEND_JOBRESULT = "Please send the Jobresult to the server";
 
     public static string RESPONSE_JOB_ALL_JOBS = "Job.AllJobs";
     public static string RESPONSE_JOB_ID_MUST_NOT_BE_SET = "Job.IdMustNotBeSet";

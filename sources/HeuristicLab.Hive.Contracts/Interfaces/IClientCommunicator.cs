@@ -47,5 +47,9 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
       bool finished);
     [OperationContract]
     Response Logout(Guid clientId);
+    [OperationContract]
+    Response IsJobStillNeeded(long jobId);
+    [OperationContract]
+    ResponsePlugin SendPlugins(List<String> pluginList);
   }
 }

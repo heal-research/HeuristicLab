@@ -60,6 +60,14 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.Logout(clientId);
     }
 
+    public Response IsJobStillNeeded(long jobId) {
+      return clientCommunicator.IsJobStillNeeded(jobId);
+    }
+
+    public ResponsePlugin SendPlugins(List<string> pluginList) {
+      return clientCommunicator.SendPlugins(pluginList);
+    }
+
     #endregion
   }
 }
