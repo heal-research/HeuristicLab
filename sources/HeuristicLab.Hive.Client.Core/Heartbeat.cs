@@ -72,13 +72,13 @@ namespace HeuristicLab.Hive.Client.Core {
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");  
       ClientInfo info = ConfigManager.Instance.GetClientInfo();
-      // Todo: remove tempfix for free cores. Fix spelling of freeCores (uppercase)
+      // Todo: remove tempfix for free cores.
 
       HeartBeatData heartBeatData = new HeartBeatData {
         ClientId = info.ClientId,
-        freeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
-        freeMemory = 1000,
-        jobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
+        FreeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
+        FreeMemory = 1000,
+        JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
       };
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();

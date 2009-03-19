@@ -32,10 +32,10 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public Guid ClientId { get; set; }
     [DataMember]
-    public int freeMemory { get; set; }
+    public int FreeMemory { get; set; }
     [DataMember]
-    public int freeCores { get; set; }
+    public int FreeCores { get; set; }
     [DataMember]
-    public Dictionary<long, double> jobProgress { get; set; } // TODO: define Type 
+    public Dictionary<long, double> JobProgress { get; set; } // TODO: define Type 
   }
 }

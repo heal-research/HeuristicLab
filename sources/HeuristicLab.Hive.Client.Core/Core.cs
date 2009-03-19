@@ -50,16 +50,13 @@ namespace HeuristicLab.Hive.Client.Core {
   /// The core component of the Hive Client
   /// </summary>
   public class Core: MarshalByRefObject {
-    public delegate string GetASnapshotDelegate();
-    //Todo: private + getter/setter removen.
-    public static Object Locker { get; set; }
-    //Todo: ev. Rename to "abortRequested"
-    public static bool ShutdownFlag { get; set; }
-    
-    //Todo: Access modifier
-    Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
-    Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
-    Dictionary<long, Job> jobs = new Dictionary<long, Job>();
+    //Todo: Ask wagner
+    public static Object Locker { get; set; }    
+    public static bool abortRequested { get; set; }
+        
+    private Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
+    private Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
+    private Dictionary<long, Job> jobs = new Dictionary<long, Job>();
 
     private WcfService wcfService;
     private Heartbeat beat;
@@ -69,7 +66,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// </summary>
     public void Start() {
       Core.Locker = new Object();
-      ShutdownFlag = false;
+      abortRequested = false;
 
       Logging.GetInstance().Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
@@ -100,7 +97,8 @@ namespace HeuristicLab.Hive.Client.Core {
       
       //Main processing loop     
       //Todo: own thread for message handling
-      while (!ShutdownFlag) {
+      //Rly?!
+      while (!abortRequested) {
         MessageContainer container = queue.GetMessage();
         Debug.WriteLine("Main loop received this message: " + container.Message.ToString());
         Logging.GetInstance().Info(this.ToString(), container.Message.ToString());
@@ -112,9 +110,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// Reads and analyzes the Messages from the MessageQueue and starts corresponding actions
     /// </summary>
     /// <param name="container">The Container, containing the message</param>
-    private void DetermineAction(MessageContainer container) {
-      //Todo: Threads aus Threadpool verwenden
-      
+    private void DetermineAction(MessageContainer container) {           
       switch (container.Message) {
         //Server requests to abort a job
         case MessageContainer.MessageType.AbortJob:
@@ -130,8 +126,9 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:
-          Thread ssr = new Thread(new ParameterizedThreadStart(GetSnapshot));
-          ssr.Start(container.JobId);          
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);
+          //Thread ssr = new Thread(new ParameterizedThreadStart(GetSnapshot));
+          //ssr.Start(container.JobId);          
           break;
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
@@ -139,12 +136,13 @@ namespace HeuristicLab.Hive.Client.Core {
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
-          Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
-          finThread.Start(container.JobId);          
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);
+          //Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
+          //finThread.Start(container.JobId);          
           break;     
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
-          ShutdownFlag = true;
+          abortRequested = true;
           beat.StopHeartBeat();
           break;
       }
@@ -154,24 +152,29 @@ namespace HeuristicLab.Hive.Client.Core {
     #region Async Threads for the EE
     
     private void GetFinishedJob(object jobId) {
-      long jId = (long)jobId;
-      //Todo: Don't return null, throw exception!
-      byte[] sJob = engines[jId].GetFinishedJob();
+      long jId = (long)jobId;      
+      try {
+        byte[] sJob = engines[jId].GetFinishedJob();
 
-      if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
-        wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
-          jId,
-          sJob,
-          1,
-          null,
-          true);
-      } else {
-        //Todo: locking
-        JobStorageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
-        AppDomain.Unload(appDomains[jId]);
-        appDomains.Remove(jId);
-        engines.Remove(jId);
-        jobs.Remove(jId);
+        if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
+          wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+            jId,
+            sJob,
+            1,
+            null,
+            true);
+        } else {          
+          JobStorageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
+          lock (Core.Locker) {
+            AppDomain.Unload(appDomains[jId]);
+            appDomains.Remove(jId);
+            engines.Remove(jId);
+            jobs.Remove(jId);
+          }
+        }
+      }
+      catch (InvalidStateException ise) {
+        Logging.GetInstance().Error(this.ToString(), "Exception: ", ise);
       }
     }
 
@@ -223,8 +226,7 @@ namespace HeuristicLab.Hive.Client.Core {
         }
       }
     }
-
-    //Todo: Remove intellgent stuff from the async event and move it to the main thread (message queue)
+    
     //Todo: Seperate this method into 2: Finished jobs and Snapshots
     void wcfService_SendJobResultCompleted(object sender, ProcessJobResultCompletedEventArgs e) {
       if (e.Result.Success) {        

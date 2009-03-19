@@ -189,12 +189,12 @@ namespace HeuristicLab.Hive.Server.Core {
 
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
-      if (hbData.freeCores > 0 && scheduler.ExistsJobForClient(hbData))
+      if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData))
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
       else
         response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
-      if (hbData.jobProgress != null) {
+      if (hbData.JobProgress != null) {
         List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
@@ -202,7 +202,7 @@ namespace HeuristicLab.Hive.Server.Core {
           return response;
         }
 
-        foreach (KeyValuePair<long, double> jobProgress in hbData.jobProgress) {
+        foreach (KeyValuePair<long, double> jobProgress in hbData.JobProgress) {
           Job curJob = jobAdapter.GetById(jobProgress.Key);
           if (curJob.Client == null || curJob.Client.ClientId != hbData.ClientId) {
             response.Success = false;

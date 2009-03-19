@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Executor.cs" />
     <Compile Include="ExecutionEnginePlugin.cs" />
+    <Compile Include="InvalidStateException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

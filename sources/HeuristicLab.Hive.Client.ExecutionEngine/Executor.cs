@@ -92,7 +92,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     public byte[] GetFinishedJob() {
       //Job isn't finished!
       if (Job.Running) {
-        return null;
+        throw new InvalidStateException("Job is still running");
       } else {
         return SerializeJobObject();
       }
