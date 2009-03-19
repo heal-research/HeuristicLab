@@ -81,8 +81,8 @@ namespace HeuristicLab.Hive.Client.Core {
       //Register all Wcf Service references
       wcfService = WcfService.Instance;
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
-      wcfService.PullJobCompleted += new EventHandler<SendJobCompletedEventArgs>(wcfService_PullJobCompleted);
-      wcfService.SendJobResultCompleted += new EventHandler<ProcessJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.SendJobCompleted += new EventHandler<SendJobCompletedEventArgs>(wcfService_PullJobCompleted);
+      wcfService.ProcessJobResultCompleted += new EventHandler<ProcessJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
       wcfService.Connected += new EventHandler(wcfService_Connected);
@@ -135,7 +135,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
-          wcfService.PullJobAsync(ConfigManager.Instance.GetClientInfo().ClientId);
+          wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().ClientId);
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
@@ -159,7 +159,7 @@ namespace HeuristicLab.Hive.Client.Core {
       byte[] sJob = engines[jId].GetFinishedJob();
 
       if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
-        wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+        wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
           jId,
           sJob,
           1,
@@ -178,7 +178,7 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetSnapshot(object jobId) {
       long jId = (long)jobId;
       byte[] obj = engines[jId].GetSnapshot();
-      wcfService.SendJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+      wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
         jId,
         obj,
         engines[jId].Progress,

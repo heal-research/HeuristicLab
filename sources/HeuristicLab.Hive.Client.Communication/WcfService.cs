@@ -167,14 +167,14 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Pull a Job from the Server
     /// </summary>
     #region PullJob
-    public event System.EventHandler<SendJobCompletedEventArgs> PullJobCompleted;
-    public void PullJobAsync(Guid guid) {
+    public event System.EventHandler<SendJobCompletedEventArgs> SendJobCompleted;
+    public void SendJobAsync(Guid guid) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)        
         proxy.SendJobAsync(guid);
     }
     void proxy_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
       if (e.Error == null)
-        PullJobCompleted(sender, e);
+        SendJobCompleted(sender, e);
       else
         NetworkErrorHandling(e.Error);
     }
@@ -184,14 +184,14 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Send back finished Job Results
     /// </summary>
     #region SendJobResults
-    public event System.EventHandler<ProcessJobResultCompletedEventArgs> SendJobResultCompleted;
-    public void SendJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
+    public event System.EventHandler<ProcessJobResultCompletedEventArgs> ProcessJobResultCompleted;
+    public void ProcessJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)
         proxy.ProcessJobResultAsync(clientId, jobId, result, percentage, exception, finished);
     }
     private void proxy_ProcessJobResultCompleted(object sender, ProcessJobResultCompletedEventArgs e) {
       if (e.Error == null)
-        SendJobResultCompleted(sender, e);
+        ProcessJobResultCompleted(sender, e);
       else
         NetworkErrorHandling(e.Error);
     }
@@ -222,8 +222,8 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Send back finished and Stored Job Results
     /// </summary>
     #region SendJobResults
-    public event System.EventHandler<ProcessJobResultCompletedEventArgs> SendStoredJobResultCompleted;
-    public void SendStoredJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
+    public event System.EventHandler<ProcessJobResultCompletedEventArgs> ProcessStoredJobResultCompleted;
+    public void ProcessStoredJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)
         //TODO: some sort of algo for the stored jobs
         proxy.ProcessJobResultAsync(clientId, jobId, result, percentage, exception, finished);
