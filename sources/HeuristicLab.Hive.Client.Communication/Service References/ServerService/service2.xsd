@@ -18,35 +18,35 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendHeartBeat">
+  <xs:element name="ProcessHeartBeat">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" minOccurs="0" name="hbData" nillable="true" type="q3:HeartBeatData" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendHeartBeatResponse">
+  <xs:element name="ProcessHeartBeatResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="SendHeartBeatResult" nillable="true" type="q4:ResponseHB" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="ProcessHeartBeatResult" nillable="true" type="q4:ResponseHB" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="PullJob">
+  <xs:element name="SendJob">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q5:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="PullJobResponse">
+  <xs:element name="SendJobResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="PullJobResult" nillable="true" type="q6:ResponseJob" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="SendJobResult" nillable="true" type="q6:ResponseJob" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendJobResult">
+  <xs:element name="ProcessJobResult">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q7:guid" />
@@ -58,10 +58,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="SendJobResultResponse">
+  <xs:element name="ProcessJobResultResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="SendJobResultResult" nillable="true" type="q9:ResponseResultReceived" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="ProcessJobResultResult" nillable="true" type="q9:ResponseResultReceived" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

@@ -26,29 +26,29 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         HeuristicLab.Hive.Contracts.Response EndLogin(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendHeartBeat", ReplyAction="http://tempuri.org/IClientCommunicator/SendHeartBeatResponse")]
-        HeuristicLab.Hive.Contracts.ResponseHB SendHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeat", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessHeartBeatResponse")]
+        HeuristicLab.Hive.Contracts.ResponseHB ProcessHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendHeartBeat", ReplyAction="http://tempuri.org/IClientCommunicator/SendHeartBeatResponse")]
-        System.IAsyncResult BeginSendHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeat", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessHeartBeatResponse")]
+        System.IAsyncResult BeginProcessHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, System.AsyncCallback callback, object asyncState);
         
-        HeuristicLab.Hive.Contracts.ResponseHB EndSendHeartBeat(System.IAsyncResult result);
+        HeuristicLab.Hive.Contracts.ResponseHB EndProcessHeartBeat(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/PullJob", ReplyAction="http://tempuri.org/IClientCommunicator/PullJobResponse")]
-        HeuristicLab.Hive.Contracts.ResponseJob PullJob(System.Guid clientId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendJob", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResponse")]
+        HeuristicLab.Hive.Contracts.ResponseJob SendJob(System.Guid clientId);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/PullJob", ReplyAction="http://tempuri.org/IClientCommunicator/PullJobResponse")]
-        System.IAsyncResult BeginPullJob(System.Guid clientId, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendJob", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResponse")]
+        System.IAsyncResult BeginSendJob(System.Guid clientId, System.AsyncCallback callback, object asyncState);
         
-        HeuristicLab.Hive.Contracts.ResponseJob EndPullJob(System.IAsyncResult result);
+        HeuristicLab.Hive.Contracts.ResponseJob EndSendJob(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/ProcessJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessJobResultResponse")]
+        HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/SendJobResultResponse")]
-        System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/ProcessJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessJobResultResponse")]
+        System.IAsyncResult BeginProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState);
         
-        HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result);
+        HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessJobResult(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/Logout", ReplyAction="http://tempuri.org/IClientCommunicator/LogoutResponse")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseHB))]
@@ -87,11 +87,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class SendHeartBeatCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class ProcessHeartBeatCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public SendHeartBeatCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public ProcessHeartBeatCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -106,11 +106,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class PullJobCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class SendJobCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public PullJobCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public SendJobCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -125,11 +125,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class SendJobResultCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class ProcessJobResultCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public SendJobResultCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public ProcessJobResultCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -171,23 +171,23 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         private System.Threading.SendOrPostCallback onLoginCompletedDelegate;
         
-        private BeginOperationDelegate onBeginSendHeartBeatDelegate;
+        private BeginOperationDelegate onBeginProcessHeartBeatDelegate;
         
-        private EndOperationDelegate onEndSendHeartBeatDelegate;
+        private EndOperationDelegate onEndProcessHeartBeatDelegate;
         
-        private System.Threading.SendOrPostCallback onSendHeartBeatCompletedDelegate;
+        private System.Threading.SendOrPostCallback onProcessHeartBeatCompletedDelegate;
         
-        private BeginOperationDelegate onBeginPullJobDelegate;
+        private BeginOperationDelegate onBeginSendJobDelegate;
         
-        private EndOperationDelegate onEndPullJobDelegate;
+        private EndOperationDelegate onEndSendJobDelegate;
         
-        private System.Threading.SendOrPostCallback onPullJobCompletedDelegate;
+        private System.Threading.SendOrPostCallback onSendJobCompletedDelegate;
         
-        private BeginOperationDelegate onBeginSendJobResultDelegate;
+        private BeginOperationDelegate onBeginProcessJobResultDelegate;
         
-        private EndOperationDelegate onEndSendJobResultDelegate;
+        private EndOperationDelegate onEndProcessJobResultDelegate;
         
-        private System.Threading.SendOrPostCallback onSendJobResultCompletedDelegate;
+        private System.Threading.SendOrPostCallback onProcessJobResultCompletedDelegate;
         
         private BeginOperationDelegate onBeginLogoutDelegate;
         
@@ -216,11 +216,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         public event System.EventHandler<LoginCompletedEventArgs> LoginCompleted;
         
-        public event System.EventHandler<SendHeartBeatCompletedEventArgs> SendHeartBeatCompleted;
+        public event System.EventHandler<ProcessHeartBeatCompletedEventArgs> ProcessHeartBeatCompleted;
         
-        public event System.EventHandler<PullJobCompletedEventArgs> PullJobCompleted;
+        public event System.EventHandler<SendJobCompletedEventArgs> SendJobCompleted;
         
-        public event System.EventHandler<SendJobResultCompletedEventArgs> SendJobResultCompleted;
+        public event System.EventHandler<ProcessJobResultCompletedEventArgs> ProcessJobResultCompleted;
         
         public event System.EventHandler<LogoutCompletedEventArgs> LogoutCompleted;
         
@@ -274,164 +274,164 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         clientInfo}, this.onEndLoginDelegate, this.onLoginCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseHB SendHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData) {
-            return base.Channel.SendHeartBeat(hbData);
+        public HeuristicLab.Hive.Contracts.ResponseHB ProcessHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData) {
+            return base.Channel.ProcessHeartBeat(hbData);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginSendHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSendHeartBeat(hbData, callback, asyncState);
+        public System.IAsyncResult BeginProcessHeartBeat(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginProcessHeartBeat(hbData, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public HeuristicLab.Hive.Contracts.ResponseHB EndSendHeartBeat(System.IAsyncResult result) {
-            return base.Channel.EndSendHeartBeat(result);
+        public HeuristicLab.Hive.Contracts.ResponseHB EndProcessHeartBeat(System.IAsyncResult result) {
+            return base.Channel.EndProcessHeartBeat(result);
         }
         
-        private System.IAsyncResult OnBeginSendHeartBeat(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginProcessHeartBeat(object[] inValues, System.AsyncCallback callback, object asyncState) {
             HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData = ((HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData)(inValues[0]));
-            return this.BeginSendHeartBeat(hbData, callback, asyncState);
+            return this.BeginProcessHeartBeat(hbData, callback, asyncState);
         }
         
-        private object[] OnEndSendHeartBeat(System.IAsyncResult result) {
-            HeuristicLab.Hive.Contracts.ResponseHB retVal = this.EndSendHeartBeat(result);
+        private object[] OnEndProcessHeartBeat(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponseHB retVal = this.EndProcessHeartBeat(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnSendHeartBeatCompleted(object state) {
-            if ((this.SendHeartBeatCompleted != null)) {
+        private void OnProcessHeartBeatCompleted(object state) {
+            if ((this.ProcessHeartBeatCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.SendHeartBeatCompleted(this, new SendHeartBeatCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.ProcessHeartBeatCompleted(this, new ProcessHeartBeatCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void SendHeartBeatAsync(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData) {
-            this.SendHeartBeatAsync(hbData, null);
+        public void ProcessHeartBeatAsync(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData) {
+            this.ProcessHeartBeatAsync(hbData, null);
         }
         
-        public void SendHeartBeatAsync(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, object userState) {
-            if ((this.onBeginSendHeartBeatDelegate == null)) {
-                this.onBeginSendHeartBeatDelegate = new BeginOperationDelegate(this.OnBeginSendHeartBeat);
+        public void ProcessHeartBeatAsync(HeuristicLab.Hive.Contracts.BusinessObjects.HeartBeatData hbData, object userState) {
+            if ((this.onBeginProcessHeartBeatDelegate == null)) {
+                this.onBeginProcessHeartBeatDelegate = new BeginOperationDelegate(this.OnBeginProcessHeartBeat);
             }
-            if ((this.onEndSendHeartBeatDelegate == null)) {
-                this.onEndSendHeartBeatDelegate = new EndOperationDelegate(this.OnEndSendHeartBeat);
+            if ((this.onEndProcessHeartBeatDelegate == null)) {
+                this.onEndProcessHeartBeatDelegate = new EndOperationDelegate(this.OnEndProcessHeartBeat);
             }
-            if ((this.onSendHeartBeatCompletedDelegate == null)) {
-                this.onSendHeartBeatCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSendHeartBeatCompleted);
+            if ((this.onProcessHeartBeatCompletedDelegate == null)) {
+                this.onProcessHeartBeatCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnProcessHeartBeatCompleted);
             }
-            base.InvokeAsync(this.onBeginSendHeartBeatDelegate, new object[] {
-                        hbData}, this.onEndSendHeartBeatDelegate, this.onSendHeartBeatCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginProcessHeartBeatDelegate, new object[] {
+                        hbData}, this.onEndProcessHeartBeatDelegate, this.onProcessHeartBeatCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseJob PullJob(System.Guid clientId) {
-            return base.Channel.PullJob(clientId);
+        public HeuristicLab.Hive.Contracts.ResponseJob SendJob(System.Guid clientId) {
+            return base.Channel.SendJob(clientId);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginPullJob(System.Guid clientId, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginPullJob(clientId, callback, asyncState);
+        public System.IAsyncResult BeginSendJob(System.Guid clientId, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSendJob(clientId, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public HeuristicLab.Hive.Contracts.ResponseJob EndPullJob(System.IAsyncResult result) {
-            return base.Channel.EndPullJob(result);
+        public HeuristicLab.Hive.Contracts.ResponseJob EndSendJob(System.IAsyncResult result) {
+            return base.Channel.EndSendJob(result);
         }
         
-        private System.IAsyncResult OnBeginPullJob(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginSendJob(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid clientId = ((System.Guid)(inValues[0]));
-            return this.BeginPullJob(clientId, callback, asyncState);
+            return this.BeginSendJob(clientId, callback, asyncState);
         }
         
-        private object[] OnEndPullJob(System.IAsyncResult result) {
-            HeuristicLab.Hive.Contracts.ResponseJob retVal = this.EndPullJob(result);
+        private object[] OnEndSendJob(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponseJob retVal = this.EndSendJob(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnPullJobCompleted(object state) {
-            if ((this.PullJobCompleted != null)) {
+        private void OnSendJobCompleted(object state) {
+            if ((this.SendJobCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.PullJobCompleted(this, new PullJobCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.SendJobCompleted(this, new SendJobCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void PullJobAsync(System.Guid clientId) {
-            this.PullJobAsync(clientId, null);
+        public void SendJobAsync(System.Guid clientId) {
+            this.SendJobAsync(clientId, null);
         }
         
-        public void PullJobAsync(System.Guid clientId, object userState) {
-            if ((this.onBeginPullJobDelegate == null)) {
-                this.onBeginPullJobDelegate = new BeginOperationDelegate(this.OnBeginPullJob);
+        public void SendJobAsync(System.Guid clientId, object userState) {
+            if ((this.onBeginSendJobDelegate == null)) {
+                this.onBeginSendJobDelegate = new BeginOperationDelegate(this.OnBeginSendJob);
             }
-            if ((this.onEndPullJobDelegate == null)) {
-                this.onEndPullJobDelegate = new EndOperationDelegate(this.OnEndPullJob);
+            if ((this.onEndSendJobDelegate == null)) {
+                this.onEndSendJobDelegate = new EndOperationDelegate(this.OnEndSendJob);
             }
-            if ((this.onPullJobCompletedDelegate == null)) {
-                this.onPullJobCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnPullJobCompleted);
+            if ((this.onSendJobCompletedDelegate == null)) {
+                this.onSendJobCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSendJobCompleted);
             }
-            base.InvokeAsync(this.onBeginPullJobDelegate, new object[] {
-                        clientId}, this.onEndPullJobDelegate, this.onPullJobCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginSendJobDelegate, new object[] {
+                        clientId}, this.onEndSendJobDelegate, this.onSendJobCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived SendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
-            return base.Channel.SendJobResult(clientId, jobId, result, percentage, exception, finished);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
+            return base.Channel.ProcessJobResult(clientId, jobId, result, percentage, exception, finished);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginSendJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginSendJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
+        public System.IAsyncResult BeginProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginProcessJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived EndSendJobResult(System.IAsyncResult result) {
-            return base.Channel.EndSendJobResult(result);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessJobResult(System.IAsyncResult result) {
+            return base.Channel.EndProcessJobResult(result);
         }
         
-        private System.IAsyncResult OnBeginSendJobResult(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginProcessJobResult(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid clientId = ((System.Guid)(inValues[0]));
             long jobId = ((long)(inValues[1]));
             byte[] result = ((byte[])(inValues[2]));
             double percentage = ((double)(inValues[3]));
             System.Exception exception = ((System.Exception)(inValues[4]));
             bool finished = ((bool)(inValues[5]));
-            return this.BeginSendJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
+            return this.BeginProcessJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
         }
         
-        private object[] OnEndSendJobResult(System.IAsyncResult result) {
-            HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndSendJobResult(result);
+        private object[] OnEndProcessJobResult(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndProcessJobResult(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnSendJobResultCompleted(object state) {
-            if ((this.SendJobResultCompleted != null)) {
+        private void OnProcessJobResultCompleted(object state) {
+            if ((this.ProcessJobResultCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.SendJobResultCompleted(this, new SendJobResultCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.ProcessJobResultCompleted(this, new ProcessJobResultCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
-            this.SendJobResultAsync(clientId, jobId, result, percentage, exception, finished, null);
+        public void ProcessJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
+            this.ProcessJobResultAsync(clientId, jobId, result, percentage, exception, finished, null);
         }
         
-        public void SendJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, object userState) {
-            if ((this.onBeginSendJobResultDelegate == null)) {
-                this.onBeginSendJobResultDelegate = new BeginOperationDelegate(this.OnBeginSendJobResult);
+        public void ProcessJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, object userState) {
+            if ((this.onBeginProcessJobResultDelegate == null)) {
+                this.onBeginProcessJobResultDelegate = new BeginOperationDelegate(this.OnBeginProcessJobResult);
             }
-            if ((this.onEndSendJobResultDelegate == null)) {
-                this.onEndSendJobResultDelegate = new EndOperationDelegate(this.OnEndSendJobResult);
+            if ((this.onEndProcessJobResultDelegate == null)) {
+                this.onEndProcessJobResultDelegate = new EndOperationDelegate(this.OnEndProcessJobResult);
             }
-            if ((this.onSendJobResultCompletedDelegate == null)) {
-                this.onSendJobResultCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSendJobResultCompleted);
+            if ((this.onProcessJobResultCompletedDelegate == null)) {
+                this.onProcessJobResultCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnProcessJobResultCompleted);
             }
-            base.InvokeAsync(this.onBeginSendJobResultDelegate, new object[] {
+            base.InvokeAsync(this.onBeginProcessJobResultDelegate, new object[] {
                         clientId,
                         jobId,
                         result,
                         percentage,
                         exception,
-                        finished}, this.onEndSendJobResultDelegate, this.onSendJobResultCompletedDelegate, userState);
+                        finished}, this.onEndProcessJobResultDelegate, this.onProcessJobResultCompletedDelegate, userState);
         }
         
         public HeuristicLab.Hive.Contracts.Response Logout(System.Guid clientId) {

@@ -59,6 +59,7 @@
       <xs:extension base="tns:Response">
         <xs:sequence>
           <xs:element minOccurs="0" name="JobId" type="xs:long" />
+          <xs:element minOccurs="0" name="finished" type="xs:boolean" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

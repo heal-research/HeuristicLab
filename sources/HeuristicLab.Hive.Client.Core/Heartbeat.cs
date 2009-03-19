@@ -60,7 +60,7 @@ namespace HeuristicLab.Hive.Client.Core {
       heartbeatTimer.AutoReset = true;
       heartbeatTimer.Elapsed += new ElapsedEventHandler(heartbeatTimer_Elapsed);
       wcfService = WcfService.Instance;
-      wcfService.SendHeartBeatCompleted += new EventHandler<SendHeartBeatCompletedEventArgs>(wcfService_SendHeartBeatCompleted);
+      wcfService.SendHeartBeatCompleted += new EventHandler<ProcessHeartBeatCompletedEventArgs>(wcfService_SendHeartBeatCompleted);
       heartbeatTimer.Start();
     }
 
@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
-    void wcfService_SendHeartBeatCompleted(object sender, SendHeartBeatCompletedEventArgs e) {
+    void wcfService_SendHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
       System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
     }

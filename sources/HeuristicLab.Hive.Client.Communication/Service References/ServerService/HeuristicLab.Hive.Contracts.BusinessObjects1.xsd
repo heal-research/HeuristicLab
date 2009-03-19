@@ -20,18 +20,30 @@
   </xs:complexType>
   <xs:element name="ClientInfo" nillable="true" type="tns:ClientInfo" />
   <xs:complexType name="Resource">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Id" type="xs:long" />
-      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-    </xs:sequence>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:HiveBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="Resource" nillable="true" type="tns:Resource" />
-  <xs:complexType name="ClientConfig">
+  <xs:complexType name="HiveBaseObject">
     <xs:sequence>
-      <xs:element minOccurs="0" name="HeartBeatIntervall" type="xs:int" />
       <xs:element minOccurs="0" name="Id" type="xs:long" />
-      <xs:element minOccurs="0" name="UpDownTimeCalendar" nillable="true" type="xs:string" />
     </xs:sequence>
+  </xs:complexType>
+  <xs:element name="HiveBaseObject" nillable="true" type="tns:HiveBaseObject" />
+  <xs:complexType name="ClientConfig">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:HiveBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="HeartBeatIntervall" type="xs:int" />
+          <xs:element minOccurs="0" name="UpDownTimeCalendar" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="ClientConfig" nillable="true" type="tns:ClientConfig" />
   <xs:simpleType name="State">
@@ -54,14 +66,41 @@
   </xs:complexType>
   <xs:element name="HeartBeatData" nillable="true" type="tns:HeartBeatData" />
   <xs:complexType name="Job">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
-      <xs:element minOccurs="0" name="Id" type="xs:long" />
-      <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:Job" />
-      <xs:element minOccurs="0" name="Percentage" type="xs:double" />
-      <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
-      <xs:element minOccurs="0" name="State" type="tns:State" />
-    </xs:sequence>
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:HiveBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
+          <xs:element minOccurs="0" name="DateCalculated" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateCreated" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="ParentJob" nillable="true" type="tns:Job" />
+          <xs:element minOccurs="0" name="Percentage" type="xs:double" />
+          <xs:element minOccurs="0" name="Priority" type="xs:int" />
+          <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="State" type="tns:State" />
+          <xs:element minOccurs="0" name="User" nillable="true" type="tns:User" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="Job" nillable="true" type="tns:Job" />
+  <xs:complexType name="User">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:PermissionOwner">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="User" nillable="true" type="tns:User" />
+  <xs:complexType name="PermissionOwner">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:HiveBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PermissionOwner" nillable="true" type="tns:PermissionOwner" />
 </xs:schema>

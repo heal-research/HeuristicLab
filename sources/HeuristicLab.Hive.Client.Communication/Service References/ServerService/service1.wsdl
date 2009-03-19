@@ -49,23 +49,23 @@
   <wsdl:message name="IClientCommunicator_Login_OutputMessage">
     <wsdl:part name="parameters" element="tns:LoginResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendHeartBeat_InputMessage">
-    <wsdl:part name="parameters" element="tns:SendHeartBeat" />
+  <wsdl:message name="IClientCommunicator_ProcessHeartBeat_InputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessHeartBeat" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendHeartBeat_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SendHeartBeatResponse" />
+  <wsdl:message name="IClientCommunicator_ProcessHeartBeat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessHeartBeatResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_PullJob_InputMessage">
-    <wsdl:part name="parameters" element="tns:PullJob" />
+  <wsdl:message name="IClientCommunicator_SendJob_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendJob" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_PullJob_OutputMessage">
-    <wsdl:part name="parameters" element="tns:PullJobResponse" />
+  <wsdl:message name="IClientCommunicator_SendJob_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendJobResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendJobResult_InputMessage">
-    <wsdl:part name="parameters" element="tns:SendJobResult" />
+  <wsdl:message name="IClientCommunicator_ProcessJobResult_InputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessJobResult" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendJobResult_OutputMessage">
-    <wsdl:part name="parameters" element="tns:SendJobResultResponse" />
+  <wsdl:message name="IClientCommunicator_ProcessJobResult_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessJobResultResponse" />
   </wsdl:message>
   <wsdl:message name="IClientCommunicator_Logout_InputMessage">
     <wsdl:part name="parameters" element="tns:Logout" />
@@ -78,17 +78,17 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Login" message="tns:IClientCommunicator_Login_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/LoginResponse" message="tns:IClientCommunicator_Login_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="SendHeartBeat">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendHeartBeat" message="tns:IClientCommunicator_SendHeartBeat_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendHeartBeatResponse" message="tns:IClientCommunicator_SendHeartBeat_OutputMessage" />
+    <wsdl:operation name="ProcessHeartBeat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeat" message="tns:IClientCommunicator_ProcessHeartBeat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeatResponse" message="tns:IClientCommunicator_ProcessHeartBeat_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="PullJob">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/PullJob" message="tns:IClientCommunicator_PullJob_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/PullJobResponse" message="tns:IClientCommunicator_PullJob_OutputMessage" />
+    <wsdl:operation name="SendJob">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJob" message="tns:IClientCommunicator_SendJob_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResponse" message="tns:IClientCommunicator_SendJob_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="SendJobResult">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResult" message="tns:IClientCommunicator_SendJobResult_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResultResponse" message="tns:IClientCommunicator_SendJobResult_OutputMessage" />
+    <wsdl:operation name="ProcessJobResult">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessJobResult" message="tns:IClientCommunicator_ProcessJobResult_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessJobResultResponse" message="tns:IClientCommunicator_ProcessJobResult_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="Logout">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Logout" message="tns:IClientCommunicator_Logout_InputMessage" />
@@ -108,8 +108,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="SendHeartBeat">
-      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendHeartBeat" style="document" />
+    <wsdl:operation name="ProcessHeartBeat">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/ProcessHeartBeat" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -117,8 +117,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="PullJob">
-      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/PullJob" style="document" />
+    <wsdl:operation name="SendJob">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendJob" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -126,8 +126,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="SendJobResult">
-      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendJobResult" style="document" />
+    <wsdl:operation name="ProcessJobResult">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/ProcessJobResult" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -147,11 +147,11 @@
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
     <wsdl:port name="NetTcpBinding_IClientCommunicator" binding="tns:NetTcpBinding_IClientCommunicator">
-      <soap12:address location="net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.20.53.2:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.20.53.2:9000/HiveServer/ClientCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08003@fhs-hagenberg.ac.at</Upn>
+          <Upn>mse08023@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

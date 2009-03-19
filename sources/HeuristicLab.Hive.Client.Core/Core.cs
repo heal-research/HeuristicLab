@@ -81,8 +81,8 @@ namespace HeuristicLab.Hive.Client.Core {
       //Register all Wcf Service references
       wcfService = WcfService.Instance;
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
-      wcfService.PullJobCompleted += new EventHandler<PullJobCompletedEventArgs>(wcfService_PullJobCompleted);
-      wcfService.SendJobResultCompleted += new EventHandler<SendJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.PullJobCompleted += new EventHandler<SendJobCompletedEventArgs>(wcfService_PullJobCompleted);
+      wcfService.SendJobResultCompleted += new EventHandler<ProcessJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
       wcfService.Connected += new EventHandler(wcfService_Connected);
@@ -198,7 +198,7 @@ namespace HeuristicLab.Hive.Client.Core {
         Logging.GetInstance().Error(this.ToString(), e.Result.StatusMessage);
     }    
 
-    void wcfService_PullJobCompleted(object sender, PullJobCompletedEventArgs e) {
+    void wcfService_PullJobCompleted(object sender, SendJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
         bool sandboxed = true;
 
@@ -226,7 +226,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     //Todo: Remove intellgent stuff from the async event and move it to the main thread (message queue)
     //Todo: Seperate this method into 2: Finished jobs and Snapshots
-    void wcfService_SendJobResultCompleted(object sender, SendJobResultCompletedEventArgs e) {
+    void wcfService_SendJobResultCompleted(object sender, ProcessJobResultCompletedEventArgs e) {
       if (e.Result.Success) {        
         lock (Locker) {
           //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
