@@ -163,14 +163,12 @@
       this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
       this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
       this.userToolStripMenuItem1.Text = "User";
-      this.userToolStripMenuItem1.Click += new System.EventHandler(this.AddUser_Click);
       // 
       // groupToolStripMenuItem2
       // 
       this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
       this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
       this.groupToolStripMenuItem2.Text = "Group";
-      this.groupToolStripMenuItem2.Click += new System.EventHandler(this.AddUserGroup_Click);
       // 
       // tcManagementConsole
       // 
@@ -336,7 +334,6 @@
       this.tvUserControl.Name = "tvUserControl";
       this.tvUserControl.Size = new System.Drawing.Size(139, 346);
       this.tvUserControl.TabIndex = 1;
-      this.tvUserControl.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTVUserControlClicked);
       // 
       // lvUserControl
       // 
@@ -348,7 +345,6 @@
       this.lvUserControl.Size = new System.Drawing.Size(494, 346);
       this.lvUserControl.TabIndex = 1;
       this.lvUserControl.UseCompatibleStateImageBehavior = false;
-      this.lvUserControl.Click += new System.EventHandler(this.OnLVUserControlClicked);
       // 
       // ilUserControl
       // 

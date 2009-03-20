@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 
 namespace HeuristicLab.Hive.Server.Core {

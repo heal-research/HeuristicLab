@@ -24,13 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.DataAccess;
 
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class UpTimeStatistics: IHiveObject {
-    [DataMember]
-    public long Id { get; set; }
+  public class UpTimeStatistics : PersistableObject {
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]

@@ -43,8 +43,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private ResponseList<ClientGroup> clients = null;
     private ResponseList<ClientInfo> clientInfo = null;
     private ResponseList<Job> jobs = null;
-    private ResponseList<UserGroup> userGroups = null;
-    private ResponseList<User> usersList = null;
 
     private Dictionary<long, ListViewGroup> clientObjects;
     private Dictionary<long, ListViewItem> clientInfoObjects;
@@ -54,7 +52,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private Job currentJob = null;
     private ClientInfo currentClient = null;
-    private User currentUser = null;
     private string nameCurrentJob = "";
     private string nameCurrentClient = "";
     private string nameCurrentUser = "";
@@ -69,7 +66,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       InitializeComponent();
       AddClients();
       AddJobs();
-      AddUsers();
       timerSyncronize.Start();
     }
 
@@ -181,55 +177,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     /// <summary>
-    /// Adds users to ListView and TreeView
-    /// </summary>
-    private void AddUsers() {
-      try {
-        userGroupsObjects = new Dictionary<long, ListViewGroup>();
-        userListObjects = new Dictionary<long, ListViewItem>();
-        IUserRoleManager userRoleManager =
-          ServiceLocator.GetUserRoleManager();
-
-        userGroups = userRoleManager.GetAllUserGroups();
-
-        lvUserControl.Items.Clear();
-        tvUserControl.Nodes.Clear();
-
-        foreach (UserGroup ug in userGroups.List) {
-          tvUserControl.Nodes.Add(ug.Name);
-          ListViewGroup lvg = new ListViewGroup(ug.Name, HorizontalAlignment.Left);
-
-          foreach (PermissionOwner permOwner in ug.Members) {
-            if (permOwner is User) {
-              User users = permOwner as User;
-              tvUserControl.Nodes[tvUserControl.Nodes.Count - 1].Nodes.Add(users.Name);
-              ListViewItem item = new ListViewItem(users.Name, 0, lvg);
-              lvUserControl.Items.Add(item);
-              userListObjects.Add(users.Id, item);
-            }
-          }
-          lvUserControl.Groups.Add(lvg);
-          userGroupsObjects.Add(ug.Id, lvg);
-
-        } // Users
-        usersList = userRoleManager.GetAllUsers();
-        ListViewGroup lvunsorted = new ListViewGroup("unsorted", HorizontalAlignment.Left);
-        foreach (User u in usersList.List) {
-          tvUserControl.Nodes.Add(u.Name);
-          lvUserControl.Items.Add(new ListViewItem(u.Name, 0, lvunsorted));
-        }
-        lvUserControl.Groups.Add(lvunsorted);
-        if (flagUser) {
-          UserClicked();
-        }
-      }
-      catch (Exception ex) {
-        closeFormEvent(true, true);
-        this.Close();
-      }
-    }
-
-    /// <summary>
     /// if one client is clicked, a panel is opened with the details
     /// </summary>
     private void ClientClicked() {
@@ -319,21 +266,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    /// <summary>
-    /// if one user is clicked, a panel is opened with the details
-    /// </summary>
-    private void UserClicked() {
-      int i = 0;
-      while (usersList.List[i].Name != nameCurrentUser) {
-        i++;
-      }
-      currentUser = usersList.List[i];
-      scUserControl.Panel2.Controls.Clear();
-      scUserControl.Panel2.Controls.Add(plUserDetails);
-      pbUserControl.Image = ilUserControl.Images[0];
-      lblUserName.Text = currentUser.Id.ToString();
-    }
-
     #region Eventhandlers
     /// <summary>
     /// Send event to Login-GUI when closing
@@ -367,19 +299,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void Refresh() {
       AddClients();
       AddJobs();
-      AddUsers();
-    }
-
-    private void AddUser_Click(object sender, EventArgs e) {
-      AddUserForm newForm = new AddUserForm("User", false);
-      newForm.Show();
-      newForm.addUserEvent += new addDelegate(Refresh);
-    }
-
-    private void AddUserGroup_Click(object sender, EventArgs e) {
-      AddUserForm newForm = new AddUserForm("User", true);
-      newForm.Show();
-      newForm.addUserEvent += new addDelegate(Refresh);                                             
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
@@ -418,28 +337,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       catch (Exception ex) { }
 
     }
-
-    private void OnLVUserControlClicked(object sender, EventArgs e) {
-      nameCurrentUser = lvUserControl.SelectedItems[0].Text;
-      flagUser = true;
-      UserClicked();
-    }
-
-    private void OnTVUserControlClicked(object sender, TreeViewEventArgs e) {
-      bool usergroup = false;
-      foreach (UserGroup ug in userGroups.List) {
-        if (tvUserControl.SelectedNode.Text == ug.Name) {
-          usergroup = true;
-        }
-      }
-      if (usergroup == false) {
-        nameCurrentUser = tvUserControl.SelectedNode.Text;
-        flagUser = true;
-        UserClicked();
-      }
-
-    }
-
 
     private void btnClientClose_Click(object sender, EventArgs e) {
       scClientControl.Panel2.Controls.Clear();

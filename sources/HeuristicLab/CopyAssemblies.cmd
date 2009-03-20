@@ -77,3 +77,6 @@ copy "%SolutionDir%\HeuristicLab.Hive.Client.Communication\%Outdir%\HeuristicLab
 copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Console\%Outdir%\HeuristicLab.Hive.Server.Console-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SA\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.DataAccess\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins

@@ -26,9 +26,10 @@ using HeuristicLab.PluginInfrastructure;
 using System.Net;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.Interfaces;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Diagnostics;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive DB Test App",
@@ -67,100 +68,6 @@ namespace HeuristicLab.Hive.Server {
 
       clients = clientAdapter.GetAll();
       Debug.Assert(count - 1 == clients.Count);
-    }
-
-    private void TestUserAdapter() {
-      IUserAdapter userAdapter =
-        ServiceLocator.GetUserAdapter();
-
-      User user = new User();
-      user.Name = "TestDummy";
-
-      userAdapter.Update(user);
-
-      User userRead =
-        userAdapter.GetById(user.Id);
-      Debug.Assert(
-        userRead != null &&
-        user.Id == userRead.Id);
-
-      user.Password = "passme";
-      userAdapter.Update(user);
-      userRead =
-        userAdapter.GetByName(user.Name);
-      Debug.Assert(
-       userRead != null &&
-       userRead.Name == user.Name &&
-       userRead.Password == user.Password);
-
-      ICollection<User> users = 
-       userAdapter.GetAll();
-      int count = users.Count;
-
-      userAdapter.Delete(user);
-
-      users = userAdapter.GetAll();
-      Debug.Assert(count - 1 == users.Count);
-    }
-
-    private void TestUserGroupAdapter() {
-      IUserGroupAdapter userGroupAdapter =
-       ServiceLocator.GetUserGroupAdapter();
-
-      User user =
-        new User();
-      user.Name = "Stefan";
-
-      User user2 =
-        new User();
-      user2.Name = "Martin";
-
-      User user3 =
-        new User();
-      user3.Name = "Heinz";
-
-      UserGroup group =
-        new UserGroup();
-
-      UserGroup subGroup =
-        new UserGroup();
-      subGroup.Members.Add(user);
-
-      group.Members.Add(user3);
-      group.Members.Add(user2);
-      group.Members.Add(subGroup);
-
-      userGroupAdapter.Update(group);
-
-      UserGroup read =
-        userGroupAdapter.GetById(group.Id);
-
-      ICollection<UserGroup> userGroups =
-        userGroupAdapter.GetAll();
-
-      IUserAdapter userAdapter =
-        ServiceLocator.GetUserAdapter();
-
-      userAdapter.Delete(user3);
-      
-      read =
-         userGroupAdapter.GetById(group.Id);
-
-      userGroupAdapter.Delete(subGroup);
-
-      read =
-         userGroupAdapter.GetById(group.Id);
-
-      userGroups =
-        userGroupAdapter.GetAll();
-
-      userGroupAdapter.Delete(group);
-
-      userGroups =
-        userGroupAdapter.GetAll();
-
-      userAdapter.Delete(user);
-      userAdapter.Delete(user2);
     }
 
     private void TestClientGroupAdapter() {
@@ -300,16 +207,10 @@ namespace HeuristicLab.Hive.Server {
     }
 
     public override void Run() {
-      ITransactionManager transactionManager =
-        ServiceLocator.GetTransactionManager();
+      IDBSynchronizer transactionManager =
+        ServiceLocator.GetDBSynchronizer();
       
       TestClientAdapter();
-      transactionManager.UpdateDB();
-
-      TestUserAdapter();
-      transactionManager.UpdateDB();
-
-      TestUserGroupAdapter();
       transactionManager.UpdateDB();
 
       TestClientGroupAdapter();

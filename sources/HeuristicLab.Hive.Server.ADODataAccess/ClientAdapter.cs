@@ -23,9 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Linq.Expressions;
+using HeuristicLab.DataAccess.Interfaces;
+using HeuristicLab.DataAccess.ADOHelper;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientAdapter: 
@@ -72,7 +74,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
     #endregion
 
-    public ClientAdapter() {
+    public ClientAdapter():
+      base(ServiceLocator.GetDBSynchronizer()) {
       parentAdapters.Add(this.ResAdapter as ICachedDataAdapter);
     }
 

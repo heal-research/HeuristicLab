@@ -88,6 +88,10 @@
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
+      <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
+      <Name>HeuristicLab.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Hive.Client.Common\HeuristicLab.Hive.Client.Common.csproj">
       <Project>{89F4BC52-C174-481E-9BD2-3814171020E8}</Project>
       <Name>HeuristicLab.Hive.Client.Common</Name>

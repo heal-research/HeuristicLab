@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Contracts.Interfaces {    
   /// <summary>
@@ -53,7 +54,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     /// Gets the transaction manager
     /// </summary>
     /// <returns></returns>
-    ITransactionManager GetTransactionManager();
+    IDBSynchronizer GetDBSynchronizer();
 
     /// <summary>
     /// Shuts the application down

@@ -35,9 +35,6 @@ namespace HeuristicLab.Hive.Server.Core {
     private IJobManager jobManager = 
       ServiceLocator.GetJobManager();
 
-    private IUserRoleManager userRoleManager = 
-      ServiceLocator.GetUserRoleManager();
-
     private String loginName = null;
 
     #region IServerConsoleFacade Members
@@ -102,46 +99,5 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     #endregion
-
-    #region IUserRoleManager Members
-
-    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.User> GetAllUsers() {
-      return userRoleManager.GetAllUsers();
-    }
-
-    public ResponseObject<User> AddNewUser(User user) {
-      return userRoleManager.AddNewUser(user);
-    }
-
-    public ResponseList<UserGroup> GetAllUserGroups() {
-      return userRoleManager.GetAllUserGroups();
-    }
-
-    public Response RemoveUser(long userId) {
-      return userRoleManager.RemoveUser(userId);
-    }
-
-    public ResponseObject<UserGroup> AddNewUserGroup(UserGroup userGroup) {
-      return userRoleManager.AddNewUserGroup(userGroup);
-    }
-
-    public Response RemoveUserGroup(long groupId) {
-      return userRoleManager.RemoveUserGroup(groupId);
-    }
-
-    public Response AddUserToGroup(long groupId, long userId) {
-      return userRoleManager.AddUserToGroup(groupId, userId);
-    }
-
-    public Response AddUserGroupToGroup(long groupId, long groupToAddId) {
-      return userRoleManager.AddUserGroupToGroup(groupId, groupToAddId);
-    }
-
-    public Response RemovePermissionOwnerFromGroup(long groupId, long userId) {
-      return userRoleManager.RemovePermissionOwnerFromGroup(groupId, userId);
-    }
-
-    #endregion
-
   }
 }

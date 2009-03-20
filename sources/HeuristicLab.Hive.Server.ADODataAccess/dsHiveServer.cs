@@ -14,7 +14,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters {
     }
 }
 
-namespace dsHiveServerTableAdapters {
+namespace HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters {
     
     
     public partial class HiveUserTableAdapter {

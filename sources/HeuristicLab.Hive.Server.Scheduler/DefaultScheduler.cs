@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using System.Threading;
 
 namespace HeuristicLab.Hive.Server.Scheduler {

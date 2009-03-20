@@ -19,12 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 using System.Runtime.CompilerServices;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
+using HeuristicLab.DataAccess.Interfaces;
 
 /// <summary>
 /// The service locator for the server core
@@ -33,13 +34,11 @@ public class ServiceLocator {
   private static DiscoveryService discoveryService =
     new DiscoveryService();
 
-  private static ITransactionManager transManager = null;
+  private static IDBSynchronizer transManager = null;
 
   private static IClientManager clientManager = null;
 
   private static IJobManager jobManager = null;
-
-  private static IUserRoleManager userRoleManager = null;
 
   private static IClientCommunicator clientCommunicator = null;
 
@@ -50,12 +49,6 @@ public class ServiceLocator {
   private static IClientGroupAdapter clientGroupAdapter = null;
 
   private static IResourceAdapter resourceAdapter = null;
-
-  private static IUserAdapter userAdapter = null;
-
-  private static IUserGroupAdapter userGroupAdapter = null;
-
-  private static IPermissionOwnerAdapter permOwnerAdapter = null;
 
   private static IJobAdapter jobAdapter = null;
 
@@ -69,9 +62,9 @@ public class ServiceLocator {
   /// </summary>
   /// <returns></returns>
   [MethodImpl(MethodImplOptions.Synchronized)]
-  public static ITransactionManager GetTransactionManager() {
+  public static IDBSynchronizer GetDBSynchronizer() {
     if (transManager == null) {
-      transManager = discoveryService.GetInstances<ITransactionManager>()[0];
+      transManager = discoveryService.GetInstances<IDBSynchronizer>()[0];
     }
 
     return transManager;
@@ -99,18 +92,6 @@ public class ServiceLocator {
       jobManager = new JobManager();
 
     return jobManager;
-  }
-
-  /// <summary>
-  /// Gets the user role manager
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IUserRoleManager GetUserRoleManager() {
-    if (userRoleManager == null)
-      userRoleManager = new UserRoleManager();
-
-    return userRoleManager;
   }
 
   /// <summary>
@@ -175,45 +156,6 @@ public class ServiceLocator {
     }
 
     return resourceAdapter;
-  }
-
-  /// <summary>
-  /// Gets the user database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IUserAdapter GetUserAdapter() {
-    if (userAdapter == null) {
-      userAdapter = discoveryService.GetInstances<IUserAdapter>()[0];
-    }
-
-    return userAdapter;
-  }
-
-  /// <summary>
-  /// Gets the user group database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IUserGroupAdapter GetUserGroupAdapter() {
-    if (userGroupAdapter == null) {
-      userGroupAdapter = discoveryService.GetInstances<IUserGroupAdapter>()[0];
-    }
-
-    return userGroupAdapter;
-  }
-
-  /// <summary>
-  /// Gets the permission owner database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IPermissionOwnerAdapter GetPermissionOwnerAdapter() {
-    if (permOwnerAdapter == null) {
-      permOwnerAdapter = discoveryService.GetInstances<IPermissionOwnerAdapter>()[0];
-    }
-
-    return permOwnerAdapter;
   }
 
   /// <summary>

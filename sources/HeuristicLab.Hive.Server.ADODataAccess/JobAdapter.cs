@@ -23,9 +23,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Linq.Expressions;
+using HeuristicLab.DataAccess.ADOHelper;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class JobAdapter :
@@ -34,6 +35,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                       dsHiveServer.JobRow, 
                       dsHiveServer.JobDataTable>, 
     IJobAdapter {
+    public JobAdapter() : 
+      base(ServiceLocator.GetDBSynchronizer()) {
+    }
+
     #region Fields
     private IClientAdapter clientAdapter = null;
 
@@ -43,18 +48,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           clientAdapter = ServiceLocator.GetClientAdapter();
 
         return clientAdapter;
-      }
-    }
-
-    private IUserAdapter userAdapter = null;
-
-    private IUserAdapter UserAdapter {
-      get {
-        if (userAdapter == null) {
-          userAdapter = ServiceLocator.GetUserAdapter();
-        }
-
-        return userAdapter;
       }
     }
 
@@ -88,9 +81,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           job.Client = null;
 
         if (!row.IsPermissionOwnerIdNull())
-          job.User = UserAdapter.GetById(row.PermissionOwnerId);
+          job.UserId = Guid.Empty;
         else
-          job.User = null;
+          job.UserId = Guid.Empty;
         
         if (!row.IsJobStateNull())
           job.State = (State)Enum.Parse(job.State.GetType(), row.JobState);
@@ -148,11 +141,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         } else
           row.SetParentJobIdNull();
 
-        if (job.User != null) {
+        if (job.UserId != Guid.Empty) {
           if (row.IsPermissionOwnerIdNull() ||
-           row.PermissionOwnerId != job.User.Id) {
-            UserAdapter.Update(job.User);
-            row.PermissionOwnerId = job.User.Id;
+           row.PermissionOwnerId != 0) {
+            row.PermissionOwnerId = 0;
           }
         } else
           row.SetPermissionOwnerIdNull();
@@ -314,21 +306,21 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return null;
     }
 
-    public ICollection<Job> GetJobsOf(User user) {
-      if (user != null) {
-        return 
+    public ICollection<Job> GetJobsOf(Guid userId) {
+      throw new NotImplementedException();  
+      
+      return 
           base.FindMultiple(
             delegate() {
-              return Adapter.GetDataByUser(user.Id);
+              return Adapter.GetDataByUser(0);
             },
             delegate() {
               return from job in
                 cache.AsEnumerable<dsHiveServer.JobRow>()
               where !job.IsPermissionOwnerIdNull() &&
-                job.PermissionOwnerId == user.Id
+                job.PermissionOwnerId == 0
               select job;
             });
-      }
 
       return null;
     }

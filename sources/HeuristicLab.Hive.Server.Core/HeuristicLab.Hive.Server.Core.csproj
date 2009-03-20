@@ -72,15 +72,6 @@
     <Compile Include="ExecutionEngineFacade.cs" />
     <Compile Include="HiveServerCorePlugin.cs" />
     <Compile Include="HiveServerMessages.Designer.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IClientAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IClientGroupAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IDataAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IJobAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IJobResultsAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IPermissionOwnerAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IResourceAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IUserAdapter.cs" />
-    <Compile Include="InternalInterfaces\DataAccess\IUserGroupAdapter.cs" />
     <Compile Include="InternalInterfaces\IInternalJobManager.cs" />
     <Compile Include="InternalInterfaces\IScheduler.cs" />
     <Compile Include="JobManager.cs" />
@@ -88,7 +79,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConsoleFacade.cs" />
     <Compile Include="ServiceLocator.cs" />
-    <Compile Include="UserRoleManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -99,6 +89,10 @@
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
+      <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
+      <Name>HeuristicLab.DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
       <Name>HeuristicLab.Hive.Contracts</Name>
@@ -106,6 +100,10 @@
     <ProjectReference Include="..\HeuristicLab.Hive.JobBase\HeuristicLab.Hive.JobBase.csproj">
       <Project>{21187322-52DD-4243-80A4-A85F0263E63B}</Project>
       <Name>HeuristicLab.Hive.JobBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Hive.Server.DataAccess\HeuristicLab.Hive.Server.DataAccess.csproj">
+      <Project>{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}</Project>
+      <Name>HeuristicLab.Hive.Server.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

@@ -24,11 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.DataAccess;
 
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class ClientConfig: HiveBaseObject {
+  public class ClientConfig : PersistableObject {
     [DataMember]
     public String UpDownTimeCalendar { get; set; } // TODO define DataStructure
     [DataMember]

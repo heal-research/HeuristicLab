@@ -24,9 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Data;
+using HeuristicLab.DataAccess.ADOHelper;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class ClientGroupAdapter : 

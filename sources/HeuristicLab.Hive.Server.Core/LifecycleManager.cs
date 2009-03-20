@@ -24,8 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
-using HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess;
+using HeuristicLab.Hive.Server.DataAccess;
 using System.Timers;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   class LifecycleManager: ILifecycleManager {
@@ -63,12 +64,12 @@ namespace HeuristicLab.Hive.Server.Core {
         OnServerHeartbeat(this, null);
     }
 
-    public ITransactionManager GetTransactionManager() {
-      return ServiceLocator.GetTransactionManager();
+    public IDBSynchronizer GetDBSynchronizer() {
+      return ServiceLocator.GetDBSynchronizer();
     }
 
     public void Shutdown() {
-      ServiceLocator.GetTransactionManager().UpdateDB();
+      ServiceLocator.GetDBSynchronizer().UpdateDB();
 
       if (OnShutdown != null)
         OnShutdown(this, null);

@@ -70,21 +70,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
-    <Compile Include="BusinessObjects\GrantedPermissions.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
     <Compile Include="BusinessObjects\HeartBeatData.cs" />
-    <Compile Include="BusinessObjects\HiveBaseObject.cs" />
-    <Compile Include="BusinessObjects\IHiveObject.cs" />
     <Compile Include="BusinessObjects\Job.cs" />
     <Compile Include="BusinessObjects\JobResult.cs" />
-    <Compile Include="BusinessObjects\Permission.cs" />
-    <Compile Include="BusinessObjects\PermissionOwner.cs" />
     <Compile Include="BusinessObjects\Resource.cs" />
     <Compile Include="BusinessObjects\UpTimeStatistics.cs" />
     <Compile Include="BusinessObjects\Client.cs" />
     <Compile Include="BusinessObjects\ClientConfig.cs" />
-    <Compile Include="BusinessObjects\User.cs" />
-    <Compile Include="BusinessObjects\UserGroup.cs" />
     <Compile Include="Interfaces\IClientFacade.cs" />
     <Compile Include="Interfaces\IExecutionEngineFacade.cs" />
     <Compile Include="ResponseObject.cs" />
@@ -93,7 +86,6 @@
     <Compile Include="Interfaces\ILifecycleManager.cs" />
     <Compile Include="Interfaces\IServerConsoleFacade.cs" />
     <Compile Include="Interfaces\ITransactionManager.cs" />
-    <Compile Include="Interfaces\IUserRoleManager.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="ResponseJob.cs" />
     <Compile Include="HiveContractPlugin.cs" />
@@ -109,6 +101,10 @@
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
+      <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
+      <Name>HeuristicLab.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

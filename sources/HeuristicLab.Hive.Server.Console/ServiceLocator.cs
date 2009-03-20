@@ -21,10 +21,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       return GetServerConsoleFacade() as IJobManager;
     }
 
-    internal static IUserRoleManager GetUserRoleManager() {
-      return GetServerConsoleFacade() as IUserRoleManager;
-    }
-
     internal static IServerConsoleFacade GetServerConsoleFacade() {
       if (serverConsoleFacade == null &&
         Address != String.Empty &&

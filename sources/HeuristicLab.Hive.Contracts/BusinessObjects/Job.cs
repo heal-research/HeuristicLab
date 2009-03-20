@@ -24,15 +24,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.DataAccess;
 
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Job : HiveBaseObject {
+  public class Job : PersistableObject {
     [DataMember]
     public State State { get; set; }
     [DataMember]
-    public User User { get; set; }
+    public Guid UserId { get; set; }
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]
