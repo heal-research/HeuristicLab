@@ -109,7 +109,7 @@ namespace HeuristicLab.Visualization {
     }
 
     public override int Count {
-      get { return dataRowWatches.Count; }
+      get { return dataRow.Count; } //return dataRowWatches.Count; }
     }
 
     public override double this[int index] {
