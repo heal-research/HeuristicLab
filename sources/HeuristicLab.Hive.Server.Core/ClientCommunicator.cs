@@ -245,31 +245,21 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    /// <summary>
-    /// the client can send job results during calculating 
-    /// and will send a final job result when he finished calculating
-    /// these job results will be stored in the database
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <param name="jobId"></param>
-    /// <param name="result"></param>
-    /// <param name="exception"></param>
-    /// <param name="finished"></param>
-    /// <returns></returns>
-    public ResponseResultReceived ProcessJobResult(Guid clientId, 
-      long jobId, 
-      byte[] result, 
+    private ResponseResultReceived ProcessJobResult(Guid clientId,
+      long jobId,
+      byte[] result,
       double percentage,
-      Exception exception,  
+      Exception exception,
       bool finished) {
+
       ResponseResultReceived response = new ResponseResultReceived();
       ClientInfo client =
         clientAdapter.GetById(clientId);
 
-      Job job = 
+      Job job =
         jobAdapter.GetById(jobId);
 
-      if (job.Client == null)    {
+      if (job.Client == null) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
         return response;
@@ -287,7 +277,7 @@ namespace HeuristicLab.Hive.Server.Core {
       if (job.State == State.finished) {
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
-        return response;        
+        return response;
       }
       if (job.State != State.calculating) {
         response.Success = false;
@@ -305,7 +295,7 @@ namespace HeuristicLab.Hive.Server.Core {
         clientAdapter.Update(client);
 
         List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
-        foreach (JobResult currentResult in jobResults) 
+        foreach (JobResult currentResult in jobResults)
           jobResultAdapter.Delete(currentResult);
       }
 
@@ -327,6 +317,32 @@ namespace HeuristicLab.Hive.Server.Core {
       response.finished = finished;
 
       return response;
+    }
+
+
+    /// <summary>
+    /// the client can send job results during calculating 
+    /// and will send a final job result when he finished calculating
+    /// these job results will be stored in the database
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <param name="jobId"></param>
+    /// <param name="result"></param>
+    /// <param name="exception"></param>
+    /// <param name="finished"></param>
+    /// <returns></returns>
+    public ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
+      long jobId, 
+      byte[] result, 
+      double percentage,
+      Exception exception) {
+
+      return ProcessJobResult(clientId, jobId, result, percentage, exception, true);
+    }
+
+
+    public ResponseResultReceived ProcessSnapshot(Guid clientId, long jobId, byte[] result, double percentage, Exception exception) {
+      return ProcessJobResult(clientId, jobId, result, percentage, exception, false);
     }
 
     /// <summary>

@@ -47,13 +47,12 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.SendJob(clientId);
     }
 
-    public ResponseResultReceived ProcessJobResult(Guid clientId,
+    public ResponseResultReceived StoreFinishedJobResult(Guid clientId,
       long jobId,
       byte[] result,
       double percentage, 
-      Exception exception,
-      bool finished) {
-      return clientCommunicator.ProcessJobResult(clientId, jobId, result, percentage, exception, finished);
+      Exception exception) {
+      return clientCommunicator.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);
     }
 
     public Response Logout(Guid clientId) {
@@ -66,6 +65,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponsePlugin SendPlugins(List<string> pluginList) {
       return clientCommunicator.SendPlugins(pluginList);
+    }
+
+    public ResponseResultReceived ProcessSnapshot(Guid clientId, long jobId, byte[] result, double percentage, Exception exception) {
+      throw new NotImplementedException();
     }
 
     #endregion

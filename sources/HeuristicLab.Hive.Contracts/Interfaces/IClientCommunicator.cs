@@ -39,12 +39,17 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseJob SendJob(Guid clientId);
     [OperationContract]
-    ResponseResultReceived ProcessJobResult(Guid clientId, 
+    ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
       long jobId, 
       byte[] result, 
       double percentage,
-      Exception exception,  
-      bool finished);
+      Exception exception);
+    [OperationContract]
+    ResponseResultReceived ProcessSnapshot(Guid clientId, 
+      long jobId, 
+      byte[] result, 
+      double percentage, 
+      Exception exception);
     [OperationContract]
     Response Logout(Guid clientId);
     [OperationContract]
