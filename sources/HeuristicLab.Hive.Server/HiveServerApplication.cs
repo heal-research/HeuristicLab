@@ -34,17 +34,27 @@ namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive Server",
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
-  class HiveServerApplication : ApplicationBase {
-    const int port =
-      9000;
+  public class HiveServerApplication : ApplicationBase {
+    private const int DEFAULT_PORT = 9000;
+    public const string STR_ClientCommunicator = "ClientCommunicator";
+    public const string STR_ServerConsoleFacade = "ServerConsoleFacade";
+    public const string STR_ExecutionEngineFacade = "ExecutionEngineFacade";
 
-    DiscoveryService discService =
-        new DiscoveryService();
+    private DiscoveryService discService = new DiscoveryService();
+    private Dictionary<string, ServiceHost> runningServices = new Dictionary<string, ServiceHost>();
+    private NetTcpBinding binding = new NetTcpBinding(SecurityMode.None, true);
+    //private WSHttpBinding binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential, true);
 
+    private enum Services {
+      ClientCommunicator,
+      ServerConsoleFacade,
+      ExecutionEngineFacade,
+      All
+    }
+    
     private bool AddMexEndpoint(ServiceHost serviceHost) {
       if (serviceHost != null) {
-        ServiceMetadataBehavior behavior =
-            new ServiceMetadataBehavior();
+        ServiceMetadataBehavior behavior = new ServiceMetadataBehavior();
         serviceHost.Description.Behaviors.Add(behavior);
 
         return serviceHost.AddServiceEndpoint(
@@ -55,82 +65,72 @@ namespace HeuristicLab.Hive.Server {
         return false;
     }
 
-    private ServiceHost StartClientCommunicator(Uri uriTcp) {
-      IClientFacade[] clientCommunicatorInstances =
-        discService.GetInstances<IClientFacade>();
-
-      if (clientCommunicatorInstances.Length > 0) {
-        ServiceHost serviceHost =
-                new ServiceHost(clientCommunicatorInstances[0].GetType(),
-                  uriTcp);
-
-        System.ServiceModel.Channels.Binding binding =
-          new NetTcpBinding();
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IClientCommunicator),
-              binding,
-              "ClientCommunicator");
-
+    private Uri StartService(Services svc, IPAddress ipAddress, int port) {
+      string curServiceHost = "";
+      Uri uriTcp;
+      IClientFacade[] clientCommunicatorInstances = discService.GetInstances<IClientFacade>();
+      IServerConsoleFacade[] serverConsoleInstances = discService.GetInstances<IServerConsoleFacade>();
+      IExecutionEngineFacade[] executionEngineInstances = discService.GetInstances<IExecutionEngineFacade>();
+      ServiceHost serviceHost = null;
+      switch (svc) {
+        case Services.ClientCommunicator:
+          if (clientCommunicatorInstances.Length > 0) {
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServer/"); 
+            serviceHost = new ServiceHost(clientCommunicatorInstances[0].GetType(), uriTcp);
+            serviceHost.AddServiceEndpoint(typeof(IClientCommunicator), binding, STR_ClientCommunicator);
+            curServiceHost = STR_ClientCommunicator;
+          }
+          break;
+        case Services.ServerConsoleFacade:
+          if (serverConsoleInstances.Length > 0) {
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServerConsole/");
+            serviceHost = new ServiceHost(serverConsoleInstances[0].GetType(), uriTcp);
+            serviceHost.AddServiceEndpoint(typeof(IServerConsoleFacade), binding, STR_ServerConsoleFacade);
+            curServiceHost = STR_ServerConsoleFacade;
+          }
+          break;
+        case Services.ExecutionEngineFacade:
+          if (executionEngineInstances.Length > 0) {
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/ExecutionEngine/");
+            serviceHost = new ServiceHost(executionEngineInstances[0].GetType(), uriTcp);
+            serviceHost.AddServiceEndpoint(typeof(IExecutionEngineFacade), binding, STR_ExecutionEngineFacade);
+            curServiceHost = STR_ExecutionEngineFacade;
+          }
+          break;
+        case Services.All:
+          throw new InvalidOperationException("Not supported!");
+        default:
+          return null;
+      }
+      if ((serviceHost != null) && (!String.IsNullOrEmpty(curServiceHost))) {
         AddMexEndpoint(serviceHost);
-
         serviceHost.Open();
-
-        return serviceHost;
+        runningServices.Add(curServiceHost, serviceHost);
+        return serviceHost.BaseAddresses[0];
       } else
         return null;
     }
 
-    private ServiceHost StartServerConsoleFacade(Uri uriTcp) {
-      IServerConsoleFacade[] serverConsoleInstances =
-        discService.GetInstances<IServerConsoleFacade>();
-
-      if (serverConsoleInstances.Length > 0) {
-        ServiceHost serviceHost =
-            new ServiceHost(serverConsoleInstances[0].GetType(),
-                  uriTcp);
-
-        System.ServiceModel.Channels.Binding binding =
-          new NetTcpBinding();
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IServerConsoleFacade),
-            binding,
-            "ServerConsoleFacade");
-
-        AddMexEndpoint(serviceHost);
-
-        serviceHost.Open();
-
-        return serviceHost;
-      } else
-        return null;
-    }
-
-    private ServiceHost StartExecutionEngineFacade(Uri uriTcp) {
-      IExecutionEngineFacade[] serverConsoleInstances =
-        discService.GetInstances<IExecutionEngineFacade>();
-
-      if (serverConsoleInstances.Length > 0) {
-        ServiceHost serviceHost =
-            new ServiceHost(serverConsoleInstances[0].GetType(),
-                  uriTcp);
-
-        System.ServiceModel.Channels.Binding binding =
-          new NetTcpBinding();
-
-        serviceHost.AddServiceEndpoint(
-          typeof(IExecutionEngineFacade),
-            binding,
-            "ExecutionEngineFacade");
-
-        AddMexEndpoint(serviceHost);
-
-        serviceHost.Open();
-
-        return serviceHost;
-      } else
-        return null;
+    private void StopService(Services svc) {
+      ServiceHost svcHost = null;
+      switch (svc) {
+        case Services.ClientCommunicator:
+          runningServices.TryGetValue(STR_ClientCommunicator, out svcHost);
+          break;
+        case Services.ServerConsoleFacade:
+          runningServices.TryGetValue(STR_ServerConsoleFacade, out svcHost);
+          break;
+        case Services.ExecutionEngineFacade:
+          runningServices.TryGetValue(STR_ExecutionEngineFacade, out svcHost);
+          break;
+        case Services.All:
+          foreach (KeyValuePair<string, ServiceHost> item in runningServices)
+            item.Value.Close();
+          return;
+        default:
+          throw new InvalidOperationException("Not supported!");
+      }
+      svcHost.Close();
     }
 
     public override void Run() {
@@ -141,30 +141,19 @@ namespace HeuristicLab.Hive.Server {
           if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
             break;
       }
+      
+      //Start services and record their base address
+      Dictionary<string, Uri> baseAddrDict = new Dictionary<string, Uri>();
+      baseAddrDict.Add(STR_ClientCommunicator,
+        StartService(Services.ClientCommunicator, addresses[index], DEFAULT_PORT));
+      baseAddrDict.Add(STR_ServerConsoleFacade,
+        StartService(Services.ServerConsoleFacade, addresses[index], DEFAULT_PORT));
+      baseAddrDict.Add(STR_ExecutionEngineFacade,
+        StartService(Services.ExecutionEngineFacade, addresses[index], DEFAULT_PORT));
 
-      Uri uriTcp =
-          new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServer/"); 
-
-      ServiceHost clientCommunicator =
-        StartClientCommunicator(uriTcp);
-
-      uriTcp =
-        new Uri("net.tcp://" + addresses[index] + ":" + port + "/HiveServerConsole/");
-
-      ServiceHost serverConsoleFacade =
-        StartServerConsoleFacade(uriTcp);
-
-      uriTcp =
-        new Uri("net.tcp://" + addresses[index] + ":" + port + "/ExecutionEngine/");
-
-      ServiceHost executionEngineFacade =
-        StartExecutionEngineFacade(uriTcp);
-
-      ILifecycleManager[] lifecycleManagers =
-         discService.GetInstances<ILifecycleManager>();
-
+      ILifecycleManager[] lifecycleManagers =  discService.GetInstances<ILifecycleManager>();
       if (lifecycleManagers.Length > 0) {
-        ILifecycleManager lifecycleManager = 
+        ILifecycleManager lifecycleManager =
           lifecycleManagers[0];
 
         lifecycleManager.Init();
@@ -172,18 +161,13 @@ namespace HeuristicLab.Hive.Server {
         lifecycleManager.GetTransactionManager().EnableAutoUpdate(
           new TimeSpan(0, 0, 30));
 
-        Form mainForm = new MainForm(clientCommunicator.BaseAddresses[0],
-            serverConsoleFacade.BaseAddresses[0], 
-            executionEngineFacade.BaseAddresses[0]);
+        Form mainForm = new MainForm(baseAddrDict);
 
-         Application.Run(mainForm);
+        Application.Run(mainForm);
 
-         lifecycleManager.Shutdown();
+        lifecycleManager.Shutdown();
       }
-
-      clientCommunicator.Close();
-      serverConsoleFacade.Close();
-      executionEngineFacade.Close();      
+      StopService(Services.All);
     }
   }
 }

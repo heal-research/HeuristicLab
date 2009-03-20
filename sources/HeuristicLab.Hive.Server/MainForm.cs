@@ -10,14 +10,18 @@ using System.Windows.Forms;
 namespace HeuristicLab.Hive.Server
 {
     public partial class MainForm : Form {
-        public MainForm(Uri address1, Uri address2, Uri address3) {
+        public MainForm(Dictionary<string, Uri> addresses) {
           InitializeComponent();
-          if(address1 != null)
-            this.lblAddress1.Text = address1.ToString();
-          if (address2 != null)
-            this.lblAddress2.Text = address2.ToString();
-          if (address3 != null)
-            this.lblAddress3.Text = address3.ToString();
+          Uri uri;
+          addresses.TryGetValue(HiveServerApplication.STR_ClientCommunicator, out uri);
+          if(uri!=null)
+            this.lblAddress1.Text = uri.ToString();
+          addresses.TryGetValue(HiveServerApplication.STR_ServerConsoleFacade, out uri);
+          if (uri != null)
+            this.lblAddress2.Text = uri.ToString();
+          addresses.TryGetValue(HiveServerApplication.STR_ExecutionEngineFacade, out uri);
+          if (uri != null)
+            this.lblAddress3.Text = uri.ToString();
         }
 
     }
