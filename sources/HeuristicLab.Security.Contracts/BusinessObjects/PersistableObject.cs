@@ -24,14 +24,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace HeuristicLab.Security.Contracts.BusinessObjects {
-
+namespace HeuristicLab.Security.Contracts {
   [DataContract]
-  public class Permission: PersistableObject {
+  public class PersistableObject {
     [DataMember]
-    public String Description { get; set; }
+    public Guid Id { get; set; }
 
-    [DataMember]
-    public Guid EntityId { get; set; }
+    public override bool Equals(object obj) {
+      if (obj is PersistableObject)
+        return this.Id.Equals(
+          (obj as PersistableObject).Id);
+      else
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode() {
+      return this.Id.GetHashCode();
+    }
   }
 }

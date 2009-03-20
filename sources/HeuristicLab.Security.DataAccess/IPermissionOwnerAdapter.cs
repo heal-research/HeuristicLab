@@ -22,22 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.DataAccess;
 using HeuristicLab.Security.Contracts.BusinessObjects;
-using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Security.DataAccess {
   /// <summary>
   /// The permission owner database adapter
   /// </summary>
   public interface IPermissionOwnerAdapter: IDataAdapter<PermissionOwner> {
-    /// <summary>
-    /// Gets the permission owner and updates the values of the object
-    /// </summary>
-    /// <param name="resource"></param>
-    /// <returns></returns>
-    bool GetById(PermissionOwner permOwner);
-
     /// <summary>
     /// Get the permission owner with the specified name
     /// </summary>

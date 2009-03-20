@@ -22,16 +22,41 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.DataAccess;
 using HeuristicLab.Security.Contracts.BusinessObjects;
-using HeuristicLab.DataAccess.Interfaces;
 
-namespace HeuristicLab.Hive.Server.Core.InternalInterfaces.DataAccess {
+namespace HeuristicLab.Security.DataAccess {
   /// <summary>
   /// The permission database adapter
   /// </summary>
   interface IPermissionAdapter: IDataAdapter<Permission> {
-    bool hasPermssion(String permissionOwnerId, Guid permissionToken,
+    /// <summary>
+    /// Determines, if the permission Owner has the permission on the entity
+    /// </summary>
+    /// <param name="permissionOwnerId"></param>
+    /// <param name="permissionId"></param>
+    /// <param name="entityId"></param>
+    /// <returns></returns>
+    GrantedPermission getPermssion(Guid permissionOwnerId, Guid permissionId,
+      Guid entityId);
+
+    /// <summary>
+    /// Adds a permission
+    /// </summary>
+    /// <param name="permissionOwnerId"></param>
+    /// <param name="permissionId"></param>
+    /// <param name="entityId"></param>
+    /// <returns></returns>
+    bool addPermission(Guid permissionOwnerId, Guid permissionId,
+      Guid entityId);
+
+    /// <summary>
+    /// Removes a permission
+    /// </summary>
+    /// <param name="permissionOwnerId"></param>
+    /// <param name="permissionId"></param>
+    /// <param name="entityId"></param>
+    /// <returns></returns>
+    bool removePermission(Guid permissionOwnerId, Guid permissionId,
       Guid entityId);
   }
 }

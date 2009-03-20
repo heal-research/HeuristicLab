@@ -25,13 +25,14 @@ using System.Text;
 using System.Runtime.Serialization;
 
 namespace HeuristicLab.Security.Contracts.BusinessObjects {
-
+  
   [DataContract]
-  public class Permission: PersistableObject {
+  public class GrantedPermission : PersistableObject {
     [DataMember]
-    public String Description { get; set; }
-
+    public Permission Permission { get; set; }
     [DataMember]
     public Guid EntityId { get; set; }
+    [DataMember]
+    public PermissionOwner PermissionOwner { get; set; }
   }
 }

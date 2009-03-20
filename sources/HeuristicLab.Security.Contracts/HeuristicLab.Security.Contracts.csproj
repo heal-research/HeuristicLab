@@ -41,11 +41,12 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="BusinessObjects\GrantedPermissions.cs" />
+    <Compile Include="BusinessObjects\GrantedPermission.cs" />
     <Compile Include="BusinessObjects\Permission.cs" />
     <Compile Include="BusinessObjects\PermissionOwner.cs" />
     <Compile Include="BusinessObjects\User.cs" />
     <Compile Include="BusinessObjects\UserGroup.cs" />
+    <Compile Include="BusinessObjects\PersistableObject.cs" />
     <Compile Include="SecurityContractsPlugin.cs" />
     <Compile Include="Interfaces\IPermissionManager.cs" />
     <Compile Include="Interfaces\ISecurityManager.cs" />

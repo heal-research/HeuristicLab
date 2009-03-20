@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
-using HeuristicLab.DataAccess;
 
 namespace HeuristicLab.Security.Contracts.BusinessObjects {
 
@@ -31,5 +30,8 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
   public class PermissionOwner: PersistableObject {
     [DataMember]
     public string Name { get; set; }
+
+    [DataMember]
+    public Guid EntityId { get; set; }
   }
 }

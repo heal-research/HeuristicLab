@@ -6,17 +6,17 @@ using HeuristicLab.Security.Contracts.BusinessObjects;
 namespace HeuristicLab.Security.Contracts.Interfaces {
   interface ISecurityManager {
     User AddNewUser(User user);
-    bool RemoveUser(long userId);
+    bool RemoveUser(Guid userId);
     User UpdateUser(User user);
 
     UserGroup AddNewUserGroup(UserGroup group);
-    bool RemoveUserGroup(long groupId);
+    bool RemoveUserGroup(Guid groupId);
     UserGroup UpdateUserGroup(UserGroup group);
- 
-    bool AddPermissionOwnerToGroup(long groupId, long permissionOwnerId);
-    bool RemovePermissionOwnerFromGroup(long groupId, long permissionOwnerId);
 
-    bool GrantPermission(long permissionOwnerId, Guid permissionToken);
-    bool RevokePermission(long permissionOwnerId, Guid permissionToken);
+    bool AddPermissionOwnerToGroup(Guid groupId, Guid permissionOwnerId);
+    bool RemovePermissionOwnerFromGroup(Guid groupId, Guid permissionOwnerId);
+
+    bool GrantPermission(Guid permissionOwnerId, Guid permissionId);
+    bool RevokePermission(Guid permissionOwnerId, Guid permissionId);
   }
 }

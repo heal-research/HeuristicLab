@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Security.Contracts.BusinessObjects;
-using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Security.DataAccess {
   /// <summary>

@@ -22,18 +22,35 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.Serialization;
-using HeuristicLab.DataAccess;
+using HeuristicLab.Security.Contracts;
 
-namespace HeuristicLab.Security.Contracts.BusinessObjects {
-  
-  [DataContract]
-  public class GrantedPermissions : PersistableObject {
-    [DataMember]
-    public Permission Permission { get; set; }
-    [DataMember]
-    public Guid EntityId { get; set; }
-    [DataMember]
-    public PermissionOwner PermissionOwner { get; set; }
+namespace HeuristicLab.Security.DataAccess {
+  public interface IDataAdapter<ObjT>
+    where ObjT: PersistableObject
+  {
+    /// <summary>
+    /// Save or update the object
+    /// </summary>
+    /// <param name="user"></param>
+    void Update(ObjT obj);
+
+    /// <summary>
+    /// Get the object with the specified ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    ObjT GetById(long id);
+
+    /// <summary>
+    /// Get all objects
+    /// </summary>
+    /// <returns></returns>
+    ICollection<ObjT> GetAll();
+
+    /// <summary>
+    /// Deletes the object
+    /// </summary>
+    /// <param name="user"></param>
+    bool Delete(ObjT obj);
   }
 }
