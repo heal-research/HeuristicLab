@@ -4,6 +4,7 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="Login">
     <xs:complexType>
       <xs:sequence>
@@ -46,7 +47,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ProcessJobResult">
+  <xs:element name="StoreFinishedJobResult">
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q7:guid" />
@@ -54,28 +55,73 @@
         <xs:element minOccurs="0" name="result" nillable="true" type="xs:base64Binary" />
         <xs:element minOccurs="0" name="percentage" type="xs:double" />
         <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="exception" nillable="true" type="q8:Exception" />
-        <xs:element minOccurs="0" name="finished" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="ProcessJobResultResponse">
+  <xs:element name="StoreFinishedJobResultResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="ProcessJobResultResult" nillable="true" type="q9:ResponseResultReceived" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="StoreFinishedJobResultResult" nillable="true" type="q9:ResponseResultReceived" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ProcessSnapshot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q10:guid" />
+        <xs:element minOccurs="0" name="jobId" type="xs:long" />
+        <xs:element minOccurs="0" name="result" nillable="true" type="xs:base64Binary" />
+        <xs:element minOccurs="0" name="percentage" type="xs:double" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="exception" nillable="true" type="q11:Exception" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ProcessSnapshotResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="ProcessSnapshotResult" nillable="true" type="q12:ResponseResultReceived" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="Logout">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q10:guid" />
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="clientId" type="q13:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="LogoutResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="LogoutResult" nillable="true" type="q11:Response" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="LogoutResult" nillable="true" type="q14:Response" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsJobStillNeeded">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="jobId" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsJobStillNeededResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="IsJobStillNeededResult" nillable="true" type="q15:Response" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendPlugins">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="pluginList" nillable="true" type="q16:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SendPluginsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" minOccurs="0" name="SendPluginsResult" nillable="true" type="q17:ResponsePlugin" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

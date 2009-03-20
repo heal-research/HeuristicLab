@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="ClientInfo">
     <xs:complexContent mixed="false">
@@ -21,7 +22,7 @@
   <xs:element name="ClientInfo" nillable="true" type="tns:ClientInfo" />
   <xs:complexType name="Resource">
     <xs:complexContent mixed="false">
-      <xs:extension base="tns:HiveBaseObject">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q1:PersistableObject">
         <xs:sequence>
           <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
         </xs:sequence>
@@ -29,15 +30,9 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="Resource" nillable="true" type="tns:Resource" />
-  <xs:complexType name="HiveBaseObject">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Id" type="xs:long" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="HiveBaseObject" nillable="true" type="tns:HiveBaseObject" />
   <xs:complexType name="ClientConfig">
     <xs:complexContent mixed="false">
-      <xs:extension base="tns:HiveBaseObject">
+      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q2:PersistableObject">
         <xs:sequence>
           <xs:element minOccurs="0" name="HeartBeatIntervall" type="xs:int" />
           <xs:element minOccurs="0" name="UpDownTimeCalendar" nillable="true" type="xs:string" />
@@ -59,15 +54,15 @@
   <xs:complexType name="HeartBeatData">
     <xs:sequence>
       <xs:element minOccurs="0" name="ClientId" type="ser:guid" />
-      <xs:element minOccurs="0" name="freeCores" type="xs:int" />
-      <xs:element minOccurs="0" name="freeMemory" type="xs:int" />
-      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="jobProgress" nillable="true" type="q1:ArrayOfKeyValueOflongdouble" />
+      <xs:element minOccurs="0" name="FreeCores" type="xs:int" />
+      <xs:element minOccurs="0" name="FreeMemory" type="xs:int" />
+      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="JobProgress" nillable="true" type="q3:ArrayOfKeyValueOflongdouble" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="HeartBeatData" nillable="true" type="tns:HeartBeatData" />
   <xs:complexType name="Job">
     <xs:complexContent mixed="false">
-      <xs:extension base="tns:HiveBaseObject">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q4:PersistableObject">
         <xs:sequence>
           <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
           <xs:element minOccurs="0" name="DateCalculated" type="xs:dateTime" />
@@ -77,30 +72,10 @@
           <xs:element minOccurs="0" name="Priority" type="xs:int" />
           <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
           <xs:element minOccurs="0" name="State" type="tns:State" />
-          <xs:element minOccurs="0" name="User" nillable="true" type="tns:User" />
+          <xs:element minOccurs="0" name="UserId" type="ser:guid" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="Job" nillable="true" type="tns:Job" />
-  <xs:complexType name="User">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:PermissionOwner">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="User" nillable="true" type="tns:User" />
-  <xs:complexType name="PermissionOwner">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:HiveBaseObject">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="PermissionOwner" nillable="true" type="tns:PermissionOwner" />
 </xs:schema>

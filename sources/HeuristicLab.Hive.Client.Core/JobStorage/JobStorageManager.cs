@@ -20,18 +20,21 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
 
       JobStorageInfo info = new JobStorageInfo { JobID = jobId, ServerIP = serverIP, ServerPort = serverPort, TimeFinished = DateTime.Now };
-      
-      //Todo: Filestream won't be closed if exception occurs
+            
+      Stream jobstream = null;
       try {
-        Stream jobstream = File.Create(path + filename + ".dat");
+        jobstream = File.Create(path + filename + ".dat");
         jobstream.Write(job, 0, job.Length);
         storedJobsList.Add(info);
-        jobstream.Close();
         Logging.Instance.Info("JobStorageManager", "Job " + info.JobID + " stored on the harddisc");
       }
       catch (Exception e) {
         Logging.Instance.Error("JobStorageManager", "Exception: ", e);
-      }       
+      }
+      finally {
+        if(jobstream!=null)
+          jobstream.Close();
+      }
     }
 
     public static void CheckAndSubmitJobsFromDisc() {

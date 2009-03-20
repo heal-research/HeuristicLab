@@ -65,4 +65,14 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="ResponseResultReceived" nillable="true" type="tns:ResponseResultReceived" />
+  <xs:complexType name="ResponsePlugin">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Response">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Plugins" nillable="true" type="xs:base64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResponsePlugin" nillable="true" type="tns:ResponsePlugin" />
 </xs:schema>

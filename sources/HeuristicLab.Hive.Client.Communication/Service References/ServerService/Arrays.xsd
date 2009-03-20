@@ -18,4 +18,10 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfKeyValueOflongdouble" nillable="true" type="tns:ArrayOfKeyValueOflongdouble" />
+  <xs:complexType name="ArrayOfstring">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
 </xs:schema>

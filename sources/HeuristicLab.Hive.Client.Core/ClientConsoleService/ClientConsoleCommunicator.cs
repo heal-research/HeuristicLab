@@ -12,10 +12,8 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleCommunicator: IClientConsoleCommunicator {
     #region IClientConsoleCommunicator Members
 
-    public StatusCommons GetStatusInfos() {
-      lock (Core.Locker) {
+    public StatusCommons GetStatusInfos() {      
         return ConfigManager.Instance.GetStatusForClientConsole();
-      }
     }
 
     public void SetConnection(ConnectionContainer container) {

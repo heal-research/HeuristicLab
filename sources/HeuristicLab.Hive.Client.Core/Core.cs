@@ -49,9 +49,7 @@ namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
   /// The core component of the Hive Client
   /// </summary>
-  public class Core: MarshalByRefObject {
-    //Todo: Ask wagner
-    public static Object Locker { get; set; }    
+  public class Core: MarshalByRefObject {       
     public static bool abortRequested { get; set; }
         
     private Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
@@ -64,8 +62,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <summary>
     /// Main Method for the client
     /// </summary>
-    public void Start() {
-      Core.Locker = new Object();
+    public void Start() {      
       abortRequested = false;
 
       Logging.Instance.Info(this.ToString(), "Hive Client started");
@@ -78,8 +75,9 @@ namespace HeuristicLab.Hive.Client.Core {
       //Register all Wcf Service references
       wcfService = WcfService.Instance;
       wcfService.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(wcfService_LoginCompleted);
-      wcfService.SendJobCompleted += new EventHandler<SendJobCompletedEventArgs>(wcfService_PullJobCompleted);
-      wcfService.ProcessJobResultCompleted += new EventHandler<ProcessJobResultCompletedEventArgs>(wcfService_SendJobResultCompleted);
+      wcfService.SendJobCompleted += new EventHandler<SendJobCompletedEventArgs>(wcfService_SendJobCompleted);
+      wcfService.StoreFinishedJobResultCompleted += new EventHandler<StoreFinishedJobResultCompletedEventArgs>(wcfService_StoreFinishedJobResultCompleted);
+      wcfService.ProcessSnapshotCompleted += new EventHandler<ProcessSnapshotCompletedEventArgs>(wcfService_ProcessSnapshotCompleted);
       wcfService.ConnectionRestored += new EventHandler(wcfService_ConnectionRestored);
       wcfService.ServerChanged += new EventHandler(wcfService_ServerChanged);
       wcfService.Connected += new EventHandler(wcfService_Connected);
@@ -104,7 +102,7 @@ namespace HeuristicLab.Hive.Client.Core {
         Logging.Instance.Info(this.ToString(), container.Message.ToString());
         DetermineAction(container);
       }
-    }
+    }    
 
     /// <summary>
     /// Reads and analyzes the Messages from the MessageQueue and starts corresponding actions
@@ -126,9 +124,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:
-          ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);
-          //Thread ssr = new Thread(new ParameterizedThreadStart(GetSnapshot));
-          //ssr.Start(container.JobId);          
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);          
           break;
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
@@ -136,9 +132,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
-          ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);
-          //Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
-          //finThread.Start(container.JobId);          
+          ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);          
           break;     
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
@@ -157,7 +151,7 @@ namespace HeuristicLab.Hive.Client.Core {
         byte[] sJob = engines[jId].GetFinishedJob();
 
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
-          wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+          wcfService.StoreFinishedJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
             jId,
             sJob,
             1,
@@ -165,7 +159,7 @@ namespace HeuristicLab.Hive.Client.Core {
             true);
         } else {          
           JobStorageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
-          lock (Core.Locker) {
+          lock (engines) {
             AppDomain.Unload(appDomains[jId]);
             appDomains.Remove(jId);
             engines.Remove(jId);
@@ -181,7 +175,7 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetSnapshot(object jobId) {
       long jId = (long)jobId;
       byte[] obj = engines[jId].GetSnapshot();
-      wcfService.ProcessJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+      wcfService.ProcessSnapshotAsync(ConfigManager.Instance.GetClientInfo().ClientId,
         jId,
         obj,
         engines[jId].Progress,
@@ -201,14 +195,14 @@ namespace HeuristicLab.Hive.Client.Core {
         Logging.Instance.Error(this.ToString(), e.Result.StatusMessage);
     }    
 
-    void wcfService_PullJobCompleted(object sender, SendJobCompletedEventArgs e) {
+    void wcfService_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
         bool sandboxed = true;
 
         PluginManager.Manager.Initialize();
         AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-        lock (Locker) {                    
+        lock (engines) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
             jobs.Add(e.Result.Job.Id, e.Result.Job);
             appDomains.Add(e.Result.Job.Id, appDomain);
@@ -227,33 +221,33 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
     
-    //Todo: Seperate this method into 2: Finished jobs and Snapshots
-    void wcfService_SendJobResultCompleted(object sender, ProcessJobResultCompletedEventArgs e) {
+
+    void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
       if (e.Result.Success) {        
-        lock (Locker) {
+        lock(engines) {        
           //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
           //this method has a risk concerning race conditions.
           //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
-          if (e.Result.finished == false) {
-            Logging.Instance.Info(this.ToString(), "Snapshot for Job " + e.Result.JobId + " transmitted");
-          } else {
-            AppDomain.Unload(appDomains[e.Result.JobId]);
-            appDomains.Remove(e.Result.JobId);
-            engines.Remove(e.Result.JobId);
-            jobs.Remove(e.Result.JobId);
-            ClientStatusInfo.JobsProcessed++;
-            Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
-          }
+          AppDomain.Unload(appDomains[e.Result.JobId]);
+          appDomains.Remove(e.Result.JobId);
+          engines.Remove(e.Result.JobId);
+          jobs.Remove(e.Result.JobId);
+          ClientStatusInfo.JobsProcessed++;
+          Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
         }        
       } else {        
         Logging.Instance.Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
       }
     }
 
+    void wcfService_ProcessSnapshotCompleted(object sender, ProcessSnapshotCompletedEventArgs e) {
+      Logging.Instance.Info(this.ToString(), "Snapshot " + e.Result.JobId + " has been transmitted according to plan");
+    }
+
     //Todo: First stop all threads, then terminate
     void wcfService_ServerChanged(object sender, EventArgs e) {
       Logging.Instance.Info(this.ToString(), "ServerChanged has been called");
-      lock (Locker) {
+      lock (engines) {
         foreach (KeyValuePair<long, AppDomain> entries in appDomains)
           AppDomain.Unload(appDomains[entries.Key]);
         appDomains = new Dictionary<long, AppDomain>();

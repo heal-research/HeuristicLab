@@ -19,6 +19,7 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseHB))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseJob))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseResultReceived))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponsePlugin))]
         HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/Login", ReplyAction="http://tempuri.org/IClientCommunicator/LoginResponse")]
@@ -42,24 +43,53 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         HeuristicLab.Hive.Contracts.ResponseJob EndSendJob(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/ProcessJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessJobResultResponse")]
-        HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse")]
+        HeuristicLab.Hive.Contracts.ResponseResultReceived StoreFinishedJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/ProcessJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessJobResultResponse")]
-        System.IAsyncResult BeginProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult", ReplyAction="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse")]
+        System.IAsyncResult BeginStoreFinishedJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, System.AsyncCallback callback, object asyncState);
         
-        HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessJobResult(System.IAsyncResult result);
+        HeuristicLab.Hive.Contracts.ResponseResultReceived EndStoreFinishedJobResult(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/ProcessSnapshot", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessSnapshotResponse")]
+        HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessSnapshot(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/ProcessSnapshot", ReplyAction="http://tempuri.org/IClientCommunicator/ProcessSnapshotResponse")]
+        System.IAsyncResult BeginProcessSnapshot(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessSnapshot(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/Logout", ReplyAction="http://tempuri.org/IClientCommunicator/LogoutResponse")]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseHB))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseJob))]
         [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseResultReceived))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponsePlugin))]
         HeuristicLab.Hive.Contracts.Response Logout(System.Guid clientId);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/Logout", ReplyAction="http://tempuri.org/IClientCommunicator/LogoutResponse")]
         System.IAsyncResult BeginLogout(System.Guid clientId, System.AsyncCallback callback, object asyncState);
         
         HeuristicLab.Hive.Contracts.Response EndLogout(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/IsJobStillNeeded", ReplyAction="http://tempuri.org/IClientCommunicator/IsJobStillNeededResponse")]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseHB))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseJob))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponseResultReceived))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(HeuristicLab.Hive.Contracts.ResponsePlugin))]
+        HeuristicLab.Hive.Contracts.Response IsJobStillNeeded(long jobId);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/IsJobStillNeeded", ReplyAction="http://tempuri.org/IClientCommunicator/IsJobStillNeededResponse")]
+        System.IAsyncResult BeginIsJobStillNeeded(long jobId, System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Contracts.Response EndIsJobStillNeeded(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendPlugins", ReplyAction="http://tempuri.org/IClientCommunicator/SendPluginsResponse")]
+        HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(string[] pluginList);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendPlugins", ReplyAction="http://tempuri.org/IClientCommunicator/SendPluginsResponse")]
+        System.IAsyncResult BeginSendPlugins(string[] pluginList, System.AsyncCallback callback, object asyncState);
+        
+        HeuristicLab.Hive.Contracts.ResponsePlugin EndSendPlugins(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -125,11 +155,30 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class ProcessJobResultCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class StoreFinishedJobResultCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public ProcessJobResultCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public StoreFinishedJobResultCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Contracts.ResponseResultReceived)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class ProcessSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public ProcessSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -163,6 +212,44 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class IsJobStillNeededCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public IsJobStillNeededCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Contracts.Response Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Contracts.Response)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class SendPluginsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public SendPluginsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public HeuristicLab.Hive.Contracts.ResponsePlugin Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((HeuristicLab.Hive.Contracts.ResponsePlugin)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class ClientCommunicatorClient : System.ServiceModel.ClientBase<HeuristicLab.Hive.Client.Communication.ServerService.IClientCommunicator>, HeuristicLab.Hive.Client.Communication.ServerService.IClientCommunicator {
         
         private BeginOperationDelegate onBeginLoginDelegate;
@@ -183,17 +270,35 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         private System.Threading.SendOrPostCallback onSendJobCompletedDelegate;
         
-        private BeginOperationDelegate onBeginProcessJobResultDelegate;
+        private BeginOperationDelegate onBeginStoreFinishedJobResultDelegate;
         
-        private EndOperationDelegate onEndProcessJobResultDelegate;
+        private EndOperationDelegate onEndStoreFinishedJobResultDelegate;
         
-        private System.Threading.SendOrPostCallback onProcessJobResultCompletedDelegate;
+        private System.Threading.SendOrPostCallback onStoreFinishedJobResultCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginProcessSnapshotDelegate;
+        
+        private EndOperationDelegate onEndProcessSnapshotDelegate;
+        
+        private System.Threading.SendOrPostCallback onProcessSnapshotCompletedDelegate;
         
         private BeginOperationDelegate onBeginLogoutDelegate;
         
         private EndOperationDelegate onEndLogoutDelegate;
         
         private System.Threading.SendOrPostCallback onLogoutCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginIsJobStillNeededDelegate;
+        
+        private EndOperationDelegate onEndIsJobStillNeededDelegate;
+        
+        private System.Threading.SendOrPostCallback onIsJobStillNeededCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginSendPluginsDelegate;
+        
+        private EndOperationDelegate onEndSendPluginsDelegate;
+        
+        private System.Threading.SendOrPostCallback onSendPluginsCompletedDelegate;
         
         public ClientCommunicatorClient() {
         }
@@ -220,9 +325,15 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         
         public event System.EventHandler<SendJobCompletedEventArgs> SendJobCompleted;
         
-        public event System.EventHandler<ProcessJobResultCompletedEventArgs> ProcessJobResultCompleted;
+        public event System.EventHandler<StoreFinishedJobResultCompletedEventArgs> StoreFinishedJobResultCompleted;
+        
+        public event System.EventHandler<ProcessSnapshotCompletedEventArgs> ProcessSnapshotCompleted;
         
         public event System.EventHandler<LogoutCompletedEventArgs> LogoutCompleted;
+        
+        public event System.EventHandler<IsJobStillNeededCompletedEventArgs> IsJobStillNeededCompleted;
+        
+        public event System.EventHandler<SendPluginsCompletedEventArgs> SendPluginsCompleted;
         
         public HeuristicLab.Hive.Contracts.Response Login(HeuristicLab.Hive.Contracts.BusinessObjects.ClientInfo clientInfo) {
             return base.Channel.Login(clientInfo);
@@ -374,64 +485,120 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         clientId}, this.onEndSendJobDelegate, this.onSendJobCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
-            return base.Channel.ProcessJobResult(clientId, jobId, result, percentage, exception, finished);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived StoreFinishedJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception) {
+            return base.Channel.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginProcessJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginProcessJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
+        public System.IAsyncResult BeginStoreFinishedJobResult(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginStoreFinishedJobResult(clientId, jobId, result, percentage, exception, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessJobResult(System.IAsyncResult result) {
-            return base.Channel.EndProcessJobResult(result);
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived EndStoreFinishedJobResult(System.IAsyncResult result) {
+            return base.Channel.EndStoreFinishedJobResult(result);
         }
         
-        private System.IAsyncResult OnBeginProcessJobResult(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginStoreFinishedJobResult(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid clientId = ((System.Guid)(inValues[0]));
             long jobId = ((long)(inValues[1]));
             byte[] result = ((byte[])(inValues[2]));
             double percentage = ((double)(inValues[3]));
             System.Exception exception = ((System.Exception)(inValues[4]));
-            bool finished = ((bool)(inValues[5]));
-            return this.BeginProcessJobResult(clientId, jobId, result, percentage, exception, finished, callback, asyncState);
+            return this.BeginStoreFinishedJobResult(clientId, jobId, result, percentage, exception, callback, asyncState);
         }
         
-        private object[] OnEndProcessJobResult(System.IAsyncResult result) {
-            HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndProcessJobResult(result);
+        private object[] OnEndStoreFinishedJobResult(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndStoreFinishedJobResult(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnProcessJobResultCompleted(object state) {
-            if ((this.ProcessJobResultCompleted != null)) {
+        private void OnStoreFinishedJobResultCompleted(object state) {
+            if ((this.StoreFinishedJobResultCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.ProcessJobResultCompleted(this, new ProcessJobResultCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.StoreFinishedJobResultCompleted(this, new StoreFinishedJobResultCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void ProcessJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished) {
-            this.ProcessJobResultAsync(clientId, jobId, result, percentage, exception, finished, null);
+        public void StoreFinishedJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception) {
+            this.StoreFinishedJobResultAsync(clientId, jobId, result, percentage, exception, null);
         }
         
-        public void ProcessJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, bool finished, object userState) {
-            if ((this.onBeginProcessJobResultDelegate == null)) {
-                this.onBeginProcessJobResultDelegate = new BeginOperationDelegate(this.OnBeginProcessJobResult);
+        public void StoreFinishedJobResultAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, object userState) {
+            if ((this.onBeginStoreFinishedJobResultDelegate == null)) {
+                this.onBeginStoreFinishedJobResultDelegate = new BeginOperationDelegate(this.OnBeginStoreFinishedJobResult);
             }
-            if ((this.onEndProcessJobResultDelegate == null)) {
-                this.onEndProcessJobResultDelegate = new EndOperationDelegate(this.OnEndProcessJobResult);
+            if ((this.onEndStoreFinishedJobResultDelegate == null)) {
+                this.onEndStoreFinishedJobResultDelegate = new EndOperationDelegate(this.OnEndStoreFinishedJobResult);
             }
-            if ((this.onProcessJobResultCompletedDelegate == null)) {
-                this.onProcessJobResultCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnProcessJobResultCompleted);
+            if ((this.onStoreFinishedJobResultCompletedDelegate == null)) {
+                this.onStoreFinishedJobResultCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnStoreFinishedJobResultCompleted);
             }
-            base.InvokeAsync(this.onBeginProcessJobResultDelegate, new object[] {
+            base.InvokeAsync(this.onBeginStoreFinishedJobResultDelegate, new object[] {
                         clientId,
                         jobId,
                         result,
                         percentage,
-                        exception,
-                        finished}, this.onEndProcessJobResultDelegate, this.onProcessJobResultCompletedDelegate, userState);
+                        exception}, this.onEndStoreFinishedJobResultDelegate, this.onStoreFinishedJobResultCompletedDelegate, userState);
+        }
+        
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived ProcessSnapshot(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception) {
+            return base.Channel.ProcessSnapshot(clientId, jobId, result, percentage, exception);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginProcessSnapshot(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginProcessSnapshot(clientId, jobId, result, percentage, exception, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Contracts.ResponseResultReceived EndProcessSnapshot(System.IAsyncResult result) {
+            return base.Channel.EndProcessSnapshot(result);
+        }
+        
+        private System.IAsyncResult OnBeginProcessSnapshot(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid clientId = ((System.Guid)(inValues[0]));
+            long jobId = ((long)(inValues[1]));
+            byte[] result = ((byte[])(inValues[2]));
+            double percentage = ((double)(inValues[3]));
+            System.Exception exception = ((System.Exception)(inValues[4]));
+            return this.BeginProcessSnapshot(clientId, jobId, result, percentage, exception, callback, asyncState);
+        }
+        
+        private object[] OnEndProcessSnapshot(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponseResultReceived retVal = this.EndProcessSnapshot(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnProcessSnapshotCompleted(object state) {
+            if ((this.ProcessSnapshotCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.ProcessSnapshotCompleted(this, new ProcessSnapshotCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void ProcessSnapshotAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception) {
+            this.ProcessSnapshotAsync(clientId, jobId, result, percentage, exception, null);
+        }
+        
+        public void ProcessSnapshotAsync(System.Guid clientId, long jobId, byte[] result, double percentage, System.Exception exception, object userState) {
+            if ((this.onBeginProcessSnapshotDelegate == null)) {
+                this.onBeginProcessSnapshotDelegate = new BeginOperationDelegate(this.OnBeginProcessSnapshot);
+            }
+            if ((this.onEndProcessSnapshotDelegate == null)) {
+                this.onEndProcessSnapshotDelegate = new EndOperationDelegate(this.OnEndProcessSnapshot);
+            }
+            if ((this.onProcessSnapshotCompletedDelegate == null)) {
+                this.onProcessSnapshotCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnProcessSnapshotCompleted);
+            }
+            base.InvokeAsync(this.onBeginProcessSnapshotDelegate, new object[] {
+                        clientId,
+                        jobId,
+                        result,
+                        percentage,
+                        exception}, this.onEndProcessSnapshotDelegate, this.onProcessSnapshotCompletedDelegate, userState);
         }
         
         public HeuristicLab.Hive.Contracts.Response Logout(System.Guid clientId) {
@@ -482,6 +649,106 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
             }
             base.InvokeAsync(this.onBeginLogoutDelegate, new object[] {
                         clientId}, this.onEndLogoutDelegate, this.onLogoutCompletedDelegate, userState);
+        }
+        
+        public HeuristicLab.Hive.Contracts.Response IsJobStillNeeded(long jobId) {
+            return base.Channel.IsJobStillNeeded(jobId);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginIsJobStillNeeded(long jobId, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginIsJobStillNeeded(jobId, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Contracts.Response EndIsJobStillNeeded(System.IAsyncResult result) {
+            return base.Channel.EndIsJobStillNeeded(result);
+        }
+        
+        private System.IAsyncResult OnBeginIsJobStillNeeded(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            long jobId = ((long)(inValues[0]));
+            return this.BeginIsJobStillNeeded(jobId, callback, asyncState);
+        }
+        
+        private object[] OnEndIsJobStillNeeded(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.Response retVal = this.EndIsJobStillNeeded(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnIsJobStillNeededCompleted(object state) {
+            if ((this.IsJobStillNeededCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.IsJobStillNeededCompleted(this, new IsJobStillNeededCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void IsJobStillNeededAsync(long jobId) {
+            this.IsJobStillNeededAsync(jobId, null);
+        }
+        
+        public void IsJobStillNeededAsync(long jobId, object userState) {
+            if ((this.onBeginIsJobStillNeededDelegate == null)) {
+                this.onBeginIsJobStillNeededDelegate = new BeginOperationDelegate(this.OnBeginIsJobStillNeeded);
+            }
+            if ((this.onEndIsJobStillNeededDelegate == null)) {
+                this.onEndIsJobStillNeededDelegate = new EndOperationDelegate(this.OnEndIsJobStillNeeded);
+            }
+            if ((this.onIsJobStillNeededCompletedDelegate == null)) {
+                this.onIsJobStillNeededCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnIsJobStillNeededCompleted);
+            }
+            base.InvokeAsync(this.onBeginIsJobStillNeededDelegate, new object[] {
+                        jobId}, this.onEndIsJobStillNeededDelegate, this.onIsJobStillNeededCompletedDelegate, userState);
+        }
+        
+        public HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(string[] pluginList) {
+            return base.Channel.SendPlugins(pluginList);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginSendPlugins(string[] pluginList, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSendPlugins(pluginList, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public HeuristicLab.Hive.Contracts.ResponsePlugin EndSendPlugins(System.IAsyncResult result) {
+            return base.Channel.EndSendPlugins(result);
+        }
+        
+        private System.IAsyncResult OnBeginSendPlugins(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string[] pluginList = ((string[])(inValues[0]));
+            return this.BeginSendPlugins(pluginList, callback, asyncState);
+        }
+        
+        private object[] OnEndSendPlugins(System.IAsyncResult result) {
+            HeuristicLab.Hive.Contracts.ResponsePlugin retVal = this.EndSendPlugins(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnSendPluginsCompleted(object state) {
+            if ((this.SendPluginsCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.SendPluginsCompleted(this, new SendPluginsCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void SendPluginsAsync(string[] pluginList) {
+            this.SendPluginsAsync(pluginList, null);
+        }
+        
+        public void SendPluginsAsync(string[] pluginList, object userState) {
+            if ((this.onBeginSendPluginsDelegate == null)) {
+                this.onBeginSendPluginsDelegate = new BeginOperationDelegate(this.OnBeginSendPlugins);
+            }
+            if ((this.onEndSendPluginsDelegate == null)) {
+                this.onEndSendPluginsDelegate = new EndOperationDelegate(this.OnEndSendPlugins);
+            }
+            if ((this.onSendPluginsCompletedDelegate == null)) {
+                this.onSendPluginsCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSendPluginsCompleted);
+            }
+            base.InvokeAsync(this.onBeginSendPluginsDelegate, new object[] {
+                        pluginList}, this.onEndSendPluginsDelegate, this.onSendPluginsCompletedDelegate, userState);
         }
     }
 }

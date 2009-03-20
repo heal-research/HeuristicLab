@@ -99,6 +99,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     /// </summary>
     /// <returns></returns>
     public StatusCommons GetStatusForClientConsole() {
+      //Todo: Locking
       StatusCommons st = new StatusCommons();
       st.ClientGuid = hardwareInfo.ClientId;
       
@@ -112,9 +113,11 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       Dictionary<long, Executor> engines = Core.GetExecutionEngines();
       st.Jobs = new List<JobStatus>();
 
-      foreach (KeyValuePair<long, Executor> kvp in engines) {
-        Executor e = kvp.Value;
-        st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
+      lock (engines) {
+        foreach (KeyValuePair<long, Executor> kvp in engines) {
+          Executor e = kvp.Value;
+          st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
+        }
       }
       return st;      
     }
@@ -122,9 +125,11 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     public Dictionary<long, double> GetProgressOfAllJobs() {
       Dictionary<long,double> prog = new Dictionary<long,double>();
       Dictionary<long, Executor> engines = Core.GetExecutionEngines();
-      foreach (KeyValuePair<long, Executor> kvp in engines) {
-        Executor e = kvp.Value;
-        prog[e.JobId] = e.Progress;
+      lock (engines) {
+        foreach (KeyValuePair<long, Executor> kvp in engines) {
+          Executor e = kvp.Value;
+          prog[e.JobId] = e.Progress;
+        }
       }
       return prog;
     }

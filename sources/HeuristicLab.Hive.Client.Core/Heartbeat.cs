@@ -60,7 +60,7 @@ namespace HeuristicLab.Hive.Client.Core {
       heartbeatTimer.AutoReset = true;
       heartbeatTimer.Elapsed += new ElapsedEventHandler(heartbeatTimer_Elapsed);
       wcfService = WcfService.Instance;
-      wcfService.SendHeartBeatCompleted += new EventHandler<ProcessHeartBeatCompletedEventArgs>(wcfService_SendHeartBeatCompleted);
+      wcfService.SendHeartBeatCompleted += new EventHandler<ProcessHeartBeatCompletedEventArgs>(wcfService_ProcessHeartBeatCompleted);
       heartbeatTimer.Start();
     }
 
@@ -74,10 +74,14 @@ namespace HeuristicLab.Hive.Client.Core {
       ClientInfo info = ConfigManager.Instance.GetClientInfo();
       // Todo: remove tempfix for free cores.
 
-      HeartBeatData heartBeatData = new HeartBeatData {
+      PerformanceCounter counter = new PerformanceCounter("Memory", "Available Bytes", true);
+      int mb = (int)(counter.NextValue() / 1024 / 1024);
+
+
+        HeartBeatData heartBeatData = new HeartBeatData {
         ClientId = info.ClientId,
         FreeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
-        FreeMemory = 1000,
+        FreeMemory = mb,
         JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
       };
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
@@ -87,7 +91,7 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
-    void wcfService_SendHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
+    void wcfService_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
       System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
       e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
     }
