@@ -170,50 +170,21 @@ namespace HeuristicLab.Visualization.Test {
         this.model = model;
       }
       
-      public void DoWork() {
+      public void DoWorkMultiLine() {
 
         IDataRow row1 = new DataRow();
         row1.Color = Color.Red;
         row1.Thickness = 2;
-        row1.Label = "Simon";
+        row1.Label = "Sinus";
         row1.Style = DrawingStyle.Solid;
         model.AddDataRow(row1);
 
         IDataRow row2 = new DataRow();
         row2.Color = Color.Red;
         row2.Thickness = 3;
-        row2.Label = "Simon";
+        row2.Label = "Growing";
         row2.Style = DrawingStyle.Solid;
         model.AddDataRow(row2);
-
-
-        MinAggregator aggregator = new MinAggregator();
-        aggregator.Label = "MinAggregator";
-        aggregator.Color = Color.Pink;
-        aggregator.Thickness = 3;
-        aggregator.Style = DrawingStyle.Solid;
-        aggregator.LineType = DataRowType.SingleValue;
-        aggregator.AddWatch(row1);
-        model.AddDataRow(aggregator);
-
-        MaxAggregator maxAggregator = new MaxAggregator();
-        maxAggregator.Label = "MaxAggregator";
-        maxAggregator.Color = Color.DeepSkyBlue;
-        maxAggregator.Thickness = 3;
-        maxAggregator.Style = DrawingStyle.Solid;
-        maxAggregator.LineType = DataRowType.SingleValue;
-        maxAggregator.AddWatch(row1);
-        model.AddDataRow(maxAggregator);
-        
-        
-        AvgAggregator avgAggregator = new AvgAggregator();
-        avgAggregator.Label = "AvgAggregator";
-        avgAggregator.Color = Color.Violet;
-        avgAggregator.Thickness = 3;
-        avgAggregator.Style = DrawingStyle.Solid;
-        avgAggregator.LineType = DataRowType.SingleValue;
-        avgAggregator.AddWatch(row1);
-        model.AddDataRow(avgAggregator);
 
         AvgAggregator multiAvgAggregator = new AvgAggregator();
         multiAvgAggregator.Label = "MultiAvgAggregator";
@@ -271,6 +242,105 @@ namespace HeuristicLab.Visualization.Test {
         }
         Console.WriteLine("worker thread: terminating gracefully.");
       }
+      public void DoWorkSingleLine() {
+
+        IDataRow row1 = new DataRow();
+        row1.Color = Color.Red;
+        row1.Thickness = 2;
+        row1.Label = "Sinus";
+        row1.Style = DrawingStyle.Solid;
+        model.AddDataRow(row1);
+
+        IDataRow row2 = new DataRow();
+        row2.Color = Color.Red;
+        row2.Thickness = 3;
+        row2.Label = "Growing";
+        row2.Style = DrawingStyle.Solid;
+        model.AddDataRow(row2);
+
+        MinAggregator aggregator = new MinAggregator();
+        aggregator.Label = "MinAggregator";
+        aggregator.Color = Color.Pink;
+        aggregator.Thickness = 3;
+        aggregator.Style = DrawingStyle.Solid;
+        aggregator.LineType = DataRowType.SingleValue;
+        aggregator.AddWatch(row1);
+        model.AddDataRow(aggregator);
+
+        MaxAggregator maxAggregator = new MaxAggregator();
+        maxAggregator.Label = "MaxAggregator";
+        maxAggregator.Color = Color.DeepSkyBlue;
+        maxAggregator.Thickness = 3;
+        maxAggregator.Style = DrawingStyle.Solid;
+        maxAggregator.LineType = DataRowType.SingleValue;
+        maxAggregator.AddWatch(row1);
+        model.AddDataRow(maxAggregator);
+
+        AvgAggregator avgAggregator = new AvgAggregator();
+        avgAggregator.Label = "AvgAggregator";
+        avgAggregator.Color = Color.Violet;
+        avgAggregator.Thickness = 3;
+        avgAggregator.Style = DrawingStyle.Solid;
+        avgAggregator.LineType = DataRowType.SingleValue;
+        avgAggregator.AddWatch(row1);
+        model.AddDataRow(avgAggregator);
+
+        double i = 0;
+        double newY;
+
+        Random rand = new Random();
+        while (!_shouldStop && i <= 24) {
+          i += 0.2;
+          newY = Math.Sin(i);
+          System.Console.WriteLine("working");
+          //row1.AddValue(rand.NextDouble() * 10);
+          row1.AddValue(newY * 10);
+          row2.AddValue(i * 2 - 15);
+          System.Threading.Thread.Sleep(100);
+        }
+        Console.WriteLine("worker thread: terminating gracefully.");
+      }
+      public void DoWorkAvgLine() {
+
+        IDataRow row1 = new DataRow();
+        row1.Color = Color.Red;
+        row1.Thickness = 2;
+        row1.Label = "Sinus";
+        row1.Style = DrawingStyle.Solid;
+        model.AddDataRow(row1);
+
+        IDataRow row2 = new DataRow();
+        row2.Color = Color.Red;
+        row2.Thickness = 3;
+        row2.Label = "Growing";
+        row2.Style = DrawingStyle.Solid;
+        model.AddDataRow(row2);
+
+        AvgLineAggregator avgLineAggregator = new AvgLineAggregator();
+        avgLineAggregator.Label = "AvgLineAggregator";
+        avgLineAggregator.Color = Color.Violet;
+        avgLineAggregator.Thickness = 3;
+        avgLineAggregator.Style = DrawingStyle.Solid;
+        avgLineAggregator.LineType = DataRowType.Normal;
+        avgLineAggregator.AddWatch(row1);
+        avgLineAggregator.AddWatch(row2);
+        model.AddDataRow(avgLineAggregator);
+
+        double i = 0;
+        double newY;
+
+        Random rand = new Random();
+        while (!_shouldStop && i <= 24) {
+          i += 0.2;
+          newY = Math.Sin(i);
+          System.Console.WriteLine("working");
+          //row1.AddValue(rand.NextDouble() * 10);
+          row1.AddValue(newY * 10);
+          row2.AddValue(i * 2 - 15);
+          System.Threading.Thread.Sleep(100);
+        }
+        Console.WriteLine("worker thread: terminating gracefully.");
+      }
       public void RequestStop() {
         _shouldStop = true;
       }
@@ -281,12 +351,41 @@ namespace HeuristicLab.Visualization.Test {
 
 
     [Test]
-    public void TestAggregator2() {
+    public void TestAggregatorMultiLine() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      // Create the thread object. This does not start the thread.
+      Worker workerObject = new Worker(model);
+      Thread workerThread = new Thread(workerObject.DoWorkMultiLine);
+
+      // Start the worker thread.
+      workerThread.Start();
+
+      f.ShowDialog();
+      workerObject.RequestStop();
+    }
+
+    [Test]
+    public void TestAggregatorSingleLine() {
       LineChartTestForm f = new LineChartTestForm(model);
    
       // Create the thread object. This does not start the thread.
       Worker workerObject = new Worker(model);
-      Thread workerThread = new Thread(workerObject.DoWork);
+      Thread workerThread = new Thread(workerObject.DoWorkSingleLine);
+
+      // Start the worker thread.
+      workerThread.Start();
+
+      f.ShowDialog();
+      workerObject.RequestStop();
+    }
+    [Test]
+    public void TestAggregatorAvgLine() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      // Create the thread object. This does not start the thread.
+      Worker workerObject = new Worker(model);
+      Thread workerThread = new Thread(workerObject.DoWorkAvgLine);
 
       // Start the worker thread.
       workerThread.Start();
