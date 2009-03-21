@@ -68,7 +68,7 @@ namespace HeuristicLab {
 
       applicationsListView.Items.Add(pluginManagerListViewItem);
 
-      foreach(ApplicationInfo info in PluginManager.Manager.InstalledApplications) {
+      foreach (ApplicationInfo info in PluginManager.Manager.InstalledApplications) {
         ListViewItem item = new ListViewItem(info.Name, 0);
         item.Tag = info;
         item.Group = applicationsListView.Groups["Applications"];
@@ -80,14 +80,20 @@ namespace HeuristicLab {
     }
 
     private void applicationsListView_ItemActivate(object sender, EventArgs e) {
-      if(applicationsListView.SelectedItems.Count > 0) {
+      if (applicationsListView.SelectedItems.Count > 0) {
         ListViewItem selected = applicationsListView.SelectedItems[0];
-        if(selected == pluginManagerListViewItem) {
-          ManagerForm form = new ManagerForm();
-          this.Visible = false;
-          form.ShowDialog(this);
-          RefreshApplicationsList();
-          this.Visible = true;
+        if (selected == pluginManagerListViewItem) {
+          try {
+            Cursor = Cursors.AppStarting;
+            ManagerForm form = new ManagerForm();
+            this.Visible = false;
+            form.ShowDialog(this);
+            RefreshApplicationsList();
+            this.Visible = true;
+          }
+          finally {
+            Cursor = Cursors.Arrow;
+          }
         } else {
           ApplicationInfo app = (ApplicationInfo)applicationsListView.SelectedItems[0].Tag;
           SplashScreen splashScreen = new SplashScreen(2000, "Loading " + app.Name);
@@ -98,15 +104,16 @@ namespace HeuristicLab {
             bool stopped = false;
             do {
               try {
-                if(!abortRequested) 
+                if (!abortRequested)
                   PluginManager.Manager.Run(app);
                 stopped = true;
-              } catch(Exception ex) {
+              }
+              catch (Exception ex) {
                 stopped = false;
                 ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
                 Thread.Sleep(5000); // sleep 5 seconds before autorestart
               }
-            } while(!abortRequested && !stopped && app.AutoRestart);
+            } while (!abortRequested && !stopped && app.AutoRestart);
           });
           t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
           t.Start();
@@ -115,7 +122,7 @@ namespace HeuristicLab {
     }
 
     private void applicationsListBox_SelectedIndexChanged(object sender, ListViewItemSelectionChangedEventArgs e) {
-      if(e.IsSelected) {
+      if (e.IsSelected) {
         startButton.Enabled = true;
       } else {
         startButton.Enabled = false;
@@ -144,7 +151,7 @@ namespace HeuristicLab {
       StringBuilder sb = new StringBuilder();
       sb.Append("Sorry, but something went wrong!\n\n" + ex.Message + "\n\n" + ex.StackTrace);
 
-      while(ex.InnerException != null) {
+      while (ex.InnerException != null) {
         ex = ex.InnerException;
         sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
       }

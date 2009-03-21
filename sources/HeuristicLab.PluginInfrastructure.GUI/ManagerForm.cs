@@ -47,6 +47,7 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
     public ManagerForm() {
       InitializeComponent();
       InitializePlugins();
+      Cursor = Cursors.Arrow;
     }
 
     private void InitializePlugins() {
