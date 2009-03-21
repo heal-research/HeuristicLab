@@ -35,8 +35,10 @@ namespace HeuristicLab {
   public partial class MainForm : Form {
 
     private ListViewItem pluginManagerListViewItem;
+    private bool abortRequested;
 
     public MainForm() {
+      abortRequested = false;
       SplashScreen splashScreen = new SplashScreen(1000, "Loading HeuristicLab...");
       splashScreen.Owner = this;
       splashScreen.Show();
@@ -96,14 +98,15 @@ namespace HeuristicLab {
             bool stopped = false;
             do {
               try {
-                PluginManager.Manager.Run(app);
+                if(!abortRequested) 
+                  PluginManager.Manager.Run(app);
                 stopped = true;
               } catch(Exception ex) {
                 stopped = false;
                 ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
                 Thread.Sleep(5000); // sleep 5 seconds before autorestart
               }
-            } while(!stopped && app.AutoRestart);
+            } while(!abortRequested && !stopped && app.AutoRestart);
           });
           t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
           t.Start();
@@ -146,6 +149,10 @@ namespace HeuristicLab {
         sb.Append("\n\n-----\n\n" + ex.Message + "\n\n" + ex.StackTrace);
       }
       return sb.ToString();
+    }
+
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+      abortRequested = true;
     }
   }
 }
