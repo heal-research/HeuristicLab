@@ -26,6 +26,20 @@ namespace HeuristicLab.Visualization.Options {
       legendPosition = LegendPosition.Bottom;
     }
 
+    public ViewSettings(ViewSettings src) {
+      
+      titleFont = (Font)(src.titleFont.Clone());
+      titleColor = src.TitleColor;
+
+      legendFont = (Font)(src.legendFont.Clone());
+      legendColor = src.LegendColor;
+
+      xAxisFont = (Font) (src.xAxisFont.Clone());
+      xAxisColor = src.XAxisColor;
+
+      legendPosition = src.LegendPosition;
+    }
+
     public void UpdateView() {
       if (OnUpdateSettings != null) {
         OnUpdateSettings();

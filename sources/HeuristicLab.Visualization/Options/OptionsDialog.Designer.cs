@@ -25,7 +25,6 @@
     private void InitializeComponent() {
       this.OptionsDialogCancelButton = new System.Windows.Forms.Button();
       this.OptionsDialogOkButton = new System.Windows.Forms.Button();
-      this.OptionsDialogApplyBtn = new System.Windows.Forms.Button();
       this.fdFont = new System.Windows.Forms.FontDialog();
       this.tpTitle = new System.Windows.Forms.TabPage();
       this.btnChangeTitleFont = new System.Windows.Forms.Button();
@@ -64,29 +63,19 @@
       this.OptionsDialogCancelButton.Name = "OptionsDialogCancelButton";
       this.OptionsDialogCancelButton.Size = new System.Drawing.Size(75, 23);
       this.OptionsDialogCancelButton.TabIndex = 1;
-      this.OptionsDialogCancelButton.Text = "Cancel";
+      this.OptionsDialogCancelButton.Text = "Reset";
       this.OptionsDialogCancelButton.UseVisualStyleBackColor = true;
-      this.OptionsDialogCancelButton.Click += new System.EventHandler(this.OptionsDialogCancelButton_Click);
+      this.OptionsDialogCancelButton.Click += new System.EventHandler(this.OptionsDialogResetButton_Click);
       // 
       // OptionsDialogOkButton
       // 
-      this.OptionsDialogOkButton.Location = new System.Drawing.Point(43, 232);
+      this.OptionsDialogOkButton.Location = new System.Drawing.Point(132, 232);
       this.OptionsDialogOkButton.Name = "OptionsDialogOkButton";
       this.OptionsDialogOkButton.Size = new System.Drawing.Size(75, 23);
       this.OptionsDialogOkButton.TabIndex = 2;
       this.OptionsDialogOkButton.Text = "OK";
       this.OptionsDialogOkButton.UseVisualStyleBackColor = true;
       this.OptionsDialogOkButton.Click += new System.EventHandler(this.OptionsDialogOkButton_Click);
-      // 
-      // OptionsDialogApplyBtn
-      // 
-      this.OptionsDialogApplyBtn.Location = new System.Drawing.Point(128, 231);
-      this.OptionsDialogApplyBtn.Name = "OptionsDialogApplyBtn";
-      this.OptionsDialogApplyBtn.Size = new System.Drawing.Size(75, 23);
-      this.OptionsDialogApplyBtn.TabIndex = 3;
-      this.OptionsDialogApplyBtn.Text = "Apply";
-      this.OptionsDialogApplyBtn.UseVisualStyleBackColor = true;
-      this.OptionsDialogApplyBtn.Click += new System.EventHandler(this.OptionsDialogApplyBtn_Click);
       // 
       // fdFont
       // 
@@ -206,6 +195,7 @@
       this.LinestyleCB.Name = "LinestyleCB";
       this.LinestyleCB.Size = new System.Drawing.Size(121, 21);
       this.LinestyleCB.TabIndex = 2;
+      this.LinestyleCB.SelectedIndexChanged += new System.EventHandler(this.LinestyleCB_SelectedIndexChanged);
       // 
       // label1
       // 
@@ -255,6 +245,7 @@
       this.LineThicknessCB.Name = "LineThicknessCB";
       this.LineThicknessCB.Size = new System.Drawing.Size(121, 21);
       this.LineThicknessCB.TabIndex = 4;
+      this.LineThicknessCB.SelectedIndexChanged += new System.EventHandler(this.LineThicknessCB_SelectedIndexChanged);
       // 
       // label3
       // 
@@ -323,7 +314,6 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(292, 266);
-      this.Controls.Add(this.OptionsDialogApplyBtn);
       this.Controls.Add(this.OptionsDialogOkButton);
       this.Controls.Add(this.OptionsDialogCancelButton);
       this.Controls.Add(this.Optionstabs);
@@ -350,7 +340,6 @@
 
     private System.Windows.Forms.Button OptionsDialogCancelButton;
     private System.Windows.Forms.Button OptionsDialogOkButton;
-    private System.Windows.Forms.Button OptionsDialogApplyBtn;
     private System.Windows.Forms.FontDialog fdFont;
     private System.Windows.Forms.TabPage tpTitle;
     private System.Windows.Forms.Button btnChangeTitleFont;
