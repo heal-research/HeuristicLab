@@ -203,6 +203,10 @@ namespace HeuristicLab.Visualization{
         columnElement.InnerText += builder.ToString();
         node.AppendChild(columnElement);
       }
+
+      XmlNode labelProviderNode = document.ImportNode(labelProvider.GetLabelProviderXmlNode(), true);
+      node.AppendChild(labelProviderNode);
+
       return node;    
     }
 
@@ -210,26 +214,29 @@ namespace HeuristicLab.Visualization{
       base.Populate(node, restoredObjects);
 
       foreach (XmlNode dataRow in node.ChildNodes) {
-        XmlAttributeCollection attrs = dataRow.Attributes;
-        XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
-        string rowLabel = rowIdAttr.Value;
-        DataRow row = new DataRow();
-        row.Label = rowLabel;
+        if (dataRow.Name.Equals("LabelProvider")) {
+          labelProvider = labelProvider.PopulateLabelProviderXmlNode(dataRow);
+        } else {
+          XmlAttributeCollection attrs = dataRow.Attributes;
+          XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
+          string rowLabel = rowIdAttr.Value;
+          DataRow row = new DataRow();
+          row.Label = rowLabel;
 
-        string[] tokens = dataRow.InnerText.Split(';');
-        double[] data = new double[tokens.Length];
-        for (int i = 0; i < data.Length; i++) {
-          if (tokens[i].Length != 0) {
-            if (
-              double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
-              false) {
-              throw new FormatException("Can't parse " + tokens[i] + " as double value.");
+          string[] tokens = dataRow.InnerText.Split(';');
+          double[] data = new double[tokens.Length];
+          for (int i = 0; i < data.Length; i++) {
+            if (tokens[i].Length != 0) {
+              if (
+                double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
+                false) {
+                throw new FormatException("Can't parse " + tokens[i] + " as double value.");
+              }
             }
           }
+          row.AddValues(data);
+          AddDataRow(row);
         }
-        row.AddValues(data);
-
-        AddDataRow(row);
       }
     }
   }

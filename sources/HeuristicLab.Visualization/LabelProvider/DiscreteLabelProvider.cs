@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 namespace HeuristicLab.Visualization.LabelProvider {
   public class DiscreteLabelProvider : ILabelProvider {
@@ -10,6 +11,21 @@ namespace HeuristicLab.Visualization.LabelProvider {
         return index.ToString();
       else
         return string.Empty;
+    }
+
+    public XmlNode GetLabelProviderXmlNode()
+    {
+      XmlDocument Xdoc = new XmlDocument();
+
+      XmlNode lblProvInfo = Xdoc.CreateNode(XmlNodeType.Element, "LabelProvider", null);
+      lblProvInfo.InnerText = "DiscreteLabelProvider";
+
+      return lblProvInfo;
+    }
+
+    public ILabelProvider PopulateLabelProviderXmlNode(XmlNode node) {
+      var labelProvider = new DiscreteLabelProvider();
+      return labelProvider;
     }
   }
 }
