@@ -99,10 +99,13 @@ namespace HeuristicLab.Visualization.Test {
       row3.Style = DrawingStyle.Solid;
       row3.Label = "Die Blaue";
       row3.YAxis = yaxis2;
+      row3.YAxis.Label = "Die Blaue";
 
       model.AddDataRow(row1);
       model.AddDataRow(row2);
       model.AddDataRow(row3);
+
+      row1.YAxis.Label = "Rot und Grün";
 
       Random rand = new Random(42);
 

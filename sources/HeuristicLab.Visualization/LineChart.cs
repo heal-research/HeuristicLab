@@ -442,8 +442,10 @@ namespace HeuristicLab.Visualization {
       SetClipX(clippingArea.X1, clippingArea.X2);
 
       foreach (RowEntry rowEntry in rowEntries) {
-        clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea, rowEntry.LinesShape.Viewport);
-        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        if (rowEntry.DataRow.YAxis.ClipChangeable) {
+          clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea, rowEntry.LinesShape.Viewport);
+          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        }
       }
 
       canvasUI.Invalidate();
@@ -459,9 +461,11 @@ namespace HeuristicLab.Visualization {
       SetClipX(clippingArea.X1, clippingArea.X2);
 
       foreach (RowEntry rowEntry in rowEntries) {
-        clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
+        if (rowEntry.DataRow.YAxis.ClipChangeable) {
+          clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
 
-        SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        }
       }
 
       userInteractionShape.RemoveShape(rectangleShape);

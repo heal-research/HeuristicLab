@@ -10,6 +10,7 @@ namespace HeuristicLab.Visualization {
     private readonly List<IDataRow> dataRows = new List<IDataRow>();
     private bool showYAxis = true;
     private string label = "";
+    public bool ClipChangeable = true;
 
     public event YAxisDescriptorChangedHandler YAxisDescriptorChanged;
 
@@ -69,6 +70,11 @@ namespace HeuristicLab.Visualization {
         label = value;
         OnYAxisDescriptorChanged();
       }
+    }
+
+    public bool Zoom_ {
+      get { return ClipChangeable; }
+      set { ClipChangeable = value; }
     }
 
     public void AddDataRow(IDataRow row) {

@@ -105,6 +105,17 @@ namespace HeuristicLab.Visualization.Options {
         
         dataRowsFlowLayout.Controls.Add(chkbox);
       }
+
+      for (int i = 0; i < model.YAxes.Count; i++) {
+        YAxisDescriptor yAxisDescriptor = model.YAxes[i];
+
+        CheckBox chkbox = new CheckBox();
+        chkbox.Text = yAxisDescriptor.Label;
+        chkbox.Checked = yAxisDescriptor.ClipChangeable;
+        chkbox.CheckedChanged += delegate { yAxisDescriptor.ClipChangeable = chkbox.Checked; };
+
+        dataRowsFlowLayout.Controls.Add(chkbox);
+      }
     }
 
     private void LineSelectCB_SelectedIndexChanged(object sender, EventArgs e) {
