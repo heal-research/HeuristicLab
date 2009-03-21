@@ -94,11 +94,11 @@ namespace HeuristicLab.Visualization.Options {
         ((IDataRow)LineSelectCB.SelectedValue).Color = ColorPreviewTB.BackColor;
         ((IDataRow)LineSelectCB.SelectedValue).Style = (DrawingStyle)LinestyleCB.SelectedItem;
       }
+      viewSettings.UpdateView();
     }
 
     private void cbLegendPosition_SelectedIndexChanged(object sender, EventArgs e) {
       viewSettings.LegendPosition = (LegendPosition)cbLegendPosition.SelectedItem;
-      viewSettings.UpdateView();
     }
 
     private void btnChangeTitleFont_Click(object sender, EventArgs e) {

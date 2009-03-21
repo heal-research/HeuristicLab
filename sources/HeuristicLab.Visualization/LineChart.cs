@@ -185,7 +185,7 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendRight() {
       // legend right
-      legendShape.BoundingBox = new RectangleD(canvasUI.Width - 110, 10, canvasUI.Width, canvasUI.Height - 50);
+      legendShape.BoundingBox = new RectangleD(canvasUI.Width - legendShape.GetMaxLabelLength(), 10, canvasUI.Width, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = false;
       legendShape.CreateLegend();
@@ -193,7 +193,7 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendLeft() {
       // legend left
-      legendShape.BoundingBox = new RectangleD(10, 10, 110, canvasUI.Height - 50);
+      legendShape.BoundingBox = new RectangleD(10, 10, canvasUI.Width, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = false;
       legendShape.CreateLegend();
@@ -212,7 +212,7 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendBottom() {
       // legend bottom
-      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, 200);
+      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, canvasUI.Height/*legendShape.GetHeight4Rows()*/);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;
       legendShape.Top = false;
