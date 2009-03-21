@@ -78,6 +78,12 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row2 = new DataRow();
       IDataRow row3 = new DataRow();
 
+      YAxisDescriptor yaxis1 = model.DefaultYAxis;
+      YAxisDescriptor yaxis2 = new YAxisDescriptor();
+
+      yaxis1.Label = "Y-Axis 1";
+      yaxis2.Label = "Y-Axis 2";
+
       row1.Color = Color.Red;
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
@@ -92,7 +98,7 @@ namespace HeuristicLab.Visualization.Test {
       row3.Thickness = 3;
       row3.Style = DrawingStyle.Solid;
       row3.Label = "Die Blaue";
-      row3.YAxis = new YAxisDescriptor();
+      row3.YAxis = yaxis2;
 
       model.AddDataRow(row1);
       model.AddDataRow(row2);

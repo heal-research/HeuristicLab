@@ -137,6 +137,10 @@ namespace HeuristicLab.Visualization{
       OnDataRowRemoved(row);
     }
 
+    public YAxisDescriptor DefaultYAxis {
+      get { return defaultYAxisDescriptor; }
+    }
+
     // TODO implement calculation of max data row values
     public int MaxDataRowValues {
       get {
