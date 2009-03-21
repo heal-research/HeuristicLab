@@ -34,7 +34,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="pluginName">The plugin that has been loaded.</param>
     public delegate void PluginLoadedEventHandler(string pluginName);
-    
+
     public delegate void PluginLoadFailedEventHandler(string pluginName, string args);
 
     private Dictionary<PluginInfo, List<string>> pluginDependencies = new Dictionary<PluginInfo, List<string>>();
@@ -187,6 +187,16 @@ namespace HeuristicLab.PluginInfrastructure {
           info.Files.Add(assembly.Location);
           info.Assemblies.Add(assembly.FullName);
           info.Message = "Couldn't load file: " + ex.FileName;
+          disabledPlugins.Add(info);
+        }
+        catch (InvalidPluginException ex) {
+          PluginInfo info = new PluginInfo();
+          AssemblyName name = assembly.GetName();
+          info.Name = name.Name;
+          info.Version = name.Version;
+          info.Files.Add(assembly.Location);
+          info.Assemblies.Add(assembly.FullName);
+          info.Message = "Couldn't load plugin class from assembly: " + assembly.GetName().Name+". Necessary plugin attributes are missing.";
           disabledPlugins.Add(info);
         }
       }
