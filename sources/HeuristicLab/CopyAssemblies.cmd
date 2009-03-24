@@ -53,7 +53,6 @@ copy "%SolutionDir%\HeuristicLab.SequentialEngine\%Outdir%\HeuristicLab.Sequenti
 copy "%SolutionDir%\HeuristicLab.SGA\%Outdir%\HeuristicLab.SGA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite.NET.chm" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
@@ -80,3 +79,21 @@ copy "%SolutionDir%\HeuristicLab.SA\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins
+
+echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
+if "%Platform%" == "x86" (   
+  xcopy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
+) else if "%Platform%" == "x64" ( 
+  xcopy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+) else if "%Platform%" == "AnyCPU" (
+  if "%PROCESSOR_ARCHITECTURE%" == "x64" (
+    xcopy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+  ) else if "%PROCESSOR_ARCHITECTURE%" == "x86" (
+    xcopy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
+  ) else (
+    echo "ERROR: unknown architecture: "%PROCESSOR_ARCHITECTURE%"
+  ) 
+) else (
+  echo "ERROR: unknown platform: %Platform%"
+)
+
