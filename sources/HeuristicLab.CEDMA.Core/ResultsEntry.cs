@@ -36,13 +36,13 @@ namespace HeuristicLab.CEDMA.Core {
     private Dictionary<string, object> values = new Dictionary<string, object>();
 
     private bool selected = false;
-    public bool Selected { 
+    public bool Selected {
       get { return selected; }
-      set { selected = value; } 
+      set { selected = value; }
     }
 
     private string uri;
-    public string Uri { 
+    public string Uri {
       get { return uri; }
       set { uri = value; }
     }
@@ -63,17 +63,11 @@ namespace HeuristicLab.CEDMA.Core {
     public string GetToolTipText() {
       StringBuilder b = new StringBuilder();
       foreach (KeyValuePair<string, object> v in values) {
-        b.Append(v.Key).Append(" = ").Append(v.Value).AppendLine();
+        string val = v.Value.ToString();
+        if (val.Length > 40) val = val.Substring(0, 38) + "...";
+        b.Append(v.Key).Append(" = ").Append(val).AppendLine();
       }
       return b.ToString();
     }
-
-    //internal void OpenModel() {
-    //  resultList.OpenModel(this);
-    //}
-
-    //internal void OpenGeneratingAlgorithm() {
-    //  resultList.OpenAlgorithm(this);
-    //}
   }
 }

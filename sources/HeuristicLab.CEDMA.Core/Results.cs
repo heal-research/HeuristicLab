@@ -136,5 +136,9 @@ namespace HeuristicLab.CEDMA.Core {
         .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
         .ToArray();
     }
+
+    public double IndexOfCategoricalValue(string variable, object value) {
+      return 1.0; // TODO
+    }
   }
 }

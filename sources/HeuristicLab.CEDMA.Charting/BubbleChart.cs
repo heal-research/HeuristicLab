@@ -117,17 +117,14 @@ namespace HeuristicLab.CEDMA.Charting {
       if (xDimension == null || yDimension == null) return;
       double maxSize = 1;
       double minSize = 1;
-      try {
-        if (sizeDimension != null && results.OrdinalVariables.Contains(sizeDimension)) {
-          var sizes = records
-            .Select(x => Convert.ToDouble(x.Get(sizeDimension)))
-            .Where(size => !double.IsInfinity(size) && size != double.MaxValue && size != double.MinValue)
-            .OrderBy(r => r);
-          minSize = sizes.ElementAt((int)(sizes.Count() * 0.1));
-          maxSize = sizes.ElementAt((int)(sizes.Count() * 0.9));
-        }
-      }
-      catch (InvalidCastException) {
+      if (sizeDimension != null && results.OrdinalVariables.Contains(sizeDimension)) {
+        var sizes = records
+          .Select(x => Convert.ToDouble(x.Get(sizeDimension)))
+          .Where(size => !double.IsInfinity(size) && size != double.MaxValue && size != double.MinValue)
+          .OrderBy(r => r);
+        minSize = sizes.ElementAt((int)(sizes.Count() * 0.1));
+        maxSize = sizes.ElementAt((int)(sizes.Count() * 0.9));
+      } else {
         minSize = 1;
         maxSize = 1;
       }
@@ -141,16 +138,22 @@ namespace HeuristicLab.CEDMA.Charting {
       foreach (ResultsEntry r in records) {
         double x, y;
         int size;
-        try {
+        if (results.OrdinalVariables.Contains(xDimension)) {
           x = Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor;
-          y = Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
-          size = CalculateSize(Convert.ToDouble(r.Get(sizeDimension)), minSize, maxSize);
-        }
-        catch (InvalidCastException) {
+        } else if (results.CategoricalVariables.Contains(xDimension)) {
+          x = results.IndexOfCategoricalValue(xDimension, r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor;
+        } else {
           x = double.NaN;
-          y = double.NaN;
-          size = minBubbleSize;
         }
+        if (results.OrdinalVariables.Contains(yDimension)) {
+          y = Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
+        } else if (results.CategoricalVariables.Contains(yDimension)) {
+          y = results.IndexOfCategoricalValue(yDimension, r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
+        } else {
+          y = double.NaN;
+        }
+        size = CalculateSize(Convert.ToDouble(r.Get(sizeDimension)), minSize, maxSize);
+
         if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
         if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
         if (!double.IsNaN(x) && !double.IsNaN(y)) {
@@ -220,7 +223,6 @@ namespace HeuristicLab.CEDMA.Charting {
       return r;
     }
 
-
     public override void MouseDrag(Point start, Point end, MouseButtons button) {
       if (button == MouseButtons.Left && Mode == ChartMode.Select) {
         PointD a = TransformPixelToWorld(start);
@@ -250,8 +252,10 @@ namespace HeuristicLab.CEDMA.Charting {
     public override void MouseClick(Point point, MouseButtons button) {
       if (button == MouseButtons.Left) {
         ResultsEntry r = GetResultsEntry(point);
-        if (r != null) r.ToggleSelected();
-        results.FireChanged();
+        if (r != null) {
+          r.ToggleSelected();
+          results.FireChanged();
+        }
       } else {
         base.MouseClick(point, button);
       }
