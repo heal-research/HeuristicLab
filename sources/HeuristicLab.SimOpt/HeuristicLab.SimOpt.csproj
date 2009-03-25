@@ -72,7 +72,16 @@
       <DependentUpon>IntParameterBoundConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="IntParameterBoundConstraint.cs" />
+    <Compile Include="NumericDataRoundedAverageMultiCrossover.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SimOptCrossoverPreparator.cs" />
+    <Compile Include="SimOptSelfAdaptiveNumericVectorNormalMutation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimOptSelfAdaptiveNumericVectorProbabilityMutation.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SimOptSequentialSubOperatorProcessor.cs" />
     <Compile Include="SimOptSquentialSubOperatorCrossover.cs" />
     <Compile Include="DoubleParameterBoundConstraint.cs" />
