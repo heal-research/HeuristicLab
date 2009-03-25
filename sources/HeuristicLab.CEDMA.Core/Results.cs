@@ -36,6 +36,7 @@ using System.Drawing;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Results : ItemBase {
+    private const int PAGE_SIZE = 1000;
     private string[] categoricalVariables = null;
     public string[] CategoricalVariables {
       get {
@@ -83,25 +84,39 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private IEnumerable<ResultsEntry> SelectRows() {
+      int page = 0;
+      int resultsReturned = 0;
+      bool newEntry = false;
       if (store == null) yield break;
       entries = new List<ResultsEntry>();
-      var results = store.Query("<" + dataSetEntity + "> <" + Ontology.PredicateHasModel + "> ?Model ." + Environment.NewLine +
-        "?Model ?Attribute ?Value .")
-        .GroupBy(x => (Entity)x.Get("Model"));
-      foreach (var modelBindings in results) {
-        ResultsEntry entry = new ResultsEntry(modelBindings.Key.Uri);
-        foreach (var binding in modelBindings) {
-          if (binding.Get("Value") is Literal) {
-            string name = ((Entity)binding.Get("Attribute")).Uri.Replace(Ontology.CedmaNameSpace, "");
-            if (entry.Get(name) == null) {
-              object value = ((Literal)binding.Get("Value")).Value;
-              entry.Set(name, value);
+      do {
+        var allBindings = store.Query("<" + dataSetEntity + "> <" + Ontology.PredicateHasModel + "> ?Model ." + Environment.NewLine +
+          "?Model ?Attribute ?Value .", page, PAGE_SIZE);
+        var allModelBindings = allBindings.GroupBy(x => (Entity)x.Get("Model"));
+        resultsReturned = allBindings.Count;
+
+        foreach (var modelBindings in allModelBindings) {
+          ResultsEntry entry = entries.FirstOrDefault(x => x.Uri == modelBindings.Key.Uri);
+          newEntry = false;
+          if (entry == null) {
+            entry = new ResultsEntry();
+            entry.Uri = modelBindings.Key.Uri;
+            entries.Add(entry);
+            newEntry = true;
+          }
+          foreach (var binding in modelBindings) {
+            if (binding.Get("Value") is Literal) {
+              string name = ((Entity)binding.Get("Attribute")).Uri.Replace(Ontology.CedmaNameSpace, "");
+              if (entry.Get(name) == null) {
+                object value = ((Literal)binding.Get("Value")).Value;
+                entry.Set(name, value);
+              }
             }
           }
+          if (newEntry) yield return entry;
         }
-        entries.Add(entry);
-        yield return entry;
-      }
+        page++;
+      } while (resultsReturned == PAGE_SIZE);
 
       FireChanged();
       cached = true;
@@ -113,11 +128,11 @@ namespace HeuristicLab.CEDMA.Core {
 
     private void LoadModelAttributes() {
       this.ordinalVariables =
-        store.Query("?ModelAttribute <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeOrdinalAttribute + "> .")
+        store.Query("?ModelAttribute <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeOrdinalAttribute + "> .", 0, 100)
         .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
         .ToArray();
       this.categoricalVariables =
-        store.Query("?ModelAttribute <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeCategoricalAttribute + "> .")
+        store.Query("?ModelAttribute <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeCategoricalAttribute + "> .", 0, 100)
         .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
         .ToArray();
     }

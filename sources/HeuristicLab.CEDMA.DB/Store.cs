@@ -61,18 +61,18 @@ namespace HeuristicLab.CEDMA.DB {
     }
 
 
-    public ICollection<VariableBindings> Query(string query) {
+    public ICollection<VariableBindings> Query(string query, int page, int pageSize) {
       MyQueryResultSink resultSink = new MyQueryResultSink();
       SemWeb.N3Reader n3Reader = new SemWeb.N3Reader(new StringReader(query));
       SemWeb.Query.GraphMatch matcher = new SemWeb.Query.GraphMatch(n3Reader);
       matcher.Run(store, resultSink);
-      return resultSink.Bindings;
+      return resultSink.Bindings.Skip(page*pageSize).Take(pageSize).ToList();
     }
 
-    public ICollection<VariableBindings> Query(ICollection<Statement> query) {
+    public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
       MyQueryResultSink resultSink = new MyQueryResultSink();
       Translate(query).Run(store, resultSink);
-      return resultSink.Bindings;
+      return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
     }
 
     private SemWeb.Query.Query Translate(ICollection<Statement> query) {
@@ -81,31 +81,6 @@ namespace HeuristicLab.CEDMA.DB {
 
       return new SemWeb.Query.GraphMatch(queryStore);
     }
-
-
-    //public ICollection<Statement> Select(Statement template) {
-    //  SemWeb.MemoryStore memStore = new SemWeb.MemoryStore();
-    //  lock (bigLock) {
-    //    store.Select(Translate(template), memStore);
-    //  }
-    //  return memStore.Select(x=>Translate(x)).ToList();
-    //}
-
-    //public ICollection<Statement> Select(SelectFilter filter) {
-    //  SemWeb.MemoryStore memStore = new SemWeb.MemoryStore();
-    //  lock (bigLock) {
-    //    store.Select(Translate(filter), memStore);
-    //  }
-    //  return memStore.Select(x => Translate(x)).ToList();
-    //}
-
-    //private SemWeb.SelectFilter Translate(SelectFilter filter) {
-    //  SemWeb.SelectFilter f = new SemWeb.SelectFilter();
-    //  f.Subjects = Array.ConvertAll(filter.Subjects, s => Translate(s));
-    //  f.Predicates = Array.ConvertAll(filter.Predicates, p => Translate(p));
-    //  f.Objects = Array.ConvertAll(filter.Properties, prop => Translate(prop));
-    //  return f;
-    //}
 
     private static SemWeb.Entity Translate(Entity e) {
       return e.Uri == null ? null : new SemWeb.Entity(e.Uri);

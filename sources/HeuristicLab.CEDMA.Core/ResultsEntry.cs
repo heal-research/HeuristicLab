@@ -42,10 +42,9 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private string uri;
-    public string Uri { get { return uri; } }
-
-    public ResultsEntry(string uri) {
-      this.uri = uri;
+    public string Uri { 
+      get { return uri; }
+      set { uri = value; }
     }
 
     public void Set(string name, object value) {

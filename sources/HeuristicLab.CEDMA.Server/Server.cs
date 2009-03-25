@@ -70,10 +70,10 @@ namespace HeuristicLab.CEDMA.Server {
       host.Description.Behaviors.Add(throttlingBehavior);
       try {
         NetTcpBinding binding = new NetTcpBinding();
-        binding.SendTimeout = new TimeSpan(1, 0, 0);
-        binding.MaxReceivedMessageSize = 1000000000; // 100Mbytes
-        binding.ReaderQuotas.MaxStringContentLength = 1000000000; // also 100M chars
-        binding.ReaderQuotas.MaxArrayLength = 1000000000; // also 100M elements;
+        binding.SendTimeout = new TimeSpan(10, 0, 0);
+        binding.MaxReceivedMessageSize = int.MaxValue;
+        binding.ReaderQuotas.MaxStringContentLength = int.MaxValue;
+        binding.ReaderQuotas.MaxArrayLength = int.MaxValue;
         host.AddServiceEndpoint(typeof(IStore), binding, cedmaServiceUrl);
         host.Open();
       }

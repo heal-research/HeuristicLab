@@ -61,11 +61,7 @@ namespace HeuristicLab.CEDMA.Core {
       HeuristicLab.CEDMA.DB.Interfaces.Variable dataSetNameVar = new HeuristicLab.CEDMA.DB.Interfaces.Variable("Name");
       var bindings = store.Query(
         "?DataSet <"+Ontology.PredicateInstanceOf.Uri+"> <"+Ontology.TypeDataSet.Uri+"> ." + Environment.NewLine +
-        "?DataSet <"+Ontology.PredicateName.Uri+"> ?Name .");
-      //  new Statement[] { 
-      //    new Statement(dataSetVar, Ontology.PredicateInstanceOf, Ontology.TypeDataSet),
-      //    new Statement(dataSetVar, Ontology.PredicateName, dataSetNameVar)
-      //});
+        "?DataSet <"+Ontology.PredicateName.Uri+"> ?Name .",0, 100);
       foreach (var binding in bindings) {
         DataSet d = new DataSet(store, (Entity)binding.Get("DataSet"));
         d.Name = (string)((Literal)binding.Get("Name")).Value;

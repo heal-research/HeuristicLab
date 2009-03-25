@@ -48,11 +48,8 @@ namespace HeuristicLab.CEDMA.Core {
       get {
         // lazy loading of problem from DB
         if (problem == null) {
-          //var serializedDataVar = new HeuristicLab.CEDMA.DB.Interfaces.Variable("SerializedData");
-          //var persistedData = Store.Query(
-          //  new Statement[] { new Statement(new Entity(Ontology.CedmaNameSpace + Guid), Ontology.PredicateSerializedData, serializedDataVar)});
           var persistedData = Store.Query(
-            "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.PredicateSerializedData.Uri + "> ?SerializedData .");
+            "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.PredicateSerializedData.Uri + "> ?SerializedData .", 0, 10);
           if (persistedData.Count() == 1) {
             Literal persistedLiteral = (Literal)persistedData.First().Get("SerializedData");
             this.problem = (Problem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String((string)persistedLiteral.Value));

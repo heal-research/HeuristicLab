@@ -67,7 +67,7 @@ namespace HeuristicLab.CEDMA.Server {
         new Statement(dataSetVar, Ontology.PredicateInstanceOf, Ontology.TypeDataSet)
       };
 
-      Entity[] datasets = store.Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .")
+      Entity[] datasets = store.Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .", 0, 100)
         .Select(x => (Entity)x.Get("DataSet"))
         .ToArray();
 

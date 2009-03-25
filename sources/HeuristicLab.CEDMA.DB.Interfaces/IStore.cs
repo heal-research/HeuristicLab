@@ -34,9 +34,9 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     void Add(Statement statement);
 
     [OperationContract]
-    ICollection<VariableBindings> Query(ICollection<Statement> query);
+    ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize);
 
     [OperationContract(Name="QueryN3")]
-    ICollection<VariableBindings> Query(string query);
+    ICollection<VariableBindings> Query(string query, int page, int pageSize);
   }
 }

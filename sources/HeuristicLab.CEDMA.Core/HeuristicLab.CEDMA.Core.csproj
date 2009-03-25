@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StoreProxy.cs" />
     <Compile Include="IResultsViewFactory.cs" />
     <Compile Include="ResultsEntry.cs" />
     <Compile Include="TableResultsView.cs">

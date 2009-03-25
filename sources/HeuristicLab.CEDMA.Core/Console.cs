@@ -31,14 +31,12 @@ using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
-    private DataSetList dataSetList;
-    private ChannelFactory<IStore> factory;
-    private IStore store;
     private string serverUri;
     public string ServerUri {
       get { return serverUri; }
     }
 
+    private DataSetList dataSetList;
     public DataSetList DataSetList {
       get { return dataSetList; }
     }
@@ -71,22 +69,8 @@ namespace HeuristicLab.CEDMA.Core {
     }
     #endregion
 
-    #region WCF
-    private void ResetConnection() {
-      NetTcpBinding binding = new NetTcpBinding();
-      binding.ReceiveTimeout = new TimeSpan(1, 0, 0);
-      binding.MaxReceivedMessageSize = 1000000000; // 100Mbytes
-      binding.ReaderQuotas.MaxStringContentLength = 1000000000; // also 100M chars
-      binding.ReaderQuotas.MaxArrayLength = 1000000000; // also 100M elements;
-      factory = new ChannelFactory<IStore>(binding);
-      store = factory.CreateChannel(new EndpointAddress(serverUri));
-      dataSetList.Store = store;
-    }
-    #endregion
-
     internal void Connect(string serverUri) {
-      this.serverUri = serverUri;
-      ResetConnection();
+      DataSetList.Store = new StoreProxy(serverUri);
     }
   }
 }
