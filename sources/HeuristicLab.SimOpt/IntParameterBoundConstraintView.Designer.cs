@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.SimOpt {
-  partial class DoubleParameterBoundConstraintView {
+  partial class IntParameterBoundConstraintView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -137,7 +137,7 @@ namespace HeuristicLab.SimOpt {
       this.pmLabel.TabIndex = 7;
       this.pmLabel.Text = "Name:";
       // 
-      // DoubleParameterBoundConstraintView
+      // IntParameterBoundConstraintView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -149,7 +149,7 @@ namespace HeuristicLab.SimOpt {
       this.Controls.Add(this.lbIncludedCheckBox);
       this.Controls.Add(this.ubEnabledCheckBox);
       this.Controls.Add(this.lbEnabledCheckBox);
-      this.Name = "DoubleParameterBoundConstraintView";
+      this.Name = "IntParameterBoundConstraintView";
       this.Size = new System.Drawing.Size(206, 131);
       this.ResumeLayout(false);
       this.PerformLayout();

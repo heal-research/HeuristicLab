@@ -65,6 +65,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntParameterBoundConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IntParameterBoundConstraintView.Designer.cs">
+      <DependentUpon>IntParameterBoundConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IntParameterBoundConstraint.cs" />
     <Compile Include="SimOptCrossoverPreparator.cs" />
     <Compile Include="SimOptSequentialSubOperatorProcessor.cs" />
     <Compile Include="SimOptSquentialSubOperatorCrossover.cs" />
@@ -95,6 +102,10 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="IntParameterBoundConstraintView.resx">
+      <DependentUpon>IntParameterBoundConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="DoubleParameterBoundConstraintView.resx">
       <DependentUpon>DoubleParameterBoundConstraintView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -128,6 +139,10 @@
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
+      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
+      <Name>HeuristicLab.Random</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Selection\HeuristicLab.Selection.csproj">
       <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
