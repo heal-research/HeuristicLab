@@ -15,28 +15,26 @@ namespace HeuristicLab.SimOpt {
 
     public SimOptCrossoverPreparator()
       : base() {
-      AddVariableInfo(new VariableInfo("Parents", "Number of parents per child", typeof(IntData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
-      int parents = GetVariableValue<IntData>("Parents", scope, true).Data;
-      int populationSize = scope.SubScopes.Count;
-      int childrenSize = populationSize / parents;
-      if (populationSize % parents > 0) throw new ArgumentException("ERROR in SimOptCrossoverPreparator: The number of subscopes is not a multiple of the number of parents per child");
-      for (int i = 0; i < childrenSize; i++) {
-        IScope child = new Scope(i.ToString());
-        int parameters = scope.SubScopes[0].SubScopes.Count;
-        for (int k = 0; k < parameters; k++) {
-          child.AddSubScope(new Scope("Parameter_" + (k+1).ToString()));
-          for (int j = 0; j < parents; j++) {
-            IScope param = scope.SubScopes[j].SubScopes[0]; // take scope containing the parameter from the parent
-            child.SubScopes[k].AddSubScope(param); // add it to the child
-            scope.SubScopes[j].RemoveSubScope(param);
-          }
+      int parents = scope.SubScopes.Count;
+      int parameters = scope.SubScopes[0].SubScopes.Count;
+      // remove the parents and add them to a temporary list
+      IList<IScope> parentsScopes = new List<IScope>();
+      while (scope.SubScopes.Count > 0) {
+        IScope tmp = scope.SubScopes[0];
+        scope.RemoveSubScope(tmp);
+        parentsScopes.Add(tmp);
+      }
+
+      for (int i = 0; i < parameters; i++) {
+        scope.AddSubScope(new Scope("Parameters_" + (i + 1).ToString()));
+        for (int k = 0; k < parents; k++) {
+          IScope param = parentsScopes[k].SubScopes[i];
+          parentsScopes[k].RemoveSubScope(param);
+          scope.SubScopes[i].AddSubScope(param);
         }
-        for (int j = 0; j < parents; j++)
-          scope.RemoveSubScope(scope.SubScopes[0]); // remove the parent
-        scope.SubScopes.Add(child); // add the child to the end of the scope list
       }
       return null;
     }
