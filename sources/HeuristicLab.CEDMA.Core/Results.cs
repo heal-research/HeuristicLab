@@ -65,6 +65,8 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
+    private Dictionary<string, Dictionary<object, double>> categoricalValueIndices = new Dictionary<string, Dictionary<object, double>>();
+
     private Entity dataSetEntity;
 
     public Results(IStore store) {
@@ -138,7 +140,19 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     public double IndexOfCategoricalValue(string variable, object value) {
-      return 1.0; // TODO
+      if (value == null) return double.NaN;
+      Dictionary<object, double> valueToIndexMap;
+      if (categoricalValueIndices.ContainsKey(variable)) {
+        valueToIndexMap = categoricalValueIndices[variable];
+      } else {
+        valueToIndexMap = new Dictionary<object, double>();
+        categoricalValueIndices[variable] = valueToIndexMap;
+      }
+      if (!valueToIndexMap.ContainsKey(value)) {
+        if (valueToIndexMap.Values.Count == 0) valueToIndexMap[value] = 1.0;
+        else valueToIndexMap[value] = 1.0 + valueToIndexMap.Values.Max();
+      }
+      return valueToIndexMap[value];
     }
   }
 }
