@@ -146,6 +146,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DataAccess.ADO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.DataAccess", "HeuristicLab.Hive.Server.DataAccess\HeuristicLab.Hive.Server.DataAccess.csproj", "{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Engine", "HeuristicLab.Hive.Engine\HeuristicLab.Hive.Engine.csproj", "{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU
@@ -1300,6 +1302,21 @@ Global
 		{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.GP Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Release|x86.ActiveCfg = Release|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
