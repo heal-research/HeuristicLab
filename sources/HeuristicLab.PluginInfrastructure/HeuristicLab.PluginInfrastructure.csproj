@@ -68,6 +68,7 @@
     <Compile Include="AssemblyBuildDateAttribute.cs" />
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
+    <Compile Include="CachedPlugin.cs" />
     <Compile Include="ClassInfoAttribute.cs" />
     <Compile Include="Interfaces\IApplication.cs" />
     <Compile Include="Interfaces\IControl.cs" />
