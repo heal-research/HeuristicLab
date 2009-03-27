@@ -47,7 +47,10 @@
       this.tpXAxis = new System.Windows.Forms.TabPage();
       this.btnChangeXAxisFont = new System.Windows.Forms.Button();
       this.tpYAxes = new System.Windows.Forms.TabPage();
-      this.dataRowsFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
+      this.gbxShowYAxis = new System.Windows.Forms.GroupBox();
+      this.gbxYAxisClipChangeable = new System.Windows.Forms.GroupBox();
+      this.flpShowYAxis = new System.Windows.Forms.FlowLayoutPanel();
+      this.flpYAxisClipChangeable = new System.Windows.Forms.FlowLayoutPanel();
       this.tpTitle.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -55,6 +58,8 @@
       this.Optionstabs.SuspendLayout();
       this.tpXAxis.SuspendLayout();
       this.tpYAxes.SuspendLayout();
+      this.gbxShowYAxis.SuspendLayout();
+      this.gbxYAxisClipChangeable.SuspendLayout();
       this.SuspendLayout();
       // 
       // OptionsDialogCancelButton
@@ -291,7 +296,8 @@
       // 
       // tpYAxes
       // 
-      this.tpYAxes.Controls.Add(this.dataRowsFlowLayout);
+      this.tpYAxes.Controls.Add(this.gbxYAxisClipChangeable);
+      this.tpYAxes.Controls.Add(this.gbxShowYAxis);
       this.tpYAxes.Location = new System.Drawing.Point(4, 22);
       this.tpYAxes.Name = "tpYAxes";
       this.tpYAxes.Padding = new System.Windows.Forms.Padding(3);
@@ -300,14 +306,47 @@
       this.tpYAxes.Text = "Y-Axes";
       this.tpYAxes.UseVisualStyleBackColor = true;
       // 
-      // dataRowsFlowLayout
+      // gbxShowYAxis
       // 
-      this.dataRowsFlowLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dataRowsFlowLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-      this.dataRowsFlowLayout.Location = new System.Drawing.Point(3, 3);
-      this.dataRowsFlowLayout.Name = "dataRowsFlowLayout";
-      this.dataRowsFlowLayout.Size = new System.Drawing.Size(278, 193);
-      this.dataRowsFlowLayout.TabIndex = 0;
+      this.gbxShowYAxis.AutoSize = true;
+      this.gbxShowYAxis.Controls.Add(this.flpShowYAxis);
+      this.gbxShowYAxis.Location = new System.Drawing.Point(0, 0);
+      this.gbxShowYAxis.Name = "gbxShowYAxis";
+      this.gbxShowYAxis.Size = new System.Drawing.Size(281, 76);
+      this.gbxShowYAxis.TabIndex = 0;
+      this.gbxShowYAxis.TabStop = false;
+      this.gbxShowYAxis.Text = "Show Y-Axis";
+      // 
+      // gbxYAxisClipChangeable
+      // 
+      this.gbxYAxisClipChangeable.AutoSize = true;
+      this.gbxYAxisClipChangeable.Controls.Add(this.flpYAxisClipChangeable);
+      this.gbxYAxisClipChangeable.Location = new System.Drawing.Point(0, 82);
+      this.gbxYAxisClipChangeable.Name = "gbxYAxisClipChangeable";
+      this.gbxYAxisClipChangeable.Size = new System.Drawing.Size(281, 76);
+      this.gbxYAxisClipChangeable.TabIndex = 1;
+      this.gbxYAxisClipChangeable.TabStop = false;
+      this.gbxYAxisClipChangeable.Text = "Y-Axis-Clip changeable";
+      // 
+      // flpShowYAxis
+      // 
+      this.flpShowYAxis.AutoSize = true;
+      this.flpShowYAxis.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.flpShowYAxis.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+      this.flpShowYAxis.Location = new System.Drawing.Point(3, 16);
+      this.flpShowYAxis.Name = "flpShowYAxis";
+      this.flpShowYAxis.Size = new System.Drawing.Size(275, 57);
+      this.flpShowYAxis.TabIndex = 0;
+      // 
+      // flpYAxisClipChangeable
+      // 
+      this.flpYAxisClipChangeable.AutoSize = true;
+      this.flpYAxisClipChangeable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.flpYAxisClipChangeable.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+      this.flpYAxisClipChangeable.Location = new System.Drawing.Point(3, 16);
+      this.flpYAxisClipChangeable.Name = "flpYAxisClipChangeable";
+      this.flpYAxisClipChangeable.Size = new System.Drawing.Size(275, 57);
+      this.flpYAxisClipChangeable.TabIndex = 0;
       // 
       // OptionsDialog
       // 
@@ -332,6 +371,11 @@
       this.Optionstabs.ResumeLayout(false);
       this.tpXAxis.ResumeLayout(false);
       this.tpYAxes.ResumeLayout(false);
+      this.tpYAxes.PerformLayout();
+      this.gbxShowYAxis.ResumeLayout(false);
+      this.gbxShowYAxis.PerformLayout();
+      this.gbxYAxisClipChangeable.ResumeLayout(false);
+      this.gbxYAxisClipChangeable.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -362,6 +406,9 @@
     private System.Windows.Forms.TabPage tpXAxis;
     private System.Windows.Forms.Button btnChangeXAxisFont;
     private System.Windows.Forms.TabPage tpYAxes;
-    private System.Windows.Forms.FlowLayoutPanel dataRowsFlowLayout;
+    private System.Windows.Forms.GroupBox gbxShowYAxis;
+    private System.Windows.Forms.GroupBox gbxYAxisClipChangeable;
+    private System.Windows.Forms.FlowLayoutPanel flpYAxisClipChangeable;
+    private System.Windows.Forms.FlowLayoutPanel flpShowYAxis;
   }
 }

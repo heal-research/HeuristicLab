@@ -11,6 +11,7 @@ namespace HeuristicLab.Visualization.Options {
     private readonly ViewSettings oldViewSettings;
     private LineParams[] oldLineParams;
     private Dictionary<CheckBox,bool> ShowYAxisBoxes;
+    private Dictionary<CheckBox,bool> yAxisClipChangeableBoxes;
 
     internal class LineParams {
       string Label { get; set; }
@@ -94,27 +95,26 @@ namespace HeuristicLab.Visualization.Options {
 
     private void InitTabPageYAxes() {
       ShowYAxisBoxes = new Dictionary<CheckBox, bool>();
+      yAxisClipChangeableBoxes = new Dictionary<CheckBox, bool>();
+
       for (int i = 0; i < model.YAxes.Count; i++) {
         YAxisDescriptor yAxisDescriptor = model.YAxes[i];
 
-        CheckBox chkbox = new CheckBox();
-        chkbox.Text = yAxisDescriptor.Label;
-        chkbox.Checked = yAxisDescriptor.ShowYAxis;
-        ShowYAxisBoxes[chkbox] = yAxisDescriptor.ShowYAxis;
-        chkbox.CheckedChanged += delegate { yAxisDescriptor.ShowYAxis = chkbox.Checked; };
+        CheckBox cbxShowYAxis = new CheckBox();
+        cbxShowYAxis.Text = yAxisDescriptor.Label;
+        cbxShowYAxis.Checked = yAxisDescriptor.ShowYAxis;
+        ShowYAxisBoxes[cbxShowYAxis] = yAxisDescriptor.ShowYAxis;
+        cbxShowYAxis.CheckedChanged += delegate { yAxisDescriptor.ShowYAxis = cbxShowYAxis.Checked; };
         
-        dataRowsFlowLayout.Controls.Add(chkbox);
-      }
+        flpShowYAxis.Controls.Add(cbxShowYAxis);
 
-      for (int i = 0; i < model.YAxes.Count; i++) {
-        YAxisDescriptor yAxisDescriptor = model.YAxes[i];
+        CheckBox cbxClipChangeable = new CheckBox();
+        cbxClipChangeable.Text = yAxisDescriptor.Label;
+        cbxClipChangeable.Checked = yAxisDescriptor.ClipChangeable;
+        yAxisClipChangeableBoxes[cbxClipChangeable] = yAxisDescriptor.ClipChangeable; 
+        cbxClipChangeable.CheckedChanged += delegate { yAxisDescriptor.ClipChangeable = cbxClipChangeable.Checked; };
 
-        CheckBox chkbox = new CheckBox();
-        chkbox.Text = yAxisDescriptor.Label;
-        chkbox.Checked = yAxisDescriptor.ClipChangeable;
-        chkbox.CheckedChanged += delegate { yAxisDescriptor.ClipChangeable = chkbox.Checked; };
-
-        dataRowsFlowLayout.Controls.Add(chkbox);
+        flpYAxisClipChangeable.Controls.Add(cbxClipChangeable);
       }
     }
 
@@ -136,9 +136,6 @@ namespace HeuristicLab.Visualization.Options {
       Close();
     }
     
-
-   
-
     private void cbLegendPosition_SelectedIndexChanged(object sender, EventArgs e) {
       viewSettings.LegendPosition = (LegendPosition)cbLegendPosition.SelectedItem;
       viewSettings.UpdateView();
@@ -194,6 +191,11 @@ namespace HeuristicLab.Visualization.Options {
       foreach (var box in ShowYAxisBoxes) {
         box.Key.Checked = box.Value;
       }
+
+      foreach (KeyValuePair<CheckBox, bool> box in yAxisClipChangeableBoxes) {
+        box.Key.Checked = box.Value;
+      }
+
       viewSettings.LegendColor = oldViewSettings.LegendColor;
       viewSettings.LegendPosition = oldViewSettings.LegendPosition;
       viewSettings.LegendFont = oldViewSettings.LegendFont;
@@ -215,9 +217,5 @@ namespace HeuristicLab.Visualization.Options {
       if (LineSelectCB.SelectedValue != null)
         ((IDataRow)LineSelectCB.SelectedValue).Thickness = (int)LineThicknessCB.SelectedItem;
     }
-
-
-
-
   }
 }

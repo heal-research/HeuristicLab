@@ -251,8 +251,7 @@ namespace HeuristicLab.Visualization {
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(model);
-      optionsdlg.ShowDialog(this);
-      Invalidate();
+      optionsdlg.Show();
     }
 
     public void OnDataRowChanged(IDataRow row) {
