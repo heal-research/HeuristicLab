@@ -14,7 +14,8 @@ namespace HeuristicLab.Visualization{
 
   public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
     private string title = "Title";
-    //private string xAxisLabel;
+    private string xAxisLabel = "";
+    private bool showXAxisLabel = true;
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     private ViewSettings viewSettings = new ViewSettings();
@@ -58,13 +59,22 @@ namespace HeuristicLab.Visualization{
         OnModelChanged();
       }
     }
-    //public string XAxisLabel {
-    //  get { return xAxisLabel; }
-    //  set {
-    //    xAxisLabel = value;
-    //    OnModelChanged();
-    //  }
-    //}
+
+    public string XAxisLabel {
+      get { return xAxisLabel; }
+      set {
+        xAxisLabel = value;
+        OnModelChanged();
+      }
+    }
+
+    public bool ShowXAxisLabel {
+      get { return showXAxisLabel; }
+      set {
+        showXAxisLabel = value;
+        OnModelChanged();
+      }
+    }
 
     public override IView CreateView() {
       return new LineChart(this);

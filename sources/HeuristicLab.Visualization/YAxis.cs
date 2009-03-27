@@ -9,6 +9,8 @@ namespace HeuristicLab.Visualization {
 
     private ILabelProvider labelProvider = new ContinuousLabelProvider("e4");
     private AxisPosition position = AxisPosition.Left;
+    private bool showLabel = true;
+    private string label = "";
 
     public ILabelProvider LabelProvider {
       get { return labelProvider; }
@@ -18,6 +20,16 @@ namespace HeuristicLab.Visualization {
     public AxisPosition Position {
       get { return position; }
       set { position = value; }
+    }
+
+    public bool ShowLabel {
+      get { return showLabel; }
+      set { showLabel = value; }
+    }
+
+    public string Label {
+      get { return label; }
+      set { label = value; }
     }
 
     public override void Draw(Graphics graphics) {
@@ -42,9 +54,35 @@ namespace HeuristicLab.Visualization {
             throw new NotImplementedException();
         }
         
-        TextShape label = new TextShape(x, y, labelProvider.GetLabel(y));
-        label.AnchorPositionX = anchorPositionX;
-        label.AnchorPositionY = AnchorPositionY.Middle;
+        TextShape tickLabel = new TextShape(x, y, labelProvider.GetLabel(y));
+        tickLabel.AnchorPositionX = anchorPositionX;
+        tickLabel.AnchorPositionY = AnchorPositionY.Middle;
+        AddShape(tickLabel);
+      }
+
+      if (showLabel) {
+        double x;
+        AnchorPositionY anchorPositionY;
+
+        switch (position) {
+          case AxisPosition.Left:
+            x = ClippingArea.X1 + 3;
+            anchorPositionY = AnchorPositionY.Top;
+            break;
+          case AxisPosition.Right:
+            x = ClippingArea.X2 - 3;
+            anchorPositionY = AnchorPositionY.Bottom;
+            break;
+          default:
+            throw new NotImplementedException();
+        }
+
+        TextShape label = new TextShape(x,
+                                        ClippingArea.Y1 + ClippingArea.Height/2,
+                                        this.label);
+        label.AnchorPositionX = AnchorPositionX.Middle;
+        label.AnchorPositionY = anchorPositionY;
+        label.Rotation = -90;
         AddShape(label);
       }
 

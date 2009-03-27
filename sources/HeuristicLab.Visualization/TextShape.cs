@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Visualization {
   public enum AnchorPositionX {
@@ -18,6 +19,7 @@ namespace HeuristicLab.Visualization {
     private string text;
     private double x;
     private double y;
+    private float rotation = 0;
 
     private AnchorPositionX anchorPositionX = AnchorPositionX.Left;
     private AnchorPositionY anchorPositionY = AnchorPositionY.Top;
@@ -58,6 +60,11 @@ namespace HeuristicLab.Visualization {
       set { y = value; }
     }
 
+    public float Rotation {
+      get { return rotation; }
+      set { rotation = value; }
+    }
+
     public Color Color {
       get { return color; }
       set {
@@ -86,17 +93,19 @@ namespace HeuristicLab.Visualization {
     public void Draw(Graphics graphics) {
       int screenX = Transform.ToScreenX(x, Parent.Viewport, Parent.ClippingArea);
       int screenY = Transform.ToScreenY(y, Parent.Viewport, Parent.ClippingArea);
+      int offsetX, offsetY;
 
       SizeF size = graphics.MeasureString(text, font);
 
       switch (AnchorPositionX) {
         case AnchorPositionX.Left:
+          offsetX = 0;
           break;
         case AnchorPositionX.Middle:
-          screenX -= (int)(size.Width/2);
+          offsetX = -(int)(size.Width/2);
           break;
         case AnchorPositionX.Right:
-          screenX -= (int)size.Width;
+          offsetX = -(int)size.Width;
           break;
         default:
           throw new NotSupportedException("Unknown anchor position: " + AnchorPositionX);
@@ -104,18 +113,23 @@ namespace HeuristicLab.Visualization {
 
       switch (AnchorPositionY) {
         case AnchorPositionY.Top:
+          offsetY = 0;
           break;
         case AnchorPositionY.Middle:
-          screenY -= (int)(size.Height/2);
+          offsetY = -(int)(size.Height/2);
           break;
         case AnchorPositionY.Bottom:
-          screenY -= (int)size.Height;
+          offsetY = -(int)size.Height;
           break;
         default:
           throw new NotSupportedException("Unknown anchor position: " + AnchorPositionX);
       }
 
-      graphics.DrawString(text, font, brush, screenX, screenY);
+      GraphicsState gstate = graphics.Save();
+      graphics.TranslateTransform(screenX, screenY, MatrixOrder.Append);
+      graphics.RotateTransform(rotation, MatrixOrder.Prepend);
+      graphics.DrawString(text, font, brush, offsetX, offsetY);
+      graphics.Restore(gstate);
     }
 
     public RectangleD BoundingBox {

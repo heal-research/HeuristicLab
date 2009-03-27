@@ -18,6 +18,9 @@ namespace HeuristicLab.Visualization {
 
     ViewSettings ViewSettings { get; set; }
 
+    string XAxisLabel { get; set; }
+    bool ShowXAxisLabel { get; set; }
+
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;
     event DataRowRemovedHandler DataRowRemoved;

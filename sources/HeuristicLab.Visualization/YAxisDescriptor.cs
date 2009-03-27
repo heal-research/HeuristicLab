@@ -11,6 +11,7 @@ namespace HeuristicLab.Visualization {
     private ILabelProvider yAxisLabelProvider = new ContinuousLabelProvider("0.##");
     private readonly List<IDataRow> dataRows = new List<IDataRow>();
     private bool showYAxis = true;
+    private bool showYAxisLabel = true;
     private string label = "";
     public bool clipChangeable = true;
     private AxisPosition position = AxisPosition.Left;
@@ -34,6 +35,14 @@ namespace HeuristicLab.Visualization {
       get { return showYAxis; }
       set {
         showYAxis = value;
+        OnYAxisDescriptorChanged();
+      }
+    }
+
+    public bool ShowYAxisLabel {
+      get { return showYAxisLabel; }
+      set {
+        showYAxisLabel = value;
         OnYAxisDescriptorChanged();
       }
     }

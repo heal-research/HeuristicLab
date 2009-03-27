@@ -69,7 +69,7 @@ namespace HeuristicLab.Visualization.Test {
 
       f.ShowDialog();
     }
-
+      
     [Test]
     public void TestAxes() {
       LineChartTestForm f = new LineChartTestForm(model);
@@ -81,16 +81,19 @@ namespace HeuristicLab.Visualization.Test {
       YAxisDescriptor yaxis1 = model.DefaultYAxis;
       YAxisDescriptor yaxis2 = new YAxisDescriptor();
 
+      model.XAxisLabel = "X Axis";
+      model.ShowXAxisLabel = true;
+
       yaxis1.Label = "Y-Axis 1";
-      yaxis2.Label = "Y-Axis 2";
-
+      yaxis1.ShowYAxisLabel = true;
       yaxis1.Position = AxisPosition.Left;
-      yaxis2.Position = AxisPosition.Right;
-
       yaxis1.ShowGrid = true;
-      yaxis2.ShowGrid = false;
-
       yaxis1.GridColor = Color.Gray;
+
+      yaxis2.Label = "Y-Axis 2";
+      yaxis2.ShowYAxisLabel = true;
+      yaxis2.Position = AxisPosition.Right;
+      yaxis2.ShowGrid = false;
 
       row1.Color = Color.Red;
       row1.Thickness = 3;
@@ -107,13 +110,10 @@ namespace HeuristicLab.Visualization.Test {
       row3.Style = DrawingStyle.Solid;
       row3.Label = "Die Blaue";
       row3.YAxis = yaxis2;
-      row3.YAxis.Label = "Die Blaue";
 
       model.AddDataRow(row1);
       model.AddDataRow(row2);
       model.AddDataRow(row3);
-
-      row1.YAxis.Label = "Rot und Grün";
 
       Random rand = new Random(42);
 

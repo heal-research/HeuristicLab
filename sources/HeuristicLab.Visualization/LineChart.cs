@@ -26,7 +26,7 @@ namespace HeuristicLab.Visualization {
     private IMouseEventListener mouseEventListener;
 
     private const int YAxisWidth = 100;
-    private const int XAxisHeight = 20;
+    private const int XAxisHeight = 40;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -94,6 +94,9 @@ namespace HeuristicLab.Visualization {
         canvas.AddShape(rowEntry.LinesShape);
       }
 
+      xAxis.ShowLabel = model.ShowXAxisLabel;
+      xAxis.Label = model.XAxisLabel;
+
       canvas.AddShape(xAxis);
 
       int yAxesWidthLeft = 0;
@@ -103,6 +106,8 @@ namespace HeuristicLab.Visualization {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
         if (yAxisDescriptor.ShowYAxis) {
           canvas.AddShape(info.YAxis);
+          info.YAxis.ShowLabel = yAxisDescriptor.ShowYAxisLabel;
+          info.YAxis.Label = yAxisDescriptor.Label;
           info.YAxis.Position = yAxisDescriptor.Position;
           switch (yAxisDescriptor.Position) {
             case AxisPosition.Left:

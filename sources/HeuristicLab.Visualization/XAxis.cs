@@ -9,6 +9,8 @@ namespace HeuristicLab.Visualization {
 
     private Color color = Color.Blue;
     private Font font = new Font("Arial", 8);
+    private bool showLabel = true;
+    private string label = "";
 
     public ILabelProvider LabelProvider {
       get { return labelProvider; }
@@ -21,10 +23,20 @@ namespace HeuristicLab.Visualization {
       foreach (double x in AxisTicks.GetTicks(PixelsPerInterval, Parent.Viewport.Width,
                                               ClippingArea.Width,
                                               ClippingArea.X1)) {
-        TextShape label = new TextShape(x, ClippingArea.Height - 3,
+        TextShape tickLabel = new TextShape(x, ClippingArea.Height - 3,
                                         labelProvider.GetLabel(x), Font, Color);
+        tickLabel.AnchorPositionX = AnchorPositionX.Middle;
+        tickLabel.AnchorPositionY = AnchorPositionY.Top;
+        AddShape(tickLabel);
+      }
+
+      if (showLabel) {
+        TextShape label = new TextShape(ClippingArea.X1 + ClippingArea.Width/2,
+                                        ClippingArea.Y1 + 3,
+                                        this.label);
         label.AnchorPositionX = AnchorPositionX.Middle;
-        label.AnchorPositionY = AnchorPositionY.Top;
+        label.AnchorPositionY = AnchorPositionY.Bottom;
+
         AddShape(label);
       }
 
@@ -39,6 +51,16 @@ namespace HeuristicLab.Visualization {
     public Font Font {
       get { return font; }
       set { font = value; }
+    }
+
+    public bool ShowLabel {
+      get { return showLabel; }
+      set { showLabel = value; }
+    }
+
+    public string Label {
+      get { return label; }
+      set { label = value; }
     }
   }
 }
