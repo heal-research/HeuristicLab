@@ -57,11 +57,11 @@ namespace HeuristicLab.Visualization.Legend {
         foreach (LegendItem item in legendItems) {
           if (!row) {
             CreateColumn(item, y);
-            y -= 15;
+            y -= Font.Height;
           } else {
             if (rowCounter >= numberOfItemsPerRow) {
               x = ClippingArea.X1;
-              y -= 25;
+              y -= Font.Height+15;
               rowCounter = 0;
             }
             CreateRow(item, x, y);
@@ -89,7 +89,7 @@ namespace HeuristicLab.Visualization.Legend {
           rowsToDraw = value + rest;
         }
       }
-      return 25*rowsToDraw;
+      return (Font.Height+12)*rowsToDraw;
     }
 
     /// <summary>
@@ -108,8 +108,8 @@ namespace HeuristicLab.Visualization.Legend {
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private static int GetLabelLengthInPixel(LegendItem item) {
-      int dummy = item.Label.Length*6 + 20;
+    private int GetLabelLengthInPixel(LegendItem item) {
+      int dummy = (int)(item.Label.Length*Font.Size + 20);
       if (dummy < LegendItem.WIDTH) {
         return LegendItem.WIDTH;
       }
@@ -123,7 +123,7 @@ namespace HeuristicLab.Visualization.Legend {
     /// <param name="x">x axis to draw the item</param>
     /// <param name="y">y axis to draw the item</param>
     private void CreateRow(LegendItem item, double x, double y) {
-      AddShape(new LineShape(x, y - 5, x + 20, y - 5, item.Color, item.Thickness, DrawingStyle.Solid));
+      AddShape(new LineShape(x, y - (Font.Height / 2), x + 20, y - (Font.Height / 2), item.Color, item.Thickness, DrawingStyle.Solid));
       AddShape(new TextShape(x + 25, y, item.Label, Font, Color));
     }
 
@@ -133,8 +133,8 @@ namespace HeuristicLab.Visualization.Legend {
     /// <param name="item">the legenditem to draw</param>
     /// <param name="y">y axis to draw the item</param>
     private void CreateColumn(LegendItem item, double y) {
-      AddShape(new LineShape(10, y - 10, 30, y - 10, item.Color, item.Thickness, DrawingStyle.Solid));
-      AddShape(new TextShape(35, y, item.Label, Font, Color));
+      AddShape(new LineShape(10, y - (Font.Height / 2), 30, y - (Font.Height / 2), item.Color, item.Thickness, DrawingStyle.Solid));
+      AddShape(new TextShape(Font.Height+12, y, item.Label, Font, Color));
     }
 
     /// <summary>
@@ -146,10 +146,10 @@ namespace HeuristicLab.Visualization.Legend {
     }
 
     /// <summary>
-    /// searches the longest label and returns it with the factor 6
+    /// searches the longest label and returns it with factor of the the current font size
     /// useful to set the width of the legend
     /// </summary>
-    /// <returns>max label length with factor 6</returns>
+    /// <returns>max label length with factor of the current font size</returns>
     public int GetMaxLabelLength() {
       int maxLabelLength = 0;
       if (ExistsLegendItems()) {
@@ -159,7 +159,7 @@ namespace HeuristicLab.Visualization.Legend {
             maxLabelLength = item.Label.Length;
           }
         }
-        maxLabelLength = maxLabelLength*6;
+        maxLabelLength = (int)(maxLabelLength*Font.Size);
       }
       return maxLabelLength < LegendItem.WIDTH ? LegendItem.WIDTH : maxLabelLength;
     }
