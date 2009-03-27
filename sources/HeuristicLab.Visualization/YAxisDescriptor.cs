@@ -12,7 +12,7 @@ namespace HeuristicLab.Visualization {
     private readonly List<IDataRow> dataRows = new List<IDataRow>();
     private bool showYAxis = true;
     private string label = "";
-    public bool ClipChangeable = true;
+    public bool clipChangeable = true;
     private AxisPosition position = AxisPosition.Left;
 
     private bool showGrid = true;
@@ -78,9 +78,9 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public bool Zoom_ {
-      get { return ClipChangeable; }
-      set { ClipChangeable = value; }
+    public bool ClipChangeable {
+      get { return clipChangeable; }
+      set { clipChangeable = value; }
     }
 
     public AxisPosition Position {
