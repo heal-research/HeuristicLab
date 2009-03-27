@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Persistence</RootNamespace>
+    <AssemblyName>HeuristicLab.Persistence-3.3</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>
+    </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\TypeMapping.cs" />
+    <Compile Include="Core\TypeStringBuilder.cs" />
+    <Compile Include="Default\Decomposers\EnumerableDecomposer.cs" />
+    <Compile Include="Default\Decomposers\ArrayDecomposer.cs" />
+    <Compile Include="Default\Decomposers\KeyValuePairDecomposer.cs" />
+    <Compile Include="Default\Decomposers\DictionaryDecomposer.cs" />
+    <Compile Include="Default\Decomposers\StorableDecomposer.cs" />
+    <Compile Include="Default\Decomposers\TypeDecomposer.cs" />
+    <Compile Include="Default\ViewOnly\ViewOnlyFormat.cs" />
+    <Compile Include="Default\Xml\Compact\IntArray2XmlFormatters.cs" />
+    <Compile Include="Default\Xml\Compact\DoubleArray2XmlFormatters.cs" />
+    <Compile Include="Default\Xml\Compact\DoubleList2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatters.cs" />
+    <Compile Include="Core\DataMemberAccessor.cs" />
+    <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Sting2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Int2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Double2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Boolean2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\DateTime2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\XmlFormat.cs" />
+    <Compile Include="HeuristicLabPersistencePlugin.cs" />
+    <Compile Include="Core\DeSerializer.cs" />
+    <Compile Include="Core\Tag.cs" />
+    <Compile Include="Interfaces\IDecomposer.cs" />
+    <Compile Include="Interfaces\IFormatter.cs" />
+    <Compile Include="Core\ConfigurationService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Serializer.cs" />
+    <Compile Include="Interfaces\Tokens.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Util.cs" />
+    <Compile Include="Core\StorableAttribute.cs" />
+    <Compile Include="Default\Xml\XmlGenerator.cs" />
+    <Compile Include="Default\Xml\XmlParser.cs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

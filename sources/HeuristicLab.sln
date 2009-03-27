@@ -148,6 +148,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Server.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive.Engine", "HeuristicLab.Hive.Engine\HeuristicLab.Hive.Engine.csproj", "{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence", "HeuristicLab.Persistence\HeuristicLab.Persistence.csproj", "{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.GUI", "HeuristicLab.Persistence.GUI\HeuristicLab.Persistence.GUI.csproj", "{A9E282EA-180F-4233-B809-AEDF0787545C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.Test", "HeuristicLab.Persistence.Test\HeuristicLab.Persistence.Test.csproj", "{E2245078-6F40-449E-A370-01A97A7C5E6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU
@@ -1317,6 +1323,51 @@ Global
 		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.GP Debug|x86.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Release|x86.ActiveCfg = Release|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.GP Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Release|x86.ActiveCfg = Release|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E282EA-180F-4233-B809-AEDF0787545C}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.GP Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2245078-6F40-449E-A370-01A97A7C5E6A}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -62,6 +62,8 @@ copy "%SolutionDir%\HeuristicLab.Operators.Programmable\%Outdir%\HeuristicLab.Op
 copy "%SolutionDir%\HeuristicLab.Operators.Stopwatch\%Outdir%\HeuristicLab.Operators.Stopwatch-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\%Outdir%\HeuristicLab.OptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Permutation\%Outdir%\HeuristicLab.Permutation-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Persistence\%Outdir%\HeuristicLab.Persistence-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Persistence.GUI\%Outdir%\HeuristicLab.Persistence.GUI-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Random\%Outdir%\HeuristicLab.Random-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.RealVector\%Outdir%\HeuristicLab.RealVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Routing.TSP\%Outdir%\HeuristicLab.Routing.TSP-3.2.dll" .\plugins
