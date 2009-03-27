@@ -223,6 +223,20 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       cacheLock.ExitWriteLock();
     }
 
+    public override ObjT GetById(Guid id) {
+      return FindSingle(
+        delegate() {
+          return FindById(id);
+        },
+        delegate() {
+          List<RowT> found =  
+            new List<RowT>();
+          found.Add(
+              FindCachedById(id));
+          return found;
+        });
+    }
+
     public override void Update(ObjT obj) {
       if (obj != null) {
         RowT row = null;
