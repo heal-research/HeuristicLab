@@ -58,8 +58,9 @@
     <Compile Include="Core\Configuration.cs" />
     <Compile Include="Core\TypeMapping.cs" />
     <Compile Include="Core\TypeStringBuilder.cs" />
-    <Compile Include="Default\Decomposers\EnumerableDecomposer.cs" />
     <Compile Include="Default\Decomposers\ArrayDecomposer.cs" />
+    <Compile Include="Default\Decomposers\EnumerableDecomposer.cs" />
+    <Compile Include="Default\Decomposers\EnumDecomposer.cs" />
     <Compile Include="Default\Decomposers\KeyValuePairDecomposer.cs" />
     <Compile Include="Default\Decomposers\DictionaryDecomposer.cs" />
     <Compile Include="Default\Decomposers\StorableDecomposer.cs" />

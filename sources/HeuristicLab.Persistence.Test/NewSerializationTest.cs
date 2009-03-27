@@ -9,9 +9,13 @@ using HeuristicLab.Persistence.Default.ViewOnly;
 
 namespace HeuristicLab.Persistence.Test {
 
+  public enum TestEnum { va1, va2, va3, va8 } ;
+
   public class RootBase {
     [Storable]
     private string baseString = "Serial";
+    [Storable]
+    public TestEnum myEnum = TestEnum.va3;
   }
 
   public class Root : RootBase {
@@ -160,6 +164,7 @@ namespace HeuristicLab.Persistence.Test {
       r.dict.Add("one", 1);
       r.dict.Add("two", 2);
       r.dict.Add("three", 3);
+      r.myEnum = TestEnum.va1;
       XmlGenerator.Serialize(r, "test");      
       object o = XmlParser.DeSerialize("test");
       Console.Out.WriteLine(Util.AutoFormat(o, true));
