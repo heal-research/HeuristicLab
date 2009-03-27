@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Visualization.Legend;
 using HeuristicLab.Visualization.Options;
+using HeuristicLab.Visualization.Test;
 
 namespace HeuristicLab.Visualization {
   public partial class LineChart : ViewBase {
@@ -92,13 +93,24 @@ namespace HeuristicLab.Visualization {
 
       canvas.AddShape(xAxis);
 
-      int yAxesWidth = 0;
+      int yAxesWidthLeft = 0;
+      int yAxesWidthRight = 0;
 
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
         if (yAxisDescriptor.ShowYAxis) {
           canvas.AddShape(info.YAxis);
-          yAxesWidth += YAxisWidth;
+          info.YAxis.Position = yAxisDescriptor.Position;
+          switch (yAxisDescriptor.Position) {
+            case AxisPosition.Left:
+              yAxesWidthLeft += YAxisWidth;
+              break;
+            case AxisPosition.Right:
+              yAxesWidthRight += YAxisWidth;
+              break;
+            default:
+              throw new NotImplementedException();
+          }
         }
       }
 
@@ -110,9 +122,9 @@ namespace HeuristicLab.Visualization {
       titleShape.X = 10;
       titleShape.Y = canvasUI.Height - 10;
 
-      RectangleD linesAreaBoundingBox = new RectangleD(yAxesWidth,
+      RectangleD linesAreaBoundingBox = new RectangleD(yAxesWidthLeft,
                                                        XAxisHeight,
-                                                       canvasUI.Width,
+                                                       canvasUI.Width - yAxesWidthRight,
                                                        canvasUI.Height);
 
       foreach (RowEntry rowEntry in rowEntries) {
@@ -125,14 +137,29 @@ namespace HeuristicLab.Visualization {
       }
 
       int yAxisLeft = 0;
+      int yAxisRight = (int)linesAreaBoundingBox.X2;
+
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
         if (yAxisDescriptor.ShowYAxis) {
-          info.YAxis.BoundingBox = new RectangleD(yAxisLeft,
-                                                 linesAreaBoundingBox.Y1,
-                                                 yAxisLeft + YAxisWidth,
-                                                 linesAreaBoundingBox.Y2);
-          yAxisLeft += YAxisWidth;
+          switch (yAxisDescriptor.Position) {
+            case AxisPosition.Left:
+              info.YAxis.BoundingBox = new RectangleD(yAxisLeft,
+                                                      linesAreaBoundingBox.Y1,
+                                                      yAxisLeft + YAxisWidth,
+                                                      linesAreaBoundingBox.Y2);
+              yAxisLeft += YAxisWidth;
+              break;
+            case AxisPosition.Right:
+              info.YAxis.BoundingBox = new RectangleD(yAxisRight,
+                                                      linesAreaBoundingBox.Y1,
+                                                      yAxisRight + YAxisWidth,
+                                                      linesAreaBoundingBox.Y2);
+              yAxisRight += YAxisWidth;
+              break;
+            default:
+              throw new NotImplementedException();
+          }
         }
       }
 

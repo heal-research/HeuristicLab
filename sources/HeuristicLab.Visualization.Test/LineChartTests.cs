@@ -84,6 +84,9 @@ namespace HeuristicLab.Visualization.Test {
       yaxis1.Label = "Y-Axis 1";
       yaxis2.Label = "Y-Axis 2";
 
+      yaxis1.Position = AxisPosition.Left;
+      yaxis2.Position = AxisPosition.Right;
+
       row1.Color = Color.Red;
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
@@ -498,8 +501,6 @@ namespace HeuristicLab.Visualization.Test {
 
       f.ShowDialog();
     }
-
-
 
     [Test]
     public void TestMainForm() {

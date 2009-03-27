@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Visualization.LabelProvider;
+using HeuristicLab.Visualization.Test;
 
 namespace HeuristicLab.Visualization {
   public delegate void YAxisDescriptorChangedHandler(YAxisDescriptor sender);
@@ -11,6 +12,7 @@ namespace HeuristicLab.Visualization {
     private bool showYAxis = true;
     private string label = "";
     public bool ClipChangeable = true;
+    private AxisPosition position = AxisPosition.Left;
 
     public event YAxisDescriptorChangedHandler YAxisDescriptorChanged;
 
@@ -75,6 +77,11 @@ namespace HeuristicLab.Visualization {
     public bool Zoom_ {
       get { return ClipChangeable; }
       set { ClipChangeable = value; }
+    }
+
+    public AxisPosition Position {
+      get { return position; }
+      set { position = value; }
     }
 
     public void AddDataRow(IDataRow row) {
