@@ -84,7 +84,10 @@ namespace HeuristicLab.Visualization {
 
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
-        canvas.AddShape(info.Grid);
+        if (yAxisDescriptor.ShowGrid) {
+          info.Grid.Color = yAxisDescriptor.GridColor;
+          canvas.AddShape(info.Grid);
+        }
       }
 
       foreach (RowEntry rowEntry in rowEntries) {

@@ -87,6 +87,11 @@ namespace HeuristicLab.Visualization.Test {
       yaxis1.Position = AxisPosition.Left;
       yaxis2.Position = AxisPosition.Right;
 
+      yaxis1.ShowGrid = true;
+      yaxis2.ShowGrid = false;
+
+      yaxis1.GridColor = Color.Gray;
+
       row1.Color = Color.Red;
       row1.Thickness = 3;
       row1.Style = DrawingStyle.Solid;

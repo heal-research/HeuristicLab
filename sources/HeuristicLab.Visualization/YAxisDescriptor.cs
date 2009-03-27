@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using HeuristicLab.Visualization.LabelProvider;
 using HeuristicLab.Visualization.Test;
 
@@ -13,6 +14,9 @@ namespace HeuristicLab.Visualization {
     private string label = "";
     public bool ClipChangeable = true;
     private AxisPosition position = AxisPosition.Left;
+
+    private bool showGrid = true;
+    private Color gridColor = Color.LightBlue;
 
     public event YAxisDescriptorChangedHandler YAxisDescriptorChanged;
 
@@ -81,7 +85,26 @@ namespace HeuristicLab.Visualization {
 
     public AxisPosition Position {
       get { return position; }
-      set { position = value; }
+      set {
+        position = value;
+        OnYAxisDescriptorChanged();
+      }
+    }
+
+    public bool ShowGrid {
+      get { return showGrid; }
+      set {
+        showGrid = value;
+        OnYAxisDescriptorChanged();
+      }
+    }
+
+    public Color GridColor {
+      get { return gridColor; }
+      set {
+        gridColor = value;
+        OnYAxisDescriptorChanged();
+      }
     }
 
     public void AddDataRow(IDataRow row) {
