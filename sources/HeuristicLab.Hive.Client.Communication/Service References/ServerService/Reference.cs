@@ -84,10 +84,10 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         HeuristicLab.Hive.Contracts.Response EndIsJobStillNeeded(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientCommunicator/SendPlugins", ReplyAction="http://tempuri.org/IClientCommunicator/SendPluginsResponse")]
-        HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(string[] pluginList);
+        HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList);
         
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientCommunicator/SendPlugins", ReplyAction="http://tempuri.org/IClientCommunicator/SendPluginsResponse")]
-        System.IAsyncResult BeginSendPlugins(string[] pluginList, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginSendPlugins(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList, System.AsyncCallback callback, object asyncState);
         
         HeuristicLab.Hive.Contracts.ResponsePlugin EndSendPlugins(System.IAsyncResult result);
     }
@@ -701,12 +701,12 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                         jobId}, this.onEndIsJobStillNeededDelegate, this.onIsJobStillNeededCompletedDelegate, userState);
         }
         
-        public HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(string[] pluginList) {
+        public HeuristicLab.Hive.Contracts.ResponsePlugin SendPlugins(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList) {
             return base.Channel.SendPlugins(pluginList);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginSendPlugins(string[] pluginList, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSendPlugins(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList, System.AsyncCallback callback, object asyncState) {
             return base.Channel.BeginSendPlugins(pluginList, callback, asyncState);
         }
         
@@ -716,7 +716,7 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
         }
         
         private System.IAsyncResult OnBeginSendPlugins(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string[] pluginList = ((string[])(inValues[0]));
+            HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList = ((HeuristicLab.PluginInfrastructure.PluginInfo[])(inValues[0]));
             return this.BeginSendPlugins(pluginList, callback, asyncState);
         }
         
@@ -733,11 +733,11 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
             }
         }
         
-        public void SendPluginsAsync(string[] pluginList) {
+        public void SendPluginsAsync(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList) {
             this.SendPluginsAsync(pluginList, null);
         }
         
-        public void SendPluginsAsync(string[] pluginList, object userState) {
+        public void SendPluginsAsync(HeuristicLab.PluginInfrastructure.PluginInfo[] pluginList, object userState) {
             if ((this.onBeginSendPluginsDelegate == null)) {
                 this.onBeginSendPluginsDelegate = new BeginOperationDelegate(this.OnBeginSendPlugins);
             }

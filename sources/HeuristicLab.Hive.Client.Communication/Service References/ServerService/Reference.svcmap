@@ -28,6 +28,7 @@
     <MetadataFile FileName="HeuristicLab.Hive.Contracts1.xsd" MetadataType="Schema" ID="679f24c7-bc6c-45b8-a1cc-9339911bddc9" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
     <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="53f47e2f-ca2b-4f21-9457-037e222fefaf" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
     <MetadataFile FileName="System1.xsd" MetadataType="Schema" ID="6a87c5f1-b08b-4dea-b2b3-bd10a1f13d52" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.PluginInfrastructure.xsd" MetadataType="Schema" ID="2dafc69c-27f2-456d-80d7-303362ac8b68" SourceId="1" SourceUrl="net.tcp://10.20.53.3:9000/HiveServer/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

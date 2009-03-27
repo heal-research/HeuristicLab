@@ -29,6 +29,7 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Client.Communication.ServerService;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Client.Communication {
   /// <summary>
@@ -248,7 +249,18 @@ namespace HeuristicLab.Hive.Client.Communication {
     #endregion  */
 
     public ResponseResultReceived SendStoredJobResultsSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
-      return proxy.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);
+      return proxy.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);    
     }
+
+    public List<CachedPlugin> RequestPlugins(List<PluginInfo> requestedPlugins) {
+      try {
+        return proxy.SendPlugins(requestedPlugins.ToArray()).Plugins;
+      }
+      catch (Exception e) {
+        HandleNetworkError(e);
+        return null;
+      }
+    }
+
   }
 }

@@ -25,6 +25,7 @@
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IClientCommunicator_Login_InputMessage">

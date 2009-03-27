@@ -8,4 +8,13 @@
     <xs:attribute ref="ser:FactoryType" />
   </xs:complexType>
   <xs:element name="Exception" nillable="true" type="tns:Exception" />
+  <xs:complexType name="Version">
+    <xs:sequence>
+      <xs:element name="_Build" type="xs:int" />
+      <xs:element name="_Major" type="xs:int" />
+      <xs:element name="_Minor" type="xs:int" />
+      <xs:element name="_Revision" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Version" nillable="true" type="tns:Version" />
 </xs:schema>
