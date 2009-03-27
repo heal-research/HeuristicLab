@@ -24,10 +24,14 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
-  class CachedPlugin : PluginInfo {
+  public class CachedPlugin : PluginInfo {
+    
+    private List<byte[]> pluginFiles = new List<byte[]>();
     /// <summary>
     /// stores the plugin files in a list of byte arrays
     /// </summary>
-    public List<byte[]> PluginFiles { get; set; }
+    public List<byte[]> PluginFiles {
+      get { return pluginFiles; }
+    }
   }
 }
