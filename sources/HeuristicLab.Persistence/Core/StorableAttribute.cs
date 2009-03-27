@@ -48,7 +48,8 @@ namespace HeuristicLab.Persistence.Core {
     private const BindingFlags instanceMembers =
       BindingFlags.Instance |
       BindingFlags.Public |
-      BindingFlags.NonPublic;
+      BindingFlags.NonPublic |
+      BindingFlags.DeclaredOnly;
     
     public static IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>> GetStorableMembers(Type type) {
       return GetStorableMembers(type, true);      
