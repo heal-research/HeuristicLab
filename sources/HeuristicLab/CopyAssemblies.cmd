@@ -25,8 +25,11 @@ copy "%SolutionDir%\HeuristicLab.Communication.Operators\%Outdir%\HeuristicLab.C
 copy "%SolutionDir%\HeuristicLab.Core\%Outdir%\HeuristicLab.Core-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Constraints\%Outdir%\HeuristicLab.Constraints-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\%Outdir%\HeuristicLab.Data-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.DataAccess\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAnalysis\%Outdir%\HeuristicLab.DataAnalysis-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DistributedEngine\%Outdir%\HeuristicLab.DistributedEngine-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.ES\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\%Outdir%\HeuristicLab.Evolutionary-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\%Outdir%\HeuristicLab.GP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Boolean\%Outdir%\HeuristicLab.GP.Boolean-1.0.dll" .\plugins
@@ -35,6 +38,22 @@ copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification\%Outdir%\HeuristicLa
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.Classification\%Outdir%\HeuristicLab.GP.StructureIdentification.Classification-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.TimeSeries\%Outdir%\HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Grid\%Outdir%\HeuristicLab.Grid-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Common\%Outdir%\HeuristicLab.Hive.Client.Common-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Communication\%Outdir%\HeuristicLab.Hive.Client.Communication-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\HeuristicLab.Hive.Client.Console-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\ZedGraph.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\Calendar.DayView.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.Core\%Outdir%\HeuristicLab.Hive.Client.Core-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Engine\%Outdir%\HeuristicLab.Hive.Engine-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.JobBase\%Outdir%\HeuristicLab.Hive.JobBase-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server\%Outdir%\HeuristicLab.Hive.Server-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.ADODataAccess\%Outdir%\HeuristicLab.Hive.Server.ADODataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.Console\%Outdir%\HeuristicLab.Hive.Server.Console-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\%Outdir%\HeuristicLab.Hive.Server.Core-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\%Outdir%\HeuristicLab.Hive.Contracts-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.IntVector\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
@@ -46,6 +65,7 @@ copy "%SolutionDir%\HeuristicLab.Permutation\%Outdir%\HeuristicLab.Permutation-3
 copy "%SolutionDir%\HeuristicLab.Random\%Outdir%\HeuristicLab.Random-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.RealVector\%Outdir%\HeuristicLab.RealVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Routing.TSP\%Outdir%\HeuristicLab.Routing.TSP-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.SA\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Scheduling.JSSP\%Outdir%\HeuristicLab.Scheduling.JSSP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection\%Outdir%\HeuristicLab.Selection-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.2.dll" .\plugins
@@ -57,28 +77,8 @@ copy "%SolutionDir%\HeuristicLab.SQLite\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite.NET.chm" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\%Outdir%\HeuristicLab.ThreadParallelEngine-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.ES\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization\%Outdir%\HeuristicLab.Visualization-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization.Test\%Outdir%\HeuristicLab.Visualization.Test-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.JobBase\%Outdir%\HeuristicLab.Hive.JobBase-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server\%Outdir%\HeuristicLab.Hive.Server-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.ADODataAccess\%Outdir%\HeuristicLab.Hive.Server.ADODataAccess-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\%Outdir%\HeuristicLab.Hive.Server.Core-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\%Outdir%\HeuristicLab.Hive.Contracts-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Core\%Outdir%\HeuristicLab.Hive.Client.Core-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Common\%Outdir%\HeuristicLab.Hive.Client.Common-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\HeuristicLab.Hive.Client.Console-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\ZedGraph.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\%Outdir%\Calendar.DayView.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.Communication\%Outdir%\HeuristicLab.Hive.Client.Communication-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Client.ExecutionEngine\%Outdir%\HeuristicLab.Hive.Client.ExecutionEngine-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.Console\%Outdir%\HeuristicLab.Hive.Server.Console-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.SA\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.DataAccess\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins
 
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
