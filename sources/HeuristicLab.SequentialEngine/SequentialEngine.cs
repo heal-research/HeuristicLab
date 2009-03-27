@@ -50,7 +50,7 @@ namespace HeuristicLab.SequentialEngine {
     }
 
     /// <summary>
-    /// Aborts the current operator.
+    /// Aborts the engine execution.
     /// </summary>
     /// <remarks>Calls <see cref="EngineBase.Abort"/> of base class <see cref="EngineBase"/> and
     /// <see cref="IOperator.Abort"/> of the current <see cref="IOperator"/>.</remarks>
