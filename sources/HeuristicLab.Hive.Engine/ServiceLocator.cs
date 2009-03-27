@@ -30,9 +30,7 @@ namespace HeuristicLab.Hive.Engine {
   internal class ServiceLocator {
     internal static IExecutionEngineFacade CreateExecutionEngineFacade(string url) {
       NetTcpBinding binding =
-           new NetTcpBinding();
-
-      binding.MaxReceivedMessageSize = 5000000;
+           new NetTcpBinding(SecurityMode.None, true);
 
       ChannelFactory<IExecutionEngineFacade> factory =
         new ChannelFactory<IExecutionEngineFacade>(

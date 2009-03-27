@@ -85,6 +85,7 @@ namespace HeuristicLab.Hive.Engine {
       // 
       // snapshotButton
       // 
+      this.snapshotButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.snapshotButton.Location = new System.Drawing.Point(294, 457);
       this.snapshotButton.Name = "snapshotButton";
       this.snapshotButton.Size = new System.Drawing.Size(92, 23);
@@ -94,6 +95,7 @@ namespace HeuristicLab.Hive.Engine {
       // 
       // urlTextBox
       // 
+      this.urlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.urlTextBox.Location = new System.Drawing.Point(526, 459);
       this.urlTextBox.Name = "urlTextBox";
       this.urlTextBox.Size = new System.Drawing.Size(154, 20);
@@ -101,6 +103,7 @@ namespace HeuristicLab.Hive.Engine {
       // 
       // urlLabel
       // 
+      this.urlLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.urlLabel.AutoSize = true;
       this.urlLabel.Location = new System.Drawing.Point(523, 444);
       this.urlLabel.Name = "urlLabel";
@@ -117,15 +120,15 @@ namespace HeuristicLab.Hive.Engine {
       this.Controls.Add(this.urlLabel);
       this.Name = "HiveEngineEditor";
       this.Size = new System.Drawing.Size(827, 480);
-      this.Controls.SetChildIndex(this.urlLabel, 0);
-      this.Controls.SetChildIndex(this.urlTextBox, 0);
-      this.Controls.SetChildIndex(this.snapshotButton, 0);
       this.Controls.SetChildIndex(this.executeButton, 0);
       this.Controls.SetChildIndex(this.abortButton, 0);
       this.Controls.SetChildIndex(this.resetButton, 0);
       this.Controls.SetChildIndex(this.splitContainer1, 0);
       this.Controls.SetChildIndex(this.executionTimeLabel, 0);
       this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
+      this.Controls.SetChildIndex(this.urlLabel, 0);
+      this.Controls.SetChildIndex(this.urlTextBox, 0);
+      this.Controls.SetChildIndex(this.snapshotButton, 0);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
