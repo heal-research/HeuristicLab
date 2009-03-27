@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.ServiceModel;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Contracts.Interfaces {
   /// <summary>
@@ -55,6 +56,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response IsJobStillNeeded(long jobId);
     [OperationContract]
-    ResponsePlugin SendPlugins(List<String> pluginList);
+    ResponsePlugin SendPlugins(List<PluginInfo> pluginList);
   }
 }

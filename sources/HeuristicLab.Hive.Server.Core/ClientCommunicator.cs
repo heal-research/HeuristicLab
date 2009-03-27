@@ -33,6 +33,7 @@ using System.Reflection;
 using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using System.Threading;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -411,7 +412,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public ResponsePlugin SendPlugins(List<string> pluginList) {
+    public ResponsePlugin SendPlugins(List<PluginInfo> pluginList) {
       throw new NotImplementedException();
     }
 

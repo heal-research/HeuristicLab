@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientFacade: IClientFacade {
@@ -63,7 +64,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.IsJobStillNeeded(jobId);
     }
 
-    public ResponsePlugin SendPlugins(List<string> pluginList) {
+    public ResponsePlugin SendPlugins(List<PluginInfo> pluginList) {
       return clientCommunicator.SendPlugins(pluginList);
     }
 
