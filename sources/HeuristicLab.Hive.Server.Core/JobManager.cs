@@ -120,7 +120,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE;
           return response;
         }
-        if (job.Id != 0) {
+        if (job.Id != Guid.Empty) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
           return response;
@@ -149,7 +149,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="jobId"></param>
     /// <returns></returns>
-    public Response RemoveJob(long jobId) {
+    public Response RemoveJob(Guid jobId) {
       Response response = new Response();
 
       Job job = jobAdapter.GetById(jobId);
@@ -165,7 +165,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return response;
     }
 
-    public ResponseObject<JobResult> GetLastJobResultOf(long jobId) {
+    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
       ResponseObject<JobResult> response = new ResponseObject<JobResult>();
       response.Success = true;
       response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;

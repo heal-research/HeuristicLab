@@ -84,14 +84,14 @@ namespace HeuristicLab.Hive.Server.Core {
         if (client.State != State.offline && client.State != State.nullState) {
           heartbeatLock.EnterUpgradeableReadLock();
 
-          if (!lastHeartbeats.ContainsKey(client.ClientId)) {
+          if (!lastHeartbeats.ContainsKey(client.Id)) {
             client.State = State.offline;
             clientAdapter.Update(client);
             foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
               jobManager.ResetJobsDependingOnResults(job);
             }
           } else {
-            DateTime lastHbOfClient = lastHeartbeats[client.ClientId];
+            DateTime lastHbOfClient = lastHeartbeats[client.Id];
 
             TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
             // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
@@ -109,7 +109,7 @@ namespace HeuristicLab.Hive.Server.Core {
               clientAdapter.Update(client);
 
               heartbeatLock.EnterWriteLock();
-              lastHeartbeats.Remove(client.ClientId);
+              lastHeartbeats.Remove(client.Id);
               heartbeatLock.ExitWriteLock();
             }
           }
@@ -117,8 +117,8 @@ namespace HeuristicLab.Hive.Server.Core {
           heartbeatLock.ExitUpgradeableReadLock();
         } else {
           heartbeatLock.EnterWriteLock();
-          if (lastHeartbeats.ContainsKey(client.ClientId))
-            lastHeartbeats.Remove(client.ClientId);
+          if (lastHeartbeats.ContainsKey(client.Id))
+            lastHeartbeats.Remove(client.Id);
           heartbeatLock.ExitWriteLock();
         }
       }
@@ -136,15 +136,15 @@ namespace HeuristicLab.Hive.Server.Core {
       Response response = new Response();
 
       heartbeatLock.EnterWriteLock();
-      if (lastHeartbeats.ContainsKey(clientInfo.ClientId)) {
-        lastHeartbeats[clientInfo.ClientId] = DateTime.Now;
+      if (lastHeartbeats.ContainsKey(clientInfo.Id)) {
+        lastHeartbeats[clientInfo.Id] = DateTime.Now;
       } else {
-        lastHeartbeats.Add(clientInfo.ClientId, DateTime.Now);
+        lastHeartbeats.Add(clientInfo.Id, DateTime.Now);
       }
       heartbeatLock.ExitWriteLock();
 
       // todo: allClients legacy ?
-      ClientInfo client = clientAdapter.GetById(clientInfo.ClientId);
+      ClientInfo client = clientAdapter.GetById(clientInfo.Id);
       if (client != null && client.State != State.offline && client.State != State.nullState) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
@@ -204,9 +204,9 @@ namespace HeuristicLab.Hive.Server.Core {
           return response;
         }
 
-        foreach (KeyValuePair<long, double> jobProgress in hbData.JobProgress) {
+        foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
           Job curJob = jobAdapter.GetById(jobProgress.Key);
-          if (curJob.Client == null || curJob.Client.ClientId != hbData.ClientId) {
+          if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
           } else if(curJob.State == State.finished) {
@@ -247,7 +247,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     private ResponseResultReceived ProcessJobResult(Guid clientId,
-      long jobId,
+      Guid jobId,
       byte[] result,
       double percentage,
       Exception exception,
@@ -265,7 +265,7 @@ namespace HeuristicLab.Hive.Server.Core {
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
         return response;
       }
-      if (job.Client.ClientId != clientId) {
+      if (job.Client.Id != clientId) {
         response.Success = false;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
         return response;
@@ -333,7 +333,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="finished"></param>
     /// <returns></returns>
     public ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
-      long jobId, 
+      Guid jobId, 
       byte[] result, 
       double percentage,
       Exception exception) {
@@ -342,7 +342,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
 
-    public ResponseResultReceived ProcessSnapshot(Guid clientId, long jobId, byte[] result, double percentage, Exception exception) {
+    public ResponseResultReceived ProcessSnapshot(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
       return ProcessJobResult(clientId, jobId, result, percentage, exception, false);
     }
 
@@ -370,7 +370,7 @@ namespace HeuristicLab.Hive.Server.Core {
       if (client.State == State.calculating) {
         // check wich job the client was calculating and reset it
         foreach (Job job in allJobs) {
-          if (job.Client.ClientId == client.ClientId) {
+          if (job.Client.Id == client.Id) {
             jobManager.ResetJobsDependingOnResults(job);
           }
         }
@@ -391,7 +391,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="jobId"></param>
     /// <returns></returns>
-    public Response IsJobStillNeeded(long jobId) {
+    public Response IsJobStillNeeded(Guid jobId) {
       Response response = new Response();
       Job job = jobAdapter.GetById(jobId);
       if (job == null) {

@@ -71,11 +71,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientManager.AddClientGroup(clientGroup);
     }
 
-    public Response AddResourceToGroup(long clientGroupId, Resource resource) {
+    public Response AddResourceToGroup(Guid clientGroupId, Resource resource) {
       return clientManager.AddResourceToGroup(clientGroupId, resource);
     }
 
-    public Response DeleteResourceFromGroup(long clientGroupId, long resourceId) {
+    public Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId) {
       return clientManager.DeleteResourceFromGroup(clientGroupId, resourceId);
     }
 
@@ -90,11 +90,11 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AddNewJob(job);
     }
 
-    public ResponseObject<JobResult> GetLastJobResultOf(long jobId) {
+    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
       return jobManager.GetLastJobResultOf(jobId);
     }
 
-    public Response RemoveJob(long jobId) {
+    public Response RemoveJob(Guid jobId) {
       return jobManager.RemoveJob(jobId);
     }
 

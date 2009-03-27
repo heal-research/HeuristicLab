@@ -54,11 +54,11 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       hardwareInfo = new ClientInfo();
 
       if (Settings.Default.Guid == Guid.Empty) {
-        hardwareInfo.ClientId = Guid.NewGuid();
-        Settings.Default.Guid = hardwareInfo.ClientId;
+        hardwareInfo.Id = Guid.NewGuid();
+        Settings.Default.Guid = hardwareInfo.Id;
         Settings.Default.Save();
       } else
-        hardwareInfo.ClientId = Settings.Default.Guid;
+        hardwareInfo.Id = Settings.Default.Guid;
       
       hardwareInfo.NrOfCores = Environment.ProcessorCount;
       hardwareInfo.Memory = 1024;
@@ -101,7 +101,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
     public StatusCommons GetStatusForClientConsole() {
       //Todo: Locking
       StatusCommons st = new StatusCommons();
-      st.ClientGuid = hardwareInfo.ClientId;
+      st.ClientGuid = hardwareInfo.Id;
       
       st.Status = WcfService.Instance.ConnState;
       st.ConnectedSince = WcfService.Instance.ConnectedSince;
@@ -110,11 +110,11 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       st.JobsDone = ClientStatusInfo.JobsProcessed;
       st.JobsFetched = ClientStatusInfo.JobsFetched;      
 
-      Dictionary<long, Executor> engines = Core.GetExecutionEngines();
+      Dictionary<Guid, Executor> engines = Core.GetExecutionEngines();
       st.Jobs = new List<JobStatus>();
 
       lock (engines) {
-        foreach (KeyValuePair<long, Executor> kvp in engines) {
+        foreach (KeyValuePair<Guid, Executor> kvp in engines) {
           Executor e = kvp.Value;
           st.Jobs.Add(new JobStatus { JobId = e.JobId, Progress = e.Progress, Since = e.CreationTime });
         }
@@ -122,11 +122,11 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       return st;      
     }
 
-    public Dictionary<long, double> GetProgressOfAllJobs() {
-      Dictionary<long,double> prog = new Dictionary<long,double>();
-      Dictionary<long, Executor> engines = Core.GetExecutionEngines();
+    public Dictionary<Guid, double> GetProgressOfAllJobs() {
+      Dictionary<Guid, double> prog = new Dictionary<Guid, double>();
+      Dictionary<Guid, Executor> engines = Core.GetExecutionEngines();
       lock (engines) {
-        foreach (KeyValuePair<long, Executor> kvp in engines) {
+        foreach (KeyValuePair<Guid, Executor> kvp in engines) {
           Executor e = kvp.Value;
           prog[e.JobId] = e.Progress;
         }

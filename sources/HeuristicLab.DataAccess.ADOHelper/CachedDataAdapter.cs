@@ -144,7 +144,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     protected abstract bool PutInCache(ObjT obj);
 
-    protected abstract RowT FindCachedById(long id);
+    protected abstract RowT FindCachedById(Guid id);
 
     public void SyncWithDb() {
       foreach (ICachedDataAdapter parent in this.parentAdapters) {        
@@ -168,7 +168,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       else {
         cacheLock.EnterReadLock();
 
-        bool cached = FindCachedById((long)row[row.Table.PrimaryKey[0]]) != null;
+        bool cached = FindCachedById((Guid)row[row.Table.PrimaryKey[0]]) != null;
 
         cacheLock.ExitReadLock();
 
@@ -176,7 +176,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    protected override RowT GetRowById(long id) {
+    protected override RowT GetRowById(Guid id) {
       cacheLock.EnterReadLock();
 
       RowT row =
@@ -226,13 +226,15 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     public override void Update(ObjT obj) {
       if (obj != null) {
         RowT row = null;
-        long locked = default(long);
+        Guid locked = Guid.Empty;
 
-        if (obj.Id != default(long)) {
+        if (obj.Id != Guid.Empty) {
           LockRow(obj.Id);
           locked = obj.Id;
 
           row = GetRowById(obj.Id);
+        } else {
+          obj.Id = Guid.NewGuid();
         }
 
         if (row == null) {
@@ -240,13 +242,12 @@ namespace HeuristicLab.DataAccess.ADOHelper {
             row = AddToCache(obj);
           } else {
             row = InsertNewRow(obj);
+            UpdateRow(row);
           }
-
-          UpdateRow(row);
-          obj.Id = (long)row[row.Table.PrimaryKey[0]];
         }
 
-        if (locked == default(long)) {
+        if (locked == Guid.Empty)
+        {
           LockRow(obj.Id);
           locked = obj.Id;
         }

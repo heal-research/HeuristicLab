@@ -38,7 +38,7 @@ namespace HeuristicLab.DataAccess.Interfaces {
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    ObjT GetById(long id);
+    ObjT GetById(Guid id);
 
     /// <summary>
     /// Get all objects

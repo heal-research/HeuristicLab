@@ -23,10 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Security.Contracts {
   [DataContract]
-  public class PersistableObject {
+  public class PersistableObject: IPersistableObject {
     [DataMember]
     public Guid Id { get; set; }
 

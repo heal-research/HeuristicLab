@@ -41,20 +41,20 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     ResponseJob SendJob(Guid clientId);
     [OperationContract]
     ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
-      long jobId, 
+      Guid jobId, 
       byte[] result, 
       double percentage,
       Exception exception);
     [OperationContract]
-    ResponseResultReceived ProcessSnapshot(Guid clientId, 
-      long jobId, 
+    ResponseResultReceived ProcessSnapshot(Guid clientId,
+      Guid jobId, 
       byte[] result, 
       double percentage, 
       Exception exception);
     [OperationContract]
     Response Logout(Guid clientId);
     [OperationContract]
-    Response IsJobStillNeeded(long jobId);
+    Response IsJobStillNeeded(Guid jobId);
     [OperationContract]
     ResponsePlugin SendPlugins(List<PluginInfo> pluginList);
   }

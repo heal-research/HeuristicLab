@@ -188,9 +188,9 @@
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
     <wsdl:port name="NetTcpBinding_IClientCommunicator" binding="tns:NetTcpBinding_IClientCommunicator">
-      <soap12:address location="net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.20.53.3:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
   </wsdl:service>

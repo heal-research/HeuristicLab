@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
     /// Id of the Job
     /// </summary>
     [DataMember]
-    public long JobId { get; set; }
+    public Guid JobId { get; set; }
     /// <summary>
     /// When has the calculation of the Job begun?
     /// </summary>

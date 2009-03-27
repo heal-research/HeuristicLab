@@ -51,10 +51,10 @@ namespace HeuristicLab.Hive.Client.Core {
   /// </summary>
   public class Core: MarshalByRefObject {       
     public static bool abortRequested { get; set; }
-        
-    private Dictionary<long, Executor> engines = new Dictionary<long, Executor>();
-    private Dictionary<long, AppDomain> appDomains = new Dictionary<long, AppDomain>();
-    private Dictionary<long, Job> jobs = new Dictionary<long, Job>();
+
+    private Dictionary<Guid, Executor> engines = new Dictionary<Guid, Executor>();
+    private Dictionary<Guid, AppDomain> appDomains = new Dictionary<Guid, AppDomain>();
+    private Dictionary<Guid, Job> jobs = new Dictionary<Guid, Job>();
 
     private WcfService wcfService;
     private Heartbeat beat;
@@ -128,7 +128,7 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob: 
-          wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().ClientId);
+          wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().Id);
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
@@ -146,12 +146,12 @@ namespace HeuristicLab.Hive.Client.Core {
     #region Async Threads for the EE
     
     private void GetFinishedJob(object jobId) {
-      long jId = (long)jobId;      
+      Guid jId = (Guid)jobId;      
       try {
         byte[] sJob = engines[jId].GetFinishedJob();
 
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
-          wcfService.StoreFinishedJobResultAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+          wcfService.StoreFinishedJobResultAsync(ConfigManager.Instance.GetClientInfo().Id,
             jId,
             sJob,
             1,
@@ -173,9 +173,9 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     private void GetSnapshot(object jobId) {
-      long jId = (long)jobId;
+      Guid jId = (Guid)jobId;
       byte[] obj = engines[jId].GetSnapshot();
-      wcfService.ProcessSnapshotAsync(ConfigManager.Instance.GetClientInfo().ClientId,
+      wcfService.ProcessSnapshotAsync(ConfigManager.Instance.GetClientInfo().Id,
         jId,
         obj,
         engines[jId].Progress,
@@ -248,10 +248,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_ServerChanged(object sender, EventArgs e) {
       Logging.Instance.Info(this.ToString(), "ServerChanged has been called");
       lock (engines) {
-        foreach (KeyValuePair<long, AppDomain> entries in appDomains)
+        foreach (KeyValuePair<Guid, AppDomain> entries in appDomains)
           AppDomain.Unload(appDomains[entries.Key]);
-        appDomains = new Dictionary<long, AppDomain>();
-        engines = new Dictionary<long, Executor>();
+        appDomains = new Dictionary<Guid, AppDomain>();
+        engines = new Dictionary<Guid, Executor>();
       }
     }
 
@@ -264,7 +264,7 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_ConnectionRestored(object sender, EventArgs e) {
       Logging.Instance.Info(this.ToString(), "Reconnected to old server - checking currently running appdomains");                 
 
-      foreach (KeyValuePair<long, Executor> execKVP in engines) {
+      foreach (KeyValuePair<Guid, Executor> execKVP in engines) {
         if (!execKVP.Value.Running && execKVP.Value.CurrentMessage == MessageContainer.MessageType.NoMessage) {
           Logging.Instance.Info(this.ToString(), "Checking for JobId: " + execKVP.Value.JobId);
           Thread finThread = new Thread(new ParameterizedThreadStart(GetFinishedJob));
@@ -275,7 +275,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     #endregion
 
-    public Dictionary<long, Executor> GetExecutionEngines() {
+    public Dictionary<Guid, Executor> GetExecutionEngines() {
       return engines;
     }
 

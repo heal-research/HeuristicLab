@@ -166,7 +166,7 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private long JobIdField;
+        private System.Guid JobIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double ProgressField;
@@ -185,7 +185,7 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public long JobId {
+        public System.Guid JobId {
             get {
                 return this.JobIdField;
             }

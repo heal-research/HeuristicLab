@@ -85,7 +85,6 @@
     <Compile Include="Interfaces\IJobManager.cs" />
     <Compile Include="Interfaces\ILifecycleManager.cs" />
     <Compile Include="Interfaces\IServerConsoleFacade.cs" />
-    <Compile Include="Interfaces\ITransactionManager.cs" />
     <Compile Include="MessageContainer.cs" />
     <Compile Include="ResponseJob.cs" />
     <Compile Include="HiveContractPlugin.cs" />

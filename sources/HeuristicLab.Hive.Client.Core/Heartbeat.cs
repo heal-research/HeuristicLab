@@ -79,7 +79,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
 
         HeartBeatData heartBeatData = new HeartBeatData {
-        ClientId = info.ClientId,
+        ClientId = info.Id,
         FreeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
         FreeMemory = mb,
         JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()

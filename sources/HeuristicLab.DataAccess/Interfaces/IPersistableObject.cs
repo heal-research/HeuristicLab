@@ -25,6 +25,6 @@ using System.Text;
 
 namespace HeuristicLab.DataAccess.Interfaces {
   public interface IPersistableObject {
-    long Id { get; set;  }
+    Guid Id { get; set;  }
   }
 }

@@ -35,13 +35,13 @@ namespace HeuristicLab.Hive.Contracts {
     public enum MessageType { FetchJob, AbortJob, JobAborted, RequestSnapshot, FinishedJob, NoMessage, SnapshotReady, Shutdown };
 
     public MessageType Message { get; set; }
-    public long JobId { get; set; }
+    public Guid JobId { get; set; }
 
     public MessageContainer(MessageType message) {
       Message = message;
-      JobId = 0;
+      JobId = Guid.Empty;
     }
-    public MessageContainer(MessageType message, long jobId) {
+    public MessageContainer(MessageType message, Guid jobId) {
       Message = message;
       JobId = jobId;
     }

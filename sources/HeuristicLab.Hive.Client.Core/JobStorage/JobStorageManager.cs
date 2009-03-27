@@ -16,7 +16,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     //Todo: Choose a better directory name 
     private static String path = "C:\\Program Files\\HeuristicLab 3.0\\plugins\\jobStorrage\\";
     
-    public static void PersistObjectToDisc(String serverIP, long serverPort, long jobId, byte[] job) {
+    public static void PersistObjectToDisc(String serverIP, long serverPort, Guid jobId, byte[] job) {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
 
       JobStorageInfo info = new JobStorageInfo { JobID = jobId, ServerIP = serverIP, ServerPort = serverPort, TimeFinished = DateTime.Now };
@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
           byte[] job = File.ReadAllBytes(path + filename + ".dat");
           
           //Todo: ask server first if he really wants the job...
-          ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().ClientId, storedJobsList[index-1].JobID, job, 1.00, null, true);
+          ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().Id, storedJobsList[index-1].JobID, job, 1.00, null, true);
           //TODO: has to be fixed from server side
           //if (res.Success == true) {
           Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");  

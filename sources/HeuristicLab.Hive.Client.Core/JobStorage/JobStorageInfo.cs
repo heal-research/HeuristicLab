@@ -8,6 +8,6 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     public String ServerIP { get; set; }
     public long ServerPort { get; set; }
     public DateTime TimeFinished { get; set; }
-    public long JobID { get; set; }
+    public Guid JobID { get; set; }
   }
 }

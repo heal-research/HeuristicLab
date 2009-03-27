@@ -33,7 +33,7 @@ using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.ExecutionEngine {
   public class Executor: MarshalByRefObject {
-    public long JobId { get; set; }
+    public Guid JobId { get; set; }
     public IJob Job { get; set; }
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }

@@ -79,13 +79,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       parentAdapters.Add(this.ResAdapter as ICachedDataAdapter);
     }
 
-    private void Preprocess(ClientInfo client) {
-      if (client != null && client.Id == default(long)) {
-        ClientInfo found = GetById(client.ClientId);
-        if (found != null)
-          client.Id = found.Id;
-      }
-    }
 
     #region Overrides
     protected override ClientInfo ConvertRow(dsHiveServer.ClientRow row, 
@@ -95,12 +88,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         client.Id = row.ResourceId;
         ResAdapter.GetById(client);
 
-        /*ClientInfo*/
-        if (!row.IsGUIDNull())
-          client.ClientId = row.GUID;
-        else
-          client.ClientId = Guid.Empty;
-       
+        /*ClientInfo*/       
         if (!row.IsCPUSpeedNull())
           client.CpuSpeedPerCore = row.CPUSpeed;
         else
@@ -136,8 +124,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override dsHiveServer.ClientRow ConvertObj(ClientInfo client,
       dsHiveServer.ClientRow row) {
-      if (client != null && row != null) {      
-        row.GUID = client.ClientId;
+      if (client != null && row != null) {
+        row.ResourceId = client.Id;
         row.CPUSpeed = client.CpuSpeedPerCore;
         row.Memory = client.Memory;
         row.Login = client.Login;
@@ -195,12 +183,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override IEnumerable<dsHiveServer.ClientRow>
-      FindById(long id) {
-      return Adapter.GetDataByResourceId(id);
+      FindById(Guid id) {
+      return Adapter.GetDataById(id);
     }
 
     protected override dsHiveServer.ClientRow
-      FindCachedById(long id) {
+      FindCachedById(Guid id) {
       return cache.FindByResourceId(id);
     }
 
@@ -216,36 +204,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #region IClientAdapter Members
     public override void Update(ClientInfo client) {
       if (client != null) {
-        Guid locked = Guid.Empty;
-        if (client.ClientId != Guid.Empty) {
-          LockRow(client.ClientId);
-          locked = client.ClientId;
-        }
-
-        Preprocess(client);
-
         ResAdapter.Update(client);
 
         base.Update(client);
-
-        if (locked != Guid.Empty) {
-          UnlockRow(locked);
-        }
       }
-    }
-
-    public ClientInfo GetById(Guid clientId) {
-      return base.FindSingle(
-        delegate() {
-          return Adapter.GetDataById(clientId);
-        }, 
-        delegate() {
-          return from c in
-                     cache.AsEnumerable<dsHiveServer.ClientRow>()
-                   where !c.IsGUIDNull() && 
-                          c.GUID == clientId
-                   select c; 
-        });
     }
 
     public ClientInfo GetByName(string name) {
@@ -261,12 +223,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       Guid locked = Guid.Empty;
       
       if (client != null) {
-        if (client.ClientId != Guid.Empty) {
-          LockRow(client.ClientId);
-          locked = client.ClientId;
+        if (client.Id != Guid.Empty) {
+          LockRow(client.Id);
+          locked = client.Id;
         }
-
-        Preprocess(client);
 
         dsHiveServer.ClientRow row =
           GetRowById(client.Id);

@@ -32,10 +32,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [DataContract]
   public class ClientInfo : Resource {
     [DataMember]
-    public long ClientInfoId { get; set; }
-    [DataMember]
-    public Guid ClientId { get; set; }
-    [DataMember]
     public int NrOfCores { get; set; }
     [DataMember]
     public int CpuSpeedPerCore { get; set; }

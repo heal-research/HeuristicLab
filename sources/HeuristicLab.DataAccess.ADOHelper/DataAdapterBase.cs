@@ -91,7 +91,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     protected abstract void UpdateRow(RowT row);
 
-    protected abstract IEnumerable<RowT> FindById(long id);
+    protected abstract IEnumerable<RowT> FindById(Guid id);
 
     protected abstract IEnumerable<RowT> FindAll();
     #endregion
@@ -153,7 +153,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       return result;
     }
 
-    protected virtual RowT GetRowById(long id) {
+    protected virtual RowT GetRowById(Guid id) {
       return FindSingleRow(
         delegate() {
           return FindById(id);
@@ -163,23 +163,23 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     public virtual void Update(ObjT obj) {
       if (obj != null) {
         RowT row = null;
-        long locked = default(long);
-        
-        if (obj.Id != default(long)) {
-           LockRow(obj.Id);
-           locked = obj.Id;
+        Guid locked = Guid.Empty;
 
-           row = GetRowById(obj.Id);
-        }          
+        if (obj.Id != Guid.Empty) {
+          LockRow(obj.Id);
+          locked = obj.Id;
+
+          row = GetRowById(obj.Id);
+        } else {
+          obj.Id = Guid.NewGuid();
+        }
 
         if (row == null) {
           row = InsertNewRow(obj);
           UpdateRow(row);
-
-          obj.Id = (long)row[row.Table.PrimaryKey[0]];
         }
 
-        if (locked == default(long)) {
+        if (locked == Guid.Empty) {
           LockRow(obj.Id);
           locked = obj.Id;
         }
@@ -191,7 +191,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public virtual ObjT GetById(long id) {
+    public virtual ObjT GetById(Guid id) {
       return FindSingle(delegate() {
         return FindById(id);
       });

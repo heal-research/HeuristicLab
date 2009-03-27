@@ -29,7 +29,7 @@ namespace HeuristicLab.DataAccess {
   [DataContract]
   public class PersistableObject: IPersistableObject {
     [DataMember]
-    public long Id { get; set; }
+      public Guid Id { get; set; }
 
     public override bool Equals(object obj) {
       if (obj is IPersistableObject)

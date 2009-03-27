@@ -42,22 +42,21 @@ namespace HeuristicLab.Hive.Server {
 
       ClientInfo client = new ClientInfo();
       client.Login = DateTime.Now;
-      client.ClientId = Guid.NewGuid();
       clientAdapter.Update(client);
 
       ClientInfo clientRead =
-        clientAdapter.GetById(client.ClientId);
+        clientAdapter.GetById(client.Id);
       Debug.Assert(
         clientRead != null &&
-        client.ClientId == clientRead.ClientId);
+        client.Id == clientRead.Id);
 
       client.CpuSpeedPerCore = 2000;
       clientAdapter.Update(client);
       clientRead =
-        clientAdapter.GetById(client.ClientId);
+        clientAdapter.GetById(client.Id);
       Debug.Assert(
        clientRead != null &&
-       client.ClientId == clientRead.ClientId &&
+       client.Id == clientRead.Id &&
        clientRead.CpuSpeedPerCore == 2000);
 
       ICollection<ClientInfo> clients = 
@@ -77,19 +76,16 @@ namespace HeuristicLab.Hive.Server {
       ClientInfo client =
         new ClientInfo();
       client.Name = "Stefan";
-      client.ClientId = Guid.NewGuid();
       client.Login = DateTime.Now;
 
       ClientInfo client2 =
         new ClientInfo();
       client2.Name = "Martin";
-      client2.ClientId = Guid.NewGuid();
       client2.Login = DateTime.Now;
 
       ClientInfo client3 =
         new ClientInfo();
       client3.Name = "Heinz";
-      client3.ClientId = Guid.NewGuid();
       client3.Login = DateTime.Now;
 
       ClientGroup group =
@@ -145,7 +141,6 @@ namespace HeuristicLab.Hive.Server {
       Job job = new Job();
 
       ClientInfo client = new ClientInfo();
-      client.ClientId = Guid.NewGuid();
       client.Login = DateTime.Now;
 
       job.Client = client;
@@ -163,7 +158,6 @@ namespace HeuristicLab.Hive.Server {
       Job job = new Job();
 
       ClientInfo client = new ClientInfo();
-      client.ClientId = Guid.NewGuid();
       client.Login = DateTime.Now;
 
       job.Client = client;

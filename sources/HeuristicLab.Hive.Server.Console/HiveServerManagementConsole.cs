@@ -44,11 +44,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private ResponseList<ClientInfo> clientInfo = null;
     private ResponseList<Job> jobs = null;
 
-    private Dictionary<long, ListViewGroup> clientObjects;
-    private Dictionary<long, ListViewItem> clientInfoObjects;
-    private Dictionary<long, ListViewItem> jobObjects;
-    private Dictionary<long, ListViewGroup> userGroupsObjects;
-    private Dictionary<long, ListViewItem> userListObjects;
+    private Dictionary<Guid, ListViewGroup> clientObjects;
+    private Dictionary<Guid, ListViewItem> clientInfoObjects;
+    private Dictionary<Guid, ListViewItem> jobObjects;
+    private Dictionary<Guid, ListViewGroup> userGroupsObjects;
+    private Dictionary<Guid, ListViewItem> userListObjects;
 
     private Job currentJob = null;
     private ClientInfo currentClient = null;
@@ -84,8 +84,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void AddClients() {
       try {
-        clientObjects = new Dictionary<long, ListViewGroup>();
-        clientInfoObjects = new Dictionary<long, ListViewItem>();
+        clientObjects = new Dictionary<Guid, ListViewGroup>();
+        clientInfoObjects = new Dictionary<Guid, ListViewItem>();
         IClientManager clientManager =
           ServiceLocator.GetClientManager();
 
@@ -130,7 +130,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void AddJobs() {
       try {
-        jobObjects = new Dictionary<long, ListViewItem>();
+        jobObjects = new Dictionary<Guid, ListViewItem>();
         IJobManager jobManager =
           ServiceLocator.GetJobManager();
         jobs = jobManager.GetAllJobs();

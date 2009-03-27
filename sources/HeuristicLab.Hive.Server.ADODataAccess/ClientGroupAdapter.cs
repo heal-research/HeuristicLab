@@ -221,7 +221,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override IEnumerable<dsHiveServer.ClientGroupRow>
-      FindById(long id) {
+      FindById(Guid id) {
       return Adapter.GetDataById(id);
     }
 

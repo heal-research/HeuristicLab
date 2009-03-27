@@ -80,7 +80,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.Client = null;
 
-        if (!row.IsPermissionOwnerIdNull())
+        if (!row.IsUserIdNull())
           job.UserId = Guid.Empty;
         else
           job.UserId = Guid.Empty;
@@ -123,6 +123,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override dsHiveServer.JobRow ConvertObj(Job job,
       dsHiveServer.JobRow row) {
       if (job != null && row != null) {
+        row.JobId = job.Id;
+        
         if (job.Client != null) {
           if (row.IsResourceIdNull() ||
             row.ResourceId != job.Client.Id) {
@@ -142,12 +144,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetParentJobIdNull();
 
         if (job.UserId != Guid.Empty) {
-          if (row.IsPermissionOwnerIdNull() ||
-           row.PermissionOwnerId != 0) {
-            row.PermissionOwnerId = 0;
+          if (row.IsUserIdNull() ||
+           row.UserId != Guid.Empty) {
+            row.UserId = Guid.Empty;
           }
         } else
-          row.SetPermissionOwnerIdNull();
+          row.SetUserIdNull();
 
         if (job.State != State.nullState)
           row.JobState = job.State.ToString();
@@ -184,6 +186,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new dsHiveServer.JobDataTable();
 
       dsHiveServer.JobRow row = data.NewJobRow();
+      row.JobId = job.Id;
       data.AddJobRow(row);
 
       return row;
@@ -192,6 +195,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override dsHiveServer.JobRow 
       InsertNewRowInCache(Job job) {
       dsHiveServer.JobRow row = cache.NewJobRow();
+      row.JobId = job.Id;
       cache.AddJobRow(row);
 
       return row;
@@ -212,12 +216,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override IEnumerable<dsHiveServer.JobRow>
-      FindById(long id) {
+      FindById(Guid id) {
       return Adapter.GetDataById(id);
     }
 
     protected override dsHiveServer.JobRow
-      FindCachedById(long id) {
+      FindCachedById(Guid id) {
       return cache.FindByJobId(id);
     }
 
@@ -236,7 +240,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return
           base.FindMultiple(
             delegate() {
-              return Adapter.GetDataBySubjobs(job.Id);
+              return Adapter.GetDataByParentJob(job.Id);
             },
             delegate() {
               return from j in
@@ -312,17 +316,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return 
           base.FindMultiple(
             delegate() {
-              return Adapter.GetDataByUser(0);
+              return Adapter.GetDataByUser(userId);
             },
             delegate() {
               return from job in
                 cache.AsEnumerable<dsHiveServer.JobRow>()
-              where !job.IsPermissionOwnerIdNull() &&
-                job.PermissionOwnerId == 0
+              where !job.IsUserIdNull() &&
+                job.UserId == Guid.Empty
               select job;
             });
-
-      return null;
     }
 
     public override bool Delete(Job job) {

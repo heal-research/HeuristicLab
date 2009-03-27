@@ -52,7 +52,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
         if (result.Client != null)  {
           ClientInfo client = 
-                 ClientAdapter.GetById(result.Client.ClientId);
+                 ClientAdapter.GetById(result.Client.Id);
 
           if (client != null)
             row.ResourceId = client.Id;
@@ -82,6 +82,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override JobResult ConvertRow(dsHiveServer.JobResultRow row, 
       JobResult result) {
       if (row != null && result != null) {
+        row.JobResultId = result.Id;
         result.Id = row.JobResultId;
 
         if (!row.IsJobIdNull())
@@ -125,12 +126,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new dsHiveServer.JobResultDataTable();
 
       dsHiveServer.JobResultRow row = data.NewJobResultRow();
+      row.JobResultId = obj.Id;
       data.AddJobResultRow(row);
 
       return row;
     }
 
-    protected override IEnumerable<dsHiveServer.JobResultRow> FindById(long id) {
+    protected override IEnumerable<dsHiveServer.JobResultRow> FindById(Guid id) {
       return Adapter.GetDataById(id);
     }
 

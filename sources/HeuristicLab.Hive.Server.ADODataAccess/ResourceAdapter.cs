@@ -70,6 +70,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override dsHiveServer.ResourceRow ConvertObj(Resource resource,
       dsHiveServer.ResourceRow row) {
       if (resource != null && row != null) {
+        row.ResourceId = resource.Id;
         row.Name = resource.Name;
 
         return row;
@@ -87,6 +88,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         new dsHiveServer.ResourceDataTable();
 
       dsHiveServer.ResourceRow row = data.NewResourceRow();
+      row.ResourceId = resource.Id;
       data.AddResourceRow(row);
 
       return row;
@@ -95,6 +97,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override dsHiveServer.ResourceRow
       InsertNewRowInCache(Resource resource) {
       dsHiveServer.ResourceRow row = cache.NewResourceRow();
+      row.ResourceId = resource.Id;
       cache.AddResourceRow(row);
 
       return row;
@@ -114,12 +117,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override IEnumerable<dsHiveServer.ResourceRow>
-      FindById(long id) {
+      FindById(Guid id) {
       return Adapter.GetDataById(id);
     }
 
     protected override dsHiveServer.ResourceRow
-      FindCachedById(long id) {
+      FindCachedById(Guid id) {
       return cache.FindByResourceId(id);
     }
 

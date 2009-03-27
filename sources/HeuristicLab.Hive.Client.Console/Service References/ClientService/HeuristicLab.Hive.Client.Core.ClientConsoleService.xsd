@@ -22,7 +22,7 @@
   <xs:element name="ArrayOfJobStatus" nillable="true" type="tns:ArrayOfJobStatus" />
   <xs:complexType name="JobStatus">
     <xs:sequence>
-      <xs:element minOccurs="0" name="JobId" type="xs:long" />
+      <xs:element minOccurs="0" name="JobId" type="ser:guid" />
       <xs:element minOccurs="0" name="Progress" type="xs:double" />
       <xs:element minOccurs="0" name="Since" type="xs:dateTime" />
     </xs:sequence>

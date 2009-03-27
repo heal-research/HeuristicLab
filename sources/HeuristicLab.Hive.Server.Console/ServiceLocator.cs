@@ -26,8 +26,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         Address != String.Empty &&
         Port != String.Empty) {
 
-        NetTcpBinding binding = 
-             new NetTcpBinding();
+        NetTcpBinding binding =
+             new NetTcpBinding(SecurityMode.None, true);
 
         binding.MaxReceivedMessageSize = 5000000;
 
