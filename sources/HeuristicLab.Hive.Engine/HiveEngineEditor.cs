@@ -40,7 +40,10 @@ namespace HeuristicLab.Hive.Engine {
     /// <see cref="EngineBaseEditor"/>. No own data storage present.</remarks>
     public HiveEngine HiveEngine {
       get { return (HiveEngine)Engine; }
-      set { base.Engine = value; }
+      set {
+        base.Engine = value;
+        SetDataBinding();
+      }
     }
 
     /// <summary>
@@ -57,6 +60,10 @@ namespace HeuristicLab.Hive.Engine {
     public HiveEngineEditor(HiveEngine hiveEngine)
       : this() {
       HiveEngine = hiveEngine;
+    }
+
+    private void SetDataBinding() {
+      urlTextBox.DataBindings.Add("Text", HiveEngine, "HiveServerUrl");
     }
   }
 }

@@ -24,73 +24,97 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using System.Threading;
+using HeuristicLab.Hive.JobBase;
+using HeuristicLab.Hive.Contracts.Interfaces;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
   /// Represents an engine that executes its operator-graph on the hive.
   /// in parallel.
   /// </summary>
-  public class HiveEngine : EngineBase, IEditable {
-    private IOperator currentOperator;
+  public class HiveEngine : ItemBase, IEngine, IEditable {
+    private Job job;
+    public string HiveServerUrl { get; set; }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="HiveEngineEditor"/>.
-    /// </summary>
-    /// <returns>The created view as <see cref="HiveEngineEditor"/>.</returns>
+    public HiveEngine() {
+      job = new Job();
+    }
+
+
+    #region IEngine Members
+
+    public IOperatorGraph OperatorGraph {
+      get { return job.Engine.OperatorGraph; }
+    }
+
+    public IScope GlobalScope {
+      get { return job.Engine.GlobalScope; }
+    }
+
+    public TimeSpan ExecutionTime {
+      get { return job.Engine.ExecutionTime; }
+    }
+
+    public bool Running {
+      get { return job.Engine.Running; }
+    }
+
+    public bool Canceled {
+      get { return job.Engine.Canceled; }
+    }
+
+    public bool Terminated {
+      get { return job.Engine.Terminated; }
+    }
+
+    public void Execute() {
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
+      jobObj.SerializedJob = PersistenceManager.SaveToGZip(job);
+      executionEngineFacade.AddJob(jobObj);
+    }
+
+    public void ExecuteStep() {
+      throw new NotSupportedException();
+    }
+
+    public void ExecuteSteps(int steps) {
+      throw new NotSupportedException();
+    }
+
+    public void Abort() {
+      throw new NotImplementedException();
+    }
+
+    public void Reset() {
+      throw new NotImplementedException();
+    }
+
+    public event EventHandler Initialized;
+
+    public event EventHandler<OperationEventArgs> OperationExecuted;
+
+    public event EventHandler<ExceptionEventArgs> ExceptionOccurred;
+
+    public event EventHandler ExecutionTimeChanged;
+
+    public event EventHandler Finished;
+
+    #endregion
+
+    public void RequestSnapshot() {
+      throw new NotImplementedException();
+    }
+
     public override IView CreateView() {
       return new HiveEngineEditor(this);
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="HiveEngineEditor"/>.
-    /// </summary>
-    /// <returns>The created editor as <see cref="HiveEngineEditor"/>.</returns>
-    public virtual IEditor CreateEditor() {
+    #region IEditable Members
+
+    public IEditor CreateEditor() {
       return new HiveEngineEditor(this);
     }
-
-    /// <summary>
-    /// Aborts the current operator.
-    /// </summary>
-    /// <remarks>Calls <see cref="EngineBase.Abort"/> of base class <see cref="EngineBase"/> and
-    /// <see cref="IOperator.Abort"/> of the current <see cref="IOperator"/>.</remarks>
-    public override void Abort() {
-      base.Abort();
-      if (currentOperator != null)
-        currentOperator.Abort();
-    }
-
-    /// <summary>
-    /// Deals with the next operation, if it is an <see cref="AtomicOperation"/> it is executed,
-    /// if it is a <see cref="CompositeOperation"/> its single operations are pushed on the execution stack.
-    /// </summary>
-    /// <remarks>If an error occurs during the execution the operation is aborted and the operation
-    /// is pushed on the stack again.<br/>
-    /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected override void ProcessNextOperation() {
-      IOperation operation = myExecutionStack.Pop();
-      if (operation is AtomicOperation) {
-        AtomicOperation atomicOperation = (AtomicOperation)operation;
-        IOperation next = null;
-        try {
-          currentOperator = atomicOperation.Operator;
-          next = atomicOperation.Operator.Execute(atomicOperation.Scope);
-        }
-        catch (Exception ex) {
-          // push operation on stack again
-          myExecutionStack.Push(atomicOperation);
-          Abort();
-          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex);});
-        }
-        if (next != null)
-          myExecutionStack.Push(next);
-        OnOperationExecuted(atomicOperation);
-        if (atomicOperation.Operator.Breakpoint) Abort();
-      } else if (operation is CompositeOperation) {
-        CompositeOperation compositeOperation = (CompositeOperation)operation;
-        for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
-          myExecutionStack.Push(compositeOperation.Operations[i]);
-      }
-    }
+    #endregion
   }
 }
