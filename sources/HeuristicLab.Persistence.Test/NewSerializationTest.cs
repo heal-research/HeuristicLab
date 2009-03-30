@@ -165,8 +165,8 @@ namespace HeuristicLab.Persistence.Test {
       r.dict.Add("two", 2);
       r.dict.Add("three", 3);
       r.myEnum = TestEnum.va1;
-      XmlGenerator.Serialize(r, "test");      
-      object o = XmlParser.DeSerialize("test");
+      XmlGenerator.Serialize(r, "test.zip");      
+      object o = XmlParser.DeSerialize("test.zip");
       Console.Out.WriteLine(Util.AutoFormat(o, true));
       Console.WriteLine(ViewOnlyGenerator.Serialize(r));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
@@ -179,8 +179,8 @@ namespace HeuristicLab.Persistence.Test {
       cs[1] = new C[] { c };
       c.allCs = cs;
       c.kvpList = new KeyValuePair<List<C>, C>(new List<C> { c }, c);
-      XmlGenerator.Serialize(cs, "test3");
-      object o = XmlParser.DeSerialize("test3");
+      XmlGenerator.Serialize(cs, "test3.zip");
+      object o = XmlParser.DeSerialize("test3.zip");
       Console.Out.WriteLine(Util.AutoFormat(o, true));
       Console.WriteLine(ViewOnlyGenerator.Serialize(cs));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
@@ -200,8 +200,8 @@ namespace HeuristicLab.Persistence.Test {
                               typeof(object),
                               new[] { 1, 2 }, new[] { 3, 4 });
       arrayListArray[2].Add(a);
-      XmlGenerator.Serialize(arrayListArray, "test4");
-      object o = XmlParser.DeSerialize("test4");
+      XmlGenerator.Serialize(arrayListArray, "test4.zip");
+      object o = XmlParser.DeSerialize("test4.zip");
       Console.Out.WriteLine(Util.AutoFormat(o, true));
       Console.WriteLine(ViewOnlyGenerator.Serialize(arrayListArray));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
@@ -209,20 +209,8 @@ namespace HeuristicLab.Persistence.Test {
 
     public static void Test2() {
       Manager m = new Manager();      
-      Serializer s = new Serializer(m,
-        ConfigurationService.Instance.GetDefaultConfig(XmlFormat.Instance));
-      XmlGenerator xmlGenerator = new XmlGenerator();
-      StreamWriter writer = new StreamWriter("test2.xml");
-      foreach (ISerializationToken token in s) {
-        string line = xmlGenerator.Format(token);
-        writer.Write(line);
-        Console.Out.Write(line);
-      }
-      writer.Close();
-      XmlParser parser = new XmlParser(new StreamReader("test2.xml"));
-      DeSerializer deSerializer = new DeSerializer(
-        XmlParser.ParseTypeCache(new StreamReader("test-types.xml")));        
-      object o = deSerializer.DeSerialize(parser);      
+      XmlGenerator.Serialize(m, "test2.zip");
+      object o = XmlParser.DeSerialize("test2.zip");
       Console.Out.WriteLine(Util.AutoFormat(o, true));      
     }    
 

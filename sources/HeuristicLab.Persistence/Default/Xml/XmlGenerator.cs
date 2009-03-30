@@ -4,6 +4,7 @@ using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using System.IO;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -87,14 +88,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
         {"typeId", beginToken.TypeId},
         {"id", beginToken.Id}};
       string result = Prefix +
-                      FormatNode(XmlStrings.COMPOSITE, attributes, NodeType.Start) + "\n";
+                      FormatNode(XmlStrings.COMPOSITE, attributes, NodeType.Start) + "\r\n";
       depth += 1;
       return result;
     }
 
     protected override string Format(EndToken endToken) {      
       depth -= 1;
-      return Prefix + "</" + XmlStrings.COMPOSITE + ">\n";
+      return Prefix + "</" + XmlStrings.COMPOSITE + ">\r\n";
     }
 
     protected override string Format(PrimitiveToken dataToken) {      
@@ -105,20 +106,20 @@ namespace HeuristicLab.Persistence.Default.Xml {
             {"id", dataToken.Id}};
       return Prefix +
         FormatNode(XmlStrings.PRIMITIVE, attributes, NodeType.Start) +
-        dataToken.SerialData + "</" + XmlStrings.PRIMITIVE + ">\n";      
+        dataToken.SerialData + "</" + XmlStrings.PRIMITIVE + ">\r\n";      
     }
 
     protected override string Format(ReferenceToken refToken) {      
       var attributes = new Dictionary<string, object> {
         {"ref", refToken.Id},
         {"name", refToken.Name}};                                       
-      return Prefix + FormatNode(XmlStrings.REFERENCE, attributes, NodeType.Inline) + "\n";  
+      return Prefix + FormatNode(XmlStrings.REFERENCE, attributes, NodeType.Inline) + "\r\n";  
     }
 
     protected override string Format(NullReferenceToken nullRefToken) {      
       var attributes = new Dictionary<string, object>{
         {"name", nullRefToken.Name}};      
-      return Prefix + FormatNode(XmlStrings.NULL, attributes, NodeType.Inline) + "\n";
+      return Prefix + FormatNode(XmlStrings.NULL, attributes, NodeType.Inline) + "\r\n";
     }
 
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {
@@ -128,7 +129,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           XmlStrings.TYPE,
           mapping.GetDict(),
           NodeType.Inline,
-          "\n    ");
+          "\r\n    ");
       yield return "</" + XmlStrings.TYPECACHE + ">";
     }
 
@@ -136,22 +137,22 @@ namespace HeuristicLab.Persistence.Default.Xml {
       Serialize(o, basename, ConfigurationService.Instance.GetDefaultConfig(XmlFormat.Instance));
     }
 
-    public static void Serialize(object o, string basename, Configuration configuration) {
-      Serializer s = new Serializer(o, configuration);
-      XmlGenerator xmlGenerator = new XmlGenerator();
-      StreamWriter writer = new StreamWriter(basename + ".xml");
-      foreach (ISerializationToken token in s) {
-        string line = xmlGenerator.Format(token);
-        writer.Write(line);
-        Console.Out.Write(line);
-      }
-      writer.Close();
-      writer = new StreamWriter(basename + "-types.xml");
-      foreach (string line in xmlGenerator.Format(s.TypeCache)) {
+    public static void Serialize(object obj, string filename, Configuration config) {
+      Serializer serializer = new Serializer(obj, config);
+      XmlGenerator generator = new XmlGenerator();
+      ZipOutputStream zipStream = new ZipOutputStream(File.Create(filename));
+      zipStream.SetLevel(9);      
+      zipStream.PutNextEntry(new ZipEntry("data.xml"));      
+      StreamWriter writer = new StreamWriter(zipStream);
+      foreach ( ISerializationToken token in serializer )
+        writer.Write(generator.Format(token));
+      writer.Flush();
+      zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
+      writer = new StreamWriter(zipStream);
+      foreach ( string line in generator.Format(serializer.TypeCache))
         writer.WriteLine(line);
-        Console.Out.WriteLine(line);
-      }
-      writer.Close();      
+      writer.Flush();            
+      zipStream.Close();      
     }
 
   }

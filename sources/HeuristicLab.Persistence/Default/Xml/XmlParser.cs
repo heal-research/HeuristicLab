@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -104,10 +105,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return typeCache;
     }
 
-    public static object DeSerialize(string basename) {
+    public static object DeSerialize(string filename) {
+      ZipFile zipFile = new ZipFile(filename);      
       DeSerializer deSerializer = new DeSerializer(
-        ParseTypeCache(new StreamReader(basename + "-types.xml")));
-      XmlParser parser = new XmlParser(new StreamReader(basename + ".xml"));
+        ParseTypeCache(
+        new StreamReader(
+          zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
+      XmlParser parser = new XmlParser(
+        new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
       return deSerializer.DeSerialize(parser);      
     }
   }  
