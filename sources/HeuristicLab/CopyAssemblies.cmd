@@ -84,14 +84,14 @@ copy "%SolutionDir%\HeuristicLab.Visualization.Test\%Outdir%\HeuristicLab.Visual
 
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
-  copy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
+  copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
 ) else if "%Platform%" == "x64" ( 
-  copy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+  copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
 ) else if "%Platform%" == "AnyCPU" (
   if "%PROCESSOR_ARCHITECTURE%" == "x64" (
-    copy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+    copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
   ) else if "%PROCESSOR_ARCHITECTURE%" == "x86" (
-    copy "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
+    copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\System.Data.SQLite.dll" .\plugins
   ) else (
     echo "ERROR: unknown architecture: "%PROCESSOR_ARCHITECTURE%"
   ) 
