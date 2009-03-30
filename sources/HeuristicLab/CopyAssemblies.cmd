@@ -79,6 +79,10 @@ copy "%SolutionDir%\HeuristicLab.SQLite\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite.NET.chm" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\%Outdir%\HeuristicLab.ThreadParallelEngine-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Tracing\%Outdir%\HeuristicLab.Tracing-1.0.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Tracing\%Outdir%\log4net.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Tracing\log4net licence.txt" .\plugins
+copy "%SolutionDir%\HeuristicLab.Tracing\HeuristicLab.log4net.xml" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization\%Outdir%\HeuristicLab.Visualization-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization.Test\%Outdir%\HeuristicLab.Visualization.Test-3.2.dll" .\plugins
 
