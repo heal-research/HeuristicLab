@@ -187,7 +187,7 @@ namespace HeuristicLab.Persistence.Test {
     }
 
     public static void Test4() {
-      ArrayList[] arrayListArray = new ArrayList[3];
+      ArrayList[] arrayListArray = new ArrayList[4];
       arrayListArray[0] = new ArrayList();
       arrayListArray[0].Add(arrayListArray);
       arrayListArray[0].Add(arrayListArray);
@@ -196,6 +196,10 @@ namespace HeuristicLab.Persistence.Test {
       arrayListArray[2] = new ArrayList();
       arrayListArray[2].Add(arrayListArray);
       arrayListArray[2].Add(arrayListArray);
+      Array a = Array.CreateInstance(
+                              typeof(object),
+                              new[] { 1, 2 }, new[] { 3, 4 });
+      arrayListArray[2].Add(a);
       XmlGenerator.Serialize(arrayListArray, "test4");
       object o = XmlParser.DeSerialize("test4");
       Console.Out.WriteLine(Util.AutoFormat(o, true));

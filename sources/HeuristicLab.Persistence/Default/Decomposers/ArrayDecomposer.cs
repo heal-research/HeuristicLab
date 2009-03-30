@@ -42,16 +42,16 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       for (int i = 0; i < rank; i++) {
         e.MoveNext();
         lowerBounds[i] = (int)e.Current.Value;
-      }
-      Array a = Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);      
-      int[] positions = new int[rank];
+      }      
+      Array a = Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
+      int[] positions = (int[])lowerBounds.Clone();
       while (e.MoveNext()) {
         int[] currentPositions = positions;
         e.Current.SafeSet(value => a.SetValue(value, currentPositions));        
         positions[0] += 1;
         for (int i = 0; i < rank-1; i++) {
-          if (positions[i] >= lengths[i]) {
-            positions[i] = 0;
+          if (positions[i] >= lengths[i]+lowerBounds[i]) {
+            positions[i] = lowerBounds[i];
             positions[i + 1] += 1;
           } else {
             break;
