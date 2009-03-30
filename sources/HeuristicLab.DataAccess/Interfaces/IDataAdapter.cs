@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.Common;
 
 namespace HeuristicLab.DataAccess.Interfaces {
   public interface IDataAdapter<ObjT>
@@ -51,5 +52,10 @@ namespace HeuristicLab.DataAccess.Interfaces {
     /// </summary>
     /// <param name="user"></param>
     bool Delete(ObjT obj);
+
+    /// <summary>
+    /// sets the session
+    /// </summary>
+    ISession Session { set; }
   }
 }

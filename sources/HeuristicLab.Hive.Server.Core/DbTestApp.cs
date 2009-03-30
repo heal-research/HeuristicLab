@@ -36,7 +36,7 @@ namespace HeuristicLab.Hive.Server {
       Description = "Test Application for the Hive DataAccess Layer",
       AutoRestart = true)]
   class HiveDbTestApplication : ApplicationBase {
-    private void TestClientAdapter() {
+  /*  private void TestClientAdapter() {
       IClientAdapter clientAdapter =
         ServiceLocator.GetClientAdapter();
 
@@ -198,23 +198,28 @@ namespace HeuristicLab.Hive.Server {
       IClientAdapter clientAdapter =
         ServiceLocator.GetClientAdapter();
       clientAdapter.Delete(client);
-    }
+    }      */
 
     public override void Run() {
-      IDBSynchronizer transactionManager =
-        ServiceLocator.GetDBSynchronizer();
-      
-      TestClientAdapter();
-      transactionManager.UpdateDB();
+      ISessionFactory factory =
+        ServiceLocator.GetSessionFactory();
 
-      TestClientGroupAdapter();
-      transactionManager.UpdateDB();   
+      ISession session = 
+        factory.GetSessionForCurrentThread();
 
-      TestJobAdapter();
-      transactionManager.UpdateDB();  
+      IClientAdapter clientAdapter = 
+        session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      TestJobResultsAdapter();
-      transactionManager.UpdateDB();     
-    }
+      ITransaction trans = 
+        session.BeginTransaction(); 
+
+      ClientInfo client = new ClientInfo();
+      client.Login = DateTime.Now;
+      clientAdapter.Update(client);
+
+      trans.Rollback();
+
+      session.EndSession();
+    }      
   }
 }

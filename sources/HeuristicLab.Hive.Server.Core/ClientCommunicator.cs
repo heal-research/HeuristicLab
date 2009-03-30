@@ -34,6 +34,7 @@ using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using System.Threading;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -46,9 +47,7 @@ namespace HeuristicLab.Hive.Server.Core {
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-    private IClientAdapter clientAdapter;
-    private IJobAdapter jobAdapter;
-    private IJobResultsAdapter jobResultAdapter;
+    private ISessionFactory factory;
     private ILifecycleManager lifecycleManager;
     private IInternalJobManager jobManager;
     private IScheduler scheduler;
@@ -59,9 +58,8 @@ namespace HeuristicLab.Hive.Server.Core {
     /// Initialization of lastHearbeats Dictionary
     /// </summary>
     public ClientCommunicator() {
-      clientAdapter = ServiceLocator.GetClientAdapter();
-      jobAdapter = ServiceLocator.GetJobAdapter();
-      jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
+      factory = ServiceLocator.GetSessionFactory();
+      
       lifecycleManager = ServiceLocator.GetLifecycleManager();
       jobManager = ServiceLocator.GetJobManager() as 
         IInternalJobManager;
@@ -78,49 +76,62 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
-      List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
+      ISession session = factory.GetSessionForCurrentThread();
 
-      foreach (ClientInfo client in allClients) {
-        if (client.State != State.offline && client.State != State.nullState) {
-          heartbeatLock.EnterUpgradeableReadLock();
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
 
-          if (!lastHeartbeats.ContainsKey(client.Id)) {
-            client.State = State.offline;
-            clientAdapter.Update(client);
-            foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
-              jobManager.ResetJobsDependingOnResults(job);
-            }
-          } else {
-            DateTime lastHbOfClient = lastHeartbeats[client.Id];
+        List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
 
-            TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
-            // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
-            if (dif.Seconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
-              // if client calculated jobs, the job must be reset
-              if (client.State == State.calculating) {
-                // check wich job the client was calculating and reset it
-                foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
-                  jobManager.ResetJobsDependingOnResults(job);
-                }
-              }
-              
-              // client must be set offline
+        foreach (ClientInfo client in allClients) {
+          if (client.State != State.offline && client.State != State.nullState) {
+            heartbeatLock.EnterUpgradeableReadLock();
+
+            if (!lastHeartbeats.ContainsKey(client.Id)) {
               client.State = State.offline;
               clientAdapter.Update(client);
+              foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+                jobManager.ResetJobsDependingOnResults(job);
+              }
+            } else {
+              DateTime lastHbOfClient = lastHeartbeats[client.Id];
 
-              heartbeatLock.EnterWriteLock();
-              lastHeartbeats.Remove(client.Id);
-              heartbeatLock.ExitWriteLock();
+              TimeSpan dif = DateTime.Now.Subtract(lastHbOfClient);
+              // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
+              if (dif.TotalSeconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
+                // if client calculated jobs, the job must be reset
+                if (client.State == State.calculating) {
+                  // check wich job the client was calculating and reset it
+                  foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+                    jobManager.ResetJobsDependingOnResults(job);
+                  }
+                }
+
+                // client must be set offline
+                client.State = State.offline;
+                clientAdapter.Update(client);
+
+                heartbeatLock.EnterWriteLock();
+                lastHeartbeats.Remove(client.Id);
+                heartbeatLock.ExitWriteLock();
+              }
             }
-          }
 
-          heartbeatLock.ExitUpgradeableReadLock();
-        } else {
-          heartbeatLock.EnterWriteLock();
-          if (lastHeartbeats.ContainsKey(client.Id))
-            lastHeartbeats.Remove(client.Id);
-          heartbeatLock.ExitWriteLock();
+            heartbeatLock.ExitUpgradeableReadLock();
+          } else {
+            heartbeatLock.EnterWriteLock();
+            if (lastHeartbeats.ContainsKey(client.Id))
+              lastHeartbeats.Remove(client.Id);
+            heartbeatLock.ExitWriteLock();
+          }
         }
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
       }
     }
 
@@ -133,29 +144,40 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientInfo"></param>
     /// <returns></returns>
     public Response Login(ClientInfo clientInfo) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      heartbeatLock.EnterWriteLock();
-      if (lastHeartbeats.ContainsKey(clientInfo.Id)) {
-        lastHeartbeats[clientInfo.Id] = DateTime.Now;
-      } else {
-        lastHeartbeats.Add(clientInfo.Id, DateTime.Now);
-      }
-      heartbeatLock.ExitWriteLock();
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      // todo: allClients legacy ?
-      ClientInfo client = clientAdapter.GetById(clientInfo.Id);
-      if (client != null && client.State != State.offline && client.State != State.nullState) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
+        Response response = new Response();
+
+        heartbeatLock.EnterWriteLock();
+        if (lastHeartbeats.ContainsKey(clientInfo.Id)) {
+          lastHeartbeats[clientInfo.Id] = DateTime.Now;
+        } else {
+          lastHeartbeats.Add(clientInfo.Id, DateTime.Now);
+        }
+        heartbeatLock.ExitWriteLock();
+
+        // todo: allClients legacy ?
+        ClientInfo client = clientAdapter.GetById(clientInfo.Id);
+        if (client != null && client.State != State.offline && client.State != State.nullState) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
+          return response;
+        }
+        clientInfo.State = State.idle;
+        clientAdapter.Update(clientInfo);
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
+
         return response;
       }
-      clientInfo.State = State.idle;
-      clientAdapter.Update(clientInfo);
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
-
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>
@@ -166,62 +188,76 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="hbData"></param>
     /// <returns></returns>
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
-      ResponseHB response = new ResponseHB();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      // check if the client is logged in
-      response.ActionRequest = new List<MessageContainer>();
-      if (clientAdapter.GetById(hbData.ClientId).State == State.offline ||
-          clientAdapter.GetById(hbData.ClientId).State == State.nullState) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;
-        response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
-        return response;
-      }
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      // save timestamp of this heartbeat
-      heartbeatLock.EnterWriteLock();
-      if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
-        lastHeartbeats[hbData.ClientId] = DateTime.Now;
-      } else {
-        lastHeartbeats.Add(hbData.ClientId, DateTime.Now);
-      }
-      heartbeatLock.ExitWriteLock();
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
 
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
-      // check if client has a free core for a new job
-      // if true, ask scheduler for a new job for this client
-      if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData))
-        response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
-      else
-        response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
+        ResponseHB response = new ResponseHB();
 
-      if (hbData.JobProgress != null) {
-        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
-        if (jobsOfClient == null || jobsOfClient.Count == 0) {
+        // check if the client is logged in
+        response.ActionRequest = new List<MessageContainer>();
+        if (clientAdapter.GetById(hbData.ClientId).State == State.offline ||
+            clientAdapter.GetById(hbData.ClientId).State == State.nullState) {
           response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;
+          response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
           return response;
         }
 
-        foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
-          Job curJob = jobAdapter.GetById(jobProgress.Key);
-          if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
+        // save timestamp of this heartbeat
+        heartbeatLock.EnterWriteLock();
+        if (lastHeartbeats.ContainsKey(hbData.ClientId)) {
+          lastHeartbeats[hbData.ClientId] = DateTime.Now;
+        } else {
+          lastHeartbeats.Add(hbData.ClientId, DateTime.Now);
+        }
+        heartbeatLock.ExitWriteLock();
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
+        // check if client has a free core for a new job
+        // if true, ask scheduler for a new job for this client
+        if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData))
+          response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
+        else
+          response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
+
+        if (hbData.JobProgress != null) {
+          List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
+          if (jobsOfClient == null || jobsOfClient.Count == 0) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-          } else if(curJob.State == State.finished) {
-            // another client has finished this job allready
-            // the client can abort it
-            response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));        
-          } else {
-            // save job progress
-            curJob.Percentage = jobProgress.Value;
-            jobAdapter.Update(curJob);
+            return response;
+          }
+
+          foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
+            Job curJob = jobAdapter.GetById(jobProgress.Key);
+            if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
+              response.Success = false;
+              response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+            } else if (curJob.State == State.finished) {
+              // another client has finished this job allready
+              // the client can abort it
+              response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
+            } else {
+              // save job progress
+              curJob.Percentage = jobProgress.Value;
+              jobAdapter.Update(curJob);
+            }
           }
         }
-      }
 
-      return response;
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
    
     /// <summary>
@@ -252,72 +288,86 @@ namespace HeuristicLab.Hive.Server.Core {
       double percentage,
       Exception exception,
       bool finished) {
+      ISession session = factory.GetSessionForCurrentThread();
 
-      ResponseResultReceived response = new ResponseResultReceived();
-      ClientInfo client =
-        clientAdapter.GetById(clientId);
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+        IJobResultsAdapter jobResultAdapter =
+          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
 
-      Job job =
-        jobAdapter.GetById(jobId);
+        ResponseResultReceived response = new ResponseResultReceived();
+        ClientInfo client =
+          clientAdapter.GetById(clientId);
 
-      if (job.Client == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-        return response;
-      }
-      if (job.Client.Id != clientId) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
-        return response;
-      }
-      if (job == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
-        return response;
-      }
-      if (job.State == State.finished) {
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
-        return response;
-      }
-      if (job.State != State.calculating) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
-        return response;
-      }
-      job.SerializedJob = result;
-      job.Percentage = percentage;
+        Job job =
+          jobAdapter.GetById(jobId);
 
-      if (finished) {
-        job.State = State.finished;
+        if (job.Client == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          return response;
+        }
+        if (job.Client.Id != clientId) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
+          return response;
+        }
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
+          return response;
+        }
+        if (job.State == State.finished) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
+          return response;
+        }
+        if (job.State != State.calculating) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
+          return response;
+        }
+        job.SerializedJob = result;
+        job.Percentage = percentage;
+
+        if (finished) {
+          job.State = State.finished;
+          jobAdapter.Update(job);
+
+          client.State = State.idle;
+          clientAdapter.Update(client);
+
+          List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+          foreach (JobResult currentResult in jobResults)
+            jobResultAdapter.Delete(currentResult);
+        }
+
+        JobResult jobResult =
+          new JobResult();
+        jobResult.Client = client;
+        jobResult.Job = job;
+        jobResult.Result = result;
+        jobResult.Percentage = percentage;
+        jobResult.Exception = exception;
+        jobResult.DateFinished = DateTime.Now;
+
+        jobResultAdapter.Update(jobResult);
         jobAdapter.Update(job);
 
-        client.State = State.idle;
-        clientAdapter.Update(client);
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
+        response.JobId = jobId;
+        response.finished = finished;
 
-        List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
-        foreach (JobResult currentResult in jobResults)
-          jobResultAdapter.Delete(currentResult);
+        return response;
       }
-
-      JobResult jobResult =
-        new JobResult();
-      jobResult.Client = client;
-      jobResult.Job = job;
-      jobResult.Result = result;
-      jobResult.Percentage = percentage;
-      jobResult.Exception = exception;
-      jobResult.DateFinished = DateTime.Now;
-
-      jobResultAdapter.Update(jobResult);
-      jobAdapter.Update(job);
-
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
-      response.JobId = jobId;
-      response.finished = finished;
-
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
 
@@ -353,36 +403,49 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientId"></param>
     /// <returns></returns>                       
     public Response Logout(Guid clientId) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      heartbeatLock.EnterWriteLock();
-      if (lastHeartbeats.ContainsKey(clientId))
-        lastHeartbeats.Remove(clientId);
-      heartbeatLock.ExitWriteLock();
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
 
-      ClientInfo client = clientAdapter.GetById(clientId);
-      if (client == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
-        return response;
-      }
-      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
-      if (client.State == State.calculating) {
-        // check wich job the client was calculating and reset it
-        foreach (Job job in allJobs) {
-          if (job.Client.Id == client.Id) {
-            jobManager.ResetJobsDependingOnResults(job);
+        Response response = new Response();
+
+        heartbeatLock.EnterWriteLock();
+        if (lastHeartbeats.ContainsKey(clientId))
+          lastHeartbeats.Remove(clientId);
+        heartbeatLock.ExitWriteLock();
+
+        ClientInfo client = clientAdapter.GetById(clientId);
+        if (client == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
+          return response;
+        }
+        List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
+        if (client.State == State.calculating) {
+          // check wich job the client was calculating and reset it
+          foreach (Job job in allJobs) {
+            if (job.Client.Id == client.Id) {
+              jobManager.ResetJobsDependingOnResults(job);
+            }
           }
         }
+
+        client.State = State.offline;
+        clientAdapter.Update(client);
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
+
+        return response;
       }
-
-      client.State = State.offline;
-      clientAdapter.Update(client);
-
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
-      
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>
@@ -392,24 +455,35 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="jobId"></param>
     /// <returns></returns>
     public Response IsJobStillNeeded(Guid jobId) {
-      Response response = new Response();
-      Job job = jobAdapter.GetById(jobId);
-      if (job == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST;
-        return response;
-      }
-      if (job.State == State.finished) {
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+
+        Response response = new Response();
+        Job job = jobAdapter.GetById(jobId);
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST;
+          return response;
+        }
+        if (job.State == State.finished) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED;
+          return response;
+        }
+        job.State = State.finished;
+        jobAdapter.Update(job);
+
         response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
         return response;
       }
-      job.State = State.finished;
-      jobAdapter.Update(job);
-      
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     public ResponsePlugin SendPlugins(List<PluginInfo> pluginList) {

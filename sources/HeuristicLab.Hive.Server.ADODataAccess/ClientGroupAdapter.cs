@@ -28,8 +28,55 @@ using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Data;
 using HeuristicLab.DataAccess.ADOHelper;
+using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
+  class ClientGroupAdapterWrapper :
+    DataAdapterWrapperBase<dsHiveServerTableAdapters.ClientGroupTableAdapter,
+    ClientGroup,
+    dsHiveServer.ClientGroupRow> {
+    public override dsHiveServer.ClientGroupRow
+     InsertNewRow(ClientGroup group) {
+      dsHiveServer.ClientGroupDataTable data =
+         new dsHiveServer.ClientGroupDataTable();
+
+      dsHiveServer.ClientGroupRow row =
+        data.NewClientGroupRow();
+
+      row.ResourceId = group.Id;
+
+      data.AddClientGroupRow(row);
+      TransactionalAdapter.Update(row);
+
+      return row;
+    }
+
+    public override void
+      UpdateRow(dsHiveServer.ClientGroupRow row) {
+      TransactionalAdapter.Update(row);
+    }
+
+    public override IEnumerable<dsHiveServer.ClientGroupRow>
+      FindById(Guid id) {
+      return TransactionalAdapter.GetDataById(id);
+    }
+
+    public override IEnumerable<dsHiveServer.ClientGroupRow>
+      FindAll() {
+      return TransactionalAdapter.GetData();
+    }
+
+    protected override void SetConnection(DbConnection connection) {
+      adapter.Connection = connection as SqlConnection;
+    }
+
+    protected override void SetTransaction(DbTransaction transaction) {
+      adapter.Transaction = transaction as SqlTransaction;
+    }
+  }
+  
   class ClientGroupAdapter : 
     DataAdapterBase<dsHiveServerTableAdapters.ClientGroupTableAdapter, 
     ClientGroup, 
@@ -44,7 +91,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IResourceAdapter ResAdapter {
       get {
         if (resourceAdapter == null)
-          resourceAdapter = ServiceLocator.GetResourceAdapter();
+          resourceAdapter =
+            this.Session.GetDataAdapter<Resource, IResourceAdapter>();
 
         return resourceAdapter;
       }
@@ -55,12 +103,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IClientAdapter ClientAdapter {
       get {
         if (clientAdapter == null)
-          clientAdapter = ServiceLocator.GetClientAdapter();
+          clientAdapter =
+            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
         return clientAdapter;
       }
     }
     #endregion
+
+    public ClientGroupAdapter(): 
+      base(new ClientGroupAdapterWrapper()) {
+    }
 
     #region Overrides
     protected override ClientGroup ConvertRow(dsHiveServer.ClientGroupRow row,
@@ -198,45 +251,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       return row;
     }
-
-    protected override dsHiveServer.ClientGroupRow
-      InsertNewRow(ClientGroup group) {
-      dsHiveServer.ClientGroupDataTable data =
-         new dsHiveServer.ClientGroupDataTable();
-
-      dsHiveServer.ClientGroupRow row =
-        data.NewClientGroupRow();
-
-      row.ResourceId = group.Id;
-
-      data.AddClientGroupRow(row);
-      Adapter.Update(row);
-
-      return row;
-    }
-
-    protected override void
-      UpdateRow(dsHiveServer.ClientGroupRow row) {
-      Adapter.Update(row);
-    }
-
-    protected override IEnumerable<dsHiveServer.ClientGroupRow>
-      FindById(Guid id) {
-      return Adapter.GetDataById(id);
-    }
-
-    protected override IEnumerable<dsHiveServer.ClientGroupRow>
-      FindAll() {
-      return Adapter.GetData();
-    }
     #endregion
 
     #region IClientGroupAdapter Members
-    public override void Update(ClientGroup group) {
+    protected override void doUpdate(ClientGroup group) {
       if (group != null) {
         ResAdapter.Update(group);
 
-        base.Update(group);
+        base.doUpdate(group);
       }
     }
 
@@ -271,9 +293,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return clientGroups;
     }
 
-    public override bool Delete(ClientGroup group) {
+    protected override bool doDelete(ClientGroup group) {
       if (group != null) {
-        return base.Delete(group) && 
+        return base.doDelete(group) && 
           ResAdapter.Delete(group);
       }
 

@@ -24,35 +24,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.DataAccess.Interfaces;
+using System.Data.Common;
 
-namespace HeuristicLab.Hive.Contracts.Interfaces {    
-  /// <summary>
-  /// Manages the lifecycle of the application
-  /// </summary>
-  public interface ILifecycleManager {    
-    /// <summary>
-    /// Initializes the application
-    /// </summary>
-    void Init();
+namespace HeuristicLab.DataAccess.ADOHelper {
+  public interface IDataAdapterWrapper<AdapterT, ObjT, RowT>
+   where AdapterT : new()
+   where ObjT : IPersistableObject, new()
+   where RowT : System.Data.DataRow {
+    void UpdateRow(RowT row);
 
-    /// <summary>
-    /// The server heartbeat
-    /// </summary>
-    void RegisterHeartbeat(EventHandler handler);
+    RowT InsertNewRow(ObjT obj);
 
-    /// <summary>
-    /// The startup event
-    /// </summary>
-    void RegisterStartup(EventHandler handler);
+    IEnumerable<RowT> FindById(Guid id);
 
-    /// <summary>
-    /// The shutdown event
-    /// </summary>
-    void RegisterShutdown(EventHandler handler);
+    IEnumerable<RowT> FindAll();
 
-    /// <summary>
-    /// Shuts the application down
-    /// </summary>
-    void Shutdown();
+    AdapterT TransactionalAdapter { get; }
+
+    ISession Session { set; }
   }
 }

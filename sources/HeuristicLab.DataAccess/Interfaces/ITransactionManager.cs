@@ -21,38 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using HeuristicLab.DataAccess.Interfaces;
 
-namespace HeuristicLab.Hive.Contracts.Interfaces {    
-  /// <summary>
-  /// Manages the lifecycle of the application
-  /// </summary>
-  public interface ILifecycleManager {    
-    /// <summary>
-    /// Initializes the application
-    /// </summary>
-    void Init();
-
-    /// <summary>
-    /// The server heartbeat
-    /// </summary>
-    void RegisterHeartbeat(EventHandler handler);
-
-    /// <summary>
-    /// The startup event
-    /// </summary>
-    void RegisterStartup(EventHandler handler);
-
-    /// <summary>
-    /// The shutdown event
-    /// </summary>
-    void RegisterShutdown(EventHandler handler);
-
-    /// <summary>
-    /// Shuts the application down
-    /// </summary>
-    void Shutdown();
+namespace HeuristicLab.DataAccess.Interfaces {
+  public interface ITransactionManager {
+    ITransaction BeginTransaction();
+    ITransaction GetTransactionForCurrentThread(); 
   }
 }

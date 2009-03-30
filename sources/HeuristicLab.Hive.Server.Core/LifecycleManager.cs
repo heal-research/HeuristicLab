@@ -64,13 +64,7 @@ namespace HeuristicLab.Hive.Server.Core {
         OnServerHeartbeat(this, null);
     }
 
-    public IDBSynchronizer GetDBSynchronizer() {
-      return ServiceLocator.GetDBSynchronizer();
-    }
-
     public void Shutdown() {
-      ServiceLocator.GetDBSynchronizer().UpdateDB();
-
       if (OnShutdown != null)
         OnShutdown(this, null);
     }

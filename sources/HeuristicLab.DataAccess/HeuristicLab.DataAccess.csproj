@@ -79,12 +79,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccessPlugin.cs" />
-    <Compile Include="Interfaces\IDBSynchronizer.cs" />
+    <Compile Include="Interfaces\ISession.cs" />
+    <Compile Include="Interfaces\ISessionFactory.cs" />
+    <Compile Include="Interfaces\ITransaction.cs" />
+    <Compile Include="Interfaces\ITransactionManager.cs" />
     <Compile Include="PersistableObject.cs" />
-    <Compile Include="Interfaces\ICachedDataAdapter.cs" />
     <Compile Include="Interfaces\IDataAdapter.cs" />
     <Compile Include="Interfaces\IPersistableObject.cs" />
-    <Compile Include="DBSynchronizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
@@ -138,8 +139,10 @@ call PreBuildEvent.cmd</PreBuildEvent>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

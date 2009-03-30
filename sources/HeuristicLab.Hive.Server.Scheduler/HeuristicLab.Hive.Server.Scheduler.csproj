@@ -72,6 +72,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.DataAccess.ADOHelper\HeuristicLab.DataAccess.ADOHelper.csproj">
+      <Project>{5CDACE54-5FB2-4344-A21C-963F63CB7C2B}</Project>
+      <Name>HeuristicLab.DataAccess.ADOHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
       <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
       <Name>HeuristicLab.DataAccess</Name>

@@ -63,9 +63,14 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedDataAdapter.cs" />
     <Compile Include="DataAccessADOHelperPlugin.cs" />
     <Compile Include="DataAdapterBase.cs" />
+    <Compile Include="DataAdapterWrapperBase.cs" />
+    <Compile Include="IDataAdapterWrapper.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="SessionFactory.cs" />
+    <Compile Include="Transaction.cs" />
+    <Compile Include="TransactionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">

@@ -118,10 +118,6 @@
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
       <Name>HeuristicLab.Hive.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Server.Core\HeuristicLab.Hive.Server.Core.csproj">
-      <Project>{898B31CF-81DC-453B-AEB3-BDF83197A7EE}</Project>
-      <Name>HeuristicLab.Hive.Server.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Hive.Server.DataAccess\HeuristicLab.Hive.Server.DataAccess.csproj">
       <Project>{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}</Project>
       <Name>HeuristicLab.Hive.Server.DataAccess</Name>

@@ -22,36 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Timers;
-using HeuristicLab.DataAccess.Interfaces;
+using System.Data.Common;
 
-namespace HeuristicLab.DataAccess {
-  class DBSynchronizer: IDBSynchronizer {
-    private Timer timer =
-      new Timer();
+namespace HeuristicLab.DataAccess.Interfaces {
+  public interface ITransaction {
+    void Commit();
+    void Rollback();
 
-    void timer_Elapsed(object sender, ElapsedEventArgs e) {
-      UpdateDB();
-    }
-
-    #region IDBSynchronizer Members
-    public event EventHandler OnUpdate;
-
-    public void EnableAutoUpdate(TimeSpan interval) {
-      timer.Interval = interval.TotalMilliseconds;
-      timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
-      timer.Start();
-    }
-
-    public void DisableAutoUpdate() {
-      timer.Stop();
-    }
-
-    public void UpdateDB() {
-      if (OnUpdate != null)
-        OnUpdate(this, null);
-    }
-
-    #endregion
+    object InnerTransaction { get; }
   }
 }

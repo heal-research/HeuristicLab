@@ -36,12 +36,5 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="clientId"></param>
     /// <returns></returns>
     ClientInfo GetByName(string name);
-
-    /// <summary>
-    /// Get the client with the specified id
-    /// </summary>
-    /// <param name="clientId"></param>
-    /// <returns></returns>
-    ClientInfo GetById(Guid id);
   }
 }

@@ -27,7 +27,7 @@ using System.Text;
 namespace HeuristicLab.Hive.Contracts {
   public class ApplicationConstants {
 
-    public static int HEARTBEAT_MAX_DIF = 30; // value in seconds
+    public static int HEARTBEAT_MAX_DIF = 120; // value in seconds
 
     public static string RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS = "Logged in";
     public static string RESPONSE_SERVERCONSOLE_LOGIN_FAILED = "Login failed";

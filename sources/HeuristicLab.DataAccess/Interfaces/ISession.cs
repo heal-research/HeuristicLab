@@ -22,31 +22,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.Common;
 
 namespace HeuristicLab.DataAccess.Interfaces {
-  /// <summary>
-  /// Transaction manager for the DB access layer
-  /// </summary>
-  public interface IDBSynchronizer {
-    /// <summary>
-    /// This event is fired when an update occurs
-    /// </summary>
-    event EventHandler OnUpdate; 
+  public interface ISession {
+    ITransaction BeginTransaction();
 
-    /// <summary>
-    /// Enables the auto update of the DB
-    /// </summary>
-    /// <param name="interval"></param>
-    void EnableAutoUpdate(TimeSpan interval);
+    ITransaction GetTransactionForCurrentThread();
 
-    /// <summary>
-    /// Disables the auto update of the DB
-    /// </summary>
-    void DisableAutoUpdate();
+    IDataAdapter<ObjT> GetDataAdapter<ObjT>()
+      where ObjT : IPersistableObject;
 
-    /// <summary>
-    /// Update the DB from the cache
-    /// </summary>
-    void UpdateDB();
+    T GetDataAdapter<ObjT, T>()
+      where ObjT : IPersistableObject
+      where T : class, IDataAdapter<ObjT>;
+
+    DbConnection Connection { get; }
+
+    void EndSession();
   }
 }

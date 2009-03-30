@@ -33,6 +33,10 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     where RowT : System.Data.DataRow
     where ObjT : IPersistableObject, new() {
 
+    private ISession session;
+
+    private IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter;
+
     private static Mutex lockersMutex =
       new Mutex();
 
@@ -41,6 +45,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private static IDictionary<object, int> lockCount =
       new Dictionary<object, int>();
+
+    protected DataAdapterBase(
+      IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter) {
+      this.dataAdapter = dataAdapter;
+    }
 
     protected void LockRow(object id) {
       Mutex rowLock = null;
@@ -78,7 +87,24 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     
     protected AdapterT Adapter {
       get {
-        return new AdapterT();
+        return dataAdapter.TransactionalAdapter;
+      }
+    }
+
+    public ISession Session {
+      get {
+        return this.session;
+      }
+
+      set {
+        this.session = value;
+        this.dataAdapter.Session = value;
+      }
+    }
+
+    public object InnerAdapter {
+      get {
+        return this.Adapter;
       }
     }
 
@@ -86,14 +112,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     protected abstract RowT ConvertObj(ObjT obj, RowT row);
 
     protected abstract ObjT ConvertRow(RowT row, ObjT obj);
-
-    protected abstract RowT InsertNewRow(ObjT obj);
-
-    protected abstract void UpdateRow(RowT row);
-
-    protected abstract IEnumerable<RowT> FindById(Guid id);
-
-    protected abstract IEnumerable<RowT> FindAll();
     #endregion
 
     protected delegate IEnumerable<RowT> Selector();
@@ -111,7 +129,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    protected virtual RowT FindSingleRow(Selector selector) {
+    protected RowT FindSingleRow(Selector selector) {
       RowT row = default(RowT);
 
       IEnumerable<RowT> found =
@@ -123,44 +141,75 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       return row;
     }
 
-    protected virtual ObjT FindSingle(Selector selector) {
-      RowT row = FindSingleRow(selector);
+    protected ObjT FindSingle(Selector selector) {
+      ITransaction trans =
+       session.GetTransactionForCurrentThread();
+      bool transactionExists = trans != null;
+      if (!transactionExists) {
+        trans = session.BeginTransaction();
+      }
 
-      if (row != null) {
-        ObjT obj = new ObjT();
-        obj = Convert(row, obj);
+      try {
+        RowT row = FindSingleRow(selector);
 
-        return obj;
-      } else {
-        return default(ObjT);
+        ObjT result;
+        if (row != null) {
+          ObjT obj = new ObjT();
+          obj = Convert(row, obj);
+
+          result = obj;
+        } else {
+          result = default(ObjT);
+        }
+
+        return result;
+      }
+      finally {
+        if (!transactionExists && trans != null) {
+          trans.Commit();
+        }
       }
     }
 
-    protected virtual ICollection<ObjT> FindMultiple(Selector selector) {
-      IEnumerable<RowT> found =
-        selector();
-
-      IList<ObjT> result =
-        new List<ObjT>();
-
-      foreach (RowT row in found) {
-        ObjT obj = new ObjT();
-        obj = Convert(row, obj);
-        if(obj != null)
-          result.Add(obj);
+    protected ICollection<ObjT> FindMultiple(Selector selector) {
+      ITransaction trans =
+       session.GetTransactionForCurrentThread();
+      bool transactionExists = trans != null;
+      if (!transactionExists) {
+        trans = session.BeginTransaction();
       }
 
-      return result;
+      try {
+        IEnumerable<RowT> found =
+          selector();
+
+        IList<ObjT> result =
+          new List<ObjT>();
+
+        foreach (RowT row in found) {
+          ObjT obj = new ObjT();
+          obj = Convert(row, obj);
+          if (obj != null)
+            result.Add(obj);
+        }
+
+        return result;
+      }
+      finally {
+        if (!transactionExists && trans != null) {
+          trans.Commit();
+        }
+      }     
     }
 
     protected virtual RowT GetRowById(Guid id) {
       return FindSingleRow(
         delegate() {
-          return FindById(id);
+          return dataAdapter.FindById(id);
         });
     }
 
-    public virtual void Update(ObjT obj) {
+    protected virtual void doUpdate(ObjT obj) {
       if (obj != null) {
         RowT row = null;
         Guid locked = Guid.Empty;
@@ -175,8 +224,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         }
 
         if (row == null) {
-          row = InsertNewRow(obj);
-          UpdateRow(row);
+          row = dataAdapter.InsertNewRow(obj);
         }
 
         if (locked == Guid.Empty) {
@@ -185,27 +233,45 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         }
 
         ConvertObj(obj, row);
-        UpdateRow(row);
+        dataAdapter.UpdateRow(row);
 
         UnlockRow(locked);
       }
     }
 
+    public void Update(ObjT obj) {
+      ITransaction trans =
+        session.GetTransactionForCurrentThread();
+      bool transactionExists = trans != null;
+      if (!transactionExists) {
+        trans = session.BeginTransaction();
+      }
+
+      try {
+        doUpdate(obj);
+      }
+      finally {
+        if (!transactionExists && trans != null) {
+          trans.Commit();
+        }
+      }
+    }
+
     public virtual ObjT GetById(Guid id) {
       return FindSingle(delegate() {
-        return FindById(id);
+        return dataAdapter.FindById(id);
       });
     }
 
     public virtual ICollection<ObjT> GetAll() {
       return new List<ObjT>(
         FindMultiple(
-          new Selector(FindAll)));
+          new Selector(dataAdapter.FindAll)));
     }
 
-    public virtual bool Delete(ObjT obj) {
+    protected virtual bool doDelete(ObjT obj) {
       bool success = false;
-      
+
       if (obj != null) {
         LockRow(obj.Id);
 
@@ -214,7 +280,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
         if (row != null) {
           row.Delete();
-          UpdateRow(row);
+          dataAdapter.UpdateRow(row);
 
           success = true;
         }
@@ -223,6 +289,24 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
 
       return success;
+    }
+
+    public bool Delete(ObjT obj) {
+      ITransaction trans =
+        session.GetTransactionForCurrentThread();
+      bool transactionExists = trans != null;
+      if (!transactionExists) {
+        trans = session.BeginTransaction();
+      }
+
+      try {
+        return doDelete(obj);
+      }
+      finally {
+        if (!transactionExists && trans != null) {
+          trans.Commit();
+        }
+      }  
     }
   }
 }

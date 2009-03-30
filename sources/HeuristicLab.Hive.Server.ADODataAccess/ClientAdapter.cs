@@ -28,14 +28,56 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Linq.Expressions;
 using HeuristicLab.DataAccess.Interfaces;
 using HeuristicLab.DataAccess.ADOHelper;
+using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
+  class ClientAdapterWrapper :
+    DataAdapterWrapperBase<
+        dsHiveServerTableAdapters.ClientTableAdapter,
+    ClientInfo,
+    dsHiveServer.ClientRow> {
+    public override void UpdateRow(dsHiveServer.ClientRow row) {
+      TransactionalAdapter.Update(row);
+    }
+
+    public override dsHiveServer.ClientRow
+      InsertNewRow(ClientInfo client) {
+      dsHiveServer.ClientDataTable data =
+        new dsHiveServer.ClientDataTable();
+
+      dsHiveServer.ClientRow row = data.NewClientRow();
+      row.ResourceId = client.Id;
+      data.AddClientRow(row);
+
+      return row;
+    }
+
+    public override IEnumerable<dsHiveServer.ClientRow>
+      FindById(Guid id) {
+      return TransactionalAdapter.GetDataById(id);
+    }
+
+    public override IEnumerable<dsHiveServer.ClientRow>
+      FindAll() {
+      return TransactionalAdapter.GetData();
+    }
+
+    protected override void SetConnection(DbConnection connection) {
+      adapter.Connection = connection as SqlConnection;
+    }
+
+    protected override void SetTransaction(DbTransaction transaction) {
+      adapter.Transaction = transaction as SqlTransaction;
+    }
+  }
+
   class ClientAdapter: 
-    CachedDataAdapter<
+    DataAdapterBase<
       dsHiveServerTableAdapters.ClientTableAdapter, 
       ClientInfo, 
-      dsHiveServer.ClientRow, 
-      dsHiveServer.ClientDataTable>,
+      dsHiveServer.ClientRow>,
     IClientAdapter {
     #region Fields
     private IResourceAdapter resAdapter = null;
@@ -43,7 +85,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IResourceAdapter ResAdapter {
       get {
         if (resAdapter == null)
-          resAdapter = ServiceLocator.GetResourceAdapter();
+          resAdapter =
+            this.Session.GetDataAdapter<Resource, IResourceAdapter>();
 
         return resAdapter;
       }
@@ -54,7 +97,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IClientGroupAdapter ClientGroupAdapter {
       get {
         if (clientGroupAdapter == null) {
-          clientGroupAdapter = ServiceLocator.GetClientGroupAdapter();
+          clientGroupAdapter =
+            this.Session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
         }
 
         return clientGroupAdapter;
@@ -66,7 +110,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IJobAdapter JobAdapter {
       get {
         if (jobAdapter == null) {
-          jobAdapter = ServiceLocator.GetJobAdapter();
+          this.Session.GetDataAdapter<Job, IJobAdapter>();
         }
 
         return jobAdapter;
@@ -74,11 +118,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
     #endregion
 
-    public ClientAdapter():
-      base(ServiceLocator.GetDBSynchronizer()) {
-      parentAdapters.Add(this.ResAdapter as ICachedDataAdapter);
+    public ClientAdapter(): 
+      base(new ClientAdapterWrapper()) {
     }
-
 
     #region Overrides
     protected override ClientInfo ConvertRow(dsHiveServer.ClientRow row, 
@@ -145,68 +187,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return row;
     }
 
-    protected override void UpdateRow(dsHiveServer.ClientRow row) {
-      Adapter.Update(row);
-    }
-
-    protected override dsHiveServer.ClientRow
-      InsertNewRow(ClientInfo client) {
-      dsHiveServer.ClientDataTable data =
-        new dsHiveServer.ClientDataTable();
-
-      dsHiveServer.ClientRow row = data.NewClientRow();
-      row.ResourceId = client.Id;
-      data.AddClientRow(row);
-
-      return row;
-    }
-
-    protected override dsHiveServer.ClientRow
-      InsertNewRowInCache(ClientInfo client) {
-      dsHiveServer.ClientRow row = cache.NewClientRow();
-      row.ResourceId = client.Id;
-      cache.AddClientRow(row);
-
-      return row;
-    }
-
-    protected override void FillCache() {
-      Adapter.FillByActive(cache);
-    }
-
-    protected override void SynchronizeWithDb() {
-      Adapter.Update(cache);
-    }
-
-    protected override bool PutInCache(ClientInfo obj) {
-      return (obj.State != State.offline && obj.State != State.nullState);
-    }
-
-    protected override IEnumerable<dsHiveServer.ClientRow>
-      FindById(Guid id) {
-      return Adapter.GetDataById(id);
-    }
-
-    protected override dsHiveServer.ClientRow
-      FindCachedById(Guid id) {
-      return cache.FindByResourceId(id);
-    }
-
-    protected override IEnumerable<dsHiveServer.ClientRow>
-      FindAll() {
-      return FindMultipleRows(
-        new Selector(Adapter.GetData),
-        new Selector(cache.AsEnumerable<dsHiveServer.ClientRow>));
-    }
-
     #endregion
 
     #region IClientAdapter Members
-    public override void Update(ClientInfo client) {
+    protected override void doUpdate(ClientInfo client) {
       if (client != null) {
         ResAdapter.Update(client);
 
-        base.Update(client);
+        base.doUpdate(client);
       }
     }
 
@@ -218,7 +206,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       return GetById(res.Id);
     }
 
-    public override bool Delete(ClientInfo client) {
+    protected override bool doDelete(ClientInfo client) {
       bool success = false;
       Guid locked = Guid.Empty;
       
@@ -239,7 +227,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             JobAdapter.Delete(job);
           }
 
-          success = base.Delete(client) && 
+          success = base.doDelete(client) && 
             ResAdapter.Delete(client);
         }
       }

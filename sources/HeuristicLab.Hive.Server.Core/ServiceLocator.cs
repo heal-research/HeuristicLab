@@ -26,6 +26,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.DataAccess.Interfaces;
+using System.Data.SqlClient;
 
 /// <summary>
 /// The service locator for the server core
@@ -33,8 +34,6 @@ using HeuristicLab.DataAccess.Interfaces;
 public class ServiceLocator {
   private static DiscoveryService discoveryService =
     new DiscoveryService();
-
-  private static IDBSynchronizer transManager = null;
 
   private static IClientManager clientManager = null;
 
@@ -44,31 +43,9 @@ public class ServiceLocator {
 
   private static ILifecycleManager lifecycleManager = null;
 
-  private static IClientAdapter clientAdapter = null;
-
-  private static IClientGroupAdapter clientGroupAdapter = null;
-
-  private static IResourceAdapter resourceAdapter = null;
-
-  private static IJobAdapter jobAdapter = null;
-
-  private static IJobResultsAdapter jobResultsAdapter = null;
+  private static ISessionFactory sessionFactory = null;
 
   private static IScheduler scheduler = null;
-
-
-  /// <summary>
-  /// Gets the db transaction manager
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IDBSynchronizer GetDBSynchronizer() {
-    if (transManager == null) {
-      transManager = discoveryService.GetInstances<IDBSynchronizer>()[0];
-    }
-
-    return transManager;
-  }
 
   /// <summary>
   /// Gets the client manager
@@ -120,68 +97,23 @@ public class ServiceLocator {
   }
 
   /// <summary>
-  /// Gets the client database adapter
+  /// Gets the db session factory
   /// </summary>
   /// <returns></returns>
   [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IClientAdapter GetClientAdapter() {
-    if (clientAdapter == null) {
-      clientAdapter = discoveryService.GetInstances<IClientAdapter>()[0];
+  public static ISessionFactory GetSessionFactory() {
+    if (sessionFactory == null) {
+      sessionFactory = 
+        discoveryService.GetInstances<ISessionFactory>()[0];
+
+      sessionFactory.DbConnectionType =
+        typeof(SqlConnection);
+      
+      sessionFactory.DbConnectionString =
+        HeuristicLab.Hive.Server.Core.Properties.Settings.Default.HiveServerConnectionString;
     }
 
-    return clientAdapter;
-  }
-
-  /// <summary>
-  /// Gets the client group database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IClientGroupAdapter GetClientGroupAdapter() {
-    if (clientGroupAdapter == null) {
-      clientGroupAdapter = discoveryService.GetInstances<IClientGroupAdapter>()[0];
-    }
-
-    return clientGroupAdapter;
-  }
-
-  /// <summary>
-  /// Gets the resource database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IResourceAdapter GetResourceAdapter() {
-    if (resourceAdapter == null) {
-      resourceAdapter = discoveryService.GetInstances<IResourceAdapter>()[0];
-    }
-
-    return resourceAdapter;
-  }
-
-  /// <summary>
-  /// Gets the job database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IJobAdapter GetJobAdapter() {
-    if (jobAdapter == null) {
-      jobAdapter = discoveryService.GetInstances<IJobAdapter>()[0];
-    }
-
-    return jobAdapter;
-  }
-
-  /// <summary>
-  /// Gets the job results database adapter
-  /// </summary>
-  /// <returns></returns>
-  [MethodImpl(MethodImplOptions.Synchronized)]
-  public static IJobResultsAdapter GetJobResultsAdapter() {
-    if (jobResultsAdapter == null) {
-      jobResultsAdapter = discoveryService.GetInstances<IJobResultsAdapter>()[0];
-    }
-
-    return jobResultsAdapter;
+    return sessionFactory;
   }
 
   /// <summary>

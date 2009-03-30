@@ -22,11 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.CompilerServices;
 
 namespace HeuristicLab.DataAccess.Interfaces {
-  public interface ICachedDataAdapter {
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    void SyncWithDb();
+  public interface ISessionFactory {
+    ISession GetSessionForCurrentThread();
+
+    Type DbConnectionType { set; }
+    String DbConnectionString { set; }
   }
 }

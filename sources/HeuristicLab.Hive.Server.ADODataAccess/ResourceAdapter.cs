@@ -26,31 +26,73 @@ using System.Text;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.DataAccess.ADOHelper;
+using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ResourceAdapter: 
-    CachedDataAdapter<
-      dsHiveServerTableAdapters.ResourceTableAdapter, 
-      Resource, 
-      dsHiveServer.ResourceRow, 
-      dsHiveServer.ResourceDataTable>,  
-    IResourceAdapter {
-    public ResourceAdapter(): 
-      base(ServiceLocator.GetDBSynchronizer()) {
+  class ResourceAdapterWrapper :
+    DataAdapterWrapperBase<
+      dsHiveServerTableAdapters.ResourceTableAdapter,
+      Resource,
+      dsHiveServer.ResourceRow> {    
+    public override void UpdateRow(dsHiveServer.ResourceRow row) {
+      TransactionalAdapter.Update(row);
     }
 
+    public override dsHiveServer.ResourceRow
+      InsertNewRow(Resource resource) {
+      dsHiveServer.ResourceDataTable data =
+        new dsHiveServer.ResourceDataTable();
+
+      dsHiveServer.ResourceRow row = data.NewResourceRow();
+      row.ResourceId = resource.Id;
+      data.AddResourceRow(row);
+
+      return row;
+    }
+
+    public override IEnumerable<dsHiveServer.ResourceRow>
+      FindById(Guid id) {
+      return TransactionalAdapter.GetDataById(id);
+    }
+
+    public override IEnumerable<dsHiveServer.ResourceRow>
+      FindAll() {
+      return TransactionalAdapter.GetData();
+    }
+
+    protected override void SetConnection(DbConnection connection) {
+      adapter.Connection = connection as SqlConnection;
+    }
+
+    protected override void SetTransaction(DbTransaction transaction) {
+      adapter.Transaction = transaction as SqlTransaction;
+    }
+  }
+  
+  class ResourceAdapter: 
+    DataAdapterBase<
+      dsHiveServerTableAdapters.ResourceTableAdapter, 
+      Resource, 
+      dsHiveServer.ResourceRow>,  
+    IResourceAdapter {
     #region Fields
     private IClientAdapter clientAdapter = null;
 
     private IClientAdapter ClientAdapter {
       get {
         if (clientAdapter == null)
-          clientAdapter = ServiceLocator.GetClientAdapter();
+          clientAdapter =
+            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
         
         return clientAdapter;
       }
     }
     #endregion
+
+    public ResourceAdapter(): base(new ResourceAdapterWrapper()) {
+    }
 
     #region Overrides
     protected override Resource ConvertRow(dsHiveServer.ResourceRow row,
@@ -77,62 +119,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } else
         return null;
     }
-
-    protected override void UpdateRow(dsHiveServer.ResourceRow row) {
-      Adapter.Update(row);
-    }
-
-    protected override dsHiveServer.ResourceRow
-      InsertNewRow(Resource resource) {
-      dsHiveServer.ResourceDataTable data =
-        new dsHiveServer.ResourceDataTable();
-
-      dsHiveServer.ResourceRow row = data.NewResourceRow();
-      row.ResourceId = resource.Id;
-      data.AddResourceRow(row);
-
-      return row;
-    }
-
-    protected override dsHiveServer.ResourceRow
-      InsertNewRowInCache(Resource resource) {
-      dsHiveServer.ResourceRow row = cache.NewResourceRow();
-      row.ResourceId = resource.Id;
-      cache.AddResourceRow(row);
-
-      return row;
-    }
-
-    protected override void FillCache() {
-      Adapter.FillByActive(cache);
-    }
-
-    protected override void SynchronizeWithDb() {
-      Adapter.Update(cache);
-    }
-
-    protected override bool PutInCache(Resource obj) {
-      return (obj is ClientInfo &&
-        (obj as ClientInfo).State != State.offline);
-    }
-
-    protected override IEnumerable<dsHiveServer.ResourceRow>
-      FindById(Guid id) {
-      return Adapter.GetDataById(id);
-    }
-
-    protected override dsHiveServer.ResourceRow
-      FindCachedById(Guid id) {
-      return cache.FindByResourceId(id);
-    }
-
-    protected override IEnumerable<dsHiveServer.ResourceRow>
-      FindAll() {
-      return FindMultipleRows(
-        new Selector(Adapter.GetData),
-        new Selector(cache.AsEnumerable<dsHiveServer.ResourceRow>));
-    }
-
     #endregion
 
     #region IResourceAdapter Members
@@ -156,13 +142,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         base.FindSingleRow(
           delegate() {
             return Adapter.GetDataByName(name);
-          },
-          delegate() {
-            return from r in
-                     cache.AsEnumerable<dsHiveServer.ResourceRow>()
-                   where !r.IsNameNull() && 
-                          r.Name == name
-                   select r;
           });
 
       if (row != null) {

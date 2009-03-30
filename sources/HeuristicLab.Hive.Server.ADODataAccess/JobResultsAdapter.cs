@@ -5,8 +5,47 @@ using System.Text;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.DataAccess.ADOHelper;
+using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
+  class JobResultsAdapterWrapper :
+    DataAdapterWrapperBase<dsHiveServerTableAdapters.JobResultTableAdapter,
+                    JobResult,
+                    dsHiveServer.JobResultRow> {    
+    public override void UpdateRow(dsHiveServer.JobResultRow row) {
+      TransactionalAdapter.Update(row);
+    }
+
+    public override dsHiveServer.JobResultRow InsertNewRow(JobResult obj) {
+      dsHiveServer.JobResultDataTable data =
+        new dsHiveServer.JobResultDataTable();
+
+      dsHiveServer.JobResultRow row = data.NewJobResultRow();
+      row.JobResultId = obj.Id;
+      data.AddJobResultRow(row);
+
+      return row;
+    }
+
+    public override IEnumerable<dsHiveServer.JobResultRow> FindById(Guid id) {
+      return TransactionalAdapter.GetDataById(id);
+    }
+
+    public override IEnumerable<dsHiveServer.JobResultRow> FindAll() {
+      return TransactionalAdapter.GetData();
+    }
+
+    protected override void SetConnection(DbConnection connection) {
+      adapter.Connection = connection as SqlConnection;
+    }
+
+    protected override void SetTransaction(DbTransaction transaction) {
+      adapter.Transaction = transaction as SqlTransaction;
+    }
+  }
+
   class JobResultsAdapter: 
     DataAdapterBase<dsHiveServerTableAdapters.JobResultTableAdapter, 
                     JobResult, 
@@ -18,7 +57,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IClientAdapter ClientAdapter {
       get {
         if (clientAdapter == null)
-          clientAdapter = ServiceLocator.GetClientAdapter();
+          clientAdapter =
+            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
         return clientAdapter;
       }
@@ -29,12 +69,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     private IJobAdapter JobAdapter {
       get {
         if (jobAdapter == null)
-          jobAdapter = ServiceLocator.GetJobAdapter();
+          jobAdapter =
+            this.Session.GetDataAdapter<Job, IJobAdapter>();
 
         return jobAdapter;
       }
     }
     #endregion
+
+    public JobResultsAdapter(): base(new JobResultsAdapterWrapper()) {
+    }
 
     #region Overrides
     protected override dsHiveServer.JobResultRow ConvertObj(JobResult result,
@@ -116,38 +160,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       } else
         return null;
     }
-
-    protected override void UpdateRow(dsHiveServer.JobResultRow row) {
-      Adapter.Update(row);
-    }
-
-    protected override dsHiveServer.JobResultRow InsertNewRow(JobResult obj) {
-      dsHiveServer.JobResultDataTable data =
-        new dsHiveServer.JobResultDataTable();
-
-      dsHiveServer.JobResultRow row = data.NewJobResultRow();
-      row.JobResultId = obj.Id;
-      data.AddJobResultRow(row);
-
-      return row;
-    }
-
-    protected override IEnumerable<dsHiveServer.JobResultRow> FindById(Guid id) {
-      return Adapter.GetDataById(id);
-    }
-
-    protected override IEnumerable<dsHiveServer.JobResultRow> FindAll() {
-      return Adapter.GetData();
-    }
     #endregion
 
     #region IJobResultsAdapter Members
-    public override void Update(JobResult result) {
+    protected override void doUpdate(JobResult result) {
       if (result != null) {
         ClientAdapter.Update(result.Client);
         JobAdapter.Update(result.Job);
 
-        base.Update(result);
+        base.doUpdate(result);
       }
     }
 

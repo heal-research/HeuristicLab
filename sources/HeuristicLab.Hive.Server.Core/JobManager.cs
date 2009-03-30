@@ -28,20 +28,18 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
 
-    IJobAdapter jobAdapter;
-    IJobResultsAdapter jobResultAdapter;
+    ISessionFactory factory;
     ILifecycleManager lifecycleManager;
 
     #region IJobManager Members
 
     public JobManager() {
-      jobAdapter = ServiceLocator.GetJobAdapter();
-      jobResultAdapter = ServiceLocator.GetJobResultsAdapter();
-
+      factory = ServiceLocator.GetSessionFactory();
       lifecycleManager = ServiceLocator.GetLifecycleManager();
 
       lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnStartup));
@@ -49,39 +47,72 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     private JobResult GetLastJobResult(Job job) {
-      List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
-      JobResult lastJobResult = null;
-      foreach (JobResult jR in allJobResults) {
-        // if lastJobResult was before the current jobResult the lastJobResult must be updated
-        if (lastJobResult == null ||
-            (jR.timestamp > lastJobResult.timestamp))
-          lastJobResult = jR;
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IJobResultsAdapter jobResultAdapter =
+            session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
+        List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+        JobResult lastJobResult = null;
+        foreach (JobResult jR in allJobResults) {
+          // if lastJobResult was before the current jobResult the lastJobResult must be updated
+          if (lastJobResult == null ||
+              (jR.timestamp > lastJobResult.timestamp))
+            lastJobResult = jR;
+        }
+        return lastJobResult;
       }
-      return lastJobResult;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     public void ResetJobsDependingOnResults(Job job) {
-      JobResult lastJobResult = GetLastJobResult(job);
-      if (lastJobResult != null) {
-        job.Percentage = lastJobResult.Percentage;
-        job.SerializedJob = lastJobResult.Result;
-      } else {
-        job.Percentage = 0;
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
+
+        JobResult lastJobResult = GetLastJobResult(job);
+        if (lastJobResult != null) {
+          job.Percentage = lastJobResult.Percentage;
+          job.SerializedJob = lastJobResult.Result;
+        } else {
+          job.Percentage = 0;
+        }
+
+        job.Client = null;
+        job.State = State.offline;
+
+        jobAdapter.Update(job);
       }
-
-      job.Client = null;
-      job.State = State.offline;
-
-      jobAdapter.Update(job);
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     void checkForDeadJobs() {
-      List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
-      foreach (Job curJob in allJobs) {
-        if (curJob.State == State.calculating) {
-          ResetJobsDependingOnResults(curJob);
-        }
-      }
+       ISession session = factory.GetSessionForCurrentThread();
+
+       try {
+         IJobAdapter jobAdapter =
+             session.GetDataAdapter<Job, IJobAdapter>();
+
+         List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
+         foreach (Job curJob in allJobs) {
+           if (curJob.State == State.calculating) {
+             ResetJobsDependingOnResults(curJob);
+           }
+         }
+       }
+       finally {
+         if (session != null)
+           session.EndSession();
+       }
     }
 
     void lifecycleManager_OnStartup(object sender, EventArgs e) {
@@ -97,13 +128,24 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseList<Job> GetAllJobs() {
-      ResponseList<Job> response = new ResponseList<Job>();
+       ISession session = factory.GetSessionForCurrentThread();
 
-      response.List = new List<Job>(jobAdapter.GetAll());
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ALL_JOBS;
-      
-      return response;
+       try {
+         IJobAdapter jobAdapter =
+             session.GetDataAdapter<Job, IJobAdapter>();
+
+         ResponseList<Job> response = new ResponseList<Job>();
+
+         response.List = new List<Job>(jobAdapter.GetAll());
+         response.Success = true;
+         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ALL_JOBS;
+
+         return response;
+       }
+       finally {
+         if (session != null)
+           session.EndSession();
+       }
     }
 
     /// <summary>
@@ -112,36 +154,47 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="job"></param>
     /// <returns></returns>
     public ResponseObject<Job> AddNewJob(Job job) {
-      ResponseObject<Job> response = new ResponseObject<Job>();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      if (job != null) {
-        if (job.State != State.offline) {
+      try {
+        IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
+
+        ResponseObject<Job> response = new ResponseObject<Job>();
+
+        if (job != null) {
+          if (job.State != State.offline) {
+            response.Success = false;
+            response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE;
+            return response;
+          }
+          if (job.Id != Guid.Empty) {
+            response.Success = false;
+            response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
+            return response;
+          }
+          if (job.SerializedJob == null) {
+            response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
+            response.Success = false;
+            return response;
+          }
+
+          job.DateCreated = DateTime.Now;
+          jobAdapter.Update(job);
+          response.Success = true;
+          response.Obj = job;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
+        } else {
           response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE;
-          return response;
-        }
-        if (job.Id != Guid.Empty) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
-          return response;
-        }
-        if (job.SerializedJob == null) {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
-          response.Success = false;
-          return response;
         }
 
-        job.DateCreated = DateTime.Now;
-        jobAdapter.Update(job);
-        response.Success = true;
-        response.Obj = job;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
-      } else {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
+        return response;
       }
-
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>
@@ -150,28 +203,49 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="jobId"></param>
     /// <returns></returns>
     public Response RemoveJob(Guid jobId) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      Job job = jobAdapter.GetById(jobId);
-      if (job == null) {
+      try {
+        IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
+        Response response = new Response();
+
+        Job job = jobAdapter.GetById(jobId);
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+          return response;
+        }
+        jobAdapter.Delete(job);
         response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_REMOVED;
+
         return response;
       }
-      jobAdapter.Delete(job);
-      response.Success = false;
-      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_REMOVED;
-
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
-      ResponseObject<JobResult> response = new ResponseObject<JobResult>();
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
-      response.Obj = GetLastJobResult(jobAdapter.GetById(jobId));
+      ISession session = factory.GetSessionForCurrentThread();
 
-      return response;
+      try {
+        IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
+
+        ResponseObject<JobResult> response = new ResponseObject<JobResult>();
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
+        response.Obj = GetLastJobResult(jobAdapter.GetById(jobId));
+
+        return response;
+      }
+      finally {
+        if(session != null)
+          session.EndSession();
+      }
     }
 
     #endregion

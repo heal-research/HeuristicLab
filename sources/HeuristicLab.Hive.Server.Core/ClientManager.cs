@@ -27,25 +27,18 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.DataAccess;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientManager: IClientManager {
 
-    IClientAdapter clientAdapter;
-    IClientGroupAdapter clientGroupAdapter;
-
+    ISessionFactory factory;
     List<ClientGroup> clientGroups;
 
     public ClientManager() {
-      clientAdapter = ServiceLocator.GetClientAdapter();
-      clientGroupAdapter = ServiceLocator.GetClientGroupAdapter();
-
+      factory = ServiceLocator.GetSessionFactory();
+      
       clientGroups = new List<ClientGroup>();
-
-      ClientGroup cg = new ClientGroup { Id = Guid.NewGuid(), Name = "SuperGroup" };
-      cg.Resources = new List<Resource>();
-
-      clientGroups.Add(cg);
     }
 
     #region IClientManager Members
@@ -55,13 +48,24 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseList<ClientInfo> GetAllClients() {
-      ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      response.List = new List<ClientInfo>(clientAdapter.GetAll());
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTS;
-      response.Success = true;
+      try {
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      return response;
+        ResponseList<ClientInfo> response = new ResponseList<ClientInfo>();
+
+        response.List = new List<ClientInfo>(clientAdapter.GetAll());
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTS;
+        response.Success = true;
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>
@@ -69,13 +73,23 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <returns></returns>
     public ResponseList<ClientGroup> GetAllClientGroups() {
-      ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      response.List = new List<ClientGroup>(clientGroupAdapter.GetAll());
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS;
-      response.Success = true;
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+        ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
 
-      return response;
+        response.List = new List<ClientGroup>(clientGroupAdapter.GetAll());
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS;
+        response.Success = true;
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
@@ -90,18 +104,29 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientGroup"></param>
     /// <returns></returns>
     public Response AddClientGroup(ClientGroup clientGroup) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      if (clientGroup.Id != Guid.Empty) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        Response response = new Response();
+
+        if (clientGroup.Id != Guid.Empty) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+        } else {
+          clientGroupAdapter.Update(clientGroup);
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
+        }
+
         return response;
       }
-      clientGroupAdapter.Update(clientGroup);
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
-
-      return response;
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>
@@ -111,26 +136,37 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="resource"></param>
     /// <returns></returns>
     public Response AddResourceToGroup(Guid clientGroupId, Resource resource) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      if (resource.Id != Guid.Empty) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        Response response = new Response();
+
+        if (resource.Id != Guid.Empty) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
+          return response;
+        }
+
+        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        if (clientGroup == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
+          return response;
+        }
+        clientGroup.Resources.Add(resource);
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
+
         return response;
       }
-
-      ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
-      if (clientGroup == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
-        return response;
+      finally {
+        if (session != null)
+          session.EndSession();
       }
-      clientGroup.Resources.Add(resource);
-
-      response.Success = true;
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
-
-      return response;
     }
 
     /// <summary>
@@ -140,26 +176,37 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="resourceId"></param>
     /// <returns></returns>
     public Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId) {
-      Response response = new Response();
+      ISession session = factory.GetSessionForCurrentThread();
 
-      ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
-      if (clientGroup == null) {
-        response.Success = false;
-        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
-        return response;
-      }
-      foreach (Resource resource in clientGroup.Resources) {
-        if (resource.Id == resourceId) {
-          clientGroup.Resources.Remove(resource);
-          response.Success = true;
-          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        Response response = new Response();
+
+        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        if (clientGroup == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
           return response;
         }
-      }
-      response.Success = false;
-      response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
+        foreach (Resource resource in clientGroup.Resources) {
+          if (resource.Id == resourceId) {
+            clientGroup.Resources.Remove(resource);
+            response.Success = true;
+            response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
+            return response;
+          }
+        }
+        response.Success = false;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
 
-      return response;
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
     #endregion
   }
