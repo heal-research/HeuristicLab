@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Persistence.Core {
   
@@ -49,7 +50,7 @@ namespace HeuristicLab.Persistence.Core {
           customConfigurations[config.Key] = config.Value;
         }
       } catch {
-        Console.WriteLine("WARNING: Could not load settings.");
+        Logger.Warn("Could not load settings.");        
       }
     }
 
@@ -94,14 +95,14 @@ namespace HeuristicLab.Persistence.Core {
             }
             Formatters[formatter.Format].Add(formatter);
           } catch (MissingMethodException) {
-            Console.WriteLine("WARNING: Could not instantiate {0}", t.VersionInvariantName());
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName());            
           }          
         }
         if (t.GetInterface(typeof (IDecomposer).FullName) != null) {
           try {
             Decomposers.Add((IDecomposer) Activator.CreateInstance(t, true));
           } catch (MissingMethodException) {
-            Console.WriteLine("WARNING: Could not instantiate {0}", t.VersionInvariantName());
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName());            
           }
         }
       }
