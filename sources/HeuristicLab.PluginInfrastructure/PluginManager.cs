@@ -137,7 +137,7 @@ namespace HeuristicLab.PluginInfrastructure {
       NotifyListeners(PluginManagerAction.Starting, appInfo.Name);
       AppDomain applicationDomain = null;
       try {
-        applicationDomain = CreateAndInitAppDomain(appInfo.Name + " AppDomain");
+        applicationDomain = CreateAndInitAppDomain(appInfo.Name);
         Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
         remoteRunner.Run(appInfo);
       }

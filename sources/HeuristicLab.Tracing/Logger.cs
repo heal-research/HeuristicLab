@@ -22,7 +22,7 @@ namespace HeuristicLab.Tracing {
       }
       XmlConfigurator.ConfigureAndWatch(
         new FileInfo(Settings.Default.log4netConfigFile));
-      Info("Logging started and configured");
+      Info("logging initialized");
     }
 
     public static ILog GetDefaultLogger(int nParents) {
