@@ -49,8 +49,8 @@ namespace HeuristicLab.Persistence.Core {
         foreach (var config in newCustomConfigurations) {
           customConfigurations[config.Key] = config.Value;
         }
-      } catch {
-        Logger.Warn("Could not load settings.");        
+      } catch (Exception e) {
+        Logger.Warn("Could not load settings.", e);        
       }
     }
 
@@ -94,15 +94,15 @@ namespace HeuristicLab.Persistence.Core {
               Formatters.Add(formatter.Format, new List<IFormatter>());
             }
             Formatters[formatter.Format].Add(formatter);
-          } catch (MissingMethodException) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName());            
+          } catch (MissingMethodException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
           }          
         }
         if (t.GetInterface(typeof (IDecomposer).FullName) != null) {
           try {
             Decomposers.Add((IDecomposer) Activator.CreateInstance(t, true));
-          } catch (MissingMethodException) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName());            
+          } catch (MissingMethodException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
           }
         }
       }
