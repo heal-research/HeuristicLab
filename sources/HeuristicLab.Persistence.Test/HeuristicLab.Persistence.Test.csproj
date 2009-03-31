@@ -44,6 +44,10 @@
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Tracing\HeuristicLab.Tracing.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NewSerializationTest.cs" />
@@ -56,5 +60,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>
