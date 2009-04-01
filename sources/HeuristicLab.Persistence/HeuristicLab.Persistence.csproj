@@ -79,6 +79,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\HeuristicLab.PluginInfrastructure.GUI\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\HeuristicLab.Tracing\libs\debug\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -98,6 +102,7 @@
     <Compile Include="Default\Decomposers\DictionaryDecomposer.cs" />
     <Compile Include="Default\Decomposers\StorableDecomposer.cs" />
     <Compile Include="Default\Decomposers\TypeDecomposer.cs" />
+    <Compile Include="Default\Decomposers\X2StringDecomposer.cs" />
     <Compile Include="Default\ViewOnly\ViewOnlyFormat.cs" />
     <Compile Include="Default\Xml\Compact\IntArray2XmlFormatters.cs" />
     <Compile Include="Default\Xml\Compact\DoubleArray2XmlFormatters.cs" />
@@ -106,7 +111,7 @@
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatters.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
-    <Compile Include="Default\Xml\Primitive\Sting2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\String2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\Int2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\Double2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\Boolean2XmlFormatter.cs" />

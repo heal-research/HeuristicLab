@@ -45,25 +45,6 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     public override Type Type { get { return typeof(Type); } }
   }
 
-  //public class ToStringDecomposer : IDecomposer {
-  // should not be used by default
-  public class ToStringDecomposer {
-    public bool CanDecompose(Type type) { return true; }
-    public IEnumerable<Tag> DeCompose(object obj) {
-      yield return new Tag(obj.ToString());
-    }
-
-    public object CreateInstance(Type type) {
-      throw new NotImplementedException();
-    }
-
-    public object Populate(object instance, IEnumerable<Tag> tags, Type type) {
-      throw new NotImplementedException();
-    }
-
-  }
-
-
   public class ViewOnlyGenerator : Generator<string> {
 
     private bool isSepReq;

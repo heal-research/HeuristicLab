@@ -5,6 +5,8 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
+using HeuristicLab.Tracing;
+using log4net;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -144,13 +146,19 @@ namespace HeuristicLab.Persistence.Default.Xml {
       zipStream.SetLevel(9);      
       zipStream.PutNextEntry(new ZipEntry("data.xml"));      
       StreamWriter writer = new StreamWriter(zipStream);
-      foreach ( ISerializationToken token in serializer )
-        writer.Write(generator.Format(token));
+      ILog logger = Logger.GetDefaultLogger();      
+      foreach (ISerializationToken token in serializer) {
+        string line = generator.Format(token);
+        writer.Write(line);
+        logger.Debug(line);
+      }
       writer.Flush();
       zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
       writer = new StreamWriter(zipStream);
-      foreach ( string line in generator.Format(serializer.TypeCache))
+      foreach (string line in generator.Format(serializer.TypeCache)) {
         writer.WriteLine(line);
+        logger.Debug(line);
+      }
       writer.Flush();            
       zipStream.Close();      
     }
