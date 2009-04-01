@@ -6,6 +6,9 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.ViewOnly;
+using HeuristicLab.Tracing;
+using log4net;
+using log4net.Config;
 
 namespace HeuristicLab.Persistence.Test {
 
@@ -13,7 +16,7 @@ namespace HeuristicLab.Persistence.Test {
 
   public class RootBase {
     [Storable]
-    private string baseString = "Serial";
+    private string baseString = "   Serial  ";
     [Storable]
     public TestEnum myEnum = TestEnum.va3;
   }
@@ -223,7 +226,8 @@ namespace HeuristicLab.Persistence.Test {
     }
 
 
-    public static void Main() {            
+    public static void Main() {
+      BasicConfigurator.Configure();
       Test1();      
       Test2();
       Test3();
