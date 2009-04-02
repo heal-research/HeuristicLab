@@ -34,17 +34,15 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private SessionFactory factory;
 
-    private ITransactionManager transManager;
+    private Transaction transaction;
 
     private DbConnection connection;
 
     private IDictionary<Guid, object> adapters =
       new Dictionary<Guid, object>();
 
-    public Session(SessionFactory factory, 
-      ITransactionManager transManager) {
+    public Session(SessionFactory factory) {
       this.factory = factory;
-      this.transManager = transManager;
     }
 
     public DbConnection Connection {
@@ -57,46 +55,44 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    #region ISession Members
-    public ITransaction BeginTransaction() {
-      ITransaction trans = transManager.BeginTransaction();
-      if(trans is Transaction)
-        ((Transaction)trans).Connection = Connection;
-
-      return trans;
+    public void DetachTrasaction() {
+      this.transaction = null;
     }
 
-    public ITransaction GetTransactionForCurrentThread() {
-      ITransaction trans = transManager.GetTransactionForCurrentThread();
-      if (trans != null && trans is Transaction)
-        ((Transaction)trans).Connection = Connection;
+    #region ISession Members
+    public ITransaction BeginTransaction() {
+      if (transaction == null) {
+         transaction = new Transaction(this);
+         transaction.Connection = Connection;
+      }
 
-      return trans;
+      return transaction;
+    }
+
+    public ITransaction GetCurrentTransaction() {
+      return transaction;
     }
 
     public IDataAdapter<ObjT> GetDataAdapter<ObjT>()
       where ObjT : IPersistableObject {
-      lock(this) {
-        Guid adapterId = typeof(IDataAdapter<ObjT>).GUID;
+      Guid adapterId = typeof(IDataAdapter<ObjT>).GUID;
 
-        if (!adapters.ContainsKey(adapterId)) {
-          IDataAdapter<ObjT> adapter =
-            discoveryService.GetInstances<IDataAdapter<ObjT>>()[0];
+      if (!adapters.ContainsKey(adapterId)) {
+        IDataAdapter<ObjT> adapter =
+          discoveryService.GetInstances<IDataAdapter<ObjT>>()[0];
 
-          adapter.Session = this;
+        adapter.Session = this;
 
-          adapters.Add(adapterId, adapter);
-        }
-
-        return adapters[adapterId] as IDataAdapter<ObjT>;
+        adapters.Add(adapterId, adapter);
       }
+
+      return adapters[adapterId] as IDataAdapter<ObjT>;
     }
 
     public T GetDataAdapter<ObjT, T>()
       where ObjT : IPersistableObject
       where T : class, IDataAdapter<ObjT>
     {
-      lock (this) {
         Guid adapterId = typeof(T).GUID;
 
         if (!adapters.ContainsKey(adapterId)) {
@@ -109,12 +105,17 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         }
 
         return adapters[adapterId] as T;
-      }
     }
 
     public void EndSession() {
-      if(connection.State == System.Data.ConnectionState.Open)
+      if (transaction != null) {
+        transaction.Rollback();
+        transaction = null;
+      }
+      if (connection.State == System.Data.ConnectionState.Open) {
         connection.Close();
+        connection = null;
+      }
       factory.EndSession(this);
     }
 

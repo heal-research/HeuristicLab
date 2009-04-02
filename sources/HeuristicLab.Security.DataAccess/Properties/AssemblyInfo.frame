@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Security.DataAccess)]
+[assembly: AssemblyTitle("HeuristicLab.Security.DataAccess")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

@@ -87,7 +87,6 @@
     <Compile Include="Session.cs" />
     <Compile Include="SessionFactory.cs" />
     <Compile Include="Transaction.cs" />
-    <Compile Include="TransactionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">

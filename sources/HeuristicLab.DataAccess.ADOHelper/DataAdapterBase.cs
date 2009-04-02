@@ -143,7 +143,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     protected ObjT FindSingle(Selector selector) {
       ITransaction trans =
-       session.GetTransactionForCurrentThread();
+       session.GetCurrentTransaction();
       bool transactionExists = trans != null;
       if (!transactionExists) {
         trans = session.BeginTransaction();
@@ -173,7 +173,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     protected ICollection<ObjT> FindMultiple(Selector selector) {
       ITransaction trans =
-       session.GetTransactionForCurrentThread();
+       session.GetCurrentTransaction();
       bool transactionExists = trans != null;
       if (!transactionExists) {
         trans = session.BeginTransaction();
@@ -241,7 +241,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public void Update(ObjT obj) {
       ITransaction trans =
-        session.GetTransactionForCurrentThread();
+        session.GetCurrentTransaction();
       bool transactionExists = trans != null;
       if (!transactionExists) {
         trans = session.BeginTransaction();
@@ -293,7 +293,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public bool Delete(ObjT obj) {
       ITransaction trans =
-        session.GetTransactionForCurrentThread();
+        session.GetCurrentTransaction();
       bool transactionExists = trans != null;
       if (!transactionExists) {
         trans = session.BeginTransaction();

@@ -30,14 +30,14 @@ using System.Data.Common;
 namespace HeuristicLab.DataAccess.ADOHelper {
   class Transaction: ITransaction {
     private DbTransaction transaction;
-    private TransactionManager manager;
 
-    #region ITransaction Members
+    private Session session;
 
-    public Transaction(TransactionManager manager) {
-      this.manager = manager;
+    public Transaction(Session session) {
+      this.session = session;
     }
 
+    #region ITransaction Members
     public DbConnection Connection {
       set {
         if (value != null &&
@@ -53,12 +53,14 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void Commit() {
-      manager.RemoveTransaction(this);
       if (transaction != null) {
         DbConnection conn =
           transaction.Connection;
 
         transaction.Commit();
+
+        transaction = null;
+        session.DetachTrasaction();
 
         if (conn != null && 
             conn.State == System.Data.ConnectionState.Open)
@@ -67,15 +69,19 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void Rollback() {
-      manager.RemoveTransaction(this);
-      DbConnection conn =
-          transaction.Connection;
+      if (transaction != null) {
+        DbConnection conn =
+            transaction.Connection;
 
-      transaction.Rollback();
+        transaction.Rollback();
 
-      if (conn != null &&
-          conn.State == System.Data.ConnectionState.Open)
-        conn.Close();
+        transaction = null;
+        session.DetachTrasaction();
+
+        if (conn != null &&
+            conn.State == System.Data.ConnectionState.Open)
+          conn.Close();
+      }
     }
 
     public object InnerTransaction {

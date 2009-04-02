@@ -28,7 +28,7 @@ namespace HeuristicLab.DataAccess.Interfaces {
   public interface ISession {
     ITransaction BeginTransaction();
 
-    ITransaction GetTransactionForCurrentThread();
+    ITransaction GetCurrentTransaction();
 
     IDataAdapter<ObjT> GetDataAdapter<ObjT>()
       where ObjT : IPersistableObject;

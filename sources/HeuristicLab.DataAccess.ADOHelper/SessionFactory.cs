@@ -33,9 +33,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     private IDictionary<Thread, ISession> sessions =
       new Dictionary<Thread, ISession>();
 
-    private ITransactionManager transManager =
-          new TransactionManager();
-
     public Type DbConnectionType { get;  set; }
     public String DbConnectionString { get;  set; }
 
@@ -85,7 +82,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
         if (!sessions.ContainsKey(current)) {
           sessions[current] =
-            new Session(this, transManager);
+            new Session(this);
         }
 
         return sessions[current];

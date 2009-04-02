@@ -42,7 +42,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     public AdapterT TransactionalAdapter {
       get {
         ITransaction trans =
-          session.GetTransactionForCurrentThread();
+          session.GetCurrentTransaction();
         if (trans != null)
           SetTransaction(trans.InnerTransaction as DbTransaction);
         else
