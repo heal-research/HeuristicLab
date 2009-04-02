@@ -87,6 +87,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IPermissionAdapter.cs" />
     <Compile Include="IPermissionOwnerAdapter.cs" />
     <Compile Include="IUserAdapter.cs" />

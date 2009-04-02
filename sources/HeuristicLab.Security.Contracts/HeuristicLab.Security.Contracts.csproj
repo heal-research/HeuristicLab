@@ -73,6 +73,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusinessObjects\GrantedPermission.cs" />
     <Compile Include="BusinessObjects\Permission.cs" />
     <Compile Include="BusinessObjects\PermissionOwner.cs" />

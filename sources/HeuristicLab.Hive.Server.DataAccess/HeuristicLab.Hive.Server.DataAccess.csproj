@@ -75,6 +75,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HiveServerDataAccessPlugin.cs" />
     <Compile Include="IClientAdapter.cs" />
     <Compile Include="IClientGroupAdapter.cs" />

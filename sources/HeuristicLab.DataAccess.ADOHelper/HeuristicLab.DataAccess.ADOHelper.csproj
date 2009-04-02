@@ -79,6 +79,7 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccessADOHelperPlugin.cs" />
     <Compile Include="DataAdapterBase.cs" />
     <Compile Include="DataAdapterWrapperBase.cs" />
