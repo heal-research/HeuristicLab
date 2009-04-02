@@ -97,8 +97,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
 
       set {
+        if (!(value is Session))
+          throw new Exception("Can only bind to ADO session");
+
         this.session = value;
-        this.dataAdapter.Session = value;
+        this.dataAdapter.Session = value as Session;
       }
     }
 

@@ -52,7 +52,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public ISession Session {
+    public Session Session {
       set { 
         this.session = value;
 

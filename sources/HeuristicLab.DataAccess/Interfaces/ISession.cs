@@ -37,8 +37,6 @@ namespace HeuristicLab.DataAccess.Interfaces {
       where ObjT : IPersistableObject
       where T : class, IDataAdapter<ObjT>;
 
-    DbConnection Connection { get; }
-
     void EndSession();
   }
 }

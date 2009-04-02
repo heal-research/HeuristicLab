@@ -41,6 +41,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     AdapterT TransactionalAdapter { get; }
 
-    ISession Session { set; }
+    Session Session { set; }
   }
 }
