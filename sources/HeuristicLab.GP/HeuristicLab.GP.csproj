@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BakedFunctionTree.cs" />
+    <Compile Include="TrainingWindowSlider.cs" />
     <Compile Include="DefaultFunctionTreeNameGenerator.cs" />
     <Compile Include="EqualiserController.cs" />
     <Compile Include="Logging\TreeArityAnalyser.cs" />

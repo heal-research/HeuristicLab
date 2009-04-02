@@ -1,0 +1,76 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Random;
+
+namespace HeuristicLab.GP {
+  public class TrainingWindowSlider : OperatorBase {
+
+    private const string TRAINING_SAMPLES_START = "TrainingSamplesStart";
+    private const string TRAINING_SAMPLES_END = "TrainingSamplesEnd";
+    private const string TRAINING_WINDOW_START = "TrainingWindowStart";
+    private const string TRAINING_WINDOW_END = "TrainingWindowEnd";
+    private const string WINDOW_SIZE = "WindowSize";
+    private const string STEP_SIZE = "SlidingStepSize";
+
+    public override string Description {
+      get { return @"Modifies variables TrainingSamplesStart and TrainingSamplesEnd to have a continually sliding window over the whole training data set."; }
+    }
+
+    public TrainingWindowSlider() {
+      AddVariableInfo(new VariableInfo(TRAINING_SAMPLES_START, "Start of whole training set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TRAINING_SAMPLES_END, "End of whole training set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TRAINING_WINDOW_START, "Start of training set window", typeof(IntData), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo(TRAINING_WINDOW_END, "End of training set window", typeof(IntData), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo(STEP_SIZE, "Numer of samples to slide the window forward", typeof(IntData), VariableKind.In));
+    }
+
+    public override IOperation Apply(IScope scope) {
+      int trainingSamplesStart = GetVariableValue<IntData>(TRAINING_SAMPLES_START, scope, true).Data;
+      int trainingSamplesEnd = GetVariableValue<IntData>(TRAINING_SAMPLES_END, scope, true).Data;
+      int wholeTrainingSetSize = trainingSamplesEnd - trainingSamplesStart;
+
+      int trainingWindowStart = GetVariableValue<IntData>(TRAINING_WINDOW_START, scope, true).Data;
+      int trainingWindowEnd = GetVariableValue<IntData>(TRAINING_WINDOW_END, scope, true).Data;
+      int stepSize = GetVariableValue<IntData>(STEP_SIZE, scope, true).Data;
+      int windowSize = trainingWindowEnd - trainingWindowStart;
+
+      int trainingWindowEndOffset = trainingWindowEnd - trainingSamplesStart;
+      trainingWindowEndOffset = (trainingWindowEndOffset + stepSize) % wholeTrainingSetSize;
+      trainingWindowEnd = trainingWindowEndOffset + trainingSamplesStart;
+      
+      if (trainingWindowEnd > trainingWindowStart) {
+        trainingWindowStart = trainingWindowStart + stepSize;
+      } else {
+        // slide over end of whole training set => reset to beginning
+        trainingWindowStart = trainingSamplesStart;
+        trainingWindowEnd = trainingWindowStart + windowSize;
+      }
+
+      return null;
+    }
+  }
+}
