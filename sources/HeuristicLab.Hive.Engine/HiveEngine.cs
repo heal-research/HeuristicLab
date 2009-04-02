@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -71,7 +72,8 @@ namespace HeuristicLab.Hive.Engine {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
       jobObj.SerializedJob = PersistenceManager.SaveToGZip(job);
-      executionEngineFacade.AddJob(jobObj);
+      jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
+      ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
     }
 
     public void ExecuteStep() {

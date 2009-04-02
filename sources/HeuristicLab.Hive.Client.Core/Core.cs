@@ -202,7 +202,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
-        bool sandboxed = true;
+        bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
         AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
