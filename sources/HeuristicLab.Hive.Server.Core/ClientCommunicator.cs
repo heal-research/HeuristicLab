@@ -77,12 +77,15 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="e"></param>
     void lifecycleManager_OnServerHeartbeat(object sender, EventArgs e) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
           session.GetDataAdapter<ClientInfo, IClientAdapter>();
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
+
+        tx = session.BeginTransaction();
 
         List<ClientInfo> allClients = new List<ClientInfo>(clientAdapter.GetAll());
 
@@ -125,6 +128,12 @@ namespace HeuristicLab.Hive.Server.Core {
             heartbeatLock.ExitWriteLock();
           }
         }
+        tx.Commit();
+      }
+      catch (Exception ex) {
+        if (tx != null) 
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -142,10 +151,13 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>
     public Response Login(ClientInfo clientInfo) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
           session.GetDataAdapter<ClientInfo, IClientAdapter>();
+
+        tx = session.BeginTransaction();
 
         Response response = new Response();
 
@@ -168,7 +180,13 @@ namespace HeuristicLab.Hive.Server.Core {
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_SUCCESS;
 
+        tx.Commit();
         return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -185,6 +203,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>
     public ResponseHB ProcessHeartBeat(HeartBeatData hbData) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
@@ -192,6 +211,8 @@ namespace HeuristicLab.Hive.Server.Core {
 
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
+
+        tx = session.BeginTransaction();
 
         ResponseHB response = new ResponseHB();
 
@@ -247,8 +268,13 @@ namespace HeuristicLab.Hive.Server.Core {
             }
           }
         }
-
+        tx.Commit();
         return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -285,6 +311,7 @@ namespace HeuristicLab.Hive.Server.Core {
       Exception exception,
       bool finished) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
@@ -293,6 +320,8 @@ namespace HeuristicLab.Hive.Server.Core {
           session.GetDataAdapter<Job, IJobAdapter>();
         IJobResultsAdapter jobResultAdapter =
           session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
+        tx = session.BeginTransaction();
 
         ResponseResultReceived response = new ResponseResultReceived();
         ClientInfo client =
@@ -358,7 +387,13 @@ namespace HeuristicLab.Hive.Server.Core {
         response.JobId = jobId;
         response.finished = finished;
 
+        tx.Commit();
         return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -400,12 +435,15 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>                       
     public Response Logout(Guid clientId) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IClientAdapter clientAdapter =
           session.GetDataAdapter<ClientInfo, IClientAdapter>();
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
+
+        tx = session.BeginTransaction();
 
         Response response = new Response();
 
@@ -436,7 +474,13 @@ namespace HeuristicLab.Hive.Server.Core {
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_SUCCESS;
 
+        tx.Commit();
         return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -452,10 +496,12 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <returns></returns>
     public Response IsJobStillNeeded(Guid jobId) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
+        tx = session.BeginTransaction();
 
         Response response = new Response();
         Job job = jobAdapter.GetById(jobId);
@@ -474,7 +520,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
+        tx.Commit();
         return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
