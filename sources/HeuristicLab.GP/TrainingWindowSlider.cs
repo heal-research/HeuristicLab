@@ -45,29 +45,19 @@ namespace HeuristicLab.GP {
       AddVariableInfo(new VariableInfo(TRAINING_SAMPLES_END, "End of whole training set", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(TRAINING_WINDOW_START, "Start of training set window", typeof(IntData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo(TRAINING_WINDOW_END, "End of training set window", typeof(IntData), VariableKind.In | VariableKind.Out));
-      AddVariableInfo(new VariableInfo(STEP_SIZE, "Numer of samples to slide the window forward", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(STEP_SIZE, "Number of samples to slide the window forward", typeof(IntData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       int trainingSamplesStart = GetVariableValue<IntData>(TRAINING_SAMPLES_START, scope, true).Data;
       int trainingSamplesEnd = GetVariableValue<IntData>(TRAINING_SAMPLES_END, scope, true).Data;
-      int wholeTrainingSetSize = trainingSamplesEnd - trainingSamplesStart;
-
       int trainingWindowStart = GetVariableValue<IntData>(TRAINING_WINDOW_START, scope, true).Data;
       int trainingWindowEnd = GetVariableValue<IntData>(TRAINING_WINDOW_END, scope, true).Data;
       int stepSize = GetVariableValue<IntData>(STEP_SIZE, scope, true).Data;
-      int windowSize = trainingWindowEnd - trainingWindowStart;
 
-      int trainingWindowEndOffset = trainingWindowEnd - trainingSamplesStart;
-      trainingWindowEndOffset = (trainingWindowEndOffset + stepSize) % wholeTrainingSetSize;
-      trainingWindowEnd = trainingWindowEndOffset + trainingSamplesStart;
-      
-      if (trainingWindowEnd > trainingWindowStart) {
+      if (trainingWindowEnd + stepSize <= trainingSamplesEnd) {
         trainingWindowStart = trainingWindowStart + stepSize;
-      } else {
-        // slide over end of whole training set => reset to beginning
-        trainingWindowStart = trainingSamplesStart;
-        trainingWindowEnd = trainingWindowStart + windowSize;
+        trainingWindowEnd = trainingWindowEnd + stepSize;
       }
 
       return null;
