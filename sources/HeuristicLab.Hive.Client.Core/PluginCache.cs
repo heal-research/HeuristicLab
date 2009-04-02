@@ -36,9 +36,10 @@ namespace HeuristicLab.Hive.Client.Core {
       }
 
       List<CachedPlugin> receivedPlugins = WcfService.Instance.RequestPlugins(missingPlugins);
-      if (receivedPlugins != null)
+      if (receivedPlugins != null) {
         neededPlugins.AddRange(receivedPlugins);
-      else
+        pluginCache.AddRange(receivedPlugins);
+      } else
         Logging.Instance.Error(this.ToString(), "Fetching of the plugins failed!");
 
       return neededPlugins;

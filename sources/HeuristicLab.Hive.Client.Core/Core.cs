@@ -102,6 +102,7 @@ namespace HeuristicLab.Hive.Client.Core {
         Logging.Instance.Info(this.ToString(), container.Message.ToString());
         DetermineAction(container);
       }
+      Console.WriteLine("ended!");
     }    
 
     /// <summary>
@@ -136,6 +137,10 @@ namespace HeuristicLab.Hive.Client.Core {
           break;     
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
+          lock (engines) {
+            foreach (KeyValuePair<Guid, AppDomain> kvp in appDomains)
+              AppDomain.Unload(kvp.Value);
+          }
           abortRequested = true;
           beat.StopHeartBeat();
           break;
