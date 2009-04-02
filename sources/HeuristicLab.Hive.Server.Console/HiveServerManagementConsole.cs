@@ -92,14 +92,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
         clients = clientManager.GetAllClientGroups();
         lvClientControl.Items.Clear();
-        tvClientControl.Nodes.Clear();
         int count = 0;
         List<Guid> inGroup = new List<Guid>();
         foreach (ClientGroup cg in clients.List) {
-          tvClientControl.Nodes.Add(cg.Name);
           ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
           foreach (ClientInfo ci in cg.Resources) {
-            tvClientControl.Nodes[tvClientControl.Nodes.Count - 1].Nodes.Add(ci.Name);
             ListViewItem item = null;
             if ((ci.State == State.offline) || (ci.State == State.nullState)) {
               item = new ListViewItem(ci.Name, 3, lvg);
@@ -130,7 +127,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
           }
           if (!help) {
-            tvClientControl.Nodes.Add(ci.Name);
             ListViewItem item = null;
             if ((ci.State == State.offline) || (ci.State == State.nullState)) {
               item = new ListViewItem(ci.Name, 3, lvunsorted);
@@ -168,7 +164,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         jobs = jobManager.GetAllJobs();
 
         lvJobControl.Items.Clear();
-        tvJobControl.Nodes.Clear();
 
         ListViewGroup lvJobCalculating = new ListViewGroup("calculating", HorizontalAlignment.Left);
         ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
@@ -179,14 +174,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         jobGroup.Add(lvJobFinished);
         jobGroup.Add(lvJobPending);
         
-        tvJobControl.Nodes.Add("calculating");
-        tvJobControl.Nodes.Add("finished");
-        tvJobControl.Nodes.Add("pending");
         foreach (Job job in jobs.List) {
           if (job.State == State.calculating) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobCalculating);
             jobObjects.Add(job.Id, lvi);
-            tvJobControl.Nodes[0].Nodes.Add(job.Id.ToString());
 
             //lvJobControl.Items.Add(lvi);
             
@@ -194,12 +185,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           } else if (job.State == State.finished) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
             jobObjects.Add(job.Id, lvi);
-            tvJobControl.Nodes[1].Nodes.Add(job.Id.ToString());
             //lvJobControl.Items.Add(lvi);
           } else if (job.State == State.offline) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobPending);
             jobObjects.Add(job.Id, lvi);
-            tvJobControl.Nodes[2].Nodes.Add(job.Id.ToString());
             //lvJobControl.Items.Add(lvi);
           }
         } // Jobs
@@ -430,47 +419,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       ClientClicked();
     }
 
-    private void OnTVClientClicked(object sender, TreeViewEventArgs e) {
-      bool clientgroup = false;
-      foreach (ClientGroup cg in clients.List) {
-        if (tvClientControl.SelectedNode.Text == cg.Name) {
-          clientgroup = true;
-        }
-      }
-      if (clientgroup == false) {
-        nameCurrentClient = tvClientControl.SelectedNode.Text;
-        flagClient = true;
-        ClientClicked();
-      }
-
-    }
-
     private void OnLVJobControlClicked(object sender, EventArgs e) {
       nameCurrentJob = lvJobControl.SelectedItems[0].Text;
       flagJob = true;
       JobClicked();
-    }
-
-    private void OnTVJobControlClicked(object sender, TreeViewEventArgs e) {
-      try {
-        nameCurrentJob = Convert.ToInt32(tvJobControl.SelectedNode.Text).ToString();
-        flagJob = true;
-        JobClicked();
-      }
-      catch (Exception ex) { }
-
-    }
-
-    private void btnClientClose_Click(object sender, EventArgs e) {
-      scClientControl.Panel2.Controls.Clear();
-      scClientControl.Panel2.Controls.Add(lvClientControl);
-      flagClient = false;
-    }
- 
-    private void btnJobDetailClose_Click(object sender, EventArgs e) {
-      scJobControl.Panel2.Controls.Clear();
-      scJobControl.Panel2.Controls.Add(lvJobControl);
-      flagJob = false;
     }
 
     private void lvJobControl_MouseMove(object sender, MouseEventArgs e) {
