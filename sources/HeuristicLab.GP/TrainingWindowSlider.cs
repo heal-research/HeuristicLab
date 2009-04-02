@@ -33,7 +33,6 @@ namespace HeuristicLab.GP {
     private const string TRAINING_SAMPLES_END = "TrainingSamplesEnd";
     private const string TRAINING_WINDOW_START = "TrainingWindowStart";
     private const string TRAINING_WINDOW_END = "TrainingWindowEnd";
-    private const string WINDOW_SIZE = "WindowSize";
     private const string STEP_SIZE = "SlidingStepSize";
 
     public override string Description {
