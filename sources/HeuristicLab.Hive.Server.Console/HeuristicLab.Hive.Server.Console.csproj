@@ -94,6 +94,7 @@
     <Compile Include="AddJobForm.Designer.cs">
       <DependentUpon>AddJobForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Changes.cs" />
     <Compile Include="HiveServerConsole.cs">
       <SubType>Form</SubType>
     </Compile>

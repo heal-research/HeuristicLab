@@ -44,63 +44,34 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.msServerConsole = new System.Windows.Forms.MenuStrip();
-      this.tsmiConsole = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
-      this.gbManager = new System.Windows.Forms.GroupBox();
+      this.gbConfiguration = new System.Windows.Forms.GroupBox();
       this.lblPort = new System.Windows.Forms.Label();
       this.lblIp = new System.Windows.Forms.Label();
       this.tbPort = new System.Windows.Forms.TextBox();
       this.tbIp = new System.Windows.Forms.TextBox();
       this.btnLogin = new System.Windows.Forms.Button();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.gpUser = new System.Windows.Forms.GroupBox();
       this.tbUserName = new System.Windows.Forms.TextBox();
       this.lblPwd = new System.Windows.Forms.Label();
       this.lblUsername = new System.Windows.Forms.Label();
       this.tbPwd = new System.Windows.Forms.TextBox();
       this.lblError = new System.Windows.Forms.Label();
-      this.msServerConsole.SuspendLayout();
-      this.gbManager.SuspendLayout();
-      this.groupBox1.SuspendLayout();
+      this.gbConfiguration.SuspendLayout();
+      this.gpUser.SuspendLayout();
       this.SuspendLayout();
       // 
-      // msServerConsole
+      // gbConfiguration
       // 
-      this.msServerConsole.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiConsole});
-      this.msServerConsole.Location = new System.Drawing.Point(0, 0);
-      this.msServerConsole.Name = "msServerConsole";
-      this.msServerConsole.Size = new System.Drawing.Size(311, 24);
-      this.msServerConsole.TabIndex = 0;
-      this.msServerConsole.Text = "menuStrip1";
-      // 
-      // tsmiConsole
-      // 
-      this.tsmiConsole.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiExit});
-      this.tsmiConsole.Name = "tsmiConsole";
-      this.tsmiConsole.Size = new System.Drawing.Size(87, 20);
-      this.tsmiConsole.Text = "Serverconsole";
-      // 
-      // tsmiExit
-      // 
-      this.tsmiExit.Name = "tsmiExit";
-      this.tsmiExit.Size = new System.Drawing.Size(103, 22);
-      this.tsmiExit.Text = "Exit";
-      this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
-      // 
-      // gbManager
-      // 
-      this.gbManager.Controls.Add(this.lblPort);
-      this.gbManager.Controls.Add(this.lblIp);
-      this.gbManager.Controls.Add(this.tbPort);
-      this.gbManager.Controls.Add(this.tbIp);
-      this.gbManager.Location = new System.Drawing.Point(16, 124);
-      this.gbManager.Name = "gbManager";
-      this.gbManager.Size = new System.Drawing.Size(283, 82);
-      this.gbManager.TabIndex = 4;
-      this.gbManager.TabStop = false;
-      this.gbManager.Text = "Manager";
+      this.gbConfiguration.Controls.Add(this.lblPort);
+      this.gbConfiguration.Controls.Add(this.lblIp);
+      this.gbConfiguration.Controls.Add(this.tbPort);
+      this.gbConfiguration.Controls.Add(this.tbIp);
+      this.gbConfiguration.Location = new System.Drawing.Point(12, 100);
+      this.gbConfiguration.Name = "gbConfiguration";
+      this.gbConfiguration.Size = new System.Drawing.Size(283, 82);
+      this.gbConfiguration.TabIndex = 4;
+      this.gbConfiguration.TabStop = false;
+      this.gbConfiguration.Text = "Configuration";
       // 
       // lblPort
       // 
@@ -138,7 +109,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // btnLogin
       // 
-      this.btnLogin.Location = new System.Drawing.Point(183, 212);
+      this.btnLogin.Location = new System.Drawing.Point(179, 188);
       this.btnLogin.Name = "btnLogin";
       this.btnLogin.Size = new System.Drawing.Size(116, 23);
       this.btnLogin.TabIndex = 7;
@@ -147,18 +118,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
       this.btnLogin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
-      // groupBox1
+      // gpUser
       // 
-      this.groupBox1.Controls.Add(this.tbUserName);
-      this.groupBox1.Controls.Add(this.lblPwd);
-      this.groupBox1.Controls.Add(this.lblUsername);
-      this.groupBox1.Controls.Add(this.tbPwd);
-      this.groupBox1.Location = new System.Drawing.Point(16, 36);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(283, 82);
-      this.groupBox1.TabIndex = 1;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Manager";
+      this.gpUser.Controls.Add(this.tbUserName);
+      this.gpUser.Controls.Add(this.lblPwd);
+      this.gpUser.Controls.Add(this.lblUsername);
+      this.gpUser.Controls.Add(this.tbPwd);
+      this.gpUser.Location = new System.Drawing.Point(12, 12);
+      this.gpUser.Name = "gpUser";
+      this.gpUser.Size = new System.Drawing.Size(283, 82);
+      this.gpUser.TabIndex = 1;
+      this.gpUser.TabStop = false;
+      this.gpUser.Text = "User";
       // 
       // tbUserName
       // 
@@ -206,24 +177,21 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // HiveServerConsole
       // 
+      this.AcceptButton = this.btnLogin;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(311, 263);
+      this.ClientSize = new System.Drawing.Size(311, 225);
       this.Controls.Add(this.lblError);
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.gpUser);
       this.Controls.Add(this.btnLogin);
-      this.Controls.Add(this.gbManager);
-      this.Controls.Add(this.msServerConsole);
-      this.MainMenuStrip = this.msServerConsole;
+      this.Controls.Add(this.gbConfiguration);
       this.Name = "HiveServerConsole";
       this.Text = "Server Console";
       this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
-      this.msServerConsole.ResumeLayout(false);
-      this.msServerConsole.PerformLayout();
-      this.gbManager.ResumeLayout(false);
-      this.gbManager.PerformLayout();
-      this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
+      this.gbConfiguration.ResumeLayout(false);
+      this.gbConfiguration.PerformLayout();
+      this.gpUser.ResumeLayout(false);
+      this.gpUser.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -231,16 +199,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     #endregion
 
-    private System.Windows.Forms.MenuStrip msServerConsole;
-    private System.Windows.Forms.ToolStripMenuItem tsmiConsole;
-    private System.Windows.Forms.ToolStripMenuItem tsmiExit;
-    private System.Windows.Forms.GroupBox gbManager;
+    private System.Windows.Forms.GroupBox gbConfiguration;
     private System.Windows.Forms.Label lblPort;
     private System.Windows.Forms.Label lblIp;
     private System.Windows.Forms.TextBox tbPort;
     private System.Windows.Forms.TextBox tbIp;
     private System.Windows.Forms.Button btnLogin;
-    private System.Windows.Forms.GroupBox groupBox1;
+    private System.Windows.Forms.GroupBox gpUser;
     private System.Windows.Forms.TextBox tbUserName;
     private System.Windows.Forms.Label lblPwd;
     private System.Windows.Forms.Label lblUsername;

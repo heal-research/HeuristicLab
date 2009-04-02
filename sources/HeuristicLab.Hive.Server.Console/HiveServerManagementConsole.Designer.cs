@@ -30,24 +30,8 @@
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.userToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.userToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-      this.groupToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-      this.tcManagementConsole = new System.Windows.Forms.TabControl();
-      this.tpClientControl = new System.Windows.Forms.TabPage();
-      this.scClientControl = new System.Windows.Forms.SplitContainer();
-      this.tvClientControl = new System.Windows.Forms.TreeView();
-      this.lvClientControl = new System.Windows.Forms.ListView();
       this.ilClientControl = new System.Windows.Forms.ImageList(this.components);
-      this.tpJobControl = new System.Windows.Forms.TabPage();
-      this.scJobControl = new System.Windows.Forms.SplitContainer();
-      this.tvJobControl = new System.Windows.Forms.TreeView();
-      this.lvJobControl = new System.Windows.Forms.ListView();
       this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
-      this.tpUserControl = new System.Windows.Forms.TabPage();
-      this.scUserControl = new System.Windows.Forms.SplitContainer();
-      this.tvUserControl = new System.Windows.Forms.TreeView();
-      this.lvUserControl = new System.Windows.Forms.ListView();
       this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
       this.plClientDetails = new System.Windows.Forms.Panel();
       this.lblState = new System.Windows.Forms.Label();
@@ -84,20 +68,16 @@
       this.timerSyncronize = new System.Windows.Forms.Timer(this.components);
       this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
       this.updaterWoker = new System.ComponentModel.BackgroundWorker();
+      this.tpJobControl = new System.Windows.Forms.TabPage();
+      this.scJobControl = new System.Windows.Forms.SplitContainer();
+      this.tvJobControl = new System.Windows.Forms.TreeView();
+      this.lvJobControl = new System.Windows.Forms.ListView();
+      this.tpClientControl = new System.Windows.Forms.TabPage();
+      this.scClientControl = new System.Windows.Forms.SplitContainer();
+      this.tvClientControl = new System.Windows.Forms.TreeView();
+      this.lvClientControl = new System.Windows.Forms.ListView();
+      this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.menuStrip1.SuspendLayout();
-      this.tcManagementConsole.SuspendLayout();
-      this.tpClientControl.SuspendLayout();
-      this.scClientControl.Panel1.SuspendLayout();
-      this.scClientControl.Panel2.SuspendLayout();
-      this.scClientControl.SuspendLayout();
-      this.tpJobControl.SuspendLayout();
-      this.scJobControl.Panel1.SuspendLayout();
-      this.scJobControl.Panel2.SuspendLayout();
-      this.scJobControl.SuspendLayout();
-      this.tpUserControl.SuspendLayout();
-      this.scUserControl.Panel1.SuspendLayout();
-      this.scUserControl.Panel2.SuspendLayout();
-      this.scUserControl.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
       this.plUserDetails.SuspendLayout();
@@ -105,6 +85,15 @@
       this.plJobDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
+      this.tpJobControl.SuspendLayout();
+      this.scJobControl.Panel1.SuspendLayout();
+      this.scJobControl.Panel2.SuspendLayout();
+      this.scJobControl.SuspendLayout();
+      this.tpClientControl.SuspendLayout();
+      this.scClientControl.Panel1.SuspendLayout();
+      this.scClientControl.Panel2.SuspendLayout();
+      this.scClientControl.SuspendLayout();
+      this.tcManagementConsole.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -136,8 +125,7 @@
       // addToolStripMenuItem
       // 
       this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jobToolStripMenuItem,
-            this.userToolStripMenuItem});
+            this.jobToolStripMenuItem});
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
       this.addToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
       this.addToolStripMenuItem.Text = "Add";
@@ -145,94 +133,9 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
-      // 
-      // userToolStripMenuItem
-      // 
-      this.userToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.userToolStripMenuItem1,
-            this.groupToolStripMenuItem2});
-      this.userToolStripMenuItem.Name = "userToolStripMenuItem";
-      this.userToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-      this.userToolStripMenuItem.Text = "User";
-      // 
-      // userToolStripMenuItem1
-      // 
-      this.userToolStripMenuItem1.Name = "userToolStripMenuItem1";
-      this.userToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
-      this.userToolStripMenuItem1.Text = "User";
-      // 
-      // groupToolStripMenuItem2
-      // 
-      this.groupToolStripMenuItem2.Name = "groupToolStripMenuItem2";
-      this.groupToolStripMenuItem2.Size = new System.Drawing.Size(114, 22);
-      this.groupToolStripMenuItem2.Text = "Group";
-      // 
-      // tcManagementConsole
-      // 
-      this.tcManagementConsole.Controls.Add(this.tpClientControl);
-      this.tcManagementConsole.Controls.Add(this.tpJobControl);
-      this.tcManagementConsole.Controls.Add(this.tpUserControl);
-      this.tcManagementConsole.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tcManagementConsole.Location = new System.Drawing.Point(0, 24);
-      this.tcManagementConsole.Name = "tcManagementConsole";
-      this.tcManagementConsole.SelectedIndex = 0;
-      this.tcManagementConsole.Size = new System.Drawing.Size(651, 378);
-      this.tcManagementConsole.TabIndex = 1;
-      // 
-      // tpClientControl
-      // 
-      this.tpClientControl.AllowDrop = true;
-      this.tpClientControl.Controls.Add(this.scClientControl);
-      this.tpClientControl.Location = new System.Drawing.Point(4, 22);
-      this.tpClientControl.Name = "tpClientControl";
-      this.tpClientControl.Padding = new System.Windows.Forms.Padding(3);
-      this.tpClientControl.Size = new System.Drawing.Size(643, 352);
-      this.tpClientControl.TabIndex = 0;
-      this.tpClientControl.Text = "Client Control";
-      this.tpClientControl.UseVisualStyleBackColor = true;
-      // 
-      // scClientControl
-      // 
-      this.scClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scClientControl.Location = new System.Drawing.Point(3, 3);
-      this.scClientControl.Name = "scClientControl";
-      // 
-      // scClientControl.Panel1
-      // 
-      this.scClientControl.Panel1.Controls.Add(this.tvClientControl);
-      // 
-      // scClientControl.Panel2
-      // 
-      this.scClientControl.Panel2.Controls.Add(this.lvClientControl);
-      this.scClientControl.Size = new System.Drawing.Size(637, 346);
-      this.scClientControl.SplitterDistance = 139;
-      this.scClientControl.TabIndex = 0;
-      // 
-      // tvClientControl
-      // 
-      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tvClientControl.Location = new System.Drawing.Point(0, 0);
-      this.tvClientControl.Name = "tvClientControl";
-      this.tvClientControl.Size = new System.Drawing.Size(139, 346);
-      this.tvClientControl.TabIndex = 0;
-      this.tvClientControl.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTVClientClicked);
-      // 
-      // lvClientControl
-      // 
-      this.lvClientControl.AllowDrop = true;
-      this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
-      this.lvClientControl.LargeImageList = this.ilClientControl;
-      this.lvClientControl.Location = new System.Drawing.Point(0, 0);
-      this.lvClientControl.MultiSelect = false;
-      this.lvClientControl.Name = "lvClientControl";
-      this.lvClientControl.Size = new System.Drawing.Size(494, 346);
-      this.lvClientControl.TabIndex = 0;
-      this.lvClientControl.UseCompatibleStateImageBehavior = false;
-      this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
       // 
       // ilClientControl
       // 
@@ -241,110 +144,13 @@
       this.ilClientControl.Images.SetKeyName(0, "monitor-green.png");
       this.ilClientControl.Images.SetKeyName(1, "monitor-orange.png");
       this.ilClientControl.Images.SetKeyName(2, "monitor-red.png");
-      // 
-      // tpJobControl
-      // 
-      this.tpJobControl.Controls.Add(this.scJobControl);
-      this.tpJobControl.Location = new System.Drawing.Point(4, 22);
-      this.tpJobControl.Name = "tpJobControl";
-      this.tpJobControl.Padding = new System.Windows.Forms.Padding(3);
-      this.tpJobControl.Size = new System.Drawing.Size(643, 352);
-      this.tpJobControl.TabIndex = 1;
-      this.tpJobControl.Text = "Job Control";
-      this.tpJobControl.UseVisualStyleBackColor = true;
-      // 
-      // scJobControl
-      // 
-      this.scJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scJobControl.Location = new System.Drawing.Point(3, 3);
-      this.scJobControl.Name = "scJobControl";
-      // 
-      // scJobControl.Panel1
-      // 
-      this.scJobControl.Panel1.Controls.Add(this.tvJobControl);
-      // 
-      // scJobControl.Panel2
-      // 
-      this.scJobControl.Panel2.Controls.Add(this.lvJobControl);
-      this.scJobControl.Size = new System.Drawing.Size(637, 346);
-      this.scJobControl.SplitterDistance = 139;
-      this.scJobControl.TabIndex = 1;
-      // 
-      // tvJobControl
-      // 
-      this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tvJobControl.Location = new System.Drawing.Point(0, 0);
-      this.tvJobControl.Name = "tvJobControl";
-      this.tvJobControl.Size = new System.Drawing.Size(139, 346);
-      this.tvJobControl.TabIndex = 2;
-      this.tvJobControl.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTVJobControlClicked);
-      // 
-      // lvJobControl
-      // 
-      this.lvJobControl.AllowDrop = true;
-      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.ilJobControl;
-      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
-      this.lvJobControl.MultiSelect = false;
-      this.lvJobControl.Name = "lvJobControl";
-      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
-      this.lvJobControl.TabIndex = 0;
-      this.lvJobControl.UseCompatibleStateImageBehavior = false;
-      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
-      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
+      this.ilClientControl.Images.SetKeyName(3, "monitor-gray.png");
       // 
       // ilJobControl
       // 
       this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
       this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
       this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
-      // 
-      // tpUserControl
-      // 
-      this.tpUserControl.Controls.Add(this.scUserControl);
-      this.tpUserControl.Location = new System.Drawing.Point(4, 22);
-      this.tpUserControl.Name = "tpUserControl";
-      this.tpUserControl.Padding = new System.Windows.Forms.Padding(3);
-      this.tpUserControl.Size = new System.Drawing.Size(643, 352);
-      this.tpUserControl.TabIndex = 2;
-      this.tpUserControl.Text = "User Control";
-      this.tpUserControl.UseVisualStyleBackColor = true;
-      // 
-      // scUserControl
-      // 
-      this.scUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.scUserControl.Location = new System.Drawing.Point(3, 3);
-      this.scUserControl.Name = "scUserControl";
-      // 
-      // scUserControl.Panel1
-      // 
-      this.scUserControl.Panel1.Controls.Add(this.tvUserControl);
-      // 
-      // scUserControl.Panel2
-      // 
-      this.scUserControl.Panel2.Controls.Add(this.lvUserControl);
-      this.scUserControl.Size = new System.Drawing.Size(637, 346);
-      this.scUserControl.SplitterDistance = 139;
-      this.scUserControl.TabIndex = 1;
-      // 
-      // tvUserControl
-      // 
-      this.tvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tvUserControl.Location = new System.Drawing.Point(0, 0);
-      this.tvUserControl.Name = "tvUserControl";
-      this.tvUserControl.Size = new System.Drawing.Size(139, 346);
-      this.tvUserControl.TabIndex = 1;
-      // 
-      // lvUserControl
-      // 
-      this.lvUserControl.AllowDrop = true;
-      this.lvUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvUserControl.LargeImageList = this.ilUserControl;
-      this.lvUserControl.Location = new System.Drawing.Point(0, 0);
-      this.lvUserControl.Name = "lvUserControl";
-      this.lvUserControl.Size = new System.Drawing.Size(494, 346);
-      this.lvUserControl.TabIndex = 1;
-      this.lvUserControl.UseCompatibleStateImageBehavior = false;
       // 
       // ilUserControl
       // 
@@ -460,7 +266,6 @@
       this.btnUserControlClose.TabIndex = 4;
       this.btnUserControlClose.Text = "Close";
       this.btnUserControlClose.UseVisualStyleBackColor = true;
-      this.btnUserControlClose.Click += new System.EventHandler(this.btnUserControlClose_Click);
       // 
       // pbUserControl
       // 
@@ -664,6 +469,121 @@
       // updaterWoker
       // 
       this.updaterWoker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.updaterWoker_DoWork);
+      this.updaterWoker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.updaterWoker_RunWorkerCompleted);
+      // 
+      // tpJobControl
+      // 
+      this.tpJobControl.Controls.Add(this.scJobControl);
+      this.tpJobControl.Location = new System.Drawing.Point(4, 22);
+      this.tpJobControl.Name = "tpJobControl";
+      this.tpJobControl.Padding = new System.Windows.Forms.Padding(3);
+      this.tpJobControl.Size = new System.Drawing.Size(643, 352);
+      this.tpJobControl.TabIndex = 1;
+      this.tpJobControl.Text = "Job Control";
+      this.tpJobControl.UseVisualStyleBackColor = true;
+      // 
+      // scJobControl
+      // 
+      this.scJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scJobControl.Location = new System.Drawing.Point(3, 3);
+      this.scJobControl.Name = "scJobControl";
+      // 
+      // scJobControl.Panel1
+      // 
+      this.scJobControl.Panel1.Controls.Add(this.tvJobControl);
+      // 
+      // scJobControl.Panel2
+      // 
+      this.scJobControl.Panel2.Controls.Add(this.lvJobControl);
+      this.scJobControl.Size = new System.Drawing.Size(637, 346);
+      this.scJobControl.SplitterDistance = 139;
+      this.scJobControl.TabIndex = 1;
+      // 
+      // tvJobControl
+      // 
+      this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.tvJobControl.Name = "tvJobControl";
+      this.tvJobControl.Size = new System.Drawing.Size(139, 346);
+      this.tvJobControl.TabIndex = 2;
+      this.tvJobControl.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTVJobControlClicked);
+      // 
+      // lvJobControl
+      // 
+      this.lvJobControl.AllowDrop = true;
+      this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvJobControl.LargeImageList = this.ilJobControl;
+      this.lvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.lvJobControl.MultiSelect = false;
+      this.lvJobControl.Name = "lvJobControl";
+      this.lvJobControl.Size = new System.Drawing.Size(494, 346);
+      this.lvJobControl.TabIndex = 0;
+      this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
+      this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
+      // 
+      // tpClientControl
+      // 
+      this.tpClientControl.AllowDrop = true;
+      this.tpClientControl.Controls.Add(this.scClientControl);
+      this.tpClientControl.Location = new System.Drawing.Point(4, 22);
+      this.tpClientControl.Name = "tpClientControl";
+      this.tpClientControl.Padding = new System.Windows.Forms.Padding(3);
+      this.tpClientControl.Size = new System.Drawing.Size(643, 352);
+      this.tpClientControl.TabIndex = 0;
+      this.tpClientControl.Text = "Client Control";
+      this.tpClientControl.UseVisualStyleBackColor = true;
+      // 
+      // scClientControl
+      // 
+      this.scClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scClientControl.Location = new System.Drawing.Point(3, 3);
+      this.scClientControl.Name = "scClientControl";
+      // 
+      // scClientControl.Panel1
+      // 
+      this.scClientControl.Panel1.Controls.Add(this.tvClientControl);
+      // 
+      // scClientControl.Panel2
+      // 
+      this.scClientControl.Panel2.Controls.Add(this.lvClientControl);
+      this.scClientControl.Size = new System.Drawing.Size(637, 346);
+      this.scClientControl.SplitterDistance = 139;
+      this.scClientControl.TabIndex = 0;
+      // 
+      // tvClientControl
+      // 
+      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.tvClientControl.Name = "tvClientControl";
+      this.tvClientControl.Size = new System.Drawing.Size(139, 346);
+      this.tvClientControl.TabIndex = 0;
+      this.tvClientControl.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnTVClientClicked);
+      // 
+      // lvClientControl
+      // 
+      this.lvClientControl.AllowDrop = true;
+      this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
+      this.lvClientControl.LargeImageList = this.ilClientControl;
+      this.lvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.lvClientControl.MultiSelect = false;
+      this.lvClientControl.Name = "lvClientControl";
+      this.lvClientControl.Size = new System.Drawing.Size(494, 346);
+      this.lvClientControl.TabIndex = 0;
+      this.lvClientControl.UseCompatibleStateImageBehavior = false;
+      this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
+      // 
+      // tcManagementConsole
+      // 
+      this.tcManagementConsole.Controls.Add(this.tpClientControl);
+      this.tcManagementConsole.Controls.Add(this.tpJobControl);
+      this.tcManagementConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tcManagementConsole.Location = new System.Drawing.Point(0, 24);
+      this.tcManagementConsole.Name = "tcManagementConsole";
+      this.tcManagementConsole.SelectedIndex = 0;
+      this.tcManagementConsole.Size = new System.Drawing.Size(651, 378);
+      this.tcManagementConsole.TabIndex = 1;
       // 
       // HiveServerManagementConsole
       // 
@@ -678,19 +598,6 @@
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HiveServerConsoleInformation_FormClosing);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      this.tcManagementConsole.ResumeLayout(false);
-      this.tpClientControl.ResumeLayout(false);
-      this.scClientControl.Panel1.ResumeLayout(false);
-      this.scClientControl.Panel2.ResumeLayout(false);
-      this.scClientControl.ResumeLayout(false);
-      this.tpJobControl.ResumeLayout(false);
-      this.scJobControl.Panel1.ResumeLayout(false);
-      this.scJobControl.Panel2.ResumeLayout(false);
-      this.scJobControl.ResumeLayout(false);
-      this.tpUserControl.ResumeLayout(false);
-      this.scUserControl.Panel1.ResumeLayout(false);
-      this.scUserControl.Panel2.ResumeLayout(false);
-      this.scUserControl.ResumeLayout(false);
       this.plClientDetails.ResumeLayout(false);
       this.plClientDetails.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).EndInit();
@@ -701,6 +608,15 @@
       this.plJobDetails.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbJobControl)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
+      this.tpJobControl.ResumeLayout(false);
+      this.scJobControl.Panel1.ResumeLayout(false);
+      this.scJobControl.Panel2.ResumeLayout(false);
+      this.scJobControl.ResumeLayout(false);
+      this.tpClientControl.ResumeLayout(false);
+      this.scClientControl.Panel1.ResumeLayout(false);
+      this.scClientControl.Panel2.ResumeLayout(false);
+      this.scClientControl.ResumeLayout(false);
+      this.tcManagementConsole.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -711,27 +627,11 @@
     private System.Windows.Forms.MenuStrip menuStrip1;
     private System.Windows.Forms.ToolStripMenuItem informationToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-    private System.Windows.Forms.TabControl tcManagementConsole;
-    private System.Windows.Forms.TabPage tpClientControl;
-    private System.Windows.Forms.TabPage tpJobControl;
-    private System.Windows.Forms.SplitContainer scClientControl;
-    private System.Windows.Forms.TabPage tpUserControl;
-    private System.Windows.Forms.TreeView tvClientControl;
-    private System.Windows.Forms.ListView lvClientControl;
-    private System.Windows.Forms.SplitContainer scJobControl;
-    private System.Windows.Forms.ListView lvJobControl;
-    private System.Windows.Forms.SplitContainer scUserControl;
     private System.Windows.Forms.TreeView treeView2;
     private System.Windows.Forms.ListView listView2;
-    private System.Windows.Forms.TreeView tvJobControl;
-    private System.Windows.Forms.TreeView tvUserControl;
-    private System.Windows.Forms.ListView lvUserControl;
     private System.Windows.Forms.ImageList ilClientControl;
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem userToolStripMenuItem1;
-    private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem2;
     private System.Windows.Forms.ImageList ilUserControl;
     private System.Windows.Forms.Timer timerSyncronize;
     private System.Windows.Forms.ImageList ilJobControl;
@@ -767,5 +667,14 @@
     private System.Windows.Forms.Label lblStateClient;
     private System.Windows.Forms.Label lblState;
     private System.ComponentModel.BackgroundWorker updaterWoker;
+    private System.Windows.Forms.TabControl tcManagementConsole;
+    private System.Windows.Forms.TabPage tpClientControl;
+    private System.Windows.Forms.SplitContainer scClientControl;
+    private System.Windows.Forms.TreeView tvClientControl;
+    private System.Windows.Forms.ListView lvClientControl;
+    private System.Windows.Forms.TabPage tpJobControl;
+    private System.Windows.Forms.SplitContainer scJobControl;
+    private System.Windows.Forms.TreeView tvJobControl;
+    private System.Windows.Forms.ListView lvJobControl;
   }
 }

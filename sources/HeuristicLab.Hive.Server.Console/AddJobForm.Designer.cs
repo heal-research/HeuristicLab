@@ -82,6 +82,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // btnClose
       // 
+      this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.btnClose.Location = new System.Drawing.Point(254, 65);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(75, 23);
@@ -117,8 +118,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // AddJobForm
       // 
+      this.AcceptButton = this.btnAdd;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this.btnClose;
       this.ClientSize = new System.Drawing.Size(344, 100);
       this.Controls.Add(this.lblError);
       this.Controls.Add(this.tbNumJobs);
