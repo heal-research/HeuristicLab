@@ -103,11 +103,8 @@ namespace HeuristicLab.Hive.Server.Core {
               // check if time between last hearbeat and now is greather than HEARTBEAT_MAX_DIF
               if (dif.TotalSeconds > ApplicationConstants.HEARTBEAT_MAX_DIF) {
                 // if client calculated jobs, the job must be reset
-                if (client.State == State.calculating) {
-                  // check wich job the client was calculating and reset it
-                  foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
-                    jobManager.ResetJobsDependingOnResults(job);
-                  }
+                foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+                  jobManager.ResetJobsDependingOnResults(job);
                 }
 
                 // client must be set offline
@@ -160,7 +157,6 @@ namespace HeuristicLab.Hive.Server.Core {
         }
         heartbeatLock.ExitWriteLock();
 
-        // todo: allClients legacy ?
         ClientInfo client = clientAdapter.GetById(clientInfo.Id);
         if (client != null && client.State != State.offline && client.State != State.nullState) {
           response.Success = false;
@@ -487,6 +483,8 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponsePlugin SendPlugins(List<PluginInfo> pluginList) {
+
+
       throw new NotImplementedException();
     }
 

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using HeuristicLab.DataAccess;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
@@ -48,5 +49,11 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public DateTime DateCalculated { get; set; }
     [DataMember]
     public int Priority { get; set; }
+    [DataMember]
+    public int CoresNeeded { get; set; }
+    [DataMember]
+    public int MemoryNeeded { get; set; }
+    [DataMember]
+    public List<PluginInfo> PluginsNeeded { get; set; }
   }
 }
