@@ -35,7 +35,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
     #region IExecutionEngineFacade Members
 
-    public Response AddJob(Job job) {
+    public ResponseObject<Job> AddJob(Job job) {
       return jobManager.AddNewJob(job);
     }
 
