@@ -50,13 +50,13 @@ namespace HeuristicLab.GP {
     public override IOperation Apply(IScope scope) {
       int trainingSamplesStart = GetVariableValue<IntData>(TRAINING_SAMPLES_START, scope, true).Data;
       int trainingSamplesEnd = GetVariableValue<IntData>(TRAINING_SAMPLES_END, scope, true).Data;
-      int trainingWindowStart = GetVariableValue<IntData>(TRAINING_WINDOW_START, scope, true).Data;
-      int trainingWindowEnd = GetVariableValue<IntData>(TRAINING_WINDOW_END, scope, true).Data;
+      IntData trainingWindowStart = GetVariableValue<IntData>(TRAINING_WINDOW_START, scope, true);
+      IntData trainingWindowEnd = GetVariableValue<IntData>(TRAINING_WINDOW_END, scope, true);
       int stepSize = GetVariableValue<IntData>(STEP_SIZE, scope, true).Data;
 
-      if (trainingWindowEnd + stepSize <= trainingSamplesEnd) {
-        trainingWindowStart = trainingWindowStart + stepSize;
-        trainingWindowEnd = trainingWindowEnd + stepSize;
+      if (trainingWindowEnd.Data + stepSize <= trainingSamplesEnd) {
+        trainingWindowStart.Data = trainingWindowStart.Data + stepSize;
+        trainingWindowEnd.Data = trainingWindowEnd.Data + stepSize;
       }
 
       return null;
