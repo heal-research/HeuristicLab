@@ -44,7 +44,6 @@ using HeuristicLab.Hive.Client.Communication.ServerService;
 using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Client.Core.JobStorage;
 
-
 namespace HeuristicLab.Hive.Client.Core {
   /// <summary>
   /// The core component of the Hive Client
@@ -205,7 +204,8 @@ namespace HeuristicLab.Hive.Client.Core {
         bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(TestJob));
+        
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(HeuristicLab.Hive.Engine.HiveEngine));
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {

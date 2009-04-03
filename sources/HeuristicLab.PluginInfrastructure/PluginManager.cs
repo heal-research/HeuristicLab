@@ -240,21 +240,25 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>a list of plugins that are directly of transitively dependent.</returns>
     public List<PluginInfo> GetDependentPlugins(PluginInfo pluginInfo) {
       List<PluginInfo> mergedList = new List<PluginInfo>();
-      foreach (PluginInfo plugin in InstalledPlugins) {
-        if (plugin.Dependencies.Contains(pluginInfo)) {
-          if (!mergedList.Contains(plugin)) {
-            mergedList.Add(plugin);
-          }
-          // for each of the dependent plugins add the list of transitively dependent plugins
-          // make sure that only one entry for each plugin is added to the merged list
-          GetDependentPlugins(plugin).ForEach(delegate(PluginInfo dependentPlugin) {
-            if (!mergedList.Contains(dependentPlugin)) {
-              mergedList.Add(dependentPlugin);
-            }
-          });
-        }
+      //Bugfix the hell out of this...
+      //Bugfixed the hell out of this...
+      foreach (PluginInfo info in pluginInfo.Dependencies) {
+        if (!mergedList.Contains(info)) {
+          mergedList.Add(info);
+          AddDependenciesRecursive(info, mergedList);        
+        }        
       }
       return mergedList;
+    }
+
+    private void AddDependenciesRecursive(PluginInfo info, List<PluginInfo> mergedList) {
+      //if we've already processed this element => STOP IT!
+      if(!mergedList.Contains(info)) {
+        mergedList.Add(info);
+        return;
+      }
+      foreach (PluginInfo depinfo in info.Dependencies)
+        AddDependenciesRecursive(depinfo, mergedList);       
     }
 
     /// <summary>

@@ -12,6 +12,8 @@
     <AssemblyName>HeuristicLab.Hive.Engine-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -121,6 +123,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>

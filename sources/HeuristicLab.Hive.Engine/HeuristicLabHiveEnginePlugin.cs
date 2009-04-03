@@ -32,6 +32,7 @@ namespace HeuristicLab.Hive.Engine {
   [PluginFile(Filename = "HeuristicLab.Hive.Engine-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Hive.JobBase-3.2")]
+  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabHiveEnginePlugin : PluginBase {
   }
 }
