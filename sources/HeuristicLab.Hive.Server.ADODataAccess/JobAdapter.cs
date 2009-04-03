@@ -293,6 +293,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       return false;
     }
+
+    public ICollection<Job> FindJobs(State state, int cores, int memory) {
+      throw new NotImplementedException();
+    }
     #endregion
   }
 }

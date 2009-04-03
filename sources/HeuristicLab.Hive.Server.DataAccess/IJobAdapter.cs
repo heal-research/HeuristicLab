@@ -40,6 +40,15 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     ICollection<Job> GetJobsByState(State state);
 
     /// <summary>
+    /// Finds a job with the specified criterias 
+    /// </summary>
+    /// <param name="state">all jobs with the specified state</param>
+    /// <param name="cores">all jobs which require less or equal cores</param>
+    /// <param name="memory">all jobs which require less or equal memory</param>
+    /// <returns></returns>
+    ICollection<Job> FindJobs(State state, int cores, int memory);
+
+    /// <summary>
     /// Gets all jobs of the client
     /// </summary>
     /// <param name="client"></param>
