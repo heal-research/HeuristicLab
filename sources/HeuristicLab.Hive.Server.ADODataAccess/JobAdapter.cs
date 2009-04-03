@@ -157,6 +157,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.Priority = default(int);
 
+        if (!row.IsCoresNeededNull())
+          job.CoresNeeded = row.CoresNeeded;
+        else
+          job.CoresNeeded = default(int);
+
+        if (!row.IsMemoryNeededNull())
+          job.MemoryNeeded = row.MemoryNeeded;
+        else
+          job.MemoryNeeded = default(int);
+
         return job;
       } else
         return null;
@@ -213,6 +223,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetDateCalculatedNull();
 
         row.Priority = job.Priority;
+
+        row.CoresNeeded = job.CoresNeeded;
+
+        row.MemoryNeeded = job.MemoryNeeded;
       }
 
       return row;
@@ -295,7 +309,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<Job> FindJobs(State state, int cores, int memory) {
-      throw new NotImplementedException();
+      return
+         base.FindMultiple(
+           delegate() {
+             return Adapter.GetDataByStateCoresMemory(state.ToString(), cores, memory);
+           });
     }
     #endregion
   }

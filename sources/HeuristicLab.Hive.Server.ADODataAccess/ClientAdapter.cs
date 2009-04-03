@@ -156,6 +156,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           client.NrOfCores = 0;
 
+        if (!row.IsNumberOfFreeCoresNull())
+          client.NrOfFreeCores = row.NumberOfFreeCores;
+        else
+          client.NrOfFreeCores = 0;
+
+        if (!row.IsFreeMemoryNull())
+          client.FreeMemory = row.FreeMemory;
+        else
+          client.FreeMemory = 0;
+
         //todo: config adapter (client.config)
 
         return client;
@@ -176,6 +186,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetStatusNull();
         row.NumberOfCores = client.NrOfCores;
+        row.NumberOfFreeCores = client.NrOfFreeCores;
+        row.FreeMemory = client.FreeMemory;
 
         //todo: config adapter
         /*if (client.Config != null)
