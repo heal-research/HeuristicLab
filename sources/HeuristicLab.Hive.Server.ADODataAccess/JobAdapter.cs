@@ -287,6 +287,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             });
     }
 
+    public ICollection<Job> FindJobs(State state, int cores, int memory) {
+      return
+         base.FindMultiple(
+           delegate() {
+             return Adapter.GetDataByStateCoresMemory(state.ToString(), cores, memory);
+           });
+    }
+
     protected override bool doDelete(Job job) {
       if (job != null) {
         dsHiveServer.JobRow row =
@@ -306,14 +314,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
 
       return false;
-    }
-
-    public ICollection<Job> FindJobs(State state, int cores, int memory) {
-      return
-         base.FindMultiple(
-           delegate() {
-             return Adapter.GetDataByStateCoresMemory(state.ToString(), cores, memory);
-           });
     }
     #endregion
   }

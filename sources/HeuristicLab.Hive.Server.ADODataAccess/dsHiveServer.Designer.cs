@@ -6003,7 +6003,7 @@ SELECT ClientGroupId, ResourceId FROM ClientGroup_Resource WHERE (ClientGroupId 
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
             this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[Job] ([JobId], [ParentJobId], [JobState], [ResourceId], [Percentage], [SerializedJob], [DateCreated], [DateCalculated], [Priority], [ProjectId], [UserId], [CoresNeeded], [MemoryNeeded]) VALUES (@JobId, @ParentJobId, @JobState, @ResourceId, @Percentage, @SerializedJob, @DateCreated, @DateCalculated, @Priority, @ProjectId, @UserId, @CoresNeeded, @MemoryNeeded);
-SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, DateCreated, DateCalculated, Priority, ProjectId, UserId, CoresNeeded, MemoryNeeded FROM Job WHERE (JobId = @JobId)";
+SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, DateCreated, DateCalculated, Priority, ProjectId, UserId, CoresNeeded, MemoryNeeded FROM Job WHERE (JobId = @JobId) ORDER BY Priority";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentJobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -6040,7 +6040,8 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
                 "nal_CoresNeeded)) AND ((@IsNull_MemoryNeeded = 1 AND [MemoryNeeded] IS NULL) OR " +
                 "([MemoryNeeded] = @Original_MemoryNeeded)));\r\nSELECT JobId, ParentJobId, JobStat" +
                 "e, ResourceId, Percentage, SerializedJob, DateCreated, DateCalculated, Priority," +
-                " ProjectId, UserId, CoresNeeded, MemoryNeeded FROM Job WHERE (JobId = @JobId)";
+                " ProjectId, UserId, CoresNeeded, MemoryNeeded FROM Job WHERE (JobId = @JobId) OR" +
+                "DER BY Priority";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ParentJobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -6092,14 +6093,16 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.Job WHERE JobState = @State AND CoresNeeded <= @CoresNeeded AND" +
-                " MemoryNeeded <= @MemoryNeeded";
+                " MemoryNeeded <= @MemoryNeeded ORDER BY Priority";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CoresNeeded", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "CoresNeeded", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MemoryNeeded", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "MemoryNeeded", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT * FROM dbo.Job";
+            this._commandCollection[1].CommandText = "SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, P" +
+                "arentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId F" +
+                "ROM Job";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
