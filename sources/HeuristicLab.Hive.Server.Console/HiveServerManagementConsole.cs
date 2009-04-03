@@ -52,10 +52,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private ClientInfo currentClient = null;
     private string nameCurrentJob = "";
     private string nameCurrentClient = "";
-    private string nameCurrentUser = "";
     private bool flagJob = false;
     private bool flagClient = false;
-    private bool flagUser = false;
 
     private List<Changes> changes = new List<Changes>();
 
@@ -108,7 +106,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             clientInfoObjects.Add(ci.Id, item);
             count = (count + 1) % 3;
             inGroup.Add(ci.Id);
-            
+
           }
           lvClientControl.BeginUpdate();
           lvClientControl.Groups.Add(lvg);
@@ -173,14 +171,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         jobGroup.Add(lvJobCalculating);
         jobGroup.Add(lvJobFinished);
         jobGroup.Add(lvJobPending);
-        
+
         foreach (Job job in jobs.List) {
           if (job.State == State.calculating) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobCalculating);
             jobObjects.Add(job.Id, lvi);
 
             //lvJobControl.Items.Add(lvi);
-            
+
             lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
           } else if (job.State == State.finished) {
             ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
@@ -215,12 +213,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void ClientClicked() {
       int i = 0;
-      while (clientInfo.List[i].Name != nameCurrentClient) {
+      while (clientInfo.List[i].Id.ToString() != nameCurrentClient) {
         i++;
       }
       currentClient = clientInfo.List[i];
-      scClientControl.Panel2.Controls.Clear();
-      scClientControl.Panel2.Controls.Add(plClientDetails);
       pbClientControl.Image = ilClientControl.Images[0];
       lblClientName.Text = currentClient.Name;
       lblLogin.Text = currentClient.Login.ToString();
@@ -236,67 +232,38 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         i++;
       }
       lvSnapshots.Enabled = false;
-      int yPos = 0;
       currentJob = jobs.List[i];
-      scJobControl.Panel2.Controls.Clear();
-      scJobControl.Panel2.Controls.Add(plJobDetails);
       pbJobControl.Image = ilJobControl.Images[0];
       lblJobName.Text = currentJob.Id.ToString();
       progressJob.Value = (int)(currentJob.Percentage * 100);
-      yPos = progressJob.Location.Y;
-      yPos += 20;
-      lblProgress.Location = new Point(
-        lblProgress.Location.X, yPos);
       lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
-      yPos += 20;
-      lblUserCreatedJob.Location = new Point(
-        lblUserCreatedJob.Location.X, yPos);
-      lblUserCreatedJob.Text = /* currentJob.User.Name + */ " created Job";
-      yPos += 20;
-      lblJobCreated.Location = new Point(
-        lblJobCreated.Location.X, yPos);
+      lblUserCreatedJob.Text = currentJob.UserId.ToString() + /* currentJob.User.Name + */ " created Job";
       lblJobCreated.Text = "Created at " + currentJob.DateCreated;
       if (currentJob.ParentJob != null) {
-        yPos += 20;
-        lblParentJob.Location = new Point(
-          lblParentJob.Location.X, yPos);
         lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
+      } else {
+        lblParentJob.Text = "";
       }
-      yPos += 20;
-      lblPriorityJob.Location = new Point(
-        lblPriorityJob.Location.X, yPos);
       lblPriorityJob.Text = "Priority of job is " + currentJob.Priority;
       if (currentJob.Client != null) {
-        yPos += 20;
-        lblClientCalculating.Location = new Point(
-          lblClientCalculating.Location.X, yPos);
         lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
-        yPos += 20;
-        lblJobCalculationBegin.Location = new Point(
-          lblJobCalculationBegin.Location.X, yPos);
-        lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated ;
-        
-        if (currentJob.State == State.finished) {
-          yPos += 20;
-          lblJobCalculationEnd.Location = new Point(
-            lblJobCalculationEnd.Location.X, yPos);
+        lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated;
 
+        if (currentJob.State == State.finished) {
           IJobManager jobManager =
             ServiceLocator.GetJobManager();
-
           ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id);
-
-          
           lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
         }
-      }                       
+      } else {
+        lblClientCalculating.Text = "";
+        lblJobCalculationBegin.Text = "";
+        lblJobCalculationEnd.Text = "";
+      }
       if (currentJob.State != State.offline) {
-        yPos += 20;
-        lvSnapshots.Location = new Point(
-          lvSnapshots.Location.X, yPos);
-        lvSnapshots.Size = new Size(lvSnapshots.Size.Width,
-          plJobDetails.Size.Height - 10 - yPos);
         lvSnapshots.Enabled = true;
+      } else {
+        lvSnapshots.Enabled = false;
       }
     }
 
@@ -316,6 +283,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (change.ChangeType == Change.Update) {
         for (int i = 0; i < lvJobControl.Items.Count; i++) {
           if (lvJobControl.Items[i].Text == change.ID.ToString()) {
+            if (nameCurrentJob == change.ID.ToString()) {
+              JobClicked();
+            }
             State state = jobs.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvJobControl.Items[i].Text.ToString());
             if (state == State.finished) {
@@ -353,6 +323,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (change.ChangeType == Change.Update) {
         for (int i = 0; i < lvClientControl.Items.Count; i++) {
           if (lvClientControl.Items[i].Tag.ToString() == change.ID.ToString()) {
+            if (nameCurrentClient == change.ID.ToString()) {
+              ClientClicked();
+            }
             State state = clientInfo.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvClientControl.Items[i].Text.ToString());
             if ((state == State.offline) || (state == State.nullState)) {
@@ -366,7 +339,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
 
       } else if (change.ChangeType == Change.Create) {
-        
+
       } else if (change.ChangeType == Change.Delete) {
         clientInfoObjects.Remove(change.ID);
         for (int i = 0; i < lvClientControl.Items.Count; i++) {
@@ -414,7 +387,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
-      nameCurrentClient = lvClientControl.SelectedItems[0].Text;
+      nameCurrentClient = lvClientControl.SelectedItems[0].Tag.ToString();
       flagClient = true;
       ClientClicked();
     }
@@ -434,10 +407,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void updaterWoker_DoWork(object sender, DoWorkEventArgs e) {
 
-        changes.Clear();
+      changes.Clear();
       IClientManager clientManager =
           ServiceLocator.GetClientManager();
-      
+
       #region ClientInfo
       ResponseList<ClientInfo> clientInfoOld = clientInfo;
       clientInfo = clientManager.GetAllClients();
@@ -451,7 +424,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       #region Clients
       ResponseList<ClientGroup> clientsOld = clients;
-     
+
       clients = clientManager.GetAllClientGroups();
 
       IDictionary<int, ClientGroup> clientsOldHelp;
@@ -493,7 +466,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void CloneList(ResponseList<ClientInfo> oldList, out IDictionary<int, ClientInfo> newList) {
       newList = new Dictionary<int, ClientInfo>();
-      for (int i = 0; i < oldList.List.Count; i ++) {
+      for (int i = 0; i < oldList.List.Count; i++) {
         newList.Add(i, oldList.List[i]);
       }
     }
@@ -517,7 +490,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void GetDelta(IList<ClientInfo> oldClient, IDictionary<int, ClientInfo> helpClients) {
       bool found = false;
 
-      for (int i = 0; i < clientInfo.List.Count; i ++) {
+      for (int i = 0; i < clientInfo.List.Count; i++) {
         ClientInfo ci = clientInfo.List[i];
         for (int j = 0; j < oldClient.Count; j++) {
           ClientInfo cio = oldClient[j];
@@ -589,7 +562,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void GetDelta(IList<Job> oldJobs, IDictionary<int, Job> helpJobs) {
       bool found = false;
-      for (int i = 0; i < jobs.List.Count; i ++ ) {
+      for (int i = 0; i < jobs.List.Count; i++) {
         Job job = jobs.List[i];
         for (int j = 0; j < oldJobs.Count; j++) {
 
