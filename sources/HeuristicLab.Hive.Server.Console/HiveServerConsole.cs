@@ -41,6 +41,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public HiveServerConsole() {
       InitializeComponent();
+      tbIp.Text = WcfSettings.GetActiveIP();
+      tbPort.Text = WcfSettings.GetDefaultPort().ToString();
+      
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
