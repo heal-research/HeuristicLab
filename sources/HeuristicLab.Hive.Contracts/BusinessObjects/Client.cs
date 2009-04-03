@@ -27,7 +27,7 @@ using System.Runtime.Serialization;
                                    
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
-  public enum State { nullState, idle, calculating, offline, finished };
+  public enum State { nullState, idle, calculating, offline, finished, abort, requestSnapshot };
 
   [DataContract]
   public class ClientInfo : Resource {

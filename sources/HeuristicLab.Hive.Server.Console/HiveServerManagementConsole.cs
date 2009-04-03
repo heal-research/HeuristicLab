@@ -252,7 +252,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (currentJob.State == State.finished) {
           IJobManager jobManager =
             ServiceLocator.GetJobManager();
-          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id);
+          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
           lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
         }
       } else {

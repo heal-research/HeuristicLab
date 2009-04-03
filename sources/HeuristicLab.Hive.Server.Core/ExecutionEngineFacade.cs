@@ -39,6 +39,18 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AddNewJob(job);
     }
 
+    public Response RequestSnapshot(Guid jobId) {
+      return jobManager.RequestSnapshot(jobId);
+    }
+
+    public ResponseObject<JobResult> GetLastResult(Guid jobId, bool requested) {
+      return jobManager.GetLastJobResultOf(jobId, requested);
+    }
+
+    public Response AbortJob(Guid jobId) {
+      return jobManager.AbortJob(jobId);
+    }
+
     #endregion
   }
 }

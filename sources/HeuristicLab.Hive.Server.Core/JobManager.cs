@@ -228,7 +228,7 @@ namespace HeuristicLab.Hive.Server.Core {
       }
     }
 
-    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
+    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId, bool requested) {
       ISession session = factory.GetSessionForCurrentThread();
 
       try {
@@ -246,6 +246,25 @@ namespace HeuristicLab.Hive.Server.Core {
         if(session != null)
           session.EndSession();
       }
+    }
+
+    public Response RequestSnapshot(Guid jobId) {
+      ISession session = factory.GetSessionForCurrentThread();
+      Response response = new Response();
+      
+      try {
+        
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    public Response AbortJob(Guid jobId) {
+      throw new NotImplementedException();
     }
 
     #endregion
