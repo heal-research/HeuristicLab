@@ -29,8 +29,8 @@ namespace HeuristicLab.Hive.Server.Scheduler {
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
 
-        List<Job> allOfflineJobs = new List<Job>(jobAdapter.GetJobsByState(State.offline));
-        return (allOfflineJobs.Count > 0);
+        List<Job> allOfflineJobsForClient = new List<Job>(jobAdapter.FindJobs(State.offline, hbData.FreeCores, hbData.FreeMemory));
+        return (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0);
       }
       finally {
         if (session != null)
@@ -51,22 +51,23 @@ namespace HeuristicLab.Hive.Server.Scheduler {
         /// Critical section ///
         jobLock.WaitOne();
 
-        LinkedList<Job> allOfflineJobs = new LinkedList<Job>(jobAdapter.GetJobsByState(State.offline));
+        ClientInfo client = clientAdapter.GetById(clientId);
+        LinkedList<Job> allOfflineJobsForClient = new LinkedList<Job>(jobAdapter.FindJobs(State.offline, client.NrOfFreeCores, client.FreeMemory ));
 
-        Job job2Calculate = null;
-        if (allOfflineJobs != null && allOfflineJobs.Count > 0) {
-          job2Calculate = allOfflineJobs.First.Value;
-          job2Calculate.State = State.calculating;
-          job2Calculate.Client = clientAdapter.GetById(clientId);
-          job2Calculate.Client.State = State.calculating;
+        Job jobToCalculate = null;
+        if (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0) {
+          jobToCalculate = allOfflineJobsForClient.First.Value;
+          jobToCalculate.State = State.calculating;
+          jobToCalculate.Client = client;
+          jobToCalculate.Client.State = State.calculating;
 
-          job2Calculate.DateCalculated = DateTime.Now;
-          jobAdapter.Update(job2Calculate);
+          jobToCalculate.DateCalculated = DateTime.Now;
+          jobAdapter.Update(jobToCalculate);
         }
         jobLock.ReleaseMutex();
         /// End Critical section ///
 
-        return job2Calculate;
+        return jobToCalculate;
       }
       finally {
         if (session != null)

@@ -40,6 +40,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public int Memory { get; set; }
     [DataMember]
+    public int FreeMemory { get; set; }
+    [DataMember]
     public DateTime Login { get; set; }
     [DataMember]
     public State State { get; set; }

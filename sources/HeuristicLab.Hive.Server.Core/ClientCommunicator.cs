@@ -215,16 +215,20 @@ namespace HeuristicLab.Hive.Server.Core {
         tx = session.BeginTransaction();
 
         ResponseHB response = new ResponseHB();
+        response.ActionRequest = new List<MessageContainer>();
+
+        ClientInfo client = clientAdapter.GetById(hbData.ClientId);
 
         // check if the client is logged in
-        response.ActionRequest = new List<MessageContainer>();
-        if (clientAdapter.GetById(hbData.ClientId).State == State.offline ||
-            clientAdapter.GetById(hbData.ClientId).State == State.nullState) {
+        if (client.State == State.offline || client.State == State.nullState) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_USER_NOT_LOGGED_IN;
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
           return response;
         }
+
+        client.NrOfFreeCores = hbData.FreeCores;
+        client.FreeMemory = hbData.FreeMemory;
 
         // save timestamp of this heartbeat
         heartbeatLock.EnterWriteLock();
@@ -244,30 +248,9 @@ namespace HeuristicLab.Hive.Server.Core {
         else
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
 
-        if (hbData.JobProgress != null) {
-          List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
-          if (jobsOfClient == null || jobsOfClient.Count == 0) {
-            response.Success = false;
-            response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-            return response;
-          }
+        processJobProcess(hbData, jobAdapter, clientAdapter, response);
+        clientAdapter.Update(client);
 
-          foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
-            Job curJob = jobAdapter.GetById(jobProgress.Key);
-            if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
-              response.Success = false;
-              response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-            } else if (curJob.State == State.finished) {
-              // another client has finished this job allready
-              // the client can abort it
-              response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
-            } else {
-              // save job progress
-              curJob.Percentage = jobProgress.Value;
-              jobAdapter.Update(curJob);
-            }
-          }
-        }
         tx.Commit();
         return response;
       }
@@ -279,6 +262,40 @@ namespace HeuristicLab.Hive.Server.Core {
       finally {
         if (session != null)
           session.EndSession();
+      }
+    }
+
+    /// <summary>
+    /// Process the Job progress sent by a client
+    /// </summary>
+    /// <param name="hbData"></param>
+    /// <param name="jobAdapter"></param>
+    /// <param name="clientAdapter"></param>
+    /// <param name="response"></param>
+    private void processJobProcess(HeartBeatData hbData, IJobAdapter jobAdapter, IClientAdapter clientAdapter, ResponseHB response) {
+      if (hbData.JobProgress != null) {
+        List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
+        if (jobsOfClient == null || jobsOfClient.Count == 0) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          return;
+        }
+
+        foreach (KeyValuePair<Guid, double> jobProgress in hbData.JobProgress) {
+          Job curJob = jobAdapter.GetById(jobProgress.Key);
+          if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
+            response.Success = false;
+            response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          } else if (curJob.State == State.finished) {
+            // another client has finished this job allready
+            // the client can abort it
+            response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
+          } else {
+            // save job progress
+            curJob.Percentage = jobProgress.Value;
+            jobAdapter.Update(curJob);
+          }
+        }
       }
     }
    
