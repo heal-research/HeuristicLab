@@ -41,6 +41,9 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public AdapterT TransactionalAdapter {
       get {
+        if (session == null)
+          throw new Exception("No session set!");
+
         ITransaction trans =
           session.GetCurrentTransaction();
         if (trans != null)
