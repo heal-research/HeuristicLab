@@ -12,6 +12,21 @@ using log4net.Config;
 
 namespace HeuristicLab.Persistence.Test {
 
+  public class StringDecomposerTest {
+    [Storable] private bool _bool = true;
+    [Storable] private byte _byte = 0xFF;
+    [Storable] private sbyte _sbyte = 0xF;
+    [Storable] private short _short = -123;
+    [Storable] private ushort _ushort = 123;
+    [Storable] private int _int = -123;
+    [Storable] private uint _uint = 123;
+    [Storable] private long _long = 123456;
+    [Storable] private ulong _ulong = 123456;
+    [Storable] private long[,] _long_array =
+      new long[,] { { 123, 456, },  {789, 123 }} ;
+    [Storable] public List<int> list = new List<int>{ 1, 2, 3, 4, 5};
+  }
+
   public enum TestEnum { va1, va2, va3, va8 } ;
 
   public class RootBase {
@@ -217,6 +232,16 @@ namespace HeuristicLab.Persistence.Test {
       Console.Out.WriteLine(Util.AutoFormat(o, true));      
     }    
 
+    
+
+    public static void Test5() {
+      StringDecomposerTest sdt = new StringDecomposerTest();      
+      XmlGenerator.Serialize(sdt, "test5.zip");
+      object o = XmlParser.DeSerialize("test5.zip");
+      Console.WriteLine(ViewOnlyGenerator.Serialize(sdt));
+      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+    }
+
     public class Base {
       [Storable] private int baseInt = 3;      
     }
@@ -232,6 +257,7 @@ namespace HeuristicLab.Persistence.Test {
       Test2();
       Test3();
       Test4();
+      Test5();
       //SpeedTest();
       //SpeedTest2();
       Console.In.ReadLine();

@@ -48,7 +48,7 @@ namespace HeuristicLab.Persistence.Core {
     private Dictionary<Type, object> createSerializers(IEnumerable<TypeMapping> typeCache) {
       var map = new Dictionary<Type, object>();
       foreach (var typeMapping in typeCache) {
-        Type type = Type.GetType(typeMapping.TypeName);
+        Type type = Type.GetType(typeMapping.TypeName, true);
         typeIds.Add(typeMapping.Id, type);
         if (typeMapping.Serializer != null) {
           Type serializerType = Type.GetType(typeMapping.Serializer);
