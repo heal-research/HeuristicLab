@@ -1,47 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-namespace HeuristicLab.Hive.Client.Console {
-  public partial class Recurrence : Form {
-    public Recurrence() {
+namespace HeuristicLab.Hive.Client.Console
+{
+
+  public enum RecurrenceMode
+  {
+    Daily,
+    Weekly
+  }
+
+  public partial class Recurrence : Form
+  {
+
+    public OnDialogClosedDelegate dialogClosedDelegate;
+
+    public Recurrence()
+    {
       InitializeComponent();
     }
 
-    private void rbtDaily_CheckedChanged(object sender, EventArgs e) {
-      if (rbtDaily.Checked) {
-        gbDaily.Visible = true;
-        gbWeekly.Visible = false;
-      } else if (rbtWeekly.Checked) {
-        gbDaily.Visible = false;
-        gbWeekly.Visible = true;
-      }
-    }
-
-    private void btCancelRecurrence_Click(object sender, EventArgs e) {
+    private void btCancelRecurrence_Click(object sender, EventArgs e)
+    {
       this.Close();
     }
 
-    private void gbAppointment_Enter(object sender, EventArgs e) {
+    private void btSaveRecurrence_Click(object sender, EventArgs e)
+    {
+      DateTime dateFrom, dateTo;
+      RecurrenceMode mode = RecurrenceMode.Daily;
+      int incWeek = 0;
+      HashSet<DayOfWeek> days = new HashSet<DayOfWeek>();
 
+      days = GetDays();
+
+      //check if valid
+      if (InputIsValid())
+      {
+        //set entity
+
+        dateFrom = DateTime.Parse(dtpStart.Text + " " + dtpFromTime.Text);
+        dateTo = DateTime.Parse(dtpEnd.Text + " " + dtpToTime.Text);
+
+        if (int.TryParse(txtDays.Text, out incWeek))
+          mode = RecurrenceMode.Weekly;
+        else
+          mode = RecurrenceMode.Daily;
+
+        RecurrentEvent recurrentEvent = new RecurrentEvent()
+        {
+          DateFrom = dateFrom,
+          DateTo = dateTo,
+          AllDay = chbade.Checked,
+          WeekDays = days,
+          IncWeeks = incWeek,
+        };
+
+        //fire delegate and close the dialog
+        dialogClosedDelegate(recurrentEvent);
+        this.Close();
+      }
+      else
+        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
-    private void cmbEnd_Click(object sender, EventArgs e) {
+    private HashSet<DayOfWeek> GetDays()
+    {
+      HashSet<DayOfWeek> days = new HashSet<DayOfWeek>();
 
+      if (cbMonday.Checked)
+        days.Add(DayOfWeek.Monday);
+      if (cbTuesday.Checked)
+        days.Add(DayOfWeek.Tuesday);
+      if (cbWednesday.Checked)
+        days.Add(DayOfWeek.Wednesday);
+      if (cbThursday.Checked)
+        days.Add(DayOfWeek.Thursday);
+      if (cbFriday.Checked)
+        days.Add(DayOfWeek.Friday);
+      if (cbSaturday.Checked)
+        days.Add(DayOfWeek.Saturday);
+      if (cbSunday.Checked)
+        days.Add(DayOfWeek.Sunday);
+
+      return days;
     }
 
-    private void dtpToTime_ValueChanged(object sender, EventArgs e) {
+    private bool InputIsValid()
+    {
+      DateTime dateFrom, dateTo;
+      int i = 0;
 
-    }
+      dateFrom = DateTime.Parse(dtpStart.Text + " " + dtpFromTime.Text);
+      dateTo = DateTime.Parse(dtpEnd.Text + " " + dtpToTime.Text);
 
-    private void chbade_CheckedChanged(object sender, EventArgs e) {
-        dtpFromTime.Visible = !chbade.Checked;
-        dtpToTime.Visible = !chbade.Checked;
+      if (dateFrom < dateTo && dateFrom.TimeOfDay < dateTo.TimeOfDay && int.TryParse(txtDays.Text, out i))
+        return true;
+      else
+        return false;
     }
   }
 }

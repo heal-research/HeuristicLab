@@ -155,6 +155,7 @@
     <Compile Include="Recurrence.Designer.cs">
       <DependentUpon>Recurrence.cs</DependentUpon>
     </Compile>
+    <Compile Include="RecurrentEvent.cs" />
     <Compile Include="Service References\ClientService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

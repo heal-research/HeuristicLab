@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
+      Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
       this.dvOnline = new Calendar.DayView();
       this.tcClientConsole = new System.Windows.Forms.TabControl();
@@ -114,8 +114,8 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // dvOnline
       // 
-      drawTool2.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool2;
+      drawTool1.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -528,9 +528,9 @@ namespace HeuristicLab.Hive.Client.Console {
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.btCreate);
-      this.groupBox1.Location = new System.Drawing.Point(353, 7);
+      this.groupBox1.Location = new System.Drawing.Point(373, 7);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(274, 161);
+      this.groupBox1.Size = new System.Drawing.Size(254, 161);
       this.groupBox1.TabIndex = 21;
       this.groupBox1.TabStop = false;
       // 
@@ -538,7 +538,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       this.txttimeTo.CustomFormat = "HH:00";
       this.txttimeTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.txttimeTo.Location = new System.Drawing.Point(189, 64);
+      this.txttimeTo.Location = new System.Drawing.Point(164, 45);
       this.txttimeTo.Name = "txttimeTo";
       this.txttimeTo.ShowUpDown = true;
       this.txttimeTo.Size = new System.Drawing.Size(73, 20);
@@ -548,7 +548,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       this.txttimeFrom.CustomFormat = "HH:00";
       this.txttimeFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.txttimeFrom.Location = new System.Drawing.Point(189, 31);
+      this.txttimeFrom.Location = new System.Drawing.Point(164, 12);
       this.txttimeFrom.Name = "txttimeFrom";
       this.txttimeFrom.ShowUpDown = true;
       this.txttimeFrom.Size = new System.Drawing.Size(73, 20);
@@ -557,7 +557,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // dtpTo
       // 
       this.dtpTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpTo.Location = new System.Drawing.Point(97, 64);
+      this.dtpTo.Location = new System.Drawing.Point(72, 45);
       this.dtpTo.Name = "dtpTo";
       this.dtpTo.Size = new System.Drawing.Size(89, 20);
       this.dtpTo.TabIndex = 33;
@@ -565,7 +565,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // dtpFrom
       // 
       this.dtpFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-      this.dtpFrom.Location = new System.Drawing.Point(97, 31);
+      this.dtpFrom.Location = new System.Drawing.Point(72, 12);
       this.dtpFrom.Name = "dtpFrom";
       this.dtpFrom.Size = new System.Drawing.Size(89, 20);
       this.dtpFrom.TabIndex = 32;
@@ -573,7 +573,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // chbade
       // 
       this.chbade.AutoSize = true;
-      this.chbade.Location = new System.Drawing.Point(97, 90);
+      this.chbade.Location = new System.Drawing.Point(72, 71);
       this.chbade.Name = "chbade";
       this.chbade.Size = new System.Drawing.Size(90, 17);
       this.chbade.TabIndex = 31;
@@ -583,9 +583,9 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // btnRecurrence
       // 
-      this.btnRecurrence.Location = new System.Drawing.Point(189, 129);
+      this.btnRecurrence.Location = new System.Drawing.Point(141, 129);
       this.btnRecurrence.Name = "btnRecurrence";
-      this.btnRecurrence.Size = new System.Drawing.Size(75, 26);
+      this.btnRecurrence.Size = new System.Drawing.Size(113, 26);
       this.btnRecurrence.TabIndex = 30;
       this.btnRecurrence.Text = "Recurrence";
       this.btnRecurrence.UseVisualStyleBackColor = true;
@@ -593,9 +593,9 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // btbDelete
       // 
-      this.btbDelete.Location = new System.Drawing.Point(100, 129);
+      this.btbDelete.Location = new System.Drawing.Point(8, 129);
       this.btbDelete.Name = "btbDelete";
-      this.btbDelete.Size = new System.Drawing.Size(75, 26);
+      this.btbDelete.Size = new System.Drawing.Size(114, 26);
       this.btbDelete.TabIndex = 25;
       this.btbDelete.Text = "Delete";
       this.btbDelete.UseVisualStyleBackColor = true;
@@ -604,7 +604,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(41, 65);
+      this.label2.Location = new System.Drawing.Point(16, 46);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(55, 13);
       this.label2.TabIndex = 23;
@@ -613,7 +613,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(41, 34);
+      this.label1.Location = new System.Drawing.Point(16, 15);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(58, 13);
       this.label1.TabIndex = 21;
@@ -621,9 +621,9 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // btCreate
       // 
-      this.btCreate.Location = new System.Drawing.Point(11, 129);
+      this.btCreate.Location = new System.Drawing.Point(6, 93);
       this.btCreate.Name = "btCreate";
-      this.btCreate.Size = new System.Drawing.Size(75, 26);
+      this.btCreate.Size = new System.Drawing.Size(242, 26);
       this.btCreate.TabIndex = 20;
       this.btCreate.Text = "Save";
       this.btCreate.UseVisualStyleBackColor = true;
