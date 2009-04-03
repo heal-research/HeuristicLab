@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Text;
-using System.Collections;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
@@ -27,34 +26,33 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         typeof(decimal),
       };
 
-    private static readonly Dictionary<Type, MethodInfo> numberParser;  
+    private static readonly Dictionary<Type, MethodInfo> numberParsers;  
 
     static Number2StringDecomposer() {
-      numberParser = new Dictionary<Type, MethodInfo>();
+      numberParsers = new Dictionary<Type, MethodInfo>();
       foreach ( var type in numberTypes ) {
-        numberParser[type] = type
+        numberParsers[type] = type
           .GetMethod("Parse", BindingFlags.Static | BindingFlags.Public,
                      null, new[] {typeof (string)}, null);          
       }
     }
 
     public bool CanDecompose(Type type) {
-      return numberParser.ContainsKey(type);
+      return numberParsers.ContainsKey(type);
     }
 
-    public string SimpleDecompose(object obj) {
+    public string Format(object obj) {
       if (obj.GetType() == typeof(float))        
         return ((float)obj).ToString("r", CultureInfo.InvariantCulture);
-      else if (obj.GetType() == typeof(double))
+      if (obj.GetType() == typeof(double))
         return ((double)obj).ToString("r", CultureInfo.InvariantCulture);
-      else if (obj.GetType() == typeof(decimal))
+      if (obj.GetType() == typeof(decimal))
         return ((decimal)obj).ToString("r", CultureInfo.InvariantCulture);
-      else
-        return obj.ToString();      
+      return obj.ToString();
     }
 
     public IEnumerable<Tag> DeCompose(object obj) {      
-      yield return new Tag(SimpleDecompose(obj));      
+      yield return new Tag(Format(obj));      
     }
 
     public object CreateInstance(Type type) {
@@ -62,7 +60,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object Parse(string stringValue, Type type) {
-      return numberParser[type]
+      return numberParsers[type]
         .Invoke(null,
             BindingFlags.Static | BindingFlags.PutRefDispProperty,
                   null, new[] {stringValue}, CultureInfo.InvariantCulture);
@@ -119,7 +117,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       for ( int i = 0; i<a.Rank; i++)
         sb.Append(a.GetLowerBound(i)).Append(';');
       foreach (var number in a) {        
-        sb.Append(numberDecomposer.SimpleDecompose(number)).Append(';');
+        sb.Append(numberDecomposer.Format(number)).Append(';');
       }
       yield return new Tag("compact array", sb.ToString());
     }
@@ -129,23 +127,29 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object Populate(object instance, IEnumerable<Tag> tags, Type type) {      
-      var iter = tags.GetEnumerator();
-      iter.MoveNext();
-      var it = ((string) iter.Current.Value).Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries).GetEnumerator();
-      it.MoveNext();
-      int rank = int.Parse((string) it.Current);
-      it.MoveNext();
+      var tagIter = tags.GetEnumerator();
+      tagIter.MoveNext();
+      var valueIter = ((string) tagIter.Current.Value)
+        .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
+        .GetEnumerator();
+      valueIter.MoveNext();
+      int rank = int.Parse((string) valueIter.Current);      
       int[] lengths = new int[rank];
-      int[] lowerBounds = new int[rank];
-      for (int i = 0; i < rank; i++, it.MoveNext())
-        lengths[i] = int.Parse((string) it.Current);
-      for (int i = 0; i < rank; i++, it.MoveNext())
-        lowerBounds[i] = int.Parse((string)it.Current);
-      Array a = Array.CreateInstance(type.GetElementType(), lengths, lowerBounds);
+      int[] lowerBounds = new int[rank];      
+      for (int i = 0; i < rank; i++) {
+        valueIter.MoveNext();
+        lengths[i] = int.Parse((string) valueIter.Current);        
+      }      
+      for (int i = 0; i < rank; i++) {
+        valueIter.MoveNext();
+        lowerBounds[i] = int.Parse((string) valueIter.Current);        
+      }
+      Type elementType = type.GetElementType();
+      Array a = Array.CreateInstance(elementType, lengths, lowerBounds);
       int[] positions = (int[]) lowerBounds.Clone();
-      while (it.MoveNext()) {
+      while (valueIter.MoveNext()) {
         a.SetValue(
-          numberDecomposer.Parse((string)it.Current, type.GetElementType()),          
+          numberDecomposer.Parse((string)valueIter.Current, elementType),          
           positions);
         positions[0] += 1;
         for ( int i = 0; i<rank-1; i++ ) {
@@ -166,14 +170,25 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     private static readonly Number2StringDecomposer numberDecomposer =
       new Number2StringDecomposer();
     
-    public bool ImplementsGenericEnumerable(Type type) {
-      foreach( Type iface in type.GetInterfaces() ) {
-        if ( iface.IsGenericType &&
+    private static readonly Dictionary<Type, Type> interfaceCache = new Dictionary<Type, Type>();
+
+    public Type GetGenericEnumerableInterface(Type type) {
+      if (interfaceCache.ContainsKey(type))
+        return interfaceCache[type];
+      foreach (Type iface in type.GetInterfaces()) {
+        if (iface.IsGenericType &&
           iface.GetGenericTypeDefinition() == typeof(IEnumerable<>) &&
-          numberDecomposer.CanDecompose(iface.GetGenericArguments()[0]) )
-          return true;
+          numberDecomposer.CanDecompose(iface.GetGenericArguments()[0])) {
+          interfaceCache.Add(type, iface);
+          return iface;
+        }
       }
-      return false;
+      interfaceCache.Add(type, null);
+      return null;
+    }
+    
+    public bool ImplementsGenericEnumerable(Type type) {
+      return GetGenericEnumerableInterface(type) != null;
     }
 
     public bool HasAddMethod(Type type) {
@@ -194,14 +209,14 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public IEnumerable<Tag> DeCompose(object obj) {
-      Type elementType = obj.GetType().GetGenericArguments()[0];
-      Type instantiatedGenericInterface =
-        typeof (IEnumerable<>).MakeGenericType(new[] {elementType});
-      MethodInfo genericGetEnumeratorMethod =
-        instantiatedGenericInterface.GetMethod("GetEnumerator");
-      InterfaceMapping iMap = obj.GetType().GetInterfaceMap(instantiatedGenericInterface);
+      Type type = obj.GetType();
+      Type enumerable = GetGenericEnumerableInterface(type);      
+      InterfaceMapping iMap = obj.GetType().GetInterfaceMap(enumerable);      
       MethodInfo getEnumeratorMethod =
-        iMap.TargetMethods[Array.IndexOf(iMap.InterfaceMethods, genericGetEnumeratorMethod)];
+        iMap.TargetMethods[
+        Array.IndexOf(
+          iMap.InterfaceMethods,
+          enumerable.GetMethod("GetEnumerator"))];
       object[] empty = new object[] {};
       object genericEnumerator = getEnumeratorMethod.Invoke(obj, empty);
       MethodInfo moveNextMethod = genericEnumerator.GetType().GetMethod("MoveNext");
@@ -209,7 +224,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       StringBuilder sb = new StringBuilder();
       while ( (bool)moveNextMethod.Invoke(genericEnumerator, empty) )
         sb.Append(
-          numberDecomposer.SimpleDecompose(
+          numberDecomposer.Format(
             currentProperty.GetValue(genericEnumerator, null))).Append(';');
       yield return new Tag("compact enumerable", sb.ToString());
     }
@@ -219,7 +234,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object Populate(object instance, IEnumerable<Tag> tags, Type type) {
-      Type elementType = type.GetGenericArguments()[0];
+      Type enumerable = GetGenericEnumerableInterface(type);
+      Type elementType = enumerable.GetGenericArguments()[0];      
       MethodInfo addMethod = type.GetMethod("Add");      
       var tagEnumerator = tags.GetEnumerator();
       tagEnumerator.MoveNext();
