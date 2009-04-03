@@ -35,6 +35,7 @@ namespace HeuristicLab.Hive.Engine {
   /// in parallel.
   /// </summary>
   public class HiveEngine : ItemBase, IEngine, IEditable {
+    private Guid jobId;
     private Job job;
     public string HiveServerUrl { get; set; }
 
@@ -71,9 +72,9 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Execute() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+     
       DiscoveryService dService = new DiscoveryService();
       PluginInfo depInfo = dService.GetDeclaringPlugin(typeof(HiveEngine));
-
       List<PluginInfo> dependentPlugins = PluginManager.Manager.GetDependentPluginsRec(depInfo);
 
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
@@ -81,6 +82,7 @@ namespace HeuristicLab.Hive.Engine {
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
       jobObj.PluginsNeeded = dependentPlugins;
       ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
+      jobId = res.Obj.Id;
     }
 
     public void ExecuteStep() {
@@ -92,6 +94,20 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     public void Abort() {
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+      
+      
+      //This are just Stubs on the server right now. There won't be any effect right now...
+      executionEngineFacade.AbortJob(jobId);      
+      executionEngineFacade.RequestSnapshot(Guid);
+      
+      //Requests the last result.
+      //false: There will always be a result that is been sent back
+      //true: if you hit "requestsnapshot" before - it won't send you the job back if
+      //      the snapshot hasn't been submitted to the server (because the client needs
+      //      more time).
+      executionEngineFacade.GetLastResult(jobId, false);
+
       throw new NotImplementedException();
     }
 
