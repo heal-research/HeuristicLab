@@ -78,6 +78,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+
+    private int CapacityRam(int noCores, int freeCores) {
+      return (((noCores - freeCores) / noCores) * 100); 
+    }
+
     /// <summary>
     /// Adds clients to ListView and TreeView
     /// </summary>
@@ -90,7 +95,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
         clients = clientManager.GetAllClientGroups();
         lvClientControl.Items.Clear();
-        int count = 0;
         List<Guid> inGroup = new List<Guid>();
         foreach (ClientGroup cg in clients.List) {
           ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
@@ -99,12 +103,21 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if ((ci.State == State.offline) || (ci.State == State.nullState)) {
               item = new ListViewItem(ci.Name, 3, lvg);
             } else {
-              item = new ListViewItem(ci.Name, count, lvg);
+                            int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
+              int usage = 0;
+              if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
+                usage = 0;
+              } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
+                usage = 1;
+              } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
+                usage = 2;
+              }
+
+              item = new ListViewItem(ci.Name, usage, lvg);
             }
             item.Tag = ci.Id;
             lvClientControl.Items.Add(item);
             clientInfoObjects.Add(ci.Id, item);
-            count = (count + 1) % 3;
             inGroup.Add(ci.Id);
 
           }
@@ -129,11 +142,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if ((ci.State == State.offline) || (ci.State == State.nullState)) {
               item = new ListViewItem(ci.Name, 3, lvunsorted);
             } else {
-              item = new ListViewItem(ci.Name, count, lvunsorted);
+              int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
+              int usage = 0;
+              if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
+                usage = 0;
+              } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
+                usage = 1;
+              } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
+                usage = 2;
+              }
+              item = new ListViewItem(ci.Name, usage, lvunsorted);
             }
             item.Tag = ci.Id;
             lvClientControl.Items.Add(item);
-            count = (count + 1) % 3;
           }
         }
         lvClientControl.BeginUpdate();
@@ -212,12 +233,24 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// if one client is clicked, a panel is opened with the details
     /// </summary>
     private void ClientClicked() {
+      plClientDetails.Visible = true;
       int i = 0;
       while (clientInfo.List[i].Id.ToString() != nameCurrentClient) {
         i++;
       }
       currentClient = clientInfo.List[i];
-      pbClientControl.Image = ilClientControl.Images[0];
+      int percentageUsage = CapacityRam(currentClient.NrOfCores, currentClient.NrOfFreeCores);
+      int usage = 3;
+      if ((currentClient.State != State.offline) && (currentClient.State != State.nullState)) {
+        if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
+          usage = 0;
+        } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
+          usage = 1;
+        } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
+          usage = 2;
+        }
+      }
+      pbClientControl.Image = ilClientControl.Images[usage];
       lblClientName.Text = currentClient.Name;
       lblLogin.Text = currentClient.Login.ToString();
       lblState.Text = currentClient.State.ToString();
@@ -227,11 +260,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// if one job is clicked, a panel is opened with the details
     /// </summary>
     private void JobClicked() {
+      plJobDetails.Visible = true;
       int i = 0;
       while (jobs.List[i].Id.ToString() != nameCurrentJob) {
         i++;
       }
-      lvSnapshots.Enabled = false;
+      lvSnapshots.Enabled = true;
       currentJob = jobs.List[i];
       pbJobControl.Image = ilJobControl.Images[0];
       lblJobName.Text = currentJob.Id.ToString();
@@ -261,9 +295,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblJobCalculationEnd.Text = "";
       }
       if (currentJob.State != State.offline) {
-        lvSnapshots.Enabled = true;
+        lvSnapshots.Visible = true;
       } else {
-        lvSnapshots.Enabled = false;
+        lvSnapshots.Visible = false;
       }
     }
 
@@ -328,10 +362,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
             State state = clientInfo.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvClientControl.Items[i].Text.ToString());
+            int percentageUsage = CapacityRam(currentClient.NrOfCores, currentClient.NrOfFreeCores);
             if ((state == State.offline) || (state == State.nullState)) {
               lvClientControl.Items[i].ImageIndex = 3;
             } else {
-              lvClientControl.Items[i].ImageIndex = 1;
+              if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
+                lvClientControl.Items[i].ImageIndex = 0;
+              } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
+                lvClientControl.Items[i].ImageIndex = 1;
+              } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
+                lvClientControl.Items[i].ImageIndex = 2;
+              }
+
             }
             lvClientControl.Refresh();
           }
@@ -496,7 +538,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           ClientInfo cio = oldClient[j];
           if (ci.Id.Equals(cio.Id)) {
             found = true;
-            if (ci.State != cio.State) {
+            if ((ci.State != cio.State) || (ci.NrOfFreeCores != ci.NrOfFreeCores)) {
               changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Update, Position = i });
             }
             int removeAt = -1;
@@ -572,9 +614,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
             found = true;
             if (job.State != State.offline) {
-              if (!IsEqual(job.Client, jobold.Client)) {
-                changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Update, Position = i });
-              } else if (job.State != jobold.State) {
+              if ((!IsEqual(job.Client, jobold.Client)) || (job.State != jobold.State) 
+                   || (job.Percentage != jobold.Percentage)) {
                 changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Update, Position = i });
               }
             } else if (job.DateCalculated != jobold.DateCalculated) {
