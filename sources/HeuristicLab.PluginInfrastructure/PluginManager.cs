@@ -198,7 +198,7 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
 
       //get all the plugins that have dependencies with the jobplugin
-      List<PluginInfo> depPlugins = GetDependentPlugins(jobPlugin);
+      List<PluginInfo> depPlugins = GetDependentPluginsRec(jobPlugin);
       //insert all jobs into one list
       depPlugins.Add(jobPlugin);
       
@@ -239,6 +239,31 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="pluginInfo">The plugin the other depend on.</param>
     /// <returns>a list of plugins that are directly of transitively dependent.</returns>
     public List<PluginInfo> GetDependentPlugins(PluginInfo pluginInfo) {
+      List<PluginInfo> mergedList = new List<PluginInfo>();
+      foreach (PluginInfo plugin in InstalledPlugins) {
+        if (plugin.Dependencies.Contains(pluginInfo)) {
+          if (!mergedList.Contains(plugin)) {
+            mergedList.Add(plugin);
+          }
+          // for each of the dependent plugins add the list of transitively dependent plugins
+          // make sure that only one entry for each plugin is added to the merged list
+          GetDependentPlugins(plugin).ForEach(delegate(PluginInfo dependentPlugin) {
+            if (!mergedList.Contains(dependentPlugin)) {
+              mergedList.Add(dependentPlugin);
+            }
+          });
+        }
+      }
+      return mergedList;
+    }
+
+
+    /// <summary>
+    /// Calculates a set of plugins that directly or transitively depend on the plugin given in the argument.
+    /// </summary>
+    /// <param name="pluginInfo">The plugin the other depend on.</param>
+    /// <returns>a list of plugins that are directly of transitively dependent.</returns>
+    public List<PluginInfo> GetDependentPluginsRec(PluginInfo pluginInfo) {
       List<PluginInfo> mergedList = new List<PluginInfo>();
       //Bugfix the hell out of this...
       //Bugfixed the hell out of this...
