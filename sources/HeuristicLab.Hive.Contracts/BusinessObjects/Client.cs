@@ -34,6 +34,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public int NrOfCores { get; set; }
     [DataMember]
+    public int NrOfFreeCores { get; set; }
+    [DataMember]
     public int CpuSpeedPerCore { get; set; }
     [DataMember]
     public int Memory { get; set; }
