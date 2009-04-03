@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.DataAccess.Interfaces;
 using HeuristicLab.PluginInfrastructure;
 using System.Data.Common;
+using System.Threading;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
   public class Session: ISession {
@@ -38,11 +39,20 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private DbConnection connection;
 
+    private Thread ownerThread;
+
     private IDictionary<Guid, object> adapters =
       new Dictionary<Guid, object>();
 
     public Session(SessionFactory factory) {
       this.factory = factory;
+      this.ownerThread = Thread.CurrentThread;
+    }
+
+    public void CheckThread() {
+      if (!Thread.CurrentThread.Equals(ownerThread)) {
+        throw new Exception("Session is owned by another thread");
+      }
     }
 
     public DbConnection Connection {
@@ -61,6 +71,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     #region ISession Members
     public ITransaction BeginTransaction() {
+      CheckThread();
+
       if (transaction == null) {
          transaction = new Transaction(this);
          transaction.Connection = Connection;
@@ -70,11 +82,15 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public ITransaction GetCurrentTransaction() {
+      CheckThread();
+
       return transaction;
     }
 
     public IDataAdapter<ObjT> GetDataAdapter<ObjT>()
       where ObjT : IPersistableObject {
+      CheckThread();
+
       Guid adapterId = typeof(IDataAdapter<ObjT>).GUID;
 
       if (!adapters.ContainsKey(adapterId)) {
@@ -93,21 +109,25 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       where ObjT : IPersistableObject
       where T : class, IDataAdapter<ObjT>
     {
-        Guid adapterId = typeof(T).GUID;
+      CheckThread();
 
-        if (!adapters.ContainsKey(adapterId)) {
-          T adapter =
-            discoveryService.GetInstances<T>()[0];
+      Guid adapterId = typeof(T).GUID;
 
-          adapter.Session = this;
+      if (!adapters.ContainsKey(adapterId)) {
+        T adapter =
+          discoveryService.GetInstances<T>()[0];
 
-          adapters.Add(adapterId, adapter);
-        }
+        adapter.Session = this;
 
-        return adapters[adapterId] as T;
+        adapters.Add(adapterId, adapter);
+      }
+
+      return adapters[adapterId] as T;
     }
 
     public void EndSession() {
+      CheckThread();
+
       if (transaction != null) {
         transaction.Rollback();
         transaction = null;

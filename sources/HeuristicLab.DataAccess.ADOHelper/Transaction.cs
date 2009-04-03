@@ -37,22 +37,24 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       this.session = session;
     }
 
-    #region ITransaction Members
     public DbConnection Connection {
       set {
         if (value != null &&
           (transaction == null ||
-           !(transaction.Connection != null && 
+           !(transaction.Connection != null &&
              transaction.Connection.Equals(value)))) {
-            if (value.State != System.Data.ConnectionState.Open)
-              value.Open();
+          if (value.State != System.Data.ConnectionState.Open)
+            value.Open();
 
-            transaction = value.BeginTransaction(IsolationLevel.RepeatableRead);
+          transaction = value.BeginTransaction(IsolationLevel.RepeatableRead);
         }
       }
     }
 
+    #region ITransaction Members
     public void Commit() {
+      this.session.CheckThread();
+
       if (transaction != null) {
         DbConnection conn =
           transaction.Connection;
@@ -69,6 +71,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void Rollback() {
+      this.session.CheckThread();
+
       if (transaction != null) {
         DbConnection conn =
             transaction.Connection;
@@ -86,6 +90,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public object InnerTransaction {
       get {
+        this.session.CheckThread();
+
         return transaction;
       }
     }
