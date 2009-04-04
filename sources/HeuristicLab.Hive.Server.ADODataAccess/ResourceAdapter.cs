@@ -138,20 +138,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public Resource GetByName(string name) {
-      dsHiveServer.ResourceRow row =
-        base.FindSingleRow(
+      return
+        base.FindSingle (
           delegate() {
             return Adapter.GetDataByName(name);
           });
-
-      if (row != null) {
-        Resource res = new Resource();
-        res = Convert(row, res);
-
-        return res;
-      } else {
-        return null;
-      }
     }
 
     #endregion

@@ -91,6 +91,12 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
+    protected IDataAdapterWrapper<AdapterT, ObjT, RowT> DataAdapterWrapper {
+      get {
+        return dataAdapter;
+      }
+    }
+
     public ISession Session {
       get {
         return this.session;

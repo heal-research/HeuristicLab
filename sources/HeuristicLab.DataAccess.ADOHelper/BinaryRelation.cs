@@ -5,7 +5,7 @@ using System.Text;
 using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
-  public class Relationship: PersistableObject {
+  public class BinaryRelation: PersistableObject {
     public Guid Id2 { get; set; }
   }
 }

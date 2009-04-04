@@ -4,26 +4,32 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
-  public class RelationshipAdapter<AdapterT, RowT>
+  public class BinaryRelationHelper<AdapterT, RowT>
     where AdapterT : new()
     where RowT : System.Data.DataRow
     {
-    IDataAdapterWrapper<AdapterT, Relationship, RowT> tableAdapterWrapper;
+    IDataAdapterWrapper<AdapterT, BinaryRelation, RowT> tableAdapterWrapper;
     
-    public RelationshipAdapter(
-      IDataAdapterWrapper<AdapterT, Relationship, RowT> tableAdapterWrapper) {
+    public BinaryRelationHelper(
+      IDataAdapterWrapper<AdapterT, BinaryRelation, RowT> tableAdapterWrapper) {
       this.tableAdapterWrapper = tableAdapterWrapper;
     }
-    
+
+    public Session Session {
+      set {
+        tableAdapterWrapper.Session = value;
+      }
+    }
+
     public void UpdateRelationships(Guid objectA, IList<Guid> relationships) {
-      //first check for created references
+      //firstly check for created references
       IList<Guid> existing =
         this.GetRelationships(objectA);
 
       foreach (Guid relationship in relationships) {
         if (!existing.Contains(relationship)) {
-          Relationship rel = 
-            new Relationship();
+          BinaryRelation rel = 
+            new BinaryRelation();
           rel.Id = objectA;
           rel.Id2 = relationship;
           
@@ -45,7 +51,12 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
 
       foreach (Guid relationship in deleted) {
-        
+        RowT toDelete =
+          FindRow(objectA, relationship);
+        if (toDelete != null) {
+          toDelete.Delete();
+          tableAdapterWrapper.UpdateRow(toDelete);
+        }
       }
     }
 
@@ -63,10 +74,20 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       return result;
     }
 
-    public Session Session {
-      set {
-        tableAdapterWrapper.Session = value;
+    private RowT FindRow(Guid objectA, Guid objectB) {
+      IEnumerable<RowT> rows =
+       tableAdapterWrapper.FindById(objectA);
+
+      RowT found = null;
+
+      foreach (RowT row in rows) {
+        if (row[1].Equals(objectB)) {
+          found = row;
+          break;
+        }
       }
+
+      return found;
     }
   }
 }

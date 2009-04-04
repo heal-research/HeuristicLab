@@ -232,13 +232,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           GetRowById(client.Id);
 
         if (row != null) {
-          //Referential integrity with jobs - they are cached
-          ICollection<Job> jobs =
-            JobAdapter.GetJobsOf(client);
-          foreach (Job job in jobs) {
-            JobAdapter.Delete(job);
-          }
-
           success = base.doDelete(client) && 
             ResAdapter.Delete(client);
         }

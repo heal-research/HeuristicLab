@@ -76,6 +76,51 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       adapter.Transaction = transaction as SqlTransaction;
     }
   }
+
+  class ClientGroup_ResourceAdapterWrapper :
+  DataAdapterWrapperBase<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
+  BinaryRelation,
+  dsHiveServer.ClientGroup_ResourceRow> {
+    public override dsHiveServer.ClientGroup_ResourceRow
+     InsertNewRow(BinaryRelation relation) {
+      dsHiveServer.ClientGroup_ResourceDataTable data =
+         new dsHiveServer.ClientGroup_ResourceDataTable();
+
+      dsHiveServer.ClientGroup_ResourceRow row =
+        data.NewClientGroup_ResourceRow();
+
+      row.ClientGroupId = relation.Id;
+      row.ResourceId = relation.Id2;
+
+      data.AddClientGroup_ResourceRow(row);
+      TransactionalAdapter.Update(row);
+
+      return row;
+    }
+
+    public override void
+      UpdateRow(dsHiveServer.ClientGroup_ResourceRow row) {
+      TransactionalAdapter.Update(row);
+    }
+
+    public override IEnumerable<dsHiveServer.ClientGroup_ResourceRow>
+      FindById(Guid id) {
+      return TransactionalAdapter.GetDataByClientGroupId(id);
+    }
+
+    public override IEnumerable<dsHiveServer.ClientGroup_ResourceRow>
+      FindAll() {
+      return TransactionalAdapter.GetData();
+    }
+
+    protected override void SetConnection(DbConnection connection) {
+      adapter.Connection = connection as SqlConnection;
+    }
+
+    protected override void SetTransaction(DbTransaction transaction) {
+      adapter.Transaction = transaction as SqlTransaction;
+    }
+  }
   
   class ClientGroupAdapter : 
     DataAdapterBase<dsHiveServerTableAdapters.ClientGroupTableAdapter, 
@@ -83,8 +128,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     dsHiveServer.ClientGroupRow>, 
     IClientGroupAdapter {
     #region Fields
-    private dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter resourceClientGroupAdapter =
-      new dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter();
+    private BinaryRelationHelper<
+      dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter, 
+      dsHiveServer.ClientGroup_ResourceRow> binaryRelationHelper = null;
+
+    private BinaryRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter, 
+      dsHiveServer.ClientGroup_ResourceRow> BinaryRelationHelper {
+      get {
+        if (binaryRelationHelper == null) {
+          binaryRelationHelper =
+            new BinaryRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
+              dsHiveServer.ClientGroup_ResourceRow>(new ClientGroup_ResourceAdapterWrapper());
+        }
+
+        binaryRelationHelper.Session = Session as Session;
+
+        return binaryRelationHelper;
+      }
+    }
 
     private IResourceAdapter resourceAdapter = null;
 
@@ -121,56 +182,25 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row != null && clientGroup != null) {
         /*Parent - Permission Owner*/
         clientGroup.Id = row.ResourceId;
-        ResAdapter.GetById(clientGroup);
+        ResAdapter.GetById(clientGroup.Id);
 
-        //first check for created references
-        dsHiveServer.ClientGroup_ResourceDataTable clientGroupRows =
-            resourceClientGroupAdapter.GetDataByClientGroupId(clientGroup.Id);
+        ICollection<Guid> resources =
+          BinaryRelationHelper.GetRelationships(clientGroup.Id);
 
-        foreach (dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow in
-          clientGroupRows) {
-          Resource resource = null;
+       clientGroup.Resources.Clear();
+        foreach(Guid resource in resources) {
+          ClientInfo client = 
+            ClientAdapter.GetById(resource);
 
-          IEnumerable<Resource> resources =
-            from p in
-              clientGroup.Resources
-            where p.Id == resourceClientGroupRow.ResourceId
-            select p;
-          if (resources.Count<Resource>() == 1)
-            resource = resources.First<Resource>();
+          if (client == null) {
+            //client group
+            ClientGroup group =
+              GetById(resource);
 
-          if (resource == null) {
-            Resource res =
-              ClientAdapter.GetById(resourceClientGroupRow.ResourceId);
-
-            if (res == null) {
-              //is a client group
-              res =
-                GetById(resourceClientGroupRow.ResourceId);
-            }
-
-            if (res != null)
-              clientGroup.Resources.Add(res);
-          }
-        }
-
-        //secondly check for deleted references
-        ICollection<Resource> deleted =
-          new List<Resource>();
-
-        foreach (Resource resource in clientGroup.Resources) {
-          dsHiveServer.ClientGroup_ResourceDataTable found =
-            resourceClientGroupAdapter.GetDataByClientGroupResourceId(
-            clientGroup.Id,
-            resource.Id);
-
-          if (found.Count != 1) {
-            deleted.Add(resource);
-          }
-        }
-
-        foreach (Resource resource in deleted) {
-          clientGroup.Resources.Remove(resource);
+            clientGroup.Resources.Add(group);
+          } else {
+            clientGroup.Resources.Add(client);
+          }          
         }
 
         return clientGroup;
@@ -182,71 +212,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       dsHiveServer.ClientGroupRow row) {
       if (clientGroup != null && row != null) {
         row.ResourceId = clientGroup.Id;
-
-        //update references
-        foreach (Resource resource in clientGroup.Resources) {
-          //first update the member to make sure it exists in the DB
-          if (resource is ClientInfo) {
-            ClientAdapter.Update(resource as ClientInfo);
-          } else if (resource is ClientGroup) {
-            Update(resource as ClientGroup);
-          }
-
-          //secondly check for created references
-          dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow =
-            null;
-          dsHiveServer.ClientGroup_ResourceDataTable found =
-            resourceClientGroupAdapter.GetDataByClientGroupResourceId(
-              clientGroup.Id,
-              resource.Id);
-          if (found.Count == 1)
-            resourceClientGroupRow = found[0];
-
-          if (resourceClientGroupRow == null) {
-            resourceClientGroupRow =
-              found.NewClientGroup_ResourceRow();
-
-            resourceClientGroupRow.ResourceId =
-              resource.Id;
-            resourceClientGroupRow.ClientGroupId =
-              clientGroup.Id;
-
-            found.AddClientGroup_ResourceRow(resourceClientGroupRow);
-
-            resourceClientGroupAdapter.Update(
-              resourceClientGroupRow);
-          }
-        }
-
-        //thirdly check for deleted references
-        dsHiveServer.ClientGroup_ResourceDataTable clientGroupRows =
-          resourceClientGroupAdapter.GetDataByClientGroupId(clientGroup.Id);
-
-        ICollection<dsHiveServer.ClientGroup_ResourceRow> deleted =
-          new List<dsHiveServer.ClientGroup_ResourceRow>();
-
-        foreach (dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow in
-          clientGroupRows) {
-          Resource resource = null;
-
-          IEnumerable<Resource> resources =
-            from r in
-              clientGroup.Resources
-            where r.Id == resourceClientGroupRow.ResourceId
-            select r;
-
-          if (resources.Count<Resource>() == 1)
-            resource = resources.First<Resource>();
-
-          if (resource == null) {
-            deleted.Add(resourceClientGroupRow);
-          }
-        }
-
-        foreach (dsHiveServer.ClientGroup_ResourceRow resourceClientGroupRow in deleted) {
-          resourceClientGroupRow.Delete();
-          resourceClientGroupAdapter.Update(resourceClientGroupRow);
-        }
       }
 
       return row;
@@ -259,6 +224,23 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         ResAdapter.Update(group);
 
         base.doUpdate(group);
+
+        List<Guid> relationships = 
+          new List<Guid>();
+        foreach(Resource res in group.Resources) {
+          if (res is ClientInfo) {
+            ClientAdapter.Update(res as ClientInfo);
+          } else if (res is ClientGroup) {
+            Update(res as ClientGroup);
+          } else {
+            ResAdapter.Update(res);
+          }
+
+          relationships.Add(res.Id);
+        }
+
+        BinaryRelationHelper.UpdateRelationships(group.Id,
+          relationships);
       }
     }
 
@@ -275,26 +257,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<ClientGroup> MemberOf(Resource resource) {
-      ICollection<ClientGroup> clientGroups =
-        new List<ClientGroup>();
-
-      if (resource != null) {
-        IEnumerable<dsHiveServer.ClientGroup_ResourceRow> clientGroupRows =
-         resourceClientGroupAdapter.GetDataByResourceId(resource.Id);
-
-        foreach (dsHiveServer.ClientGroup_ResourceRow clientGroupRow in
-          clientGroupRows) {
-          ClientGroup clientGroup =
-            GetById(clientGroupRow.ClientGroupId);
-          clientGroups.Add(clientGroup);
-        }
-      }
-
-      return clientGroups;
+      throw new NotImplementedException();
     }
 
     protected override bool doDelete(ClientGroup group) {
       if (group != null) {
+        //delete all relationships
+        BinaryRelationHelper.UpdateRelationships(group.Id,
+          new List<Guid>());
+
         return base.doDelete(group) && 
           ResAdapter.Delete(group);
       }

@@ -84,8 +84,8 @@
     <Compile Include="DataAdapterBase.cs" />
     <Compile Include="DataAdapterWrapperBase.cs" />
     <Compile Include="IDataAdapterWrapper.cs" />
-    <Compile Include="Relationship.cs" />
-    <Compile Include="RelationshipAdapter.cs" />
+    <Compile Include="BinaryRelation.cs" />
+    <Compile Include="BinaryRelationHelper.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SessionFactory.cs" />
     <Compile Include="Transaction.cs" />

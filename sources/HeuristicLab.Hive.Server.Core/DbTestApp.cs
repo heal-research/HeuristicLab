@@ -67,72 +67,91 @@ namespace HeuristicLab.Hive.Server {
 
       clients = clientAdapter.GetAll();
       Debug.Assert(count - 1 == clients.Count);
-    }
+    } */
 
     private void TestClientGroupAdapter() {
-      IClientGroupAdapter clientGroupAdapter =
-       ServiceLocator.GetClientGroupAdapter();
+      ISessionFactory factory =
+        ServiceLocator.GetSessionFactory();
 
-      ClientInfo client =
-        new ClientInfo();
-      client.Name = "Stefan";
-      client.Login = DateTime.Now;
+      ISession session =
+        factory.GetSessionForCurrentThread();
 
-      ClientInfo client2 =
-        new ClientInfo();
-      client2.Name = "Martin";
-      client2.Login = DateTime.Now;
+      ITransaction trans = null;
 
-      ClientInfo client3 =
-        new ClientInfo();
-      client3.Name = "Heinz";
-      client3.Login = DateTime.Now;
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+        session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
 
-      ClientGroup group =
-        new ClientGroup();
+        trans =
+          session.BeginTransaction();
 
-      ClientGroup subGroup =
-        new ClientGroup();
-      subGroup.Resources.Add(client);
+        ClientInfo client =
+          new ClientInfo();
+        client.Name = "Stefan";
+        client.Login = DateTime.Now;
 
-      group.Resources.Add(client3);
-      group.Resources.Add(client2);
-      group.Resources.Add(subGroup);
+        ClientInfo client2 =
+          new ClientInfo();
+        client2.Name = "Martin";
+        client2.Login = DateTime.Now;
 
-      clientGroupAdapter.Update(group);
+        ClientInfo client3 =
+          new ClientInfo();
+        client3.Name = "Heinz";
+        client3.Login = DateTime.Now;
 
-      ClientGroup read =
-        clientGroupAdapter.GetById(group.Id);
+        ClientGroup group =
+          new ClientGroup();
 
-      ICollection<ClientGroup> clientGroups =
-        clientGroupAdapter.GetAll();
+        ClientGroup subGroup =
+          new ClientGroup();
+        subGroup.Resources.Add(client);
 
-      IClientAdapter clientAdapter =
-        ServiceLocator.GetClientAdapter();
+        group.Resources.Add(client3);
+        group.Resources.Add(client2);
+        group.Resources.Add(subGroup);
 
-      clientAdapter.Delete(client3);
+        clientGroupAdapter.Update(group);
 
-      read =
-         clientGroupAdapter.GetById(group.Id);
+        ClientGroup read =
+          clientGroupAdapter.GetById(group.Id);
 
-      clientGroupAdapter.Delete(subGroup);
+        ICollection<ClientGroup> clientGroups =
+          clientGroupAdapter.GetAll();
 
-      read =
-         clientGroupAdapter.GetById(group.Id);
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      clientGroups =
-        clientGroupAdapter.GetAll();
+        clientAdapter.Delete(client3);
 
-      clientGroupAdapter.Delete(group);
+        read =
+           clientGroupAdapter.GetById(group.Id);
 
-      clientGroups =
-        clientGroupAdapter.GetAll();
+        clientGroupAdapter.Delete(subGroup);
 
-      clientAdapter.Delete(client);
-      clientAdapter.Delete(client2);
+        read =
+           clientGroupAdapter.GetById(group.Id);
+
+        clientGroups =
+          clientGroupAdapter.GetAll();
+
+        clientGroupAdapter.Delete(group);
+
+        clientGroups =
+          clientGroupAdapter.GetAll();
+
+        clientAdapter.Delete(client);
+        clientAdapter.Delete(client2);
+      }
+      finally {
+        if (trans != null)
+          trans.Rollback();
+
+        session.EndSession();
+      }
     }
 
-    private void TestJobAdapter() {
+   /* private void TestJobAdapter() {
       IJobAdapter jobAdapter = 
         ServiceLocator.GetJobAdapter();
       IClientAdapter clientAdapter =
@@ -200,18 +219,18 @@ namespace HeuristicLab.Hive.Server {
       clientAdapter.Delete(client);
     }      */
 
-    public override void Run() {
+    private void TestTransaction() {
       ISessionFactory factory =
         ServiceLocator.GetSessionFactory();
 
-      ISession session = 
+      ISession session =
         factory.GetSessionForCurrentThread();
 
-      IClientAdapter clientAdapter = 
+      IClientAdapter clientAdapter =
         session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-      ITransaction trans = 
-        session.BeginTransaction(); 
+      ITransaction trans =
+        session.BeginTransaction();
 
       ClientInfo client = new ClientInfo();
       client.Login = DateTime.Now;
@@ -220,6 +239,10 @@ namespace HeuristicLab.Hive.Server {
       trans.Rollback();
 
       session.EndSession();
+    }
+
+    public override void Run() {
+      TestClientGroupAdapter();
     }      
   }
 }
