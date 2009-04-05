@@ -46,7 +46,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           if (value.State != System.Data.ConnectionState.Open)
             value.Open();
 
-          transaction = value.BeginTransaction(IsolationLevel.RepeatableRead);
+          transaction = value.BeginTransaction(IsolationLevel.ReadCommitted);
         }
       }
     }

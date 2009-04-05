@@ -220,14 +220,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override bool doDelete(ClientInfo client) {
       bool success = false;
-      Guid locked = Guid.Empty;
       
       if (client != null) {
-        if (client.Id != Guid.Empty) {
-          LockRow(client.Id);
-          locked = client.Id;
-        }
-
         dsHiveServer.ClientRow row =
           GetRowById(client.Id);
 
@@ -235,10 +229,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           success = base.doDelete(client) && 
             ResAdapter.Delete(client);
         }
-      }
-
-      if (locked != Guid.Empty) {
-        UnlockRow(locked);
       }
 
       return success;

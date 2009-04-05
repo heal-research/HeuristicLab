@@ -2,6 +2,9 @@
     
     
     public partial class dsHiveServer {
+      partial class JobDataTable {
+      }
+    
       partial class ClientGroup_ResourceDataTable {
       }
     }

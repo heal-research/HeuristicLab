@@ -37,54 +37,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter;
 
-    private static Mutex lockersMutex =
-      new Mutex();
-
-    private static IDictionary<object, Mutex> lockers =
-      new Dictionary<object, Mutex>();
-
-    private static IDictionary<object, int> lockCount =
-      new Dictionary<object, int>();
-
     protected DataAdapterBase(
       IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter) {
       this.dataAdapter = dataAdapter;
     }
 
-    protected void LockRow(object id) {
-      Mutex rowLock = null;
-
-      /////begin critical section////
-      lockersMutex.WaitOne();
-
-      if (!lockers.ContainsKey(id)) {
-        lockers[id] = new Mutex();
-        lockCount[id] = 0;
-      }
-      rowLock = lockers[id];
-      lockCount[id]++;
-      
-      lockersMutex.ReleaseMutex();
-      /////end critical section////
-
-      rowLock.WaitOne();
-    }
-
-    protected void UnlockRow(object id) {
-      Mutex rowLock = lockers[id];
-      rowLock.ReleaseMutex();
-
-      /////begin critical section////
-      lockersMutex.WaitOne();
-
-      lockCount[id]--;
-      if (lockCount[id] == 0)
-        lockers.Remove(id);
-
-      lockersMutex.ReleaseMutex();
-      /////end critical section////
-    }
-    
     protected AdapterT Adapter {
       get {
         return dataAdapter.TransactionalAdapter;
@@ -221,12 +178,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     protected virtual void doUpdate(ObjT obj) {
       if (obj != null) {
         RowT row = null;
-        Guid locked = Guid.Empty;
 
         if (obj.Id != Guid.Empty) {
-          LockRow(obj.Id);
-          locked = obj.Id;
-
           row = GetRowById(obj.Id);
         } else {
           obj.Id = Guid.NewGuid();
@@ -236,15 +189,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           row = dataAdapter.InsertNewRow(obj);
         }
 
-        if (locked == Guid.Empty) {
-          LockRow(obj.Id);
-          locked = obj.Id;
-        }
-
         ConvertObj(obj, row);
         dataAdapter.UpdateRow(row);
-
-        UnlockRow(locked);
       }
     }
 
@@ -258,6 +204,25 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       try {
         doUpdate(obj);
+      }
+      catch (DBConcurrencyException ex) {
+        DataRow row = ex.Row;
+
+        RowT current = GetRowById(obj.Id);
+        if (current != null) {
+          //find out changes
+          for (int i = 0; i < row.ItemArray.Length; i++) {            
+            if (!row[i, DataRowVersion.Current].Equals(
+                 row[i, DataRowVersion.Original])) {
+              current[i] = row[i];
+            }
+          }
+
+          ConvertRow(current, obj);
+          //try updating again
+          Update(obj);
+        }
+        //otherwise: row was deleted in the meantime - nothing to do
       }
       finally {
         if (!transactionExists && trans != null) {
@@ -282,8 +247,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       bool success = false;
 
       if (obj != null) {
-        LockRow(obj.Id);
-
         RowT row =
           GetRowById(obj.Id);
 
@@ -293,8 +256,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
           success = true;
         }
-
-        UnlockRow(obj.Id);
       }
 
       return success;
@@ -310,6 +271,17 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       try {
         return doDelete(obj);
+      }
+      catch (DBConcurrencyException) {
+        RowT current = GetRowById(obj.Id);
+        if (current != null) {
+          ConvertRow(current, obj);
+          //try deleting again
+          return Delete(obj);
+        } else {
+          //row has already been deleted
+          return false;
+        }
       }
       finally {
         if (!transactionExists && trans != null) {
