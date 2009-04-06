@@ -77,6 +77,7 @@ copy "%SolutionDir%\HeuristicLab.SimOpt\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\
 copy "%SolutionDir%\HeuristicLab.SQLite\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\SQLite.NET.chm" .\plugins
+copy "%SolutionDir%\HeuristicLab.StatisticalAnalysis\%Outdir%\HeuristicLab.StatisticalAnalysis-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\%Outdir%\HeuristicLab.ThreadParallelEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\%Outdir%\HeuristicLab.Tracing-1.0.dll" .\plugins
