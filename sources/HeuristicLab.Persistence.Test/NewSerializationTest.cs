@@ -253,6 +253,19 @@ namespace HeuristicLab.Persistence.Test {
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
 
+    public class NestedType {
+      [Storable]
+      private string value = "value";
+    }
+
+    public static void Test7() {
+      NestedType t = new NestedType();
+      XmlGenerator.Serialize(t, "test7.zip");
+      object o = XmlParser.DeSerialize("test7.zip");
+      Console.WriteLine(ViewOnlyGenerator.Serialize(t));
+      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+    }
+
 
     public static void Main() {
       BasicConfigurator.Configure();
@@ -262,6 +275,7 @@ namespace HeuristicLab.Persistence.Test {
       Test4();
       Test5();
       Test6();
+      Test7();
       //SpeedTest();
       //SpeedTest2();
       Console.In.ReadLine();
