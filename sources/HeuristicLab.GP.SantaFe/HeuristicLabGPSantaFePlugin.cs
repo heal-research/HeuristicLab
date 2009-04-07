@@ -25,8 +25,8 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.SantaFe {
-  [ClassInfo(Name = "HeuristicLab.GP.SantaFe-3.2")]
-  [PluginFile(Filename = "HeuristicLab.GP.SantaFe-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.GP.SantaFe-3.3")]
+  [PluginFile(Filename = "HeuristicLab.GP.SantaFe-3.3.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
