@@ -242,12 +242,15 @@ namespace HeuristicLab.Persistence.Test {
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
 
-    public class Base {
-      [Storable] private int baseInt = 3;      
-    }
-
-    public class Derived: Base {
-      [Storable] private int derivedInt = 5;
+    public static void Test6() {
+      string[,] mDimString = new string[,] {
+        {"ora", "et", "labora"},
+        {"Beten", "und", "Arbeiten"}
+      };
+      XmlGenerator.Serialize(mDimString, "test6.zip");
+      object o = XmlParser.DeSerialize("test6.zip");
+      Console.WriteLine(ViewOnlyGenerator.Serialize(mDimString));
+      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
 
 
@@ -258,6 +261,7 @@ namespace HeuristicLab.Persistence.Test {
       Test3();
       Test4();
       Test5();
+      Test6();
       //SpeedTest();
       //SpeedTest2();
       Console.In.ReadLine();

@@ -110,14 +110,30 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public IEnumerable<Tag> DeCompose(object obj) {
       Array a = (Array) obj;
+      int[] lengths = new int[a.Rank];
+      int[] lowerBounds = new int[a.Rank];
       StringBuilder sb = new StringBuilder();
-      sb.Append(a.Rank).Append(';');      
-      for ( int i = 0; i<a.Rank; i++ )
+      sb.Append(a.Rank).Append(';');
+      for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLength(i)).Append(';');
-      for ( int i = 0; i<a.Rank; i++)
+        lengths[i] = a.GetLength(i);
+      }
+      for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLowerBound(i)).Append(';');
-      foreach (var number in a) {        
-        sb.Append(numberDecomposer.Format(number)).Append(';');
+        lowerBounds[i] = a.GetLowerBound(i);
+      }
+      int[] positions = (int[])lowerBounds.Clone();
+      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
+        sb.Append(numberDecomposer.Format(a.GetValue(positions))).Append(';');
+        positions[0] += 1;
+        for (int i = 0; i < a.Rank - 1; i++) {
+          if (positions[i] >= lengths[i] + lowerBounds[i]) {
+            positions[i] = lowerBounds[i];
+            positions[i + 1] += 1;
+          } else {
+            break;
+          }
+        }
       }
       yield return new Tag("compact array", sb.ToString());
     }

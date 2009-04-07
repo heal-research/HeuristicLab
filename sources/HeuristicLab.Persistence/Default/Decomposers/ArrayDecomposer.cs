@@ -14,14 +14,28 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public IEnumerable<Tag> DeCompose(object array) {
       Array a = (Array)array;      
       yield return new Tag("rank", a.Rank);
+      int[] lengths = new int[a.Rank];
+      int[] lowerBounds = new int[a.Rank];
       for (int i = 0; i < a.Rank; i++) {
+        lengths[i] = a.GetLength(i);
         yield return new Tag("length_" + i, a.GetLength(i));
       }
       for (int i = 0; i < a.Rank; i++) {
+        lowerBounds[i] = a.GetLowerBound(i);
         yield return new Tag("lowerBound_" + i, a.GetLowerBound(i));
       }
-      foreach (object o in (Array)array) {
-        yield return new Tag(null, o);
+      int[] positions = (int[])lowerBounds.Clone();
+      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
+        yield return new Tag(a.GetValue(positions));
+        positions[0] += 1;
+        for (int i = 0; i < a.Rank - 1; i++) {
+          if (positions[i] >= lowerBounds[i] + lengths[i]) {
+            positions[i] = lowerBounds[i];
+            positions[i + 1] += 1;
+          } else {
+            break;
+          }
+        }
       }
     }
 
