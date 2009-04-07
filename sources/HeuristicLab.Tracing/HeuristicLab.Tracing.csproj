@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Tracing</RootNamespace>
-    <AssemblyName>HeuristicLab.Tracing-1.0</AssemblyName>
+    <AssemblyName>HeuristicLab.Tracing-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
