@@ -1,22 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ServiceModel;
 using HeuristicLab.Security.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Security.Contracts.Interfaces {
-  interface ISecurityManager {
+
+  [ServiceContract]
+  public interface ISecurityManager {
+
+    [OperationContract]
     User AddNewUser(User user);
+
+    [OperationContract]
     bool RemoveUser(Guid userId);
+
+    [OperationContract]
     User UpdateUser(User user);
 
+    [OperationContract]
     UserGroup AddNewUserGroup(UserGroup group);
-    bool RemoveUserGroup(Guid groupId);
+
+    [OperationContract]
+    bool RemoveUserGroup(UserGroup group);
+
+    [OperationContract]
     UserGroup UpdateUserGroup(UserGroup group);
 
-    bool AddPermissionOwnerToGroup(Guid groupId, Guid permissionOwnerId);
-    bool RemovePermissionOwnerFromGroup(Guid groupId, Guid permissionOwnerId);
+    [OperationContract]
+    bool AddPermissionOwnerToGroup(UserGroup userGroup, PermissionOwner permissionOwner);
 
-    bool GrantPermission(Guid permissionOwnerId, Guid permissionId);
-    bool RevokePermission(Guid permissionOwnerId, Guid permissionId);
+    [OperationContract]
+    bool RemovePermissionOwnerFromGroup(UserGroup userGroup, PermissionOwner permissionOwner);
+
+    [OperationContract]
+    bool GrantPermission(PermissionOwner permissionOwner, Permission permission);
+
+    [OperationContract]
+    bool RevokePermission(PermissionOwner permissionOwner, Permission permission);
   }
 }

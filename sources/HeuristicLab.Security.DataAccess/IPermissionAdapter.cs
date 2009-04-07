@@ -29,7 +29,7 @@ namespace HeuristicLab.Security.DataAccess {
   /// <summary>
   /// The permission database adapter
   /// </summary>
-  interface IPermissionAdapter: IDataAdapter<Permission> {
+  public interface IPermissionAdapter: IDataAdapter<Permission> {
     /// <summary>
     /// Determines, if the permission Owner has the permission on the entity
     /// </summary>
@@ -37,8 +37,7 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    GrantedPermission getPermssion(Guid permissionOwnerId, Guid permissionId,
-      Guid entityId);
+    GrantedPermission getPermission(PermissionOwner permissionOwner, Permission permission);
 
     /// <summary>
     /// Adds a permission
@@ -47,8 +46,7 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    bool addPermission(Guid permissionOwnerId, Guid permissionId,
-      Guid entityId);
+    bool addPermission(PermissionOwner permissionOwner, Permission permission);
 
     /// <summary>
     /// Removes a permission
@@ -57,7 +55,6 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    bool removePermission(Guid permissionOwnerId, Guid permissionId,
-      Guid entityId);
+    bool removePermission(PermissionOwner permissionOwner, Permission permission);
   }
 }
