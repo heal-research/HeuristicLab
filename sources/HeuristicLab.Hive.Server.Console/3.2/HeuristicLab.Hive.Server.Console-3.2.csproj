@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{42A1D075-6C12-4DD9-B0C2-C6F5210A8119}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -146,23 +146,23 @@
     <Compile Include="ServiceLocator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core</Name>
+      <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.DataAccess\3.2\HeuristicLab.DataAccess-3.2.csproj">
       <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
-      <Name>HeuristicLab.DataAccess</Name>
+      <Name>HeuristicLab.DataAccess-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Contracts\3.2\HeuristicLab.Hive.Contracts-3.2.csproj">
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
-      <Name>HeuristicLab.Hive.Contracts</Name>
+      <Name>HeuristicLab.Hive.Contracts-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.JobBase\HeuristicLab.Hive.JobBase.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Hive.JobBase\3.2\HeuristicLab.Hive.JobBase-3.2.csproj">
       <Project>{21187322-52DD-4243-80A4-A85F0263E63B}</Project>
-      <Name>HeuristicLab.Hive.JobBase</Name>
+      <Name>HeuristicLab.Hive.JobBase-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>

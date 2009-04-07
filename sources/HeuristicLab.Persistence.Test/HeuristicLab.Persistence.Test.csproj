@@ -72,16 +72,6 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Persistence\HeuristicLab.Persistence.csproj">
-      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
-      <Name>HeuristicLab.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Tracing\HeuristicLab.Tracing.csproj">
-      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
-      <Name>HeuristicLab.Tracing</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="NewSerializationTest.cs" />
     <Compile Include="SerializationTest.cs" />
     <Compile Include="StorableAttributeTests.cs" />
@@ -89,13 +79,23 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Tracing\libs\debug\log4net.dll</HintPath>
+      <HintPath>..\HeuristicLab.Tracing\3.2\libs\debug\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

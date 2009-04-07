@@ -5,7 +5,8 @@ namespace HeuristicLab.Persistence.GUI {
 
   [ClassInfo(Name = "HeuristicLab.Persistence.GUI-3.3")]
   [PluginFile(Filename = "HeuristicLab.Persistence.GUI-3.3.dll", Filetype = PluginFileType.Assembly)]
-  public class HeuristicLabPersistencePlugin : PluginBase {}
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
+  public class HeuristicLabPersistencePlugin : PluginBase { }
 
 
   [ClassInfo(Name = "Persistence Configuration")]

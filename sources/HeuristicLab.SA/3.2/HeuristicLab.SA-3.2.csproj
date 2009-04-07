@@ -99,45 +99,45 @@
     <Compile Include="VariablesCopier.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core</Name>
+      <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data</Name>
+      <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Evolutionary\HeuristicLab.Evolutionary.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
       <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
-      <Name>HeuristicLab.Evolutionary</Name>
+      <Name>HeuristicLab.Evolutionary-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Logging\HeuristicLab.Logging.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
-      <Name>HeuristicLab.Logging</Name>
+      <Name>HeuristicLab.Logging-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators</Name>
+      <Name>HeuristicLab.Operators-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random</Name>
+      <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Selection.OffspringSelection\HeuristicLab.Selection.OffspringSelection.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Selection.OffspringSelection\3.2\HeuristicLab.Selection.OffspringSelection-3.2.csproj">
       <Project>{205898D3-2717-4686-AF17-52409B7EC0C6}</Project>
-      <Name>HeuristicLab.Selection.OffspringSelection</Name>
+      <Name>HeuristicLab.Selection.OffspringSelection-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Selection\HeuristicLab.Selection.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
       <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
-      <Name>HeuristicLab.Selection</Name>
+      <Name>HeuristicLab.Selection-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.SequentialEngine\HeuristicLab.SequentialEngine.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.2\HeuristicLab.SequentialEngine-3.2.csproj">
       <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
-      <Name>HeuristicLab.SequentialEngine</Name>
+      <Name>HeuristicLab.SequentialEngine-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

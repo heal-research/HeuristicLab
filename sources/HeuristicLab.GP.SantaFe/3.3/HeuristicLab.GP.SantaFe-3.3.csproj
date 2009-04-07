@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.GP.SantaFe</RootNamespace>
-    <AssemblyName>HeuristicLab.GP.SantaFe-3.2</AssemblyName>
+    <AssemblyName>HeuristicLab.GP.SantaFe-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -94,33 +94,33 @@
     <Compile Include="SymbolTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Constraints\HeuristicLab.Constraints.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
       <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints</Name>
+      <Name>HeuristicLab.Constraints-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core</Name>
+      <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.DataAnalysis\HeuristicLab.DataAnalysis.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.DataAnalysis\3.2\HeuristicLab.DataAnalysis-3.2.csproj">
       <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
-      <Name>HeuristicLab.DataAnalysis</Name>
+      <Name>HeuristicLab.DataAnalysis-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data</Name>
+      <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.GP\HeuristicLab.GP.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.GP\3.3\HeuristicLab.GP-3.3.csproj">
       <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
-      <Name>HeuristicLab.GP</Name>
+      <Name>HeuristicLab.GP-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random</Name>
+      <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

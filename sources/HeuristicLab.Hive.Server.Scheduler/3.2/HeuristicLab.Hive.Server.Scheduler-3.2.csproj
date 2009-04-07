@@ -88,27 +88,27 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.DataAccess.ADOHelper\HeuristicLab.DataAccess.ADOHelper.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.DataAccess.ADOHelper\3.2\HeuristicLab.DataAccess.ADOHelper-3.2.csproj">
       <Project>{5CDACE54-5FB2-4344-A21C-963F63CB7C2B}</Project>
-      <Name>HeuristicLab.DataAccess.ADOHelper</Name>
+      <Name>HeuristicLab.DataAccess.ADOHelper-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.DataAccess\HeuristicLab.DataAccess.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.DataAccess\3.2\HeuristicLab.DataAccess-3.2.csproj">
       <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
-      <Name>HeuristicLab.DataAccess</Name>
+      <Name>HeuristicLab.DataAccess-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Contracts\HeuristicLab.Hive.Contracts.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Contracts\3.2\HeuristicLab.Hive.Contracts-3.2.csproj">
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
-      <Name>HeuristicLab.Hive.Contracts</Name>
+      <Name>HeuristicLab.Hive.Contracts-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Server.Core\HeuristicLab.Hive.Server.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Server.Core\3.2\HeuristicLab.Hive.Server.Core-3.2.csproj">
       <Project>{898B31CF-81DC-453B-AEB3-BDF83197A7EE}</Project>
-      <Name>HeuristicLab.Hive.Server.Core</Name>
+      <Name>HeuristicLab.Hive.Server.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Hive.Server.DataAccess\HeuristicLab.Hive.Server.DataAccess.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Server.DataAccess\3.2\HeuristicLab.Hive.Server.DataAccess-3.2.csproj">
       <Project>{4D5A2A16-66C2-431D-9AA3-BD3041E64B84}</Project>
-      <Name>HeuristicLab.Hive.Server.DataAccess</Name>
+      <Name>HeuristicLab.Hive.Server.DataAccess-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>

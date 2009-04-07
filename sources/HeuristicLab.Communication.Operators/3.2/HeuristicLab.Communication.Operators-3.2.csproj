@@ -125,37 +125,37 @@ set Outdir=$(Outdir)
 call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Communication.Data\HeuristicLab.Communication.Data.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Communication.Data\3.2\HeuristicLab.Communication.Data-3.2.csproj">
       <Project>{14E1C3E3-2496-436A-AE00-09F7B81DB15B}</Project>
-      <Name>HeuristicLab.Communication.Data</Name>
+      <Name>HeuristicLab.Communication.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Constraints\HeuristicLab.Constraints.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
       <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints</Name>
+      <Name>HeuristicLab.Constraints-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core</Name>
+      <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Data\HeuristicLab.Data.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data</Name>
+      <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Operators.Programmable\HeuristicLab.Operators.Programmable.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Operators.Programmable\3.2\HeuristicLab.Operators.Programmable-3.2.csproj">
       <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
-      <Name>HeuristicLab.Operators.Programmable</Name>
+      <Name>HeuristicLab.Operators.Programmable-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Operators\HeuristicLab.Operators.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators</Name>
+      <Name>HeuristicLab.Operators-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Random\HeuristicLab.Random.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random</Name>
+      <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -81,7 +81,7 @@
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HeuristicLab.Tracing\libs\debug\log4net.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.Tracing\3.2\libs\release\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -156,13 +156,13 @@ call PreBuildEvent.cmd</PreBuildEvent>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Tracing\HeuristicLab.Tracing.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
       <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
-      <Name>HeuristicLab.Tracing</Name>
+      <Name>HeuristicLab.Tracing-3.2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -116,17 +116,17 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Core\HeuristicLab.Core.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core</Name>
+      <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Visualization\HeuristicLab.Visualization.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Visualization\3.2\HeuristicLab.Visualization-3.2.csproj">
       <Project>{E392A1E2-DC95-4E33-B82E-8ED690EDA1AB}</Project>
-      <Name>HeuristicLab.Visualization</Name>
+      <Name>HeuristicLab.Visualization-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
