@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -48,11 +49,7 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     public IEnumerator<ISerializationToken> GetEnumerator() {
-      DataMemberAccessor rootAccessor = new DataMemberAccessor(
-        rootName, null, () => obj, null);
-      IEnumerator<ISerializationToken> iterator = Serialize(rootAccessor);
-      while (iterator.MoveNext())
-        yield return iterator.Current;      
+      return Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
     }
     
     private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor) {
@@ -74,7 +71,7 @@ namespace HeuristicLab.Persistence.Core {
         return PrimitiveEnumerator(accessor.Name, typeId, formatter.DoFormat(value), id);
       IDecomposer decomposer = configuration.GetDecomposer(value.GetType()); 
       if (decomposer != null)
-        return CompositeEnumerator(accessor.Name, decomposer.DeCompose(value), id, typeId);                  
+        return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId);                  
       throw new ApplicationException(
           String.Format(
           "No suitable method for serializing values of type \"{0}\" found.",
@@ -91,7 +88,7 @@ namespace HeuristicLab.Persistence.Core {
 
     private IEnumerator<ISerializationToken> PrimitiveEnumerator(string name,
         int typeId, object serializedValue, int? id) {
-      yield return new PrimitiveToken(name, typeId, serializedValue, id);
+      yield return new PrimitiveToken(name, typeId, id, serializedValue);
     }
 
     private IEnumerator<ISerializationToken> CompositeEnumerator(string name,

@@ -25,7 +25,7 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// the order in which elements are generated is guaranteed to be
     /// the same as they are supplied in the Compose method.
     /// </summary>    
-    IEnumerable<Tag> DeCompose(object obj);
+    IEnumerable<Tag> Decompose(object obj);
 
     /// <summary>
     /// Create an instance of the object if possible. May return null

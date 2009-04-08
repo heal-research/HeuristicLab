@@ -4,10 +4,11 @@ using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Default.ViewOnly {
 
-  public class ViewOnlyFormat : Format {
+  public class ViewOnlyFormat : FormatBase {
     public override string Name { get { return "ViewOnly"; } }
     public static ViewOnlyFormat Instance = new ViewOnlyFormat();
   }

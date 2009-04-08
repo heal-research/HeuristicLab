@@ -107,8 +107,8 @@
     <Compile Include="Default\Xml\Compact\IntArray2XmlFormatters.cs" />
     <Compile Include="Default\Xml\Compact\DoubleArray2XmlFormatters.cs" />
     <Compile Include="Default\Xml\Compact\DoubleList2XmlFormatter.cs" />
-    <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlFormatter.cs" />
-    <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatters.cs" />
+    <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlFormatterBase.cs" />
+    <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\String2XmlFormatter.cs" />
@@ -120,18 +120,26 @@
     <Compile Include="HeuristicLabPersistencePlugin.cs" />
     <Compile Include="Core\DeSerializer.cs" />
     <Compile Include="Core\Tag.cs" />
+    <Compile Include="Interfaces\IFormat.cs" />
+    <Compile Include="Interfaces\FormatBase.cs" />
     <Compile Include="Interfaces\IDecomposer.cs" />
     <Compile Include="Interfaces\IFormatter.cs" />
     <Compile Include="Core\ConfigurationService.cs" />
+    <Compile Include="Interfaces\Tokens\ISerializationToken.cs" />
+    <Compile Include="Interfaces\Tokens\SerializationTokenBase.cs" />
+    <Compile Include="Interfaces\Tokens\CompositeTokenBase.cs" />
+    <Compile Include="Interfaces\Tokens\BeginToken.cs" />
+    <Compile Include="Interfaces\Tokens\EndToken.cs" />
+    <Compile Include="Interfaces\Tokens\PrimitiveToken.cs" />
+    <Compile Include="Interfaces\Tokens\ReferenceToken.cs" />
+    <Compile Include="Interfaces\Tokens\NulLReferenceToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Serializer.cs" />
-    <Compile Include="Interfaces\Tokens.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Util.cs" />
     <Compile Include="Core\StorableAttribute.cs" />
     <Compile Include="Default\Xml\XmlGenerator.cs" />
     <Compile Include="Default\Xml\XmlParser.cs" />

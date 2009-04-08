@@ -5,7 +5,7 @@ using System.Globalization;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
-  public class DoubleArray2XmlFormatter : NumberArray2XmlFormatter {
+  public class DoubleArray2XmlFormatter : NumberArray2XmlFormatterBase {
 
     public override Type Type {
       get {
@@ -13,11 +13,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       }
     }
 
-    protected override string formatValue(object o) {
+    protected override string FormatValue(object o) {
       return ((double)o).ToString("r", CultureInfo.InvariantCulture);
     }
 
-    protected override object parseValue(string o) {
+    protected override object ParseValue(string o) {
       return double.Parse(o);
     }
   }

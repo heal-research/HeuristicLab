@@ -6,6 +6,7 @@ using System.IO;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using ICSharpCode.SharpZipLib.Zip;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -58,8 +59,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
       yield return new PrimitiveToken(
         reader.GetAttribute("name"),
         int.Parse(reader.GetAttribute("typeId")),
-        reader.ReadString(),
-        id);
+        id,
+        reader.ReadString());        
     }
 
     private IEnumerator<ISerializationToken> ParseComposite() {
@@ -107,13 +108,13 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     public static object DeSerialize(string filename) {
       ZipFile zipFile = new ZipFile(filename);      
-      DeSerializer deSerializer = new DeSerializer(
+      Deserializer deSerializer = new Deserializer(
         ParseTypeCache(
         new StreamReader(
           zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
       XmlParser parser = new XmlParser(
         new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
-      return deSerializer.DeSerialize(parser);      
+      return deSerializer.Deserialize(parser);      
     }
   }  
 }

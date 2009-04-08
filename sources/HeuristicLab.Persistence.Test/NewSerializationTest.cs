@@ -184,8 +184,7 @@ namespace HeuristicLab.Persistence.Test {
       r.dict.Add("three", 3);
       r.myEnum = TestEnum.va1;
       XmlGenerator.Serialize(r, "test.zip");      
-      object o = XmlParser.DeSerialize("test.zip");
-      Console.Out.WriteLine(Util.AutoFormat(o, true));
+      object o = XmlParser.DeSerialize("test.zip");      
       Console.WriteLine(ViewOnlyGenerator.Serialize(r));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
@@ -198,8 +197,7 @@ namespace HeuristicLab.Persistence.Test {
       c.allCs = cs;
       c.kvpList = new KeyValuePair<List<C>, C>(new List<C> { c }, c);
       XmlGenerator.Serialize(cs, "test3.zip");
-      object o = XmlParser.DeSerialize("test3.zip");
-      Console.Out.WriteLine(Util.AutoFormat(o, true));
+      object o = XmlParser.DeSerialize("test3.zip");      
       Console.WriteLine(ViewOnlyGenerator.Serialize(cs));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
@@ -219,8 +217,7 @@ namespace HeuristicLab.Persistence.Test {
                               new[] { 1, 2 }, new[] { 3, 4 });
       arrayListArray[2].Add(a);
       XmlGenerator.Serialize(arrayListArray, "test4.zip");
-      object o = XmlParser.DeSerialize("test4.zip");
-      Console.Out.WriteLine(Util.AutoFormat(o, true));
+      object o = XmlParser.DeSerialize("test4.zip");      
       Console.WriteLine(ViewOnlyGenerator.Serialize(arrayListArray));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
@@ -229,7 +226,8 @@ namespace HeuristicLab.Persistence.Test {
       Manager m = new Manager();      
       XmlGenerator.Serialize(m, "test2.zip");
       object o = XmlParser.DeSerialize("test2.zip");
-      Console.Out.WriteLine(Util.AutoFormat(o, true));      
+      Console.WriteLine(ViewOnlyGenerator.Serialize(m));
+      Console.WriteLine(ViewOnlyGenerator.Serialize(o));      
     }    
 
     

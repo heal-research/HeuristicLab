@@ -67,7 +67,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
           null, Type.EmptyTypes, null) != null;
     }
 
-    public IEnumerable<Tag> DeCompose(object obj) {
+    public IEnumerable<Tag> Decompose(object obj) {
       foreach (object o in (IEnumerable)obj) {
         yield return new Tag(null, o);
       }

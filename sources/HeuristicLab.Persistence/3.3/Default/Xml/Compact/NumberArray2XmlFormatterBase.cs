@@ -2,17 +2,16 @@
 using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using System;
-using HeuristicLab.Persistence.Default.ViewOnly;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
                                                               
-  public abstract class NumberArray2XmlFormatter : IFormatter {
+  public abstract class NumberArray2XmlFormatterBase : IFormatter {
 
     public abstract Type Type { get; }
     public IFormat Format { get { return XmlFormat.Instance; } }
     protected virtual string Separator { get { return ";"; } }
-    protected abstract string formatValue(object o);
-    protected abstract object parseValue(string o);
+    protected abstract string FormatValue(object o);
+    protected abstract object ParseValue(string o);
 
     public object DoFormat(object obj) {
       Array a = (Array)obj;
@@ -31,10 +30,9 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         lowerBounds[i] = a.GetLowerBound(i);
       }
       int[] positions = (int[])lowerBounds.Clone();
-      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
-        Console.WriteLine(ViewOnlyGenerator.Serialize(positions));
+      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {        
         sb.Append(Separator);
-        sb.Append(formatValue(a.GetValue(positions)));
+        sb.Append(FormatValue(a.GetValue(positions)));
         positions[0] += 1;
         for (int i = 0; i < a.Rank - 1; i++) {
           if (positions[i] >= lengths[i] + lowerBounds[i]) {
@@ -68,7 +66,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       Array a = Array.CreateInstance(this.Type.GetElementType(), lengths, lowerBounds);
       int[] positions = new int[rank];
       while (values.MoveNext()) {
-        a.SetValue(parseValue((string)values.Current), positions);
+        a.SetValue(ParseValue((string)values.Current), positions);
         positions[0] += 1;
         for (int i = 0; i < rank - 1; i++) {
           if (positions[i] >= lengths[i]) {

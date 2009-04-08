@@ -8,8 +8,8 @@
     <ProjectGuid>{E2245078-6F40-449E-A370-01A97A7C5E6A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>HeuristicLab.Persistence.Test</RootNamespace>
+    <AssemblyName>HeuristicLab.Persistence.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>HeuristicLab.Persistence.Test.NewSerializationTest</StartupObject>

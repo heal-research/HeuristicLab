@@ -20,7 +20,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
              typeof (KeyValuePair<int, int>).GetGenericTypeDefinition();
     }
 
-    public IEnumerable<Tag> DeCompose(object o) {      
+    public IEnumerable<Tag> Decompose(object o) {      
       Type t = o.GetType();
       yield return new Tag("key", t.GetProperty("Key").GetValue(o, null));
       yield return new Tag("value", t.GetProperty("Value").GetValue(o, null));

@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Core {
 
     public DataMemberAccessor(
         MemberInfo memberInfo,
-        StorableAttribute autoStorableAttribute,
+        StorableAttribute storableAttribute,
         object obj) {
       if (memberInfo.MemberType == MemberTypes.Field) {
         FieldInfo fieldInfo = (FieldInfo)memberInfo;
@@ -33,8 +33,8 @@ namespace HeuristicLab.Persistence.Core {
         throw new NotSupportedException(
                 "The Storable attribute can only be applied to fields and properties.");
       }
-      Name = autoStorableAttribute.Name ?? memberInfo.Name;
-      DefaultValue = autoStorableAttribute.DefaultValue;
+      Name = storableAttribute.Name ?? memberInfo.Name;
+      DefaultValue = storableAttribute.DefaultValue;
     }
 
     public DataMemberAccessor(

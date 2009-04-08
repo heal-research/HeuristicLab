@@ -365,7 +365,7 @@ namespace HeuristicLab.Persistence.GUI {
   }
 
   [EmptyStorableClass]
-  public class EmptyFormat : Format {
+  public class EmptyFormat : FormatBase {
     public override string Name { get { return "Empty"; } }
     public static EmptyFormat Instance = new EmptyFormat();
   }

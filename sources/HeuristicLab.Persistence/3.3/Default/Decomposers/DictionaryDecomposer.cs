@@ -22,16 +22,16 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public void SetKey(object v) {
       key = v;
       keyIsSet = true;
-      check();
+      Check();
     }
 
     public void SetValue(object v) {
       value = v;
       valueIsSet = true;
-      check();
+      Check();
     }
 
-    private void check() {
+    private void Check() {
       if ( keyIsSet && valueIsSet )
         dict.Add(key, value);
     }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type.GetInterface(typeof(IDictionary).FullName) != null;        
     }
 
-    public IEnumerable<Tag> DeCompose(object o) {
+    public IEnumerable<Tag> Decompose(object o) {
       IDictionary dict = (IDictionary)o;      
       foreach ( DictionaryEntry entry in dict) {
         yield return new Tag("key", entry.Key);

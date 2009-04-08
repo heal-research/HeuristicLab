@@ -2,10 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Persistence.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="customConfigurations" Type="System.String" Scope="User">
+    <Setting Name="CustomConfigurations" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="customConfigurationsTypeCache" Type="System.String" Scope="User">
+    <Setting Name="CustomConfigurationsTypeCache" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

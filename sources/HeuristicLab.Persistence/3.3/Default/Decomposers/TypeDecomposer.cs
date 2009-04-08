@@ -16,7 +16,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
              type.VersionInvariantName() == "System.RuntimeType, mscorlib";
     }
 
-    public IEnumerable<Tag> DeCompose(object obj) {
+    public IEnumerable<Tag> Decompose(object obj) {
       Type t = (Type) obj;
       yield return new Tag("VersionInvariantName", t.VersionInvariantName());
     }

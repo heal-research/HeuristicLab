@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type.IsArray || type == typeof(Array);
     }
 
-    public IEnumerable<Tag> DeCompose(object array) {
+    public IEnumerable<Tag> Decompose(object array) {
       Array a = (Array)array;      
       yield return new Tag("rank", a.Rank);
       int[] lengths = new int[a.Rank];

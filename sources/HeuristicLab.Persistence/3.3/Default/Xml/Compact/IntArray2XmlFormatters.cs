@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Core;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
-  public class IntArray2XmlFormatter : NumberArray2XmlFormatter {
+  public class IntArray2XmlFormatter : NumberArray2XmlFormatterBase {
 
     public override Type Type {
       get {
@@ -12,11 +12,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       }
     }
 
-    protected override string formatValue(object o) {
+    protected override string FormatValue(object o) {
       return o.ToString();
     }
 
-    protected override object parseValue(string o) {
+    protected override object ParseValue(string o) {
       return int.Parse(o);
     }
   }

@@ -6,6 +6,7 @@ using System.Text;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
   
@@ -13,8 +14,8 @@ namespace HeuristicLab.Persistence.Core {
 
     private static ConfigurationService instance;
     private readonly Dictionary<IFormat, Configuration> customConfigurations;
-    public readonly Dictionary<IFormat, List<IFormatter>> Formatters;
-    public readonly List<IDecomposer> Decomposers;
+    public Dictionary<IFormat, List<IFormatter>> Formatters { get; private set; }
+    public List<IDecomposer> Decomposers { get; private set; }
     
     public static ConfigurationService Instance {
       get {
@@ -24,7 +25,7 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
-    public ConfigurationService() {
+    private ConfigurationService() {
       Formatters = new Dictionary<IFormat, List<IFormatter>>();
       Decomposers = new List<IDecomposer>();
       customConfigurations = new Dictionary<IFormat, Configuration>();      
@@ -34,18 +35,18 @@ namespace HeuristicLab.Persistence.Core {
 
     public void LoadSettings() {
       try {
-        if (String.IsNullOrEmpty(Properties.Settings.Default.customConfigurations) ||
-          String.IsNullOrEmpty(Properties.Settings.Default.customConfigurationsTypeCache))
+        if (String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurations) ||
+          String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurationsTypeCache))
           return;
-        DeSerializer deSerializer = new DeSerializer(
+        Deserializer deSerializer = new Deserializer(
           XmlParser.ParseTypeCache(
           new StringReader(
-            Properties.Settings.Default.customConfigurationsTypeCache)));
+            Properties.Settings.Default.CustomConfigurationsTypeCache)));
         XmlParser parser = new XmlParser(
           new StringReader(
-            Properties.Settings.Default.customConfigurations));
+            Properties.Settings.Default.CustomConfigurations));
         var newCustomConfigurations = (Dictionary<IFormat, Configuration>)
-          deSerializer.DeSerialize(parser);
+          deSerializer.Deserialize(parser);
         foreach (var config in newCustomConfigurations) {
           customConfigurations[config.Key] = config.Value;
         }
@@ -67,9 +68,9 @@ namespace HeuristicLab.Persistence.Core {
       StringBuilder configurationTypeCacheString = new StringBuilder();
       foreach (string s in generator.Format(serializer.TypeCache))
         configurationTypeCacheString.Append(s);
-      Properties.Settings.Default.customConfigurations =
+      Properties.Settings.Default.CustomConfigurations =
         configurationString.ToString();
-      Properties.Settings.Default.customConfigurationsTypeCache =
+      Properties.Settings.Default.CustomConfigurationsTypeCache =
         configurationTypeCacheString.ToString();
       Properties.Settings.Default.Save();
     }

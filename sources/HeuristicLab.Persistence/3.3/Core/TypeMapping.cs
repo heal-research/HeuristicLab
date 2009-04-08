@@ -2,7 +2,7 @@
 
 namespace HeuristicLab.Persistence.Core {
 
-  public struct TypeMapping {
+  public class TypeMapping {
     public readonly int Id;
     public readonly string TypeName;
     public readonly string Serializer;    

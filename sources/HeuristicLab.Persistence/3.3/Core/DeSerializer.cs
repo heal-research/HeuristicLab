@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System;
 using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Core {  
 
-  public struct ParentReference {}  
+  public class ParentReference {}  
 
   class CompositeObject {
 
@@ -17,7 +18,7 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     public void AddValue(string name, object value, List<Thunk> finalFixes) {
-      Tag t = new Tag(name, value) {finalFixes = finalFixes};
+      Tag t = new Tag(name, value) {globalFinalFixes = finalFixes};
       customValues.Add(t);
     }
 
@@ -29,7 +30,7 @@ namespace HeuristicLab.Persistence.Core {
 
   public delegate void Thunk();
 
-  public class DeSerializer {
+  public class Deserializer {
     
     private readonly Dictionary<int, object> id2obj;
     private readonly Dictionary<Type, object> serializerMapping;    
@@ -37,15 +38,15 @@ namespace HeuristicLab.Persistence.Core {
     private readonly Dictionary<int, Type> typeIds;    
     private List<Thunk> finalFixes;
 
-    public DeSerializer(
+    public Deserializer(
       IEnumerable<TypeMapping> typeCache) {      
       id2obj = new Dictionary<int, object>();
       parentStack = new Stack<CompositeObject>();
       typeIds = new Dictionary<int, Type>();
-      serializerMapping = createSerializers(typeCache);
+      serializerMapping = CreateSerializers(typeCache);
     }
 
-    private Dictionary<Type, object> createSerializers(IEnumerable<TypeMapping> typeCache) {
+    private Dictionary<Type, object> CreateSerializers(IEnumerable<TypeMapping> typeCache) {
       var map = new Dictionary<Type, object>();
       foreach (var typeMapping in typeCache) {
         Type type = Type.GetType(typeMapping.TypeName, true);
@@ -58,7 +59,7 @@ namespace HeuristicLab.Persistence.Core {
       return map;
     }
 
-    public object DeSerialize(IEnumerable<ISerializationToken> tokens) {
+    public object Deserialize(IEnumerable<ISerializationToken> tokens) {
       finalFixes = new List<Thunk>();      
       foreach (ISerializationToken token in tokens) {
         Type t = token.GetType();

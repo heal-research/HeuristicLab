@@ -12,10 +12,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public bool CanDecompose(Type type) {
-      return type.IsEnum || type == typeof (Enum);
+      return type.IsEnum || type == typeof(Enum);
     }
 
-    public IEnumerable<Tag> DeCompose(object obj) {      
+    public IEnumerable<Tag> Decompose(object obj) {      
       yield return new Tag(Enum.GetName(obj.GetType(), obj));
     }
 

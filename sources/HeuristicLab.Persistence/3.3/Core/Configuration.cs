@@ -12,7 +12,7 @@ namespace HeuristicLab.Persistence.Core {
     private readonly List<IDecomposer> decomposers;
     private readonly Dictionary<Type, IDecomposer> decomposerCache;
     [Storable]
-    public readonly IFormat Format;
+    public IFormat Format { get; set; }
 
     private Configuration() {
       decomposerCache = new Dictionary<Type, IDecomposer>();

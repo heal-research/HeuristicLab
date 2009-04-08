@@ -2,6 +2,7 @@
 using System.Text;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
+using System.Xml;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 

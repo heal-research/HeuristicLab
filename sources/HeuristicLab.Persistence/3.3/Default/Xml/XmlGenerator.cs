@@ -7,6 +7,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using HeuristicLab.Tracing;
 using log4net;
+using HeuristicLab.Persistence.Interfaces.Tokens;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -15,7 +16,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public const string COMPOSITE = "COMPOSITE";
     public const string REFERENCE = "REFERENCE";
     public const string NULL = "NULL";
-    public const string TYPECACHE = "TYPCACHE";
+    public const string TYPECACHE = "TYPECACHE";
     public const string TYPE = "TYPE";
   }
 
@@ -135,8 +136,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
       yield return "</" + XmlStrings.TYPECACHE + ">";
     }
 
-    public static void Serialize(object o, string basename) {      
-      Serialize(o, basename, ConfigurationService.Instance.GetDefaultConfig(XmlFormat.Instance));
+    public static void Serialize(object o, string filename) {      
+      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(XmlFormat.Instance));
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {

@@ -18,7 +18,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     }    
 
-    public IEnumerable<Tag> DeCompose(object obj) {
+    public IEnumerable<Tag> Decompose(object obj) {
       foreach (var mapping in StorableAttribute.GetAutostorableAccessors(obj)) {
         yield return new Tag(mapping.Key, mapping.Value.Get());
       }
