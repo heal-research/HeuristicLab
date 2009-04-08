@@ -33,7 +33,7 @@ namespace HeuristicLab.GP.StructureIdentification {
   public class FunctionLibraryInjector : OperatorBase {
     private const string TARGETVARIABLE = "TargetVariable";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
-    private const string FUNCTIONLIBRARY = "FunctionLibrary";
+    protected const string FUNCTIONLIBRARY = "FunctionLibrary";
 
     public override string Description {
       get { return @"Injects a default function library for regression and classification problems."; }
