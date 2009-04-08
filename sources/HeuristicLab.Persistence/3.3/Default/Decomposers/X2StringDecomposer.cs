@@ -10,6 +10,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   public class Number2StringDecomposer : IDecomposer {
 
+    public int Priority {
+      get { return 100; }
+    }
+
+
     private static readonly List<Type> numberTypes =
       new List<Type> {
         typeof(bool),
@@ -76,6 +81,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   public class DateTime2StringDecomposer : IDecomposer {
 
+    public int Priority {
+      get { return 100; }
+    }
+
+
     public bool CanDecompose(Type type) {
       return type == typeof(DateTime);
     }
@@ -98,6 +108,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
   }  
 
   public class CompactNumberArray2StringDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 200; }
+    }
     
     private static readonly Number2StringDecomposer numberDecomposer =
       new Number2StringDecomposer();    
@@ -182,6 +196,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
   }
 
   public class NumberEnumerable2StringDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 200; }
+    }
 
     private static readonly Number2StringDecomposer numberDecomposer =
       new Number2StringDecomposer();

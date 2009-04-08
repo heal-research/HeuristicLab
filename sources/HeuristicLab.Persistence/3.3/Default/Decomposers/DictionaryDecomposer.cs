@@ -40,6 +40,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
   
   public class DictionaryDecomposer : IDecomposer {
 
+    public int Priority {
+      get { return 100; }
+    }
+
+
     public bool CanDecompose(Type type) {
       return type.GetInterface(typeof(IDictionary).FullName) != null;        
     }

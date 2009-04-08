@@ -6,7 +6,11 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
-  public class StorableDecomposer : IDecomposer {    
+  public class StorableDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 200; }
+    }
 
     public bool CanDecompose(Type type) {
       return StorableAttribute.GetStorableMembers(type, false).Count() > 0 ||

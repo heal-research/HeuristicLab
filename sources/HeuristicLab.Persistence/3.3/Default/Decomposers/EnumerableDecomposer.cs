@@ -48,7 +48,12 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   }
 
-  public class EnumerableDecomposer : IDecomposer {    
+  public class EnumerableDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 100; }
+    }
+
 
     public bool CanDecompose(Type type) {
       return

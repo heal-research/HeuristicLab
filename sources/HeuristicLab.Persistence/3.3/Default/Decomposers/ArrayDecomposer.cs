@@ -7,6 +7,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     
   public class ArrayDecomposer : IDecomposer {
 
+    public int Priority {
+      get { return 100; }
+    }
+
     public bool CanDecompose(Type type) {
       return type.IsArray || type == typeof(Array);
     }

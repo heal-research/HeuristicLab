@@ -5,7 +5,12 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
   
-  public class TypeDecomposer : IDecomposer {    
+  public class TypeDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 100; }
+    }
+
     public bool CanDecompose(Type type) {
       return type == typeof (Type) ||
              type.VersionInvariantName() == "System.RuntimeType, mscorlib";

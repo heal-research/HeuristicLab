@@ -7,7 +7,12 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
   
-  public class KeyValuePairDecomposer : IDecomposer {    
+  public class KeyValuePairDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 100; }
+    }
+
 
     public bool CanDecompose(Type type) {
       return type.IsGenericType &&

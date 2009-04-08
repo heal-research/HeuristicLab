@@ -83,6 +83,17 @@ namespace HeuristicLab.Persistence.Core {
       foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         if ( a != defaultAssembly )
           DiscoverFrom(a);
+      SortDecomposers();
+    }
+
+    class PriortiySorter : IComparer<IDecomposer> {
+      public int Compare(IDecomposer x, IDecomposer y) {
+        return y.Priority - x.Priority;
+      }
+    }
+
+    protected void SortDecomposers() {
+      Decomposers.Sort(new PriortiySorter());
     }
 
     protected void DiscoverFrom(Assembly a) {

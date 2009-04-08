@@ -7,6 +7,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     
   public class EnumDecomposer : IDecomposer {
 
+    public int Priority {
+      get { return 100; }
+    }
+
     public bool CanDecompose(Type type) {
       return type.IsEnum || type == typeof (Enum);
     }
@@ -24,6 +28,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       it.MoveNext();
       return Enum.Parse(t, (string)it.Current.Value);
     }
+    
   }
   
 }
