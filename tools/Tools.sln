@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewPluginWizard", "NewPluginWizard\NewPluginWizard.csproj", "{1E4B971A-83BA-4C39-BE19-D09B13CF7242}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizards", "Wizards\Wizards.csproj", "{1E4B971A-83BA-4C39-BE19-D09B13CF7242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

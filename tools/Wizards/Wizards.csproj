@@ -8,8 +8,8 @@
     <ProjectGuid>{1E4B971A-83BA-4C39-BE19-D09B13CF7242}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Tools.NewPluginWizard</RootNamespace>
-    <AssemblyName>HeuristicLab.Tools.NewPluginWizard</AssemblyName>
+    <RootNamespace>HeuristicLab.Tools.Wizards</RootNamespace>
+    <AssemblyName>HeuristicLab.Tools.Wizards</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

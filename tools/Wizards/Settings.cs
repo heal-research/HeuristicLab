@@ -21,28 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
-namespace HeuristicLab.Tools.NewPluginWizard {
-  public partial class NewPluginWizardForm : Form {
-    private Settings mySettings;
-    public Settings Settings {
-      get { return mySettings; }
-    }
-
-    public NewPluginWizardForm() {
-      mySettings = new Settings();
-      InitializeComponent();
-      propertyGrid.SelectedObject = mySettings;
-    }
-
-    private void okButton_Click(object sender, EventArgs e) {
-      this.Close();
-    }
+namespace HeuristicLab.Tools.Wizards {
+  public class Settings {
+    public string PluginName { get; set; }
+    public string PluginVersion { get; set; }
   }
 }

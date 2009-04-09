@@ -27,7 +27,7 @@ using System.Windows.Forms;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
 
-namespace HeuristicLab.Tools.NewPluginWizard {
+namespace HeuristicLab.Tools.Wizards {
   public class NewPluginWizard : IWizard {
     public void BeforeOpeningFile(ProjectItem projectItem) {
     }

@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Tools.NewPluginWizard {
+namespace HeuristicLab.Tools.Wizards {
   partial class NewPluginWizardForm {
     /// <summary>
     /// Required designer variable.
