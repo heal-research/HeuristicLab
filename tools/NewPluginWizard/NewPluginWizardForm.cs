@@ -40,5 +40,9 @@ namespace HeuristicLab.Tools.NewPluginWizard {
       InitializeComponent();
       propertyGrid.SelectedObject = mySettings;
     }
+
+    private void okButton_Click(object sender, EventArgs e) {
+      this.Close();
+    }
   }
 }

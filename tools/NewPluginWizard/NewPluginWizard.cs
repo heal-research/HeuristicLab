@@ -43,11 +43,15 @@ namespace HeuristicLab.Tools.NewPluginWizard {
 
     public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams) {
       try {
+        MessageBox.Show("Init");
         using (NewPluginWizardForm form = new NewPluginWizardForm()) {
-          form.ShowDialog();
-          replacementsDictionary.Add("$PluginName$", form.Settings.PluginName);
-          replacementsDictionary.Add("$PluginVersion$", form.Settings.PluginVersion);
+          if (form.ShowDialog() == DialogResult.OK) {
+            MessageBox.Show(form.Settings.PluginName + "\n" + form.Settings.PluginVersion);
+            replacementsDictionary.Add("$PluginName$", form.Settings.PluginName);
+            replacementsDictionary.Add("$PluginVersion$", form.Settings.PluginVersion);
+          }
         }
+        MessageBox.Show("Done");
       }
       catch (Exception ex) {
         MessageBox.Show(ex.ToString());
