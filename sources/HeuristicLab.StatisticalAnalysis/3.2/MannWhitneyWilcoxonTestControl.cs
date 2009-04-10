@@ -47,17 +47,17 @@ namespace HeuristicLab.StatisticalAnalysis {
 
     private double[] ConvertStringToArray(TextBox p) {
       string t = p.Text;
-      string[] s = t.Split(new char[] { ';' });
-      double[] tmp = new double[s.Length];
-      try {
-        for (int i = 0; i < s.Length; i++) {
-          tmp[i] = double.Parse(s[i]);
+      string[] s = t.Split(new char[] { ';', ' ', '\t' });
+      List<double> tmp = new List<double>();
+      for (int i = 0; i < s.Length; i++) {
+        try {
+          double val = double.Parse(s[i]);
+          tmp.Add(val);
         }
+        catch (FormatException) { }
       }
-      catch (FormatException) {
-        return null;
-      }
-      return tmp;
+      if (tmp.Count > 0) return tmp.ToArray();
+      else return null;
     }
 
     private void testApproximateButton_Click(object sender, EventArgs e) {
@@ -80,8 +80,13 @@ namespace HeuristicLab.StatisticalAnalysis {
       double[] p1 = ConvertStringToArray(p1TextBox);
       double[] p2 = ConvertStringToArray(p2TextBox);
       if (p1.Length > 20 || p2.Length > 20) {
-        MessageBox.Show("Sample size is too large for exact calculation, do not use more than 20 samples in each population.");
-        return;
+        double[] tmp = new double[Math.Min(20, p1.Length)];
+        for (int i = 0; i < Math.Min(20, p1.Length); i++) tmp[i] = p1[i];
+        p1 = tmp;
+        tmp = new double[Math.Min(20, p2.Length)];
+        for (int i = 0; i < Math.Min(20, p2.Length); i++) tmp[i] = p2[i];
+        p2 = tmp;
+        MessageBox.Show("Caution: Sample size is too large for exact calculation. Only the first 20 samples are used for the test!");
       }
       double alpha = Double.Parse(alphaTextBox.Text);
       if (MannWhitneyWilcoxonTest.TwoTailedTest(p1, p2, alpha)) {

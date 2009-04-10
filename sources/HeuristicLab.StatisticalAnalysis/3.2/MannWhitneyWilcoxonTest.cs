@@ -49,6 +49,8 @@ namespace HeuristicLab.StatisticalAnalysis {
     /// <param name="p2">Array with samples from population 2</param>
     /// <returns>The p-value of the test</returns>
     public static double TwoTailedTest(double[] p1, double[] p2) {
+      Array.Sort<double>(p1);
+      Array.Sort<double>(p2);
       double rank = MannWhitneyWilcoxonTest.CalculateRankSumForP1(p1, p2);
       return MannWhitneyWilcoxonTest.ApproximatePValue(rank, p1.Length, p2.Length, true);
     }
@@ -69,6 +71,8 @@ namespace HeuristicLab.StatisticalAnalysis {
     /// <param name="alpha">The significance level. If p1 and p2 are both smaller or equal than 20, the decision is based on three tables that represent significance at 0.01, 0.05, and 0.1.</param>
     /// <returns>True if H0 (p1 equals p2) can be rejected, False otherwise</returns>
     public static bool TwoTailedTest(double[] p1, double[] p2, double alpha) {
+      Array.Sort<double>(p1);
+      Array.Sort<double>(p2);
       return MannWhitneyWilcoxonTest.TwoTailedTest(p1, p2, alpha, 20);
     }
 
@@ -119,6 +123,8 @@ namespace HeuristicLab.StatisticalAnalysis {
     /// <param name="p2">Array with samples from population 2</param>
     /// <returns>The p-value of the test</returns>
     public static double TwoTailedTest(int[] p1, int[] p2) {
+      Array.Sort<int>(p1);
+      Array.Sort<int>(p2);
       double rank = MannWhitneyWilcoxonTest.CalculateRankSumForP1(p1, p2);
       return MannWhitneyWilcoxonTest.ApproximatePValue(rank, p1.Length, p2.Length, true);
     }
@@ -180,11 +186,11 @@ namespace HeuristicLab.StatisticalAnalysis {
     private static bool AbsolutePValue(double rank, int nRank, int nOther, double alpha, bool twoTailed) {
       double U1 = rank - (double)(nRank * (nRank + 1) / 2);
       double U2 = (double)(nRank * nOther) - U1;
-      if (alpha <= 0.01) {
+      if (alpha < 0.05) {
         return (Math.Min(U1, U2) <= table001[nRank - 1, nOther - 1]);
-      } else if (alpha <= 0.05) {
+      } else if (alpha < 0.1) {
         return (Math.Min(U1, U2) <= table005[nRank - 1, nOther - 1]);
-      } else if (alpha <= 0.1) {
+      } else if (Math.Abs(alpha - 0.1) < 1e-07) {
         return (Math.Min(U1, U2) <= table01[nRank - 1, nOther - 1]);
       } else throw new ArgumentException("ERROR in MannWhitneyWilcoxonTest: alpha must be <= 0.1");
     }
@@ -196,7 +202,9 @@ namespace HeuristicLab.StatisticalAnalysis {
       double mu = nRank * nOther / 2;
       double sigma = Math.Sqrt(nRank * nOther * (nRank + nOther + 1) / 12);
       double z = (Math.Min(U1, U2) - mu) / sigma;
-      return ProbabilityOfZValue(z);
+      if (twoTailed) {
+        return 2 * ProbabilityOfZValue(z);
+      } else return ProbabilityOfZValue(z);
     }
 
     // FIXME: when there's equality among some samples within a population the rank also needs to be averaged
