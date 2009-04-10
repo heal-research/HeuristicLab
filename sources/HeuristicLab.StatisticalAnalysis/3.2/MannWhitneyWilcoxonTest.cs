@@ -233,7 +233,7 @@ namespace HeuristicLab.StatisticalAnalysis {
             commonRank += rank;
           }
           p2Idx++;
-          R1 += (i - starti + 1) * commonRank / (rank - startRank + 1);
+          R1 += (double)((i - starti + 1) * commonRank) / (double)(rank - startRank + 1);
         } else {
           p2Idx++;
           i--;
@@ -280,7 +280,7 @@ namespace HeuristicLab.StatisticalAnalysis {
             commonRank += rank;
           }
           p2Idx++;
-          R1 += (i - starti + 1) * commonRank / (rank - startRank + 1);
+          R1 += (double)((i - starti + 1) * commonRank) / (double)(rank - startRank + 1);
         } else if (p1[i] < p2[p2Idx]) {
           R1 += rank;
         } else {

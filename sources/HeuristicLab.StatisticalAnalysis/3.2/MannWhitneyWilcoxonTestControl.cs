@@ -64,13 +64,12 @@ namespace HeuristicLab.StatisticalAnalysis {
       double[] p1 = ConvertStringToArray(p1TextBox);
       double[] p2 = ConvertStringToArray(p2TextBox);
       if (p1.Length < 10 || p2.Length < 10) {
-        MessageBox.Show("Sample size is too small to approximate, provide at least 10 samples in each population.");
-        return;
+        MessageBox.Show("Caution: Sample size is too small for good approximation, treat the results carefully. Provide at least 10 samples in each population.");
       }
       double alpha = Double.Parse(alphaTextBox.Text);
       double pVal = MannWhitneyWilcoxonTest.TwoTailedTest(p1, p2);
       if (pVal <= alpha) {
-        resultLabel.Text = "The hypothesis H0 can be rejected at " + alpha.ToString() + ", the p-Value is " + pVal.ToString() + "\nThe samples are likely not to stem from the same distribution.";
+        resultLabel.Text = "The hypothesis H0 can be rejected at " + alpha.ToString() + ", the approximated p-Value is " + pVal.ToString() + "\nThe samples are not likely to stem from the same distribution.";
       } else {
         resultLabel.Text = "The hypothesis H0 cannot be rejected at " + alpha.ToString();
       }
