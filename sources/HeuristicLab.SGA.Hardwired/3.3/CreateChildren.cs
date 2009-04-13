@@ -33,9 +33,9 @@ using HeuristicLab.Routing.TSP;
 namespace HeuristicLab.SGA.Hardwired {
   class CreateChildren : OperatorBase {
     ChildrenInitializer ci;
-    OrderCrossover oc;
-    InversionManipulator im;
-    RoundedEuclideanPathTSPEvaluator repTSPe;
+    OperatorBase crossover;
+    OperatorBase mutator;
+    OperatorBase evaluator;
     SubScopesRemover sr;
     Counter counter;
     Sorter sorter;
@@ -49,14 +49,14 @@ namespace HeuristicLab.SGA.Hardwired {
     public CreateChildren()
       : base() {
       ci = new ChildrenInitializer();
-      oc = new OrderCrossover();
-      im = new InversionManipulator();
-      repTSPe = new RoundedEuclideanPathTSPEvaluator();
   
-      // variables for stochastic branch
+      // variables infos
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("MutationRate", "Probability to choose first branch", typeof(DoubleData), VariableKind.In));
-            
+      AddVariableInfo(new VariableInfo("Crossover", "Crossover strategy for SGA", typeof(OperatorBase), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Mutator", "Mutation strategy for SGA", typeof(OperatorBase), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Evaluator", "Evaluation strategy for SGA", typeof(OperatorBase), VariableKind.In));
+
       sr = new SubScopesRemover();
       sr.GetVariableInfo("SubScopeIndex").Local = true;
 
@@ -68,11 +68,12 @@ namespace HeuristicLab.SGA.Hardwired {
       sorter.GetVariableInfo("Value").ActualName = "Quality";
     }
 
-    void valueInfo_ActualNameChanged(object sender, EventArgs e) {
-      throw new NotImplementedException();
-    } // SGAMain()
-
     public override IOperation Apply(IScope scope) {
+
+      ci = new ChildrenInitializer();
+      crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
+      mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
+      evaluator = GetVariableValue<OperatorBase>("Evaluator", scope, true);
 
       random = GetVariableValue<IRandom>("Random", scope, true);
       probability = GetVariableValue<DoubleData>("MutationRate", scope, true);
@@ -81,11 +82,11 @@ namespace HeuristicLab.SGA.Hardwired {
       ci.Apply(scope);
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
-        oc.Execute(s);
-        
+        crossover.Execute(s);
+        // Stochastic Branch
         if(random.NextDouble() < probability.Data)
-          im.Execute(s);
-        repTSPe.Execute(s);
+          mutator.Execute(s);
+        evaluator.Execute(s);
         sr.Execute(s);
         counter.Execute(s);
       } // foreach
