@@ -5,11 +5,16 @@ using System.Drawing;
 namespace HeuristicLab.Visualization {
   public class CompositeShape : IShape {
     private IShape parent;
+    private bool showChildShapes = true;
 
     protected readonly List<IShape> shapes = new List<IShape>();
     protected RectangleD boundingBox = RectangleD.Empty;
 
+
+
     public virtual void Draw(Graphics graphics) {
+      if(!showChildShapes)
+        return;
       foreach (IShape shape in shapes) {
         shape.Draw(graphics);
       }
@@ -38,9 +43,18 @@ namespace HeuristicLab.Visualization {
       set { parent = value; }
     }
 
+    public bool ShowChildShapes {
+      get { return showChildShapes; }
+      set { showChildShapes = value; }
+    }
+
     public void ClearShapes() {
       shapes.Clear();
       boundingBox = RectangleD.Empty;
+    }
+
+    public IShape GetShape(int index) {
+      return shapes[index];
     }
 
     public void AddShape(IShape shape) {

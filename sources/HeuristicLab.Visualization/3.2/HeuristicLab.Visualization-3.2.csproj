@@ -109,6 +109,7 @@
     <Compile Include="LabelProvider\ILabelProvider.cs" />
     <Compile Include="IMouseEventListener.cs" />
     <Compile Include="Legend\LegendItem.cs" />
+    <Compile Include="MarkerShape.cs" />
     <Compile Include="MaxAggregator.cs" />
     <Compile Include="MinAggregator.cs" />
     <Compile Include="Options\OptionsDialog.cs">

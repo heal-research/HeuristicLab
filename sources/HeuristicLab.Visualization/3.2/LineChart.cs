@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Visualization.Legend;
@@ -390,7 +391,10 @@ namespace HeuristicLab.Visualization {
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i-1,row[i-1],8,row.Color));
         }
+        if(row.Count>0)
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape((row.Count - 1), row[(row.Count - 1)], 8, row.Color));
       }
 
       ZoomToFullView();
@@ -404,13 +408,14 @@ namespace HeuristicLab.Visualization {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
+          
         } else {
           LineShape lineShape = rowEntry.LinesShape.GetShape(0);
           lineShape.Y1 = value;
           lineShape.Y2 = value;
         }
       } else {
-        if (index > rowEntry.LinesShape.Count + 1) {
+        if (index > rowEntry.LinesShape.Count + 1) {    //MarkersShape is on position zero
           throw new NotImplementedException();
         }
 
@@ -418,16 +423,19 @@ namespace HeuristicLab.Visualization {
         if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
           LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index ], 8, row.Color));
         }
 
         // not the first value
         if (index > 0) {
           rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
+          ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
         }
 
         // not the last value
         if (index > 0 && index < row.Count - 1) {
           rowEntry.LinesShape.GetShape(index).Y1 = value;
+          ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
         }
       }
 
@@ -582,6 +590,8 @@ namespace HeuristicLab.Visualization {
     #endregion
 
     private class LinesShape : WorldShape {
+      public readonly CompositeShape markersShape = new CompositeShape();
+
       public void UpdateStyle(IDataRow row) {
         foreach (IShape shape in shapes) {
           LineShape lineShape = shape as LineShape;
@@ -593,12 +603,29 @@ namespace HeuristicLab.Visualization {
         }
       }
 
+      public override void Draw(Graphics graphics) {
+        GraphicsState gstate = graphics.Save();
+
+        graphics.SetClip(Viewport);
+        foreach (IShape shape in shapes) {
+          // draw child shapes using our own clipping area
+          shape.Draw(graphics);
+        }
+        markersShape.Draw(graphics);
+        graphics.Restore(gstate);
+      }
+
+      public void AddMarkerShape(IShape shape) {
+        shape.Parent = this;
+        markersShape.AddShape(shape);
+      }
+
       public int Count {
         get { return shapes.Count; }
       }
 
       public LineShape GetShape(int index) {
-        return (LineShape)shapes[index];
+        return (LineShape)shapes[index];     //shapes[0] is markersShape!!
       }
     }
 
@@ -609,6 +636,7 @@ namespace HeuristicLab.Visualization {
 
       public RowEntry(IDataRow dataRow) {
         this.dataRow = dataRow;
+        linesShape.markersShape.Parent = linesShape;
       }
 
       public IDataRow DataRow {
@@ -618,9 +646,17 @@ namespace HeuristicLab.Visualization {
       public LinesShape LinesShape {
         get { return linesShape; }
       }
+
+      public void hideMarkers() {
+        linesShape.markersShape.ShowChildShapes = false;
+      }
+
+      public void showMarkers() {
+        linesShape.markersShape.ShowChildShapes = true;
+      }
     }
 
-    private class YAxisInfo {
+    private class YAxisInfo { 
       private readonly Grid grid = new Grid();
       private readonly YAxis yAxis = new YAxis();
 
