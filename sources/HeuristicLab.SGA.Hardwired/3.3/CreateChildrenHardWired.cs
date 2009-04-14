@@ -74,11 +74,18 @@ namespace HeuristicLab.SGA.Hardwired {
       ci.Apply(scope);
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
-        crossover.Execute(s);
+        if (crossover.Execute(s) != null)
+          throw new InvalidOperationException("ERROR: no support for combined operators!");
+
         // Stochastic Branch
-        if (random.NextDouble() < probability.Data)
-          mutator.Execute(s);
-        evaluator.Execute(s);
+        if (random.NextDouble() < probability.Data) {
+          if (mutator.Execute(s) != null)
+            throw new InvalidOperationException("ERROR: no support for combined operators!");
+        }
+
+        if (evaluator.Execute(s) != null)
+          throw new InvalidOperationException("ERROR: no support for combined operators!");
+
         // subscopes remover
         IntData index = GetVariableValue<IntData>("SubScopeIndex", s, true, false);
         if (index == null) { // remove all scopes
@@ -119,7 +126,5 @@ namespace HeuristicLab.SGA.Hardwired {
 
       return null;
     } // Apply
-
-  } // class SGAMain
-
-} // namespace HeuristicLab.SGA
+  } // class CreateChildrenHardWired
+} // namespace HeuristicLab.SGA.Hardwired

@@ -43,7 +43,7 @@ namespace HeuristicLab.SGA.Hardwired {
     DoubleData probability;
     
     public override string Description {
-      get { return @"Implements the functionality of method SGAMain hard wired."; }
+      get { return @"Implements the control structures of CreateChildren hard wired. Operators are delegated."; }
     }
 
     public CreateChildren()
@@ -69,8 +69,6 @@ namespace HeuristicLab.SGA.Hardwired {
     }
 
     public override IOperation Apply(IScope scope) {
-
-      ci = new ChildrenInitializer();
       crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
       mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
       evaluator = GetVariableValue<OperatorBase>("Evaluator", scope, true);
@@ -90,38 +88,10 @@ namespace HeuristicLab.SGA.Hardwired {
         sr.Execute(s);
         counter.Execute(s);
       } // foreach
-      // set evaluated solutions
-      //IntData value = GetVariableValue<IntData>("EvaluatedSolutions", scope, true);
-      //value.Data = counter;
 
-      // sort with using of operator
       sorter.Execute(scope);
-
-      // sort scopes
-      //bool descending = false;//GetVariableValue<BoolData>("Descending", scope, true).Data;
-      //double[] keys = new double[scope.SubScopes.Count];
-      //int[] sequence = new int[keys.Length];
-
-      //for (int i = 0; i < keys.Length; i++) {
-      //  keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
-      //  sequence[i] = i;
-      //}
-
-      //Array.Sort<double, int>(keys, sequence);
-
-      //if (descending) {
-      //  int temp;
-      //  for (int i = 0; i < sequence.Length / 2; i++) {
-      //    temp = sequence[i];
-      //    sequence[i] = sequence[sequence.Length - 1 - i];
-      //    sequence[sequence.Length - 1 - i] = temp;
-      //  }
-      //}
-      //scope.ReorderSubScopes(sequence);
 
       return null;
     } // Apply
-
-  } // class SGAMain
-
-} // namespace HeuristicLab.SGA
+  } // class CreateChildren
+} // namespace HeuristicLab.SGA.Hardwired
