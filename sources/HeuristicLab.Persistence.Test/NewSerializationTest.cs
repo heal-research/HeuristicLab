@@ -265,15 +265,25 @@ namespace HeuristicLab.Persistence.Test {
     }
 
 
+    public static void Test8() {
+      string[] strings = { "ora", "et", "labora" };      
+      XmlGenerator.Serialize(strings, "test8.zip");
+      object o = XmlParser.DeSerialize("test8.zip");
+      Console.WriteLine(ViewOnlyGenerator.Serialize(strings));
+      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+    }
+
+
     public static void Main() {
       BasicConfigurator.Configure();
       Test1();      
       Test2();
       Test3();
       Test4();
-      Test5();
+      //Test5();
       Test6();
       Test7();
+      Test8();
       //SpeedTest();
       //SpeedTest2();
       Console.In.ReadLine();

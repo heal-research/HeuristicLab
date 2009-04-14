@@ -15,18 +15,26 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type.IsArray || type == typeof(Array);
     }
 
+    public IEnumerable<Tag> CreateMetaInfo(object obj) {
+      Array a = (Array)obj;
+      yield return new Tag("rank", a.Rank);
+      for (int i = 0; i < a.Rank; i++) {      
+        yield return new Tag("length_" + i, a.GetLength(i));
+      }
+      for (int i = 0; i < a.Rank; i++) {        
+        yield return new Tag("lowerBound_" + i, a.GetLowerBound(i));
+      }      
+    }
+
     public IEnumerable<Tag> Decompose(object array) {
       Array a = (Array)array;      
-      yield return new Tag("rank", a.Rank);
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
       for (int i = 0; i < a.Rank; i++) {
         lengths[i] = a.GetLength(i);
-        yield return new Tag("length_" + i, a.GetLength(i));
       }
       for (int i = 0; i < a.Rank; i++) {
         lowerBounds[i] = a.GetLowerBound(i);
-        yield return new Tag("lowerBound_" + i, a.GetLowerBound(i));
       }
       int[] positions = (int[])lowerBounds.Clone();
       while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
@@ -43,12 +51,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
 
-    public object CreateInstance(Type t) {
-      return null;
-    }
-
-    public object Populate(object instance, IEnumerable<Tag> elements, Type t) {
-      IEnumerator<Tag> e = elements.GetEnumerator();
+    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
+      IEnumerator<Tag> e = metaInfo.GetEnumerator();
       e.MoveNext();
       int rank = (int)e.Current.Value;
       int[] lengths = new int[rank];
@@ -60,14 +64,27 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       for (int i = 0; i < rank; i++) {
         e.MoveNext();
         lowerBounds[i] = (int)e.Current.Value;
+      }
+      return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);      
+    }
+
+    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {      
+      Array a = (Array)instance;
+      int[] lengths = new int[a.Rank];
+      int[] lowerBounds = new int[a.Rank];
+      for (int i = 0; i < a.Rank; i++) {
+        lengths[i] = a.GetLength(i);
+      }
+      for (int i = 0; i < a.Rank; i++) {
+        lowerBounds[i] = a.GetLowerBound(i);
       }      
-      Array a = Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
       int[] positions = (int[])lowerBounds.Clone();
+      IEnumerator<Tag> e = elements.GetEnumerator();
       while (e.MoveNext()) {
         int[] currentPositions = positions;
-        e.Current.SafeSet(value => a.SetValue(value, currentPositions));        
+        a.SetValue(e.Current.Value, currentPositions);
         positions[0] += 1;
-        for (int i = 0; i < rank-1; i++) {
+        for (int i = 0; i < a.Rank-1; i++) {
           if (positions[i] >= lengths[i]+lowerBounds[i]) {
             positions[i] = lowerBounds[i];
             positions[i + 1] += 1;
@@ -76,7 +93,6 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
           }
         }
       }
-      return a;
     }
   }
   

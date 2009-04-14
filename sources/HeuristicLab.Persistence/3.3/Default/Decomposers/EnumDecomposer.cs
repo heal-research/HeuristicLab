@@ -15,20 +15,21 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type.IsEnum || type == typeof(Enum);
     }
 
-    public IEnumerable<Tag> Decompose(object obj) {      
+    public IEnumerable<Tag> CreateMetaInfo(object obj) {
       yield return new Tag(Enum.GetName(obj.GetType(), obj));
     }
 
-    public object CreateInstance(Type t) {
-      return null;
+    public IEnumerable<Tag> Decompose(object obj) {
+      return new Tag[] { };
     }
-    
-    public object Populate(object instance, IEnumerable<Tag> elements, Type t) {
-      IEnumerator<Tag> it = elements.GetEnumerator();
+
+    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
+      IEnumerator<Tag> it = metaInfo.GetEnumerator();
       it.MoveNext();
       return Enum.Parse(t, (string)it.Current.Value);
     }
     
+    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {      
+    }
   }
-  
 }

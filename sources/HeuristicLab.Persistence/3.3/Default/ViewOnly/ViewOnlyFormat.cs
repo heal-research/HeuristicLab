@@ -126,6 +126,14 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
       return sb.ToString();
     }
 
+    protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
+      return "[";
+    }
+
+    protected override string Format(MetaInfoEndToken metaInfoEndToken) {
+      return "]";
+    }
+
     public static string Serialize(object o) {
       return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(ViewOnlyFormat.Instance));
     }

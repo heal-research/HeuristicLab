@@ -7,41 +7,60 @@ namespace HeuristicLab.Persistence.Core {
 
   public class ParentReference {}  
 
-  class CompositeObject {
-
+  class Midwife {
+    
+    public int? Id { get; private set; }    
+    public bool MetaMode { get; set; }
     public object Obj { get; private set; }
-    public List<Tag> customValues;
 
-    public CompositeObject(object obj) {
-      Obj = obj;
-      customValues = new List<Tag>();
+    private List<Tag> metaInfo;
+    private List<Tag> customValues;
+    private Type type;
+    private IDecomposer decomposer;
+
+    public Midwife(object value) {
+      this.Obj = value;
+    }
+        
+    public Midwife(Type type, IDecomposer decomposer, int? id) {    
+      this.type = type;
+      this.decomposer = decomposer;      
+      this.Id = id;
+      MetaMode = false;      
+      metaInfo = new List<Tag>();
+      customValues = new List<Tag>();            
     }
 
-    public void AddValue(string name, object value, List<Thunk> finalFixes) {
-      Tag t = new Tag(name, value) {globalFinalFixes = finalFixes};
-      customValues.Add(t);
+    public void CreateInstance() {
+      if (Obj != null)
+        throw new ApplicationException("object already instantiated");
+      Obj = decomposer.CreateInstance(type, metaInfo);      
     }
 
-    public Setter GetSetterForLastAddedValue(string name) {            
-      Tag t = customValues[customValues.Count - 1];      
-      return value => t.Value = value;
+    public void AddValue(string name, object value) {
+      if (MetaMode) {
+        metaInfo.Add(new Tag(name, value));
+      } else {
+        customValues.Add(new Tag(name, value));
+      }
     }
-  }
 
-  public delegate void Thunk();
+    public void Populate() {
+      decomposer.Populate(Obj, customValues, type);
+    }
+  }  
 
   public class Deserializer {
     
     private readonly Dictionary<int, object> id2obj;
-    private readonly Dictionary<Type, object> serializerMapping;    
-    private readonly Stack<CompositeObject> parentStack;    
-    private readonly Dictionary<int, Type> typeIds;    
-    private List<Thunk> finalFixes;
+    private readonly Dictionary<Type, object> serializerMapping;
+    private readonly Stack<Midwife> parentStack;    
+    private readonly Dictionary<int, Type> typeIds;
 
     public Deserializer(
-      IEnumerable<TypeMapping> typeCache) {      
+      IEnumerable<TypeMapping> typeCache) {
       id2obj = new Dictionary<int, object>();
-      parentStack = new Stack<CompositeObject>();
+      parentStack = new Stack<Midwife>();
       typeIds = new Dictionary<int, Type>();
       serializerMapping = CreateSerializers(typeCache);
     }
@@ -59,8 +78,7 @@ namespace HeuristicLab.Persistence.Core {
       return map;
     }
 
-    public object Deserialize(IEnumerable<ISerializationToken> tokens) {
-      finalFixes = new List<Thunk>();      
+    public object Deserialize(IEnumerable<ISerializationToken> tokens) {      
       foreach (ISerializationToken token in tokens) {
         Type t = token.GetType();
         if ( t == typeof(BeginToken) ) {
@@ -73,51 +91,37 @@ namespace HeuristicLab.Persistence.Core {
           ReferenceHandler((ReferenceToken) token);
         } else if (t == typeof(NullReferenceToken)) {
           NullHandler((NullReferenceToken)token);
+        } else if (t == typeof(MetaInfoBeginToken)) {
+          MetaInfoBegin((MetaInfoBeginToken)token);
+        } else if (t == typeof(MetaInfoEndToken)) {
+          MetaInfoEnd((MetaInfoEndToken)token);
         } else {
           throw new ApplicationException("invalid token type");
         }
       }
-      foreach (Thunk fix in finalFixes) {
-        fix();
-      }
       return parentStack.Pop().Obj;
     }
 
-    private void CompositeStartHandler(BeginToken token) {      
+    private void CompositeStartHandler(BeginToken token) {
       Type type = typeIds[(int)token.TypeId];
       IDecomposer decomposer = null;
       if ( serializerMapping.ContainsKey(type) )
-        decomposer = serializerMapping[type] as IDecomposer;      
+        decomposer = serializerMapping[type] as IDecomposer;
       if (decomposer == null)
         throw new ApplicationException(String.Format(
           "No suitable method for deserialization of type \"{0}\" found.",
           type.VersionInvariantName()));
-      object instance = 
-        decomposer.CreateInstance(type) ??
-        new ParentReference();
-      parentStack.Push(new CompositeObject(instance));              
-      if ( token.Id != null )
-        id2obj.Add((int)token.Id, instance);
+      parentStack.Push(new Midwife(type, decomposer, token.Id));
     }
 
-    private void CompositeEndHandler(EndToken token) {      
+    private void CompositeEndHandler(EndToken token) {
       Type type = typeIds[(int)token.TypeId];
-      IDecomposer decomposer = null;
-      if (serializerMapping.ContainsKey(type))
-        decomposer = serializerMapping[type] as IDecomposer;            
-      if (decomposer == null)
-        throw new ApplicationException(String.Format(
-          "No suitable method for deserialization of type \"{0}\" found.",
-          type.VersionInvariantName()));
-      CompositeObject customComposite = parentStack.Pop();
-      object deserializedObject =          
-        decomposer.Populate(customComposite.Obj, customComposite.customValues, type);
-      if ( token.Id != null )
-        id2obj[(int)token.Id] = deserializedObject;        
-      SetValue(token.Name, deserializedObject);          
+      Midwife midwife = parentStack.Pop();
+      midwife.Populate();
+      SetValue(token.Name, midwife.Obj);
     }
 
-    private void PrimitiveHandler(PrimitiveToken token) {      
+    private void PrimitiveHandler(PrimitiveToken token) {
       Type type = typeIds[(int)token.TypeId];
       object value = ((IFormatter) serializerMapping[type]).Parse(token.SerialData);
       if ( token.Id != null )      
@@ -125,24 +129,39 @@ namespace HeuristicLab.Persistence.Core {
       SetValue(token.Name, value);
     }
 
-    private void ReferenceHandler(ReferenceToken token) {      
+    private void ReferenceHandler(ReferenceToken token) {
       object referredObject = id2obj[token.Id];
-      SetValue(token.Name, referredObject);      
-      if (referredObject is ParentReference) {
-        Setter set = parentStack.Peek().GetSetterForLastAddedValue(token.Name);                
-        finalFixes.Add(() => set(id2obj[token.Id]));
-      } 
+      SetValue(token.Name, referredObject);
     }
 
-    private void NullHandler(NullReferenceToken token) {      
+    private void NullHandler(NullReferenceToken token) {
       SetValue(token.Name, null);
-    }    
+    }
+
+    private void MetaInfoBegin(MetaInfoBeginToken token) {
+      parentStack.Peek().MetaMode = true;
+    }
+
+    private void MetaInfoEnd(MetaInfoEndToken token) {
+      Midwife m = parentStack.Peek();      
+      m.MetaMode = false;
+      CreateInstance(m);
+    }
+
+    private void CreateInstance(Midwife m) {
+      m.CreateInstance();
+      if (m.Id != null)
+        id2obj.Add((int)m.Id, m.Obj);      
+    }
 
     private void SetValue(string name, object value) {
       if (parentStack.Count == 0) {        
-        parentStack.Push(new CompositeObject(value));
-      } else {        
-        parentStack.Peek().AddValue(name, value, finalFixes);        
+        parentStack.Push(new Midwife(value));
+      } else {
+        Midwife m = parentStack.Peek();
+        if (m.MetaMode == false && m.Obj == null)
+          CreateInstance(m);
+        m.AddValue(name, value);        
       }
     }
   }

@@ -20,30 +20,28 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
              typeof (KeyValuePair<int, int>).GetGenericTypeDefinition();
     }
 
-    public IEnumerable<Tag> Decompose(object o) {      
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
+
+    public IEnumerable<Tag> Decompose(object o) {
       Type t = o.GetType();
       yield return new Tag("key", t.GetProperty("Key").GetValue(o, null));
       yield return new Tag("value", t.GetProperty("Value").GetValue(o, null));
     }
 
-    public object CreateInstance(Type type) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       return Activator.CreateInstance(type, true);
     }
 
-    public object Populate(object instance, IEnumerable<Tag> o, Type t) {
+    public void Populate(object instance, IEnumerable<Tag> o, Type t) {
       IEnumerator<Tag> iter = o.GetEnumerator();
+      iter.MoveNext();      
+      t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        .Single(fi => fi.Name == "key").SetValue(instance, iter.Current.Value);
       iter.MoveNext();
-      FieldInfo keyFieldInfo =
-        t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-        .Single(fi => fi.Name == "key");
-      FieldInfo valueFieldInfo = 
-        t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-        .Single(fi => fi.Name == "value");
-      iter.Current.SafeSet(value => keyFieldInfo.SetValue(instance, value));      
-      iter.MoveNext();
-      iter.Current.SafeSet(value => valueFieldInfo.SetValue(instance, value));
-      return instance;
-    }    
+      t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);      
+    }
   }
-
 }

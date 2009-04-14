@@ -71,19 +71,22 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type == typeof(DateTime);
     }
 
-    public IEnumerable<Tag> Decompose(object obj) {
+    public IEnumerable<Tag> CreateMetaInfo(object obj) {
       yield return new Tag(((DateTime)obj).Ticks);
     }
 
-    public object CreateInstance(Type type) {
-      return null;
+    public IEnumerable<Tag> Decompose(object obj) {
+      return new Tag[] { };
     }
 
-    public object Populate(object instance, IEnumerable<Tag> tags, Type type) {
-      foreach (Tag tag in tags) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
+      foreach (Tag tag in metaInfo) {
         return new DateTime((long)tag.Value);
       }
       throw new ApplicationException("Not enough components to compose a bool.");
+    }
+
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {      
     }
 
   }  
@@ -103,8 +106,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         numberConverter.CanDecompose(type.GetElementType());
     }
 
-    public IEnumerable<Tag> Decompose(object obj) {
-      Array a = (Array) obj;
+    public IEnumerable<Tag> CreateMetaInfo(object obj) {
+      Array a = (Array)obj;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
       StringBuilder sb = new StringBuilder();
@@ -133,12 +136,12 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       yield return new Tag("compact array", sb.ToString());
     }
 
-    public object CreateInstance(Type type) {
-      return null;
+    public IEnumerable<Tag> Decompose(object obj) {
+      return new Tag[] { };
     }
 
-    public object Populate(object instance, IEnumerable<Tag> tags, Type type) {      
-      var tagIter = tags.GetEnumerator();
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
+      var tagIter = metaInfo.GetEnumerator();
       tagIter.MoveNext();
       var valueIter = ((string) tagIter.Current.Value)
         .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
@@ -174,6 +177,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
       return a;
     }
+
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
+    }
+
   }
 
   public class NumberEnumerable2StringDecomposer : IDecomposer {
@@ -223,6 +230,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         HasAddMethod(type);
     }
 
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
+
     public IEnumerable<Tag> Decompose(object obj) {
       Type type = obj.GetType();
       Type enumerable = GetGenericEnumerableInterface(type);      
@@ -244,11 +255,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       yield return new Tag("compact enumerable", sb.ToString());
     }
 
-    public object CreateInstance(Type type) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       return Activator.CreateInstance(type, true);
     }
 
-    public object Populate(object instance, IEnumerable<Tag> tags, Type type) {
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
       Type enumerable = GetGenericEnumerableInterface(type);
       Type elementType = enumerable.GetGenericArguments()[0];      
       MethodInfo addMethod = type.GetMethod("Add");      
@@ -258,10 +269,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
       foreach (var value in stringValues) {
         addMethod.Invoke(instance, new[] {numberConverter.Parse(value, elementType)});
-      }      
-      return instance;      
+      }
     }
-    
   }
-
 }

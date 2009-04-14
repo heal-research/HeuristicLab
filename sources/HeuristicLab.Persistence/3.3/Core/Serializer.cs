@@ -71,7 +71,7 @@ namespace HeuristicLab.Persistence.Core {
         return PrimitiveEnumerator(accessor.Name, typeId, formatter.DoFormat(value), id);
       IDecomposer decomposer = configuration.GetDecomposer(value.GetType()); 
       if (decomposer != null)
-        return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId);                  
+        return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
       throw new ApplicationException(
           String.Format(
           "No suitable method for serializing values of type \"{0}\" found.",
@@ -91,15 +91,28 @@ namespace HeuristicLab.Persistence.Core {
       yield return new PrimitiveToken(name, typeId, id, serializedValue);
     }
 
-    private IEnumerator<ISerializationToken> CompositeEnumerator(string name,
-        IEnumerable<Tag> tags, int? id, int typeId) {
+    private IEnumerator<ISerializationToken> CompositeEnumerator(
+        string name, IEnumerable<Tag> tags, int? id, int typeId, IEnumerable<Tag> metaInfo) {
       yield return new BeginToken(name, typeId, id);      
-        foreach (var tag in tags) {
-          IEnumerator<ISerializationToken> iterator = Serialize(            
-            new DataMemberAccessor(tag.Value, tag.Name));
-          while (iterator.MoveNext())
-            yield return iterator.Current;
+      bool first = true;
+      foreach (var tag in metaInfo) {
+        IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+        while (metaIt.MoveNext()) {
+          if (first) {
+            yield return new MetaInfoBeginToken();
+            first = false;
+          }
+          yield return metaIt.Current;
         }
+      }
+      if (!first) {
+        yield return new MetaInfoEndToken();
+      }
+      foreach (var tag in tags) {
+        IEnumerator<ISerializationToken> it = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+        while (it.MoveNext())
+          yield return it.Current;
+      }
       yield return new EndToken(name, typeId, id);        
     }
 

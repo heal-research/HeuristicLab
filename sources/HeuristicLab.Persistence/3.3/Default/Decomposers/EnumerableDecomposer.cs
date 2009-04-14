@@ -5,48 +5,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
-namespace HeuristicLab.Persistence.Default.Decomposers {
-
-  public class EnumerableCache {
-    readonly List<object> values;
-    int nSet;
-    int count;
-    readonly object enumerable;
-    readonly MethodInfo addMethod;
-
-    public EnumerableCache(object enumerable, MethodInfo addMethod) {      
-      values = new List<object>();
-      this.enumerable = enumerable;
-      this.addMethod = addMethod;
-      count = -1;
-    }
-
-    public Setter GetNextSetter() {      
-      int index = values.Count;      
-      values.Add(new object());
-      return v => Set(index, v);
-    }
-
-    private void Set(int index, object value) {      
-      values[index] = value;
-      nSet += 1;
-      if (count >= 0 && nSet >= count)
-        Fill();
-    }
-
-    public void Terminate() {
-      count = values.Count;      
-      if (nSet >= count)
-        Fill();
-    }
-
-    private void Fill() {      
-      foreach ( object v in values ) {
-        addMethod.Invoke(enumerable, new[] {v});
-      }
-    }
-
-  }
+namespace HeuristicLab.Persistence.Default.Decomposers { 
 
   public class EnumerableDecomposer : IDecomposer {
 
@@ -67,26 +26,24 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
           null, Type.EmptyTypes, null) != null;
     }
 
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
+
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (object o in (IEnumerable)obj) {
         yield return new Tag(null, o);
       }
     }
 
-    public object CreateInstance(Type type) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       return Activator.CreateInstance(type, true);
     }
 
-    public object Populate(object instance, IEnumerable<Tag> tags, Type type) {
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
       MethodInfo addMethod = type.GetMethod("Add");
-      EnumerableCache cache = new EnumerableCache(instance, addMethod);
-      foreach (var tag in tags) {
-        tag.SafeSet(cache.GetNextSetter());
-      }
-      cache.Terminate();
-      return instance;
+      foreach (var tag in tags)
+        addMethod.Invoke(instance, new[] { tag.Value });
     }
-
-  }  
-
+  }
 }

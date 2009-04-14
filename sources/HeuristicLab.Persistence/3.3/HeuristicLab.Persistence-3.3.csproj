@@ -118,13 +118,15 @@
     <Compile Include="Default\Xml\Primitive\DateTime2XmlFormatter.cs" />
     <Compile Include="Default\Xml\XmlFormat.cs" />
     <Compile Include="HeuristicLabPersistencePlugin.cs" />
-    <Compile Include="Core\DeSerializer.cs" />
+    <Compile Include="Core\Deserializer.cs" />
     <Compile Include="Core\Tag.cs" />
     <Compile Include="Interfaces\IFormat.cs" />
     <Compile Include="Interfaces\FormatBase.cs" />
     <Compile Include="Interfaces\IDecomposer.cs" />
     <Compile Include="Interfaces\IFormatter.cs" />
     <Compile Include="Core\ConfigurationService.cs" />
+    <Compile Include="Interfaces\Tokens\MetaInfoBeginToken.cs" />
+    <Compile Include="Interfaces\Tokens\MetaInfoEndToken.cs" />
     <Compile Include="Interfaces\Tokens\ISerializationToken.cs" />
     <Compile Include="Interfaces\Tokens\SerializationTokenBase.cs" />
     <Compile Include="Interfaces\Tokens\CompositeTokenBase.cs" />

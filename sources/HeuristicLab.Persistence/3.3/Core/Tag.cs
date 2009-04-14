@@ -3,7 +3,6 @@
 namespace HeuristicLab.Persistence.Core {
 
   public class Tag {
-    internal List<Thunk> globalFinalFixes; // reference to final fixes of Deserializer
     public string Name { get; private set; }
     public object Value { get; set; }     
 
@@ -15,12 +14,6 @@ namespace HeuristicLab.Persistence.Core {
       Name = null;
       Value = value;
     }
-    public void SafeSet(Setter setter) {
-      if ( Value as ParentReference != null)
-        globalFinalFixes.Add(() => setter(Value));
-      else
-        setter(Value);
-    }
-  }  
+  }
 
 }

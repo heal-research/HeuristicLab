@@ -27,7 +27,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
                      {XmlStrings.PRIMITIVE, ParsePrimitive},
                      {XmlStrings.COMPOSITE, ParseComposite},
                      {XmlStrings.REFERENCE, ParseReference},
-                     {XmlStrings.NULL, ParseNull}
+                     {XmlStrings.NULL, ParseNull},
+                     {XmlStrings.METAINFO, ParseMetaInfo},
                    };
     }
 
@@ -86,6 +87,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     private IEnumerator<ISerializationToken> ParseNull() {
       yield return new NullReferenceToken(reader.GetAttribute("name"));
+    }
+
+    private IEnumerator<ISerializationToken> ParseMetaInfo() {
+      yield return new MetaInfoBeginToken();
+      IEnumerator<ISerializationToken> iterator = GetEnumerator();
+      while (iterator.MoveNext())
+        yield return iterator.Current;
+      yield return new MetaInfoEndToken();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {

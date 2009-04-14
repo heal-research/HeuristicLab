@@ -4,39 +4,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
-namespace HeuristicLab.Persistence.Default.Decomposers {
-
-  class DictionaryAdder {
-
-    bool keyIsSet, valueIsSet;
-    object key;
-    object value;
-    readonly IDictionary dict;
-
-    public DictionaryAdder(IDictionary dict) {
-      this.dict = dict;
-      keyIsSet = false;
-      valueIsSet = false;
-    }
-
-    public void SetKey(object v) {
-      key = v;
-      keyIsSet = true;
-      Check();
-    }
-
-    public void SetValue(object v) {
-      value = v;
-      valueIsSet = true;
-      Check();
-    }
-
-    private void Check() {
-      if ( keyIsSet && valueIsSet )
-        dict.Add(key, value);
-    }
-
-  }
+namespace HeuristicLab.Persistence.Default.Decomposers {  
   
   public class DictionaryDecomposer : IDecomposer {
 
@@ -49,6 +17,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return type.GetInterface(typeof(IDictionary).FullName) != null;        
     }
 
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
+
     public IEnumerable<Tag> Decompose(object o) {
       IDictionary dict = (IDictionary)o;      
       foreach ( DictionaryEntry entry in dict) {
@@ -57,22 +29,19 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
 
-    public object CreateInstance(Type t) {
+    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
       return Activator.CreateInstance(t, true);
     }
 
-    public object Populate(object instance, IEnumerable<Tag> o, Type t) {
+    public void Populate(object instance, IEnumerable<Tag> o, Type t) {
       IDictionary dict = (IDictionary)instance;
       IEnumerator<Tag> iter = o.GetEnumerator();
       while (iter.MoveNext()) {
         Tag key = iter.Current;
         iter.MoveNext();
         Tag value = iter.Current;
-        DictionaryAdder da = new DictionaryAdder(dict);
-        key.SafeSet(da.SetKey);
-        value.SafeSet(da.SetValue);        
-      }
-      return dict;
+        dict.Add(key.Value, value.Value);
+      }      
     }
   }
 

@@ -16,20 +16,22 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
              type.VersionInvariantName() == "System.RuntimeType, mscorlib";
     }
 
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      yield return new Tag("VersionInvariantName", ((Type)o).VersionInvariantName());
+    }
+
     public IEnumerable<Tag> Decompose(object obj) {
-      Type t = (Type) obj;
-      yield return new Tag("VersionInvariantName", t.VersionInvariantName());
+      return new Tag[] { };
     }
 
-    public object CreateInstance(Type type) {
-      return null;
-    }
-
-    public object Populate(object instance, IEnumerable<Tag> objects, Type type) {
-      foreach ( var typeName in objects ) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
+      foreach (var typeName in metaInfo) {
         return Type.GetType((string)typeName.Value);
       }
-      return null;
+      return null;      
+    }
+
+    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {      
     }
   }
 }

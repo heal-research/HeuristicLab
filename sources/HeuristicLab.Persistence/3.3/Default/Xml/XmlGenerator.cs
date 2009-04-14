@@ -18,6 +18,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public const string NULL = "NULL";
     public const string TYPECACHE = "TYPECACHE";
     public const string TYPE = "TYPE";
+    public const string METAINFO = "METAINFO";
   }
 
   public abstract class Generator<T> {
@@ -33,6 +34,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
         return Format((ReferenceToken)token);
       if (type == typeof(NullReferenceToken))
         return Format((NullReferenceToken)token);
+      if (type == typeof(MetaInfoBeginToken))
+        return Format((MetaInfoBeginToken)token);
+      if (type == typeof(MetaInfoEndToken))
+        return Format((MetaInfoEndToken)token);
       throw new ApplicationException("Invalid token of type " + type.FullName);
     }
     protected abstract T Format(BeginToken beginToken);
@@ -40,6 +45,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     protected abstract T Format(PrimitiveToken primitiveToken);
     protected abstract T Format(ReferenceToken referenceToken);
     protected abstract T Format(NullReferenceToken nullReferenceToken);
+    protected abstract T Format(MetaInfoBeginToken metaInfoBeginToken);
+    protected abstract T Format(MetaInfoEndToken metaInfoEndToken);
   }
 
   public class XmlGenerator : Generator<string> {
@@ -123,6 +130,17 @@ namespace HeuristicLab.Persistence.Default.Xml {
       var attributes = new Dictionary<string, object>{
         {"name", nullRefToken.Name}};      
       return Prefix + FormatNode(XmlStrings.NULL, attributes, NodeType.Inline) + "\r\n";
+    }
+
+    protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
+      string result = Prefix + "<" + XmlStrings.METAINFO + ">";
+      depth += 1;
+      return result;
+    }
+
+    protected override string Format(MetaInfoEndToken metaInfoEndToken) {
+      depth -= 1;
+      return Prefix + "</" + XmlStrings.METAINFO + ">";
     }
 
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {

@@ -16,7 +16,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return StorableAttribute.GetStorableMembers(type, false).Count() > 0 ||
         EmptyStorableClassAttribute.IsEmpyStorable(type);
 
-    }    
+    }
+
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
 
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (var mapping in StorableAttribute.GetAutostorableAccessors(obj)) {
@@ -24,11 +28,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
 
-    public object CreateInstance(Type type) {
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       return Activator.CreateInstance(type, true);
     }
 
-    public object Populate(object instance, IEnumerable<Tag> objects, Type type) {           
+    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {           
       var memberDict = new Dictionary<string, Tag>();      
       IEnumerator<Tag> iter = objects.GetEnumerator();      
       while (iter.MoveNext()) {
@@ -36,13 +40,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }      
       foreach (var mapping in StorableAttribute.GetAutostorableAccessors(instance)) {
         if (memberDict.ContainsKey(mapping.Key)) {
-          memberDict[mapping.Key].SafeSet(mapping.Value.Set);
+          mapping.Value.Set(memberDict[mapping.Key].Value);          
         } else if (mapping.Value.DefaultValue != null) {
           mapping.Value.Set(mapping.Value.DefaultValue);
         }
       }
-      return instance;
     }
-
   }
 }
