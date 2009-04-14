@@ -53,11 +53,9 @@ namespace HeuristicLab.SGA.Hardwired {
       AddVariableInfo(new VariableInfo("Crossover", "Crossover strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("Mutator", "Mutation strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("Evaluator", "Evaluation strategy for SGA", typeof(OperatorBase), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SubScopeIndex", "(Optional) the index of the subscope to remove", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("EvaluatedSolutions", "Number of evaluated solutions", typeof(IntData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("Maximization", "Sort in descending order", typeof(BoolData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Quality", "Sorting value", typeof(DoubleData), VariableKind.In));
-      GetVariableInfo("SubScopeIndex").Local = true;
     }
 
     public override IOperation Apply(IScope scope) {
@@ -87,15 +85,9 @@ namespace HeuristicLab.SGA.Hardwired {
           throw new InvalidOperationException("ERROR: no support for combined operators!");
 
         // subscopes remover
-        IntData index = GetVariableValue<IntData>("SubScopeIndex", s, true, false);
-        if (index == null) { // remove all scopes
-          while (s.SubScopes.Count > 0) {
-            s.RemoveSubScope(s.SubScopes[0]);
-          }
-        } else {
-          if (index.Data < 0 && index.Data >= s.SubScopes.Count) throw new InvalidOperationException("ERROR: no scope with index " + index.Data + " exists");
-          s.RemoveSubScope(s.SubScopes[index.Data]);
-        }
+        while (s.SubScopes.Count > 0)
+          s.RemoveSubScope(s.SubScopes[0]);
+       
         counter++;
       } // foreach
 
