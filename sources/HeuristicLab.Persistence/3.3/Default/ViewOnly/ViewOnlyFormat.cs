@@ -46,6 +46,10 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     public override Type Type { get { return typeof(Type); } }
   }
 
+  public class Float2ViewFormatter : ValueType2ViewFormatter {
+    public override Type Type { get { return typeof(float); } }
+  }
+
   public class ViewOnlyGenerator : Generator<string> {
 
     private bool isSepReq;

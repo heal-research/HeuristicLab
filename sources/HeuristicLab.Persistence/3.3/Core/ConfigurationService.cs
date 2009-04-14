@@ -106,15 +106,21 @@ namespace HeuristicLab.Persistence.Core {
               Formatters.Add(formatter.Format, new List<IFormatter>());
             }
             Formatters[formatter.Format].Add(formatter);
+            Logger.Debug("discovered formatter " + t.VersionInvariantName());
           } catch (MissingMethodException e) {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
-          }          
+          } catch (ArgumentException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+          }
         }
         if (t.GetInterface(typeof (IDecomposer).FullName) != null) {
           try {
             Decomposers.Add((IDecomposer) Activator.CreateInstance(t, true));
+            Logger.Debug("discovered decomposer " + t.VersionInvariantName());
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);          
+          } catch (ArgumentException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           }
         }
       }
