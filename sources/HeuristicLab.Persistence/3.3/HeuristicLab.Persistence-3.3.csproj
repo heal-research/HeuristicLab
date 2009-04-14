@@ -93,6 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\EmptyStorableClassAttribute.cs" />
+    <Compile Include="Core\TypeExtensions.cs" />
     <Compile Include="Core\TypeMapping.cs" />
     <Compile Include="Core\TypeStringBuilder.cs" />
     <Compile Include="Default\Decomposers\ArrayDecomposer.cs" />
@@ -111,9 +113,9 @@
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
-    <Compile Include="Default\Xml\Primitive\Double2XmlFormatterBase.cs" />
-    <Compile Include="Default\Xml\Primitive\Decimal2XmlFormatterBase.cs" />
-    <Compile Include="Default\Xml\Primitive\Float2XmlFormatterBase.cs" />
+    <Compile Include="Default\Xml\Primitive\Double2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Decimal2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Float2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\UInt2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\Long2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\ULong2XmlFormatter.cs" />

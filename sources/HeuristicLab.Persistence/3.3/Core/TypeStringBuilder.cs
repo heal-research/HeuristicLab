@@ -3,16 +3,16 @@ using System.Text;
 
 namespace HeuristicLab.Persistence.Core {
 
-  public static class TypeStringBuilder {
+  internal static class TypeStringBuilder {
 
-    private static void BuildDeclaringTypeChain(Type type, StringBuilder sb) {
+    internal static void BuildDeclaringTypeChain(Type type, StringBuilder sb) {
       if ( type.DeclaringType != null ) {
         BuildDeclaringTypeChain(type.DeclaringType, sb);
         sb.Append(type.DeclaringType.Name).Append('+');
       }
     }
 
-    private static void BuildVersionInvariantName(Type type, StringBuilder sb) {
+    internal static void BuildVersionInvariantName(Type type, StringBuilder sb) {
       sb.Append(type.Namespace).Append('.');
       BuildDeclaringTypeChain(type, sb);
       sb.Append(type.Name);
@@ -31,11 +31,6 @@ namespace HeuristicLab.Persistence.Core {
       sb.Append(", ").Append(type.Assembly.GetName().Name);
     }
 
-    public static string VersionInvariantName(this Type type) {
-      StringBuilder sb = new StringBuilder();
-      BuildVersionInvariantName(type, sb);
-      return sb.ToString();
-    }
-  }  
+  }
   
 }

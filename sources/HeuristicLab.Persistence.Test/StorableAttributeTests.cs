@@ -20,7 +20,7 @@ namespace HeuristicLab.Persistence.Test {
 
     static void Main() {
       TestClass t = new TestClass();
-      Dictionary<string, DataMemberAccessor> accessors = StorableAttribute.GetAutostorableAccessors(t);
+      Dictionary<string, DataMemberAccessor> accessors = StorableAttribute.GetStorableAccessors(t);
       foreach ( KeyValuePair<string, DataMemberAccessor> pair in accessors ) {
         Console.WriteLine(pair.Key + ": " + pair.Value);
       }
