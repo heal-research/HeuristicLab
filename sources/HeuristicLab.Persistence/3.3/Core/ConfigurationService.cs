@@ -6,7 +6,7 @@ using System.Text;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
-using HeuristicLab.Persistence.Interfaces.Tokens;
+using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
   

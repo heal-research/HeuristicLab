@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Interfaces.Tokens;
+using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
 

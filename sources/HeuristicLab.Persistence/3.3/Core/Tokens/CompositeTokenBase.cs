@@ -1,5 +1,5 @@
 ﻿
-namespace HeuristicLab.Persistence.Interfaces.Tokens {
+namespace HeuristicLab.Persistence.Core.Tokens {
 
   public abstract class CompositeTokenBase : SerializationTokenBase {
     public readonly int? TypeId;

@@ -1,5 +1,6 @@
-﻿
-namespace HeuristicLab.Persistence.Interfaces.Tokens {
+﻿using HeuristicLab.Persistence.Interfaces;
+
+namespace HeuristicLab.Persistence.Core.Tokens {
   
   public class PrimitiveToken : SerializationTokenBase {    
     public readonly int TypeId;
