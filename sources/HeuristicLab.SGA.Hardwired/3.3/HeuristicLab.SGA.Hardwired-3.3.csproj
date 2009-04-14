@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreateReplacement.cs" />
+    <Compile Include="CreateReplacementHardWired.cs" />
     <Compile Include="CreateChildrenHardWired.cs" />
     <Compile Include="HeuristicLabSGAHardwiredPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
