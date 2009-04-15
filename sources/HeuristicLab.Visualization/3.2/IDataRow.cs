@@ -11,6 +11,7 @@ namespace HeuristicLab.Visualization {
     int Thickness { get; set; }
     DrawingStyle Style { get; set; }
     DataRowType LineType { get; set; }
+    bool ShowMarkers { get; set; }
  
     YAxisDescriptor YAxis { get; set; }
 

@@ -8,6 +8,15 @@ namespace HeuristicLab.Visualization {
     private DrawingStyle style = DrawingStyle.Solid;
     private DataRowType lineType = DataRowType.Normal;
     private YAxisDescriptor yAxis;
+    private bool showMarkers = true;
+
+    public bool ShowMarkers {
+      get { return showMarkers; }
+      set {
+        showMarkers = value;
+        OnDataRowChanged(this);
+      }
+    }          
 
     public string Label {
       get { return label; }

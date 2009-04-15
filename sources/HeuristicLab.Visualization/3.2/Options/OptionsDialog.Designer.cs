@@ -47,10 +47,11 @@
       this.tpXAxis = new System.Windows.Forms.TabPage();
       this.btnChangeXAxisFont = new System.Windows.Forms.Button();
       this.tpYAxes = new System.Windows.Forms.TabPage();
-      this.gbxShowYAxis = new System.Windows.Forms.GroupBox();
       this.gbxYAxisClipChangeable = new System.Windows.Forms.GroupBox();
-      this.flpShowYAxis = new System.Windows.Forms.FlowLayoutPanel();
       this.flpYAxisClipChangeable = new System.Windows.Forms.FlowLayoutPanel();
+      this.gbxShowYAxis = new System.Windows.Forms.GroupBox();
+      this.flpShowYAxis = new System.Windows.Forms.FlowLayoutPanel();
+      this.MarkercheckBox = new System.Windows.Forms.CheckBox();
       this.tpTitle.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -58,8 +59,8 @@
       this.Optionstabs.SuspendLayout();
       this.tpXAxis.SuspendLayout();
       this.tpYAxes.SuspendLayout();
-      this.gbxShowYAxis.SuspendLayout();
       this.gbxYAxisClipChangeable.SuspendLayout();
+      this.gbxShowYAxis.SuspendLayout();
       this.SuspendLayout();
       // 
       // OptionsDialogCancelButton
@@ -223,6 +224,7 @@
       // 
       // groupBox1
       // 
+      this.groupBox1.Controls.Add(this.MarkercheckBox);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.LineThicknessCB);
       this.groupBox1.Controls.Add(this.label3);
@@ -306,17 +308,6 @@
       this.tpYAxes.Text = "Y-Axes";
       this.tpYAxes.UseVisualStyleBackColor = true;
       // 
-      // gbxShowYAxis
-      // 
-      this.gbxShowYAxis.AutoSize = true;
-      this.gbxShowYAxis.Controls.Add(this.flpShowYAxis);
-      this.gbxShowYAxis.Location = new System.Drawing.Point(0, 0);
-      this.gbxShowYAxis.Name = "gbxShowYAxis";
-      this.gbxShowYAxis.Size = new System.Drawing.Size(281, 76);
-      this.gbxShowYAxis.TabIndex = 0;
-      this.gbxShowYAxis.TabStop = false;
-      this.gbxShowYAxis.Text = "Show Y-Axis";
-      // 
       // gbxYAxisClipChangeable
       // 
       this.gbxYAxisClipChangeable.AutoSize = true;
@@ -328,6 +319,27 @@
       this.gbxYAxisClipChangeable.TabStop = false;
       this.gbxYAxisClipChangeable.Text = "Y-Axis-Clip changeable";
       // 
+      // flpYAxisClipChangeable
+      // 
+      this.flpYAxisClipChangeable.AutoSize = true;
+      this.flpYAxisClipChangeable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.flpYAxisClipChangeable.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+      this.flpYAxisClipChangeable.Location = new System.Drawing.Point(3, 16);
+      this.flpYAxisClipChangeable.Name = "flpYAxisClipChangeable";
+      this.flpYAxisClipChangeable.Size = new System.Drawing.Size(275, 57);
+      this.flpYAxisClipChangeable.TabIndex = 0;
+      // 
+      // gbxShowYAxis
+      // 
+      this.gbxShowYAxis.AutoSize = true;
+      this.gbxShowYAxis.Controls.Add(this.flpShowYAxis);
+      this.gbxShowYAxis.Location = new System.Drawing.Point(0, 0);
+      this.gbxShowYAxis.Name = "gbxShowYAxis";
+      this.gbxShowYAxis.Size = new System.Drawing.Size(281, 76);
+      this.gbxShowYAxis.TabIndex = 0;
+      this.gbxShowYAxis.TabStop = false;
+      this.gbxShowYAxis.Text = "Show Y-Axis";
+      // 
       // flpShowYAxis
       // 
       this.flpShowYAxis.AutoSize = true;
@@ -338,15 +350,16 @@
       this.flpShowYAxis.Size = new System.Drawing.Size(275, 57);
       this.flpShowYAxis.TabIndex = 0;
       // 
-      // flpYAxisClipChangeable
+      // MarkercheckBox
       // 
-      this.flpYAxisClipChangeable.AutoSize = true;
-      this.flpYAxisClipChangeable.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.flpYAxisClipChangeable.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-      this.flpYAxisClipChangeable.Location = new System.Drawing.Point(3, 16);
-      this.flpYAxisClipChangeable.Name = "flpYAxisClipChangeable";
-      this.flpYAxisClipChangeable.Size = new System.Drawing.Size(275, 57);
-      this.flpYAxisClipChangeable.TabIndex = 0;
+      this.MarkercheckBox.AutoSize = true;
+      this.MarkercheckBox.Location = new System.Drawing.Point(142, 106);
+      this.MarkercheckBox.Name = "MarkercheckBox";
+      this.MarkercheckBox.Size = new System.Drawing.Size(59, 17);
+      this.MarkercheckBox.TabIndex = 9;
+      this.MarkercheckBox.Text = "Marker";
+      this.MarkercheckBox.UseVisualStyleBackColor = true;
+      this.MarkercheckBox.CheckedChanged += new System.EventHandler(this.MarkercheckBox_CheckedChanged);
       // 
       // OptionsDialog
       // 
@@ -372,10 +385,10 @@
       this.tpXAxis.ResumeLayout(false);
       this.tpYAxes.ResumeLayout(false);
       this.tpYAxes.PerformLayout();
-      this.gbxShowYAxis.ResumeLayout(false);
-      this.gbxShowYAxis.PerformLayout();
       this.gbxYAxisClipChangeable.ResumeLayout(false);
       this.gbxYAxisClipChangeable.PerformLayout();
+      this.gbxShowYAxis.ResumeLayout(false);
+      this.gbxShowYAxis.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -410,5 +423,6 @@
     private System.Windows.Forms.GroupBox gbxYAxisClipChangeable;
     private System.Windows.Forms.FlowLayoutPanel flpYAxisClipChangeable;
     private System.Windows.Forms.FlowLayoutPanel flpShowYAxis;
+    private System.Windows.Forms.CheckBox MarkercheckBox;
   }
 }

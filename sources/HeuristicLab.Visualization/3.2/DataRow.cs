@@ -29,10 +29,20 @@ namespace HeuristicLab.Visualization {
     }
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
-     this.Label = label;
+      this.Label = label;
       this.Color = color;
       this.Thickness = thickness;
       this.Style = style;
+      this.dataRow = dataRow;
+      this.ShowMarkers = true;
+    }
+
+    public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow, bool showMarkers) {
+      this.Label = label;
+      this.Color = color;
+      this.Thickness = thickness;
+      this.Style = style;
+      this.ShowMarkers = showMarkers;
       this.dataRow = dataRow;
     }
 

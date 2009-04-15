@@ -16,6 +16,7 @@ namespace HeuristicLab.Visualization.Options {
     internal class LineParams {
       string Label { get; set; }
       Color Color { get; set; }
+      bool ShowMarkers { get; set; }
       int Thickness { get; set; }
       DrawingStyle Style { get; set; }
       private readonly IDataRow row;
@@ -26,6 +27,7 @@ namespace HeuristicLab.Visualization.Options {
         Thickness = row.Thickness;
         Style = row.Style;
         this.row = row;
+        this.ShowMarkers = row.ShowMarkers; 
       }
 
       public void applySettings() {
@@ -33,6 +35,7 @@ namespace HeuristicLab.Visualization.Options {
         row.Color = Color;
         row.Thickness = Thickness;
         row.Style = Style;
+        row.ShowMarkers = this.ShowMarkers;
       }
     }
 
@@ -82,6 +85,7 @@ namespace HeuristicLab.Visualization.Options {
         LinestyleCB.DataSource = GetStyles();
         LinestyleCB.SelectedItem = model.Rows[0].Style;
         LineThicknessCB.SelectedItem = model.Rows[0].Thickness;
+        MarkercheckBox.Checked = model.Rows[0].ShowMarkers;
 
         LineSelectCB.DataSource = model.Rows;
         LineSelectCB.DisplayMember = "Label";
@@ -127,7 +131,8 @@ namespace HeuristicLab.Visualization.Options {
         LinestyleCB.SelectedIndex = index;  */
         LineThicknessCB.SelectedItem = ((IDataRow) LineSelectCB.SelectedValue).Thickness;
         LinestyleCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).Style;
-        ColorPreviewTB.BackColor = ((IDataRow)LineSelectCB.SelectedValue).Color;   
+        ColorPreviewTB.BackColor = ((IDataRow)LineSelectCB.SelectedValue).Color;
+        MarkercheckBox.Checked = ((IDataRow) LineSelectCB.SelectedValue).ShowMarkers;
       }
     }
 
@@ -217,5 +222,12 @@ namespace HeuristicLab.Visualization.Options {
       if (LineSelectCB.SelectedValue != null)
         ((IDataRow)LineSelectCB.SelectedValue).Thickness = (int)LineThicknessCB.SelectedItem;
     }
+
+    private void MarkercheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (LineSelectCB.SelectedValue != null)
+        ((IDataRow) LineSelectCB.SelectedValue).ShowMarkers = MarkercheckBox.Checked;
+    }
+
+
   }
 }

@@ -388,6 +388,7 @@ namespace HeuristicLab.Visualization {
           rowEntry.LinesShape.AddShape(lineShape);
         }
       } else {
+        rowEntry.showMarkers(row.ShowMarkers);
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
@@ -601,6 +602,7 @@ namespace HeuristicLab.Visualization {
             lineShape.LSThickness = row.Thickness;
           }
         }
+        this.markersShape.ShowChildShapes = row.ShowMarkers;
       }
 
       public override void Draw(Graphics graphics) {
@@ -647,12 +649,8 @@ namespace HeuristicLab.Visualization {
         get { return linesShape; }
       }
 
-      public void hideMarkers() {
-        linesShape.markersShape.ShowChildShapes = false;
-      }
-
-      public void showMarkers() {
-        linesShape.markersShape.ShowChildShapes = true;
+      public void showMarkers(bool flag) {
+        linesShape.markersShape.ShowChildShapes = flag;
       }
     }
 
