@@ -68,11 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreateReplacement.cs" />
-    <Compile Include="CreateReplacementHardWired.cs" />
     <Compile Include="CreateChildrenHardWired.cs" />
     <Compile Include="HeuristicLabSGAHardwiredPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CreateChildren.cs" />
+    <Compile Include="SGAMainWithHWControllStructures.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfo.frame" />

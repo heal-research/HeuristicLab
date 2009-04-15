@@ -44,8 +44,6 @@ namespace HeuristicLab.SGA.Hardwired {
     IRandom random;
     DoubleData probability;
 
-    IList<OperatorBase> operators;
-
     public override string Description {
       get { return @"Implements the control structures of CreateReplacement hard wired. Operators are delegated."; }
     }
@@ -68,12 +66,6 @@ namespace HeuristicLab.SGA.Hardwired {
       // variables infos
       //AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       //AddVariableInfo(new VariableInfo("Elites", "Number of selected sub-scopes", typeof(IntData), VariableKind.In));
-
-      operators = new List<OperatorBase>();
-      operators.Add(ls);
-      operators.Add(rr);
-      operators.Add(rs);
-      operators.Add(lr);
     }
 
     public override IOperation Apply(IScope scope) {
