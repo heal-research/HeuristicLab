@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure.GUI", "HeuristicLab.PluginInfrastructure.GUI\HeuristicLab.PluginInfrastructure.GUI.csproj", "{D3F92C1F-42B4-4EFB-9E73-B64FD3428ADE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.Test", "HeuristicLab.Persistence.Test\HeuristicLab.Persistence.Test.csproj", "{E2245078-6F40-449E-A370-01A97A7C5E6A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.AdvancedOptimizationFrontend-3.2", "HeuristicLab.AdvancedOptimizationFrontend\3.2\HeuristicLab.AdvancedOptimizationFrontend-3.2.csproj", "{74752FCD-9E10-48DB-9AF2-AF5518B62807}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Assignment.QAP-3.2", "HeuristicLab.Assignment.QAP\3.2\HeuristicLab.Assignment.QAP-3.2.csproj", "{0AFC3DEE-0CA4-4CE6-BDE2-E06DDBB8BD21}"
@@ -161,6 +159,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", "HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA.Hardwired-3.3", "HeuristicLab.SGA.Hardwired\3.3\HeuristicLab.SGA.Hardwired-3.3.csproj", "{583705E2-B1F7-42B8-8149-96E7AECA171A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.Test", "HeuristicLab.Persistence\Test\HeuristicLab.Persistence.Test.csproj", "{E2245078-6F40-449E-A370-01A97A7C5E6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
