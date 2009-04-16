@@ -2574,7 +2574,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             
             private global::System.Data.DataColumn columnPluginId;
             
-            private global::System.Data.DataColumn columnSerializedInfo;
+            private global::System.Data.DataColumn columnName;
+            
+            private global::System.Data.DataColumn columnVersion;
+            
+            private global::System.Data.DataColumn columnBuildDate;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public PluginInfoDataTable() {
@@ -2614,9 +2618,23 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public global::System.Data.DataColumn SerializedInfoColumn {
+            public global::System.Data.DataColumn NameColumn {
                 get {
-                    return this.columnSerializedInfo;
+                    return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn VersionColumn {
+                get {
+                    return this.columnVersion;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn BuildDateColumn {
+                get {
+                    return this.columnBuildDate;
                 }
             }
             
@@ -2649,11 +2667,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public PluginInfoRow AddPluginInfoRow(System.Guid PluginId, string SerializedInfo) {
+            public PluginInfoRow AddPluginInfoRow(System.Guid PluginId, string Name, string Version, string BuildDate) {
                 PluginInfoRow rowPluginInfoRow = ((PluginInfoRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PluginId,
-                        SerializedInfo};
+                        Name,
+                        Version,
+                        BuildDate};
                 rowPluginInfoRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowPluginInfoRow);
                 return rowPluginInfoRow;
@@ -2680,20 +2700,28 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             internal void InitVars() {
                 this.columnPluginId = base.Columns["PluginId"];
-                this.columnSerializedInfo = base.Columns["SerializedInfo"];
+                this.columnName = base.Columns["Name"];
+                this.columnVersion = base.Columns["Version"];
+                this.columnBuildDate = base.Columns["BuildDate"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             private void InitClass() {
                 this.columnPluginId = new global::System.Data.DataColumn("PluginId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPluginId);
-                this.columnSerializedInfo = new global::System.Data.DataColumn("SerializedInfo", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnSerializedInfo);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnName);
+                this.columnVersion = new global::System.Data.DataColumn("Version", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVersion);
+                this.columnBuildDate = new global::System.Data.DataColumn("BuildDate", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBuildDate);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnPluginId}, true));
                 this.columnPluginId.AllowDBNull = false;
                 this.columnPluginId.Unique = true;
-                this.columnSerializedInfo.MaxLength = 2147483647;
+                this.columnName.MaxLength = 20;
+                this.columnVersion.MaxLength = 20;
+                this.columnBuildDate.MaxLength = 20;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3836,28 +3864,78 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public string SerializedInfo {
+            public string Name {
                 get {
                     try {
-                        return ((string)(this[this.tablePluginInfo.SerializedInfoColumn]));
+                        return ((string)(this[this.tablePluginInfo.NameColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'SerializedInfo\' in table \'PluginInfo\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'PluginInfo\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tablePluginInfo.SerializedInfoColumn] = value;
+                    this[this.tablePluginInfo.NameColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public bool IsSerializedInfoNull() {
-                return this.IsNull(this.tablePluginInfo.SerializedInfoColumn);
+            public string Version {
+                get {
+                    try {
+                        return ((string)(this[this.tablePluginInfo.VersionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Version\' in table \'PluginInfo\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePluginInfo.VersionColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void SetSerializedInfoNull() {
-                this[this.tablePluginInfo.SerializedInfoColumn] = global::System.Convert.DBNull;
+            public string BuildDate {
+                get {
+                    try {
+                        return ((string)(this[this.tablePluginInfo.BuildDateColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BuildDate\' in table \'PluginInfo\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePluginInfo.BuildDateColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public bool IsNameNull() {
+                return this.IsNull(this.tablePluginInfo.NameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void SetNameNull() {
+                this[this.tablePluginInfo.NameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public bool IsVersionNull() {
+                return this.IsNull(this.tablePluginInfo.VersionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void SetVersionNull() {
+                this[this.tablePluginInfo.VersionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public bool IsBuildDateNull() {
+                return this.IsNull(this.tablePluginInfo.BuildDateColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void SetBuildDateNull() {
+                this[this.tablePluginInfo.BuildDateColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6112,7 +6190,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = @"SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, ParentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId FROM Job WHERE (JobState = 'calculating')  OR (JobState = ' abort') OR (JobState = 'requestSnapshot ') AND (ResourceId = @ResourceId)";
+            this._commandCollection[3].CommandText = @"SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, ParentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId FROM Job WHERE ((JobState = 'calculating')  OR (JobState = ' abort') OR (JobState = 'requestSnapshot ')) AND (ResourceId = @ResourceId)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
@@ -7608,11 +7686,16 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT JobId, PluginId FROM dbo.RequiredPlugins";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT * FROM dbo.RequiredPlugins WHERE JobId =  @JobId";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7632,6 +7715,30 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsHiveServer.RequiredPluginsDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsHiveServer.RequiredPluginsDataTable dataTable = new dsHiveServer.RequiredPluginsDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsHiveServer.RequiredPluginsDataTable dataTable, System.Guid JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.RequiredPluginsDataTable GetDataById(System.Guid JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId));
             dsHiveServer.RequiredPluginsDataTable dataTable = new dsHiveServer.RequiredPluginsDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -7854,30 +7961,47 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
             tableMapping.SourceTable = "Table";
             tableMapping.DataSetTable = "PluginInfo";
             tableMapping.ColumnMappings.Add("PluginId", "PluginId");
-            tableMapping.ColumnMappings.Add("SerializedInfo", "SerializedInfo");
+            tableMapping.ColumnMappings.Add("Name", "Name");
+            tableMapping.ColumnMappings.Add("Version", "Version");
+            tableMapping.ColumnMappings.Add("BuildDate", "BuildDate");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[PluginInfo] WHERE (([PluginId] = @Original_PluginId))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[PluginInfo] WHERE (([PluginId] = @Original_PluginId) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Version = 1 AND [Version] IS NULL) OR ([Version] = @Original_Version)) AND ((@IsNull_BuildDate = 1 AND [BuildDate] IS NULL) OR ([BuildDate] = @Original_BuildDate)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PluginId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PluginId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Name", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Version", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Version", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_BuildDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_BuildDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[PluginInfo] ([PluginId], [SerializedInfo]) VALUES (@PluginId, " +
-                "@SerializedInfo);\r\nSELECT PluginId, SerializedInfo FROM PluginInfo WHERE (Plugin" +
-                "Id = @PluginId)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[PluginInfo] ([PluginId], [Name], [Version], [BuildDate]) VALUE" +
+                "S (@PluginId, @Name, @Version, @BuildDate);\r\nSELECT PluginId, Name, Version, Bui" +
+                "ldDate FROM PluginInfo WHERE (PluginId = @PluginId)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PluginId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PluginId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SerializedInfo", global::System.Data.SqlDbType.Xml, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SerializedInfo", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Version", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@BuildDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[PluginInfo] SET [PluginId] = @PluginId, [SerializedInfo] = @Seriali" +
-                "zedInfo WHERE (([PluginId] = @Original_PluginId));\r\nSELECT PluginId, SerializedI" +
-                "nfo FROM PluginInfo WHERE (PluginId = @PluginId)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[PluginInfo] SET [PluginId] = @PluginId, [Name] = @Name, [Version] = @Version, [BuildDate] = @BuildDate WHERE (([PluginId] = @Original_PluginId) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Version = 1 AND [Version] IS NULL) OR ([Version] = @Original_Version)) AND ((@IsNull_BuildDate = 1 AND [BuildDate] IS NULL) OR ([BuildDate] = @Original_BuildDate)));
+SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @PluginId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PluginId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PluginId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SerializedInfo", global::System.Data.SqlDbType.Xml, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SerializedInfo", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Version", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@BuildDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PluginId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PluginId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Name", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Version", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Version", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Version", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_BuildDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_BuildDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "BuildDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7891,11 +8015,11 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.PluginInfo";
+            this._commandCollection[0].CommandText = "SELECT PluginId, Name, Version, BuildDate FROM PluginInfo";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT * FROM dbo.PluginInfo WHERE PluginId=@Id";
+            this._commandCollection[1].CommandText = "SELECT * FROM PluginInfo WHERE (PluginId = @Id)";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PluginId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
@@ -7974,8 +8098,32 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.Guid Original_PluginId) {
+        public virtual int Delete(System.Guid Original_PluginId, string Original_Name, string Original_Version, string Original_BuildDate) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_PluginId));
+            if ((Original_Name == null)) {
+                this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[2].Value = ((string)(Original_Name));
+            }
+            if ((Original_Version == null)) {
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[3].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[4].Value = ((string)(Original_Version));
+            }
+            if ((Original_BuildDate == null)) {
+                this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(1));
+                this.Adapter.DeleteCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.DeleteCommand.Parameters[5].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[6].Value = ((string)(Original_BuildDate));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -7995,13 +8143,25 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid PluginId, object SerializedInfo) {
+        public virtual int Insert(System.Guid PluginId, string Name, string Version, string BuildDate) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(PluginId));
-            if ((SerializedInfo == null)) {
+            if ((Name == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((object)(SerializedInfo));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(Name));
+            }
+            if ((Version == null)) {
+                this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(Version));
+            }
+            if ((BuildDate == null)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(BuildDate));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8022,15 +8182,51 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid PluginId, object SerializedInfo, System.Guid Original_PluginId) {
+        public virtual int Update(System.Guid PluginId, string Name, string Version, string BuildDate, System.Guid Original_PluginId, string Original_Name, string Original_Version, string Original_BuildDate) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(PluginId));
-            if ((SerializedInfo == null)) {
+            if ((Name == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((object)(SerializedInfo));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Name));
             }
-            this.Adapter.UpdateCommand.Parameters[2].Value = ((System.Guid)(Original_PluginId));
+            if ((Version == null)) {
+                this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(Version));
+            }
+            if ((BuildDate == null)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(BuildDate));
+            }
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((System.Guid)(Original_PluginId));
+            if ((Original_Name == null)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(Original_Name));
+            }
+            if ((Original_Version == null)) {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(Original_Version));
+            }
+            if ((Original_BuildDate == null)) {
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_BuildDate));
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -8050,8 +8246,8 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(object SerializedInfo, System.Guid Original_PluginId) {
-            return this.Update(Original_PluginId, SerializedInfo, Original_PluginId);
+        public virtual int Update(string Name, string Version, string BuildDate, System.Guid Original_PluginId, string Original_Name, string Original_Version, string Original_BuildDate) {
+            return this.Update(Original_PluginId, Name, Version, BuildDate, Original_PluginId, Original_Name, Original_Version, Original_BuildDate);
         }
     }
     
