@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
 using log4net;
 using log4net.Config;
-using HeuristicLab.Persistence.Default.ViewOnly;
+using HeuristicLab.Persistence.Default.DebugString;
 
 namespace HeuristicLab.Persistence.Test {
 
@@ -69,7 +69,7 @@ namespace HeuristicLab.Persistence.Test {
     [Storable]
     public Root r;
     [Storable]
-    public string name = "Serial";
+    public string name = "<![CDATA[<![CDATA[Serial]]>]]>";
   }
 
   public class CloneableRoot {
@@ -185,8 +185,8 @@ namespace HeuristicLab.Persistence.Test {
       r.myEnum = TestEnum.va1;
       XmlGenerator.Serialize(r, "test.zip");
       object o = XmlParser.DeSerialize("test.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(r));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(r));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public static void Test3() {
@@ -198,8 +198,8 @@ namespace HeuristicLab.Persistence.Test {
       c.kvpList = new KeyValuePair<List<C>, C>(new List<C> { c }, c);
       XmlGenerator.Serialize(cs, "test3.zip");
       object o = XmlParser.DeSerialize("test3.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(cs));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(cs));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public static void Test4() {
@@ -218,16 +218,16 @@ namespace HeuristicLab.Persistence.Test {
       arrayListArray[2].Add(a);
       XmlGenerator.Serialize(arrayListArray, "test4.zip");
       object o = XmlParser.DeSerialize("test4.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(arrayListArray));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(arrayListArray));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public static void Test2() {
       Manager m = new Manager();
       XmlGenerator.Serialize(m, "test2.zip");
       object o = XmlParser.DeSerialize("test2.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(m));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(m));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
 
@@ -236,8 +236,8 @@ namespace HeuristicLab.Persistence.Test {
       StringDecomposerTest sdt = new StringDecomposerTest();
       XmlGenerator.Serialize(sdt, "test5.zip");
       object o = XmlParser.DeSerialize("test5.zip");
-      //Console.WriteLine(ViewOnlyGenerator.Serialize(sdt));
-      //Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      //Console.WriteLine(DebugStringGenerator.Serialize(sdt));
+      //Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public static void Test6() {
@@ -247,8 +247,8 @@ namespace HeuristicLab.Persistence.Test {
       };
       XmlGenerator.Serialize(mDimString, "test6.zip");
       object o = XmlParser.DeSerialize("test6.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(mDimString));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(mDimString));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public class NestedType {
@@ -260,8 +260,8 @@ namespace HeuristicLab.Persistence.Test {
       NestedType t = new NestedType();
       XmlGenerator.Serialize(t, "test7.zip");
       object o = XmlParser.DeSerialize("test7.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(t));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(t));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
 
@@ -269,8 +269,8 @@ namespace HeuristicLab.Persistence.Test {
       string[] strings = { "ora", "et", "labora" };
       XmlGenerator.Serialize(strings, "test8.zip");
       object o = XmlParser.DeSerialize("test8.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(strings));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(strings));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
     public static void Test9() {
@@ -286,8 +286,8 @@ namespace HeuristicLab.Persistence.Test {
     public static void Test10() {
       XmlGenerator.Serialize(12.3f, "test9.zip");
       object o = XmlParser.DeSerialize("test9.zip");
-      Console.WriteLine(ViewOnlyGenerator.Serialize(12.3f));
-      Console.WriteLine(ViewOnlyGenerator.Serialize(o));
+      Console.WriteLine(DebugStringGenerator.Serialize(12.3f));
+      Console.WriteLine(DebugStringGenerator.Serialize(o));
     }
 
 
