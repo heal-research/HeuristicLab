@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
-  public class BinaryRelationHelper<AdapterT, RowT>
+  public class ManyToManyRelationHelper<AdapterT, RowT>
     where AdapterT : new()
     where RowT : System.Data.DataRow
     {
-    IDataAdapterWrapper<AdapterT, BinaryRelation, RowT> tableAdapterWrapper;
+    ITableAdapterWrapper<AdapterT, ManyToManyRelation, RowT> tableAdapterWrapper;
     
-    public BinaryRelationHelper(
-      IDataAdapterWrapper<AdapterT, BinaryRelation, RowT> tableAdapterWrapper) {
+    public ManyToManyRelationHelper(
+      ITableAdapterWrapper<AdapterT, ManyToManyRelation, RowT> tableAdapterWrapper) {
       this.tableAdapterWrapper = tableAdapterWrapper;
     }
 
@@ -28,8 +28,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       foreach (Guid relationship in relationships) {
         if (!existing.Contains(relationship)) {
-          BinaryRelation rel = 
-            new BinaryRelation();
+          ManyToManyRelation rel = 
+            new ManyToManyRelation();
           rel.Id = objectA;
           rel.Id2 = relationship;
           

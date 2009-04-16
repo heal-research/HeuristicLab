@@ -87,6 +87,7 @@
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
+    <Compile Include="BusinessObjects\HivePluginInfo.cs" />
     <Compile Include="BusinessObjects\HeartBeatData.cs" />
     <Compile Include="BusinessObjects\Job.cs" />
     <Compile Include="BusinessObjects\JobResult.cs" />

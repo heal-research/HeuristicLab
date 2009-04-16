@@ -35,10 +35,10 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private ISession session;
 
-    private IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter;
+    private ITableAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter;
 
     protected DataAdapterBase(
-      IDataAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter) {
+      ITableAdapterWrapper<AdapterT, ObjT, RowT> dataAdapter) {
       this.dataAdapter = dataAdapter;
     }
 
@@ -48,7 +48,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    protected IDataAdapterWrapper<AdapterT, ObjT, RowT> DataAdapterWrapper {
+    protected ITableAdapterWrapper<AdapterT, ObjT, RowT> DataAdapterWrapper {
       get {
         return dataAdapter;
       }

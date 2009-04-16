@@ -30,53 +30,35 @@ using HeuristicLab.DataAccess.ADOHelper;
 using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
 using System.Data.Common;
 using System.Data.SqlClient;
+using HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class JobAdapterWrapper :
-    DataAdapterWrapperBase<dsHiveServerTableAdapters.JobTableAdapter,
-                      Job,
-                      dsHiveServer.JobRow> {    
-    public override void UpdateRow(dsHiveServer.JobRow row) {
-      TransactionalAdapter.Update(row);
-    }
-
-    public override dsHiveServer.JobRow
-      InsertNewRow(Job job) {
-      dsHiveServer.JobDataTable data =
-        new dsHiveServer.JobDataTable();
-
-      dsHiveServer.JobRow row = data.NewJobRow();
-      row.JobId = job.Id;
-      data.AddJobRow(row);
-
-      return row;
-    }
-
-    public override IEnumerable<dsHiveServer.JobRow>
-      FindById(Guid id) {
-      return TransactionalAdapter.GetDataById(id);
-    }
-
-    public override IEnumerable<dsHiveServer.JobRow>
-      FindAll() {
-      return TransactionalAdapter.GetData();
-    }
-
-    protected override void SetConnection(DbConnection connection) {
-      adapter.Connection = connection as SqlConnection;
-    }
-
-    protected override void SetTransaction(DbTransaction transaction) {
-      adapter.Transaction = transaction as SqlTransaction;
-    }
-  }
-  
   class JobAdapter :
     DataAdapterBase<dsHiveServerTableAdapters.JobTableAdapter,
                       Job, 
                       dsHiveServer.JobRow>, 
     IJobAdapter {
     #region Fields
+    private ManyToManyRelationHelper<
+      dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
+      dsHiveServer.RequiredPluginsRow> manyToManyRelationHelper = null;
+
+    private ManyToManyRelationHelper<
+      dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
+      dsHiveServer.RequiredPluginsRow> ManyToManyRelationHelper {
+      get {
+        if (manyToManyRelationHelper == null) {
+          manyToManyRelationHelper =
+            new ManyToManyRelationHelper<dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
+              dsHiveServer.RequiredPluginsRow>(new RequiredPluginsAdapterWrapper());
+        }
+
+        manyToManyRelationHelper.Session = Session as Session;
+
+        return manyToManyRelationHelper;
+      }
+    }
+
     private IClientAdapter clientAdapter = null;
 
     private IClientAdapter ClientAdapter {
@@ -99,6 +81,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
 
         return resultsAdapter;
+      }
+    }
+
+    private IPluginInfoAdapter pluginInfoAdapter = null;
+
+    private IPluginInfoAdapter PluginInfoAdapter {
+      get {
+        if (pluginInfoAdapter == null) {
+          pluginInfoAdapter =
+            this.Session.GetDataAdapter<HivePluginInfo, IPluginInfoAdapter>();
+        }
+
+        return pluginInfoAdapter;
       }
     }
     #endregion
@@ -166,6 +161,17 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           job.MemoryNeeded = row.MemoryNeeded;
         else
           job.MemoryNeeded = default(int);
+
+        ICollection<Guid> requiredPlugins =
+          ManyToManyRelationHelper.GetRelationships(job.Id);
+        
+        job.PluginsNeeded.Clear();
+        foreach (Guid requiredPlugin in requiredPlugins) {
+          HivePluginInfo pluginInfo = 
+            PluginInfoAdapter.GetById(requiredPlugin);
+
+          job.PluginsNeeded.Add(pluginInfo);
+        }
 
         return job;
       } else
@@ -295,6 +301,21 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
+    protected override void doUpdate(Job obj) {
+      base.doUpdate(obj);
+
+      //update relationships
+      List<Guid> relationships =
+        new List<Guid>();
+      foreach (HivePluginInfo pluginInfo in obj.PluginsNeeded) {
+        PluginInfoAdapter.Update(pluginInfo);
+        relationships.Add(pluginInfo.Id);
+      }
+
+      ManyToManyRelationHelper.UpdateRelationships(
+        obj.Id, relationships);
+    }
+
     protected override bool doDelete(Job job) {
       if (job != null) {
         dsHiveServer.JobRow row =
@@ -308,6 +329,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           foreach (JobResult result in results) {
             ResultsAdapter.Delete(result);
           }
+
+          //delete all relationships
+          ManyToManyRelationHelper.UpdateRelationships(job.Id,
+            new List<Guid>());
 
           return base.doDelete(job);
         }

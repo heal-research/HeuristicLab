@@ -23,24 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.DataAccess.Interfaces;
-using System.Data.Common;
+using System.Runtime.Serialization;
+using HeuristicLab.DataAccess;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.DataAccess.ADOHelper {
-  public interface IDataAdapterWrapper<AdapterT, ObjT, RowT>
-   where AdapterT : new()
-   where ObjT : IPersistableObject, new()
-   where RowT : System.Data.DataRow {
-    void UpdateRow(RowT row);
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
-    RowT InsertNewRow(ObjT obj);
+  [DataContract]
+  public class HivePluginInfo : PersistableObject {
+    [DataMember]
+    public String Name { get; set; }
 
-    IEnumerable<RowT> FindById(Guid id);
+    [DataMember]
+    public String Version { get; set; }
 
-    IEnumerable<RowT> FindAll();
-
-    AdapterT TransactionalAdapter { get; }
-
-    Session Session { set; }
+    [DataMember]
+    public String BuildDate { get; set; }
   }
 }

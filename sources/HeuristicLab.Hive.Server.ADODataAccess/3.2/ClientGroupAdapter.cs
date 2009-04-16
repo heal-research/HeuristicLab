@@ -31,119 +31,31 @@ using HeuristicLab.DataAccess.ADOHelper;
 using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
 using System.Data.Common;
 using System.Data.SqlClient;
+using HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
-  class ClientGroupAdapterWrapper :
-    DataAdapterWrapperBase<dsHiveServerTableAdapters.ClientGroupTableAdapter,
-    ClientGroup,
-    dsHiveServer.ClientGroupRow> {
-    public override dsHiveServer.ClientGroupRow
-     InsertNewRow(ClientGroup group) {
-      dsHiveServer.ClientGroupDataTable data =
-         new dsHiveServer.ClientGroupDataTable();
-
-      dsHiveServer.ClientGroupRow row =
-        data.NewClientGroupRow();
-
-      row.ResourceId = group.Id;
-
-      data.AddClientGroupRow(row);
-      TransactionalAdapter.Update(row);
-
-      return row;
-    }
-
-    public override void
-      UpdateRow(dsHiveServer.ClientGroupRow row) {
-      TransactionalAdapter.Update(row);
-    }
-
-    public override IEnumerable<dsHiveServer.ClientGroupRow>
-      FindById(Guid id) {
-      return TransactionalAdapter.GetDataById(id);
-    }
-
-    public override IEnumerable<dsHiveServer.ClientGroupRow>
-      FindAll() {
-      return TransactionalAdapter.GetData();
-    }
-
-    protected override void SetConnection(DbConnection connection) {
-      adapter.Connection = connection as SqlConnection;
-    }
-
-    protected override void SetTransaction(DbTransaction transaction) {
-      adapter.Transaction = transaction as SqlTransaction;
-    }
-  }
-
-  class ClientGroup_ResourceAdapterWrapper :
-  DataAdapterWrapperBase<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
-  BinaryRelation,
-  dsHiveServer.ClientGroup_ResourceRow> {
-    public override dsHiveServer.ClientGroup_ResourceRow
-     InsertNewRow(BinaryRelation relation) {
-      dsHiveServer.ClientGroup_ResourceDataTable data =
-         new dsHiveServer.ClientGroup_ResourceDataTable();
-
-      dsHiveServer.ClientGroup_ResourceRow row =
-        data.NewClientGroup_ResourceRow();
-
-      row.ClientGroupId = relation.Id;
-      row.ResourceId = relation.Id2;
-
-      data.AddClientGroup_ResourceRow(row);
-      TransactionalAdapter.Update(row);
-
-      return row;
-    }
-
-    public override void
-      UpdateRow(dsHiveServer.ClientGroup_ResourceRow row) {
-      TransactionalAdapter.Update(row);
-    }
-
-    public override IEnumerable<dsHiveServer.ClientGroup_ResourceRow>
-      FindById(Guid id) {
-      return TransactionalAdapter.GetDataByClientGroupId(id);
-    }
-
-    public override IEnumerable<dsHiveServer.ClientGroup_ResourceRow>
-      FindAll() {
-      return TransactionalAdapter.GetData();
-    }
-
-    protected override void SetConnection(DbConnection connection) {
-      adapter.Connection = connection as SqlConnection;
-    }
-
-    protected override void SetTransaction(DbTransaction transaction) {
-      adapter.Transaction = transaction as SqlTransaction;
-    }
-  }
-  
   class ClientGroupAdapter : 
     DataAdapterBase<dsHiveServerTableAdapters.ClientGroupTableAdapter, 
     ClientGroup, 
     dsHiveServer.ClientGroupRow>, 
     IClientGroupAdapter {
     #region Fields
-    private BinaryRelationHelper<
+    private ManyToManyRelationHelper<
       dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter, 
-      dsHiveServer.ClientGroup_ResourceRow> binaryRelationHelper = null;
+      dsHiveServer.ClientGroup_ResourceRow> manyToManyRelationHelper = null;
 
-    private BinaryRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter, 
-      dsHiveServer.ClientGroup_ResourceRow> BinaryRelationHelper {
+    private ManyToManyRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter, 
+      dsHiveServer.ClientGroup_ResourceRow> ManyToManyRelationHelper {
       get {
-        if (binaryRelationHelper == null) {
-          binaryRelationHelper =
-            new BinaryRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
+        if (manyToManyRelationHelper == null) {
+          manyToManyRelationHelper =
+            new ManyToManyRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
               dsHiveServer.ClientGroup_ResourceRow>(new ClientGroup_ResourceAdapterWrapper());
         }
 
-        binaryRelationHelper.Session = Session as Session;
+        manyToManyRelationHelper.Session = Session as Session;
 
-        return binaryRelationHelper;
+        return manyToManyRelationHelper;
       }
     }
 
@@ -185,7 +97,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         ResAdapter.GetById(clientGroup.Id);
 
         ICollection<Guid> resources =
-          BinaryRelationHelper.GetRelationships(clientGroup.Id);
+          ManyToManyRelationHelper.GetRelationships(clientGroup.Id);
 
        clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
@@ -239,7 +151,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           relationships.Add(res.Id);
         }
 
-        BinaryRelationHelper.UpdateRelationships(group.Id,
+        ManyToManyRelationHelper.UpdateRelationships(group.Id,
           relationships);
       }
     }
@@ -263,7 +175,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override bool doDelete(ClientGroup group) {
       if (group != null) {
         //delete all relationships
-        BinaryRelationHelper.UpdateRelationships(group.Id,
+        ManyToManyRelationHelper.UpdateRelationships(group.Id,
           new List<Guid>());
 
         return base.doDelete(group) && 

@@ -27,8 +27,8 @@ using HeuristicLab.DataAccess.Interfaces;
 using System.Data.Common;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
-  public abstract class DataAdapterWrapperBase<AdapterT, ObjT, RowT>:
-    IDataAdapterWrapper<AdapterT, ObjT, RowT>
+  public abstract class TableAdapterWrapperBase<AdapterT, ObjT, RowT>:
+    ITableAdapterWrapper<AdapterT, ObjT, RowT>
     where AdapterT : new()
     where ObjT : IPersistableObject, new()
     where RowT : System.Data.DataRow {

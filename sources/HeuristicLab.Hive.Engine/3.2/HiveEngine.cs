@@ -28,6 +28,7 @@ using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -80,7 +81,21 @@ namespace HeuristicLab.Hive.Engine {
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
       jobObj.SerializedJob = PersistenceManager.SaveToGZip(job);
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
-      jobObj.PluginsNeeded = dependentPlugins;
+
+      List<HivePluginInfo> pluginsNeeded =
+        new List<HivePluginInfo>();
+
+      foreach (PluginInfo info in dependentPlugins) {
+        HivePluginInfo pluginInfo = 
+          new HivePluginInfo();
+        pluginInfo.Name = info.Name;
+        pluginInfo.Version = info.Version.ToString();
+        pluginInfo.BuildDate = info.BuildDate.ToString();
+
+        pluginsNeeded.Add(pluginInfo);
+      }
+
+      jobObj.PluginsNeeded = pluginsNeeded;
       ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
       jobId = res.Obj.Id;
     }

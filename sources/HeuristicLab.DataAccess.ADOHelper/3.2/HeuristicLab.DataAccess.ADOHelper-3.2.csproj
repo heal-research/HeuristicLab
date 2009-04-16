@@ -82,10 +82,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccessADOHelperPlugin.cs" />
     <Compile Include="DataAdapterBase.cs" />
-    <Compile Include="DataAdapterWrapperBase.cs" />
-    <Compile Include="IDataAdapterWrapper.cs" />
-    <Compile Include="BinaryRelation.cs" />
-    <Compile Include="BinaryRelationHelper.cs" />
+    <Compile Include="TableAdapterWrapperBase.cs" />
+    <Compile Include="ITableAdapterWrapper.cs" />
+    <Compile Include="ManyToManyRelation.cs" />
+    <Compile Include="ManyToManyRelationHelper.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SessionFactory.cs" />
     <Compile Include="Transaction.cs" />

@@ -54,6 +54,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public int MemoryNeeded { get; set; }
     [DataMember]
-    public List<PluginInfo> PluginsNeeded { get; set; }
+    public List<HivePluginInfo> PluginsNeeded { get; set; }
   }
 }
