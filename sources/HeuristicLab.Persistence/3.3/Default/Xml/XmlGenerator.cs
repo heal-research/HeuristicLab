@@ -24,106 +24,145 @@ namespace HeuristicLab.Persistence.Default.Xml {
   public class XmlGenerator : GeneratorBase<string> {
 
     private int depth;
+    private int Depth {
+      get {
+        return depth;
+      }
+      set {
+        depth = value;
+        prefix = new string(' ', depth * 2);
+      }
+    }
+
+    private string prefix;
+
 
     public XmlGenerator() {
-      depth = 0;
+      Depth = 0;
     }
 
     private enum NodeType { Start, End, Inline } ;
 
-    private static string FormatNode(string name,
-        Dictionary<string, object> attributes,
-        NodeType type) {
-      return FormatNode(name, attributes, type, " ");
-    }
-
-    private static string FormatNode(string name,
-        Dictionary<string, object> attributes,
-        NodeType type, string space) {
-      StringBuilder sb = new StringBuilder();
-      sb.Append('<');
-      if (type == NodeType.End)
-        sb.Append('/');
+    private static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, object> attributes) {
       sb.Append(name);
       foreach (var attribute in attributes) {
         if (attribute.Value != null && !string.IsNullOrEmpty(attribute.Value.ToString())) {
-          sb.Append(space);
+          sb.Append(' ');
           sb.Append(attribute.Key);
           sb.Append("=\"");
           sb.Append(attribute.Value);
           sb.Append('"');
         }
       }
-      if (type == NodeType.Inline)
-        sb.Append('/');
+    }
+
+    private static void AddXmlStartTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+      sb.Append('<');
+      AddXmlTagContent(sb, name, attributes);
+      sb.Append('>');
+    }
+
+    private static void AddXmlInlineTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+      sb.Append('<');
+      AddXmlTagContent(sb, name, attributes);
+      sb.Append("/>");
+    }
+
+    private static void AddXmlEndTag(StringBuilder sb, string name) {
+      sb.Append("</");
+      sb.Append(name);
       sb.Append(">");
+    }
+
+    private string CreateNodeStart(string name, Dictionary<string, object> attributes) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(prefix);
+      Depth += 1;
+      AddXmlStartTag(sb, name, attributes);
+      sb.Append("\r\n");
       return sb.ToString();
     }
 
-    private string Prefix {
-      get { return new string(' ', depth * 2); }
+    private string CreateNodeStart(string name) {
+      return CreateNodeStart(name, new Dictionary<string, object>());
+    }
+
+    private string CreateNodeEnd(string name) {
+      Depth -= 1;
+      StringBuilder sb = new StringBuilder();
+      sb.Append(prefix);
+      AddXmlEndTag(sb, name);
+      sb.Append("\r\n");
+      return sb.ToString();
+    }
+
+    private string CreateNode(string name, Dictionary<string, object> attributes) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(prefix);
+      AddXmlInlineTag(sb, name, attributes);
+      sb.Append("\r\n");
+      return sb.ToString();
+    }
+
+    private string CreateNode(string name, Dictionary<string, object> attributes, string content) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(prefix);
+      AddXmlStartTag(sb, name, attributes);
+      sb.Append(content);
+      sb.Append("</").Append(name).Append(">\r\n");
+      return sb.ToString();
     }
 
     protected override string Format(BeginToken beginToken) {
-      var attributes = new Dictionary<string, object> {
-        {"name", beginToken.Name},
-        {"typeId", beginToken.TypeId},
-        {"id", beginToken.Id}};
-      string result = Prefix +
-                      FormatNode(XmlStrings.COMPOSITE, attributes, NodeType.Start) + "\r\n";
-      depth += 1;
-      return result;
+      return CreateNodeStart(
+        XmlStrings.COMPOSITE,
+        new Dictionary<string, object> {
+          {"name", beginToken.Name},
+          {"typeId", beginToken.TypeId},
+          {"id", beginToken.Id}});
     }
 
     protected override string Format(EndToken endToken) {
-      depth -= 1;
-      return Prefix + "</" + XmlStrings.COMPOSITE + ">\r\n";
+      return CreateNodeEnd(XmlStrings.COMPOSITE);
     }
 
     protected override string Format(PrimitiveToken dataToken) {
-      var attributes =
+      return CreateNode(XmlStrings.PRIMITIVE,
         new Dictionary<string, object> {
             {"typeId", dataToken.TypeId},
             {"name", dataToken.Name},
-            {"id", dataToken.Id}};
-      return Prefix +
-        FormatNode(XmlStrings.PRIMITIVE, attributes, NodeType.Start) +
-        ((XmlString)dataToken.SerialData).Data + "</" + XmlStrings.PRIMITIVE + ">\r\n";
+            {"id", dataToken.Id}},
+        ((XmlString)dataToken.SerialData).Data);
     }
 
     protected override string Format(ReferenceToken refToken) {
-      var attributes = new Dictionary<string, object> {
-        {"ref", refToken.Id},
-        {"name", refToken.Name}};
-      return Prefix + FormatNode(XmlStrings.REFERENCE, attributes, NodeType.Inline) + "\r\n";
+      return CreateNode(XmlStrings.REFERENCE,
+        new Dictionary<string, object> {
+          {"ref", refToken.Id},
+          {"name", refToken.Name}});
     }
 
     protected override string Format(NullReferenceToken nullRefToken) {
-      var attributes = new Dictionary<string, object>{
-        {"name", nullRefToken.Name}};
-      return Prefix + FormatNode(XmlStrings.NULL, attributes, NodeType.Inline) + "\r\n";
+      return CreateNode(XmlStrings.NULL,
+        new Dictionary<string, object>{
+          {"name", nullRefToken.Name}});
     }
 
     protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
-      string result = Prefix + "<" + XmlStrings.METAINFO + ">\r\n";
-      depth += 1;
-      return result;
+      return CreateNodeStart(XmlStrings.METAINFO);
     }
 
     protected override string Format(MetaInfoEndToken metaInfoEndToken) {
-      depth -= 1;
-      return Prefix + "</" + XmlStrings.METAINFO + ">\r\n";
+      return CreateNodeEnd(XmlStrings.METAINFO);
     }
 
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {
-      yield return "<" + XmlStrings.TYPECACHE + ">";
+      yield return CreateNodeStart(XmlStrings.TYPECACHE);
       foreach (var mapping in typeCache)
-        yield return "  " + FormatNode(
+        yield return CreateNode(
           XmlStrings.TYPE,
-          mapping.GetDict(),
-          NodeType.Inline,
-          "\r\n    ");
-      yield return "</" + XmlStrings.TYPECACHE + ">";
+          mapping.GetDict());
+      yield return CreateNodeEnd(XmlStrings.TYPECACHE);
     }
 
     public static void Serialize(object o, string filename) {
@@ -141,14 +180,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
       foreach (ISerializationToken token in serializer) {
         string line = generator.Format(token);
         writer.Write(line);
-        logger.Debug(line);
+        logger.Debug(line.TrimEnd());
       }
       writer.Flush();
       zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
       writer = new StreamWriter(zipStream);
       foreach (string line in generator.Format(serializer.TypeCache)) {
         writer.WriteLine(line);
-        logger.Debug(line);
+        logger.Debug(line.TrimEnd());
       }
       writer.Flush();
       zipStream.Close();
