@@ -112,6 +112,12 @@
     <Compile Include="MarkerShape.cs" />
     <Compile Include="MaxAggregator.cs" />
     <Compile Include="MinAggregator.cs" />
+    <Compile Include="Options\Options.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Options\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
     <Compile Include="Options\OptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +179,9 @@
     <EmbeddedResource Include="LineChart.resx">
       <DependentUpon>LineChart.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\OptionsDialog.resx">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
