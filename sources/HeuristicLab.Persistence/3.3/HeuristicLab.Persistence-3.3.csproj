@@ -100,17 +100,27 @@
     <Compile Include="Core\TypeMapping.cs" />
     <Compile Include="Core\TypeStringBuilder.cs" />
     <Compile Include="Core\GeneratorBase.cs" />
+    <Compile Include="Default\DebugString\DebugString.cs" />
+    <Compile Include="Default\DebugString\DebugStringFormat.cs" />
+    <Compile Include="Default\DebugString\ValueType2DebugStringFormatterBase.cs" />
+    <Compile Include="Default\DebugString\String2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Bool2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Int2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Doubld2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\DateTime2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Type2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Float2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\DebugStringGenerator.cs" />
     <Compile Include="Default\Decomposers\ArrayDecomposer.cs" />
+    <Compile Include="Default\Decomposers\Number2StringConverter.cs" />
+    <Compile Include="Default\Decomposers\CompactNumberArray2StringDecomposer.cs" />
     <Compile Include="Default\Decomposers\EnumerableDecomposer.cs" />
     <Compile Include="Default\Decomposers\EnumDecomposer.cs" />
     <Compile Include="Default\Decomposers\KeyValuePairDecomposer.cs" />
     <Compile Include="Default\Decomposers\DictionaryDecomposer.cs" />
     <Compile Include="Default\Decomposers\StorableDecomposer.cs" />
     <Compile Include="Default\Decomposers\TypeDecomposer.cs" />
-    <Compile Include="Default\Decomposers\X2StringDecomposer.cs" />
-    <Compile Include="Default\ViewOnly\ViewOnlyFormat.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Default\Decomposers\NumberEnumerable2StringDecomposer.cs" />
     <Compile Include="Default\Xml\Compact\IntArray2XmlFormatters.cs" />
     <Compile Include="Default\Xml\Compact\DoubleArray2XmlFormatters.cs" />
     <Compile Include="Default\Xml\Compact\DoubleList2XmlFormatter.cs" />

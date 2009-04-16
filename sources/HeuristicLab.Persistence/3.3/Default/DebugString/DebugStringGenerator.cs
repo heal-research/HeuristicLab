@@ -6,55 +6,16 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Default.ViewOnly {
+namespace HeuristicLab.Persistence.Default.DebugString {
 
-  public class String : ISerialData {
-    public string Data { get; set; }
-    public String(string s) {
-      Data = s;
-    }
-  }
-
-  public class ViewOnlyFormat : FormatBase<String> {
-    public override string Name { get { return "ViewOnly"; } }
-  }
-
-  public abstract class ValueType2ViewFormatterBase<T> : FormatterBase<T, String> {
-    public override String Format(T o) { return new String(o.ToString()); }
-    public override T Parse(String s) {
-      throw new NotImplementedException();
-    }
-  }
-
-  [EmptyStorableClass]
-  public class String2ViewFormatter : ValueType2ViewFormatterBase<string> { }
-
-  [EmptyStorableClass]
-  public class Bool2ViewFormatter : ValueType2ViewFormatterBase<bool> { }
-
-  [EmptyStorableClass]
-  public class Int2ViewFormatter : ValueType2ViewFormatterBase<int> { }
-
-  [EmptyStorableClass]
-  public class Double2ViewFormatter : ValueType2ViewFormatterBase<double> { }
-
-  [EmptyStorableClass]
-  public class DateTime2ViewFormatter : ValueType2ViewFormatterBase<DateTime> { }
-
-  [EmptyStorableClass]
-  public class Type2ViewFormatter : ValueType2ViewFormatterBase<Type> { }
-
-  [EmptyStorableClass]
-  public class Float2ViewFormatter : ValueType2ViewFormatterBase<float> { }
-
-  public class ViewOnlyGenerator : GeneratorBase<string> {
+  public class DebugStringGenerator : GeneratorBase<string> {
 
     private bool isSepReq;
     private readonly bool showRefs;
 
-    public ViewOnlyGenerator() : this(false) { }
+    public DebugStringGenerator() : this(false) { }
 
-    public ViewOnlyGenerator(bool showRefs) {
+    public DebugStringGenerator(bool showRefs) {
       isSepReq = false;
       this.showRefs = showRefs;
     }
@@ -94,7 +55,7 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
         }
         sb.Append('=');
       }
-      sb.Append(((String)primitiveToken.SerialData).Data);
+      sb.Append(((DebugString)primitiveToken.SerialData).Data);
       isSepReq = true;
       return sb.ToString();
     }
@@ -136,12 +97,12 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     }
 
     public static string Serialize(object o) {
-      return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(new ViewOnlyFormat()));
+      return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(new DebugStringFormat()));
     }
 
     public static string Serialize(object o, Configuration configuration) {
       Serializer s = new Serializer(o, configuration);
-      ViewOnlyGenerator generator = new ViewOnlyGenerator();
+      DebugStringGenerator generator = new DebugStringGenerator();
       StringBuilder sb = new StringBuilder();
       foreach (ISerializationToken token in s) {
         sb.Append(generator.Format(token));

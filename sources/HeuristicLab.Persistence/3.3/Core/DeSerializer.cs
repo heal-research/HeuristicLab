@@ -3,54 +3,52 @@ using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Core {
+namespace HeuristicLab.Persistence.Core {  
 
-  public class ParentReference { }
+  public class Deserializer {    
 
-  class Midwife {
+    class Midwife {
 
-    public int? Id { get; private set; }
-    public bool MetaMode { get; set; }
-    public object Obj { get; private set; }
+      public int? Id { get; private set; }
+      public bool MetaMode { get; set; }
+      public object Obj { get; private set; }
 
-    private List<Tag> metaInfo;
-    private List<Tag> customValues;
-    private Type type;
-    private IDecomposer decomposer;
+      private List<Tag> metaInfo;
+      private List<Tag> customValues;
+      private Type type;
+      private IDecomposer decomposer;
 
-    public Midwife(object value) {
-      this.Obj = value;
-    }
+      public Midwife(object value) {
+        this.Obj = value;
+      }
 
-    public Midwife(Type type, IDecomposer decomposer, int? id) {
-      this.type = type;
-      this.decomposer = decomposer;
-      this.Id = id;
-      MetaMode = false;
-      metaInfo = new List<Tag>();
-      customValues = new List<Tag>();
-    }
+      public Midwife(Type type, IDecomposer decomposer, int? id) {
+        this.type = type;
+        this.decomposer = decomposer;
+        this.Id = id;
+        MetaMode = false;
+        metaInfo = new List<Tag>();
+        customValues = new List<Tag>();
+      }
 
-    public void CreateInstance() {
-      if (Obj != null)
-        throw new ApplicationException("object already instantiated");
-      Obj = decomposer.CreateInstance(type, metaInfo);
-    }
+      public void CreateInstance() {
+        if (Obj != null)
+          throw new ApplicationException("object already instantiated");
+        Obj = decomposer.CreateInstance(type, metaInfo);
+      }
 
-    public void AddValue(string name, object value) {
-      if (MetaMode) {
-        metaInfo.Add(new Tag(name, value));
-      } else {
-        customValues.Add(new Tag(name, value));
+      public void AddValue(string name, object value) {
+        if (MetaMode) {
+          metaInfo.Add(new Tag(name, value));
+        } else {
+          customValues.Add(new Tag(name, value));
+        }
+      }
+
+      public void Populate() {
+        decomposer.Populate(Obj, customValues, type);
       }
     }
-
-    public void Populate() {
-      decomposer.Populate(Obj, customValues, type);
-    }
-  }
-
-  public class Deserializer {
 
     private readonly Dictionary<int, object> id2obj;
     private readonly Dictionary<Type, object> serializerMapping;
