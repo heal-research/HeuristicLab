@@ -15,5 +15,5 @@ echo local machine certification store, otherwise you will get
 echo an error message. In that case try to change the store location
 echo to CurrentUser and also change the store location in WcfSettings to CurrentUser.
 pause
-makecert -sk HTTPS-Key -ss My -sr LocalMachine -n CN=HIVE-Server -sky exhange
+makecert -sk HTTPS-Key -ss My -n CN=HIVE-Server -sky exhange
 pause
