@@ -92,17 +92,20 @@
     <Compile Include="FunctionLibraryInjector.cs" />
     <Compile Include="OffspringSelectionGP.cs" />
     <Compile Include="OffSpringSelectionGpEditor.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OffSpringSelectionGpEditor.Designer.cs">
       <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ProblemInjector.cs" />
     <Compile Include="ProblemInjectorView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ProblemInjectorView.Designer.cs">
       <DependentUpon>ProblemInjectorView.cs</DependentUpon>
     </Compile>
     <Compile Include="StandardGpEditor.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="StandardGpEditor.Designer.cs">
       <DependentUpon>StandardGpEditor.cs</DependentUpon>
