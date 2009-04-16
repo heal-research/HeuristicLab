@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using Calendar;
 using HeuristicLab.Hive.Client.Console.ClientService;
 using ZedGraph;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.Console
 {
@@ -107,7 +108,9 @@ namespace HeuristicLab.Hive.Client.Console
     {
       try
       {
-        cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress(ENDPOINTADRESS));
+        //changed by MB, 16.04.09
+        //cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress(ENDPOINTADRESS));
+        cccc = new ClientConsoleCommunicatorClient(WcfSettings.GetBinding(), new EndpointAddress(ENDPOINTADRESS));
         cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
         cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
       }

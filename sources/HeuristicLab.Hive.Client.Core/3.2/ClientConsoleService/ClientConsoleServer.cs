@@ -6,6 +6,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleServer {
@@ -35,12 +36,9 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
                 new ServiceHost(clientConsoleServerInstances[0].GetType(),
                   uriTcp);
 
-        System.ServiceModel.Channels.Binding binding =
-          new NetTcpBinding();
-
         serviceHost.AddServiceEndpoint(
           typeof(IClientConsoleCommunicator),
-              binding,
+              WcfSettings.GetBinding(),
               "ClientConsoleCommunicator");
 
         AddMexEndpoint(serviceHost);

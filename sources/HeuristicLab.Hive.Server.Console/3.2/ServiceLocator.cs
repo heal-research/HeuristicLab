@@ -5,6 +5,7 @@ using System.Text;
 
 using HeuristicLab.Hive.Contracts.Interfaces;
 using System.ServiceModel;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
   internal class ServiceLocator {
@@ -26,14 +27,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         Address != String.Empty &&
         Port != String.Empty) {
 
-        NetTcpBinding binding =
-             new NetTcpBinding(SecurityMode.None, true);
-
-        binding.MaxReceivedMessageSize = 5000000;
+        //binding.MaxReceivedMessageSize = 5000000;
 
         ChannelFactory<IServerConsoleFacade> factory =
           new ChannelFactory<IServerConsoleFacade>(
-            binding,
+            WcfSettings.GetBinding(),
             new EndpointAddress("net.tcp://" + Address + ":" + Port + "/HiveServerConsole/ServerConsoleFacade"));
 
         serverConsoleFacade = factory.CreateChannel();

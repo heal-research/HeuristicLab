@@ -74,7 +74,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     public void Connect() {
       try {
         proxy = new ClientCommunicatorClient(
-          new NetTcpBinding(SecurityMode.None, true),
+          WcfSettings.GetBinding(),
           new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
         );
 

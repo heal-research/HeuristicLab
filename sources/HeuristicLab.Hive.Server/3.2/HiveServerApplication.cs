@@ -35,15 +35,13 @@ namespace HeuristicLab.Hive.Server {
       Description = "Server application for the distributed hive engine.",
       AutoRestart = true)]
   public class HiveServerApplication : ApplicationBase {
-    private const int DEFAULT_PORT = 9000;
     public const string STR_ClientCommunicator = "ClientCommunicator";
     public const string STR_ServerConsoleFacade = "ServerConsoleFacade";
     public const string STR_ExecutionEngineFacade = "ExecutionEngineFacade";
 
     private DiscoveryService discService = new DiscoveryService();
     private Dictionary<string, ServiceHost> runningServices = new Dictionary<string, ServiceHost>();
-    private NetTcpBinding binding = new NetTcpBinding(SecurityMode.None, true);
-    //private WSHttpBinding binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential, true);
+    private NetTcpBinding binding = (NetTcpBinding)WcfSettings.GetBinding();
 
     private enum Services {
       ClientCommunicator,
@@ -104,6 +102,7 @@ namespace HeuristicLab.Hive.Server {
       }
       if ((serviceHost != null) && (!String.IsNullOrEmpty(curServiceHost))) {
         AddMexEndpoint(serviceHost);
+        WcfSettings.SetServiceCertificate(serviceHost);
         serviceHost.Open();
         runningServices.Add(curServiceHost, serviceHost);
         return serviceHost.BaseAddresses[0];
@@ -145,11 +144,11 @@ namespace HeuristicLab.Hive.Server {
       //Start services and record their base address
       Dictionary<string, Uri> baseAddrDict = new Dictionary<string, Uri>();
       baseAddrDict.Add(STR_ClientCommunicator,
-        StartService(Services.ClientCommunicator, addresses[index], DEFAULT_PORT));
+        StartService(Services.ClientCommunicator, addresses[index], WcfSettings.DEFAULTPORT));
       baseAddrDict.Add(STR_ServerConsoleFacade,
-        StartService(Services.ServerConsoleFacade, addresses[index], DEFAULT_PORT));
+        StartService(Services.ServerConsoleFacade, addresses[index], WcfSettings.DEFAULTPORT));
       baseAddrDict.Add(STR_ExecutionEngineFacade,
-        StartService(Services.ExecutionEngineFacade, addresses[index], DEFAULT_PORT));
+        StartService(Services.ExecutionEngineFacade, addresses[index], WcfSettings.DEFAULTPORT));
 
       ILifecycleManager[] lifecycleManagers =  discService.GetInstances<ILifecycleManager>();
       if (lifecycleManagers.Length > 0) {
