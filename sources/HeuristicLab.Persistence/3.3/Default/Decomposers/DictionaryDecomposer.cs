@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {  
   
+  [EmptyStorableClass]
   public class DictionaryDecomposer : IDecomposer {
 
     public int Priority {

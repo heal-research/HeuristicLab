@@ -7,6 +7,7 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
   
+  [EmptyStorableClass]
   public class KeyValuePairDecomposer : IDecomposer {
 
     public int Priority {

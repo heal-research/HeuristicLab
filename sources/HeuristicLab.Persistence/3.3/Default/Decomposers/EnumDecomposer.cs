@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
     
+  [EmptyStorableClass]
   public class EnumDecomposer : IDecomposer {
 
     public int Priority {

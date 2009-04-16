@@ -6,6 +6,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
+  [EmptyStorableClass]
   public class StorableDecomposer : IDecomposer {
 
     public int Priority {

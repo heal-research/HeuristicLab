@@ -60,6 +60,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   }  
 
+  [EmptyStorableClass]
   public class DateTime2StringDecomposer : IDecomposer {
 
     public int Priority {
@@ -91,6 +92,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   }  
 
+  [EmptyStorableClass]
   public class CompactNumberArray2StringDecomposer : IDecomposer {
 
     public int Priority {
@@ -183,6 +185,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
   }
 
+  [EmptyStorableClass]
   public class NumberEnumerable2StringDecomposer : IDecomposer {
 
     public int Priority {

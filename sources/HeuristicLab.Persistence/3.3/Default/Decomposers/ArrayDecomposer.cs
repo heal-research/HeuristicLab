@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
     
+  [EmptyStorableClass]
   public class ArrayDecomposer : IDecomposer {
 
     public int Priority {
