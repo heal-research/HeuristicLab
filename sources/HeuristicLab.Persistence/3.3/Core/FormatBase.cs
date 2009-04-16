@@ -19,6 +19,10 @@ namespace HeuristicLab.Persistence.Interfaces {
       return Equals(f);
     }
 
+    public override int GetHashCode() {
+      return Name.GetHashCode();
+    }
+
   }
 
 }

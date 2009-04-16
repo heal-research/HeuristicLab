@@ -3,9 +3,9 @@ using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Core {  
+namespace HeuristicLab.Persistence.Core {
 
-  public class Deserializer {    
+  public class Deserializer {
 
     class Midwife {
 
@@ -115,6 +115,8 @@ namespace HeuristicLab.Persistence.Core {
     private void CompositeEndHandler(EndToken token) {
       Type type = typeIds[(int)token.TypeId];
       Midwife midwife = parentStack.Pop();
+      if (midwife.Obj == null)
+        CreateInstance(midwife);
       midwife.Populate();
       SetValue(token.Name, midwife.Obj);
     }
