@@ -239,14 +239,15 @@ namespace HeuristicLab.Hive.Server.Core {
         }
         heartbeatLock.ExitWriteLock();
 
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
         // check if client has a free core for a new job
         // if true, ask scheduler for a new job for this client
         if (hbData.FreeCores > 0 && scheduler.ExistsJobForClient(hbData))
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.FetchJob));
         else
           response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.NoMessage));
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED;
 
         processJobProcess(hbData, jobAdapter, clientAdapter, response);
         clientAdapter.Update(client);
@@ -286,21 +287,25 @@ namespace HeuristicLab.Hive.Server.Core {
           if (curJob.Client == null || curJob.Client.Id != hbData.ClientId) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
-          } else if (curJob.State == State.finished) {
-            // another client has finished this job allready
-            // the client can abort it
+          } else if (curJob.State == State.abort) {
+            // a request to abort the job has been set
             response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
           } else {
             // save job progress
             curJob.Percentage = jobProgress.Value;
             jobAdapter.Update(curJob);
+
+            if (curJob.State == State.requestSnapshot) {
+              // a request for a snapshot has been set
+              response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.RequestSnapshot, curJob.Id));
+            }
           }
         }
       }
     }
    
     /// <summary>
-    /// if the client asked to pull a job he calls this method
+    /// if the client was told to pull a job he calls this method
     /// the server selects a job and sends it to the client
     /// </summary>
     /// <param name="clientId"></param>
@@ -347,29 +352,34 @@ namespace HeuristicLab.Hive.Server.Core {
         Job job =
           jobAdapter.GetById(jobId);
 
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
+          response.JobId = jobId;
+          return response;
+        }
         if (job.Client == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
+          response.JobId = jobId;
           return response;
         }
         if (job.Client.Id != clientId) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
-          return response;
-        }
-        if (job == null) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
+          response.JobId = jobId;
           return response;
         }
         if (job.State == State.finished) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
+          response.JobId = jobId;
           return response;
         }
         if (job.State != State.calculating) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
+          response.JobId = jobId;
           return response;
         }
         job.SerializedJob = result;

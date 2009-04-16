@@ -6190,7 +6190,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = @"SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, ParentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId FROM Job WHERE ((JobState = 'calculating')  OR (JobState = ' abort') OR (JobState = 'requestSnapshot ')) AND (ResourceId = @ResourceId)";
+            this._commandCollection[3].CommandText = @"SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, ParentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId FROM Job WHERE ((JobState = 'calculating')  OR (JobState = 'abort') OR (JobState = 'requestSnapshot ')) AND (ResourceId = @ResourceId)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();

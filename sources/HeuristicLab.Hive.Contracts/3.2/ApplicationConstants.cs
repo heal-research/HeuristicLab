@@ -83,6 +83,11 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_JOB_JOB_DOESNT_EXIST = "JobDoesntExist";
     public static string RESPONSE_JOB_JOB_REMOVED = "Job.JobRemoved";
     public static string RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE = "Job.JobStateMustBeOffline";
+    public static string RESPONSE_JOB_IS_NOT_BEEING_CALCULATED = "Job.IsNotBeeingCalculated";
     public static string RESPONSE_JOB_JOB_RESULT_SENT = "Job.JobResultSent";
+    public static string RESPONSE_JOB_REQUEST_ALLREADY_SET = "Job.RequestAllreadySet";
+    public static string RESPONSE_JOB_ABORT_REQUEST_ALLREADY_SET = "Job.AbortRequestAllreadySet";
+    public static string RESPONSE_JOB_REQUEST_SET = "Job.RequestSet";
+    public static string RESPONSE_JOB_ABORT_REQUEST_SET = "Job.AbortRequestSet";
   }
 }

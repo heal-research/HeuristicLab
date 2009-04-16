@@ -253,7 +253,25 @@ namespace HeuristicLab.Hive.Server.Core {
       Response response = new Response();
       
       try {
-        
+        IJobAdapter jobAdapter = session.GetDataAdapter<Job, IJobAdapter>();
+
+        Job job = jobAdapter.GetById(jobId);
+        if (job.State == State.requestSnapshot) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_REQUEST_ALLREADY_SET;
+          return response; // no commit needed
+        }
+        if (job.State != State.calculating) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED;
+          return response; // no commit needed
+        }
+        // job is in correct state
+        job.State = State.requestSnapshot;
+        jobAdapter.Update(job);
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_REQUEST_SET;
 
         return response;
       }
@@ -264,7 +282,36 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public Response AbortJob(Guid jobId) {
-      throw new NotImplementedException();
+      ISession session = factory.GetSessionForCurrentThread();
+      Response response = new Response();
+
+      try {
+        IJobAdapter jobAdapter = session.GetDataAdapter<Job, IJobAdapter>();
+
+        Job job = jobAdapter.GetById(jobId);
+        if (job.State == State.abort) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ABORT_REQUEST_ALLREADY_SET;
+          return response; // no commit needed
+        }
+        if (job.State != State.calculating) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED;
+          return response; // no commit needed
+        }
+        // job is in correct state
+        job.State = State.abort;
+        jobAdapter.Update(job);
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ABORT_REQUEST_SET;
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     #endregion
