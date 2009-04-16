@@ -28,8 +28,8 @@ namespace HeuristicLab.SGA.Hardwired {
   /// <summary>
   /// Plugin class for HeuristicLab.SGA.Hardwired plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.SGA.Hardwired-3.3")]
-  [PluginFile(Filename = "HeuristicLab.SGA.Hardwired-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.SGA.Hardwired-3.2")]
+  [PluginFile(Filename = "HeuristicLab.SGA.Hardwired-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]

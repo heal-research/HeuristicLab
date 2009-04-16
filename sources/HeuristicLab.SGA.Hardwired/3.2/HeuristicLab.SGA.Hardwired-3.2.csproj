@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.SGA.Hardwired</RootNamespace>
-    <AssemblyName>HeuristicLab.SGA.Hardwired-3.3</AssemblyName>
+    <AssemblyName>HeuristicLab.SGA.Hardwired-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>

@@ -158,7 +158,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.GU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", "HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA.Hardwired-3.3", "HeuristicLab.SGA.Hardwired\3.3\HeuristicLab.SGA.Hardwired-3.3.csproj", "{583705E2-B1F7-42B8-8149-96E7AECA171A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA.Hardwired-3.2", "HeuristicLab.SGA.Hardwired\3.2\HeuristicLab.SGA.Hardwired-3.2.csproj", "{583705E2-B1F7-42B8-8149-96E7AECA171A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.Test", "HeuristicLab.Persistence\Test\HeuristicLab.Persistence.Test.csproj", "{E2245078-6F40-449E-A370-01A97A7C5E6A}"
 EndProject

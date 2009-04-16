@@ -40,23 +40,32 @@ namespace HeuristicLab.SGA.Hardwired {
     public SGAMainWithHWControllStructures()
       : base() {
       AddVariableInfo(new VariableInfo("Selector", "Selection strategy for SGA", typeof(OperatorBase), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MaximumGenerations", "Maximum number of generations to create", typeof(IntData), VariableKind.In));
+
+      Name = "SGAMainWithHWControllStructures";
     }
 
     public override IOperation Apply(IScope scope) {
-      int nrOfGenerations = 1000;
+
+      //base.Apply(scope); // noch nachfragen ob das auch in ordnung wäre
+      for (int i = 0; i < SubOperators.Count; i++) {
+        if (scope.GetVariable(SubOperators[i].Name) != null)
+          scope.RemoveVariable(SubOperators[i].Name);
+        scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
+      }
 
       OperatorBase selector = (OperatorBase)GetVariableValue("Selector", scope, true);
       OperatorBase createChildren = new CreateChildren();
       OperatorBase createReplacement = new CreateReplacement();
       QualityLogger ql = new QualityLogger();
-      
+
       BestAverageWorstQualityCalculator bawqc = new BestAverageWorstQualityCalculator();
       DataCollector dc = new DataCollector();
       ItemList<StringData> names = dc.GetVariable("VariableNames").GetValue<ItemList<StringData>>();
       names.Add(new StringData("BestQuality"));
       names.Add(new StringData("AverageQuality"));
       names.Add(new StringData("WorstQuality"));
-      
+
       LinechartInjector lci = new LinechartInjector();
       lci.GetVariableInfo("Linechart").ActualName = "Quality Linechart";
       lci.GetVariable("NumberOfLines").GetValue<IntData>().Data = 3;
@@ -69,17 +78,23 @@ namespace HeuristicLab.SGA.Hardwired {
       ltc.GetVariableInfo("RightSide").ActualName = "MaximumGenerations";
       ltc.GetVariableInfo("Result").ActualName = "GenerationsCondition";
 
-      for (int i = 0; i < nrOfGenerations; i++) {
+      IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
+      //IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
+
+      for (int i = 0; i < maxGenerations.Data; i++) {
         selector.Execute(scope);
         createChildren.Execute(scope.SubScopes[1]);
         createReplacement.Execute(scope);
         ql.Execute(scope);
-        bawqc.Equals(scope);
+        bawqc.Execute(scope);
         dc.Execute(scope);
         lci.Execute(scope);
-        c.Execute(scope);
-        ltc.Execute(scope);
+        //c.Execute(scope);
+        //ltc.Execute(scope);
+        //nrOfGenerations.Data = i;
       }
+
+     
       return null;
     } // Apply
   } // class SGAMainWithHWControllStructures
