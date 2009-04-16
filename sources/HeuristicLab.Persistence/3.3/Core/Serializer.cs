@@ -68,7 +68,7 @@ namespace HeuristicLab.Persistence.Core {
       }
       IFormatter formatter = configuration.GetFormatter(value.GetType());
       if (formatter != null)
-        return PrimitiveEnumerator(accessor.Name, typeId, formatter.DoFormat(value), id);
+        return PrimitiveEnumerator(accessor.Name, typeId, formatter.Format(value), id);
       IDecomposer decomposer = configuration.GetDecomposer(value.GetType()); 
       if (decomposer != null)
         return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
@@ -87,7 +87,7 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private IEnumerator<ISerializationToken> PrimitiveEnumerator(string name,
-        int typeId, object serializedValue, int? id) {
+        int typeId, ISerialData serializedValue, int? id) {
       yield return new PrimitiveToken(name, typeId, id, serializedValue);
     }
 

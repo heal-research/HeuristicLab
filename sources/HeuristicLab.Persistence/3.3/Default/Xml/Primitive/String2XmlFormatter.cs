@@ -7,21 +7,21 @@ using System.Xml;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class String2XmlFormatter : IFormatter {
-
-    public Type Type { get { return typeof(string); } }
-    public IFormat Format { get { return XmlFormat.Instance;  } }
-
-    public object DoFormat(object o) {      
-      return "<![CDATA[" +
-        ((string)o).Replace("]]>", "]]]]><![CDATA[>") +
-        "]]>";
+  public class String2XmlFormatter : FormatterBase<string, XmlString> {
+    
+    public override XmlString Format(string s) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("<![CDATA[");
+      sb.Append(s.Replace("]]>", "]]]]><![CDATA[>"));
+      sb.Append("]]>");
+      return new XmlString(sb.ToString());  
     }
 
-    public object Parse(object o) {
+    private static readonly string[] separators = new string[] { "<![CDATA[", "]]>" };
+
+    public override string Parse(XmlString x) {
       StringBuilder sb = new StringBuilder();
-      foreach (string s in ((string)o).Split(
-        new[] { "<![CDATA[", "]]>" },
+      foreach (string s in x.Data.Split(separators,        
         StringSplitOptions.RemoveEmptyEntries)) {
         sb.Append(s);
       }

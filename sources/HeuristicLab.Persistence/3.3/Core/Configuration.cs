@@ -8,22 +8,23 @@ namespace HeuristicLab.Persistence.Core {
 
     [Storable]
     private readonly Dictionary<Type, IFormatter> formatters;
+
     [Storable]
     private readonly List<IDecomposer> decomposers;
     private readonly Dictionary<Type, IDecomposer> decomposerCache;
-    [Storable]
-    public IFormat Format { get; set; }
+
+    [Storable]    
+    public IFormat Format { get; private set; }
 
     private Configuration() {
       decomposerCache = new Dictionary<Type, IDecomposer>();
     }
 
-    public Configuration(Dictionary<Type, IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {      
+    public Configuration(IFormat format, Dictionary<Type, IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {
+      this.Format = format;
       this.formatters = new Dictionary<Type, IFormatter>();
       foreach ( var pair in formatters ) {
-        if (Format == null) {
-          Format = pair.Value.Format;
-        } else if (pair.Value.Format != Format ) {
+        if (pair.Value.SerialDataType != format.SerialDataType ) {
           throw new ArgumentException("All formatters must have the same IFormat.");
         }
         this.formatters.Add(pair.Key, pair.Value);

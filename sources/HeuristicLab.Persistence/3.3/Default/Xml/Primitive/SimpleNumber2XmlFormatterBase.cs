@@ -6,11 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {  
 
-  public abstract class SimpleNumber2XmlFormatterBase<T> : IFormatter {
-
-    public Type Type { get { return typeof(T); } }
-
-    public IFormat Format { get { return XmlFormat.Instance; } }
+  public abstract class SimpleNumber2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
 
     private static MethodInfo ParseMethod = typeof(T)
       .GetMethod(
@@ -21,11 +17,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
         new[] { typeof(string) },
         null);
 
-    public object DoFormat(object o) {
-      return ((T)o).ToString();
+    public override XmlString Format(T t) {
+      return new XmlString(t.ToString());
     }
-    public object Parse(object o) {
-      return ParseMethod.Invoke(null, new[] { o });      
+    public override T Parse(XmlString x) {
+      return (T)ParseMethod.Invoke(null, new[] { x.Data });      
     }
   }  
 }

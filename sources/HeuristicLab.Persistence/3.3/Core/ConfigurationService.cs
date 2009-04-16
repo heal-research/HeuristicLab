@@ -14,8 +14,9 @@ namespace HeuristicLab.Persistence.Core {
 
     private static ConfigurationService instance;
     private readonly Dictionary<IFormat, Configuration> customConfigurations;
-    public Dictionary<IFormat, List<IFormatter>> Formatters { get; private set; }
+    public Dictionary<Type, List<IFormatter>> Formatters { get; private set; }
     public List<IDecomposer> Decomposers { get; private set; }
+    public List<IFormat> Formats { get; private set; }
     
     public static ConfigurationService Instance {
       get {
@@ -26,9 +27,10 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private ConfigurationService() {
-      Formatters = new Dictionary<IFormat, List<IFormatter>>();
+      Formatters = new Dictionary<Type, List<IFormatter>>();
       Decomposers = new List<IDecomposer>();
-      customConfigurations = new Dictionary<IFormat, Configuration>();      
+      customConfigurations = new Dictionary<IFormat, Configuration>();
+      Formats = new List<IFormat>();
       Reset();
       LoadSettings();
     }
@@ -58,7 +60,7 @@ namespace HeuristicLab.Persistence.Core {
     public void SaveSettings() {      
       Serializer serializer = new Serializer(
         customConfigurations,
-        GetDefaultConfig(XmlFormat.Instance),
+        GetDefaultConfig(new XmlFormat()),
         "CustomConfigurations");
       XmlGenerator generator = new XmlGenerator();
       StringBuilder configurationString = new StringBuilder();
@@ -102,11 +104,14 @@ namespace HeuristicLab.Persistence.Core {
         if (t.GetInterface(typeof (IFormatter).FullName) != null) {
           try {
             IFormatter formatter = (IFormatter) Activator.CreateInstance(t, true);
-            if ( ! Formatters.ContainsKey(formatter.Format) ) {
-              Formatters.Add(formatter.Format, new List<IFormatter>());
+            if ( ! Formatters.ContainsKey(formatter.SerialDataType) ) {
+              Formatters.Add(formatter.SerialDataType, new List<IFormatter>());
             }
-            Formatters[formatter.Format].Add(formatter);
-            Logger.Debug("discovered formatter " + t.VersionInvariantName());
+            Formatters[formatter.SerialDataType].Add(formatter);
+            Logger.Debug(String.Format("discovered formatter {0} ({1} -> {2})",
+              t.VersionInvariantName(),
+              formatter.SourceType.VersionInvariantName(),
+              formatter.SerialDataType.VersionInvariantName()));
           } catch (MissingMethodException e) {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
           } catch (ArgumentException e) {
@@ -123,16 +128,30 @@ namespace HeuristicLab.Persistence.Core {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           }
         }
+        if (t.GetInterface(typeof(IFormat).FullName) != null) {
+          try {
+            IFormat format = (IFormat)Activator.CreateInstance(t, true);
+            Formats.Add(format);
+            Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
+              format.Name,
+              format.SerialDataType,
+              t.VersionInvariantName()));              
+          } catch (MissingMethodException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);          
+          } catch (ArgumentException e) {
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+          }          
+        }
       }
     }
 
     public Configuration GetDefaultConfig(IFormat format) {
       Dictionary<Type, IFormatter> formatterConfig = new Dictionary<Type, IFormatter>();
-      foreach ( IFormatter f in Formatters[format] ) {
-        if ( ! formatterConfig.ContainsKey(f.Type) )
-          formatterConfig.Add(f.Type, f);
+      foreach ( IFormatter f in Formatters[format.SerialDataType] ) {
+        if ( ! formatterConfig.ContainsKey(f.SourceType) )
+          formatterConfig.Add(f.SourceType, f);
       }
-      return new Configuration(formatterConfig, Decomposers);
+      return new Configuration(format, formatterConfig, Decomposers);
     }
 
     public Configuration GetConfiguration(IFormat format) {
@@ -141,8 +160,8 @@ namespace HeuristicLab.Persistence.Core {
       return GetDefaultConfig(format);
     }
 
-    public void DefineConfiguration(IFormat format, Configuration configuration) {
-      customConfigurations[format] = configuration;
+    public void DefineConfiguration(Configuration configuration) {      
+      customConfigurations[configuration.Format] = configuration;
       SaveSettings();
     }
 

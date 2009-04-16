@@ -61,17 +61,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
         reader.GetAttribute("name"),
         int.Parse(reader.GetAttribute("typeId")),
         id,
-        reader.ReadString());        
+        new XmlString(reader.ReadString()));
     }
 
     private IEnumerator<ISerializationToken> ParseComposite() {
       string name = reader.GetAttribute("name");            
       string idString = reader.GetAttribute("id");
       int? id = null;
-      int? typeId = null;
       if (idString != null)
         id = int.Parse(idString);
-        typeId = int.Parse(reader.GetAttribute("typeId"));
+      int typeId = int.Parse(reader.GetAttribute("typeId"));
       yield return new BeginToken(name, typeId, id);
       IEnumerator<ISerializationToken> iterator = GetEnumerator();
       while (iterator.MoveNext())

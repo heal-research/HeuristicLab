@@ -5,32 +5,30 @@ using System;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
   
-  public abstract class NumberEnumeration2XmlFormatterBase : IFormatter {
+  public abstract class NumberEnumeration2XmlFormatterBase<T> : FormatterBase<T, XmlString> where T : IEnumerable {
 
-    public abstract Type Type { get; }
-    public IFormat Format { get { return XmlFormat.Instance; } }
     protected virtual string Separator { get { return ";"; } }
     protected abstract void Add(IEnumerable enumeration, object o);
-    protected abstract object Instantiate();
+    protected abstract IEnumerable Instantiate();
     protected abstract string FormatValue(object o);
     protected abstract object ParseValue(string o);
 
-    public object DoFormat(object o) {
+    public override XmlString Format(T t) {
       StringBuilder sb = new StringBuilder();
-      foreach (var value in (IEnumerable)o) {
+      foreach (var value in (IEnumerable)t) {
         sb.Append(FormatValue(value));
         sb.Append(Separator);
       }
-      return sb.ToString();
+      return new XmlString(sb.ToString());
     }
 
-    public object Parse(object o) {
-      IEnumerable enumeration = (IEnumerable)Instantiate();
-      string[] values = ((string)o).Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
+    public override T Parse(XmlString x) {
+      IEnumerable enumeration = Instantiate();
+      string[] values = x.Data.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
       foreach (var value in values) {
         Add(enumeration, ParseValue(value));
       }
-      return enumeration;
+      return (T)enumeration;
     }
   }
   

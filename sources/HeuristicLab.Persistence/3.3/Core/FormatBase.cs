@@ -2,18 +2,23 @@
 
 namespace HeuristicLab.Persistence.Interfaces {
 
-  public abstract class FormatBase : IFormat {
-    public abstract string Name { get;  }
-    public override bool Equals(object obj) {
-      if (obj as IFormat == null)
+  public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
+
+    public abstract string Name { get; }
+
+    public Type SerialDataType { get { return typeof(SerialDataFormat); } }
+
+    public bool Equals(FormatBase<SerialDataFormat> f) {
+      if (f == null)
         return false;
-      return this.Equals((FormatBase)obj);      
+      return f.Name == this.Name;
     }
-    public bool Equals(FormatBase f) {
-      return Name.Equals(f.Name);
+
+    public override bool Equals(object obj) {
+      FormatBase<SerialDataFormat> f = obj as FormatBase<SerialDataFormat>;      
+      return Equals(f);
     }
-    public override int GetHashCode() {
-      return Name.GetHashCode();
-    }
+    
   }
+
 }

@@ -6,12 +6,8 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {  
   
-  public abstract class DecimalNumber2XmlFormatterBase<T> : IFormatter {
-
-    public Type Type { get { return typeof(T); } }
-
-    public IFormat Format { get { return XmlFormat.Instance; } }
-
+  public abstract class DecimalNumber2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
+    
     private static MethodInfo ToStringMethod = typeof(T)
       .GetMethod(
         "ToString",
@@ -30,11 +26,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
         new[] { typeof(string), typeof(IFormatProvider) },
         null);
 
-    public object DoFormat(object o) {
-      return ToStringMethod.Invoke(o, new object[] { "r", CultureInfo.InvariantCulture });
+    public override XmlString Format(T t) {
+      return new XmlString((string)ToStringMethod.Invoke(t, new object[] { "r", CultureInfo.InvariantCulture }));
     }
-    public object Parse(object o) {      
-      return ParseMethod.Invoke(null, new[] { o, CultureInfo.InvariantCulture });
+    public override T Parse(XmlString x) {      
+      return (T)ParseMethod.Invoke(null, new object[] { x.Data, CultureInfo.InvariantCulture });
     }
   }  
 }

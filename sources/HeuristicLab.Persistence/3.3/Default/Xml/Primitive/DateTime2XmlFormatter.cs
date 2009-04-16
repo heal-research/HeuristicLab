@@ -5,17 +5,14 @@ using HeuristicLab.Persistence.Interfaces;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class DateTime2XmlFormatter : IFormatter {    
-
-    public Type Type { get { return typeof(DateTime); } }
-    public IFormat Format { get { return XmlFormat.Instance; } }  
-
-    public object DoFormat(object o) {
-      return ((DateTime)o).Ticks.ToString();      
+  public class DateTime2XmlFormatter : FormatterBase<DateTime, XmlString> {    
+    
+    public override XmlString Format(DateTime dt) {
+      return new XmlString(dt.Ticks.ToString());      
     }
 
-    public object Parse(object o) {
-      return new DateTime(long.Parse((string)o));
+    public override DateTime Parse(XmlString x) {
+      return new DateTime(long.Parse(x.Data));
     }
 
   }

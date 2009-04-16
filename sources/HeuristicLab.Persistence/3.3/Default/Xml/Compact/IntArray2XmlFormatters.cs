@@ -2,15 +2,8 @@
 using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
-
-  [EmptyStorableClass]
-  public class IntArray2XmlFormatter : NumberArray2XmlFormatterBase {
-
-    public override Type Type {
-      get {
-        return typeof(int[]);
-      }
-    }
+  
+  public abstract class IntArray2XmlFormatterBase<T> : NumberArray2XmlFormatterBase<T> {    
 
     protected override string FormatValue(object o) {
       return o.ToString();
@@ -21,24 +14,13 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
   }
 
+  [EmptyStorableClass]
+  public class Int1DArray2XmlFormatter : IntArray2XmlFormatterBase<int[]> { }
 
   [EmptyStorableClass]
-  public class Int2DArray2XmlFormatter : IntArray2XmlFormatter {
-    public override Type Type {
-      get {
-        return typeof(int[,]);
-      }
-    }
-  }
-
+  public class Int2DArray2XmlFormatter : IntArray2XmlFormatterBase<int[,]> { }
 
   [EmptyStorableClass]
-  public class Int3DArray2XmlFormatter : IntArray2XmlFormatter {
-    public override Type Type {
-      get {
-        return typeof(int[, ,]);
-      }
-    }
-  }
+  public class Int3DArray2XmlFormatter : IntArray2XmlFormatterBase<int[,,]> { }
   
 }

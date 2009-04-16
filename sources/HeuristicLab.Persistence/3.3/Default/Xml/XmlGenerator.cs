@@ -20,36 +20,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public const string TYPE = "TYPE";
     public const string METAINFO = "METAINFO";
   }
-
-  public abstract class Generator<T> {
-    public T Format(ISerializationToken token) {
-      Type type = token.GetType();
-      if (type == typeof(BeginToken))
-        return Format((BeginToken)token);
-      if (type == typeof(EndToken))
-        return Format((EndToken)token);
-      if (type == typeof(PrimitiveToken))
-        return Format((PrimitiveToken)token);
-      if (type == typeof(ReferenceToken))
-        return Format((ReferenceToken)token);
-      if (type == typeof(NullReferenceToken))
-        return Format((NullReferenceToken)token);
-      if (type == typeof(MetaInfoBeginToken))
-        return Format((MetaInfoBeginToken)token);
-      if (type == typeof(MetaInfoEndToken))
-        return Format((MetaInfoEndToken)token);
-      throw new ApplicationException("Invalid token of type " + type.FullName);
-    }
-    protected abstract T Format(BeginToken beginToken);
-    protected abstract T Format(EndToken endToken);
-    protected abstract T Format(PrimitiveToken primitiveToken);
-    protected abstract T Format(ReferenceToken referenceToken);
-    protected abstract T Format(NullReferenceToken nullReferenceToken);
-    protected abstract T Format(MetaInfoBeginToken metaInfoBeginToken);
-    protected abstract T Format(MetaInfoEndToken metaInfoEndToken);
-  }
-
-  public class XmlGenerator : Generator<string> {
+  
+  public class XmlGenerator : GeneratorBase<string> {
     
     private int depth;
 
@@ -116,7 +88,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
             {"id", dataToken.Id}};
       return Prefix +
         FormatNode(XmlStrings.PRIMITIVE, attributes, NodeType.Start) +
-        dataToken.SerialData + "</" + XmlStrings.PRIMITIVE + ">\r\n";      
+        ((XmlString)dataToken.SerialData).Data + "</" + XmlStrings.PRIMITIVE + ">\r\n";      
     }
 
     protected override string Format(ReferenceToken refToken) {      
@@ -133,14 +105,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
-      string result = Prefix + "<" + XmlStrings.METAINFO + ">";
+      string result = Prefix + "<" + XmlStrings.METAINFO + ">\r\n";
       depth += 1;
       return result;
     }
 
     protected override string Format(MetaInfoEndToken metaInfoEndToken) {
       depth -= 1;
-      return Prefix + "</" + XmlStrings.METAINFO + ">";
+      return Prefix + "</" + XmlStrings.METAINFO + ">\r\n";
     }
 
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {
@@ -155,7 +127,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static void Serialize(object o, string filename) {      
-      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(XmlFormat.Instance));
+      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {

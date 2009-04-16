@@ -6,19 +6,13 @@ using HeuristicLab.Persistence.Core;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
-  public class IntList2XmlFormatter : NumberEnumeration2XmlFormatterBase {
-
-    public override Type Type {
-      get {
-        return typeof(List<int>);
-      }
-    }
-
+  public class IntList2XmlFormatter : NumberEnumeration2XmlFormatterBase<List<int>> {
+    
     protected override void Add(IEnumerable enumeration, object o) {
       ((List<int>)enumeration).Add((int)o);
     }
 
-    protected override object Instantiate() {
+    protected override IEnumerable Instantiate() {
       return new List<int>();
     }
 

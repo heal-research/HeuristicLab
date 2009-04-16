@@ -7,19 +7,13 @@ using System.Globalization;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
-  public class DoubleList2XmlFormatter : NumberEnumeration2XmlFormatterBase {
-
-    public override Type Type {
-      get {
-        return typeof(List<double>);
-      }
-    }
+  public class DoubleList2XmlFormatter : NumberEnumeration2XmlFormatterBase<List<double>> {    
 
     protected override void Add(IEnumerable enumeration, object o) {
       ((List<double>)enumeration).Add((int)o);
     }
 
-    protected override object Instantiate() {
+    protected override IEnumerable Instantiate() {
       return new List<double>();
     }
 

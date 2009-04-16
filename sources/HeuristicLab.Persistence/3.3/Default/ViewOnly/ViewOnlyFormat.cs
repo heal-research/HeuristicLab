@@ -8,49 +8,46 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.ViewOnly {
 
-  public class ViewOnlyFormat : FormatBase {
-    public override string Name { get { return "ViewOnly"; } }
-    public static ViewOnlyFormat Instance = new ViewOnlyFormat();
+  public class String : ISerialData {
+    public string Data { get; set; }
+    public String(string s) {
+      Data = s;
+    }
   }
 
-  public abstract class ValueType2ViewFormatter : IFormatter {
-    public abstract Type Type { get; }
-    public IFormat Format { get { return ViewOnlyFormat.Instance; } }
-    public object DoFormat(object o) { return o; }
-    public object Parse(object o) {
+  public class ViewOnlyFormat : FormatBase<String> {
+    public override string Name { get { return "ViewOnly"; } }    
+  }
+
+  public abstract class ValueType2ViewFormatterBase<T> : FormatterBase<T, String> {
+    public override String Format(T o) { return new String(o.ToString()); }
+    public override T Parse(String s) {
       throw new NotImplementedException();
     }
   }
 
-  public class String2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(string); } }
-  }
+  [EmptyStorableClass]
+  public class String2ViewFormatter : ValueType2ViewFormatterBase<string> { }
 
-  public class Bool2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(bool); } }
-  }
+  [EmptyStorableClass]
+  public class Bool2ViewFormatter : ValueType2ViewFormatterBase<bool> { }
 
-  public class Int2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(int); } }
-  }
+  [EmptyStorableClass]
+  public class Int2ViewFormatter : ValueType2ViewFormatterBase<int> { }
 
-  public class Double2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(double); } }
-  }
+  [EmptyStorableClass]
+  public class Double2ViewFormatter : ValueType2ViewFormatterBase<double> { }
 
-  public class DateTime2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(DateTime); } }
-  }
+  [EmptyStorableClass]
+  public class DateTime2ViewFormatter : ValueType2ViewFormatterBase<DateTime> { }
 
-  public class Type2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(Type); } }
-  }
+  [EmptyStorableClass]
+  public class Type2ViewFormatter : ValueType2ViewFormatterBase<Type> { }
 
-  public class Float2ViewFormatter : ValueType2ViewFormatter {
-    public override Type Type { get { return typeof(float); } }
-  }
-
-  public class ViewOnlyGenerator : Generator<string> {
+  [EmptyStorableClass]
+  public class Float2ViewFormatter : ValueType2ViewFormatterBase<float> { }
+    
+  public class ViewOnlyGenerator : GeneratorBase<string> {
 
     private bool isSepReq;
     private readonly bool showRefs;
@@ -97,7 +94,7 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
         }
         sb.Append('=');
       }
-      sb.Append(primitiveToken.SerialData);
+      sb.Append(((String)primitiveToken.SerialData).Data);
       isSepReq = true;      
       return sb.ToString();  
     }
@@ -139,7 +136,7 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     }
 
     public static string Serialize(object o) {
-      return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(ViewOnlyFormat.Instance));
+      return Serialize(o, ConfigurationService.Instance.GetDefaultConfig(new ViewOnlyFormat()));
     }
 
     public static string Serialize(object o, Configuration configuration) {

@@ -5,16 +5,15 @@ using System;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
                                                               
-  public abstract class NumberArray2XmlFormatterBase : IFormatter {
+  public abstract class NumberArray2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
 
-    public abstract Type Type { get; }
-    public IFormat Format { get { return XmlFormat.Instance; } }
     protected virtual string Separator { get { return ";"; } }
     protected abstract string FormatValue(object o);
     protected abstract object ParseValue(string o);
 
-    public object DoFormat(object obj) {
-      Array a = (Array)obj;
+    public override XmlString Format(T t) {
+      object o = (object)t;
+      Array a = (Array)o;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
       StringBuilder sb = new StringBuilder();
@@ -43,13 +42,12 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
           }
         }
       }      
-      return sb.ToString();
+      return new XmlString(sb.ToString());
     }
 
-    public object Parse(object o) {
+    public override T Parse(XmlString x) {
       IEnumerator values =
-        ((string)o)
-        .Split(new[] { Separator },
+        x.Data.Split(new[] { Separator },
         StringSplitOptions.RemoveEmptyEntries).GetEnumerator();
       values.MoveNext();
       int rank = int.Parse((string)values.Current);
@@ -63,7 +61,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         values.MoveNext();
         lowerBounds[i] = int.Parse((string)values.Current);
       }
-      Array a = Array.CreateInstance(this.Type.GetElementType(), lengths, lowerBounds);
+      Array a = Array.CreateInstance(this.SourceType.GetElementType(), lengths, lowerBounds);
       int[] positions = new int[rank];
       while (values.MoveNext()) {
         a.SetValue(ParseValue((string)values.Current), positions);
@@ -77,7 +75,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
           }
         }
       }
-      return a;
+      object o = a;
+      return (T)o;
     }
   }
   
