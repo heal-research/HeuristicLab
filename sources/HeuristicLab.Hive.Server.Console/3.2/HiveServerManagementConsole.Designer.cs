@@ -46,9 +46,9 @@
       this.pbUserControl = new System.Windows.Forms.PictureBox();
       this.plJobDetails = new System.Windows.Forms.Panel();
       this.lvSnapshots = new System.Windows.Forms.ListView();
-      this.chJobId = new System.Windows.Forms.ColumnHeader();
-      this.chTimeCalculated = new System.Windows.Forms.ColumnHeader();
+      this.chClientCalculated = new System.Windows.Forms.ColumnHeader();
       this.chProgress = new System.Windows.Forms.ColumnHeader();
+      this.chSnapshotTime = new System.Windows.Forms.ColumnHeader();
       this.lblPriorityJob = new System.Windows.Forms.Label();
       this.lblParentJob = new System.Windows.Forms.Label();
       this.lblClientCalculating = new System.Windows.Forms.Label();
@@ -288,9 +288,9 @@
       // lvSnapshots
       // 
       this.lvSnapshots.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chJobId,
-            this.chTimeCalculated,
-            this.chProgress});
+            this.chClientCalculated,
+            this.chProgress,
+            this.chSnapshotTime});
       this.lvSnapshots.Enabled = false;
       this.lvSnapshots.FullRowSelect = true;
       this.lvSnapshots.GridLines = true;
@@ -301,17 +301,20 @@
       this.lvSnapshots.UseCompatibleStateImageBehavior = false;
       this.lvSnapshots.View = System.Windows.Forms.View.Details;
       // 
-      // chJobId
+      // chClientCalculated
       // 
-      this.chJobId.Text = "Job-ID";
-      // 
-      // chTimeCalculated
-      // 
-      this.chTimeCalculated.Text = "Calculated At";
+      this.chClientCalculated.Text = "Client Calculated";
+      this.chClientCalculated.Width = 88;
       // 
       // chProgress
       // 
       this.chProgress.Text = "Progress";
+      this.chProgress.Width = 67;
+      // 
+      // chSnapshotTime
+      // 
+      this.chSnapshotTime.Text = "Snapshot request";
+      this.chSnapshotTime.Width = 166;
       // 
       // lblPriorityJob
       // 
@@ -635,8 +638,7 @@
     private System.Windows.Forms.Label lblPriorityJob;
     private System.Windows.Forms.Label lblParentJob;
     private System.Windows.Forms.ListView lvSnapshots;
-    private System.Windows.Forms.ColumnHeader chJobId;
-    private System.Windows.Forms.ColumnHeader chTimeCalculated;
+    private System.Windows.Forms.ColumnHeader chClientCalculated;
     private System.Windows.Forms.ColumnHeader chProgress;
     private System.Windows.Forms.Label lblStateClient;
     private System.Windows.Forms.Label lblState;
@@ -649,5 +651,6 @@
     private System.Windows.Forms.SplitContainer scJobControl;
     private System.Windows.Forms.ListView lvJobControl;
     private System.Windows.Forms.CheckBox checkBox1;
+    private System.Windows.Forms.ColumnHeader chSnapshotTime;
   }
 }

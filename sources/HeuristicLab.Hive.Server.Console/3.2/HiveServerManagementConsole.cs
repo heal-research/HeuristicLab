@@ -78,6 +78,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    private void updaterWoker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      Refresh();
+    }
 
     private int CapacityRam(int noCores, int freeCores) {
       return (((noCores - freeCores) / noCores) * 100); 
@@ -230,7 +233,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     /// <summary>
-    /// if one client is clicked, a panel is opened with the details
+    /// if one client is clicked, the details for the clicked client are shown
+    /// in the second panel
     /// </summary>
     private void ClientClicked() {
       plClientDetails.Visible = true;
@@ -257,7 +261,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     /// <summary>
-    /// if one job is clicked, a panel is opened with the details
+    /// if one job is clicked, the details for the clicked job are shown
+    /// in the second panel
     /// </summary>
     private void JobClicked() {
       plJobDetails.Visible = true;
@@ -295,6 +300,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblJobCalculationEnd.Text = "";
       }
       if (currentJob.State != State.offline) {
+        GetSnapshotList();
         lvSnapshots.Visible = true;
       } else {
         lvSnapshots.Visible = false;
@@ -306,7 +312,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (change.Types == Type.Job) {
           RefreshJob(change);
         } else if (change.Types == Type.Client) {
-          RefreshClient(change);
+         RefreshClient(change);
         } else if (change.Types == Type.ClientGroup) {
           RefreshClientGroup(change);
         }
@@ -425,7 +431,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void AddJob_Click(object sender, EventArgs e) {
       AddJobForm newForm = new AddJobForm();
       newForm.Show();
-      //newForm.addJobEvent += new addDelegate(updaterWoker.RunWorkerAsync);
+      newForm.addJobEvent += new addDelegate(updaterWoker.RunWorkerAsync);
     }
 
     private void OnLVClientClicked(object sender, EventArgs e) {
@@ -648,12 +654,23 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    private void GetSnapshotList() {
+
+      lvSnapshots.Items.Clear();
+      IJobManager jobManager =
+        ServiceLocator.GetJobManager();
+      ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
+      ListViewItem curSnapshot = new ListViewItem(jobRes.Obj.Client.Name);
+      double percentage = jobRes.Obj.Percentage * 100;
+      curSnapshot.SubItems.Add(percentage.ToString() + " %");
+      curSnapshot.SubItems.Add(jobRes.Obj.timestamp.ToString());
+      lvSnapshots.Items.Add(curSnapshot);
+
+
+    }
 
     #endregion
 
-    private void updaterWoker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      Refresh();
-    }
 
 
   }
