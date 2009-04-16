@@ -8,12 +8,14 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using System.Text;
 using HeuristicLab.Persistence.Default.Decomposers;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Persistence.GUI {
 
   public partial class PersistenceConfigurationForm : Form {
 
     private readonly Dictionary<string, IFormatter> formatterTable;
+    private readonly Dictionary<string, bool> simpleFormatterTable;
     private readonly Dictionary<IFormatter, string> reverseFormatterTable;    
     private readonly Dictionary<string, Type> typeNameTable;
     private readonly Dictionary<Type, string> reverseTypeNameTable;
@@ -21,10 +23,12 @@ namespace HeuristicLab.Persistence.GUI {
     public PersistenceConfigurationForm() {      
       InitializeComponent();
       formatterTable = new Dictionary<string, IFormatter>();
+      simpleFormatterTable = new Dictionary<string, bool>();
       reverseFormatterTable = new Dictionary<IFormatter, string>();
       typeNameTable = new Dictionary<string, Type>();
-      reverseTypeNameTable = new Dictionary<Type, string>();      
-      initializeConfigPages();      
+      reverseTypeNameTable = new Dictionary<Type, string>();
+      InitializeNameTables();
+      initializeConfigPages();
       UpdateFromConfigurationService();
     }
 
@@ -67,8 +71,8 @@ namespace HeuristicLab.Persistence.GUI {
     }    
 
     private void UpdateFromConfigurationService() {
-      foreach (IFormat format in ConfigurationService.Instance.Formatters.Keys) {
-        Configuration config = ConfigurationService.Instance.GetConfiguration(format);        
+      foreach ( IFormat format in ConfigurationService.Instance.Formats ) {
+        Configuration config = ConfigurationService.Instance.GetConfiguration(format);
         UpdateFormatterGrid(
           (DataGridView)GetControlsOnPage(format.Name, "GridView"),
           config);        
@@ -79,11 +83,12 @@ namespace HeuristicLab.Persistence.GUI {
     }    
 
     private void initializeConfigPages() {
-      configurationTabs.TabPages.Clear();
-      foreach ( var formats in ConfigurationService.Instance.Formatters ) {        
-        TabPage page = new TabPage(formats.Key.Name) {
-          Name = formats.Key.Name,
-          Tag = formats.Key,
+      configurationTabs.TabPages.Clear();      
+      foreach ( IFormat format in ConfigurationService.Instance.Formats ) {
+        List<IFormatter> formatters = ConfigurationService.Instance.Formatters[format.SerialDataType];
+        TabPage page = new TabPage(format.Name) {
+          Name = format.Name,
+          Tag = format,
         };
         configurationTabs.TabPages.Add(page);
         SplitContainer verticalSplit = new SplitContainer {
@@ -102,7 +107,7 @@ namespace HeuristicLab.Persistence.GUI {
         horizontalSplit.Panel1.Controls.Add(decomposerList);
         DataGridView gridView = createGridView();
         verticalSplit.Panel2.Controls.Add(gridView);        
-        fillDataGrid(gridView, formats.Value);
+        fillDataGrid(gridView, formatters);
         ListBox checkBox = new ListBox {
           Name = "CheckBox",
           Dock = DockStyle.Fill,
@@ -170,8 +175,7 @@ namespace HeuristicLab.Persistence.GUI {
       return decomposerList;
     }
 
-    private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {      
-      updateNameTables(formatters);
+    private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {            
       Dictionary<string, List<string>> formatterMap = createFormatterMap(formatters);
       foreach ( var formatterMapping in formatterMap ) {
         var row = gridView.Rows[gridView.Rows.Add()];
@@ -195,7 +199,7 @@ namespace HeuristicLab.Persistence.GUI {
       var formatterMap = new Dictionary<string, List<string>>();      
       foreach (var formatter in formatters) {
         string formatterName = reverseFormatterTable[formatter];
-        string typeName = reverseTypeNameTable[formatter.Type];          
+        string typeName = reverseTypeNameTable[formatter.SourceType];          
         if (!formatterMap.ContainsKey(typeName))
           formatterMap.Add(typeName, new List<string>());
         formatterMap[typeName].Add(formatterName);
@@ -203,38 +207,41 @@ namespace HeuristicLab.Persistence.GUI {
       return formatterMap;
     }
 
-    private void updateNameTables(IEnumerable<IFormatter> formatters) {
-      foreach (var formatter in formatters) {
-        string formatterName = formatter.GetType().Name;
-        if (formatterTable.ContainsKey(formatterName)) {
-          IFormatter otherFormatter = formatterTable[formatterName];
-          formatterTable.Remove(formatterName);
-          reverseFormatterTable.Remove(otherFormatter);
-          formatterTable.Add(otherFormatter.GetType().VersionInvariantName(), otherFormatter);
-          reverseFormatterTable.Add(otherFormatter, otherFormatter.GetType().VersionInvariantName());
-          formatterName = formatter.GetType().VersionInvariantName();
-        }
-        formatterTable.Add(formatterName, formatter);
-        reverseFormatterTable.Add(formatter, formatterName);
-
-        string typeName = formatter.Type.IsGenericType ?
-          formatter.Type.SimpleFullName() : 
-          formatter.Type.Name;
-        if (typeNameTable.ContainsKey(typeName)) {
-          Type otherType = typeNameTable[typeName];
-          if (otherType != formatter.Type) {
-            typeNameTable.Remove(typeName);
-            reverseTypeNameTable.Remove(otherType);
-            typeNameTable.Add(otherType.VersionInvariantName(), otherType);
-            reverseTypeNameTable.Add(otherType, otherType.VersionInvariantName());
-            typeName = formatter.Type.VersionInvariantName();
-            typeNameTable.Add(typeName, formatter.Type);
-            reverseTypeNameTable.Add(formatter.Type, typeName);
+    private void InitializeNameTables() {
+      foreach (var serialDataType in ConfigurationService.Instance.Formatters.Keys) {
+        foreach (var formatter in ConfigurationService.Instance.Formatters[serialDataType]) {
+          string formatterName = formatter.GetType().Name;
+          if (simpleFormatterTable.ContainsKey(formatterName)) {
+            IFormatter otherFormatter = formatterTable[formatterName];
+            formatterTable.Remove(formatterName);
+            reverseFormatterTable.Remove(otherFormatter);
+            formatterTable.Add(otherFormatter.GetType().VersionInvariantName(), otherFormatter);
+            reverseFormatterTable.Add(otherFormatter, otherFormatter.GetType().VersionInvariantName());
+            formatterName = formatter.GetType().VersionInvariantName();
           }
-        } else {
-          typeNameTable.Add(typeName, formatter.Type);
-          reverseTypeNameTable.Add(formatter.Type, typeName);
-        }          
+          simpleFormatterTable[formatter.GetType().Name] = true;
+          formatterTable.Add(formatterName, formatter);          
+          reverseFormatterTable.Add(formatter, formatterName);
+
+          string typeName = formatter.SourceType.IsGenericType ?
+            formatter.SourceType.SimpleFullName() :
+            formatter.SourceType.Name;
+          if (typeNameTable.ContainsKey(typeName)) {
+            Type otherType = typeNameTable[typeName];
+            if (otherType != formatter.SourceType) {
+              typeNameTable.Remove(typeName);
+              reverseTypeNameTable.Remove(otherType);
+              typeNameTable.Add(otherType.VersionInvariantName(), otherType);
+              reverseTypeNameTable.Add(otherType, otherType.VersionInvariantName());
+              typeName = formatter.SourceType.VersionInvariantName();
+              typeNameTable.Add(typeName, formatter.SourceType);
+              reverseTypeNameTable.Add(formatter.SourceType, typeName);
+            }
+          } else {
+            typeNameTable.Add(typeName, formatter.SourceType);
+            reverseTypeNameTable.Add(formatter.SourceType, typeName);
+          }
+        }
       }
     }    
 
@@ -320,7 +327,7 @@ namespace HeuristicLab.Persistence.GUI {
       }      
     }
 
-    private Configuration GenerateConfiguration(DataGridView formatterGrid, ListView decomposerList) {
+    private Configuration GenerateConfiguration(IFormat format, DataGridView formatterGrid, ListView decomposerList) {
       if (formatterGrid == null || decomposerList == null)
         return null;
       var formatters = new Dictionary<Type, IFormatter>();
@@ -339,17 +346,18 @@ namespace HeuristicLab.Persistence.GUI {
         if (item != null && item.Checked)
           decomposers.Add((IDecomposer)item.Tag);
       }
-      return new Configuration(formatters, decomposers);
+      return new Configuration(format, formatters, decomposers);
     }
 
-    private Configuration GetActiveConfiguration() {      
-      return GenerateConfiguration(
+    private Configuration GetActiveConfiguration() {
+      IFormat format = (IFormat)configurationTabs.SelectedTab.Tag;
+      return GenerateConfiguration(format,
         (DataGridView)GetActiveControl("GridView"),
         (ListView)GetActiveControl("DecomposerList"));
     }
 
     private Configuration GetConfiguration(IFormat format) {
-       return GenerateConfiguration(
+       return GenerateConfiguration(format,
         (DataGridView)GetControlsOnPage(format.Name, "GridView"),
         (ListView)GetControlsOnPage(format.Name, "DecomposerList"));
     }
@@ -358,59 +366,53 @@ namespace HeuristicLab.Persistence.GUI {
       IFormat format = (IFormat)configurationTabs.SelectedTab.Tag;
       if (format != null)
         ConfigurationService.Instance.DefineConfiguration(
-          format,
           GetActiveConfiguration());
     }    
     
   }
 
+  public class Empty : ISerialData { }
+
   [EmptyStorableClass]
-  public class EmptyFormat : FormatBase {
+  public class EmptyFormat : FormatBase<Empty> {
     public override string Name { get { return "Empty"; } }
-    public static EmptyFormat Instance = new EmptyFormat();
   }
 
   [EmptyStorableClass]
-  public class EmptyFormatter : IFormatter {
+  public class EmptyFormatter : FormatterBase<Type, Empty> {
 
-    public Type Type { get { return typeof(Type); } }
-    public IFormat  Format { get { return EmptyFormat.Instance; } }
-
-    public object DoFormat(object o) {
+    public override Empty Format(Type o) {
  	   return null;
     }
 
-    public object Parse(object o) {
+    public override Type Parse(Empty o) {
       return null;
     }
   }
 
   [EmptyStorableClass]
-  public class FakeBoolean2XmlFormatter : IFormatter {    
+  public class FakeBoolean2XmlFormatter : FormatterBase<bool, Empty> {
 
-    public Type Type { get { return typeof (Boolean); } }
-
-    public IFormat Format { get { return XmlFormat.Instance; } }
-
-    public object DoFormat(object o) {
+    public override Empty Format(bool o) {
       return null;
     }
 
-    public object Parse(object o) {
-      return null;
+    public override bool Parse(Empty o) {
+      return false;
     }    
   }  
 
   [EmptyStorableClass]
-  public class Int2XmlFormatter: IFormatter {
-    public Type Type { get { return typeof (int);  } }
-    public IFormat Format { get { return XmlFormat.Instance; } }
-    public object DoFormat(object o) {
+  public class Int2XmlFormatter : FormatterBase<int, Empty> {
+
+    public override Empty Format(int o) {
       return null;
     }
-    public object Parse(object o) {
-      return null;
+
+    public override int Parse(Empty o) {
+      return 0;
     }
+
   }
 
   public static class TypeFormatter {
@@ -423,10 +425,10 @@ namespace HeuristicLab.Persistence.GUI {
 
     private static void SimpleFullName(Type type, StringBuilder sb) {      
       if (type.IsGenericType) {
-        sb.Append(type.Name, 0, type.Name.LastIndexOf('`'));      
+        sb.Append(type.Name, 0, type.Name.LastIndexOf('`'));
         sb.Append("<");
         foreach (Type t in type.GetGenericArguments()) {
-          SimpleFullName(t, sb);          
+          SimpleFullName(t, sb);
           sb.Append(", ");
         }
         sb.Remove(sb.Length - 2, 2);

@@ -5,10 +5,10 @@ using System.IO;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Default.ViewOnly;
 using HeuristicLab.Tracing;
 using log4net;
 using log4net.Config;
+using HeuristicLab.Persistence.Default.ViewOnly;
 
 namespace HeuristicLab.Persistence.Test {
 
@@ -272,13 +272,18 @@ namespace HeuristicLab.Persistence.Test {
       Console.WriteLine(ViewOnlyGenerator.Serialize(strings));
       Console.WriteLine(ViewOnlyGenerator.Serialize(o));
     }
+
+    public static void Test9() {
+      Root r = new Root();
+      //BinaryGenerator.Serialize(r, "test.bin");
+    }
     
     class Float {
       [Storable]
       float f = 12.3f;
     }
 
-    public static void Test9() {            
+    public static void Test10() {            
       XmlGenerator.Serialize(12.3f, "test9.zip");
       object o = XmlParser.DeSerialize("test9.zip");
       Console.WriteLine(ViewOnlyGenerator.Serialize(12.3f));
@@ -298,6 +303,7 @@ namespace HeuristicLab.Persistence.Test {
       Test7();
       Test8();
       Test9();
+      Test10();
       //SpeedTest();
       //SpeedTest2();
       Console.In.ReadLine();
