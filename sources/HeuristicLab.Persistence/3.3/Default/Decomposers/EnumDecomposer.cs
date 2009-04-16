@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
-    
+
   [EmptyStorableClass]
   public class EnumDecomposer : IDecomposer {
 
@@ -29,8 +29,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       it.MoveNext();
       return Enum.Parse(t, (string)it.Current.Value);
     }
-    
-    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {      
+
+    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {
     }
   }
 }

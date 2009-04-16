@@ -10,7 +10,7 @@ using log4net;
 using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
-  
+
   public abstract class GeneratorBase<T> {
     public T Format(ISerializationToken token) {
       Type type = token.GetType();
@@ -37,5 +37,5 @@ namespace HeuristicLab.Persistence.Core {
     protected abstract T Format(NullReferenceToken nullReferenceToken);
     protected abstract T Format(MetaInfoBeginToken metaInfoBeginToken);
     protected abstract T Format(MetaInfoEndToken metaInfoEndToken);
-  }  
+  }
 }

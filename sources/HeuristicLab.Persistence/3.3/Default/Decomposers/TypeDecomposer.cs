@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
-  
+
   [EmptyStorableClass]
   public class TypeDecomposer : IDecomposer {
 
@@ -13,7 +13,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public bool CanDecompose(Type type) {
-      return type == typeof (Type) ||
+      return type == typeof(Type) ||
              type.VersionInvariantName() == "System.RuntimeType, mscorlib";
     }
 
@@ -29,10 +29,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       foreach (var typeName in metaInfo) {
         return Type.GetType((string)typeName.Value);
       }
-      return null;      
+      return null;
     }
 
-    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {      
+    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
     }
   }
 }

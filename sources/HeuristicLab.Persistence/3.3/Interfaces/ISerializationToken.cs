@@ -5,6 +5,6 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// Marker interface for serialization tokens, passed between serializer,
   /// deserializer, parser and generator.  
   /// </summary>
-  public interface ISerializationToken {}
-  
+  public interface ISerializationToken { }
+
 }

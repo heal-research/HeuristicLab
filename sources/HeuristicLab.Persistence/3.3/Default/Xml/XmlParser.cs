@@ -18,10 +18,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     public XmlParser(TextReader input) {
       XmlReaderSettings settings = new XmlReaderSettings {
-                                       ConformanceLevel = ConformanceLevel.Document,
-                                       IgnoreWhitespace = true,
-                                       IgnoreComments = true
-                                     };
+        ConformanceLevel = ConformanceLevel.Document,
+        IgnoreWhitespace = true,
+        IgnoreComments = true
+      };
       reader = XmlReader.Create(input, settings);
       handlers = new Dictionary<string, Handler> {
                      {XmlStrings.PRIMITIVE, ParsePrimitive},
@@ -65,7 +65,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     private IEnumerator<ISerializationToken> ParseComposite() {
-      string name = reader.GetAttribute("name");            
+      string name = reader.GetAttribute("name");
       string idString = reader.GetAttribute("id");
       int? id = null;
       if (idString != null)
@@ -103,7 +103,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static List<TypeMapping> ParseTypeCache(TextReader reader) {
       var typeCache = new List<TypeMapping>();
       XmlReader xmlReader = XmlReader.Create(reader);
-      while ( xmlReader.Read() ) {
+      while (xmlReader.Read()) {
         if (xmlReader.Name == XmlStrings.TYPE) {
           typeCache.Add(new TypeMapping(
             int.Parse(xmlReader.GetAttribute("id")),
@@ -115,14 +115,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static object DeSerialize(string filename) {
-      ZipFile zipFile = new ZipFile(filename);      
+      ZipFile zipFile = new ZipFile(filename);
       Deserializer deSerializer = new Deserializer(
         ParseTypeCache(
         new StreamReader(
           zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
       XmlParser parser = new XmlParser(
         new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
-      return deSerializer.Deserialize(parser);      
+      return deSerializer.Deserialize(parser);
     }
-  }  
+  }
 }

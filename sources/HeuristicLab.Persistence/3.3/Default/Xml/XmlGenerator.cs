@@ -20,9 +20,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public const string TYPE = "TYPE";
     public const string METAINFO = "METAINFO";
   }
-  
+
   public class XmlGenerator : GeneratorBase<string> {
-    
+
     private int depth;
 
     public XmlGenerator() {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       sb.Append('<');
       if (type == NodeType.End)
         sb.Append('/');
-      sb.Append(name);      
+      sb.Append(name);
       foreach (var attribute in attributes) {
         if (attribute.Value != null && !string.IsNullOrEmpty(attribute.Value.ToString())) {
           sb.Append(space);
@@ -57,14 +57,14 @@ namespace HeuristicLab.Persistence.Default.Xml {
       if (type == NodeType.Inline)
         sb.Append('/');
       sb.Append(">");
-      return sb.ToString();      
+      return sb.ToString();
     }
 
     private string Prefix {
       get { return new string(' ', depth * 2); }
     }
 
-    protected override string Format(BeginToken beginToken) {            
+    protected override string Format(BeginToken beginToken) {
       var attributes = new Dictionary<string, object> {
         {"name", beginToken.Name},
         {"typeId", beginToken.TypeId},
@@ -75,12 +75,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return result;
     }
 
-    protected override string Format(EndToken endToken) {      
+    protected override string Format(EndToken endToken) {
       depth -= 1;
       return Prefix + "</" + XmlStrings.COMPOSITE + ">\r\n";
     }
 
-    protected override string Format(PrimitiveToken dataToken) {      
+    protected override string Format(PrimitiveToken dataToken) {
       var attributes =
         new Dictionary<string, object> {
             {"typeId", dataToken.TypeId},
@@ -88,19 +88,19 @@ namespace HeuristicLab.Persistence.Default.Xml {
             {"id", dataToken.Id}};
       return Prefix +
         FormatNode(XmlStrings.PRIMITIVE, attributes, NodeType.Start) +
-        ((XmlString)dataToken.SerialData).Data + "</" + XmlStrings.PRIMITIVE + ">\r\n";      
+        ((XmlString)dataToken.SerialData).Data + "</" + XmlStrings.PRIMITIVE + ">\r\n";
     }
 
-    protected override string Format(ReferenceToken refToken) {      
+    protected override string Format(ReferenceToken refToken) {
       var attributes = new Dictionary<string, object> {
         {"ref", refToken.Id},
-        {"name", refToken.Name}};                                       
-      return Prefix + FormatNode(XmlStrings.REFERENCE, attributes, NodeType.Inline) + "\r\n";  
+        {"name", refToken.Name}};
+      return Prefix + FormatNode(XmlStrings.REFERENCE, attributes, NodeType.Inline) + "\r\n";
     }
 
-    protected override string Format(NullReferenceToken nullRefToken) {      
+    protected override string Format(NullReferenceToken nullRefToken) {
       var attributes = new Dictionary<string, object>{
-        {"name", nullRefToken.Name}};      
+        {"name", nullRefToken.Name}};
       return Prefix + FormatNode(XmlStrings.NULL, attributes, NodeType.Inline) + "\r\n";
     }
 
@@ -126,7 +126,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       yield return "</" + XmlStrings.TYPECACHE + ">";
     }
 
-    public static void Serialize(object o, string filename) {      
+    public static void Serialize(object o, string filename) {
       Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
     }
 
@@ -134,10 +134,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
       Serializer serializer = new Serializer(obj, config);
       XmlGenerator generator = new XmlGenerator();
       ZipOutputStream zipStream = new ZipOutputStream(File.Create(filename));
-      zipStream.SetLevel(9);      
-      zipStream.PutNextEntry(new ZipEntry("data.xml"));      
+      zipStream.SetLevel(9);
+      zipStream.PutNextEntry(new ZipEntry("data.xml"));
       StreamWriter writer = new StreamWriter(zipStream);
-      ILog logger = Logger.GetDefaultLogger();      
+      ILog logger = Logger.GetDefaultLogger();
       foreach (ISerializationToken token in serializer) {
         string line = generator.Format(token);
         writer.Write(line);
@@ -150,8 +150,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
         writer.WriteLine(line);
         logger.Debug(line);
       }
-      writer.Flush();            
-      zipStream.Close();      
+      writer.Flush();
+      zipStream.Close();
     }
 
   }

@@ -5,7 +5,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
-namespace HeuristicLab.Persistence.Default.Decomposers { 
+namespace HeuristicLab.Persistence.Default.Decomposers {
 
   [EmptyStorableClass]
   public class EnumerableDecomposer : IDecomposer {

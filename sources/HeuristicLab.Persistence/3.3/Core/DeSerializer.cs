@@ -3,13 +3,13 @@ using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Core {  
+namespace HeuristicLab.Persistence.Core {
 
-  public class ParentReference {}  
+  public class ParentReference { }
 
   class Midwife {
-    
-    public int? Id { get; private set; }    
+
+    public int? Id { get; private set; }
     public bool MetaMode { get; set; }
     public object Obj { get; private set; }
 
@@ -21,20 +21,20 @@ namespace HeuristicLab.Persistence.Core {
     public Midwife(object value) {
       this.Obj = value;
     }
-        
-    public Midwife(Type type, IDecomposer decomposer, int? id) {    
+
+    public Midwife(Type type, IDecomposer decomposer, int? id) {
       this.type = type;
-      this.decomposer = decomposer;      
+      this.decomposer = decomposer;
       this.Id = id;
-      MetaMode = false;      
+      MetaMode = false;
       metaInfo = new List<Tag>();
-      customValues = new List<Tag>();            
+      customValues = new List<Tag>();
     }
 
     public void CreateInstance() {
       if (Obj != null)
         throw new ApplicationException("object already instantiated");
-      Obj = decomposer.CreateInstance(type, metaInfo);      
+      Obj = decomposer.CreateInstance(type, metaInfo);
     }
 
     public void AddValue(string name, object value) {
@@ -48,13 +48,13 @@ namespace HeuristicLab.Persistence.Core {
     public void Populate() {
       decomposer.Populate(Obj, customValues, type);
     }
-  }  
+  }
 
   public class Deserializer {
-    
+
     private readonly Dictionary<int, object> id2obj;
     private readonly Dictionary<Type, object> serializerMapping;
-    private readonly Stack<Midwife> parentStack;    
+    private readonly Stack<Midwife> parentStack;
     private readonly Dictionary<int, Type> typeIds;
 
     public Deserializer(
@@ -78,17 +78,17 @@ namespace HeuristicLab.Persistence.Core {
       return map;
     }
 
-    public object Deserialize(IEnumerable<ISerializationToken> tokens) {      
+    public object Deserialize(IEnumerable<ISerializationToken> tokens) {
       foreach (ISerializationToken token in tokens) {
         Type t = token.GetType();
-        if ( t == typeof(BeginToken) ) {
+        if (t == typeof(BeginToken)) {
           CompositeStartHandler((BeginToken)token);
-        } else if ( t == typeof(EndToken) ) {
-          CompositeEndHandler((EndToken) token);
-        } else if ( t == typeof(PrimitiveToken) ) {
-          PrimitiveHandler((PrimitiveToken) token);
-        } else if ( t == typeof(ReferenceToken) ) {
-          ReferenceHandler((ReferenceToken) token);
+        } else if (t == typeof(EndToken)) {
+          CompositeEndHandler((EndToken)token);
+        } else if (t == typeof(PrimitiveToken)) {
+          PrimitiveHandler((PrimitiveToken)token);
+        } else if (t == typeof(ReferenceToken)) {
+          ReferenceHandler((ReferenceToken)token);
         } else if (t == typeof(NullReferenceToken)) {
           NullHandler((NullReferenceToken)token);
         } else if (t == typeof(MetaInfoBeginToken)) {
@@ -105,7 +105,7 @@ namespace HeuristicLab.Persistence.Core {
     private void CompositeStartHandler(BeginToken token) {
       Type type = typeIds[(int)token.TypeId];
       IDecomposer decomposer = null;
-      if ( serializerMapping.ContainsKey(type) )
+      if (serializerMapping.ContainsKey(type))
         decomposer = serializerMapping[type] as IDecomposer;
       if (decomposer == null)
         throw new ApplicationException(String.Format(
@@ -123,8 +123,8 @@ namespace HeuristicLab.Persistence.Core {
 
     private void PrimitiveHandler(PrimitiveToken token) {
       Type type = typeIds[(int)token.TypeId];
-      object value = ((IFormatter) serializerMapping[type]).Parse(token.SerialData);
-      if ( token.Id != null )      
+      object value = ((IFormatter)serializerMapping[type]).Parse(token.SerialData);
+      if (token.Id != null)
         id2obj[(int)token.Id] = value;
       SetValue(token.Name, value);
     }
@@ -143,7 +143,7 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private void MetaInfoEnd(MetaInfoEndToken token) {
-      Midwife m = parentStack.Peek();      
+      Midwife m = parentStack.Peek();
       m.MetaMode = false;
       CreateInstance(m);
     }
@@ -151,17 +151,17 @@ namespace HeuristicLab.Persistence.Core {
     private void CreateInstance(Midwife m) {
       m.CreateInstance();
       if (m.Id != null)
-        id2obj.Add((int)m.Id, m.Obj);      
+        id2obj.Add((int)m.Id, m.Obj);
     }
 
     private void SetValue(string name, object value) {
-      if (parentStack.Count == 0) {        
+      if (parentStack.Count == 0) {
         parentStack.Push(new Midwife(value));
       } else {
         Midwife m = parentStack.Peek();
         if (m.MetaMode == false && m.Obj == null)
           CreateInstance(m);
-        m.AddValue(name, value);        
+        m.AddValue(name, value);
       }
     }
   }

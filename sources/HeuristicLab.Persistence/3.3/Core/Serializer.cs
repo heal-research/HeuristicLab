@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Core {
     private readonly Configuration configuration;
 
     public List<TypeMapping> TypeCache {
-      get {        
+      get {
         List<TypeMapping> result = new List<TypeMapping>();
         foreach (var pair in typeCache) {
           string serializer = null;
@@ -29,18 +29,18 @@ namespace HeuristicLab.Persistence.Core {
           }
           result.Add(new TypeMapping(pair.Value, pair.Key.VersionInvariantName(), serializer));
         }
-        return result;                                     
+        return result;
       }
     }
 
-    public Serializer(object obj, Configuration configuration) :        
+    public Serializer(object obj, Configuration configuration) :
       this(obj, configuration, "ROOT") { }
 
     public Serializer(object obj, Configuration configuration, string rootName) {
       this.obj = obj;
       this.rootName = rootName;
-      this.configuration = configuration;      
-      obj2id = new Dictionary<object, int> {{new object(), 0}};
+      this.configuration = configuration;
+      obj2id = new Dictionary<object, int> { { new object(), 0 } };
       typeCache = new Dictionary<Type, int>();
     }
 
@@ -51,31 +51,31 @@ namespace HeuristicLab.Persistence.Core {
     public IEnumerator<ISerializationToken> GetEnumerator() {
       return Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
     }
-    
+
     private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor) {
       object value = accessor.Get();
       if (value == null)
         return NullReferenceEnumerator(accessor.Name);
       if (obj2id.ContainsKey(value))
-        return ReferenceEnumerator(accessor.Name, obj2id[value]);              
-      if ( ! typeCache.ContainsKey(value.GetType()))
+        return ReferenceEnumerator(accessor.Name, obj2id[value]);
+      if (!typeCache.ContainsKey(value.GetType()))
         typeCache.Add(value.GetType(), typeCache.Count);
       int typeId = typeCache[value.GetType()];
       int? id = null;
-      if ( ! value.GetType().IsValueType) {
+      if (!value.GetType().IsValueType) {
         id = obj2id.Count;
         obj2id.Add(value, (int)id);
       }
       IFormatter formatter = configuration.GetFormatter(value.GetType());
       if (formatter != null)
         return PrimitiveEnumerator(accessor.Name, typeId, formatter.Format(value), id);
-      IDecomposer decomposer = configuration.GetDecomposer(value.GetType()); 
+      IDecomposer decomposer = configuration.GetDecomposer(value.GetType());
       if (decomposer != null)
         return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
       throw new ApplicationException(
           String.Format(
           "No suitable method for serializing values of type \"{0}\" found.",
-          value.GetType().VersionInvariantName()));      
+          value.GetType().VersionInvariantName()));
     }
 
     private IEnumerator<ISerializationToken> NullReferenceEnumerator(string name) {
@@ -93,7 +93,7 @@ namespace HeuristicLab.Persistence.Core {
 
     private IEnumerator<ISerializationToken> CompositeEnumerator(
         string name, IEnumerable<Tag> tags, int? id, int typeId, IEnumerable<Tag> metaInfo) {
-      yield return new BeginToken(name, typeId, id);      
+      yield return new BeginToken(name, typeId, id);
       bool first = true;
       foreach (var tag in metaInfo) {
         IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
@@ -113,7 +113,7 @@ namespace HeuristicLab.Persistence.Core {
         while (it.MoveNext())
           yield return it.Current;
       }
-      yield return new EndToken(name, typeId, id);        
+      yield return new EndToken(name, typeId, id);
     }
 
   }

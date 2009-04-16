@@ -6,7 +6,7 @@ namespace HeuristicLab.Persistence.Test {
 
   class TestClass {
 
-    [Storable(Name="TestProperty", DefaultValue=12)]
+    [Storable(Name = "TestProperty", DefaultValue = 12)]
     public object o;
 
     [Storable]
@@ -21,7 +21,7 @@ namespace HeuristicLab.Persistence.Test {
     static void Main() {
       TestClass t = new TestClass();
       Dictionary<string, DataMemberAccessor> accessors = StorableAttribute.GetStorableAccessors(t);
-      foreach ( KeyValuePair<string, DataMemberAccessor> pair in accessors ) {
+      foreach (KeyValuePair<string, DataMemberAccessor> pair in accessors) {
         Console.WriteLine(pair.Key + ": " + pair.Value);
       }
       t.o = new Object();
@@ -32,7 +32,7 @@ namespace HeuristicLab.Persistence.Test {
       try {
         accessors["y"].Set(0);
         throw new InvalidOperationException();
-      } catch ( KeyNotFoundException ) { }
+      } catch (KeyNotFoundException) { }
       Console.ReadLine();
     }
 

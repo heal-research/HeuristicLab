@@ -4,7 +4,7 @@ namespace HeuristicLab.Persistence.Core {
 
   public class Tag {
     public string Name { get; private set; }
-    public object Value { get; set; }     
+    public object Value { get; set; }
 
     public Tag(string name, object value) {
       Name = name;

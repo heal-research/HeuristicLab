@@ -35,7 +35,7 @@ namespace Persistence.Test {
     }
 
   }
-   
+
   class SerializationTest {
     public static void Main() {
 

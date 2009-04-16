@@ -7,7 +7,7 @@ using System.Globalization;
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
-  public class DoubleList2XmlFormatter : NumberEnumeration2XmlFormatterBase<List<double>> {    
+  public class DoubleList2XmlFormatter : NumberEnumeration2XmlFormatterBase<List<double>> {
 
     protected override void Add(IEnumerable enumeration, object o) {
       ((List<double>)enumeration).Add((int)o);

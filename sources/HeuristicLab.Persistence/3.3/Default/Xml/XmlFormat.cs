@@ -5,7 +5,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
   [EmptyStorableClass]
   public class XmlFormat : FormatBase<XmlString> {
-    public override string Name { get { return "XML"; } }    
+    public override string Name { get { return "XML"; } }
   }
 
 }

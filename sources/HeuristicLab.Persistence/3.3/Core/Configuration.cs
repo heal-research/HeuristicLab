@@ -13,7 +13,7 @@ namespace HeuristicLab.Persistence.Core {
     private readonly List<IDecomposer> decomposers;
     private readonly Dictionary<Type, IDecomposer> decomposerCache;
 
-    [Storable]    
+    [Storable]
     public IFormat Format { get; private set; }
 
     private Configuration() {
@@ -23,14 +23,14 @@ namespace HeuristicLab.Persistence.Core {
     public Configuration(IFormat format, Dictionary<Type, IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {
       this.Format = format;
       this.formatters = new Dictionary<Type, IFormatter>();
-      foreach ( var pair in formatters ) {
-        if (pair.Value.SerialDataType != format.SerialDataType ) {
+      foreach (var pair in formatters) {
+        if (pair.Value.SerialDataType != format.SerialDataType) {
           throw new ArgumentException("All formatters must have the same IFormat.");
         }
         this.formatters.Add(pair.Key, pair.Value);
       }
       this.decomposers = new List<IDecomposer>(decomposers);
-      decomposerCache = new Dictionary<Type, IDecomposer>();      
+      decomposerCache = new Dictionary<Type, IDecomposer>();
     }
 
     public IEnumerable<IFormatter> Formatters {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Persistence.Core {
       get { return decomposers; }
     }
 
-    public IFormatter GetFormatter(Type type) {      
+    public IFormatter GetFormatter(Type type) {
       IFormatter formatter;
       formatters.TryGetValue(type, out formatter);
       return formatter;
@@ -49,7 +49,7 @@ namespace HeuristicLab.Persistence.Core {
 
     public IDecomposer GetDecomposer(Type type) {
       if (decomposerCache.ContainsKey(type))
-        return decomposerCache[type];      
+        return decomposerCache[type];
       foreach (IDecomposer d in decomposers) {
         if (d.CanDecompose(type)) {
           decomposerCache.Add(type, d);
@@ -58,7 +58,7 @@ namespace HeuristicLab.Persistence.Core {
       }
       decomposerCache.Add(type, null);
       return null;
-    }    
-  }  
-  
+    }
+  }
+
 }

@@ -1,8 +1,8 @@
 ﻿using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core.Tokens {
-  
-  public class PrimitiveToken : SerializationTokenBase {    
+
+  public class PrimitiveToken : SerializationTokenBase {
     public readonly int TypeId;
     public readonly int? Id;
     public readonly ISerialData SerialData;

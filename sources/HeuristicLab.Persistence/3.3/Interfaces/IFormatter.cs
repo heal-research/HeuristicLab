@@ -11,7 +11,7 @@ namespace HeuristicLab.Persistence.Interfaces {
     Type SerialDataType { get; }
     Type SourceType { get; }
     ISerialData Format(object o);
-    object Parse(ISerialData o);  
+    object Parse(ISerialData o);
   }
 
   /// <summary>
@@ -22,6 +22,6 @@ namespace HeuristicLab.Persistence.Interfaces {
   public interface IFormatter<Source, SerialData> : IFormatter where SerialData : ISerialData {
     SerialData Format(Source o);
     Source Parse(SerialData t);
-  }  
-     
+  }
+
 }

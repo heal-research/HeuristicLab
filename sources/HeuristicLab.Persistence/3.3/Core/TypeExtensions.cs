@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace HeuristicLab.Persistence.Core {
-  
+
   public static class TypeExtensions {
 
     public static string VersionInvariantName(this Type type) {
@@ -11,6 +11,6 @@ namespace HeuristicLab.Persistence.Core {
       return sb.ToString();
     }
 
-  }  
-  
+  }
+
 }

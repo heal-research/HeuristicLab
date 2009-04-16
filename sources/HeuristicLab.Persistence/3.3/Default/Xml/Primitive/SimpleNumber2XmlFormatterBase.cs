@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
 using System.Globalization;
 
-namespace HeuristicLab.Persistence.Default.Xml.Primitive {  
+namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   public abstract class SimpleNumber2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
 
@@ -21,7 +21,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       return new XmlString(t.ToString());
     }
     public override T Parse(XmlString x) {
-      return (T)ParseMethod.Invoke(null, new[] { x.Data });      
+      return (T)ParseMethod.Invoke(null, new[] { x.Data });
     }
-  }  
+  }
 }

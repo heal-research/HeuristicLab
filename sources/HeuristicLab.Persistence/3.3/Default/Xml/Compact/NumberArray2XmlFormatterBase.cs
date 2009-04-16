@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
-                                                              
+
   public abstract class NumberArray2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
 
     protected virtual string Separator { get { return ";"; } }
@@ -29,7 +29,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         lowerBounds[i] = a.GetLowerBound(i);
       }
       int[] positions = (int[])lowerBounds.Clone();
-      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {        
+      while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
         sb.Append(Separator);
         sb.Append(FormatValue(a.GetValue(positions)));
         positions[0] += 1;
@@ -41,7 +41,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
             break;
           }
         }
-      }      
+      }
       return new XmlString(sb.ToString());
     }
 
@@ -79,5 +79,5 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       return (T)o;
     }
   }
-  
+
 }

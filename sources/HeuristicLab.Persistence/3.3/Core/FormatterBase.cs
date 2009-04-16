@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace HeuristicLab.Persistence.Interfaces {
-  
+
   public abstract class FormatterBase<Source, SerialData> : IFormatter<Source, SerialData> where SerialData : ISerialData {
 
     public abstract SerialData Format(Source o);
@@ -13,7 +13,7 @@ namespace HeuristicLab.Persistence.Interfaces {
     public Type SourceType { get { return typeof(Source); } }
 
     ISerialData IFormatter.Format(object o) {
-      return Format((Source)o);    
+      return Format((Source)o);
     }
 
     object IFormatter.Parse(ISerialData o) {
@@ -21,5 +21,5 @@ namespace HeuristicLab.Persistence.Interfaces {
     }
 
   }
-     
+
 }

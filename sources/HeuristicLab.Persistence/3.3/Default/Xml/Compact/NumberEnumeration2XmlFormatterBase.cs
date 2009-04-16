@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
-  
+
   public abstract class NumberEnumeration2XmlFormatterBase<T> : FormatterBase<T, XmlString> where T : IEnumerable {
 
     protected virtual string Separator { get { return ";"; } }
@@ -31,5 +31,5 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       return (T)enumeration;
     }
   }
-  
+
 }

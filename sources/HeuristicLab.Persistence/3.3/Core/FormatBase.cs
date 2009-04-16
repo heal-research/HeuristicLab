@@ -15,10 +15,10 @@ namespace HeuristicLab.Persistence.Interfaces {
     }
 
     public override bool Equals(object obj) {
-      FormatBase<SerialDataFormat> f = obj as FormatBase<SerialDataFormat>;      
+      FormatBase<SerialDataFormat> f = obj as FormatBase<SerialDataFormat>;
       return Equals(f);
     }
-    
+
   }
 
 }

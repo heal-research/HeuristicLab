@@ -8,7 +8,7 @@ using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
-  public class Number2StringConverter {    
+  public class Number2StringConverter {
 
     private static readonly List<Type> numberTypes =
       new List<Type> {
@@ -26,14 +26,14 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         typeof(decimal),
       };
 
-    private static readonly Dictionary<Type, MethodInfo> numberParsers;  
+    private static readonly Dictionary<Type, MethodInfo> numberParsers;
 
     static Number2StringConverter() {
       numberParsers = new Dictionary<Type, MethodInfo>();
-      foreach ( var type in numberTypes ) {
+      foreach (var type in numberTypes) {
         numberParsers[type] = type
           .GetMethod("Parse", BindingFlags.Static | BindingFlags.Public,
-                     null, new[] {typeof (string)}, null);          
+                     null, new[] { typeof(string) }, null);
       }
     }
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public string Format(object obj) {
-      if (obj.GetType() == typeof(float))        
+      if (obj.GetType() == typeof(float))
         return ((float)obj).ToString("r", CultureInfo.InvariantCulture);
       if (obj.GetType() == typeof(double))
         return ((double)obj).ToString("r", CultureInfo.InvariantCulture);
@@ -50,15 +50,15 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         return ((decimal)obj).ToString("r", CultureInfo.InvariantCulture);
       return obj.ToString();
     }
-    
+
     public object Parse(string stringValue, Type type) {
       return numberParsers[type]
         .Invoke(null,
             BindingFlags.Static | BindingFlags.PutRefDispProperty,
-                  null, new[] {stringValue}, CultureInfo.InvariantCulture);
+                  null, new[] { stringValue }, CultureInfo.InvariantCulture);
     }
 
-  }  
+  }
 
   [EmptyStorableClass]
   public class DateTime2StringDecomposer : IDecomposer {
@@ -87,10 +87,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       throw new ApplicationException("Not enough components to compose a bool.");
     }
 
-    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {      
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
     }
 
-  }  
+  }
 
   [EmptyStorableClass]
   public class CompactNumberArray2StringDecomposer : IDecomposer {
@@ -98,13 +98,13 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public int Priority {
       get { return 200; }
     }
-    
+
     private static readonly Number2StringConverter numberConverter =
-      new Number2StringConverter();    
+      new Number2StringConverter();
 
     public bool CanDecompose(Type type) {
       return
-        (type.IsArray || type == typeof (Array)) &&
+        (type.IsArray || type == typeof(Array)) &&
         numberConverter.CanDecompose(type.GetElementType());
     }
 
@@ -145,30 +145,30 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       var tagIter = metaInfo.GetEnumerator();
       tagIter.MoveNext();
-      var valueIter = ((string) tagIter.Current.Value)
-        .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
+      var valueIter = ((string)tagIter.Current.Value)
+        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
         .GetEnumerator();
       valueIter.MoveNext();
-      int rank = int.Parse((string) valueIter.Current);      
+      int rank = int.Parse((string)valueIter.Current);
       int[] lengths = new int[rank];
-      int[] lowerBounds = new int[rank];      
+      int[] lowerBounds = new int[rank];
       for (int i = 0; i < rank; i++) {
         valueIter.MoveNext();
-        lengths[i] = int.Parse((string) valueIter.Current);        
-      }      
+        lengths[i] = int.Parse((string)valueIter.Current);
+      }
       for (int i = 0; i < rank; i++) {
         valueIter.MoveNext();
-        lowerBounds[i] = int.Parse((string) valueIter.Current);        
+        lowerBounds[i] = int.Parse((string)valueIter.Current);
       }
       Type elementType = type.GetElementType();
       Array a = Array.CreateInstance(elementType, lengths, lowerBounds);
-      int[] positions = (int[]) lowerBounds.Clone();
+      int[] positions = (int[])lowerBounds.Clone();
       while (valueIter.MoveNext()) {
         a.SetValue(
-          numberConverter.Parse((string)valueIter.Current, elementType),          
+          numberConverter.Parse((string)valueIter.Current, elementType),
           positions);
         positions[0] += 1;
-        for ( int i = 0; i<rank-1; i++ ) {
+        for (int i = 0; i < rank - 1; i++) {
           if (positions[i] >= lengths[i] + lowerBounds[i]) {
             positions[i + 1] += 1;
             positions[i] = lowerBounds[i];
@@ -194,7 +194,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     private static readonly Number2StringConverter numberConverter =
       new Number2StringConverter();
-    
+
     private static readonly Dictionary<Type, Type> interfaceCache = new Dictionary<Type, Type>();
 
     public Type GetGenericEnumerableInterface(Type type) {
@@ -211,7 +211,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       interfaceCache.Add(type, null);
       return null;
     }
-    
+
     public bool ImplementsGenericEnumerable(Type type) {
       return GetGenericEnumerableInterface(type) != null;
     }
@@ -224,7 +224,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
           BindingFlags.Public |
           BindingFlags.NonPublic |
           BindingFlags.Instance,
-          null, Type.EmptyTypes, null) != null;      
+          null, Type.EmptyTypes, null) != null;
     }
 
     public bool CanDecompose(Type type) {
@@ -239,19 +239,19 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public IEnumerable<Tag> Decompose(object obj) {
       Type type = obj.GetType();
-      Type enumerable = GetGenericEnumerableInterface(type);      
-      InterfaceMapping iMap = obj.GetType().GetInterfaceMap(enumerable);      
+      Type enumerable = GetGenericEnumerableInterface(type);
+      InterfaceMapping iMap = obj.GetType().GetInterfaceMap(enumerable);
       MethodInfo getEnumeratorMethod =
         iMap.TargetMethods[
         Array.IndexOf(
           iMap.InterfaceMethods,
           enumerable.GetMethod("GetEnumerator"))];
-      object[] empty = new object[] {};
+      object[] empty = new object[] { };
       object genericEnumerator = getEnumeratorMethod.Invoke(obj, empty);
       MethodInfo moveNextMethod = genericEnumerator.GetType().GetMethod("MoveNext");
       PropertyInfo currentProperty = genericEnumerator.GetType().GetProperty("Current");
       StringBuilder sb = new StringBuilder();
-      while ( (bool)moveNextMethod.Invoke(genericEnumerator, empty) )
+      while ((bool)moveNextMethod.Invoke(genericEnumerator, empty))
         sb.Append(
           numberConverter.Format(
             currentProperty.GetValue(genericEnumerator, null))).Append(';');
@@ -264,14 +264,14 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
       Type enumerable = GetGenericEnumerableInterface(type);
-      Type elementType = enumerable.GetGenericArguments()[0];      
-      MethodInfo addMethod = type.GetMethod("Add");      
+      Type elementType = enumerable.GetGenericArguments()[0];
+      MethodInfo addMethod = type.GetMethod("Add");
       var tagEnumerator = tags.GetEnumerator();
       tagEnumerator.MoveNext();
-      string[] stringValues = ((string) tagEnumerator.Current.Value)
-        .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+      string[] stringValues = ((string)tagEnumerator.Current.Value)
+        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       foreach (var value in stringValues) {
-        addMethod.Invoke(instance, new[] {numberConverter.Parse(value, elementType)});
+        addMethod.Invoke(instance, new[] { numberConverter.Parse(value, elementType) });
       }
     }
   }

@@ -4,10 +4,10 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
 using System.Globalization;
 
-namespace HeuristicLab.Persistence.Default.Xml.Primitive {  
-  
+namespace HeuristicLab.Persistence.Default.Xml.Primitive {
+
   public abstract class DecimalNumber2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
-    
+
     private static MethodInfo ToStringMethod = typeof(T)
       .GetMethod(
         "ToString",
@@ -29,8 +29,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override XmlString Format(T t) {
       return new XmlString((string)ToStringMethod.Invoke(t, new object[] { "r", CultureInfo.InvariantCulture }));
     }
-    public override T Parse(XmlString x) {      
+    public override T Parse(XmlString x) {
       return (T)ParseMethod.Invoke(null, new object[] { x.Data, CultureInfo.InvariantCulture });
     }
-  }  
+  }
 }

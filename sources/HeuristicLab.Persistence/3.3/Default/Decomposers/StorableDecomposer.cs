@@ -33,15 +33,15 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return Activator.CreateInstance(type, true);
     }
 
-    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {           
-      var memberDict = new Dictionary<string, Tag>();      
-      IEnumerator<Tag> iter = objects.GetEnumerator();      
+    public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
+      var memberDict = new Dictionary<string, Tag>();
+      IEnumerator<Tag> iter = objects.GetEnumerator();
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
-      }      
+      }
       foreach (var mapping in StorableAttribute.GetStorableAccessors(instance)) {
         if (memberDict.ContainsKey(mapping.Key)) {
-          mapping.Value.Set(memberDict[mapping.Key].Value);          
+          mapping.Value.Set(memberDict[mapping.Key].Value);
         } else if (mapping.Value.DefaultValue != null) {
           mapping.Value.Set(mapping.Value.DefaultValue);
         }

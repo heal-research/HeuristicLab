@@ -4,8 +4,8 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
-namespace HeuristicLab.Persistence.Default.Decomposers {  
-  
+namespace HeuristicLab.Persistence.Default.Decomposers {
+
   [EmptyStorableClass]
   public class DictionaryDecomposer : IDecomposer {
 
@@ -15,7 +15,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
 
     public bool CanDecompose(Type type) {
-      return type.GetInterface(typeof(IDictionary).FullName) != null;        
+      return type.GetInterface(typeof(IDictionary).FullName) != null;
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -23,8 +23,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public IEnumerable<Tag> Decompose(object o) {
-      IDictionary dict = (IDictionary)o;      
-      foreach ( DictionaryEntry entry in dict) {
+      IDictionary dict = (IDictionary)o;
+      foreach (DictionaryEntry entry in dict) {
         yield return new Tag("key", entry.Key);
         yield return new Tag("value", entry.Value);
       }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         iter.MoveNext();
         Tag value = iter.Current;
         dict.Add(key.Value, value.Value);
-      }      
+      }
     }
   }
 

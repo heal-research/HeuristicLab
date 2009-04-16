@@ -9,7 +9,7 @@ using HeuristicLab.Tracing;
 using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Core {
-  
+
   public class ConfigurationService {
 
     private static ConfigurationService instance;
@@ -17,7 +17,7 @@ namespace HeuristicLab.Persistence.Core {
     public Dictionary<Type, List<IFormatter>> Formatters { get; private set; }
     public List<IDecomposer> Decomposers { get; private set; }
     public List<IFormat> Formats { get; private set; }
-    
+
     public static ConfigurationService Instance {
       get {
         if (instance == null)
@@ -53,11 +53,11 @@ namespace HeuristicLab.Persistence.Core {
           customConfigurations[config.Key] = config.Value;
         }
       } catch (Exception e) {
-        Logger.Warn("Could not load settings.", e);        
+        Logger.Warn("Could not load settings.", e);
       }
     }
 
-    public void SaveSettings() {      
+    public void SaveSettings() {
       Serializer serializer = new Serializer(
         customConfigurations,
         GetDefaultConfig(new XmlFormat()),
@@ -77,14 +77,14 @@ namespace HeuristicLab.Persistence.Core {
       Properties.Settings.Default.Save();
     }
 
-    public void Reset() {      
+    public void Reset() {
       customConfigurations.Clear();
       Formatters.Clear();
       Decomposers.Clear();
       Assembly defaultAssembly = Assembly.GetExecutingAssembly();
       DiscoverFrom(defaultAssembly);
       foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
-        if ( a != defaultAssembly )
+        if (a != defaultAssembly)
           DiscoverFrom(a);
       SortDecomposers();
     }
@@ -101,10 +101,10 @@ namespace HeuristicLab.Persistence.Core {
 
     protected void DiscoverFrom(Assembly a) {
       foreach (Type t in a.GetTypes()) {
-        if (t.GetInterface(typeof (IFormatter).FullName) != null) {
+        if (t.GetInterface(typeof(IFormatter).FullName) != null) {
           try {
-            IFormatter formatter = (IFormatter) Activator.CreateInstance(t, true);
-            if ( ! Formatters.ContainsKey(formatter.SerialDataType) ) {
+            IFormatter formatter = (IFormatter)Activator.CreateInstance(t, true);
+            if (!Formatters.ContainsKey(formatter.SerialDataType)) {
               Formatters.Add(formatter.SerialDataType, new List<IFormatter>());
             }
             Formatters[formatter.SerialDataType].Add(formatter);
@@ -113,17 +113,17 @@ namespace HeuristicLab.Persistence.Core {
               formatter.SourceType.VersionInvariantName(),
               formatter.SerialDataType.VersionInvariantName()));
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);            
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           } catch (ArgumentException e) {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           }
         }
-        if (t.GetInterface(typeof (IDecomposer).FullName) != null) {
+        if (t.GetInterface(typeof(IDecomposer).FullName) != null) {
           try {
-            Decomposers.Add((IDecomposer) Activator.CreateInstance(t, true));
+            Decomposers.Add((IDecomposer)Activator.CreateInstance(t, true));
             Logger.Debug("discovered decomposer " + t.VersionInvariantName());
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);          
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           } catch (ArgumentException e) {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           }
@@ -135,20 +135,20 @@ namespace HeuristicLab.Persistence.Core {
             Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
               format.Name,
               format.SerialDataType,
-              t.VersionInvariantName()));              
+              t.VersionInvariantName()));
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);          
+            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
           } catch (ArgumentException e) {
             Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
-          }          
+          }
         }
       }
     }
 
     public Configuration GetDefaultConfig(IFormat format) {
       Dictionary<Type, IFormatter> formatterConfig = new Dictionary<Type, IFormatter>();
-      foreach ( IFormatter f in Formatters[format.SerialDataType] ) {
-        if ( ! formatterConfig.ContainsKey(f.SourceType) )
+      foreach (IFormatter f in Formatters[format.SerialDataType]) {
+        if (!formatterConfig.ContainsKey(f.SourceType))
           formatterConfig.Add(f.SourceType, f);
       }
       return new Configuration(format, formatterConfig, Decomposers);
@@ -160,11 +160,11 @@ namespace HeuristicLab.Persistence.Core {
       return GetDefaultConfig(format);
     }
 
-    public void DefineConfiguration(Configuration configuration) {      
+    public void DefineConfiguration(Configuration configuration) {
       customConfigurations[configuration.Format] = configuration;
       SaveSettings();
     }
 
   }
-  
+
 }

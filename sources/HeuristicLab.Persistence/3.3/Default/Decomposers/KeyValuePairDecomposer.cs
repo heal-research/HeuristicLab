@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
-  
+
   [EmptyStorableClass]
   public class KeyValuePairDecomposer : IDecomposer {
 
@@ -17,8 +17,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public bool CanDecompose(Type type) {
       return type.IsGenericType &&
-             type.GetGenericTypeDefinition() == 
-             typeof (KeyValuePair<int, int>).GetGenericTypeDefinition();
+             type.GetGenericTypeDefinition() ==
+             typeof(KeyValuePair<int, int>).GetGenericTypeDefinition();
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -37,12 +37,12 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public void Populate(object instance, IEnumerable<Tag> o, Type t) {
       IEnumerator<Tag> iter = o.GetEnumerator();
-      iter.MoveNext();      
+      iter.MoveNext();
       t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
         .Single(fi => fi.Name == "key").SetValue(instance, iter.Current.Value);
       iter.MoveNext();
       t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-        .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);      
+        .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);
     }
   }
 }

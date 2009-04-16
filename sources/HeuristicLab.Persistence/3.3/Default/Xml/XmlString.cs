@@ -2,7 +2,7 @@
 using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml {
-  
+
   public class XmlString : ISerialData {
 
     [Storable]

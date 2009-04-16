@@ -7,7 +7,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [EmptyStorableClass]
   public class IntList2XmlFormatter : NumberEnumeration2XmlFormatterBase<List<int>> {
-    
+
     protected override void Add(IEnumerable enumeration, object o) {
       ((List<int>)enumeration).Add((int)o);
     }

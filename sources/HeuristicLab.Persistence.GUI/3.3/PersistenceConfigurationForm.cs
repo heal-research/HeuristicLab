@@ -16,11 +16,11 @@ namespace HeuristicLab.Persistence.GUI {
 
     private readonly Dictionary<string, IFormatter> formatterTable;
     private readonly Dictionary<string, bool> simpleFormatterTable;
-    private readonly Dictionary<IFormatter, string> reverseFormatterTable;    
+    private readonly Dictionary<IFormatter, string> reverseFormatterTable;
     private readonly Dictionary<string, Type> typeNameTable;
     private readonly Dictionary<Type, string> reverseTypeNameTable;
 
-    public PersistenceConfigurationForm() {      
+    public PersistenceConfigurationForm() {
       InitializeComponent();
       formatterTable = new Dictionary<string, IFormatter>();
       simpleFormatterTable = new Dictionary<string, bool>();
@@ -51,40 +51,40 @@ namespace HeuristicLab.Persistence.GUI {
       }
     }
 
-    private void UpdateDecomposerList(ListView decomposerList, Configuration config) {      
+    private void UpdateDecomposerList(ListView decomposerList, Configuration config) {
       decomposerList.Items.Clear();
       var availableDecomposers = new Dictionary<string, IDecomposer>();
-      foreach (IDecomposer d in ConfigurationService.Instance.Decomposers) {        
+      foreach (IDecomposer d in ConfigurationService.Instance.Decomposers) {
         availableDecomposers.Add(d.GetType().VersionInvariantName(), d);
-      }      
-      foreach (IDecomposer decomposer in config.Decomposers) {       
-        var item = decomposerList.Items.Add(decomposer.GetType().Name);        
+      }
+      foreach (IDecomposer decomposer in config.Decomposers) {
+        var item = decomposerList.Items.Add(decomposer.GetType().Name);
         item.Checked = true;
         item.Tag = decomposer;
         availableDecomposers.Remove(decomposer.GetType().VersionInvariantName());
-      }      
+      }
       foreach (KeyValuePair<string, IDecomposer> pair in availableDecomposers) {
         var item = decomposerList.Items.Add(pair.Value.GetType().Name);
         item.Checked = false;
         item.Tag = pair.Value;
       }
-    }    
+    }
 
     private void UpdateFromConfigurationService() {
-      foreach ( IFormat format in ConfigurationService.Instance.Formats ) {
+      foreach (IFormat format in ConfigurationService.Instance.Formats) {
         Configuration config = ConfigurationService.Instance.GetConfiguration(format);
         UpdateFormatterGrid(
           (DataGridView)GetControlsOnPage(format.Name, "GridView"),
-          config);        
+          config);
         UpdateDecomposerList(
           (ListView)GetControlsOnPage(format.Name, "DecomposerList"),
           config);
       }
-    }    
+    }
 
     private void initializeConfigPages() {
-      configurationTabs.TabPages.Clear();      
-      foreach ( IFormat format in ConfigurationService.Instance.Formats ) {
+      configurationTabs.TabPages.Clear();
+      foreach (IFormat format in ConfigurationService.Instance.Formats) {
         List<IFormatter> formatters = ConfigurationService.Instance.Formatters[format.SerialDataType];
         TabPage page = new TabPage(format.Name) {
           Name = format.Name,
@@ -106,7 +106,7 @@ namespace HeuristicLab.Persistence.GUI {
         ListView decomposerList = createDecomposerList();
         horizontalSplit.Panel1.Controls.Add(decomposerList);
         DataGridView gridView = createGridView();
-        verticalSplit.Panel2.Controls.Add(gridView);        
+        verticalSplit.Panel2.Controls.Add(gridView);
         fillDataGrid(gridView, formatters);
         ListBox checkBox = new ListBox {
           Name = "CheckBox",
@@ -166,7 +166,7 @@ namespace HeuristicLab.Persistence.GUI {
       decomposerList.Columns.Add(
         new ColumnHeader {
           Name = "DecomposerColumn", Text = "Decomposers",
-        });      
+        });
       foreach (IDecomposer decomposer in ConfigurationService.Instance.Decomposers) {
         var item = decomposerList.Items.Add(decomposer.GetType().Name);
         item.Checked = true;
@@ -175,31 +175,31 @@ namespace HeuristicLab.Persistence.GUI {
       return decomposerList;
     }
 
-    private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {            
+    private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {
       Dictionary<string, List<string>> formatterMap = createFormatterMap(formatters);
-      foreach ( var formatterMapping in formatterMap ) {
+      foreach (var formatterMapping in formatterMap) {
         var row = gridView.Rows[gridView.Rows.Add()];
         row.Cells["Type"].Value = formatterMapping.Key;
         row.Cells["Type"].ToolTipText = formatterMapping.Key;
-        row.Cells["Active"].Value = true;        
-        var comboBoxCell = (DataGridViewComboBoxCell) row.Cells["Formatter"];          
-        foreach ( var formatter in formatterMapping.Value ) {
+        row.Cells["Active"].Value = true;
+        var comboBoxCell = (DataGridViewComboBoxCell)row.Cells["Formatter"];
+        foreach (var formatter in formatterMapping.Value) {
           comboBoxCell.Items.Add(formatter);
-        }          
-        comboBoxCell.Value = comboBoxCell.Items[0];          
+        }
+        comboBoxCell.Value = comboBoxCell.Items[0];
         comboBoxCell.ToolTipText = comboBoxCell.Items[0].ToString();
         if (comboBoxCell.Items.Count == 1) {
           comboBoxCell.ReadOnly = true;
           comboBoxCell.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
-        }     
+        }
       }
     }
 
     private Dictionary<string, List<string>> createFormatterMap(IEnumerable<IFormatter> formatters) {
-      var formatterMap = new Dictionary<string, List<string>>();      
+      var formatterMap = new Dictionary<string, List<string>>();
       foreach (var formatter in formatters) {
         string formatterName = reverseFormatterTable[formatter];
-        string typeName = reverseTypeNameTable[formatter.SourceType];          
+        string typeName = reverseTypeNameTable[formatter.SourceType];
         if (!formatterMap.ContainsKey(typeName))
           formatterMap.Add(typeName, new List<string>());
         formatterMap[typeName].Add(formatterName);
@@ -220,7 +220,7 @@ namespace HeuristicLab.Persistence.GUI {
             formatterName = formatter.GetType().VersionInvariantName();
           }
           simpleFormatterTable[formatter.GetType().Name] = true;
-          formatterTable.Add(formatterName, formatter);          
+          formatterTable.Add(formatterName, formatter);
           reverseFormatterTable.Add(formatter, formatterName);
 
           string typeName = formatter.SourceType.IsGenericType ?
@@ -243,21 +243,21 @@ namespace HeuristicLab.Persistence.GUI {
           }
         }
       }
-    }    
+    }
 
     void gridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
       UpdatePreview();
-    }    
+    }
 
     private void decomposerList_ItemDrag(object sender, ItemDragEventArgs e) {
-      ListView decomposerList = (ListView) sender;
+      ListView decomposerList = (ListView)sender;
       decomposerList.DoDragDrop(decomposerList.SelectedItems, DragDropEffects.Move);
     }
 
-    private void decomposerList_DragEnter(object sender, DragEventArgs e) {      
-      if ( e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection).FullName)) {
+    private void decomposerList_DragEnter(object sender, DragEventArgs e) {
+      if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection).FullName)) {
         e.Effect = DragDropEffects.Move;
-      } 
+      }
     }
 
     private void decomposerList_DragDrop(object sender, DragEventArgs e) {
@@ -265,21 +265,21 @@ namespace HeuristicLab.Persistence.GUI {
       if (decomposerList.SelectedItems.Count == 0) {
         return;
       }
-      Point cp = decomposerList.PointToClient(new Point(e.X, e.Y));      
-      ListViewItem targetItem = decomposerList.GetItemAt(cp.X, cp.Y);      
+      Point cp = decomposerList.PointToClient(new Point(e.X, e.Y));
+      ListViewItem targetItem = decomposerList.GetItemAt(cp.X, cp.Y);
       if (targetItem == null)
-        return;            
-      int targetIndex = targetItem.Index;      
+        return;
+      int targetIndex = targetItem.Index;
       var selectedItems = new List<ListViewItem>(decomposerList.SelectedItems.Cast<ListViewItem>());
       int i = 0;
-      foreach ( ListViewItem dragItem in selectedItems ) {                
+      foreach (ListViewItem dragItem in selectedItems) {
         if (targetIndex == dragItem.Index)
           return;
         if (dragItem.Index < targetIndex) {
-          decomposerList.Items.Insert(targetIndex + 1, (ListViewItem) dragItem.Clone());
+          decomposerList.Items.Insert(targetIndex + 1, (ListViewItem)dragItem.Clone());
         } else {
-          decomposerList.Items.Insert(targetIndex + i, (ListViewItem)dragItem.Clone());          
-        }        
+          decomposerList.Items.Insert(targetIndex + i, (ListViewItem)dragItem.Clone());
+        }
         decomposerList.Items.Remove(dragItem);
         i++;
       }
@@ -287,22 +287,22 @@ namespace HeuristicLab.Persistence.GUI {
     }
 
     private void decomposerList_Resize(object sender, EventArgs e) {
-      ListView decomposerList = (ListView)sender;      
-      decomposerList.Columns["DecomposerColumn"].Width = decomposerList.Width - 4;      
+      ListView decomposerList = (ListView)sender;
+      decomposerList.Columns["DecomposerColumn"].Width = decomposerList.Width - 4;
     }
-    
+
     private void UpdatePreview() {
-      ListBox checkBox = (ListBox)GetActiveControl("CheckBox");      
+      ListBox checkBox = (ListBox)GetActiveControl("CheckBox");
       IFormat activeFormat = (IFormat)configurationTabs.SelectedTab.Tag;
-      if (activeFormat != null && checkBox != null ) {
+      if (activeFormat != null && checkBox != null) {
         checkBox.Items.Clear();
         Configuration activeConfig = GetActiveConfiguration();
         foreach (var formatter in activeConfig.Formatters) {
           checkBox.Items.Add(formatter.GetType().Name + " (F)");
         }
         foreach (var decomposer in activeConfig.Decomposers)
-          checkBox.Items.Add(decomposer.GetType().Name + " (D)");      
-      }      
+          checkBox.Items.Add(decomposer.GetType().Name + " (D)");
+      }
     }
 
     private void decomposerList_ItemChecked(object sender, ItemCheckedEventArgs e) {
@@ -315,16 +315,16 @@ namespace HeuristicLab.Persistence.GUI {
         return controls[0];
       } else {
         return null;
-      }      
+      }
     }
 
-    private Control GetControlsOnPage(string pageName, string name) {      
+    private Control GetControlsOnPage(string pageName, string name) {
       Control[] controls = configurationTabs.TabPages[pageName].Controls.Find(name, true);
       if (controls.Length == 1) {
         return controls[0];
       } else {
         return null;
-      }      
+      }
     }
 
     private Configuration GenerateConfiguration(IFormat format, DataGridView formatterGrid, ListView decomposerList) {
@@ -357,18 +357,18 @@ namespace HeuristicLab.Persistence.GUI {
     }
 
     private Configuration GetConfiguration(IFormat format) {
-       return GenerateConfiguration(format,
-        (DataGridView)GetControlsOnPage(format.Name, "GridView"),
-        (ListView)GetControlsOnPage(format.Name, "DecomposerList"));
+      return GenerateConfiguration(format,
+       (DataGridView)GetControlsOnPage(format.Name, "GridView"),
+       (ListView)GetControlsOnPage(format.Name, "DecomposerList"));
     }
-    
+
     private void updateButton_Click(object sender, EventArgs e) {
       IFormat format = (IFormat)configurationTabs.SelectedTab.Tag;
       if (format != null)
         ConfigurationService.Instance.DefineConfiguration(
           GetActiveConfiguration());
-    }    
-    
+    }
+
   }
 
   public class Empty : ISerialData { }
@@ -382,7 +382,7 @@ namespace HeuristicLab.Persistence.GUI {
   public class EmptyFormatter : FormatterBase<Type, Empty> {
 
     public override Empty Format(Type o) {
- 	   return null;
+      return null;
     }
 
     public override Type Parse(Empty o) {
@@ -399,8 +399,8 @@ namespace HeuristicLab.Persistence.GUI {
 
     public override bool Parse(Empty o) {
       return false;
-    }    
-  }  
+    }
+  }
 
   [EmptyStorableClass]
   public class Int2XmlFormatter : FormatterBase<int, Empty> {
@@ -423,7 +423,7 @@ namespace HeuristicLab.Persistence.GUI {
       return sb.ToString();
     }
 
-    private static void SimpleFullName(Type type, StringBuilder sb) {      
+    private static void SimpleFullName(Type type, StringBuilder sb) {
       if (type.IsGenericType) {
         sb.Append(type.Name, 0, type.Name.LastIndexOf('`'));
         sb.Append("<");

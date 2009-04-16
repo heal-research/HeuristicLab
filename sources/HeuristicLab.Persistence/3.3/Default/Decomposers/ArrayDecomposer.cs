@@ -4,7 +4,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
-    
+
   [EmptyStorableClass]
   public class ArrayDecomposer : IDecomposer {
 
@@ -19,16 +19,16 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
       Array a = (Array)obj;
       yield return new Tag("rank", a.Rank);
-      for (int i = 0; i < a.Rank; i++) {      
+      for (int i = 0; i < a.Rank; i++) {
         yield return new Tag("length_" + i, a.GetLength(i));
       }
-      for (int i = 0; i < a.Rank; i++) {        
+      for (int i = 0; i < a.Rank; i++) {
         yield return new Tag("lowerBound_" + i, a.GetLowerBound(i));
-      }      
+      }
     }
 
     public IEnumerable<Tag> Decompose(object array) {
-      Array a = (Array)array;      
+      Array a = (Array)array;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
       for (int i = 0; i < a.Rank; i++) {
@@ -66,10 +66,10 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         e.MoveNext();
         lowerBounds[i] = (int)e.Current.Value;
       }
-      return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);      
+      return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
     }
 
-    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {      
+    public void Populate(object instance, IEnumerable<Tag> elements, Type t) {
       Array a = (Array)instance;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
@@ -78,15 +78,15 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
       for (int i = 0; i < a.Rank; i++) {
         lowerBounds[i] = a.GetLowerBound(i);
-      }      
+      }
       int[] positions = (int[])lowerBounds.Clone();
       IEnumerator<Tag> e = elements.GetEnumerator();
       while (e.MoveNext()) {
         int[] currentPositions = positions;
         a.SetValue(e.Current.Value, currentPositions);
         positions[0] += 1;
-        for (int i = 0; i < a.Rank-1; i++) {
-          if (positions[i] >= lengths[i]+lowerBounds[i]) {
+        for (int i = 0; i < a.Rank - 1; i++) {
+          if (positions[i] >= lengths[i] + lowerBounds[i]) {
             positions[i] = lowerBounds[i];
             positions[i + 1] += 1;
           } else {
@@ -96,5 +96,5 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
   }
-  
+
 }

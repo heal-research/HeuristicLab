@@ -16,7 +16,7 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
   }
 
   public class ViewOnlyFormat : FormatBase<String> {
-    public override string Name { get { return "ViewOnly"; } }    
+    public override string Name { get { return "ViewOnly"; } }
   }
 
   public abstract class ValueType2ViewFormatterBase<T> : FormatterBase<T, String> {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
 
   [EmptyStorableClass]
   public class Float2ViewFormatter : ValueType2ViewFormatterBase<float> { }
-    
+
   public class ViewOnlyGenerator : GeneratorBase<string> {
 
     private bool isSepReq;
@@ -57,19 +57,19 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     public ViewOnlyGenerator(bool showRefs) {
       isSepReq = false;
       this.showRefs = showRefs;
-    }    
+    }
 
     protected override string Format(BeginToken beginToken) {
-      StringBuilder sb = new StringBuilder();      
+      StringBuilder sb = new StringBuilder();
       if (isSepReq)
         sb.Append(", ");
-      if ( ! string.IsNullOrEmpty(beginToken.Name) ) {
+      if (!string.IsNullOrEmpty(beginToken.Name)) {
         sb.Append(beginToken.Name);
-        if ( beginToken.Id != null && showRefs ) {
+        if (beginToken.Id != null && showRefs) {
           sb.Append('[');
           sb.Append(beginToken.Id);
           sb.Append(']');
-        }        
+        }
       }
       sb.Append("(");
       isSepReq = false;
@@ -77,17 +77,17 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     }
 
     protected override string Format(EndToken endToken) {
-      isSepReq = true;     
+      isSepReq = true;
       return ")";
     }
 
     protected override string Format(PrimitiveToken primitiveToken) {
-      StringBuilder sb = new StringBuilder();      
+      StringBuilder sb = new StringBuilder();
       if (isSepReq)
         sb.Append(", ");
-      if ( ! string.IsNullOrEmpty(primitiveToken.Name) ) {
+      if (!string.IsNullOrEmpty(primitiveToken.Name)) {
         sb.Append(primitiveToken.Name);
-        if ( primitiveToken.Id != null && showRefs ) {
+        if (primitiveToken.Id != null && showRefs) {
           sb.Append('[');
           sb.Append(primitiveToken.Id);
           sb.Append(']');
@@ -95,22 +95,22 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
         sb.Append('=');
       }
       sb.Append(((String)primitiveToken.SerialData).Data);
-      isSepReq = true;      
-      return sb.ToString();  
+      isSepReq = true;
+      return sb.ToString();
     }
 
     protected override string Format(ReferenceToken referenceToken) {
       StringBuilder sb = new StringBuilder();
       if (isSepReq)
         sb.Append(", ");
-      if ( ! string.IsNullOrEmpty(referenceToken.Name) ) {
+      if (!string.IsNullOrEmpty(referenceToken.Name)) {
         sb.Append(referenceToken.Name);
         sb.Append('=');
       }
       sb.Append('{');
       sb.Append(referenceToken.Id);
       sb.Append('}');
-      isSepReq = true;      
+      isSepReq = true;
       return sb.ToString();
     }
 
@@ -140,11 +140,11 @@ namespace HeuristicLab.Persistence.Default.ViewOnly {
     }
 
     public static string Serialize(object o, Configuration configuration) {
-      Serializer s = new Serializer(o, configuration);      
+      Serializer s = new Serializer(o, configuration);
       ViewOnlyGenerator generator = new ViewOnlyGenerator();
       StringBuilder sb = new StringBuilder();
       foreach (ISerializationToken token in s) {
-        sb.Append(generator.Format(token));        
+        sb.Append(generator.Format(token));
       }
       return sb.ToString();
     }

@@ -46,6 +46,6 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// the same as they where generated. Keys might be null.
     /// </summary>    
     void Populate(object instance, IEnumerable<Tag> tags, Type type);
-  }  
+  }
 
 }
