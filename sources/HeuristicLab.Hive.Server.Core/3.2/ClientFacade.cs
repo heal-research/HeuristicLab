@@ -69,7 +69,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseResultReceived ProcessSnapshot(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
-      throw new NotImplementedException();
+      return clientCommunicator.ProcessSnapshot(clientId, jobId, result, percentage, exception);
     }
 
     #endregion
