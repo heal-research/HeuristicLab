@@ -67,6 +67,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       timerSyncronize.Start();
     }
 
+
+    #region Backgroundworker
     /// <summary>
     /// event on Ticker
     /// </summary>
@@ -82,9 +84,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       Refresh();
     }
 
-    private int CapacityRam(int noCores, int freeCores) {
-      return (((noCores - freeCores) / noCores) * 100); 
-    }
+    #endregion
 
     /// <summary>
     /// Adds clients to ListView and TreeView
@@ -106,7 +106,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if ((ci.State == State.offline) || (ci.State == State.nullState)) {
               item = new ListViewItem(ci.Name, 3, lvg);
             } else {
-                            int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
+              int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
               int usage = 0;
               if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
                 usage = 0;
@@ -300,7 +300,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblJobCalculationEnd.Text = "";
       }
       if (currentJob.State != State.offline) {
-        GetSnapshotList();
+        lvSnapshots.Items.Clear();
+        if (currentJob.State == State.finished) 
+          GetSnapshotList();
         lvSnapshots.Visible = true;
       } else {
         lvSnapshots.Visible = false;
@@ -312,7 +314,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (change.Types == Type.Job) {
           RefreshJob(change);
         } else if (change.Types == Type.Client) {
-         RefreshClient(change);
+          RefreshClient(change);
         } else if (change.Types == Type.ClientGroup) {
           RefreshClientGroup(change);
         }
@@ -535,6 +537,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       } else return false;
     }
 
+    private int CapacityRam(int noCores, int freeCores) {
+      int capacity = ((noCores - freeCores) / noCores) * 100;
+      System.Diagnostics.Debug.WriteLine(capacity);
+      return capacity;
+    }
+
     private void GetDelta(IList<ClientInfo> oldClient, IDictionary<int, ClientInfo> helpClients) {
       bool found = false;
 
@@ -620,7 +628,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
             found = true;
             if (job.State != State.offline) {
-              if ((!IsEqual(job.Client, jobold.Client)) || (job.State != jobold.State) 
+              if ((!IsEqual(job.Client, jobold.Client)) || (job.State != jobold.State)
                    || (job.Percentage != jobold.Percentage)) {
                 changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Update, Position = i });
               }
@@ -657,21 +665,20 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void GetSnapshotList() {
 
       lvSnapshots.Items.Clear();
-      IJobManager jobManager =
-        ServiceLocator.GetJobManager();
+      IJobManager jobManager = ServiceLocator.GetJobManager();
+
       ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
+
+      // iterate threw all snapshots if method is implemented
+
       ListViewItem curSnapshot = new ListViewItem(jobRes.Obj.Client.Name);
       double percentage = jobRes.Obj.Percentage * 100;
       curSnapshot.SubItems.Add(percentage.ToString() + " %");
       curSnapshot.SubItems.Add(jobRes.Obj.timestamp.ToString());
       lvSnapshots.Items.Add(curSnapshot);
-
-
     }
 
     #endregion
-
-
 
   }
 }
