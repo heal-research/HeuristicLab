@@ -56,6 +56,6 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response IsJobStillNeeded(Guid jobId);
     [OperationContract]
-    ResponsePlugin SendPlugins(List<PluginInfo> pluginList);
+    ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList);
   }
 }

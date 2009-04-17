@@ -64,7 +64,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return clientCommunicator.IsJobStillNeeded(jobId);
     }
 
-    public ResponsePlugin SendPlugins(List<PluginInfo> pluginList) {
+    public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
       return clientCommunicator.SendPlugins(pluginList);
     }
 
