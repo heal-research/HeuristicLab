@@ -29,6 +29,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.IO;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -91,9 +92,6 @@ namespace HeuristicLab.Hive.Engine {
         pluginInfo.Name = info.Name;
         pluginInfo.Version = info.Version.ToString();
         pluginInfo.BuildDate = info.BuildDate.ToString();
-
-
-
         pluginsNeeded.Add(pluginInfo);
       }
 
