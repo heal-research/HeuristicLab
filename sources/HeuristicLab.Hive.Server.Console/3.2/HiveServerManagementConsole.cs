@@ -62,6 +62,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public HiveServerManagementConsole() {
       InitializeComponent();
+      Init();
       AddClients();
       AddJobs();
       timerSyncronize.Start();
@@ -85,6 +86,37 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     #endregion
+
+    private void Init() {
+
+      //adding context menu items for jobs
+      menuItemAbortJob.Click += (s, e) => {
+        IJobManager jobManager = ServiceLocator.GetJobManager();
+        if (lvJobControl.SelectedItems.Count == 1) {
+          Guid jobID = Guid.Empty;
+          jobID = (Guid)TypeDescriptor.GetConverter(jobID).ConvertFrom(lvJobControl.SelectedItems[0].Text);
+          jobManager.AbortJob(jobID);
+        }
+      };
+
+      menuItemGetSnapshot.Click += (s, e) => {
+        IJobManager jobManager = ServiceLocator.GetJobManager();
+        if (lvJobControl.SelectedItems.Count == 1) {
+          Guid jobID = Guid.Empty;
+          jobID = (Guid)TypeDescriptor.GetConverter(jobID).ConvertFrom(lvJobControl.SelectedItems[0].Text);
+          jobManager.RequestSnapshot(jobID);
+        }
+      };
+
+    }
+
+    private void lvJobControl_MouseUp(object sender, MouseEventArgs e) {
+      // If the right mouse button was clicked and released,
+      // display the shortcut menu assigned to the TreeView. 
+      if (e.Button == MouseButtons.Right && lvJobControl.SelectedItems.Count == 1) {
+        lvJobControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
+      }
+    }
 
     /// <summary>
     /// Adds clients to ListView and TreeView
@@ -688,6 +720,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     #endregion
+
+
+
 
   }
 }

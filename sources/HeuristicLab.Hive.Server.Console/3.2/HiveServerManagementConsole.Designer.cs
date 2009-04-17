@@ -72,6 +72,9 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.lvClientControl = new System.Windows.Forms.ListView();
+      this.contextMenuJob = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.menuItemAbortJob = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItemGetSnapshot = new System.Windows.Forms.ToolStripMenuItem();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
       this.menuStrip1.SuspendLayout();
@@ -90,6 +93,7 @@
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
+      this.contextMenuJob.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -489,6 +493,7 @@
       // lvJobControl
       // 
       this.lvJobControl.AllowDrop = true;
+      this.lvJobControl.ContextMenuStrip = this.contextMenuJob;
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvJobControl.LargeImageList = this.ilJobControl;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
@@ -497,6 +502,7 @@
       this.lvJobControl.Size = new System.Drawing.Size(454, 386);
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
+      this.lvJobControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseUp);
       this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
       this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
       // 
@@ -542,6 +548,26 @@
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
       this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
+      // 
+      // contextMenuJob
+      // 
+      this.contextMenuJob.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemAbortJob,
+            this.menuItemGetSnapshot});
+      this.contextMenuJob.Name = "contextMenuJob";
+      this.contextMenuJob.Size = new System.Drawing.Size(151, 48);
+      // 
+      // menuItemAbortJob
+      // 
+      this.menuItemAbortJob.Name = "menuItemAbortJob";
+      this.menuItemAbortJob.Size = new System.Drawing.Size(150, 22);
+      this.menuItemAbortJob.Text = "Abort";
+      // 
+      // menuItemGetSnapshot
+      // 
+      this.menuItemGetSnapshot.Name = "menuItemGetSnapshot";
+      this.menuItemGetSnapshot.Size = new System.Drawing.Size(150, 22);
+      this.menuItemGetSnapshot.Text = "Get Snapshot";
       // 
       // tcManagementConsole
       // 
@@ -595,6 +621,7 @@
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
+      this.contextMenuJob.ResumeLayout(false);
       this.tcManagementConsole.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -652,5 +679,8 @@
     private System.Windows.Forms.ListView lvJobControl;
     private System.Windows.Forms.CheckBox checkBox1;
     private System.Windows.Forms.ColumnHeader chSnapshotTime;
+    private System.Windows.Forms.ContextMenuStrip contextMenuJob;
+    private System.Windows.Forms.ToolStripMenuItem menuItemAbortJob;
+    private System.Windows.Forms.ToolStripMenuItem menuItemGetSnapshot;
   }
 }
