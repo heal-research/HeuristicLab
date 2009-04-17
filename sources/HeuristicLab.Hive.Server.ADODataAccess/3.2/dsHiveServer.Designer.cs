@@ -55,6 +55,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         private global::System.Data.DataRelation relationR_52;
         
+        private global::System.Data.DataRelation relationR_59;
+        
+        private global::System.Data.DataRelation relationR_47;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -363,6 +367,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             this.relationR_51 = this.Relations["R_51"];
             this.relationR_54 = this.Relations["R_54"];
             this.relationR_52 = this.Relations["R_52"];
+            this.relationR_59 = this.Relations["R_59"];
+            this.relationR_47 = this.Relations["R_47"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -416,6 +422,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
                         this.tableClientGroup_Resource.ClientGroupIdColumn}, false);
             this.Relations.Add(this.relationR_52);
+            this.relationR_59 = new global::System.Data.DataRelation("R_59", new global::System.Data.DataColumn[] {
+                        this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableClientGroup_Resource.ResourceIdColumn}, false);
+            this.Relations.Add(this.relationR_59);
+            this.relationR_47 = new global::System.Data.DataRelation("R_47", new global::System.Data.DataColumn[] {
+                        this.tableClient.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableJobResult.ResourceIdColumn}, false);
+            this.Relations.Add(this.relationR_47);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -997,7 +1011,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                                 this.columnResourceId}, true));
                 this.columnResourceId.AllowDBNull = false;
                 this.columnResourceId.Unique = true;
-                this.columnName.MaxLength = 18;
+                this.columnName.MaxLength = 100;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1436,13 +1450,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public ClientGroup_ResourceRow AddClientGroup_ResourceRow(ResourceRow parentResourceRowByR_52, System.Guid ResourceId) {
+            public ClientGroup_ResourceRow AddClientGroup_ResourceRow(ResourceRow parentResourceRowByR_52, ResourceRow parentResourceRowByR_59) {
                 ClientGroup_ResourceRow rowClientGroup_ResourceRow = ((ClientGroup_ResourceRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
-                        ResourceId};
+                        null};
                 if ((parentResourceRowByR_52 != null)) {
                     columnValuesArray[0] = parentResourceRowByR_52[0];
+                }
+                if ((parentResourceRowByR_59 != null)) {
+                    columnValuesArray[1] = parentResourceRowByR_59[0];
                 }
                 rowClientGroup_ResourceRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowClientGroup_ResourceRow);
@@ -2125,7 +2142,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public JobResultRow AddJobResultRow(System.Guid JobResultId, JobRow parentJobRowByR_14, byte[] JobResult, string Message, double Percentage, System.Guid ResourceId, System.DateTime DateFinished) {
+            public JobResultRow AddJobResultRow(System.Guid JobResultId, JobRow parentJobRowByR_14, byte[] JobResult, string Message, double Percentage, ClientRow parentClientRowByR_47, System.DateTime DateFinished) {
                 JobResultRow rowJobResultRow = ((JobResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         JobResultId,
@@ -2133,10 +2150,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         JobResult,
                         Message,
                         Percentage,
-                        ResourceId,
+                        null,
                         DateFinished};
                 if ((parentJobRowByR_14 != null)) {
                     columnValuesArray[1] = parentJobRowByR_14[0];
+                }
+                if ((parentClientRowByR_47 != null)) {
+                    columnValuesArray[5] = parentClientRowByR_47[0];
                 }
                 rowJobResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowJobResultRow);
@@ -2719,8 +2739,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                                 this.columnPluginId}, true));
                 this.columnPluginId.AllowDBNull = false;
                 this.columnPluginId.Unique = true;
-                this.columnName.MaxLength = 20;
-                this.columnVersion.MaxLength = 20;
+                this.columnName.MaxLength = 100;
+                this.columnVersion.MaxLength = 100;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3081,6 +3101,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     return ((JobRow[])(base.GetChildRows(this.Table.ChildRelations["R_21"])));
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public JobResultRow[] GetJobResultRows() {
+                if ((this.Table.ChildRelations["R_47"] == null)) {
+                    return new JobResultRow[0];
+                }
+                else {
+                    return ((JobResultRow[])(base.GetChildRows(this.Table.ChildRelations["R_47"])));
+                }
+            }
         }
         
         /// <summary>
@@ -3161,6 +3191,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_52"])));
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow[] GetClientGroup_ResourceRowsByR_59() {
+                if ((this.Table.ChildRelations["R_59"] == null)) {
+                    return new ClientGroup_ResourceRow[0];
+                }
+                else {
+                    return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_59"])));
+                }
+            }
         }
         
         /// <summary>
@@ -3239,6 +3279,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["R_52"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ResourceRow ResourceRowByR_59 {
+                get {
+                    return ((ResourceRow)(this.GetParentRow(this.Table.ParentRelations["R_59"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_59"]);
                 }
             }
         }
@@ -3719,6 +3769,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["R_14"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientRow ClientRow {
+                get {
+                    return ((ClientRow)(this.GetParentRow(this.Table.ParentRelations["R_47"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_47"]);
                 }
             }
             
@@ -4963,12 +5023,9 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Resource] WHERE (([ResourceId] = @Original_ResourceId) AND ((@" +
-                "IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Resource] WHERE (([ResourceId] = @Original_ResourceId))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Name", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
             this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Resource] ([ResourceId], [Name]) VALUES (@ResourceId, @Name);\r" +
@@ -4978,14 +5035,13 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[Resource] SET [ResourceId] = @ResourceId, [Name] = @Name WHERE (([ResourceId] = @Original_ResourceId) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)));
-SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[Resource] SET [ResourceId] = @ResourceId, [Name] = @Name WHERE (([R" +
+                "esourceId] = @Original_ResourceId));\r\nSELECT ResourceId, Name FROM Resource WHER" +
+                "E (ResourceId = @ResourceId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Name", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5003,17 +5059,17 @@ SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT Resource.* FROM \r\n  Resource INNER JOIN Client ON Resource.ResourceId = Cl" +
-                "ient.ResourceId\r\n  WHERE Client.Status <> \'offline\'";
+            this._commandCollection[1].CommandText = "SELECT Resource.Name, Resource.ResourceId FROM Resource INNER JOIN Client ON Reso" +
+                "urce.ResourceId = Client.ResourceId WHERE (Client.Status <> \'offline\')";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT * FROM dbo.Resource WHERE ResourceId = @ID";
+            this._commandCollection[2].CommandText = "SELECT Name, ResourceId FROM Resource WHERE (ResourceId = @ID)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ID", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT * FROM dbo.Resource WHERE Name = @Name";
+            this._commandCollection[3].CommandText = "SELECT Name, ResourceId FROM Resource WHERE (Name = @Name)";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
@@ -5148,16 +5204,8 @@ SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.Guid Original_ResourceId, string Original_Name) {
+        public virtual int Delete(System.Guid Original_ResourceId) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_ResourceId));
-            if ((Original_Name == null)) {
-                this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[2].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[2].Value = ((string)(Original_Name));
-            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -5204,7 +5252,7 @@ SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid ResourceId, string Name, System.Guid Original_ResourceId, string Original_Name) {
+        public virtual int Update(System.Guid ResourceId, string Name, System.Guid Original_ResourceId) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(ResourceId));
             if ((Name == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
@@ -5213,14 +5261,6 @@ SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
                 this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Name));
             }
             this.Adapter.UpdateCommand.Parameters[2].Value = ((System.Guid)(Original_ResourceId));
-            if ((Original_Name == null)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(Original_Name));
-            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -5240,8 +5280,8 @@ SELECT ResourceId, Name FROM Resource WHERE (ResourceId = @ResourceId)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Name, System.Guid Original_ResourceId, string Original_Name) {
-            return this.Update(Original_ResourceId, Name, Original_ResourceId, Original_Name);
+        public virtual int Update(string Name, System.Guid Original_ResourceId) {
+            return this.Update(Original_ResourceId, Name, Original_ResourceId);
         }
     }
     
@@ -7208,12 +7248,14 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT * FROM dbo.JobResult WHERE JobResultId = @Id";
+            this._commandCollection[1].CommandText = "SELECT DateFinished, JobId, JobResult, JobResultId, Message, Percentage, Resource" +
+                "Id FROM JobResult WHERE (JobResultId = @Id)";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT * FROM dbo.JobResult WHERE JobId = @JobId";
+            this._commandCollection[2].CommandText = "SELECT DateFinished, JobId, JobResult, JobResultId, Message, Percentage, Resource" +
+                "Id FROM JobResult WHERE (JobId = @JobId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
