@@ -41,6 +41,14 @@ namespace HeuristicLab.PluginInfrastructure {
       FireOnLoad();
       PluginManager.Manager.LoadedPlugins = plugins;
     }
+    /// <summary>
+    /// Loads plugins from a byte array
+    /// </summary>
+    /// <param name="plugins">bytearray of all plugins that should be loaded</param>
+    public void LoadPlugins(ICollection<byte[]> plugins) {
+      foreach (byte[] plugin in plugins)
+        Assembly.Load(plugin);
+    }
 
     public void Run(ApplicationInfo appInfo) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.PluginAssembly, appInfo.PluginType).Unwrap();

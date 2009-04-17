@@ -4,7 +4,6 @@
   <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" />
   <xs:element name="Login">
     <xs:complexType>
       <xs:sequence>
@@ -114,7 +113,7 @@
   <xs:element name="SendPlugins">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" minOccurs="0" name="pluginList" nillable="true" type="q16:ArrayOfPluginInfo" />
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" minOccurs="0" name="pluginList" nillable="true" type="q19:ArrayOfHivePluginInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

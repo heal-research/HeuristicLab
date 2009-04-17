@@ -5,6 +5,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Common;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
   public class PluginCache {
@@ -18,11 +19,11 @@ namespace HeuristicLab.Hive.Client.Core {
       pluginCache.Add(plugin);    
     }
 
-    public List<CachedHivePluginInfo> GetPlugins(List<PluginInfo> requests) {
+    public List<CachedHivePluginInfo> GetPlugins(List<HivePluginInfo> requests) {
       List<CachedHivePluginInfo> neededPlugins = new List<CachedHivePluginInfo>();
-      List<PluginInfo> missingPlugins = new List<PluginInfo>();
+      List<HivePluginInfo> missingPlugins = new List<HivePluginInfo>();
       bool found = false;
-      foreach (PluginInfo info in requests) {
+      foreach (HivePluginInfo info in requests) {
         foreach (CachedHivePluginInfo cache in pluginCache) {
           if (info.Equals(cache)) {
             neededPlugins.Add(cache);

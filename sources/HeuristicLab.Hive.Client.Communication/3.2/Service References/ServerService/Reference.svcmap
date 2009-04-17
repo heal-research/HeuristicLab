@@ -17,18 +17,18 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://10.20.53.7:9000/HiveServer/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://10.20.53.2:9000/HiveServer/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="ceb125d3-f4d3-4af5-8fbf-11cb3a2a2651" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="b397e011-e88d-4a05-acb2-a7ff59cba729" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="c410fac9-aa83-4b25-924f-896bbb7e41d9" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" MetadataType="Schema" ID="3e897fc0-f222-46e3-a03a-7afd47f6419b" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.DataAccess1.xsd" MetadataType="Schema" ID="eafbe601-c045-41f4-b2dd-7fcf4ec1feef" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.Hive.Contracts1.xsd" MetadataType="Schema" ID="679f24c7-bc6c-45b8-a1cc-9339911bddc9" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="53f47e2f-ca2b-4f21-9457-037e222fefaf" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="System1.xsd" MetadataType="Schema" ID="6a87c5f1-b08b-4dea-b2b3-bd10a1f13d52" SourceId="1" SourceUrl="net.tcp://10.20.53.7:9000/HiveServer/mex" />
-    <MetadataFile FileName="HeuristicLab.PluginInfrastructure.xsd" MetadataType="Schema" ID="2dafc69c-27f2-456d-80d7-303362ac8b68" SourceId="1" SourceUrl="net.tcp://10.20.53.3:9000/HiveServer/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="3e312443-dbf2-4fea-83bf-061680f77672" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="a779c2ad-9688-4d69-b8d9-4646934978f7" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="service3.xsd" MetadataType="Schema" ID="beb401a3-0cfd-425e-a988-929712770fe6" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" MetadataType="Schema" ID="ca6a32ca-2685-4840-8a21-27071617387b" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.DataAccess.xsd" MetadataType="Schema" ID="b525b917-9b1e-4fa9-bbae-860f5bfcdaed" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.Hive.Contracts1.xsd" MetadataType="Schema" ID="5daa43c0-3c44-4734-ab5d-dcdf89126c13" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="c0bbfc71-65d9-470c-9350-c588b628c1cf" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="System1.xsd" MetadataType="Schema" ID="13a2f08c-6842-4409-894d-0a86add68173" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
+    <MetadataFile FileName="HeuristicLab.PluginInfrastructure1.xsd" MetadataType="Schema" ID="3b1f3008-1103-4efe-9d56-dc8d55109c87" SourceId="1" SourceUrl="net.tcp://10.20.53.2:9000/HiveServer/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

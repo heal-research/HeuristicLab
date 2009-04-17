@@ -71,7 +71,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Response">
         <xs:sequence>
-          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" minOccurs="0" name="Plugins" nillable="true" type="q2:ArrayOfCachedPlugin" />
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" minOccurs="0" name="Plugins" nillable="true" type="q2:ArrayOfCachedHivePluginInfo" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
