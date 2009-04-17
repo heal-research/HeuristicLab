@@ -38,6 +38,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public String Version { get; set; }
 
     [DataMember]
-    public String BuildDate { get; set; }
+    public DateTime BuildDate { get; set; }
   }
 }

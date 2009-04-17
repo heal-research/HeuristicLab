@@ -308,6 +308,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       List<Guid> relationships =
         new List<Guid>();
       foreach (HivePluginInfo pluginInfo in obj.PluginsNeeded) {
+        //first check if pluginInfo already exists in the db
+        HivePluginInfo found = PluginInfoAdapter.GetByNameVersionBuilddate(
+          pluginInfo.Name, pluginInfo.Version, pluginInfo.BuildDate);
+        if (found != null) {
+          pluginInfo.Id = found.Id;
+        }
+
         PluginInfoAdapter.Update(pluginInfo);
         relationships.Add(pluginInfo.Id);
       }
@@ -333,6 +340,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           //delete all relationships
           ManyToManyRelationHelper.UpdateRelationships(job.Id,
             new List<Guid>());
+
+          //delete orphaned pluginInfos
+          ICollection<HivePluginInfo> orphanedPluginInfos =
+             PluginInfoAdapter.GetOrphanedPluginInfos();
+          foreach(HivePluginInfo orphanedPlugin in orphanedPluginInfos) {
+            PluginInfoAdapter.Delete(orphanedPlugin);
+          }
 
           return base.doDelete(job);
         }

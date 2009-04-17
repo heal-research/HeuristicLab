@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="datamodel_hive_sqlserver.erwin" />
     <None Include="dsHiveServer.xsc">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
     </None>

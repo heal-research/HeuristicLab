@@ -55,13 +55,29 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (!row.IsBuildDateNull()) {
           pluginInfo.BuildDate = row.BuildDate;
         } else {
-          pluginInfo.BuildDate = null;
+          pluginInfo.BuildDate = DateTime.Now;
         }
 
         return pluginInfo;
       } else {
         return null;
       } 
+    }
+
+    public HivePluginInfo GetByNameVersionBuilddate(String name, String version, DateTime buildDate) {
+      return
+         base.FindSingle(
+           delegate() {
+             return Adapter.GetDataByNameVersionBuilddate(name, version, buildDate);
+           });
+    }
+
+    public ICollection<HivePluginInfo> GetOrphanedPluginInfos() {
+      return
+        base.FindMultiple(
+          delegate() {
+            return Adapter.GetDataByOrphaned();
+          });
     }
   }
 }
