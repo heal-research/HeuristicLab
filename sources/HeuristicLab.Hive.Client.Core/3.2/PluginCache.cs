@@ -9,8 +9,19 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Client.Core {
   public class PluginCache {
+
+    private static PluginCache instance = null;
+    public static PluginCache Instance {
+      get {
+        if (instance == null)
+          instance = new PluginCache();
+        return instance;
+      }
+    } 
+    
     private List<CachedHivePluginInfo> pluginCache;
     
+
     public PluginCache() {
       pluginCache = new List<CachedHivePluginInfo>();
     }
@@ -23,6 +34,8 @@ namespace HeuristicLab.Hive.Client.Core {
       List<CachedHivePluginInfo> neededPlugins = new List<CachedHivePluginInfo>();
       List<HivePluginInfo> missingPlugins = new List<HivePluginInfo>();
       bool found = false;
+      
+      //Todo: Fix the whole equals thing here
       foreach (HivePluginInfo info in requests) {
         foreach (CachedHivePluginInfo cache in pluginCache) {
           if (info.Equals(cache)) {

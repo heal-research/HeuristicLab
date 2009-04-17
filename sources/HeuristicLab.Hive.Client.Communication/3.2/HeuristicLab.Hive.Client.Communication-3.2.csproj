@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AEB51212-CDBA-4FC6-A2EE-02359AA53ECE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -133,16 +133,17 @@
     <None Include="Service References\ServerService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.Response.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseHB.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseJob.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponsePlugin.datasource" />
     <None Include="Properties\DataSources\HeuristicLab.Hive.Contracts.ResponseResultReceived.datasource" />
     <None Include="Service References\ServerService\Arrays1.xsd" />
-    <None Include="Service References\ServerService\HeuristicLab.DataAccess1.xsd" />
+    <None Include="Service References\ServerService\HeuristicLab.DataAccess.xsd" />
     <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" />
     <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts1.xsd" />
-    <None Include="Service References\ServerService\HeuristicLab.PluginInfrastructure.xsd" />
+    <None Include="Service References\ServerService\HeuristicLab.PluginInfrastructure1.xsd" />
     <None Include="Service References\ServerService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

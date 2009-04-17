@@ -190,7 +190,7 @@ namespace HeuristicLab.PluginInfrastructure {
       return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
     }
 
-    public AppDomain CreateAndInitAppDomainWithSandbox(string friendlyName, bool sandboxed, Type jobType) {
+    public AppDomain CreateAndInitAppDomainWithSandbox(string friendlyName, bool sandboxed, Type jobType, ICollection<byte[]> assemblyFiles) {
       PermissionSet pset;
 
       DiscoveryService dService = new DiscoveryService();
@@ -226,9 +226,12 @@ namespace HeuristicLab.PluginInfrastructure {
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
 
-      if (depPlugins != null && depPlugins.Count > 0) {
-        remoteRunner.LoadPlugins(depPlugins);
-      }
+      if (assemblyFiles != null && assemblyFiles.Count > 0)
+        remoteRunner.LoadPlugins(assemblyFiles);
+    
+      //if (depPlugins != null && depPlugins.Count > 0) {        
+      //  remoteRunner.LoadPlugins(depPlugins);
+      //}
       NotifyListeners(PluginManagerAction.Initialized, "All plugins");
       return applicationDomain;
     }

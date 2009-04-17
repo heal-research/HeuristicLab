@@ -204,8 +204,12 @@ namespace HeuristicLab.Hive.Client.Core {
         bool sandboxed = false;
 
         PluginManager.Manager.Initialize();
+        //Todo: make a set & override the equals method
+        List<byte[]> files = new List<byte[]>();
+        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
+          files.AddRange(plugininfo.PluginFiles);
         
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(HeuristicLab.Hive.Engine.HiveEngine));
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, typeof(HeuristicLab.Hive.Engine.HiveEngine), files);
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
