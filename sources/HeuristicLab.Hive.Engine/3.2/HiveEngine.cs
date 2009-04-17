@@ -92,6 +92,8 @@ namespace HeuristicLab.Hive.Engine {
         pluginInfo.Version = info.Version.ToString();
         pluginInfo.BuildDate = info.BuildDate.ToString();
 
+
+
         pluginsNeeded.Add(pluginInfo);
       }
 

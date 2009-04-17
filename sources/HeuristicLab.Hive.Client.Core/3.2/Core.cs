@@ -228,25 +228,32 @@ namespace HeuristicLab.Hive.Client.Core {
     
 
     void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
-      if (e.Result.Success) {        
-        lock(engines) {        
-          //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
-          //this method has a risk concerning race conditions.
-          //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
+      lock(engines) {
+        try {
           AppDomain.Unload(appDomains[e.Result.JobId]);
           appDomains.Remove(e.Result.JobId);
           engines.Remove(e.Result.JobId);
           jobs.Remove(e.Result.JobId);
-          ClientStatusInfo.JobsProcessed++;
-          Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);
-        }        
+        }
+        catch (Exception ex) {
+          Logging.Instance.Error(this.ToString(), "Exception when unloading the appdomain: ", ex);
+        }
+      }
+      if (e.Result.Success) {        
+      
+        //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
+        //this method has a risk concerning race conditions.
+        //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
+
+        ClientStatusInfo.JobsProcessed++;
+        Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);                
       } else {        
-        Logging.Instance.Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed");
+        Logging.Instance.Error(this.ToString(), "Sending of job " + e.Result.JobId + " failed, job has been wasted. Message: " + e.Result.StatusMessage);
       }
     }
 
     void wcfService_ProcessSnapshotCompleted(object sender, ProcessSnapshotCompletedEventArgs e) {
-      Logging.Instance.Info(this.ToString(), "Snapshot " + e.Result.JobId + " has been transmitted according to plan");
+      Logging.Instance.Info(this.ToString(), "Snapshot " + e.Result.JobId + " has been transmitted according to plan.");
     }
 
     //Todo: First stop all threads, then terminate

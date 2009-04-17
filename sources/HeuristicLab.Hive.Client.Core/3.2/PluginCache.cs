@@ -8,22 +8,22 @@ using HeuristicLab.Hive.Client.Common;
 
 namespace HeuristicLab.Hive.Client.Core {
   public class PluginCache {
-    private List<CachedPlugin> pluginCache;
+    private List<CachedHivePluginInfo> pluginCache;
     
     public PluginCache() {
-      pluginCache = new List<CachedPlugin>();
+      pluginCache = new List<CachedHivePluginInfo>();
     }
     
-    public void AddPlugin(CachedPlugin plugin) {
+    public void AddPlugin(CachedHivePluginInfo plugin) {
       pluginCache.Add(plugin);    
     }
 
-    public List<CachedPlugin> GetPlugins(List<PluginInfo> requests) {
-      List<CachedPlugin> neededPlugins = new List<CachedPlugin>();
+    public List<CachedHivePluginInfo> GetPlugins(List<PluginInfo> requests) {
+      List<CachedHivePluginInfo> neededPlugins = new List<CachedHivePluginInfo>();
       List<PluginInfo> missingPlugins = new List<PluginInfo>();
       bool found = false;
       foreach (PluginInfo info in requests) {
-        foreach (CachedPlugin cache in pluginCache) {
+        foreach (CachedHivePluginInfo cache in pluginCache) {
           if (info.Equals(cache)) {
             neededPlugins.Add(cache);
             found = true;
@@ -35,7 +35,7 @@ namespace HeuristicLab.Hive.Client.Core {
         found = false;
       }
 
-      List<CachedPlugin> receivedPlugins = WcfService.Instance.RequestPlugins(missingPlugins);
+      List<CachedHivePluginInfo> receivedPlugins = WcfService.Instance.RequestPlugins(missingPlugins);
       if (receivedPlugins != null) {
         neededPlugins.AddRange(receivedPlugins);
         pluginCache.AddRange(receivedPlugins);

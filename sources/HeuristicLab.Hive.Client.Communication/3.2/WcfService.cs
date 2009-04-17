@@ -252,7 +252,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       return proxy.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);    
     }
 
-    public List<CachedPlugin> RequestPlugins(List<PluginInfo> requestedPlugins) {
+    public List<CachedHivePluginInfo> RequestPlugins(List<PluginInfo> requestedPlugins) {
       try {
         return proxy.SendPlugins(requestedPlugins.ToArray()).Plugins;
       }

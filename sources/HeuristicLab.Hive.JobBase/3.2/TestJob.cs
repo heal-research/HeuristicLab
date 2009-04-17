@@ -36,7 +36,7 @@ namespace HeuristicLab.Hive.JobBase {
     private int runValue = 0;
 
     public override void Run() {
-      int max = 10;
+      int max = 100;
       while(runValue < max && abort == false) {
         //for (int y = 0; y < Int32.MaxValue; y++) ;
         Thread.Sleep(2000);   

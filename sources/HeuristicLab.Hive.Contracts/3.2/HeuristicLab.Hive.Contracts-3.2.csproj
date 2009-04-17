@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="BusinessObjects\CachedPlugin.cs" />
     <Compile Include="BusinessObjects\ClientGroup.cs" />
     <Compile Include="BusinessObjects\HivePluginInfo.cs" />
     <Compile Include="BusinessObjects\HeartBeatData.cs" />

@@ -10,6 +10,6 @@ namespace HeuristicLab.Hive.Contracts {
   [DataContract]
   public class ResponsePlugin : Response {
     [DataMember]
-    public List<CachedPlugin> Plugins { get; set; }
+    public List<CachedHivePluginInfo> Plugins { get; set; }
   }
 }

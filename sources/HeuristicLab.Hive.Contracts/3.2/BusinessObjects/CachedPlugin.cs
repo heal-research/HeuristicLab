@@ -22,9 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.PluginInfrastructure {
-  public class CachedPlugin : PluginInfo {
+  public class CachedHivePluginInfo : HivePluginInfo {
     
     private List<byte[]> pluginFiles = new List<byte[]>();
     /// <summary>
