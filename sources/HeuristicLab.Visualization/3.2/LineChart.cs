@@ -420,23 +420,26 @@ namespace HeuristicLab.Visualization {
           throw new NotImplementedException();
         }
 
-        // new value was added
-        if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
-          LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness, row.Style);
-          rowEntry.LinesShape.AddShape(lineShape);
-          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index ], 8, row.Color));
-        }
+        if (action == Action.Added) {
+          // new value was added
+          if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
+            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+                                                row.Style);
+            rowEntry.LinesShape.AddShape(lineShape);
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
+          }
+        } else if(action == Action.Modified){
+          // not the first value
+          if (index > 0) {
+            rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
+          }
 
-        // not the first value
-        if (index > 0) {
-          rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
-          ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
-        }
-
-        // not the last value
-        if (index > 0 && index < row.Count - 1) {
-          rowEntry.LinesShape.GetShape(index).Y1 = value;
-          ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
+          // not the last value
+          if (index > 0 && index < row.Count - 1) {
+            rowEntry.LinesShape.GetShape(index).Y1 = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
+          }
         }
       }
 
