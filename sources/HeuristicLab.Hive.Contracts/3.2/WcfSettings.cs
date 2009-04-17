@@ -1,4 +1,4 @@
-﻿#define USE_MSG_BINDING
+﻿//#define USE_MSG_BINDING
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +22,7 @@ namespace HeuristicLab.Hive.Contracts {
 #if USE_MSG_BINDING
       NetTcpBinding binding = new NetTcpBinding(SecurityMode.Message);
 #else
-      NetTcpBinding binding = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
-      binding.Security.Message.ClientCredentialType = MessageCredentialType.Certificate;
+      NetTcpBinding binding = new NetTcpBinding();
 #endif
       return binding;
     }
@@ -33,11 +32,13 @@ namespace HeuristicLab.Hive.Contracts {
     /// </summary>
     /// <param name="svchost">A service for which this certificate is applicable.</param>
     public static void SetServiceCertificate(ServiceHost svchost) {
+#if USE_MSG_BINDING
       svchost.Credentials.ServiceCertificate.SetCertificate(
         StoreLocation.LocalMachine,
         StoreName.My,
         X509FindType.FindBySubjectName,
         SERVERCERT);
+#endif
     }
 
     /// <summary>
