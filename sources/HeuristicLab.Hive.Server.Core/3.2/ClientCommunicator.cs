@@ -35,6 +35,7 @@ using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using System.Threading;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.DataAccess.Interfaces;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -564,9 +565,32 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
+      ResponsePlugin response = new ResponsePlugin();
+      ICollection<PluginInfo> allActivePlugins = PluginManager.Manager.ActivePlugins;
 
+      foreach (HivePluginInfo pluginInfo in pluginList) {
+        foreach (PluginInfo currPlugin in allActivePlugins) {
+          if (currPlugin.Name == pluginInfo.Name
+              && currPlugin.Version.ToString() == pluginInfo.Version
+              && currPlugin.BuildDate == pluginInfo.BuildDate) {
 
-      throw new NotImplementedException();
+            CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo { 
+                Name = currPlugin.Name,
+                Version = currPlugin.Version.ToString(),
+                BuildDate = currPlugin.BuildDate };
+
+            foreach (String assemblyPath in currPlugin.Assemblies) {
+              currCachedPlugin.PluginFiles.Add(File.ReadAllBytes(assemblyPath));
+            }
+            response.Plugins.Add(currCachedPlugin);
+          }
+        }
+      }
+      response.Success = true;
+      response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_PLUGINS_SENT;
+
+      return response;
+
     }
 
     #endregion

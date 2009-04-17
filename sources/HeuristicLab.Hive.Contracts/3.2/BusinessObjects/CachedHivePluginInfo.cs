@@ -26,7 +26,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.PluginInfrastructure {
   public class CachedHivePluginInfo : HivePluginInfo {
-    
+
     private List<byte[]> pluginFiles = new List<byte[]>();
     /// <summary>
     /// stores the plugin files in a list of byte arrays

@@ -75,6 +75,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED = "Job allready finished. Not needed anymore";
     public static string RESPONSE_COMMUNICATOR_JOB_DOESNT_EXIST = "No job exists with this id";
     public static string RESPONSE_COMMUNICATOR_SEND_JOBRESULT = "Please send the Jobresult to the server";
+    public static string RESPONSE_COMMUNICATOR_PLUGINS_SENT = "Communicator.PluginsSent";
 
     public static string RESPONSE_JOB_ALL_JOBS = "Job.AllJobs";
     public static string RESPONSE_JOB_ID_MUST_NOT_BE_SET = "Job.IdMustNotBeSet";
