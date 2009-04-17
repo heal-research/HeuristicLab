@@ -370,7 +370,16 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             }
             State state = clientInfo.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvClientControl.Items[i].Text.ToString());
-            int percentageUsage = CapacityRam(currentClient.NrOfCores, currentClient.NrOfFreeCores);
+
+            ClientInfo ci = null;
+
+            foreach (ClientInfo c in clientInfo.List) {
+              if (c.Id == change.ID) {
+                ci = c;
+              }
+            }
+
+            int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
             if ((state == State.offline) || (state == State.nullState)) {
               lvClientControl.Items[i].ImageIndex = 3;
             } else {
@@ -552,7 +561,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           ClientInfo cio = oldClient[j];
           if (ci.Id.Equals(cio.Id)) {
             found = true;
-            if ((ci.State != cio.State) || (ci.NrOfFreeCores != ci.NrOfFreeCores)) {
+            if ((ci.State != cio.State) || (ci.NrOfFreeCores != cio.NrOfFreeCores)) {
               changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Update, Position = i });
             }
             int removeAt = -1;
