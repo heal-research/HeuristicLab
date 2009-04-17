@@ -50,6 +50,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return clientAdapter;
       }
     }
+
+    private IClientGroupAdapter clientGroupAdapter = null;
+
+    private IClientGroupAdapter ClientGroupAdapter {
+      get {
+        if (clientGroupAdapter == null)
+          clientGroupAdapter =
+            this.Session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        return clientGroupAdapter;
+      }
+    }
     #endregion
 
     public ResourceAdapter(): base(new ResourceAdapterWrapper()) {
@@ -104,6 +116,48 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           delegate() {
             return Adapter.GetDataByName(name);
           });
+    }
+
+    #endregion
+
+    #region IPolymorphicDataAdapter<Resource> Members
+
+    public void UpdatePolymorphic(Resource res) {
+      if (res is ClientInfo) {
+        ClientAdapter.Update(res as ClientInfo);
+      } else if (res is ClientGroup) {
+        ClientGroupAdapter.Update(res as ClientGroup);
+      } else {
+        this.Update(res);
+      }
+    }
+
+    public Resource GetByIdPolymorphic(Guid id) {
+      ClientGroup group =
+        ClientGroupAdapter.GetById(id);
+
+      if (group != null)
+        return group;
+      else {
+        ClientInfo client =
+          ClientAdapter.GetById(id);
+
+        if (client != null)
+          return client;
+        else {
+          return this.GetById(id);
+        }
+      }
+    }
+
+    public bool DeletePolymorphic(Resource res) {
+      if (res is ClientInfo) {
+        return ClientAdapter.Delete(res as ClientInfo);
+      } else if (res is ClientGroup) {
+        return ClientGroupAdapter.Delete(res as ClientGroup);
+      } else {
+        return this.Delete(res);
+      }
     }
 
     #endregion

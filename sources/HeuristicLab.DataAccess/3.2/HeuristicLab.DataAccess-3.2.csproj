@@ -94,6 +94,7 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IPolymorphicDataAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccessPlugin.cs" />
     <Compile Include="Interfaces\ISession.cs" />

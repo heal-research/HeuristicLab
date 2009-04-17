@@ -22,26 +22,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
-using HeuristicLab.DataAccess.Interfaces;
 
-namespace HeuristicLab.Hive.Server.DataAccess {
-  /// <summary>
-  /// The resource database adapter
-  /// </summary>
-  public interface IResourceAdapter: IPolymorphicDataAdapter<Resource> {
+namespace HeuristicLab.DataAccess.Interfaces {
+  public interface IPolymorphicDataAdapter<ObjT>: IDataAdapter<ObjT>
+    where ObjT: IPersistableObject
+  {
     /// <summary>
-    /// Gets the resource and updates the values of the object
+    /// Save or update the object
     /// </summary>
-    /// <param name="resource"></param>
-    /// <returns></returns>
-    bool GetById(Resource resource);
+    /// <param name="user"></param>
+    void UpdatePolymorphic(ObjT obj);
 
     /// <summary>
-    /// Get the resource with the specified name
+    /// Get the object with the specified ID
     /// </summary>
-    /// <param name="clientId"></param>
+    /// <param name="userId"></param>
     /// <returns></returns>
-    Resource GetByName(string name);
+    ObjT GetByIdPolymorphic(Guid id);
+
+    /// <summary>
+    /// Deletes the object
+    /// </summary>
+    /// <param name="user"></param>
+    bool DeletePolymorphic(ObjT obj);
   }
 }

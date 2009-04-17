@@ -70,18 +70,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return resourceAdapter;
       }
     }
-
-    private IClientAdapter clientAdapter = null;
-
-    private IClientAdapter ClientAdapter {
-      get {
-        if (clientAdapter == null)
-          clientAdapter =
-            this.Session.GetDataAdapter<ClientInfo, IClientAdapter>();
-
-        return clientAdapter;
-      }
-    }
     #endregion
 
     public ClientGroupAdapter(): 
@@ -101,18 +89,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
        clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
-          ClientInfo client = 
-            ClientAdapter.GetById(resource);
+          Resource res =
+            ResAdapter.GetByIdPolymorphic(resource);
 
-          if (client == null) {
-            //client group
-            ClientGroup group =
-              GetById(resource);
-
-            clientGroup.Resources.Add(group);
-          } else {
-            clientGroup.Resources.Add(client);
-          }          
+            clientGroup.Resources.Add(res);         
         }
 
         return clientGroup;
@@ -140,13 +120,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         List<Guid> relationships = 
           new List<Guid>();
         foreach(Resource res in group.Resources) {
-          if (res is ClientInfo) {
-            ClientAdapter.Update(res as ClientInfo);
-          } else if (res is ClientGroup) {
-            Update(res as ClientGroup);
-          } else {
-            ResAdapter.Update(res);
-          }
+          ResAdapter.UpdatePolymorphic(res);
 
           relationships.Add(res.Id);
         }
