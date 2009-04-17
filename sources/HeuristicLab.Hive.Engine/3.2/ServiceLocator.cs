@@ -25,16 +25,14 @@ using System.Text;
 
 using HeuristicLab.Hive.Contracts.Interfaces;
 using System.ServiceModel;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Engine {
   internal class ServiceLocator {
     internal static IExecutionEngineFacade CreateExecutionEngineFacade(string url) {
-      NetTcpBinding binding =
-           new NetTcpBinding(SecurityMode.None, true);
-
       ChannelFactory<IExecutionEngineFacade> factory =
         new ChannelFactory<IExecutionEngineFacade>(
-          binding,
+          WcfSettings.GetBinding(),
           new EndpointAddress(url));
 
       return factory.CreateChannel();
