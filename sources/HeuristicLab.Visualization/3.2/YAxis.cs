@@ -7,7 +7,7 @@ namespace HeuristicLab.Visualization {
   public class YAxis : WorldShape {
     public const int PixelsPerInterval = 75;
 
-    private ILabelProvider labelProvider = new ContinuousLabelProvider("e4");
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.####");
     private AxisPosition position = AxisPosition.Left;
     private bool showLabel = true;
     private string label = "";
