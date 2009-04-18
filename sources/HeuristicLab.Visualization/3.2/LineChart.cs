@@ -83,6 +83,8 @@ namespace HeuristicLab.Visualization {
     private void UpdateLayout() {
       canvas.ClearShapes();
 
+      titleShape.Text = model.Title;
+
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
         if (yAxisDescriptor.ShowGrid) {
@@ -248,7 +250,7 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendBottom() {
       // legend bottom
-      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, canvasUI.Height/*legendShape.GetHeight4Rows()*/);
+      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, canvasUI.Height /*legendShape.GetHeight4Rows()*/);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;
       legendShape.Top = false;
@@ -392,10 +394,11 @@ namespace HeuristicLab.Visualization {
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
-          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i-1,row[i-1],8,row.Color));
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i - 1, row[i - 1], 8, row.Color));
         }
-        if(row.Count>0)
+        if (row.Count > 0) {
           rowEntry.LinesShape.AddMarkerShape(new MarkerShape((row.Count - 1), row[(row.Count - 1)], 8, row.Color));
+        }
       }
 
       ZoomToFullView();
@@ -409,14 +412,14 @@ namespace HeuristicLab.Visualization {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
-          
         } else {
           LineShape lineShape = rowEntry.LinesShape.GetShape(0);
           lineShape.Y1 = value;
           lineShape.Y2 = value;
         }
       } else {
-        if (index > rowEntry.LinesShape.Count + 1) {    //MarkersShape is on position zero
+        if (index > rowEntry.LinesShape.Count + 1) {
+          //MarkersShape is on position zero
           throw new NotImplementedException();
         }
 
@@ -428,17 +431,17 @@ namespace HeuristicLab.Visualization {
             rowEntry.LinesShape.AddShape(lineShape);
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
           }
-        } else if(action == Action.Modified){
+        } else if (action == Action.Modified) {
           // not the first value
           if (index > 0) {
             rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
-            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
+            ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
           }
 
           // not the last value
           if (index > 0 && index < row.Count - 1) {
             rowEntry.LinesShape.GetShape(index).Y1 = value;
-            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
+            ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
           }
         }
       }
@@ -453,8 +456,6 @@ namespace HeuristicLab.Visualization {
     }
 
     private void OnModelChanged() {
-      titleShape.Text = model.Title;
-
       canvasUI.Invalidate();
     }
 
@@ -523,8 +524,7 @@ namespace HeuristicLab.Visualization {
       canvasUI.Invalidate();
     }
 
-    private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {
-    }
+    private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {}
 
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
@@ -581,7 +581,7 @@ namespace HeuristicLab.Visualization {
         foreach (RowEntry rowEntry in rowEntries) {
           world = Transform.ToWorld(e.Location, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
 
-          double y1 = world.Y - (world.Y - rowEntry.LinesShape.ClippingArea.Y1) * zoomFactor;
+          double y1 = world.Y - (world.Y - rowEntry.LinesShape.ClippingArea.Y1)*zoomFactor;
           double y2 = world.Y + (rowEntry.LinesShape.ClippingArea.Y2 - world.Y)*zoomFactor;
 
           SetClipY(rowEntry, y1, y2);
@@ -630,7 +630,7 @@ namespace HeuristicLab.Visualization {
       }
 
       public LineShape GetShape(int index) {
-        return (LineShape)shapes[index];     //shapes[0] is markersShape!!
+        return (LineShape)shapes[index]; //shapes[0] is markersShape!!
       }
     }
 
@@ -657,7 +657,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    private class YAxisInfo { 
+    private class YAxisInfo {
       private readonly Grid grid = new Grid();
       private readonly YAxis yAxis = new YAxis();
 
