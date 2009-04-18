@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class MaxAggregator : DataRowBase {

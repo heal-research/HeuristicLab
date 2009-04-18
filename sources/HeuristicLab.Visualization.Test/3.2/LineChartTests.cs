@@ -36,7 +36,7 @@ namespace HeuristicLab.Visualization.Test {
       row1.Style = DrawingStyle.Solid;
       row2.Style = DrawingStyle.Solid;
       row3.Style = DrawingStyle.Dashed;
-      
+
 
       model.AddDataRow(row1);
       model.AddDataRow(row2);
@@ -62,14 +62,14 @@ namespace HeuristicLab.Visualization.Test {
       Random rand = new Random();
 
       for (int i = 0; i < 10000; i++) {
-        row1.AddValue(rand.NextDouble()*10);
-        row2.AddValue(rand.NextDouble()*10);
-        row3.AddValue(rand.NextDouble()*10);
+        row1.AddValue(rand.NextDouble() * 10);
+        row2.AddValue(rand.NextDouble() * 10);
+        row3.AddValue(rand.NextDouble() * 10);
       }
 
       f.ShowDialog();
     }
-      
+
     [Test]
     public void TestAxes() {
       LineChartTestForm f = new LineChartTestForm(model);
@@ -118,56 +118,39 @@ namespace HeuristicLab.Visualization.Test {
       Random rand = new Random(42);
 
       for (int i = 0; i < 10; i++) {
-        row1.AddValue(rand.NextDouble()*10);
-        row2.AddValue(rand.NextDouble()*10);
-        row3.AddValue(rand.NextDouble()*1);
+        row1.AddValue(rand.NextDouble() * 10);
+        row2.AddValue(rand.NextDouble() * 10);
+        row3.AddValue(rand.NextDouble() * 1);
       }
 
       f.AddValue += delegate {
-        row1.AddValue(rand.NextDouble()*10);
-        row2.AddValue(rand.NextDouble()*10);
-        row3.AddValue(rand.NextDouble()*1);
+        row1.AddValue(rand.NextDouble() * 10);
+        row2.AddValue(rand.NextDouble() * 10);
+        row3.AddValue(rand.NextDouble() * 1);
       };
 
       f.ShowDialog();
     }
 
     [Test]
-    public void TestAggregator() {
+    public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 
-      IDataRow row1 = new DataRow();
-      row1.Label = "row";
-      row1.Color = Color.Red;
-      row1.Thickness = 3;
-      row1.Style = DrawingStyle.Solid;
+      IDataRow row1 = new DataRow { Label = "row", Color = Color.Red, Thickness = 3, Style = DrawingStyle.Solid };
 
       model.AddDataRow(row1);
 
 
-      MinAggregator aggregator = new MinAggregator();
-      aggregator.Label = "MinAggregator";
-      aggregator.Color = Color.Pink;
-      aggregator.Thickness = 5;
-      aggregator.Style = DrawingStyle.Solid;
-      aggregator.AddValue(2);
-      aggregator.LineType = DataRowType.SingleValue;
-
-      IDataRow lineTest = new DataRow("testline");
-      lineTest.Color = Color.DarkSalmon;
-      lineTest.Thickness = 2;
-      lineTest.Style = DrawingStyle.Dashed;
-      lineTest.LineType = DataRowType.SingleValue;
-      model.AddDataRow(lineTest);
-      lineTest.AddValue(9);
-      lineTest.AddValue(2);
-      lineTest.AddValue(3);
-      lineTest.AddValue(4);
-
+      MaxAggregator aggregator = new MaxAggregator {
+        Label = "MinAggregator",
+        Color = Color.Pink,
+        Thickness = 5,
+        Style = DrawingStyle.Solid,
+        LineType = DataRowType.SingleValue
+      };
       aggregator.AddWatch(row1);
 
       model.AddDataRow(aggregator);
-
 
       row1.AddValue(10);
       row1.AddValue(5);
@@ -182,185 +165,236 @@ namespace HeuristicLab.Visualization.Test {
 
     public class Worker {
       // This method will be called when the thread is started.
-      private ChartDataRowsModel model;
+      private readonly ChartDataRowsModel model;
+
       public Worker(ChartDataRowsModel model) {
         this.model = model;
       }
-      
-      public void DoWorkMultiLine() {
 
-        IDataRow row1 = new DataRow();
-        row1.Color = Color.Red;
-        row1.Thickness = 2;
-        row1.Label = "Sinus";
-        row1.Style = DrawingStyle.Solid;
+      public void DoWorkMultiLine() {
+        IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 2, Label = "Sinus", Style = DrawingStyle.Solid, ShowMarkers = false };
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow();
-        row2.Color = Color.Red;
-        row2.Thickness = 3;
-        row2.Label = "Growing";
-        row2.Style = DrawingStyle.Solid;
+        IDataRow row2 = new DataRow { Color = Color.Red, Thickness = 3, Label = "Growing", Style = DrawingStyle.Solid, ShowMarkers = false };
         model.AddDataRow(row2);
 
-        AvgAggregator multiAvgAggregator = new AvgAggregator();
-        multiAvgAggregator.Label = "MultiAvgAggregator";
-        multiAvgAggregator.Color = Color.DarkOliveGreen;
-        multiAvgAggregator.Thickness = 3;
-        multiAvgAggregator.Style = DrawingStyle.Solid;
-        multiAvgAggregator.LineType = DataRowType.SingleValue;
+        AvgAggregator multiAvgAggregator = new AvgAggregator {
+          Label = "MultiAvgAggregator",
+          Color = Color.DarkOliveGreen,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue,
+          ShowMarkers = false
+        };
         multiAvgAggregator.AddWatch(row1);
         multiAvgAggregator.AddWatch(row2);
         model.AddDataRow(multiAvgAggregator);
 
-        MaxAggregator multiMaxAggregator = new MaxAggregator();
-        multiMaxAggregator.Label = "MultiMaxAggregator";
-        multiMaxAggregator.Color = Color.DarkKhaki;
-        multiMaxAggregator.Thickness = 3;
-        multiMaxAggregator.Style = DrawingStyle.Solid;
-        multiMaxAggregator.LineType = DataRowType.SingleValue;
+        MaxAggregator multiMaxAggregator = new MaxAggregator {
+          Label = "MultiMaxAggregator",
+          Color = Color.DarkKhaki,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue,
+          ShowMarkers = false
+        };
         multiMaxAggregator.AddWatch(row1);
         multiMaxAggregator.AddWatch(row2);
         model.AddDataRow(multiMaxAggregator);
 
-        MinAggregator multiMinAggregator = new MinAggregator();
-        multiMinAggregator.Label = "MultiMinAggregator";
-        multiMinAggregator.Color = Color.DarkRed;
-        multiMinAggregator.Thickness = 3;
-        multiMinAggregator.Style = DrawingStyle.Solid;
-        multiMinAggregator.LineType = DataRowType.SingleValue;
+        MinAggregator multiMinAggregator = new MinAggregator {
+          Label = "MultiMinAggregator",
+          Color = Color.DarkRed,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue,
+          ShowMarkers = false
+        };
         multiMinAggregator.AddWatch(row1);
         multiMinAggregator.AddWatch(row2);
         model.AddDataRow(multiMinAggregator);
 
-        AvgLineAggregator multiLineAvgAggregator = new AvgLineAggregator();
-        multiLineAvgAggregator.Label = "MultiLineAvgAggregator";
-        multiLineAvgAggregator.Color = Color.Red;
-        multiLineAvgAggregator.Thickness = 4;
-        multiLineAvgAggregator.Style = DrawingStyle.Solid;
-        multiLineAvgAggregator.LineType = DataRowType.Normal;
-        multiLineAvgAggregator.AddWatch(row1);
-        multiLineAvgAggregator.AddWatch(row2);
-        multiLineAvgAggregator.AddValue(0);
-        model.AddDataRow(multiLineAvgAggregator);
+        //        AvgLineAggregator multiLineAvgAggregator = new AvgLineAggregator {
+        //                                                                           Label = "MultiLineAvgAggregator",
+        //                                                                           Color = Color.Red,
+        //                                                                           Thickness = 4,
+        //                                                                           Style = DrawingStyle.Solid,
+        //                                                                           LineType = DataRowType.Normal,
+        //                                                                           ShowMarkers = false
+        //                                                                         };
+        //        multiLineAvgAggregator.AddWatch(row1);
+        //        multiLineAvgAggregator.AddWatch(row2);
+        //        multiLineAvgAggregator.AddValue(0);
+        //        model.AddDataRow(multiLineAvgAggregator);
 
         double i = 0;
-        double newY;
 
-        Random rand = new Random();
+
         while (!_shouldStop && i <= 24) {
           i += 0.2;
-          newY = Math.Sin(i);
-          System.Console.WriteLine("working");
+          double newY = Math.Sin(i);
+          Console.WriteLine("working");
           //row1.AddValue(rand.NextDouble() * 10);
           row1.AddValue(newY * 10);
-          row2.AddValue(i*2-15);
-          System.Threading.Thread.Sleep(100);
+          row2.AddValue(i * 2 - 15);
+          Thread.Sleep(100);
         }
         Console.WriteLine("worker thread: terminating gracefully.");
       }
-      public void DoWorkSingleLine() {
 
-        IDataRow row1 = new DataRow();
-        row1.Color = Color.Red;
-        row1.Thickness = 2;
-        row1.Label = "Sinus";
-        row1.Style = DrawingStyle.Solid;
+      public void DoWorkSingleLine() {
+        IDataRow row1 = new DataRow {
+          Color = Color.Red,
+          Thickness = 2,
+          Label = "Sinus",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow();
-        row2.Color = Color.Red;
-        row2.Thickness = 3;
-        row2.Label = "Growing";
-        row2.Style = DrawingStyle.Solid;
+        IDataRow row2 = new DataRow {
+          Color = Color.Red,
+          Thickness = 3,
+          Label = "Growing",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
         model.AddDataRow(row2);
 
-        MinAggregator aggregator = new MinAggregator();
-        aggregator.Label = "MinAggregator";
-        aggregator.Color = Color.Pink;
-        aggregator.Thickness = 3;
-        aggregator.Style = DrawingStyle.Solid;
-        aggregator.LineType = DataRowType.SingleValue;
+        MinAggregator aggregator = new MinAggregator {
+          Label = "MinAggregator",
+          Color = Color.Pink,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue
+        };
         aggregator.AddWatch(row1);
         model.AddDataRow(aggregator);
 
-        MaxAggregator maxAggregator = new MaxAggregator();
-        maxAggregator.Label = "MaxAggregator";
-        maxAggregator.Color = Color.DeepSkyBlue;
-        maxAggregator.Thickness = 3;
-        maxAggregator.Style = DrawingStyle.Solid;
-        maxAggregator.LineType = DataRowType.SingleValue;
+        MaxAggregator maxAggregator = new MaxAggregator {
+          Label = "MaxAggregator",
+          Color = Color.DeepSkyBlue,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue
+        };
         maxAggregator.AddWatch(row1);
         model.AddDataRow(maxAggregator);
 
-        AvgAggregator avgAggregator = new AvgAggregator();
-        avgAggregator.Label = "AvgAggregator";
-        avgAggregator.Color = Color.Violet;
-        avgAggregator.Thickness = 3;
-        avgAggregator.Style = DrawingStyle.Solid;
-        avgAggregator.LineType = DataRowType.SingleValue;
+        AvgAggregator avgAggregator = new AvgAggregator {
+          Label = "AvgAggregator",
+          Color = Color.Violet,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.SingleValue
+        };
         avgAggregator.AddWatch(row1);
         model.AddDataRow(avgAggregator);
 
         double i = 0;
-        double newY;
 
-        Random rand = new Random();
-        while (!_shouldStop && i <= 24) {
+
+        while (!_shouldStop && i <= 240) {
           i += 0.2;
-          newY = Math.Sin(i);
-          System.Console.WriteLine("working");
+          double newY = Math.Sin(i);
+          Console.WriteLine("working");
           //row1.AddValue(rand.NextDouble() * 10);
           row1.AddValue(newY * 10);
           row2.AddValue(i * 2 - 15);
-          System.Threading.Thread.Sleep(100);
+          //System.Threading.Thread.Sleep(100);
         }
         Console.WriteLine("worker thread: terminating gracefully.");
       }
-      public void DoWorkAvgLine() {
 
-        IDataRow row1 = new DataRow();
-        row1.Color = Color.Red;
-        row1.Thickness = 2;
-        row1.Label = "Sinus";
-        row1.Style = DrawingStyle.Solid;
+      public void DoWorkAvgLine() {
+        IDataRow row1 = new DataRow {
+          Color = Color.Red,
+          Thickness = 2,
+          Label = "Sinus",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow();
-        row2.Color = Color.Red;
-        row2.Thickness = 3;
-        row2.Label = "Growing";
-        row2.Style = DrawingStyle.Solid;
+        IDataRow row2 = new DataRow {
+          Color = Color.Red,
+          Thickness = 3,
+          Label = "Growing",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
         model.AddDataRow(row2);
 
-        AvgLineAggregator avgLineAggregator = new AvgLineAggregator();
-        avgLineAggregator.Label = "AvgLineAggregator";
-        avgLineAggregator.Color = Color.Violet;
-        avgLineAggregator.Thickness = 3;
-        avgLineAggregator.Style = DrawingStyle.Solid;
-        avgLineAggregator.LineType = DataRowType.Normal;
+        AvgLineAggregator avgLineAggregator = new AvgLineAggregator {
+          Label = "AvgLineAggregator",
+          Color = Color.Violet,
+          Thickness = 3,
+          Style = DrawingStyle.Solid,
+          LineType = DataRowType.Normal,
+          ShowMarkers = false
+        };
         avgLineAggregator.AddWatch(row1);
         avgLineAggregator.AddWatch(row2);
         model.AddDataRow(avgLineAggregator);
 
         double i = 0;
-        double newY;
 
-        Random rand = new Random();
-        while (!_shouldStop && i <= 24) {
+        while (!_shouldStop && i <= 240) {
           i += 0.2;
-          newY = Math.Sin(i);
-          System.Console.WriteLine("working");
+          double newY = Math.Sin(i);
+          Console.WriteLine("working");
           //row1.AddValue(rand.NextDouble() * 10);
           row1.AddValue(newY * 10);
           row2.AddValue(i * 2 - 15);
-          System.Threading.Thread.Sleep(100);
+          //Thread.Sleep(100);
         }
         Console.WriteLine("worker thread: terminating gracefully.");
       }
+
+      public void DoWorkFloatingAvg() {
+        IDataRow row1 = new DataRow {
+          Color = Color.Red,
+          Thickness = 2,
+          Label = "SinusHacked",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
+        model.AddDataRow(row1);
+
+        IDataRow row2 = new DataRow {
+          Color = Color.Red,
+          Thickness = 3,
+          Label = "GrowingHacked",
+          Style = DrawingStyle.Solid,
+          ShowMarkers = false
+        };
+        model.AddDataRow(row2);
+
+        // insert 2 floating avg line aggregators (for each hacked line)
+
+        // test floating avg aggregator without visible watcher line
+
+        double i = 0;
+        Random rnd = new Random();
+
+        while (!_shouldStop && i <= 240) {
+          i += 0.2;
+          double newY = Math.Sin(i);
+
+          double hack = rnd.NextDouble() * i / 10;
+          row1.AddValue(newY * 10 + hack);
+
+          hack = rnd.NextDouble() * i / 10;
+          row2.AddValue(i * 2 - 15 + hack);
+          //Thread.Sleep(100);
+        }
+        Console.WriteLine("worker thread: terminating gracefully.");
+      }
+
       public void RequestStop() {
         _shouldStop = true;
       }
+
       // Volatile is used as hint to the compiler that this data
       // member will be accessed by multiple threads.
       private volatile bool _shouldStop;
@@ -385,7 +419,8 @@ namespace HeuristicLab.Visualization.Test {
     [Test]
     public void TestAggregatorSingleLine() {
       LineChartTestForm f = new LineChartTestForm(model);
-   
+      model.Title = "SingleLineAggregator Tests";
+
       // Create the thread object. This does not start the thread.
       Worker workerObject = new Worker(model);
       Thread workerThread = new Thread(workerObject.DoWorkSingleLine);
@@ -396,9 +431,11 @@ namespace HeuristicLab.Visualization.Test {
       f.ShowDialog();
       workerObject.RequestStop();
     }
+
     [Test]
     public void TestAggregatorAvgLine() {
       LineChartTestForm f = new LineChartTestForm(model);
+      model.Title = "AvgLineTest";
 
       // Create the thread object. This does not start the thread.
       Worker workerObject = new Worker(model);
@@ -411,15 +448,27 @@ namespace HeuristicLab.Visualization.Test {
       workerObject.RequestStop();
     }
 
-    
+    [Test]
+    public void TestFloatingAvg() {
+      LineChartTestForm f = new LineChartTestForm(model);
+      model.Title = "FloatingAvg Test";
+      model.ViewSettings.LegendPosition = Legend.LegendPosition.Top;
+
+      // Create the thread object. This does not start the thread.
+      Worker workerObject = new Worker(model);
+      Thread workerThread = new Thread(workerObject.DoWorkFloatingAvg);
+
+      // Start the worker thread.
+      workerThread.Start();
+
+      f.ShowDialog();
+      workerObject.RequestStop();
+    }
+
 
     [Test]
     public void TestAutoZoomInConstructor() {
-      IDataRow row1 = new DataRow();
-
-      row1.Color = Color.Red;
-      row1.Thickness = 3;
-      row1.Style = DrawingStyle.Solid;
+      IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 3, Style = DrawingStyle.Solid };
 
       model.AddDataRow(row1);
 
@@ -484,7 +533,7 @@ namespace HeuristicLab.Visualization.Test {
       row1.AddValue(12);
 
       row2.AddValue(5);
-     
+
 
       row3.AddValue(2);
       row3.AddValue(5);

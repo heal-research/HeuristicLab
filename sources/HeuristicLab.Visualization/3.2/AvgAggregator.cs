@@ -21,7 +21,7 @@ namespace HeuristicLab.Visualization {
 
     #endregion
 
-    private List<IDataRow> dataRowWatches = new List<IDataRow>();
+    private readonly List<IDataRow> dataRowWatches = new List<IDataRow>();
     private double curAvgValue;
 
     private void dataRow_ValueChanged(IDataRow row, double value, int index, Action action) {
@@ -125,7 +125,7 @@ namespace HeuristicLab.Visualization {
       throw new NotSupportedException();
     }
 
-    public override void RemoveValues(int index, int count) {
+    public override void RemoveValues(int index, int countVals) {
       throw new NotSupportedException();
     }
 
