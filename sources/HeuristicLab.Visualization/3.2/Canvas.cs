@@ -49,18 +49,29 @@ namespace HeuristicLab.Visualization {
     }
 
     public void Draw(Graphics graphics) {
-      Stopwatch sw = new Stopwatch();
-      sw.Start();
+      try {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
 
-      graphics.SmoothingMode = SmoothingMode.AntiAlias;
-      graphics.FillRectangle(Brushes.White, Viewport);
+        graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        graphics.FillRectangle(Brushes.White, Viewport);
 
-      worldShape.Draw(graphics);
+        worldShape.Draw(graphics);
 
-      graphics.DrawRectangle(Pens.Black, 0, 0, Viewport.Width - 1, Viewport.Height - 1);
+        graphics.DrawRectangle(Pens.Black, 0, 0, Viewport.Width - 1, Viewport.Height - 1);
 
-      sw.Stop();
-      Trace.WriteLine(string.Format("Drawing time: {0:0.0}ms", sw.Elapsed.TotalMilliseconds));
+        sw.Stop();
+        Trace.WriteLine(string.Format("Drawing time: {0:0.0}ms", sw.Elapsed.TotalMilliseconds));
+      } catch (OverflowException e) {
+        Trace.WriteLine(e);
+
+        graphics.FillRectangle(Brushes.White, graphics.ClipBounds);
+
+        using (Font font = new Font("Arial", 14)) {
+          const string message = "Zoom level is too high!";
+          graphics.DrawString(message, font, Brushes.Red, graphics.ClipBounds.X + 10, graphics.ClipBounds.Y + 10);
+        }
+      }
     }
   }
 }
