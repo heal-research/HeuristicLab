@@ -150,7 +150,7 @@ namespace HeuristicLab.Data {
         // copy contents of itemlist to clipboard
         StringBuilder buffer = new StringBuilder();
         for(int i = 0; i < itemsListView.Items.Count; i++) {
-          buffer.Append(itemsListView.Items[i].Text);
+          buffer.Append(itemsListView.Items[i].Text.Replace(';','\t'));
           buffer.Append("\n");
         }
         Clipboard.SetText(buffer.ToString());
