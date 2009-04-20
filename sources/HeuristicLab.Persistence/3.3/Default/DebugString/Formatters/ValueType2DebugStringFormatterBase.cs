@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Default.DebugString {
+namespace HeuristicLab.Persistence.Default.DebugString.Formatters {
 
   public abstract class ValueType2DebugStringFormatterBase<T> : FormatterBase<T, DebugString> {
     public override DebugString Format(T o) { return new DebugString(o.ToString()); }

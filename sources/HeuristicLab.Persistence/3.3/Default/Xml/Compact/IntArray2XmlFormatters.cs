@@ -3,7 +3,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class IntArray2XmlFormatterBase<T> : NumberArray2XmlFormatterBase<T> {
+  public abstract class IntArray2XmlFormatterBase<T> : NumberArray2XmlFormatterBase<T> where T : class{
 
     protected override string FormatValue(object o) {
       return o.ToString();

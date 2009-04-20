@@ -13,7 +13,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     private bool isSepReq;
     private readonly bool showRefs;
 
-    public DebugStringGenerator() : this(false) { }
+    public DebugStringGenerator() : this(true) { }
 
     public DebugStringGenerator(bool showRefs) {
       isSepReq = false;

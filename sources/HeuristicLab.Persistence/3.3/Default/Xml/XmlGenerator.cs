@@ -9,17 +9,7 @@ using HeuristicLab.Tracing;
 using log4net;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Default.Xml {
-
-  struct XmlStrings {
-    public const string PRIMITIVE = "PRIMITVE";
-    public const string COMPOSITE = "COMPOSITE";
-    public const string REFERENCE = "REFERENCE";
-    public const string NULL = "NULL";
-    public const string TYPECACHE = "TYPECACHE";
-    public const string TYPE = "TYPE";
-    public const string METAINFO = "METAINFO";
-  }
+namespace HeuristicLab.Persistence.Default.Xml {  
 
   public class XmlGenerator : GeneratorBase<string> {
 
@@ -115,7 +105,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     protected override string Format(BeginToken beginToken) {
       return CreateNodeStart(
-        XmlStrings.COMPOSITE,
+        XmlStringConstants.COMPOSITE,
         new Dictionary<string, object> {
           {"name", beginToken.Name},
           {"typeId", beginToken.TypeId},
@@ -123,11 +113,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     protected override string Format(EndToken endToken) {
-      return CreateNodeEnd(XmlStrings.COMPOSITE);
+      return CreateNodeEnd(XmlStringConstants.COMPOSITE);
     }
 
     protected override string Format(PrimitiveToken dataToken) {
-      return CreateNode(XmlStrings.PRIMITIVE,
+      return CreateNode(XmlStringConstants.PRIMITIVE,
         new Dictionary<string, object> {
             {"typeId", dataToken.TypeId},
             {"name", dataToken.Name},
@@ -136,33 +126,33 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     protected override string Format(ReferenceToken refToken) {
-      return CreateNode(XmlStrings.REFERENCE,
+      return CreateNode(XmlStringConstants.REFERENCE,
         new Dictionary<string, object> {
           {"ref", refToken.Id},
           {"name", refToken.Name}});
     }
 
     protected override string Format(NullReferenceToken nullRefToken) {
-      return CreateNode(XmlStrings.NULL,
+      return CreateNode(XmlStringConstants.NULL,
         new Dictionary<string, object>{
           {"name", nullRefToken.Name}});
     }
 
     protected override string Format(MetaInfoBeginToken metaInfoBeginToken) {
-      return CreateNodeStart(XmlStrings.METAINFO);
+      return CreateNodeStart(XmlStringConstants.METAINFO);
     }
 
     protected override string Format(MetaInfoEndToken metaInfoEndToken) {
-      return CreateNodeEnd(XmlStrings.METAINFO);
+      return CreateNodeEnd(XmlStringConstants.METAINFO);
     }
 
     public IEnumerable<string> Format(List<TypeMapping> typeCache) {
-      yield return CreateNodeStart(XmlStrings.TYPECACHE);
+      yield return CreateNodeStart(XmlStringConstants.TYPECACHE);
       foreach (var mapping in typeCache)
         yield return CreateNode(
-          XmlStrings.TYPE,
+          XmlStringConstants.TYPE,
           mapping.GetDict());
-      yield return CreateNodeEnd(XmlStrings.TYPECACHE);
+      yield return CreateNodeEnd(XmlStringConstants.TYPECACHE);
     }
 
     public static void Serialize(object o, string filename) {

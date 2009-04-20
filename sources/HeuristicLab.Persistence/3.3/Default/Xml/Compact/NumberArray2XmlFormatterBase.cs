@@ -5,15 +5,14 @@ using System;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class NumberArray2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
+  public abstract class NumberArray2XmlFormatterBase<T> : FormatterBase<T, XmlString> where T : class {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract string FormatValue(object o);
     protected abstract object ParseValue(string o);
 
-    public override XmlString Format(T t) {
-      object o = (object)t;
-      Array a = (Array)o;
+    public override XmlString Format(T t) {      
+      Array a = (Array)(object)t;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
       StringBuilder sb = new StringBuilder();
@@ -74,9 +73,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
             break;
           }
         }
-      }
-      object o = a;
-      return (T)o;
+      }      
+      return (T)(object)a;
     }
   }
 

@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class DoubleArray2XmlFormatterBase<T> : NumberArray2XmlFormatterBase<T> {
+  public abstract class DoubleArray2XmlFormatterBase<T> : NumberArray2XmlFormatterBase<T> where T : class{
 
     protected override string FormatValue(object o) {
       return ((double)o).ToString("r", CultureInfo.InvariantCulture);

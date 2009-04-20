@@ -24,11 +24,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
       };
       reader = XmlReader.Create(input, settings);
       handlers = new Dictionary<string, Handler> {
-                     {XmlStrings.PRIMITIVE, ParsePrimitive},
-                     {XmlStrings.COMPOSITE, ParseComposite},
-                     {XmlStrings.REFERENCE, ParseReference},
-                     {XmlStrings.NULL, ParseNull},
-                     {XmlStrings.METAINFO, ParseMetaInfo},
+                     {XmlStringConstants.PRIMITIVE, ParsePrimitive},
+                     {XmlStringConstants.COMPOSITE, ParseComposite},
+                     {XmlStringConstants.REFERENCE, ParseReference},
+                     {XmlStringConstants.NULL, ParseNull},
+                     {XmlStringConstants.METAINFO, ParseMetaInfo},
                    };
     }
 
@@ -104,7 +104,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       var typeCache = new List<TypeMapping>();
       XmlReader xmlReader = XmlReader.Create(reader);
       while (xmlReader.Read()) {
-        if (xmlReader.Name == XmlStrings.TYPE) {
+        if (xmlReader.Name == XmlStringConstants.TYPE) {
           typeCache.Add(new TypeMapping(
             int.Parse(xmlReader.GetAttribute("id")),
             xmlReader.GetAttribute("typeName"),

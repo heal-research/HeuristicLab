@@ -68,10 +68,8 @@ namespace HeuristicLab.Persistence.Core {
       foreach (var typeMapping in typeCache) {
         Type type = Type.GetType(typeMapping.TypeName, true);
         typeIds.Add(typeMapping.Id, type);
-        if (typeMapping.Serializer != null) {
-          Type serializerType = Type.GetType(typeMapping.Serializer);
-          map.Add(type, Activator.CreateInstance(serializerType, true));
-        }
+        Type serializerType = Type.GetType(typeMapping.Serializer);
+        map.Add(type, Activator.CreateInstance(serializerType, true));
       }
       return map;
     }

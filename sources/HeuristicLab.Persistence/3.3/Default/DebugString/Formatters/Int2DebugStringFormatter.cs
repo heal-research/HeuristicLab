@@ -6,9 +6,9 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Default.DebugString {
+namespace HeuristicLab.Persistence.Default.DebugString.Formatters {
 
   [EmptyStorableClass]
-  public class Type2DebugStringFormatter : ValueType2DebugStringFormatterBase<Type> { }
+  public class Int2DebugStringFormatter : ValueType2DebugStringFormatterBase<int> { }
 
 }
