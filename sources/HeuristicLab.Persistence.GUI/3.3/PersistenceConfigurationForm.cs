@@ -19,6 +19,7 @@ namespace HeuristicLab.Persistence.GUI {
     private readonly Dictionary<IFormatter, string> reverseFormatterTable;
     private readonly Dictionary<string, Type> typeNameTable;
     private readonly Dictionary<Type, string> reverseTypeNameTable;
+    private bool underConstruction;
 
     public PersistenceConfigurationForm() {
       InitializeComponent();
@@ -27,9 +28,29 @@ namespace HeuristicLab.Persistence.GUI {
       reverseFormatterTable = new Dictionary<IFormatter, string>();
       typeNameTable = new Dictionary<string, Type>();
       reverseTypeNameTable = new Dictionary<Type, string>();
+      underConstruction = true;
+      InitializeTooltips();
       InitializeNameTables();
       initializeConfigPages();
       UpdateFromConfigurationService();
+      underConstruction = false;
+      UpdatePreview();
+    }
+
+    private void InitializeTooltips() {
+      ToolTip tooltip = new ToolTip() {
+        AutoPopDelay = 5000,
+        InitialDelay = 1000,
+        ReshowDelay = 500,
+        ShowAlways = true
+      };
+      tooltip.SetToolTip(resetButton,
+        "Clear all custom configurations from memory.\r\n" +
+        "The saved configuration will still be used next\r\n" +
+        "time if you don't save (define) this change.");
+      tooltip.SetToolTip(updateButton,
+        "Define configuration for currently active format\r\n" +
+        "and save to disk.");
     }
 
     private void UpdateFormatterGrid(DataGridView formatterGrid, Configuration config) {
@@ -111,7 +132,6 @@ namespace HeuristicLab.Persistence.GUI {
         ListBox checkBox = new ListBox {
           Name = "CheckBox",
           Dock = DockStyle.Fill,
-          Enabled = false,
         };
         horizontalSplit.Panel2.Controls.Add(checkBox);
       }
@@ -245,6 +265,23 @@ namespace HeuristicLab.Persistence.GUI {
       }
     }
 
+    private void UpdatePreview() {
+      if (underConstruction)
+        return;
+      ListBox checkBox = (ListBox)GetActiveControl("CheckBox");
+      IFormat activeFormat = (IFormat)configurationTabs.SelectedTab.Tag;
+      if (activeFormat != null && checkBox != null) {
+        checkBox.Items.Clear();
+        Configuration activeConfig = GetActiveConfiguration();
+        foreach (var formatter in activeConfig.Formatters) {
+          checkBox.Items.Add(formatter.GetType().Name + " (F)");
+        }
+        foreach (var decomposer in activeConfig.Decomposers)
+          checkBox.Items.Add(decomposer.GetType().Name + " (D)");
+      }
+    }
+
+
     void gridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
       UpdatePreview();
     }
@@ -291,19 +328,6 @@ namespace HeuristicLab.Persistence.GUI {
       decomposerList.Columns["DecomposerColumn"].Width = decomposerList.Width - 4;
     }
 
-    private void UpdatePreview() {
-      ListBox checkBox = (ListBox)GetActiveControl("CheckBox");
-      IFormat activeFormat = (IFormat)configurationTabs.SelectedTab.Tag;
-      if (activeFormat != null && checkBox != null) {
-        checkBox.Items.Clear();
-        Configuration activeConfig = GetActiveConfiguration();
-        foreach (var formatter in activeConfig.Formatters) {
-          checkBox.Items.Add(formatter.GetType().Name + " (F)");
-        }
-        foreach (var decomposer in activeConfig.Decomposers)
-          checkBox.Items.Add(decomposer.GetType().Name + " (D)");
-      }
-    }
 
     private void decomposerList_ItemChecked(object sender, ItemCheckedEventArgs e) {
       UpdatePreview();
@@ -367,6 +391,14 @@ namespace HeuristicLab.Persistence.GUI {
       if (format != null)
         ConfigurationService.Instance.DefineConfiguration(
           GetActiveConfiguration());
+    }
+
+    private void resetButton_Click(object sender, EventArgs e) {
+      ConfigurationService.Instance.Reset();
+      underConstruction = true;
+      UpdateFromConfigurationService();
+      underConstruction = false;
+      UpdatePreview();
     }
 
   }
