@@ -1,5 +1,6 @@
 ﻿using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
+using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -10,6 +11,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     public XmlString(string data) {
       Data = data;
+    }
+
+    public override string ToString() {
+      StringBuilder sb = new StringBuilder();
+      sb.Append("XmlString(").Append(Data).Append(')');
+      return sb.ToString();
     }
   }
 }

@@ -9,7 +9,7 @@ using HeuristicLab.Tracing;
 using log4net;
 using HeuristicLab.Persistence.Core.Tokens;
 
-namespace HeuristicLab.Persistence.Default.Xml {  
+namespace HeuristicLab.Persistence.Default.Xml {
 
   public class XmlGenerator : GeneratorBase<string> {
 
@@ -176,7 +176,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
       writer = new StreamWriter(zipStream);
       foreach (string line in generator.Format(serializer.TypeCache)) {
-        writer.WriteLine(line);
+        writer.Write(line);
         logger.Debug(line.TrimEnd());
       }
       writer.Flush();
