@@ -81,7 +81,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       SequentialProcessor manipulationSeq = new SequentialProcessor();
       NormalRandomAdder valueAdder = new NormalRandomAdder();
       valueAdder.Mu = 0.0;
-      valueAdder.Sigma = 0.1;
+      valueAdder.Sigma = 1.0;
 
       combinedOp.OperatorGraph.AddOperator(manipulationSeq);
       combinedOp.OperatorGraph.AddOperator(valueAdder);

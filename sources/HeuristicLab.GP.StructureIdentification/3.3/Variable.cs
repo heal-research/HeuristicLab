@@ -64,13 +64,13 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       GetVariableInfo(MANIPULATION).Local = false;
 
       ConstrainedDoubleData weight = new ConstrainedDoubleData();
-      // initialize a totally arbitrary range for the weight = [-20.0, 20.0]
-      weight.AddConstraint(new DoubleBoundedConstraint(-20.0, 20.0));
+      // initialize a totally arbitrary range for the weight = [-1.0, 1.0]
+      weight.AddConstraint(new DoubleBoundedConstraint(-1.0, 1.0));
       AddVariable(new HeuristicLab.Core.Variable(WEIGHT, weight));
 
       ConstrainedIntData variable = new ConstrainedIntData();
       AddVariable(new HeuristicLab.Core.Variable(INDEX, variable));
-      minIndex = 0; maxIndex = 100;
+      minIndex = 0; maxIndex = 1000;
 
       ConstrainedIntData sampleOffset = new ConstrainedIntData();
       AddVariable(new HeuristicLab.Core.Variable(OFFSET, sampleOffset));
@@ -91,7 +91,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       indexRandomizer.GetVariableInfo("Value").ActualName = INDEX;
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomizer weightRandomizer = new NormalRandomizer();
-      weightRandomizer.Mu = 1.0;
+      weightRandomizer.Mu = 0.0;
       weightRandomizer.Sigma = 1.0;
       weightRandomizer.GetVariableInfo("Value").ActualName = WEIGHT;
       weightRandomizer.Name = "Weight Randomizer";
@@ -128,7 +128,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       indexRandomizer.Name = "Index Randomizer";
       NormalRandomAdder weightRandomAdder = new NormalRandomAdder();
       weightRandomAdder.Mu = 0.0;
-      weightRandomAdder.Sigma = 0.1;
+      weightRandomAdder.Sigma = 1.0;
       weightRandomAdder.GetVariableInfo("Value").ActualName = WEIGHT;
       weightRandomAdder.Name = "Weight Adder";
       NormalRandomAdder offsetRandomAdder = new NormalRandomAdder();
