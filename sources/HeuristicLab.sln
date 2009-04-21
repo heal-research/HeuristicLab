@@ -5,6 +5,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
+		HeuristicLab.vsmdi = HeuristicLab.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
@@ -160,9 +162,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.2", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SGA.Hardwired-3.2", "HeuristicLab.SGA.Hardwired\3.2\HeuristicLab.SGA.Hardwired-3.2.csproj", "{583705E2-B1F7-42B8-8149-96E7AECA171A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.Test", "HeuristicLab.Persistence\Test\HeuristicLab.Persistence.Test.csproj", "{E2245078-6F40-449E-A370-01A97A7C5E6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.UnitTest", "HeuristicLab.Persistence\UnitTests\HeuristicLab.Persistence.UnitTest.csproj", "{BF7D9494-A586-457B-8DF9-ED599F9E6A71}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HeuristicLab.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU
 		CEDMA Debug|x64 = CEDMA Debug|x64
