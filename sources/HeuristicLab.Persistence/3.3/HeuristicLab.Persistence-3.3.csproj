@@ -128,7 +128,7 @@
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
     <Compile Include="Core\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
-    <Compile Include="Default\Xml\XmlStrings.cs" />
+    <Compile Include="Default\Xml\XmlStringConstants.cs" />
     <Compile Include="Default\Xml\XmlString.cs" />
     <Compile Include="Default\Xml\Primitive\Double2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Primitive\Decimal2XmlFormatter.cs" />
