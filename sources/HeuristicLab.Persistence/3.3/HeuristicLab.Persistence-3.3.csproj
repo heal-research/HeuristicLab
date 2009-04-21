@@ -102,6 +102,13 @@
     <Compile Include="Core\GeneratorBase.cs" />
     <Compile Include="Default\DebugString\DebugString.cs" />
     <Compile Include="Default\DebugString\DebugStringFormat.cs" />
+    <Compile Include="Default\DebugString\Formatters\SByte2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\UInt2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\Long2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\ULong2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\Short2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\UShort2DebugStringFormatter.cs" />
+    <Compile Include="Default\DebugString\Formatters\Byte2DebugStringFormatter.cs" />
     <Compile Include="Default\DebugString\Formatters\ValueType2DebugStringFormatterBase.cs" />
     <Compile Include="Default\DebugString\Formatters\String2DebugStringFormatter.cs" />
     <Compile Include="Default\DebugString\Formatters\Bool2DebugStringFormatter.cs" />

@@ -40,8 +40,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         IEnumerator<ISerializationToken> iterator;
         try {
           iterator = handlers[reader.Name].Invoke();
-        }
-        catch (KeyNotFoundException) {
+        } catch (KeyNotFoundException) {
           throw new InvalidOperationException(String.Format(
             "No handler for XML tag \"{0}\" installed",
             reader.Name));
@@ -57,11 +56,13 @@ namespace HeuristicLab.Persistence.Default.Xml {
       string idString = reader.GetAttribute("id");
       if (idString != null)
         id = int.Parse(idString);
-      yield return new PrimitiveToken(
-        reader.GetAttribute("name"),
-        int.Parse(reader.GetAttribute("typeId")),
-        id,
-        new XmlString(reader.ReadString()));
+      string name = reader.GetAttribute("name");
+      int typeId = int.Parse(reader.GetAttribute("typeId"));
+      XmlReader inner = reader.ReadSubtree();
+      inner.Read();
+      string xml = inner.ReadInnerXml();
+      inner.Close();      
+      yield return new PrimitiveToken(name, typeId, id, new XmlString(xml));
     }
 
     private IEnumerator<ISerializationToken> ParseComposite() {
@@ -122,7 +123,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
           zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
       XmlParser parser = new XmlParser(
         new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
-      return deSerializer.Deserialize(parser);
+      object result = deSerializer.Deserialize(parser);
+      zipFile.Close();
+      return result;
     }
   }
 }
