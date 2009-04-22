@@ -14,14 +14,14 @@ namespace HeuristicLab.Tracing {
     private static void Configure() {
       if ( IsConfigured ) return;
       IsConfigured = true;
-      if (string.IsNullOrEmpty(Settings.Default.log4netConfigFile)) {
-        Settings.Default.log4netConfigFile = 
+      if (string.IsNullOrEmpty(Settings.Default.TracingLog4netConfigFile)) {
+        Settings.Default.TracingLog4netConfigFile = 
           Path.Combine(
             PluginInfrastructure.Properties.Settings.Default.PluginDir,
             "HeuristicLab.log4net.xml");
       }
       XmlConfigurator.ConfigureAndWatch(
-        new FileInfo(Settings.Default.log4netConfigFile));
+        new FileInfo(Settings.Default.TracingLog4netConfigFile));
       Info("logging initialized " + DateTime.Now);
     }
 
