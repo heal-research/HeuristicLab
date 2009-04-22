@@ -4,7 +4,7 @@ using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 
-namespace HeuristicLab.Persistence.Default.Decomposers {
+namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
   [EmptyStorableClass]
   public class StorableDecomposer : IDecomposer {

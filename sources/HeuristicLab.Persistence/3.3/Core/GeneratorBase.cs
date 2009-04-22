@@ -12,6 +12,7 @@ using HeuristicLab.Persistence.Core.Tokens;
 namespace HeuristicLab.Persistence.Core {
 
   public abstract class GeneratorBase<T> {
+
     public T Format(ISerializationToken token) {
       Type type = token.GetType();
       if (type == typeof(BeginToken))
@@ -30,6 +31,7 @@ namespace HeuristicLab.Persistence.Core {
         return Format((MetaInfoEndToken)token);
       throw new ApplicationException("Invalid token of type " + type.FullName);
     }
+
     protected abstract T Format(BeginToken beginToken);
     protected abstract T Format(EndToken endToken);
     protected abstract T Format(PrimitiveToken primitiveToken);
@@ -37,5 +39,6 @@ namespace HeuristicLab.Persistence.Core {
     protected abstract T Format(NullReferenceToken nullReferenceToken);
     protected abstract T Format(MetaInfoBeginToken metaInfoBeginToken);
     protected abstract T Format(MetaInfoEndToken metaInfoEndToken);
+
   }
 }

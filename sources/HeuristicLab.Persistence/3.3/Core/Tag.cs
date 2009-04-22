@@ -10,6 +10,7 @@ namespace HeuristicLab.Persistence.Core {
       Name = name;
       Value = value;
     }
+
     public Tag(object value) {
       Name = null;
       Value = value;

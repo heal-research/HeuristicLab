@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Text;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 

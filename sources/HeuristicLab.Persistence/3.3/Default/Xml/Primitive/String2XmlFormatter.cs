@@ -3,6 +3,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Text;
 using System.Text.RegularExpressions;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {

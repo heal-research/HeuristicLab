@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HeuristicLab.Persistence.Core {
+namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
   [AttributeUsage(
     AttributeTargets.Field | AttributeTargets.Property,

@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Configuration.cs" />
-    <Compile Include="Core\EmptyStorableClassAttribute.cs" />
+    <Compile Include="Default\Decomposers\Storable\EmptyStorableClassAttribute.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Core\FormatterBase.cs" />
     <Compile Include="Core\TypeExtensions.cs" />
@@ -125,7 +125,7 @@
     <Compile Include="Default\Decomposers\EnumDecomposer.cs" />
     <Compile Include="Default\Decomposers\KeyValuePairDecomposer.cs" />
     <Compile Include="Default\Decomposers\DictionaryDecomposer.cs" />
-    <Compile Include="Default\Decomposers\StorableDecomposer.cs" />
+    <Compile Include="Default\Decomposers\Storable\StorableDecomposer.cs" />
     <Compile Include="Default\Decomposers\TypeDecomposer.cs" />
     <Compile Include="Default\Decomposers\NumberEnumerable2StringDecomposer.cs" />
     <Compile Include="Default\Xml\Compact\IntArray2XmlFormatters.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="Default\Xml\Compact\DoubleList2XmlFormatter.cs" />
     <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlFormatterBase.cs" />
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
-    <Compile Include="Core\DataMemberAccessor.cs" />
+    <Compile Include="Default\Decomposers\Storable\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
     <Compile Include="Default\Xml\XmlStringConstants.cs" />
     <Compile Include="Default\Xml\XmlString.cs" />
@@ -179,7 +179,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Core\StorableAttribute.cs" />
+    <Compile Include="Default\Decomposers\Storable\StorableAttribute.cs" />
     <Compile Include="Default\Xml\XmlGenerator.cs" />
     <Compile Include="Default\Xml\XmlParser.cs" />
   </ItemGroup>

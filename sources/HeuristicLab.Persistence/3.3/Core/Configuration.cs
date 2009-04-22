@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Core {
 

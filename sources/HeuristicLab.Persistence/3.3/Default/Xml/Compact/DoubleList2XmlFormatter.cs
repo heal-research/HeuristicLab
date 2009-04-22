@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using HeuristicLab.Persistence.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 

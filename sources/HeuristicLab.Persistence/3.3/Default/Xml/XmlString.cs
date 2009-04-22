@@ -1,6 +1,7 @@
 ﻿using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using System.Text;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 

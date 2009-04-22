@@ -35,7 +35,7 @@ namespace HeuristicLab.Persistence.Core {
       LoadSettings();
     }
 
-    public void LoadSettings() {
+    protected void LoadSettings() {
       try {
         if (String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurations) ||
           String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurationsTypeCache))
@@ -57,7 +57,7 @@ namespace HeuristicLab.Persistence.Core {
       }
     }
 
-    public void SaveSettings() {
+    protected void SaveSettings() {
       Serializer serializer = new Serializer(
         customConfigurations,
         GetDefaultConfig(new XmlFormat()),

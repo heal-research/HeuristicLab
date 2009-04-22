@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace HeuristicLab.Persistence.Core {
+namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
 
   [AttributeUsage(
@@ -12,6 +12,7 @@ namespace HeuristicLab.Persistence.Core {
   public class EmptyStorableClassAttribute : Attribute {
 
     private static readonly Dictionary<Type, bool> emptyTypeInfo = new Dictionary<Type, bool>();
+
     public static bool IsEmptyStorable(Type type) {
       if (emptyTypeInfo.ContainsKey(type))
         return emptyTypeInfo[type];

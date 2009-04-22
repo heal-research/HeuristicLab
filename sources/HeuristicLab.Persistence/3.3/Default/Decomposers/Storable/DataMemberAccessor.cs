@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace HeuristicLab.Persistence.Core {
+namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
   public class DataMemberAccessor {
     
