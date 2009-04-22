@@ -37,7 +37,7 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    GrantedPermission getPermission(PermissionOwner permissionOwner, Permission permission);
+    GrantedPermission getPermission(PermissionOwner permissionOwner, Permission permission, Guid entityId);
 
     /// <summary>
     /// Adds a permission
@@ -46,7 +46,7 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    bool addPermission(PermissionOwner permissionOwner, Permission permission);
+    bool grantPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId);
 
     /// <summary>
     /// Removes a permission
@@ -55,6 +55,6 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    bool removePermission(PermissionOwner permissionOwner, Permission permission);
+    bool revokePermission(Guid permissionOwnerId, Guid permissionId, Guid entityId);
   }
 }

@@ -19,24 +19,42 @@ namespace HeuristicLab.Security.Contracts.Interfaces {
     User UpdateUser(User user);
 
     [OperationContract]
+    ICollection<User> GetAllUsers();
+
+    [OperationContract]
+    User GetUserByName(string name);
+
+    [OperationContract]
     UserGroup AddNewUserGroup(UserGroup group);
 
     [OperationContract]
-    bool RemoveUserGroup(UserGroup group);
+    bool RemoveUserGroup(Guid userGroupId);
 
     [OperationContract]
     UserGroup UpdateUserGroup(UserGroup group);
 
     [OperationContract]
-    bool AddPermissionOwnerToGroup(UserGroup userGroup, PermissionOwner permissionOwner);
+    ICollection<UserGroup> GetAllUserGroups();
 
     [OperationContract]
-    bool RemovePermissionOwnerFromGroup(UserGroup userGroup, PermissionOwner permissionOwner);
+    UserGroup GetUserGroupByName(string name);
 
     [OperationContract]
-    bool GrantPermission(PermissionOwner permissionOwner, Permission permission);
+    PermissionOwner UpdatePermissionOwner(PermissionOwner permissionOwner);
 
     [OperationContract]
-    bool RevokePermission(PermissionOwner permissionOwner, Permission permission);
+    bool AddPermissionOwnerToGroup(Guid userGroupId, Guid permissionOwnerId);
+
+    [OperationContract]
+    bool RemovePermissionOwnerFromGroup(Guid userGroupId, Guid permissionOwnerId);
+
+    [OperationContract]
+    bool GrantPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId);
+
+    [OperationContract]
+    Permission GetPermissionById(Guid permissionId);
+
+    [OperationContract]
+    bool RevokePermission(Guid permissionOwnerId, Guid permissionId, Guid entityId);
   }
 }

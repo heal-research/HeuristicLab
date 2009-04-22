@@ -31,7 +31,5 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
     [DataMember]
     public String Description { get; set; }
 
-    [DataMember]
-    public Guid EntityId { get; set; }
   }
 }
