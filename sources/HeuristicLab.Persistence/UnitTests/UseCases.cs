@@ -8,6 +8,7 @@ using System.Collections;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.DebugString;
 using System.IO;
+using System.Reflection;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -266,6 +267,47 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(12.3f),
         DebugStringGenerator.Serialize(o));
+    }
+
+    private string formatFullMemberName(MemberInfo mi) {     
+      return new StringBuilder()
+        .Append(mi.DeclaringType.Assembly.GetName().Name)
+        .Append(": ")
+        .Append(mi.DeclaringType.Namespace)
+        .Append('.')
+        .Append(mi.DeclaringType.Name)
+        .Append('.')
+        .Append(mi.Name).ToString();
+    }
+
+    [TestMethod]
+    public void CodingConventions() {
+      List<string> lowerCaseMethodNames = new List<string>();
+      List<string> lowerCaseProperties = new List<string>();
+      List<string> lowerCaseFields = new List<string>();
+      foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
+        if (!a.GetName().Name.StartsWith("HeuristicLab"))
+          continue;        
+        foreach (Type t in a.GetTypes()) {
+          foreach (MemberInfo mi in t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)) {
+            if (char.IsLower(mi.Name[0])) {
+              if (mi.MemberType == MemberTypes.Field)
+                lowerCaseFields.Add(formatFullMemberName(mi));
+              if (mi.MemberType == MemberTypes.Property)
+                lowerCaseProperties.Add(formatFullMemberName(mi));
+              if (mi.MemberType == MemberTypes.Method &&
+                !mi.Name.StartsWith("get_") &&
+                !mi.Name.StartsWith("set_") &&
+                !mi.Name.StartsWith("add_") &&
+                !mi.Name.StartsWith("remove_") )
+                lowerCaseMethodNames.Add(formatFullMemberName(mi));
+            }
+          }
+        }
+      }
+      //Assert.AreEqual("", lowerCaseFields.Aggregate("", (a, b) => a + "\r\n" + b));
+      Assert.AreEqual("", lowerCaseMethodNames.Aggregate("", (a, b) => a + "\r\n" + b));
+      Assert.AreEqual("", lowerCaseProperties.Aggregate("", (a, b) => a + "\r\n" + b));
     }
 
 
