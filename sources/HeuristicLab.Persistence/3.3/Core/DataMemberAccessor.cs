@@ -3,13 +3,10 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Core {
 
-  public delegate object Getter();
-  public delegate void Setter(object value);
-
   public class DataMemberAccessor {
-
-    public readonly Getter Get;
-    public readonly Setter Set;
+    
+    public readonly Func<object> Get;    
+    public readonly Action<object> Set;
     public readonly string Name;
     public readonly object DefaultValue;
 
@@ -31,7 +28,7 @@ namespace HeuristicLab.Persistence.Core {
         Set = value => propertyInfo.SetValue(obj, value, null);
       } else {
         throw new NotSupportedException(
-                "The Storable attribute can only be applied to fields and properties.");
+          "The Storable attribute can only be applied to fields and properties.");
       }
       Name = storableAttribute.Name ?? memberInfo.Name;
       DefaultValue = storableAttribute.DefaultValue;
@@ -39,7 +36,7 @@ namespace HeuristicLab.Persistence.Core {
 
     public DataMemberAccessor(
         string name, object defaultValue,
-        Getter getter, Setter setter) {
+        Func<object> getter, Action<object> setter) {
       Name = name;
       DefaultValue = defaultValue;
       Get = getter;
