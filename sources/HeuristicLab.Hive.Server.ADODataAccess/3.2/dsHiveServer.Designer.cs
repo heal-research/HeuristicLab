@@ -59,6 +59,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         private global::System.Data.DataRelation relationR_47;
         
+        private global::System.Data.DataRelation relationR_521;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -369,6 +371,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             this.relationR_52 = this.Relations["R_52"];
             this.relationR_59 = this.Relations["R_59"];
             this.relationR_47 = this.Relations["R_47"];
+            this.relationR_521 = this.Relations["R_521"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -430,6 +433,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         this.tableClient.ResourceIdColumn}, new global::System.Data.DataColumn[] {
                         this.tableJobResult.ResourceIdColumn}, false);
             this.Relations.Add(this.relationR_47);
+            this.relationR_521 = new global::System.Data.DataRelation("R_521", new global::System.Data.DataColumn[] {
+                        this.tableClientGroup.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableClientGroup_Resource.ClientGroupIdColumn}, false);
+            this.Relations.Add(this.relationR_521);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3236,6 +3243,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     this.SetParentRow(value, this.Table.ParentRelations["ClientGroup_is_a_Resource"]);
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroup_ResourceRow[] GetClientGroup_ResourceRows() {
+                if ((this.Table.ChildRelations["R_521"] == null)) {
+                    return new ClientGroup_ResourceRow[0];
+                }
+                else {
+                    return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_521"])));
+                }
+            }
         }
         
         /// <summary>
@@ -3289,6 +3306,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["R_59"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ClientGroupRow ClientGroupRow {
+                get {
+                    return ((ClientGroupRow)(this.GetParentRow(this.Table.ParentRelations["R_521"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_521"]);
                 }
             }
         }
@@ -5461,7 +5488,8 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.ClientGroup";
+            this._commandCollection[0].CommandText = "SELECT * FROM dbo.ClientGroup WHERE NOT EXISTS (SELECT * FROM dbo.ClientGroup_Res" +
+                "ource WHERE ResourceId = dbo.ClientGroup.ResourceId)";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
@@ -8691,12 +8719,12 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(updatedRows);
                 }
             }
-            if ((this._requiredPluginsTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
-                    result = (result + this._requiredPluginsTableAdapter.Update(updatedRows));
+                    result = (result + this._clientGroupTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -8709,12 +8737,12 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(updatedRows);
                 }
             }
-            if ((this._clientGroupTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+            if ((this._requiredPluginsTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
-                    result = (result + this._clientGroupTableAdapter.Update(updatedRows));
+                    result = (result + this._requiredPluginsTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -8768,11 +8796,11 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allAddedRows.AddRange(addedRows);
                 }
             }
-            if ((this._requiredPluginsTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Added);
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
-                    result = (result + this._requiredPluginsTableAdapter.Update(addedRows));
+                    result = (result + this._clientGroupTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -8784,11 +8812,11 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allAddedRows.AddRange(addedRows);
                 }
             }
-            if ((this._clientGroupTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Added);
+            if ((this._requiredPluginsTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
-                    result = (result + this._clientGroupTableAdapter.Update(addedRows));
+                    result = (result + this._requiredPluginsTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -8817,11 +8845,11 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(deletedRows);
                 }
             }
-            if ((this._clientGroupTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+            if ((this._requiredPluginsTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
-                    result = (result + this._clientGroupTableAdapter.Update(deletedRows));
+                    result = (result + this._requiredPluginsTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -8833,11 +8861,11 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(deletedRows);
                 }
             }
-            if ((this._requiredPluginsTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+            if ((this._clientGroupTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
-                    result = (result + this._requiredPluginsTableAdapter.Update(deletedRows));
+                    result = (result + this._clientGroupTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
