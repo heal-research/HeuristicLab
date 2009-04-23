@@ -87,6 +87,10 @@ copy "%SolutionDir%\HeuristicLab.Tracing\3.2\log4net licence.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\HeuristicLab.log4net.xml" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization\3.2\%Outdir%\HeuristicLab.Visualization-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization.Test\3.2\%Outdir%\HeuristicLab.Visualization.Test-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Security.Contracts\3.2\%Outdir%\HeuristicLab.Security.Contracts-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Security.Core\3.2\%Outdir%\HeuristicLab.Security.Core-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Security.DataAccess\3.2\%Outdir%\HeuristicLab.Security.DataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Security.ADODataAccess\3.2\%Outdir%\HeuristicLab.Security.ADODataAccess-3.2.dll" .\plugins
 
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
