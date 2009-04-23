@@ -30,8 +30,8 @@
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ilLargeImgJob = new System.Windows.Forms.ImageList(this.components);
       this.ilLargeImgClient = new System.Windows.Forms.ImageList(this.components);
+      this.ilLargeImgJob = new System.Windows.Forms.ImageList(this.components);
       this.plClientDetails = new System.Windows.Forms.Panel();
       this.lblState = new System.Windows.Forms.Label();
       this.lblStateClient = new System.Windows.Forms.Label();
@@ -80,8 +80,12 @@
       this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ilSmallImgJob = new System.Windows.Forms.ImageList(this.components);
       this.ilSmallImgClient = new System.Windows.Forms.ImageList(this.components);
+      this.ilSmallImgJob = new System.Windows.Forms.ImageList(this.components);
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.tvClientControl = new System.Windows.Forms.TreeView();
+      this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+      this.tvJobControl = new System.Windows.Forms.TreeView();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -100,6 +104,12 @@
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
+      this.splitContainer2.Panel1.SuspendLayout();
+      this.splitContainer2.Panel2.SuspendLayout();
+      this.splitContainer2.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -125,7 +135,7 @@
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
@@ -144,20 +154,20 @@
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
       // 
-      // ilLargeImgJob
-      // 
-      this.ilLargeImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilLargeImgJob.ImageStream")));
-      this.ilLargeImgJob.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilLargeImgJob.Images.SetKeyName(0, "monitor-green.png");
-      this.ilLargeImgJob.Images.SetKeyName(1, "monitor-orange.png");
-      this.ilLargeImgJob.Images.SetKeyName(2, "monitor-red.png");
-      this.ilLargeImgJob.Images.SetKeyName(3, "monitor-gray.png");
-      // 
       // ilLargeImgClient
       // 
       this.ilLargeImgClient.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilLargeImgClient.ImageStream")));
       this.ilLargeImgClient.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilLargeImgClient.Images.SetKeyName(0, "PlayHS.png");
+      this.ilLargeImgClient.Images.SetKeyName(0, "monitor-green.png");
+      this.ilLargeImgClient.Images.SetKeyName(1, "monitor-orange.png");
+      this.ilLargeImgClient.Images.SetKeyName(2, "monitor-red.png");
+      this.ilLargeImgClient.Images.SetKeyName(3, "monitor-gray.png");
+      // 
+      // ilLargeImgJob
+      // 
+      this.ilLargeImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilLargeImgJob.ImageStream")));
+      this.ilLargeImgJob.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilLargeImgJob.Images.SetKeyName(0, "PlayHS.png");
       // 
       // plClientDetails
       // 
@@ -432,7 +442,6 @@
       // treeView2
       // 
       this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView2.LineColor = System.Drawing.Color.Empty;
       this.treeView2.Location = new System.Drawing.Point(0, 0);
       this.treeView2.Name = "treeView2";
       this.treeView2.Size = new System.Drawing.Size(139, 346);
@@ -481,7 +490,7 @@
       // 
       // scJobControl.Panel1
       // 
-      this.scJobControl.Panel1.Controls.Add(this.lvJobControl);
+      this.scJobControl.Panel1.Controls.Add(this.splitContainer2);
       // 
       // scJobControl.Panel2
       // 
@@ -495,12 +504,12 @@
       this.lvJobControl.AllowDrop = true;
       this.lvJobControl.ContextMenuStrip = this.contextMenuJob;
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.ilLargeImgJob;
+      this.lvJobControl.LargeImageList = this.ilLargeImgClient;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
       this.lvJobControl.MultiSelect = false;
       this.lvJobControl.Name = "lvJobControl";
-      this.lvJobControl.Size = new System.Drawing.Size(454, 386);
-      this.lvJobControl.SmallImageList = this.ilSmallImgJob;
+      this.lvJobControl.Size = new System.Drawing.Size(299, 386);
+      this.lvJobControl.SmallImageList = this.ilSmallImgClient;
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
       this.lvJobControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseUp);
@@ -547,7 +556,7 @@
       // 
       // scClientControl.Panel1
       // 
-      this.scClientControl.Panel1.Controls.Add(this.lvClientControl);
+      this.scClientControl.Panel1.Controls.Add(this.splitContainer1);
       // 
       // scClientControl.Panel2
       // 
@@ -561,12 +570,12 @@
       this.lvClientControl.AllowDrop = true;
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
-      this.lvClientControl.LargeImageList = this.ilLargeImgClient;
+      this.lvClientControl.LargeImageList = this.ilLargeImgJob;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.MultiSelect = false;
       this.lvClientControl.Name = "lvClientControl";
-      this.lvClientControl.Size = new System.Drawing.Size(454, 386);
-      this.lvClientControl.SmallImageList = this.ilSmallImgClient;
+      this.lvClientControl.Size = new System.Drawing.Size(299, 386);
+      this.lvClientControl.SmallImageList = this.ilSmallImgJob;
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
       this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
@@ -625,20 +634,70 @@
       this.listToolStripMenuItem.Text = "List";
       this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
       // 
-      // ilSmallImgJob
-      // 
-      this.ilSmallImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgJob.ImageStream")));
-      this.ilSmallImgJob.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilSmallImgJob.Images.SetKeyName(0, "monitor-green.png");
-      this.ilSmallImgJob.Images.SetKeyName(1, "monitor-orange.png");
-      this.ilSmallImgJob.Images.SetKeyName(2, "monitor-red.png");
-      this.ilSmallImgJob.Images.SetKeyName(3, "monitor-gray.png");
-      // 
       // ilSmallImgClient
       // 
       this.ilSmallImgClient.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgClient.ImageStream")));
       this.ilSmallImgClient.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilSmallImgClient.Images.SetKeyName(0, "PlayHS.png");
+      this.ilSmallImgClient.Images.SetKeyName(0, "monitor-green.png");
+      this.ilSmallImgClient.Images.SetKeyName(1, "monitor-orange.png");
+      this.ilSmallImgClient.Images.SetKeyName(2, "monitor-red.png");
+      this.ilSmallImgClient.Images.SetKeyName(3, "monitor-gray.png");
+      // 
+      // ilSmallImgJob
+      // 
+      this.ilSmallImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgJob.ImageStream")));
+      this.ilSmallImgJob.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilSmallImgJob.Images.SetKeyName(0, "PlayHS.png");
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer1.Name = "splitContainer1";
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.tvClientControl);
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.lvClientControl);
+      this.splitContainer1.Size = new System.Drawing.Size(454, 386);
+      this.splitContainer1.SplitterDistance = 151;
+      this.splitContainer1.TabIndex = 0;
+      // 
+      // tvClientControl
+      // 
+      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvClientControl.Location = new System.Drawing.Point(0, 0);
+      this.tvClientControl.Name = "tvClientControl";
+      this.tvClientControl.Size = new System.Drawing.Size(151, 386);
+      this.tvClientControl.TabIndex = 0;
+      // 
+      // splitContainer2
+      // 
+      this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer2.Name = "splitContainer2";
+      // 
+      // splitContainer2.Panel1
+      // 
+      this.splitContainer2.Panel1.Controls.Add(this.tvJobControl);
+      // 
+      // splitContainer2.Panel2
+      // 
+      this.splitContainer2.Panel2.Controls.Add(this.lvJobControl);
+      this.splitContainer2.Size = new System.Drawing.Size(454, 386);
+      this.splitContainer2.SplitterDistance = 151;
+      this.splitContainer2.TabIndex = 0;
+      // 
+      // tvJobControl
+      // 
+      this.tvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvJobControl.Location = new System.Drawing.Point(0, 0);
+      this.tvJobControl.Name = "tvJobControl";
+      this.tvJobControl.Size = new System.Drawing.Size(151, 386);
+      this.tvJobControl.TabIndex = 0;
       // 
       // HiveServerManagementConsole
       // 
@@ -673,6 +732,12 @@
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
       this.tcManagementConsole.ResumeLayout(false);
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.ResumeLayout(false);
+      this.splitContainer2.Panel1.ResumeLayout(false);
+      this.splitContainer2.Panel2.ResumeLayout(false);
+      this.splitContainer2.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -685,11 +750,11 @@
     private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
     private System.Windows.Forms.TreeView treeView2;
     private System.Windows.Forms.ListView listView2;
-    private System.Windows.Forms.ImageList ilLargeImgJob;
+    private System.Windows.Forms.ImageList ilLargeImgClient;
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
     private System.Windows.Forms.Timer timerSyncronize;
-    private System.Windows.Forms.ImageList ilLargeImgClient;
+    private System.Windows.Forms.ImageList ilLargeImgJob;
     private System.Windows.Forms.Panel plClientDetails;
     private System.Windows.Forms.PictureBox pbClientControl;
     private System.Windows.Forms.Label lblClientName;
@@ -735,7 +800,11 @@
     private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem smallIconsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
-    private System.Windows.Forms.ImageList ilSmallImgJob;
     private System.Windows.Forms.ImageList ilSmallImgClient;
+    private System.Windows.Forms.ImageList ilSmallImgJob;
+    private System.Windows.Forms.SplitContainer splitContainer1;
+    private System.Windows.Forms.TreeView tvClientControl;
+    private System.Windows.Forms.SplitContainer splitContainer2;
+    private System.Windows.Forms.TreeView tvJobControl;
   }
 }
