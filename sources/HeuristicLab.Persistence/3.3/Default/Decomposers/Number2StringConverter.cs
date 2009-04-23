@@ -8,7 +8,7 @@ using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
-  public class Number2StringConverter {
+  public class Number2StringDecomposer : IDecomposer {
 
     private static readonly List<Type> numberTypes =
       new List<Type> {
@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     private static readonly Dictionary<Type, MethodInfo> numberParsers;
 
-    static Number2StringConverter() {
+    static Number2StringDecomposer() {
       numberParsers = new Dictionary<Type, MethodInfo>();
       foreach (var type in numberTypes) {
         numberParsers[type] = type
@@ -64,6 +64,41 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       } 
     }
 
+
+    #region IDecomposer Members
+
+    public int Priority {
+      get { return -100; }
+    }
+
+    public IEnumerable<Tag> CreateMetaInfo(object obj) {
+      yield return new Tag(Format(obj));
+    }
+
+    public IEnumerable<Tag> Decompose(object obj) {
+      // numbers are composed just of meta info
+      return new Tag[] { };
+    }
+
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
+      var it = metaInfo.GetEnumerator();
+      try {
+        it.MoveNext();
+        return Parse((string)it.Current.Value, type);
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException(
+          String.Format("Insufficient meta information to reconstruct number of type {0}.",
+          type.VersionInvariantName()), e);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid meta information element type", e);
+      }
+    }
+
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
+      // numbers are composed just of meta info, no need to populate
+    }
+
+    #endregion
   }
 
 }

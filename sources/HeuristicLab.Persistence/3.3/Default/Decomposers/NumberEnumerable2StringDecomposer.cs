@@ -16,8 +16,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       get { return 200; }
     }
 
-    private static readonly Number2StringConverter numberConverter =
-      new Number2StringConverter();
+    private static readonly Number2StringDecomposer numberConverter =
+      new Number2StringDecomposer();
 
     private static readonly Dictionary<Type, Type> interfaceCache = new Dictionary<Type, Type>();
 

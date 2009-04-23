@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -158,7 +159,7 @@ namespace HeuristicLab.Persistence.Core {
           format.GetType().VersionInvariantName(),
           format.SerialDataType.VersionInvariantName()));
       }
-      return new Configuration(format, formatterConfig, Decomposers);
+      return new Configuration(format, formatterConfig, Decomposers.Where((d) => d.Priority > 0));
     }
 
     public Configuration GetConfiguration(IFormat format) {

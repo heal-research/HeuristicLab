@@ -10,6 +10,9 @@ using HeuristicLab.Persistence.Default.DebugString;
 using System.IO;
 using System.Reflection;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
+using HeuristicLab.Persistence.Default.Decomposers;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -309,6 +312,19 @@ namespace HeuristicLab.Persistence.UnitTest {
       //Assert.AreEqual("", lowerCaseFields.Aggregate("", (a, b) => a + "\r\n" + b));
       Assert.AreEqual("", lowerCaseMethodNames.Aggregate("", (a, b) => a + "\r\n" + b));
       Assert.AreEqual("", lowerCaseProperties.Aggregate("", (a, b) => a + "\r\n" + b));
+    }
+
+    [TestMethod]
+    public void Number2StringDecomposer() {
+      PrimitivesTest sdt = new PrimitivesTest();
+      XmlGenerator.Serialize(sdt, tempFile,
+        new Configuration(new XmlFormat(),
+          new Dictionary<Type, IFormatter> { { typeof(string), new String2XmlFormatter() } },
+          new List<IDecomposer> { new Number2StringDecomposer() }));
+      object o = XmlParser.DeSerialize(tempFile);      
+      Assert.AreEqual(
+        DebugStringGenerator.Serialize(sdt),
+        DebugStringGenerator.Serialize(o));
     }
 
 
