@@ -23,6 +23,10 @@ namespace HeuristicLab.Hive.Contracts {
       NetTcpBinding binding = new NetTcpBinding(SecurityMode.Message);
 #else
       NetTcpBinding binding = new NetTcpBinding();
+      binding.MaxBufferSize = int.MaxValue;
+      binding.MaxReceivedMessageSize = int.MaxValue;
+      binding.ReaderQuotas.MaxArrayLength = int.MaxValue;
+      binding.ReaderQuotas.MaxStringContentLength = int.MaxValue;
 #endif
       return binding;
     }
