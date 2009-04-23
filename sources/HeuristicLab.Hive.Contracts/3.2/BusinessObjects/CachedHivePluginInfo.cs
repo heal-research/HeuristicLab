@@ -23,14 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.PluginInfrastructure {
+  [DataContract]
   public class CachedHivePluginInfo : HivePluginInfo {
 
     private List<byte[]> pluginFiles = new List<byte[]>();
     /// <summary>
     /// stores the plugin files in a list of byte arrays
     /// </summary>
+    [DataMember]
     public List<byte[]> PluginFiles {
       get { return pluginFiles; }
     }

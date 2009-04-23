@@ -579,13 +579,15 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponsePlugin SendPlugins(List<HivePluginInfo> pluginList) {
       ResponsePlugin response = new ResponsePlugin();
+      PluginManager.Manager.Initialize();
       ICollection<PluginInfo> allActivePlugins = PluginManager.Manager.ActivePlugins;
 
       foreach (HivePluginInfo pluginInfo in pluginList) {
+        // TODO: BuildDate deleted, not needed???
+        // TODO: Split version to major, minor and revision number
         foreach (PluginInfo currPlugin in allActivePlugins) {
           if (currPlugin.Name == pluginInfo.Name
-              && currPlugin.Version.ToString() == pluginInfo.Version
-              && currPlugin.BuildDate == pluginInfo.BuildDate) {
+              && currPlugin.Version.ToString() == pluginInfo.Version) {
 
             CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo { 
                 Name = currPlugin.Name,
