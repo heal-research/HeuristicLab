@@ -9,6 +9,7 @@ using HeuristicLab.Persistence.Interfaces;
 using System.Text;
 using HeuristicLab.Persistence.Default.Decomposers;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.GUI {
 
@@ -73,6 +74,7 @@ namespace HeuristicLab.Persistence.GUI {
     }
 
     private void UpdateDecomposerList(ListView decomposerList, Configuration config) {
+      decomposerList.SuspendLayout();
       decomposerList.Items.Clear();
       var availableDecomposers = new Dictionary<string, IDecomposer>();
       foreach (IDecomposer d in ConfigurationService.Instance.Decomposers) {
@@ -89,9 +91,11 @@ namespace HeuristicLab.Persistence.GUI {
         item.Checked = false;
         item.Tag = pair.Value;
       }
+      decomposerList.ResumeLayout();
     }
 
     private void UpdateFromConfigurationService() {
+      configurationTabs.SuspendLayout();
       foreach (IFormat format in ConfigurationService.Instance.Formats) {
         Configuration config = ConfigurationService.Instance.GetConfiguration(format);
         UpdateFormatterGrid(
@@ -101,9 +105,11 @@ namespace HeuristicLab.Persistence.GUI {
           (ListView)GetControlsOnPage(format.Name, "DecomposerList"),
           config);
       }
+      configurationTabs.ResumeLayout();
     }
 
     private void initializeConfigPages() {
+      configurationTabs.SuspendLayout();
       configurationTabs.TabPages.Clear();
       foreach (IFormat format in ConfigurationService.Instance.Formats) {
         List<IFormatter> formatters = ConfigurationService.Instance.Formatters[format.SerialDataType];
@@ -111,18 +117,21 @@ namespace HeuristicLab.Persistence.GUI {
           Name = format.Name,
           Tag = format,
         };
+        page.SuspendLayout();
         configurationTabs.TabPages.Add(page);
         SplitContainer verticalSplit = new SplitContainer {
           Dock = DockStyle.Fill,
           Orientation = Orientation.Vertical,
           BorderStyle = BorderStyle.Fixed3D,
         };
+        verticalSplit.SuspendLayout();
         page.Controls.Add(verticalSplit);
         SplitContainer horizontalSplit = new SplitContainer {
           Dock = DockStyle.Fill,
           Orientation = Orientation.Horizontal,
           BorderStyle = BorderStyle.Fixed3D,
         };
+        horizontalSplit.SuspendLayout();
         verticalSplit.Panel1.Controls.Add(horizontalSplit);
         ListView decomposerList = createDecomposerList();
         horizontalSplit.Panel1.Controls.Add(decomposerList);
@@ -134,7 +143,11 @@ namespace HeuristicLab.Persistence.GUI {
           Dock = DockStyle.Fill,
         };
         horizontalSplit.Panel2.Controls.Add(checkBox);
+        horizontalSplit.ResumeLayout();
+        verticalSplit.ResumeLayout();
+        page.ResumeLayout();
       }
+      configurationTabs.ResumeLayout();
     }
 
     private DataGridView createGridView() {
@@ -149,6 +162,7 @@ namespace HeuristicLab.Persistence.GUI {
         AllowUserToResizeRows = false,
         AllowUserToOrderColumns = true,
       };
+      gridView.SuspendLayout();
       gridView.CellValueChanged += gridView_CellValueChanged;
       gridView.Columns.Add(new DataGridViewTextBoxColumn {
         Name = "Type", ReadOnly = true,
@@ -162,6 +176,7 @@ namespace HeuristicLab.Persistence.GUI {
         Name = "Formatter",
         AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
       });
+      gridView.ResumeLayout();
       return gridView;
     }
 
@@ -178,6 +193,7 @@ namespace HeuristicLab.Persistence.GUI {
         ShowGroups = false,
         View = View.Details
       };
+      decomposerList.SuspendLayout();
       decomposerList.Resize += decomposerList_Resize;
       decomposerList.ItemChecked += decomposerList_ItemChecked;
       decomposerList.DragDrop += decomposerList_DragDrop;
@@ -192,10 +208,12 @@ namespace HeuristicLab.Persistence.GUI {
         item.Checked = true;
         item.Tag = decomposer;
       }
+      decomposerList.ResumeLayout();
       return decomposerList;
     }
 
     private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {
+      gridView.SuspendLayout();
       Dictionary<string, List<string>> formatterMap = createFormatterMap(formatters);
       foreach (var formatterMapping in formatterMap) {
         var row = gridView.Rows[gridView.Rows.Add()];
@@ -213,6 +231,7 @@ namespace HeuristicLab.Persistence.GUI {
           comboBoxCell.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
         }
       }
+      gridView.ResumeLayout();
     }
 
     private Dictionary<string, List<string>> createFormatterMap(IEnumerable<IFormatter> formatters) {
@@ -269,6 +288,7 @@ namespace HeuristicLab.Persistence.GUI {
       if (underConstruction)
         return;
       ListBox checkBox = (ListBox)GetActiveControl("CheckBox");
+      checkBox.SuspendLayout();
       IFormat activeFormat = (IFormat)configurationTabs.SelectedTab.Tag;
       if (activeFormat != null && checkBox != null) {
         checkBox.Items.Clear();
@@ -279,6 +299,7 @@ namespace HeuristicLab.Persistence.GUI {
         foreach (var decomposer in activeConfig.Decomposers)
           checkBox.Items.Add(decomposer.GetType().Name + " (D)");
       }
+      checkBox.ResumeLayout();
     }
 
 
