@@ -4461,7 +4461,7 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[3];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[4];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.Client";
@@ -4473,10 +4473,15 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT CPUSpeed, ClientConfigId, FreeMemory, Login, Memory, NumberOfCores, Number" +
-                "OfFreeCores, ResourceId, Status FROM Client WHERE (ResourceId = @Id)";
+            this._commandCollection[2].CommandText = "SELECT * FROM dbo.Client WHERE NOT EXISTS (SELECT * FROM dbo.ClientGroup_Resource" +
+                " WHERE ResourceId = dbo.Client.ResourceId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[3].Connection = this.Connection;
+            this._commandCollection[3].CommandText = "SELECT CPUSpeed, ClientConfigId, FreeMemory, Login, Memory, NumberOfCores, Number" +
+                "OfFreeCores, ResourceId, Status FROM Client WHERE (ResourceId = @Id)";
+            this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4526,8 +4531,30 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillById(dsHiveServer.ClientDataTable dataTable, System.Guid Id) {
+        public virtual int FillByGroupless(dsHiveServer.ClientDataTable dataTable) {
             this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.ClientDataTable GetDataByGroupless() {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            dsHiveServer.ClientDataTable dataTable = new dsHiveServer.ClientDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsHiveServer.ClientDataTable dataTable, System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
             this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
@@ -4540,7 +4567,7 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.ClientDataTable GetDataById(System.Guid Id) {
-            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand = this.CommandCollection[3];
             this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
             dsHiveServer.ClientDataTable dataTable = new dsHiveServer.ClientDataTable();
             this.Adapter.Fill(dataTable);

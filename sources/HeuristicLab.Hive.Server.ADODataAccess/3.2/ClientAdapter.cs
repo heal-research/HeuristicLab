@@ -196,7 +196,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<ClientInfo> GetGrouplessClients() {
-      throw new NotImplementedException();
+      return
+        base.FindMultiple(
+          delegate() {
+            return Adapter.GetDataByGroupless();
+          });
     }
 
     #endregion
