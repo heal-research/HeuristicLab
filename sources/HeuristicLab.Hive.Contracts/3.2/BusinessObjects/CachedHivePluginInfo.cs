@@ -35,8 +35,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     [DataMember]
     public List<byte[]> PluginFiles {
-      get;
-      set;
+      get { return pluginFiles; }
+      set { pluginFiles = value; }
     }
   }
 }
