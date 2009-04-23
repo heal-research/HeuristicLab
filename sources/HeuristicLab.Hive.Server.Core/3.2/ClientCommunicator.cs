@@ -304,6 +304,19 @@ namespace HeuristicLab.Hive.Server.Core {
             }
           }
         }
+        foreach (Job currJob in jobsOfClient) {
+          bool found = false;
+          foreach (Guid jobId in hbData.JobProgress.Keys) {
+            if (jobId == currJob.Id) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            currJob.State = State.offline;
+            jobAdapter.Update(currJob);
+          }
+        }
       }
     }
    
