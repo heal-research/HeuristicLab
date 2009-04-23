@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public double Percentage { get; set; }
     [DataMember]
-    public DateTime timestamp { get; set; }
+    public DateTime Timestamp { get; set; }
     [DataMember]
     public ClientInfo Client { get; set; }
     [DataMember]

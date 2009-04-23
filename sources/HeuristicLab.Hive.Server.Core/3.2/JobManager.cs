@@ -58,7 +58,7 @@ namespace HeuristicLab.Hive.Server.Core {
         foreach (JobResult jR in allJobResults) {
           // if lastJobResult was before the current jobResult the lastJobResult must be updated
           if (lastJobResult == null ||
-              (jR.timestamp > lastJobResult.timestamp))
+              (jR.Timestamp > lastJobResult.Timestamp))
             lastJobResult = jR;
         }
         return lastJobResult;
