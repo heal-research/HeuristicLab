@@ -78,9 +78,21 @@ namespace HeuristicLab.Hive.Server.Core {
       try {
         IClientGroupAdapter clientGroupAdapter =
           session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
         ResponseList<ClientGroup> response = new ResponseList<ClientGroup>();
 
-        response.List = new List<ClientGroup>(clientGroupAdapter.GetAll());
+        List<ClientGroup> allClientGroups = new List<ClientGroup>(clientGroupAdapter.GetAll());
+        ClientGroup emptyClientGroup = new ClientGroup();
+        ICollection<ClientInfo> groupLessClients = clientAdapter.GetGrouplessClients();
+        if (groupLessClients != null) {
+          foreach (ClientInfo currClient in groupLessClients) {
+            emptyClientGroup.Resources.Add(currClient);
+          }
+        }
+        allClientGroups.Add(emptyClientGroup);
+
+        response.List = allClientGroups;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_ALL_CLIENTGROUPS;
         response.Success = true;
 
