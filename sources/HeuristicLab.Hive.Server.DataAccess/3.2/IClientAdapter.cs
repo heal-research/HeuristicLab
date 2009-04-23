@@ -36,5 +36,11 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="clientId"></param>
     /// <returns></returns>
     ClientInfo GetByName(string name);
+
+    /// <summary>
+    /// Gets all clients that are not in a group
+    /// </summary>
+    /// <returns></returns>
+    ICollection<ClientInfo> GetGrouplessClients();
   }
 }
