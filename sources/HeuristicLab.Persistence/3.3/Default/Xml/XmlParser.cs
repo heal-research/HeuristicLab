@@ -41,8 +41,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
         try {
           iterator = handlers[reader.Name].Invoke();
         } catch (KeyNotFoundException) {
-          throw new InvalidOperationException(String.Format(
-            "No handler for XML tag \"{0}\" installed",
+          throw new PersistenceException(String.Format(
+            "Invalid XML tag \"{0}\" in persistence file.",
             reader.Name));
         }
         while (iterator.MoveNext()) {
@@ -102,30 +102,42 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static List<TypeMapping> ParseTypeCache(TextReader reader) {
-      var typeCache = new List<TypeMapping>();
-      XmlReader xmlReader = XmlReader.Create(reader);
-      while (xmlReader.Read()) {
-        if (xmlReader.Name == XmlStringConstants.TYPE) {
-          typeCache.Add(new TypeMapping(
-            int.Parse(xmlReader.GetAttribute("id")),
-            xmlReader.GetAttribute("typeName"),
-            xmlReader.GetAttribute("serializer")));
+      try {
+        var typeCache = new List<TypeMapping>();
+        XmlReader xmlReader = XmlReader.Create(reader);
+        while (xmlReader.Read()) {
+          if (xmlReader.Name == XmlStringConstants.TYPE) {
+            typeCache.Add(new TypeMapping(
+              int.Parse(xmlReader.GetAttribute("id")),
+              xmlReader.GetAttribute("typeName"),
+              xmlReader.GetAttribute("serializer")));
+          }
         }
+        return typeCache;
+      } catch (PersistenceException e) {
+        throw;
+      } catch (Exception e) {
+        throw new PersistenceException("Unexpected exception during type cache parsing.", e);
       }
-      return typeCache;
     }
 
     public static object DeSerialize(string filename) {
-      ZipFile zipFile = new ZipFile(filename);
-      Deserializer deSerializer = new Deserializer(
-        ParseTypeCache(
-        new StreamReader(
-          zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
-      XmlParser parser = new XmlParser(
-        new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
-      object result = deSerializer.Deserialize(parser);
-      zipFile.Close();
-      return result;
+      try {
+        ZipFile zipFile = new ZipFile(filename);
+        Deserializer deSerializer = new Deserializer(
+          ParseTypeCache(
+          new StreamReader(
+            zipFile.GetInputStream(zipFile.GetEntry("typecache.xml")))));
+        XmlParser parser = new XmlParser(
+          new StreamReader(zipFile.GetInputStream(zipFile.GetEntry("data.xml"))));
+        object result = deSerializer.Deserialize(parser);
+        zipFile.Close();
+        return result;
+      } catch (PersistenceException e) {
+        throw;
+      } catch (Exception e) {
+        throw new PersistenceException("Unexpected exception during deserialization", e);
+      }
     }
   }
 }

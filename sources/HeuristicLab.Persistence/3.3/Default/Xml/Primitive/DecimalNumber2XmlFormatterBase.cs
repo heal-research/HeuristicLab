@@ -30,7 +30,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       return new XmlString((string)ToStringMethod.Invoke(t, new object[] { "r", CultureInfo.InvariantCulture }));
     }
     public override T Parse(XmlString x) {
-      return (T)ParseMethod.Invoke(null, new object[] { x.Data, CultureInfo.InvariantCulture });
+      try {
+        return (T)ParseMethod.Invoke(null, new object[] { x.Data, CultureInfo.InvariantCulture });
+      } catch (Exception e) {
+        throw new PersistenceException("Could not parse decimal number.", e);
+      }
     }
   }
 }

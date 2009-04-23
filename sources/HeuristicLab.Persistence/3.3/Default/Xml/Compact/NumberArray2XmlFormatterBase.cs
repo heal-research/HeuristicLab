@@ -2,6 +2,7 @@
 using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using System;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -45,36 +46,46 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     public override T Parse(XmlString x) {
-      IEnumerator values =
-        x.Data.Split(new[] { Separator },
-        StringSplitOptions.RemoveEmptyEntries).GetEnumerator();
-      values.MoveNext();
-      int rank = int.Parse((string)values.Current);
-      int[] lengths = new int[rank];
-      for (int i = 0; i < rank; i++) {
+      try {
+        IEnumerator values =
+          x.Data.Split(new[] { Separator },
+          StringSplitOptions.RemoveEmptyEntries).GetEnumerator();
         values.MoveNext();
-        lengths[i] = int.Parse((string)values.Current);
-      }
-      int[] lowerBounds = new int[rank];
-      for (int i = 0; i < rank; i++) {
-        values.MoveNext();
-        lowerBounds[i] = int.Parse((string)values.Current);
-      }
-      Array a = Array.CreateInstance(this.SourceType.GetElementType(), lengths, lowerBounds);
-      int[] positions = new int[rank];
-      while (values.MoveNext()) {
-        a.SetValue(ParseValue((string)values.Current), positions);
-        positions[0] += 1;
-        for (int i = 0; i < rank - 1; i++) {
-          if (positions[i] >= lengths[i]) {
-            positions[i] = 0;
-            positions[i + 1] += 1;
-          } else {
-            break;
+        int rank = int.Parse((string)values.Current);
+        int[] lengths = new int[rank];
+        for (int i = 0; i < rank; i++) {
+          values.MoveNext();
+          lengths[i] = int.Parse((string)values.Current);
+        }
+        int[] lowerBounds = new int[rank];
+        for (int i = 0; i < rank; i++) {
+          values.MoveNext();
+          lowerBounds[i] = int.Parse((string)values.Current);
+        }
+        Array a = Array.CreateInstance(this.SourceType.GetElementType(), lengths, lowerBounds);
+        int[] positions = (int[])lowerBounds.Clone();
+        while (values.MoveNext()) {
+          a.SetValue(ParseValue((string)values.Current), positions);
+          positions[0] += 1;
+          for (int i = 0; i < rank - 1; i++) {
+            if (positions[i] >= lengths[i]) {
+              positions[i] = 0;
+              positions[i + 1] += 1;
+            } else {
+              break;
+            }
           }
         }
-      }      
-      return (T)(object)a;
+        if (positions[rank - 1] != lowerBounds[rank - 1] + lengths[rank - 1])
+          throw new PersistenceException("Insufficient number of elements while trying to fill number array.");
+        return (T)(object)a;
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Insufficient information to rebuild number array.", e);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid element data or meta data to reconstruct number array.", e);
+      } catch (OverflowException e) {
+        throw new PersistenceException("Overflow during element parsing while trying to reconstruct number array.", e);
+      } 
     }
   }
 

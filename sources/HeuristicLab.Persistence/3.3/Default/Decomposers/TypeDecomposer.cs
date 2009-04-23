@@ -27,13 +27,25 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
-      foreach (var typeName in metaInfo) {
-        return Type.GetType((string)typeName.Value);
+      IEnumerator<Tag> it = metaInfo.GetEnumerator();
+      try {
+        it.MoveNext();
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Insufficient meta information to instantiate Type object", e);
       }
-      return null;
+      try {
+        return Type.GetType((string)it.Current.Value, true);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid meta information during reconstruction of Type object", e);
+      } catch (TypeLoadException e) {
+        throw new PersistenceException(String.Format(
+          "Cannot load Type {0}, make sure all required assemblies are available.",
+          (string)it.Current.Value), e);
+      }
     }
 
     public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
+      // Type ojects are populated during instance creation.
     }
   }
 }

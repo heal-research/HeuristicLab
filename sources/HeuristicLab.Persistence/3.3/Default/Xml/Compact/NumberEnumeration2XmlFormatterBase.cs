@@ -2,6 +2,7 @@
 using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using System;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -23,12 +24,18 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     public override T Parse(XmlString x) {
-      IEnumerable enumeration = Instantiate();
-      string[] values = x.Data.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
-      foreach (var value in values) {
-        Add(enumeration, ParseValue(value));
-      }
-      return (T)enumeration;
+      try {
+        IEnumerable enumeration = Instantiate();
+        string[] values = x.Data.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var value in values) {
+          Add(enumeration, ParseValue(value));
+        }
+        return (T)enumeration;
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid element data during reconstruction of number enumerable.", e);
+      } catch (OverflowException e) {
+        throw new PersistenceException("Overflow during element parsing while trying to reconstruct number enumerable.", e);
+      }       
     }
   }
 

@@ -90,12 +90,18 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       Type enumerable = GetGenericEnumerableInterface(type);
       Type elementType = enumerable.GetGenericArguments()[0];
       MethodInfo addMethod = type.GetMethod("Add");
-      var tagEnumerator = tags.GetEnumerator();
-      tagEnumerator.MoveNext();
-      string[] stringValues = ((string)tagEnumerator.Current.Value)
-        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      foreach (var value in stringValues) {
-        addMethod.Invoke(instance, new[] { numberConverter.Parse(value, elementType) });
+      try {
+        var tagEnumerator = tags.GetEnumerator();
+        tagEnumerator.MoveNext();
+        string[] stringValues = ((string)tagEnumerator.Current.Value)
+          .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var value in stringValues) {
+          addMethod.Invoke(instance, new[] { numberConverter.Parse(value, elementType) });
+        }
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Insufficient element data to reconstruct number enumerable", e);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid element data during reconstruction of number enumerable", e);
       }
     }
   }

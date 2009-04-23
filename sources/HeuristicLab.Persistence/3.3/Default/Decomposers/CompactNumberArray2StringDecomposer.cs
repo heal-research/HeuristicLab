@@ -60,44 +60,51 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
-      var tagIter = metaInfo.GetEnumerator();
-      tagIter.MoveNext();
-      var valueIter = ((string)tagIter.Current.Value)
-        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-        .GetEnumerator();
-      valueIter.MoveNext();
-      int rank = int.Parse((string)valueIter.Current);
-      int[] lengths = new int[rank];
-      int[] lowerBounds = new int[rank];
-      for (int i = 0; i < rank; i++) {
+      try {
+        var tagIter = metaInfo.GetEnumerator();
+        tagIter.MoveNext();      
+        var valueIter = ((string)tagIter.Current.Value)
+          .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+          .GetEnumerator();
         valueIter.MoveNext();
-        lengths[i] = int.Parse((string)valueIter.Current);
-      }
-      for (int i = 0; i < rank; i++) {
-        valueIter.MoveNext();
-        lowerBounds[i] = int.Parse((string)valueIter.Current);
-      }
-      Type elementType = type.GetElementType();
-      Array a = Array.CreateInstance(elementType, lengths, lowerBounds);
-      int[] positions = (int[])lowerBounds.Clone();
-      while (valueIter.MoveNext()) {
-        a.SetValue(
-          numberConverter.Parse((string)valueIter.Current, elementType),
-          positions);
-        positions[0] += 1;
-        for (int i = 0; i < rank - 1; i++) {
-          if (positions[i] >= lengths[i] + lowerBounds[i]) {
-            positions[i + 1] += 1;
-            positions[i] = lowerBounds[i];
-          } else {
-            break;
+        int rank = int.Parse((string)valueIter.Current);
+        int[] lengths = new int[rank];
+        int[] lowerBounds = new int[rank];
+        for (int i = 0; i < rank; i++) {
+          valueIter.MoveNext();
+          lengths[i] = int.Parse((string)valueIter.Current);
+        }
+        for (int i = 0; i < rank; i++) {
+          valueIter.MoveNext();
+          lowerBounds[i] = int.Parse((string)valueIter.Current);
+        }
+        Type elementType = type.GetElementType();
+        Array a = Array.CreateInstance(elementType, lengths, lowerBounds);
+        int[] positions = (int[])lowerBounds.Clone();
+        while (valueIter.MoveNext()) {
+          a.SetValue(
+            numberConverter.Parse((string)valueIter.Current, elementType),
+            positions);
+          positions[0] += 1;
+          for (int i = 0; i < rank - 1; i++) {
+            if (positions[i] >= lengths[i] + lowerBounds[i]) {
+              positions[i + 1] += 1;
+              positions[i] = lowerBounds[i];
+            } else {
+              break;
+            }
           }
         }
-      }
-      return a;
+        return a;
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Insufficient data to deserialize compact array", e);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid element data during compact array deserialization", e);
+      }      
     }
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
+      // Nothing to do: Compact arrays are already populated during instance creation.
     }
 
   }

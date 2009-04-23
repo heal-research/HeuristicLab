@@ -9,6 +9,7 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.DebugString;
 using System.IO;
 using System.Reflection;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.UnitTest {
 

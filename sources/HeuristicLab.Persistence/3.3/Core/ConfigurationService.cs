@@ -147,9 +147,16 @@ namespace HeuristicLab.Persistence.Core {
 
     public Configuration GetDefaultConfig(IFormat format) {
       Dictionary<Type, IFormatter> formatterConfig = new Dictionary<Type, IFormatter>();
-      foreach (IFormatter f in Formatters[format.SerialDataType]) {
-        if (!formatterConfig.ContainsKey(f.SourceType))
-          formatterConfig.Add(f.SourceType, f);
+      if (Formatters.ContainsKey(format.SerialDataType)) {
+        foreach (IFormatter f in Formatters[format.SerialDataType]) {
+          if (!formatterConfig.ContainsKey(f.SourceType))
+            formatterConfig.Add(f.SourceType, f);
+        }
+      } else {
+        Logger.Warn(String.Format(
+          "No formatters found for format {0} with serial data type {1}",
+          format.GetType().VersionInvariantName(),
+          format.SerialDataType.VersionInvariantName()));
       }
       return new Configuration(format, formatterConfig, Decomposers);
     }

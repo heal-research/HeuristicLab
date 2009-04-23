@@ -52,10 +52,16 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object Parse(string stringValue, Type type) {
-      return numberParsers[type]
-        .Invoke(null,
-            BindingFlags.Static | BindingFlags.PutRefDispProperty,
-                  null, new[] { stringValue }, CultureInfo.InvariantCulture);
+      try {        
+        return numberParsers[type]
+          .Invoke(null,
+              BindingFlags.Static | BindingFlags.PutRefDispProperty,
+                    null, new[] { stringValue }, CultureInfo.InvariantCulture);
+      } catch (FormatException e) {
+        throw new PersistenceException("Invalid element data during number parsing.", e);
+      } catch (OverflowException e) {
+        throw new PersistenceException("Overflow during number parsing.", e);
+      } 
     }
 
   }

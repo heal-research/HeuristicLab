@@ -93,6 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\PersistenceException.cs" />
+    <Compile Include="Default\Decomposers\Number2StringConverter.cs" />
     <Compile Include="Default\Decomposers\Storable\EmptyStorableClassAttribute.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Core\FormatterBase.cs" />
@@ -119,7 +121,6 @@
     <Compile Include="Default\DebugString\Formatters\Float2DebugStringFormatter.cs" />
     <Compile Include="Default\DebugString\DebugStringGenerator.cs" />
     <Compile Include="Default\Decomposers\ArrayDecomposer.cs" />
-    <Compile Include="Default\Decomposers\Number2StringConverter.cs" />
     <Compile Include="Default\Decomposers\CompactNumberArray2StringDecomposer.cs" />
     <Compile Include="Default\Decomposers\EnumerableDecomposer.cs" />
     <Compile Include="Default\Decomposers\EnumDecomposer.cs" />

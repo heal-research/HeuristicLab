@@ -21,7 +21,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       return new XmlString(t.ToString());
     }
     public override T Parse(XmlString x) {
-      return (T)ParseMethod.Invoke(null, new[] { x.Data });
+      try {
+        return (T)ParseMethod.Invoke(null, new[] { x.Data });
+      } catch (Exception e) {
+        throw new PersistenceException("Could not parse simple number.", e);
+      }
     }
   }
 }

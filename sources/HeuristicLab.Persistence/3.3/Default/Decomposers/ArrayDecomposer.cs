@@ -53,21 +53,27 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
 
-    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
-      IEnumerator<Tag> e = metaInfo.GetEnumerator();
-      e.MoveNext();
-      int rank = (int)e.Current.Value;
-      int[] lengths = new int[rank];
-      for (int i = 0; i < rank; i++) {
+    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {      
+      try {
+        IEnumerator<Tag> e = metaInfo.GetEnumerator();
         e.MoveNext();
-        lengths[i] = (int)e.Current.Value;
-      }
-      int[] lowerBounds = new int[rank];
-      for (int i = 0; i < rank; i++) {
-        e.MoveNext();
-        lowerBounds[i] = (int)e.Current.Value;
-      }
-      return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
+        int rank = (int)e.Current.Value;
+        int[] lengths = new int[rank];
+        for (int i = 0; i < rank; i++) {
+          e.MoveNext();
+          lengths[i] = (int)e.Current.Value;
+        }
+        int[] lowerBounds = new int[rank];
+        for (int i = 0; i < rank; i++) {
+          e.MoveNext();
+          lowerBounds[i] = (int)e.Current.Value;
+        }
+        return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
+      } catch (InvalidOperationException x) {
+        throw new PersistenceException("Insufficient meta information to construct array instance.", x);
+      } catch (InvalidCastException x) {
+        throw new PersistenceException("Invalid format of array metainfo.", x);
+      }      
     }
 
     public void Populate(object instance, IEnumerable<Tag> elements, Type t) {
@@ -82,18 +88,26 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
       int[] positions = (int[])lowerBounds.Clone();
       IEnumerator<Tag> e = elements.GetEnumerator();
-      while (e.MoveNext()) {
-        int[] currentPositions = positions;
-        a.SetValue(e.Current.Value, currentPositions);
-        positions[0] += 1;
-        for (int i = 0; i < a.Rank - 1; i++) {
-          if (positions[i] >= lengths[i] + lowerBounds[i]) {
-            positions[i] = lowerBounds[i];
-            positions[i + 1] += 1;
-          } else {
-            break;
+      try {
+        while (e.MoveNext()) {
+          int[] currentPositions = positions;
+          a.SetValue(e.Current.Value, currentPositions);
+          positions[0] += 1;
+          for (int i = 0; i < a.Rank - 1; i++) {
+            if (positions[i] >= lengths[i] + lowerBounds[i]) {
+              positions[i] = lowerBounds[i];
+              positions[i + 1] += 1;
+            } else {
+              break;
+            }
           }
         }
+      } catch (InvalidOperationException x) {
+        throw new PersistenceException("Insufficient data to fill array instance", x);
+      } catch (InvalidCastException x) {
+        throw new PersistenceException("Invalid element data. Cannot fill array", x);
+      } catch (IndexOutOfRangeException x) {
+        throw new PersistenceException("Too many elements during array deserialization", x);
       }
     }
   }

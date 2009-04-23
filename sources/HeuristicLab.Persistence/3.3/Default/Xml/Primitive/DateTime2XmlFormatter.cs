@@ -13,7 +13,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     }
 
     public override DateTime Parse(XmlString x) {
-      return new DateTime(long.Parse(x.Data));
+      try {
+        return new DateTime(long.Parse(x.Data));
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caugth while trying to reconstruct DateTime object.", e);
+      }
     }
 
   }

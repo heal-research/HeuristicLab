@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Test {
 

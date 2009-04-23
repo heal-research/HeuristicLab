@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -72,7 +73,7 @@ namespace HeuristicLab.Persistence.Core {
       IDecomposer decomposer = configuration.GetDecomposer(value.GetType());
       if (decomposer != null)
         return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
-      throw new ApplicationException(
+      throw new PersistenceException(
           String.Format(
           "No suitable method for serializing values of type \"{0}\" found.",
           value.GetType().VersionInvariantName()));

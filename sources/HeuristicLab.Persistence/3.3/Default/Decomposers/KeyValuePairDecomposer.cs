@@ -28,8 +28,19 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public IEnumerable<Tag> Decompose(object o) {
       Type t = o.GetType();
-      yield return new Tag("key", t.GetProperty("Key").GetValue(o, null));
-      yield return new Tag("value", t.GetProperty("Value").GetValue(o, null));
+      Tag key, value;
+      try {
+        key = new Tag("key", t.GetProperty("Key").GetValue(o, null));        
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caught during KeyValuePair decomposition", e);
+      }
+      yield return key;
+      try {
+        value = new Tag("value", t.GetProperty("Value").GetValue(o, null));
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caught during KeyValuePair decomposition", e);
+      }
+      yield return value;
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
@@ -38,12 +49,18 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public void Populate(object instance, IEnumerable<Tag> o, Type t) {
       IEnumerator<Tag> iter = o.GetEnumerator();
-      iter.MoveNext();
-      t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-        .Single(fi => fi.Name == "key").SetValue(instance, iter.Current.Value);
-      iter.MoveNext();
-      t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-        .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);
+      try {
+        iter.MoveNext();
+        t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+          .Single(fi => fi.Name == "key").SetValue(instance, iter.Current.Value);
+        iter.MoveNext();
+        t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+          .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Not enough components to populate KeyValuePair instance", e);
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caught during KeyValuePair reconstruction", e);
+      }
     }
   }
 }

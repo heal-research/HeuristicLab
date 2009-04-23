@@ -33,7 +33,7 @@ namespace HeuristicLab.Persistence.Core {
 
       public void CreateInstance() {
         if (Obj != null)
-          throw new ApplicationException("object already instantiated");
+          throw new PersistenceException("object already instantiated");
         Obj = decomposer.CreateInstance(type, metaInfo);
       }
 
@@ -64,14 +64,20 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private Dictionary<Type, object> CreateSerializers(IEnumerable<TypeMapping> typeCache) {
-      var map = new Dictionary<Type, object>();
-      foreach (var typeMapping in typeCache) {
-        Type type = Type.GetType(typeMapping.TypeName, true);
-        typeIds.Add(typeMapping.Id, type);
-        Type serializerType = Type.GetType(typeMapping.Serializer, true);
-        map.Add(type, Activator.CreateInstance(serializerType, true));
-      }
-      return map;
+      try {
+        var map = new Dictionary<Type, object>();
+        foreach (var typeMapping in typeCache) {
+          Type type = Type.GetType(typeMapping.TypeName, true);
+          typeIds.Add(typeMapping.Id, type);
+          Type serializerType = Type.GetType(typeMapping.Serializer, true);
+          map.Add(type, Activator.CreateInstance(serializerType, true));
+        }
+        return map;
+      } catch (Exception e) {
+        throw new PersistenceException(
+          "The serialization type cache could not be loaded.\r\n" +
+          "This usualy happens when you are missing an Assembly/Plugin.", e);
+      }      
     }
 
     public object Deserialize(IEnumerable<ISerializationToken> tokens) {
@@ -92,7 +98,7 @@ namespace HeuristicLab.Persistence.Core {
         } else if (t == typeof(MetaInfoEndToken)) {
           MetaInfoEnd((MetaInfoEndToken)token);
         } else {
-          throw new ApplicationException("invalid token type");
+          throw new PersistenceException("invalid token type");
         }
       }
       return parentStack.Pop().Obj;
@@ -104,7 +110,7 @@ namespace HeuristicLab.Persistence.Core {
       if (serializerMapping.ContainsKey(type))
         decomposer = serializerMapping[type] as IDecomposer;
       if (decomposer == null)
-        throw new ApplicationException(String.Format(
+        throw new PersistenceException(String.Format(
           "No suitable method for deserialization of type \"{0}\" found.",
           type.VersionInvariantName()));
       parentStack.Push(new Midwife(type, decomposer, token.Id));

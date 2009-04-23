@@ -38,12 +38,22 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public void Populate(object instance, IEnumerable<Tag> o, Type t) {
       IDictionary dict = (IDictionary)instance;
       IEnumerator<Tag> iter = o.GetEnumerator();
-      while (iter.MoveNext()) {
-        Tag key = iter.Current;
-        iter.MoveNext();
-        Tag value = iter.Current;
-        dict.Add(key.Value, value.Value);
-      }
+      try {
+        while (iter.MoveNext()) {
+          Tag key = iter.Current;
+          iter.MoveNext();
+          Tag value = iter.Current;
+          dict.Add(key.Value, value.Value);
+        }
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("Dictionaries must contain an even number of elements (key+value).", e);
+      } catch (NotSupportedException e) {
+        throw new PersistenceException("The serialized dictionary type was read-only or had a fixed size and cannot be deserialized.", e);
+      } catch (ArgumentNullException e) {
+        throw new PersistenceException("Dictionary key was null.", e);
+      } catch (ArgumentException e) {
+        throw new PersistenceException("Duplicate dictionary key.", e);
+      }      
     }
   }
 

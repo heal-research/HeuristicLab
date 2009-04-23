@@ -27,11 +27,18 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
       IEnumerator<Tag> it = metaInfo.GetEnumerator();
-      it.MoveNext();
-      return Enum.Parse(t, (string)it.Current.Value);
+      try {
+        it.MoveNext();
+        return Enum.Parse(t, (string)it.Current.Value);
+      } catch (InvalidOperationException e) {
+        throw new PersistenceException("not enough meta information to recstruct enum", e);
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("invalid meta information found while trying to reconstruct enum", e);
+      }
     }
 
     public void Populate(object instance, IEnumerable<Tag> elements, Type t) {
+      // Enums are already populated during instance creation.
     }
   }
 }

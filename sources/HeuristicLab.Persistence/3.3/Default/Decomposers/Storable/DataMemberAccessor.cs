@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
@@ -21,13 +22,13 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
       } else if (memberInfo.MemberType == MemberTypes.Property) {
         PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
         if (!propertyInfo.CanRead || !propertyInfo.CanWrite) {
-          throw new NotSupportedException(
+          throw new PersistenceException(
             "Storable properties must implement both a Get and a Set Accessor. ");
         }
         Get = () => propertyInfo.GetValue(obj, null);
         Set = value => propertyInfo.SetValue(obj, value, null);
       } else {
-        throw new NotSupportedException(
+        throw new PersistenceException(
           "The Storable attribute can only be applied to fields and properties.");
       }
       Name = storableAttribute.Name ?? memberInfo.Name;

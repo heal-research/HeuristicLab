@@ -44,8 +44,12 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
       MethodInfo addMethod = type.GetMethod("Add");
-      foreach (var tag in tags)
-        addMethod.Invoke(instance, new[] { tag.Value });
+      try {
+        foreach (var tag in tags)
+          addMethod.Invoke(instance, new[] { tag.Value });
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caught while trying to populate enumerable.", e);
+      }
     }
   }
 }

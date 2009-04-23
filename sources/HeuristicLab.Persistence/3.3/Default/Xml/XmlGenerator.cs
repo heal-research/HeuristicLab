@@ -160,28 +160,33 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {
-      Serializer serializer = new Serializer(obj, config);
-      XmlGenerator generator = new XmlGenerator();
-      ZipOutputStream zipStream = new ZipOutputStream(File.Create(filename));
-      zipStream.SetLevel(9);
-      zipStream.PutNextEntry(new ZipEntry("data.xml"));
-      StreamWriter writer = new StreamWriter(zipStream);
-      ILog logger = Logger.GetDefaultLogger();
-      foreach (ISerializationToken token in serializer) {
-        string line = generator.Format(token);
-        writer.Write(line);
-        logger.Debug(line.TrimEnd());
+      try {
+        Serializer serializer = new Serializer(obj, config);
+        XmlGenerator generator = new XmlGenerator();
+        ZipOutputStream zipStream = new ZipOutputStream(File.Create(filename));
+        zipStream.SetLevel(9);
+        zipStream.PutNextEntry(new ZipEntry("data.xml"));
+        StreamWriter writer = new StreamWriter(zipStream);
+        ILog logger = Logger.GetDefaultLogger();
+        foreach (ISerializationToken token in serializer) {
+          string line = generator.Format(token);
+          writer.Write(line);
+          logger.Debug(line.TrimEnd());
+        }
+        writer.Flush();
+        zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
+        writer = new StreamWriter(zipStream);
+        foreach (string line in generator.Format(serializer.TypeCache)) {
+          writer.Write(line);
+          logger.Debug(line.TrimEnd());
+        }
+        writer.Flush();
+        zipStream.Close();
+      } catch (PersistenceException e) {
+        throw;
+      } catch (Exception e) {
+        throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
-      writer.Flush();
-      zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
-      writer = new StreamWriter(zipStream);
-      foreach (string line in generator.Format(serializer.TypeCache)) {
-        writer.Write(line);
-        logger.Debug(line.TrimEnd());
-      }
-      writer.Flush();
-      zipStream.Close();
     }
-
   }
 }

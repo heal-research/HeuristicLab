@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
@@ -18,6 +19,16 @@ namespace HeuristicLab.Persistence.Interfaces {
 
     object IFormatter.Parse(ISerialData o) {
       return Parse((SerialData)o);
+    }
+
+    public override string ToString() {
+      return new StringBuilder()
+        .Append(this.GetType().Name)
+        .Append('(')
+        .Append(SourceType.Name)
+        .Append("->")
+        .Append(SerialDataType.Name)
+        .ToString();
     }
 
   }
