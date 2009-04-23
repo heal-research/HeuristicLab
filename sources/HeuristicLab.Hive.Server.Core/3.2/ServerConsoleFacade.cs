@@ -106,6 +106,10 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.AbortJob(jobId);
     }
 
+    public ResponseObject<List<JobResult>> GetAllJobResults(Guid jobId) {
+      throw new NotImplementedException();
+    }
+
     #endregion
   }
 }

@@ -314,6 +314,33 @@ namespace HeuristicLab.Hive.Server.Core {
       }
     }
 
+    public ResponseObject<List<JobResult>> GetAllJobResults(Guid jobId) {
+      ISession session = factory.GetSessionForCurrentThread();
+      ResponseObject<List<JobResult>> response = new ResponseObject<List<JobResult>>();
+
+      try {
+        IJobResultsAdapter jobResultAdapter =
+            session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+        IJobAdapter jobAdapter = session.GetDataAdapter<Job, IJobAdapter>();
+
+        Job job = jobAdapter.GetById(jobId);
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+          return response;
+        }
+        response.Obj = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
+
+        return response;
+      }
+      finally {
+        if(session != null)
+          session.EndSession();
+      }
+    }
+      
     #endregion
   }
 }
