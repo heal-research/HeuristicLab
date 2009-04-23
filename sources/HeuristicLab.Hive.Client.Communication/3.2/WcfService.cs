@@ -254,7 +254,8 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public List<CachedHivePluginInfo> RequestPlugins(List<HivePluginInfo> requestedPlugins) {
       try {
-        return proxy.SendPlugins(requestedPlugins.ToArray()).Plugins;
+        ResponsePlugin response = proxy.SendPlugins(requestedPlugins.ToArray());
+        return response.Plugins;        
       }
       catch (Exception e) {
         HandleNetworkError(e);
@@ -262,5 +263,13 @@ namespace HeuristicLab.Hive.Client.Communication {
       }
     }
 
+    public void Logout(Guid guid) {
+      try {
+        proxy.Logout(guid);
+      }
+      catch (Exception e) {
+        HandleNetworkError(e);
+      }
+    }
   }
 }

@@ -34,11 +34,11 @@ namespace HeuristicLab.Hive.Client.Core {
       List<CachedHivePluginInfo> neededPlugins = new List<CachedHivePluginInfo>();
       List<HivePluginInfo> missingPlugins = new List<HivePluginInfo>();
       bool found = false;
-      
-      //Todo: Fix the whole equals thing here
+            
       foreach (HivePluginInfo info in requests) {
+        //we MAY run in problems here - if there is a plugin twice in requests, there may be added two different versions of the plugin
         foreach (CachedHivePluginInfo cache in pluginCache) {
-          if (info.Equals(cache)) {
+          if (info.Name.Equals(cache.Name) && info.Version.Equals(cache.Version) && info.BuildDate <= cache.BuildDate) {
             neededPlugins.Add(cache);
             found = true;
             break;

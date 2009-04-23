@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" />
+  <xs:complexType name="ArrayOfCachedHivePluginInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CachedHivePluginInfo" nillable="true" type="tns:CachedHivePluginInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCachedHivePluginInfo" nillable="true" type="tns:ArrayOfCachedHivePluginInfo" />
+  <xs:complexType name="CachedHivePluginInfo">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Contracts.BusinessObjects" base="q1:HivePluginInfo">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="PluginFiles" nillable="true" type="q2:ArrayOfbase64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CachedHivePluginInfo" nillable="true" type="tns:CachedHivePluginInfo" />
+</xs:schema>

@@ -206,9 +206,9 @@
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
     <wsdl:port name="NetTcpBinding_IClientCommunicator" binding="tns:NetTcpBinding_IClientCommunicator">
-      <soap12:address location="net.tcp://10.20.53.2:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.20.53.2:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
           <Upn>mse08023@fhs-hagenberg.ac.at</Upn>
         </Identity>
