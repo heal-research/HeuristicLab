@@ -30,9 +30,8 @@
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ilClientControl = new System.Windows.Forms.ImageList(this.components);
-      this.ilJobControl = new System.Windows.Forms.ImageList(this.components);
-      this.ilUserControl = new System.Windows.Forms.ImageList(this.components);
+      this.ilLargeImgJob = new System.Windows.Forms.ImageList(this.components);
+      this.ilLargeImgClient = new System.Windows.Forms.ImageList(this.components);
       this.plClientDetails = new System.Windows.Forms.Panel();
       this.lblState = new System.Windows.Forms.Label();
       this.lblStateClient = new System.Windows.Forms.Label();
@@ -69,14 +68,20 @@
       this.tpJobControl = new System.Windows.Forms.TabPage();
       this.scJobControl = new System.Windows.Forms.SplitContainer();
       this.lvJobControl = new System.Windows.Forms.ListView();
-      this.tpClientControl = new System.Windows.Forms.TabPage();
-      this.scClientControl = new System.Windows.Forms.SplitContainer();
-      this.lvClientControl = new System.Windows.Forms.ListView();
       this.contextMenuJob = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.menuItemAbortJob = new System.Windows.Forms.ToolStripMenuItem();
       this.menuItemGetSnapshot = new System.Windows.Forms.ToolStripMenuItem();
+      this.tpClientControl = new System.Windows.Forms.TabPage();
+      this.scClientControl = new System.Windows.Forms.SplitContainer();
+      this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
+      this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.listToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.ilSmallImgJob = new System.Windows.Forms.ImageList(this.components);
+      this.ilSmallImgClient = new System.Windows.Forms.ImageList(this.components);
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -89,11 +94,11 @@
       this.scJobControl.Panel1.SuspendLayout();
       this.scJobControl.Panel2.SuspendLayout();
       this.scJobControl.SuspendLayout();
+      this.contextMenuJob.SuspendLayout();
       this.tpClientControl.SuspendLayout();
       this.scClientControl.Panel1.SuspendLayout();
       this.scClientControl.Panel2.SuspendLayout();
       this.scClientControl.SuspendLayout();
-      this.contextMenuJob.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -101,7 +106,8 @@
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.informationToolStripMenuItem,
-            this.addToolStripMenuItem});
+            this.addToolStripMenuItem,
+            this.viewToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(893, 24);
@@ -134,30 +140,24 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
       // 
-      // ilClientControl
+      // ilLargeImgJob
       // 
-      this.ilClientControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilClientControl.ImageStream")));
-      this.ilClientControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilClientControl.Images.SetKeyName(0, "monitor-green.png");
-      this.ilClientControl.Images.SetKeyName(1, "monitor-orange.png");
-      this.ilClientControl.Images.SetKeyName(2, "monitor-red.png");
-      this.ilClientControl.Images.SetKeyName(3, "monitor-gray.png");
+      this.ilLargeImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilLargeImgJob.ImageStream")));
+      this.ilLargeImgJob.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilLargeImgJob.Images.SetKeyName(0, "monitor-green.png");
+      this.ilLargeImgJob.Images.SetKeyName(1, "monitor-orange.png");
+      this.ilLargeImgJob.Images.SetKeyName(2, "monitor-red.png");
+      this.ilLargeImgJob.Images.SetKeyName(3, "monitor-gray.png");
       // 
-      // ilJobControl
+      // ilLargeImgClient
       // 
-      this.ilJobControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilJobControl.ImageStream")));
-      this.ilJobControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilJobControl.Images.SetKeyName(0, "PlayHS.png");
-      // 
-      // ilUserControl
-      // 
-      this.ilUserControl.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilUserControl.ImageStream")));
-      this.ilUserControl.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilUserControl.Images.SetKeyName(0, "Users.png");
+      this.ilLargeImgClient.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilLargeImgClient.ImageStream")));
+      this.ilLargeImgClient.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilLargeImgClient.Images.SetKeyName(0, "PlayHS.png");
       // 
       // plClientDetails
       // 
@@ -495,16 +495,37 @@
       this.lvJobControl.AllowDrop = true;
       this.lvJobControl.ContextMenuStrip = this.contextMenuJob;
       this.lvJobControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.lvJobControl.LargeImageList = this.ilJobControl;
+      this.lvJobControl.LargeImageList = this.ilLargeImgJob;
       this.lvJobControl.Location = new System.Drawing.Point(0, 0);
       this.lvJobControl.MultiSelect = false;
       this.lvJobControl.Name = "lvJobControl";
       this.lvJobControl.Size = new System.Drawing.Size(454, 386);
+      this.lvJobControl.SmallImageList = this.ilSmallImgJob;
       this.lvJobControl.TabIndex = 0;
       this.lvJobControl.UseCompatibleStateImageBehavior = false;
       this.lvJobControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseUp);
       this.lvJobControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lvJobControl_MouseMove);
       this.lvJobControl.Click += new System.EventHandler(this.OnLVJobControlClicked);
+      // 
+      // contextMenuJob
+      // 
+      this.contextMenuJob.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemAbortJob,
+            this.menuItemGetSnapshot});
+      this.contextMenuJob.Name = "contextMenuJob";
+      this.contextMenuJob.Size = new System.Drawing.Size(151, 48);
+      // 
+      // menuItemAbortJob
+      // 
+      this.menuItemAbortJob.Name = "menuItemAbortJob";
+      this.menuItemAbortJob.Size = new System.Drawing.Size(150, 22);
+      this.menuItemAbortJob.Text = "Abort";
+      // 
+      // menuItemGetSnapshot
+      // 
+      this.menuItemGetSnapshot.Name = "menuItemGetSnapshot";
+      this.menuItemGetSnapshot.Size = new System.Drawing.Size(150, 22);
+      this.menuItemGetSnapshot.Text = "Get Snapshot";
       // 
       // tpClientControl
       // 
@@ -540,34 +561,15 @@
       this.lvClientControl.AllowDrop = true;
       this.lvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
-      this.lvClientControl.LargeImageList = this.ilClientControl;
+      this.lvClientControl.LargeImageList = this.ilLargeImgClient;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
       this.lvClientControl.MultiSelect = false;
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(454, 386);
+      this.lvClientControl.SmallImageList = this.ilSmallImgClient;
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
       this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
-      // 
-      // contextMenuJob
-      // 
-      this.contextMenuJob.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItemAbortJob,
-            this.menuItemGetSnapshot});
-      this.contextMenuJob.Name = "contextMenuJob";
-      this.contextMenuJob.Size = new System.Drawing.Size(151, 48);
-      // 
-      // menuItemAbortJob
-      // 
-      this.menuItemAbortJob.Name = "menuItemAbortJob";
-      this.menuItemAbortJob.Size = new System.Drawing.Size(150, 22);
-      this.menuItemAbortJob.Text = "Abort";
-      // 
-      // menuItemGetSnapshot
-      // 
-      this.menuItemGetSnapshot.Name = "menuItemGetSnapshot";
-      this.menuItemGetSnapshot.Size = new System.Drawing.Size(150, 22);
-      this.menuItemGetSnapshot.Text = "Get Snapshot";
       // 
       // tcManagementConsole
       // 
@@ -589,6 +591,54 @@
       this.checkBox1.TabIndex = 0;
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
+      // 
+      // viewToolStripMenuItem
+      // 
+      this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.largeIconsToolStripMenuItem,
+            this.smallIconsToolStripMenuItem,
+            this.listToolStripMenuItem});
+      this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+      this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+      this.viewToolStripMenuItem.Text = "View";
+      // 
+      // largeIconsToolStripMenuItem
+      // 
+      this.largeIconsToolStripMenuItem.Checked = true;
+      this.largeIconsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
+      this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.largeIconsToolStripMenuItem.Text = "Large Icons";
+      this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click);
+      // 
+      // smallIconsToolStripMenuItem
+      // 
+      this.smallIconsToolStripMenuItem.Name = "smallIconsToolStripMenuItem";
+      this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.smallIconsToolStripMenuItem.Text = "Small Icons";
+      this.smallIconsToolStripMenuItem.Click += new System.EventHandler(this.smallIconsToolStripMenuItem_Click);
+      // 
+      // listToolStripMenuItem
+      // 
+      this.listToolStripMenuItem.Name = "listToolStripMenuItem";
+      this.listToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.listToolStripMenuItem.Text = "List";
+      this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
+      // 
+      // ilSmallImgJob
+      // 
+      this.ilSmallImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgJob.ImageStream")));
+      this.ilSmallImgJob.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilSmallImgJob.Images.SetKeyName(0, "monitor-green.png");
+      this.ilSmallImgJob.Images.SetKeyName(1, "monitor-orange.png");
+      this.ilSmallImgJob.Images.SetKeyName(2, "monitor-red.png");
+      this.ilSmallImgJob.Images.SetKeyName(3, "monitor-gray.png");
+      // 
+      // ilSmallImgClient
+      // 
+      this.ilSmallImgClient.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgClient.ImageStream")));
+      this.ilSmallImgClient.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilSmallImgClient.Images.SetKeyName(0, "PlayHS.png");
       // 
       // HiveServerManagementConsole
       // 
@@ -617,11 +667,11 @@
       this.scJobControl.Panel1.ResumeLayout(false);
       this.scJobControl.Panel2.ResumeLayout(false);
       this.scJobControl.ResumeLayout(false);
+      this.contextMenuJob.ResumeLayout(false);
       this.tpClientControl.ResumeLayout(false);
       this.scClientControl.Panel1.ResumeLayout(false);
       this.scClientControl.Panel2.ResumeLayout(false);
       this.scClientControl.ResumeLayout(false);
-      this.contextMenuJob.ResumeLayout(false);
       this.tcManagementConsole.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -635,12 +685,11 @@
     private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
     private System.Windows.Forms.TreeView treeView2;
     private System.Windows.Forms.ListView listView2;
-    private System.Windows.Forms.ImageList ilClientControl;
+    private System.Windows.Forms.ImageList ilLargeImgJob;
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem jobToolStripMenuItem;
-    private System.Windows.Forms.ImageList ilUserControl;
     private System.Windows.Forms.Timer timerSyncronize;
-    private System.Windows.Forms.ImageList ilJobControl;
+    private System.Windows.Forms.ImageList ilLargeImgClient;
     private System.Windows.Forms.Panel plClientDetails;
     private System.Windows.Forms.PictureBox pbClientControl;
     private System.Windows.Forms.Label lblClientName;
@@ -682,5 +731,11 @@
     private System.Windows.Forms.ContextMenuStrip contextMenuJob;
     private System.Windows.Forms.ToolStripMenuItem menuItemAbortJob;
     private System.Windows.Forms.ToolStripMenuItem menuItemGetSnapshot;
+    private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem largeIconsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem smallIconsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
+    private System.Windows.Forms.ImageList ilSmallImgJob;
+    private System.Windows.Forms.ImageList ilSmallImgClient;
   }
 }

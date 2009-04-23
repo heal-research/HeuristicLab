@@ -87,24 +87,26 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     #endregion
 
+    private Guid ConvertStringToGuid(string stringGuid) {
+      Guid guid = Guid.Empty;
+      return (Guid)TypeDescriptor.GetConverter(guid).ConvertFrom(stringGuid);
+    }
+
+
     private void Init() {
 
       //adding context menu items for jobs
       menuItemAbortJob.Click += (s, e) => {
         IJobManager jobManager = ServiceLocator.GetJobManager();
         if (lvJobControl.SelectedItems.Count == 1) {
-          Guid jobID = Guid.Empty;
-          jobID = (Guid)TypeDescriptor.GetConverter(jobID).ConvertFrom(lvJobControl.SelectedItems[0].Text);
-          jobManager.AbortJob(jobID);
+          jobManager.AbortJob(ConvertStringToGuid(lvJobControl.SelectedItems[0].Text));
         }
       };
 
       menuItemGetSnapshot.Click += (s, e) => {
         IJobManager jobManager = ServiceLocator.GetJobManager();
         if (lvJobControl.SelectedItems.Count == 1) {
-          Guid jobID = Guid.Empty;
-          jobID = (Guid)TypeDescriptor.GetConverter(jobID).ConvertFrom(lvJobControl.SelectedItems[0].Text);
-          jobManager.RequestSnapshot(jobID);
+          jobManager.RequestSnapshot(ConvertStringToGuid(lvJobControl.SelectedItems[0].Text));
         }
       };
 
@@ -112,10 +114,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void lvJobControl_MouseUp(object sender, MouseEventArgs e) {
       // If the right mouse button was clicked and released,
-      // display the shortcut menu assigned to the TreeView. 
-      if (e.Button == MouseButtons.Right && lvJobControl.SelectedItems.Count == 1) {
-        lvJobControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
+      // display the shortcut menu assigned to the ListView. 
+      lvJobControl.ContextMenuStrip.Items.Clear();
+      ListViewHitTestInfo hitTestInfo = lvJobControl.HitTest(e.Location);
+      if (e.Button == MouseButtons.Right && hitTestInfo.Item != null && lvJobControl.SelectedItems.Count == 1) {
+        Guid selectedJobGuid = ConvertStringToGuid(lvJobControl.SelectedItems[0].Text);
+        Job selectedJob = jobs.List.FirstOrDefault(x => x.Id == selectedJobGuid);
+
+        if (selectedJob != null && selectedJob.State == State.calculating) {
+        lvJobControl.ContextMenuStrip.Items.Add(menuItemAbortJob);
+        lvJobControl.ContextMenuStrip.Items.Add(menuItemGetSnapshot);
+        }
       }
+       lvJobControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
     }
 
     /// <summary>
@@ -286,7 +297,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           usage = 2;
         }
       }
-      pbClientControl.Image = ilClientControl.Images[usage];
+      pbClientControl.Image = ilLargeImgJob.Images[usage];
       lblClientName.Text = currentClient.Name;
       lblLogin.Text = currentClient.Login.ToString();
       lblState.Text = currentClient.State.ToString();
@@ -304,7 +315,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
       lvSnapshots.Enabled = true;
       currentJob = jobs.List[i];
-      pbJobControl.Image = ilJobControl.Images[0];
+      pbJobControl.Image = ilLargeImgClient.Images[0];
       lblJobName.Text = currentJob.Id.ToString();
       progressJob.Value = (int)(currentJob.Percentage * 100);
       lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
@@ -333,7 +344,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
       if (currentJob.State != State.offline) {
         lvSnapshots.Items.Clear();
-        if (currentJob.State == State.finished) 
+        if (currentJob.State == State.finished)
           GetSnapshotList();
         lvSnapshots.Visible = true;
       } else {
@@ -720,6 +731,30 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     #endregion
+
+    private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.LargeIcon;
+      lvJobControl.View = View.LargeIcon;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Checked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      listToolStripMenuItem.CheckState = CheckState.Unchecked;
+    }
+
+    private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.SmallIcon;
+      lvJobControl.View = View.SmallIcon;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Checked;
+      listToolStripMenuItem.CheckState = CheckState.Unchecked;
+    }
+
+    private void listToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.List;
+      lvJobControl.View = View.List;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      listToolStripMenuItem.CheckState = CheckState.Checked;
+    }
 
 
 
