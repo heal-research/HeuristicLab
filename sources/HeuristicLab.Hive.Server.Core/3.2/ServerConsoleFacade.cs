@@ -36,7 +36,7 @@ namespace HeuristicLab.Hive.Server.Core {
     private IJobManager jobManager = 
       ServiceLocator.GetJobManager();
 
-    private IPermissionManager permManager = ServiceLocator.GetPermissionManager();
+    //private IPermissionManager permManager = ServiceLocator.GetPermissionManager();
 
     #region IServerConsoleFacade Members
 
