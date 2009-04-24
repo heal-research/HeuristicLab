@@ -33,6 +33,7 @@ namespace HeuristicLab.Hive.JobBase {
 
     private Thread thread = null;
     public event EventHandler JobStopped;
+    public event EventHandler JobFailed;
     
     public long JobId { get; set; }    
     public double Progress { get; set; }        
@@ -41,9 +42,18 @@ namespace HeuristicLab.Hive.JobBase {
     protected bool abort = false;    
 
     abstract public void Run();
+    private void SecureRun() {
+      try {
+        Run();
+      }
+      catch (Exception ex) {
+        if (JobFailed != null)
+          JobFailed(this, new EventArgs());
+      }
+    }
 
     public void Start() {
-      thread = new Thread(new ThreadStart(Run));
+      thread = new Thread(new ThreadStart(Run));      
       thread.Start();
       Running = true;
     }

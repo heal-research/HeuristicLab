@@ -59,6 +59,7 @@ namespace HeuristicLab.Hive.Engine {
     #region IJob Members
 
     public event EventHandler JobStopped;
+    public event EventHandler JobFailed;
 
     public long JobId {
       get;

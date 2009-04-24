@@ -56,7 +56,12 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
       //debug
       //Job = new TestJob();
       Job.JobStopped += new EventHandler(Job_JobStopped);
+      Job.JobFailed += new EventHandler(Job_JobFailed);
       Job.Start();
+    }
+
+    void Job_JobFailed(object sender, EventArgs e) {
+      Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobFailed, JobId));
     }
 
     public void Abort() {
