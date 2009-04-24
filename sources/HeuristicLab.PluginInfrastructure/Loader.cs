@@ -257,7 +257,6 @@ namespace HeuristicLab.PluginInfrastructure {
         info.Version = t.Assembly.GetName().Version;
         info.Assemblies = pluginAssemblies;
         info.Files.AddRange(pluginFiles);
-        info.Assemblies.AddRange(pluginAssemblies);
         this.pluginDependencies[info] = pluginDependencies;
         preloadedPluginInfos.Add(info);
       } else {
