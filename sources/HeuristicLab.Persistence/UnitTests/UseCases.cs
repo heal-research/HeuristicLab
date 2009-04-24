@@ -148,18 +148,17 @@ namespace HeuristicLab.Persistence.UnitTest {
       r.kvp = new KeyValuePair<string, int>("string key", 321);
       r.uninitialized = null;
       XmlGenerator.Serialize(r, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      Root newR = (Root)XmlParser.DeSerialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(r),
-        DebugStringGenerator.Serialize(o));
-      Root newR = (Root)o;
+        DebugStringGenerator.Serialize(newR));      
       Assert.AreSame(newR, newR.selfReferences[0]);
       Assert.AreNotSame(r, newR);
       Assert.AreEqual(r.myEnum, TestEnum.va1);
       Assert.AreEqual(r.i[0], 7);
       Assert.AreEqual(r.i[1], 5);
       Assert.AreEqual(r.i[2], 6);
-      Assert.AreSame(r.s, "new value");
+      Assert.AreEqual(r.s, "new value");
       Assert.AreEqual(r.intArray[0], 3);
       Assert.AreEqual(r.intArray[1], 2);
       Assert.AreEqual(r.intArray[2], 1);
@@ -174,9 +173,31 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(r.multiDimArray[1, 2], 6);
       Assert.IsFalse(r.boolean);
       Assert.IsTrue((DateTime.Now - r.dateTime).TotalSeconds < 10);      
-      Assert.AreSame(r.kvp.Key, "string key");
+      Assert.AreEqual(r.kvp.Key, "string key");
       Assert.AreEqual(r.kvp.Value, 321);
       Assert.IsNull(r.uninitialized);
+      Assert.AreEqual(newR.myEnum, TestEnum.va1);
+      Assert.AreEqual(newR.i[0], 7);
+      Assert.AreEqual(newR.i[1], 5);
+      Assert.AreEqual(newR.i[2], 6);
+      Assert.AreEqual(newR.s, "new value");
+      Assert.AreEqual(newR.intArray[0], 3);
+      Assert.AreEqual(newR.intArray[1], 2);
+      Assert.AreEqual(newR.intArray[2], 1);
+      Assert.AreEqual(newR.intList[0], 9);
+      Assert.AreEqual(newR.intList[1], 8);
+      Assert.AreEqual(newR.intList[2], 7);
+      Assert.AreEqual(newR.multiDimArray[0, 0], 5);
+      Assert.AreEqual(newR.multiDimArray[0, 1], 4);
+      Assert.AreEqual(newR.multiDimArray[0, 2], 3);
+      Assert.AreEqual(newR.multiDimArray[1, 0], 1);
+      Assert.AreEqual(newR.multiDimArray[1, 1], 4);
+      Assert.AreEqual(newR.multiDimArray[1, 2], 6);
+      Assert.IsFalse(newR.boolean);
+      Assert.IsTrue((DateTime.Now - newR.dateTime).TotalSeconds < 10);
+      Assert.AreEqual(newR.kvp.Key, "string key");
+      Assert.AreEqual(newR.kvp.Value, 321);
+      Assert.IsNull(newR.uninitialized);
     }
 
     [TestMethod]
