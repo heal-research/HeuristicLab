@@ -82,7 +82,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (row != null && clientGroup != null) {
         /*Parent - Permission Owner*/
         clientGroup.Id = row.ResourceId;
-        ResAdapter.GetById(clientGroup.Id);
+        ResAdapter.GetById(clientGroup);
 
         ICollection<Guid> resources =
           ManyToManyRelationHelper.GetRelationships(clientGroup.Id);
