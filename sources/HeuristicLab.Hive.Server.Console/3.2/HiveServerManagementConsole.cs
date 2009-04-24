@@ -45,8 +45,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     public event closeForm closeFormEvent;
 
     #region private variables
-    private ResponseList<ClientGroup> clients = null;
-    private ResponseList<ClientInfo> clientInfo = null;
+    private ResponseList<ClientGroup> clientGroups = null;
+    private ResponseList<ClientInfo> clients = null;
     private ResponseList<Job> jobs = null;
 
     //TODO delete
@@ -66,6 +66,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private List<Changes> changes = new List<Changes>();
 
     private ToolTip tt = new ToolTip();
+
+    private const string NOGROUP = "No group";
+    //private List<ListViewItem> clientList = new List<ListViewItem>();
+    private Dictionary<Guid, List<ListViewItem>> clientList = new Dictionary<Guid, List<ListViewItem>>();
 
     private IClientManager ClientManager {
       get {
@@ -160,7 +164,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     //      tvClientControl.Nodes.Add(tn);
 
     //      ListViewGroup lvg = new ListViewGroup(cg.Name, HorizontalAlignment.Left);
-                             
+
     //      foreach (ClientInfo ci in cg.Resources) {
     //        ListViewItem item = null;
     //        if ((ci.State == State.offline) || (ci.State == State.nullState)) {
@@ -234,38 +238,46 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     //}
 
     private void AddClients() {
-        clients = ClientManager.GetAllClientGroups();
+      clientList.Clear();
+      tvClientControl.Nodes.Clear();
 
-        foreach (ClientGroup cg in clients.List) {
-          AddClientOrGroup(cg, null);
-        }
+      clientGroups = ClientManager.GetAllClientGroups();
+
+      foreach (ClientGroup cg in clientGroups.List) {
+        AddClientOrGroup(cg, null);
+      }
+
+      tvClientControl.ExpandAll();
     }
 
     private void AddClientOrGroup(ClientGroup clientGroup, TreeNode currentNode) {
       currentNode = CreateTreeNode(clientGroup, currentNode);
-      ListViewGroup lvg = new ListViewGroup(clientGroup.Name, HorizontalAlignment.Left);
-
+      List<ListViewItem> clientGroupList = new List<ListViewItem>();
+      ListViewGroup lvg;
+      if (string.IsNullOrEmpty(clientGroup.Name)) {
+        lvg = new ListViewGroup(NOGROUP, HorizontalAlignment.Left);
+      } else {
+        lvg = new ListViewGroup(clientGroup.Name, HorizontalAlignment.Left);
+      }
+      lvClientControl.Groups.Add(lvg);
       foreach (Resource resource in clientGroup.Resources) {
         if (resource is ClientInfo) {
           ListViewItem lvi = new ListViewItem(resource.Name, 0, lvg);
           lvi.Tag = resource as ClientInfo;
-          // has to be added to lvClientControl, not group
-          lvClientControl.Items.Add(lvi);
+          clientGroupList.Add(lvi);
         } else if (resource is ClientGroup) {
           AddClientOrGroup(resource as ClientGroup, currentNode);
         }
       }
-      if (lvg.Items.Count > 0) {
-        lvClientControl.Groups.Add(lvg);
-      }
+      clientList.Add(clientGroup.Id, clientGroupList);
     }
 
     private TreeNode CreateTreeNode(ClientGroup clientGroup, TreeNode currentNode) {
-       TreeNode tn;
-      if(string.IsNullOrEmpty(clientGroup.Name)) {
-         tn = new TreeNode("No group");
+      TreeNode tn;
+      if (string.IsNullOrEmpty(clientGroup.Name)) {
+        tn = new TreeNode(NOGROUP);
       } else {
-         tn = new TreeNode(clientGroup.Name);
+        tn = new TreeNode(clientGroup.Name);
       }
       tn.Tag = clientGroup;
       if (currentNode == null) {
@@ -301,7 +313,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
         foreach (Job job in jobs.List) {
           if (job.State == State.calculating) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobCalculating);
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
             lvi.Tag = job;
             jobObjects.Add(job.Id, lvi);
 
@@ -309,12 +321,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
             lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
           } else if (job.State == State.finished) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(),0, lvJobFinished);
             lvi.Tag = job;
             jobObjects.Add(job.Id, lvi);
             //lvJobControl.Items.Add(lvi);
           } else if (job.State == State.offline) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobPending);
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
             lvi.Tag = job;
             jobObjects.Add(job.Id, lvi);
             //lvJobControl.Items.Add(lvi);
@@ -344,11 +356,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void ClientClicked() {
       plClientDetails.Visible = true;
-      int i = 0;
-      while (clientInfo.List[i].Id.ToString() != nameCurrentClient) {
-        i++;
+      //int i = 0;
+      //while (clientInfo.List[i].Id.ToString() != nameCurrentClient) {
+      //  i++;
+      //}
+      if (lvClientControl.SelectedItems != null && lvClientControl.SelectedItems.Count > 0) {
+        currentClient = (ClientInfo)lvClientControl.SelectedItems[0].Tag;
       }
-      currentClient = clientInfo.List[i];
+      if(currentClient != null) {
       int percentageUsage = CapacityRam(currentClient.NrOfCores, currentClient.NrOfFreeCores);
       int usage = 3;
       if ((currentClient.State != State.offline) && (currentClient.State != State.nullState)) {
@@ -364,6 +379,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       lblClientName.Text = currentClient.Name;
       lblLogin.Text = currentClient.Login.ToString();
       lblState.Text = currentClient.State.ToString();
+      }
     }
 
     /// <summary>
@@ -420,9 +436,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (change.Types == Type.Job) {
           RefreshJob(change);
         } else if (change.Types == Type.Client) {
-          RefreshClient(change);
+          //RefreshClient(change);
         } else if (change.Types == Type.ClientGroup) {
-          RefreshClientGroup(change);
+          //RefreshClientGroup(change);
         }
       }
     }
@@ -474,12 +490,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if (nameCurrentClient == change.ID.ToString()) {
               ClientClicked();
             }
-            State state = clientInfo.List[change.Position].State;
+            State state = clients.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvClientControl.Items[i].Text.ToString());
 
             ClientInfo ci = null;
 
-            foreach (ClientInfo c in clientInfo.List) {
+            foreach (ClientInfo c in clients.List) {
               if (c.Id == change.ID) {
                 ci = c;
               }
@@ -573,30 +589,29 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void updaterWoker_DoWork(object sender, DoWorkEventArgs e) {
 
       changes.Clear();
-      IClientManager clientManager =
-          ServiceLocator.GetClientManager();
 
-      #region ClientInfo
-      ResponseList<ClientInfo> clientInfoOld = clientInfo;
-      clientInfo = clientManager.GetAllClients();
+      //#region ClientInfo
+      //ResponseList<ClientInfo> clientInfoOld = clientInfo;
+      //clientInfo = ClientManager.GetAllClients();
 
-      IDictionary<int, ClientInfo> clientInfoOldHelp;
+      //IDictionary<int, ClientInfo> clientInfoOldHelp;
 
-      CloneList(clientInfoOld, out clientInfoOldHelp);
+      //CloneList(clientInfoOld, out clientInfoOldHelp);
 
-      GetDelta(clientInfoOld.List, clientInfoOldHelp);
-      #endregion
+      //GetDelta(clientInfoOld.List, clientInfoOldHelp);
+      //#endregion
 
       #region Clients
-      ResponseList<ClientGroup> clientsOld = clients;
+      //ResponseList<ClientGroup> clientsOld = clients;
 
-      clients = clientManager.GetAllClientGroups();
+     // newClients = ClientManager.GetAllClientGroups();
 
-      IDictionary<int, ClientGroup> clientsOldHelp;
+      //IDictionary<Guid, ClientGroup> clientsOldHelp;
 
-      CloneList(clientsOld, out clientsOldHelp);
+      //CloneList(clientsOld, out clientsOldHelp);
 
-      GetDelta(clientsOld.List, clientsOldHelp);
+      //GetDelta(clientsOld.List, clientsOldHelp);
+      //DetermineDelta();
       #endregion
 
       #region Job
@@ -629,17 +644,17 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void CloneList(ResponseList<ClientInfo> oldList, out IDictionary<int, ClientInfo> newList) {
-      newList = new Dictionary<int, ClientInfo>();
-      for (int i = 0; i < oldList.List.Count; i++) {
-        newList.Add(i, oldList.List[i]);
-      }
-    }
+    //private void CloneList(ResponseList<ClientInfo> oldList, out IDictionary<int, ClientInfo> newList) {
+    //  newList = new Dictionary<int, ClientInfo>();
+    //  for (int i = 0; i < oldList.List.Count; i++) {
+    //    newList.Add(i, oldList.List[i]);
+    //  }
+    //}
 
-    private void CloneList(ResponseList<ClientGroup> oldList, out IDictionary<int, ClientGroup> newList) {
-      newList = new Dictionary<int, ClientGroup>();
-      for (int i = 0; i < oldList.List.Count; i++) {
-        newList.Add(i, oldList.List[i]);
+    private void CloneList(ResponseList<ClientGroup> oldList, out IDictionary<Guid, ClientGroup> newList) {
+      newList = new Dictionary<Guid, ClientGroup>();
+      foreach (ClientGroup clientGroup in oldList.List) {
+        newList.Add(clientGroup.Id, clientGroup);
       }
     }
 
@@ -653,83 +668,93 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private int CapacityRam(int noCores, int freeCores) {
-      int capacity = ((noCores - freeCores) / noCores) * 100;
-      System.Diagnostics.Debug.WriteLine(capacity);
-      return capacity;
+      if (noCores > 0) {
+        int capacity = ((noCores - freeCores) / noCores) * 100;
+        System.Diagnostics.Debug.WriteLine(capacity);
+        return capacity;
+      }
+      return 100;
     }
 
-    private void GetDelta(IList<ClientInfo> oldClient, IDictionary<int, ClientInfo> helpClients) {
-      bool found = false;
+    //private void GetDelta(IList<ClientInfo> oldClient, IDictionary<int, ClientInfo> helpClients) {
+    //  bool found = false;
 
-      for (int i = 0; i < clientInfo.List.Count; i++) {
-        ClientInfo ci = clientInfo.List[i];
-        for (int j = 0; j < oldClient.Count; j++) {
-          ClientInfo cio = oldClient[j];
-          if (ci.Id.Equals(cio.Id)) {
-            found = true;
-            if ((ci.State != cio.State) || (ci.NrOfFreeCores != cio.NrOfFreeCores)) {
-              changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Update, Position = i });
-            }
-            int removeAt = -1;
-            foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
-              if (cio.Id.Equals(kvp.Value.Id)) {
-                removeAt = kvp.Key;
-                break;
-              }
-            }
-            if (removeAt >= 0) {
-              helpClients.Remove(removeAt);
-            }
-            break;
-          }
-        }
-        if (found == false) {
-          changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Create });
-        }
-        found = false;
-      }
-      foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
-        changes.Add(new Changes { Types = Type.Client, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
-      }
+    //  for (int i = 0; i < clientInfo.List.Count; i++) {
+    //    ClientInfo ci = clientInfo.List[i];
+    //    for (int j = 0; j < oldClient.Count; j++) {
+    //      ClientInfo cio = oldClient[j];
+    //      if (ci.Id.Equals(cio.Id)) {
+    //        found = true;
+    //        if ((ci.State != cio.State) || (ci.NrOfFreeCores != cio.NrOfFreeCores)) {
+    //          changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Update, Position = i });
+    //        }
+    //        int removeAt = -1;
+    //        foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
+    //          if (cio.Id.Equals(kvp.Value.Id)) {
+    //            removeAt = kvp.Key;
+    //            break;
+    //          }
+    //        }
+    //        if (removeAt >= 0) {
+    //          helpClients.Remove(removeAt);
+    //        }
+    //        break;
+    //      }
+    //    }
+    //    if (found == false) {
+    //      changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Create });
+    //    }
+    //    found = false;
+    //  }
+    //  foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
+    //    changes.Add(new Changes { Types = Type.Client, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
+    //  }
+
+    //}
+
+    private void DetermineDelta() {
+      
+
 
     }
 
-    private void GetDelta(IList<ClientGroup> oldClient, IDictionary<int, ClientGroup> helpClients) {
 
-      bool found = false;
-      for (int i = 0; i < clients.List.Count; i++) {
-        ClientGroup cg = clients.List[i];
-        for (int j = 0; j < oldClient.Count; i++) {
-          ClientGroup cgo = oldClient[j];
-          if (cg.Id.Equals(cgo.Id)) {
-            found = true;
-            foreach (Resource resource in cg.Resources) {
-              foreach (Resource resourceold in cgo.Resources) {
-                if (resource.Id.Equals(resourceold.Id)) {
-                  if (resourceold.Name != resource.Name) {
-                    changes.Add(new Changes { Types = Type.Client, ID = cg.Id, ChangeType = Change.Update, Position = i });
-                  }
-                }
-              }
-            }
-            for (int k = 0; k < helpClients.Count; k++) {
-              if (cgo.Id.Equals(helpClients[k].Id)) {
-                helpClients.Remove(k);
-                break;
-              }
-            }
-            break;
-          }
-        }
-        if (found == false) {
-          changes.Add(new Changes { Types = Type.ClientGroup, ID = cg.Id, ChangeType = Change.Create });
-        }
-        found = false;
-      }
-      foreach (KeyValuePair<int, ClientGroup> kvp in helpClients) {
-        changes.Add(new Changes { Types = Type.ClientGroup, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
-      }
-    }
+    //private void GetDelta(IList<ClientGroup> oldClient, IDictionary<Guid, ClientGroup> helpClients) {
+
+    //  bool found = false;
+    //  for (int i = 0; i < clients.List.Count; i++) {
+    //    ClientGroup cg = clientGroups.List[i];
+    //    for (int j = 0; j < oldClient.Count; i++) {
+    //      ClientGroup cgo = oldClient[j];
+    //      if (cg.Id.Equals(cgo.Id)) {
+    //        found = true;
+    //        foreach (Resource resource in cg.Resources) {
+    //          foreach (Resource resourceold in cgo.Resources) {
+    //            if (resource.Id.Equals(resourceold.Id)) {
+    //              if (resourceold.Name != resource.Name) {
+    //                changes.Add(new Changes { Types = Type.Client, ID = cg.Id, ChangeType = Change.Update, Position = i });
+    //              }
+    //            }
+    //          }
+    //        }
+    //        for (int k = 0; k < helpClients.Count; k++) {
+    //          if (cgo.Id.Equals(helpClients[k].Id)) {
+    //            helpClients.Remove(k);
+    //            break;
+    //          }
+    //        }
+    //        break;
+    //      }
+    //    }
+    //    if (found == false) {
+    //      changes.Add(new Changes { Types = Type.ClientGroup, ID = cg.Id, ChangeType = Change.Create });
+    //    }
+    //    found = false;
+    //  }
+    //  foreach (KeyValuePair<int, ClientGroup> kvp in helpClients) {
+    //    changes.Add(new Changes { Types = Type.ClientGroup, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
+    //  }
+    //}
 
     private void GetDelta(IList<Job> oldJobs, IDictionary<int, Job> helpJobs) {
       bool found = false;
@@ -819,8 +844,31 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       listToolStripMenuItem.CheckState = CheckState.Checked;
     }
 
+    private void tvClientControl_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+      lvClientControl.Items.Clear();
+      lvClientControl.Groups.Clear();
+      AddGroupsToListView(e.Node);
+    }
 
+    private void AddGroupsToListView(TreeNode node) {
+      if (node != null) {
+        ListViewGroup lvg = new ListViewGroup(node.Text, HorizontalAlignment.Left);
+        lvClientControl.Groups.Add(lvg);
+        foreach (ListViewItem item in clientList[((ClientGroup)node.Tag).Id]) {
+          item.Group = lvg;
+          lvClientControl.Items.Add(item);
+        }
 
+        if (node.Nodes != null) {
+          foreach (TreeNode curNode in node.Nodes) {
+            AddGroupsToListView(curNode);
+          }
+        }
+      }
+    }
 
+    private void refreshToolStripMenuItem_Click(object sender, EventArgs e) {
+      AddClients();
+    }
   }
 }
