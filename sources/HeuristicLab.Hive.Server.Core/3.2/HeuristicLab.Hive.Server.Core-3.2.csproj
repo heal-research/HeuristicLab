@@ -92,6 +92,7 @@
     <Compile Include="InternalInterfaces\IScheduler.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="LifecycleManager.cs" />
+    <Compile Include="PermissiveSecurityConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConsoleFacade.cs" />
     <Compile Include="ServiceLocator.cs" />
@@ -135,6 +136,10 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Security.Contracts\3.2\HeuristicLab.Security.Contracts-3.2.csproj">
+      <Project>{D59E852C-F205-4647-8C05-EB9ED1CF44E9}</Project>
+      <Name>HeuristicLab.Security.Contracts-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -27,6 +27,7 @@ using HeuristicLab.Hive.Server.Core;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.DataAccess.Interfaces;
 using System.Data.SqlClient;
+using HeuristicLab.Security.Contracts.Interfaces;
 
 /// <summary>
 /// The service locator for the server core
@@ -46,6 +47,8 @@ public class ServiceLocator {
   private static ISessionFactory sessionFactory = null;
 
   private static IScheduler scheduler = null;
+
+  private static IPermissionManager permManager = null;
 
   /// <summary>
   /// Gets the client manager
@@ -127,5 +130,17 @@ public class ServiceLocator {
     }
 
     return scheduler;
+  }
+
+  /// <summary>
+  /// Gets the permission manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]  
+  public static IPermissionManager GetPermissionManager() {
+    if (permManager == null)
+      permManager = discoveryService.GetInstances<IPermissionManager>()[0];
+    return permManager;
+    
   }
 }
