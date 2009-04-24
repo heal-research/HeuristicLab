@@ -78,6 +78,7 @@ namespace HeuristicLab.Hive.Engine {
       DiscoveryService dService = new DiscoveryService();
       PluginInfo depInfo = dService.GetDeclaringPlugin(typeof(HiveEngine));
       List<PluginInfo> dependentPlugins = PluginManager.Manager.GetDependentPluginsRec(depInfo);
+      dependentPlugins.Add(depInfo);
 
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
       jobObj.SerializedJob = PersistenceManager.SaveToGZip(job);
