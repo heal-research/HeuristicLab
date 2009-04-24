@@ -21,14 +21,14 @@ namespace HeuristicLab.Persistence.Core {
       decomposerCache = new Dictionary<Type, IDecomposer>();
     }
 
-    public Configuration(IFormat format, Dictionary<Type, IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {
+    public Configuration(IFormat format, IEnumerable<IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {
       this.Format = format;
       this.formatters = new Dictionary<Type, IFormatter>();
-      foreach (var pair in formatters) {
-        if (pair.Value.SerialDataType != format.SerialDataType) {
+      foreach (IFormatter formatter in formatters) {
+        if (formatter.SerialDataType != format.SerialDataType) {
           throw new ArgumentException("All formatters must have the same IFormat.");
         }
-        this.formatters.Add(pair.Key, pair.Value);
+        this.formatters.Add(formatter.SourceType, formatter);
       }
       this.decomposers = new List<IDecomposer>(decomposers);
       decomposerCache = new Dictionary<Type, IDecomposer>();

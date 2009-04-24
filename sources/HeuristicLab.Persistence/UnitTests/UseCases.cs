@@ -378,8 +378,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       NumberTest sdt = new NumberTest();
       XmlGenerator.Serialize(sdt, tempFile,
         new Configuration(new XmlFormat(),
-          new Dictionary<Type, IFormatter> {
-          { typeof(string), new String2XmlFormatter() } },
+          new List<IFormatter> { new String2XmlFormatter() },
           new List<IDecomposer> { 
             new StorableDecomposer(),
             new Number2StringDecomposer() }));

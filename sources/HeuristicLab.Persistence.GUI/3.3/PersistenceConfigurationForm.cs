@@ -375,15 +375,13 @@ namespace HeuristicLab.Persistence.GUI {
     private Configuration GenerateConfiguration(IFormat format, DataGridView formatterGrid, ListView decomposerList) {
       if (formatterGrid == null || decomposerList == null)
         return null;
-      var formatters = new Dictionary<Type, IFormatter>();
+      var formatters = new List<IFormatter>();
       foreach (DataGridViewRow row in formatterGrid.Rows) {
         if (row.Cells["Type"].Value != null &&
              row.Cells["Active"].Value != null &&
              row.Cells["Formatter"].Value != null &&
              (bool)row.Cells["Active"].Value == true) {
-          formatters.Add(
-            typeNameTable[(string)row.Cells["Type"].Value],
-            formatterTable[(string)row.Cells["Formatter"].Value]);
+          formatters.Add(formatterTable[(string)row.Cells["Formatter"].Value]);
         }
       }
       var decomposers = new List<IDecomposer>();

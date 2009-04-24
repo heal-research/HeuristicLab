@@ -159,7 +159,7 @@ namespace HeuristicLab.Persistence.Core {
           format.GetType().VersionInvariantName(),
           format.SerialDataType.VersionInvariantName()));
       }
-      return new Configuration(format, formatterConfig, Decomposers.Where((d) => d.Priority > 0));
+      return new Configuration(format, formatterConfig.Values, Decomposers.Where((d) => d.Priority > 0));
     }
 
     public Configuration GetConfiguration(IFormat format) {
