@@ -87,7 +87,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         ICollection<Guid> resources =
           ManyToManyRelationHelper.GetRelationships(clientGroup.Id);
 
-       clientGroup.Resources.Clear();
+        clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
           Resource res =
             ResAdapter.GetByIdPolymorphic(resource);

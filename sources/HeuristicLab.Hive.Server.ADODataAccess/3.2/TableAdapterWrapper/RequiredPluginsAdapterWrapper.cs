@@ -24,7 +24,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
       row.PluginId = relation.Id2;
 
       data.AddRequiredPluginsRow(row);
-      TransactionalAdapter.Update(row);
 
       return row;
     }

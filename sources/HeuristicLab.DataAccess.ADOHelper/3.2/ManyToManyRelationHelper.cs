@@ -21,10 +21,17 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public void UpdateRelationships(Guid objectA, IList<Guid> relationships) {
+    public void UpdateRelationships(Guid objectA,
+      IList<Guid> relationships) {
+      UpdateRelationships(objectA, relationships, null);
+    }
+
+    public void UpdateRelationships(Guid objectA, 
+      IList<Guid> relationships,
+      IList<object> additionalAttributes) {
       //firstly check for created references
       IList<Guid> existing =
-        this.GetRelationships(objectA);
+        this.GetRelationships(objectA); 
 
       foreach (Guid relationship in relationships) {
         if (!existing.Contains(relationship)) {
@@ -32,6 +39,9 @@ namespace HeuristicLab.DataAccess.ADOHelper {
             new ManyToManyRelation();
           rel.Id = objectA;
           rel.Id2 = relationship;
+          if(additionalAttributes != null)
+            rel.AdditionalAttributes = 
+              new List<object>(additionalAttributes);
           
           RowT inserted = 
             tableAdapterWrapper.InsertNewRow(rel);

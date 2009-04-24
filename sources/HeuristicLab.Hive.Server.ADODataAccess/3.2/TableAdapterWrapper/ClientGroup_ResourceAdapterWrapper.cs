@@ -24,7 +24,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
       row.ResourceId = relation.Id2;
 
       data.AddClientGroup_ResourceRow(row);
-      TransactionalAdapter.Update(row);
 
       return row;
     }

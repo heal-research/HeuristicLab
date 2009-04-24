@@ -23,7 +23,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
       row.ResourceId = group.Id;
 
       data.AddClientGroupRow(row);
-      TransactionalAdapter.Update(row);
 
       return row;
     }

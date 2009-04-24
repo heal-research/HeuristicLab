@@ -151,6 +151,53 @@ namespace HeuristicLab.Hive.Server {
       }
     }
 
+    private void InsertTestClientGroups() {
+      ISessionFactory factory =
+        ServiceLocator.GetSessionFactory();
+
+      ISession session =
+        factory.GetSessionForCurrentThread();
+
+      ITransaction trans = null;
+
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+        session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        trans =
+          session.BeginTransaction();
+
+        ClientInfo client =
+          new ClientInfo();
+        client.Name = "Stefan";
+        client.Login = DateTime.Now;
+
+        ClientInfo client2 =
+          new ClientInfo();
+        client2.Name = "Martin";
+        client2.Login = DateTime.Now;
+
+        ClientGroup group =
+          new ClientGroup();
+        group.Name = "Gruppe1";
+
+        ClientGroup subGroup =
+          new ClientGroup();
+        subGroup.Name = "Untergruppe1";
+        subGroup.Resources.Add(client);
+
+        group.Resources.Add(client2);
+        group.Resources.Add(subGroup);
+
+        clientGroupAdapter.Update(group);
+
+        trans.Commit();
+      }
+      finally {
+        session.EndSession();
+      }
+    }
+
    /* private void TestJobAdapter() {
       IJobAdapter jobAdapter = 
         ServiceLocator.GetJobAdapter();
@@ -243,6 +290,7 @@ namespace HeuristicLab.Hive.Server {
 
     public override void Run() {
       TestClientGroupAdapter();
+      //InsertTestClientGroups();
     }      
   }
 }

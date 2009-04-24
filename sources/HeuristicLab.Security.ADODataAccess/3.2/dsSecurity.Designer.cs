@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace HeuristicLab.Security.ADODataAccess_3._2 {
+namespace HeuristicLab.Security.ADODataAccess {
     
     
     /// <summary>
@@ -1065,7 +1065,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public HLUserRow AddHLUserRow(PermissionOwnerRow parentPermissionOwnerRowByUser_is_a_PermissionOwner, byte[] Password, string Login, string MailAddress) {
+            public HLUserRow AddHLUserRow(PermissionOwnerRow parentPermissionOwnerRowByUser_is_a_PermissionOwner, string Password, string Login, string MailAddress) {
                 HLUserRow rowHLUserRow = ((HLUserRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -1110,7 +1110,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             private void InitClass() {
                 this.columnPermissionOwnerId = new global::System.Data.DataColumn("PermissionOwnerId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPermissionOwnerId);
-                this.columnPassword = new global::System.Data.DataColumn("Password", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                this.columnPassword = new global::System.Data.DataColumn("Password", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPassword);
                 this.columnLogin = new global::System.Data.DataColumn("Login", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLogin);
@@ -1120,6 +1120,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
                                 this.columnPermissionOwnerId}, true));
                 this.columnPermissionOwnerId.AllowDBNull = false;
                 this.columnPermissionOwnerId.Unique = true;
+                this.columnPassword.MaxLength = 2147483647;
                 this.columnLogin.MaxLength = 2147483647;
                 this.columnMailAddress.MaxLength = 2147483647;
             }
@@ -1342,7 +1343,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public PermissionRow AddPermissionRow(System.Guid PermissionId, byte[] Name, byte[] Description, string Plugin) {
+            public PermissionRow AddPermissionRow(System.Guid PermissionId, string Name, string Description, string Plugin) {
                 PermissionRow rowPermissionRow = ((PermissionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PermissionId,
@@ -1384,9 +1385,9 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             private void InitClass() {
                 this.columnPermissionId = new global::System.Data.DataColumn("PermissionId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPermissionId);
-                this.columnName = new global::System.Data.DataColumn("Name", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnName);
-                this.columnDescription = new global::System.Data.DataColumn("Description", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                this.columnDescription = new global::System.Data.DataColumn("Description", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDescription);
                 this.columnPlugin = new global::System.Data.DataColumn("Plugin", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPlugin);
@@ -1394,6 +1395,8 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
                                 this.columnPermissionId}, true));
                 this.columnPermissionId.AllowDBNull = false;
                 this.columnPermissionId.Unique = true;
+                this.columnName.MaxLength = 2147483647;
+                this.columnDescription.MaxLength = 2147483647;
                 this.columnPlugin.MaxLength = 2147483647;
             }
             
@@ -1597,7 +1600,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public PermissionOwnerRow AddPermissionOwnerRow(System.Guid PermissionOwnerId, byte[] Name) {
+            public PermissionOwnerRow AddPermissionOwnerRow(System.Guid PermissionOwnerId, string Name) {
                 PermissionOwnerRow rowPermissionOwnerRow = ((PermissionOwnerRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         PermissionOwnerId,
@@ -1635,12 +1638,13 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             private void InitClass() {
                 this.columnPermissionOwnerId = new global::System.Data.DataColumn("PermissionOwnerId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPermissionOwnerId);
-                this.columnName = new global::System.Data.DataColumn("Name", typeof(byte[]), null, global::System.Data.MappingType.Element);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnName);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnPermissionOwnerId}, true));
                 this.columnPermissionOwnerId.AllowDBNull = false;
                 this.columnPermissionOwnerId.Unique = true;
+                this.columnName.MaxLength = 2147483647;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2147,10 +2151,10 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public byte[] Password {
+            public string Password {
                 get {
                     try {
-                        return ((byte[])(this[this.tableHLUser.PasswordColumn]));
+                        return ((string)(this[this.tableHLUser.PasswordColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'Password\' in table \'HLUser\' is DBNull.", e);
@@ -2257,10 +2261,10 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public byte[] Name {
+            public string Name {
                 get {
                     try {
-                        return ((byte[])(this[this.tablePermission.NameColumn]));
+                        return ((string)(this[this.tablePermission.NameColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'Permission\' is DBNull.", e);
@@ -2272,10 +2276,10 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public byte[] Description {
+            public string Description {
                 get {
                     try {
-                        return ((byte[])(this[this.tablePermission.DescriptionColumn]));
+                        return ((string)(this[this.tablePermission.DescriptionColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'Description\' in table \'Permission\' is DBNull.", e);
@@ -2367,10 +2371,10 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public byte[] Name {
+            public string Name {
                 get {
                     try {
-                        return ((byte[])(this[this.tablePermissionOwner.NameColumn]));
+                        return ((string)(this[this.tablePermissionOwner.NameColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'PermissionOwner\' is DBNull.", e);
@@ -2674,7 +2678,7 @@ namespace HeuristicLab.Security.ADODataAccess_3._2 {
         }
     }
 }
-namespace HeuristicLab.Security.ADODataAccess_3._2.dsSecurityTableAdapters {
+namespace HeuristicLab.Security.ADODataAccess.dsSecurityTableAdapters {
     
     
     /// <summary>
@@ -2829,7 +2833,7 @@ SELECT PermissionId, PermissionOwnerId, EntityId FROM GrantedPermissions WHERE (
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3111,16 +3115,21 @@ SELECT PermissionId, PermissionOwnerId, EntityId FROM GrantedPermissions WHERE (
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.UserGroup";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT * FROM dbo.UserGroup WHERE PermissionOwnerId = @Id";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3140,6 +3149,30 @@ SELECT PermissionId, PermissionOwnerId, EntityId FROM GrantedPermissions WHERE (
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsSecurity.UserGroupDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsSecurity.UserGroupDataTable dataTable = new dsSecurity.UserGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsSecurity.UserGroupDataTable dataTable, System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.UserGroupDataTable GetDataById(System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
             dsSecurity.UserGroupDataTable dataTable = new dsSecurity.UserGroupDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3364,26 +3397,27 @@ SELECT PermissionId, PermissionOwnerId, EntityId FROM GrantedPermissions WHERE (
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[HLUser] WHERE (([PermissionOwnerId] = @Original_PermissionOwne" +
-                "rId))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [HLUser] WHERE (([PermissionOwnerId] = @Original_PermissionOwnerId))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[HLUser] ([PermissionOwnerId], [Password], [Login], [MailAddress]) VALUES (@PermissionOwnerId, @Password, @Login, @MailAddress);
-SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (PermissionOwnerId = @PermissionOwnerId)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [HLUser] ([PermissionOwnerId], [Password], [Login], [MailAddress]) VA" +
+                "LUES (@PermissionOwnerId, @Password, @Login, @MailAddress);\r\nSELECT PermissionOw" +
+                "nerId, Password, Login, MailAddress FROM HLUser WHERE (PermissionOwnerId = @Perm" +
+                "issionOwnerId)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Password", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Password", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Password", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Password", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Login", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Login", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MailAddress", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MailAddress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[HLUser] SET [PermissionOwnerId] = @PermissionOwnerId, [Password] = @Password, [Login] = @Login, [MailAddress] = @MailAddress WHERE (([PermissionOwnerId] = @Original_PermissionOwnerId));
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [HLUser] SET [PermissionOwnerId] = @PermissionOwnerId, [Password] = @Password, [Login] = @Login, [MailAddress] = @MailAddress WHERE (([PermissionOwnerId] = @Original_PermissionOwnerId));
 SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (PermissionOwnerId = @PermissionOwnerId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Password", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Password", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Password", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Password", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Login", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Login", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@MailAddress", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "MailAddress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -3392,16 +3426,21 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.HLUser";
+            this._commandCollection[0].CommandText = "SELECT * FROM HLUser";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT * FROM HLUser WHERE PermissionOwnerId = @Id";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3421,6 +3460,30 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsSecurity.HLUserDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsSecurity.HLUserDataTable dataTable = new dsSecurity.HLUserDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsSecurity.HLUserDataTable dataTable, System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.HLUserDataTable GetDataById(System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
             dsSecurity.HLUserDataTable dataTable = new dsSecurity.HLUserDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3475,13 +3538,13 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid PermissionOwnerId, byte[] Password, string Login, string MailAddress) {
+        public virtual int Insert(System.Guid PermissionOwnerId, string Password, string Login, string MailAddress) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
             if ((Password == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((byte[])(Password));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(Password));
             }
             if ((Login == null)) {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
@@ -3514,13 +3577,13 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid PermissionOwnerId, byte[] Password, string Login, string MailAddress, System.Guid Original_PermissionOwnerId) {
+        public virtual int Update(System.Guid PermissionOwnerId, string Password, string Login, string MailAddress, System.Guid Original_PermissionOwnerId) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
             if ((Password == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((byte[])(Password));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Password));
             }
             if ((Login == null)) {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
@@ -3554,7 +3617,7 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(byte[] Password, string Login, string MailAddress, System.Guid Original_PermissionOwnerId) {
+        public virtual int Update(string Password, string Login, string MailAddress, System.Guid Original_PermissionOwnerId) {
             return this.Update(Original_PermissionOwnerId, Password, Login, MailAddress, Original_PermissionOwnerId);
         }
     }
@@ -3681,27 +3744,27 @@ SELECT PermissionOwnerId, Password, Login, MailAddress FROM HLUser WHERE (Permis
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Permission] WHERE (([PermissionId] = @Original_PermissionId))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [Permission] WHERE (([PermissionId] = @Original_PermissionId))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Permission] ([PermissionId], [Name], [Description], [Plugin]) " +
-                "VALUES (@PermissionId, @Name, @Description, @Plugin);\r\nSELECT PermissionId, Name" +
-                ", Description, Plugin FROM Permission WHERE (PermissionId = @PermissionId)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [Permission] ([PermissionId], [Name], [Description], [Plugin]) VALUES" +
+                " (@PermissionId, @Name, @Description, @Plugin);\r\nSELECT PermissionId, Name, Desc" +
+                "ription, Plugin FROM Permission WHERE (PermissionId = @PermissionId)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Description", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Description", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Description", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Description", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Plugin", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Plugin", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[Permission] SET [PermissionId] = @PermissionId, [Name] = @Name, [Description] = @Description, [Plugin] = @Plugin WHERE (([PermissionId] = @Original_PermissionId));
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [Permission] SET [PermissionId] = @PermissionId, [Name] = @Name, [Description] = @Description, [Plugin] = @Plugin WHERE (([PermissionId] = @Original_PermissionId));
 SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (PermissionId = @PermissionId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Description", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Description", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Description", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Description", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Plugin", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Plugin", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
@@ -3709,16 +3772,22 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.Permission";
+            this._commandCollection[0].CommandText = "SELECT * FROM Permission";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT Description, Name, PermissionId, Plugin FROM Permission WHERE (PermissionI" +
+                "d = @Id)";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3738,6 +3807,30 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsSecurity.PermissionDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsSecurity.PermissionDataTable dataTable = new dsSecurity.PermissionDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsSecurity.PermissionDataTable dataTable, System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionDataTable GetDataById(System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
             dsSecurity.PermissionDataTable dataTable = new dsSecurity.PermissionDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3792,19 +3885,19 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid PermissionId, byte[] Name, byte[] Description, string Plugin) {
+        public virtual int Insert(System.Guid PermissionId, string Name, string Description, string Plugin) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(PermissionId));
             if ((Name == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((byte[])(Name));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(Name));
             }
             if ((Description == null)) {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((byte[])(Description));
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(Description));
             }
             if ((Plugin == null)) {
                 this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
@@ -3831,19 +3924,19 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid PermissionId, byte[] Name, byte[] Description, string Plugin, System.Guid Original_PermissionId) {
+        public virtual int Update(System.Guid PermissionId, string Name, string Description, string Plugin, System.Guid Original_PermissionId) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(PermissionId));
             if ((Name == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((byte[])(Name));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Name));
             }
             if ((Description == null)) {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((byte[])(Description));
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(Description));
             }
             if ((Plugin == null)) {
                 this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
@@ -3871,7 +3964,7 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(byte[] Name, byte[] Description, string Plugin, System.Guid Original_PermissionId) {
+        public virtual int Update(string Name, string Description, string Plugin, System.Guid Original_PermissionId) {
             return this.Update(Original_PermissionId, Name, Description, Plugin, Original_PermissionId);
         }
     }
@@ -3996,43 +4089,53 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[PermissionOwner] WHERE (([PermissionOwnerId] = @Original_Permi" +
-                "ssionOwnerId))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [PermissionOwner] WHERE (([PermissionOwnerId] = @Original_PermissionO" +
+                "wnerId))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[PermissionOwner] ([PermissionOwnerId], [Name]) VALUES (@Permis" +
-                "sionOwnerId, @Name);\r\nSELECT PermissionOwnerId, Name FROM PermissionOwner WHERE " +
-                "(PermissionOwnerId = @PermissionOwnerId)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [PermissionOwner] ([PermissionOwnerId], [Name]) VALUES (@PermissionOw" +
+                "nerId, @Name);\r\nSELECT PermissionOwnerId, Name FROM PermissionOwner WHERE (Permi" +
+                "ssionOwnerId = @PermissionOwnerId)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[PermissionOwner] SET [PermissionOwnerId] = @PermissionOwnerId, [Nam" +
-                "e] = @Name WHERE (([PermissionOwnerId] = @Original_PermissionOwnerId));\r\nSELECT " +
-                "PermissionOwnerId, Name FROM PermissionOwner WHERE (PermissionOwnerId = @Permiss" +
-                "ionOwnerId)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [PermissionOwner] SET [PermissionOwnerId] = @PermissionOwnerId, [Name] = @" +
+                "Name WHERE (([PermissionOwnerId] = @Original_PermissionOwnerId));\r\nSELECT Permis" +
+                "sionOwnerId, Name FROM PermissionOwner WHERE (PermissionOwnerId = @PermissionOwn" +
+                "erId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[3];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.PermissionOwner";
+            this._commandCollection[0].CommandText = "SELECT * FROM PermissionOwner";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT * FROM PermissionOwner WHERE (Id = @Id)";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.Variant, 1024, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[2].Connection = this.Connection;
+            this._commandCollection[2].CommandText = "SELECT Name, PermissionOwnerId FROM PermissionOwner WHERE (Name = @Name)";
+            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 2147483647, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4052,6 +4155,74 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsSecurity.PermissionOwnerDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsSecurity.PermissionOwnerDataTable dataTable = new dsSecurity.PermissionOwnerDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsSecurity.PermissionOwnerDataTable dataTable, object Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((Id == null)) {
+                throw new global::System.ArgumentNullException("Id");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((object)(Id));
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionOwnerDataTable GetDataById(object Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((Id == null)) {
+                throw new global::System.ArgumentNullException("Id");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((object)(Id));
+            }
+            dsSecurity.PermissionOwnerDataTable dataTable = new dsSecurity.PermissionOwnerDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByName(dsSecurity.PermissionOwnerDataTable dataTable, string Name) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((Name == null)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(Name));
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionOwnerDataTable GetDataByName(string Name) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((Name == null)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(Name));
+            }
             dsSecurity.PermissionOwnerDataTable dataTable = new dsSecurity.PermissionOwnerDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -4106,13 +4277,13 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid PermissionOwnerId, byte[] Name) {
+        public virtual int Insert(System.Guid PermissionOwnerId, string Name) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
             if ((Name == null)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((byte[])(Name));
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(Name));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4133,13 +4304,13 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid PermissionOwnerId, byte[] Name, System.Guid Original_PermissionOwnerId) {
+        public virtual int Update(System.Guid PermissionOwnerId, string Name, System.Guid Original_PermissionOwnerId) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
             if ((Name == null)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((byte[])(Name));
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Name));
             }
             this.Adapter.UpdateCommand.Parameters[2].Value = ((System.Guid)(Original_PermissionOwnerId));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
@@ -4161,7 +4332,7 @@ SELECT PermissionId, Name, Description, Plugin FROM Permission WHERE (Permission
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(byte[] Name, System.Guid Original_PermissionOwnerId) {
+        public virtual int Update(string Name, System.Guid Original_PermissionOwnerId) {
             return this.Update(Original_PermissionOwnerId, Name, Original_PermissionOwnerId);
         }
     }
@@ -4312,16 +4483,34 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess_3._2.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
+            this._connection.ConnectionString = global::HeuristicLab.Security.ADODataAccess.Properties.Settings.Default.HeuristicLab_SecurityConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[4];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.PermissionOwner_UserGroup";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT * FROM dbo.PermissionOwner_UserGroup WHERE PermissionOwnerId = @Permission" +
+                "OwnerId ";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[2].Connection = this.Connection;
+            this._commandCollection[2].CommandText = "SELECT * FROM dbo.PermissionOwner_UserGroup WHERE PermissionOwnerId = @Permission" +
+                "OwnerId AND UserGroupId = @UserGroupId";
+            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@PermissionOwnerId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "PermissionOwnerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserGroupId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "UserGroupId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[3].Connection = this.Connection;
+            this._commandCollection[3].CommandText = "SELECT * FROM dbo.PermissionOwner_UserGroup WHERE UserGroupId = @UserGroupId";
+            this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserGroupId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "UserGroupId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4341,6 +4530,80 @@ SELECT PermissionOwnerId, UserGroupId FROM PermissionOwner_UserGroup WHERE (Perm
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual dsSecurity.PermissionOwner_UserGroupDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsSecurity.PermissionOwner_UserGroupDataTable dataTable = new dsSecurity.PermissionOwner_UserGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByPermissionOwnerId(dsSecurity.PermissionOwner_UserGroupDataTable dataTable, System.Guid PermissionOwnerId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionOwner_UserGroupDataTable GetDataByPermissionOwnerId(System.Guid PermissionOwnerId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
+            dsSecurity.PermissionOwner_UserGroupDataTable dataTable = new dsSecurity.PermissionOwner_UserGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByPermissionOwnerUserGroupId(dsSecurity.PermissionOwner_UserGroupDataTable dataTable, System.Guid PermissionOwnerId, System.Guid UserGroupId) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
+            this.Adapter.SelectCommand.Parameters[1].Value = ((System.Guid)(UserGroupId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionOwner_UserGroupDataTable GetDataByPermissionOwnerUserGroupId(System.Guid PermissionOwnerId, System.Guid UserGroupId) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(PermissionOwnerId));
+            this.Adapter.SelectCommand.Parameters[1].Value = ((System.Guid)(UserGroupId));
+            dsSecurity.PermissionOwner_UserGroupDataTable dataTable = new dsSecurity.PermissionOwner_UserGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByUserGroupId(dsSecurity.PermissionOwner_UserGroupDataTable dataTable, System.Guid UserGroupId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(UserGroupId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsSecurity.PermissionOwner_UserGroupDataTable GetDataByUserGroupId(System.Guid UserGroupId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(UserGroupId));
             dsSecurity.PermissionOwner_UserGroupDataTable dataTable = new dsSecurity.PermissionOwner_UserGroupDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;

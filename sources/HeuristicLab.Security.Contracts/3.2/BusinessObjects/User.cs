@@ -29,6 +29,10 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
   [DataContract]
   public class User : PermissionOwner {
     [DataMember]
+    public String Login { get; set; }
+    [DataMember]
     public String Password { get; set; }
+    [DataMember]
+    public String MailAddress { get; set; }
   }
 }

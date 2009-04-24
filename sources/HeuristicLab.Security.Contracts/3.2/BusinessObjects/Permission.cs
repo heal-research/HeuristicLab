@@ -30,6 +30,9 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
   public class Permission: PersistableObject {
     [DataMember]
     public String Description { get; set; }
-
+    [DataMember]
+    public String Name { get; set; }
+    [DataMember]
+    public String Plugin { get; set; }
   }
 }

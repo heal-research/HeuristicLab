@@ -29,7 +29,14 @@ namespace HeuristicLab.Security.DataAccess {
   /// <summary>
   /// The permission owner database adapter
   /// </summary>
-  public interface IPermissionOwnerAdapter: IDataAdapter<PermissionOwner> {
+  public interface IPermissionOwnerAdapter: IPolymorphicDataAdapter<PermissionOwner> {
+    /// <summary>
+    /// Gets the permissionOwner and updates the values of the object
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <returns></returns>
+    bool GetById(PermissionOwner permOwner);
+    
     /// <summary>
     /// Get the permission owner with the specified name
     /// </summary>

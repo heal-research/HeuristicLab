@@ -8,7 +8,7 @@
     <ProjectGuid>{FD1AFEC2-7A79-45CF-9365-5195B04A2C9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Security.ADODataAccess_3._2</RootNamespace>
+    <RootNamespace>HeuristicLab.Security.ADODataAccess</RootNamespace>
     <AssemblyName>HeuristicLab.Security.ADODataAccess-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -73,17 +73,26 @@ call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ADODataAccessPlugin.cs" />
+    <Compile Include="TableAdapterWrapper\PermissionOwner_UserGroupAdapterWrapper.cs" />
+    <Compile Include="UserGroupAdapter.cs" />
+    <Compile Include="HLUserAdapter.cs" />
+    <Compile Include="PermissionOwnerAdapter.cs" />
     <Compile Include="dsSecurity.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>dsSecurity.xsd</DependentUpon>
     </Compile>
+    <Compile Include="PermissionAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="TableAdapterWrapper\UserGroupAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\HLUserAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\PermissionOwnerAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\PermissionAdapterWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.DataAccess.ADOHelper\3.2\HeuristicLab.DataAccess.ADOHelper-3.2.csproj">
@@ -97,6 +106,10 @@ call PreBuildEvent.cmd</PreBuildEvent>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Security.Contracts\3.2\HeuristicLab.Security.Contracts-3.2.csproj">
+      <Project>{D59E852C-F205-4647-8C05-EB9ED1CF44E9}</Project>
+      <Name>HeuristicLab.Security.Contracts-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Security.DataAccess\3.2\HeuristicLab.Security.DataAccess-3.2.csproj">
       <Project>{AC3D84FF-F0D7-43F0-9C99-9F8DBE087E2C}</Project>
