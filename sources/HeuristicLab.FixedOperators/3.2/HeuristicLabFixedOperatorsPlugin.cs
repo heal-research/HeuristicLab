@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.SGA.Hardwired {
+namespace HeuristicLab.FixedOperators {
   /// <summary>
-  /// Plugin class for HeuristicLab.SGA.Hardwired plugin.
+  /// Plugin class for HeuristicLab.FixedOperators plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.SGA.Hardwired-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SGA.Hardwired-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.FixedOperators-3.2")]
+  [PluginFile(Filename = "HeuristicLab.FixedOperators-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
@@ -38,6 +38,6 @@ namespace HeuristicLab.SGA.Hardwired {
   [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
   [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
-  public class HeuristicLabSGAHardwiredPlugin : PluginBase {
+  public class HeuristicLabFixedOperatorsPlugin : PluginBase {
   }
 }

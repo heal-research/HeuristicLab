@@ -30,42 +30,32 @@ using HeuristicLab.Evolutionary;
 using HeuristicLab.Operators;
 using HeuristicLab.Routing.TSP;
 
-namespace HeuristicLab.SGA.Hardwired {
-  class CreateChildren : OperatorBase {
+namespace HeuristicLab.FixedOperators {
+  class CreateChildrenHardWired : OperatorBase {
     ChildrenInitializer ci;
     OperatorBase crossover;
     OperatorBase mutator;
     OperatorBase evaluator;
-    SubScopesRemover sr;
-    Counter counter;
-    Sorter sorter;
     IRandom random;
     DoubleData probability;
-    
+
     public override string Description {
-      get { return @"Implements the control structures of CreateChildren hard wired. Operators are delegated."; }
+      get { return @"Implements the functionality CreateChildren hard wired. Operators like Crossover, Mutation and Evaluation are delegated."; }
     }
 
-    public CreateChildren()
+    public CreateChildrenHardWired()
       : base() {
       ci = new ChildrenInitializer();
-  
+
       // variables infos
       AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
       AddVariableInfo(new VariableInfo("MutationRate", "Probability to choose first branch", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Crossover", "Crossover strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("Mutator", "Mutation strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("Evaluator", "Evaluation strategy for SGA", typeof(OperatorBase), VariableKind.In));
-
-      sr = new SubScopesRemover();
-      sr.GetVariableInfo("SubScopeIndex").Local = true;
-
-      counter = new Counter();
-      counter.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
-
-      sorter = new Sorter();
-      sorter.GetVariableInfo("Descending").ActualName = "Maximization";
-      sorter.GetVariableInfo("Value").ActualName = "Quality";
+      AddVariableInfo(new VariableInfo("EvaluatedSolutions", "Number of evaluated solutions", typeof(IntData), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Maximization", "Sort in descending order", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Quality", "Sorting value", typeof(DoubleData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -75,23 +65,58 @@ namespace HeuristicLab.SGA.Hardwired {
 
       random = GetVariableValue<IRandom>("Random", scope, true);
       probability = GetVariableValue<DoubleData>("MutationRate", scope, true);
+      IntData value = GetVariableValue<IntData>("EvaluatedSolutions", scope, true);
+      int counter = value.Data;
 
       // ChildrenInitializer
       ci.Apply(scope);
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
-        crossover.Execute(s);
+        if (crossover.Execute(s) != null)
+          throw new InvalidOperationException("ERROR: no support for combined operators!");
+
         // Stochastic Branch
-        if(random.NextDouble() < probability.Data)
-          mutator.Execute(s);
-        evaluator.Execute(s);
-        sr.Execute(s);
-        counter.Execute(s);
+        if (random.NextDouble() < probability.Data) {
+          if (mutator.Execute(s) != null)
+            throw new InvalidOperationException("ERROR: no support for combined operators!");
+        }
+
+        if (evaluator.Execute(s) != null)
+          throw new InvalidOperationException("ERROR: no support for combined operators!");
+
+        // subscopes remover
+        while (s.SubScopes.Count > 0)
+          s.RemoveSubScope(s.SubScopes[0]);
+       
+        counter++;
       } // foreach
 
-      sorter.Execute(scope);
+      // write back counter variable to evaluated solutions
+      value.Data = counter;
+
+      // sort scopes
+      bool descending = GetVariableValue<BoolData>("Maximization", scope, true).Data;
+      double[] keys = new double[scope.SubScopes.Count];
+      int[] sequence = new int[keys.Length];
+
+      for (int i = 0; i < keys.Length; i++) {
+        keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
+        sequence[i] = i;
+      }
+
+      Array.Sort<double, int>(keys, sequence);
+
+      if (descending) {
+        int temp;
+        for (int i = 0; i < sequence.Length / 2; i++) {
+          temp = sequence[i];
+          sequence[i] = sequence[sequence.Length - 1 - i];
+          sequence[sequence.Length - 1 - i] = temp;
+        }
+      }
+      scope.ReorderSubScopes(sequence);
 
       return null;
     } // Apply
-  } // class CreateChildren
-} // namespace HeuristicLab.SGA.Hardwired
+  } // class CreateChildrenHardWired
+} // namespace HeuristicLab.FixedOperators

@@ -73,7 +73,7 @@ copy "%SolutionDir%\HeuristicLab.Selection\3.2\%Outdir%\HeuristicLab.Selection-3
 copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\3.2\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SequentialEngine\3.2\%Outdir%\HeuristicLab.SequentialEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SGA\3.2\%Outdir%\HeuristicLab.SGA-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.SGA.Hardwired\3.3\%Outdir%\HeuristicLab.SGA.Hardwired-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.FixedOperators\3.2\%Outdir%\HeuristicLab.FixedOperators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\3.2\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite License.txt" .\plugins

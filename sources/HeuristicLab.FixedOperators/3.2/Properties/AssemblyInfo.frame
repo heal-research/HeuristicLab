@@ -27,11 +27,11 @@ using HeuristicLab.PluginInfrastructure;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.SGA.Hardwired")]
+[assembly: AssemblyTitle("HeuristicLab.FixedOperators")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FH-Hagenberg")]
-[assembly: AssemblyProduct("HeuristicLab.SGA.Hardwired")]
+[assembly: AssemblyProduct("HeuristicLab.FixedOperators")]
 [assembly: AssemblyCopyright("Copyright © FH-Hagenberg 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

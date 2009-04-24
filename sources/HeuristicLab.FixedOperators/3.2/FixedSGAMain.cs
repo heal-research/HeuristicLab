@@ -32,8 +32,8 @@ using HeuristicLab.Routing.TSP;
 using HeuristicLab.Logging;
 using System.Diagnostics;
 
-namespace HeuristicLab.SGA.Hardwired {
-  class SGAMainWithHWControllStructures : CombinedOperator {
+namespace HeuristicLab.FixedOperators {
+  class FixedSGAMain : CombinedOperator {
     public override string Description {
       get { return @"Implements the SGAMain with hardwired control structures. Operators are delegated."; }
     }
@@ -48,13 +48,14 @@ namespace HeuristicLab.SGA.Hardwired {
     IRandom random;
     DoubleData probability;
 
-    public SGAMainWithHWControllStructures()
+    long[] timesExecuteCreateChildren;
+
+    public FixedSGAMain()
       : base() {
       AddVariableInfo(new VariableInfo("Selector", "Selection strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaximumGenerations", "Maximum number of generations to create", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Generations", "Number of processed generations", typeof(IntData), VariableKind.In | VariableKind.Out));
-      Name = "SGAMainWithHWControllStructures";
-
+      Name = "FixedSGAMain";
       //InitCreateChildrenHWCS();
       InitCreateChildrenHW();
 
@@ -95,7 +96,8 @@ namespace HeuristicLab.SGA.Hardwired {
     }
 
     public override IOperation Apply(IScope scope) {
-
+      Stopwatch swApply = new Stopwatch();
+      swApply.Start();
       //base.Apply(scope); // noch nachfragen ob das auch in ordnung wäre
       for (int i = 0; i < SubOperators.Count; i++) {
         if (scope.GetVariable(SubOperators[i].Name) != null)
@@ -133,23 +135,60 @@ namespace HeuristicLab.SGA.Hardwired {
       InitializeExecuteCreateChildren(scope);
       IntData evaluatedSolutions = GetVariableValue<IntData>("EvaluatedSolutions", scope, true);
       Stopwatch watch = new Stopwatch();
+      long[] times = new long[10];
+      timesExecuteCreateChildren = new long[10];
       for (int i = 0; i < maxGenerations.Data; i++) {
+          watch.Start();
         selector.Execute(scope);
+        watch.Stop();
+        times[0] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
+        // if uncomment, adapt constructor
         //createChildren.Execute(scope.SubScopes[1]);
         //ExecuteCreateChildrenHWCS(scope.SubScopes[1]);
         ExecuteCreateChildrenHW(scope.SubScopes[1], evaluatedSolutions);
+        watch.Stop();
+        times[1] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         createReplacement.Execute(scope);
+        watch.Stop();
+        times[2] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         ql.Execute(scope);
+        watch.Stop();
+        times[3] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         bawqc.Execute(scope);
+        watch.Stop();
+        times[4] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         dc.Execute(scope);
+        watch.Stop();
+        times[5] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         lci.Execute(scope);
+        watch.Stop();
+        times[6] += watch.ElapsedTicks;
+        watch.Reset();
+        watch.Start();
         nrOfGenerations.Data++;
       }
 
-     
+      swApply.Stop();
+      Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
       return null;
     } // Apply
 
+    /// <summary>
+    /// Initializes some variables needed before the execution of create children
+    /// </summary>
+    /// <param name="scope"></param>
     private void InitializeExecuteCreateChildren(IScope scope) {
       crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
       mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
@@ -179,53 +218,81 @@ namespace HeuristicLab.SGA.Hardwired {
     } // ExecuteCreateChildrenHWCS
 
     private void ExecuteCreateChildrenHW(IScope scope, IntData evaluatedSolutions){
+      //Stopwatch watch = new Stopwatch();
+      //long[] times = new long[10];
       // ChildrenInitializer
+      //watch.Start();
       ci.Apply(scope);
+      //watch.Stop();
+      //timesExecuteCreateChildren[0] += watch.ElapsedTicks;
+      //watch.Reset();
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
+        //watch.Start();
         if (crossover.Execute(s) != null)
           throw new InvalidOperationException("ERROR: no support for combined operators!");
+        //watch.Stop();
+        //timesExecuteCreateChildren[1] += watch.ElapsedTicks;
+        //watch.Reset();
+
 
         // Stochastic Branch
         if (random.NextDouble() < probability.Data) {
+          //watch.Start();
           if (mutator.Execute(s) != null)
             throw new InvalidOperationException("ERROR: no support for combined operators!");
+          //watch.Stop();
+          //timesExecuteCreateChildren[2] += watch.ElapsedTicks;
+          //watch.Reset();
+
         }
 
+        //watch.Start();
         if (evaluator.Execute(s) != null)
           throw new InvalidOperationException("ERROR: no support for combined operators!");
+        //watch.Stop();
+        //timesExecuteCreateChildren[3] += watch.ElapsedTicks;
+        //watch.Reset();
 
         // subscopes remover
+        //watch.Start();
         while (s.SubScopes.Count > 0)
           s.RemoveSubScope(s.SubScopes[0]);
+        //watch.Stop();
+        //timesExecuteCreateChildren[4] += watch.ElapsedTicks;
+        //watch.Reset();
 
         evaluatedSolutions.Data++;
       } // foreach
 
       // sort scopes
-      //bool descending = GetVariableValue<BoolData>("Maximization", scope, true).Data;
-      //double[] keys = new double[scope.SubScopes.Count];
-      //int[] sequence = new int[keys.Length];
+      bool descending = GetVariableValue<BoolData>("Maximization", scope, true).Data;
 
-      //for (int i = 0; i < keys.Length; i++) {
-      //  keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
-      //  sequence[i] = i;
-      //}
+      double[] keys = new double[scope.SubScopes.Count];
+      int[] sequence = new int[keys.Length];
 
-      //Array.Sort<double, int>(keys, sequence);
+      for (int i = 0; i < keys.Length; i++) {
+        keys[i] = scope.SubScopes[i].GetVariableValue<DoubleData>("Quality", false).Data;
+        sequence[i] = i;
+      }
 
-      //if (descending) {
-      //  int temp;
-      //  for (int i = 0; i < sequence.Length / 2; i++) {
-      //    temp = sequence[i];
-      //    sequence[i] = sequence[sequence.Length - 1 - i];
-      //    sequence[sequence.Length - 1 - i] = temp;
-      //  }
-      //}
-      //scope.ReorderSubScopes(sequence);
+      Array.Sort<double, int>(keys, sequence);
+
+      if (descending) {
+        int temp;
+        for (int i = 0; i < sequence.Length / 2; i++) {
+          temp = sequence[i];
+          sequence[i] = sequence[sequence.Length - 1 - i];
+          sequence[sequence.Length - 1 - i] = temp;
+        }
+      }
+      scope.ReorderSubScopes(sequence);
+      //watch.Stop();
+      //timesExecuteCreateChildren[5] += watch.ElapsedTicks;
+      //watch.Reset();
 
       return;
-    }
+    } // ExecuteCreateChildrenHW
 
-  } // class SGAMainWithHWControllStructures
-} // namespace HeuristicLab.SGA.Hardwired
+  } // class FixedSGAMain
+} // namespace HeuristicLab.FixedOperators

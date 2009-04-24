@@ -8,8 +8,8 @@
     <ProjectGuid>{583705E2-B1F7-42B8-8149-96E7AECA171A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.SGA.Hardwired</RootNamespace>
-    <AssemblyName>HeuristicLab.SGA.Hardwired-3.2</AssemblyName>
+    <RootNamespace>HeuristicLab.FixedOperators</RootNamespace>
+    <AssemblyName>HeuristicLab.FixedOperators-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
@@ -69,10 +69,10 @@
   <ItemGroup>
     <Compile Include="CreateReplacement.cs" />
     <Compile Include="CreateChildrenHardWired.cs" />
-    <Compile Include="HeuristicLabSGAHardwiredPlugin.cs" />
+    <Compile Include="FixedSGAMain.cs" />
+    <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CreateChildren.cs" />
-    <Compile Include="SGAMainWithHWControllStructures.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfo.frame" />

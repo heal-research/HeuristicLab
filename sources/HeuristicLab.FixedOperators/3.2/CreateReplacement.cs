@@ -32,7 +32,7 @@ using HeuristicLab.Routing.TSP;
 using HeuristicLab.Selection;
 using System.Collections;
 
-namespace HeuristicLab.SGA.Hardwired {
+namespace HeuristicLab.FixedOperators {
   class CreateReplacement : OperatorBase {
     LeftSelector ls;
     RightReducer rr;
@@ -82,4 +82,4 @@ namespace HeuristicLab.SGA.Hardwired {
       return null;
     } // Apply
   } // class CreateReplacement
-} // namespace HeuristicLab.SGA.Hardwired
+} // namespace HeuristicLab.FixedOperators
