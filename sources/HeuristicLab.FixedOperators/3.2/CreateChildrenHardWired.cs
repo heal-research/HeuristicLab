@@ -87,7 +87,7 @@ namespace HeuristicLab.FixedOperators {
         // subscopes remover
         while (s.SubScopes.Count > 0)
           s.RemoveSubScope(s.SubScopes[0]);
-       
+
         counter++;
       } // foreach
 

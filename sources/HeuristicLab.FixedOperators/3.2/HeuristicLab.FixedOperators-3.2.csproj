@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FixedAllSGAMain.cs" />
     <Compile Include="CreateReplacement.cs" />
     <Compile Include="CreateChildrenHardWired.cs" />
     <Compile Include="FixedSGAMain.cs" />

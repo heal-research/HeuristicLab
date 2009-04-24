@@ -41,9 +41,6 @@ namespace HeuristicLab.FixedOperators {
     MergingReducer mr;
     Sorter sorter;
 
-    IRandom random;
-    DoubleData probability;
-
     public override string Description {
       get { return @"Implements the control structures of CreateReplacement hard wired. Operators are delegated."; }
     }
@@ -62,17 +59,13 @@ namespace HeuristicLab.FixedOperators {
 
       ls.GetVariableInfo("Selected").ActualName = "Elites";
       rs.GetVariableInfo("Selected").ActualName = "Elites";
-
-      // variables infos
-      //AddVariableInfo(new VariableInfo("Random", "Pseudo random number generator", typeof(IRandom), VariableKind.In));
-      //AddVariableInfo(new VariableInfo("Elites", "Number of selected sub-scopes", typeof(IntData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       // SequentialSubScopesProcessor
       ls.Execute(scope.SubScopes[0]);
       rr.Execute(scope.SubScopes[0]);
-      
+
       rs.Execute(scope.SubScopes[1]);
       lr.Execute(scope.SubScopes[1]);
 
