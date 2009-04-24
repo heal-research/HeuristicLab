@@ -16,6 +16,9 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
     public static bool IsEmptyStorable(Type type) {
       if (emptyTypeInfo.ContainsKey(type))
         return emptyTypeInfo[type];
+      if (type == typeof(object)) {
+        return true;
+      }
       foreach (var attribute in type.GetCustomAttributes(false)) {
         EmptyStorableClassAttribute empty = attribute as EmptyStorableClassAttribute;
         if (empty != null) {

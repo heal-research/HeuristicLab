@@ -16,7 +16,7 @@ using HeuristicLab.Persistence.Default.Decomposers;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
-  public class PrimitivesTest {
+  public class NumberTest {
     [Storable]
     private bool _bool = true;
     [Storable]
@@ -35,11 +35,18 @@ namespace HeuristicLab.Persistence.UnitTest {
     private long _long = 123456;
     [Storable]
     private ulong _ulong = 123456;
+  }
+
+  public class PrimitivesTest : NumberTest {
+    [Storable]
+    private char c = 'e';
     [Storable]
     private long[,] _long_array =
       new long[,] { { 123, 456, }, { 789, 123 } };
     [Storable]
     public List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+    [Storable]
+    private object o = new object();
   }
 
   public enum TestEnum { va1, va2, va3, va8 } ;
@@ -131,6 +138,15 @@ namespace HeuristicLab.Persistence.UnitTest {
       r.dict.Add("two", 2);
       r.dict.Add("three", 3);
       r.myEnum = TestEnum.va1;
+      r.i = new[] { 7, 5, 6 };
+      r.s = "new value";
+      r.intArray = new ArrayList { 3, 2, 1 };
+      r.intList = new List<int> { 9, 8, 7 };
+      r.multiDimArray = new double[,] { { 5, 4, 3 }, { 1, 4, 6 } };
+      r.boolean = false;
+      r.dateTime = DateTime.Now;
+      r.kvp = new KeyValuePair<string, int>("string key", 321);
+      r.uninitialized = null;
       XmlGenerator.Serialize(r, tempFile);
       object o = XmlParser.DeSerialize(tempFile);
       Assert.AreEqual(
@@ -139,6 +155,28 @@ namespace HeuristicLab.Persistence.UnitTest {
       Root newR = (Root)o;
       Assert.AreSame(newR, newR.selfReferences[0]);
       Assert.AreNotSame(r, newR);
+      Assert.AreEqual(r.myEnum, TestEnum.va1);
+      Assert.AreEqual(r.i[0], 7);
+      Assert.AreEqual(r.i[1], 5);
+      Assert.AreEqual(r.i[2], 6);
+      Assert.AreSame(r.s, "new value");
+      Assert.AreEqual(r.intArray[0], 3);
+      Assert.AreEqual(r.intArray[1], 2);
+      Assert.AreEqual(r.intArray[2], 1);
+      Assert.AreEqual(r.intList[0], 9);
+      Assert.AreEqual(r.intList[1], 8);
+      Assert.AreEqual(r.intList[2], 7);      
+      Assert.AreEqual(r.multiDimArray[0, 0], 5);
+      Assert.AreEqual(r.multiDimArray[0, 1], 4);
+      Assert.AreEqual(r.multiDimArray[0, 2], 3);
+      Assert.AreEqual(r.multiDimArray[1, 0], 1);
+      Assert.AreEqual(r.multiDimArray[1, 1], 4);
+      Assert.AreEqual(r.multiDimArray[1, 2], 6);
+      Assert.IsFalse(r.boolean);
+      Assert.IsTrue((DateTime.Now - r.dateTime).TotalSeconds < 10);      
+      Assert.AreSame(r.kvp.Key, "string key");
+      Assert.AreEqual(r.kvp.Value, 321);
+      Assert.IsNull(r.uninitialized);
     }
 
     [TestMethod]
@@ -273,7 +311,7 @@ namespace HeuristicLab.Persistence.UnitTest {
         DebugStringGenerator.Serialize(o));
     }
 
-    private string formatFullMemberName(MemberInfo mi) {     
+    private string formatFullMemberName(MemberInfo mi) {
       return new StringBuilder()
         .Append(mi.DeclaringType.Assembly.GetName().Name)
         .Append(": ")
@@ -291,7 +329,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       List<string> lowerCaseFields = new List<string>();
       foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
         if (!a.GetName().Name.StartsWith("HeuristicLab"))
-          continue;        
+          continue;
         foreach (Type t in a.GetTypes()) {
           foreach (MemberInfo mi in t.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)) {
             if (char.IsLower(mi.Name[0])) {
@@ -303,7 +341,7 @@ namespace HeuristicLab.Persistence.UnitTest {
                 !mi.Name.StartsWith("get_") &&
                 !mi.Name.StartsWith("set_") &&
                 !mi.Name.StartsWith("add_") &&
-                !mi.Name.StartsWith("remove_") )
+                !mi.Name.StartsWith("remove_"))
                 lowerCaseMethodNames.Add(formatFullMemberName(mi));
             }
           }
@@ -316,12 +354,15 @@ namespace HeuristicLab.Persistence.UnitTest {
 
     [TestMethod]
     public void Number2StringDecomposer() {
-      PrimitivesTest sdt = new PrimitivesTest();
+      NumberTest sdt = new NumberTest();
       XmlGenerator.Serialize(sdt, tempFile,
         new Configuration(new XmlFormat(),
-          new Dictionary<Type, IFormatter> { { typeof(string), new String2XmlFormatter() } },
-          new List<IDecomposer> { new Number2StringDecomposer() }));
-      object o = XmlParser.DeSerialize(tempFile);      
+          new Dictionary<Type, IFormatter> {
+          { typeof(string), new String2XmlFormatter() } },
+          new List<IDecomposer> { 
+            new StorableDecomposer(),
+            new Number2StringDecomposer() }));
+      object o = XmlParser.DeSerialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));

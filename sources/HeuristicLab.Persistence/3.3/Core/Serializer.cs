@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using System;
+using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using System.Text;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -75,8 +77,14 @@ namespace HeuristicLab.Persistence.Core {
         return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
       throw new PersistenceException(
           String.Format(
-          "No suitable method for serializing values of type \"{0}\" found.",
-          value.GetType().VersionInvariantName()));
+          "No suitable method for serializing values of type \"{0}\" found\r\n" +
+          "Formatters:\r\n{1}\r\n" +
+          "Decomposers:\r\n{2}",
+          value.GetType().VersionInvariantName(),
+          string.Join("\r\n", configuration.Formatters.Select(f => f.GetType().VersionInvariantName()).ToArray()),
+          string.Join("\r\n", configuration.Decomposers.Select(d => d.GetType().VersionInvariantName()).ToArray())
+          ));
+
     }
 
     private IEnumerator<ISerializationToken> NullReferenceEnumerator(string name) {
