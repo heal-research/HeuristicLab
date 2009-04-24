@@ -33,7 +33,17 @@ namespace HeuristicLab.Persistence.GUI {
       InitializeTooltips();
       InitializeNameTables();
       initializeConfigPages();
-      UpdateFromConfigurationService();
+      try {
+        ConfigurationService.Instance.LoadSettings(true);
+        UpdateFromConfigurationService();
+      } catch (PersistenceException e) {
+        MessageBox.Show(
+          "Persistence settings could not be loaded.\r\n" +
+          "Default configurations will be used instead.",
+          "Loading Settings Failed",
+          MessageBoxButtons.OK,
+          MessageBoxIcon.Information);
+      }
       underConstruction = false;
       UpdatePreview();
     }

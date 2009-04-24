@@ -36,25 +36,37 @@ namespace HeuristicLab.Persistence.Core {
       LoadSettings();
     }
 
-    protected void LoadSettings() {
+    public void LoadSettings() {
+      LoadSettings(false);
+    }
+
+    public void LoadSettings(bool throwOnError) {
       try {
-        if (String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurations) ||
-          String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurationsTypeCache))
-          return;
-        Deserializer deSerializer = new Deserializer(
-          XmlParser.ParseTypeCache(
-          new StringReader(
-            Properties.Settings.Default.CustomConfigurationsTypeCache)));
-        XmlParser parser = new XmlParser(
-          new StringReader(
-            Properties.Settings.Default.CustomConfigurations));
-        var newCustomConfigurations = (Dictionary<IFormat, Configuration>)
-          deSerializer.Deserialize(parser);
-        foreach (var config in newCustomConfigurations) {
-          customConfigurations[config.Key] = config.Value;
-        }
+        TryLoadSettings();
       } catch (Exception e) {
-        Logger.Warn("Could not load settings.", e);
+        if (throwOnError) {
+          throw new PersistenceException("Could not load persistence settings.", e);
+        } else {
+          Logger.Warn("Could not load settings.", e);
+        }
+      }      
+    }
+
+    protected void TryLoadSettings() {
+      if (String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurations) ||
+          String.IsNullOrEmpty(Properties.Settings.Default.CustomConfigurationsTypeCache))
+        return;
+      Deserializer deSerializer = new Deserializer(
+        XmlParser.ParseTypeCache(
+        new StringReader(
+          Properties.Settings.Default.CustomConfigurationsTypeCache)));
+      XmlParser parser = new XmlParser(
+        new StringReader(
+          Properties.Settings.Default.CustomConfigurations));
+      var newCustomConfigurations = (Dictionary<IFormat, Configuration>)
+        deSerializer.Deserialize(parser);
+      foreach (var config in newCustomConfigurations) {
+        customConfigurations[config.Key] = config.Value;
       }
     }
 
