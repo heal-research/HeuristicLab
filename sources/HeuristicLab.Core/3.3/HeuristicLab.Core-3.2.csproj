@@ -1,0 +1,389 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F43B59AB-2B8C-4570-BC1E-15592086517C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Core</RootNamespace>
+    <AssemblyName>HeuristicLab.Core-3.2</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>http://localhost/HeuristicLab.Core/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\HeuristicLab.Core-3.2.XML</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\HeuristicLab.Core-3.2.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\HeuristicLab.Core-3.2.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Auxiliary.cs" />
+    <Compile Include="ChooseItemDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseItemDialog.Designer.cs">
+      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChooseOperatorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseOperatorDialog.Designer.cs">
+      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConstrainedItemBase.cs" />
+    <Compile Include="ConstrainedItemBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConstrainedItemBaseView.Designer.cs">
+      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConstraintEventArgs.cs" />
+    <Compile Include="AtomicOperation.cs" />
+    <Compile Include="CompositeOperation.cs" />
+    <Compile Include="ChooseTypeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseTypeDialog.Designer.cs">
+      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AliasEventArgs.cs" />
+    <Compile Include="KeyValueEventArgs.cs" />
+    <Compile Include="OperatorBaseDescriptionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorBaseDescriptionView.Designer.cs">
+      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IOperation.cs" />
+    <Compile Include="Interfaces\IOperatorLibrary.cs" />
+    <Compile Include="Interfaces\IVisualizationItem.cs" />
+    <Compile Include="NameChangingEventArgs.cs" />
+    <Compile Include="OperationEventArgs.cs" />
+    <Compile Include="OperatorBaseVariablesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorBaseVariablesView.Designer.cs">
+      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorBaseVariableInfosView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorBaseVariableInfosView.Designer.cs">
+      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExceptionEventArgs.cs" />
+    <Compile Include="Interfaces\IConstrainedItem.cs" />
+    <Compile Include="Interfaces\IConstraint.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="ItemBase.cs" />
+    <Compile Include="ItemBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemBaseView.Designer.cs">
+      <DependentUpon>ItemBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ItemEventArgs.cs" />
+    <Compile Include="ItemIndexEventArgs.cs" />
+    <Compile Include="OperatorLibrary.cs" />
+    <Compile Include="OperatorLibraryEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorLibraryEditor.Designer.cs">
+      <DependentUpon>OperatorLibraryEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ScopeIndexEventArgs.cs" />
+    <Compile Include="EngineBaseEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EngineBaseEditor.Designer.cs">
+      <DependentUpon>EngineBaseEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VariableInfoEventArgs.cs" />
+    <Compile Include="VariableEventArgs.cs" />
+    <Compile Include="Interfaces\IOperatorGroup.cs" />
+    <Compile Include="Interfaces\IOperatorGraph.cs" />
+    <Compile Include="Interfaces\IScope.cs" />
+    <Compile Include="Interfaces\IVariable.cs" />
+    <Compile Include="Interfaces\IVariableInfo.cs" />
+    <Compile Include="OperatorEventArgs.cs" />
+    <Compile Include="OperatorGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OperatorIndexEventArgs.cs" />
+    <Compile Include="ScopeEventArgs.cs" />
+    <Compile Include="OperatorBaseView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorBaseView.Designer.cs">
+      <DependentUpon>OperatorBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperatorGraphView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OperatorGraphView.Designer.cs">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScopeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScopeView.Designer.cs">
+      <DependentUpon>ScopeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VariableInfoView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableInfoView.Designer.cs">
+      <DependentUpon>VariableInfoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableView.Designer.cs">
+      <DependentUpon>VariableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ViewBase.Designer.cs">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IViewable.cs" />
+    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="EditorBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditorBase.Designer.cs">
+      <DependentUpon>EditorBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IEditable.cs" />
+    <Compile Include="Interfaces\IEditor.cs" />
+    <Compile Include="OperatorBase.cs" />
+    <Compile Include="Interfaces\IRandom.cs" />
+    <Compile Include="OperatorGraph.cs" />
+    <Compile Include="StorableBase.cs" />
+    <Compile Include="Scope.cs" />
+    <Compile Include="EngineBase.cs" />
+    <Compile Include="Interfaces\IEngine.cs" />
+    <Compile Include="Interfaces\IOperator.cs" />
+    <Compile Include="Interfaces\IStorable.cs" />
+    <Compile Include="PersistenceManager.cs" />
+    <Compile Include="HeuristicLabCorePlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Variable.cs" />
+    <Compile Include="VariableInfo.cs" />
+    <Compile Include="VariableKind.cs" />
+    <Compile Include="VariablesScopeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariablesScopeView.Designer.cs">
+      <DependentUpon>VariablesScopeView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ChooseItemDialog.resx">
+      <DependentUpon>ChooseItemDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChooseOperatorDialog.resx">
+      <DependentUpon>ChooseOperatorDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConstrainedItemBaseView.resx">
+      <DependentUpon>ConstrainedItemBaseView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChooseTypeDialog.resx">
+      <DependentUpon>ChooseTypeDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorBaseDescriptionView.resx">
+      <DependentUpon>OperatorBaseDescriptionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorBaseVariablesView.resx">
+      <DependentUpon>OperatorBaseVariablesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorBaseVariableInfosView.resx">
+      <DependentUpon>OperatorBaseVariableInfosView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditorBase.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditorBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ItemBaseView.resx">
+      <DependentUpon>ItemBaseView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorBaseView.resx">
+      <DependentUpon>OperatorBaseView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorGraphView.resx">
+      <DependentUpon>OperatorGraphView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperatorLibraryEditor.resx">
+      <DependentUpon>OperatorLibraryEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScopeView.resx">
+      <DependentUpon>ScopeView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EngineBaseEditor.resx">
+      <DependentUpon>EngineBaseEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VariableInfoView.resx">
+      <DependentUpon>VariableInfoView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VariablesScopeView.resx">
+      <DependentUpon>VariablesScopeView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VariableView.resx">
+      <DependentUpon>VariableView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\CombinedOperator.bmp" />
+    <Content Include="Resources\HeuristicLab.ico" />
+    <Content Include="Resources\Operator.bmp" />
+    <Content Include="Resources\ProgrammableOperator.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
+</Project>
