@@ -1,6 +1,6 @@
 copy "%SolutionDir%\HeuristicLab.PluginInfrastructure.GUI\ICSharpCode.SharpZipLib License.txt" .\
 
-rmdir plugins /s /q 
+rmdir plugins /s /q
 mkdir plugins
 mkdir plugins\cache
 mkdir plugins\temp
@@ -23,6 +23,7 @@ copy "%SolutionDir%\HeuristicLab.Charting.Data\3.2\%Outdir%\HeuristicLab.Chartin
 copy "%SolutionDir%\HeuristicLab.Communication.Data\3.2\%Outdir%\HeuristicLab.Communication.Data-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Communication.Operators\3.2\%Outdir%\HeuristicLab.Communication.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core\3.2\%Outdir%\HeuristicLab.Core-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Constraints\3.2\%Outdir%\HeuristicLab.Constraints-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\3.2\%Outdir%\HeuristicLab.Data-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess\3.2\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins

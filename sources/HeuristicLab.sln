@@ -166,6 +166,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Security.ADODa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.FixedOperators-3.2", "HeuristicLab.FixedOperators\3.2\HeuristicLab.FixedOperators-3.2.csproj", "{583705E2-B1F7-42B8-8149-96E7AECA171A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Core-3.3", "HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj", "{C36BD924-A541-4A00-AFA8-41701378DDC5}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab.vsmdi
@@ -2475,6 +2477,36 @@ Global
 		{583705E2-B1F7-42B8-8149-96E7AECA171A}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
 		{583705E2-B1F7-42B8-8149-96E7AECA171A}.Visualization Debug|x64.ActiveCfg = Debug|Any CPU
 		{583705E2-B1F7-42B8-8149-96E7AECA171A}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|x64.ActiveCfg = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|x64.Build.0 = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|x86.ActiveCfg = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.CEDMA Debug|x86.Build.0 = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|x64.ActiveCfg = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|x64.Build.0 = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|x86.ActiveCfg = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Debug|x86.Build.0 = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|x64.ActiveCfg = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|x64.Build.0 = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|x86.ActiveCfg = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.GP Debug|x86.Build.0 = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|x64.ActiveCfg = Release|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|x64.Build.0 = Release|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|x86.ActiveCfg = Release|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Release|x86.Build.0 = Release|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|x64.ActiveCfg = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|x64.Build.0 = Debug|x64
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|x86.ActiveCfg = Debug|x86
+		{C36BD924-A541-4A00-AFA8-41701378DDC5}.Visualization Debug|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
