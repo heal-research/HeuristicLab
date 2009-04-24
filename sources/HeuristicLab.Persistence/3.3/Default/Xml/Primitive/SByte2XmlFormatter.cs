@@ -8,6 +8,6 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class Sbyte2XmlFormatter : SimpleNumber2XmlFormatterBase<sbyte> { }
+  public class SByte2XmlFormatter : SimpleNumber2XmlFormatterBase<sbyte> { }
 
 }

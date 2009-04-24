@@ -10,6 +10,6 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 namespace HeuristicLab.Persistence.Default.DebugString.Formatters {
 
   [EmptyStorableClass]
-  public class String2DebugStringFormatter : ValueType2DebugStringFormatterBase<string> { }
+  public class String2DebugStringFormatter : DebugStringFormatterBase<string> { }
 
 }

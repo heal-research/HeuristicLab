@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class NumberArray2XmlFormatterBase<T> : FormatterBase<T, XmlString> where T : class {
+  public abstract class NumberArray2XmlFormatterBase<T> : CompactXmlFormatterBase<T> where T : class {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract string FormatValue(object o);

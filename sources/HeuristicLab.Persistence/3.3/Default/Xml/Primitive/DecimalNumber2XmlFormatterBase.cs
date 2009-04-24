@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  public abstract class DecimalNumber2XmlFormatterBase<T> : FormatterBase<T, XmlString> {
+  public abstract class DecimalNumber2XmlFormatterBase<T> : PrimitiveXmlFormatterBase<T> {
 
     private static MethodInfo ToStringMethod = typeof(T)
       .GetMethod(

@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  public abstract class NumberEnumeration2XmlFormatterBase<T> : FormatterBase<T, XmlString> where T : IEnumerable {
+  public abstract class NumberEnumeration2XmlFormatterBase<T> : CompactXmlFormatterBase<T> where T : IEnumerable {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract void Add(IEnumerable enumeration, object o);

@@ -8,7 +8,7 @@ using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.DebugString.Formatters {
 
-  public abstract class ValueType2DebugStringFormatterBase<T> : FormatterBase<T, DebugString> {
+  public abstract class DebugStringFormatterBase<T> : FormatterBase<T, DebugString> {
     public override DebugString Format(T o) { return new DebugString(o.ToString()); }
     public override T Parse(DebugString s) {
       throw new NotImplementedException();

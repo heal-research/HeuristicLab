@@ -5,11 +5,13 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
 
+  [EmptyStorableClass]
   public class DebugStringFormat : FormatBase<DebugString> {
-    public override string Name { get { return "ViewOnly"; } }
+    public override string Name { get { return "DebugString"; } }
   }
 
 }

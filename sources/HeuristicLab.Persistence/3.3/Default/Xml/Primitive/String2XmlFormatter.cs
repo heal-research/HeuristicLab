@@ -9,7 +9,7 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class String2XmlFormatter : FormatterBase<string, XmlString> {
+  public class String2XmlFormatter : PrimitiveXmlFormatterBase<string> {
 
     public override XmlString Format(string s) {
       StringBuilder sb = new StringBuilder();

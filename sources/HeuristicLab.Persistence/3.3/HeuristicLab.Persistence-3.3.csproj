@@ -137,6 +137,9 @@
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
     <Compile Include="Default\Decomposers\Storable\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\XmlFormatterBase.cs" />
+    <Compile Include="Default\Xml\Primitive\PrimitiveXmlFormatterBase.cs" />
+    <Compile Include="Default\Xml\Compact\CompactXmlFormatterBase.cs" />
     <Compile Include="Default\Xml\Primitive\Char2XmlFormatter.cs" />
     <Compile Include="Default\Xml\XmlStringConstants.cs" />
     <Compile Include="Default\Xml\XmlString.cs" />

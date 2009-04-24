@@ -6,7 +6,7 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class DateTime2XmlFormatter : FormatterBase<DateTime, XmlString> {
+  public class DateTime2XmlFormatter : PrimitiveXmlFormatterBase<DateTime> {
 
     public override XmlString Format(DateTime dt) {
       return new XmlString(dt.Ticks.ToString());
