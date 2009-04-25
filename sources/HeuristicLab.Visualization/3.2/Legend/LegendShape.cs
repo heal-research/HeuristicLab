@@ -46,61 +46,71 @@ namespace HeuristicLab.Visualization.Legend {
         double x = ClippingArea.X1;
         double y = ClippingArea.Y2;
 
-        int numberOfItemsPerRow = 1;
-        if (row) {
-          numberOfItemsPerRow = GetNrOfItemsPerRow();
-          if (!top) {
-            y = GetHeight4Rows();
-          }
+        if (row && !top) {
+          y = GetOptimalBottomHeight();
         }
-        int rowCounter = 0;
+        int legendItemCounter = 1;
         foreach (LegendItem item in legendItems) {
           if (!row) {
             CreateColumn(item, y);
             y -= Font.Height;
           } else {
-            if (rowCounter >= numberOfItemsPerRow) {
+            if (IsNewRow(legendItemCounter)) {
               x = ClippingArea.X1;
               y -= Font.Height+15;
-              rowCounter = 0;
             }
             CreateRow(item, x, y);
             x += GetLabelLengthInPixel(item);
-            rowCounter++;
+            legendItemCounter++;
           }
         }
       }
     }
 
-    /// <summary>
-    /// returns die optimal height for the top or bottom legend
-    /// </summary>
-    /// <returns></returns>
-    private int GetHeight4Rows() {
-      int numberOfItemsPerRow = GetNrOfItemsPerRow();
-      int nrOfItems = legendItems.Count;
+    private double GetOptimalBottomHeight() {
       int rowsToDraw = 1;
-      if (nrOfItems > numberOfItemsPerRow) {
-        int rest;
-        int value = Math.DivRem(nrOfItems, numberOfItemsPerRow, out rest);
-        if (rest > 1) {
-          rowsToDraw = rest;
-        } else {
-          rowsToDraw = value + rest;
+      for (int i = 0; i < legendItems.Count; i++) {
+        if (IsNewRow(i + 1)) {
+          rowsToDraw++;
         }
       }
-      return (Font.Height+12)*rowsToDraw;
+      return (Font.Height + 12) * rowsToDraw;
     }
+
+    ///// <summary>
+    ///// returns the maximum number of items per row to paint
+    ///// </summary>
+    ///// <returns>number of items per row</returns>
+    //public int GetNrOfItemsPerRow() {
+    //  double sum = 0;
+    //  double caw = ClippingArea.Width;
+    //  int items = 0;
+    //  foreach (var item in legendItems) {
+    //    sum += GetLabelLengthInPixel(item);
+    //    if (sum < caw) {
+    //      items++;
+    //    }
+    //  }
+    //  if (items == 0) {
+    //    items++;
+    //  }
+    //  return items;
+    //}
 
     /// <summary>
     /// returns the maximum number of items per row to paint
     /// </summary>
-    /// <returns></returns>
-    private int GetNrOfItemsPerRow() {
-      int numberOfItemsPerRow = (int)ClippingArea.Width / GetMaxLabelLength();
-      // if the width of the clippingarea < maxLabelLength
-      if (numberOfItemsPerRow == 0) numberOfItemsPerRow = 1;
-      return numberOfItemsPerRow;
+    /// <returns>number of items per row</returns>
+    private bool IsNewRow(int toCurrentItem) {
+      double sum = 0;
+      double caw = ClippingArea.Width;
+      for (int i = 0; i < toCurrentItem; i++) {
+        sum += GetLabelLengthInPixel(legendItems[i]);
+        if (sum > caw) {
+          return true;
+        }
+      }
+      return false;
     }
 
     /// <summary>
