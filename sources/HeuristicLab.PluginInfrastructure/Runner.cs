@@ -52,7 +52,18 @@ namespace HeuristicLab.PluginInfrastructure {
 
     public void Run(ApplicationInfo appInfo) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.PluginAssembly, appInfo.PluginType).Unwrap();
-      runnablePlugin.Run();
+      try {
+        runnablePlugin.Run();
+      } catch (Exception e) {
+        throw new Exception(String.Format(
+          "Unexpected exception caught: \"{0}\"\r\n" +
+          "Type: {1}\r\n" +
+          "Plugin {2}:\r\n{3}",
+          e.Message,
+          e.GetType().FullName,
+          appInfo.Name,
+          e.ToString()));
+      }
     }
 
     private void FireOnLoad() {
