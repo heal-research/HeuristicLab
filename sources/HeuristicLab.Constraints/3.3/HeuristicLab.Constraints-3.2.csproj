@@ -1,0 +1,232 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Constraints</RootNamespace>
+    <AssemblyName>HeuristicLab.Constraints-3.2</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\HeuristicLab.Constraints-3.2.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\HeuristicLab.Constraints-3.2.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\HeuristicLab.Constraints-3.2.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AllSubOperatorsTypeConstraint.cs" />
+    <Compile Include="AllSubOperatorsTypeConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AllSubOperatorsTypeConstraintView.designer.cs">
+      <DependentUpon>AllSubOperatorsTypeConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AndConstraint.cs" />
+    <Compile Include="AndConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AndConstraintView.Designer.cs">
+      <DependentUpon>AndConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConstraintBase.cs" />
+    <Compile Include="DoubleBoundedConstraint.cs" />
+    <Compile Include="DoubleBoundedConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DoubleBoundedConstraintView.Designer.cs">
+      <DependentUpon>DoubleBoundedConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IntBoundedConstraint.cs" />
+    <Compile Include="IntBoundedConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IntBoundedConstraintView.Designer.cs">
+      <DependentUpon>IntBoundedConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IsIntegerConstraint.cs" />
+    <Compile Include="ItemTypeConstraint.cs" />
+    <Compile Include="ItemTypeConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ItemTypeConstraintView.Designer.cs">
+      <DependentUpon>ItemTypeConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NotConstraint.cs" />
+    <Compile Include="NotConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NotConstraintView.Designer.cs">
+      <DependentUpon>NotConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NumberOfSubOperatorsConstraint.cs" />
+    <Compile Include="NumberOfSubOperatorsConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NumberOfSubOperatorsConstraintView.Designer.cs">
+      <DependentUpon>NumberOfSubOperatorsConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OrConstraint.cs" />
+    <Compile Include="OrConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OrConstraintView.Designer.cs">
+      <DependentUpon>OrConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SubOperatorsConstraintAnalyser.cs" />
+    <Compile Include="SubOperatorsTypeConstraint.cs" />
+    <Compile Include="SubOperatorsTypeConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SubOperatorsTypeConstraintView.designer.cs">
+      <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeuristicLabConstraintsPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VariableComparisonConstraint.cs" />
+    <Compile Include="VariableComparisonConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableComparisonConstraintView.Designer.cs">
+      <DependentUpon>VariableComparisonConstraintView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
+      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
+      <Name>HeuristicLab.Core-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
+      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
+      <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AllSubOperatorsTypeConstraintView.resx">
+      <DependentUpon>AllSubOperatorsTypeConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AndConstraintView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AndConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DoubleBoundedConstraintView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DoubleBoundedConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IntBoundedConstraintView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>IntBoundedConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ItemTypeConstraintView.resx">
+      <DependentUpon>ItemTypeConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotConstraintView.resx">
+      <DependentUpon>NotConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumberOfSubOperatorsConstraintView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NumberOfSubOperatorsConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OrConstraintView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OrConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubOperatorsTypeConstraintView.resx">
+      <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VariableComparisonConstraintView.resx">
+      <DependentUpon>VariableComparisonConstraintView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
+</Project>
