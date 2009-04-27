@@ -28,9 +28,9 @@ namespace HeuristicLab.SequentialEngine {
   /// <summary>
   /// Plugin class for HeuristicLab.SequentialEngine plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.SequentialEngine-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SequentialEngine-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [ClassInfo(Name = "HeuristicLab.SequentialEngine-3.3")]
+  [PluginFile(Filename = "HeuristicLab.SequentialEngine-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   public class HeuristicLabSequentialEnginePlugin : PluginBase {
   }
 }
