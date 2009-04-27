@@ -23,12 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// The base class for all operators.
   /// </summary>
   public abstract class OperatorBase : ConstrainedItemBase, IOperator {
+
+    [Storable]
     private string myName;
     /// <summary>
     /// Gets or sets the name of the operator.
@@ -58,6 +61,8 @@ namespace HeuristicLab.Core {
     public bool Canceled {
       get { return myCanceled; }
     }
+
+    [Storable]
     private bool myBreakpoint;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnBreakpointChanged"/> in the setter.</remarks>
@@ -71,6 +76,7 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [Storable]
     private List<IOperator> mySubOperators;
     /// <summary>
     /// Gets a list of all suboperators.
@@ -79,11 +85,15 @@ namespace HeuristicLab.Core {
     public virtual IList<IOperator> SubOperators {
       get { return mySubOperators.AsReadOnly(); }
     }
+
+    [Storable]
     private Dictionary<string, IVariableInfo> myVariableInfos;
     /// <inheritdoc/>
     public virtual ICollection<IVariableInfo> VariableInfos {
       get { return myVariableInfos.Values; }
     }
+
+    [Storable]
     private Dictionary<string, IVariable> myVariables;
     /// <inheritdoc/>
     public virtual ICollection<IVariable> Variables {
@@ -588,94 +598,5 @@ namespace HeuristicLab.Core {
         Executed(this, new EventArgs());
       }
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>
-    /// Calls <see cref="ConstrainedItemBase.GetXmlNode"/> of base class <see cref="ConstrainedItemBase"/>.
-    /// <br/>A quick overview how the single elements of the current instance are saved:
-    /// <list type="bullet">
-    /// <item>
-    /// <term>Name: </term>
-    /// <description>Saved as an <see cref="XmlAttribute"/> with the name <c>Name</c>.</description>
-    /// </item>
-    /// <item>
-    /// <term>Breakpoint: </term>
-    /// <description>Is only saved if it set to <c>true</c>. 
-    /// Saved as an <see cref="XmlAttribute"/> with the name <c>Breakpoint</c>.</description>
-    /// </item>
-    /// <item>
-    /// <term>Sub operators: </term>
-    /// <description>Saved as child node with tag name <c>SubOperators</c>. All sub operators are themselves
-    /// saved as child nodes.</description>
-    /// </item>
-    /// <item>
-    /// <term>Variable infos: </term>
-    /// <description>Saved as child node with tag name <c>VariableInfos</c>. All variable infos are themselves
-    /// saved as child nodes.</description>
-    /// </item>
-    /// <item>
-    /// <term>Variables: </term>
-    /// <description>Saved as child node with tag name <c>Variables</c>. All variables are themselves
-    /// saved as child nodes.</description>
-    /// </item> 
-    /// </list>
-    /// </remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute nameAttribute = document.CreateAttribute("Name");
-      nameAttribute.Value = Name;
-      node.Attributes.Append(nameAttribute);
-      if (Breakpoint) {
-        XmlAttribute breakpointAttribute = document.CreateAttribute("Breakpoint");
-        breakpointAttribute.Value = Breakpoint.ToString();
-        node.Attributes.Append(breakpointAttribute);
-      }
-      XmlNode subOperatorsNode = document.CreateNode(XmlNodeType.Element, "SubOperators", null);
-      for (int i = 0; i < SubOperators.Count; i++)
-        subOperatorsNode.AppendChild(PersistenceManager.Persist(SubOperators[i], document, persistedObjects));
-      node.AppendChild(subOperatorsNode);
-      XmlNode infosNode = document.CreateNode(XmlNodeType.Element, "VariableInfos", null);
-      foreach (IVariableInfo info in myVariableInfos.Values)
-        infosNode.AppendChild(PersistenceManager.Persist(info, document, persistedObjects));
-      node.AppendChild(infosNode);
-      XmlNode variablesNode = document.CreateNode(XmlNodeType.Element, "Variables", null);
-      foreach (IVariable variable in myVariables.Values)
-        variablesNode.AppendChild(PersistenceManager.Persist(variable, document, persistedObjects));
-      node.AppendChild(variablesNode);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted operation from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ConstrainedItemBase.Populate"/> of base class 
-    /// <see cref="ConstrainedItemBase"/>.
-    /// For informations how the different elements must be saved please see <see cref="GetXmlNode"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the operation is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myName = node.Attributes["Name"].Value;
-      if (node.Attributes["Breakpoint"] != null)
-        myBreakpoint = bool.Parse(node.Attributes["Breakpoint"].Value);
-      XmlNode subOperatorsNode = node.SelectSingleNode("SubOperators");
-      for (int i = 0; i < subOperatorsNode.ChildNodes.Count; i++)
-        AddSubOperator((IOperator)PersistenceManager.Restore(subOperatorsNode.ChildNodes[i], restoredObjects));
-      XmlNode infosNode = node.SelectSingleNode("VariableInfos");
-      myVariableInfos.Clear();
-      foreach (XmlNode infoNode in infosNode.ChildNodes)
-        AddVariableInfo((IVariableInfo)PersistenceManager.Restore(infoNode, restoredObjects));
-      XmlNode variablesNode = node.SelectSingleNode("Variables");
-      myVariables.Clear();
-      foreach (XmlNode variableNode in variablesNode.ChildNodes)
-        AddVariable((IVariable)PersistenceManager.Restore(variableNode, restoredObjects));
-    }
-    #endregion
   }
 }

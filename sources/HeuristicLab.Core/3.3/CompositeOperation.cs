@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -30,8 +31,9 @@ namespace HeuristicLab.Core {
   /// Can also be executed in parallel.
   /// </summary>
   public class CompositeOperation : ItemBase, IOperation {
-    private bool myExecuteInParallel;
 
+    [Storable]
+    private bool myExecuteInParallel;
     /// <summary>
     /// Gets or sets the bool value, whether the operation should be executed in parallel or not.  
     /// </summary>
@@ -39,6 +41,8 @@ namespace HeuristicLab.Core {
       get { return myExecuteInParallel; }
       set { myExecuteInParallel = value; }
     }
+
+    [Storable]
     private List<IOperation> myOperations;
     /// <summary>
     /// Gets all current operations.
@@ -87,51 +91,5 @@ namespace HeuristicLab.Core {
         clone.AddOperation((IOperation)Auxiliary.Clone(Operations[i], clonedObjects));
       return clone;
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="HeuristicLab.Core.StorableBase.GetXmlNode"/> of base 
-    /// class <see cref="ItemBase"/>.<br/>
-    /// The <see cref="ExecuteInParallel"/> property is saved as <see cref="XmlAttribute"/> with the
-    /// tag name <c>ExecuteInParallel</c>. A child node with tag name <c>Operations</c> is created where
-    /// all operations are saved as child nodes.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute parallelAttribute = document.CreateAttribute("ExecuteInParallel");
-      parallelAttribute.Value = ExecuteInParallel.ToString();
-      node.Attributes.Append(parallelAttribute);
-
-      XmlNode operationsNode = document.CreateNode(XmlNodeType.Element, "Operations", null);
-      for (int i = 0; i < Operations.Count; i++)
-        operationsNode.AppendChild(PersistenceManager.Persist(Operations[i], document, persistedObjects));
-      node.AppendChild(operationsNode);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted operation from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The <see cref="ExecuteInParallel"/> property must be saved as <see cref="XmlAttribute"/>
-    /// with the tag name <c>ExecuteInParallel</c>. <br/>
-    /// The single operations must be saved as child nodes of a node with tag name <c>Operations</c>, 
-    /// being a child node of the current instance. <br/>
-    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the operation is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-
-      myExecuteInParallel = bool.Parse(node.Attributes["ExecuteInParallel"].Value);
-
-      XmlNode operationsNode = node.SelectSingleNode("Operations");
-      for (int i = 0; i < operationsNode.ChildNodes.Count; i++)
-        AddOperation((IOperation)PersistenceManager.Restore(operationsNode.ChildNodes[i], restoredObjects));
-    }
-    #endregion
   }
 }

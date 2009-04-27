@@ -23,12 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Base class for all items that are subjects to restrictions.
   /// </summary>
   public abstract class ConstrainedItemBase : ItemBase, IConstrainedItem {
+
+    [Storable]
     private List<IConstraint> myConstraints;
     /// <summary>
     /// Gets all current constraints.
@@ -143,47 +146,5 @@ namespace HeuristicLab.Core {
       if (ConstraintRemoved != null)
         ConstraintRemoved(this, new ConstraintEventArgs(constraint));
     }
-
-    #region Persistence Methods  
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>. <br/>
-    /// For saving the constraints a child node is created having the tag name <c>Constraints</c>. Beyond this
-    /// child node all constraints are saved as child nodes themselves.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      if (Constraints.Count > 0) {
-        XmlNode constraintsNode = document.CreateNode(XmlNodeType.Element, "Constraints", null);
-        foreach (IConstraint constraint in Constraints)
-          constraintsNode.AppendChild(PersistenceManager.Persist(constraint, document, persistedObjects));
-        node.AppendChild(constraintsNode);
-      }
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted item from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>See <see cref="GetXmlNode"/> to get information about how the constrained item must
-    /// be saved. <br/>
-    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the constrained item is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode constraintsNode = node.SelectSingleNode("Constraints");
-      if (constraintsNode != null) {
-        myConstraints.Clear();
-        foreach (XmlNode constraintNode in constraintsNode.ChildNodes)
-          AddConstraint((IConstraint)PersistenceManager.Restore(constraintNode, restoredObjects));
-      }
-    }
-    #endregion
   }
 }

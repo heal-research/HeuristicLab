@@ -23,12 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// The base class for all storable objects.
   /// </summary>
   public abstract class StorableBase : IStorable {
+
+    [Storable]
     private Guid myGuid;
     /// <summary>
     /// Gets the Guid of the item.
@@ -62,36 +65,6 @@ namespace HeuristicLab.Core {
       object clone = Activator.CreateInstance(this.GetType());
       clonedObjects.Add(Guid, clone);
       return clone;
-    }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The type of the current instance is saved as <see cref="XmlAttribute"/> with tag name
-    /// <c>Type</c>, the guid is also saved as an attribute with the tag name <c>GUID</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public virtual XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = document.CreateNode(XmlNodeType.Element, name, null);
-      XmlAttribute typeAttribute = document.CreateAttribute("Type");
-      typeAttribute.Value = PersistenceManager.BuildTypeString(this.GetType());
-      node.Attributes.Append(typeAttribute);
-      XmlAttribute guidAttribute = document.CreateAttribute("GUID");
-      guidAttribute.Value = Guid.ToString();
-      node.Attributes.Append(guidAttribute);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted object from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Loads only guid; type,... already loaded by the <see cref="PersistenceManager"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the object is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public virtual void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      myGuid = new Guid(node.Attributes["GUID"].Value);
     }
   }
 }

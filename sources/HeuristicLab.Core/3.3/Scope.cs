@@ -23,15 +23,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Hierarchical container of variables (and of subscopes).
   /// </summary>
   public class Scope : ItemBase, IScope {
+
     private IScope parent;
 
-    private string myName; 
+    [Storable]
+    private string myName;
     /// <summary>
     /// Gets the name of the current scope.
     /// </summary>
@@ -39,16 +42,21 @@ namespace HeuristicLab.Core {
       get { return myName; }
     }
 
+    [Storable]
     private IDictionary<string, IVariable> myVariables;
     /// <inheritdoc/>
     public ICollection<IVariable> Variables {
       get { return myVariables.Values; }
     }
+
+    [Storable]
     private IDictionary<string, string> myAliases;
     /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, string>> Aliases {
       get { return myAliases; }
     }
+
+    [Storable]
     private List<IScope> mySubScopes;
     /// <summary>
     /// Gets all subscopes of the current instance.
@@ -237,7 +245,7 @@ namespace HeuristicLab.Core {
       for (int j = 0; j < variableNames.Length; j++)
         RemoveVariable(variableNames[j]);
 
-      KeyValuePair<string, string>[] aliases = new KeyValuePair<string,string>[myAliases.Count];
+      KeyValuePair<string, string>[] aliases = new KeyValuePair<string, string>[myAliases.Count];
       myAliases.CopyTo(aliases, 0);
       for (int j = 0; j < aliases.Length; j++)
         RemoveAlias(aliases[j].Key);
@@ -332,104 +340,5 @@ namespace HeuristicLab.Core {
       if (SubScopesReordered != null)
         SubScopesReordered(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the given <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>
-    /// Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>.<br/>
-    /// A quick overview how the single elements of the current instance are saved:
-    /// <list type="bullet">
-    /// <item>
-    /// <term>Name: </term>
-    /// <description>Saved as an <see cref="XmlAttribute"/> having the tag name <c>Name</c>.</description>
-    /// </item>
-    /// <item>
-    /// <term>Variables: </term>
-    /// <description>A child node is created with the tag name <c>Variables</c>. Beyond this child node,
-    /// all variables are saved as child nodes.</description>
-    /// </item>
-    /// <item>
-    /// <term>Aliases: </term>
-    /// <description>A child node is created with the tag name <c>Aliases</c>. Beyond this child node, 
-    /// all aliases are saved as child nodes with the tag name <c>Alias</c>. Each alias has an
-    /// <see cref="XmlAttribute"/> with the tag name "Alias", holding the alias, and an attribute 
-    /// with the tag name <c>Name</c>, holding the name of the alias.</description>
-    /// </item>
-    /// <item>
-    /// <term>Sub scopes: </term>
-    /// <description>A child node is created with the tag name <c>SubScopes</c>. Beyond this child node,
-    /// all sub scopes are saved as child nodes.</description>
-    /// </item>
-    /// </list>
-    /// </remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute nameAttribute = document.CreateAttribute("Name");
-      nameAttribute.Value = Name.ToString();
-      node.Attributes.Append(nameAttribute);
-
-      XmlNode variables = document.CreateNode(XmlNodeType.Element, "Variables", null);
-      foreach (IVariable variable in Variables)
-        variables.AppendChild(PersistenceManager.Persist(variable, document, persistedObjects));
-      node.AppendChild(variables);
-
-      XmlNode aliases = document.CreateNode(XmlNodeType.Element, "Aliases", null);
-      foreach (KeyValuePair<string, string> alias in myAliases) {
-        XmlNode aliasNode = document.CreateNode(XmlNodeType.Element, "Alias", null);
-        XmlAttribute keyAttribute = document.CreateAttribute("Alias");
-        keyAttribute.Value = alias.Key;
-        aliasNode.Attributes.Append(keyAttribute);
-        XmlAttribute valueAttribute = document.CreateAttribute("Name");
-        valueAttribute.Value = alias.Value;
-        aliasNode.Attributes.Append(valueAttribute);
-        aliases.AppendChild(aliasNode);
-      }
-      node.AppendChild(aliases);
-
-      XmlNode subScopes = document.CreateNode(XmlNodeType.Element, "SubScopes", null);
-      for (int i = 0; i < SubScopes.Count; i++)
-        subScopes.AppendChild(PersistenceManager.Persist(SubScopes[i], document, persistedObjects));
-      node.AppendChild(subScopes);
-
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted scope from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>See <see cref="GetXmlNode"/> to get further information on how the current instance must
-    /// be saved. <br/>
-    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the boolean value is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myName = node.Attributes["Name"].Value;
-
-      XmlNode variables = node.SelectSingleNode("Variables");
-      foreach (XmlNode variableNode in variables.ChildNodes) {
-        IVariable variable = (IVariable)PersistenceManager.Restore(variableNode, restoredObjects);
-        AddVariable(variable);
-      }
-
-      XmlNode aliases = node.SelectSingleNode("Aliases");
-      if (aliases != null) {
-        foreach (XmlNode aliasNode in aliases.ChildNodes)
-          AddAlias(aliasNode.Attributes["Alias"].Value, aliasNode.Attributes["Name"].Value);
-      }
-
-      XmlNode subScopes = node.SelectSingleNode("SubScopes");
-      for (int i = 0; i < subScopes.ChildNodes.Count; i++) {
-        IScope scope = (IScope)PersistenceManager.Restore(subScopes.ChildNodes[i], restoredObjects);
-        AddSubScope(scope);
-      }
-    }
-    #endregion
   }
 }

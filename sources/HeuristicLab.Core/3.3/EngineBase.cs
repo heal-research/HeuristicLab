@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Threading;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -32,9 +33,11 @@ namespace HeuristicLab.Core {
   /// one execution and can handle parallel executions.
   /// </summary>
   public abstract class EngineBase : ItemBase, IEngine {
+
     /// <summary>
     /// Field of the current instance that represent the operator graph.
     /// </summary>
+    [Storable]
     protected IOperatorGraph myOperatorGraph;
     /// <summary>
     /// Gets the current operator graph.
@@ -45,6 +48,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Field of the current instance that represent the global scope.
     /// </summary>
+    [Storable]
     protected IScope myGlobalScope;
     /// <summary>
     /// Gets the current global scope.
@@ -53,6 +57,7 @@ namespace HeuristicLab.Core {
       get { return myGlobalScope; }
     }
 
+    [Storable]
     private TimeSpan myExecutionTime;
     /// <summary>
     /// Gets or sets the execution time.
@@ -69,6 +74,7 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Field of the current instance that represent the execution stack.
     /// </summary>
+    [Storable]
     protected Stack<IOperation> myExecutionStack;
     /// <summary>
     /// Gets the current execution stack.
@@ -76,7 +82,7 @@ namespace HeuristicLab.Core {
     public Stack<IOperation> ExecutionStack {
       get { return myExecutionStack; }
     }
-    
+
     /// <summary>
     /// Flag of the current instance whether it is currently running.
     /// </summary>
@@ -135,7 +141,6 @@ namespace HeuristicLab.Core {
       clone.myRunning = Running;
       clone.myCanceled = Canceled;
       return clone;
-      
     }
 
     /// <inheritdoc/>
@@ -275,75 +280,5 @@ namespace HeuristicLab.Core {
       if (Finished != null)
         Finished(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>.<br/>
-    /// A quick overview how the single elements of the current instance are saved:
-    /// <list type="bullet">
-    /// <item>
-    /// <term>Operator graph: </term>
-    /// <description>Saved as a child node with the tag name <c>OperatorGraph</c>.</description>
-    /// </item>
-    /// <item>
-    /// <term>Global scope: </term>
-    /// <description>Saved as a child node with the tag name <c>GlobalScope</c>.</description> 
-    /// </item>
-    /// <item>
-    /// <term>Execution stack: </term>
-    /// <description>A child node is created with the tag name <c>ExecutionStack</c>. Beyond this child node
-    /// all operations of the execution stack are saved as child nodes.</description>
-    /// </item>
-    /// <item>
-    /// <term>Execution time: </term>
-    /// <description>Saved as a child node with the tag name <c>ExecutionTime</c>, where the execution
-    /// time is saved as string in the node's inner text.</description>
-    /// </item>
-    /// </list></remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-
-      node.AppendChild(PersistenceManager.Persist("OperatorGraph", OperatorGraph, document, persistedObjects));
-      node.AppendChild(PersistenceManager.Persist("GlobalScope", GlobalScope, document, persistedObjects));
-
-      XmlNode stackNode = document.CreateNode(XmlNodeType.Element, "ExecutionStack", null);
-      IOperation[] operations = new IOperation[ExecutionStack.Count];
-      ExecutionStack.CopyTo(operations, 0);
-      for (int i = 0; i < operations.Length; i++)
-        stackNode.AppendChild(PersistenceManager.Persist(operations[i], document, persistedObjects));
-      node.AppendChild(stackNode);
-
-      XmlNode timeNode = document.CreateNode(XmlNodeType.Element, "ExecutionTime", null);
-      timeNode.InnerText = ExecutionTime.ToString();
-      node.AppendChild(timeNode);
-      return node;
-    }
-    /// <summary>
-    ///  Loads the persisted instance from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>See <see cref="GetXmlNode"/> to get information on how the instance must be saved. <br/>
-    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the engine is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myOperatorGraph = (IOperatorGraph)PersistenceManager.Restore(node.SelectSingleNode("OperatorGraph"), restoredObjects);
-      myGlobalScope = (IScope)PersistenceManager.Restore(node.SelectSingleNode("GlobalScope"), restoredObjects);
-
-      XmlNode stackNode = node.SelectSingleNode("ExecutionStack");
-      for (int i = stackNode.ChildNodes.Count - 1; i >= 0; i--)
-        myExecutionStack.Push((IOperation)PersistenceManager.Restore(stackNode.ChildNodes[i], restoredObjects));
-
-      XmlNode timeNode = node.SelectSingleNode("ExecutionTime");
-      myExecutionTime = TimeSpan.Parse(timeNode.InnerText);
-    }
-    #endregion
   }
 }

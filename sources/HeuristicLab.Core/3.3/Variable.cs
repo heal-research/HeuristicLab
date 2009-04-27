@@ -23,12 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a variable of an operator having a name and a value.
   /// </summary>
   public class Variable : ItemBase, IVariable {
+
+    [Storable]
     private string myName;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnNameChanging"/> and also <see cref="OnNameChanged"/> 
@@ -46,6 +49,8 @@ namespace HeuristicLab.Core {
         }
       }
     }
+
+    [Storable]
     private IItem myValue;
     /// <inheritdoc/>
     /// <remarks>Calls <see cref="OnValueChanged"/> in the setter.</remarks>
@@ -58,7 +63,7 @@ namespace HeuristicLab.Core {
         }
       }
     }
-    
+
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
     /// and value <c>null</c>.
@@ -144,42 +149,5 @@ namespace HeuristicLab.Core {
         ValueChanged(this, new EventArgs());
       OnChanged();
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>.<br/>
-    /// The name of the current instance is saved as an <see cref="XmlAttribute"/> with the 
-    /// tag name <c>Name</c>, the value is saved as child node with the tag name <c>Value</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute nameAttribute = document.CreateAttribute("Name");
-      nameAttribute.Value = Name;
-      node.Attributes.Append(nameAttribute);
-      if (Value != null)
-        node.AppendChild(PersistenceManager.Persist("Value", Value, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted variable from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>See <see cref="GetXmlNode"/> to get information on how the variable must be saved.<br/>
-    /// Calls <see cref="StorableBase.Populate"/> of base class <see cref="ItemBase"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the variable is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myName = node.Attributes["Name"].Value;
-      XmlNode valueNode = node.SelectSingleNode("Value");
-      if (valueNode != null)
-        myValue = (IItem)PersistenceManager.Restore(valueNode, restoredObjects);
-    }
-    #endregion
   }
 }

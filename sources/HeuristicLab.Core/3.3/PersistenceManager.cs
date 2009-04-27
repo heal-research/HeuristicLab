@@ -26,6 +26,7 @@ using System.Xml;
 using System.IO;
 using System.IO.Compression;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -33,85 +34,15 @@ namespace HeuristicLab.Core {
   /// </summary>
   public static class PersistenceManager {
     /// <summary>
-    /// Creates an <see cref="XmlDocument"/> to persist an object with xml declaration.
-    /// </summary>
-    /// <returns>The created <see cref="XmlDocument"/>.</returns>
-    public static XmlDocument CreateXmlDocument() {
-      XmlDocument document = new XmlDocument();
-      document.AppendChild(document.CreateXmlDeclaration("1.0", null, null));
-      return document;
-    }
-    /// <summary>
-    /// Saves the specified <paramref name="instance"/> in the specified <paramref name="document"/>
-    /// if it has not already been serialized.
-    /// </summary>
-    /// <remarks>The tag name of the saved instance is its type name.<br/>
-    /// The guid is saved as an <see cref="XmlAttribute"/> with tag name <c>GUID</c>.</remarks>
-    /// <param name="instance">The object that should be saved.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public static XmlNode Persist(IStorable instance, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      string name = instance.GetType().Name;
-      name = name.Replace('`', '_');
-      return Persist(name, instance, document, persistedObjects);
-    }
-    /// <summary>
-    /// Saves the specified <paramref name="instance"/> in the specified <paramref name="document"/>
-    /// if it has not already been serialized.
-    /// </summary>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="instance">The object that should be saved.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public static XmlNode Persist(string name, IStorable instance, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      if(persistedObjects.ContainsKey(instance.Guid)) {
-        XmlNode node = document.CreateNode(XmlNodeType.Element, name, null);
-        XmlAttribute guidAttribute = document.CreateAttribute("GUID");
-        guidAttribute.Value = instance.Guid.ToString();
-        node.Attributes.Append(guidAttribute);
-        return node;
-      } else {
-        persistedObjects.Add(instance.Guid, instance);
-        XmlNode node = instance.GetXmlNode(name, document, persistedObjects);
-        return node;
-      }
-    }
-    /// <summary>
-    /// Loads a persisted object from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The guid is saved as an attribute with tag name <c>GUID</c>. The type of the 
-    /// persisted object is saved as attribute with tag name <c>Type</c>.<br/>
-    /// Calls <c>instance.Populate</c>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the object is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The loaded object.</returns>
-    public static IStorable Restore(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      Guid guid = new Guid(node.Attributes["GUID"].Value);
-      if(restoredObjects.ContainsKey(guid)) {
-        return restoredObjects[guid];
-      } else {
-        Type type = Type.GetType(node.Attributes["Type"].Value, true);
-        IStorable instance = (IStorable)Activator.CreateInstance(type);
-        restoredObjects.Add(guid, instance);
-        instance.Populate(node, restoredObjects);
-        return instance;
-      }
-    }
-    /// <summary>
     /// Saves the specified <paramref name="instance"/> in the specified file through creating an 
     /// <see cref="XmlDocument"/>.
     /// </summary>
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="filename">The name of the file where the <paramref name="object"/> should be saved.</param>
     public static void Save(IStorable instance, string filename) {
-      using(FileStream stream = File.Create(filename)) {
-        Save(instance, stream);
-        stream.Close();
-      }
+      XmlGenerator.Serialize(instance, filename);
     }
+
     /// <summary>
     /// Saves the specified <paramref name="instance"/> in the specified <paramref name="stream"/> 
     /// through creating an <see cref="XmlDocument"/>.
@@ -119,31 +50,18 @@ namespace HeuristicLab.Core {
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="stream">The (file) stream where the object should be saved.</param>
     public static void Save(IStorable instance, Stream stream) {
-      XmlDocument document = PersistenceManager.CreateXmlDocument();
-      Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
-      XmlNode rootNode = document.CreateElement("Root");
-      document.AppendChild(rootNode);
-      XmlNode necessaryPluginsNode = document.CreateElement("NecessaryPlugins");
-      rootNode.AppendChild(necessaryPluginsNode);
-      rootNode.AppendChild(Persist(instance, document, dictionary));
-      // determine the list of necessary plugins for this document
-      DiscoveryService service = new DiscoveryService();
-      List<PluginInfo> plugins = new List<PluginInfo>();
-      foreach(IStorable storeable in dictionary.Values) {
-        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
-        if(!plugins.Contains(pluginInfo)) plugins.Add(pluginInfo);
-      }
-      foreach(PluginInfo uniquePlugin in plugins) {
-        XmlNode necessaryPluginNode = document.CreateElement("Plugin");
-        XmlAttribute nameAttr = document.CreateAttribute("Name");
-        nameAttr.Value = uniquePlugin.Name;
-        XmlAttribute versionAttr = document.CreateAttribute("Version");
-        versionAttr.Value = uniquePlugin.Version.ToString();
-        necessaryPluginNode.Attributes.Append(nameAttr);
-        necessaryPluginNode.Attributes.Append(versionAttr);
-        necessaryPluginsNode.AppendChild(necessaryPluginNode);
-      }
-      document.Save(stream);
+      string tempfile = Path.GetTempFileName();
+      XmlGenerator.Serialize(instance, tempfile);
+      Stream reader = new FileStream(tempfile, FileMode.Open);
+      byte[] buffer = new byte[1024];
+      int bytesRead = 0;
+      do {
+        bytesRead = reader.Read(buffer, 0, buffer.Length);
+        stream.Write(buffer, 0, bytesRead);
+      } while (bytesRead > 0);
+      reader.Close();
+      stream.Close();
+      File.Delete(tempfile);
     }
     /// <summary>
     /// Loads an object from a file with the specified <paramref name="filename"/>.
@@ -153,11 +71,7 @@ namespace HeuristicLab.Core {
     /// <param name="filename">The filename of the file where the data is saved.</param>
     /// <returns>The loaded object.</returns>
     public static IStorable Load(string filename) {
-      using(FileStream stream = File.OpenRead(filename)) {
-        IStorable storable = Load(stream);
-        stream.Close();
-        return storable;
-      }
+      return (IStorable)XmlParser.DeSerialize(filename);
     }
     /// <summary>
     /// Loads an object from the specified <paramref name="stream"/>.
@@ -167,40 +81,19 @@ namespace HeuristicLab.Core {
     /// <param name="stream">The stream from where to load the data.</param>
     /// <returns>The loaded object.</returns>
     public static IStorable Load(Stream stream) {
-      XmlDocument doc = new XmlDocument();
-      doc.Load(stream);
-      XmlNode rootNode = doc.ChildNodes[1];
-      if(rootNode.Name == "Root" && rootNode.ChildNodes.Count == 2) {
-        // load documents that have a list of necessary plugins at the top
-        return PersistenceManager.Restore(rootNode.ChildNodes[1], new Dictionary<Guid, IStorable>());
-      } else {
-        // compatibility to load documents without list of necessary plugins 
-        return PersistenceManager.Restore(rootNode, new Dictionary<Guid, IStorable>());
-      }
-    }
-
-    /// <summary>
-    /// Loads an object from a zip file.
-    /// </summary>
-    /// <param name="serializedStorable">The zip file from where to load as byte array.</param>
-    /// <returns>The loaded object.</returns>
-    public static IStorable RestoreFromGZip(byte[] serializedStorable) {
-      GZipStream stream = new GZipStream(new MemoryStream(serializedStorable), CompressionMode.Decompress);
-      return Load(stream);
-    }
-
-    /// <summary>
-    /// Saves the specified <paramref name="storable"/> in a zip file.
-    /// </summary>
-    /// <remarks>Calls <see cref="Save(HeuristicLab.Core.IStorable, Stream)"/>.</remarks>
-    /// <param name="storable">The object to save.</param>
-    /// <returns>The zip stream as byte array.</returns>
-    public static byte[] SaveToGZip(IStorable storable) {
-      MemoryStream memStream = new MemoryStream();
-      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-      Save(storable, stream);
+      string tempfile = Path.GetTempFileName();
+      Stream writer = new FileStream(tempfile, FileMode.CreateNew);
+      byte[] buffer = new byte[1024];
+      int bytesRead = 0;
+      do {
+        bytesRead = stream.Read(buffer, 0, buffer.Length);
+        writer.Write(buffer, 0, bytesRead);
+      } while (bytesRead > 0);
       stream.Close();
-      return memStream.ToArray();
+      writer.Close();
+      object o = XmlParser.DeSerialize(tempfile);
+      File.Delete(tempfile);
+      return (IStorable)o;
     }
 
     /// <summary>
@@ -218,11 +111,11 @@ namespace HeuristicLab.Core {
       builder.Append(".");
       builder.Append(type.Name);
       Type[] args = type.GetGenericArguments();
-      if(args.Length > 0) {
+      if (args.Length > 0) {
         builder.Append("[[");
         builder.Append(BuildTypeString(args[0]));
         builder.Append("]");
-        for(int i = 1; i < args.Length; i++) {
+        for (int i = 1; i < args.Length; i++) {
           builder.Append(",[");
           builder.Append(BuildTypeString(args[i]));
           builder.Append("]");
