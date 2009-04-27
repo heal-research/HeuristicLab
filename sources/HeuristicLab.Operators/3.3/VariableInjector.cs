@@ -24,13 +24,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
   /// Class to inject local variables into the scope.
   /// </summary>
   public class VariableInjector : OperatorBase {
+
+    [Storable]
     private Dictionary<IVariable, IVariableInfo> variableVariableInfoTable;
+
+    [Storable]
     private Dictionary<IVariableInfo, IVariable> variableInfoVariableTable;
 
     /// <inheritdoc select="summary"/>
@@ -139,25 +144,6 @@ namespace HeuristicLab.Operators {
       IVariable variable = (IVariable)sender;
       IVariableInfo info = variableVariableInfoTable[variable];
       info.ActualName = variable.Name;
-    }
-    #endregion
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// <note type="caution"> Variable infos are not persisted!</note>
-    /// </summary>
-    /// <remarks>Calls <see cref="OperatorBase.GetXmlNode"/> of base class <see cref="OperatorBase"/>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      // variable infos should not be persisted
-      XmlNode infosNode = node.SelectSingleNode("VariableInfos");
-      infosNode.RemoveAll();
-      return node;
     }
     #endregion
   }

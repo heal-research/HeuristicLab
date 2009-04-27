@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -32,6 +33,8 @@ namespace HeuristicLab.Operators {
   /// applied on (useful for modularization to assemble complex operators out of simpler ones).
   /// </summary>
   public class CombinedOperator : DelegatingOperator {
+
+    [Storable]
     private string myDescription;
     /// <summary>
     /// Gets the description of the current instance.
@@ -39,6 +42,8 @@ namespace HeuristicLab.Operators {
     public override string Description {
       get { return myDescription; }
     }
+
+    [Storable]
     private IOperatorGraph myOperatorGraph;
     /// <summary>
     /// Gets the operator graph of the current instance.
@@ -130,40 +135,5 @@ A combined operator automatically inject its sub-operators into the scope it is 
       if (DescriptionChanged != null)
         DescriptionChanged(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The description and the operator graph of the current instance are saved as child 
-    /// nodes with tag names <c>Description</c> <c>OperatorGraph</c>.<br/>
-    /// Calls <see cref="OperatorBase.GetXmlNode"/> of base class <see cref="DelegatingOperator"/>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode descriptionNode = document.CreateNode(XmlNodeType.Element, "Description", null);
-      descriptionNode.InnerText = myDescription;
-      node.AppendChild(descriptionNode);
-      node.AppendChild(PersistenceManager.Persist("OperatorGraph", OperatorGraph, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted instance from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="OperatorBase.Populate"/> of base class <see cref="DelegatingOperator"/>.
-    /// <br/> See <see cref="GetXmlNode"/> for further information on how the data must be saved.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the operator is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode descriptionNode = node.SelectSingleNode("Description");
-      if (descriptionNode != null) myDescription = descriptionNode.InnerText;
-      myOperatorGraph = (IOperatorGraph)PersistenceManager.Restore(node.SelectSingleNode("OperatorGraph"), restoredObjects);
-    }
-    #endregion
   }
 }
