@@ -52,4 +52,43 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
   }
+
+
+  [EmptyStorableClass]
+  public class StackDecomposer : IDecomposer {
+
+    public int Priority {
+      get { return 100; }
+    }
+
+
+    public bool CanDecompose(Type type) {
+      return type.IsGenericType &&
+        type.GetGenericTypeDefinition() == typeof(Stack<>);        
+    }
+
+    public IEnumerable<Tag> CreateMetaInfo(object o) {
+      return new Tag[] { };
+    }
+
+    public IEnumerable<Tag> Decompose(object obj) {
+      foreach (object o in (IEnumerable)obj) {
+        yield return new Tag(null, o);
+      }
+    }
+
+    public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
+      return Activator.CreateInstance(type, true);
+    }
+
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {      
+      MethodInfo addMethod = type.GetMethod("Push");      
+      try {
+        foreach (var tag in tags)
+          addMethod.Invoke(instance, new[] { tag.Value });
+      } catch (Exception e) {
+        throw new PersistenceException("Exception caught while trying to populate enumerable.", e);
+      }
+    }
+  }
 }

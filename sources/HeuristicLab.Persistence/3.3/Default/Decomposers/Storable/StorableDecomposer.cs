@@ -25,7 +25,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (var mapping in StorableAttribute.GetStorableAccessors(obj)) {
-        yield return new Tag(mapping.Key, mapping.Value.Get());
+        yield return new Tag(mapping.Value.Name ?? mapping.Key, mapping.Value.Get());        
       }
     }
 
@@ -40,8 +40,9 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
       foreach (var mapping in StorableAttribute.GetStorableAccessors(instance)) {
-        if (memberDict.ContainsKey(mapping.Key)) {
-          mapping.Value.Set(memberDict[mapping.Key].Value);
+        string name = mapping.Value.Name ?? mapping.Key;
+        if (memberDict.ContainsKey(name)) {
+          mapping.Value.Set(memberDict[name].Value);
         } else if (mapping.Value.DefaultValue != null) {
           mapping.Value.Set(mapping.Value.DefaultValue);
         }

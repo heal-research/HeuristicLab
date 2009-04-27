@@ -27,8 +27,7 @@ namespace HeuristicLab.Persistence.Core {
             serializer = f.GetType().VersionInvariantName();
           } else {
             IDecomposer d = configuration.GetDecomposer(pair.Key);
-            if (d != null)
-              serializer = d.GetType().VersionInvariantName();
+            serializer = d.GetType().VersionInvariantName();
           }
           result.Add(new TypeMapping(pair.Value, pair.Key.VersionInvariantName(), serializer));
         }

@@ -61,7 +61,7 @@ namespace HeuristicLab.Persistence.UnitTest {
   public class Root : RootBase {
     [Storable]
     public int[] i = new[] { 3, 4, 5, 6 };
-    [Storable]
+    [Storable(Name="Test String")]
     public string s;
     [Storable]
     public ArrayList intArray = new ArrayList(new[] { 1, 2, 3 });
@@ -125,7 +125,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     }
 
     [TestCleanup()]
-    public void ClearTempFile() {
+    public void ClearTempFile() {      
       File.Delete(tempFile);
     }
 
