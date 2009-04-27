@@ -44,14 +44,16 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Initializes a new instance of <see cref="ConstrainedDoubleData"/> with default value <c>0.0</c>.
     /// </summary>
-    public ConstrainedDoubleData() : this (0.0) {
+    public ConstrainedDoubleData()
+      : this(0.0) {
     }
     /// <summary>
     /// Initializes a new instance of <see cref="ConstrainedDoubleData"/> with the specified 
     /// double value <paramref name="data"/> as <see cref="DoubleData"/>.
     /// </summary>
     /// <param name="data">The double value to represent.</param>
-    public ConstrainedDoubleData(double data) : base() {
+    public ConstrainedDoubleData(double data)
+      : base() {
       base.Data = new DoubleData(data);
     }
 
@@ -83,31 +85,5 @@ namespace HeuristicLab.Data {
       return clone;
     }
 
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Uses the <see cref="ConstrainedItemBase.GetXmlNode"/> implementation of base class 
-    /// <see cref="ConstrainedObjectData"/>. The double value is saved as a <see cref="DoubleData"/> 
-    /// in a child node having the tag name <c>Value</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Value", (DoubleData) base.Data, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted double value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The double value must be saved in the child node as a persisted <see cref="DoubleData"/>
-    /// having the tag name <c>Value</c> (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the double is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      base.Data = (DoubleData)PersistenceManager.Restore(node.SelectSingleNode("Value"), restoredObjects);
-    }
   }
 }

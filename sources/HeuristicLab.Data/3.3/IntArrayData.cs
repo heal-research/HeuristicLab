@@ -65,39 +65,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The int elements of the array are saved in the node's inner text as string, 
-    /// each element, whose format depends on the locale culture info, separated by a semicolon.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"></see>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.InnerText = ToString(CultureInfo.InvariantCulture.NumberFormat);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted int array from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The int elemets of the array must be saved in the inner text of the node as string, 
-    /// each element separated by a semicolon and formatted according to the locale culture info and 
-    /// its number format (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"></see> where the instance is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      if (!node.InnerText.Equals("")) {
-        string[] tokens = node.InnerText.Split(';');
-        int[] data = new int[tokens.Length];
-        for (int i = 0; i < data.Length; i++)
-          data[i] = int.Parse(tokens[i], CultureInfo.InvariantCulture.NumberFormat);
-        Data = data;
-      }
-    }
-
-    /// <summary>
     /// The string representation of the array, formatted according to the given <paramref name="format"/>.
     /// </summary>
     /// <param name="format">The <see cref="NumberFormatInfo"></see> the single int values 

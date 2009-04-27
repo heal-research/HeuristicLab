@@ -75,38 +75,5 @@ namespace HeuristicLab.Data {
       clone.Data = Data;
       return clone;
     }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The double value is saved in the node's inner text as string, 
-    /// its format depending on the local culture info and its number format.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.InnerText = Data.ToString("r", CultureInfo.InvariantCulture.NumberFormat);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted double value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The double value must be saved in the node's inner text as a string and 
-    /// formatted according to the locale culture info and 
-    /// its number format (see <see cref="GetXmlNode"/>).</remarks>
-    /// <exception cref="System.FormatException">Thrown when the saved value cannot be parsed as a double value.</exception>
-    /// <param name="node">The <see cref="XmlNode"/> where the double is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      double data;
-      if(double.TryParse(node.InnerText, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data) == true) {
-        Data = data;
-      } else {
-        throw new FormatException("Can't parse " + node.InnerText + " as double value.");       
-      }
-    }
   }
 }

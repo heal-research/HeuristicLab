@@ -65,56 +65,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The dimensions of the matrix are saved as attributes (<c>Dimension1</c>,<c>Dimension2</c>), 
-    /// formatted according to the local culture info and its number format.<br/>
-    /// The elements of the matrix are saved as string in the node's inner text, 
-    /// each element separated by a semicolon, all line by line, formatted according to the 
-    /// local number format.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute dim1 = document.CreateAttribute("Dimension1");
-      dim1.Value = Data.GetLength(0).ToString(CultureInfo.InvariantCulture.NumberFormat);
-      node.Attributes.Append(dim1);
-      XmlAttribute dim2 = document.CreateAttribute("Dimension2");
-      dim2.Value = Data.GetLength(1).ToString(CultureInfo.InvariantCulture.NumberFormat);
-      node.Attributes.Append(dim2);
-      node.InnerText = ToString(CultureInfo.InvariantCulture.NumberFormat);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted matrix from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The dimensions of the matrix must be saved as Attributes (<c>Dimension1</c>, <c>Dimension2</c>),
-    /// formatted in the local number format. <br/>
-    /// The elements of the matrix must be saved in the node's inner text as string, 
-    /// each element separated by a semicolon, line by line, formatted according to the local 
-    /// culture info and its number format (see <see cref="GetXmlNode"/>).</remarks>
-    /// <exception cref="System.FormatException">Thrown when a saved element cannot be parsed as a double value.</exception>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      int dim1 = int.Parse(node.Attributes["Dimension1"].Value, CultureInfo.InvariantCulture.NumberFormat);
-      int dim2 = int.Parse(node.Attributes["Dimension2"].Value, CultureInfo.InvariantCulture.NumberFormat);
-      string[] tokens = node.InnerText.Split(';');
-      double[,] data = new double[dim1, dim2];
-      for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++) {
-          if(double.TryParse(tokens[i * dim2 + j], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i, j])==false) {
-            throw new FormatException("Can't parse " + tokens[i * dim2 + j] + " as double value.");
-          }
-        }
-      }
-      Data = data;
-    }
-
-    /// <summary>
     /// The string representation of the matrix.
     /// </summary>
     /// <returns>The elements of the matrix as a string, line by line, each element separated by a 

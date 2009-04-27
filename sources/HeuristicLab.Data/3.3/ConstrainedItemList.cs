@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -32,7 +33,11 @@ namespace HeuristicLab.Data {
   /// (which are implementing the interface <see cref="IItem"/>) having some constraints.
   /// </summary>
   public class ConstrainedItemList : ConstrainedItemBase, IEnumerable, IEnumerable<IItem> {
+
+    [Storable]
     private List<IItem> list;
+
+    [Storable]
     private bool suspendConstraintCheck;
 
     /// <summary>
@@ -58,8 +63,6 @@ namespace HeuristicLab.Data {
     public override IView CreateView() {
       return new ConstrainedItemListView(this);
     }
-
-    #region Clone & Persistence
     /// <summary>
     /// Clones the current instance.
     /// </summary>
@@ -78,51 +81,6 @@ namespace HeuristicLab.Data {
       }
       return clone;
     }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The basic instance is saved through the call of 
-    /// <see cref="HeuristicLab.Core.ConstrainedItemBase.GetXmlNode"/> of base class 
-    /// <see cref="ConstrainedItemBase"/>. <br/>
-    /// The list itself is saved as child node having the tag name <c>ListItems</c> 
-    /// and each element is saved as a child node of the <c>ListItems</c> node. 
-    /// The <c>suspendConstraintCheck</c> attribute is saved as an attribute of the list node 
-    /// having the tag name <c>SuspendConstraintCheck</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode listNode = document.CreateNode(XmlNodeType.Element, "ListItems", null);
-      for (int i = 0; i < list.Count; i++)
-        listNode.AppendChild(PersistenceManager.Persist(list[i], document, persistedObjects));
-      XmlAttribute sccAttrib = document.CreateAttribute("SuspendConstraintCheck");
-      sccAttrib.Value = suspendConstraintCheck.ToString();
-      listNode.Attributes.Append(sccAttrib);
-      node.AppendChild(listNode);
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted int value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The elements of the list must be saved as child nodes of 
-    /// the node with the tag name <c>ListItems</c>, which itself is a child node of the current instance.<br/>
-    /// The <c>suspendConstraintCheck</c> must be saved as attribute of the list node 
-    /// with the tag name <c>SuspendConstraintCheck</c> (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the int is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode listNode = node.SelectSingleNode("ListItems");
-      list = new List<IItem>();
-      for (int i = 0; i < listNode.ChildNodes.Count; i++)
-        list.Add((IItem)PersistenceManager.Restore(listNode.ChildNodes[i], restoredObjects));
-      suspendConstraintCheck = bool.Parse(listNode.Attributes["SuspendConstraintCheck"].Value);
-    }
-    #endregion
 
     /// <summary>
     /// The string representation of the current list instance.

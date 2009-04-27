@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -35,6 +36,7 @@ namespace HeuristicLab.Data {
     /// </summary>
     /// <remarks>Uses property <see cref="ObjectData.Data"/> of base class <see cref="ObjectData"/>. 
     /// No own data storage present.</remarks>
+    [Storable]
     public new virtual Array Data {
       get { return (Array)base.Data; }
       set { base.Data = value; }

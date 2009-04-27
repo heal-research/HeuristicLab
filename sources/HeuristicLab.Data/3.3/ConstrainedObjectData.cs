@@ -24,12 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// A class representing all basic data types having some constraints.
   /// </summary>
   public class ConstrainedObjectData : ConstrainedItemBase, IObjectData {
+
+    [Storable]
     private object myData;
     /// <summary>
     /// Gets or sets the object with constraints to represent.

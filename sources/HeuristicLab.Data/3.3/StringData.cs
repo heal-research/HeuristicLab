@@ -77,31 +77,6 @@ namespace HeuristicLab.Data {
     }
 
     /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The string value is saved in the node's inner text.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects.(Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.InnerText = Data;
-      return node;
-    }
-    /// <summary>
-    ///  Loads the persisted string value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The string value must be saved in the node's inner text 
-    /// (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the string is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      Data = node.InnerText;
-    }
-
-    /// <summary>
     /// The string representation of the current instance.
     /// </summary>
     /// <returns>The string value.</returns>

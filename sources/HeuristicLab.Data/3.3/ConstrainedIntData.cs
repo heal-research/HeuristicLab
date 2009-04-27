@@ -44,14 +44,16 @@ namespace HeuristicLab.Data {
     /// <summary>
     /// Initializes a new instance of <see cref="ConstrainedIntData"/> with default value <c>0</c>.
     /// </summary>
-    public ConstrainedIntData() : this (0) {
+    public ConstrainedIntData()
+      : this(0) {
     }
     /// <summary>
     /// Initializes a new instance of <see cref="ConstrainedIntData"/> with the specified 
     /// int value <paramref name="data"/> as <see cref="IntData"/>.
     /// </summary>
     /// <param name="data">The integer value to represent.</param>
-    public ConstrainedIntData(int data) : base() {
+    public ConstrainedIntData(int data)
+      : base() {
       base.Data = new IntData(data);
     }
 
@@ -81,33 +83,6 @@ namespace HeuristicLab.Data {
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       ConstrainedIntData clone = (ConstrainedIntData)base.Clone(clonedObjects);
       return clone;
-    }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Uses the <see cref="ConstrainedItemBase.GetXmlNode"/> implementation of base class 
-    /// <see cref="ConstrainedObjectData"/>. The int value is saved as a <see cref="IntData"/> 
-    /// in a child node having the tag name <c>Value</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Value", ((IntData)base.Data), document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted int value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The int value must be saved in the child node as a persisted <see cref="IntData"/>
-    /// having the tag name <c>Value</c> (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the int is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      base.Data = (IntData)PersistenceManager.Restore(node.SelectSingleNode("Value"), restoredObjects);
     }
   }
 }

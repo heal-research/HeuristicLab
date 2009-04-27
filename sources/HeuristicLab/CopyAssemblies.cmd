@@ -26,6 +26,7 @@ copy "%SolutionDir%\HeuristicLab.Core\3.2\%Outdir%\HeuristicLab.Core-3.2.dll" .\
 copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Constraints\3.2\%Outdir%\HeuristicLab.Constraints-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\3.2\%Outdir%\HeuristicLab.Data-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess\3.2\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\3.2\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.2\%Outdir%\HeuristicLab.DataAnalysis-3.2.dll" .\plugins

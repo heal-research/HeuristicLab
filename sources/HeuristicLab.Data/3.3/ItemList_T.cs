@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -32,6 +33,8 @@ namespace HeuristicLab.Data {
   /// </summary>
   /// <typeparam name="T">The type of the items in this list. <paramref name="T"/> must implement <see cref="IItem"/>.</typeparam>
   public class ItemList<T> : ItemBase, IList<T> where T : IItem {
+
+    [Storable]
     private List<T> list;
 
     /// <summary>
@@ -72,33 +75,6 @@ namespace HeuristicLab.Data {
     protected void CloneElements(ItemList<T> destination, IDictionary<Guid, object> clonedObjects) {
       for (int i = 0; i < list.Count; i++)
         destination.list.Add((T) Auxiliary.Clone(list[i], clonedObjects));
-    }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Each element in the list is saved as child node.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      for (int i = 0; i < list.Count; i++)
-        node.AppendChild(PersistenceManager.Persist(list[i], document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted item list from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The single elements of the list must be saved as child nodes (see <see cref="GetXmlNode"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      for (int i = 0; i < node.ChildNodes.Count; i++)
-        list.Add((T) PersistenceManager.Restore(node.ChildNodes[i], restoredObjects));
     }
 
     /// <summary>

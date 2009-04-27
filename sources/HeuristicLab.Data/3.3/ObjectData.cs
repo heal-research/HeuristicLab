@@ -24,12 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// Represents the base class for all base data types.
   /// </summary>
   public class ObjectData : ItemBase, IObjectData {
+
+    [Storable]
     private object myData;
     /// <summary>
     /// Gets or sets the data to represent.

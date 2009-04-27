@@ -28,9 +28,9 @@ namespace HeuristicLab.Data {
   /// <summary>
   /// Plugin class for HeuristicLab.Data plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Data-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Data-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [ClassInfo(Name = "HeuristicLab.Data-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Data-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   public class HeuristicLabDataPlugin : PluginBase {
   }
 }

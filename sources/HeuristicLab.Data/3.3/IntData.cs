@@ -75,32 +75,5 @@ namespace HeuristicLab.Data {
       clone.Data = Data;
       return clone;
     }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The int value is saved as string in the node's inner text, 
-    /// formatted according to the local culture info and its number format.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects.(Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.InnerText = Data.ToString(CultureInfo.InvariantCulture.NumberFormat);
-      return node;
-    }
-    /// <summary>
-    ///  Loads the persisted int value from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The int value must be saved in the node's inner text as a string and 
-    /// formatted according to the locale culture info and 
-    /// its number format (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the int is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      Data = int.Parse(node.InnerText, CultureInfo.InvariantCulture.NumberFormat);
-    }
   }
 }

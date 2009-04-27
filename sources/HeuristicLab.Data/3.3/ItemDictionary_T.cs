@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
@@ -13,7 +14,9 @@ namespace HeuristicLab.Data {
   /// <typeparam name="V">The type of the values, which must imlement the interface <see cref="IItem"/>.</typeparam>
   public class ItemDictionary<K,V> : ItemBase, IDictionary<K,V> 
     where K : IItem
-    where V : IItem{
+    where V : IItem {
+
+    [Storable]
     private Dictionary<K, V> dict;
 
     /// <summary>
@@ -56,47 +59,6 @@ namespace HeuristicLab.Data {
         clone.dict.Add((K) Auxiliary.Clone(item.Key, clonedObjects), (V) Auxiliary.Clone(item.Value, clonedObjects));
       }
       return clone;
-    }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Every key-value pair is saved as new child node with the tag name "KeyValuePair".<br/>
-    /// In the child node the key is saved as a new child node with the tag name "Key".<br/>
-    /// The value is also saved as new child node with the tag name "Val".
-    /// </remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      foreach (KeyValuePair<K, V> item in dict) {
-        XmlNode keyNode = PersistenceManager.Persist("Key", item.Key, document, persistedObjects);
-        XmlNode valueNode = PersistenceManager.Persist("Val", item.Value, document, persistedObjects); 
-        XmlNode pairNode = document.CreateNode(XmlNodeType.Element, "KeyValuePair", null); 
-        pairNode.AppendChild(keyNode); 
-        pairNode.AppendChild(valueNode); 
-        node.AppendChild(pairNode); 
-      }
-      return node; 
-    }
-
-    /// <summary>
-    /// Loads the persisted matrix from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>All key-value pairs must be saved as child nodes of the node. <br/>
-    /// Every child node has to contain two child nodes itself, one for the key, having the tag name "Key",
-    /// and one for the value, having the tag name "Val" (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      for (int i = 0; i < node.ChildNodes.Count; i++) {
-        K key = (K) PersistenceManager.Restore(node.ChildNodes[i].SelectSingleNode("Key"), restoredObjects);
-        V val = (V) PersistenceManager.Restore(node.ChildNodes[i].SelectSingleNode("Val"), restoredObjects);
-        dict[key] = val; 
-      }
     }
 
     /// <summary>
