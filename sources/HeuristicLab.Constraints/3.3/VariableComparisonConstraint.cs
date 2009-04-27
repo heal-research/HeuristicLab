@@ -25,12 +25,15 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint that compares variables in a <see cref="ConstrainedItemList"/>.
   /// </summary>
   public class VariableComparisonConstraint : ConstraintBase {
+
+    [Storable]
     private StringData leftVarName;
     /// <summary>
     /// Gets or sets the variable name of the left item to compare.
@@ -40,6 +43,7 @@ namespace HeuristicLab.Constraints {
       set { leftVarName = value; }
     }
 
+    [Storable]
     private StringData rightVarName;
     /// <summary>
     /// Gets or sets the variable name of the right item to compare.
@@ -49,6 +53,7 @@ namespace HeuristicLab.Constraints {
       set { rightVarName = value; }
     }
 
+    [Storable]
     private IntData comparer;
     /// <summary>
     /// Gets or sets the comparer.
@@ -124,7 +129,6 @@ namespace HeuristicLab.Constraints {
       return new VariableComparisonConstraintView(this);
     }
 
-    #region clone & persistence
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
@@ -140,42 +144,5 @@ namespace HeuristicLab.Constraints {
       clone.Comparer = (IntData)Auxiliary.Clone(Comparer, clonedObjects);
       return clone;
     }
-
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The variable names and the comparer are saved as child nodes with tag names
-    /// <c>LeftVarName</c>, <c>RightVarName</c> and <c>Comparer</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode leftNode = PersistenceManager.Persist("LeftVarName", LeftVarName, document, persistedObjects);
-      node.AppendChild(leftNode);
-      XmlNode rightNode = PersistenceManager.Persist("RightVarName", RightVarName, document, persistedObjects);
-      node.AppendChild(rightNode);
-      XmlNode comparerNode = PersistenceManager.Persist("Comparer", Comparer, document, persistedObjects);
-      node.AppendChild(comparerNode);
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      leftVarName = (StringData)PersistenceManager.Restore(node.SelectSingleNode("LeftVarName"), restoredObjects);
-      rightVarName = (StringData)PersistenceManager.Restore(node.SelectSingleNode("RightVarName"), restoredObjects);
-      comparer = (IntData)PersistenceManager.Restore(node.SelectSingleNode("Comparer"), restoredObjects);
-    }
-    #endregion
   }
 }

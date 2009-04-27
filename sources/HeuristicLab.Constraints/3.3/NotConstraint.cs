@@ -25,12 +25,15 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where its sub-constraint must be false to be true.
   /// </summary>
   public class NotConstraint : ConstraintBase {
+
+    [Storable]
     private ConstraintBase subConstraint;
     /// <summary>
     /// Gets or sets the sub-constraint.
@@ -87,41 +90,5 @@ namespace HeuristicLab.Constraints {
         clone.SubConstraint = (ConstraintBase)SubConstraint.Clone();
       return clone;
     }
-
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The sub-constraint is saved as a child node with tag name 
-    /// <c>SubConstraint</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      if (subConstraint != null) {
-        XmlNode sub = PersistenceManager.Persist("SubConstraint", SubConstraint, document, persistedObjects);
-        node.AppendChild(sub);
-      }
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode subNode =  node.SelectSingleNode("SubConstraint");
-      if(subNode!=null) 
-        subConstraint = (ConstraintBase)PersistenceManager.Restore(subNode, restoredObjects);
-    }
-    #endregion
   }
 }

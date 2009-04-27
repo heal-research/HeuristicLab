@@ -26,13 +26,18 @@ using HeuristicLab.Core;
 using System.Diagnostics;
 using HeuristicLab.Data;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where the number of sub-operators must be within a specific range.
   /// </summary>
   public class NumberOfSubOperatorsConstraint : ConstraintBase {
+
+    [Storable]
     private IntData minOperators;
+
+    [Storable]
     private IntData maxOperators;
 
     /// <summary>
@@ -58,7 +63,7 @@ namespace HeuristicLab.Constraints {
     /// Initializes a new instance of <see cref="NumberOfSubOperatorsConstraint"/>.
     /// </summary>
     public NumberOfSubOperatorsConstraint()
-      : this(0,0) {
+      : this(0, 0) {
     }
 
     /// <summary>
@@ -67,7 +72,8 @@ namespace HeuristicLab.Constraints {
     /// </summary>
     /// <param name="min">The minimum number of sub-operators.</param>
     /// <param name="max">The maximum number of sub-operators.</param>
-    public NumberOfSubOperatorsConstraint(int min, int max) : base() {
+    public NumberOfSubOperatorsConstraint(int min, int max)
+      : base() {
       minOperators = new IntData(min);
       maxOperators = new IntData(max);
     }
@@ -105,41 +111,5 @@ namespace HeuristicLab.Constraints {
     public override IView CreateView() {
       return new NumberOfSubOperatorsConstraintView(this);
     }
-
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The minimum and the maximum number of sub-operators are saved as child nodes with tag
-    /// names <c>min</c> and <c>max</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode minNode = PersistenceManager.Persist("min", minOperators, document, persistedObjects);
-      XmlNode maxNode = PersistenceManager.Persist("max", maxOperators, document, persistedObjects);
-      node.AppendChild(minNode);
-      node.AppendChild(maxNode);
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      minOperators = (IntData)PersistenceManager.Restore(node.SelectSingleNode("min"), restoredObjects);
-      maxOperators = (IntData)PersistenceManager.Restore(node.SelectSingleNode("max"), restoredObjects);
-    }
-    #endregion persistence
-
   }
 }

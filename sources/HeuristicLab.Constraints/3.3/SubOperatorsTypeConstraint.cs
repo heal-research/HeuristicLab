@@ -26,12 +26,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Diagnostics;
 using System.Xml;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where the sub-operator at a specific index has to be an element of a pre-defined group.
   /// </summary>
   public class SubOperatorTypeConstraint : ConstraintBase {
+
+    [Storable]
     private IntData subOperatorIndex;
     /// <summary>
     /// Gets the index of the sub-operator.
@@ -40,6 +43,7 @@ namespace HeuristicLab.Constraints {
       get { return subOperatorIndex; }
     }
 
+    [Storable]
     private List<IOperator> subOperators;
     /// <summary>
     /// Gets all allowed sub-operators.
@@ -69,7 +73,8 @@ namespace HeuristicLab.Constraints {
     /// <paramref name="index"/>.
     /// </summary>
     /// <param name="index">The index of the sub-operator.</param>
-    public SubOperatorTypeConstraint(int index) : base() {
+    public SubOperatorTypeConstraint(int index)
+      : base() {
       subOperatorIndex = new IntData(index);
       subOperators = new List<IOperator>();
     }
@@ -80,7 +85,7 @@ namespace HeuristicLab.Constraints {
     /// <remarks>Calls <see cref="ItemBase.FireChanged"/> of base class <see cref="ConstraintBase"/>.</remarks>
     /// <param name="op">The operator to add.</param>
     public void AddOperator(IOperator op) {
-      if(!subOperators.Contains(op)) {
+      if (!subOperators.Contains(op)) {
         subOperators.Add(op);
         FireChanged();
       }
@@ -92,7 +97,7 @@ namespace HeuristicLab.Constraints {
     /// <remarks>Calls <see cref="ItemBase.FireChanged"/> of base class <see cref="ConstraintBase"/>.</remarks>
     /// <param name="op">The operator to remove.</param>
     public void RemoveOperator(IOperator op) {
-      if(subOperators.Contains(op)) {
+      if (subOperators.Contains(op)) {
         subOperators.Remove(op);
         FireChanged();
       }
@@ -112,9 +117,9 @@ namespace HeuristicLab.Constraints {
     /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
-      if(data == null) return false;
+      if (data == null) return false;
 
-      if(op.SubOperators.Count <= subOperatorIndex.Data) {
+      if (op.SubOperators.Count <= subOperatorIndex.Data) {
         return false;
       }
       return subOperators.Contains(op.SubOperators[subOperatorIndex.Data]);
@@ -131,7 +136,7 @@ namespace HeuristicLab.Constraints {
       SubOperatorTypeConstraint clone = new SubOperatorTypeConstraint();
       clonedObjects.Add(Guid, clone);
       clone.subOperatorIndex.Data = subOperatorIndex.Data;
-      foreach(IOperator op in subOperators) {
+      foreach (IOperator op in subOperators) {
         clone.AddOperator((IOperator)Auxiliary.Clone(op, clonedObjects));
       }
       return clone;
@@ -145,47 +150,5 @@ namespace HeuristicLab.Constraints {
     public override IView CreateView() {
       return new SubOperatorsTypeConstraintView(this);
     }
-
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The index and the list of sub-operators are saved as child nodes with tag names 
-    /// <c>SubOperatorIndex</c> and <c>AllowedSubOperators</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode indexNode = PersistenceManager.Persist("SubOperatorIndex", subOperatorIndex, document, persistedObjects);
-      node.AppendChild(indexNode);
-      XmlNode listNode = document.CreateNode(XmlNodeType.Element, "AllowedSubOperators", document.NamespaceURI);
-      foreach(IOperator op in subOperators) {
-        XmlNode opNode = PersistenceManager.Persist(op, document, persistedObjects);
-        listNode.AppendChild(opNode);
-      }
-      node.AppendChild(listNode);
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      subOperatorIndex = (IntData)PersistenceManager.Restore(node.SelectSingleNode("SubOperatorIndex"), restoredObjects);
-      subOperators = new List<IOperator>();
-      foreach(XmlNode childNode in node.SelectSingleNode("AllowedSubOperators").ChildNodes) {
-        subOperators.Add((IOperator)PersistenceManager.Restore(childNode, restoredObjects));
-      }
-    }
-    #endregion persistence
   }
 }

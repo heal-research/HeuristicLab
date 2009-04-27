@@ -28,11 +28,12 @@ namespace HeuristicLab.Constraints {
   /// <summary>
   /// Plugin class for HeuristicLab.Constraints plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Constraints-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Constraints-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [ClassInfo(Name = "HeuristicLab.Constraints-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Constraints-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
+  [Dependency(Dependency = "HeurisitcLab.Persistence-3.3")]
   public class HeuristicLabConstraintsPlugin : PluginBase {
   }
 }

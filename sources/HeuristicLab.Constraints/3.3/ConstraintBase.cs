@@ -24,13 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Base class for all constraints.
   /// </summary>
   public abstract class ConstraintBase : ItemBase, IConstraint {
-    /// <inheritdoc select="summary"/>
+
+    /// <inheritdoc select="summary"/>    
     public virtual string Description {
       get { return "No constraint description available."; }
     }

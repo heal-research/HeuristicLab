@@ -24,12 +24,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint that allows only integer values.
   /// </summary>
-  public class IsIntegerConstraint : ConstraintBase{
+  [EmptyStorableClass]
+  public class IsIntegerConstraint : ConstraintBase {
     /// <inheritdoc select="summary"/>
     public override string Description {
       get { return "Allows only integer values."; }
@@ -42,13 +44,13 @@ namespace HeuristicLab.Constraints {
     /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem item) {
       // ConstrainedIntData is always integer => just return true
-      if(item is ConstrainedIntData)
+      if (item is ConstrainedIntData)
         return true;
 
       // if we have an item of ConstrainedDoubleData then we check if it is integer or not
-      if(item is ConstrainedDoubleData) {
+      if (item is ConstrainedDoubleData) {
         ConstrainedDoubleData d = (ConstrainedDoubleData)item;
-        if(d.Data == Math.Truncate(d.Data)) {
+        if (d.Data == Math.Truncate(d.Data)) {
           return true;
         } else {
           return false;

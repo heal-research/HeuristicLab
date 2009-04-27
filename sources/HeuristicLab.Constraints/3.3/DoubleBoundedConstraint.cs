@@ -26,12 +26,15 @@ using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint where a double value is limited by a one or two sided boundary.
   /// </summary>
   public class DoubleBoundedConstraint : ConstraintBase {
+
+    [Storable]
     private double lowerBound;
     /// <summary>
     /// Gets or sets the lower bound of the limit.
@@ -45,6 +48,8 @@ namespace HeuristicLab.Constraints {
         OnChanged();
       }
     }
+
+    [Storable]
     private bool lowerBoundIncluded;
     /// <summary>
     /// Gets or sets the boolean flag whether the lower bound should be included.
@@ -58,6 +63,8 @@ namespace HeuristicLab.Constraints {
         OnChanged();
       }
     }
+
+    [Storable]
     private bool lowerBoundEnabled;
     /// <summary>
     /// Gets or sets the boolean flag whether the lower bound should be enabled.
@@ -71,6 +78,8 @@ namespace HeuristicLab.Constraints {
         OnChanged();
       }
     }
+
+    [Storable]
     private double upperBound;
     /// <summary>
     /// Gets or sets the upper bound of the limit.
@@ -84,6 +93,8 @@ namespace HeuristicLab.Constraints {
         OnChanged();
       }
     }
+
+    [Storable]
     private bool upperBoundIncluded;
     /// <summary>
     /// Gets or sets the boolean flag whether the upper bound should be included.
@@ -97,6 +108,8 @@ namespace HeuristicLab.Constraints {
         OnChanged();
       }
     }
+
+    [Storable]
     private bool upperBoundEnabled;
     /// <summary>
     /// Gets or sets the boolean flag whether the upper bound should be enabled.
@@ -190,74 +203,5 @@ namespace HeuristicLab.Constraints {
       clone.lowerBoundEnabled = LowerBoundEnabled;
       return clone;
     }
-
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The properties of the current instance are saved as attributes with special tag names.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute lb = document.CreateAttribute("LowerBound");
-      lb.Value = LowerBound.ToString("r", CultureInfo.InvariantCulture);
-      XmlAttribute lbi = document.CreateAttribute("LowerBoundIncluded");
-      lbi.Value = lowerBoundIncluded.ToString();
-      XmlAttribute lbe = document.CreateAttribute("LowerBoundEnabled");
-      lbe.Value = lowerBoundEnabled.ToString();
-      XmlAttribute ub = document.CreateAttribute("UpperBound");
-      ub.Value = upperBound.ToString("r", CultureInfo.InvariantCulture);
-      XmlAttribute ubi = document.CreateAttribute("UpperBoundIncluded");
-      ubi.Value = upperBoundIncluded.ToString();
-      XmlAttribute ube = document.CreateAttribute("UpperBoundEnabled");
-      ube.Value = upperBoundEnabled.ToString();
-      node.Attributes.Append(lb);
-      if (!lowerBoundIncluded) node.Attributes.Append(lbi);
-      if (!lowerBoundEnabled) node.Attributes.Append(lbe);
-      node.Attributes.Append(ub);
-      if (!upperBoundIncluded) node.Attributes.Append(ubi);
-      if (!upperBoundEnabled) node.Attributes.Append(ube);
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      lowerBound = double.Parse(node.Attributes["LowerBound"].Value, CultureInfo.InvariantCulture);
-      if (node.Attributes["LowerBoundIncluded"] != null) {
-        lowerBoundIncluded = bool.Parse(node.Attributes["LowerBoundIncluded"].Value);
-      } else {
-        lowerBoundIncluded = true;
-      }
-      if (node.Attributes["LowerBoundEnabled"] != null) {
-        lowerBoundEnabled = bool.Parse(node.Attributes["LowerBoundEnabled"].Value);
-      } else {
-        lowerBoundEnabled = true;
-      }
-
-      upperBound = double.Parse(node.Attributes["UpperBound"].Value, CultureInfo.InvariantCulture);
-      if (node.Attributes["UpperBoundIncluded"] != null) {
-        upperBoundIncluded = bool.Parse(node.Attributes["UpperBoundIncluded"].Value);
-      } else {
-        upperBoundIncluded = true;
-      }
-      if (node.Attributes["UpperBoundEnabled"] != null) {
-        upperBoundEnabled = bool.Parse(node.Attributes["UpperBoundEnabled"].Value);
-      } else {
-        upperBoundEnabled = true;
-      }
-    }
-    #endregion
   }
 }

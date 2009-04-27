@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Xml;
 using System.Diagnostics;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Constraints {
   /// <summary>
@@ -33,6 +34,7 @@ namespace HeuristicLab.Constraints {
   /// </summary>
   public class AllSubOperatorsTypeConstraint : ConstraintBase {
 
+    [Storable]
     private SubOperatorTypeConstraint groupConstraint;
     /// <summary>
     /// Gets all allowed sub-operators.
@@ -85,11 +87,11 @@ namespace HeuristicLab.Constraints {
     /// <returns><c>true</c> if the constraint could be fulfilled, <c>false</c> otherwise.</returns>
     public override bool Check(IItem data) {
       IOperator op = data as IOperator;
-      if(data == null) return false;
+      if (data == null) return false;
 
-      for(int i = 0; i < op.SubOperators.Count; i++) {
+      for (int i = 0; i < op.SubOperators.Count; i++) {
         groupConstraint.SubOperatorIndex.Data = i;
-        if(groupConstraint.Check(data) == false) {
+        if (groupConstraint.Check(data) == false) {
           return false;
         }
       }
@@ -125,38 +127,5 @@ namespace HeuristicLab.Constraints {
     public override IView CreateView() {
       return new AllSubOperatorsTypeConstraintView(groupConstraint);
     }
-
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The sub-operators are saved as a child node with tag name 
-    /// <c>SubOperatorsGroupConstraint</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode subOperatorsNode = PersistenceManager.Persist("SubOperatorsGroupConstraint", groupConstraint, document, persistedObjects);
-      node.AppendChild(subOperatorsNode);
-
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted constraint from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The constraint must be saved in a specific way, see <see cref="GetXmlNode"/> for 
-    /// more information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      groupConstraint = (SubOperatorTypeConstraint)PersistenceManager.Restore(node.SelectSingleNode("SubOperatorsGroupConstraint"), restoredObjects);
-    }
-    #endregion persistence
   }
 }
