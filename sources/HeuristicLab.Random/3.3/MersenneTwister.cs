@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Random {
   /// <summary>
@@ -45,8 +46,11 @@ namespace HeuristicLab.Random {
     private const int n = 624, m = 397;
 
     private object locker = new object();
+    [Storable]
     private uint[] state = new uint[n];
+    [Storable]
     private int p = 0;
+    [Storable]
     private bool init = false;
 
     /// <summary>
@@ -153,59 +157,6 @@ namespace HeuristicLab.Random {
         return rand_double53();
       }
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The state(s) are saved as child node with the tag <c>State</c>, each state separaated with
-    /// a semicolon. Also the elements <c>p</c> and the <c>init</c> flag are saved as child nodes with 
-    /// tag names <c>P</c> and <c>Init</c> respectively.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid,IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-
-      StringBuilder builder = new StringBuilder();
-      builder.Append(state[0]);
-      for (int i = 1; i < state.Length; i++) {
-        builder.Append(';');
-        builder.Append(state[i]);
-      }
-      XmlNode stateNode = document.CreateNode(XmlNodeType.Element, "State", null);
-      stateNode.InnerText = builder.ToString();
-      node.AppendChild(stateNode);
-
-      XmlNode pNode = document.CreateNode(XmlNodeType.Element, "P", null);
-      pNode.InnerText = p.ToString();
-      node.AppendChild(pNode);
-
-      XmlNode initNode = document.CreateNode(XmlNodeType.Element, "Init", null);
-      initNode.InnerText = init.ToString();
-      node.AppendChild(initNode);
-
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted random number generator from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The elements of the current instance must be saved in a special way, see 
-    /// <see cref="GetXmlNode"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid,IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-
-      string stateString = node.SelectSingleNode("State").InnerText;
-      string[] tokens = stateString.Split(';');
-      for (int i = 0; i < tokens.Length; i++)
-        state[i] = uint.Parse(tokens[i]);
-      p = int.Parse(node.SelectSingleNode("P").InnerText);
-      init = bool.Parse(node.SelectSingleNode("Init").InnerText);
-    }
-    #endregion
 
     #region Seed Methods
     /// <summary>

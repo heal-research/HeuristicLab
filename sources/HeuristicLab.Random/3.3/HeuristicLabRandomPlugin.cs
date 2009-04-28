@@ -28,11 +28,12 @@ namespace HeuristicLab.Random {
   /// <summary>
   /// Plugin class for HeuristicLab.Random plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Random-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Random-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [ClassInfo(Name = "HeuristicLab.Random-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Random-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabRandomPlugin : PluginBase {
   }
 }

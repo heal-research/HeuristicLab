@@ -25,6 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Random {
 
@@ -35,8 +36,8 @@ namespace HeuristicLab.Random {
   /// </summary>
   public class NormalDistributedRandom : ItemBase, IRandom {
 
+    [Storable]
     private double mu;
-
     /// <summary>
     /// Gets or sets the value for µ.
     /// </summary>
@@ -44,8 +45,9 @@ namespace HeuristicLab.Random {
       get { return mu; }
       set { mu = value; }
     }
-    private double sigma;
 
+    [Storable]
+    private double sigma;
     /// <summary>
     /// Gets or sets the value for sigma.
     /// </summary>
@@ -53,7 +55,10 @@ namespace HeuristicLab.Random {
       get { return sigma; }
       set { sigma = value; }
     }
+
+    [Storable]
     private IRandom uniform;
+
     private double[] w = new double[] {
       1.7290404664e-09,
       1.2680928529e-10,
@@ -512,27 +517,27 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <returns>A double random number.</returns>
     public double NextDouble() {
-      double signFactor = uniform.Next()%2==0?1.0:-1.0;
-      return sigma* signFactor * NextPositiveDouble() + mu;
+      double signFactor = uniform.Next() % 2 == 0 ? 1.0 : -1.0;
+      return sigma * signFactor * NextPositiveDouble() + mu;
     }
 
     private double NextPositiveDouble() {
       int j = uniform.Next();
       int i = (j & 127);
-      if(Math.Abs(j) < k[i]) {
+      if (Math.Abs(j) < k[i]) {
         return j * w[i];
       } else {
         double r = 3.442620;
         double x, y;
         x = j * w[i];
-        if(i == 0) {
+        if (i == 0) {
           do {
             x = -Math.Log(ScaledUniform()) * 0.2904764;
             y = -Math.Log(ScaledUniform());
-          } while(y + y < x * x);
+          } while (y + y < x * x);
           return (j > 0) ? r + x : -r - x;
         }
-        if(f[i] + ScaledUniform() * (f[i - 1] - f[i]) < Math.Exp(-0.5 * x * x)) {
+        if (f[i] + ScaledUniform() * (f[i - 1] - f[i]) < Math.Exp(-0.5 * x * x)) {
           return x;
         } else {
           // recurse
@@ -548,47 +553,6 @@ namespace HeuristicLab.Random {
 
     #endregion
 
-    #region persistence
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The value of µ and sigma are saved as child nodes with tag names <c>Mu</c> and <c>Sigma</c>,
-    /// also the random number generator is saved as a child node with tag name <c>UniformRandom</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">A dictionary of all already persisted objects. (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-
-      XmlNode muNode = document.CreateNode(XmlNodeType.Element, "Mu", null);
-      muNode.InnerText = mu.ToString("r", CultureInfo.InvariantCulture);
-      node.AppendChild(muNode);
-
-      XmlNode sigmaNode = document.CreateNode(XmlNodeType.Element, "Sigma", null);
-      sigmaNode.InnerText = sigma.ToString("r", CultureInfo.InvariantCulture);
-      node.AppendChild(sigmaNode);
-
-      node.AppendChild(PersistenceManager.Persist("UniformRandom", uniform, document, persistedObjects));
-
-      return node;
-    }
-
-    /// <summary>
-    /// Loads the persisted normally distributed random variable from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The elements of the current instance must be saved in a special way, see 
-    /// <see cref="GetXmlNode"/>.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-
-      mu = double.Parse(node.SelectSingleNode("Mu").InnerText, CultureInfo.InvariantCulture);
-      sigma = double.Parse(node.SelectSingleNode("Sigma").InnerText, CultureInfo.InvariantCulture);
-      uniform = (IRandom)PersistenceManager.Restore(node.SelectSingleNode("UniformRandom"), restoredObjects);
-    }
-
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
@@ -601,7 +565,5 @@ namespace HeuristicLab.Random {
       clonedObjects.Add(Guid, clone);
       return clone;
     }
-
-    #endregion
   }
 }
