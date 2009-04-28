@@ -18,7 +18,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
-      yield return new Tag(Enum.GetName(obj.GetType(), obj));
+      yield return new Tag(Enum.Format(obj.GetType(), obj, "G"));
     }
 
     public IEnumerable<Tag> Decompose(object obj) {

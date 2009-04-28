@@ -101,6 +101,20 @@ namespace HeuristicLab.Persistence.UnitTest {
     public string uninitialized;
   }
 
+  public enum SimpleEnum { one, two, three }
+  public enum ComplexEnum { one = 1, two = 2, three = 3 }
+  [FlagsAttribute]
+  public enum TrickyEnum { zero = 0, one = 1, two = 2 }
+
+  public class EnumTest {
+    [Storable]
+    public SimpleEnum simpleEnum = SimpleEnum.one;
+    [Storable]
+    public ComplexEnum complexEnum = (ComplexEnum)2;
+    [Storable]
+    public TrickyEnum trickyEnum = (TrickyEnum)15;
+  }
+
   public class Custom {
     [Storable]
     public int i;
@@ -419,6 +433,19 @@ namespace HeuristicLab.Persistence.UnitTest {
       et.OnChange += (o) => o;
       XmlGenerator.Serialize(et, tempFile);
       EventTest newEt = (EventTest)XmlParser.DeSerialize(tempFile);
+    }
+
+    [TestMethod]
+    public void Enums() {
+      EnumTest et = new EnumTest();
+      et.simpleEnum = SimpleEnum.two;
+      et.complexEnum = ComplexEnum.three;
+      et.trickyEnum = TrickyEnum.two | TrickyEnum.one;
+      XmlGenerator.Serialize(et, tempFile);
+      EnumTest newEt = (EnumTest)XmlParser.DeSerialize(tempFile);
+      Assert.AreEqual(et.simpleEnum, SimpleEnum.two);
+      Assert.AreEqual(et.complexEnum, ComplexEnum.three);
+      Assert.AreEqual(et.trickyEnum, (TrickyEnum)3);
     }
 
 
