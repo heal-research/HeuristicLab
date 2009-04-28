@@ -184,6 +184,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Evolutionary-3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Random-3.3", "HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj", "{F4539FB6-4708-40C9-BE64-0A1390AEA197}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection-3.3", "HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj", "{2C36CD4F-E5F5-43A4-801A-201EA895FE17}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab.vsmdi
@@ -2763,6 +2765,36 @@ Global
 		{F4539FB6-4708-40C9-BE64-0A1390AEA197}.Visualization Debug|x64.Build.0 = Debug|x64
 		{F4539FB6-4708-40C9-BE64-0A1390AEA197}.Visualization Debug|x86.ActiveCfg = Debug|x86
 		{F4539FB6-4708-40C9-BE64-0A1390AEA197}.Visualization Debug|x86.Build.0 = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|x64.ActiveCfg = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|x64.Build.0 = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|x86.ActiveCfg = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.CEDMA Debug|x86.Build.0 = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|x64.ActiveCfg = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|x64.Build.0 = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|x86.ActiveCfg = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Debug|x86.Build.0 = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|x64.ActiveCfg = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|x64.Build.0 = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|x86.ActiveCfg = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.GP Debug|x86.Build.0 = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x64.ActiveCfg = Release|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x64.Build.0 = Release|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x86.ActiveCfg = Release|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x86.Build.0 = Release|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|x64.ActiveCfg = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|x64.Build.0 = Debug|x64
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|x86.ActiveCfg = Debug|x86
+		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Visualization Debug|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
