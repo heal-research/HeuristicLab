@@ -28,11 +28,12 @@ namespace HeuristicLab.Permutation {
   /// <summary>
   /// Plugin class for HeuristicLab.Permutation plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Permutation-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Permutation-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
+  [ClassInfo(Name = "HeuristicLab.Permutation-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Permutation-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.3")]
   public class HeuristicLabRandomPlugin : PluginBase {
   }
 }
