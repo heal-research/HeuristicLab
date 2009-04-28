@@ -95,6 +95,7 @@
     <Compile Include="Core\Configuration.cs" />
     <Compile Include="Core\PersistenceException.cs" />
     <Compile Include="Default\DebugString\Formatters\Char2DebugStringFormatter.cs" />
+    <Compile Include="Default\Decomposers\StackDecomposer.cs" />
     <Compile Include="Default\Decomposers\Number2StringConverter.cs" />
     <Compile Include="Default\Decomposers\Storable\EmptyStorableClassAttribute.cs" />
     <Compile Include="Core\FormatBase.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="Default\Xml\Compact\NumberArray2XmlFormatterBase.cs" />
     <Compile Include="Default\Decomposers\Storable\DataMemberAccessor.cs" />
     <Compile Include="Default\Xml\Compact\IntList2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\Guid2XmlFormatter.cs" />
+    <Compile Include="Default\Xml\Primitive\TimeSpan2XmlFormatter.cs" />
     <Compile Include="Default\Xml\XmlFormatterBase.cs" />
     <Compile Include="Default\Xml\Primitive\PrimitiveXmlFormatterBase.cs" />
     <Compile Include="Default\Xml\Compact\CompactXmlFormatterBase.cs" />

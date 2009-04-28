@@ -10,42 +10,6 @@ using System.Globalization;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class TimeSpan2XmlFormatter : PrimitiveXmlFormatterBase<TimeSpan> {
-
-    public override XmlString Format(TimeSpan o) {
-      return new XmlString(o.ToString());
-    }
-
-    public override TimeSpan Parse(XmlString t) {
-      try {
-        return TimeSpan.Parse(t.Data);
-      } catch (FormatException x) {
-        throw new PersistenceException("Cannot parse TimeSpan string representation.", x);
-      } catch (OverflowException x) {
-        throw new PersistenceException("Overflow during TimeSpan parsing.", x);
-      }
-    }
-  }
-
-  [EmptyStorableClass]
-  public class Guid2XmlFormatter : PrimitiveXmlFormatterBase<Guid> {
-
-    public override XmlString Format(Guid o) {
-      return new XmlString(o.ToString("D", CultureInfo.InvariantCulture));
-    }
-
-    public override Guid Parse(XmlString t) {
-      try {
-        return new Guid(t.Data);
-      } catch (FormatException x) {
-        throw new PersistenceException("Cannot parse Guid string representation.", x);
-      } catch (OverflowException x) {
-        throw new PersistenceException("Overflow during Guid parsing.", x);
-      }
-    }
-  }
-
-  [EmptyStorableClass]
   public class String2XmlFormatter : PrimitiveXmlFormatterBase<string> {
 
     public override XmlString Format(string s) {

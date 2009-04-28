@@ -74,6 +74,8 @@ namespace HeuristicLab.Persistence.UnitTest {
 
   public class Root : RootBase {
     [Storable]
+    public Stack<int> intStack = new Stack<int>();
+    [Storable]
     public int[] i = new[] { 3, 4, 5, 6 };
     [Storable(Name="Test String")]
     public string s;
@@ -149,6 +151,9 @@ namespace HeuristicLab.Persistence.UnitTest {
     [TestMethod]
     public void ComplexStorable() {
       Root r = new Root();
+      r.intStack.Push(1);
+      r.intStack.Push(2);
+      r.intStack.Push(3);
       r.selfReferences = new List<Root> { r, r };
       r.c = new Custom { r = r };
       r.dict.Add("one", 1);
@@ -210,6 +215,9 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(newR.multiDimArray[1, 0], 1);
       Assert.AreEqual(newR.multiDimArray[1, 1], 4);
       Assert.AreEqual(newR.multiDimArray[1, 2], 6);
+      Assert.AreEqual(newR.intStack.Pop(), 3);
+      Assert.AreEqual(newR.intStack.Pop(), 2);
+      Assert.AreEqual(newR.intStack.Pop(), 1);
       Assert.IsFalse(newR.boolean);
       Assert.IsTrue((DateTime.Now - newR.dateTime).TotalSeconds < 10);
       Assert.AreEqual(newR.kvp.Key, "string key");
