@@ -70,6 +70,7 @@
     <Compile Include="FixedAllSGAMain.cs" />
     <Compile Include="CreateReplacement.cs" />
     <Compile Include="CreateChildrenHardWired.cs" />
+    <Compile Include="FixedBase.cs" />
     <Compile Include="FixedSGAMain.cs" />
     <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

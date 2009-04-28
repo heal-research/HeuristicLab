@@ -34,7 +34,7 @@ using System.Diagnostics;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.FixedOperators {
-  class FixedSGAMain : CombinedOperator {
+  class FixedSGAMain : FixedBase {
     public override string Description {
       get { return @"Implements the functionality of SGAMain with fixed control structures. Operators like selection, crossover, mutation and evaluation are delegated."; }
     }
@@ -60,13 +60,15 @@ namespace HeuristicLab.FixedOperators {
     MergingReducer mr;
 
 
-    long[] timesExecuteCreateChildren;
+    //long[] timesExecuteCreateChildren;
 
     public FixedSGAMain()
       : base() {
       AddVariableInfo(new VariableInfo("Selector", "Selection strategy for SGA", typeof(OperatorBase), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaximumGenerations", "Maximum number of generations to create", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Generations", "Number of processed generations", typeof(IntData), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("ExecutionPointer", "Execution pointer for algorithm abortion", typeof(IntData), VariableKind.New));
+
       Name = "FixedSGAMain";
 
       sorter = new Sorter();
@@ -139,49 +141,99 @@ namespace HeuristicLab.FixedOperators {
       IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
       IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
 
-      InitializeExecuteCreateChildren(scope);
-      Stopwatch watch = new Stopwatch();
-      long[] times = new long[10];
-      timesExecuteCreateChildren = new long[10];
-      for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
-        watch.Start();
-        selector.Execute(scope);
-        watch.Stop();
-        times[0] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
-        watch.Stop();
-        times[1] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        ExecuteCreateReplacementWithFixedConstrolStructures(scope);
-        watch.Stop();
-        times[2] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        ql.Execute(scope);
-        watch.Stop();
-        times[3] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        bawqc.Execute(scope);
-        watch.Stop();
-        times[4] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        dc.Execute(scope);
-        watch.Stop();
-        times[5] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        lci.Execute(scope);
-        watch.Stop();
-        times[6] += watch.ElapsedTicks;
-        watch.Reset();
-        watch.Start();
-        nrOfGenerations.Data++;
+
+      // executionpointer saves the reentry point after engine abort occurs.
+      IntData executionPointer;
+      try 
+	    {
+    		executionPointer = GetVariableValue<IntData>("ExecutionPointer", scope, true);
+	    }
+	    catch (Exception)
+	    {
+        scope.AddVariable(new Variable("ExecutionPointer", new IntData(-1)));
+        executionPointer = GetVariableValue<IntData>("ExecutionPointer", scope, true);
       }
+      
+      // fetch variables from scope for create children
+      InitializeExecuteCreateChildren(scope);
+      for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
+        if (Canceled) {
+          executionPointer.Data = -1;
+          continue;
+        }
+        if (executionPointer.Data < 0)
+          Execute(selector, scope);
+
+        if (Canceled) {
+          executionPointer.Data = 0;
+          continue;
+        }
+        if (executionPointer.Data < 1)
+          ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
+
+        if (Canceled) {
+          executionPointer.Data = 1;
+          continue;
+        }
+        if (executionPointer.Data < 2)
+          ExecuteCreateReplacementWithFixedConstrolStructures(scope);
+
+        if (Canceled) {
+          executionPointer.Data = 2;
+          continue;
+        }
+        if (executionPointer.Data < 3) {
+          ql.Execute(scope);
+          bawqc.Execute(scope);
+          dc.Execute(scope);
+          lci.Execute(scope);
+          nrOfGenerations.Data++;
+        }
+        executionPointer.Data = -1;
+      } // for i
+
+      //Stopwatch watch = new Stopwatch();
+      //long[] times = new long[10];
+      //timesExecuteCreateChildren = new long[10];
+      //for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
+      //  watch.Start();
+      //  selector.Execute(scope);
+      //  watch.Stop();
+      //  times[0] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
+      //  watch.Stop();
+      //  times[1] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  ExecuteCreateReplacementWithFixedConstrolStructures(scope);
+      //  watch.Stop();
+      //  times[2] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  ql.Execute(scope);
+      //  watch.Stop();
+      //  times[3] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  bawqc.Execute(scope);
+      //  watch.Stop();
+      //  times[4] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  dc.Execute(scope);
+      //  watch.Stop();
+      //  times[5] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  lci.Execute(scope);
+      //  watch.Stop();
+      //  times[6] += watch.ElapsedTicks;
+      //  watch.Reset();
+      //  watch.Start();
+      //  nrOfGenerations.Data++;
+      //}
 
       swApply.Stop();
       Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
@@ -214,11 +266,11 @@ namespace HeuristicLab.FixedOperators {
       ci.Apply(scope);
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
-        crossover.Execute(s);
+        Execute(crossover, s);
         // Stochastic Branch
         if (random.NextDouble() < probability.Data)
-          mutator.Execute(s);
-        evaluator.Execute(s);
+          Execute(mutator, s);
+        Execute(evaluator, s);
         sr.Execute(s);
         counter.Execute(s);
       } // foreach
