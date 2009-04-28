@@ -37,6 +37,20 @@ namespace HeuristicLab.Persistence.UnitTest {
     private ulong _ulong = 123456;
   }
 
+  public class EventTest {
+    public delegate object Filter(object o);
+    public event Filter OnChange;
+    [Storable]
+    private Delegate[] OnChangeListener {
+      get { return OnChange.GetInvocationList(); }
+      set {
+        foreach (Delegate d in value) {
+          OnChange += (Filter)d;
+        }
+      }
+    }
+  }
+
   public class PrimitivesTest : NumberTest {
     [Storable]
     private char c = 'e';
@@ -126,6 +140,9 @@ namespace HeuristicLab.Persistence.UnitTest {
 
     [TestCleanup()]
     public void ClearTempFile() {      
+      StreamReader reader = new StreamReader(tempFile);
+      string s = reader.ReadToEnd();
+      reader.Close();
       File.Delete(tempFile);
     }
 
@@ -386,6 +403,14 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));
+    }
+
+    [TestMethod]
+    public void Events() {
+      EventTest et = new EventTest();
+      et.OnChange += (o) => o;
+      XmlGenerator.Serialize(et, tempFile);
+      EventTest newEt = (EventTest)XmlParser.DeSerialize(tempFile);
     }
 
 
