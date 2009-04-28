@@ -26,12 +26,15 @@ using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Permutation;
+using HeuristicLab.Persistence.Default.Decomposers.Storable;
 
 namespace HeuristicLab.Routing.TSP {
   /// <summary>
   /// Represent the tour of a TSP.
   /// </summary>
   public class TSPTour : ItemBase, IVisualizationItem {
+
+    [Storable]
     private DoubleMatrixData myCoordinates;
     /// <summary>
     /// Gets or sets the coordinates of the current instance.
@@ -40,6 +43,8 @@ namespace HeuristicLab.Routing.TSP {
       get { return myCoordinates; }
       set { myCoordinates = value; }
     }
+
+    [Storable]
     private Permutation.Permutation myTour;
     /// <summary>
     /// Gets or sets the current permutation/tour of the current instance.
@@ -108,40 +113,6 @@ namespace HeuristicLab.Routing.TSP {
     protected virtual void OnTourChanged() {
       if (TourChanged != null)
         TourChanged(this, new EventArgs());
-    }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="StorableBase.GetXmlNode"/> of base class <see cref="ItemBase"/>. <br/>
-    /// The coordinates and the tour are saved as a child node with the tag names <c>Coordinates</c> and 
-    /// <c>Tour</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Coordinates", Coordinates, document, persistedObjects));
-      node.AppendChild(PersistenceManager.Persist("Tour", Tour, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted TSP tour from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="StorableBase.Populate"/> of base class 
-    /// <see cref="ItemBase"/>.<br/>
-    /// The coordinates and the tour must be saved as child nodes with the tag names <c>Coordinates</c>
-    /// and <c>Tour</c> (see <see cref="GetXmlNode"/>).</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the TSP tour is saved.</param>
-    /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myCoordinates = (DoubleMatrixData)PersistenceManager.Restore(node.SelectSingleNode("Coordinates"), restoredObjects);
-      myTour = (Permutation.Permutation)PersistenceManager.Restore(node.SelectSingleNode("Tour"), restoredObjects);
-    }
-    #endregion
+    }    
   }
 }

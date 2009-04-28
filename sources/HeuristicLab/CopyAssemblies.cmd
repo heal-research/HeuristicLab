@@ -76,6 +76,7 @@ copy "%SolutionDir%\HeuristicLab.Random\3.2\%Outdir%\HeuristicLab.Random-3.2.dll
 copy "%SolutionDir%\HeuristicLab.Random\3.3\%Outdir%\HeuristicLab.Random-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.RealVector\3.2\%Outdir%\HeuristicLab.RealVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.2\%Outdir%\HeuristicLab.Routing.TSP-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.3\%Outdir%\HeuristicLab.Routing.TSP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SA\3.2\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Scheduling.JSSP\3.2\%Outdir%\HeuristicLab.Scheduling.JSSP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection\3.2\%Outdir%\HeuristicLab.Selection-3.2.dll" .\plugins
