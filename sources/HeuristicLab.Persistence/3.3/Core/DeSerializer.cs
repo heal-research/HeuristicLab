@@ -2,6 +2,8 @@
 using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Tracing;
+using System.Reflection;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -67,7 +69,17 @@ namespace HeuristicLab.Persistence.Core {
       try {
         var map = new Dictionary<Type, object>();
         foreach (var typeMapping in typeCache) {
-          Type type = Type.GetType(typeMapping.TypeName, true);
+          Type type;
+          try {
+            type = Type.GetType(typeMapping.TypeName, true);
+          } catch (Exception e) {
+            Logger.Error(String.Format(
+              "Cannot load type \"{0}\", falling back to loading with partial name", typeMapping.TypeName));
+            string[] typeNameParts = typeMapping.TypeName.Split(new[] {','});
+            Assembly a = Assembly.LoadWithPartialName(typeNameParts[typeNameParts.Length - 1].Trim());
+            Array.Resize(ref typeNameParts, typeNameParts.Length - 1);
+            type = a.GetType(string.Join(",", typeNameParts), true);
+          }
           typeIds.Add(typeMapping.Id, type);
           Type serializerType = Type.GetType(typeMapping.Serializer, true);
           map.Add(type, Activator.CreateInstance(serializerType, true));
