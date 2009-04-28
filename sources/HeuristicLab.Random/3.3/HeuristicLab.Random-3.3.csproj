@@ -95,21 +95,25 @@
     <Compile Include="UniformRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
-      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.3\HeuristicLab.Constraints-3.3.csproj">
+      <Project>{19C1E42A-4B48-4EFD-B697-899016F1C198}</Project>
+      <Name>HeuristicLab.Constraints-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
-      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
-      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

@@ -35,6 +35,7 @@ copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.2\%Outdir%\HeuristicLab.DataAnal
 copy "%SolutionDir%\HeuristicLab.DistributedEngine\3.2\%Outdir%\HeuristicLab.DistributedEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ES\3.2\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.2\%Outdir%\HeuristicLab.Evolutionary-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.3\%Outdir%\HeuristicLab.GP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Boolean\3.3\%Outdir%\HeuristicLab.GP.Boolean-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.SantaFe\3.3\%Outdir%\HeuristicLab.GP.SantaFe-3.3.dll" .\plugins
@@ -67,9 +68,11 @@ copy "%SolutionDir%\HeuristicLab.Operators.Programmable\3.2\%Outdir%\HeuristicLa
 copy "%SolutionDir%\HeuristicLab.Operators.Stopwatch\3.2\%Outdir%\HeuristicLab.Operators.Stopwatch-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\3.2\%Outdir%\HeuristicLab.OptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Permutation\3.2\%Outdir%\HeuristicLab.Permutation-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Permutation\3.3\%Outdir%\HeuristicLab.Permutation-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Persistence\3.3\%Outdir%\HeuristicLab.Persistence-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Persistence.GUI\3.3\%Outdir%\HeuristicLab.Persistence.GUI-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Random\3.2\%Outdir%\HeuristicLab.Random-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Random\3.3\%Outdir%\HeuristicLab.Random-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.RealVector\3.2\%Outdir%\HeuristicLab.RealVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.2\%Outdir%\HeuristicLab.Routing.TSP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SA\3.2\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
