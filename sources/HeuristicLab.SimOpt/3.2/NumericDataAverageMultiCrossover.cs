@@ -24,24 +24,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Evolutionary;
 using HeuristicLab.Data;
+using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.SimOpt {
-  public class NumericDataRoundedAverageMultiCrossover : CrossoverBase {
+  public class NumericDataAverageMultiCrossover : CrossoverBase {
 
     public override string Description {
-      get { return @"Takes two IntData, DoubleData, ConstrainedIntData, or ConstrainedDoubleData, averages, and rounds them."; }
+      get { return @"Takes two DoubleData, or ConstrainedDoubleData, and averages them."; }
     }
 
-    public NumericDataRoundedAverageMultiCrossover()
+    public NumericDataAverageMultiCrossover()
       : base() {
       AddVariableInfo(new VariableInfo("VariableName", "The name of the variable to cross", typeof(IObjectData), VariableKind.In | VariableKind.Out));
     }
 
     protected override void Cross(IScope scope, IRandom random) {
       IScope[] parents = scope.SubScopes.ToArray<IScope>();
-      if (parents.Length == 0) throw new ArgumentException("ERROR in NumericDataRoundedAverageMultiCrossover: No parents are given");
+      if (parents.Length == 0) throw new ArgumentException("ERROR in NumericDataAverageMultiCrossover: No parents are given");
       double sum = 0.0;
       IVariable var = null;
       string name = scope.TranslateName("VariableName");
@@ -49,24 +49,16 @@ namespace HeuristicLab.SimOpt {
         var = parents[i].GetVariable(name);
         if (var.Value is DoubleData) {
           sum += ((DoubleData)var.Value).Data;
-        } else if (var.Value is IntData) {
-          sum += ((IntData)var.Value).Data;
-        } else if (var.Value is ConstrainedIntData) {
-          sum += ((ConstrainedIntData)var.Value).Data;
         } else if (var.Value is ConstrainedDoubleData) {
           sum += ((ConstrainedDoubleData)var.Value).Data;
-        } else throw new InvalidOperationException("ERROR in NumericDataRoundedAverageMultiCrossover: Encountered unknown type: " + ((var.Value != null) ? (var.Value.GetType().ToString()) : ("null")));
+        } else throw new InvalidOperationException("ERROR in NumericDataAverageMultiCrossover: Encountered unknown type: " + ((var.Value != null) ? (var.Value.GetType().ToString()) : ("null")));
       }
-      double roundedAverage = Math.Round(sum / (double)parents.Length);
+      double average = sum / (double)parents.Length;
       IVariable varChild = (IVariable)var.Clone();
       if (varChild.Value is DoubleData) {
-        (varChild.Value as DoubleData).Data = roundedAverage;
-      } else if (var.Value is IntData) {
-        (varChild.Value as IntData).Data = (int)roundedAverage;
-      } else if (var.Value is ConstrainedIntData) {
-        (varChild.Value as ConstrainedIntData).TrySetData((int)roundedAverage);
+        (varChild.Value as DoubleData).Data = average;
       } else if (var.Value is ConstrainedDoubleData) {
-        (varChild.Value as ConstrainedDoubleData).TrySetData(roundedAverage);
+        (varChild.Value as ConstrainedDoubleData).TrySetData(average);
       }
       IVariable varScope = scope.GetVariable(name);
       if (varScope == null)
