@@ -37,6 +37,28 @@ namespace HeuristicLab.Persistence.UnitTest {
     private ulong _ulong = 123456;
   }
 
+  public class IntWrapper {
+
+    [Storable]
+    public int Value;
+
+    private IntWrapper() { }
+
+    public IntWrapper(int value) {
+      this.Value = value;
+    }
+
+    public override bool Equals(object obj) {
+      if (obj as IntWrapper == null)
+        return false;
+      return Value.Equals(((IntWrapper)obj).Value);
+    }
+    public override int GetHashCode() {
+      return Value.GetHashCode();
+    }
+
+  }
+
   public class EventTest {
     public delegate object Filter(object o);
     public event Filter OnChange;
@@ -448,6 +470,20 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(et.trickyEnum, (TrickyEnum)3);
     }
 
+    [TestMethod]
+    public void TestAliasingWithOverriddenEquals() {
+      List<IntWrapper> ints = new List<IntWrapper>();
+      ints.Add(new IntWrapper(1));
+      ints.Add(new IntWrapper(1));
+      Assert.AreEqual(ints[0], ints[1]);
+      Assert.AreNotSame(ints[0], ints[1]);
+      XmlGenerator.Serialize(ints, tempFile);
+      List<IntWrapper> newInts = (List<IntWrapper>)XmlParser.DeSerialize(tempFile);
+      Assert.AreEqual(newInts[0].Value, 1);
+      Assert.AreEqual(newInts[1].Value, 1);
+      Assert.AreEqual(newInts[0], newInts[1]);
+      Assert.AreNotSame(newInts[0], newInts[1]);
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

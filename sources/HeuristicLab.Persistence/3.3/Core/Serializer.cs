@@ -6,8 +6,24 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace HeuristicLab.Persistence.Core {
+
+  public class ReferenceEqualityComparer : IEqualityComparer<object> {
+
+    public bool Equals(object a, object b) {
+      return Object.ReferenceEquals(a, b);
+    }
+
+    public int GetHashCode(object obj) {
+      GCHandle handle = GCHandle.Alloc(obj, GCHandleType.Weak);
+      int address = GCHandle.ToIntPtr(handle).ToInt32();
+      handle.Free();
+      return address;
+    }    
+
+  }
 
   public class Serializer : IEnumerable<ISerializationToken> {
 
@@ -42,7 +58,7 @@ namespace HeuristicLab.Persistence.Core {
       this.obj = obj;
       this.rootName = rootName;
       this.configuration = configuration;
-      obj2id = new Dictionary<object, int> { { new object(), 0 } };
+      obj2id = new Dictionary<object,int>(new ReferenceEqualityComparer()) { { new object(), 0 } };
       typeCache = new Dictionary<Type, int>();
     }
 
@@ -58,20 +74,21 @@ namespace HeuristicLab.Persistence.Core {
       object value = accessor.Get();
       if (value == null)
         return NullReferenceEnumerator(accessor.Name);
+      Type type = value.GetType();
       if (obj2id.ContainsKey(value))
         return ReferenceEnumerator(accessor.Name, obj2id[value]);
-      if (!typeCache.ContainsKey(value.GetType()))
-        typeCache.Add(value.GetType(), typeCache.Count);
-      int typeId = typeCache[value.GetType()];
+      if (!typeCache.ContainsKey(type))
+        typeCache.Add(type, typeCache.Count);
+      int typeId = typeCache[type];
       int? id = null;
-      if (!value.GetType().IsValueType) {
+      if ( ! type.IsValueType) {
         id = obj2id.Count;
         obj2id.Add(value, (int)id);
       }
-      IFormatter formatter = configuration.GetFormatter(value.GetType());
+      IFormatter formatter = configuration.GetFormatter(type);
       if (formatter != null)
         return PrimitiveEnumerator(accessor.Name, typeId, formatter.Format(value), id);
-      IDecomposer decomposer = configuration.GetDecomposer(value.GetType());
+      IDecomposer decomposer = configuration.GetDecomposer(type);
       if (decomposer != null)
         return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
       throw new PersistenceException(
