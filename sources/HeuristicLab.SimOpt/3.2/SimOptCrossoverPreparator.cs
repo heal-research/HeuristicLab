@@ -31,7 +31,7 @@ namespace HeuristicLab.SimOpt {
       for (int i = 0; i < parameters; i++) {
         scope.AddSubScope(new Scope("Parameters_" + (i + 1).ToString()));
         for (int k = 0; k < parents; k++) {
-          IScope param = parentsScopes[k].SubScopes[i];
+          IScope param = parentsScopes[k].SubScopes[0];
           parentsScopes[k].RemoveSubScope(param);
           scope.SubScopes[i].AddSubScope(param);
         }
