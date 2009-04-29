@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
+using System.Reflection;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
@@ -14,8 +16,9 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
     }
 
     public bool CanDecompose(Type type) {
-      return StorableAttribute.GetStorableMembers(type, false).Count() > 0 ||
-        EmptyStorableClassAttribute.IsEmptyStorable(type);
+      return ReflectionTools.HasDefaultConstructor(type) &&
+        (StorableAttribute.GetStorableMembers(type, false).Count() > 0 ||
+          EmptyStorableClassAttribute.IsEmptyStorable(type));
 
     }
 
@@ -25,7 +28,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers.Storable {
 
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (var mapping in StorableAttribute.GetStorableAccessors(obj)) {
-        yield return new Tag(mapping.Value.Name ?? mapping.Key, mapping.Value.Get());        
+        yield return new Tag(mapping.Value.Name ?? mapping.Key, mapping.Value.Get());
       }
     }
 

@@ -5,6 +5,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
@@ -18,6 +19,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public bool CanDecompose(Type type) {
       return
+        ReflectionTools.HasDefaultConstructor(type) &&
         type.GetInterface(typeof(IEnumerable).FullName) != null &&
         type.GetMethod("Add") != null &&
         type.GetMethod("Add").GetParameters().Length == 1 &&

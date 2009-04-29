@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Text;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
@@ -53,6 +54,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public bool CanDecompose(Type type) {
       return
+        ReflectionTools.HasDefaultConstructor(type) &&
         ImplementsGenericEnumerable(type) &&
         HasAddMethod(type);
     }

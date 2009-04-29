@@ -37,6 +37,14 @@ namespace HeuristicLab.Persistence.UnitTest {
     private ulong _ulong = 123456;
   }
 
+  public class NonDefaultConstructorClass {
+    [Storable]
+    int value;
+    public NonDefaultConstructorClass(int value) {
+      this.value = value;
+    }
+  }
+
   public class IntWrapper {
 
     [Storable]
@@ -99,7 +107,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     public Stack<int> intStack = new Stack<int>();
     [Storable]
     public int[] i = new[] { 3, 4, 5, 6 };
-    [Storable(Name="Test String")]
+    [Storable(Name = "Test String")]
     public string s;
     [Storable]
     public ArrayList intArray = new ArrayList(new[] { 1, 2, 3 });
@@ -177,7 +185,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     }
 
     [TestCleanup()]
-    public void ClearTempFile() {      
+    public void ClearTempFile() {
       StreamReader reader = new StreamReader(tempFile);
       string s = reader.ReadToEnd();
       reader.Close();
@@ -209,7 +217,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       Root newR = (Root)XmlParser.DeSerialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(r),
-        DebugStringGenerator.Serialize(newR));      
+        DebugStringGenerator.Serialize(newR));
       Assert.AreSame(newR, newR.selfReferences[0]);
       Assert.AreNotSame(r, newR);
       Assert.AreEqual(r.myEnum, TestEnum.va1);
@@ -222,7 +230,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(r.intArray[2], 1);
       Assert.AreEqual(r.intList[0], 9);
       Assert.AreEqual(r.intList[1], 8);
-      Assert.AreEqual(r.intList[2], 7);      
+      Assert.AreEqual(r.intList[2], 7);
       Assert.AreEqual(r.multiDimArray[0, 0], 5);
       Assert.AreEqual(r.multiDimArray[0, 1], 4);
       Assert.AreEqual(r.multiDimArray[0, 2], 3);
@@ -230,7 +238,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(r.multiDimArray[1, 1], 4);
       Assert.AreEqual(r.multiDimArray[1, 2], 6);
       Assert.IsFalse(r.boolean);
-      Assert.IsTrue((DateTime.Now - r.dateTime).TotalSeconds < 10);      
+      Assert.IsTrue((DateTime.Now - r.dateTime).TotalSeconds < 10);
       Assert.AreEqual(r.kvp.Key, "string key");
       Assert.AreEqual(r.kvp.Value, 321);
       Assert.IsNull(r.uninitialized);
@@ -483,6 +491,16 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(newInts[1].Value, 1);
       Assert.AreEqual(newInts[0], newInts[1]);
       Assert.AreNotSame(newInts[0], newInts[1]);
+    }
+
+    [TestMethod]
+    public void NonDefaultConstructorTest() {
+      NonDefaultConstructorClass c = new NonDefaultConstructorClass(1);
+      try {
+        XmlGenerator.Serialize(c, tempFile);
+        Assert.Fail("Exception not thrown");
+      } catch (PersistenceException) {
+      }
     }
 
     [ClassInitialize]

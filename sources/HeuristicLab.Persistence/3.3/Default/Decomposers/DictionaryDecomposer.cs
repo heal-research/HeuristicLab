@@ -4,6 +4,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Decomposers {
 
@@ -16,7 +17,8 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
 
     public bool CanDecompose(Type type) {
-      return type.GetInterface(typeof(IDictionary).FullName) != null;
+      return ReflectionTools.HasDefaultConstructor(type) &&
+        type.GetInterface(typeof(IDictionary).FullName) != null;
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -53,7 +55,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         throw new PersistenceException("Dictionary key was null.", e);
       } catch (ArgumentException e) {
         throw new PersistenceException("Duplicate dictionary key.", e);
-      }      
+      }
     }
   }
 
