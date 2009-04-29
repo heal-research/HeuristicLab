@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace HeuristicLab.Persistence.Core {
+namespace HeuristicLab.Persistence.Auxiliary {
 
   public static class TypeExtensions {
 

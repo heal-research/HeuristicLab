@@ -1,6 +1,7 @@
 ﻿using System;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Auxiliary;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
@@ -52,7 +53,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
     public object Parse(string stringValue, Type type) {
-      try {        
+      try {
         return numberParsers[type]
           .Invoke(null,
               BindingFlags.Static | BindingFlags.PutRefDispProperty,
@@ -61,7 +62,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         throw new PersistenceException("Invalid element data during number parsing.", e);
       } catch (OverflowException e) {
         throw new PersistenceException("Overflow during number parsing.", e);
-      } 
+      }
     }
 
 

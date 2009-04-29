@@ -17,7 +17,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     }
 
 
-    public bool CanDecompose(Type type) {      
+    public bool CanDecompose(Type type) {
       return type == typeof(Stack) ||
         type.IsGenericType &&
         type.GetGenericTypeDefinition() == typeof(Stack<>);
@@ -42,11 +42,11 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       return Activator.CreateInstance(type, true);
     }
 
-    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {            
+    public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
       MethodInfo addMethod = type.GetMethod("Push");
       try {
         foreach (var tag in tags)
-          addMethod.Invoke(instance, new[] { tag.Value });        
+          addMethod.Invoke(instance, new[] { tag.Value });
       } catch (Exception e) {
         throw new PersistenceException("Exception caught while trying to populate enumerable.", e);
       }

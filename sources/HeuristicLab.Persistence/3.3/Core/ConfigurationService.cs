@@ -8,6 +8,7 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
 using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -49,7 +50,7 @@ namespace HeuristicLab.Persistence.Core {
         } else {
           Logger.Warn("Could not load settings.", e);
         }
-      }      
+      }
     }
 
     protected void TryLoadSettings() {

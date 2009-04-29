@@ -2,13 +2,14 @@
 using System.Collections;
 using System;
 using System.Linq;
+using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace HeuristicLab.Persistence.Core {  
+namespace HeuristicLab.Persistence.Core {
 
   public class Serializer : IEnumerable<ISerializationToken> {
 
@@ -58,7 +59,7 @@ namespace HeuristicLab.Persistence.Core {
       this.obj = obj;
       this.rootName = rootName;
       this.configuration = configuration;
-      obj2id = new Dictionary<object,int>(new ReferenceEqualityComparer()) { { new object(), 0 } };
+      obj2id = new Dictionary<object, int>(new ReferenceEqualityComparer()) { { new object(), 0 } };
       typeCache = new Dictionary<Type, int>();
     }
 
@@ -81,7 +82,7 @@ namespace HeuristicLab.Persistence.Core {
         typeCache.Add(type, typeCache.Count);
       int typeId = typeCache[type];
       int? id = null;
-      if ( ! type.IsValueType) {
+      if (!type.IsValueType) {
         id = obj2id.Count;
         obj2id.Add(value, (int)id);
       }

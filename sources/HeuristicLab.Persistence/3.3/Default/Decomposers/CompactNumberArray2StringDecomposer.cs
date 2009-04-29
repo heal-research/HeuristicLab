@@ -62,7 +62,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         var tagIter = metaInfo.GetEnumerator();
-        tagIter.MoveNext();      
+        tagIter.MoveNext();
         var valueIter = ((string)tagIter.Current.Value)
           .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
           .GetEnumerator();
@@ -100,7 +100,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         throw new PersistenceException("Insufficient data to deserialize compact array", e);
       } catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during compact array deserialization", e);
-      }      
+      }
     }
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {

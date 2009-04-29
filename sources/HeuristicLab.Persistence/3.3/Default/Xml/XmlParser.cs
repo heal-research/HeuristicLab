@@ -61,7 +61,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       XmlReader inner = reader.ReadSubtree();
       inner.Read();
       string xml = inner.ReadInnerXml();
-      inner.Close();      
+      inner.Close();
       yield return new PrimitiveToken(name, typeId, id, new XmlString(xml));
     }
 

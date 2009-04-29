@@ -53,7 +53,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       }
     }
 
-    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {      
+    public object CreateInstance(Type t, IEnumerable<Tag> metaInfo) {
       try {
         IEnumerator<Tag> e = metaInfo.GetEnumerator();
         e.MoveNext();
@@ -73,7 +73,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         throw new PersistenceException("Insufficient meta information to construct array instance.", x);
       } catch (InvalidCastException x) {
         throw new PersistenceException("Invalid format of array metainfo.", x);
-      }      
+      }
     }
 
     public void Populate(object instance, IEnumerable<Tag> elements, Type t) {

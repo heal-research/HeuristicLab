@@ -100,9 +100,9 @@
     <Compile Include="Default\Decomposers\Storable\EmptyStorableClassAttribute.cs" />
     <Compile Include="Core\FormatBase.cs" />
     <Compile Include="Core\FormatterBase.cs" />
-    <Compile Include="Core\TypeExtensions.cs" />
+    <Compile Include="Auxiliary\TypeExtensions.cs" />
     <Compile Include="Core\TypeMapping.cs" />
-    <Compile Include="Core\TypeStringBuilder.cs" />
+    <Compile Include="Auxiliary\TypeStringBuilder.cs" />
     <Compile Include="Core\GeneratorBase.cs" />
     <Compile Include="Default\DebugString\DebugString.cs" />
     <Compile Include="Default\DebugString\DebugStringFormat.cs" />

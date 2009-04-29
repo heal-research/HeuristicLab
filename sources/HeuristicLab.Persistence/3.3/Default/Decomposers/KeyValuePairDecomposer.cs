@@ -30,7 +30,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
       Type t = o.GetType();
       Tag key, value;
       try {
-        key = new Tag("key", t.GetProperty("Key").GetValue(o, null));        
+        key = new Tag("key", t.GetProperty("Key").GetValue(o, null));
       } catch (Exception e) {
         throw new PersistenceException("Exception caught during KeyValuePair decomposition", e);
       }
