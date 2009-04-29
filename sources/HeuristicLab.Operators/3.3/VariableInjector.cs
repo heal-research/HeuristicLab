@@ -32,10 +32,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   public class VariableInjector : OperatorBase {
 
-    [Storable]
-    private Dictionary<IVariable, IVariableInfo> variableVariableInfoTable;
-
-    [Storable]
+    private Dictionary<IVariable, IVariableInfo> variableVariableInfoTable;    
     private Dictionary<IVariableInfo, IVariable> variableInfoVariableTable;
 
     /// <inheritdoc select="summary"/>
@@ -111,6 +108,22 @@ namespace HeuristicLab.Operators {
     /// <returns>The created view as <see cref="VariableInjectorView"/>.</returns>
     public override IView CreateView() {
       return new VariableInjectorView(this);
+    }
+
+    [Storable]
+    private KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>> MappingPersistence {
+      get {
+        return new KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>>(
+          variableInfoVariableTable, variableVariableInfoTable);
+      }
+      set {
+        variableInfoVariableTable = value.Key;
+        variableVariableInfoTable = value.Value;
+        foreach (var pair in variableInfoVariableTable) {
+          pair.Key.ActualNameChanged += new EventHandler(VariableInfo_ActualNameChanged);
+          pair.Value.NameChanged += new EventHandler(Variable_NameChanged);          
+        }
+      }
     }
 
     private void CreateVariableInfo(IVariable variable) {
