@@ -7,7 +7,6 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using System.Text;
-using System.Runtime.InteropServices;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -20,10 +19,7 @@ namespace HeuristicLab.Persistence.Core {
       }
 
       public int GetHashCode(object obj) {
-        GCHandle handle = GCHandle.Alloc(obj, GCHandleType.Weak);
-        int address = GCHandle.ToIntPtr(handle).ToInt32();
-        handle.Free();
-        return address;
+        return obj.GetHashCode();
       }
 
     }
