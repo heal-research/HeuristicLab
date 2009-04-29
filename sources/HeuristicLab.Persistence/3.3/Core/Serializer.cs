@@ -8,24 +8,24 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace HeuristicLab.Persistence.Core {
-
-  public class ReferenceEqualityComparer : IEqualityComparer<object> {
-
-    public bool Equals(object a, object b) {
-      return Object.ReferenceEquals(a, b);
-    }
-
-    public int GetHashCode(object obj) {
-      GCHandle handle = GCHandle.Alloc(obj, GCHandleType.Weak);
-      int address = GCHandle.ToIntPtr(handle).ToInt32();
-      handle.Free();
-      return address;
-    }    
-
-  }
+namespace HeuristicLab.Persistence.Core {  
 
   public class Serializer : IEnumerable<ISerializationToken> {
+
+    class ReferenceEqualityComparer : IEqualityComparer<object> {
+
+      public bool Equals(object a, object b) {
+        return Object.ReferenceEquals(a, b);
+      }
+
+      public int GetHashCode(object obj) {
+        GCHandle handle = GCHandle.Alloc(obj, GCHandleType.Weak);
+        int address = GCHandle.ToIntPtr(handle).ToInt32();
+        handle.Free();
+        return address;
+      }
+
+    }
 
     private readonly object obj;
     private readonly string rootName;
