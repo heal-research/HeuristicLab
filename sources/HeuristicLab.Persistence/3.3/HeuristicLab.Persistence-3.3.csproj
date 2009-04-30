@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auxiliary\ReflectionTools.cs" />
     <Compile Include="Core\Configuration.cs" />
     <Compile Include="Core\PersistenceException.cs" />
     <Compile Include="Default\DebugString\Formatters\Char2DebugStringFormatter.cs" />

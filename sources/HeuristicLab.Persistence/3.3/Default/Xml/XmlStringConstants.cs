@@ -12,7 +12,7 @@ using HeuristicLab.Persistence.Core.Tokens;
 namespace HeuristicLab.Persistence.Default.Xml {
 
   struct XmlStringConstants {
-    public const string PRIMITIVE = "PRIMITVE";
+    public const string PRIMITIVE = "PRIMITIVE";
     public const string COMPOSITE = "COMPOSITE";
     public const string REFERENCE = "REFERENCE";
     public const string NULL = "NULL";
