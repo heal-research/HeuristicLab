@@ -39,7 +39,7 @@ namespace HeuristicLab.Hive.JobBase {
       int max = 100;
       while(runValue < max && abort == false) {
         //for (int y = 0; y < Int32.MaxValue; y++) ;
-        Thread.Sleep(2000);   
+        Thread.Sleep(200);   
         if (abort == true) {            
           Debug.WriteLine("Job Abort Processing");
           break;
