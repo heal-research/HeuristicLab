@@ -394,7 +394,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
       lvSnapshots.Enabled = true;
       currentJob = jobs.List[i];
-      pbJobControl.Image = ilLargeImgJob.Images[0];
+      if (currentJob.State == State.offline) {
+        pbJobControl.Image = ilLargeImgJob.Images[2];
+      } else if (currentJob.State == State.calculating) {
+        pbJobControl.Image = ilLargeImgJob.Images[1];
+      } else if (currentJob.State == State.finished) {
+        pbJobControl.Image = ilLargeImgJob.Images[0];
+      }
       lblJobName.Text = currentJob.Id.ToString();
       progressJob.Value = (int)(currentJob.Percentage * 100);
       lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
@@ -454,12 +460,15 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             System.Diagnostics.Debug.WriteLine(lvJobControl.Items[i].Text.ToString());
             if (state == State.finished) {
               lvJobControl.Items[i].Group = jobGroup[1];
+              lvJobControl.Items[i].ImageIndex = 0;
               System.Diagnostics.Debug.WriteLine("finished");
             } else if (state == State.calculating) {
               lvJobControl.Items[i].Group = jobGroup[0];
+              lvJobControl.Items[i].ImageIndex = 1;
               System.Diagnostics.Debug.WriteLine("calculating");
             } else if (state == State.offline) {
               lvJobControl.Items[i].Group = jobGroup[2];
+              lvJobControl.Items[i].ImageIndex = 2;
               System.Diagnostics.Debug.WriteLine("offline");
 
             }
@@ -468,7 +477,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       } else if (change.ChangeType == Change.Create) {
         ListViewItem lvi = new ListViewItem(
-          change.ID.ToString(), 0, jobGroup[2]);
+          change.ID.ToString(), 2, jobGroup[2]);
         jobObjects.Add(change.ID, lvi);
         lvJobControl.Items.Add(lvi);
 
@@ -767,12 +776,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           if (job.Id.Equals(jobold.Id)) {
 
             found = true;
+            bool change = false;
+            if (job.State != jobold.State) {
+              change = true;
+            }
             if (job.State != State.offline) {
               if ((!IsEqual(job.Client, jobold.Client)) || (job.State != jobold.State)
                    || (job.Percentage != jobold.Percentage)) {
-                changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Update, Position = i });
+                change = true;
               }
             } else if (job.DateCalculated != jobold.DateCalculated) {
+              change = true;
+            }
+            if (change) {
               changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Update, Position = i });
             }
 

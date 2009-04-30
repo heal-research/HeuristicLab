@@ -27,6 +27,7 @@
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerManagementConsole));
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.informationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +85,6 @@
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
-      this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -129,10 +129,17 @@
       this.informationToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
       this.informationToolStripMenuItem.Text = "Management";
       // 
+      // refreshToolStripMenuItem
+      // 
+      this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+      this.refreshToolStripMenuItem.Text = "Refresh";
+      this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+      // 
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
@@ -573,8 +580,8 @@
       // 
       this.ilSmallImgJob.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilSmallImgJob.ImageStream")));
       this.ilSmallImgJob.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilSmallImgJob.Images.SetKeyName(0, "Forward.png");
-      this.ilSmallImgJob.Images.SetKeyName(1, "ok.png");
+      this.ilSmallImgJob.Images.SetKeyName(0, "ok.png");
+      this.ilSmallImgJob.Images.SetKeyName(1, "Forward.png");
       this.ilSmallImgJob.Images.SetKeyName(2, "pause.png");
       // 
       // ilSmallImgClient
@@ -676,13 +683,6 @@
       this.checkBox1.TabIndex = 0;
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
-      // 
-      // refreshToolStripMenuItem
-      // 
-      this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.refreshToolStripMenuItem.Text = "Refresh";
-      this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
       // 
       // HiveServerManagementConsole
       // 
