@@ -123,26 +123,7 @@ namespace HeuristicLab.Core {
       Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
       XmlNode rootNode = document.CreateElement("Root");
       document.AppendChild(rootNode);
-      XmlNode necessaryPluginsNode = document.CreateElement("NecessaryPlugins");
-      rootNode.AppendChild(necessaryPluginsNode);
       rootNode.AppendChild(Persist(instance, document, dictionary));
-      // determine the list of necessary plugins for this document
-      DiscoveryService service = new DiscoveryService();
-      List<PluginInfo> plugins = new List<PluginInfo>();
-      foreach(IStorable storeable in dictionary.Values) {
-        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
-        if(!plugins.Contains(pluginInfo)) plugins.Add(pluginInfo);
-      }
-      foreach(PluginInfo uniquePlugin in plugins) {
-        XmlNode necessaryPluginNode = document.CreateElement("Plugin");
-        XmlAttribute nameAttr = document.CreateAttribute("Name");
-        nameAttr.Value = uniquePlugin.Name;
-        XmlAttribute versionAttr = document.CreateAttribute("Version");
-        versionAttr.Value = uniquePlugin.Version.ToString();
-        necessaryPluginNode.Attributes.Append(nameAttr);
-        necessaryPluginNode.Attributes.Append(versionAttr);
-        necessaryPluginsNode.AppendChild(necessaryPluginNode);
-      }
       document.Save(stream);
     }
     /// <summary>
