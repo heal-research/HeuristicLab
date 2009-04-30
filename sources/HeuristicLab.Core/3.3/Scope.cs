@@ -31,6 +31,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   public class Scope : ItemBase, IScope {
 
+    [Storable]
     private IScope parent;
 
     [Storable]
@@ -41,14 +42,23 @@ namespace HeuristicLab.Core {
     public string Name {
       get { return myName; }
     }
-
-    [Storable]
+    
     private IDictionary<string, IVariable> myVariables;
-    /// <inheritdoc/>
+    /// <inheritdoc/>    
     public ICollection<IVariable> Variables {
       get { return myVariables.Values; }
     }
 
+    [Storable(Name="Variables")]
+    private List<IVariable> VariablePersistence {
+      get { return new List<IVariable>(myVariables.Values); }
+      set {
+        foreach (IVariable var in value) {
+          AddVariable(var);
+        }
+      }
+    }
+    
     [Storable]
     private IDictionary<string, string> myAliases;
     /// <inheritdoc/>

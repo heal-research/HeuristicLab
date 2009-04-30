@@ -111,7 +111,7 @@ namespace HeuristicLab.Operators {
     }
 
     [Storable]
-    private KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>> MappingPersistence {
+    private KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>> VariableMappingPersistence {
       get {
         return new KeyValuePair<Dictionary<IVariableInfo, IVariable>, Dictionary<IVariable, IVariableInfo>>(
           variableInfoVariableTable, variableVariableInfoTable);

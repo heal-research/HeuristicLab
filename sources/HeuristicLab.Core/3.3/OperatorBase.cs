@@ -92,12 +92,21 @@ namespace HeuristicLab.Core {
     public virtual ICollection<IVariableInfo> VariableInfos {
       get { return myVariableInfos.Values; }
     }
-
-    [Storable]
+    
     private Dictionary<string, IVariable> myVariables;
-    /// <inheritdoc/>
+    /// <inheritdoc/>    
     public virtual ICollection<IVariable> Variables {
       get { return myVariables.Values; }
+    }
+
+    [Storable(Name="Variables")]
+    private List<IVariable> VariablePersistence {
+      get { return new List<IVariable>(myVariables.Values); }
+      set {
+        foreach (IVariable var in value) {
+          AddVariable(var);
+        }
+      }
     }
 
     /// <summary>
