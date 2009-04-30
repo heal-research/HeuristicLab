@@ -7,6 +7,7 @@ using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Contracts;
+using System.Xml.Serialization;
 
 namespace HeuristicLab.Hive.Client.Core.JobStorage {
   public class JobStorageManager {
@@ -18,8 +19,10 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     
     public static void PersistObjectToDisc(String serverIP, long serverPort, Guid jobId, byte[] job) {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
-
       JobStorageInfo info = new JobStorageInfo { JobID = jobId, ServerIP = serverIP, ServerPort = serverPort, TimeFinished = DateTime.Now };
+
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
             
       Stream jobstream = null;
       try {
@@ -35,6 +38,9 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         if(jobstream!=null)
           jobstream.Close();
       }
+
+      StoreJobList();
+
     }
 
     public static void CheckAndSubmitJobsFromDisc() {
@@ -53,8 +59,15 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
           File.Delete(path + filename + ".dat");
             
        //   }
+          }
         }
-      }
     }
+
+    public static void StoreJobList() {
+      XmlSerializer serializer = new XmlSerializer(typeof(List<JobStorageInfo>));
+      TextWriter writer = new StreamWriter(path + "list.xml");
+      serializer.Serialize(writer, storedJobsList);
+    }
+    
   }
 }
