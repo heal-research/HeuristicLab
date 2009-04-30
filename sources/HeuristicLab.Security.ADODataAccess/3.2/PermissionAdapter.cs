@@ -35,7 +35,7 @@ namespace HeuristicLab.Security.ADODataAccess {
     private IUserGroupAdapter UserGroupAdapter {
       get {
         if (userGroupAdapter == null)
-          this.Session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
+          userGroupAdapter = this.Session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
 
         return userGroupAdapter;
       }
@@ -100,7 +100,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         return perm;
       } else {
         ICollection<UserGroup> groups =
-          UserGroupAdapter.MemberOf(permissionId);
+          UserGroupAdapter.MemberOf(permissionOwnerId);
 
         GrantedPermission perm = null;
 
@@ -118,7 +118,8 @@ namespace HeuristicLab.Security.ADODataAccess {
     }
 
     public bool grantPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
-      if (getPermission(permissionOwnerId, permissionId, entityId) == null) {
+      if (GrantedPermissionsAdapter.FindByPermissionPermissionOwnerEntityId(
+        permissionId, permissionOwnerId, entityId) == null) {
         GrantedPermission perm = new GrantedPermission();
         perm.PermissionId = permissionId;
         perm.PermissionOwnerId = permissionOwnerId;

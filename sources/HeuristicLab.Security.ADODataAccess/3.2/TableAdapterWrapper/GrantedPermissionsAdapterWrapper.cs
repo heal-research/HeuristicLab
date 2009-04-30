@@ -28,6 +28,7 @@ namespace HeuristicLab.Security.ADODataAccess.TableAdapterWrapper {
       row.EntityId = relation.EntityId;
 
       data.AddGrantedPermissionsRow(row);
+      TransactionalAdapter.Update(row);
 
       return row;
     }
@@ -58,8 +59,8 @@ namespace HeuristicLab.Security.ADODataAccess.TableAdapterWrapper {
         TransactionalAdapter.GetDataByPermissionPermissionOwnerEntityId(
           permissionId, permissionOwnerId, entityId);
 
-      if(result.Count() == 1)
-        return result.GetEnumerator().Current;
+      if (result.Count() == 1)
+        return result.First();
       else
         return null;
     }

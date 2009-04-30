@@ -352,6 +352,58 @@ namespace HeuristicLab.Security.Core {
           session.EndSession();
       }
     }
- 
+
+    public Permission AddPermission(Permission permission) {
+      try {
+        session = factory.GetSessionForCurrentThread();
+        IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
+
+        if (permission != null) {
+          permissionAdapter.Update(permission);
+
+          return permission;
+        } else
+          return null;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    public bool RemovePermission(Guid permissionId) {
+      try {
+        session = factory.GetSessionForCurrentThread();
+        IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
+
+        Permission permission = permissionAdapter.GetById(permissionId);
+        if (permission != null)
+          return permissionAdapter.Delete(permission);
+        else
+          return false;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    public Permission UpdatePermission(Permission permission) {
+      try {
+        session = factory.GetSessionForCurrentThread();
+        IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
+
+        if(permission != null) {
+          permissionAdapter.Update(permission);
+          return permission;
+        }
+        else
+          return null;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
   }
 }

@@ -50,6 +50,7 @@
     <Compile Include="PermissionManager.cs" />
     <Compile Include="SecurityCorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecurityCoreTest.cs" />
     <Compile Include="SecurityManager.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

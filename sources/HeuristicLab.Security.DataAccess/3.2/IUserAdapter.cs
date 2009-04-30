@@ -36,5 +36,12 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="userId"></param>
     /// <returns></returns>
     User GetByName(string name);
+
+    /// <summary>
+    /// Get the user with the specified name
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    User GetByLogin(string login);
   }
 }

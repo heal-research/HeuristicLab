@@ -10,6 +10,15 @@ namespace HeuristicLab.Security.Contracts.Interfaces {
   public interface ISecurityManager {
 
     [OperationContract]
+    Permission AddPermission(Permission permission);
+
+    [OperationContract]
+    bool RemovePermission(Guid permissionId);
+
+    [OperationContract]
+    Permission UpdatePermission(Permission permission);
+
+    [OperationContract]
     User AddNewUser(User user);
 
     [OperationContract]

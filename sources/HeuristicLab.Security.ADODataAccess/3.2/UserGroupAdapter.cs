@@ -66,7 +66,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         PermOwnerAdapter.GetById(group);
 
         ICollection<Guid> permissionOwners =
-          ManyToManyRelationHelper.GetRelationships(group.Id);
+          ManyToManyRelationHelper.GetRelationships(group.Id, 0);
 
         group.Members.Clear();
         foreach (Guid permissionOwner in permissionOwners) {
@@ -99,7 +99,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         }
 
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          relationships);
+          relationships, 0);
       }
     }
 
@@ -107,7 +107,7 @@ namespace HeuristicLab.Security.ADODataAccess {
       if (group != null) {
         //delete all relationships
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          new List<Guid>());
+          new List<Guid>(), 0);
 
         return base.doDelete(group) &&
           PermOwnerAdapter.Delete(group);
@@ -121,7 +121,10 @@ namespace HeuristicLab.Security.ADODataAccess {
       PermissionOwner permOwner =
         PermOwnerAdapter.GetByName(name);
 
-      return GetById(permOwner.Id);
+      if (permOwner != null)
+        return GetById(permOwner.Id);
+      else
+        return null;
     }
 
     public ICollection<UserGroup> MemberOf(Guid permissionOwnerId) {

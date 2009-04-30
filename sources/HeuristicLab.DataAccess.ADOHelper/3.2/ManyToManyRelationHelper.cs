@@ -22,16 +22,16 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void UpdateRelationships(Guid objectA,
-      IList<Guid> relationships) {
-      UpdateRelationships(objectA, relationships, null);
+      IList<Guid> relationships, int childIndex) {
+      UpdateRelationships(objectA, relationships, null, childIndex);
     }
 
     public void UpdateRelationships(Guid objectA, 
       IList<Guid> relationships,
-      IList<object> additionalAttributes) {
+      IList<object> additionalAttributes, int childIndex) {
       //firstly check for created references
       IList<Guid> existing =
-        this.GetRelationships(objectA); 
+        this.GetRelationships(objectA, childIndex); 
 
       foreach (Guid relationship in relationships) {
         if (!existing.Contains(relationship)) {
@@ -62,7 +62,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       foreach (Guid relationship in deleted) {
         RowT toDelete =
-          FindRow(objectA, relationship);
+          FindRow(objectA, relationship, childIndex);
         if (toDelete != null) {
           toDelete.Delete();
           tableAdapterWrapper.UpdateRow(toDelete);
@@ -70,7 +70,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public IList<Guid> GetRelationships(Guid objectA) {
+    public IList<Guid> GetRelationships(Guid objectA, int childIndex) {
       IList<Guid> result =
         new List<Guid>();
 
@@ -78,20 +78,20 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         tableAdapterWrapper.FindById(objectA);
 
       foreach(RowT row in rows) {
-        result.Add((Guid)row[1]);
+        result.Add((Guid)row[childIndex]);
       }
 
       return result;
     }
 
-    private RowT FindRow(Guid objectA, Guid objectB) {
+    private RowT FindRow(Guid objectA, Guid objectB, int childIndex) {
       IEnumerable<RowT> rows =
        tableAdapterWrapper.FindById(objectA);
 
       RowT found = null;
 
       foreach (RowT row in rows) {
-        if (row[1].Equals(objectB)) {
+        if (row[childIndex].Equals(objectB)) {
           found = row;
           break;
         }

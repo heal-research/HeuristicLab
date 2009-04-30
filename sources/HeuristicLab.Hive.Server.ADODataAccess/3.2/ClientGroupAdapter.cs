@@ -85,7 +85,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         ResAdapter.GetById(clientGroup);
 
         ICollection<Guid> resources =
-          ManyToManyRelationHelper.GetRelationships(clientGroup.Id);
+          ManyToManyRelationHelper.GetRelationships(clientGroup.Id, 1);
 
         clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
@@ -126,7 +126,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
 
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          relationships);
+          relationships, 1);
       }
     }
 
@@ -150,7 +150,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (group != null) {
         //delete all relationships
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          new List<Guid>());
+          new List<Guid>(), 1);
 
         return base.doDelete(group) && 
           ResAdapter.Delete(group);

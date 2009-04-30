@@ -32,6 +32,9 @@ namespace HeuristicLab.Security.ADODataAccess {
     protected override dsSecurity.HLUserRow ConvertObj(User user, dsSecurity.HLUserRow row) {
       if (user != null && row != null) {
         row.PermissionOwnerId = user.Id;
+        row.Login = user.Login;
+        row.MailAddress = user.MailAddress;
+        row.Password = user.Password;
 
         return row;
       } else {
@@ -98,9 +101,19 @@ namespace HeuristicLab.Security.ADODataAccess {
       PermissionOwner permOwner =
         PermOwnerAdapter.GetByName(name);
 
-      return GetById(permOwner.Id);
+      if (permOwner != null)
+        return GetById(permOwner.Id);
+      else
+        return null;
+    }
+
+    public User GetByLogin(string login) {
+      return base.FindSingle(
+        delegate() {
+          return Adapter.GetDataByLogin(login);
+        });
     }
 
     #endregion
-}
+  }
 }

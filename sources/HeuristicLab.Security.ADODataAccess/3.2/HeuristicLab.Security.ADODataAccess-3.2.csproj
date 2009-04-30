@@ -73,6 +73,10 @@ call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ADODataAccessPlugin.cs" />
+    <Compile Include="dsSecurity.cs">
+      <DependentUpon>dsSecurity.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TableAdapterWrapper\GrantedPermissionsAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\PermissionOwner_UserGroupAdapterWrapper.cs" />
     <Compile Include="UserGroupAdapter.cs" />

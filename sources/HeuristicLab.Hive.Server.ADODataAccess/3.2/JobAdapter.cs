@@ -163,7 +163,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           job.MemoryNeeded = default(int);
 
         ICollection<Guid> requiredPlugins =
-          ManyToManyRelationHelper.GetRelationships(job.Id);
+          ManyToManyRelationHelper.GetRelationships(job.Id, 1);
         
         job.PluginsNeeded.Clear();
         foreach (Guid requiredPlugin in requiredPlugins) {
@@ -320,7 +320,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
 
       ManyToManyRelationHelper.UpdateRelationships(
-        obj.Id, relationships);
+        obj.Id, relationships, 1);
     }
 
     protected override bool doDelete(Job job) {
@@ -339,7 +339,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           //delete all relationships
           ManyToManyRelationHelper.UpdateRelationships(job.Id,
-            new List<Guid>());
+            new List<Guid>(), 1);
 
           //delete orphaned pluginInfos
           ICollection<HivePluginInfo> orphanedPluginInfos =

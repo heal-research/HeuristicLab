@@ -34,7 +34,7 @@ namespace HeuristicLab.Security.Core {
         session = factory.GetSessionForCurrentThread();
 
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
-        User user = userAdapter.GetByName(userName);
+        User user = userAdapter.GetByLogin(userName);
 
         if (user.Password.CompareTo(password) == 0) {
           Guid newSessionId = Guid.NewGuid();
