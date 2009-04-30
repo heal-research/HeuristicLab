@@ -151,9 +151,12 @@ namespace HeuristicLab.Core {
       XmlDocument doc = new XmlDocument();
       doc.Load(stream);
       XmlNode rootNode = doc.ChildNodes[1];
-      if(rootNode.Name == "Root" && rootNode.ChildNodes.Count == 2) {
+      if(rootNode.Name == "Root") {
+        XmlNode bodyNode;
+        if (rootNode.ChildNodes.Count == 2) bodyNode = rootNode.ChildNodes[1];
+        else bodyNode = rootNode.ChildNodes[0];
         // load documents that have a list of necessary plugins at the top
-        return PersistenceManager.Restore(rootNode.ChildNodes[1], new Dictionary<Guid, IStorable>());
+        return PersistenceManager.Restore(bodyNode, new Dictionary<Guid, IStorable>());
       } else {
         // compatibility to load documents without list of necessary plugins 
         return PersistenceManager.Restore(rootNode, new Dictionary<Guid, IStorable>());
