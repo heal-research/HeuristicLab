@@ -195,14 +195,14 @@ namespace HeuristicLab.PluginInfrastructure {
 
       
 
-      DiscoveryService dService = new DiscoveryService();
+      //DiscoveryService dService = new DiscoveryService();
       //get the declaring plugin of the job
-      PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
+      //PluginInfo jobPlugin = dService.GetDeclaringPlugin(jobType);
 
       //get all the plugins that have dependencies with the jobplugin
-      List<PluginInfo> depPlugins = GetDependentPluginsRec(jobPlugin);
+      //List<PluginInfo> depPlugins = GetDependentPluginsRec(jobPlugin);
       //insert all jobs into one list
-      depPlugins.Add(jobPlugin);
+      //depPlugins.Add(jobPlugin);
       
       if (sandboxed) {
         pset = new PermissionSet(PermissionState.None);
@@ -210,12 +210,12 @@ namespace HeuristicLab.PluginInfrastructure {
         pset.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
         FileIOPermission fPerm = new FileIOPermission(PermissionState.None);
              
-        foreach (PluginInfo plugin in depPlugins) {
+        /*foreach (PluginInfo plugin in depPlugins) {
             foreach(String assemblies in plugin.Assemblies)
               fPerm.AddPathList(FileIOPermissionAccess.AllAccess, assemblies);
         }
         
-        pset.AddPermission(fPerm);
+        pset.AddPermission(fPerm);*/
 
       } else {
         pset = new PermissionSet(PermissionState.Unrestricted);
@@ -228,12 +228,12 @@ namespace HeuristicLab.PluginInfrastructure {
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
 
-      //if (assemblyFiles != null && assemblyFiles.Count > 0)
-      //  remoteRunner.LoadPlugins(assemblyFiles);
+      if (assemblyFiles != null && assemblyFiles.Count > 0)
+        remoteRunner.LoadPlugins(assemblyFiles);
       
-      if (depPlugins != null && depPlugins.Count > 0) {        
+      /*if (depPlugins != null && depPlugins.Count > 0) {        
         remoteRunner.LoadPlugins(depPlugins);
-      }
+      }*/
       NotifyListeners(PluginManagerAction.Initialized, "All plugins");
       return applicationDomain;
     }
