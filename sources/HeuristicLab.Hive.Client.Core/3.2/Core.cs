@@ -50,6 +50,7 @@ namespace HeuristicLab.Hive.Client.Core {
   /// </summary>
   public class Core: MarshalByRefObject {       
     public static bool abortRequested { get; set; }
+    private bool currentlyFetching = false;
 
     private Dictionary<Guid, Executor> engines = new Dictionary<Guid, Executor>();
     private Dictionary<Guid, AppDomain> appDomains = new Dictionary<Guid, AppDomain>();
@@ -127,8 +128,11 @@ namespace HeuristicLab.Hive.Client.Core {
           ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);          
           break;
         //Pull a Job from the Server
-        case MessageContainer.MessageType.FetchJob: 
-          wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().Id);
+        case MessageContainer.MessageType.FetchJob:
+          if (!currentlyFetching) {
+            wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().Id);
+            currentlyFetching = false;
+          }          
           break;          
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
