@@ -11,7 +11,7 @@ using HeuristicLab.DataAccess.Interfaces;
 namespace HeuristicLab.Security.Core {
   public class SecurityManager : ISecurityManager {
 
-    private static ISessionFactory factory = (new DiscoveryService()).GetInstances<ISessionFactory>()[0];
+    private static ISessionFactory factory = ServiceLocator.GetSessionFactory();
 
     private ISession session;
 

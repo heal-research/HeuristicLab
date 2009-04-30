@@ -103,6 +103,7 @@ copy "%SolutionDir%\HeuristicLab.Security.Contracts\3.2\%Outdir%\HeuristicLab.Se
 copy "%SolutionDir%\HeuristicLab.Security.Core\3.2\%Outdir%\HeuristicLab.Security.Core-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Security.DataAccess\3.2\%Outdir%\HeuristicLab.Security.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Security.ADODataAccess\3.2\%Outdir%\HeuristicLab.Security.ADODataAccess-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Security.Server\3.2\%Outdir%\HeuristicLab.Security.Server-3.2.dll" .\plugins
 
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   

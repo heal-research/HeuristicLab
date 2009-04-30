@@ -11,7 +11,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Security.Core {
   public class PermissionManager : IPermissionManager{
 
-    private static ISessionFactory factory = (new DiscoveryService()).GetInstances<ISessionFactory>()[0];
+    private static ISessionFactory factory = ServiceLocator.GetSessionFactory();
 
     private static ISession session;
     

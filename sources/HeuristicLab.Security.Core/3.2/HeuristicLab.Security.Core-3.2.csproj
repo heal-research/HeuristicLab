@@ -51,6 +51,12 @@
     <Compile Include="SecurityCorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityManager.cs" />
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.DataAccess\3.2\HeuristicLab.DataAccess-3.2.csproj">
@@ -71,8 +77,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

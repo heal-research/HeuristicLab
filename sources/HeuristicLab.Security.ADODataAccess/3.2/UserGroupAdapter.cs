@@ -124,8 +124,12 @@ namespace HeuristicLab.Security.ADODataAccess {
       return GetById(permOwner.Id);
     }
 
-    public ICollection<UserGroup> MemberOf(PermissionOwner permOwner) {
-      throw new NotImplementedException();
+    public ICollection<UserGroup> MemberOf(Guid permissionOwnerId) {
+      return base.FindMultiple(
+        delegate() {
+          return Adapter.GetDataByMemberOf(permissionOwnerId);
+        }
+      );
     }
 
     #endregion

@@ -194,7 +194,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v3.2", "v3.2", "{410732DB-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v3.3", "v3.3", "{78982D7C-D63D-4A3D-AE1F-F58AC007603B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Security.Server-3.2", "HeuristicLab.Security.Server-3.2\3.2\HeuristicLab.Security.Server-3.2.csproj", "{E3288D4B-7A51-499A-AC5B-019319CE51DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Security.Server-3.2", "HeuristicLab.Security.Server\3.2\HeuristicLab.Security.Server-3.2.csproj", "{E3288D4B-7A51-499A-AC5B-019319CE51DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2974,8 +2974,5 @@ Global
 		{A8265018-D687-4907-8A36-63B25967A038} = {78982D7C-D63D-4A3D-AE1F-F58AC007603B}
 		{600287A3-8714-453E-B875-A05F3EB72315} = {78982D7C-D63D-4A3D-AE1F-F58AC007603B}
 		{1BF17271-5350-476A-8F6D-FC74FA3E82CA} = {78982D7C-D63D-4A3D-AE1F-F58AC007603B}
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = HeuristicLab.vsmdi
 	EndGlobalSection
 EndGlobal

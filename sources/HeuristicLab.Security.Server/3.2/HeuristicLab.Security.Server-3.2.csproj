@@ -12,6 +12,8 @@
     <AssemblyName>HeuristicLab.Security.Server-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,7 +60,6 @@
       <DependentUpon>SecurityServer.cs</DependentUpon>
     </Compile>
     <Compile Include="SecurityServerApplication.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityServerPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +77,10 @@
       <DependentUpon>SecurityServer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -83,4 +89,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
 </Project>

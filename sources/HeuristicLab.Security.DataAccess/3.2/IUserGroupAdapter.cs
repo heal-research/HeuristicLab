@@ -42,6 +42,6 @@ namespace HeuristicLab.Security.DataAccess {
     /// </summary>
     /// <param name="permOwner"></param>
     /// <returns></returns>
-    ICollection<UserGroup> MemberOf(PermissionOwner permOwner);
+    ICollection<UserGroup> MemberOf(Guid permissionOwnerId);
   }
 }

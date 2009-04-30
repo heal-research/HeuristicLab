@@ -30,6 +30,17 @@ namespace HeuristicLab.Security.ADODataAccess {
       }
     }
 
+    private IUserGroupAdapter userGroupAdapter;
+
+    private IUserGroupAdapter UserGroupAdapter {
+      get {
+        if (userGroupAdapter == null)
+          this.Session.GetDataAdapter<UserGroup, IUserGroupAdapter>();
+
+        return userGroupAdapter;
+      }
+    }
+
     protected override dsSecurity.PermissionRow ConvertObj(Permission perm, 
       dsSecurity.PermissionRow row) {
       if (row != null && perm != null) {
@@ -88,7 +99,21 @@ namespace HeuristicLab.Security.ADODataAccess {
 
         return perm;
       } else {
-        return null;
+        ICollection<UserGroup> groups =
+          UserGroupAdapter.MemberOf(permissionId);
+
+        GrantedPermission perm = null;
+
+        if (groups != null) {
+          foreach(UserGroup group in groups) {
+            perm = getPermission(group.Id, permissionId, entityId);
+
+            if (perm != null)
+              break;
+          }
+        }
+
+        return perm;
       }
     }
 
