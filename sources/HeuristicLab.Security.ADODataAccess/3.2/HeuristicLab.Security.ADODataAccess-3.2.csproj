@@ -73,7 +73,6 @@ call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ADODataAccessPlugin.cs" />
-    <Compile Include="DbTestApp.cs" />
     <Compile Include="TableAdapterWrapper\GrantedPermissionsAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\PermissionOwner_UserGroupAdapterWrapper.cs" />
     <Compile Include="UserGroupAdapter.cs" />
