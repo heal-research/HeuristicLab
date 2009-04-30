@@ -23,16 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.Security.Contracts.BusinessObjects {
   
   [DataContract]
-  public class GrantedPermission : PersistableObject {
+  public class GrantedPermission {    
     [DataMember]
-    public Permission Permission { get; set; }
+    public Guid PermissionId { get; set; }
     [DataMember]
     public Guid EntityId { get; set; }
     [DataMember]
-    public PermissionOwner PermissionOwner { get; set; }
+    public Guid PermissionOwnerId { get; set; }
   }
 }

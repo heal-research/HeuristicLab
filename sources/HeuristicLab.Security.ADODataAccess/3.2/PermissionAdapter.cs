@@ -17,6 +17,19 @@ namespace HeuristicLab.Security.ADODataAccess {
       base(new PermissionAdapterWrapper()) {
     }
 
+    private GrantedPermissionsAdapterWrapper grantedPermissionsAdapter;
+
+    private GrantedPermissionsAdapterWrapper GrantedPermissionsAdapter {
+      get {
+        if (grantedPermissionsAdapter == null)
+          grantedPermissionsAdapter = new GrantedPermissionsAdapterWrapper();
+
+        grantedPermissionsAdapter.Session = Session as Session;
+
+        return grantedPermissionsAdapter;
+      }
+    }
+
     protected override dsSecurity.PermissionRow ConvertObj(Permission perm, 
       dsSecurity.PermissionRow row) {
       if (row != null && perm != null) {
@@ -58,22 +71,49 @@ namespace HeuristicLab.Security.ADODataAccess {
 
     #region IPermissionAdapter Members
 
-    public GrantedPermission getPermission(PermissionOwner permissionOwner, 
-      Permission permission, 
-      Guid entityId) {
-      throw new NotImplementedException();
+    #endregion
+
+    #region IPermissionAdapter Members
+
+    public GrantedPermission getPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
+      dsSecurity.GrantedPermissionsRow row =
+          GrantedPermissionsAdapter.FindByPermissionPermissionOwnerEntityId(
+        permissionId, permissionOwnerId, entityId); 
+
+      if (row != null) {
+        GrantedPermission perm = new GrantedPermission();
+        perm.PermissionId = row.PermissionId;
+        perm.PermissionOwnerId = row.PermissionOwnerId;
+        perm.EntityId = row.EntityId;
+
+        return perm;
+      } else {
+        return null;
+      }
     }
 
-    public bool grantPermission(Guid permissionOwnerId, 
-      Guid permissionId, 
-      Guid entityId) {
-      throw new NotImplementedException();
+    public bool grantPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
+      if (getPermission(permissionOwnerId, permissionId, entityId) == null) {
+        GrantedPermission perm = new GrantedPermission();
+        perm.PermissionId = permissionId;
+        perm.PermissionOwnerId = permissionOwnerId;
+        perm.EntityId = entityId;
+
+        return GrantedPermissionsAdapter.InsertNewRow(perm) != null;
+      } else {
+        return false;
+      }      
     }
 
-    public bool revokePermission(Guid permissionOwnerId, 
-      Guid permissionId, 
-      Guid entityId) {
-      throw new NotImplementedException();
+    public bool revokePermission(Guid permissionOwnerId, Guid permissionId, Guid entityId) {
+      GrantedPermission perm =
+        getPermission(permissionOwnerId, permissionId, entityId);
+      
+      if (perm != null) {
+        return GrantedPermissionsAdapter.DeleteRow(perm);
+      } else {
+        return false;
+      } 
     }
 
     #endregion

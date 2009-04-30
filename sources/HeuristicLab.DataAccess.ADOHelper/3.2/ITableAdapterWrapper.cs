@@ -29,7 +29,7 @@ using System.Data.Common;
 namespace HeuristicLab.DataAccess.ADOHelper {
   public interface ITableAdapterWrapper<AdapterT, ObjT, RowT>
    where AdapterT : new()
-   where ObjT : IPersistableObject, new()
+   where ObjT : new()
    where RowT : System.Data.DataRow {
     void UpdateRow(RowT row);
 

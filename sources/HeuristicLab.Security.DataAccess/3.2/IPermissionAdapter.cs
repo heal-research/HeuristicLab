@@ -37,7 +37,7 @@ namespace HeuristicLab.Security.DataAccess {
     /// <param name="permissionId"></param>
     /// <param name="entityId"></param>
     /// <returns></returns>
-    GrantedPermission getPermission(PermissionOwner permissionOwner, Permission permission, Guid entityId);
+    GrantedPermission getPermission(Guid permissionOwnerId, Guid permissionId, Guid entityId);
 
     /// <summary>
     /// Adds a permission

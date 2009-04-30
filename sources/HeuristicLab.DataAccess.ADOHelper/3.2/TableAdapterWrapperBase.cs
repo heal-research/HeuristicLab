@@ -30,7 +30,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
   public abstract class TableAdapterWrapperBase<AdapterT, ObjT, RowT>:
     ITableAdapterWrapper<AdapterT, ObjT, RowT>
     where AdapterT : new()
-    where ObjT : IPersistableObject, new()
+    where ObjT : new()
     where RowT : System.Data.DataRow {
     protected AdapterT adapter =
       new AdapterT();

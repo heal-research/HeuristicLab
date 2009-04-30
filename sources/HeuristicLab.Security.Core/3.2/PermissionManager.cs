@@ -72,7 +72,7 @@ namespace HeuristicLab.Security.Core {
           Permission permission = permissionAdapter.GetById(permissionId);
           
           if ((permission != null) && (permOwner != null))
-            return (permissionAdapter.getPermission(permOwner, permission,entityId) != null);
+            return (permissionAdapter.getPermission(permOwner.Id, permission.Id, entityId) != null);
           else return false;
         }
         finally {
