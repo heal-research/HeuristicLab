@@ -137,7 +137,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.tbUserName.Name = "tbUserName";
       this.tbUserName.Size = new System.Drawing.Size(189, 20);
       this.tbUserName.TabIndex = 2;
-      this.tbUserName.TextChanged += new System.EventHandler(this.tbUserName_TextChanged);
+     // this.tbUserName.TextChanged += new System.EventHandler(this.tbUserName_TextChanged);
       this.tbUserName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       // 
       // lblPwd
