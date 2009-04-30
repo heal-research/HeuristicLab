@@ -126,6 +126,9 @@ namespace HeuristicLab.Hive.Server.Core {
             heartbeatLock.EnterWriteLock();
             if (lastHeartbeats.ContainsKey(client.Id))
               lastHeartbeats.Remove(client.Id);
+            foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
+              jobManager.ResetJobsDependingOnResults(job);
+            }
             heartbeatLock.ExitWriteLock();
           }
         }

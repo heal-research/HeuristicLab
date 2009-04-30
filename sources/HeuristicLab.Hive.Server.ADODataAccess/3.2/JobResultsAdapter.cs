@@ -91,7 +91,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override JobResult ConvertRow(dsHiveServer.JobResultRow row, 
       JobResult result) {
       if (row != null && result != null) {
-        row.JobResultId = result.Id;
         result.Id = row.JobResultId;
 
         if (!row.IsJobIdNull())
