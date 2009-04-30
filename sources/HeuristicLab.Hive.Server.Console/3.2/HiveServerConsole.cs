@@ -116,6 +116,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void EnableForm(bool cf, bool error) {
       if (cf) {
         this.Visible = true;
+        ServiceLocator.ShutDownFacade();
         if (error == true) {
           lblError.Text = "Something went wrong with the server";
         }

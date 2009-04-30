@@ -56,12 +56,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private Job currentJob = null;
     private ClientInfo currentClient = null;
+    TreeNode currentNode = null;
 
     //TODO delete
     private string nameCurrentJob = "";
     private string nameCurrentClient = "";
     private bool flagJob = false;
-    private bool flagClient = false;
 
     private List<Changes> changes = new List<Changes>();
 
@@ -247,6 +247,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         AddClientOrGroup(cg, null);
       }
 
+      if (currentNode != null) {
+        lvClientControl.Items.Clear();
+        lvClientControl.Groups.Clear();
+        AddGroupsToListView(currentNode);
+      }
       tvClientControl.ExpandAll();
     }
 
@@ -262,7 +267,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       lvClientControl.Groups.Add(lvg);
       foreach (Resource resource in clientGroup.Resources) {
         if (resource is ClientInfo) {
-          ListViewItem lvi = new ListViewItem(resource.Name, 0, lvg);
+          int percentageUsage = CapacityRam(((ClientInfo)resource).NrOfCores, ((ClientInfo)resource).NrOfFreeCores);
+          int usage = 3;
+          if ((((ClientInfo)resource).State != State.offline) &&
+            (((ClientInfo)resource).State != State.nullState)) {
+            if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
+              usage = 0;
+            } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
+              usage = 1;
+            } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
+              usage = 2;
+            }
+          }
+          ListViewItem lvi = new ListViewItem(resource.Name, usage, lvg);
           lvi.Tag = resource as ClientInfo;
           clientGroupList.Add(lvi);
         } else if (resource is ClientGroup) {
@@ -456,6 +473,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if (nameCurrentJob == change.ID.ToString()) {
               JobClicked();
             }
+            foreach (Job job in jobs.List) {
+              if (job.Id == change.ID) {
+                lvJobControl.Items[i].Tag = job;
+                break;
+              }
+            }
             State state = jobs.List[change.Position].State;
             System.Diagnostics.Debug.WriteLine(lvJobControl.Items[i].Text.ToString());
             if (state == State.finished) {
@@ -578,7 +601,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void OnLVClientClicked(object sender, EventArgs e) {
       nameCurrentClient = lvClientControl.SelectedItems[0].Tag.ToString();
-      flagClient = true;
       ClientClicked();
     }
 
@@ -863,6 +885,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void tvClientControl_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
       lvClientControl.Items.Clear();
       lvClientControl.Groups.Clear();
+      currentNode = e.Node;
       AddGroupsToListView(e.Node);
     }
 

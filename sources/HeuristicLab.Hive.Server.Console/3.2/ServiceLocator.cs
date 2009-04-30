@@ -39,5 +39,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       return serverConsoleFacade;
     }
+
+    internal static void ShutDownFacade() {
+      serverConsoleFacade = null;
+    }
   }
 }
