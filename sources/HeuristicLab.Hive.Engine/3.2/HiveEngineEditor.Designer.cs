@@ -86,12 +86,14 @@ namespace HeuristicLab.Hive.Engine {
       // snapshotButton
       // 
       this.snapshotButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.snapshotButton.Enabled = false;
       this.snapshotButton.Location = new System.Drawing.Point(294, 457);
       this.snapshotButton.Name = "snapshotButton";
       this.snapshotButton.Size = new System.Drawing.Size(92, 23);
       this.snapshotButton.TabIndex = 6;
       this.snapshotButton.Text = "Snapshot";
       this.snapshotButton.UseVisualStyleBackColor = true;
+      this.snapshotButton.Click += new System.EventHandler(this.snapshotButton_Click);
       // 
       // urlTextBox
       // 

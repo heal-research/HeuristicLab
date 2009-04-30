@@ -41,7 +41,9 @@ namespace HeuristicLab.Hive.Engine {
     public HiveEngine HiveEngine {
       get { return (HiveEngine)Engine; }
       set {
+        if (base.Engine != null) RemoveItemEvents();
         base.Engine = value;
+        AddItemEvents();
         SetDataBinding();
       }
     }
@@ -60,10 +62,39 @@ namespace HeuristicLab.Hive.Engine {
     public HiveEngineEditor(HiveEngine hiveEngine)
       : this() {
       HiveEngine = hiveEngine;
+      base.executeButton.Click += new EventHandler(executeButton_Click);
+    }
+
+    void executeButton_Click(object sender, EventArgs e) {
+      snapshotButton.Enabled = true;
     }
 
     private void SetDataBinding() {
       urlTextBox.DataBindings.Add("Text", HiveEngine, "HiveServerUrl");
+    }
+
+    protected override void RemoveItemEvents() {
+      Engine.Initialized -= new EventHandler(Engine_Initialized);
+      Engine.Finished -= new EventHandler(Engine_Finished);
+      base.RemoveItemEvents();
+    }
+
+    protected override void AddItemEvents() {
+      base.AddItemEvents();
+      Engine.Finished += new EventHandler(Engine_Finished);
+      Engine.Initialized += new EventHandler(Engine_Initialized);
+    }
+
+    void Engine_Initialized(object sender, EventArgs e) {
+      snapshotButton.Enabled = false;
+    }
+
+    void Engine_Finished(object sender, EventArgs e) {
+      snapshotButton.Enabled = false;
+    }
+
+    private void snapshotButton_Click(object sender, EventArgs e) {
+      HiveEngine.RequestSnapshot();
     }
   }
 }

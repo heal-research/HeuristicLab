@@ -30,6 +30,7 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.IO;
+using System.Xml;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -44,7 +45,6 @@ namespace HeuristicLab.Hive.Engine {
     public HiveEngine() {
       job = new Job();
     }
-
 
     #region IEngine Members
 
@@ -74,7 +74,7 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Execute() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-     
+
       DiscoveryService dService = new DiscoveryService();
       PluginInfo depInfo = dService.GetDeclaringPlugin(typeof(HiveEngine));
       List<PluginInfo> dependentPlugins = PluginManager.Manager.GetDependentPluginsRec(depInfo);
@@ -88,7 +88,7 @@ namespace HeuristicLab.Hive.Engine {
         new List<HivePluginInfo>();
 
       foreach (PluginInfo info in dependentPlugins) {
-        HivePluginInfo pluginInfo = 
+        HivePluginInfo pluginInfo =
           new HivePluginInfo();
         pluginInfo.Name = info.Name;
         pluginInfo.Version = info.Version.ToString();
@@ -101,6 +101,28 @@ namespace HeuristicLab.Hive.Engine {
       jobId = res.Obj.Id;
     }
 
+    public void RequestSnapshot() {
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+
+      //Requests the last result.
+      //false: There will always be a result that is been sent back
+      //true: if you hit "requestsnapshot" before - it won't send you the job back if
+      //      the snapshot hasn't been submitted to the server (because the client needs
+      //      more time).
+      var result = executionEngineFacade.GetLastResult(jobId, false);
+      if (result.Success) {
+        JobResult jobResult = result.Obj;
+        if (jobResult != null) {
+          job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
+          PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+        }
+      } else {
+        Exception ex = new Exception(result.Obj.Exception.Message);
+        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
+      }
+    }
+
+
     public void ExecuteStep() {
       throw new NotSupportedException();
     }
@@ -111,41 +133,67 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Abort() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-      
-      
-      //This are just Stubs on the server right now. There won't be any effect right now...
-      executionEngineFacade.AbortJob(jobId);      
-      executionEngineFacade.RequestSnapshot(Guid);
-      
-      //Requests the last result.
-      //false: There will always be a result that is been sent back
-      //true: if you hit "requestsnapshot" before - it won't send you the job back if
-      //      the snapshot hasn't been submitted to the server (because the client needs
-      //      more time).
-      executionEngineFacade.GetLastResult(jobId, false);
 
-      throw new NotImplementedException();
+      //This are just Stubs on the server right now. There won't be any effect right now...
+      executionEngineFacade.AbortJob(jobId);
+      OnFinished();
     }
 
     public void Reset() {
-      throw new NotImplementedException();
+      job.Engine.Reset();
+      jobId = Guid.NewGuid();
+      OnInitialized();
     }
 
     public event EventHandler Initialized;
+    /// <summary>
+    /// Fires a new <c>Initialized</c> event.
+    /// </summary>
+    protected virtual void OnInitialized() {
+      if (Initialized != null)
+        Initialized(this, new EventArgs());
+    }
 
     public event EventHandler<OperationEventArgs> OperationExecuted;
+    /// <summary>
+    /// Fires a new <c>OperationExecuted</c> event.
+    /// </summary>
+    /// <param name="operation">The operation that has been executed.</param>
+    protected virtual void OnOperationExecuted(IOperation operation) {
+      if (OperationExecuted != null)
+        OperationExecuted(this, new OperationEventArgs(operation));
+    }
 
     public event EventHandler<ExceptionEventArgs> ExceptionOccurred;
+    /// <summary>
+    /// Aborts the execution and fires a new <c>ExceptionOccurred</c> event.
+    /// </summary>
+    /// <param name="exception">The exception that was thrown.</param>
+    protected virtual void OnExceptionOccurred(Exception exception) {
+      Abort();
+      if (ExceptionOccurred != null)
+        ExceptionOccurred(this, new ExceptionEventArgs(exception));
+    }
 
     public event EventHandler ExecutionTimeChanged;
+    /// <summary>
+    /// Fires a new <c>ExecutionTimeChanged</c> event.
+    /// </summary>
+    protected virtual void OnExecutionTimeChanged() {
+      if (ExecutionTimeChanged != null)
+        ExecutionTimeChanged(this, new EventArgs());
+    }
 
     public event EventHandler Finished;
+    /// <summary>
+    /// Fires a new <c>Finished</c> event.
+    /// </summary>
+    protected virtual void OnFinished() {
+      if (Finished != null)
+        Finished(this, new EventArgs());
+    }
 
     #endregion
-
-    public void RequestSnapshot() {
-      throw new NotImplementedException();
-    }
 
     public override IView CreateView() {
       return new HiveEngineEditor(this);
@@ -157,5 +205,20 @@ namespace HeuristicLab.Hive.Engine {
       return new HiveEngineEditor(this);
     }
     #endregion
+
+    public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute attr = document.CreateAttribute("HiveServerUrl");
+      attr.Value = HiveServerUrl;
+      node.Attributes.Append(attr);
+      node.AppendChild(PersistenceManager.Persist("Job", job, document, persistedObjects));
+      return node;
+    }
+
+    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      HiveServerUrl = node.Attributes["HiveServerUrl"].Value;
+      job = (Job)PersistenceManager.Restore(node.SelectSingleNode("Job"), restoredObjects);
+    }
   }
 }
