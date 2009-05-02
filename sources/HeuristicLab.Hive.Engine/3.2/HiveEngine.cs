@@ -31,6 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.IO;
 using System.Xml;
+using System.IO.Compression;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -75,30 +76,48 @@ namespace HeuristicLab.Hive.Engine {
     public void Execute() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
 
-      DiscoveryService dService = new DiscoveryService();
-      PluginInfo depInfo = dService.GetDeclaringPlugin(typeof(HiveEngine));
-      List<PluginInfo> dependentPlugins = PluginManager.Manager.GetDependentPluginsRec(depInfo);
-      dependentPlugins.Add(depInfo);
+      var jobObj = CreateJobObj();
 
+      ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
+      jobId = res.Obj.Id;
+    }
+
+    private HeuristicLab.Hive.Contracts.BusinessObjects.Job CreateJobObj() {
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
-      jobObj.SerializedJob = PersistenceManager.SaveToGZip(job);
-      jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
+
+      MemoryStream memStream = new MemoryStream();
+      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+      XmlDocument document = PersistenceManager.CreateXmlDocument();
+      Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
+      XmlNode rootNode = document.CreateElement("Root");
+      document.AppendChild(rootNode);
+      rootNode.AppendChild(PersistenceManager.Persist(job, document, dictionary));
+      document.Save(stream);
+      stream.Close();
+      jobObj.SerializedJob = memStream.ToArray();
+
+      DiscoveryService service = new DiscoveryService();
+      List<PluginInfo> plugins = new List<PluginInfo>();
+
+      foreach (IStorable storeable in dictionary.Values) {
+        PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
+        if (!plugins.Contains(pluginInfo)) plugins.Add(pluginInfo);
+      }
 
       List<HivePluginInfo> pluginsNeeded =
         new List<HivePluginInfo>();
-
-      foreach (PluginInfo info in dependentPlugins) {
+      foreach (PluginInfo uniquePlugin in plugins) {
         HivePluginInfo pluginInfo =
           new HivePluginInfo();
-        pluginInfo.Name = info.Name;
-        pluginInfo.Version = info.Version.ToString();
-        pluginInfo.BuildDate = info.BuildDate;
+        pluginInfo.Name = uniquePlugin.Name;
+        pluginInfo.Version = uniquePlugin.Version.ToString();
+        pluginInfo.BuildDate = uniquePlugin.BuildDate;
         pluginsNeeded.Add(pluginInfo);
       }
 
       jobObj.PluginsNeeded = pluginsNeeded;
-      ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
-      jobId = res.Obj.Id;
+      jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
+      return jobObj;
     }
 
     public void RequestSnapshot() {

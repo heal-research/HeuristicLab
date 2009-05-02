@@ -262,35 +262,6 @@ namespace HeuristicLab.PluginInfrastructure {
       return mergedList;
     }
 
-
-    /// <summary>
-    /// Calculates a set of plugins that directly or transitively depend on the plugin given in the argument.
-    /// </summary>
-    /// <param name="pluginInfo">The plugin the other depend on.</param>
-    /// <returns>a list of plugins that are directly of transitively dependent.</returns>
-    public List<PluginInfo> GetDependentPluginsRec(PluginInfo pluginInfo) {
-      List<PluginInfo> mergedList = new List<PluginInfo>();
-      //Bugfix the hell out of this...
-      //Bugfixed the hell out of this...
-      foreach (PluginInfo info in pluginInfo.Dependencies) {
-        if (!mergedList.Contains(info)) {
-          mergedList.Add(info);
-          AddDependenciesRecursive(info, mergedList);        
-        }        
-      }
-      return mergedList;
-    }
-
-    private void AddDependenciesRecursive(PluginInfo info, List<PluginInfo> mergedList) {
-      //if we've already processed this element => STOP IT!
-      if(!mergedList.Contains(info)) {
-        mergedList.Add(info);
-        return;
-      }
-      foreach (PluginInfo depinfo in info.Dependencies)
-        AddDependenciesRecursive(depinfo, mergedList);       
-    }
-
     /// <summary>
     /// Unloads all plugins.
     /// </summary>
