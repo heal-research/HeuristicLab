@@ -43,27 +43,30 @@ namespace HeuristicLab.Security.Server {
         return false;
     }
 
-    private Uri StartService(Services svc, IPAddress ipAddress, int port) {
+    private String StartService(Services svc, IPAddress ipAddress, int port) {
       string curServiceHost = "";
       Uri uriTcp;
+      String result = "";
       ISecurityManager[] securityManagerInstances = discService.GetInstances<ISecurityManager>();
       IPermissionManager[] permissionManagerInstances = discService.GetInstances<IPermissionManager>();
       ServiceHost serviceHost = null;
       switch (svc) {
         case Services.PermissionManager:
           if (securityManagerInstances.Length > 0) {
-            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/PermissionManager/"); 
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/"); 
             serviceHost = new ServiceHost(permissionManagerInstances[0].GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IPermissionManager), binding, STR_PermissionManager);
             curServiceHost = STR_PermissionManager;
+            result = uriTcp.ToString() + STR_PermissionManager;
           }
           break;
         case Services.SecurityManager:
           if (securityManagerInstances.Length > 0) {
-            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityManager/");
+            uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/");
             serviceHost = new ServiceHost(securityManagerInstances[0].GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(ISecurityManager), binding, STR_SecurityManager);
             curServiceHost = STR_SecurityManager;
+            result = uriTcp.ToString() + STR_SecurityManager;
           }
           break;
         case Services.All:
@@ -76,7 +79,7 @@ namespace HeuristicLab.Security.Server {
     //    WcfSettings.SetServiceCertificate(serviceHost);
         serviceHost.Open();
         runningServices.Add(curServiceHost, serviceHost);
-        return serviceHost.BaseAddresses[0];
+        return result;
       } else
         return null;
     }
@@ -110,7 +113,7 @@ namespace HeuristicLab.Security.Server {
       }
       
       //Start services and record their base address
-      Dictionary<string, Uri> baseAddrDict = new Dictionary<string, Uri>();
+      Dictionary<string, String> baseAddrDict = new Dictionary<string, String>();
       baseAddrDict.Add(STR_PermissionManager,
         StartService(Services.PermissionManager, addresses[index], DEFAULT_PORT_PM));
       baseAddrDict.Add(STR_SecurityManager,

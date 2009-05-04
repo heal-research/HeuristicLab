@@ -7,6 +7,7 @@ using HeuristicLab.Security.Contracts.BusinessObjects;
 using HeuristicLab.Security.DataAccess;
 using HeuristicLab.DataAccess.Interfaces;
 using HeuristicLab.PluginInfrastructure;
+using System.Security.Cryptography;
 
 namespace HeuristicLab.Security.Core {
   public class PermissionManager : IPermissionManager{
@@ -18,7 +19,27 @@ namespace HeuristicLab.Security.Core {
     private static IDictionary<Guid,string> currentSessions = new Dictionary<Guid, string>();
     Object locker = new Object();
 
- 
+    private static string getMd5Hash(string input) {
+      // Create a new instance of the MD5CryptoServiceProvider object.
+      MD5 md5Hasher = MD5.Create();
+
+      // Convert the input string to a byte array and compute the hash.
+      byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+
+      // Create a new Stringbuilder to collect the bytes
+      // and create a string.
+      StringBuilder sBuilder = new StringBuilder();
+
+      // Loop through each byte of the hashed data 
+      // and format each one as a hexadecimal string.
+      for (int i = 0; i < data.Length; i++) {
+        sBuilder.Append(data[i].ToString("x2"));
+      }
+
+      // Return the hexadecimal string.
+      return sBuilder.ToString();
+    }
+
    /// <summary>
    /// If a session exists for this userName then it is returned, otherwise the given password
    /// is checked and a new session is created.
@@ -33,10 +54,13 @@ namespace HeuristicLab.Security.Core {
       try {
         session = factory.GetSessionForCurrentThread();
 
+        password = getMd5Hash(password);
+
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
         User user = userAdapter.GetByLogin(userName);
 
-        if (user.Password.CompareTo(password) == 0) {
+        if (user != null && 
+            user.Password.Equals(password)) {
           Guid newSessionId = Guid.NewGuid();
           lock (locker)
             currentSessions.Add(newSessionId, userName);
@@ -103,9 +127,6 @@ namespace HeuristicLab.Security.Core {
         if (currentSessions[guid].CompareTo(userName) == 0)
           return guid;
       return Guid.Empty;
-    }
-
-    public void TestServer() {
     }
   } 
 }

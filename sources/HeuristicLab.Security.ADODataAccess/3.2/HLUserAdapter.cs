@@ -54,9 +54,9 @@ namespace HeuristicLab.Security.ADODataAccess {
           user.Login = String.Empty;
 
         if (!row.IsPasswordNull())
-          user.Password = row.Password;
+          user.SetPlainPassword(row.Password);
         else
-          user.Password = String.Empty;
+          user.SetPlainPassword(String.Empty);
 
         if (!row.IsMailAddressNull())
           user.MailAddress = row.MailAddress;

@@ -18,8 +18,5 @@ namespace HeuristicLab.Security.Contracts.Interfaces {
     [OperationContract]
     void EndSession(Guid sessionId);
 
-    [OperationContract]
-    [FaultContractAttribute(typeof(CommunicationException))]
-    void TestServer();
   }
 }

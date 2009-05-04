@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.Security.Server {
   public partial class SecurityServer : Form {
-    public SecurityServer(Dictionary<string, Uri> baseAddrDict) {
+    public SecurityServer(Dictionary<string, String> baseAddrDict) {
       InitializeComponent();
-      Uri uri;
+      String uri;
       baseAddrDict.TryGetValue(SecurityServerApplication.STR_PermissionManager, out uri);
       if (uri != null)
         this.labelPermission.Text = uri.ToString();
