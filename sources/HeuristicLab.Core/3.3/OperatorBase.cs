@@ -103,6 +103,7 @@ namespace HeuristicLab.Core {
     private List<IVariable> VariablePersistence {
       get { return new List<IVariable>(myVariables.Values); }
       set {
+        myVariables.Clear();
         foreach (IVariable var in value) {
           AddVariable(var);
         }
