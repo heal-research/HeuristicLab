@@ -27,6 +27,7 @@ using System.IO;
 using System.IO.Compression;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -50,18 +51,7 @@ namespace HeuristicLab.Core {
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="stream">The (file) stream where the object should be saved.</param>
     public static void Save(IStorable instance, Stream stream) {
-      string tempfile = Path.GetTempFileName();
-      XmlGenerator.Serialize(instance, tempfile);
-      Stream reader = new FileStream(tempfile, FileMode.Open);
-      byte[] buffer = new byte[1024];
-      int bytesRead = 0;
-      do {
-        bytesRead = reader.Read(buffer, 0, buffer.Length);
-        stream.Write(buffer, 0, bytesRead);
-      } while (bytesRead > 0);
-      reader.Close();
-      stream.Close();
-      File.Delete(tempfile);
+      XmlGenerator.Serialize(instance, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()));      
     }
     /// <summary>
     /// Loads an object from a file with the specified <paramref name="filename"/>.
@@ -71,7 +61,7 @@ namespace HeuristicLab.Core {
     /// <param name="filename">The filename of the file where the data is saved.</param>
     /// <returns>The loaded object.</returns>
     public static IStorable Load(string filename) {
-      return (IStorable)XmlParser.DeSerialize(filename);
+      return (IStorable)XmlParser.Deserialize(filename);
     }
     /// <summary>
     /// Loads an object from the specified <paramref name="stream"/>.
@@ -81,19 +71,7 @@ namespace HeuristicLab.Core {
     /// <param name="stream">The stream from where to load the data.</param>
     /// <returns>The loaded object.</returns>
     public static IStorable Load(Stream stream) {
-      string tempfile = Path.GetTempFileName();
-      Stream writer = new FileStream(tempfile, FileMode.CreateNew);
-      byte[] buffer = new byte[1024];
-      int bytesRead = 0;
-      do {
-        bytesRead = stream.Read(buffer, 0, buffer.Length);
-        writer.Write(buffer, 0, bytesRead);
-      } while (bytesRead > 0);
-      stream.Close();
-      writer.Close();
-      object o = XmlParser.DeSerialize(tempfile);
-      File.Delete(tempfile);
-      return (IStorable)o;
+      return (IStorable)XmlParser.Deserialize(stream);
     }
 
     /// <summary>

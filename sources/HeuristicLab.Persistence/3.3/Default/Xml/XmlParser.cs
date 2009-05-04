@@ -121,9 +121,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
-    public static object DeSerialize(string filename) {
-      try {
-        ZipFile zipFile = new ZipFile(filename);
+    public static object Deserialize(string filename) {
+      return Deserialize(new ZipFile(filename));
+    }
+
+    public static object Deserialize(Stream stream) {
+      return Deserialize(new ZipFile(stream));
+    }
+
+    private static object Deserialize(ZipFile zipFile) {
+      try {        
         Deserializer deSerializer = new Deserializer(
           ParseTypeCache(
           new StreamReader(

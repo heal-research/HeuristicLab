@@ -218,7 +218,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       r.kvp = new KeyValuePair<string, int>("string key", 321);
       r.uninitialized = null;
       XmlGenerator.Serialize(r, tempFile);
-      Root newR = (Root)XmlParser.DeSerialize(tempFile);
+      Root newR = (Root)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(r),
         DebugStringGenerator.Serialize(newR));
@@ -282,7 +282,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       c.allCs = cs;
       c.kvpList = new KeyValuePair<List<C>, C>(new List<C> { c }, c);
       XmlGenerator.Serialize(cs, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(cs),
         DebugStringGenerator.Serialize(o));
@@ -314,7 +314,7 @@ namespace HeuristicLab.Persistence.UnitTest {
                               new[] { 1, 2 }, new[] { 3, 4 });
       arrayListArray[2].Add(a);
       XmlGenerator.Serialize(arrayListArray, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(arrayListArray),
         DebugStringGenerator.Serialize(o));
@@ -329,7 +329,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     public void CustomSerializationProperty() {
       Manager m = new Manager();
       XmlGenerator.Serialize(m, tempFile);
-      Manager newM = (Manager)XmlParser.DeSerialize(tempFile);
+      Manager newM = (Manager)XmlParser.Deserialize(tempFile);
       Assert.AreNotEqual(
         DebugStringGenerator.Serialize(m),
         DebugStringGenerator.Serialize(newM));
@@ -343,7 +343,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     public void Primitives() {
       PrimitivesTest sdt = new PrimitivesTest();
       XmlGenerator.Serialize(sdt, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));
@@ -356,7 +356,7 @@ namespace HeuristicLab.Persistence.UnitTest {
         {"Beten", "und", "Arbeiten"}
       };
       XmlGenerator.Serialize(mDimString, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(mDimString),
         DebugStringGenerator.Serialize(o));
@@ -371,7 +371,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     public void NestedTypeTest() {
       NestedType t = new NestedType();
       XmlGenerator.Serialize(t, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(t),
         DebugStringGenerator.Serialize(o));
@@ -382,7 +382,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     public void SimpleArray() {
       string[] strings = { "ora", "et", "labora" };
       XmlGenerator.Serialize(strings, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(strings),
         DebugStringGenerator.Serialize(o));
@@ -399,7 +399,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     [TestMethod]
     public void PrimitiveRoot() {
       XmlGenerator.Serialize(12.3f, tempFile);
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(12.3f),
         DebugStringGenerator.Serialize(o));
@@ -455,7 +455,7 @@ namespace HeuristicLab.Persistence.UnitTest {
           new List<IDecomposer> { 
             new StorableDecomposer(),
             new Number2StringDecomposer() }));
-      object o = XmlParser.DeSerialize(tempFile);
+      object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));
@@ -466,7 +466,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       EventTest et = new EventTest();
       et.OnChange += (o) => o;
       XmlGenerator.Serialize(et, tempFile);
-      EventTest newEt = (EventTest)XmlParser.DeSerialize(tempFile);
+      EventTest newEt = (EventTest)XmlParser.Deserialize(tempFile);
     }
 
     [TestMethod]
@@ -476,7 +476,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       et.complexEnum = ComplexEnum.three;
       et.trickyEnum = TrickyEnum.two | TrickyEnum.one;
       XmlGenerator.Serialize(et, tempFile);
-      EnumTest newEt = (EnumTest)XmlParser.DeSerialize(tempFile);
+      EnumTest newEt = (EnumTest)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(et.simpleEnum, SimpleEnum.two);
       Assert.AreEqual(et.complexEnum, ComplexEnum.three);
       Assert.AreEqual(et.trickyEnum, (TrickyEnum)3);
@@ -490,7 +490,7 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(ints[0], ints[1]);
       Assert.AreNotSame(ints[0], ints[1]);
       XmlGenerator.Serialize(ints, tempFile);
-      List<IntWrapper> newInts = (List<IntWrapper>)XmlParser.DeSerialize(tempFile);
+      List<IntWrapper> newInts = (List<IntWrapper>)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(newInts[0].Value, 1);
       Assert.AreEqual(newInts[1].Value, 1);
       Assert.AreEqual(newInts[0], newInts[1]);
@@ -516,7 +516,7 @@ namespace HeuristicLab.Persistence.UnitTest {
         XmlGenerator.Serialize(s, tempFile);
         Assert.Fail("Exception expected");
       } catch (PersistenceException) { }
-      List<int> newList = (List<int>)XmlParser.DeSerialize(tempFile);
+      List<int> newList = (List<int>)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(list[0], newList[0]);
       Assert.AreEqual(list[1], newList[1]);
     }
