@@ -45,16 +45,12 @@ namespace HeuristicLab.FixedOperators {
             next = atomicOperation.Operator.Execute(atomicOperation.Scope);
           }
           catch (Exception) {
-            // push operation on stack again
-            executionStack.Push(atomicOperation);
             //Abort();
             //ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
             throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute");
           }
           if (next != null)
             executionStack.Push(next);
-          //OnOperationExecuted(atomicOperation);
-          //if (atomicOperation.Operator.Breakpoint) Abort();
         } else if (operation is CompositeOperation) {
           CompositeOperation compositeOperation = (CompositeOperation)operation;
           for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)

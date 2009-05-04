@@ -112,7 +112,6 @@ namespace HeuristicLab.FixedOperators {
     public override IOperation Apply(IScope scope) {
       Stopwatch swApply = new Stopwatch();
       swApply.Start();
-      //base.Apply(scope); // noch nachfragen ob das auch in ordnung wäre
       for (int i = 0; i < SubOperators.Count; i++) {
         if (scope.GetVariable(SubOperators[i].Name) != null)
           scope.RemoveVariable(SubOperators[i].Name);
@@ -144,16 +143,14 @@ namespace HeuristicLab.FixedOperators {
 
       // executionpointer saves the reentry point after engine abort occurs.
       IntData executionPointer;
-      try 
-	    {
-    		executionPointer = GetVariableValue<IntData>("ExecutionPointer", scope, true);
-	    }
-	    catch (Exception)
-	    {
+      try {
+        executionPointer = GetVariableValue<IntData>("ExecutionPointer", scope, true);
+      }
+      catch (Exception) {
         scope.AddVariable(new Variable("ExecutionPointer", new IntData(-1)));
         executionPointer = GetVariableValue<IntData>("ExecutionPointer", scope, true);
       }
-      
+
       // fetch variables from scope for create children
       InitializeExecuteCreateChildren(scope);
       for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
@@ -244,7 +241,7 @@ namespace HeuristicLab.FixedOperators {
       return null;
     } // Apply
 
-  
+
 
     /// <summary>
     /// Initializes some variables needed before the execution of create children
@@ -261,6 +258,10 @@ namespace HeuristicLab.FixedOperators {
       ci = new ChildrenInitializer();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="scope"></param>
     protected void ExecuteCreateChildrenWithFixedControlStructures(IScope scope) {
       // ChildrenInitializer
       ci.Apply(scope);
