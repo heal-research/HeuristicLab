@@ -104,5 +104,8 @@ namespace HeuristicLab.Security.Core {
           return guid;
       return Guid.Empty;
     }
+
+    public void TestServer() {
+    }
   } 
 }
