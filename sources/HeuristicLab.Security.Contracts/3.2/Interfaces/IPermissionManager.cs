@@ -6,7 +6,7 @@ using System.ServiceModel;
 namespace HeuristicLab.Security.Contracts.Interfaces {
 
   [ServiceContract]
-  public interface IPermissionManager {
+  public interface IPermissionManager  {
 
     [OperationContract]
     Guid Authenticate(String userName, String password);
@@ -17,5 +17,9 @@ namespace HeuristicLab.Security.Contracts.Interfaces {
 
     [OperationContract]
     void EndSession(Guid sessionId);
+
+    [OperationContract]
+    [FaultContractAttribute(typeof(CommunicationException))]
+    void TestServer();
   }
 }
