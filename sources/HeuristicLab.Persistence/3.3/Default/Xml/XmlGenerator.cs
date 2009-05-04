@@ -160,11 +160,23 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {
+      string tempfile = Path.GetTempFileName();
+      try {
+        Serialize(obj, File.Create(tempfile), config);
+        File.Copy(tempfile, filename, true);
+        File.Delete(tempfile);
+      } catch (Exception x) {
+        Logger.Warn("Exception caught, no data has been written.");
+        throw;
+      }
+    }
+
+    public static void Serialize(object obj, Stream stream, Configuration config) {
       try {
         Serializer serializer = new Serializer(obj, config);
         XmlGenerator generator = new XmlGenerator();
         ILog logger = Logger.GetDefaultLogger();
-        using (ZipOutputStream zipStream = new ZipOutputStream(File.Create(filename))) {
+        using (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
           zipStream.SetLevel(9);
           zipStream.PutNextEntry(new ZipEntry("data.xml"));
           StreamWriter writer = new StreamWriter(zipStream);

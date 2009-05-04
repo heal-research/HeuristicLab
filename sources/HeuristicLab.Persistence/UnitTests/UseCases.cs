@@ -173,6 +173,10 @@ namespace HeuristicLab.Persistence.UnitTest {
     public KeyValuePair<List<C>, C> kvpList;
   }
 
+  public class NonSerializable {
+    int x;
+  }
+
 
   [TestClass]
   public class UseCases {
@@ -501,6 +505,20 @@ namespace HeuristicLab.Persistence.UnitTest {
         Assert.Fail("Exception not thrown");
       } catch (PersistenceException) {
       }
+    }
+
+    [TestMethod]
+    public void TestSavingException() {      
+      List<int> list = new List<int> { 1, 2, 3 };
+      XmlGenerator.Serialize(list, tempFile);
+      NonSerializable s = new NonSerializable();
+      try {
+        XmlGenerator.Serialize(s, tempFile);
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException) { }
+      List<int> newList = (List<int>)XmlParser.DeSerialize(tempFile);
+      Assert.AreEqual(list[0], newList[0]);
+      Assert.AreEqual(list[1], newList[1]);
     }
 
     [ClassInitialize]
