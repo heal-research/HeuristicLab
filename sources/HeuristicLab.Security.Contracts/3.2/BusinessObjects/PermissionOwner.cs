@@ -27,6 +27,8 @@ using System.Runtime.Serialization;
 namespace HeuristicLab.Security.Contracts.BusinessObjects {
 
   [DataContract]
+  [KnownType(typeof(User))]
+  [KnownType(typeof(UserGroup))]
   public class PermissionOwner: PersistableObject {
     [DataMember]
     public string Name { get; set; }

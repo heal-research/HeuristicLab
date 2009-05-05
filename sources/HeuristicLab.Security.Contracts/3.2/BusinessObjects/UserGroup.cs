@@ -29,7 +29,7 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
   [DataContract]
   public class UserGroup : PermissionOwner {
     [DataMember]
-    public IList<PermissionOwner> Members { get; set; }
+    public List<PermissionOwner> Members { get; set; }
 
     public UserGroup() {
       Members = new List<PermissionOwner>();
