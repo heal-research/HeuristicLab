@@ -42,26 +42,71 @@ namespace HeuristicLab.Selection.Uncertainty {
       GetVariableInfo("GroupSize").Local = true;
       AddVariable(new Variable("GroupSize", new IntData(2)));
       GetVariable("CopySelected").GetValue<BoolData>().Data = true;
+      AddVariableInfo(new VariableInfo("SignificanceLevel", "The significance level for the mann whitney wilcoxon rank sum test", typeof(DoubleData), VariableKind.In));
+      GetVariableInfo("SignificanceLevel").Local = true;
+      AddVariable(new Variable("SignificanceLevel", new DoubleData(0.05)));
     }
 
     protected override void Select(IRandom random, IScope source, int selected, IScope target, bool copySelected) {
       IVariableInfo qualityInfo = GetVariableInfo("QualitySamples");
       bool maximization = GetVariableValue<BoolData>("Maximization", source, true).Data;
       int groupSize = GetVariableValue<IntData>("GroupSize", source, true).Data;
+      double alpha = GetVariableValue<DoubleData>("SignificanceLevel", source, true).Data;
+
       for (int i = 0; i < selected; i++) {
         if (source.SubScopes.Count < 1) throw new InvalidOperationException("No source scopes available to select.");
 
-        IScope selectedScope = source.SubScopes[random.Next(source.SubScopes.Count)];
-        double best = selectedScope.GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
-        for (int j = 1; j < groupSize; j++) {
-          IScope scope = source.SubScopes[random.Next(source.SubScopes.Count)];
-          double quality = scope.GetVariableValue<DoubleData>(qualityInfo.FormalName, false).Data;
-          if (((maximization) && (quality > best)) ||
-              ((!maximization) && (quality < best))) {
-            best = quality;
-            selectedScope = scope;
+        double[][] tournamentGroup = new double[groupSize][];
+        int[] tournamentGroupIndices = new int[groupSize];
+        double[] tournamentGroupAverages = new double[groupSize];
+        for (int j = 0; j < groupSize; j++) {
+          tournamentGroupIndices[j] = random.Next(source.SubScopes.Count);
+          tournamentGroup[j] = source.SubScopes[tournamentGroupIndices[j]].GetVariableValue<DoubleArrayData>(qualityInfo.FormalName, false).Data;
+          double sum = 0.0;
+          for (int k = 0; k < tournamentGroup[j].Length; k++) {
+            sum += tournamentGroup[j][k];
+          }
+          tournamentGroupAverages[j] = sum / (double)tournamentGroup[j].Length;
+        }
+
+        int[] rankList = new int[groupSize];
+        int highestRank = 0;
+        IList<int> equalRankList = new List<int>(groupSize);
+        for (int j = 0; j < groupSize - 1; j++) {
+          for (int k = j + 1; k < groupSize; k++) {
+            if (MannWhitneyWilcoxonTest.TwoTailedTest(tournamentGroup[j], tournamentGroup[k], alpha)) { // if a 2-tailed test is successful it means that two solutions are likely different
+              if (maximization && tournamentGroupAverages[j] > tournamentGroupAverages[k]
+                || !maximization && tournamentGroupAverages[j] < tournamentGroupAverages[k]) {
+                rankList[j]++;
+                if (rankList[j] > highestRank) {
+                  highestRank = rankList[j];
+                  equalRankList.Clear();
+                  equalRankList.Add(j);
+                } else if (rankList[j] == highestRank) {
+                  equalRankList.Add(j);
+                }
+              } else if (maximization && tournamentGroupAverages[j] < tournamentGroupAverages[k]
+                || !maximization && tournamentGroupAverages[j] > tournamentGroupAverages[k]) {
+                rankList[k]++;
+                if (rankList[k] > highestRank) {
+                  highestRank = rankList[k];
+                  equalRankList.Clear();
+                  equalRankList.Add(k);
+                } else if (rankList[k] == highestRank) {
+                  equalRankList.Add(k);
+                }
+              }
+              // else there's a statistical significant difference, but equal average qualities... can that happen?
+            }
           }
         }
+        int selectedScopeIndex = 0;
+        if (equalRankList.Count == 0)
+          selectedScopeIndex = tournamentGroupIndices[random.Next(groupSize)]; // no significance in all the solutions, select one randomly
+        else
+          selectedScopeIndex = tournamentGroupIndices[equalRankList[random.Next(equalRankList.Count)]]; // select among those with the highest rank randomly
+
+        IScope selectedScope = source.SubScopes[selectedScopeIndex];
 
         if (copySelected)
           target.AddSubScope((IScope)selectedScope.Clone());
