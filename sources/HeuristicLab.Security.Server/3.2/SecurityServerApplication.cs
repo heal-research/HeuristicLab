@@ -44,6 +44,8 @@ namespace HeuristicLab.Security.Server {
     }
 
     private String StartService(Services svc, IPAddress ipAddress, int port) {
+      binding.MaxReceivedMessageSize = 5000000;
+      binding.SendTimeout = new TimeSpan(0, 0, 0, 0, 20);
       string curServiceHost = "";
       Uri uriTcp;
       String result = "";
@@ -52,7 +54,7 @@ namespace HeuristicLab.Security.Server {
       ServiceHost serviceHost = null;
       switch (svc) {
         case Services.PermissionManager:
-          if (securityManagerInstances.Length > 0) {
+          if (permissionManagerInstances.Length > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/SecurityServer/"); 
             serviceHost = new ServiceHost(permissionManagerInstances[0].GetType(), uriTcp);
             serviceHost.AddServiceEndpoint(typeof(IPermissionManager), binding, STR_PermissionManager);
@@ -125,5 +127,5 @@ namespace HeuristicLab.Security.Server {
 
       StopService(Services.All);
     }
-  }
+  }                                                                                      
 }

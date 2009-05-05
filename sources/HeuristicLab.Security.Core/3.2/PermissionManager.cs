@@ -8,6 +8,7 @@ using HeuristicLab.Security.DataAccess;
 using HeuristicLab.DataAccess.Interfaces;
 using HeuristicLab.PluginInfrastructure;
 using System.Security.Cryptography;
+using System.ServiceModel;
 
 namespace HeuristicLab.Security.Core {
   public class PermissionManager : IPermissionManager{
@@ -59,7 +60,7 @@ namespace HeuristicLab.Security.Core {
         IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
         User user = userAdapter.GetByLogin(userName);
 
-        if (user != null && 
+        if (user != null &&
             user.Password.Equals(password)) {
           Guid newSessionId = Guid.NewGuid();
           lock (locker)
@@ -67,6 +68,7 @@ namespace HeuristicLab.Security.Core {
           return newSessionId;
         } else return Guid.Empty;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -99,6 +101,7 @@ namespace HeuristicLab.Security.Core {
             return (permissionAdapter.getPermission(permOwner.Id, permission.Id, entityId) != null);
           else return false;
         }
+        catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
         finally {
           if (session != null)
             session.EndSession();

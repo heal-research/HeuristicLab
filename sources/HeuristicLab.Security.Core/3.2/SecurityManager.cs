@@ -7,6 +7,7 @@ using HeuristicLab.Security.Contracts.BusinessObjects;
 using HeuristicLab.Security.DataAccess;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.DataAccess.Interfaces;
+using System.ServiceModel;
 
 namespace HeuristicLab.Security.Core {
   public class SecurityManager : ISecurityManager {
@@ -30,6 +31,7 @@ namespace HeuristicLab.Security.Core {
 
         return user;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -50,6 +52,7 @@ namespace HeuristicLab.Security.Core {
           userAdapter.Update(user);
         return user;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -71,6 +74,7 @@ namespace HeuristicLab.Security.Core {
           return userAdapter.Delete(user);
         return false;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -88,6 +92,7 @@ namespace HeuristicLab.Security.Core {
 
         return userAdapter.GetAll();
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -106,6 +111,7 @@ namespace HeuristicLab.Security.Core {
 
         return userAdapter.GetByName(name);
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -127,6 +133,7 @@ namespace HeuristicLab.Security.Core {
 
         return userGroup;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -148,6 +155,7 @@ namespace HeuristicLab.Security.Core {
 
         return userGroup;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -170,6 +178,7 @@ namespace HeuristicLab.Security.Core {
           return userGroupAdapter.Delete(userGroup);
         return false;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -187,6 +196,7 @@ namespace HeuristicLab.Security.Core {
 
         return userGroupAdapter.GetAll();
        }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -205,6 +215,7 @@ namespace HeuristicLab.Security.Core {
 
         return userGroupAdapter.GetByName(name);
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -226,6 +237,7 @@ namespace HeuristicLab.Security.Core {
 
         return permissionOwner;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -257,6 +269,7 @@ namespace HeuristicLab.Security.Core {
         }
         return false;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -289,6 +302,7 @@ namespace HeuristicLab.Security.Core {
         }
         return false;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -309,6 +323,7 @@ namespace HeuristicLab.Security.Core {
 
         return permissionAdapter.grantPermission(permissionOwnerId, permissionId, entityId);
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -327,6 +342,7 @@ namespace HeuristicLab.Security.Core {
         IPermissionAdapter permissionAdapter = session.GetDataAdapter<Permission, IPermissionAdapter>();
         return permissionAdapter.GetById(permissionId);
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -347,6 +363,7 @@ namespace HeuristicLab.Security.Core {
  
         return permissionAdapter.revokePermission(permissionOwnerId, permissionId, entityId);
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -365,6 +382,7 @@ namespace HeuristicLab.Security.Core {
         } else
           return null;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -382,6 +400,7 @@ namespace HeuristicLab.Security.Core {
         else
           return false;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();
@@ -400,6 +419,7 @@ namespace HeuristicLab.Security.Core {
         else
           return null;
       }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
         if (session != null)
           session.EndSession();

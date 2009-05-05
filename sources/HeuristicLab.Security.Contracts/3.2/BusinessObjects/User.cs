@@ -29,6 +29,33 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
 
   [DataContract]
   public class User : PermissionOwner {
+
+    [DataMember]
+    public String Login { get; set; }
+
+    private String password;
+    
+    [DataMember]
+    public String Password {
+      get {
+        return this.password;
+      }
+      protected set {
+        this.password = value;
+      }
+    }
+
+    [DataMember]
+    public String MailAddress { get; set; }
+
+    public void SetPlainPassword(String password) {
+      this.password = password;
+    }
+
+    public void SetHashedPassword(String password) {
+      this.password = getMd5Hash(password);
+    }
+
     private static string getMd5Hash(string input) {
       // Create a new instance of the MD5CryptoServiceProvider object.
       MD5 md5Hasher = MD5.Create();
@@ -49,28 +76,5 @@ namespace HeuristicLab.Security.Contracts.BusinessObjects {
       // Return the hexadecimal string.
       return sBuilder.ToString();
     }
-
-
-    [DataMember]
-    public String Login { get; set; }
-
-    private String password;
-    
-    [DataMember]
-    public String Password {
-      get {
-        return this.password;
-      }
-      set {
-        this.password = getMd5Hash(value);
-      }
-    }
-
-    public void SetPlainPassword(String password) {
-      this.password = password;
-    }
-
-    [DataMember]
-    public String MailAddress { get; set; }
   }
 }

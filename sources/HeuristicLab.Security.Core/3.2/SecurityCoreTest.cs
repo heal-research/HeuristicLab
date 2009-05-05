@@ -16,7 +16,7 @@ namespace HeuristicLab.Security.Core {
 
         User user = new User();
         user.Login = "anna";
-        user.Password = "blubb";
+        user.SetHashedPassword("blubb");
         user.Name = "Anna";
         user = manager.AddNewUser(user);
 
@@ -72,7 +72,7 @@ namespace HeuristicLab.Security.Core {
 
         User user = new User();
         user.Login = "anna";
-        user.Password = "blubb";
+        user.SetHashedPassword("blubb");
         user.Name = "Anna";
         user = manager.AddNewUser(user);
 
@@ -106,13 +106,13 @@ namespace HeuristicLab.Security.Core {
 
         User user = new User();
         user.Login = "anna";
-        user.Password = "blubb";
+        user.SetHashedPassword("blubb");
         user.Name = "Anna";
         user = manager.AddNewUser(user);
 
         User user2 = new User();
         user2.Login = "stefan";
-        user2.Password = "foo";
+        user2.SetHashedPassword("foo");
         user2.Name = "Stefan";
 
         UserGroup group = new UserGroup();
