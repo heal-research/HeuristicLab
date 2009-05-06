@@ -109,6 +109,10 @@
       <Project>{1DAA4952-8D6B-4D43-A9E5-5466053DA777}</Project>
       <Name>HeuristicLab.StatisticalAnalysis-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

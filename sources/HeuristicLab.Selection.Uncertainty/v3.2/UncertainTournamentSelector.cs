@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Selection;
 using HeuristicLab.StatisticalAnalysis;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Selection.Uncertainty {
   public class UncertainTournamentSelector : StochasticSelectorBase {
@@ -53,6 +54,8 @@ namespace HeuristicLab.Selection.Uncertainty {
       int groupSize = GetVariableValue<IntData>("GroupSize", source, true).Data;
       double alpha = GetVariableValue<DoubleData>("SignificanceLevel", source, true).Data;
 
+      int insignificantCount = 0;
+      int equalRankListSize = 0;
       for (int i = 0; i < selected; i++) {
         if (source.SubScopes.Count < 1) throw new InvalidOperationException("No source scopes available to select.");
 
@@ -96,16 +99,18 @@ namespace HeuristicLab.Selection.Uncertainty {
                   equalRankList.Add(k);
                 }
               }
-              // else there's a statistical significant difference, but equal average qualities... can that happen?
+              // else there's a statistical significant difference, but equal average qualities... can that happen? in any case, nobody gets a rank increase
             }
           }
         }
         int selectedScopeIndex = 0;
-        if (equalRankList.Count == 0)
+        if (equalRankList.Count == 0) {
+          insignificantCount++;
           selectedScopeIndex = tournamentGroupIndices[random.Next(groupSize)]; // no significance in all the solutions, select one randomly
-        else
+        } else {
+          equalRankListSize += equalRankList.Count;
           selectedScopeIndex = tournamentGroupIndices[equalRankList[random.Next(equalRankList.Count)]]; // select among those with the highest rank randomly
-
+        }
         IScope selectedScope = source.SubScopes[selectedScopeIndex];
 
         if (copySelected)
@@ -115,6 +120,7 @@ namespace HeuristicLab.Selection.Uncertainty {
           target.AddSubScope(selectedScope);
         }
       }
+      Logger.Debug("Solutions selected: " + selected + ". Completely random selections: " + insignificantCount + ". Average size of highest rank pool: " + (double)equalRankListSize / (double)selected);
     }
   }
 }

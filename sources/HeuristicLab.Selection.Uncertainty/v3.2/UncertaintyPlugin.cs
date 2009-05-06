@@ -33,6 +33,7 @@ namespace HeuristicLab.Selection.Uncertainty {
   [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
   [Dependency(Dependency = "HeuristicLab.StatisticalAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.Random-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
   public class UncertaintyPlugin : PluginBase {
   }
 }
