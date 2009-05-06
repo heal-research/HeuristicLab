@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UncertainBestSelector.cs" />
     <Compile Include="UncertainTournamentSelector.cs" />
     <Compile Include="UncertaintyPlugin.cs" />
     <None Include="HeuristicLab.snk" />
