@@ -59,6 +59,29 @@ namespace HeuristicLab.Hive.Server.Core {
     public static Guid Delete_Resource {
       get { return new Guid("EC2362E0-0781-493f-8688-76F3CDFEF339"); }
     }
+
+    public static Guid Add_User {
+      get { return new Guid("4FE34091-6674-4c24-BE2E-8AE0DAAAD29C"); }
+    }
+
+    public static Guid Delete_User {
+      get { return new Guid("835CF39C-F830-4130-BBAF-E0100B2760D2"); }
+    }
+
+    public static Guid Update_User {
+      get { return new Guid("FEB4D84B-25CB-4708-8B70-3159F40D8F6E"); }
+    }
+
+    public static Guid Get_User {
+      get { return new Guid("19EF2197-F71A-44ae-9916-3F5AEEC4E463"); }
+    }
+
+    public static Guid Grant_Permission {
+      get { return new Guid("B7696208-1EA3-4675-8834-5659CD6BB5DC"); }
+    }
+
+    public static Guid Revoke_Permission {
+      get { return new Guid("357DE1A5-198E-4b90-BC55-C007D504AF65"); }
+    }
   }
 }
-
