@@ -49,9 +49,6 @@ namespace HeuristicLab.Security.Core {
    /// <param name="password"></param>
    /// <returns></returns>
     public Guid Authenticate(String userName, String password) {
-      lock (locker)
-        if (currentSessions.Values.Contains(userName))
-          return GetGuid(userName);
       try {
         session = factory.GetSessionForCurrentThread();
 
@@ -62,11 +59,20 @@ namespace HeuristicLab.Security.Core {
 
         if (user != null &&
             user.Password.Equals(password)) {
-          Guid newSessionId = Guid.NewGuid();
-          lock (locker)
-            currentSessions.Add(newSessionId, userName);
-          return newSessionId;
-        } else return Guid.Empty;
+          Guid sessionId;
+
+          lock (locker) {
+            if (currentSessions.Values.Contains(userName)) {
+              sessionId = Guid.NewGuid();
+            } else {
+              sessionId = GetGuid(userName);
+              currentSessions.Add(sessionId, userName);
+            }
+          }
+
+          return sessionId;
+        } else 
+          return Guid.Empty;
       }
       catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
       finally {
