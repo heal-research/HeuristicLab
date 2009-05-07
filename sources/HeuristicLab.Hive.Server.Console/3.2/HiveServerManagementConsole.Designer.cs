@@ -211,6 +211,7 @@
       // plClientDetails
       // 
       this.plClientDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plClientDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
       this.plClientDetails.Controls.Add(this.lblState);
       this.plClientDetails.Controls.Add(this.lblStateClient);
       this.plClientDetails.Controls.Add(this.lblLogin);
@@ -318,6 +319,7 @@
       // plJobDetails
       // 
       this.plJobDetails.BackColor = System.Drawing.SystemColors.Window;
+      this.plJobDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
       this.plJobDetails.Controls.Add(this.lvSnapshots);
       this.plJobDetails.Controls.Add(this.lblPriorityJob);
       this.plJobDetails.Controls.Add(this.lblParentJob);
@@ -437,7 +439,7 @@
       this.lblProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.lblProgress.BackColor = System.Drawing.Color.Transparent;
       this.lblProgress.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.lblProgress.Location = new System.Drawing.Point(256, 108);
+      this.lblProgress.Location = new System.Drawing.Point(252, 108);
       this.lblProgress.Name = "lblProgress";
       this.lblProgress.Size = new System.Drawing.Size(143, 13);
       this.lblProgress.TabIndex = 8;

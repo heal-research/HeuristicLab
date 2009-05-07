@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
 
@@ -56,6 +57,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private Job currentJob = null;
     private ClientInfo currentClient = null;
+    
     TreeNode currentNode = null;
 
     //TODO delete
@@ -253,7 +255,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         AddGroupsToListView(currentNode);
       }
       tvClientControl.ExpandAll();
+      Thread.Sleep(5000);
     }
+
 
     private void AddClientOrGroup(ClientGroup clientGroup, TreeNode currentNode) {
       currentNode = CreateTreeNode(clientGroup, currentNode);
@@ -418,6 +422,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       } else if (currentJob.State == State.finished) {
         pbJobControl.Image = ilLargeImgJob.Images[0];
       }
+
       lblJobName.Text = currentJob.Id.ToString();
       progressJob.Value = (int)(currentJob.Percentage * 100);
       lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";

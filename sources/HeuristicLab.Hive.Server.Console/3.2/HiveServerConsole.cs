@@ -90,6 +90,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
             Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
             string str = resp.StatusMessage;
+            if (resp.StatusMessage != "Logged in") {
+              return false;
+            }
           } else {
             lblError.Text = "IP or Port not valid";
           }

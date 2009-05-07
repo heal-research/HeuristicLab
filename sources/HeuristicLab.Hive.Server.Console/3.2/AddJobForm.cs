@@ -69,13 +69,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             if (cbParJob.SelectedIndex != 0) {
               foreach (Job pjob in jobGroups.List) {
                 if (cbParJob.SelectedItem.ToString().Equals(pjob.Id.ToString())) {
-                  Job job = new Job { ParentJob = pjob, State = State.offline };
+                  Job job = new Job { ParentJob = pjob, State = State.offline, CoresNeeded = 1 };
                   job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
                   Response resp = jobManager.AddNewJob(job);
                 }
               }
             } else {
-              Job job = new Job { State = State.offline };
+              Job job = new Job { State = State.offline, CoresNeeded = 1 };
               job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
               Response resp = jobManager.AddNewJob(job);
             }
