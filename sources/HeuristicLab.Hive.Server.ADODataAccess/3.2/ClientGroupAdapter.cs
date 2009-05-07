@@ -143,7 +143,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<ClientGroup> MemberOf(Resource resource) {
-      throw new NotImplementedException();
+      if (resource != null) {
+        return base.FindMultiple(
+           delegate() {
+             return Adapter.GetDataByParentsOf(resource.Id);
+           }
+        );
+      } 
+
+      return null;
     }
 
     protected override bool doDelete(ClientGroup group) {

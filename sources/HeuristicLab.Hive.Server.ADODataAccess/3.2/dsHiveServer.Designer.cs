@@ -5485,7 +5485,7 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[3];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.ClientGroup WHERE NOT EXISTS (SELECT * FROM dbo.ClientGroup_Res" +
@@ -5496,6 +5496,12 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
             this._commandCollection[1].CommandText = "SELECT * FROM dbo.ClientGroup WHERE ResourceId = @Id";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[2].Connection = this.Connection;
+            this._commandCollection[2].CommandText = "SELECT * FROM ClientGroup WHERE EXISTS (SELECT * FROM ClientGroup_Resource WHERE " +
+                "ClientGroupId = ClientGroup.ResourceId AND ResourceId = @ResourceId)";
+            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5539,6 +5545,30 @@ SELECT ResourceId, CPUSpeed, Memory, Login, Status, ClientConfigId, NumberOfCore
         public virtual dsHiveServer.ClientGroupDataTable GetDataById(System.Guid Id) {
             this.Adapter.SelectCommand = this.CommandCollection[1];
             this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            dsHiveServer.ClientGroupDataTable dataTable = new dsHiveServer.ClientGroupDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByParentsOf(dsHiveServer.ClientGroupDataTable dataTable, System.Guid ResourceId) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(ResourceId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.ClientGroupDataTable GetDataByParentsOf(System.Guid ResourceId) {
+            this.Adapter.SelectCommand = this.CommandCollection[2];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(ResourceId));
             dsHiveServer.ClientGroupDataTable dataTable = new dsHiveServer.ClientGroupDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
