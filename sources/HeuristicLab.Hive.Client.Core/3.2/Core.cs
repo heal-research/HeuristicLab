@@ -64,7 +64,7 @@ namespace HeuristicLab.Hive.Client.Core {
     /// </summary>
     public void Start() {      
       abortRequested = false;
-
+      PluginManager.Manager.Initialize();
       Logging.Instance.Info(this.ToString(), "Hive Client started");
       ClientConsoleServer server = new ClientConsoleServer();
       server.StartClientConsoleServer(new Uri("net.tcp://127.0.0.1:8000/ClientConsole/"));
@@ -205,10 +205,10 @@ namespace HeuristicLab.Hive.Client.Core {
     }    
 
     void wcfService_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
-      if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {
+      if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {        
         bool sandboxed = false;
-
-        PluginManager.Manager.Initialize();
+        //todo: For testing!!!
+        //beat.StopHeartBeat();        
         //Todo: make a set & override the equals method
         List<byte[]> files = new List<byte[]>();
         foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
@@ -303,6 +303,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void appDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
       Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());
       
+    }
+
+    internal Dictionary<Guid, Job> GetJobs() {
+      return jobs;
     }
   }
 }

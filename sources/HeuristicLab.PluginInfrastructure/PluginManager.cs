@@ -228,12 +228,12 @@ namespace HeuristicLab.PluginInfrastructure {
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
 
-      if (assemblyFiles != null && assemblyFiles.Count > 0)
-        remoteRunner.LoadPlugins(assemblyFiles);
+      //if (assemblyFiles != null && assemblyFiles.Count > 0)
+      //  remoteRunner.LoadPlugins(assemblyFiles);
       
-      /*if (depPlugins != null && depPlugins.Count > 0) {        
-        remoteRunner.LoadPlugins(depPlugins);
-      }*/
+      //if (depPlugins != null && depPlugins.Count > 0) {        
+        remoteRunner.LoadPlugins(ActivePlugins);
+      //}
       NotifyListeners(PluginManagerAction.Initialized, "All plugins");
       return applicationDomain;
     }

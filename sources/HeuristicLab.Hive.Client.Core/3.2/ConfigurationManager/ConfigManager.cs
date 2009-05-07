@@ -134,5 +134,16 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       return prog;
     }
 
+    public int GetUsedCores() {
+      Dictionary<Guid, Executor> engines = Core.GetExecutionEngines();
+      Dictionary<Guid, Job> jobs = Core.GetJobs();
+      int usedCores = 0;
+      lock (engines) {        
+        foreach (KeyValuePair<Guid, Job> kvp in jobs)
+          usedCores += kvp.Value.CoresNeeded;
+      }
+      return usedCores;
+    }
+
   }
 }

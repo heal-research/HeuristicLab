@@ -77,10 +77,11 @@ namespace HeuristicLab.Hive.Client.Core {
       PerformanceCounter counter = new PerformanceCounter("Memory", "Available Bytes", true);
       int mb = (int)(counter.NextValue() / 1024 / 1024);
 
+      
 
-        HeartBeatData heartBeatData = new HeartBeatData {
+      HeartBeatData heartBeatData = new HeartBeatData {
         ClientId = info.Id,
-        FreeCores = info.NrOfCores - (ClientStatusInfo.JobsFetched - ClientStatusInfo.JobsProcessed),
+        FreeCores = info.NrOfCores - ConfigManager.Instance.GetUsedCores(),
         FreeMemory = mb,
         JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
       };
