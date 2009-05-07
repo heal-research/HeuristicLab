@@ -44,6 +44,8 @@ namespace HeuristicLab.Hive.Server.Core {
   public class ClientCommunicator: IClientCommunicator {
     private static Dictionary<Guid, DateTime> lastHeartbeats = 
       new Dictionary<Guid,DateTime>();
+    private static Dictionary<Guid, int> newAssignedJobs =
+      new Dictionary<Guid, int>();
 
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -109,6 +111,10 @@ namespace HeuristicLab.Hive.Server.Core {
                 // if client calculated jobs, the job must be reset
                 foreach (Job job in jobAdapter.GetActiveJobsOf(client)) {
                   jobManager.ResetJobsDependingOnResults(job);
+                  lock (newAssignedJobs) {
+                    if (newAssignedJobs.ContainsKey(job.Id))
+                      newAssignedJobs.Remove(job.Id);
+                  }
                 }
 
                 // client must be set offline
@@ -316,8 +322,25 @@ namespace HeuristicLab.Hive.Server.Core {
             }
           }
           if (!found) {
-            currJob.State = State.offline;
-            jobAdapter.Update(currJob);
+            lock (newAssignedJobs) {
+              if (newAssignedJobs.ContainsKey(currJob.Id)) {
+                newAssignedJobs[currJob.Id]--;
+
+                if (newAssignedJobs[currJob.Id] <= 0) {
+                  currJob.State = State.offline;
+                  jobAdapter.Update(currJob);
+                  newAssignedJobs.Remove(currJob.Id);
+                }
+              } else {
+                currJob.State = State.offline;
+                jobAdapter.Update(currJob);
+              }
+            } // lock
+          } else {
+            lock (newAssignedJobs) {
+              if (newAssignedJobs.ContainsKey(currJob.Id))
+                newAssignedJobs.Remove(currJob.Id);
+            }
           }
         }
       }
@@ -337,6 +360,9 @@ namespace HeuristicLab.Hive.Server.Core {
         response.Job = job2Calculate;
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+        lock (newAssignedJobs) {
+          newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
+        }
       } else {
         response.Success = false;
         response.Job = null;

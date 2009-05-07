@@ -28,6 +28,7 @@ namespace HeuristicLab.Hive.Contracts {
   public class ApplicationConstants {
 
     public static int HEARTBEAT_MAX_DIF = 120; // value in seconds
+    public static int JOB_TIME_TO_LIVE = 5;
 
     public static string RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS = "Logged in";
     public static string RESPONSE_SERVERCONSOLE_LOGIN_FAILED = "Login failed";
