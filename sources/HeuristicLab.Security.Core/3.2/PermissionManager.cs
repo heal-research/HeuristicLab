@@ -63,9 +63,9 @@ namespace HeuristicLab.Security.Core {
 
           lock (locker) {
             if (currentSessions.Values.Contains(userName)) {
-              sessionId = Guid.NewGuid();
-            } else {
               sessionId = GetGuid(userName);
+            } else {
+              sessionId = Guid.NewGuid();
               currentSessions.Add(sessionId, userName);
             }
           }
