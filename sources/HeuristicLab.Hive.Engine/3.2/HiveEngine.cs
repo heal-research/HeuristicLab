@@ -115,6 +115,7 @@ namespace HeuristicLab.Hive.Engine {
         pluginsNeeded.Add(pluginInfo);
       }
 
+      jobObj.CoresNeeded = 1;
       jobObj.PluginsNeeded = pluginsNeeded;
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
       return jobObj;
