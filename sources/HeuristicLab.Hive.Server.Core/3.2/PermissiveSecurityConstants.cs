@@ -83,5 +83,9 @@ namespace HeuristicLab.Hive.Server.Core {
     public static Guid Revoke_Permission {
       get { return new Guid("357DE1A5-198E-4b90-BC55-C007D504AF65"); }
     }
+
+    public static Guid Get_AllGroupsOfResource {
+      get { return new Guid("07436F36-E882-4aed-B787-861E4AADC5E6"); }
+    }
   }
 }
