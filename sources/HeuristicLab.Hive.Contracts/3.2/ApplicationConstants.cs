@@ -58,6 +58,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_CLIENT_RESOURCE_REMOVED = "Client.ResourceRemoved";
     public static string RESPONSE_CLIENT_RESOURCE_NOT_FOUND = "Client.ResourceNotFound";
     public static string RESPONSE_CLIENT_PERMISSIONOWNER_DOESNT_EXIST = "Client.PermissionOwnerDoesntExist";
+    public static string RESPONSE_CLIENT_GET_GROUPS_OF_CLIENT = "Get all groups of a client";
 
     public static string RESPONSE_COMMUNICATOR_HEARTBEAT_RECEIVED = "Communicator.HeardbeatReceived";
     public static string RESPONSE_COMMUNICATOR_JOB_PULLED = "Communicator.JobPulled";

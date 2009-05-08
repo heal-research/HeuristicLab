@@ -181,7 +181,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     }
 
-    #endregion
+    public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
+      return clientManager.GetAllGroupsOfResource(resourceId);
+    }
 
+    #endregion
   }
 }

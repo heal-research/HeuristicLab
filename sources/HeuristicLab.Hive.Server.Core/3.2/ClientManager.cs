@@ -220,6 +220,32 @@ namespace HeuristicLab.Hive.Server.Core {
           session.EndSession();
       }
     }
+
+    public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+        IClientAdapter clientAdapter =
+          session.GetDataAdapter<ClientInfo, IClientAdapter>();
+
+        ResponseObject<List<ClientGroup>> response = new ResponseObject<List<ClientGroup>>();
+
+        ClientInfo client = clientAdapter.GetById(resourceId);
+        List<ClientGroup> groupsOfClient = new List<ClientGroup>(clientGroupAdapter.MemberOf(client));
+        response.Obj = groupsOfClient;
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_GROUPS_OF_CLIENT;
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
     #endregion
   }
 }

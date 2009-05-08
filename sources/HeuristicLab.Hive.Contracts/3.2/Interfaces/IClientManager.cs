@@ -40,6 +40,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [ServiceKnownType(typeof(ClientGroup))]
     ResponseList<ClientGroup> GetAllClientGroups();
     [OperationContract]
+    ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId);
+    [OperationContract]
     Response AddClientGroup(ClientGroup clientGroup);
     [OperationContract]
     Response AddResourceToGroup(Guid clientGroupId, Resource resource);
