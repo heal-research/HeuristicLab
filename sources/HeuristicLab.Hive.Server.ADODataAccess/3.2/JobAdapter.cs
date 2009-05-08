@@ -50,7 +50,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (manyToManyRelationHelper == null) {
           manyToManyRelationHelper =
             new ManyToManyRelationHelper<dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
-              dsHiveServer.RequiredPluginsRow>(new RequiredPluginsAdapterWrapper());
+              dsHiveServer.RequiredPluginsRow>(new RequiredPluginsAdapterWrapper(), 1);
         }
 
         manyToManyRelationHelper.Session = Session as Session;
@@ -163,7 +163,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           job.MemoryNeeded = default(int);
 
         ICollection<Guid> requiredPlugins =
-          ManyToManyRelationHelper.GetRelationships(job.Id, 1);
+          ManyToManyRelationHelper.GetRelationships(job.Id);
         
         job.PluginsNeeded.Clear();
         foreach (Guid requiredPlugin in requiredPlugins) {

@@ -9,10 +9,14 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     where RowT : System.Data.DataRow
     {
     ITableAdapterWrapper<AdapterT, ManyToManyRelation, RowT> tableAdapterWrapper;
-    
+
+    private int childIndex;
+
     public ManyToManyRelationHelper(
-      ITableAdapterWrapper<AdapterT, ManyToManyRelation, RowT> tableAdapterWrapper) {
+      ITableAdapterWrapper<AdapterT, ManyToManyRelation, RowT> tableAdapterWrapper, 
+      int childIndex) {
       this.tableAdapterWrapper = tableAdapterWrapper;
+      this.childIndex = childIndex;
     }
 
     public Session Session {
@@ -23,15 +27,15 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public void UpdateRelationships(Guid objectA,
       IList<Guid> relationships, int childIndex) {
-      UpdateRelationships(objectA, relationships, null, childIndex);
+      UpdateRelationships(objectA, relationships, null);
     }
 
     public void UpdateRelationships(Guid objectA, 
       IList<Guid> relationships,
-      IList<object> additionalAttributes, int childIndex) {
+      IList<object> additionalAttributes) {
       //firstly check for created references
       IList<Guid> existing =
-        this.GetRelationships(objectA, childIndex); 
+        this.GetRelationships(objectA); 
 
       foreach (Guid relationship in relationships) {
         if (!existing.Contains(relationship)) {
@@ -62,7 +66,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
       foreach (Guid relationship in deleted) {
         RowT toDelete =
-          FindRow(objectA, relationship, childIndex);
+          FindRow(objectA, relationship);
         if (toDelete != null) {
           toDelete.Delete();
           tableAdapterWrapper.UpdateRow(toDelete);
@@ -70,7 +74,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public IList<Guid> GetRelationships(Guid objectA, int childIndex) {
+    public IList<Guid> GetRelationships(Guid objectA) {
       IList<Guid> result =
         new List<Guid>();
 
@@ -84,7 +88,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       return result;
     }
 
-    private RowT FindRow(Guid objectA, Guid objectB, int childIndex) {
+    private RowT FindRow(Guid objectA, Guid objectB) {
       IEnumerable<RowT> rows =
        tableAdapterWrapper.FindById(objectA);
 

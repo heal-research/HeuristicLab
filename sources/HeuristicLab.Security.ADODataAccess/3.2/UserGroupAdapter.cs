@@ -27,7 +27,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         if (manyToManyRelationHelper == null) {
           manyToManyRelationHelper =
             new ManyToManyRelationHelper<dsSecurityTableAdapters.PermissionOwner_UserGroupTableAdapter,
-              dsSecurity.PermissionOwner_UserGroupRow>(new PermissionOwner_UserGroupAdapterWrapper());
+              dsSecurity.PermissionOwner_UserGroupRow>(new PermissionOwner_UserGroupAdapterWrapper(), 0);
         }
 
         manyToManyRelationHelper.Session = Session as Session;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         PermOwnerAdapter.GetById(group);
 
         ICollection<Guid> permissionOwners =
-          ManyToManyRelationHelper.GetRelationships(group.Id, 0);
+          ManyToManyRelationHelper.GetRelationships(group.Id);
 
         group.Members.Clear();
         foreach (Guid permissionOwner in permissionOwners) {

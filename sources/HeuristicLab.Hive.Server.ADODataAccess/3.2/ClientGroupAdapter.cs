@@ -50,7 +50,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (manyToManyRelationHelper == null) {
           manyToManyRelationHelper =
             new ManyToManyRelationHelper<dsHiveServerTableAdapters.ClientGroup_ResourceTableAdapter,
-              dsHiveServer.ClientGroup_ResourceRow>(new ClientGroup_ResourceAdapterWrapper());
+              dsHiveServer.ClientGroup_ResourceRow>(new ClientGroup_ResourceAdapterWrapper(), 1);
         }
 
         manyToManyRelationHelper.Session = Session as Session;
@@ -85,7 +85,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         ResAdapter.GetById(clientGroup);
 
         ICollection<Guid> resources =
-          ManyToManyRelationHelper.GetRelationships(clientGroup.Id, 1);
+          ManyToManyRelationHelper.GetRelationships(clientGroup.Id);
 
         clientGroup.Resources.Clear();
         foreach(Guid resource in resources) {
