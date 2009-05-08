@@ -289,6 +289,11 @@ namespace HeuristicLab.Hive.Server.Core {
         IJobAdapter jobAdapter = session.GetDataAdapter<Job, IJobAdapter>();
 
         Job job = jobAdapter.GetById(jobId);
+        if (job == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+          return response; // no commit needed
+        }
         if (job.State == State.abort) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ABORT_REQUEST_ALLREADY_SET;
