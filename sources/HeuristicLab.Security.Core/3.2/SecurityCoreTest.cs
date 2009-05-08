@@ -214,18 +214,20 @@ namespace HeuristicLab.Security.Core {
 
       private void MB_AddPermission(List<User> users) {
         if (users.Count < 2) return;
+        /*
         Permission permission = new Permission();
         //permission.Id = PermissiveSecurityAction.Add_Job;
         permission.Name = "ADD_JOB";
         permission.Description = "Add new jobs";
         permission.Plugin = "HeuristicLab.Hive.Server";
-        
         manager.AddPermission(permission);
+        */
         //grant permission to random users
         Random rand = new Random(DateTime.Now.Millisecond);
         for (int i = 0; i < users.Count/2; i++) {
           int idx = rand.Next(users.Count);
-          manager.GrantPermission(users[i].Id, permission.Id, Guid.Empty);
+          //manager.GrantPermission(users[i].Id, permission.Id, Guid.Empty);
+          manager.GrantPermission(users[i].Id, PermissiveSecurityAction.Add_Job, Guid.Empty);
         }
       }
 
