@@ -26,7 +26,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void UpdateRelationships(Guid objectA,
-      IList<Guid> relationships, int childIndex) {
+      IList<Guid> relationships) {
       UpdateRelationships(objectA, relationships, null);
     }
 

@@ -320,7 +320,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
 
       ManyToManyRelationHelper.UpdateRelationships(
-        obj.Id, relationships, 1);
+        obj.Id, relationships);
     }
 
     protected override bool doDelete(Job job) {
@@ -339,7 +339,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           //delete all relationships
           ManyToManyRelationHelper.UpdateRelationships(job.Id,
-            new List<Guid>(), 1);
+            new List<Guid>());
 
           //delete orphaned pluginInfos
           ICollection<HivePluginInfo> orphanedPluginInfos =

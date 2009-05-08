@@ -126,7 +126,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
 
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          relationships, 1);
+          relationships);
       }
     }
 
@@ -158,7 +158,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       if (group != null) {
         //delete all relationships
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          new List<Guid>(), 1);
+          new List<Guid>());
 
         return base.doDelete(group) && 
           ResAdapter.Delete(group);

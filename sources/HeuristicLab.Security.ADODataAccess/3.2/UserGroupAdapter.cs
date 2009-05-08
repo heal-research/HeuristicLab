@@ -99,7 +99,7 @@ namespace HeuristicLab.Security.ADODataAccess {
         }
 
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          relationships, 0);
+          relationships);
       }
     }
 
@@ -107,7 +107,7 @@ namespace HeuristicLab.Security.ADODataAccess {
       if (group != null) {
         //delete all relationships
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
-          new List<Guid>(), 0);
+          new List<Guid>());
 
         return base.doDelete(group) &&
           PermOwnerAdapter.Delete(group);
