@@ -4,15 +4,19 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Security.Contracts.BusinessObjects;
+using HeuristicLab.Hive.Server.Core;
 
 namespace HeuristicLab.Security.Core {
     [ClassInfo(Name = "Security Test App",
         Description = "Test Application for the Security Service",
         AutoRestart = true)]
   class SecurityCoreTest : ApplicationBase {
+
+      SecurityManager manager = new SecurityManager();
+      PermissionManager permManager =  new PermissionManager();
+
+
       private void testGroups() {
-        SecurityManager manager =
-          new SecurityManager();
 
         User user = new User();
         user.Login = "anna";
@@ -55,11 +59,6 @@ namespace HeuristicLab.Security.Core {
       }
 
       private void testPermissions() {
-        SecurityManager manager =
-           new SecurityManager();
-
-        PermissionManager permManager =
-          new PermissionManager();
 
         Permission permission = new Permission();
         permission.Name = "ADD_JOBS";
@@ -98,11 +97,6 @@ namespace HeuristicLab.Security.Core {
       }
 
       private void testPermissionsGroup() {
-        SecurityManager manager =
-          new SecurityManager();
-
-        PermissionManager permManager =
-          new PermissionManager();
 
         User user = new User();
         user.Login = "anna";
@@ -169,11 +163,76 @@ namespace HeuristicLab.Security.Core {
         manager.RemoveUserGroup(group.Id);
         manager.RemoveUserGroup(group2.Id);
 
-        manager.RemovePermission(permission.Id);                        
+        manager.RemovePermission(permission.Id);
       }
-      
+      #region TEST DATA INSERT SECTION for MB
+
+      private void InsertTestDataForPermissionCheck() {
+        int numberOfUsers = 10;
+
+        List<User> users = new List<User>();
+        for (int i = 0; i < numberOfUsers; i++) {
+          users.Add(MB_InsertTestUser());
+        }
+        MB_AssignGroups(users);
+        
+      }
+
+      private User MB_InsertTestUser() {
+        Random rand = new Random(DateTime.Now.Millisecond);
+        int usr = rand.Next(1000);
+        User user = new User();
+        user.Login = "test" + usr.ToString();
+        user.SetHashedPassword("test");
+        user.Name = "test" + usr.ToString();
+        return manager.AddNewUser(user);
+      }
+
+      /// <summary>
+      /// Splits the given users into two groups and assigns them. Some will be not assigned.
+      /// </summary>
+      /// <param name="users"></param>
+      private void MB_AssignGroups(List<User> users) {
+        UserGroup group01 = new UserGroup();
+        group01.Name = "Test Group 01";
+
+        UserGroup group02 = new UserGroup();
+        group02.Name = "Test Group 02";
+
+        //three-way split users into group1, group2 and none
+        int idx = users.Count / 3;
+        for (int i = 0; i < idx; i++) {
+          group01.Members.Add(users[i]);
+        }
+        for (int i = idx; i < users.Count / 2; i++) {
+          group02.Members.Add(users[i]);
+        }
+        manager.AddNewUserGroup(group01);
+        manager.AddNewUserGroup(group02);
+        
+      }
+
+      private void MB_AddPermission(List<User> users) {
+        if (users.Count < 2) return;
+        Permission permission = new Permission();
+        //permission.Id = PermissiveSecurityAction.Add_Job;
+        permission.Name = "ADD_JOB";
+        permission.Description = "Add new jobs";
+        permission.Plugin = "HeuristicLab.Hive.Server";
+        
+        manager.AddPermission(permission);
+        //grant permission to random users
+        Random rand = new Random(DateTime.Now.Millisecond);
+        for (int i = 0; i < users.Count/2; i++) {
+          int idx = rand.Next(users.Count);
+          manager.GrantPermission(users[i].Id, permission.Id, Guid.Empty);
+        }
+      }
+
+      #endregion
       public override void Run() {
-        testPermissionsGroup();
+        //testPermissionsGroup();
+        InsertTestDataForPermissionCheck();
       }
     }
 }
