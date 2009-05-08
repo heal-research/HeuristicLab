@@ -307,6 +307,29 @@
   <metadata name="fileSystemWatcher1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>462, 9</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnRefresh.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAABcQwAA
+        XEMBOS4mtwAAA5dJREFUSEullslPU1EUxtVVSyeGoOgWYWViomGB0YUbE7fGxODGuPEfMHFjgpowaDQy
+        KlAHlKlMKoNQKQomFUShDEKhtLSlkcgkiAMz9POcR1/7HlBotMmX3td77/m9c86953QvgD3ST2qrMo6e
+        E0iHSftkk8EfvDQ1Quq8fnrRIVvGAFZKiyKGVEsCK/29AvfMypDEa8V9Phsxol3R+EGamEhtVcDQr4N5
+        LBqW6QPono4JSbyW9/BetsG2SAeF6Pjevj6NJprdUWj7Fo2m0UjUO8NR51O9MwKvXRFocAdkpLFxdEMm
+        TyRax6LQPh4NE9lgWwSoFwA0iGf3DANa1I6Eo2hAjef9ahQPaFBi1aB0UIMykmFIiwqbFpXDG6omvbDr
+        8NKhwytSzYgOtfRCJk8Eyvq1YsjiGZDEbvGGwi9qPCPjDPgfiNEdLoYqiQHJGW1KPOlTC9oNUm7TkQes
+        gCefxi+h2XNc5klmu5K9SGbAzdxPSjzuVe0IMbnPYHLejDXvPNa9S5hdtKBn6hrsP3Ip1MA7zylZuPQW
+        FQNuCIAcAuh7VEEhH8auCEZ2+rz1nJTl5FF3WACQ3aFEQbdqW0idIxG/lp3ombyFJtcZ1DqOonPiKrxY
+        lfGaCSBNvN4iAWQRIN8HeCQJ1VNKeoPzNJ2mKCHpRb6TZf1+f4szDKiSnKwCOUAhAIJBpCerxXMec8tD
+        +Lk8LOjXigO/V5x4M5ogJF6EyACZHQrkEVGElAzEUkhuo3fyDn2nk9LQO5VGITor84TvCIvvSLnkjjCk
+        oEsSosyPCjwggAiptp3YEoLphS4K1X7/HeFwVdgOCYDtIPmbAbn0gwjZDOCE1tgTwTnhcNXYj8E2o4f5
+        62X/bd8MkQEyyAMGiJCqocQtHqx7lzGz2IeF1Qlhzj1XLSRdTPxmT2SA++0K5HRuAFiVPsCPJRsm/nTI
+        YF6swTqdg2Jr5I4lJY/siRct+a5ZgazPSj+kYjARjtlKunjRQuIN1iMwuS5Qks/BMBgbUknJkJSKpBQq
+        drmdAUhet07w5KEk8cEu4vbFUQ22yYXUX67zCJBNXkg9+RdIiVUNvcXf4eL9DYdLdml/GAr7+DQFwhUq
+        pJj6SMWQGuVWlViqNxqOr6P5W+ZjqoI1wxoYXRoqE1q/Gmnc6JLLSM+sJrcGdXYNnlC+tm2ZwZr+XWr6
+        rN2a/65NX/wH4APFUXIucrPgUh6ieC3viZPa4vFfU36gB1Ssto8AAAAASUVORK5CYII=
+</value>
+  </data>
   <metadata name="contextMenuJob.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>252, 44</value>
   </metadata>

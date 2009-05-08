@@ -49,6 +49,9 @@
       this.btnUserControlClose = new System.Windows.Forms.Button();
       this.pbUserControl = new System.Windows.Forms.PictureBox();
       this.plJobDetails = new System.Windows.Forms.Panel();
+      this.lvJobDetails = new System.Windows.Forms.ListView();
+      this.chContent = new System.Windows.Forms.ColumnHeader();
+      this.chDetails = new System.Windows.Forms.ColumnHeader();
       this.lvSnapshots = new System.Windows.Forms.ListView();
       this.chClientCalculated = new System.Windows.Forms.ColumnHeader();
       this.chProgress = new System.Windows.Forms.ColumnHeader();
@@ -81,6 +84,7 @@
       this.tpClientControl = new System.Windows.Forms.TabPage();
       this.scClientControl = new System.Windows.Forms.SplitContainer();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.btnRefresh = new System.Windows.Forms.Button();
       this.tvClientControl = new System.Windows.Forms.TreeView();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
@@ -134,7 +138,7 @@
       this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
       this.refreshToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
       this.refreshToolStripMenuItem.Text = "Refresh";
-      this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+      this.refreshToolStripMenuItem.Click += new System.EventHandler(this.Refresh_Click);
       // 
       // closeToolStripMenuItem
       // 
@@ -264,6 +268,7 @@
       // lblClientName
       // 
       this.lblClientName.AutoSize = true;
+      this.lblClientName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lblClientName.Location = new System.Drawing.Point(41, 14);
       this.lblClientName.Name = "lblClientName";
       this.lblClientName.Size = new System.Drawing.Size(71, 13);
@@ -320,6 +325,7 @@
       // 
       this.plJobDetails.BackColor = System.Drawing.SystemColors.Window;
       this.plJobDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.plJobDetails.Controls.Add(this.lvJobDetails);
       this.plJobDetails.Controls.Add(this.lvSnapshots);
       this.plJobDetails.Controls.Add(this.lblPriorityJob);
       this.plJobDetails.Controls.Add(this.lblParentJob);
@@ -339,6 +345,30 @@
       this.plJobDetails.Size = new System.Drawing.Size(421, 386);
       this.plJobDetails.TabIndex = 1;
       this.plJobDetails.Visible = false;
+      // 
+      // lvJobDetails
+      // 
+      this.lvJobDetails.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chContent,
+            this.chDetails});
+      this.lvJobDetails.FullRowSelect = true;
+      this.lvJobDetails.GridLines = true;
+      this.lvJobDetails.Location = new System.Drawing.Point(20, 129);
+      this.lvJobDetails.Name = "lvJobDetails";
+      this.lvJobDetails.Size = new System.Drawing.Size(375, 137);
+      this.lvJobDetails.TabIndex = 17;
+      this.lvJobDetails.UseCompatibleStateImageBehavior = false;
+      this.lvJobDetails.View = System.Windows.Forms.View.Details;
+      // 
+      // chContent
+      // 
+      this.chContent.Text = "Content";
+      this.chContent.Width = 121;
+      // 
+      // chDetails
+      // 
+      this.chDetails.Text = "Details";
+      this.chDetails.Width = 247;
       // 
       // lvSnapshots
       // 
@@ -632,6 +662,7 @@
       // 
       // splitContainer1.Panel1
       // 
+      this.splitContainer1.Panel1.Controls.Add(this.btnRefresh);
       this.splitContainer1.Panel1.Controls.Add(this.tvClientControl);
       // 
       // splitContainer1.Panel2
@@ -641,12 +672,23 @@
       this.splitContainer1.SplitterDistance = 151;
       this.splitContainer1.TabIndex = 0;
       // 
+      // btnRefresh
+      // 
+      this.btnRefresh.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
+      this.btnRefresh.Location = new System.Drawing.Point(0, 357);
+      this.btnRefresh.Name = "btnRefresh";
+      this.btnRefresh.Size = new System.Drawing.Size(151, 29);
+      this.btnRefresh.TabIndex = 1;
+      this.btnRefresh.UseVisualStyleBackColor = true;
+      this.btnRefresh.Click += new System.EventHandler(this.Refresh_Click);
+      // 
       // tvClientControl
       // 
-      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Top;
       this.tvClientControl.Location = new System.Drawing.Point(0, 0);
       this.tvClientControl.Name = "tvClientControl";
-      this.tvClientControl.Size = new System.Drawing.Size(151, 386);
+      this.tvClientControl.Size = new System.Drawing.Size(151, 357);
       this.tvClientControl.TabIndex = 0;
       this.tvClientControl.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvClientControl_NodeMouseClick);
       // 
@@ -787,7 +829,11 @@
     private System.Windows.Forms.ImageList ilSmallImgClient;
     private System.Windows.Forms.ImageList ilSmallImgJob;
     private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.TreeView tvClientControl;
     private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+    private System.Windows.Forms.ListView lvJobDetails;
+    private System.Windows.Forms.ColumnHeader chContent;
+    private System.Windows.Forms.ColumnHeader chDetails;
+    private System.Windows.Forms.Button btnRefresh;
+    private System.Windows.Forms.TreeView tvClientControl;
   }
 }

@@ -409,6 +409,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void JobClicked() {
       plJobDetails.Visible = true;
+      lvJobDetails.Items.Clear();
       int i = 0;
       while (jobs.List[i].Id.ToString() != nameCurrentJob) {
         i++;
@@ -423,31 +424,75 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         pbJobControl.Image = ilLargeImgJob.Images[0];
       }
 
+
+
       lblJobName.Text = currentJob.Id.ToString();
       progressJob.Value = (int)(currentJob.Percentage * 100);
       lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
       lblUserCreatedJob.Text = currentJob.UserId.ToString() + /* currentJob.User.Name + */ " created Job";
-      lblJobCreated.Text = "Created at " + currentJob.DateCreated;
+      //lblJobCreated.Text = "Created at " + currentJob.DateCreated;
+      ListViewItem lvi = new ListViewItem();
+      lvi.Text = "User:";
+      lvi.SubItems.Add(currentJob.UserId.ToString());
+      lvJobDetails.Items.Add(lvi);
+
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "created at:";
+        lvi.SubItems.Add(currentJob.DateCreated.ToString());
+        lvJobDetails.Items.Add(lvi);
+
       if (currentJob.ParentJob != null) {
-        lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
-      } else {
-        lblParentJob.Text = "";
-      }
-      lblPriorityJob.Text = "Priority of job is " + currentJob.Priority;
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Parent job:";
+        lvi.SubItems.Add(currentJob.ParentJob.ToString());
+        lvJobDetails.Items.Add(lvi);
+     // lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
+      }// else {
+      //  lblParentJob.Text = "";
+      //}
+
+      lvi = null;
+      lvi = new ListViewItem();
+      lvi.Text = "Priority:";
+      lvi.SubItems.Add(currentJob.Priority.ToString());
+      lvJobDetails.Items.Add(lvi);
+
+     // lblPriorityJob.Text = "Priority of job is " + currentJob.Priority;
       if (currentJob.Client != null) {
-        lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
-        lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated;
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Calculation begin:";
+        lvi.SubItems.Add(currentJob.DateCalculated.ToString());
+        lvJobDetails.Items.Add(lvi);
+
+
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Client calculated:";
+        lvi.SubItems.Add(currentJob.Client.Name.ToString());
+        lvJobDetails.Items.Add(lvi);
+
+        //lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
+        //lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated;
 
         if (currentJob.State == State.finished) {
           IJobManager jobManager =
             ServiceLocator.GetJobManager();
           ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
-          lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
+          
+          lvi = null;
+          lvi = new ListViewItem();
+          lvi.Text = "Calculation ended:";
+          lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
+          lvJobDetails.Items.Add(lvi);
+         // lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
         }
       } else {
-        lblClientCalculating.Text = "";
-        lblJobCalculationBegin.Text = "";
-        lblJobCalculationEnd.Text = "";
+       // lblClientCalculating.Text = "";
+       // lblJobCalculationBegin.Text = "";
+       // lblJobCalculationEnd.Text = "";
       }
       if (currentJob.State != State.offline) {
         lvSnapshots.Items.Clear();
@@ -911,8 +956,33 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void refreshToolStripMenuItem_Click(object sender, EventArgs e) {
+    private void Refresh_Click(object sender, EventArgs e) {
+      Form overlayingForm = new Form();
+      //Label loadingLabel = new Label();
+      //loadingLabel.Text = "Loading";
+      //loadingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      //loadingLabel.Location = new Point(this.Width / 2, this.Height / 2);
+      //overlayingForm.Controls.Add(loadingLabel);
+
+
+      overlayingForm.Show();
+      overlayingForm.FormBorderStyle = FormBorderStyle.None;
+      overlayingForm.BackColor = Color.Gray;
+      overlayingForm.Opacity = 0.4;
+      overlayingForm.Size = this.Size;
+      //overlayingForm.PointToClient(new Point(this.Left, this.Top));
+      overlayingForm.Location = this.Location;
+      Console.WriteLine(this.Left + ", " + this.Top);
+      //overlayingForm.Left = this.Left;
+      //overlayingForm.Top = this.Top;
+
+      
+      
+
+
       AddClients();
+
+      overlayingForm.Close();
     }
   }
 }
