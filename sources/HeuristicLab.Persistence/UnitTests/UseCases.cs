@@ -13,6 +13,7 @@ using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Default.Decomposers;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -521,9 +522,15 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(list[1], newList[1]);
     }
 
+    [TestMethod]
+    public void TestTypeStringConversion() {
+      string version = TypeStringBuilder.StripVersion(typeof(List<int>[]).AssemblyQualifiedName);
+      Assert.AreEqual(version, typeof(List<int>[]).VersionInvariantName());
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
-    }
-  }
+    }    
+  }  
 }
