@@ -309,7 +309,7 @@ namespace HeuristicLab.Hive.Server.Core {
             if (curJob.State == State.requestSnapshot) {
               // a request for a snapshot has been set
               response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.RequestSnapshot, curJob.Id));
-              curJob.State = State.calculating;
+              curJob.State = State.requestSnapshotSent;
             }
           }
         }
@@ -420,6 +420,9 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
           response.JobId = jobId;
           return response;
+        }
+        if (job.State == State.requestSnapshotSent) {
+          job.State = State.calculating;
         }
         if (job.State != State.calculating) {
           response.Success = false;
