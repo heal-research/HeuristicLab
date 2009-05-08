@@ -50,6 +50,8 @@ public class ServiceLocator {
 
   private static IPermissionManager permManager = null;
 
+  private static IHivePermissionManager hivePermManager = null;
+
   /// <summary>
   /// Gets the client manager
   /// </summary>
@@ -95,7 +97,6 @@ public class ServiceLocator {
     if (lifecycleManager == null) {
       lifecycleManager = new LifecycleManager();
     }
-
     return lifecycleManager;
   }
 
@@ -142,5 +143,17 @@ public class ServiceLocator {
       permManager = discoveryService.GetInstances<IPermissionManager>()[0];
     return permManager;
     
+  }
+
+  /// <summary>
+  /// Gets the permission manager
+  /// </summary>
+  /// <returns></returns>
+  [MethodImpl(MethodImplOptions.Synchronized)]
+  public static IHivePermissionManager GetHivePermissionManager() {
+    if (hivePermManager == null)
+      hivePermManager = discoveryService.GetInstances<IHivePermissionManager>()[0];
+    return hivePermManager;
+
   }
 }
