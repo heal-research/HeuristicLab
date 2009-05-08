@@ -124,20 +124,26 @@ namespace HeuristicLab.Hive.Engine {
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
 
-      //Requests the last result.
-      //false: There will always be a result that is been sent back
-      //true: if you hit "requestsnapshot" before - it won't send you the job back if
-      //      the snapshot hasn't been submitted to the server (because the client needs
-      //      more time).
-      var result = executionEngineFacade.GetLastResult(jobId, false);
-      if (result.Success) {
-        JobResult jobResult = result.Obj;
+      // request snapshot
+      executionEngineFacade.RequestSnapshot(jobId);
+
+      // poll until snapshot is ready
+      ResponseObject<JobResult> response;
+      do {
+        response = executionEngineFacade.GetLastResult(jobId, true);
+        if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
+          Thread.Sleep(1000);
+        }
+      } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
+
+      if (response.Success) {
+        JobResult jobResult = response.Obj;
         if (jobResult != null) {
           job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
           PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
         }
       } else {
-        Exception ex = new Exception(result.Obj.Exception.Message);
+        Exception ex = new Exception(response.Obj.Exception.Message);
         ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
       }
     }
