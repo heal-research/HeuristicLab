@@ -105,6 +105,10 @@
       <Project>{9076697B-C151-46CD-95BC-1D059492B478}</Project>
       <Name>HeuristicLab.DataAccess-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
+      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
+      <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Hive.Contracts\3.2\HeuristicLab.Hive.Contracts-3.2.csproj">
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
       <Name>HeuristicLab.Hive.Contracts-3.2</Name>

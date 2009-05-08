@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.Hive.JobBase;
 using System.Xml;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -67,7 +68,11 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     public double Progress {
-      get { return 0.0; }
+      get {
+        DoubleData progress = Engine.GlobalScope.GetVariableValue<DoubleData>("Progress", false,
+          false);
+        return progress == null ? 0.0 : progress.Data;
+      }
       set { throw new NotSupportedException(); }
     }
 
