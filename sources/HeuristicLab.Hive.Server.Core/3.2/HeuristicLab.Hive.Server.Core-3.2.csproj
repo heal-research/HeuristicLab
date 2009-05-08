@@ -86,8 +86,10 @@
     <Compile Include="ClientManager.cs" />
     <Compile Include="DbTestApp.cs" />
     <Compile Include="ExecutionEngineFacade.cs" />
+    <Compile Include="HivePermissionManager.cs" />
     <Compile Include="HiveServerCorePlugin.cs" />
     <Compile Include="HiveServerMessages.Designer.cs" />
+    <Compile Include="InternalInterfaces\IHivePermissionManager.cs" />
     <Compile Include="InternalInterfaces\IInternalJobManager.cs" />
     <Compile Include="InternalInterfaces\IScheduler.cs" />
     <Compile Include="JobManager.cs" />
