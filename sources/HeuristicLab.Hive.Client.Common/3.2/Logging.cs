@@ -76,7 +76,8 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="message">the message</param>
     public void Error(String source, String message) {
       eventLogger.Source = source;
-      eventLogger.WriteEntry(message, EventLogEntryType.Error);
+      //, EventLogEntryType.Error
+      eventLogger.WriteEntry(message);
       eventLogger.Close();
     }
 
@@ -88,7 +89,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="e">the exception</param>
     public void Error(String source, String message, Exception e) {
       eventLogger.Source = source;
-      eventLogger.WriteEntry(message +"\n" + e.ToString(), EventLogEntryType.Error);
+      eventLogger.WriteEntry(message +"\n" + e.ToString());
       eventLogger.Close();
     }
   }

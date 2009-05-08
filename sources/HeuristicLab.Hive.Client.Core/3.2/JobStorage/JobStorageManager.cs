@@ -8,6 +8,7 @@ using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Contracts;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace HeuristicLab.Hive.Client.Core.JobStorage {
   public class JobStorageManager {
@@ -15,7 +16,7 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
     private static List<JobStorageInfo> storedJobsList = new List<JobStorageInfo>();
     //Todo: execution path
     //Todo: Choose a better directory name 
-    private static String path = "C:\\Program Files\\HeuristicLab 3.0\\plugins\\jobStorrage\\";
+    private static String path = "C:\\Program Files\\HeuristicLab 3.0\\plugins\\Hive.Client.Jobs\\";
     
     public static void PersistObjectToDisc(String serverIP, long serverPort, Guid jobId, byte[] job) {
       String filename = serverIP + "." + serverPort + "." + jobId.ToString();
@@ -29,7 +30,8 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         jobstream = File.Create(path + filename + ".dat");
         jobstream.Write(job, 0, job.Length);
         storedJobsList.Add(info);
-        Logging.Instance.Info("JobStorageManager", "Job " + info.JobID + " stored on the harddisc");
+        Debug.WriteLine("Job " + info.JobID + " stored on the harddisc");
+        //Logging.Instance.Info("JobStorageManager", "Job " + info.JobID + " stored on the harddisc");
       }
       catch (Exception e) {
         Logging.Instance.Error("JobStorageManager", "Exception: ", e);
@@ -47,14 +49,18 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
       for(int index=storedJobsList.Count; index > 0; index--) {
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin && (storedJobsList[index-1].ServerIP == WcfService.Instance.ServerIP && storedJobsList[index-1].ServerPort == WcfService.Instance.ServerPort)) {
           String filename = storedJobsList[index-1].ServerIP + "." + storedJobsList[index-1].ServerPort + "." + storedJobsList[index-1].JobID.ToString();
-          Logging.Instance.Info("JobStorrageManager", "Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
+          Debug.WriteLine("Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
+          //Logging.Instance.Info("JobStorrageManager", "Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
           byte[] job = File.ReadAllBytes(path + filename + ".dat");
           
           //Todo: ask server first if he really wants the job...
           ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().Id, storedJobsList[index-1].JobID, job, 1.00, null, true);
+          ClientStatusInfo.JobsProcessed++;
           //TODO: has to be fixed from server side
           //if (res.Success == true) {
-          Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");  
+          Debug.WriteLine("Sending of job " + storedJobsList[index - 1].JobID + " done");  
+          //Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");  
+
           storedJobsList.Remove(storedJobsList[index - 1]);
           File.Delete(path + filename + ".dat");
             
@@ -65,8 +71,9 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
 
     public static void StoreJobList() {
       XmlSerializer serializer = new XmlSerializer(typeof(List<JobStorageInfo>));
-      TextWriter writer = new StreamWriter(path + "list.xml");
+      TextWriter writer = new StreamWriter(Path.Combine(path ,"list.xml"));
       serializer.Serialize(writer, storedJobsList);
+      writer.Close();
     }
     
   }

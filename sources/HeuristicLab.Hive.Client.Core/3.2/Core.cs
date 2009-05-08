@@ -117,7 +117,14 @@ namespace HeuristicLab.Hive.Client.Core {
           break;
         //Job has been successfully aborted
         case MessageContainer.MessageType.JobAborted:
-          Debug.WriteLine("-- Job Aborted Message received");
+          //todo: thread this
+          Debug.WriteLine("Job aborted, he's dead");
+          lock (engines) {
+            AppDomain.Unload(appDomains[container.JobId]);
+            appDomains.Remove(container.JobId);
+            engines.Remove(container.JobId);
+            jobs.Remove(container.JobId);
+          }
           break;
         //Request a Snapshot from the Execution Engine
         case MessageContainer.MessageType.RequestSnapshot:
@@ -131,7 +138,7 @@ namespace HeuristicLab.Hive.Client.Core {
         case MessageContainer.MessageType.FetchJob:
           if (!currentlyFetching) {
             wcfService.SendJobAsync(ConfigManager.Instance.GetClientInfo().Id);
-            currentlyFetching = false;
+            currentlyFetching = true;
           }          
           break;          
         //A Job has finished and can be sent back to the server
@@ -211,8 +218,8 @@ namespace HeuristicLab.Hive.Client.Core {
         //beat.StopHeartBeat();        
         //Todo: make a set & override the equals method
         List<byte[]> files = new List<byte[]>();
-        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
-          files.AddRange(plugininfo.PluginFiles);
+        //foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
+        //  files.AddRange(plugininfo.PluginFiles);
         
         AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
@@ -231,8 +238,9 @@ namespace HeuristicLab.Hive.Client.Core {
 
             Debug.WriteLine("Increment FetchedJobs to:" + ClientStatusInfo.JobsFetched);
           }
-        }
+        }        
       }
+      currentlyFetching = false;
     }
     
 

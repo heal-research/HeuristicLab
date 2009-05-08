@@ -50,6 +50,14 @@ namespace HeuristicLab.Hive.Client.Common {
     }
 
     /// <summary>
+    /// Sets Lease time to infinite
+    /// </summary>
+    /// <returns>nothing</returns>
+    public override object InitializeLifetimeService() {
+      return null;
+    }
+
+    /// <summary>
     /// Creates a new MessageQueue Object.
     /// A new Queue and a Semaphore is created. The Semaphore is set to a max size of 5000.
     /// </summary>
