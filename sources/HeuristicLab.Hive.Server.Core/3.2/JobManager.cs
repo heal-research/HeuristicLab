@@ -236,9 +236,17 @@ namespace HeuristicLab.Hive.Server.Core {
             session.GetDataAdapter<Job, IJobAdapter>();
 
         ResponseObject<JobResult> response = new ResponseObject<JobResult>();
+
+        Job job = jobAdapter.GetById(jobId);
+        if (requested && job.State == State.requestSnapshot) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE;
+          return response;
+        }
+          
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
-        response.Obj = GetLastJobResult(jobAdapter.GetById(jobId));
+        response.Obj = GetLastJobResult(job);
 
         return response;
       }

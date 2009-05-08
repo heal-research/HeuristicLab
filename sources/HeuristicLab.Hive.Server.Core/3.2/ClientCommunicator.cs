@@ -300,7 +300,7 @@ namespace HeuristicLab.Hive.Server.Core {
           } else if (curJob.State == State.abort) {
             // a request to abort the job has been set
             response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.AbortJob, curJob.Id));
-            curJob.State = State.offline;
+            curJob.State = State.finished;
           } else {
             // save job progress
             curJob.Percentage = jobProgress.Value;
