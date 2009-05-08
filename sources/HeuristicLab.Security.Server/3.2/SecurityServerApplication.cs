@@ -22,7 +22,7 @@ namespace HeuristicLab.Security.Server {
 
     private DiscoveryService discService = new DiscoveryService();
     private Dictionary<string, ServiceHost> runningServices = new Dictionary<string, ServiceHost>();
-    private NetTcpBinding binding = new NetTcpBinding(SecurityMode.None, true);
+    private NetTcpBinding binding = (NetTcpBinding)HeuristicLab.Hive.Contracts.WcfSettings.GetBinding();
 
     private enum Services {
       SecurityManager,
@@ -44,8 +44,6 @@ namespace HeuristicLab.Security.Server {
     }
 
     private String StartService(Services svc, IPAddress ipAddress, int port) {
-      binding.MaxReceivedMessageSize = 5000000;
-      binding.SendTimeout = new TimeSpan(0, 0, 0, 0, 20);
       string curServiceHost = "";
       Uri uriTcp;
       String result = "";
