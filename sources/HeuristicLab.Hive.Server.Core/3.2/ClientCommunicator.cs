@@ -534,8 +534,10 @@ namespace HeuristicLab.Hive.Server.Core {
         if (client.State == State.calculating) {
           // check wich job the client was calculating and reset it
           foreach (Job job in allJobs) {
-            if (job.Client.Id == client.Id) {
-              jobManager.ResetJobsDependingOnResults(job);
+            if (job.Client != null) {
+              if (job.Client.Id == client.Id) {
+                jobManager.ResetJobsDependingOnResults(job);
+              }
             }
           }
         }
