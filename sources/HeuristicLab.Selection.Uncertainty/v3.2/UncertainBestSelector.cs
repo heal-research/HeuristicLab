@@ -86,14 +86,12 @@ namespace HeuristicLab.Selection.Uncertainty {
       for (int i = 0; i < selected; i++) {        
         int selectedScopeIndex = selectionGroupIndices[poolSize - i - 1];
         IScope selectedScope = source.SubScopes[selectedScopeIndex];
-        source.RemoveSubScope(selectedScope);
-        target.AddSubScope(selectedScope);
+        target.AddSubScope((IScope)selectedScope.Clone());
         selectedScopes.Add(selectedScope);
       }
-
-      if (copySelected) { // non-standard behavior, hope that's okay
+      if (!copySelected) {
         while (selectedScopes.Count > 0) {
-          source.AddSubScope((IScope)selectedScopes[0].Clone());
+          source.RemoveSubScope(selectedScopes[0]);
           selectedScopes.RemoveAt(0);
         }
       }
