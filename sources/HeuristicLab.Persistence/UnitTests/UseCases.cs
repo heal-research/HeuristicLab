@@ -524,8 +524,12 @@ namespace HeuristicLab.Persistence.UnitTest {
 
     [TestMethod]
     public void TestTypeStringConversion() {
-      string version = TypeStringBuilder.StripVersion(typeof(List<int>[]).AssemblyQualifiedName);
-      Assert.AreEqual(version, typeof(List<int>[]).VersionInvariantName());
+      string name = typeof(List<int>[]).AssemblyQualifiedName;
+      string shortName =
+        "System.Collections.Generic.List`1[[System.Int32, mscorlib]][], mscorlib";
+      Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());        
+      Assert.AreEqual(shortName, TypeNameParser.Parse(name).ToString(false));
+      Assert.AreEqual(shortName, typeof(List<int>[]).VersionInvariantName());
     }
 
     [ClassInitialize]

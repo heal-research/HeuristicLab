@@ -39,6 +39,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
         new Dictionary<string, string> {
           {"&", "AMPERSAND"},
           {".", "DOT"},
+          {"-", "DASH"},
           {"+", "PLUS"},
           {",", "COMMA"},
           {"[", "OPEN_BRACKET"},
@@ -48,11 +49,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
           {"=", "EQUALS"},
           {"`", "BACKTICK"} };
       private static Regex NumberRegex = new Regex("^\\d+$");
-      private static Regex TokenRegex = new Regex("[&.+,\\[\\]* =`]|\\d+|[a-zA-Z][a-zA-Z0-9]*");
+      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|\\d+|[a-zA-Z][a-zA-Z0-9]*");
       public string Name { get; private set; }
       public string Value { get; private set; }
       public int? Number { get; private set; }
-      private Token(string value) {
+      public int Position { get; private set; }
+      private Token(string value, int pos) {
+        Position = pos;
         if (tokens.ContainsKey(value)) {
           Name = tokens[value];
         } else if (NumberRegex.IsMatch(value)) {
@@ -62,8 +65,10 @@ namespace HeuristicLab.Persistence.Auxiliary {
         }
       }
       public static IEnumerable<Token> Tokenize(string s) {
+        int pos = 0;
         foreach (Match m in TokenRegex.Matches(s)) {
-          yield return new Token(m.Value);
+          yield return new Token(m.Value, pos);
+          pos += m.Length;
         }
       }
       public override string ToString() {
@@ -77,75 +82,111 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
     }
 
-    Queue<Token> tokens;
+    private Queue<Token> tokens;
+    private int Position {
+      get {
+        if (tokens.Count == 0)
+          return -1;
+        else
+          return tokens.Peek().Position;
+      }
+    }
 
     private TypeNameParser(string s) {
       tokens = new Queue<Token>(Token.Tokenize(s));
     }
 
-    public static string StripVersion(string s) {
+    public static TypeName Parse(string s) {
       TypeNameParser p = new TypeNameParser(s);
-      return p.TransformTypeSpec();
-    }
-
-
-    private string TransformTypeSpec() {
-      string result = TransformSimpleTypeSpec();
-      if (ConsumeToken("AMPERSAND")) {
-        return result + "&";
-      } else {
-        return result;
+      try {
+        return p.TransformTypeSpec();
+      } catch (ParseError x) {
+        if (p.Position > 0)
+          throw new ParseError(String.Format(
+            "Could not parse typename: {0}\n\"{1}====>{2}<===={3}",
+            x.Message,
+            s.Substring(0, p.Position),
+            s[p.Position],
+            s.Substring(p.Position, s.Length - p.Position)));
+        else
+          throw new ParseError(String.Format(
+            "Could not parse typenname \"{0}\" at end of input: {1}",
+            s,
+            x.Message));
       }
     }
 
-    private string TransformSimpleTypeSpec() {
+    private TypeName TransformTypeSpec() {
+      TypeName t = TransformSimpleTypeSpec();
+      t.IsReference = ConsumeToken("AMPERSAND");
+      return t;
+    }
+
+    private TypeName TransformSimpleTypeSpec() {
       List<string> nameSpace = new List<string>();
       nameSpace.Add(ConsumeIdentifier());
       while (ConsumeToken("DOT"))
         nameSpace.Add(ConsumeIdentifier());
-      List<string> typeName = new List<string>();
+      List<string> className = new List<string>();
       if (nameSpace.Count > 0) {
-        typeName.Add(nameSpace[nameSpace.Count - 1]);
+        className.Add(nameSpace[nameSpace.Count - 1]);
         nameSpace.RemoveAt(nameSpace.Count - 1);
       }
       while (ConsumeToken("PLUS"))
-        typeName.Add(ConsumeIdentifier());
-      string genericString = "";
+        className.Add(ConsumeIdentifier());
+      TypeName typeName = new TypeName(
+        string.Join(".", nameSpace.ToArray()),
+        string.Join("+", className.ToArray()));
       if (ConsumeToken("BACKTICK")) {
-        string number = ConsumeNumber().ToString();
-        ConsumeToken("OPEN_BRACKET", true);
-        string generics = TransformGenerics();
-        ConsumeToken("CLOSE_BRACKET", true);
-        genericString = "`" + number + "[" + generics + "]";
+        int nGenericArgs = ConsumeNumber();
+        if (ConsumeToken("OPEN_BRACKET") &&
+          CanConsumeToken("OPEN_BRACKET")) {
+          typeName.GenericArgs.AddRange(TransformGenerics());
+          ConsumeToken("CLOSE_BRACKET", true);
+        }
       }
       StringBuilder pointerOrArray = new StringBuilder();
       while (true) {
         if (ConsumeToken("ASTERSIK")) {
           pointerOrArray.Append("*");
         } else if (ConsumeToken("OPEN_BRACKET")) {
+          pointerOrArray.Append('[');
           ParseDimension(pointerOrArray);
           while (ConsumeToken("COMMA")) {
             pointerOrArray.Append(",");
             ParseDimension(pointerOrArray);
           }
           ConsumeToken("CLOSE_BRACKET", true);
+          pointerOrArray.Append(']');
         } else {
           break;
         }
       }
-      string assembly = "";
+      typeName.MemoryMagic = pointerOrArray.ToString();
       if (ConsumeComma()) {
-        assembly = ConsumeIdentifier();
+        StringBuilder sb = new StringBuilder();
+        sb.Append(ConsumeIdentifier());
+        while (CanConsumeToken("DOT") ||
+          CanConsumeToken("DASH") ||
+          CanConsumeNumber() ||
+          CanConsumeIdentifier()) {
+          if (ConsumeToken("DOT"))
+            sb.Append('.');
+          else if (ConsumeToken("DASH"))
+            sb.Append('-');
+          else if (CanConsumeNumber())
+            sb.Append(ConsumeNumber());
+          else
+            sb.Append(ConsumeIdentifier());
+        }
+        typeName.AssemblyName = sb.ToString();
         while (ConsumeComma()) {
-          TransformAssemblyProperty();
+          KeyValuePair<string, string> property =
+            TransformAssemblyProperty();
+          typeName.AssemblyAttribues.Add(property.Key, property.Value);
         }
       }
-      return string.Join(".", nameSpace.ToArray()) + "." +
-        string.Join("+", typeName.ToArray()) +
-        genericString +
-        pointerOrArray.ToString() +
-        ", " +
-        assembly;
+      return typeName;
     }
 
     private void ParseDimension(StringBuilder sb) {
@@ -163,51 +204,59 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
     }
 
-    private string TransformGenerics() {
+    private IEnumerable<TypeName> TransformGenerics() {
       ConsumeToken("OPEN_BRACKET", true);
-      List<string> typenames = new List<string>();
-      typenames.Add(TransformSimpleTypeSpec());
+      yield return TransformSimpleTypeSpec();
       ConsumeToken("CLOSE_BRACKET", true);
       while (ConsumeToken("COMMA")) {
         ConsumeToken("OPEN_BRACKET", true);
-        typenames.Add(TransformSimpleTypeSpec());
+        yield return TransformSimpleTypeSpec();
         ConsumeToken("CLOSE_BRACKET", true);
       }
-      return "[" + string.Join("],[", typenames.ToArray()) + "]";
     }
 
-    private string TransformAssemblyProperty() {
+    private KeyValuePair<string, string> TransformAssemblyProperty() {
       if (ConsumeIdentifier("Version")) {
         ConsumeToken("EQUALS", true);
-        TransformVersion();
+        return new KeyValuePair<string, string>(
+          "Version",
+          TransformVersion());
       } else if (ConsumeIdentifier("PublicKey")) {
         ConsumeToken("EQUALS", true);
-        ConsumeIdentifier();
+        return new KeyValuePair<string, string>(
+          "PublicKey",
+          ConsumeIdentifier());
       } else if (ConsumeIdentifier("PublicKeyToken")) {
         ConsumeToken("EQUALS", true);
-        ConsumeIdentifier();
+        return new KeyValuePair<string, string>(
+          "PublicKeyToken",
+          ConsumeIdentifier());
       } else if (ConsumeIdentifier("Culture")) {
         ConsumeToken("EQUALS", true);
-        ConsumeIdentifier();
+        return new KeyValuePair<string, string>(
+          "Culture",
+          ConsumeIdentifier());
       } else if (ConsumeIdentifier("Custom")) {
         ConsumeToken("EQUALS", true);
-        ConsumeIdentifier();
+        return new KeyValuePair<string, string>(
+          "Custom",
+          ConsumeIdentifier());
       } else {
         throw new ParseError(String.Format(
           "Invalid assembly property \"{0}\"",
           tokens.Peek().ToString()));
       }
-      return "";
     }
     private string TransformVersion() {
-      ConsumeNumber();
+      StringBuilder version = new StringBuilder();
+      version.Append(ConsumeNumber());
       ConsumeToken("DOT");
-      ConsumeNumber();
+      version.Append('.').Append(ConsumeNumber());
       ConsumeToken("DOT");
-      ConsumeNumber();
+      version.Append('.').Append(ConsumeNumber());
       ConsumeToken("DOT");
-      ConsumeNumber();
-      return "";
+      version.Append('.').Append(ConsumeNumber());
+      return version.ToString();
     }
 
     private bool CanConsumeNumber() {
@@ -237,6 +286,10 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
     }
 
+    private bool CanConsumeIdentifier() {
+      return tokens.Count > 0 && tokens.Peek().Value != null;
+    }
+
     private string ConsumeIdentifier() {
       if (tokens.Count == 0)
         throw new ParseError("End of input while expecting identifier");
@@ -260,6 +313,14 @@ namespace HeuristicLab.Persistence.Auxiliary {
       return ConsumeToken(name, false);
     }
 
+    private bool CanConsumeToken(string name) {
+      if (tokens.Count == 0)
+        return false;
+      if (tokens.Peek().Name == name)
+        return true;
+      return false;
+    }
+
     private bool ConsumeToken(string name, bool force) {
       if (tokens.Count == 0)
         if (force)
@@ -281,55 +342,76 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
     }
 
+
   }
 
   public class TypeName {
-    public bool IsReference { get; private set; }
-    public bool IsArray { get { return Dimension.Length > 0; } }
-    public bool IsPointer { get; private set; }
-    public bool IsGeneric { get { return GenericArgs.Count > 0; } }
-    public List<TypeName> GenericArgs { get; private set; }
-    public string Dimension { get; private set; }
-    public string ClassName { get; private set; }
     public string Namespace { get; private set; }
-    public string AssemblyNmae { get; private set; }
-    public string AssemblyAttribues { get; private set; }
-    public TypeName(string typeName) {
+    public string ClassName { get; private set; }
+    public List<TypeName> GenericArgs { get; internal set; }
+    public bool IsGeneric { get { return GenericArgs.Count > 0; } }
+    public string MemoryMagic { get; internal set; }
+    public string AssemblyName { get; internal set; }
+    public Dictionary<string, string> AssemblyAttribues { get; internal set; }
+    public bool IsReference { get; internal set; }
+
+    internal TypeName(string nameSpace, string className) {
+      Namespace = nameSpace;
+      ClassName = className;
+      GenericArgs = new List<TypeName>();
+      MemoryMagic = "";
+      AssemblyAttribues = new Dictionary<string, string>();
     }
-  }
 
-  public static class TypeStringBuilder {
-
-    internal static void BuildDeclaringTypeChain(Type type, StringBuilder sb) {
-      if (type.DeclaringType != null) {
-        BuildDeclaringTypeChain(type.DeclaringType, sb);
-        sb.Append(type.DeclaringType.Name).Append('+');
-      }
-    }
-
-    internal static void BuildVersionInvariantName(Type type, StringBuilder sb) {
-      sb.Append(type.Namespace).Append('.');
-      BuildDeclaringTypeChain(type, sb);
-      sb.Append(type.Name);
-      if (type.IsGenericType) {
-        sb.Append("[");
-        Type[] args = type.GetGenericArguments();
-        for (int i = 0; i < args.Length; i++) {
-          sb.Append("[");
-          BuildVersionInvariantName(args[i], sb);
-          sb.Append("],");
+    public string ToString(bool full) {
+      StringBuilder sb = new StringBuilder();
+      sb.Append(Namespace).Append('.').Append(ClassName);
+      if (IsGeneric) {
+        sb.Append('`').Append(GenericArgs.Count).Append('[');
+        bool first = true;
+        foreach (TypeName t in GenericArgs) {
+          if (first)
+            first = false;
+          else
+            sb.Append(',');
+          sb.Append('[').Append(t.ToString(full)).Append(']');
         }
-        if (args.Length > 0)
-          sb.Remove(sb.Length - 1, 1);
-        sb.Append("]");
+        sb.Append(']');
       }
-      sb.Append(", ").Append(type.Assembly.GetName().Name);
+      sb.Append(MemoryMagic);
+      if (AssemblyName != null)
+        sb.Append(", ").Append(AssemblyName);
+      if (full)
+        foreach (var property in AssemblyAttribues)
+          sb.Append(", ").Append(property.Key).Append('=').Append(property.Value);
+      return sb.ToString();
     }
 
-    public static string StripVersion(string typename) {
-      return TypeNameParser.StripVersion(typename);
+    public override string ToString() {
+      return ToString(true);
     }
 
+    public bool IsOlderThan(TypeName t) {
+      if (this.ClassName != t.ClassName ||
+        this.Namespace != t.Namespace ||
+        this.AssemblyName != t.AssemblyName)
+        throw new Exception("Cannot compare versions of different types");
+      if (CompareVersions(
+        this.AssemblyAttribues["Version"],
+        t.AssemblyAttribues["Version"]) < 0)
+        return true;
+      IEnumerator<TypeName> thisIt = this.GenericArgs.GetEnumerator();
+      IEnumerator<TypeName> tIt = t.GenericArgs.GetEnumerator();
+      while (thisIt.MoveNext()) {
+        tIt.MoveNext();
+        if (thisIt.Current.IsOlderThan(tIt.Current))
+          return true;
+      }
+      return false;
+    }
+
+    private static int CompareVersions(string v1string, string v2string) {
+      return new Version(v1string).CompareTo(new Version(v2string));
+    }
   }
-
 }

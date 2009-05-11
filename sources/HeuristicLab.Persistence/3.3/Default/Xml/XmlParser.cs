@@ -130,7 +130,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     private static object Deserialize(ZipFile zipFile) {
-      try {        
+      try {
         Deserializer deSerializer = new Deserializer(
           ParseTypeCache(
           new StreamReader(
