@@ -32,9 +32,10 @@ namespace HeuristicLab.Visualization
         {
           this.components = new System.ComponentModel.Container();
           this.canvasUI = new HeuristicLab.Visualization.CanvasUI();
-          this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+          this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
           this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-          this.contextMenuStrip1.SuspendLayout();
+          this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+          this.contextMenu.SuspendLayout();
           this.SuspendLayout();
           // 
           // canvasUI
@@ -52,19 +53,27 @@ namespace HeuristicLab.Visualization
           this.canvasUI.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvasUI_MouseUp);
           this.canvasUI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.canvasUI1_KeyDown);
           // 
-          // contextMenuStrip1
+          // contextMenu
           // 
-          this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem});
-          this.contextMenuStrip1.Name = "contextMenuStrip1";
-          this.contextMenuStrip1.Size = new System.Drawing.Size(123, 26);
+          this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem,
+            this.exportToolStripMenuItem});
+          this.contextMenu.Name = "contextMenuStrip1";
+          this.contextMenu.Size = new System.Drawing.Size(153, 70);
           // 
           // optionsToolStripMenuItem
           // 
           this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-          this.optionsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-          this.optionsToolStripMenuItem.Text = "Options";
+          this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+          this.optionsToolStripMenuItem.Text = "Opti&ons...";
           this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+          // 
+          // exportToolStripMenuItem
+          // 
+          this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+          this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+          this.exportToolStripMenuItem.Text = "E&xport...";
+          this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
           // 
           // LineChart
           // 
@@ -73,7 +82,7 @@ namespace HeuristicLab.Visualization
           this.Controls.Add(this.canvasUI);
           this.Name = "LineChart";
           this.Size = new System.Drawing.Size(551, 373);
-          this.contextMenuStrip1.ResumeLayout(false);
+          this.contextMenu.ResumeLayout(false);
           this.ResumeLayout(false);
 
         }
@@ -81,7 +90,8 @@ namespace HeuristicLab.Visualization
         #endregion
 
         private CanvasUI canvasUI;
-        private ContextMenuStrip contextMenuStrip1;
+        private ContextMenuStrip contextMenu;
         private ToolStripMenuItem optionsToolStripMenuItem;
+        private ToolStripMenuItem exportToolStripMenuItem;
     }
 }

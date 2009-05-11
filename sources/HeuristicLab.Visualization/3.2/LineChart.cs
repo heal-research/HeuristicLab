@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Visualization.DataExport;
 using HeuristicLab.Visualization.Legend;
 using HeuristicLab.Visualization.Options;
 using HeuristicLab.Visualization.Test;
@@ -260,6 +261,16 @@ namespace HeuristicLab.Visualization {
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(model);
       optionsdlg.Show();
+    }
+
+    private void exportToolStripMenuItem_Click(object sender, EventArgs e) {
+      ExportDialog exportdlg = new ExportDialog();
+      exportdlg.ShowDialog(this);
+
+      IExporter exporter = exportdlg.SelectedExporter;
+
+      if (exporter != null)
+        exporter.Export(model);
     }
 
     public void OnDataRowChanged(IDataRow row) {
@@ -530,7 +541,7 @@ namespace HeuristicLab.Visualization {
       Focus();
 
       if (e.Button == MouseButtons.Right) {
-        contextMenuStrip1.Show(PointToScreen(e.Location));
+        contextMenu.Show(PointToScreen(e.Location));
       } else if (e.Button == MouseButtons.Left) {
         if (ModifierKeys == Keys.None) {
           PanListener panListener = new PanListener(e.Location);

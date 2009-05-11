@@ -101,6 +101,15 @@
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
+    <Compile Include="DataExport\CSVDataExport.cs" />
+    <Compile Include="DataExport\CSVWriter.cs" />
+    <Compile Include="DataExport\ExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataExport\ExportDialog.Designer.cs">
+      <DependentUpon>ExportDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataExport\IExporter.cs" />
     <Compile Include="DataRowBase.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
@@ -176,6 +185,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DataExport\ExportDialog.resx">
+      <DependentUpon>ExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LineChart.resx">
       <DependentUpon>LineChart.cs</DependentUpon>
       <SubType>Designer</SubType>
