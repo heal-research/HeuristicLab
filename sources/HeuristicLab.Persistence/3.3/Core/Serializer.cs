@@ -39,11 +39,12 @@ namespace HeuristicLab.Persistence.Core {
           string serializer = null;
           IFormatter f = configuration.GetFormatter(pair.Key);
           if (f != null) {
-            serializer = f.GetType().VersionInvariantName();
+            serializer = f.GetType().AssemblyQualifiedName;
           } else {
             IDecomposer d = configuration.GetDecomposer(pair.Key);
-            serializer = d.GetType().VersionInvariantName();
+            serializer = d.GetType().AssemblyQualifiedName;
           }
+          //result.Add(new TypeMapping(pair.Value, pair.Key.AssemblyQualifiedName, serializer));
           result.Add(new TypeMapping(pair.Value, pair.Key.VersionInvariantName(), serializer));
         }
         return result;

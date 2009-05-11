@@ -14,6 +14,7 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Default.Decomposers;
 using HeuristicLab.Persistence.Auxiliary;
+using System.Text.RegularExpressions;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -509,7 +510,7 @@ namespace HeuristicLab.Persistence.UnitTest {
     }
 
     [TestMethod]
-    public void TestSavingException() {      
+    public void TestSavingException() {
       List<int> list = new List<int> { 1, 2, 3 };
       XmlGenerator.Serialize(list, tempFile);
       NonSerializable s = new NonSerializable();
@@ -527,14 +528,41 @@ namespace HeuristicLab.Persistence.UnitTest {
       string name = typeof(List<int>[]).AssemblyQualifiedName;
       string shortName =
         "System.Collections.Generic.List`1[[System.Int32, mscorlib]][], mscorlib";
-      Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());        
+      Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());
       Assert.AreEqual(shortName, TypeNameParser.Parse(name).ToString(false));
       Assert.AreEqual(shortName, typeof(List<int>[]).VersionInvariantName());
+    }
+
+    [TestMethod]
+    public void TestAssemblyVersionCheck() {
+      IntWrapper i = new IntWrapper(1);
+      Serializer s = new Serializer(i, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
+      XmlGenerator g = new XmlGenerator();
+      StringBuilder dataString = new StringBuilder();
+      foreach (var token in s) {
+        dataString.Append(g.Format(token));
+      }
+      StringBuilder typeString = new StringBuilder();
+      foreach (var line in g.Format(s.TypeCache))
+        typeString.Append(line);
+      Deserializer d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(typeString.ToString())));
+      XmlParser p = new XmlParser(new StringReader(dataString.ToString()));
+      IntWrapper newI = (IntWrapper)d.Deserialize(p);
+      Assert.AreEqual(i.Value, newI.Value);
+      string newTypeString = Regex.Replace(typeString.ToString(),
+        "Version=(\\d+\\.\\d+\\.\\d+\\.\\d+)",
+        "Version=9999.9999.9999.9999");
+      try {
+        d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException) {
+        // EXPECTED
+      }
     }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
-    }    
-  }  
+    }
+  }
 }

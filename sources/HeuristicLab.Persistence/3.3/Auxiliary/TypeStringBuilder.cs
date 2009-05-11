@@ -364,6 +364,10 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     public string ToString(bool full) {
+      return ToString(full, true);
+    }
+
+    public string ToString(bool full, bool includeAssembly) {
       StringBuilder sb = new StringBuilder();
       sb.Append(Namespace).Append('.').Append(ClassName);
       if (IsGeneric) {
@@ -379,11 +383,12 @@ namespace HeuristicLab.Persistence.Auxiliary {
         sb.Append(']');
       }
       sb.Append(MemoryMagic);
-      if (AssemblyName != null)
+      if (includeAssembly && AssemblyName != null) {
         sb.Append(", ").Append(AssemblyName);
-      if (full)
-        foreach (var property in AssemblyAttribues)
-          sb.Append(", ").Append(property.Key).Append('=').Append(property.Value);
+        if (full)
+          foreach (var property in AssemblyAttribues)
+            sb.Append(", ").Append(property.Key).Append('=').Append(property.Value);
+      }
       return sb.ToString();
     }
 
@@ -392,22 +397,26 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     public bool IsOlderThan(TypeName t) {
-      if (this.ClassName != t.ClassName ||
-        this.Namespace != t.Namespace ||
-        this.AssemblyName != t.AssemblyName)
-        throw new Exception("Cannot compare versions of different types");
-      if (CompareVersions(
-        this.AssemblyAttribues["Version"],
-        t.AssemblyAttribues["Version"]) < 0)
-        return true;
-      IEnumerator<TypeName> thisIt = this.GenericArgs.GetEnumerator();
-      IEnumerator<TypeName> tIt = t.GenericArgs.GetEnumerator();
-      while (thisIt.MoveNext()) {
-        tIt.MoveNext();
-        if (thisIt.Current.IsOlderThan(tIt.Current))
+      try {
+        if (this.ClassName != t.ClassName ||
+          this.Namespace != t.Namespace ||
+          this.AssemblyName != t.AssemblyName)
+          throw new Exception("Cannot compare versions of different types");
+        if (CompareVersions(
+          this.AssemblyAttribues["Version"],
+          t.AssemblyAttribues["Version"]) < 0)
           return true;
+        IEnumerator<TypeName> thisIt = this.GenericArgs.GetEnumerator();
+        IEnumerator<TypeName> tIt = t.GenericArgs.GetEnumerator();
+        while (thisIt.MoveNext()) {
+          tIt.MoveNext();
+          if (thisIt.Current.IsOlderThan(tIt.Current))
+            return true;
+        }
+        return false;
+      } catch (KeyNotFoundException) {
+        throw new Exception("Could not extract version information from type string");
       }
-      return false;
     }
 
     private static int CompareVersions(string v1string, string v2string) {

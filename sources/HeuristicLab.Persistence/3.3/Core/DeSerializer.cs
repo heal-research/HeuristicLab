@@ -8,6 +8,47 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Core {
 
+  public class TypeLoader {
+
+    public static Type Load(string typeNameString) {
+      Type type;
+      try {
+        type = Type.GetType(typeNameString, true);
+      } catch (Exception) {
+        Logger.Warn(String.Format(
+          "Cannot load type \"{0}\", falling back to loading with partial name", typeNameString));
+        try {
+          TypeName typeName = TypeNameParser.Parse(typeNameString);
+          Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);
+          type = a.GetType(typeName.ToString(false, false), true);
+        } catch (Exception) {
+          throw new PersistenceException(String.Format(
+            "Could not load type \"{0}\"",
+            typeNameString));
+        }
+        try {
+          if (
+            TypeNameParser.Parse(type.AssemblyQualifiedName).IsOlderThan(
+            TypeNameParser.Parse(typeNameString)))
+            throw new PersistenceException(String.Format(
+              "Serialized type is newer than available type: serialized: {0}, loaded: {1}",
+              typeNameString,
+              type.AssemblyQualifiedName));
+        } catch (PersistenceException) {
+          throw;
+        } catch (Exception e) {
+          Logger.Warn(String.Format(
+            "Could not perform version check requested type was {0} while loaded type is {1}:",
+            typeNameString,
+            type.AssemblyQualifiedName),
+            e);
+        }
+      }
+      return type;
+    }
+
+  }
+
   public class Deserializer {
 
     class Midwife {
@@ -70,25 +111,9 @@ namespace HeuristicLab.Persistence.Core {
       try {
         var map = new Dictionary<Type, object>();
         foreach (var typeMapping in typeCache) {
-          Type type;
-          try {
-            type = Type.GetType(typeMapping.TypeName, true);
-          } catch (Exception) {
-            Logger.Error(String.Format(
-              "Cannot load type \"{0}\", falling back to loading with partial name", typeMapping.TypeName));
-            string[] typeNameParts = typeMapping.TypeName.Split(new[] { ',' });
-            try {
-              Assembly a = Assembly.LoadWithPartialName(typeNameParts[typeNameParts.Length - 1].Trim());
-              Array.Resize(ref typeNameParts, typeNameParts.Length - 1);
-              type = a.GetType(string.Join(",", typeNameParts), true);
-            } catch (Exception) {
-              throw new PersistenceException(String.Format(
-                "Could not load type \"{0}\"",
-                typeMapping.TypeName));
-            }
-          }
+          Type type = TypeLoader.Load(typeMapping.TypeName);
           typeIds.Add(typeMapping.Id, type);
-          Type serializerType = Type.GetType(typeMapping.Serializer, true);
+          Type serializerType = TypeLoader.Load(typeMapping.Serializer);
           map.Add(type, Activator.CreateInstance(serializerType, true));
         }
         return map;
@@ -100,6 +125,7 @@ namespace HeuristicLab.Persistence.Core {
           "This usualy happens when you are missing an Assembly/Plugin.", e);
       }
     }
+
 
     public object Deserialize(IEnumerable<ISerializationToken> tokens) {
       foreach (ISerializationToken token in tokens) {
