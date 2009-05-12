@@ -81,9 +81,10 @@ namespace HeuristicLab.StatisticalAnalysis {
       } else throw new ArgumentException("ERROR in SimpleStatisticsCalculator: Samples are not in a recognized data format");
       #endregion
 
-      Array.Sort<double>(samples);
       int len = samples.Length;
-      if (len <= 1) throw new ArgumentException("ERROR in SimpleStatisticsCalculator: Sample size is less or equal than 1");
+      if (len < 1) throw new ArgumentException("ERROR in SimpleStatisticsCalculator: Sample size is less than 1");
+
+      Array.Sort<double>(samples);
       double mean = 0.0;
       double median = ((len % 2 == 0) ? ((samples[len / 2 - 1] + samples[len / 2]) / 2.0) : (samples[len / 2]));
       double stdDev = 0.0;
@@ -94,74 +95,35 @@ namespace HeuristicLab.StatisticalAnalysis {
         sum += samples[i];
       }
       mean = sum / (double)len;
-      for (int i = 0; i < samples.Length; i++) {
-        stdDev = Math.Pow(mean - samples[i], 2);
+      if (len > 1) {
+        for (int i = 0; i < samples.Length; i++) {
+          stdDev = Math.Pow(mean - samples[i], 2);
+        }
+        stdDev = Math.Sqrt(stdDev / (double)(len - 1));
       }
-      stdDev = Math.Sqrt(stdDev / (double)(len - 1));
 
       #region output variables
-      if (GetVariableInfo("Mean").Local) {
-        IVariable var = GetVariable(GetVariableInfo("Mean").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("Mean").ActualName, new DoubleData(mean)));
-        else (var.Value as DoubleData).Data = mean;
-      } else {
-        string name = scope.TranslateName("Mean");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(mean)));
-        else (var.Value as DoubleData).Data = mean;
-      }
-      if (GetVariableInfo("Median").Local) {
-        IVariable var = GetVariable(GetVariableInfo("Median").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("Median").ActualName, new DoubleData(median)));
-        else (var.Value as DoubleData).Data = median;
-      } else {
-        string name = scope.TranslateName("Median");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(median)));
-        else (var.Value as DoubleData).Data = median;
-      }
-      if (GetVariableInfo("StdDev").Local) {
-        IVariable var = GetVariable(GetVariableInfo("StdDev").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("StdDev").ActualName, new DoubleData(stdDev)));
-        else (var.Value as DoubleData).Data = stdDev;
-      } else {
-        string name = scope.TranslateName("StdDev");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(stdDev)));
-        else (var.Value as DoubleData).Data = stdDev;
-      }
-      if (GetVariableInfo("Sum").Local) {
-        IVariable var = GetVariable(GetVariableInfo("Sum").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("Sum").ActualName, new DoubleData(sum)));
-        else (var.Value as DoubleData).Data = sum;
-      } else {
-        string name = scope.TranslateName("Sum");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(sum)));
-        else (var.Value as DoubleData).Data = sum;
-      }
-      if (GetVariableInfo("Minimum").Local) {
-        IVariable var = GetVariable(GetVariableInfo("Minimum").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("Minimum").ActualName, new DoubleData(min)));
-        else (var.Value as DoubleData).Data = min;
-      } else {
-        string name = scope.TranslateName("Minimum");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(min)));
-        else (var.Value as DoubleData).Data = min;
-      }
-      if (GetVariableInfo("Maximum").Local) {
-        IVariable var = GetVariable(GetVariableInfo("Maximum").ActualName);
-        if (var == null) AddVariable(new Variable(GetVariableInfo("Maximum").ActualName, new DoubleData(max)));
-        else (var.Value as DoubleData).Data = max;
-      } else {
-        string name = scope.TranslateName("Maximum");
-        IVariable var = scope.GetVariable(name);
-        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(max)));
-        else (var.Value as DoubleData).Data = max;
-      }
+      WriteVariable(GetVariableInfo("Mean"), mean, scope);
+      WriteVariable(GetVariableInfo("Median"), median, scope);
+      WriteVariable(GetVariableInfo("StdDev"), stdDev, scope);
+      WriteVariable(GetVariableInfo("Sum"), sum, scope);
+      WriteVariable(GetVariableInfo("Minimum"), min, scope);
+      WriteVariable(GetVariableInfo("Maximum"), max, scope);
       #endregion
       return null;
+    }
+
+    private void WriteVariable(IVariableInfo info, double value, IScope scope) {
+      if (info.Local) {
+        IVariable var = GetVariable(info.ActualName);
+        if (var == null) AddVariable(new Variable(info.ActualName, new DoubleData(value)));
+        else (var.Value as DoubleData).Data = value;
+      } else {
+        string name = scope.TranslateName(info.FormalName);
+        IVariable var = scope.GetVariable(name);
+        if (var == null) scope.AddVariable(new Variable(name, new DoubleData(value)));
+        else (var.Value as DoubleData).Data = value;
+      }
     }
   }
 }
