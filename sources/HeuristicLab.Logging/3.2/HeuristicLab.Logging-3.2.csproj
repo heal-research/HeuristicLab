@@ -107,6 +107,7 @@
     <Compile Include="QualityLogger.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LinechartInjector.cs" />
+    <Compile Include="SimpleBestSolutionStorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
