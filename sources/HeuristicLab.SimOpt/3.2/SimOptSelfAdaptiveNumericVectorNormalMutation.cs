@@ -47,13 +47,12 @@ namespace HeuristicLab.SimOpt {
       DoubleArrayData shakingFactors = GetVariableValue<DoubleArrayData>("ShakingFactors", scope, false);
 
       ConstrainedItemList parameters = GetVariableValue<ConstrainedItemList>("Items", scope, false);
-      int tries;
       ConstrainedItemList temp = null;
       ICollection<IConstraint> tmp;
 
       NormalDistributedRandom nd = new NormalDistributedRandom(random, 0.0, 1.0);
 
-      for (tries = 0; tries < 10000; tries++) {
+      do {
         temp = (ConstrainedItemList)parameters.Clone();
 
         temp.BeginCombinedOperation();
@@ -72,15 +71,12 @@ namespace HeuristicLab.SimOpt {
             }
           }
         }
-        if (temp.EndCombinedOperation(out tmp)) break;
-      }
+      } while (!temp.EndCombinedOperation(out tmp));
 
-      if (tries < 10000) {
-        parameters.BeginCombinedOperation();
-        for (int i = 0; i < temp.Count; i++)
-          parameters.TrySetAt(i, temp[i], out tmp);
-        parameters.EndCombinedOperation(out tmp);
-      } else throw new InvalidOperationException("ERROR in SimOptSelfAdaptiveNumericVectorProbabilityMutation: no feasible result in 10000 tries");
+      parameters.BeginCombinedOperation();
+      for (int i = 0; i < temp.Count; i++)
+        parameters.TrySetAt(i, temp[i], out tmp);
+      parameters.EndCombinedOperation(out tmp);
 
       return null;
     }
