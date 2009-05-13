@@ -257,13 +257,13 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetMean(int column) {
-      return GetMean(column, 0, Rows - 1);
+      return GetMean(column, 0, Rows);
     }
 
     public double GetMean(int column, int from, int to) {
       if(!cachedMeans[column].ContainsKey(from) || !cachedMeans[column][from].ContainsKey(to)) {
-        double[] values = new double[to - from + 1];
-        for(int sample = from; sample <= to; sample++) {
+        double[] values = new double[to - from];
+        for(int sample = from; sample < to; sample++) {
           values[sample - from] = GetValue(sample, column);
         }
         double mean = Statistics.Mean(values);
@@ -276,13 +276,13 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetRange(int column) {
-      return GetRange(column, 0, Rows - 1);
+      return GetRange(column, 0, Rows);
     }
 
     public double GetRange(int column, int from, int to) {
       if(!cachedRanges[column].ContainsKey(from) || !cachedRanges[column][from].ContainsKey(to)) {
-        double[] values = new double[to - from + 1];
-        for(int sample = from; sample <= to; sample++) {
+        double[] values = new double[to - from];
+        for(int sample = from; sample < to; sample++) {
           values[sample - from] = GetValue(sample, column);
         }
         double range = Statistics.Range(values);
