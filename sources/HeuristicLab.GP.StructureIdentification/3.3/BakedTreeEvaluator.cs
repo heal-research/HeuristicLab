@@ -44,7 +44,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       public short i_arg1;
       public byte arity;
       public byte symbol;
-      public ushort exprLength;
       public IFunction function;
     }
 
@@ -68,36 +67,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       foreach (LightWeightFunction f in linearRepresentation) {
         codeArr[i++] = TranslateToInstr(f);
       }
-      exprIndex = 0;
-      ushort exprLength;
-      bool constExpr;
-      PatchExpressionLengthsAndConstants(0, out constExpr, out exprLength);
-    }
-
-    ushort exprIndex;
-    private void PatchExpressionLengthsAndConstants(ushort index, out bool constExpr, out ushort exprLength) {
-      exprLength = 1;
-      if (codeArr[index].arity == 0) {
-        // when no children then it's a constant expression only if the terminal is a constant
-        constExpr = codeArr[index].symbol == EvaluatorSymbolTable.CONSTANT;
-      } else {
-        constExpr = true; // when there are children it's a constant expression if all children are constant;
-      }
-      for (int i = 0; i < codeArr[index].arity; i++) {
-        exprIndex++;
-        ushort branchLength;
-        bool branchConstExpr;
-        PatchExpressionLengthsAndConstants(exprIndex, out branchConstExpr, out branchLength);
-        exprLength += branchLength;
-        constExpr &= branchConstExpr;
-      }
-
-      if (constExpr) {
-        PC = index;
-        codeArr[index].d_arg0 = EvaluateBakedCode();
-        codeArr[index].symbol = EvaluatorSymbolTable.CONSTANT;
-      }
-      codeArr[index].exprLength = exprLength;
     }
 
     private Instr TranslateToInstr(LightWeightFunction f) {
@@ -110,17 +79,14 @@ namespace HeuristicLab.GP.StructureIdentification {
             instr.i_arg0 = (short)f.data[0]; // var
             instr.d_arg0 = f.data[1]; // weight
             instr.i_arg1 = (short)f.data[2]; // sample-offset
-            instr.exprLength = 1;
             break;
           }
         case EvaluatorSymbolTable.CONSTANT: {
             instr.d_arg0 = f.data[0]; // value
-            instr.exprLength = 1;
             break;
           }
         case EvaluatorSymbolTable.UNKNOWN: {
             instr.function = f.functionType;
-            instr.exprLength = 1;
             break;
           }
       }
@@ -144,7 +110,11 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     // skips a whole branch
     private void SkipBakedCode() {
-      PC += codeArr[PC].exprLength;
+      int i = 1;
+      while (i > 0) {
+        i += codeArr[PC++].arity;
+        i--;
+      }
     }
 
     private double EvaluateBakedCode() {
@@ -156,7 +126,6 @@ namespace HeuristicLab.GP.StructureIdentification {
             else return currInstr.d_arg0 * dataset.GetValue(row, currInstr.i_arg0);
           }
         case EvaluatorSymbolTable.CONSTANT: {
-            PC += currInstr.exprLength - 1;
             return currInstr.d_arg0;
           }
         case EvaluatorSymbolTable.DIFFERENTIAL: {
@@ -184,25 +153,17 @@ namespace HeuristicLab.GP.StructureIdentification {
             return sum;
           }
         case EvaluatorSymbolTable.SUBTRACTION: {
-            if (currInstr.arity == 1) {
-              return -EvaluateBakedCode();
-            } else {
-              double result = EvaluateBakedCode();
-              for (int i = 1; i < currInstr.arity; i++) {
-                result -= EvaluateBakedCode();
-              }
-              return result;
+            double result = EvaluateBakedCode();
+            for (int i = 1; i < currInstr.arity; i++) {
+              result -= EvaluateBakedCode();
             }
+            return result;
           }
         case EvaluatorSymbolTable.DIVISION: {
             double result;
-            if (currInstr.arity == 1) {
-              result = 1.0 / EvaluateBakedCode();
-            } else {
-              result = EvaluateBakedCode();
-              for (int i = 1; i < currInstr.arity; i++) {
-                result /= EvaluateBakedCode();
-              }
+            result = EvaluateBakedCode();
+            for (int i = 1; i < currInstr.arity; i++) {
+              result /= EvaluateBakedCode();
             }
             if (double.IsInfinity(result)) return 0.0;
             else return result;
