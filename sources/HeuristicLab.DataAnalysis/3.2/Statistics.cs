@@ -102,8 +102,8 @@ namespace HeuristicLab.DataAnalysis {
         throw new InvalidOperationException();
       }
 
-      double minimum = values[start];
-      double maximum = minimum;
+      double minimum = double.PositiveInfinity;
+      double maximum = double.NegativeInfinity;
       for (int i = start; i < end; i++) {
         if (!double.IsNaN(values[i])) {
           if (values[i] > maximum) {
