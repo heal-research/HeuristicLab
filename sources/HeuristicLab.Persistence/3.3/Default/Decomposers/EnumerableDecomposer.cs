@@ -22,12 +22,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
         ReflectionTools.HasDefaultConstructor(type) &&
         type.GetInterface(typeof(IEnumerable).FullName) != null &&
         type.GetMethod("Add") != null &&
-        type.GetMethod("Add").GetParameters().Length == 1 &&
-        type.GetConstructor(
-          BindingFlags.Public |
-          BindingFlags.NonPublic |
-          BindingFlags.Instance,
-          null, Type.EmptyTypes, null) != null;
+        type.GetMethod("Add").GetParameters().Length == 1;
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -36,7 +31,7 @@ namespace HeuristicLab.Persistence.Default.Decomposers {
 
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (object o in (IEnumerable)obj) {
-        yield return new Tag(null, o);
+        yield return new Tag(o);
       }
     }
 
