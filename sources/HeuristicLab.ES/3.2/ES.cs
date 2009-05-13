@@ -395,7 +395,7 @@ namespace HeuristicLab.ES {
       set {
         if (value > 0) {
           myMu.Data = value;
-          if (!PlusNotation && value >= Lambda) myLambda.Data = value + 1;
+          if (!PlusNotation && value > Lambda) myLambda.Data = value;
           if (value < Rho) myRho.Data = value;
           OnChanged();
         }
@@ -432,7 +432,7 @@ namespace HeuristicLab.ES {
             if (value >= 1 && value < Mu) {
               myLambda.Data = value;
               myMu.Data = value;
-            } else if (value > Mu) {
+            } else if (value >= Mu) {
               myLambda.Data = value;
             }
           }
