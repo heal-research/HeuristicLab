@@ -99,14 +99,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FixedAllSGAMain.cs" />
-    <Compile Include="CreateReplacement.cs" />
-    <Compile Include="CreateChildrenHardWired.cs" />
-    <Compile Include="FixedBase.cs" />
+    <Compile Include="FixedOperatorBase.cs" />
     <Compile Include="FixedSGAMain.cs" />
     <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CreateChildren.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfo.frame" />
