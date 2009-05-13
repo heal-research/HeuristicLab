@@ -40,9 +40,9 @@ namespace HeuristicLab.DataAnalysis {
       enumerator.MoveNext();
       T minimum = enumerator.Current;
 
-      while(enumerator.MoveNext()) {
+      while (enumerator.MoveNext()) {
         T current = enumerator.Current;
-        if(current.CompareTo(minimum) < 0) {
+        if (current.CompareTo(minimum) < 0) {
           minimum = current;
         }
       }
@@ -64,9 +64,9 @@ namespace HeuristicLab.DataAnalysis {
       enumerator.MoveNext();
       T maximum = enumerator.Current;
 
-      while(enumerator.MoveNext()) {
+      while (enumerator.MoveNext()) {
         T current = enumerator.Current;
-        if(current.CompareTo(maximum) > 0) {
+        if (current.CompareTo(maximum) > 0) {
           maximum = current;
         }
       }
@@ -98,18 +98,20 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="end">end index (exclusive)</param>
     /// <returns></returns>
     public static double Range(double[] values, int start, int end) {
-      if(start < 0 || start > values.Length || end < 0 || end > values.Length || start > end) {
+      if (start < 0 || start > values.Length || end < 0 || end > values.Length || start > end) {
         throw new InvalidOperationException();
       }
 
       double minimum = values[start];
       double maximum = minimum;
-      for(int i = start; i < end; i++) {
-        if(values[i] > maximum) {
-          maximum = values[i];
-        }
-        if(values[i] < minimum) {
-          minimum = values[i];
+      for (int i = start; i < end; i++) {
+        if (!double.IsNaN(values[i])) {
+          if (values[i] > maximum) {
+            maximum = values[i];
+          }
+          if (values[i] < minimum) {
+            minimum = values[i];
+          }
         }
       }
       return (maximum - minimum);
@@ -123,8 +125,8 @@ namespace HeuristicLab.DataAnalysis {
     public static double Sum(double[] values) {
       int n = values.Length;
       double sum = 0.0;
-      for(int i = 0; i < n; i++) {
-        if(double.IsNaN(values[i])) {
+      for (int i = 0; i < n; i++) {
+        if (double.IsNaN(values[i])) {
           throw new NotFiniteNumberException();
         } else {
           sum += values[i];
@@ -155,11 +157,11 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="end">end index(exclusive)</param>
     /// <returns></returns>
     public static double Mean(double[] values, int start, int end) {
-      if(values.Length == 0) throw new InvalidOperationException();
+      if (values.Length == 0) throw new InvalidOperationException();
       double sum = 0.0;
       int n = 0;
-      for(int i = start; i < end; i++) {
-        if(!double.IsNaN(values[i])) {
+      for (int i = start; i < end; i++) {
+        if (!double.IsNaN(values[i])) {
           sum += values[i];
           n++;
         }
@@ -174,9 +176,9 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="values"></param>
     /// <returns></returns>
     public static double Median(double[] values) {
-      if(values.Length == 0) throw new InvalidOperationException();
+      if (values.Length == 0) throw new InvalidOperationException();
       int n = values.Length;
-      if(n == 0)
+      if (n == 0)
         return 0;
 
       double[] sortedValues = new double[n];
@@ -185,7 +187,7 @@ namespace HeuristicLab.DataAnalysis {
       Array.Sort(sortedValues);
 
       // return the middle element (if n is uneven) or the average of the two middle elements if n is even.
-      if(n % 2 == 1) {
+      if (n % 2 == 1) {
         return sortedValues[n / 2];
       } else {
         return (sortedValues[n / 2] + sortedValues[n / 2 + 1]) / 2.0;

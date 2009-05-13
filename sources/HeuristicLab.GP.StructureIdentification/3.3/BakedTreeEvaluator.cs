@@ -55,10 +55,10 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
       this.dataset = dataset;
-      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable);
+      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, start, end);
 
       // get the mean of the values of the target variable to determine the max and min bounds of the estimated value
-      double targetMean = dataset.GetMean(targetVariable, start, end - 1);
+      double targetMean = dataset.GetMean(targetVariable, start, end);
       estimatedValueMin = targetMean - maximumPunishment;
       estimatedValueMax = targetMean + maximumPunishment;
 
