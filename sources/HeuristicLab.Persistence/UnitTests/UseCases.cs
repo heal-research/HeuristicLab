@@ -549,14 +549,24 @@ namespace HeuristicLab.Persistence.UnitTest {
       XmlParser p = new XmlParser(new StringReader(dataString.ToString()));
       IntWrapper newI = (IntWrapper)d.Deserialize(p);
       Assert.AreEqual(i.Value, newI.Value);
+
       string newTypeString = Regex.Replace(typeString.ToString(),
-        "Version=(\\d+\\.\\d+\\.\\d+\\.\\d+)",
-        "Version=9999.9999.9999.9999");
+        "Version=\\d+\\.\\d+\\.\\d+\\.\\d+",
+        "Version=0.0.9999.9999");
       try {
         d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
         Assert.Fail("Exception expected");
-      } catch (PersistenceException) {
-        // EXPECTED
+      } catch (PersistenceException x) {
+        Assert.IsTrue(x.Message.Contains("incompatible"));
+      }
+      newTypeString = Regex.Replace(typeString.ToString(),
+        "Version=(\\d+\\.\\d+)\\.\\d+\\.\\d+",
+        "Version=$1.9999.9999");
+      try {
+        d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException x) {
+        Assert.IsTrue(x.Message.Contains("newer"));
       }
     }
 

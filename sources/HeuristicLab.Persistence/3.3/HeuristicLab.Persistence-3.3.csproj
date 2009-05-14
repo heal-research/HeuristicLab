@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />
     <Compile Include="Core\Configuration.cs" />
     <Compile Include="Core\PersistenceException.cs" />
@@ -103,7 +104,7 @@
     <Compile Include="Core\FormatterBase.cs" />
     <Compile Include="Auxiliary\TypeExtensions.cs" />
     <Compile Include="Core\TypeMapping.cs" />
-    <Compile Include="Auxiliary\TypeStringBuilder.cs" />
+    <Compile Include="Auxiliary\TypeName.cs" />
     <Compile Include="Core\GeneratorBase.cs" />
     <Compile Include="Default\DebugString\DebugString.cs" />
     <Compile Include="Default\DebugString\DebugStringFormat.cs" />

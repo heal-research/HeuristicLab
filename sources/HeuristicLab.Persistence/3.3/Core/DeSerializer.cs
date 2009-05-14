@@ -16,7 +16,7 @@ namespace HeuristicLab.Persistence.Core {
         type = Type.GetType(typeNameString, true);
       } catch (Exception) {
         Logger.Warn(String.Format(
-          "Cannot load type \"{0}\", falling back to loading with partial name", typeNameString));
+          "Cannot load type \"{0}\", falling back to partial name", typeNameString));
         try {
           TypeName typeName = TypeNameParser.Parse(typeNameString);
           Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);
@@ -27,9 +27,14 @@ namespace HeuristicLab.Persistence.Core {
             typeNameString));
         }
         try {
-          if (
-            TypeNameParser.Parse(type.AssemblyQualifiedName).IsOlderThan(
-            TypeNameParser.Parse(typeNameString)))
+          TypeName requestedTypeName = TypeNameParser.Parse(typeNameString);
+          TypeName loadedTypeName = TypeNameParser.Parse(type.AssemblyQualifiedName);
+          if (!requestedTypeName.IsCompatible(loadedTypeName))
+            throw new PersistenceException(String.Format(
+              "Serialized type is incompatible with available type: serialized: {0}, loaded: {1}",
+              typeNameString,
+              type.AssemblyQualifiedName));
+          if (requestedTypeName.IsNewerThan(loadedTypeName))
             throw new PersistenceException(String.Format(
               "Serialized type is newer than available type: serialized: {0}, loaded: {1}",
               typeNameString,

@@ -44,8 +44,7 @@ namespace HeuristicLab.Persistence.Core {
             IDecomposer d = configuration.GetDecomposer(pair.Key);
             serializer = d.GetType().AssemblyQualifiedName;
           }
-          //result.Add(new TypeMapping(pair.Value, pair.Key.AssemblyQualifiedName, serializer));
-          result.Add(new TypeMapping(pair.Value, pair.Key.VersionInvariantName(), serializer));
+          result.Add(new TypeMapping(pair.Value, pair.Key.AssemblyQualifiedName, serializer));
         }
         return result;
       }

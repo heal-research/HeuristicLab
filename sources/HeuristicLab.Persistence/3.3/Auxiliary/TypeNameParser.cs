@@ -222,31 +222,25 @@ namespace HeuristicLab.Persistence.Auxiliary {
           "Version",
           TransformVersion());
       } else if (ConsumeIdentifier("PublicKey")) {
-        ConsumeToken("EQUALS", true);
-        return new KeyValuePair<string, string>(
-          "PublicKey",
-          ConsumeIdentifier());
+        return ConsumeAssignment("PublicKey");
       } else if (ConsumeIdentifier("PublicKeyToken")) {
-        ConsumeToken("EQUALS", true);
-        return new KeyValuePair<string, string>(
-          "PublicKeyToken",
-          ConsumeIdentifier());
+        return ConsumeAssignment("PublicKeyToken");
       } else if (ConsumeIdentifier("Culture")) {
-        ConsumeToken("EQUALS", true);
-        return new KeyValuePair<string, string>(
-          "Culture",
-          ConsumeIdentifier());
+        return ConsumeAssignment("Culture");
       } else if (ConsumeIdentifier("Custom")) {
-        ConsumeToken("EQUALS", true);
-        return new KeyValuePair<string, string>(
-          "Custom",
-          ConsumeIdentifier());
+        return ConsumeAssignment("Custom");
       } else {
         throw new ParseError(String.Format(
           "Invalid assembly property \"{0}\"",
           tokens.Peek().ToString()));
       }
     }
+
+    private KeyValuePair<string, string> ConsumeAssignment(string name) {
+      ConsumeToken("EQUALS", true);
+      return new KeyValuePair<string, string>(name, ConsumeIdentifier());
+    }
+
     private string TransformVersion() {
       StringBuilder version = new StringBuilder();
       version.Append(ConsumeNumber());
@@ -340,87 +334,6 @@ namespace HeuristicLab.Persistence.Auxiliary {
       } else {
         return false;
       }
-    }
-
-
-  }
-
-  public class TypeName {
-    public string Namespace { get; private set; }
-    public string ClassName { get; private set; }
-    public List<TypeName> GenericArgs { get; internal set; }
-    public bool IsGeneric { get { return GenericArgs.Count > 0; } }
-    public string MemoryMagic { get; internal set; }
-    public string AssemblyName { get; internal set; }
-    public Dictionary<string, string> AssemblyAttribues { get; internal set; }
-    public bool IsReference { get; internal set; }
-
-    internal TypeName(string nameSpace, string className) {
-      Namespace = nameSpace;
-      ClassName = className;
-      GenericArgs = new List<TypeName>();
-      MemoryMagic = "";
-      AssemblyAttribues = new Dictionary<string, string>();
-    }
-
-    public string ToString(bool full) {
-      return ToString(full, true);
-    }
-
-    public string ToString(bool full, bool includeAssembly) {
-      StringBuilder sb = new StringBuilder();
-      sb.Append(Namespace).Append('.').Append(ClassName);
-      if (IsGeneric) {
-        sb.Append('`').Append(GenericArgs.Count).Append('[');
-        bool first = true;
-        foreach (TypeName t in GenericArgs) {
-          if (first)
-            first = false;
-          else
-            sb.Append(',');
-          sb.Append('[').Append(t.ToString(full)).Append(']');
-        }
-        sb.Append(']');
-      }
-      sb.Append(MemoryMagic);
-      if (includeAssembly && AssemblyName != null) {
-        sb.Append(", ").Append(AssemblyName);
-        if (full)
-          foreach (var property in AssemblyAttribues)
-            sb.Append(", ").Append(property.Key).Append('=').Append(property.Value);
-      }
-      return sb.ToString();
-    }
-
-    public override string ToString() {
-      return ToString(true);
-    }
-
-    public bool IsOlderThan(TypeName t) {
-      try {
-        if (this.ClassName != t.ClassName ||
-          this.Namespace != t.Namespace ||
-          this.AssemblyName != t.AssemblyName)
-          throw new Exception("Cannot compare versions of different types");
-        if (CompareVersions(
-          this.AssemblyAttribues["Version"],
-          t.AssemblyAttribues["Version"]) < 0)
-          return true;
-        IEnumerator<TypeName> thisIt = this.GenericArgs.GetEnumerator();
-        IEnumerator<TypeName> tIt = t.GenericArgs.GetEnumerator();
-        while (thisIt.MoveNext()) {
-          tIt.MoveNext();
-          if (thisIt.Current.IsOlderThan(tIt.Current))
-            return true;
-        }
-        return false;
-      } catch (KeyNotFoundException) {
-        throw new Exception("Could not extract version information from type string");
-      }
-    }
-
-    private static int CompareVersions(string v1string, string v2string) {
-      return new Version(v1string).CompareTo(new Version(v2string));
     }
   }
 }

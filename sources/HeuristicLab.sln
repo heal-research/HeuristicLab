@@ -199,6 +199,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection.Uncertainty", "HeuristicLab.Selection.Uncertainty\3.2\HeuristicLab.Selection.Uncertainty.csproj", "{4FB4120E-CE65-473F-B2F0-FC2E82FF3761}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HeuristicLab.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU
 		CEDMA Debug|x64 = CEDMA Debug|x64
