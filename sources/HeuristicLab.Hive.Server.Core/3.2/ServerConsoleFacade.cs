@@ -174,7 +174,7 @@ namespace HeuristicLab.Hive.Server.Core {
     [Obsolete("Only for testing!")]
     private bool HasPermission(Guid g) { return true; }
     [Obsolete("Only for testing!")]
-    private bool hasPermission(Guid g, Guid f) { return true; }
+    private bool HasPermission(Guid g, Guid f) { return true; }
 
     public class PermissionException : Exception {
       public PermissionException()
