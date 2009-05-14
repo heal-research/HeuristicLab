@@ -43,7 +43,6 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(ObjectData), VariableKind.In));
 
       AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(ItemList), VariableKind.New | VariableKind.Out));
-
     }
 
 
