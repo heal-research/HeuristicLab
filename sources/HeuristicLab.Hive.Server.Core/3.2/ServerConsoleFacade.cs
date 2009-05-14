@@ -113,7 +113,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseObject<Job> AddNewJob(Job job) {
-      if (hasPermission(PermissiveSecurityAction.Add_Job))
+      if (HasPermission(PermissiveSecurityAction.Add_Job))
         return jobManager.AddNewJob(job);
       else
         throw new PermissionException();
