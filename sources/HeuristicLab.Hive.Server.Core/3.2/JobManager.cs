@@ -307,7 +307,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ABORT_REQUEST_ALLREADY_SET;
           return response; // no commit needed
         }
-        if (job.State != State.calculating) {
+        if (job.State != State.calculating && job.State != State.requestSnapshot && job.State != State.requestSnapshotSent) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED;
           return response; // no commit needed

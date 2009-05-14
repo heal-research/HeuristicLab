@@ -304,13 +304,13 @@ namespace HeuristicLab.Hive.Server.Core {
           } else {
             // save job progress
             curJob.Percentage = jobProgress.Value;
-            jobAdapter.Update(curJob);
 
             if (curJob.State == State.requestSnapshot) {
               // a request for a snapshot has been set
               response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.RequestSnapshot, curJob.Id));
               curJob.State = State.requestSnapshotSent;
             }
+            jobAdapter.Update(curJob);
           }
         }
         foreach (Job currJob in jobsOfClient) {
@@ -396,12 +396,16 @@ namespace HeuristicLab.Hive.Server.Core {
 
         Job job =
           jobAdapter.GetById(jobId);
-
+        
         if (job == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
           response.JobId = jobId;
           return response;
+        }
+        if (job.State == State.abort) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED;
         }
         if (job.Client == null) {
           response.Success = false;
@@ -439,11 +443,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
           client.State = State.idle;
           clientAdapter.Update(client);
-
-          List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
-          foreach (JobResult currentResult in jobResults)
-            jobResultAdapter.Delete(currentResult);
         }
+        List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+        foreach (JobResult currentResult in jobResults)
+          jobResultAdapter.Delete(currentResult);
 
         JobResult jobResult =
           new JobResult();
