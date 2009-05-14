@@ -55,7 +55,7 @@ namespace HeuristicLab.Hive.Client.Common {
     }
 
     private Logging() {      
-      eventLogger = new EventLog("Hive Client");          
+      //eventLogger = new EventLog("Hive Client");          
     }
 
     /// <summary>
@@ -64,9 +64,12 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Info(String source, String message) {
-      eventLogger.Source = source;
-      eventLogger.WriteEntry(message);      
-      eventLogger.Close();
+      DateTime current = DateTime.Now;
+      Debug.WriteLine(current + " - " + source + ": " + message);
+
+    //  eventLogger.Source = source;
+    //  eventLogger.WriteEntry(message);      
+    //  eventLogger.Close();
     }
 
     /// <summary>
@@ -75,10 +78,13 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Error(String source, String message) {
-      eventLogger.Source = source;
+      DateTime current = DateTime.Now;
+      Debug.WriteLine(current + " - " + source + ": " + message);
+      
+      //eventLogger.Source = source;
       //, EventLogEntryType.Error
-      eventLogger.WriteEntry(message);
-      eventLogger.Close();
+      //eventLogger.WriteEntry(message);
+      //eventLogger.Close();
     }
 
     /// <summary>
@@ -88,9 +94,11 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="message">the message</param>
     /// <param name="e">the exception</param>
     public void Error(String source, String message, Exception e) {
-      eventLogger.Source = source;
-      eventLogger.WriteEntry(message +"\n" + e.ToString());
-      eventLogger.Close();
+      DateTime current = DateTime.Now;
+      Debug.WriteLine(current + " - " + source + ": " + e + message);
+    //  eventLogger.Source = source;
+    //  eventLogger.WriteEntry(message +"\n" + e.ToString());
+    //  eventLogger.Close();
     }
   }
 }
