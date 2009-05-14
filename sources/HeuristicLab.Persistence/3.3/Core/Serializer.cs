@@ -7,6 +7,8 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.Decomposers.Storable;
 using System.Text;
+using System.Reflection;
+using System.IO;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -34,20 +36,42 @@ namespace HeuristicLab.Persistence.Core {
 
     public List<TypeMapping> TypeCache {
       get {
-        List<TypeMapping> result = new List<TypeMapping>();
-        foreach (var pair in typeCache) {
-          string serializer = null;
-          IFormatter f = configuration.GetFormatter(pair.Key);
-          if (f != null) {
-            serializer = f.GetType().AssemblyQualifiedName;
-          } else {
-            IDecomposer d = configuration.GetDecomposer(pair.Key);
-            serializer = d.GetType().AssemblyQualifiedName;
-          }
-          result.Add(new TypeMapping(pair.Value, pair.Key.AssemblyQualifiedName, serializer));
-        }
-        return result;
+        BuildTypeCache();
+        return externalTypeCache;
       }
+    }
+
+    public List<string> RequiredFiles {
+      get {
+        BuildTypeCache();
+        return requiredFiles;
+      }
+    }
+
+    private List<TypeMapping> externalTypeCache;
+    private List<string> requiredFiles;
+    private void BuildTypeCache() {      
+      externalTypeCache = new List<TypeMapping>();
+      Dictionary<Assembly, bool> assemblies = new Dictionary<Assembly, bool>();
+      foreach (var pair in typeCache) {
+        string serializer = null;
+        IFormatter f = configuration.GetFormatter(pair.Key);
+        if (f != null) {
+          serializer = f.GetType().AssemblyQualifiedName;
+          assemblies[f.GetType().Assembly] = true;
+        } else {
+          IDecomposer d = configuration.GetDecomposer(pair.Key);
+          serializer = d.GetType().AssemblyQualifiedName;
+          assemblies[d.GetType().Assembly] = true;
+        }
+        externalTypeCache.Add(new TypeMapping(pair.Value, pair.Key.AssemblyQualifiedName, serializer));
+        assemblies[pair.Key.Assembly] = true;
+      }
+      Dictionary<string, bool> files = new Dictionary<string, bool>();
+      foreach (Assembly a in assemblies.Keys) {
+        files[a.CodeBase] = true;
+      }
+      requiredFiles = new List<string>(files.Keys);
     }
 
     public Serializer(object obj, Configuration configuration) :

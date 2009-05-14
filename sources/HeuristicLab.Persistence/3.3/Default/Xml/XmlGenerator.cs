@@ -160,9 +160,13 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {
+      Serialize(obj, filename, config, false);
+    }
+
+    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies) {
       string tempfile = Path.GetTempFileName();
       try {
-        Serialize(obj, File.Create(tempfile), config);
+        Serialize(obj, File.Create(tempfile), config, includeAssemblies);
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
       } catch (Exception x) {
@@ -171,7 +175,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
+
     public static void Serialize(object obj, Stream stream, Configuration config) {
+      Serialize(obj, stream, config, false);
+    }
+
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {
       try {
         Serializer serializer = new Serializer(obj, config);
         XmlGenerator generator = new XmlGenerator();
@@ -192,6 +201,25 @@ namespace HeuristicLab.Persistence.Default.Xml {
             logger.Debug(line.TrimEnd());
           }
           writer.Flush();
+          if (includeAssemblies) {
+            foreach (string name in serializer.RequiredFiles) {
+              Uri uri = new Uri(name);
+              if (!uri.IsFile) {
+                Logger.Warn("cannot read non-local files");
+                continue;
+              }
+              zipStream.PutNextEntry(new ZipEntry(Path.GetFileName(uri.PathAndQuery)));
+              FileStream reader = File.OpenRead(uri.PathAndQuery);
+              byte[] buffer = new byte[1024 * 1024];
+              while (true) {
+                int bytesRead = reader.Read(buffer, 0, 1024 * 1024);
+                if (bytesRead == 0)
+                  break;
+                zipStream.Write(buffer, 0, bytesRead);
+              }
+              writer.Flush();
+            }
+          }
         }
       } catch (PersistenceException e) {
         throw;
