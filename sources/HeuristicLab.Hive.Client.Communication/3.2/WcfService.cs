@@ -248,8 +248,20 @@ namespace HeuristicLab.Hive.Client.Communication {
     }  
     #endregion  */
 
-    public ResponseResultReceived SendStoredJobResultsSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
+    public ResponseResultReceived SendStoredJobResultsSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {      
       return proxy.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);    
+    }
+
+    public ResponseResultReceived ProcessSnapshotSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
+      try {
+        ResponseResultReceived res = proxy.ProcessSnapshot(clientId, jobId, result, percentage, null);
+        Logging.Instance.Info(this.ToString(), "Snapshot for Job " + jobId + " submitted");
+        return res;
+      }
+      catch (Exception e) {
+        HandleNetworkError(e);
+        return null;
+      }
     }
 
     public List<CachedHivePluginInfo> RequestPlugins(List<HivePluginInfo> requestedPlugins) {

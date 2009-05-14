@@ -64,6 +64,10 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
       Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobFailed, JobId));
     }
 
+    public void StartOnlyJob() {
+      Job.Start();
+    }
+
     public void Abort() {
       CurrentMessage = MessageContainer.MessageType.AbortJob;
       Job.Stop();      
@@ -88,7 +92,6 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
         // Pack the whole job inside an xml document
         byte[] job = SerializeJobObject();        
         // Restart the job
-        Job.Start();
         // Return the Snapshot
         return job;
       }

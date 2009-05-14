@@ -191,12 +191,12 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetSnapshot(object jobId) {
       Guid jId = (Guid)jobId;
       byte[] obj = engines[jId].GetSnapshot();
-      wcfService.ProcessSnapshotAsync(ConfigManager.Instance.GetClientInfo().Id,
+      wcfService.ProcessSnapshotSync(ConfigManager.Instance.GetClientInfo().Id,
         jId,
         obj,
         engines[jId].Progress,
-        null,
-        false);
+        null);
+      engines[jId].StartOnlyJob();
     }
 
     #endregion
