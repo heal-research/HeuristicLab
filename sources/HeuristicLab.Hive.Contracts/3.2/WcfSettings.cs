@@ -28,6 +28,9 @@ namespace HeuristicLab.Hive.Contracts {
       binding.MaxReceivedMessageSize = int.MaxValue;
       binding.ReaderQuotas.MaxArrayLength = int.MaxValue;
       binding.ReaderQuotas.MaxStringContentLength = int.MaxValue;
+      binding.CloseTimeout = new TimeSpan(0, 5, 0);
+      binding.ReceiveTimeout = new TimeSpan(0, 5, 0);
+      binding.SendTimeout = new TimeSpan(0, 5, 0);
       return binding;
     }
 
