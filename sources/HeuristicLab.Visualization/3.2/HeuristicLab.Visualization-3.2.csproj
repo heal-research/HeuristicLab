@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="DataExport\IExporter.cs" />
     <Compile Include="DataRowBase.cs" />
+    <Compile Include="FloatingAvgAggregator.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
     <Compile Include="Grid.cs" />

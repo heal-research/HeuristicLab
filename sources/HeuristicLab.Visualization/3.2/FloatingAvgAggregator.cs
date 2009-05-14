@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class AvgLineAggregator : DataRowBase {
+  public class FloatingAvgAggregator : DataRowBase {
 
     private readonly List<double> dataRow = new List<double>();
     readonly List<IDataRow> dataRowWatches = new List<IDataRow>();
@@ -42,9 +42,6 @@ namespace HeuristicLab.Visualization {
     }
 
     void dataRow_ValuesChanged(IDataRow row, double[] values, int index, Action action) {
-//      for (int i = 0; i < values.Length; i++) {
-//        refreshValue();
-//      }
       refreshValue();
     }
 
@@ -52,61 +49,49 @@ namespace HeuristicLab.Visualization {
       refreshValue();
     }
 
+    private int area = 5;
     private void refreshValue() {
-      
-      int count = dataRowWatches.Count;
 
-      IDataRow firstRow = dataRowWatches[0];
-      int count1 = firstRow.Count;
-      Console.WriteLine("count: " + count1);
+      if (dataRowWatches.Count >= 1) {
+        IDataRow watchedRow = dataRowWatches[0];
+        
+        dataRow.Clear();
+        OnDataRowChanged(this);
 
-      dataRow.Clear();
+        for (int i = 0; i < watchedRow.Count; i++) {
 
-      if (dataRowWatches.Count >= 2) {
-        for (int i = 0; i < count1; i++) {
-          double tmpSum = 0;
-          for (int j = 0; j < count; j++) {
-            if (dataRowWatches[j].Count > i) {
-              tmpSum += dataRowWatches[j][i];
-            }
+          double avgVal = 0;
+          int count = 0;
+          for (int j = Math.Max(0, i-area); j < Math.Min(watchedRow.Count, i+area); j++) {
+            avgVal += watchedRow[j];
+            count++;
           }
 
-          dataRow.Add(tmpSum / count);
-          OnValueChanged(tmpSum / count, dataRow.Count - 1, Action.Added);
+          if (count >= 1)
+            avgVal /= count;
+
+          dataRow.Add(avgVal);
+
+          OnValueChanged(avgVal, dataRow.Count - 1, Action.Added);
         }
       }
+      //OnValueChanged(avgVal, dataRow.Count - 1, Action.Added);
+      OnValuesChanged(dataRow.ToArray(), 0, Action.Modified);
+      //OnDataRowChanged(this);                                     
     }
 
+#pragma warning disable 168
     private void refreshLastValues(IDataRow row) {
-
-      int index = row.Count - 1;
-      double curAvg = 0;
-
-      foreach (IDataRow watch in dataRowWatches) {
-        if (watch.Count >= index +1) {
-          curAvg += watch[index]; 
-        }
-      }
-
-      if (dataRowWatches.Count > 0)
-        curAvg /= dataRowWatches.Count;
-
-
-      if (dataRow.Count <= index) {
-        dataRow.Add(curAvg);
-        OnValueChanged(curAvg, dataRow.Count - 1, Action.Added);     
-      }
-      else {
-        dataRow[index] = curAvg;
-        OnValueChanged(curAvg, dataRow.Count - 1, Action.Modified);  
-      }
+#pragma warning restore 168
+      refreshValue();
     }
 
     #region IDataRow Members
 
     public override void AddValue(double value) {
-      dataRow.Add(value);
-      OnValueChanged(value, dataRow.Count - 1, Action.Added);
+      throw new NotSupportedException();
+//      dataRow.Add(value);
+//      OnValueChanged(value, dataRow.Count - 1, Action.Added);
     }
 
     public override void AddValue(double value, int index) {

@@ -370,14 +370,33 @@ namespace HeuristicLab.Visualization.Test {
         };
         model.AddDataRow(row2);
 
-        // insert 2 floating avg line aggregators (for each hacked line)
+        FloatingAvgAggregator avgAggregator = new FloatingAvgAggregator {
+                                                                          Thickness = 2,
+                                                                          Label = "floatingAvg",
+                                                                          Color = Color.Peru,
+                                                                          ShowMarkers = false,
+                                                                          Style = DrawingStyle.Solid
+                                                                        };
 
-        // test floating avg aggregator without visible watcher line
+        avgAggregator.AddWatch(row1);
+        model.AddDataRow(avgAggregator);
 
+        FloatingAvgAggregator avgAggregator2 = new FloatingAvgAggregator {
+          Thickness = 2,
+          Label = "floatingAvg",
+          Color = Color.Aqua,
+          ShowMarkers = false,
+          Style = DrawingStyle.Solid
+        };
+
+        avgAggregator2.AddWatch(row2);
+        model.AddDataRow(avgAggregator2);
+
+       
         double i = 0;
         Random rnd = new Random();
 
-        while (!_shouldStop && i <= 240) {
+        while (!_shouldStop && i <= 100) {
           i += 0.2;
           double newY = Math.Sin(i);
 
