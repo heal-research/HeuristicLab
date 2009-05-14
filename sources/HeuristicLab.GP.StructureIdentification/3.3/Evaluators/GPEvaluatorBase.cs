@@ -32,6 +32,7 @@ namespace HeuristicLab.GP.StructureIdentification {
   public abstract class GPEvaluatorBase : OperatorBase {
     public GPEvaluatorBase()
       : base() {
+      AddVariableInfo(new VariableInfo("TreeEvaluator", "The evaluator that should be used to evaluate the expression tree", typeof(ITreeEvaluator), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
@@ -47,13 +48,15 @@ namespace HeuristicLab.GP.StructureIdentification {
       // get all variable values
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      BakedFunctionTree functionTree = GetVariableValue<BakedFunctionTree>("FunctionTree", scope, true);
+      IFunctionTree functionTree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
       int treeSize = scope.GetVariableValue<IntData>("TreeSize", false).Data;
       double totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
+      ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
+
       double[] backupValues = null;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
       if (useEstimatedValues &&
@@ -64,11 +67,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         }
       }
 
-      // initialize and reset the evaluator
-      BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
-      evaluator.ResetEvaluator(functionTree, dataset, targetVariable, start, end, punishmentFactor);
-
-      Evaluate(scope, evaluator, dataset, targetVariable, start, end, useEstimatedValues);
+      Evaluate(scope, evaluator, functionTree, dataset, targetVariable, start, end, useEstimatedValues);
 
       // restore the values of the target variable from the backup array if necessary
       if (useEstimatedValues) {
@@ -82,6 +81,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       return null;
     }
 
-    public abstract void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues);
+    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues);
   }
 }

@@ -42,12 +42,12 @@ the mean of the absolute percentage error (scale invariant) relative to the rang
       AddVariableInfo(new VariableInfo("MAPRE", "The mean absolute percentage range error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSum = 0.0;
       int n = 0;
       double range = dataset.GetRange(targetVariable, start, end);
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
+        double estimated = evaluator.Evaluate(tree, sample);
         double original = dataset.GetValue(sample, targetVariable);
 
         if (updateTargetValues) {

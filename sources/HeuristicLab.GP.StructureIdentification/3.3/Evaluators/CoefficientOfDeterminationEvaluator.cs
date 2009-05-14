@@ -41,12 +41,15 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       AddVariableInfo(new VariableInfo("R2", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       double targetMean = dataset.GetMean(targetVariable, start, end);
+
+      double originalSum = 0.0;
+      int n = 0;
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
+        double estimated = evaluator.Evaluate(tree, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);
@@ -55,8 +58,18 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
           double error = estimated - original;
           errorsSquaredSum += error * error;
 
-          double origDeviation = original - targetMean;
-          originalDeviationTotalSumOfSquares += origDeviation * origDeviation;
+          originalSum += original;
+          n++;
+        }
+      }
+
+      double originalMean = originalSum / n;
+      for(int sample = start; sample < end; sample++){
+        double original = dataset.GetValue(sample, targetVariable);
+        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
+          original = original - originalMean;
+          original = original * original;
+          originalDeviationTotalSumOfSquares += original;
         }
       }
 

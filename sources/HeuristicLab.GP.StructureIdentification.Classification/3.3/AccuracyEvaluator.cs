@@ -42,7 +42,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo("Accuracy", "The total accuracy of the model (ratio of correctly classified instances to total number of instances)", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       DoubleData accuracy = GetVariableValue<DoubleData>("Accuracy", scope, false, false);
       if (accuracy == null) {
         accuracy = new DoubleData();
@@ -52,7 +52,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       int nSamples = end - start;
       int nCorrect = 0;
       for (int sample = start; sample < end; sample++) {
-        double est = evaluator.Evaluate(sample);
+        double est = evaluator.Evaluate(tree, sample);
         double origClass = dataset.GetValue(sample, targetVariable);
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class

@@ -42,10 +42,10 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       double errorsSquaredSum = 0;
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
+        double estimated = evaluator.Evaluate(tree, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;

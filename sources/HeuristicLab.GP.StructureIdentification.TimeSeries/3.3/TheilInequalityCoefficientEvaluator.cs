@@ -53,7 +53,7 @@ model is worse than the naive model (=> model is useless).";
       AddVariableInfo(new VariableInfo("TheilInequalityCoefficientCovariance", "Covariance proportion of Theil's inequality coefficient", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       #region create result variables
       DoubleData theilInequaliy = GetVariableValue<DoubleData>("TheilInequalityCoefficient", scope, false, false);
       if (theilInequaliy == null) {
@@ -84,7 +84,7 @@ model is worse than the naive model (=> model is useless).";
       int nSamples = 0;
       for (int sample = start; sample < end; sample++) {
         double prevValue = dataset.GetValue(sample - 1, targetVariable);
-        double estimatedChange = evaluator.Evaluate(sample) - prevValue;
+        double estimatedChange = evaluator.Evaluate(tree, sample) - prevValue;
         double originalChange = dataset.GetValue(sample, targetVariable) - prevValue;
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimatedChange + prevValue);

@@ -33,7 +33,7 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
   /// Not thread-safe!
   /// </summary>
-  public class BakedTreeEvaluator {
+  public class BakedTreeEvaluator : ItemBase, ITreeEvaluator {
     private const double EPSILON = 1.0e-7;
     private double estimatedValueMax;
     private double estimatedValueMin;
@@ -52,7 +52,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     private Dataset dataset;
     private int sampleIndex;
 
-    public void ResetEvaluator(BakedFunctionTree functionTree, Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
+    public void ResetEvaluator(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
       this.dataset = dataset;
       double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, start, end);
 
@@ -61,12 +61,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       estimatedValueMin = targetMean - maximumPunishment;
       estimatedValueMax = targetMean + maximumPunishment;
 
-      List<LightWeightFunction> linearRepresentation = functionTree.LinearRepresentation;
-      codeArr = new Instr[linearRepresentation.Count];
-      int i = 0;
-      foreach (LightWeightFunction f in linearRepresentation) {
-        codeArr[i++] = TranslateToInstr(f);
-      }
     }
 
     private Instr TranslateToInstr(LightWeightFunction f) {
@@ -93,7 +87,17 @@ namespace HeuristicLab.GP.StructureIdentification {
       return instr;
     }
 
-    public double Evaluate(int sampleIndex) {
+    public double Evaluate(IFunctionTree functionTree, int sampleIndex) {
+      BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
+      if (bakedTree == null) throw new ArgumentException("BakedTreeEvaluator can only evaluate BakedFunctionTrees");
+
+      List<LightWeightFunction> linearRepresentation = bakedTree.LinearRepresentation;
+      codeArr = new Instr[linearRepresentation.Count];
+      int i = 0;
+      foreach (LightWeightFunction f in linearRepresentation) {
+        codeArr[i++] = TranslateToInstr(f);
+      }
+
       PC = 0;
       this.sampleIndex = sampleIndex;
 

@@ -41,7 +41,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       AddVariableInfo(new VariableInfo("APC", "The average percentage change of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       bool differential = GetVariableValue<BoolData>("Differential", scope, true).Data;
       DoubleData apc = GetVariableValue<DoubleData>("APC", scope, false, false);
       if (apc == null) {
@@ -57,13 +57,13 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
         if (differential) {
           prevOriginal = dataset.GetValue(sample - 1, targetVariable);
           originalPercentageChange = (dataset.GetValue(sample, targetVariable) - prevOriginal) / prevOriginal;
-          estimatedPercentageChange = (evaluator.Evaluate(sample) - prevOriginal) / prevOriginal;
+          estimatedPercentageChange = (evaluator.Evaluate(tree, sample) - prevOriginal) / prevOriginal;
           if (updateTargetValues) {
             dataset.SetValue(sample, targetVariable, estimatedPercentageChange * prevOriginal + prevOriginal);
           }
         } else {
           originalPercentageChange = dataset.GetValue(sample, targetVariable);
-          estimatedPercentageChange = evaluator.Evaluate(sample);
+          estimatedPercentageChange = evaluator.Evaluate(tree, sample);
           if (updateTargetValues) {
             dataset.SetValue(sample, targetVariable, estimatedPercentageChange);
           }

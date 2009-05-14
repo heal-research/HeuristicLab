@@ -49,7 +49,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
     }
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
       int minSamples = GetVariableValue<IntData>("MinEvaluatedSamples", scope, true).Data;
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
@@ -77,7 +77,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
       int[] indexes = InitIndexes(mt, start, end);
       int n = 0;
       for (int sample = 0; sample < rows; sample++) {
-        double estimated = evaluator.Evaluate(indexes[sample]);
+        double estimated = evaluator.Evaluate(tree, indexes[sample]);
         double original = dataset.GetValue(indexes[sample], targetVariable);
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           n++;

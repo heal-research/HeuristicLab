@@ -42,12 +42,12 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0;
       int n = 0;
       for (int sample = start; sample < end; sample++) {
         double original = dataset.GetValue(sample, targetVariable);
-        double estimated = evaluator.Evaluate(sample);
+        double estimated = evaluator.Evaluate(tree, sample);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);
         }

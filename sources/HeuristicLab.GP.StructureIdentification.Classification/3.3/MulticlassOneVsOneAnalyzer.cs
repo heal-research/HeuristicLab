@@ -34,6 +34,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     private const string DATASET = "Dataset";
     private const string TARGETVARIABLE = "TargetVariable";
     private const string TARGETCLASSVALUES = "TargetClassValues";
+    private const string TRAININGSAMPLESSTART = "TrainingSamplesStart";
+    private const string TRAININGSAMPLESEND = "TrainingSamplesEnd";
     private const string SAMPLESSTART = "SamplesStart";
     private const string SAMPLESEND = "SamplesEnd";
     private const string CLASSAVALUE = "ClassAValue";
@@ -55,6 +57,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo(TARGETCLASSVALUES, "Class values of the target variable in the original dataset", typeof(ItemList<DoubleData>), VariableKind.In));
       AddVariableInfo(new VariableInfo(CLASSAVALUE, "The original class value of the class A in the subscope", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo(CLASSBVALUE, "The original class value of the class B in the subscope", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TRAININGSAMPLESSTART, "The start of training samples in the original dataset", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TRAININGSAMPLESEND, "The end of training samples in the original dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(SAMPLESSTART, "The start of samples in the original dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(SAMPLESEND, "The end of samples in the original dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(BESTMODELLSCOPE, "The variable containing the scope of the model (incl. meta data)", typeof(IScope), VariableKind.In));
@@ -66,6 +70,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>(DATASET, scope, true);
       int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+      int trainingSamplesStart = GetVariableValue<IntData>(TRAININGSAMPLESSTART, scope, true).Data;
+      int trainingSamplesEnd = GetVariableValue<IntData>(TRAININGSAMPLESEND, scope, true).Data;
       int samplesStart = GetVariableValue<IntData>(SAMPLESSTART, scope, true).Data;
       int samplesEnd = GetVariableValue<IntData>(SAMPLESEND, scope, true).Data;
       ItemList<DoubleData> classValues = GetVariableValue<ItemList<DoubleData>>(TARGETCLASSVALUES, scope, true);
@@ -78,10 +84,10 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         BakedFunctionTree functionTree = GetVariableValue<BakedFunctionTree>(BESTMODELL, bestScope, true);
 
         BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
-        evaluator.ResetEvaluator(functionTree, dataset, targetVariable, samplesStart, samplesEnd, 1.0);
+        evaluator.ResetEvaluator(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0);
 
         for(int i = 0; i < (samplesEnd - samplesStart); i++) {
-          double est = evaluator.Evaluate(i + samplesStart);
+          double est = evaluator.Evaluate(functionTree, i + samplesStart);
           if(est < 0.5) {
             CastVote(votes, i, classAValue, classValues);
           } else {

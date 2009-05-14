@@ -52,12 +52,12 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
 
     }
 
-    public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       int nSamples = end - start;
       double[] errors = new double[nSamples];
       double[] originalTargetVariableValues = new double[nSamples];
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
+        double estimated = evaluator.Evaluate(tree, sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);
@@ -65,6 +65,9 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           errors[sample - start] = original - estimated;
           originalTargetVariableValues[sample - start] = original;
+        } else {
+          errors[sample - start] = double.NaN;
+          originalTargetVariableValues[sample - start] = double.NaN;
         }
       }
       double errorsVariance = Statistics.Variance(errors);
