@@ -67,6 +67,7 @@
     <Compile Include="HeuristicLabSupportVectorMachinesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleMSEEvaluator.cs" />
+    <Compile Include="SimpleR2Evaluator.cs" />
     <Compile Include="SupportVectorCreator.cs" />
     <Compile Include="SupportVectorEvaluator.cs" />
     <Compile Include="SVMHelper.cs" />
