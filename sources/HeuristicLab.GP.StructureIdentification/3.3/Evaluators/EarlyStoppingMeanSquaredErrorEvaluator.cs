@@ -53,6 +53,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
 
       double errorsSquaredSum = 0;
       int rows = end - start;
+      int n = 0;
       for (int sample = start; sample < end; sample++) {
         double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
@@ -62,14 +63,15 @@ This operator stops the computation as soon as an upper limit for the mean-squar
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
+          n++;
         }
         // check the limit and stop as soon as we hit the limit
         if (errorsSquaredSum / rows >= qualityLimit) {
-          mse.Data = errorsSquaredSum / (sample - start + 1); // return estimated MSE (when the remaining errors are on average the same)
+          mse.Data = errorsSquaredSum / (n + 1); // return estimated MSE (when the remaining errors are on average the same)
           return;
         }
       }
-      errorsSquaredSum /= rows;
+      errorsSquaredSum /= n;
       if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }

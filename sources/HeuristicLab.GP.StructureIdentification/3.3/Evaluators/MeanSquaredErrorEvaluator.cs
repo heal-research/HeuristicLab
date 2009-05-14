@@ -44,6 +44,7 @@ for the estimated values vs. the real values of 'TargetVariable'.";
 
     public override void Evaluate(IScope scope, BakedTreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0;
+      int n = 0;
       for (int sample = start; sample < end; sample++) {
         double original = dataset.GetValue(sample, targetVariable);
         double estimated = evaluator.Evaluate(sample);
@@ -53,10 +54,11 @@ for the estimated values vs. the real values of 'TargetVariable'.";
         if (!double.IsNaN(original) && !double.IsInfinity(original)) {
           double error = estimated - original;
           errorsSquaredSum += error * error;
+          n++;
         }
       }
 
-      errorsSquaredSum /= (end - start);
+      errorsSquaredSum /= n;
       if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
         errorsSquaredSum = double.MaxValue;
       }
