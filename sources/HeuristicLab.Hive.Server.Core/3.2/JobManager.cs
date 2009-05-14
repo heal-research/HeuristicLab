@@ -327,9 +327,9 @@ namespace HeuristicLab.Hive.Server.Core {
       }
     }
 
-    public ResponseObject<List<JobResult>> GetAllJobResults(Guid jobId) {
+    public ResponseList<JobResult> GetAllJobResults(Guid jobId) {
       ISession session = factory.GetSessionForCurrentThread();
-      ResponseObject<List<JobResult>> response = new ResponseObject<List<JobResult>>();
+      ResponseList<JobResult> response = new ResponseList<JobResult>();
 
       try {
         IJobResultsAdapter jobResultAdapter =
@@ -342,7 +342,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
           return response;
         }
-        response.Obj = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+        response.List = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
 

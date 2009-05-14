@@ -119,7 +119,7 @@ namespace HeuristicLab.Hive.Server.Core {
         throw new PermissionException();
     }
 
-    public ResponseObject<List<JobResult>> GetAllJobResults(Guid jobId) {
+    public ResponseList<JobResult> GetAllJobResults(Guid jobId) {
       if (HasPermission(PermissiveSecurityAction.Get_AllJobResults))
         return jobManager.GetAllJobResults(jobId);
       else
