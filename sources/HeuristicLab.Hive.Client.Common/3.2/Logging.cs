@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Client.Common {
   /// <summary>
@@ -33,8 +34,6 @@ namespace HeuristicLab.Hive.Client.Common {
   /// </summary>
   public class Logging {      
     private static Logging instance = null;
-    private EventLog eventLogger = null;
-
     /// <summary>
     /// This is an implementation of the singleton design pattern.
     /// </summary>
@@ -64,8 +63,10 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Info(String source, String message) {
-      DateTime current = DateTime.Now;
-      Debug.WriteLine(current + " - " + source + ": " + message);
+      Logger.Info(source + ": " + message);
+
+      //DateTime current = DateTime.Now;
+      ///Debug.WriteLine(current + " - " + source + ": " + message);
 
     //  eventLogger.Source = source;
     //  eventLogger.WriteEntry(message);      
@@ -78,8 +79,10 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Error(String source, String message) {
-      DateTime current = DateTime.Now;
-      Debug.WriteLine(current + " - " + source + ": " + message);
+      Logger.Error(source + ": " + message);
+      
+      //DateTime current = DateTime.Now;
+      //Debug.WriteLine(current + " - " + source + ": " + message);
       
       //eventLogger.Source = source;
       //, EventLogEntryType.Error
@@ -94,8 +97,9 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="message">the message</param>
     /// <param name="e">the exception</param>
     public void Error(String source, String message, Exception e) {
-      DateTime current = DateTime.Now;
-      Debug.WriteLine(current + " - " + source + ": " + e + message);
+      Logger.Error(source + ": " + message, e);
+      //DateTime current = DateTime.Now;
+      //Debug.WriteLine(current + " - " + source + ": " + e + message);
     //  eventLogger.Source = source;
     //  eventLogger.WriteEntry(message +"\n" + e.ToString());
     //  eventLogger.Close();
