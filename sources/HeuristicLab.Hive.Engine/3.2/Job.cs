@@ -41,6 +41,7 @@ namespace HeuristicLab.Hive.Engine {
     public Job()
       : base() {
       engine = new SequentialEngine.SequentialEngine();
+      engine.Priority = ThreadPriority.Lowest;
       RegisterEvents();
     }
 

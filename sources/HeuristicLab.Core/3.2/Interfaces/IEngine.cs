@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -43,6 +44,10 @@ namespace HeuristicLab.Core {
     /// Gets the execution time of the current instance.
     /// </summary>
     TimeSpan ExecutionTime { get; }
+    /// <summary>
+    /// Gets or sets the thread priority of the worker thread.
+    /// </summary>
+    ThreadPriority Priority { get; set; }
 
     /// <summary>
     /// Gets information whether the engine is currently running.

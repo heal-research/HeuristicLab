@@ -61,6 +61,11 @@ namespace HeuristicLab.Hive.Engine {
       get { return job.Engine.ExecutionTime; }
     }
 
+    public ThreadPriority Priority {
+      get { return job.Engine.Priority; }
+      set { job.Engine.Priority = value; }
+    }
+
     public bool Running {
       get { return job.Engine.Running; }
     }

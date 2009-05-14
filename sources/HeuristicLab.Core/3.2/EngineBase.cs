@@ -66,6 +66,15 @@ namespace HeuristicLab.Core {
       }
     }
 
+    private ThreadPriority myPriority;
+    /// <summary>
+    /// Gets or sets the priority of the worker thread.
+    /// </summary>
+    public ThreadPriority Priority {
+      get { return myPriority; }
+      set { myPriority = value; }
+    }
+
     /// <summary>
     /// Field of the current instance that represent the execution stack.
     /// </summary>
@@ -112,6 +121,7 @@ namespace HeuristicLab.Core {
     protected EngineBase() {
       myOperatorGraph = new OperatorGraph();
       myGlobalScope = new Scope("Global");
+      myPriority = ThreadPriority.Normal;
       myExecutionStack = new Stack<IOperation>();
       Reset();
     }
@@ -182,9 +192,11 @@ namespace HeuristicLab.Core {
     }
 
     private void Run(object state) {
+      Thread.CurrentThread.Priority = Priority;
       if (state == null) Run();
       else RunSteps((int)state);
       myRunning = false;
+      Thread.CurrentThread.Priority = ThreadPriority.Normal;
       OnFinished();
     }
     private void Run() {
@@ -301,6 +313,11 @@ namespace HeuristicLab.Core {
     /// <description>Saved as a child node with the tag name <c>ExecutionTime</c>, where the execution
     /// time is saved as string in the node's inner text.</description>
     /// </item>
+    /// <item>
+    /// <term>Priority: </term>
+    /// <description>Saved as a child node with the tag name <c>Priority</c>, where the thread priority
+    /// is saved as string in the node's inner text.</description>
+    /// </item>
     /// </list></remarks>
     /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
     /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
@@ -322,6 +339,9 @@ namespace HeuristicLab.Core {
       XmlNode timeNode = document.CreateNode(XmlNodeType.Element, "ExecutionTime", null);
       timeNode.InnerText = ExecutionTime.ToString();
       node.AppendChild(timeNode);
+      XmlNode priorityNode = document.CreateNode(XmlNodeType.Element, "Priority", null);
+      priorityNode.InnerText = Priority.ToString();
+      node.AppendChild(priorityNode);
       return node;
     }
     /// <summary>
@@ -343,6 +363,9 @@ namespace HeuristicLab.Core {
 
       XmlNode timeNode = node.SelectSingleNode("ExecutionTime");
       myExecutionTime = TimeSpan.Parse(timeNode.InnerText);
+      XmlNode priorityNode = node.SelectSingleNode("Priority");
+      if (priorityNode != null)
+        myPriority = (ThreadPriority) Enum.Parse(typeof(ThreadPriority), priorityNode.InnerText);
     }
     #endregion
   }
