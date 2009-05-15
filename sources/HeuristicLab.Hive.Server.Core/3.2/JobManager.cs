@@ -264,7 +264,7 @@ namespace HeuristicLab.Hive.Server.Core {
         IJobAdapter jobAdapter = session.GetDataAdapter<Job, IJobAdapter>();
 
         Job job = jobAdapter.GetById(jobId);
-        if (job.State == State.requestSnapshot) {
+        if (job.State == State.requestSnapshot || job.State == State.requestSnapshotSent) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_REQUEST_ALLREADY_SET;
           return response; // no commit needed

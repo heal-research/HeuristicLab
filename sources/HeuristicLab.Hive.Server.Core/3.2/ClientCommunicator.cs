@@ -310,8 +310,8 @@ namespace HeuristicLab.Hive.Server.Core {
               response.ActionRequest.Add(new MessageContainer(MessageContainer.MessageType.RequestSnapshot, curJob.Id));
               curJob.State = State.requestSnapshotSent;
             }
-            jobAdapter.Update(curJob);
           }
+          jobAdapter.Update(curJob);
         }
         foreach (Job currJob in jobsOfClient) {
           bool found = false;
