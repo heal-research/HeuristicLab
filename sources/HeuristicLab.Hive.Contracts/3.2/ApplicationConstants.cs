@@ -54,6 +54,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_CLIENT_ID_MUST_NOT_BE_SET = "Client.IdMustNotBeSet";
     public static string RESPONSE_CLIENT_CLIENTGROUP_ADDED = "Client.ClientGroupAdded";
     public static string RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST = "Client.ClientGroupDoesntExist";
+    public static string RESPONSE_CLIENT_CLIENTGROUP_DELETED = "Client group sucessfully deleted"; 
     public static string RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP = "Client.ResourceAddedToGroup";
     public static string RESPONSE_CLIENT_RESOURCE_REMOVED = "Client.ResourceRemoved";
     public static string RESPONSE_CLIENT_RESOURCE_NOT_FOUND = "Client.ResourceNotFound";

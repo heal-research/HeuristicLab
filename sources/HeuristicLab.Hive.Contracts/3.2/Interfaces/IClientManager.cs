@@ -44,6 +44,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     Response AddClientGroup(ClientGroup clientGroup);
     [OperationContract]
+    Response DeleteClientGroup(Guid clientGroupId);
+    [OperationContract]
     Response AddResourceToGroup(Guid clientGroupId, Resource resource);
     [OperationContract]
     Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId);

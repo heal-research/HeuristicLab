@@ -90,6 +90,7 @@ namespace HeuristicLab.Hive.Server.Core {
             emptyClientGroup.Resources.Add(currClient);
           }
         }
+        emptyClientGroup.Id = Guid.Empty;
         allClientGroups.Add(emptyClientGroup);
 
         response.List = allClientGroups;
@@ -241,6 +242,34 @@ namespace HeuristicLab.Hive.Server.Core {
         return response;
       }
       finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    public Response DeleteClientGroup(Guid clientGroupId) {
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+        Response response = new Response();
+
+        ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
+        if (clientGroup == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DOESNT_EXIST;
+          return response;
+        }
+
+        clientGroupAdapter.Delete(clientGroup);
+
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_DELETED;
+        return response;
+
+      } finally {
         if (session != null)
           session.EndSession();
       }

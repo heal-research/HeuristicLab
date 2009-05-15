@@ -161,6 +161,10 @@ namespace HeuristicLab.Hive.Server.Core {
         throw new PermissionException();      
     }
 
+    public Response DeleteClientGroup(Guid clientGroupId) {
+      return clientManager.DeleteClientGroup(clientGroupId);
+    }
+
   /*
     private bool HasPermission(Guid action) {
       return (sessionID == Guid.Empty) ? false : secMan.CheckPermission(sessionID, action, Guid.Empty);
@@ -187,7 +191,5 @@ namespace HeuristicLab.Hive.Server.Core {
 
 
     }
-
-
   }
 }
