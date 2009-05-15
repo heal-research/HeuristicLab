@@ -86,6 +86,9 @@
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.btnRefresh = new System.Windows.Forms.Button();
       this.tvClientControl = new System.Windows.Forms.TreeView();
+      this.contextMenuGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.menuItemAddGroup = new System.Windows.Forms.ToolStripMenuItem();
+      this.menuItemDeleteGroup = new System.Windows.Forms.ToolStripMenuItem();
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -109,6 +112,7 @@
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
+      this.contextMenuGroup.SuspendLayout();
       this.tcManagementConsole.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -353,9 +357,9 @@
             this.chDetails});
       this.lvJobDetails.FullRowSelect = true;
       this.lvJobDetails.GridLines = true;
-      this.lvJobDetails.Location = new System.Drawing.Point(20, 129);
+      this.lvJobDetails.Location = new System.Drawing.Point(17, 129);
       this.lvJobDetails.Name = "lvJobDetails";
-      this.lvJobDetails.Size = new System.Drawing.Size(375, 137);
+      this.lvJobDetails.Size = new System.Drawing.Size(382, 175);
       this.lvJobDetails.TabIndex = 17;
       this.lvJobDetails.UseCompatibleStateImageBehavior = false;
       this.lvJobDetails.View = System.Windows.Forms.View.Details;
@@ -368,7 +372,7 @@
       // chDetails
       // 
       this.chDetails.Text = "Details";
-      this.chDetails.Width = 247;
+      this.chDetails.Width = 255;
       // 
       // lvSnapshots
       // 
@@ -379,9 +383,9 @@
       this.lvSnapshots.Enabled = false;
       this.lvSnapshots.FullRowSelect = true;
       this.lvSnapshots.GridLines = true;
-      this.lvSnapshots.Location = new System.Drawing.Point(17, 269);
+      this.lvSnapshots.Location = new System.Drawing.Point(17, 310);
       this.lvSnapshots.Name = "lvSnapshots";
-      this.lvSnapshots.Size = new System.Drawing.Size(382, 102);
+      this.lvSnapshots.Size = new System.Drawing.Size(382, 69);
       this.lvSnapshots.TabIndex = 16;
       this.lvSnapshots.UseCompatibleStateImageBehavior = false;
       this.lvSnapshots.View = System.Windows.Forms.View.Details;
@@ -389,12 +393,12 @@
       // chClientCalculated
       // 
       this.chClientCalculated.Text = "Client Calculated";
-      this.chClientCalculated.Width = 88;
+      this.chClientCalculated.Width = 112;
       // 
       // chProgress
       // 
       this.chProgress.Text = "Progress";
-      this.chProgress.Width = 67;
+      this.chProgress.Width = 100;
       // 
       // chSnapshotTime
       // 
@@ -685,12 +689,35 @@
       // 
       // tvClientControl
       // 
+      this.tvClientControl.AllowDrop = true;
+      this.tvClientControl.ContextMenuStrip = this.contextMenuGroup;
       this.tvClientControl.Dock = System.Windows.Forms.DockStyle.Top;
       this.tvClientControl.Location = new System.Drawing.Point(0, 0);
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(151, 357);
       this.tvClientControl.TabIndex = 0;
+      this.tvClientControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvClientControl_MouseUp);
       this.tvClientControl.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvClientControl_NodeMouseClick);
+      // 
+      // contextMenuGroup
+      // 
+      this.contextMenuGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemAddGroup,
+            this.menuItemDeleteGroup});
+      this.contextMenuGroup.Name = "contextMenuJob";
+      this.contextMenuGroup.Size = new System.Drawing.Size(149, 48);
+      // 
+      // menuItemAddGroup
+      // 
+      this.menuItemAddGroup.Name = "menuItemAddGroup";
+      this.menuItemAddGroup.Size = new System.Drawing.Size(148, 22);
+      this.menuItemAddGroup.Text = "Add Group";
+      // 
+      // menuItemDeleteGroup
+      // 
+      this.menuItemDeleteGroup.Name = "menuItemDeleteGroup";
+      this.menuItemDeleteGroup.Size = new System.Drawing.Size(148, 22);
+      this.menuItemDeleteGroup.Text = "Delete Group";
       // 
       // lvClientControl
       // 
@@ -763,6 +790,7 @@
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
+      this.contextMenuGroup.ResumeLayout(false);
       this.tcManagementConsole.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -835,5 +863,8 @@
     private System.Windows.Forms.ColumnHeader chDetails;
     private System.Windows.Forms.Button btnRefresh;
     private System.Windows.Forms.TreeView tvClientControl;
+    private System.Windows.Forms.ContextMenuStrip contextMenuGroup;
+    private System.Windows.Forms.ToolStripMenuItem menuItemAddGroup;
+    private System.Windows.Forms.ToolStripMenuItem menuItemDeleteGroup;
   }
 }

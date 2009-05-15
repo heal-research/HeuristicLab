@@ -330,8 +330,11 @@
         rN2a/65NX/wH4APFUXIucrPgUh6ieC3viZPa4vFfU36gB1Ssto8AAAAASUVORK5CYII=
 </value>
   </data>
+  <metadata name="contextMenuGroup.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>504, 38</value>
+  </metadata>
   <metadata name="contextMenuJob.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>252, 44</value>
+    <value>246, 40</value>
   </metadata>
   <metadata name="ilSmallImgJob.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>137, 50</value>

@@ -43,8 +43,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       InitializeComponent();
       tbIp.Text = "10.20.53.1";
       tbPort.Text = WcfSettings.GetDefaultPort().ToString();
-      tbUserName.Text = "a";
-      tbPwd.Text = "a";
+      tbUserName.Text = "test45";
+      tbPwd.Text = "test";
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -61,15 +61,17 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       string newIp = tbIp.Text;
       newIp = newIp.Replace(" ", "");
 
-        ServiceLocator.Address = newIp;
-        ServiceLocator.Port = this.tbPort.Text;
+      ServiceLocator.Address = newIp;
+      ServiceLocator.Port = this.tbPort.Text;
 
-        if (IsValid()) {
-          this.Visible = false;
-          information = new HiveServerManagementConsole();
-          information.closeFormEvent += new closeForm(EnableForm);
-          information.Show();
-        }
+      if (IsValid()) {
+        this.Visible = false;
+        information = new HiveServerManagementConsole();
+        information.closeFormEvent += new closeForm(EnableForm);
+        information.Show();
+      } else {
+        lblError.Text = "Problem with login";
+      }
     }
 
     /// <summary>

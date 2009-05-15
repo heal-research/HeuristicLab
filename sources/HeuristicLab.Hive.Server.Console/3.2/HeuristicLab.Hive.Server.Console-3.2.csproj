@@ -88,6 +88,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddGroup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddGroup.Designer.cs">
+      <DependentUpon>AddGroup.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddJobForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +116,9 @@
     </Compile>
     <Compile Include="HiveServerConsolePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddGroup.resx">
+      <DependentUpon>AddGroup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddJobForm.resx">
       <DependentUpon>AddJobForm.cs</DependentUpon>
       <SubType>Designer</SubType>
