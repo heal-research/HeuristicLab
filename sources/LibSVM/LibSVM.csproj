@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="GaussianTransform.cs" />
     <Compile Include="IRangeTransform.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="PrecomputedKernel.cs" />
     <Compile Include="Prediction.cs" />
     <Compile Include="Problem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RangeTransform.cs" />
     <Compile Include="Scaling.cs" />
     <Compile Include="Solver.cs" />
@@ -95,4 +95,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>
