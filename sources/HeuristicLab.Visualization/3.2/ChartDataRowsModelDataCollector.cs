@@ -38,7 +38,7 @@ namespace HeuristicLab.Visualization {
 
     /// <summary>
     /// Initializes a new instance of <see cref="ChartDataRowsModelDataCollector"/> with two variable infos 
-    /// (<c>VariableNames</c> and <c>Values</c>).
+    /// (<c>VariableNames</c> and <c>Model</c>).
     /// </summary>
     public ChartDataRowsModelDataCollector() {
       IVariableInfo variableNamesVariableInfo = new VariableInfo("VariableNames", "Names of variables whose values should be collected", typeof(ItemList<StringData>), VariableKind.In);
@@ -46,7 +46,7 @@ namespace HeuristicLab.Visualization {
       AddVariableInfo(variableNamesVariableInfo);
       ItemList<StringData> variableNames = new ItemList<StringData>();
       AddVariable(new Variable("VariableNames", variableNames));
-      AddVariableInfo(new VariableInfo("Model", "Data model in which the collected values should be fed.", typeof(IChartDataRowsModel), VariableKind.New | VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Model", "Data model in which the collected values should be fed.", typeof(IChartDataRowsModel), VariableKind.In | VariableKind.Out));
     }
 
     /// <summary>
@@ -57,19 +57,6 @@ namespace HeuristicLab.Visualization {
     public override IOperation Apply(IScope scope) {
       ItemList<StringData> names = GetVariableValue<ItemList<StringData>>("VariableNames", scope, false);
       IChartDataRowsModel model = GetVariableValue<IChartDataRowsModel>("Model", scope, true, false);
-
-      // if necessary, add a new model
-      if (model == null) {
-        model = new ChartDataRowsModel();
-        for (int i = 0; i < names.Count; i++)
-          model.AddDataRow(new DataRow(names[i].Data));  // create new data row for each variable name to collect
-
-        IVariableInfo info = GetVariableInfo("Model");
-        if (info.Local)
-          AddVariable(new Variable(info.ActualName, model));
-        else
-          scope.AddVariable(new Variable(scope.TranslateName(info.FormalName), model));
-      }
 
       // collect data values and feed them into the model
       for (int i = 0; i < names.Count; i++) {
