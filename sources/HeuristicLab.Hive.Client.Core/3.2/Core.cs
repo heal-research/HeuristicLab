@@ -113,22 +113,34 @@ namespace HeuristicLab.Hive.Client.Core {
       switch (container.Message) {
         //Server requests to abort a job
         case MessageContainer.MessageType.AbortJob:
-          engines[container.JobId].Abort();
+          if(engines.ContainsKey(container.JobId))
+            engines[container.JobId].Abort();
+          else
+            Logging.Instance.Error(this.ToString(), "AbortJob: Engine doesn't exist");
           break;
         //Job has been successfully aborted
         case MessageContainer.MessageType.JobAborted:
           //todo: thread this
           Debug.WriteLine("Job aborted, he's dead");
-          lock (engines) {
-            AppDomain.Unload(appDomains[container.JobId]);
-            appDomains.Remove(container.JobId);
-            engines.Remove(container.JobId);
-            jobs.Remove(container.JobId);
+          lock (engines) {            
+            Guid jobId = new Guid(container.JobId.ToString());
+            if(engines.ContainsKey(jobId)) {
+              appDomains[jobId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+              AppDomain.Unload(appDomains[jobId]);
+              appDomains.Remove(jobId);
+              engines.Remove(jobId);
+              jobs.Remove(jobId);
+              GC.Collect();
+            } else
+              Logging.Instance.Error(this.ToString(), "JobAbort: Engine doesn't exist");
           }
           break;
         //Request a Snapshot from the Execution Engine
         case MessageContainer.MessageType.RequestSnapshot:
-          engines[container.JobId].RequestSnapshot();
+          if (engines.ContainsKey(container.JobId)) 
+            engines[container.JobId].RequestSnapshot();
+          else
+            Logging.Instance.Error(this.ToString(), "RequestSnapshot: Engine doesn't exist");
           break;
         //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:
@@ -148,8 +160,10 @@ namespace HeuristicLab.Hive.Client.Core {
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
           lock (engines) {
-            foreach (KeyValuePair<Guid, AppDomain> kvp in appDomains)
+            foreach (KeyValuePair<Guid, AppDomain> kvp in appDomains) {
+              appDomains[kvp.Key].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
               AppDomain.Unload(kvp.Value);
+            }
           }
           abortRequested = true;
           beat.StopHeartBeat();
@@ -164,6 +178,11 @@ namespace HeuristicLab.Hive.Client.Core {
     private void GetFinishedJob(object jobId) {
       Guid jId = (Guid)jobId;      
       try {
+        if (!engines.ContainsKey(jId)) {
+          Logging.Instance.Error(this.ToString(), "GetFinishedJob: Engine doesn't exist");
+          return;
+        }
+        
         byte[] sJob = engines[jId].GetFinishedJob();
 
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin) {
@@ -173,9 +192,10 @@ namespace HeuristicLab.Hive.Client.Core {
             1,
             null,
             true);
-        } else {          
+        } else {
           JobStorageManager.PersistObjectToDisc(wcfService.ServerIP, wcfService.ServerPort, jId, sJob);
           lock (engines) {
+            appDomains[jId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
             AppDomain.Unload(appDomains[jId]);
             appDomains.Remove(jId);
             engines.Remove(jId);
@@ -247,6 +267,7 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
       lock(engines) {
         try {
+          appDomains[e.Result.JobId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
           AppDomain.Unload(appDomains[e.Result.JobId]);
           appDomains.Remove(e.Result.JobId);
           engines.Remove(e.Result.JobId);
@@ -277,8 +298,10 @@ namespace HeuristicLab.Hive.Client.Core {
     void wcfService_ServerChanged(object sender, EventArgs e) {
       Logging.Instance.Info(this.ToString(), "ServerChanged has been called");
       lock (engines) {
-        foreach (KeyValuePair<Guid, AppDomain> entries in appDomains)
+        foreach (KeyValuePair<Guid, AppDomain> entries in appDomains) {
+          appDomains[entries.Key].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
           AppDomain.Unload(appDomains[entries.Key]);
+        }
         appDomains = new Dictionary<Guid, AppDomain>();
         engines = new Dictionary<Guid, Executor>();
       }
