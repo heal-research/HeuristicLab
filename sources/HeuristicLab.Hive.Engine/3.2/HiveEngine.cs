@@ -129,18 +129,21 @@ namespace HeuristicLab.Hive.Engine {
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
 
-      // request snapshot
-      executionEngineFacade.RequestSnapshot(jobId);
-
       // poll until snapshot is ready
       ResponseObject<JobResult> response;
-      do {
-        response = executionEngineFacade.GetLastResult(jobId, true);
-        if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
-          Thread.Sleep(1000);
-        }
-      } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
 
+      // request snapshot
+      Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
+      if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
+        response = executionEngineFacade.GetLastResult(jobId, false);
+      } else {
+        do {
+          response = executionEngineFacade.GetLastResult(jobId, true);
+          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
+            Thread.Sleep(1000);
+          }
+        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
+      }
       if (response.Success) {
         JobResult jobResult = response.Obj;
         if (jobResult != null) {
