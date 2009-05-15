@@ -1,63 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Core {
 
   public class Configuration {
 
     [Storable]
-    private readonly Dictionary<Type, IFormatter> formatters;
+    private readonly Dictionary<Type, IPrimitiveSerializer> primitiveSerializers;
 
     [Storable]
-    private readonly List<IDecomposer> decomposers;
-    private readonly Dictionary<Type, IDecomposer> decomposerCache;
+    private readonly List<ICompositeSerializer> compositeSerializers;
+    private readonly Dictionary<Type, ICompositeSerializer> compositeSerializerCache;
 
     [Storable]
     public IFormat Format { get; private set; }
 
     private Configuration() {
-      decomposerCache = new Dictionary<Type, IDecomposer>();
+      compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
     }
 
-    public Configuration(IFormat format, IEnumerable<IFormatter> formatters, IEnumerable<IDecomposer> decomposers) {
+    public Configuration(IFormat format,
+        IEnumerable<IPrimitiveSerializer> primitiveSerializers,
+        IEnumerable<ICompositeSerializer> compositeSerializers) {
       this.Format = format;
-      this.formatters = new Dictionary<Type, IFormatter>();
-      foreach (IFormatter formatter in formatters) {
-        if (formatter.SerialDataType != format.SerialDataType) {
-          throw new ArgumentException("All formatters must have the same IFormat.");
+      this.primitiveSerializers = new Dictionary<Type, IPrimitiveSerializer>();
+      foreach (IPrimitiveSerializer primitiveSerializer in primitiveSerializers) {
+        if (primitiveSerializer.SerialDataType != format.SerialDataType) {
+          throw new ArgumentException("All primitive serializers must have the same IFormat.");
         }
-        this.formatters.Add(formatter.SourceType, formatter);
+        this.primitiveSerializers.Add(primitiveSerializer.SourceType, primitiveSerializer);
       }
-      this.decomposers = new List<IDecomposer>(decomposers);
-      decomposerCache = new Dictionary<Type, IDecomposer>();
+      this.compositeSerializers = new List<ICompositeSerializer>(compositeSerializers);
+      compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
     }
 
-    public IEnumerable<IFormatter> Formatters {
-      get { return formatters.Values; }
+    public IEnumerable<IPrimitiveSerializer> PrimitiveSerializers {
+      get { return primitiveSerializers.Values; }
     }
 
-    public IEnumerable<IDecomposer> Decomposers {
-      get { return decomposers; }
+    public IEnumerable<ICompositeSerializer> CompositeSerializers {
+      get { return compositeSerializers; }
     }
 
-    public IFormatter GetFormatter(Type type) {
-      IFormatter formatter;
-      formatters.TryGetValue(type, out formatter);
-      return formatter;
+    public IPrimitiveSerializer GetPrimitiveSerializer(Type type) {
+      IPrimitiveSerializer primitiveSerializer;
+      primitiveSerializers.TryGetValue(type, out primitiveSerializer);
+      return primitiveSerializer;
     }
 
-    public IDecomposer GetDecomposer(Type type) {
-      if (decomposerCache.ContainsKey(type))
-        return decomposerCache[type];
-      foreach (IDecomposer d in decomposers) {
-        if (d.CanDecompose(type)) {
-          decomposerCache.Add(type, d);
+    public ICompositeSerializer GetCompositeSerializer(Type type) {
+      if (compositeSerializerCache.ContainsKey(type))
+        return compositeSerializerCache[type];
+      foreach (ICompositeSerializer d in compositeSerializers) {
+        if (d.CanSerialize(type)) {
+          compositeSerializerCache.Add(type, d);
           return d;
         }
       }
-      decomposerCache.Add(type, null);
+      compositeSerializerCache.Add(type, null);
       return null;
     }
   }

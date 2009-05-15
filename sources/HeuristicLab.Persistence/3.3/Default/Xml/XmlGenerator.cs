@@ -169,7 +169,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         Serialize(obj, File.Create(tempfile), config, includeAssemblies);
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
-      } catch (Exception x) {
+      } catch (Exception) {
         Logger.Warn("Exception caught, no data has been written.");
         throw;
       }
@@ -221,7 +221,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
             }
           }
         }
-      } catch (PersistenceException e) {
+      } catch (PersistenceException) {
         throw;
       } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);

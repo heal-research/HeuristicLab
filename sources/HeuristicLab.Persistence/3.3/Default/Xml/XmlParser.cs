@@ -114,7 +114,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
         }
         return typeCache;
-      } catch (PersistenceException e) {
+      } catch (PersistenceException) {
         throw;
       } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during type cache parsing.", e);

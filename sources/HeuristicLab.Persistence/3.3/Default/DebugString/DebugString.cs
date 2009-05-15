@@ -5,7 +5,7 @@ using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
   

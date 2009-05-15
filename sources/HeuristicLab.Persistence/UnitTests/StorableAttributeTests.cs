@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Test {
 

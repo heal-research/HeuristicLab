@@ -8,26 +8,26 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using System.Text;
-using HeuristicLab.Persistence.Default.Decomposers;
+using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.GUI {
 
   public partial class PersistenceConfigurationForm : Form {
 
-    private readonly Dictionary<string, IFormatter> formatterTable;
-    private readonly Dictionary<string, bool> simpleFormatterTable;
-    private readonly Dictionary<IFormatter, string> reverseFormatterTable;
+    private readonly Dictionary<string, IPrimitiveSerializer> primitiveSerializersTable;
+    private readonly Dictionary<string, bool> simplePrimitiveSerializersTable;
+    private readonly Dictionary<IPrimitiveSerializer, string> reversePrimitiveSerializersTable;
     private readonly Dictionary<string, Type> typeNameTable;
     private readonly Dictionary<Type, string> reverseTypeNameTable;
     private bool underConstruction;
 
     public PersistenceConfigurationForm() {
       InitializeComponent();
-      formatterTable = new Dictionary<string, IFormatter>();
-      simpleFormatterTable = new Dictionary<string, bool>();
-      reverseFormatterTable = new Dictionary<IFormatter, string>();
+      primitiveSerializersTable = new Dictionary<string, IPrimitiveSerializer>();
+      simplePrimitiveSerializersTable = new Dictionary<string, bool>();
+      reversePrimitiveSerializersTable = new Dictionary<IPrimitiveSerializer, string>();
       typeNameTable = new Dictionary<string, Type>();
       reverseTypeNameTable = new Dictionary<Type, string>();
       underConstruction = true;
@@ -37,7 +37,7 @@ namespace HeuristicLab.Persistence.GUI {
       try {
         ConfigurationService.Instance.LoadSettings(true);
         UpdateFromConfigurationService();
-      } catch (PersistenceException e) {
+      } catch (PersistenceException) {
         MessageBox.Show(
           "Persistence settings could not be loaded.\r\n" +
           "Default configurations will be used instead.",
@@ -65,16 +65,16 @@ namespace HeuristicLab.Persistence.GUI {
         "and save to disk.");
     }
 
-    private void UpdateFormatterGrid(DataGridView formatterGrid, Configuration config) {
-      foreach (DataGridViewRow row in formatterGrid.Rows) {
+    private void UpdatePrimitiveSerializersGrid(DataGridView primitiveSerializersGrid, Configuration config) {
+      foreach (DataGridViewRow row in primitiveSerializersGrid.Rows) {
         if (row.Cells["Type"] != null) {
-          IFormatter formatter = config.GetFormatter(typeNameTable[(string)row.Cells["Type"].Value]);
-          if (formatter == null) {
+          IPrimitiveSerializer primitiveSerializer = config.GetPrimitiveSerializer(typeNameTable[(string)row.Cells["Type"].Value]);
+          if (primitiveSerializer == null) {
             row.Cells["Active"].Value = false;
           } else {
-            foreach (var pair in formatterTable) {
-              if (pair.Value.GetType().VersionInvariantName() == formatter.GetType().VersionInvariantName()) {
-                row.Cells["Formatter"].Value = pair.Key;
+            foreach (var pair in primitiveSerializersTable) {
+              if (pair.Value.GetType().VersionInvariantName() == primitiveSerializer.GetType().VersionInvariantName()) {
+                row.Cells["Primitive Serializer"].Value = pair.Key;
                 row.Cells["Active"].Value = true;
                 break;
               }
@@ -84,36 +84,36 @@ namespace HeuristicLab.Persistence.GUI {
       }
     }
 
-    private void UpdateDecomposerList(ListView decomposerList, Configuration config) {
-      decomposerList.SuspendLayout();
-      decomposerList.Items.Clear();
-      var availableDecomposers = new Dictionary<string, IDecomposer>();
-      foreach (IDecomposer d in ConfigurationService.Instance.Decomposers) {
-        availableDecomposers.Add(d.GetType().VersionInvariantName(), d);
+    private void UpdateCompositeSerializersList(ListView compositeSerializersList, Configuration config) {
+      compositeSerializersList.SuspendLayout();
+      compositeSerializersList.Items.Clear();
+      var availableCompositeSerializers = new Dictionary<string, ICompositeSerializer>();
+      foreach (ICompositeSerializer d in ConfigurationService.Instance.CompositeSerializers) {
+        availableCompositeSerializers.Add(d.GetType().VersionInvariantName(), d);
       }
-      foreach (IDecomposer decomposer in config.Decomposers) {
-        var item = decomposerList.Items.Add(decomposer.GetType().Name);
+      foreach (ICompositeSerializer compositeSerializer in config.CompositeSerializers) {
+        var item = compositeSerializersList.Items.Add(compositeSerializer.GetType().Name);
         item.Checked = true;
-        item.Tag = decomposer;
-        availableDecomposers.Remove(decomposer.GetType().VersionInvariantName());
+        item.Tag = compositeSerializer;
+        availableCompositeSerializers.Remove(compositeSerializer.GetType().VersionInvariantName());
       }
-      foreach (KeyValuePair<string, IDecomposer> pair in availableDecomposers) {
-        var item = decomposerList.Items.Add(pair.Value.GetType().Name);
+      foreach (KeyValuePair<string, ICompositeSerializer> pair in availableCompositeSerializers) {
+        var item = compositeSerializersList.Items.Add(pair.Value.GetType().Name);
         item.Checked = false;
         item.Tag = pair.Value;
       }
-      decomposerList.ResumeLayout();
+      compositeSerializersList.ResumeLayout();
     }
 
     private void UpdateFromConfigurationService() {
       configurationTabs.SuspendLayout();
       foreach (IFormat format in ConfigurationService.Instance.Formats) {
         Configuration config = ConfigurationService.Instance.GetConfiguration(format);
-        UpdateFormatterGrid(
+        UpdatePrimitiveSerializersGrid(
           (DataGridView)GetControlsOnPage(format.Name, "GridView"),
           config);
-        UpdateDecomposerList(
-          (ListView)GetControlsOnPage(format.Name, "DecomposerList"),
+        UpdateCompositeSerializersList(
+          (ListView)GetControlsOnPage(format.Name, "CompositeSerializersList"),
           config);
       }
       configurationTabs.ResumeLayout();
@@ -123,7 +123,7 @@ namespace HeuristicLab.Persistence.GUI {
       configurationTabs.SuspendLayout();
       configurationTabs.TabPages.Clear();
       foreach (IFormat format in ConfigurationService.Instance.Formats) {
-        List<IFormatter> formatters = ConfigurationService.Instance.Formatters[format.SerialDataType];
+        List<IPrimitiveSerializer> primitiveSerializers = ConfigurationService.Instance.PrimitiveSerializers[format.SerialDataType];
         TabPage page = new TabPage(format.Name) {
           Name = format.Name,
           Tag = format,
@@ -144,11 +144,11 @@ namespace HeuristicLab.Persistence.GUI {
         };
         horizontalSplit.SuspendLayout();
         verticalSplit.Panel1.Controls.Add(horizontalSplit);
-        ListView decomposerList = createDecomposerList();
-        horizontalSplit.Panel1.Controls.Add(decomposerList);
+        ListView compositeSerializersList = createCompsiteSerializersList();
+        horizontalSplit.Panel1.Controls.Add(compositeSerializersList);
         DataGridView gridView = createGridView();
         verticalSplit.Panel2.Controls.Add(gridView);
-        fillDataGrid(gridView, formatters);
+        fillDataGrid(gridView, primitiveSerializers);
         ListBox checkBox = new ListBox {
           Name = "CheckBox",
           Dock = DockStyle.Fill,
@@ -184,15 +184,15 @@ namespace HeuristicLab.Persistence.GUI {
         AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells
       });
       gridView.Columns.Add(new DataGridViewComboBoxColumn {
-        Name = "Formatter",
+        Name = "Primitive Serializer",
         AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
       });
       gridView.ResumeLayout();
       return gridView;
     }
 
-    private ListView createDecomposerList() {
-      ListView decomposerList = new ListView {
+    private ListView createCompsiteSerializersList() {
+      ListView compositeSerializersList = new ListView {
         Activation = ItemActivation.OneClick,
         AllowDrop = true,
         CheckBoxes = true,
@@ -200,40 +200,40 @@ namespace HeuristicLab.Persistence.GUI {
         FullRowSelect = true,
         GridLines = true,
         HeaderStyle = ColumnHeaderStyle.Nonclickable,
-        Name = "DecomposerList",
+        Name = "CompositeSerializersList",
         ShowGroups = false,
         View = View.Details
       };
-      decomposerList.SuspendLayout();
-      decomposerList.Resize += decomposerList_Resize;
-      decomposerList.ItemChecked += decomposerList_ItemChecked;
-      decomposerList.DragDrop += decomposerList_DragDrop;
-      decomposerList.DragEnter += decomposerList_DragEnter;
-      decomposerList.ItemDrag += decomposerList_ItemDrag;
-      decomposerList.Columns.Add(
+      compositeSerializersList.SuspendLayout();
+      compositeSerializersList.Resize += compositeSerializersList_Resize;
+      compositeSerializersList.ItemChecked += compositeSerializersList_ItemChecked;
+      compositeSerializersList.DragDrop += compositeSerializersList_DragDrop;
+      compositeSerializersList.DragEnter += compositeSerializersList_DragEnter;
+      compositeSerializersList.ItemDrag += compositeSerializersList_ItemDrag;
+      compositeSerializersList.Columns.Add(
         new ColumnHeader {
-          Name = "DecomposerColumn", Text = "Decomposers",
+          Name = "CompositeSerializersColumn", Text = "Composite Serializer",
         });
-      foreach (IDecomposer decomposer in ConfigurationService.Instance.Decomposers) {
-        var item = decomposerList.Items.Add(decomposer.GetType().Name);
+      foreach (ICompositeSerializer compositeSerializer in ConfigurationService.Instance.CompositeSerializers) {
+        var item = compositeSerializersList.Items.Add(compositeSerializer.GetType().Name);
         item.Checked = true;
-        item.Tag = decomposer;
+        item.Tag = compositeSerializer;
       }
-      decomposerList.ResumeLayout();
-      return decomposerList;
+      compositeSerializersList.ResumeLayout();
+      return compositeSerializersList;
     }
 
-    private void fillDataGrid(DataGridView gridView, IEnumerable<IFormatter> formatters) {
+    private void fillDataGrid(DataGridView gridView, IEnumerable<IPrimitiveSerializer> primitiveSerializers) {
       gridView.SuspendLayout();
-      Dictionary<string, List<string>> formatterMap = createFormatterMap(formatters);
-      foreach (var formatterMapping in formatterMap) {
+      Dictionary<string, List<string>> primitiveSerializersMap = createPrimitiveSerializersMap(primitiveSerializers);
+      foreach (var primitiveSerializersMapping in primitiveSerializersMap) {
         var row = gridView.Rows[gridView.Rows.Add()];
-        row.Cells["Type"].Value = formatterMapping.Key;
-        row.Cells["Type"].ToolTipText = formatterMapping.Key;
+        row.Cells["Type"].Value = primitiveSerializersMapping.Key;
+        row.Cells["Type"].ToolTipText = primitiveSerializersMapping.Key;
         row.Cells["Active"].Value = true;
-        var comboBoxCell = (DataGridViewComboBoxCell)row.Cells["Formatter"];
-        foreach (var formatter in formatterMapping.Value) {
-          comboBoxCell.Items.Add(formatter);
+        var comboBoxCell = (DataGridViewComboBoxCell)row.Cells["Primitive Serializer"];
+        foreach (var primitiveSerializer in primitiveSerializersMapping.Value) {
+          comboBoxCell.Items.Add(primitiveSerializer);
         }
         comboBoxCell.Value = comboBoxCell.Items[0];
         comboBoxCell.ToolTipText = comboBoxCell.Items[0].ToString();
@@ -245,51 +245,51 @@ namespace HeuristicLab.Persistence.GUI {
       gridView.ResumeLayout();
     }
 
-    private Dictionary<string, List<string>> createFormatterMap(IEnumerable<IFormatter> formatters) {
-      var formatterMap = new Dictionary<string, List<string>>();
-      foreach (var formatter in formatters) {
-        string formatterName = reverseFormatterTable[formatter];
-        string typeName = reverseTypeNameTable[formatter.SourceType];
-        if (!formatterMap.ContainsKey(typeName))
-          formatterMap.Add(typeName, new List<string>());
-        formatterMap[typeName].Add(formatterName);
+    private Dictionary<string, List<string>> createPrimitiveSerializersMap(IEnumerable<IPrimitiveSerializer> primitiveSerializers) {
+      var primitiveSerializersMap = new Dictionary<string, List<string>>();
+      foreach (var primitiveSerializer in primitiveSerializers) {
+        string primitiveSerializerName = reversePrimitiveSerializersTable[primitiveSerializer];
+        string typeName = reverseTypeNameTable[primitiveSerializer.SourceType];
+        if (!primitiveSerializersMap.ContainsKey(typeName))
+          primitiveSerializersMap.Add(typeName, new List<string>());
+        primitiveSerializersMap[typeName].Add(primitiveSerializerName);
       }
-      return formatterMap;
+      return primitiveSerializersMap;
     }
 
     private void InitializeNameTables() {
-      foreach (var serialDataType in ConfigurationService.Instance.Formatters.Keys) {
-        foreach (var formatter in ConfigurationService.Instance.Formatters[serialDataType]) {
-          string formatterName = formatter.GetType().Name;
-          if (simpleFormatterTable.ContainsKey(formatterName)) {
-            IFormatter otherFormatter = formatterTable[formatterName];
-            formatterTable.Remove(formatterName);
-            reverseFormatterTable.Remove(otherFormatter);
-            formatterTable.Add(otherFormatter.GetType().VersionInvariantName(), otherFormatter);
-            reverseFormatterTable.Add(otherFormatter, otherFormatter.GetType().VersionInvariantName());
-            formatterName = formatter.GetType().VersionInvariantName();
+      foreach (var serialDataType in ConfigurationService.Instance.PrimitiveSerializers.Keys) {
+        foreach (var primtiveSerializer in ConfigurationService.Instance.PrimitiveSerializers[serialDataType]) {
+          string primitiveSerializerName = primtiveSerializer.GetType().Name;
+          if (simplePrimitiveSerializersTable.ContainsKey(primitiveSerializerName)) {
+            IPrimitiveSerializer otherPrimitiveSerializer = primitiveSerializersTable[primitiveSerializerName];
+            primitiveSerializersTable.Remove(primitiveSerializerName);
+            reversePrimitiveSerializersTable.Remove(otherPrimitiveSerializer);
+            primitiveSerializersTable.Add(otherPrimitiveSerializer.GetType().VersionInvariantName(), otherPrimitiveSerializer);
+            reversePrimitiveSerializersTable.Add(otherPrimitiveSerializer, otherPrimitiveSerializer.GetType().VersionInvariantName());
+            primitiveSerializerName = primtiveSerializer.GetType().VersionInvariantName();
           }
-          simpleFormatterTable[formatter.GetType().Name] = true;
-          formatterTable.Add(formatterName, formatter);
-          reverseFormatterTable.Add(formatter, formatterName);
+          simplePrimitiveSerializersTable[primtiveSerializer.GetType().Name] = true;
+          primitiveSerializersTable.Add(primitiveSerializerName, primtiveSerializer);
+          reversePrimitiveSerializersTable.Add(primtiveSerializer, primitiveSerializerName);
 
-          string typeName = formatter.SourceType.IsGenericType ?
-            formatter.SourceType.SimpleFullName() :
-            formatter.SourceType.Name;
+          string typeName = primtiveSerializer.SourceType.IsGenericType ?
+            primtiveSerializer.SourceType.SimpleFullName() :
+            primtiveSerializer.SourceType.Name;
           if (typeNameTable.ContainsKey(typeName)) {
             Type otherType = typeNameTable[typeName];
-            if (otherType != formatter.SourceType) {
+            if (otherType != primtiveSerializer.SourceType) {
               typeNameTable.Remove(typeName);
               reverseTypeNameTable.Remove(otherType);
               typeNameTable.Add(otherType.VersionInvariantName(), otherType);
               reverseTypeNameTable.Add(otherType, otherType.VersionInvariantName());
-              typeName = formatter.SourceType.VersionInvariantName();
-              typeNameTable.Add(typeName, formatter.SourceType);
-              reverseTypeNameTable.Add(formatter.SourceType, typeName);
+              typeName = primtiveSerializer.SourceType.VersionInvariantName();
+              typeNameTable.Add(typeName, primtiveSerializer.SourceType);
+              reverseTypeNameTable.Add(primtiveSerializer.SourceType, typeName);
             }
           } else {
-            typeNameTable.Add(typeName, formatter.SourceType);
-            reverseTypeNameTable.Add(formatter.SourceType, typeName);
+            typeNameTable.Add(typeName, primtiveSerializer.SourceType);
+            reverseTypeNameTable.Add(primtiveSerializer.SourceType, typeName);
           }
         }
       }
@@ -304,11 +304,11 @@ namespace HeuristicLab.Persistence.GUI {
       if (activeFormat != null && checkBox != null) {
         checkBox.Items.Clear();
         Configuration activeConfig = GetActiveConfiguration();
-        foreach (var formatter in activeConfig.Formatters) {
-          checkBox.Items.Add(formatter.GetType().Name + " (F)");
+        foreach (var primitveSerializer in activeConfig.PrimitiveSerializers) {
+          checkBox.Items.Add(primitveSerializer.GetType().Name + " (F)");
         }
-        foreach (var decomposer in activeConfig.Decomposers)
-          checkBox.Items.Add(decomposer.GetType().Name + " (D)");
+        foreach (var compositeSerializer in activeConfig.CompositeSerializers)
+          checkBox.Items.Add(compositeSerializer.GetType().Name + " (D)");
       }
       checkBox.ResumeLayout();
     }
@@ -318,50 +318,50 @@ namespace HeuristicLab.Persistence.GUI {
       UpdatePreview();
     }
 
-    private void decomposerList_ItemDrag(object sender, ItemDragEventArgs e) {
-      ListView decomposerList = (ListView)sender;
-      decomposerList.DoDragDrop(decomposerList.SelectedItems, DragDropEffects.Move);
+    private void compositeSerializersList_ItemDrag(object sender, ItemDragEventArgs e) {
+      ListView compositeSerializersList = (ListView)sender;
+      compositeSerializersList.DoDragDrop(compositeSerializersList.SelectedItems, DragDropEffects.Move);
     }
 
-    private void decomposerList_DragEnter(object sender, DragEventArgs e) {
+    private void compositeSerializersList_DragEnter(object sender, DragEventArgs e) {
       if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection).FullName)) {
         e.Effect = DragDropEffects.Move;
       }
     }
 
-    private void decomposerList_DragDrop(object sender, DragEventArgs e) {
-      ListView decomposerList = (ListView)sender;
-      if (decomposerList.SelectedItems.Count == 0) {
+    private void compositeSerializersList_DragDrop(object sender, DragEventArgs e) {
+      ListView compositeSerializersList = (ListView)sender;
+      if (compositeSerializersList.SelectedItems.Count == 0) {
         return;
       }
-      Point cp = decomposerList.PointToClient(new Point(e.X, e.Y));
-      ListViewItem targetItem = decomposerList.GetItemAt(cp.X, cp.Y);
+      Point cp = compositeSerializersList.PointToClient(new Point(e.X, e.Y));
+      ListViewItem targetItem = compositeSerializersList.GetItemAt(cp.X, cp.Y);
       if (targetItem == null)
         return;
       int targetIndex = targetItem.Index;
-      var selectedItems = new List<ListViewItem>(decomposerList.SelectedItems.Cast<ListViewItem>());
+      var selectedItems = new List<ListViewItem>(compositeSerializersList.SelectedItems.Cast<ListViewItem>());
       int i = 0;
       foreach (ListViewItem dragItem in selectedItems) {
         if (targetIndex == dragItem.Index)
           return;
         if (dragItem.Index < targetIndex) {
-          decomposerList.Items.Insert(targetIndex + 1, (ListViewItem)dragItem.Clone());
+          compositeSerializersList.Items.Insert(targetIndex + 1, (ListViewItem)dragItem.Clone());
         } else {
-          decomposerList.Items.Insert(targetIndex + i, (ListViewItem)dragItem.Clone());
+          compositeSerializersList.Items.Insert(targetIndex + i, (ListViewItem)dragItem.Clone());
         }
-        decomposerList.Items.Remove(dragItem);
+        compositeSerializersList.Items.Remove(dragItem);
         i++;
       }
       UpdatePreview();
     }
 
-    private void decomposerList_Resize(object sender, EventArgs e) {
-      ListView decomposerList = (ListView)sender;
-      decomposerList.Columns["DecomposerColumn"].Width = decomposerList.Width - 4;
+    private void compositeSerializersList_Resize(object sender, EventArgs e) {
+      ListView compositeSerializersList = (ListView)sender;
+      compositeSerializersList.Columns["CompositeSerializersColumn"].Width = compositeSerializersList.Width - 4;
     }
 
 
-    private void decomposerList_ItemChecked(object sender, ItemCheckedEventArgs e) {
+    private void compositeSerializersList_ItemChecked(object sender, ItemCheckedEventArgs e) {
       UpdatePreview();
     }
 
@@ -383,37 +383,37 @@ namespace HeuristicLab.Persistence.GUI {
       }
     }
 
-    private Configuration GenerateConfiguration(IFormat format, DataGridView formatterGrid, ListView decomposerList) {
-      if (formatterGrid == null || decomposerList == null)
+    private Configuration GenerateConfiguration(IFormat format, DataGridView primitiveSerializersGrid, ListView compositeSerializersList) {
+      if (primitiveSerializersGrid == null || compositeSerializersList == null)
         return null;
-      var formatters = new List<IFormatter>();
-      foreach (DataGridViewRow row in formatterGrid.Rows) {
+      var primitiveSerializers = new List<IPrimitiveSerializer>();
+      foreach (DataGridViewRow row in primitiveSerializersGrid.Rows) {
         if (row.Cells["Type"].Value != null &&
              row.Cells["Active"].Value != null &&
-             row.Cells["Formatter"].Value != null &&
+             row.Cells["Primitive Serializer"].Value != null &&
              (bool)row.Cells["Active"].Value == true) {
-          formatters.Add(formatterTable[(string)row.Cells["Formatter"].Value]);
+          primitiveSerializers.Add(primitiveSerializersTable[(string)row.Cells["Primitive Serializer"].Value]);
         }
       }
-      var decomposers = new List<IDecomposer>();
-      foreach (ListViewItem item in decomposerList.Items) {
+      var compositeSerializers = new List<ICompositeSerializer>();
+      foreach (ListViewItem item in compositeSerializersList.Items) {
         if (item != null && item.Checked)
-          decomposers.Add((IDecomposer)item.Tag);
+          compositeSerializers.Add((ICompositeSerializer)item.Tag);
       }
-      return new Configuration(format, formatters, decomposers);
+      return new Configuration(format, primitiveSerializers, compositeSerializers);
     }
 
     private Configuration GetActiveConfiguration() {
       IFormat format = (IFormat)configurationTabs.SelectedTab.Tag;
       return GenerateConfiguration(format,
         (DataGridView)GetActiveControl("GridView"),
-        (ListView)GetActiveControl("DecomposerList"));
+        (ListView)GetActiveControl("CompositeSerializersList"));
     }
 
     private Configuration GetConfiguration(IFormat format) {
       return GenerateConfiguration(format,
        (DataGridView)GetControlsOnPage(format.Name, "GridView"),
-       (ListView)GetControlsOnPage(format.Name, "DecomposerList"));
+       (ListView)GetControlsOnPage(format.Name, "CompositeSerializersList"));
     }
 
     private void updateButton_Click(object sender, EventArgs e) {

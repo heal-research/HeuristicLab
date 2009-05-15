@@ -16,8 +16,8 @@ namespace HeuristicLab.Persistence.Core {
 
     private static ConfigurationService instance;
     private readonly Dictionary<IFormat, Configuration> customConfigurations;
-    public Dictionary<Type, List<IFormatter>> Formatters { get; private set; }
-    public List<IDecomposer> Decomposers { get; private set; }
+    public Dictionary<Type, List<IPrimitiveSerializer>> PrimitiveSerializers { get; private set; }
+    public List<ICompositeSerializer> CompositeSerializers { get; private set; }
     public List<IFormat> Formats { get; private set; }
 
     public static ConfigurationService Instance {
@@ -29,8 +29,8 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private ConfigurationService() {
-      Formatters = new Dictionary<Type, List<IFormatter>>();
-      Decomposers = new List<IDecomposer>();
+      PrimitiveSerializers = new Dictionary<Type, List<IPrimitiveSerializer>>();
+      CompositeSerializers = new List<ICompositeSerializer>();
       customConfigurations = new Dictionary<IFormat, Configuration>();
       Formats = new List<IFormat>();
       Reset();
@@ -93,53 +93,54 @@ namespace HeuristicLab.Persistence.Core {
 
     public void Reset() {
       customConfigurations.Clear();
-      Formatters.Clear();
-      Decomposers.Clear();
+      PrimitiveSerializers.Clear();
+      CompositeSerializers.Clear();
       Assembly defaultAssembly = Assembly.GetExecutingAssembly();
       DiscoverFrom(defaultAssembly);
       foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
         if (a != defaultAssembly)
           DiscoverFrom(a);
-      SortDecomposers();
+      SortCompositeSerializers();
     }
 
-    class PriortiySorter : IComparer<IDecomposer> {
-      public int Compare(IDecomposer x, IDecomposer y) {
+    class PriortiySorter : IComparer<ICompositeSerializer> {
+      public int Compare(ICompositeSerializer x, ICompositeSerializer y) {
         return y.Priority - x.Priority;
       }
     }
 
-    protected void SortDecomposers() {
-      Decomposers.Sort(new PriortiySorter());
+    protected void SortCompositeSerializers() {
+      CompositeSerializers.Sort(new PriortiySorter());
     }
 
     protected void DiscoverFrom(Assembly a) {
       foreach (Type t in a.GetTypes()) {
-        if (t.GetInterface(typeof(IFormatter).FullName) != null) {
+        if (t.GetInterface(typeof(IPrimitiveSerializer).FullName) != null) {
           try {
-            IFormatter formatter = (IFormatter)Activator.CreateInstance(t, true);
-            if (!Formatters.ContainsKey(formatter.SerialDataType)) {
-              Formatters.Add(formatter.SerialDataType, new List<IFormatter>());
+            IPrimitiveSerializer primitiveSerializer =
+              (IPrimitiveSerializer)Activator.CreateInstance(t, true);
+            if (!PrimitiveSerializers.ContainsKey(primitiveSerializer.SerialDataType)) {
+              PrimitiveSerializers.Add(primitiveSerializer.SerialDataType, new List<IPrimitiveSerializer>());
             }
-            Formatters[formatter.SerialDataType].Add(formatter);
-            Logger.Debug(String.Format("discovered formatter {0} ({1} -> {2})",
+            PrimitiveSerializers[primitiveSerializer.SerialDataType].Add(primitiveSerializer);
+            Logger.Debug(String.Format("discovered primitive serializer {0} ({1} -> {2})",
               t.VersionInvariantName(),
-              formatter.SourceType.VersionInvariantName(),
-              formatter.SerialDataType.VersionInvariantName()));
+              primitiveSerializer.SourceType.AssemblyQualifiedName,
+              primitiveSerializer.SerialDataType.AssemblyQualifiedName));
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           } catch (ArgumentException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           }
         }
-        if (t.GetInterface(typeof(IDecomposer).FullName) != null) {
+        if (t.GetInterface(typeof(ICompositeSerializer).FullName) != null) {
           try {
-            Decomposers.Add((IDecomposer)Activator.CreateInstance(t, true));
-            Logger.Debug("discovered decomposer " + t.VersionInvariantName());
+            CompositeSerializers.Add((ICompositeSerializer)Activator.CreateInstance(t, true));
+            Logger.Debug("discovered composite serializer " + t.AssemblyQualifiedName);
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           } catch (ArgumentException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           }
         }
         if (t.GetInterface(typeof(IFormat).FullName) != null) {
@@ -149,30 +150,33 @@ namespace HeuristicLab.Persistence.Core {
             Logger.Debug(String.Format("discovered format {0} ({2}) with serial data {1}.",
               format.Name,
               format.SerialDataType,
-              t.VersionInvariantName()));
+              t.AssemblyQualifiedName));
           } catch (MissingMethodException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           } catch (ArgumentException e) {
-            Logger.Warn("Could not instantiate " + t.VersionInvariantName(), e);
+            Logger.Warn("Could not instantiate " + t.AssemblyQualifiedName, e);
           }
         }
       }
     }
 
     public Configuration GetDefaultConfig(IFormat format) {
-      Dictionary<Type, IFormatter> formatterConfig = new Dictionary<Type, IFormatter>();
-      if (Formatters.ContainsKey(format.SerialDataType)) {
-        foreach (IFormatter f in Formatters[format.SerialDataType]) {
-          if (!formatterConfig.ContainsKey(f.SourceType))
-            formatterConfig.Add(f.SourceType, f);
+      Dictionary<Type, IPrimitiveSerializer> primitiveConfig = new Dictionary<Type, IPrimitiveSerializer>();
+      if (PrimitiveSerializers.ContainsKey(format.SerialDataType)) {
+        foreach (IPrimitiveSerializer f in PrimitiveSerializers[format.SerialDataType]) {
+          if (!primitiveConfig.ContainsKey(f.SourceType))
+            primitiveConfig.Add(f.SourceType, f);
         }
       } else {
         Logger.Warn(String.Format(
-          "No formatters found for format {0} with serial data type {1}",
-          format.GetType().VersionInvariantName(),
-          format.SerialDataType.VersionInvariantName()));
+          "No primitive serializers found for format {0} with serial data type {1}",
+          format.GetType().AssemblyQualifiedName,
+          format.SerialDataType.AssemblyQualifiedName));
       }
-      return new Configuration(format, formatterConfig.Values, Decomposers.Where((d) => d.Priority > 0));
+      return new Configuration(
+        format,
+        primitiveConfig.Values,
+        CompositeSerializers.Where((d) => d.Priority > 0));
     }
 
     public Configuration GetConfiguration(IFormat format) {

@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Globalization;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
 

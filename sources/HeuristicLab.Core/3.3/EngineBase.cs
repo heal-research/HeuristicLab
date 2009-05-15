@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Threading;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>

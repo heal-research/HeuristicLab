@@ -3,12 +3,12 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
 using System.Globalization;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   [EmptyStorableClass]
-  public class Char2XmlFormatter : FormatterBase<char, XmlString> {  
+  public class Char2XmlSerializer : PrimitiveSerializerBase<char, XmlString> {  
     
     public override XmlString Format(char c) {
       return new XmlString(new string(c, 1));

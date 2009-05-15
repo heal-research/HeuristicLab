@@ -9,10 +9,10 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.DebugString;
 using System.IO;
 using System.Reflection;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
-using HeuristicLab.Persistence.Default.Decomposers;
+using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.Persistence.Auxiliary;
 using System.Text.RegularExpressions;
 
@@ -431,10 +431,10 @@ namespace HeuristicLab.Persistence.UnitTest {
       NumberTest sdt = new NumberTest();
       XmlGenerator.Serialize(sdt, tempFile,
         new Configuration(new XmlFormat(),
-          new List<IFormatter> { new String2XmlFormatter() },
-          new List<IDecomposer> { 
-            new StorableDecomposer(),
-            new Number2StringDecomposer() }));
+          new List<IPrimitiveSerializer> { new String2XmlSerializer() },
+          new List<ICompositeSerializer> { 
+            new StorableSerializer(),
+            new Number2StringSerializer() }));
       object o = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),

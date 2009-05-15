@@ -8,52 +8,6 @@ using System.Reflection;
 
 namespace HeuristicLab.Persistence.Core {
 
-  public class TypeLoader {
-
-    public static Type Load(string typeNameString) {
-      Type type;
-      try {
-        type = Type.GetType(typeNameString, true);
-      } catch (Exception) {
-        Logger.Warn(String.Format(
-          "Cannot load type \"{0}\", falling back to partial name", typeNameString));
-        try {
-          TypeName typeName = TypeNameParser.Parse(typeNameString);
-          Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);
-          type = a.GetType(typeName.ToString(false, false), true);
-        } catch (Exception) {
-          throw new PersistenceException(String.Format(
-            "Could not load type \"{0}\"",
-            typeNameString));
-        }
-        try {
-          TypeName requestedTypeName = TypeNameParser.Parse(typeNameString);
-          TypeName loadedTypeName = TypeNameParser.Parse(type.AssemblyQualifiedName);
-          if (!requestedTypeName.IsCompatible(loadedTypeName))
-            throw new PersistenceException(String.Format(
-              "Serialized type is incompatible with available type: serialized: {0}, loaded: {1}",
-              typeNameString,
-              type.AssemblyQualifiedName));
-          if (requestedTypeName.IsNewerThan(loadedTypeName))
-            throw new PersistenceException(String.Format(
-              "Serialized type is newer than available type: serialized: {0}, loaded: {1}",
-              typeNameString,
-              type.AssemblyQualifiedName));
-        } catch (PersistenceException) {
-          throw;
-        } catch (Exception e) {
-          Logger.Warn(String.Format(
-            "Could not perform version check requested type was {0} while loaded type is {1}:",
-            typeNameString,
-            type.AssemblyQualifiedName),
-            e);
-        }
-      }
-      return type;
-    }
-
-  }
-
   public class Deserializer {
 
     class Midwife {
@@ -65,15 +19,15 @@ namespace HeuristicLab.Persistence.Core {
       private List<Tag> metaInfo;
       private List<Tag> customValues;
       private Type type;
-      private IDecomposer decomposer;
+      private ICompositeSerializer compositeSerializer;
 
       public Midwife(object value) {
         this.Obj = value;
       }
 
-      public Midwife(Type type, IDecomposer decomposer, int? id) {
+      public Midwife(Type type, ICompositeSerializer compositeSerializer, int? id) {
         this.type = type;
-        this.decomposer = decomposer;
+        this.compositeSerializer = compositeSerializer;
         this.Id = id;
         MetaMode = false;
         metaInfo = new List<Tag>();
@@ -83,7 +37,7 @@ namespace HeuristicLab.Persistence.Core {
       public void CreateInstance() {
         if (Obj != null)
           throw new PersistenceException("object already instantiated");
-        Obj = decomposer.CreateInstance(type, metaInfo);
+        Obj = compositeSerializer.CreateInstance(type, metaInfo);
       }
 
       public void AddValue(string name, object value) {
@@ -95,7 +49,7 @@ namespace HeuristicLab.Persistence.Core {
       }
 
       public void Populate() {
-        decomposer.Populate(Obj, customValues, type);
+        compositeSerializer.Populate(Obj, customValues, type);
       }
     }
 
@@ -158,14 +112,14 @@ namespace HeuristicLab.Persistence.Core {
 
     private void CompositeStartHandler(BeginToken token) {
       Type type = typeIds[(int)token.TypeId];
-      IDecomposer decomposer = null;
+      ICompositeSerializer compositeSerializer = null;
       if (serializerMapping.ContainsKey(type))
-        decomposer = serializerMapping[type] as IDecomposer;
-      if (decomposer == null)
+        compositeSerializer = serializerMapping[type] as ICompositeSerializer;
+      if (compositeSerializer == null)
         throw new PersistenceException(String.Format(
           "No suitable method for deserialization of type \"{0}\" found.",
           type.VersionInvariantName()));
-      parentStack.Push(new Midwife(type, decomposer, token.Id));
+      parentStack.Push(new Midwife(type, compositeSerializer, token.Id));
     }
 
     private void CompositeEndHandler(EndToken token) {
@@ -179,7 +133,7 @@ namespace HeuristicLab.Persistence.Core {
 
     private void PrimitiveHandler(PrimitiveToken token) {
       Type type = typeIds[(int)token.TypeId];
-      object value = ((IFormatter)serializerMapping[type]).Parse(token.SerialData);
+      object value = ((IPrimitiveSerializer)serializerMapping[type]).Parse(token.SerialData);
       if (token.Id != null)
         id2obj[(int)token.Id] = value;
       SetValue(token.Name, value);

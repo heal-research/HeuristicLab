@@ -5,7 +5,7 @@ using System.Linq;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core.Tokens;
-using HeuristicLab.Persistence.Default.Decomposers.Storable;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Text;
 using System.Reflection;
 using System.IO;
@@ -16,7 +16,7 @@ namespace HeuristicLab.Persistence.Core {
 
     class ReferenceEqualityComparer : IEqualityComparer<object> {
 
-      public bool Equals(object a, object b) {
+      public new bool Equals(object a, object b) {
         return Object.ReferenceEquals(a, b);
       }
 
@@ -55,12 +55,12 @@ namespace HeuristicLab.Persistence.Core {
       Dictionary<Assembly, bool> assemblies = new Dictionary<Assembly, bool>();
       foreach (var pair in typeCache) {
         string serializer = null;
-        IFormatter f = configuration.GetFormatter(pair.Key);
+        IPrimitiveSerializer f = configuration.GetPrimitiveSerializer(pair.Key);
         if (f != null) {
           serializer = f.GetType().AssemblyQualifiedName;
           assemblies[f.GetType().Assembly] = true;
         } else {
-          IDecomposer d = configuration.GetDecomposer(pair.Key);
+          ICompositeSerializer d = configuration.GetCompositeSerializer(pair.Key);
           serializer = d.GetType().AssemblyQualifiedName;
           assemblies[d.GetType().Assembly] = true;
         }
@@ -108,20 +108,20 @@ namespace HeuristicLab.Persistence.Core {
         id = obj2id.Count;
         obj2id.Add(value, (int)id);
       }
-      IFormatter formatter = configuration.GetFormatter(type);
-      if (formatter != null)
-        return PrimitiveEnumerator(accessor.Name, typeId, formatter.Format(value), id);
-      IDecomposer decomposer = configuration.GetDecomposer(type);
-      if (decomposer != null)
-        return CompositeEnumerator(accessor.Name, decomposer.Decompose(value), id, typeId, decomposer.CreateMetaInfo(value));
+      IPrimitiveSerializer primitiveSerializer = configuration.GetPrimitiveSerializer(type);
+      if (primitiveSerializer != null)
+        return PrimitiveEnumerator(accessor.Name, typeId, primitiveSerializer.Format(value), id);
+      ICompositeSerializer compositeSerializer = configuration.GetCompositeSerializer(type);
+      if (compositeSerializer != null)
+        return CompositeEnumerator(accessor.Name, compositeSerializer.Decompose(value), id, typeId, compositeSerializer.CreateMetaInfo(value));
       throw new PersistenceException(
           String.Format(
           "No suitable method for serializing values of type \"{0}\" found\r\n" +
-          "Formatters:\r\n{1}\r\n" +
-          "Decomposers:\r\n{2}",
+          "primitive serializers:\r\n{1}\r\n" +
+          "composite serializers:\r\n{2}",
           value.GetType().VersionInvariantName(),
-          string.Join("\r\n", configuration.Formatters.Select(f => f.GetType().VersionInvariantName()).ToArray()),
-          string.Join("\r\n", configuration.Decomposers.Select(d => d.GetType().VersionInvariantName()).ToArray())
+          string.Join("\r\n", configuration.PrimitiveSerializers.Select(f => f.GetType().VersionInvariantName()).ToArray()),
+          string.Join("\r\n", configuration.CompositeSerializers.Select(d => d.GetType().VersionInvariantName()).ToArray())
           ));
 
     }
