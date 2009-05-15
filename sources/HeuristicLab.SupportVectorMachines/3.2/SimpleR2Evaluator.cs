@@ -21,7 +21,7 @@ namespace HeuristicLab.SupportVectorMachines {
       double targetMean = 0;
       double sse = 0;
       double cnt = 0;
-      foreach (ItemList row in values) {
+      foreach (ItemList row in values) {                                
         double estimated = ((DoubleData)row[0]).Data;
         double target = ((DoubleData)row[1]).Data;
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&

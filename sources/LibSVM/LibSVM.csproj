@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7E18E25A-BCEB-467A-BACC-ABCA73F9D655}</ProjectGuid>
+    <ProjectGuid>{A16F23B5-FB62-499E-A831-26953AA56FE2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.SupportVectorMachines</RootNamespace>
-    <AssemblyName>HeuristicLab.SupportVectorMachines-3.2</AssemblyName>
+    <RootNamespace>SVM</RootNamespace>
+    <AssemblyName>LibSVM</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -23,7 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -64,42 +63,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabSupportVectorMachinesPlugin.cs" />
+    <Compile Include="Cache.cs" />
+    <Compile Include="GaussianTransform.cs" />
+    <Compile Include="IRangeTransform.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="ParameterSelection.cs" />
+    <Compile Include="PerformanceEvaluator.cs" />
+    <Compile Include="PrecomputedKernel.cs" />
+    <Compile Include="Prediction.cs" />
+    <Compile Include="Problem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleMSEEvaluator.cs" />
-    <Compile Include="SimpleR2Evaluator.cs" />
-    <Compile Include="SupportVectorCreator.cs" />
-    <Compile Include="SupportVectorEvaluator.cs" />
-    <Compile Include="SVMHelper.cs" />
+    <Compile Include="RangeTransform.cs" />
+    <Compile Include="Scaling.cs" />
+    <Compile Include="Solver.cs" />
+    <Compile Include="SupportClass.cs" />
+    <Compile Include="Training.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="license.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
-      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.DataAnalysis\3.2\HeuristicLab.DataAnalysis-3.2.csproj">
-      <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
-      <Name>HeuristicLab.DataAnalysis-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
-      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
-      <Name>HeuristicLab.PluginInfrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LibSVM\LibSVM.csproj">
-      <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
-      <Name>LibSVM</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SVM\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -109,12 +95,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd</PreBuildEvent>
-  </PropertyGroup>
 </Project>

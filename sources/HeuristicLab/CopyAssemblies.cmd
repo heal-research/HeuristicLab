@@ -93,6 +93,7 @@ copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite.NET.chm" .\plugins
 copy "%SolutionDir%\HeuristicLab.StatisticalAnalysis\3.2\%Outdir%\HeuristicLab.StatisticalAnalysis-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SupportVectorMachines\3.2\%Outdir%\HeuristicLab.SupportVectorMachines-3.2.dll" .\plugins
+copy "%SolutionDir%\LibSVM\%Outdir%\LibSVM.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\3.2\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\3.2\%Outdir%\HeuristicLab.ThreadParallelEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\HeuristicLab.Tracing-3.2.dll" .\plugins

@@ -28,6 +28,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.SupportVectorMachines {
   [ClassInfo(Name = "HeuristicLab.SupportVectorMachines-3.2")]
   [PluginFile(Filename = "HeuristicLab.SupportVectorMachines-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [PluginFile(Filename = "LibSVM.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
