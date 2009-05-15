@@ -39,8 +39,8 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
 
-      AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(ObjectData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(ObjectData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.In));
 
       AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(ItemList), VariableKind.New | VariableKind.Out));
     }
@@ -53,8 +53,8 @@ namespace HeuristicLab.SupportVectorMachines {
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
 
-      SVM.Model model = (SVM.Model)GetVariableValue<ObjectData>("SVMModel", scope, true).Data;
-      SVM.RangeTransform rangeTransform = (SVM.RangeTransform)GetVariableValue<ObjectData>("SVMRangeTransform", scope, true).Data;
+      SVM.Model model = GetVariableValue<SVMModel>("SVMModel", scope, true).Data;
+      SVM.RangeTransform rangeTransform = GetVariableValue<SVMRangeTransform>("SVMRangeTransform", scope, true).Data;
 
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);

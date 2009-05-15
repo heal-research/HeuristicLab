@@ -47,8 +47,8 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMCost", "Cost parameter (C) of C-SVC, epsilon-SVR and nu-SVR", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMNu", "Nu parameter of nu-SVC, one-class SVM and nu-SVR", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMGamma", "Gamma parameter in kernel function", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(ObjectData), VariableKind.New | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(ObjectData), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.New | VariableKind.Out));
 
     }
 
@@ -76,12 +76,12 @@ namespace HeuristicLab.SupportVectorMachines {
       SVM.Model model = SVM.Training.Train(scaledProblem, parameter);
 
       //persist variables in scope
-      ObjectData objectData = new ObjectData();
-      objectData.Data = model;
-      scope.AddVariable(new Variable(scope.TranslateName("SVMModel"),objectData));
-      objectData = new ObjectData();
-      objectData.Data = rangeTransform;
-      scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"),objectData));
+      SVMModel modelData = new SVMModel();
+      modelData.Data = model;
+      scope.AddVariable(new Variable(scope.TranslateName("SVMModel"),modelData));
+      SVMRangeTransform rangeTransformData = new SVMRangeTransform();
+      rangeTransformData.Data = rangeTransform;
+      scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"),rangeTransformData));
 
       return null;
     }
