@@ -10,6 +10,7 @@ namespace HeuristicLab.Visualization.Options {
     private ViewSettings viewSettings;
     private ViewSettings oldViewSettings;
     private LineParams[] oldLineParams;
+    private string oldTitle;
     private Dictionary<CheckBox, bool> ShowYAxisBoxes;
     private Dictionary<CheckBox, bool> yAxisClipChangeableBoxes;
 
@@ -54,6 +55,8 @@ namespace HeuristicLab.Visualization.Options {
       get { return model; }
       set {
         model = value;
+        oldTitle = model.Title;
+        tbxTitle.Text = model.Title;
         viewSettings = model.ViewSettings;
         oldViewSettings = new ViewSettings(model.ViewSettings);
         cbLegendPosition.SelectedItem = viewSettings.LegendPosition;
@@ -72,6 +75,9 @@ namespace HeuristicLab.Visualization.Options {
       foreach (KeyValuePair<CheckBox, bool> box in yAxisClipChangeableBoxes) {
         box.Key.Checked = box.Value;
       }
+
+      model.Title = oldTitle;
+      tbxTitle.Text = oldTitle;
 
       viewSettings.LegendColor = oldViewSettings.LegendColor;
       viewSettings.LegendPosition = oldViewSettings.LegendPosition;
@@ -229,6 +235,11 @@ namespace HeuristicLab.Visualization.Options {
       if (LineSelectCB.SelectedValue != null) {
         ((IDataRow)LineSelectCB.SelectedValue).ShowMarkers = MarkercheckBox.Checked;
       }
+    }
+
+    private void tbxTitle_TextChanged(object sender, EventArgs e) {
+      model.Title = tbxTitle.Text;
+      model.ViewSettings.UpdateView();
     }
   }
 }

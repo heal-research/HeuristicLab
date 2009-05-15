@@ -41,6 +41,8 @@
       this.legendposition = new System.Windows.Forms.Label();
       this.cbLegendPosition = new System.Windows.Forms.ComboBox();
       this.tpTitle = new System.Windows.Forms.TabPage();
+      this.label5 = new System.Windows.Forms.Label();
+      this.tbxTitle = new System.Windows.Forms.TextBox();
       this.btnChangeTitleFont = new System.Windows.Forms.Button();
       this.tpXAxis = new System.Windows.Forms.TabPage();
       this.btnChangeXAxisFont = new System.Windows.Forms.Button();
@@ -244,6 +246,8 @@
       // 
       // tpTitle
       // 
+      this.tpTitle.Controls.Add(this.label5);
+      this.tpTitle.Controls.Add(this.tbxTitle);
       this.tpTitle.Controls.Add(this.btnChangeTitleFont);
       this.tpTitle.Location = new System.Drawing.Point(4, 22);
       this.tpTitle.Name = "tpTitle";
@@ -252,9 +256,26 @@
       this.tpTitle.Text = "Title";
       this.tpTitle.UseVisualStyleBackColor = true;
       // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(3, 6);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(30, 13);
+      this.label5.TabIndex = 3;
+      this.label5.Text = "Title:";
+      // 
+      // tbxTitle
+      // 
+      this.tbxTitle.Location = new System.Drawing.Point(39, 3);
+      this.tbxTitle.Name = "tbxTitle";
+      this.tbxTitle.Size = new System.Drawing.Size(151, 20);
+      this.tbxTitle.TabIndex = 2;
+      this.tbxTitle.TextChanged += new System.EventHandler(this.tbxTitle_TextChanged);
+      // 
       // btnChangeTitleFont
       // 
-      this.btnChangeTitleFont.Location = new System.Drawing.Point(3, 3);
+      this.btnChangeTitleFont.Location = new System.Drawing.Point(193, 1);
       this.btnChangeTitleFont.Name = "btnChangeTitleFont";
       this.btnChangeTitleFont.Size = new System.Drawing.Size(94, 23);
       this.btnChangeTitleFont.TabIndex = 1;
@@ -352,6 +373,7 @@
       this.tabPage2.ResumeLayout(false);
       this.tabPage2.PerformLayout();
       this.tpTitle.ResumeLayout(false);
+      this.tpTitle.PerformLayout();
       this.tpXAxis.ResumeLayout(false);
       this.tpYAxes.ResumeLayout(false);
       this.tpYAxes.PerformLayout();
@@ -392,5 +414,7 @@
     private System.Windows.Forms.GroupBox gbxShowYAxis;
     private System.Windows.Forms.FlowLayoutPanel flpShowYAxis;
     private System.Windows.Forms.FontDialog fdFont;
+    private System.Windows.Forms.TextBox tbxTitle;
+    private System.Windows.Forms.Label label5;
   }
 }

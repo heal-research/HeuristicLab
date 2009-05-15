@@ -66,6 +66,7 @@ namespace HeuristicLab.Visualization {
     private void UpdateViewSettings() {
       titleShape.Font = viewSettings.TitleFont;
       titleShape.Color = viewSettings.TitleColor;
+      titleShape.Text = model.Title;
 
       legendShape.Font = viewSettings.LegendFont;
       legendShape.Color = viewSettings.LegendColor;
