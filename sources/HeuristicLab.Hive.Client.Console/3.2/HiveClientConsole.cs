@@ -50,7 +50,7 @@ namespace HeuristicLab.Hive.Client.Console
     private const string ENDPOINTADRESS = "net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator";
     private const string EVENTLOGNAME = "Hive Client";
 
-    private EventLog HiveClientEventLog;
+    //private EventLog HiveClientEventLog;
     private ClientConsoleCommunicatorClient cccc;
     private System.Windows.Forms.Timer refreshTimer;
     private ListViewColumnSorterDate lvwColumnSorter;
@@ -73,7 +73,7 @@ namespace HeuristicLab.Hive.Client.Console
       InitTimer();
       ConnectToClient();
       RefreshGui();
-      GetEventLog();
+      //GetEventLog();
       InitCalender();
     }
 
@@ -123,26 +123,26 @@ namespace HeuristicLab.Hive.Client.Console
       }
     }
 
-    private void GetEventLog()
-    {
-      HiveClientEventLog = new EventLog(EVENTLOGNAME);
-      HiveClientEventLog.Source = EVENTLOGNAME;
-      HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
-      HiveClientEventLog.EnableRaisingEvents = true;
+    //private void GetEventLog()
+    //{
+    //  HiveClientEventLog = new EventLog(EVENTLOGNAME);
+    //  HiveClientEventLog.Source = EVENTLOGNAME;
+    //  HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
+    //  HiveClientEventLog.EnableRaisingEvents = true;
 
-      ListViewItem curEventLogEntry;
+    //  ListViewItem curEventLogEntry;
 
-      //databinding on listview?
-      if (HiveClientEventLog != null && HiveClientEventLog.Entries != null)
-      {
-        foreach (EventLogEntry ele in HiveClientEventLog.Entries)
-        {
-          curEventLogEntry = GenerateEventEntry(ele);
-          lvLog.Items.Add(curEventLogEntry);
-        }
-        lvJobDetail.Sort();
-      }
-    }
+    //  //databinding on listview?
+    //  if (HiveClientEventLog != null && HiveClientEventLog.Entries != null)
+    //  {
+    //    foreach (EventLogEntry ele in HiveClientEventLog.Entries)
+    //    {
+    //      curEventLogEntry = GenerateEventEntry(ele);
+    //      lvLog.Items.Add(curEventLogEntry);
+    //    }
+    //    lvJobDetail.Sort();
+    //  }
+    //}
 
     private ListViewItem GenerateEventEntry(EventLogEntry ele)
     {
