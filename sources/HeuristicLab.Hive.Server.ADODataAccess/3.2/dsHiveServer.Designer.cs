@@ -771,7 +771,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                                 this.columnResourceId}, true));
                 this.columnResourceId.AllowDBNull = false;
                 this.columnResourceId.Unique = true;
-                this.columnStatus.MaxLength = 18;
+                this.columnStatus.MaxLength = 255;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
