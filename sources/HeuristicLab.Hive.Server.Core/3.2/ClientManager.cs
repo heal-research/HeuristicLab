@@ -116,20 +116,21 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientGroup"></param>
     /// <returns></returns>
-    public Response AddClientGroup(ClientGroup clientGroup) {
+    public ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup) {
       ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IClientGroupAdapter clientGroupAdapter =
           session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
 
-        Response response = new Response();
+        ResponseObject<ClientGroup> response = new ResponseObject<ClientGroup>();
 
         if (clientGroup.Id != Guid.Empty) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
         } else {
           clientGroupAdapter.Update(clientGroup);
+          response.Obj = clientGroup;
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_CLIENTGROUP_ADDED;
         }

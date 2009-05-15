@@ -83,7 +83,7 @@ namespace HeuristicLab.Hive.Server.Core {
         throw new PermissionException();
     }
 
-    public Response AddClientGroup(ClientGroup clientGroup) {
+    public ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup) {
       if (HasPermission(PermissiveSecurityAction.Add_ClientGroup))
         return clientManager.AddClientGroup(clientGroup);
       else
