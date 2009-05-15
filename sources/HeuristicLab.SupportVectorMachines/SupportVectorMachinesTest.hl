@@ -46,12 +46,6 @@ A combined operator automatically inject its sub-operators into the scope it is 
                       <Variable Type="HeuristicLab.Core.Variable, HeuristicLab.Core-3.2" GUID="9e59e426-55f8-4cef-80a5-5e134b2055c0" Name="MaxNuIndex">
                         <Value Type="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" GUID="165a63ed-836f-4203-8541-59d05759dd9a">8</Value>
                       </Variable>
-                      <Variable Type="HeuristicLab.Core.Variable, HeuristicLab.Core-3.2" GUID="c685958d-18f7-4a49-9423-69a2d8f88148" Name="Nu">
-                        <Value Type="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" GUID="c5a80f41-e911-42c5-83c8-8bc5f417e50c">0.5</Value>
-                      </Variable>
-                      <Variable Type="HeuristicLab.Core.Variable, HeuristicLab.Core-3.2" GUID="f68df718-31e4-4b97-b2be-0e026e22dde9" Name="Cost">
-                        <Value Type="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" GUID="f8e8d950-91db-48e7-bfbf-8c03249ed50e">1</Value>
-                      </Variable>
                     </Variables>
                   </VariableInjector>
                   <ProblemInjector Type="HeuristicLab.GP.StructureIdentification.ProblemInjector, HeuristicLab.GP.StructureIdentification-3.3" GUID="65d032b7-0eb9-4238-93b2-cfe737da6f7c" Name="ProblemInjector">
@@ -123,32 +117,17 @@ A combined operator automatically inject its sub-operators into the scope it is 
                   </ProblemInjector>
                   <SequentialProcessor Type="HeuristicLab.Operators.SequentialProcessor, HeuristicLab.Operators-3.2" GUID="b1ba9145-b2c1-47a1-954d-3289c4b40308" Name="NuLoop">
                     <SubOperators>
-                      <ProgrammableOperator Type="HeuristicLab.Operators.Programmable.ProgrammableOperator, HeuristicLab.Operators.Programmable-3.2" GUID="fc6e3f83-ff9e-4ae1-9ae9-3b550f47d754" Name="SetNextNu">
+                      <ProgrammableOperator Type="HeuristicLab.Operators.Programmable.ProgrammableOperator, HeuristicLab.Operators.Programmable-3.2" GUID="2a8ee52c-87b0-4bff-b8f0-f54cda70a814" Name="ResetCostIndex">
                         <SubOperators />
                         <VariableInfos>
-                          <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="de79f46d-5ead-4c8a-88c9-77c5630315fc" ActualName="NuIndex" FormalName="NuIndex" Description="" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                          <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="e738cd98-7349-407d-a174-f5b947f5872a" ActualName="Nu" FormalName="Nu" Description="" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="Out" Local="False" />
-                          <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="7a41ac19-6275-47fd-a792-0c1d44568741" ActualName="NuList" FormalName="NuList" Description="" DataType="HeuristicLab.Data.DoubleArrayData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                          <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="312be4f1-5934-4093-bd13-ffa5c5c2b8f0" ActualName="CostIndex" FormalName="CostIndex" Description="" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="Out" Local="False" />
                         </VariableInfos>
                         <Variables />
                         <Description>An operator that can be programmed for arbitrary needs.</Description>
-                        <Code>double nu = NuList.Data[NuIndex.Data];
-Nu.Data = nu;</Code>
+                        <Code>CostIndex.Data = 0;</Code>
                       </ProgrammableOperator>
                       <SequentialProcessor Type="HeuristicLab.Operators.SequentialProcessor, HeuristicLab.Operators-3.2" GUID="b9c58d3c-9455-47b4-91d4-e965a9d0c121" Name="CostLoop">
                         <SubOperators>
-                          <ProgrammableOperator Type="HeuristicLab.Operators.Programmable.ProgrammableOperator, HeuristicLab.Operators.Programmable-3.2" GUID="57566cfc-5844-4338-8ffe-fe330b4cdc57" Name="SetNextCost">
-                            <SubOperators />
-                            <VariableInfos>
-                              <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="f2a97a3f-647d-4761-a41c-e5a978e72446" ActualName="Cost" FormalName="Cost" Description="" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="Out" Local="False" />
-                              <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="7a7d1bf8-1bc9-4b7d-8bfb-e4322aa178f0" ActualName="CostList" FormalName="CostList" Description="" DataType="HeuristicLab.Data.DoubleArrayData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                              <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="891f00ba-3ec2-499e-85b5-7be77e0fb288" ActualName="CostIndex" FormalName="CostIndex" Description="" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                            </VariableInfos>
-                            <Variables />
-                            <Description>An operator that can be programmed for arbitrary needs.</Description>
-                            <Code>double cost = CostList.Data[CostIndex.Data];
-Cost.Data = cost;</Code>
-                          </ProgrammableOperator>
                           <SubScopesCreater Type="HeuristicLab.Operators.SubScopesCreater, HeuristicLab.Operators-3.2" GUID="98184269-cf68-435d-852b-976fab8873dc" Name="SubScopesCreater">
                             <SubOperators />
                             <VariableInfos>
@@ -164,35 +143,59 @@ Cost.Data = cost;</Code>
                             <SubOperators>
                               <SequentialProcessor Type="HeuristicLab.Operators.SequentialProcessor, HeuristicLab.Operators-3.2" GUID="f866d259-df0c-4655-aec4-476fb08aca13" Name="SequentialProcessor">
                                 <SubOperators>
-                                  <SupportVectorCreator Type="HeuristicLab.SupportVectorMachines.SupportVectorCreator, HeuristicLab.SupportVectorMachines-3.2" GUID="4507eb6b-4f49-49d3-8a63-151ae8f9d9af" Name="SupportVectorCreator">
+                                  <ProgrammableOperator Type="HeuristicLab.Operators.Programmable.ProgrammableOperator, HeuristicLab.Operators.Programmable-3.2" GUID="fc6e3f83-ff9e-4ae1-9ae9-3b550f47d754" Name="SetNextNu">
                                     <SubOperators />
                                     <VariableInfos>
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="21487c92-3831-4cf1-881c-cb7763c97b8c" ActualName="Dataset" FormalName="Dataset" Description="Dataset with all samples on which to apply the function" DataType="HeuristicLab.DataAnalysis.Dataset, HeuristicLab.DataAnalysis-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="576f017c-6f37-467d-a397-b5e6c225b94e" ActualName="AllowedFeatures" FormalName="AllowedFeatures" Description="List of indexes of allowed features" DataType="HeuristicLab.Data.ItemList`1[[HeuristicLab.Data.IntData, HeuristicLab.Data-3.2]], HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="1d1444a1-42c0-43e1-81ca-efbcf1c5a37c" ActualName="TargetVariable" FormalName="TargetVariable" Description="Index of the column of the dataset that holds the target variable" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="5811d130-38f3-45b1-ad2d-45adf73ea61d" ActualName="TrainingSamplesStart" FormalName="SamplesStart" Description="Start index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="145cbe91-d6be-444e-b57e-1f55064300d2" ActualName="TrainingSamplesEnd" FormalName="SamplesEnd" Description="End index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="32c0be7f-43c0-404f-855d-89445e42912d" ActualName="Type" FormalName="SVMType" Description="String describing which SVM type is used. Valid inputs are: C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR" DataType="HeuristicLab.Data.StringData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="8de56d3b-80a0-4f71-bdd7-5d6145d78fa2" ActualName="KernelType" FormalName="SVMKernelType" Description="String describing which SVM kernel is used. Valid inputs are: LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED" DataType="HeuristicLab.Data.StringData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="1c93224b-abbf-493e-9772-e1df2a91385f" ActualName="Cost" FormalName="SVMCost" Description="Cost parameter (C) of C-SVC, epsilon-SVR and nu-SVR" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="e8bb0a28-7844-4d1d-add6-d650f594f6ac" ActualName="Nu" FormalName="SVMNu" Description="Nu parameter of nu-SVC, one-class SVM and nu-SVR" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="07aa101a-191a-49f0-ad8d-deceedbdca8f" ActualName="Gamma" FormalName="SVMGamma" Description="Gamma parameter in kernel function" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="5ce34cce-cef9-4bdd-b883-257180e917f3" ActualName="Model" FormalName="SVMModel" Description="Represent the model learned by the SVM" DataType="HeuristicLab.Data.ObjectData, HeuristicLab.Data-3.2" Kind="New" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="fa3c8f5e-4a7e-4f09-ba62-c55951b045b4" ActualName="RangeTransform" FormalName="SVMRangeTransform" Description="The applied transformation during the learning the model" DataType="HeuristicLab.Data.ObjectData, HeuristicLab.Data-3.2" Kind="New" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="de79f46d-5ead-4c8a-88c9-77c5630315fc" ActualName="NuIndex" FormalName="NuIndex" Description="" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="da3ec3bf-77f3-4642-80e3-a7f776929631" ActualName="Nu" FormalName="Nu" Description="" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="New" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="7a41ac19-6275-47fd-a792-0c1d44568741" ActualName="NuList" FormalName="NuList" Description="" DataType="HeuristicLab.Data.DoubleArrayData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                    </VariableInfos>
+                                    <Variables />
+                                    <Description>An operator that can be programmed for arbitrary needs.</Description>
+                                    <Code>double nu = NuList.Data[NuIndex.Data];
+Nu.Data = nu;</Code>
+                                  </ProgrammableOperator>
+                                  <ProgrammableOperator Type="HeuristicLab.Operators.Programmable.ProgrammableOperator, HeuristicLab.Operators.Programmable-3.2" GUID="57566cfc-5844-4338-8ffe-fe330b4cdc57" Name="SetNextCost">
+                                    <SubOperators />
+                                    <VariableInfos>
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="f2e160eb-ac7b-4d96-9db3-efbc64570ec5" ActualName="Cost" FormalName="Cost" Description="" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="New" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="7a7d1bf8-1bc9-4b7d-8bfb-e4322aa178f0" ActualName="CostList" FormalName="CostList" Description="" DataType="HeuristicLab.Data.DoubleArrayData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="891f00ba-3ec2-499e-85b5-7be77e0fb288" ActualName="CostIndex" FormalName="CostIndex" Description="" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                    </VariableInfos>
+                                    <Variables />
+                                    <Description>An operator that can be programmed for arbitrary needs.</Description>
+                                    <Code>double cost = CostList.Data[CostIndex.Data];
+Cost.Data = cost;</Code>
+                                  </ProgrammableOperator>
+                                  <SupportVectorCreator Type="HeuristicLab.SupportVectorMachines.SupportVectorCreator, HeuristicLab.SupportVectorMachines-3.2" GUID="4c0263f0-5501-4004-8896-ed96623c90d1" Name="SupportVectorCreator">
+                                    <SubOperators />
+                                    <VariableInfos>
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="cbc21ba0-1e59-4991-bd11-196507c00b8e" ActualName="Dataset" FormalName="Dataset" Description="Dataset with all samples on which to apply the function" DataType="HeuristicLab.DataAnalysis.Dataset, HeuristicLab.DataAnalysis-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="cae116b2-fb3d-424b-b587-ab127f84a3f9" ActualName="AllowedFeatures" FormalName="AllowedFeatures" Description="List of indexes of allowed features" DataType="HeuristicLab.Data.ItemList`1[[HeuristicLab.Data.IntData, HeuristicLab.Data-3.2]], HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="b4457e08-6954-4000-b782-04d5f6503a25" ActualName="TargetVariable" FormalName="TargetVariable" Description="Index of the column of the dataset that holds the target variable" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="efc075a0-fd5e-4195-9b80-fe93b39255d7" ActualName="TrainingSamplesStart" FormalName="SamplesStart" Description="Start index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="4dda2850-e219-4f5c-acb5-58bd6fb08418" ActualName="TrainingSamplesEnd" FormalName="SamplesEnd" Description="End index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="1eb60ebc-db36-4bc8-862d-3cc9e724e359" ActualName="Type" FormalName="SVMType" Description="String describing which SVM type is used. Valid inputs are: C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR" DataType="HeuristicLab.Data.StringData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="c67af89d-ee14-4c67-9758-d136563e4c9a" ActualName="KernelType" FormalName="SVMKernelType" Description="String describing which SVM kernel is used. Valid inputs are: LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED" DataType="HeuristicLab.Data.StringData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="1eeae7fe-3a93-4aec-bcd2-8572282751a4" ActualName="Cost" FormalName="SVMCost" Description="Cost parameter (C) of C-SVC, epsilon-SVR and nu-SVR" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="b7ae66a1-cc60-4c70-a8d2-d00651788da6" ActualName="Nu" FormalName="SVMNu" Description="Nu parameter of nu-SVC, one-class SVM and nu-SVR" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="059593e0-0761-4bb8-b8d5-2eb464821a57" ActualName="Gamma" FormalName="SVMGamma" Description="Gamma parameter in kernel function" DataType="HeuristicLab.Data.DoubleData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="0805fd25-8b23-4460-9965-f69263868686" ActualName="Model" FormalName="SVMModel" Description="Represent the model learned by the SVM" DataType="HeuristicLab.Data.SVMModel, HeuristicLab.SupportVectorMachines-3.2" Kind="New, Out" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="bc43a499-4abe-4642-846c-4df681a7ca73" ActualName="RangeTransform" FormalName="SVMRangeTransform" Description="The applied transformation during the learning the model" DataType="HeuristicLab.Data.SVMRangeTransform, HeuristicLab.SupportVectorMachines-3.2" Kind="New, Out" Local="False" />
                                     </VariableInfos>
                                     <Variables />
                                   </SupportVectorCreator>
-                                  <SupportVectorEvaluator Type="HeuristicLab.SupportVectorMachines.SupportVectorEvaluator, HeuristicLab.SupportVectorMachines-3.2" GUID="098a520a-4d0e-4303-b3d4-cb301b136fb9" Name="SupportVectorEvaluator">
+                                  <SupportVectorEvaluator Type="HeuristicLab.SupportVectorMachines.SupportVectorEvaluator, HeuristicLab.SupportVectorMachines-3.2" GUID="903176cf-4821-4ff9-bd4f-911d3cb26006" Name="SupportVectorEvaluator">
                                     <SubOperators />
                                     <VariableInfos>
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="856c3d42-ca1c-4eb8-babf-cba17f1a65df" ActualName="Dataset" FormalName="Dataset" Description="Dataset with all samples on which to apply the function" DataType="HeuristicLab.DataAnalysis.Dataset, HeuristicLab.DataAnalysis-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="af856a06-0134-404f-84f8-89f605edbbd6" ActualName="AllowedFeatures" FormalName="AllowedFeatures" Description="List of indexes of allowed features" DataType="HeuristicLab.Data.ItemList`1[[HeuristicLab.Data.IntData, HeuristicLab.Data-3.2]], HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="af644589-0808-4542-aae5-6cc8c1b104b8" ActualName="TargetVariable" FormalName="TargetVariable" Description="Index of the column of the dataset that holds the target variable" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="d65d964a-8755-4080-a3c7-4fddaceb8118" ActualName="ValidationSamplesStart" FormalName="SamplesStart" Description="Start index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="8683e74d-db2f-453a-96b2-df795eab0798" ActualName="ValidationSamplesEnd" FormalName="SamplesEnd" Description="End index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="cd6986da-7f13-4b91-b3eb-d87832b2d714" ActualName="SVMModel" FormalName="SVMModel" Description="Represent the model learned by the SVM" DataType="HeuristicLab.Data.ObjectData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="013fceff-fee8-4f09-8a5f-2e02d54642ba" ActualName="SVMRangeTransform" FormalName="SVMRangeTransform" Description="The applied transformation during the learning the model" DataType="HeuristicLab.Data.ObjectData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
-                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="80be195b-e28a-45f8-a824-01c8d18356d2" ActualName="ValidationValues" FormalName="Values" Description="Target vs predicted values" DataType="HeuristicLab.Data.ItemList, HeuristicLab.Data-3.2" Kind="New, Out" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="21315428-13e5-4f26-b160-1c0c62764614" ActualName="Dataset" FormalName="Dataset" Description="Dataset with all samples on which to apply the function" DataType="HeuristicLab.DataAnalysis.Dataset, HeuristicLab.DataAnalysis-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="1fca804f-e675-4af3-a6ba-0c963a04d83f" ActualName="AllowedFeatures" FormalName="AllowedFeatures" Description="List of indexes of allowed features" DataType="HeuristicLab.Data.ItemList`1[[HeuristicLab.Data.IntData, HeuristicLab.Data-3.2]], HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="c2a56c26-c710-4fde-a762-de1cbca233a7" ActualName="TargetVariable" FormalName="TargetVariable" Description="Index of the column of the dataset that holds the target variable" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="08609a4e-5b3b-44de-91d5-bc227e6e4368" ActualName="ValidationSamplesStart" FormalName="SamplesStart" Description="Start index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="51d978a7-9b0b-40db-b2bb-9bf77b863975" ActualName="ValidationSamplesEnd" FormalName="SamplesEnd" Description="End index of samples in dataset to evaluate" DataType="HeuristicLab.Data.IntData, HeuristicLab.Data-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="a208752c-7cfe-48d3-8c0e-c12271d01802" ActualName="Model" FormalName="SVMModel" Description="Represent the model learned by the SVM" DataType="HeuristicLab.Data.SVMModel, HeuristicLab.SupportVectorMachines-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="00b3c7a9-1dc4-4a27-bdd4-2559871f0fc6" ActualName="RangeTransform" FormalName="SVMRangeTransform" Description="The applied transformation during the learning the model" DataType="HeuristicLab.Data.SVMRangeTransform, HeuristicLab.SupportVectorMachines-3.2" Kind="In" Local="False" />
+                                      <VariableInfo Type="HeuristicLab.Core.VariableInfo, HeuristicLab.Core-3.2" GUID="27d4ad84-bc3d-4203-b81a-5995614fea8e" ActualName="ValidationValues" FormalName="Values" Description="Target vs predicted values" DataType="HeuristicLab.Data.ItemList, HeuristicLab.Data-3.2" Kind="New, Out" Local="False" />
                                     </VariableInfos>
                                     <Variables />
                                   </SupportVectorEvaluator>
@@ -296,8 +299,8 @@ Cost.Data = cost;</Code>
               </SequentialProcessor>
               <ProblemInjector GUID="65d032b7-0eb9-4238-93b2-cfe737da6f7c" />
               <VariableInjector GUID="ca1618e4-faeb-4676-8fb9-d245483e4c19" />
-              <SupportVectorEvaluator GUID="098a520a-4d0e-4303-b3d4-cb301b136fb9" />
-              <SupportVectorCreator GUID="4507eb6b-4f49-49d3-8a63-151ae8f9d9af" />
+              <SupportVectorEvaluator GUID="903176cf-4821-4ff9-bd4f-911d3cb26006" />
+              <SupportVectorCreator GUID="4c0263f0-5501-4004-8896-ed96623c90d1" />
               <SimpleMSEEvaluator GUID="739f7e8e-9b19-4e75-a74c-72a9df4f84f5" />
               <SequentialProcessor GUID="b1ba9145-b2c1-47a1-954d-3289c4b40308" />
               <SequentialProcessor GUID="b9c58d3c-9455-47b4-91d4-e965a9d0c121" />
@@ -314,6 +317,7 @@ Cost.Data = cost;</Code>
               <SequentialProcessor GUID="f866d259-df0c-4655-aec4-476fb08aca13" />
               <BestSolutionStorer GUID="a9eee655-0977-4d56-b33b-b840d5abba38" />
               <SubScopesRemover GUID="6923d07c-5000-49b9-b33c-c656ca079f3c" />
+              <ProgrammableOperator GUID="2a8ee52c-87b0-4bff-b8f0-f54cda70a814" />
             </Operators>
             <InitialOperator GUID="c6763a75-a902-4ddc-8cb3-06765a3cd920" />
           </OperatorGraph>
@@ -327,7 +331,7 @@ Cost.Data = cost;</Code>
       <SubScopes />
     </GlobalScope>
     <ExecutionStack>
-      <AtomicOperation Type="HeuristicLab.Core.AtomicOperation, HeuristicLab.Core-3.2" GUID="cc9caa58-0ec7-45d1-ae77-99be82593e80">
+      <AtomicOperation Type="HeuristicLab.Core.AtomicOperation, HeuristicLab.Core-3.2" GUID="cd8eb4c5-b852-4387-b4f4-937aa72a4756">
         <Operator GUID="36c69fe5-856c-4c9c-ba17-40ee370a890c" />
         <Scope GUID="40635b76-0dce-42bd-8b77-72a4acae6764" />
       </AtomicOperation>
