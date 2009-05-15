@@ -88,6 +88,7 @@
     <Compile Include="ConfigurableFunctionLibraryInjector.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="AlgorithmBase.cs" />
+    <Compile Include="TreeEvaluatorBase.cs" />
     <Compile Include="HL2TreeEvaluator.cs" />
     <Compile Include="HL2TreeEvaluatorInjector.cs" />
     <Compile Include="TreeEvaluatorInjector.cs" />

@@ -30,97 +30,12 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
-  /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node.
+  /// Evaluates FunctionTrees recursively by interpretation of the function symbols in each node with HL2 semantics.
   /// Not thread-safe!
   /// </summary>
-  public class HL2TreeEvaluator : ItemBase, ITreeEvaluator {
-    private const double EPSILON = 1.0e-10;
-    private double estimatedValueMax;
-    private double estimatedValueMin;
+  public class HL2TreeEvaluator : TreeEvaluatorBase {
 
-    private class Instr {
-      public double d_arg0;
-      public short i_arg0;
-      public short i_arg1;
-      public byte arity;
-      public byte symbol;
-      public IFunction function;
-    }
-
-    private Instr[] codeArr;
-    private int PC;
-    private Dataset dataset;
-    private int sampleIndex;
-
-    public void ResetEvaluator(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
-      this.dataset = dataset;
-      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, start, end);
-
-      // get the mean of the values of the target variable to determine the max and min bounds of the estimated value
-      double targetMean = dataset.GetMean(targetVariable, start, end);
-      estimatedValueMin = targetMean - maximumPunishment;
-      estimatedValueMax = targetMean + maximumPunishment;
-    }
-
-    private Instr TranslateToInstr(LightWeightFunction f) {
-      Instr instr = new Instr();
-      instr.arity = f.arity;
-      instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
-      switch (instr.symbol) {
-        case EvaluatorSymbolTable.DIFFERENTIAL:
-        case EvaluatorSymbolTable.VARIABLE: {
-            instr.i_arg0 = (short)f.data[0]; // var
-            instr.d_arg0 = f.data[1]; // weight
-            instr.i_arg1 = (short)f.data[2]; // sample-offset
-            break;
-          }
-        case EvaluatorSymbolTable.CONSTANT: {
-            instr.d_arg0 = f.data[0]; // value
-            break;
-          }
-        case EvaluatorSymbolTable.UNKNOWN: {
-            instr.function = f.functionType;
-            break;
-          }
-      }
-      return instr;
-    }
-
-    public double Evaluate(IFunctionTree functionTree, int sampleIndex) {
-      BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
-      if (bakedTree == null) throw new ArgumentException("HL2Evaluator can only evaluate BakedFunctionTrees");
-
-      List<LightWeightFunction> linearRepresentation = bakedTree.LinearRepresentation;
-      codeArr = new Instr[linearRepresentation.Count];
-      int i = 0;
-      foreach (LightWeightFunction f in linearRepresentation) {
-        codeArr[i++] = TranslateToInstr(f);
-      }
-
-      PC = 0;
-      this.sampleIndex = sampleIndex;
-
-      double estimated = EvaluateBakedCode();
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-        estimated = estimatedValueMax;
-      } else if (estimated > estimatedValueMax) {
-        estimated = estimatedValueMax;
-      } else if (estimated < estimatedValueMin) {
-        estimated = estimatedValueMin;
-      }
-      return estimated;
-    }
-
-    // skips a whole branch
-    private void SkipBakedCode() {
-      int i = 1;
-      while (i > 0) {
-        i += codeArr[PC++].arity;
-        i--;
-      }
-    }
-
-    private double EvaluateBakedCode() {
+    protected override double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
       switch (currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
