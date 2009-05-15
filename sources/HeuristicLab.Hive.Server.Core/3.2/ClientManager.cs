@@ -158,12 +158,6 @@ namespace HeuristicLab.Hive.Server.Core {
 
         Response response = new Response();
 
-        if (resource.Id != Guid.Empty) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_ID_MUST_NOT_BE_SET;
-          return response;
-        }
-
         ClientGroup clientGroup = clientGroupAdapter.GetById(clientGroupId);
         if (clientGroup == null) {
           response.Success = false;
@@ -171,6 +165,7 @@ namespace HeuristicLab.Hive.Server.Core {
           return response;
         }
         clientGroup.Resources.Add(resource);
+        clientGroupAdapter.Update(clientGroup);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_ADDED_TO_GROUP;
