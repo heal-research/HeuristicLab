@@ -69,20 +69,6 @@ namespace HeuristicLab.Persistence.UnitTest {
 
   }
 
-  public class EventTest {
-    public delegate object Filter(object o);
-    public event Filter OnChange;
-    [Storable]
-    private Delegate[] OnChangeListener {
-      get { return OnChange.GetInvocationList(); }
-      set {
-        foreach (Delegate d in value) {
-          OnChange += (Filter)d;
-        }
-      }
-    }
-  }
-
   public class PrimitivesTest : NumberTest {
     [Storable]
     private char c = 'e';
@@ -391,14 +377,6 @@ namespace HeuristicLab.Persistence.UnitTest {
     }
 
     [TestMethod]
-    public void BinaryFormatTest() {
-      Root r = new Root();
-      Assert.Fail("Not Implemented");
-      //BinaryGenerator.Serialize(r, "test.bin");
-    }
-
-
-    [TestMethod]
     public void PrimitiveRoot() {
       XmlGenerator.Serialize(12.3f, tempFile);
       object o = XmlParser.Deserialize(tempFile);
@@ -461,14 +439,6 @@ namespace HeuristicLab.Persistence.UnitTest {
       Assert.AreEqual(
         DebugStringGenerator.Serialize(sdt),
         DebugStringGenerator.Serialize(o));
-    }
-
-    [TestMethod]
-    public void Events() {
-      EventTest et = new EventTest();
-      et.OnChange += (o) => o;
-      XmlGenerator.Serialize(et, tempFile);
-      EventTest newEt = (EventTest)XmlParser.Deserialize(tempFile);
     }
 
     [TestMethod]
