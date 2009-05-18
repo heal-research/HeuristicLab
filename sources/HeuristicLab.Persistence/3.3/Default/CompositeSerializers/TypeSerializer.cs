@@ -20,7 +20,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
-      yield return new Tag("VersionInvariantName", ((Type)o).VersionInvariantName());
+      yield return new Tag("AssemblyQualifiedName", ((Type)o).AssemblyQualifiedName);
     }
 
     public IEnumerable<Tag> Decompose(object obj) {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         throw new PersistenceException("Insufficient meta information to instantiate Type object", e);
       }
       try {
-        return Type.GetType((string)it.Current.Value, true);
+        return TypeLoader.Load((string)it.Current.Value);
       } catch (InvalidCastException e) {
         throw new PersistenceException("Invalid meta information during reconstruction of Type object", e);
       } catch (TypeLoadException e) {
