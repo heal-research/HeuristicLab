@@ -85,7 +85,9 @@ namespace HeuristicLab.Data {
 
     /// <inheritdoc cref="object.GetHashCode"/>
     public override int GetHashCode() {
-      return Data.GetHashCode();
+      if ( Data != null )        
+        return Data.GetHashCode();
+      return 0;
     }
 
     /// <summary>
