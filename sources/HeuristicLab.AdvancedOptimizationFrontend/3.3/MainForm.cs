@@ -154,11 +154,16 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       Task task = (Task)state;
       try {
         task.storable = PersistenceManager.Load(task.filename);
-      } catch(FileNotFoundException fileNotFoundEx) {
+      } catch (FileNotFoundException fileNotFoundEx) {
         MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe file or plugin \"" + fileNotFoundEx.FileName + "\" is not available.\nPlease make sure you have all necessary plugins installed.",
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } catch(TypeLoadException typeLoadEx) {
-        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName+ "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
+      } catch (TypeLoadException typeLoadEx) {
+        MessageBox.Show("Sorry couldn't open file \"" + task.filename + "\".\nThe type \"" + typeLoadEx.TypeName + "\" is not available.\nPlease make sure that you have the correct version the plugin installed.",
+          "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } catch (Exception e) {
+        MessageBox.Show(String.Format(
+          "Sorry couldn't open file \"{0}\".\n The following exception occurred: {1}",
+          task.filename, e.ToString()),
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       LoadFinished(task);
@@ -204,10 +209,18 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         form.Editor.Filename = saveFileDialog.FileName;
         Save(form);
       }
+
     }
     private void AsynchronousSave(object state) {
       Task task = (Task)state;
-      PersistenceManager.Save(task.storable, task.filename);
+      try {
+        PersistenceManager.Save(task.storable, task.filename);
+      } catch (Exception e) {
+        MessageBox.Show(String.Format(
+          "Sorry couldn't open file \"{0}\".\n The following exception occurred: {1}",
+          task.filename, e.ToString()),
+          "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
       SaveFinished(task);
     }
     private void SaveFinished(Task task) {
