@@ -26,9 +26,19 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using System.Threading;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SupportVectorCreator : OperatorBase {
+    private Thread trainingThread;
+    private object locker = new object();
+    private bool abortRequested = false;
+
+    public override bool SupportsAbort {
+      get {
+        return true;
+      }
+    }
 
     public SupportVectorCreator()
       : base() {
@@ -49,10 +59,19 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMGamma", "Gamma parameter in kernel function", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.New | VariableKind.Out));
       AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.New | VariableKind.Out));
+    }
 
+    public override void Abort() {
+      abortRequested = true;
+      lock (locker) {
+        if (trainingThread != null && trainingThread.ThreadState == ThreadState.Running) {
+          trainingThread.Abort();
+        }
+      }
     }
 
     public override IOperation Apply(IScope scope) {
+      abortRequested = false;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>("AllowedFeatures", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
@@ -73,19 +92,33 @@ namespace HeuristicLab.SupportVectorMachines {
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
       SVM.RangeTransform rangeTransform = SVM.Scaling.DetermineRange(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);
-      SVM.Model model = SVM.Training.Train(scaledProblem, parameter);
 
-      //persist variables in scope
-      SVMModel modelData = new SVMModel();
-      modelData.Data = model;
-      scope.AddVariable(new Variable(scope.TranslateName("SVMModel"),modelData));
-      SVMRangeTransform rangeTransformData = new SVMRangeTransform();
-      rangeTransformData.Data = rangeTransform;
-      scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"),rangeTransformData));
-
+      SVM.Model model = StartTraining(scaledProblem, parameter);
+      if (!abortRequested) {
+        //persist variables in scope
+        SVMModel modelData = new SVMModel();
+        modelData.Data = model;
+        scope.AddVariable(new Variable(scope.TranslateName("SVMModel"), modelData));
+        SVMRangeTransform rangeTransformData = new SVMRangeTransform();
+        rangeTransformData.Data = rangeTransform;
+        scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"), rangeTransformData));
+      }
       return null;
     }
 
-    
+    private SVM.Model StartTraining(SVM.Problem scaledProblem, SVM.Parameter parameter) {
+      SVM.Model model = null;
+      lock (locker) {
+        if (!abortRequested) {
+          trainingThread = new Thread(() => {
+              model = SVM.Training.Train(scaledProblem, parameter);
+          });
+          trainingThread.Start();
+        }
+      }
+      trainingThread.Join();
+      trainingThread = null;
+      return model;
+    }
   }
 }
