@@ -59,7 +59,10 @@ namespace HeuristicLab.Core {
     /// Gets a collection of all variables of the current operator.
     /// </summary>
     ICollection<IVariable> Variables { get; }
-
+    /// <summary>
+    /// Gets information whether abortion of the operator is supported.
+    /// </summary>
+    bool SupportsAbort { get; }
     /// <summary>
     /// Adds the given sub operator to the current instance.
     /// </summary>
