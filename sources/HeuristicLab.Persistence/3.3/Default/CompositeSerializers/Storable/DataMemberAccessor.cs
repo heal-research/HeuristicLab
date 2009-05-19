@@ -5,8 +5,8 @@ using HeuristicLab.Persistence.Core;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   public class DataMemberAccessor {
-    
-    public readonly Func<object> Get;    
+
+    public readonly Func<object> Get;
     public readonly Action<object> Set;
     public readonly string Name;
     public readonly object DefaultValue;

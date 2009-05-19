@@ -16,10 +16,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public bool CanSerialize(Type type) {
-      return ReflectionTools.HasDefaultConstructor(type) &&
-        (StorableAttribute.GetStorableMembers(type, false).Count() > 0 ||
-          EmptyStorableClassAttribute.IsEmptyStorable(type));
-
+      if (!ReflectionTools.HasDefaultConstructor(type))
+        return false;
+      while (type != null) {        
+        if (StorableAttribute.GetStorableMembers(type, false).Count() == 0 &&
+            !EmptyStorableClassAttribute.IsEmptyStorable(type))
+          return false;
+        type = type.BaseType;
+      }
+      return true;
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {

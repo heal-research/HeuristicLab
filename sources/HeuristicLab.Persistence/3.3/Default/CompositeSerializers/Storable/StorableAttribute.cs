@@ -25,7 +25,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     public static IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>>
         GetStorableMembers(Type type, bool inherited) {
-      if (type.BaseType != null)
+      if (inherited && type.BaseType != null)
         foreach (var pair in GetStorableMembers(type.BaseType))
           yield return pair;
       foreach (MemberInfo memberInfo in type.GetMembers(instanceMembers)) {
