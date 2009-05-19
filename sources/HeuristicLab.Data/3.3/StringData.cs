@@ -24,11 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The representation of a string.
   /// </summary>
+  [EmptyStorableClass]
   public class StringData : ObjectData {
     /// <summary>
     /// Gets or sets the string value.

@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The representation of an array of integer values.
   /// </summary>
+  [EmptyStorableClass]
   public class IntArrayData : ArrayDataBase {
     /// <summary>
     /// Gets or sets the int elements of the array.

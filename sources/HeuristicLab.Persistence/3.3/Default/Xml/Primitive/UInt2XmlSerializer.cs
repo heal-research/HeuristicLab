@@ -7,7 +7,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
-  [EmptyStorableClass]
   public class UInt2XmlSerializer : SimpleNumber2XmlSerializerBase<uint> { }
 
 }

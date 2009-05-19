@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System;
 using HeuristicLab.Persistence.Core;
 using System.Globalization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  [EmptyStorableClass]
   public class DoubleList2XmlSerializer : NumberEnumeration2XmlSerializerBase<List<double>> {
 
     protected override void Add(IEnumerable enumeration, object o) {

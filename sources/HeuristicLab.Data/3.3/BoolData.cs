@@ -24,11 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// Class to represent boolean values.
   /// </summary>
+  [EmptyStorableClass]
   public class BoolData : ObjectData {
     /// <summary>
     /// Gets or sets the boolean value.

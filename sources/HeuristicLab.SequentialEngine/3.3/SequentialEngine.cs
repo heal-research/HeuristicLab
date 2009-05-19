@@ -24,12 +24,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using System.Threading;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.SequentialEngine {
   /// <summary>
   /// Represents an engine that executes its steps sequentially, also if they could be executed 
   /// in parallel.
   /// </summary>
+  [EmptyStorableClass]
   public class SequentialEngine : EngineBase, IEditable {
     private IOperator currentOperator;
 

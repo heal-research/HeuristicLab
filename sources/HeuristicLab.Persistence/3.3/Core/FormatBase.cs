@@ -1,7 +1,9 @@
 ﻿using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
+  [EmptyStorableClass]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
 
     public abstract string Name { get; }

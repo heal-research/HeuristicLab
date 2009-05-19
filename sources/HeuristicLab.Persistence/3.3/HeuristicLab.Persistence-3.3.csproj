@@ -124,7 +124,7 @@
     <Compile Include="Default\DebugString\PrimitiveSerializers\Byte2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\Char2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\DateTime2DebugStringSerializer.cs" />
-    <Compile Include="Default\DebugString\PrimitiveSerializers\Doubld2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Double2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\Float2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\Int2DebugStringSerializer.cs" />
     <Compile Include="Default\DebugString\PrimitiveSerializers\Long2DebugStringSerializer.cs" />

@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// A two-dimensional matrix of integer values.
   /// </summary>
+  [EmptyStorableClass]
   public class IntMatrixData : ArrayDataBase {
     /// <summary>
     /// Gets or sets the int values of the matrix.

@@ -24,11 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// A class that represents <c>null</c>.
   /// </summary>
+  [EmptyStorableClass]
   public class NullData : ObjectData {
     /// <summary>
     /// Gets <c>null</c> and throws an exception in the setter.

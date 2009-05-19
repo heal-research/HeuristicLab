@@ -25,11 +25,13 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// A two-dimensional matrix consisting of double values.
   /// </summary>
+  [EmptyStorableClass]
   public class DoubleMatrixData : ArrayDataBase {
     /// <summary>
     /// Gets or sets the double elements of the matrix.

@@ -25,11 +25,13 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Uniformly distributed random number generator.
   /// </summary>
+  [EmptyStorableClass]
   public class UniformRandomizer : OperatorBase {
     private static int MAX_NUMBER_OF_TRIES = 100;
     /// <inheritdoc select="summary"/>

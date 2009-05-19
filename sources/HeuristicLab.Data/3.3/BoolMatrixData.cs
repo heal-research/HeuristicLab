@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// A two-dimensional matrix consisting of boolean values.
   /// </summary>
+  [EmptyStorableClass]
   public class BoolMatrixData : ArrayDataBase {
     /// <summary>
     /// Gets or sets the boolean elements of the matrix.

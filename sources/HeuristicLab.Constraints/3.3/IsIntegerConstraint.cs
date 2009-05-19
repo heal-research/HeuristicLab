@@ -30,7 +30,6 @@ namespace HeuristicLab.Constraints {
   /// <summary>
   /// Constraint that allows only integer values.
   /// </summary>
-  [EmptyStorableClass]
   public class IsIntegerConstraint : ConstraintBase {
     /// <inheritdoc select="summary"/>
     public override string Description {

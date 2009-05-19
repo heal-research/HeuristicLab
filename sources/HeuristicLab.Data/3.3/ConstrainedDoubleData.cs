@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// Represents a double value having some constraints (e.g. smaller than 5.3).
   /// </summary>
+  [EmptyStorableClass]
   public class ConstrainedDoubleData : ConstrainedObjectData {
     /// <summary>
     /// Gets or sets the double value of the current instance as <see cref="DoubleData"/>.

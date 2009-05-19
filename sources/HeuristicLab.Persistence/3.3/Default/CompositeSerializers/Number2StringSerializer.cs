@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Text;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
+  [EmptyStorableClass]
   public class Number2StringSerializer : ICompositeSerializer {
 
     private static readonly List<Type> numberTypes =

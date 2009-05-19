@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// Class to represent double values.
   /// </summary>
+  [EmptyStorableClass]
   public class DoubleData : ObjectData {
     /// <summary>
     /// Gets or sets the double value.

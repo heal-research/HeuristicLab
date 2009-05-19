@@ -217,7 +217,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         PersistenceManager.Save(task.storable, task.filename);
       } catch (Exception e) {
         MessageBox.Show(String.Format(
-          "Sorry couldn't open file \"{0}\".\n The following exception occurred: {1}",
+          "Sorry couldn't save file \"{0}\".\n The following exception occurred: {1}",
           task.filename, e.ToString()),
           "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }

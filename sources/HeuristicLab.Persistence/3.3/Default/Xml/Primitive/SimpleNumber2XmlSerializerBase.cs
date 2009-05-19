@@ -20,6 +20,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override XmlString Format(T t) {
       return new XmlString(t.ToString());
     }
+
     public override T Parse(XmlString x) {
       try {
         return (T)ParseMethod.Invoke(null, new[] { x.Data });

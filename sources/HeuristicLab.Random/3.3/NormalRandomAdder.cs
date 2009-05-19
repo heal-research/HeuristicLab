@@ -25,12 +25,14 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Constraints;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Random {
   /// <summary>
   /// Normally distributed random number generator that adds the generated value to the existing value
   /// in the specified scope.
   /// </summary>
+  [EmptyStorableClass]
   public class NormalRandomAdder : OperatorBase {
     private static int MAX_NUMBER_OF_TRIES = 100;
 

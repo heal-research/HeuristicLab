@@ -3,13 +3,11 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 using System.Text;
 using System.Text.RegularExpressions;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Globalization;
 
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
-  
-  [EmptyStorableClass]
+
   public class Guid2XmlSerializer : PrimitiveXmlSerializerBase<Guid> {
 
     public override XmlString Format(Guid o) {
@@ -25,5 +23,5 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
         throw new PersistenceException("Overflow during Guid parsing.", x);
       }
     }
-  }  
+  }
 }

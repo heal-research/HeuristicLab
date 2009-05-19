@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The representation of an int value having some constraints (e.g. smaller than 2).
   /// </summary>
+  [EmptyStorableClass]
   public class ConstrainedIntData : ConstrainedObjectData {
     /// <summary>
     /// Gets or sets the int value of the current instance as <see cref="IntData"/>.

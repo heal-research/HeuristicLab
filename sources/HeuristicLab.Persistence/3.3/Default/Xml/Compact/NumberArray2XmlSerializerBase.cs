@@ -3,16 +3,18 @@ using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using System;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
+  [EmptyStorableClass]
   public abstract class NumberArray2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : class {
 
     protected virtual string Separator { get { return ";"; } }
     protected abstract string FormatValue(object o);
     protected abstract object ParseValue(string o);
 
-    public override XmlString Format(T t) {      
+    public override XmlString Format(T t) {
       Array a = (Array)(object)t;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
@@ -85,7 +87,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         throw new PersistenceException("Invalid element data or meta data to reconstruct number array.", e);
       } catch (OverflowException e) {
         throw new PersistenceException("Overflow during element parsing while trying to reconstruct number array.", e);
-      } 
+      }
     }
   }
 

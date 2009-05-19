@@ -3,9 +3,11 @@ using System.Text;
 using HeuristicLab.Persistence.Interfaces;
 using System;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
+  [EmptyStorableClass]
   public abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
 
     protected virtual string Separator { get { return ";"; } }
@@ -35,7 +37,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         throw new PersistenceException("Invalid element data during reconstruction of number enumerable.", e);
       } catch (OverflowException e) {
         throw new PersistenceException("Overflow during element parsing while trying to reconstruct number enumerable.", e);
-      }       
+      }
     }
   }
 

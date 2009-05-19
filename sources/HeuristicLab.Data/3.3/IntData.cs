@@ -25,11 +25,13 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
   /// <summary>
   /// The representation of an int value.
   /// </summary>
+  [EmptyStorableClass]
   public class IntData : ObjectData {
     /// <summary>
     /// Gets or sets the int value.

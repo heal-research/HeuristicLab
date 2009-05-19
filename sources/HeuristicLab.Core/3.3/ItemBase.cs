@@ -23,11 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents the base class for all basic item types.
   /// </summary>
+  [EmptyStorableClass]
   public abstract class ItemBase : StorableBase, IItem {
     /// <summary>
     /// Creates a new instance of <see cref="ItemBaseView"/> for 
