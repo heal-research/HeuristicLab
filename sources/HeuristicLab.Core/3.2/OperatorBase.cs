@@ -89,11 +89,6 @@ namespace HeuristicLab.Core {
     public virtual ICollection<IVariable> Variables {
       get { return myVariables.Values; }
     }
-    /// <inheritdoc/>
-    /// The default is false.
-    public virtual bool SupportsAbort {
-      get { return false; }
-    }
 
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 

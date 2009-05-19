@@ -32,7 +32,6 @@ namespace HeuristicLab.SequentialEngine {
   /// </summary>
   public class SequentialEngine : EngineBase, IEditable {
     private IOperator currentOperator;
-    private IOperation currentOperation;
 
     /// <summary>
     /// Creates a new instance of <see cref="SequentialEngineEditor"/>.
@@ -57,10 +56,8 @@ namespace HeuristicLab.SequentialEngine {
     /// <see cref="IOperator.Abort"/> of the current <see cref="IOperator"/>.</remarks>
     public override void Abort() {
       base.Abort();
-      if (currentOperator != null && currentOperator.SupportsAbort) {
+      if (currentOperator != null)
         currentOperator.Abort();
-        myExecutionStack.Push(currentOperation);
-      }
     }
 
     /// <summary>
@@ -71,9 +68,9 @@ namespace HeuristicLab.SequentialEngine {
     /// is pushed on the stack again.<br/>
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
     protected override void ProcessNextOperation() {
-      currentOperation = myExecutionStack.Pop();
-      if (currentOperation is AtomicOperation) {
-        AtomicOperation atomicOperation = (AtomicOperation)currentOperation;
+      IOperation operation = myExecutionStack.Pop();
+      if (operation is AtomicOperation) {
+        AtomicOperation atomicOperation = (AtomicOperation)operation;
         IOperation next = null;
         try {
           currentOperator = atomicOperation.Operator;
@@ -89,8 +86,8 @@ namespace HeuristicLab.SequentialEngine {
           myExecutionStack.Push(next);
         OnOperationExecuted(atomicOperation);
         if (atomicOperation.Operator.Breakpoint) Abort();
-      } else if (currentOperation is CompositeOperation) {
-        CompositeOperation compositeOperation = (CompositeOperation)currentOperation;
+      } else if (operation is CompositeOperation) {
+        CompositeOperation compositeOperation = (CompositeOperation)operation;
         for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
           myExecutionStack.Push(compositeOperation.Operations[i]);
       }

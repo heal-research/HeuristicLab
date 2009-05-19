@@ -34,12 +34,6 @@ namespace HeuristicLab.SupportVectorMachines {
     private object locker = new object();
     private bool abortRequested = false;
 
-    public override bool SupportsAbort {
-      get {
-        return true;
-      }
-    }
-
     public SupportVectorCreator()
       : base() {
       //Dataset infos
@@ -102,8 +96,10 @@ namespace HeuristicLab.SupportVectorMachines {
         SVMRangeTransform rangeTransformData = new SVMRangeTransform();
         rangeTransformData.Data = rangeTransform;
         scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"), rangeTransformData));
+        return null;
+      } else {
+        return new AtomicOperation(this, scope);
       }
-      return null;
     }
 
     private SVM.Model StartTraining(SVM.Problem scaledProblem, SVM.Parameter parameter) {
