@@ -32,6 +32,10 @@ namespace HeuristicLab.SupportVectorMachines {
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
+  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
+  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Operators.Programmable-3.2")]
   public class HeuristicLabSupportVectorMachinesPlugin : PluginBase {
   }
 }

@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SupportVectorRegression.cs" />
     <Compile Include="SVMRangeTransform.cs" />
     <Compile Include="SVMModel.cs" />
     <Compile Include="HeuristicLabSupportVectorMachinesPlugin.cs" />
@@ -110,6 +111,14 @@
     <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
       <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
       <Name>HeuristicLab.GP.StructureIdentification-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
+      <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
+      <Name>HeuristicLab.Logging-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators.Programmable\3.2\HeuristicLab.Operators.Programmable-3.2.csproj">
+      <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
+      <Name>HeuristicLab.Operators.Programmable-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
