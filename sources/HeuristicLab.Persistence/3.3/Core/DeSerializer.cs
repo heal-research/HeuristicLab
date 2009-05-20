@@ -67,13 +67,19 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     private Dictionary<Type, object> CreateSerializers(IEnumerable<TypeMapping> typeCache) {
+      Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();
       try {
         var map = new Dictionary<Type, object>();
         foreach (var typeMapping in typeCache) {
           Type type = TypeLoader.Load(typeMapping.TypeName);
           typeIds.Add(typeMapping.Id, type);
           Type serializerType = TypeLoader.Load(typeMapping.Serializer);
-          map.Add(type, Activator.CreateInstance(serializerType, true));
+          object serializer;
+          if (serializerInstances.ContainsKey(serializerType))
+            serializer = serializerInstances[serializerType];
+          else
+            serializer = Activator.CreateInstance(serializerType, true);
+          map.Add(type, serializer);
         }
         return map;
       } catch (PersistenceException) {
@@ -81,7 +87,7 @@ namespace HeuristicLab.Persistence.Core {
       } catch (Exception e) {
         throw new PersistenceException(
           "The serialization type cache could not be loaded.\r\n" +
-          "This usualy happens when you are missing an Assembly/Plugin.", e);
+          "This usualy happens when you are missing an Assembly or Plugin.", e);
       }
     }
 
@@ -112,14 +118,19 @@ namespace HeuristicLab.Persistence.Core {
 
     private void CompositeStartHandler(BeginToken token) {
       Type type = typeIds[(int)token.TypeId];
-      ICompositeSerializer compositeSerializer = null;
-      if (serializerMapping.ContainsKey(type))
-        compositeSerializer = serializerMapping[type] as ICompositeSerializer;
-      if (compositeSerializer == null)
-        throw new PersistenceException(String.Format(
-          "No suitable method for deserialization of type \"{0}\" found.",
-          type.VersionInvariantName()));
-      parentStack.Push(new Midwife(type, compositeSerializer, token.Id));
+      try {
+        parentStack.Push(new Midwife(type, (ICompositeSerializer)serializerMapping[type], token.Id));
+      } catch (Exception e) {
+        if (e is InvalidCastException || e is KeyNotFoundException) {
+          throw new PersistenceException(String.Format(
+            "Invalid composite serializer configuration for type \"{0}\".",
+            type.AssemblyQualifiedName), e);
+        } else {
+          throw new PersistenceException(String.Format(
+            "Unexpected exception while trying to compose object of type \"{0}\".",
+            type.AssemblyQualifiedName), e);
+        }
+      }
     }
 
     private void CompositeEndHandler(EndToken token) {
@@ -133,10 +144,22 @@ namespace HeuristicLab.Persistence.Core {
 
     private void PrimitiveHandler(PrimitiveToken token) {
       Type type = typeIds[(int)token.TypeId];
-      object value = ((IPrimitiveSerializer)serializerMapping[type]).Parse(token.SerialData);
-      if (token.Id != null)
-        id2obj[(int)token.Id] = value;
-      SetValue(token.Name, value);
+      try {
+        object value = ((IPrimitiveSerializer)serializerMapping[type]).Parse(token.SerialData);
+        if (token.Id != null)
+          id2obj[(int)token.Id] = value;
+        SetValue(token.Name, value);
+      } catch (Exception e) {
+        if (e is InvalidCastException || e is KeyNotFoundException) {
+          throw new PersistenceException(String.Format(
+            "Invalid primitive serializer configuration for type \"{0}\".",
+            type.AssemblyQualifiedName), e);
+        } else {
+          throw new PersistenceException(String.Format(
+            "Unexpected exception while trying to parse object of type \"{0}\".",
+            type.AssemblyQualifiedName), e);
+        }
+      }
     }
 
     private void ReferenceHandler(ReferenceToken token) {
