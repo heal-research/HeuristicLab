@@ -131,7 +131,9 @@ namespace HeuristicLab.SupportVectorMachines {
       
 
       modelProcessor.AddSubOperator(modelCreator);
-      modelProcessor.AddSubOperator(CreateEvaluator("Training"));
+      CombinedOperator trainingEvaluator = (CombinedOperator)CreateEvaluator("Training");
+      trainingEvaluator.OperatorGraph.InitialOperator.SubOperators[1].GetVariableInfo("MSE").ActualName = "Quality";
+      modelProcessor.AddSubOperator(trainingEvaluator);
       modelProcessor.AddSubOperator(CreateEvaluator("Validation"));
       modelProcessor.AddSubOperator(CreateEvaluator("Test"));
 
