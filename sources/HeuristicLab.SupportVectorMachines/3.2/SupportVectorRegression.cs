@@ -46,9 +46,17 @@ namespace HeuristicLab.SupportVectorMachines {
     }
 
     public IOperator ProblemInjector {
-      get;
-      set;
+      get {
+        IOperator main = GetMainOperator();
+        return main.SubOperators[1];
+      }
+      set {
+        IOperator main = GetMainOperator();
+        main.RemoveSubOperator(1);
+        main.AddSubOperator(value, 1);
+      }
     }
+
     public DoubleArrayData NuList {
       get { return GetVariableInjector().GetVariable("NuList").GetValue<DoubleArrayData>(); }
       set { GetVariableInjector().GetVariable("NuList").Value = value; }
@@ -71,7 +79,6 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public SupportVectorRegression() {
       engine = new SequentialEngine.SequentialEngine();
-      ProblemInjector = new EmptyOperator();
       CombinedOperator algo = CreateAlgorithm();
       engine.OperatorGraph.AddOperator(algo);
       engine.OperatorGraph.InitialOperator = algo;
@@ -91,7 +98,7 @@ namespace HeuristicLab.SupportVectorMachines {
     private IOperator CreateMainLoop() {
       SequentialProcessor main = new SequentialProcessor();
       main.AddSubOperator(CreateGlobalInjector());
-      main.AddSubOperator(ProblemInjector);
+      main.AddSubOperator(new ProblemInjector());
 
       SequentialProcessor nuLoop = new SequentialProcessor();
       nuLoop.Name = "NuLoop";
@@ -252,8 +259,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     private IOperator GetVariableInjector() {
+      return GetMainOperator().SubOperators[0];
+    }
+
+    private IOperator GetMainOperator() {
       CombinedOperator svm = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
-      return svm.OperatorGraph.InitialOperator.SubOperators[0];
+      return svm.OperatorGraph.InitialOperator;
     }
 
     public override IView CreateView() {

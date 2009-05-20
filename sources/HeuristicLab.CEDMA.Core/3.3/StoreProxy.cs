@@ -55,10 +55,6 @@ namespace HeuristicLab.CEDMA.Core {
       store = factory.CreateChannel(new EndpointAddress(serverUri));
     }
 
-    private void ExecuteSavely(Action a) {
-      ExecuteSavely(a);
-    }
-
     private T ExecuteSavely<T>(Func<T> a ) {
       try {
         return a();
@@ -76,7 +72,7 @@ namespace HeuristicLab.CEDMA.Core {
     #region IStore Members
 
     public void Add(Statement statement) {
-      ExecuteSavely(() => store.Add(statement));
+      ExecuteSavely(() => { store.Add(statement); return 1.0; });
     }
 
     public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
