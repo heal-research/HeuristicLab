@@ -60,8 +60,8 @@ namespace HeuristicLab.CEDMA.Server {
       Entity dataSetEntity = SelectDataSet(datasets);
       DataSet dataSet = new DataSet(store, dataSetEntity);
 
-      int targetVariable = SelectTargetVariable(dataSet, dataSet.Problem.AllowedTargetVariables.ToArray());
-      IAlgorithm selectedAlgorithm = SelectAlgorithm(dataSet, targetVariable, dataSet.Problem.LearningTask);
+      int targetVariable = SelectTargetVariable(dataSetEntity, dataSet.Problem.AllowedTargetVariables.ToArray());
+      IAlgorithm selectedAlgorithm = SelectAlgorithm(dataSetEntity, targetVariable, dataSet.Problem.LearningTask);
       string targetVariableName = dataSet.Problem.GetVariableName(targetVariable);
 
 
@@ -74,8 +74,8 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     public abstract Entity SelectDataSet(Entity[] datasets);
-    public abstract int SelectTargetVariable(DataSet dataSet, int[] targetVariables);
-    public abstract IAlgorithm SelectAlgorithm(DataSet dataSet, int targetVariable, LearningTask learningTask);
+    public abstract int SelectTargetVariable(Entity dataSet, int[] targetVariables);
+    public abstract IAlgorithm SelectAlgorithm(Entity dataSet, int targetVariable, LearningTask learningTask);
 
     private Execution CreateExecution(Problem problem, int targetVariable, IAlgorithm algorithm) {
       SetProblemParameters(algorithm, problem, targetVariable);

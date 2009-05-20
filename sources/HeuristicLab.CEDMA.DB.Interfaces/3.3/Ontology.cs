@@ -91,9 +91,6 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public static Entity PredicateInstanceOf {
       get { return new Entity(CedmaNameSpace + "InstanceOf"); }
     }
-    public static Entity TypeGeneticProgrammingFunctionTree {
-      get { return new Entity(CedmaNameSpace + "FunctionTree"); }
-    }
     public static Entity TypeDataSet {
       get { return new Entity(CedmaNameSpace + "DataSet"); }
     }

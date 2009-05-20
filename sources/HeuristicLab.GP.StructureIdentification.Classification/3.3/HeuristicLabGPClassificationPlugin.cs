@@ -33,7 +33,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   public class HeuristicLabGPClassificationPlugin : PluginBase {

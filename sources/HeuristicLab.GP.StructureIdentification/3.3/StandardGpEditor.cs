@@ -72,7 +72,7 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected virtual void SetDataBinding() {
       setRandomSeedRandomlyCheckBox.DataBindings.Add("Checked", StandardGP, "SetSeedRandomly");
-      randomSeedTextBox.DataBindings.Add("Text", StandardGP, "Seed");
+      randomSeedTextBox.DataBindings.Add("Text", StandardGP, "RandomSeed");
       populationSizeTextBox.DataBindings.Add("Text", StandardGP, "PopulationSize");
       maximumGenerationsTextBox.DataBindings.Add("Text", StandardGP, "MaxGenerations");
       mutationRateTextBox.DataBindings.Add("Text", StandardGP, "MutationRate");

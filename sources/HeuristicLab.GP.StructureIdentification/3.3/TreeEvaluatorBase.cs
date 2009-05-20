@@ -123,7 +123,11 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       TreeEvaluatorBase clone = (TreeEvaluatorBase)base.Clone(clonedObjects);
-      clone.dataset = (Dataset)dataset.Clone(clonedObjects);
+      if (!clonedObjects.ContainsKey(dataset.Guid)) {
+        clone.dataset = (Dataset)dataset.Clone(clonedObjects);
+      } else {
+        clone.dataset = (Dataset)clonedObjects[dataset.Guid];
+      }
       clone.estimatedValueMax = estimatedValueMax;
       clone.estimatedValueMin = estimatedValueMin;
       return clone;

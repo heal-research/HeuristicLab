@@ -139,11 +139,11 @@ namespace HeuristicLab.SupportVectorMachines {
       collector.GetVariableInfo("Values").ActualName = "Log";
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Nu"));
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Cost"));
-      ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("ValidationMSE"));
+      ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("ValidationQuality"));
       modelProcessor.AddSubOperator(collector);
 
       BestSolutionStorer solStorer = new BestSolutionStorer();
-      solStorer.GetVariableInfo("Quality").ActualName = "ValidationMSE";
+      solStorer.GetVariableInfo("Quality").ActualName = "ValidationQuality";
       solStorer.GetVariableInfo("Maximization").Local = true;
       solStorer.GetVariableInfo("BestSolution").ActualName = "BestValidationSolution";
       solStorer.AddVariable(new HeuristicLab.Core.Variable("Maximization", new BoolData(false)));
@@ -200,7 +200,7 @@ namespace HeuristicLab.SupportVectorMachines {
       SimpleMSEEvaluator mseEvaluator = new SimpleMSEEvaluator();
       mseEvaluator.Name = p + "MseEvaluator";
       mseEvaluator.GetVariableInfo("Values").ActualName = p + "Values";
-      mseEvaluator.GetVariableInfo("MSE").ActualName = p + "MSE";
+      mseEvaluator.GetVariableInfo("MSE").ActualName = p + "Quality";
       SimpleR2Evaluator r2Evaluator = new SimpleR2Evaluator();
       r2Evaluator.Name = p + "R2Evaluator";
       r2Evaluator.GetVariableInfo("Values").ActualName = p + "Values";

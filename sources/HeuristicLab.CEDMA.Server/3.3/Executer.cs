@@ -128,7 +128,6 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void StoreResults(Execution finishedExecution, ProcessingEngine finishedEngine) {
       Entity model = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-      store.Add(new Statement(model, Ontology.PredicateInstanceOf, Ontology.TypeGeneticProgrammingFunctionTree));
       store.Add(new Statement(finishedExecution.DataSetEntity, Ontology.PredicateHasModel, model));
       StoreModelAttribute(model, Ontology.TargetVariable, finishedExecution.TargetVariable);
       StoreModelAttribute(model, Ontology.AlgorithmName, finishedExecution.Description);

@@ -141,7 +141,10 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal override IOperator CreateFunctionLibraryInjector() {
-      return new FunctionLibraryInjector();
+      ConfigurableFunctionLibraryInjector funLibInjector = new ConfigurableFunctionLibraryInjector();
+      funLibInjector.GetVariableValue<BoolData>("Xor", null, false).Data = false;
+      funLibInjector.GetVariableValue<BoolData>("Average", null, false).Data = false;
+      return funLibInjector;
     }
 
     protected internal override IOperator CreateManipulator() {

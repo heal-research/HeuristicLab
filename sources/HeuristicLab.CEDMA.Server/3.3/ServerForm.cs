@@ -62,7 +62,7 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void connectButton_Click(object sender, EventArgs e) {
-      dispatcher = new RandomDispatcher(store);
+      dispatcher = new SimpleDispatcher(store);
       executer = new Executer(dispatcher, store, gridAddress.Text);
       executer.Start();
       maxActiveJobsUpDown.Enabled = true;

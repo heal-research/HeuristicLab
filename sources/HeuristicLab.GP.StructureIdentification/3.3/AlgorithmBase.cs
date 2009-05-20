@@ -135,6 +135,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       IOperator globalInjector = CreateGlobalInjector();
       IOperator initialization = CreateInitialization();
       IOperator funLibInjector = CreateFunctionLibraryInjector();
+      IOperator treeEvaluatorInjector = new HL2TreeEvaluatorInjector();
+
       IOperator mainLoop = CreateMainLoop();
       mainLoop.Name = "Main loop";
 
@@ -156,6 +158,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       seq.AddSubOperator(randomInjector);
       seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(funLibInjector);
+      seq.AddSubOperator(treeEvaluatorInjector);
       seq.AddSubOperator(initialization);
       seq.AddSubOperator(mainLoop);
       seq.AddSubOperator(cleanUp);

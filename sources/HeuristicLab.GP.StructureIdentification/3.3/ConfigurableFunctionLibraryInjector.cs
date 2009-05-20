@@ -27,7 +27,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Constraints;
-using StructId = HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class ConfigurableFunctionLibraryInjector : FunctionLibraryInjector {
@@ -65,79 +64,79 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       AddVariableInfo(new Core.VariableInfo(VARIABLES_ALLOWED, VARIABLES_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(VARIABLES_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(VARIABLES_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(VARIABLES_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(CONSTANTS_ALLOWED, CONSTANTS_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(CONSTANTS_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(CONSTANTS_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(CONSTANTS_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(ADDITION_ALLOWED, ADDITION_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(ADDITION_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(ADDITION_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(ADDITION_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(AVERAGE_ALLOWED, AVERAGE_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(AVERAGE_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(AVERAGE_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(AVERAGE_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(AND_ALLOWED, AND_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(AND_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(AND_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(AND_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(COSINUS_ALLOWED, COSINUS_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(COSINUS_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(COSINUS_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(COSINUS_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(DIVISION_ALLOWED, DIVISION_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(DIVISION_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(DIVISION_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(DIVISION_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(EQUAL_ALLOWED, EQUAL_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(EQUAL_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(EQUAL_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(EQUAL_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(EXPONENTIAL_ALLOWED, EXPONENTIAL_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(EXPONENTIAL_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(EXPONENTIAL_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(EXPONENTIAL_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(GREATERTHAN_ALLOWED, GREATERTHAN_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(GREATERTHAN_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(GREATERTHAN_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(GREATERTHAN_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(IFTHENELSE_ALLOWED, IFTHENELSE_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(IFTHENELSE_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(IFTHENELSE_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(IFTHENELSE_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(LESSTHAN_ALLOWED, LESSTHAN_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(LESSTHAN_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(LESSTHAN_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(LESSTHAN_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(LOGARTIHM_ALLOWED, LOGARTIHM_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(LOGARTIHM_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(LOGARTIHM_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(LOGARTIHM_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(MULTIPLICATION_ALLOWED, MULTIPLICATION_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(MULTIPLICATION_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(MULTIPLICATION_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(MULTIPLICATION_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(NOT_ALLOWED, NOT_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(NOT_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(NOT_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(NOT_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(POWER_ALLOWED, POWER_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(POWER_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(POWER_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(POWER_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(OR_ALLOWED, OR_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(OR_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(OR_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(OR_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(SIGNUM_ALLOWED, SIGNUM_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(SIGNUM_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(SIGNUM_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(SIGNUM_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(SINUS_ALLOWED, SINUS_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(SINUS_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(SINUS_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(SINUS_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(SQRT_ALLOWED, SQRT_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(SQRT_ALLOWED).Local = true;
@@ -145,7 +144,7 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       AddVariableInfo(new Core.VariableInfo(SUBTRACTION_ALLOWED, SUBTRACTION_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(SUBTRACTION_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(SUBTRACTION_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(SUBTRACTION_ALLOWED, new BoolData(true)));
 
       AddVariableInfo(new Core.VariableInfo(TANGENS_ALLOWED, TANGENS_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(TANGENS_ALLOWED).Local = true;
@@ -153,12 +152,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       AddVariableInfo(new Core.VariableInfo(XOR_ALLOWED, XOR_ALLOWED + " allowed", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo(XOR_ALLOWED).Local = true;
-      AddVariable(new Core.Variable(XOR_ALLOWED,  new BoolData(true)));
+      AddVariable(new Core.Variable(XOR_ALLOWED, new BoolData(true)));
     }
-
-    //public override IView CreateView() {
-    //  return new ConfigurableFunctionLibraryInjectorView(this);
-    //}
 
     public override IOperation Apply(IScope scope) {
       base.Apply(scope);
@@ -179,7 +174,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Cosinus)));
       if (!((BoolData)GetVariable(DIVISION_ALLOWED).Value).Data)
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Division)));
-      if (!((BoolData)GetVariable(EQUAL_ALLOWED).Value).Data)                                                       
+      if (!((BoolData)GetVariable(EQUAL_ALLOWED).Value).Data)
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Equal)));
       if (!((BoolData)GetVariable(EXPONENTIAL_ALLOWED).Value).Data)
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Exponential)));
@@ -211,18 +206,14 @@ namespace HeuristicLab.GP.StructureIdentification {
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Tangens)));
       if (!((BoolData)GetVariable(XOR_ALLOWED).Value).Data)
         functionLibrary.GPOperatorGroup.RemoveOperator(FindOperator(functionLibrary.GPOperatorGroup, typeof(Xor)));
-
-
       return null;
     }
 
-    private IFunction FindOperator(GPOperatorGroup g, Type t)  {
+    private IFunction FindOperator(GPOperatorGroup g, Type t) {
       foreach (IFunction func in g.Operators)
         if (func.GetType() == t)
           return func;
       return null;
-  }
-
-
+    }
   }
 }
