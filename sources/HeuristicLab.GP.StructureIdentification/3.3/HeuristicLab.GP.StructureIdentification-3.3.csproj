@@ -102,13 +102,6 @@
     <Compile Include="OffSpringSelectionGpEditor.Designer.cs">
       <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProblemInjector.cs" />
-    <Compile Include="ProblemInjectorView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ProblemInjectorView.Designer.cs">
-      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
-    </Compile>
     <Compile Include="StandardGpEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -179,6 +172,10 @@
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
+      <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
+      <Name>HeuristicLab.Modeling-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators.Programmable\3.2\HeuristicLab.Operators.Programmable-3.2.csproj">
       <Project>{E3CCBFC6-900C-41B6-AFB8-6646DB097435}</Project>
       <Name>HeuristicLab.Operators.Programmable-3.2</Name>
@@ -211,9 +208,6 @@
   <ItemGroup>
     <EmbeddedResource Include="OffSpringSelectionGpEditor.resx">
       <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProblemInjectorView.resx">
-      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StandardGpEditor.resx">
       <DependentUpon>StandardGpEditor.cs</DependentUpon>

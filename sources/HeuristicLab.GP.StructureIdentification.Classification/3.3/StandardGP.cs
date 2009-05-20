@@ -30,6 +30,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP {

@@ -33,6 +33,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabGPTimeSeriesPlugin : PluginBase {

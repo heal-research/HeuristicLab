@@ -33,6 +33,7 @@ using HeuristicLab.Selection;
 using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class StandardGP : AlgorithmBase, IEditable {

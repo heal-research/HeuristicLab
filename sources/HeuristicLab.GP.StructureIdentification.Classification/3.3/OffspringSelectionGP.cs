@@ -29,6 +29,7 @@ using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP {

@@ -23,21 +23,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using Core = HeuristicLab.Core;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
-  public class ProblemInjector : HeuristicLab.GP.StructureIdentification.ProblemInjector {
+namespace HeuristicLab.Modeling {
+  public class TimeSeriesProblemInjector : ProblemInjector {
 
     public override string Description {
       get {
-        return "Problem injector for time series structure identification.";
+        return "Problem injector for time series problems.";
       }
     }
 
-    public ProblemInjector()
+    public TimeSeriesProblemInjector()
       : base() {
       AddVariableInfo(new Core.VariableInfo("Autoregressive", "Autoregressive modelling includes previous values of the target variable to predict future values.", typeof(BoolData), Core.VariableKind.New));
       GetVariableInfo("Autoregressive").Local = true;

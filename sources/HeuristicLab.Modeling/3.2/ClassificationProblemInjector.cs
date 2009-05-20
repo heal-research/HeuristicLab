@@ -23,19 +23,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using Core = HeuristicLab.Core;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
-  public class ProblemInjector : HeuristicLab.GP.StructureIdentification.ProblemInjector {
+namespace HeuristicLab.Modeling {
+  public class ClassificationProblemInjector : ProblemInjector {
 
     public override string Description {
       get {
-        return "Problem injector for classification structure identification.";
+        return "Problem injector for classification problems.";
       }
     }
 
-    public ProblemInjector()
+    public ClassificationProblemInjector()
       : base() {
       AddVariableInfo(new Core.VariableInfo("TargetClassValues", "TargetClassValues", typeof(ItemList<DoubleData>), Core.VariableKind.New));
       GetVariableInfo("TargetClassValues").Local = true;

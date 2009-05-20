@@ -202,7 +202,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SupportVectorM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSVM", "LibSVM\LibSVM.csproj", "{A16F23B5-FB62-499E-A831-26953AA56FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Modeling", "HeuristicLab.Modeling\3.2\HeuristicLab.Modeling.csproj", "{80F7FADA-549D-4151-8856-79B620A50DBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Modeling-3.2", "HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj", "{80F7FADA-549D-4151-8856-79B620A50DBA}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

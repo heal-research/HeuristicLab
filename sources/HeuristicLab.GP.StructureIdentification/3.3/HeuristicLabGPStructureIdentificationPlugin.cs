@@ -40,6 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification {
   [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
   [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   public class HeuristicLabGPStructureIdentificationPlugin : PluginBase {
   }
 }

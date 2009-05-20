@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.GP.StructureIdentification {
+namespace HeuristicLab.Modeling {
   partial class ProblemInjectorView {
     /// <summary> 
     /// Required designer variable.

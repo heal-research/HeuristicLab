@@ -93,7 +93,6 @@
     <Compile Include="OffspringSelectionGpEditor.Designer.cs">
       <DependentUpon>OffspringSelectionGpEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProblemInjector.cs" />
     <Compile Include="ProfitEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StandardGP.cs" />
@@ -133,6 +132,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
       <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
       <Name>HeuristicLab.Logging-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
+      <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
+      <Name>HeuristicLab.Modeling-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>

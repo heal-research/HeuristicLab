@@ -28,10 +28,9 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.GP.StructureIdentification {
+namespace HeuristicLab.Modeling {
   public partial class ProblemInjectorView : ViewBase {
     public ProblemInjector ProblemInjector {
       get { return (ProblemInjector)Item; }

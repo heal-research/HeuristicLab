@@ -30,6 +30,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Logging;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP {
