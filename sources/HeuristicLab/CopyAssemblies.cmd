@@ -62,6 +62,7 @@ copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\3.2\%Outdir%\HeuristicLa
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\3.2\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.IntVector\3.2\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.2\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Metaprogramming\3.2\%Outdir%\HeuristicLab.Operators.Metaprogramming-3.2.dll" .\plugins
