@@ -33,8 +33,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
-  public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP {
-
+  public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
     protected override IOperator CreateProblemInjector() {
       return new ProblemInjector();
     }

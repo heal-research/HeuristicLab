@@ -34,19 +34,11 @@ using HeuristicLab.CEDMA.Core;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
-    public enum ModelComplexity { Low, Medium, High };
-    public enum Algorithm { StandardGpRegression, OffspringGpRegression, StandardGpClassification, OffspringGpClassification, StandardGpForecasting, OffspringGpForecasting };
-
     private IStore store;
-    private ModelComplexity[] possibleComplexities = new ModelComplexity[] { ModelComplexity.Low, ModelComplexity.Medium, ModelComplexity.High };
-    private Dictionary<LearningTask, Algorithm[]> possibleAlgorithms = new Dictionary<LearningTask, Algorithm[]>() {
-      {LearningTask.Classification, new Algorithm[] { Algorithm.StandardGpClassification, Algorithm.OffspringGpClassification }},
-      {LearningTask.Regression, new Algorithm[] { Algorithm.StandardGpRegression, Algorithm.OffspringGpRegression }},
-      {LearningTask.TimeSeries, new Algorithm[] { Algorithm.StandardGpForecasting, Algorithm.OffspringGpForecasting }}
-    };
 
     private static int MaxGenerations {
       get { return 3; }
@@ -78,109 +70,41 @@ namespace HeuristicLab.CEDMA.Server {
       DataSet dataSet = new DataSet(store, dataSetEntity);
 
       int targetVariable = SelectTargetVariable(dataSet, dataSet.Problem.AllowedTargetVariables.ToArray());
-      Algorithm selectedAlgorithm = SelectAlgorithm(dataSet, targetVariable, possibleAlgorithms[dataSet.Problem.LearningTask]);
+      IAlgorithm selectedAlgorithm = SelectAlgorithm(dataSet, targetVariable, dataSet.Problem.LearningTask);
       string targetVariableName = dataSet.Problem.GetVariableName(targetVariable);
-      ModelComplexity selectedComplexity = SelectComplexity(dataSet, targetVariable, selectedAlgorithm, possibleComplexities);
 
-      Execution exec = CreateExecution(dataSet.Problem, targetVariable, selectedAlgorithm, selectedComplexity);
-      if (exec != null) {
+
+      if (selectedAlgorithm != null) {
+        Execution exec = CreateExecution(dataSet.Problem, targetVariable, selectedAlgorithm);
         exec.DataSetEntity = dataSetEntity;
         exec.TargetVariable = targetVariableName;
-      }
-      return exec;
+        return exec;
+      } else return null;
     }
 
     public abstract Entity SelectDataSet(Entity[] datasets);
     public abstract int SelectTargetVariable(DataSet dataSet, int[] targetVariables);
-    public abstract Algorithm SelectAlgorithm(DataSet dataSet, int targetVariable, Algorithm[] possibleAlgorithms);
-    public abstract ModelComplexity SelectComplexity(DataSet dataSet, int targetVariable, Algorithm algorithm, ModelComplexity[] possibleComplexities);
+    public abstract IAlgorithm SelectAlgorithm(DataSet dataSet, int targetVariable, LearningTask learningTask);
 
-    private Execution CreateExecution(Problem problem, int targetVariable, Algorithm algorithm, ModelComplexity complexity) {
-      switch (algorithm) {
-        case Algorithm.StandardGpRegression: {
-            var algo = new HeuristicLab.GP.StructureIdentification.StandardGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.PopulationSize = 10000;
-            algo.MaxGenerations = MaxGenerations;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "StandardGP - Complexity: " + complexity;
-            return exec;
-          }
-        case Algorithm.OffspringGpRegression: {
-            var algo = new HeuristicLab.GP.StructureIdentification.OffspringSelectionGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.MaxEvaluatedSolutions = MaxEvaluatedSolutions;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "OffspringGP - Complexity: " + complexity;
-            return exec;
-          }
-        case Algorithm.StandardGpClassification: {
-            var algo = new HeuristicLab.GP.StructureIdentification.Classification.StandardGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.PopulationSize = 10000;
-            algo.MaxGenerations = MaxGenerations;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "StandardGP - Complexity: " + complexity;
-            return exec;
-          }
-        case Algorithm.OffspringGpClassification: {
-            var algo = new HeuristicLab.GP.StructureIdentification.Classification.OffspringSelectionGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.MaxEvaluatedSolutions = MaxEvaluatedSolutions;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "OffspringGP - Complexity: " + complexity;
-            return exec;
-          }
-        case Algorithm.StandardGpForecasting: {
-            var algo = new HeuristicLab.GP.StructureIdentification.TimeSeries.StandardGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.PopulationSize = 10000;
-            algo.MaxGenerations = MaxGenerations;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "StandardGP - Complexity: " + complexity;
-            return exec;
-          }
-        case Algorithm.OffspringGpForecasting: {
-            var algo = new HeuristicLab.GP.StructureIdentification.TimeSeries.OffspringSelectionGP();
-            SetComplexityParameters(algo, complexity);
-            SetProblemParameters(algo, problem, targetVariable);
-            algo.MaxEvaluatedSolutions = MaxEvaluatedSolutions;
-            Execution exec = new Execution(algo.Engine);
-            exec.Description = "OffspringGP - Complexity: " + complexity;
-            return exec;
-          }
-        default: {
-            return null;
-          }
-      }
+    private Execution CreateExecution(Problem problem, int targetVariable, IAlgorithm algorithm) {
+      //switch (algorithm) {
+      //  case Algorithm.StandardGpRegression: {
+      //      var algo = new HeuristicLab.GP.StructureIdentification.StandardGP();
+      //      SetComplexityParameters(algo, complexity);
+      //      SetProblemParameters(algo, problem, targetVariable);
+      //      algo.PopulationSize = 10000;
+      //      algo.MaxGenerations = MaxGenerations;
+      //      Execution exec = new Execution(algo.Engine);
+      //      exec.Description = "StandardGP - Complexity: " + complexity;
+      //      return exec;
+      //    }
+      SetProblemParameters(algorithm, problem, targetVariable);
+      Execution exec = new Execution(algorithm.Engine);
+      exec.Description = algorithm.Name;
+      return exec;
     }
 
-    private void SetComplexityParameters(AlgorithmBase algo, ModelComplexity complexity) {
-      switch (complexity) {
-        case ModelComplexity.Low: {
-            algo.MaxTreeHeight = 5;
-            algo.MaxTreeSize = 20;
-            break;
-          }
-        case ModelComplexity.Medium: {
-            algo.MaxTreeHeight = 10;
-            algo.MaxTreeSize = 100;
-            break;
-          }
-        case ModelComplexity.High: {
-            algo.MaxTreeHeight = 12;
-            algo.MaxTreeSize = 200;
-            break;
-          }
-      }
-    }
-
-    private void SetProblemParameters(AlgorithmBase algo, Problem problem, int targetVariable) {
+    private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable) {
       algo.ProblemInjector.GetVariable("Dataset").Value = problem.DataSet;
       algo.ProblemInjector.GetVariable("TargetVariable").GetValue<IntData>().Data = targetVariable;
       algo.ProblemInjector.GetVariable("TrainingSamplesStart").GetValue<IntData>().Data = problem.TrainingSamplesStart;

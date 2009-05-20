@@ -34,9 +34,13 @@ using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Evolutionary;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public abstract class AlgorithmBase : ItemBase {
+  public abstract class AlgorithmBase : ItemBase, IAlgorithm, IStochasticAlgorithm {
+    public virtual string Name { get { return "GP"; } }
+    public virtual string Description { get { return "TODO"; } }
+
     public virtual double MutationRate {
       get { return GetVariableInjector().GetVariable("MutationRate").GetValue<DoubleData>().Data; }
       set { GetVariableInjector().GetVariable("MutationRate").GetValue<DoubleData>().Data = value; }
@@ -51,7 +55,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       set { GetRandomInjector().GetVariable("SetSeedRandomly").GetValue<BoolData>().Data = value; }
     }
 
-    public virtual int Seed {
+    public virtual int RandomSeed {
       get { return GetRandomInjector().GetVariable("Seed").GetValue<IntData>().Data; }
       set { GetRandomInjector().GetVariable("Seed").GetValue<IntData>().Data = value; }
     }
@@ -429,5 +433,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
     }
     #endregion
+
   }
 }

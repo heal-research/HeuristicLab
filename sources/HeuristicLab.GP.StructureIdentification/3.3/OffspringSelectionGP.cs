@@ -38,6 +38,7 @@ using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class OffspringSelectionGP : StandardGP {
+    public override string Name { get { return "OffspringSelectionGP"; } }
 
     public virtual int MaxEvaluatedSolutions {
       get { return GetVariableInjector().GetVariable("MaxEvaluatedSolutions").GetValue<IntData>().Data; }

@@ -131,21 +131,13 @@
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification.Classification\3.3\HeuristicLab.GP.StructureIdentification.Classification-3.3.csproj">
-      <Project>{7C20D100-8BEB-433A-9499-F075E2CB9297}</Project>
-      <Name>HeuristicLab.GP.StructureIdentification.Classification-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification.TimeSeries\3.3\HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.csproj">
-      <Project>{6084CFB5-733F-449D-9F92-2E40D13F0514}</Project>
-      <Name>HeuristicLab.GP.StructureIdentification.TimeSeries-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
-      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
-      <Name>HeuristicLab.GP.StructureIdentification-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Grid\3.2\HeuristicLab.Grid-3.2.csproj">
       <Project>{545CE756-98D8-423B-AC2E-6E7D70926E5C}</Project>
       <Name>HeuristicLab.Grid-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
+      <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
+      <Name>HeuristicLab.Modeling-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>

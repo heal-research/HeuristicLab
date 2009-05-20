@@ -38,6 +38,8 @@ using HeuristicLab.Modeling;
 namespace HeuristicLab.GP.StructureIdentification {
   public class StandardGP : AlgorithmBase, IEditable {
 
+    public override string Name { get { return "StandardGP"; } }
+
     public virtual int MaxGenerations {
       get { return GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data; }
       set { GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data = value; }

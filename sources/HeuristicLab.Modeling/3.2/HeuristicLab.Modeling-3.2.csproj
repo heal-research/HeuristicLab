@@ -82,7 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationProblemInjector.cs" />
+    <Compile Include="ITimeSeriesAlgorithm.cs" />
+    <Compile Include="IClassificationAlgorithm.cs" />
+    <Compile Include="IStochasticAlgorithm.cs" />
     <Compile Include="HeuristicLabModelingPlugin.cs" />
+    <Compile Include="IAlgorithm.cs" />
     <Compile Include="ProblemInjector.cs" />
     <Compile Include="ProblemInjectorView.cs">
       <SubType>UserControl</SubType>

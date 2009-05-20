@@ -32,9 +32,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Logging;
 using HeuristicLab.Operators.Programmable;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.SupportVectorMachines {
-  public class SupportVectorRegression : ItemBase, IEditable {
+  public class SupportVectorRegression : ItemBase, IEditable, IAlgorithm {
+
+    public string Name { get { return "SupportVectorRegression"; } }
+    public string Description { get { return "TODO"; } }
+
     private SequentialEngine.SequentialEngine engine;
     public IEngine Engine {
       get { return engine; }

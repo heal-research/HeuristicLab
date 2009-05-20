@@ -34,6 +34,7 @@ using HeuristicLab.CEDMA.Core;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public class RandomDispatcher : DispatcherBase {
@@ -43,12 +44,27 @@ namespace HeuristicLab.CEDMA.Server {
       random = new Random();
     }
 
-    public override Algorithm SelectAlgorithm(DataSet dataSet, int targetVariable, Algorithm[] possibleAlgorithms) {
-      return possibleAlgorithms[random.Next(possibleAlgorithms.Length)];
-    }
-
-    public override ModelComplexity SelectComplexity(DataSet dataSet, int targetVariable, Algorithm algorithm, ModelComplexity[] possibleComplexities) {
-      return possibleComplexities[random.Next(possibleComplexities.Length)];
+    public override IAlgorithm SelectAlgorithm(DataSet dataSet, int targetVariable, LearningTask learningTask) {
+      DiscoveryService ds = new DiscoveryService();
+      IAlgorithm[] algos = ds.GetInstances<IAlgorithm>();
+      switch (learningTask) {
+        case LearningTask.Regression: {
+            var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
+            if (regressionAlgos.Count() == 0) return null;
+            return regressionAlgos.ElementAt(random.Next(regressionAlgos.Count()));
+          }
+        case LearningTask.Classification: {
+            var classificationAlgos = algos.Where(a => (a as IClassificationAlgorithm) != null);
+            if (classificationAlgos.Count() == 0) return null;
+            return classificationAlgos.ElementAt(random.Next(classificationAlgos.Count()));
+          }
+        case LearningTask.TimeSeries: {
+            var timeSeriesAlgos = algos.Where(a => (a as ITimeSeriesAlgorithm) != null);
+            if (timeSeriesAlgos.Count() == 0) return null;
+            return timeSeriesAlgos.ElementAt(random.Next(timeSeriesAlgos.Count()));
+          }
+      }
+      return null;
     }
 
     public override Entity SelectDataSet(Entity[] datasets) {

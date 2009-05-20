@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,26 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Random;
-using HeuristicLab.Data;
-using HeuristicLab.Modeling;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
-  public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, IClassificationAlgorithm {
-    protected override IOperator CreateProblemInjector() {
-      return new ProblemInjector();
-    }
-
-    protected override IOperator CreateBestSolutionProcessor() {
-      IOperator seq = base.CreateBestSolutionProcessor();
-      seq.AddSubOperator(StandardGP.BestSolutionProcessor);
-      return seq;
-    }
+namespace HeuristicLab.Modeling {
+  public interface ITimeSeriesAlgorithm : IAlgorithm {
   }
 }
