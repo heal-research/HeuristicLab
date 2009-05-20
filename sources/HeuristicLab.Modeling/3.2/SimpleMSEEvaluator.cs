@@ -6,22 +6,22 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.SupportVectorMachines {
-  public class SimpleMSEEvaluator : OperatorBase{
+namespace HeuristicLab.Modeling {
+  public class SimpleMSEEvaluator : OperatorBase {
 
     public SimpleMSEEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(ItemList), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MSE", "Mean squarred error", typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      ItemList values = GetVariableValue<ItemList>("Values", scope, true);
+      DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, true);
       double sse = 0;
-      double cnt = 0;      
-      foreach (ItemList row in values) {
-        double estimated = ((DoubleData)row[0]).Data;
-        double target = ((DoubleData)row[1]).Data;
+      double cnt = 0;
+      for (int i = 0; i < values.Data.GetLength(0); i++) {
+        double estimated = values.Data[i, 0];
+        double target = values.Data[i, 1];
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
             !double.IsNaN(target) && !double.IsInfinity(target)) {
           double error = estimated - target;
@@ -31,7 +31,7 @@ namespace HeuristicLab.SupportVectorMachines {
       }
 
       double mse = sse / cnt;
-      scope.AddVariable(new Variable(scope.TranslateName("MSE"),new DoubleData(mse)));
+      scope.AddVariable(new Variable(scope.TranslateName("MSE"), new DoubleData(mse)));
       return null;
     }
   }

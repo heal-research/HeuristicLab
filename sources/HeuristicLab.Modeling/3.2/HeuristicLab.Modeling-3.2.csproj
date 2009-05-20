@@ -95,6 +95,8 @@
       <DependentUpon>ProblemInjectorView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleMSEEvaluator.cs" />
+    <Compile Include="SimpleR2Evaluator.cs" />
     <Compile Include="TimeSeriesProblemInjector.cs" />
   </ItemGroup>
   <ItemGroup>

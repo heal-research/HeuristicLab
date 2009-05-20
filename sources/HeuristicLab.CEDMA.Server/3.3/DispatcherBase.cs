@@ -39,15 +39,6 @@ using HeuristicLab.Modeling;
 namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IStore store;
-
-    private static int MaxGenerations {
-      get { return 3; }
-    }
-
-    private static int MaxEvaluatedSolutions {
-      get { return 3000; }
-    }
-
     public DispatcherBase(IStore store) {
       this.store = store;
     }
@@ -87,17 +78,6 @@ namespace HeuristicLab.CEDMA.Server {
     public abstract IAlgorithm SelectAlgorithm(DataSet dataSet, int targetVariable, LearningTask learningTask);
 
     private Execution CreateExecution(Problem problem, int targetVariable, IAlgorithm algorithm) {
-      //switch (algorithm) {
-      //  case Algorithm.StandardGpRegression: {
-      //      var algo = new HeuristicLab.GP.StructureIdentification.StandardGP();
-      //      SetComplexityParameters(algo, complexity);
-      //      SetProblemParameters(algo, problem, targetVariable);
-      //      algo.PopulationSize = 10000;
-      //      algo.MaxGenerations = MaxGenerations;
-      //      Execution exec = new Execution(algo.Engine);
-      //      exec.Description = "StandardGP - Complexity: " + complexity;
-      //      return exec;
-      //    }
       SetProblemParameters(algorithm, problem, targetVariable);
       Execution exec = new Execution(algorithm.Engine);
       exec.Description = algorithm.Name;

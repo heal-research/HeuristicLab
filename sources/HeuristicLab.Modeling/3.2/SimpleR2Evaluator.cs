@@ -6,24 +6,24 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.SupportVectorMachines {
-  public class SimpleR2Evaluator : OperatorBase{
+namespace HeuristicLab.Modeling {
+  public class SimpleR2Evaluator : OperatorBase {
 
     public SimpleR2Evaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(ItemList), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.In));
       AddVariableInfo(new VariableInfo("R2", "Coefficient of determination", typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      ItemList values = GetVariableValue<ItemList>("Values", scope, true);
+      DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, true);
 
       double targetMean = 0;
       double sse = 0;
       double cnt = 0;
-      foreach (ItemList row in values) {                                
-        double estimated = ((DoubleData)row[0]).Data;
-        double target = ((DoubleData)row[1]).Data;
+      for (int i = 0; i < values.Data.GetLength(0); i++) {
+        double estimated = values.Data[i, 0];
+        double target = values.Data[i, 1];
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
             !double.IsNaN(target) && !double.IsInfinity(target)) {
           targetMean += target;
@@ -35,8 +35,8 @@ namespace HeuristicLab.SupportVectorMachines {
       targetMean /= cnt;
 
       double targetDeviationTotalSumOfSquares = 0;
-      foreach (ItemList row in values) {
-        double target = ((DoubleData)row[1]).Data;
+      for (int i = 0; i < values.Data.GetLength(0); i++) {
+        double target = values.Data[i, 1];
         if (!double.IsNaN(target) && !double.IsInfinity(target)) {
           target = target - targetMean;
           target = target * target;

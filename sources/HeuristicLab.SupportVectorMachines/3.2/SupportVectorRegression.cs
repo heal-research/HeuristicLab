@@ -145,6 +145,7 @@ namespace HeuristicLab.SupportVectorMachines {
       BestSolutionStorer solStorer = new BestSolutionStorer();
       solStorer.GetVariableInfo("Quality").ActualName = "ValidationMSE";
       solStorer.GetVariableInfo("Maximization").Local = true;
+      solStorer.GetVariableInfo("BestSolution").ActualName = "BestValidationSolution";
       solStorer.AddVariable(new HeuristicLab.Core.Variable("Maximization", new BoolData(false)));
 
       costLoop.AddSubOperator(solStorer);
