@@ -113,22 +113,86 @@ namespace HeuristicLab.FixedOperators {
 
     public override IOperation Apply(IScope scope) {
       base.Apply(scope);
-      object o = (object)scope;
-      WorkerMethod(o);
-      //try {
-      //  executionThread = new Thread(new ParameterizedThreadStart(WorkerMethod));
-      //  executionThread.Name = "ExecutionThread";
-      //  executionThread.Start(o);
+      Stopwatch swApply = new Stopwatch();
+      swApply.Start();
+      for (int i = 0; i < SubOperators.Count; i++) {
+        if (scope.GetVariable(SubOperators[i].Name) != null)
+          scope.RemoveVariable(SubOperators[i].Name);
+        scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
+      }
 
-      //  //cancelThread = new Thread(new ThreadStart(CheckCancelFlag));
-      //  //cancelThread.Name = "CancelFlagCheckerThread";
-      //  //cancelThread.Start();
+      OperatorBase selector = (OperatorBase)GetVariableValue("Selector", scope, true);
+      QualityLogger ql = new QualityLogger();
 
-      //  executionThread.Join();
-      //}
-      //catch (ThreadAbortException) {
-      //  return new AtomicOperation(this, scope);
-      //}
+      BestAverageWorstQualityCalculator bawqc = new BestAverageWorstQualityCalculator();
+      DataCollector dc = new DataCollector();
+      ItemList<StringData> names = dc.GetVariable("VariableNames").GetValue<ItemList<StringData>>();
+      names.Add(new StringData("BestQuality"));
+      names.Add(new StringData("AverageQuality"));
+      names.Add(new StringData("WorstQuality"));
+
+      LinechartInjector lci = new LinechartInjector();
+      lci.GetVariableInfo("Linechart").ActualName = "Quality Linechart";
+      lci.GetVariable("NumberOfLines").GetValue<IntData>().Data = 3;
+
+      LessThanComparator ltc = new LessThanComparator();
+      ltc.GetVariableInfo("LeftSide").ActualName = "Generations";
+      ltc.GetVariableInfo("RightSide").ActualName = "MaximumGenerations";
+      ltc.GetVariableInfo("Result").ActualName = "GenerationsCondition";
+
+      IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
+      IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
+      nrOfGenerations.Data = 0;
+
+      IntData subscopeNr = new IntData(0);
+
+      IScope s;
+      IScope s2;
+      int tempExePointer;
+      int tempPersExePointer;
+      // fetch variables from scope for create children
+      InitializeExecuteCreateChildren(scope);
+      try {
+        for (int i = nrOfGenerations.Data; i < maxGenerations.Data; i++) {
+          Execute(selector, scope);
+
+          ////// Create Children //////
+          // ChildrenInitializer
+          s = scope.SubScopes[1];
+          Execute(ci, s);
+          tempExePointer = executionPointer;
+          tempPersExePointer = persistedExecutionPointer.Data;
+          // UniformSequentialSubScopesProcessor
+          for (int j = subscopeNr.Data; j < s.SubScopes.Count; j++ ) {
+            executionPointer = tempExePointer;
+            persistedExecutionPointer.Data = tempPersExePointer;
+            s2 = s.SubScopes[j];
+            Execute(crossover, s2);
+            // Stochastic Branch
+            if (random.NextDouble() < probability.Data)
+              Execute(mutator, s2);
+            Execute(evaluator, s2);
+            Execute(sr, s2);
+            Execute(counter, s2);
+          } // foreach
+
+          Execute(sorter, s);
+          ////// END Create Children //////
+
+          ExecuteCreateReplacementWithFixedConstrolStructures(scope);
+          Execute(ql, scope);
+          Execute(bawqc, scope);
+          Execute(dc, scope);
+          Execute(lci, scope);
+          nrOfGenerations.Data++;
+        } // for i
+      } // try
+      catch (CancelException) {
+        Console.WriteLine("Micro engine aborted by cancel flag.");
+      }
+
+      swApply.Stop();
+      Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
 
       if (Canceled) {
         return new AtomicOperation(this, scope);
@@ -137,173 +201,8 @@ namespace HeuristicLab.FixedOperators {
       return null;
     } // Apply
 
-    private void CheckCancelFlag() {
-      while (executionThread.IsAlive) {
-        if (Canceled) {
-          executionThread.Abort();
-          return;
-        }
-        Thread.Sleep(500);
-      } // while
-    } // CheckCancelFlag
-
     private void WorkerMethod(object o) {
-      try {
-        IScope scope = o as IScope;
-        Stopwatch swApply = new Stopwatch();
-        swApply.Start();
-        for (int i = 0; i < SubOperators.Count; i++) {
-          if (scope.GetVariable(SubOperators[i].Name) != null)
-            scope.RemoveVariable(SubOperators[i].Name);
-          scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
-        }
-
-        OperatorBase selector = (OperatorBase)GetVariableValue("Selector", scope, true);
-        QualityLogger ql = new QualityLogger();
-
-        BestAverageWorstQualityCalculator bawqc = new BestAverageWorstQualityCalculator();
-        DataCollector dc = new DataCollector();
-        ItemList<StringData> names = dc.GetVariable("VariableNames").GetValue<ItemList<StringData>>();
-        names.Add(new StringData("BestQuality"));
-        names.Add(new StringData("AverageQuality"));
-        names.Add(new StringData("WorstQuality"));
-
-        LinechartInjector lci = new LinechartInjector();
-        lci.GetVariableInfo("Linechart").ActualName = "Quality Linechart";
-        lci.GetVariable("NumberOfLines").GetValue<IntData>().Data = 3;
-
-        LessThanComparator ltc = new LessThanComparator();
-        ltc.GetVariableInfo("LeftSide").ActualName = "Generations";
-        ltc.GetVariableInfo("RightSide").ActualName = "MaximumGenerations";
-        ltc.GetVariableInfo("Result").ActualName = "GenerationsCondition";
-
-        IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
-        IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
-        nrOfGenerations.Data = 0;
-
-        threaded = false;
-        // fetch variables from scope for create children
-        InitializeExecuteCreateChildren(scope);
-        try {
-          //for (int i = nrOfGenerations.Data; i < maxGenerations.Data; i++) {
-          //  Execute(selector, scope, false);
-          //  ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
-          //  ExecuteCreateReplacementWithFixedConstrolStructures(scope);
-          //  ql.Execute(scope);
-          //  bawqc.Execute(scope);
-          //  dc.Execute(scope);
-          //  lci.Execute(scope);
-          //  nrOfGenerations.Data++;
-          //} // for i
-          for (int i = 0; i < maxGenerations.Data; i++) {
-            Execute(selector, scope, false);
-            ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
-            ExecuteCreateReplacementWithFixedConstrolStructures(scope);
-            Execute(ql, scope, false);
-            Execute(bawqc, scope, false);
-            Execute(dc, scope, false);
-            Execute(lci, scope, false);
-            nrOfGenerations.Data++;
-          } // for i
-        } // try
-        catch (CancelException) {
-          Console.WriteLine("Micro engine aborted by cancel flag.");
-        }
-
-        //for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
-        //  if (Canceled) {
-        //    executionPointer.Data = -1;
-        //    continue;
-        //  }
-        //  if (executionPointer.Data < 0)
-        //    Execute(selector, scope);
-
-        //  if (Canceled) {
-        //    executionPointer.Data = 0;
-        //    continue;
-        //  }
-        //  if (executionPointer.Data < 1)
-        //    ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
-
-        //  if (Canceled) {
-        //    executionPointer.Data = 1;
-        //    continue;
-        //  }
-        //  if (executionPointer.Data < 2)
-        //    ExecuteCreateReplacementWithFixedConstrolStructures(scope);
-
-        //  if (Canceled) {
-        //    executionPointer.Data = 2;
-        //    continue;
-        //  }
-        //  if (executionPointer.Data < 3) {
-        //    ql.Execute(scope);
-        //    bawqc.Execute(scope);
-        //    dc.Execute(scope);
-        //    lci.Execute(scope);
-        //    nrOfGenerations.Data++;
-        //  }
-        //  executionPointer.Data = -1;
-        //} // for i
-
-
-        //Stopwatch watch = new Stopwatch();
-        //long[] times = new long[10];
-        //timesExecuteCreateChildren = new long[10];
-        //for (int i = nrOfGenerations.Data; i < maxGenerations.Data && !Canceled; i++) {
-        //  watch.Start();
-        //  selector.Execute(scope);
-        //  watch.Stop();
-        //  times[0] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  ExecuteCreateChildrenWithFixedControlStructures(scope.SubScopes[1]);
-        //  watch.Stop();
-        //  times[1] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  ExecuteCreateReplacementWithFixedConstrolStructures(scope);
-        //  watch.Stop();
-        //  times[2] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  ql.Execute(scope);
-        //  watch.Stop();
-        //  times[3] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  bawqc.Execute(scope);
-        //  watch.Stop();
-        //  times[4] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  dc.Execute(scope);
-        //  watch.Stop();
-        //  times[5] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  lci.Execute(scope);
-        //  watch.Stop();
-        //  times[6] += watch.ElapsedTicks;
-        //  watch.Reset();
-        //  watch.Start();
-        //  nrOfGenerations.Data++;
-        //}
-
-        swApply.Stop();
-        Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
-
-        //if (Canceled) {
-        //  return new AtomicOperation(this, scope);
-        //}
-
-        //return null;
-
-      }
-      catch (ThreadAbortException) {
-
-        throw;
-      }
+     
     } // Apply
 
 
@@ -328,67 +227,34 @@ namespace HeuristicLab.FixedOperators {
     /// </summary>
     /// <param name="scope"></param>
     protected void ExecuteCreateChildrenWithFixedControlStructures(IScope scope) {
-      //// ChildrenInitializer
-      //ci.Apply(scope);
-      //// UniformSequentialSubScopesProcessor
-      //foreach (IScope s in scope.SubScopes) {
-      //  Execute(crossover, s, false);
-      //  // Stochastic Branch
-      //  if (random.NextDouble() < probability.Data)
-      //    Execute(mutator, s, false);
-      //  Execute(evaluator, s, false);
-      //  sr.Execute(s);
-      //  counter.Execute(s);
-      //} // foreach
-
-      //sorter.Execute(scope);
-
-      EmptyOperator empty = new EmptyOperator();
-
       // ChildrenInitializer
-      Execute(ci, scope, false);
+      Execute(ci, scope);
       // UniformSequentialSubScopesProcessor
       foreach (IScope s in scope.SubScopes) {
-        Execute(crossover, s, false);
+        Execute(crossover, s);
         // Stochastic Branch
         if (random.NextDouble() < probability.Data)
-          Execute(mutator, s, false);
-        else
-          Execute(empty, s, false);
-        Execute(evaluator, s, false);
-        Execute(sr, s, false);
-        Execute(counter, s, false);
+          Execute(mutator, s);
+        Execute(evaluator, s);
+        Execute(sr, s);
+        Execute(counter, s);
       } // foreach
 
-      Execute(sorter, scope, false);
+      Execute(sorter, scope);
     } // ExecuteCreateChildrenHWCS
 
     private void ExecuteCreateReplacementWithFixedConstrolStructures(IScope scope) {
       //// SequentialSubScopesProcessor
-      //ls.Execute(scope.SubScopes[0]);
-      //rr.Execute(scope.SubScopes[0]);
+      Execute(ls, scope.SubScopes[0]);
+      Execute(rr, scope.SubScopes[0]);
 
-      //rs.Execute(scope.SubScopes[1]);
-      //lr.Execute(scope.SubScopes[1]);
+      Execute(rs, scope.SubScopes[1]);
+      Execute(lr, scope.SubScopes[1]);
 
-      //mr.Execute(scope);
-      //sorter.Execute(scope);
-
-      Execute(ls, scope.SubScopes[0], false);
-      Execute(rr, scope.SubScopes[0], false);
-
-      Execute(rs, scope.SubScopes[1], false);
-      Execute(lr, scope.SubScopes[1], false);
-
-      Execute(mr, scope, false);
-      Execute(sorter, scope, false);
-
+      Execute(mr, scope);
+      Execute(sorter, scope);
     } // ExecuteCreateReplacementWithFixedConstrolStructures
 
-    //public override void Abort() {
-    //  base.Abort();
-    //  executionThread.Abort();
-    //} // Abort
 
   } // class FixedSGAMain
 } // namespace HeuristicLab.FixedOperators

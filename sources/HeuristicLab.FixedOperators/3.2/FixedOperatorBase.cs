@@ -29,12 +29,6 @@ using System.Diagnostics;
 
 namespace HeuristicLab.FixedOperators {
   class FixedOperatorBase : CombinedOperator {
-
-    private class TasksList {
-      public IOperator op;
-      public IScope scope;
-      public ManualResetEvent resetEvent;
-    }
     /// <summary>
     /// Execution pointer shows which command actually is executed
     /// </summary>
@@ -44,13 +38,6 @@ namespace HeuristicLab.FixedOperators {
     /// Execution pointer if execution was aborted previously
     /// </summary>
     protected IntData persistedExecutionPointer;
-
-    /// <summary>
-    /// If true, mini engine is executed in its own thread.
-    /// </summary>
-    protected bool threaded;
-
-    protected Thread engineThread;
 
     /// <summary>
     /// Current operator in execution.
@@ -65,45 +52,24 @@ namespace HeuristicLab.FixedOperators {
       return persistedExecutionPointer.Data > executionPointer;
     } // AlreadyExecuted
 
-    protected virtual void Execute(IOperator op, IScope scope, bool runInThread) {
-      if (!IsExecuted()) {
-        if (runInThread) {
-          try {
-            // causes fatal computing overhead 5:30 minutes for sga
-            //engineThread = new Thread(new ThreadStart(ExecuteOperation));
-            //engineThread.Start();
-            //engineThread.Join();
+    protected void ExecuteExitable(IOperator op, IScope scope) { 
+    
+    } // ExecuteExitable
 
-            // causes computing overhead, 11 sec for sga
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            TasksList tl = new TasksList() { op = op, scope = scope, resetEvent = new ManualResetEvent(false) };
-            Console.WriteLine(sw.ElapsedTicks);     
-            ThreadPool.QueueUserWorkItem(new WaitCallback(ExecuteOperationThreaded), (object)tl);
-            Console.WriteLine(sw.ElapsedTicks);
-            WaitHandle.WaitAll(new WaitHandle[] { tl.resetEvent });
-            Console.WriteLine(sw.ElapsedTicks); 
-          }
-          catch (ThreadAbortException) {
-            return;
-          }
-        } else {
-          ExecuteOperation(op, scope);
-        }
+    protected void SetRegion(string region) { 
+    
+    } // SetRegion
+
+    protected virtual void Execute(IOperator op, IScope scope) {
+      if (!IsExecuted()) {
+        ExecuteOperation(op, scope);
         persistedExecutionPointer.Data++;
       } // if not executed
       executionPointer++;
-      Console.WriteLine(executionPointer);
 
       if (Canceled)
         throw new CancelException();
     } // Execute
-
-    private void ExecuteOperationThreaded(object o) {
-      TasksList tl = (TasksList)o;
-      ExecuteOperation(tl.op, tl.scope);
-      tl.resetEvent.Set();
-    } // ExecuteOperationThreaded 
 
     protected void ExecuteOperation(IOperator op, IScope scope) {
       IOperation operation;
@@ -155,8 +121,6 @@ namespace HeuristicLab.FixedOperators {
       currentOperator.Abort();
       //engineThread.Abort();
     }
-
-
 
   } // class FixedBase
 

@@ -99,6 +99,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Copy of FixedOperatorBase.cs" />
+    <Compile Include="Copy of FixedSGAMain.cs" />
     <Compile Include="FixedOperatorBase.cs" />
     <Compile Include="FixedSGAMain.cs" />
     <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
