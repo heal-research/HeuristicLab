@@ -28,9 +28,9 @@ namespace HeuristicLab.ThreadParallelEngine {
   /// <summary>
   /// Plugin class for HeuristicLab.ThreadParallelEngine plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.ThreadParallelEngine-3.2")]
-  [PluginFile(Filename = "HeuristicLab.ThreadParallelEngine-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [ClassInfo(Name = "HeuristicLab.ThreadParallelEngine-3.3")]
+  [PluginFile(Filename = "HeuristicLab.ThreadParallelEngine-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
   public class HeuristicLabThreadParallelEnginePlugin : PluginBase {
   }
 }

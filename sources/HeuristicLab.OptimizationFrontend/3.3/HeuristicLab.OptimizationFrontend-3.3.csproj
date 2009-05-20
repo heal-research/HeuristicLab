@@ -1,21 +1,19 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E39AF78A-9692-472B-B061-E2F1B1AB2C92}</ProjectGuid>
+    <ProjectGuid>{BEE2B944-7F12-42CC-95A0-6EFB837FDA00}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.SGA</RootNamespace>
-    <AssemblyName>HeuristicLab.SGA-3.2</AssemblyName>
+    <RootNamespace>HeuristicLab.OptimizationFrontend</RootNamespace>
+    <AssemblyName>HeuristicLab.OptimizationFrontend-3.3</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.SGA-3.2.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.OptimizationFrontend-3.3.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,7 +44,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\HeuristicLab.SGA-3.2.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.OptimizationFrontend-3.2.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -63,7 +61,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\HeuristicLab.SGA-3.2.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\HeuristicLab.OptimizationFrontend-3.2.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -71,62 +69,62 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabSGAPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SGA.cs" />
-    <Compile Include="SGAEditor.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SGAEditor.Designer.cs">
-      <DependentUpon>SGAEditor.cs</DependentUpon>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AvailableOperatorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AvailableOperatorsForm.Designer.cs">
+      <DependentUpon>AvailableOperatorsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorForm.Designer.cs">
+      <DependentUpon>EditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeuristicLabOptimizationFrontendApplication.cs" />
+    <Compile Include="HeuristicLabOptimizationFrontendPlugin.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewForm.Designer.cs">
+      <DependentUpon>ViewForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
-      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
-      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
-      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
-      <Name>HeuristicLab.Evolutionary-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
-      <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
-      <Name>HeuristicLab.Logging-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
-      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
-      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
-      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
-      <Name>HeuristicLab.Selection-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.2\HeuristicLab.SequentialEngine-3.2.csproj">
-      <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
-      <Name>HeuristicLab.SequentialEngine-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -134,12 +132,42 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SGAEditor.resx">
+    <Content Include="Resources\HeuristicLab.ico" />
+    <Content Include="Resources\Logo_gray.gif" />
+    <Content Include="Resources\New.png" />
+    <Content Include="Resources\Open.png" />
+    <Content Include="Resources\Save.png" />
+    <Content Include="Resources\SaveAll.png" />
+    <Content Include="Resources\Tools.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
-      <DependentUpon>SGAEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AvailableOperatorsForm.resx">
+      <DependentUpon>AvailableOperatorsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditorForm.resx">
+      <DependentUpon>EditorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewForm.resx">
+      <DependentUpon>ViewForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

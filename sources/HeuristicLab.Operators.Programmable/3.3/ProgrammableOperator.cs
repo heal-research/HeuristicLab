@@ -33,16 +33,20 @@ using System.Text.RegularExpressions;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Data.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Programmable {
   public class ProgrammableOperator : OperatorBase {
     private MethodInfo executeMethod;
 
+    [Storable]
     private string myDescription;
     public override string Description {
       get { return myDescription; }
     }
-    private string myCode;
+
+    [Storable]
+    private string myCode;    
     public string Code {
       get { return myCode; }
       set {
@@ -198,25 +202,5 @@ namespace HeuristicLab.Operators.Programmable {
       if (CodeChanged != null)
         CodeChanged(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode descriptionNode = document.CreateNode(XmlNodeType.Element, "Description", null);
-      descriptionNode.InnerText = myDescription;
-      node.AppendChild(descriptionNode);
-      XmlNode codeNode = document.CreateNode(XmlNodeType.Element, "Code", null);
-      codeNode.InnerText = myCode;
-      node.AppendChild(codeNode);
-      return node;
-    }
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      XmlNode descriptionNode = node.SelectSingleNode("Description");
-      myDescription = descriptionNode.InnerText;
-      XmlNode codeNode = node.SelectSingleNode("Code");
-      myCode = codeNode.InnerText;
-    }
-    #endregion
   }
 }

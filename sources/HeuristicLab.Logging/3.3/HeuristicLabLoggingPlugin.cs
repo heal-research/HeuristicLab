@@ -28,13 +28,14 @@ namespace HeuristicLab.Logging {
   /// <summary>
   /// Plugin class for HeuristicLab.Logging plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.Logging-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Logging-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [ClassInfo(Name = "HeuristicLab.Logging-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Logging-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
   [Dependency(Dependency = "HeuristicLab.Charting-3.2")]
   [Dependency(Dependency = "HeuristicLab.Charting.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabLoggingPlugin : PluginBase {
   }
 }

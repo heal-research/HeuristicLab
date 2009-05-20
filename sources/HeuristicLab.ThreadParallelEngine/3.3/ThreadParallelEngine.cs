@@ -25,6 +25,7 @@ using System.Text;
 using System.Xml;
 using System.Threading;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.ThreadParallelEngine {
   /// <summary>
@@ -43,6 +44,7 @@ namespace HeuristicLab.ThreadParallelEngine {
     private IOperator[] currentOperators;
     private int operatorIndex;
 
+    [Storable]
     private int myWorkers;
     /// <summary>
     /// Gets or sets the number of worker threads of the current engine.
@@ -210,37 +212,5 @@ namespace HeuristicLab.ThreadParallelEngine {
       if (WorkersChanged != null)
         WorkersChanged(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The number of workers is saved as <see cref="XmlAttribute"/> with attribute name 
-    /// <c>Workers</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where the data is saved.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute workersAttribute = document.CreateAttribute("Workers");
-      workersAttribute.Value = Workers.ToString();
-      node.Attributes.Append(workersAttribute);
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted engine from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>The number of workers must be saved in a specific way, see <see cref="GetXmlNode"/>
-    /// for further information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the instance is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myWorkers = int.Parse(node.Attributes["Workers"].Value);
-    }
-    #endregion
   }
 }

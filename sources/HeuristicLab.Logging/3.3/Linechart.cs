@@ -25,12 +25,14 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Logging {
   /// <summary>
   /// Class to represent a Linechart.
   /// </summary>
   public class Linechart : ItemBase, IVisualizationItem {
+    [Storable]
     private IntData myNumberOfLines;
     /// <summary>
     /// Gets or sets the number of lines of the current instance.
@@ -45,6 +47,7 @@ namespace HeuristicLab.Logging {
         }
       }
     }
+    [Storable]
     private ItemList myValues;
     /// <summary>
     /// Gets or sets the values of the current instance.
@@ -122,36 +125,5 @@ namespace HeuristicLab.Logging {
       if (ValuesChanged != null)
         ValuesChanged(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The number of lines and the values are saved as child nodes with tag 
-    /// name <c>NumberOfLines</c> and <c>Values</c> respectively.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("NumberOfLines", myNumberOfLines, document, persistedObjects));
-      node.AppendChild(PersistenceManager.Persist("Values", Values, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted item from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Has to be saved in a special way, see <see cref="GetXmlNode"/> for further information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the Linechart is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myNumberOfLines = (IntData)PersistenceManager.Restore(node.SelectSingleNode("NumberOfLines"), restoredObjects);
-      myValues = (ItemList)PersistenceManager.Restore(node.SelectSingleNode("Values"), restoredObjects);
-    }
-    #endregion
   }
 }

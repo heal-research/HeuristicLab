@@ -25,12 +25,14 @@ using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Logging {
   /// <summary>
   /// Represents a log object where to store a specific value that should be logged.
   /// </summary>
   public class Log : ItemBase, IVisualizationItem {
+    [Storable]
     private ItemList myItems;
     /// <summary>
     /// Gets or sets the items of the current instance.
@@ -85,34 +87,5 @@ namespace HeuristicLab.Logging {
       if (ItemsChanged != null)
         ItemsChanged(this, new EventArgs());
     }
-
-    #region Persistence Methods
-    /// <summary>
-    /// Saves the current instance as <see cref="XmlNode"/> in the specified <paramref name="document"/>.
-    /// </summary>
-    /// <remarks>The items of the current instance are saved as a child node with the tag name
-    /// <c>Items</c>.</remarks>
-    /// <param name="name">The (tag)name of the <see cref="XmlNode"/>.</param>
-    /// <param name="document">The <see cref="XmlDocument"/> where to save the data.</param>
-    /// <param name="persistedObjects">The dictionary of all already persisted objects. 
-    /// (Needed to avoid cycles.)</param>
-    /// <returns>The saved <see cref="XmlNode"/>.</returns>
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Items", Items, document, persistedObjects));
-      return node;
-    }
-    /// <summary>
-    /// Loads the persisted item from the specified <paramref name="node"/>.
-    /// </summary>
-    /// <remarks>Has to be saved in a special way, see <see cref="GetXmlNode"/> for further information.</remarks>
-    /// <param name="node">The <see cref="XmlNode"/> where the Log is saved.</param>
-    /// <param name="restoredObjects">The dictionary of all already restored objects. 
-    /// (Needed to avoid cycles.)</param>
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      myItems = (ItemList)PersistenceManager.Restore(node.SelectSingleNode("Items"), restoredObjects);
-    }
-    #endregion
   }
 }

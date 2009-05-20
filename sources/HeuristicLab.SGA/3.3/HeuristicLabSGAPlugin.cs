@@ -28,16 +28,17 @@ namespace HeuristicLab.SGA {
   /// <summary>
   /// Plugin class for HeuristicLab.SGA plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.SGA-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SGA-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
-  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [ClassInfo(Name = "HeuristicLab.SGA-3.3")]
+  [PluginFile(Filename = "HeuristicLab.SGA-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Evolutionary-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Selection-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Logging-3.3")]
+  [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabSGAPlugin : PluginBase {
   }
 }

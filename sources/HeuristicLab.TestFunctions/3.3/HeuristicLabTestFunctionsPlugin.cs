@@ -28,11 +28,11 @@ namespace HeuristicLab.TestFunctions {
   /// <summary>
   /// Plugin class for HeuristicLab.TestFunctions plugin.
   /// </summary>
-  [ClassInfo(Name = "HeuristicLab.TestFunctions-3.2")]
-  [PluginFile(Filename = "HeuristicLab.TestFunctions-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [ClassInfo(Name = "HeuristicLab.TestFunctions-3.3")]
+  [PluginFile(Filename = "HeuristicLab.TestFunctions-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
   public class HeuristicLabTestFunctionsPlugin : PluginBase {
   }
 }
