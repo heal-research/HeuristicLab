@@ -42,7 +42,7 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.In));
 
-      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(ItemList), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
 
 
@@ -59,16 +59,13 @@ namespace HeuristicLab.SupportVectorMachines {
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);
 
-      ItemList predictedValues = new ItemList();
-      ItemList row;
+      double[,] values = new double[end-start, 2];
       for (int i = 0; i < end - start; i++) {
-        row = new ItemList();
-        row.Add(new DoubleData(SVM.Prediction.Predict(model, scaledProblem.X[i])));
-        row.Add(new DoubleData(dataset.Samples[(start + i) * dataset.Columns + targetVariable]));
-        predictedValues.Add(row);
+        values[i,0] = SVM.Prediction.Predict(model, scaledProblem.X[i]);
+        values[i,1] = dataset.Samples[(start + i) * dataset.Columns + targetVariable];
       }
 
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Values"), predictedValues));
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Values"), new DoubleMatrixData(values)));
       return null;
     }
   }
