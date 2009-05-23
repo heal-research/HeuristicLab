@@ -160,6 +160,7 @@
     <Compile Include="RectangleD.cs" />
     <Compile Include="RectangleShape.cs" />
     <Compile Include="SizeD.cs" />
+    <Compile Include="TooltipListener.cs" />
     <Compile Include="Transform.cs" />
     <Compile Include="Translate.cs" />
     <Compile Include="WorldShape.cs" />

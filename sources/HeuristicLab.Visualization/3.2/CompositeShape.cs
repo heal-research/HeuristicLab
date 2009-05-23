@@ -57,6 +57,11 @@ namespace HeuristicLab.Visualization {
       return shapes[index];
     }
 
+
+    /// <summary>
+    /// Adds a shape to the container
+    /// </summary>
+    /// <param name="shape"> the Shape to add</param>
     public void AddShape(IShape shape) {
       shape.Parent = this;
 
@@ -69,6 +74,29 @@ namespace HeuristicLab.Visualization {
                                      Math.Max(boundingBox.Y2, shape.BoundingBox.Y2));
       }
       shapes.Add(shape);
+    }
+
+    /// <summary>
+    /// Recalculate the bounding box
+    /// </summary>
+    private void InitBoundingBox() {
+      if (shapes.Count > 0) 
+        boundingBox = shapes[0].BoundingBox;
+      foreach (var shape in shapes) {
+        boundingBox = new RectangleD(Math.Min(boundingBox.X1, shape.BoundingBox.X1),
+                                    Math.Min(boundingBox.Y1, shape.BoundingBox.Y1),
+                                    Math.Max(boundingBox.X2, shape.BoundingBox.X2),
+                                    Math.Max(boundingBox.Y2, shape.BoundingBox.Y2));
+      }
+    }
+
+    /// <summary>
+    /// Removes a Shape from the container and reinitializes the bounding box
+    /// </summary>
+    /// <param name="shape">the Shape to remove</param>
+    public void RemoveShape(IShape shape) {
+      shapes.Remove(shape);
+      InitBoundingBox();
     }
   }
 }

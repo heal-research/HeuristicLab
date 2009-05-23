@@ -30,6 +30,9 @@ namespace HeuristicLab.Visualization {
 
     private const int YAxisWidth = 100;
     private const int XAxisHeight = 40;
+    private readonly TooltipListener toolTipListener;
+    private readonly ToolTip valueToolTip;
+    private Point currentMousePos;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -54,6 +57,12 @@ namespace HeuristicLab.Visualization {
       viewSettings.OnUpdateSettings += UpdateViewSettings;
 
       Item = model;
+
+      valueToolTip = new ToolTip();
+      toolTipListener = new TooltipListener();
+      toolTipListener.ShowToolTip += ShowToolTip;
+      mouseEventListener = toolTipListener;
+      currentMousePos = new Point(0, 0);
 
       this.ResizeRedraw = true;
 
@@ -136,7 +145,6 @@ namespace HeuristicLab.Visualization {
 
       canvas.AddShape(titleShape);
       canvas.AddShape(legendShape);
-
       canvas.AddShape(userInteractionShape);
 
       titleShape.X = 10;
@@ -159,7 +167,7 @@ namespace HeuristicLab.Visualization {
       }
 
       int yAxisLeft = 0;
-      int yAxisRight = (int)linesAreaBoundingBox.X2;
+      int yAxisRight = (int) linesAreaBoundingBox.X2;
 
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
@@ -186,7 +194,8 @@ namespace HeuristicLab.Visualization {
       }
 
       userInteractionShape.BoundingBox = linesAreaBoundingBox;
-      userInteractionShape.ClippingArea = new RectangleD(0, 0, userInteractionShape.BoundingBox.Width, userInteractionShape.BoundingBox.Height);
+      userInteractionShape.ClippingArea = new RectangleD(0, 0, userInteractionShape.BoundingBox.Width,
+                                                         userInteractionShape.BoundingBox.Height);
 
       xAxis.BoundingBox = new RectangleD(linesAreaBoundingBox.X1,
                                          0,
@@ -198,6 +207,11 @@ namespace HeuristicLab.Visualization {
 
     private readonly Dictionary<YAxisDescriptor, YAxisInfo> yAxisInfos = new Dictionary<YAxisDescriptor, YAxisInfo>();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="yAxisDescriptor"></param>
+    /// <returns></returns>
     private YAxisInfo GetYAxisInfo(YAxisDescriptor yAxisDescriptor) {
       YAxisInfo info;
 
@@ -208,6 +222,9 @@ namespace HeuristicLab.Visualization {
 
       return info;
     }
+
+
+    #region Legend-specific
 
     /// <summary>
     /// sets the legend position
@@ -234,7 +251,8 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendRight() {
       // legend right
-      legendShape.BoundingBox = new RectangleD(canvasUI.Width - legendShape.GetMaxLabelLength(), 10, canvasUI.Width, canvasUI.Height - 50);
+      legendShape.BoundingBox = new RectangleD(canvasUI.Width - legendShape.GetMaxLabelLength(), 10, canvasUI.Width,
+                                               canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = false;
       legendShape.CreateLegend();
@@ -252,7 +270,8 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendTop() {
       // legend top
-      legendShape.BoundingBox = new RectangleD(100, canvasUI.Height - canvasUI.Height, canvasUI.Width, canvasUI.Height - 10);
+      legendShape.BoundingBox = new RectangleD(100, canvasUI.Height - canvasUI.Height, canvasUI.Width,
+                                               canvasUI.Height - 10);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;
       legendShape.Top = true;
@@ -268,9 +287,36 @@ namespace HeuristicLab.Visualization {
       legendShape.CreateLegend();
     }
 
+    #endregion
+
+    /// <summary>
+    /// Shows the Tooltip with the real values of a datapoint, if the mousepoint is near to one
+    /// </summary>
+    /// <param name="location"></param>
+    private void ShowToolTip(Point location) {
+      valueToolTip.Hide(this);
+      if (rowEntries.Count > 0) {
+        double dx = Transform.ToWorldX(location.X, this.rowEntries[0].LinesShape.Viewport,
+                                       this.rowEntries[0].LinesShape.ClippingArea);
+        int ix = (int) Math.Round(dx);
+        foreach (var rowEntry in rowEntries) {
+          if ((rowEntry.DataRow.Count > ix) && (ix > 0) && ((rowEntry.DataRow.LineType == DataRowType.Normal)||(rowEntry.DataRow.LineType==DataRowType.Points))) {
+            Point screenDataP = Transform.ToScreen(new PointD(ix, rowEntry.DataRow[ix]), rowEntry.LinesShape.Viewport,
+                                                   rowEntry.LinesShape.ClippingArea);
+            if ((Math.Abs(screenDataP.X - location.X) <= 6) && (Math.Abs(screenDataP.Y - location.Y) <= 6)) {
+              valueToolTip.Show(("\t x:" + ix + " y:" + rowEntry.DataRow[ix]), this, screenDataP.X, screenDataP.Y);
+            }
+          }
+        }
+      }
+    }
+
+
+
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
       OptionsDialog optionsdlg = new OptionsDialog(model);
       optionsdlg.Show();
+      mouseEventListener = toolTipListener;
     }
 
     private void exportToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -407,6 +453,10 @@ namespace HeuristicLab.Visualization {
                                                y2);
     }
 
+    /// <summary>
+    /// Creates the shapes for the data of the given row and stores them.
+    /// </summary>
+    /// <param name="row">Datarow, whose data items should be converted to shapes</param>
     private void InitLineShapes(IDataRow row) {
       RowEntry rowEntry = new RowEntry(row);
       rowEntries.Add(rowEntry);
@@ -418,7 +468,11 @@ namespace HeuristicLab.Visualization {
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
         }
-      } else {
+      } else if (row.LineType == DataRowType.Points) {
+        rowEntry.showMarkers(true);      //no lines, only markers are shown!!
+        for (int i = 0; i < row.Count; i++)
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i , row[i], 8, row.Color));
+      } else if (row.LineType == DataRowType.Normal) {
         rowEntry.showMarkers(row.ShowMarkers);
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
@@ -433,6 +487,13 @@ namespace HeuristicLab.Visualization {
       ZoomToFullView();
     }
 
+    /// <summary>
+    /// Handles the event, when a value of a datarow was changed
+    /// </summary>
+    /// <param name="row">row in which the data was changed</param>
+    /// <param name="value">new value of the data point</param>
+    /// <param name="index">index in the datarow of the changed datapoint</param>
+    /// <param name="action">the performed action (added, modified, deleted)</param>
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       RowEntry rowEntry = rowToRowEntry[row];
 
@@ -441,21 +502,54 @@ namespace HeuristicLab.Visualization {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
-        } else {
+        } else if(action==Action.Deleted) {
+          throw new ArgumentException("It is unwise to delete the only value of the SinglevalueRow!!");
+        }else if(action ==Action.Modified){
           LineShape lineShape = rowEntry.LinesShape.GetShape(0);
           lineShape.Y1 = value;
           lineShape.Y2 = value;
         }
-      } else {
+      } else if (row.LineType == DataRowType.Points) {
+        if (action == Action.Added) {
+          if(rowEntry.LinesShape.Count==0)
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.Color));
+          if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
+            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+                                                row.Style);
+            rowEntry.LinesShape.AddShape(lineShape);
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
+          } else {
+            throw new ArgumentException("Adding a value is only possible at the end of a row!");
+          }
+        } else if (action == Action.Modified) {
+          // not the first value
+          if (index > 0) {
+            rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
+          }
+
+          // not the last value
+          if (index < row.Count - 1) {
+            rowEntry.LinesShape.GetShape(index).Y1 = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
+          }
+        } else if(action == Action.Deleted) {
+          if (index == row.Count - 1)
+            rowEntry.LinesShape.RemoveMarkerShape(rowEntry.LinesShape.markersShape.GetShape(index));
+          else
+            throw new NotSupportedException("Deleting of values other than the last one is not supported!");
+        }
+        
+      } else if (row.LineType == DataRowType.Normal) {
         if (index > rowEntry.LinesShape.Count + 1) {
-          //MarkersShape is on position zero
           throw new NotImplementedException();
         }
 
         if (action == Action.Added) {
-          // new value was added
+          if (rowEntry.LinesShape.Count == 0)
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.Color));
           if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
-            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+            LineShape lineShape = new LineShape(index-1, row[index-1], index, row[index], row.Color, row.Thickness,
                                                 row.Style);
             rowEntry.LinesShape.AddShape(lineShape);
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
@@ -464,14 +558,20 @@ namespace HeuristicLab.Visualization {
           // not the first value
           if (index > 0) {
             rowEntry.LinesShape.GetShape(index - 1).Y2 = value;
-            ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index - 1)).Y = value;
           }
 
           // not the last value
-          if (index > 0 && index < row.Count - 1) {
+          if (index < row.Count - 1) {
             rowEntry.LinesShape.GetShape(index).Y1 = value;
-            ((MarkerShape)rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
+            ((MarkerShape) rowEntry.LinesShape.markersShape.GetShape(index)).Y = value;
           }
+        } else if (action == Action.Deleted) {
+          if (index == row.Count - 1) {
+            rowEntry.LinesShape.RemoveMarkerShape(rowEntry.LinesShape.markersShape.GetShape(index));
+            rowEntry.LinesShape.RemoveShape(rowEntry.LinesShape.GetShape(index));
+          } else
+            throw new NotSupportedException("Deleting of values other than the last one is not supported!");
         }
       }
 
@@ -519,7 +619,8 @@ namespace HeuristicLab.Visualization {
 
       foreach (RowEntry rowEntry in rowEntries) {
         if (rowEntry.DataRow.YAxis.ClipChangeable) {
-          clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea, rowEntry.LinesShape.Viewport);
+          clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea,
+                                                rowEntry.LinesShape.Viewport);
           SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
         }
       }
@@ -549,7 +650,8 @@ namespace HeuristicLab.Visualization {
     }
 
     private void DrawRectangle(Rectangle rectangle) {
-      rectangleShape.Rectangle = Transform.ToWorld(rectangle, userInteractionShape.Viewport, userInteractionShape.ClippingArea);
+      rectangleShape.Rectangle = Transform.ToWorld(rectangle, userInteractionShape.Viewport,
+                                                   userInteractionShape.ClippingArea);
       canvasUI.Invalidate();
     }
 
@@ -559,7 +661,9 @@ namespace HeuristicLab.Visualization {
       Focus();
 
       if (e.Button == MouseButtons.Right) {
-        contextMenu.Show(PointToScreen(e.Location));
+        valueToolTip.Hide(this);
+        mouseEventListener = null;
+        this.contextMenu.Show(PointToScreen(e.Location));
       } else if (e.Button == MouseButtons.Left) {
         if (ModifierKeys == Keys.None) {
           PanListener panListener = new PanListener(e.Location);
@@ -581,9 +685,13 @@ namespace HeuristicLab.Visualization {
     }
 
     private void canvasUI_MouseMove(object sender, MouseEventArgs e) {
+      if (currentMousePos == e.Location)
+        return;
       if (mouseEventListener != null) {
         mouseEventListener.MouseMove(sender, e);
       }
+
+      currentMousePos = e.Location;
     }
 
     private void canvasUI_MouseUp(object sender, MouseEventArgs e) {
@@ -591,7 +699,7 @@ namespace HeuristicLab.Visualization {
         mouseEventListener.MouseUp(sender, e);
       }
 
-      mouseEventListener = null;
+      mouseEventListener = toolTipListener;
     }
 
     private void canvasUI1_MouseWheel(object sender, MouseEventArgs e) {
@@ -639,9 +747,13 @@ namespace HeuristicLab.Visualization {
             lineShape.LSThickness = row.Thickness;
           }
         }
-        this.markersShape.ShowChildShapes = row.ShowMarkers;
+        markersShape.ShowChildShapes = row.ShowMarkers;
       }
 
+      /// <summary>
+      /// Draws all Shapes in the chart
+      /// </summary>
+      /// <param name="graphics"></param>
       public override void Draw(Graphics graphics) {
         GraphicsState gstate = graphics.Save();
 
@@ -659,12 +771,17 @@ namespace HeuristicLab.Visualization {
         markersShape.AddShape(shape);
       }
 
+      public void RemoveMarkerShape(IShape shape) {
+        shape.Parent = this;
+        markersShape.RemoveShape(shape);
+      }
+
       public int Count {
         get { return shapes.Count; }
       }
 
       public LineShape GetShape(int index) {
-        return (LineShape)shapes[index]; //shapes[0] is markersShape!!
+        return (LineShape) shapes[index]; //shapes[0] is markersShape!!
       }
     }
 

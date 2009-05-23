@@ -2,7 +2,8 @@ using System.Drawing;
 
 namespace HeuristicLab.Visualization {
   public enum DataRowType {
-    Normal, SingleValue
+    Normal, SingleValue,
+    Points
   }
 
   public interface IDataRow {
