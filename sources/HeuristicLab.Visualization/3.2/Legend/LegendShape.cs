@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -13,24 +12,15 @@ namespace HeuristicLab.Visualization.Legend {
   public class LegendShape : WorldShape {
     private readonly IList<LegendItem> legendItems = new List<LegendItem>();
     // legend draw default value: column
-    private bool row;
-    private bool top;
 
     private Color color = Color.Blue;
     private Font font = new Font("Arial", 8);
 
+    public bool Row { get; set; }
+    public bool Top { get; set; }
+
     public LegendShape() {
       CreateLegend();
-    }
-
-    public bool Row {
-      set { row = value; }
-      get { return row; }
-    }
-
-    public bool Top {
-      set { top = value; }
-      get { return top; }
     }
 
     private bool ExistsLegendItems() {
@@ -46,12 +36,12 @@ namespace HeuristicLab.Visualization.Legend {
         double x = ClippingArea.X1;
         double y = ClippingArea.Y2;
 
-        if (row && !top) {
+        if (Row && !Top) {
           y = GetOptimalBottomHeight();
         }
         int legendItemCounter = 1;
         foreach (LegendItem item in legendItems) {
-          if (!row) {
+          if (!Row) {
             CreateColumn(item, y);
             y -= Font.Height;
           } else {
@@ -67,6 +57,10 @@ namespace HeuristicLab.Visualization.Legend {
       }
     }
 
+    /// <summary>
+    /// calculates the optimal height, when the legend shall be draw at the bottom
+    /// </summary>
+    /// <returns>optimal bottom height</returns>
     private double GetOptimalBottomHeight() {
       int rowsToDraw = 1;
       for (int i = 0; i < legendItems.Count; i++) {
@@ -77,30 +71,14 @@ namespace HeuristicLab.Visualization.Legend {
       return (Font.Height + 12) * rowsToDraw;
     }
 
-    ///// <summary>
-    ///// returns the maximum number of items per row to paint
-    ///// </summary>
-    ///// <returns>number of items per row</returns>
-    //public int GetNrOfItemsPerRow() {
-    //  double sum = 0;
-    //  double caw = ClippingArea.Width;
-    //  int items = 0;
-    //  foreach (var item in legendItems) {
-    //    sum += GetLabelLengthInPixel(item);
-    //    if (sum < caw) {
-    //      items++;
-    //    }
-    //  }
-    //  if (items == 0) {
-    //    items++;
-    //  }
-    //  return items;
-    //}
-
     /// <summary>
-    /// returns the maximum number of items per row to paint
+    /// returns a boolean value, if the new legend item has to be paint in a 
+    /// new row
     /// </summary>
-    /// <returns>number of items per row</returns>
+    /// <returns>
+    ///   true, draw legend item in a new row
+    ///   false, draw the legend item in the current row
+    /// </returns>
     private bool IsNewRow(int toCurrentItem) {
       double sum = 0;
       double caw = ClippingArea.Width;
@@ -116,8 +94,8 @@ namespace HeuristicLab.Visualization.Legend {
     /// <summary>
     /// returns the length of the current legenditem in pixel
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
+    /// <param name="item">legend item to calculate the length</param>
+    /// <returns>length of the legend item</returns>
     private int GetLabelLengthInPixel(LegendItem item) {
       int dummy = (int)(item.Label.Length*Font.Size + 20);
       if (dummy < LegendItem.WIDTH) {
@@ -144,7 +122,7 @@ namespace HeuristicLab.Visualization.Legend {
     /// <param name="y">y axis to draw the item</param>
     private void CreateColumn(LegendItem item, double y) {
       AddShape(new LineShape(10, y - (Font.Height / 2), 30, y - (Font.Height / 2), item.Color, item.Thickness, DrawingStyle.Solid));
-      AddShape(new TextShape(Font.Height+12, y, item.Label, Font, Color));
+      AddShape(new TextShape(35, y, item.Label, Font, Color));//Font.Height+12
     }
 
     /// <summary>
@@ -157,7 +135,7 @@ namespace HeuristicLab.Visualization.Legend {
 
     /// <summary>
     /// searches the longest label and returns it with factor of the the current font size
-    /// useful to set the width of the legend
+    /// useful to set the width of the legend area on the left or right side
     /// </summary>
     /// <returns>max label length with factor of the current font size</returns>
     public int GetMaxLabelLength() {

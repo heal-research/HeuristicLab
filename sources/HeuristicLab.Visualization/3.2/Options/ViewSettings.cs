@@ -23,7 +23,7 @@ namespace HeuristicLab.Visualization.Options {
       xAxisFont = new Font("Arial", 8);
       xAxisColor = Color.Blue;
 
-      legendPosition = LegendPosition.Bottom;
+      legendPosition = LegendPosition.Right;
     }
 
     public ViewSettings(ViewSettings src) {
