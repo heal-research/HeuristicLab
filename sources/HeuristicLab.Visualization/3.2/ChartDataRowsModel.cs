@@ -11,15 +11,27 @@ namespace HeuristicLab.Visualization{
   public delegate void DataRowRemovedHandler(IDataRow row);
   public delegate void ModelChangedHandler();
 
-  public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
+  public class ChartDataRowsModel : ItemBase, IChartDataRowsModel {
     private string title = "Title";
-
     private ViewSettings viewSettings = new ViewSettings();
-
     private readonly XAxisDescriptor xAxisDescriptor = new XAxisDescriptor();
+    private readonly YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
+    private readonly List<IDataRow> rows = new List<IDataRow>();
 
     public ChartDataRowsModel() {
       this.XAxis.XAxisDescriptorChanged += delegate { OnModelChanged(); };
+    }
+
+    public override IView CreateView() {
+      return new LineChart(this);
+    }
+
+    public string Title {
+      get { return title; }
+      set {
+        title = value;
+        OnModelChanged();
+      }
     }
 
     public XAxisDescriptor XAxis {
@@ -38,26 +50,13 @@ namespace HeuristicLab.Visualization{
       }
     }
 
-
-    private readonly List<IDataRow> rows = new List<IDataRow>();
+    public YAxisDescriptor DefaultYAxis {
+      get { return defaultYAxisDescriptor; }
+    }
 
     public List<IDataRow> Rows{
       get { return rows; }
     }
-
-    public string Title {
-      get { return title; }
-      set {
-        title = value;
-        OnModelChanged();
-      }
-    }
-
-    public override IView CreateView() {
-      return new LineChart(this);
-    }
-
-    private readonly YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
 
     public void AddDataRow(IDataRow row) {
       if (row.YAxis == null) {
@@ -70,10 +69,6 @@ namespace HeuristicLab.Visualization{
     public void RemoveDataRow(IDataRow row) {
       rows.Remove(row);
       OnDataRowRemoved(row);
-    }
-
-    public YAxisDescriptor DefaultYAxis {
-      get { return defaultYAxisDescriptor; }
     }
 
     // TODO implement calculation of max data row values

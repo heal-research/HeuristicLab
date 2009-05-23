@@ -96,7 +96,6 @@
       <DependentUpon>CanvasUI.cs</DependentUpon>
     </Compile>
     <Compile Include="ChangeType.cs" />
-    <Compile Include="ChartDataModelBase.cs" />
     <Compile Include="ChartDataRowsModel.cs" />
     <Compile Include="ChartDataRowsModelDummy.cs" />
     <Compile Include="CompositeShape.cs" />
@@ -149,7 +148,6 @@
     <Compile Include="DataRow.cs" />
     <Compile Include="DrawingStyle.cs" />
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />
-    <Compile Include="IChartDataModel.cs" />
     <Compile Include="IChartDataRowsModel.cs" />
     <Compile Include="IDataRow.cs" />
     <Compile Include="IShape.cs" />
