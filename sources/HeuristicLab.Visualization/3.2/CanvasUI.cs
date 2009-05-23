@@ -17,8 +17,12 @@ namespace HeuristicLab.Visualization {
       get { return canvas; }
     }
 
+    public event PaintEventHandler BeforePaint;
+
     protected override void OnPaint(PaintEventArgs pe) {
       try {
+        FireBeforePaint(pe);
+
         Graphics g = pe.Graphics;
 
         canvas.Viewport = ClientRectangle;
@@ -36,6 +40,11 @@ namespace HeuristicLab.Visualization {
       canvas.Viewport = ClientRectangle;
 
       base.OnResize(e);
+    }
+
+    private void FireBeforePaint(PaintEventArgs e) {
+      if (BeforePaint != null)
+        BeforePaint(this, e);
     }
   }
 }

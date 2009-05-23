@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
 using System.Text;
-using HeuristicLab.Visualization.LabelProvider;
 using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization{
@@ -14,27 +13,17 @@ namespace HeuristicLab.Visualization{
 
   public class ChartDataRowsModel : ChartDataModelBase, IChartDataRowsModel{
     private string title = "Title";
-    private string xAxisLabel = "";
-    private bool showXAxisLabel = true;
-    private bool showXAxisGrid = true;
-    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     private ViewSettings viewSettings = new ViewSettings();
 
-    public bool ShowXAxisGrid {
-      get { return showXAxisGrid; }
-      set {
-        this.showXAxisGrid = value;
-        OnModelChanged();
-      }
+    private readonly XAxisDescriptor xAxisDescriptor = new XAxisDescriptor();
+
+    public ChartDataRowsModel() {
+      this.XAxis.XAxisDescriptorChanged += delegate { OnModelChanged(); };
     }
 
-    public ILabelProvider XAxisLabelProvider {
-      get { return labelProvider; }
-      set{
-        this.labelProvider = value;
-        OnModelChanged();
-      }
+    public XAxisDescriptor XAxis {
+      get { return xAxisDescriptor; }
     }
 
     public List<YAxisDescriptor> YAxes {
@@ -51,11 +40,6 @@ namespace HeuristicLab.Visualization{
 
 
     private readonly List<IDataRow> rows = new List<IDataRow>();
-    //private readonly List<string> xLabels = new List<string>();
-
-    //public List<string> XLabels{
-    //  get { return xLabels; }
-    //}
 
     public List<IDataRow> Rows{
       get { return rows; }
@@ -69,77 +53,9 @@ namespace HeuristicLab.Visualization{
       }
     }
 
-    public string XAxisLabel {
-      get { return xAxisLabel; }
-      set {
-        xAxisLabel = value;
-        OnModelChanged();
-      }
-    }
-
-    public bool ShowXAxisLabel {
-      get { return showXAxisLabel; }
-      set {
-        showXAxisLabel = value;
-        OnModelChanged();
-      }
-    }
-
     public override IView CreateView() {
       return new LineChart(this);
     }
-
-    //public void AddLabel(string label) {
-    //  xLabels.Add(label);
-    //  OnModelChanged();
-    //}
-
-    //public void AddLabel(string label, int index) {
-    //  xLabels[index] = label;
-    //  OnModelChanged();
-    //}
-
-    //public void AddLabels(string[] labels) {
-    //  foreach (var s in labels){
-    //    AddLabel(s);
-    //  }
-    //  //OnModelChanged();
-    //}
-
-    //public void AddLabels(string[] labels, int index) {
-    //  int i = 0;
-    //  foreach (var s in labels){
-    //    AddLabel(s, index + i);
-    //    i++;
-    //  }
-    //  //OnModelChanged();
-    //}
-
-    //public void ModifyLabel(string label, int index) {
-    //  xLabels[index] = label;
-    //  OnModelChanged();
-    //}
-
-    //public void ModifyLabels(string[] labels, int index) {
-    //  int i = 0;
-    //  foreach (var s in labels){
-    //    ModifyLabel(s, index + i);
-    //    i++;
-    //  }
-    //  //OnModelChanged();
-    //}
-
-    //public void RemoveLabel(int index) {
-    //  xLabels.RemoveAt(index);
-    //  OnModelChanged();
-    //}
-
-    //public void RemoveLabels(int index, int count) {
-    //  for (int i = index; i < index + count; i++ ){
-    //    RemoveLabel(i);
-    //  }
-    //  //OnModelChanged();
-    //}
 
     private readonly YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
 
@@ -227,7 +143,7 @@ namespace HeuristicLab.Visualization{
         node.AppendChild(columnElement);
       }
 
-      XmlNode labelProviderNode = document.ImportNode(labelProvider.GetLabelProviderXmlNode(), true);
+      XmlNode labelProviderNode = document.ImportNode(XAxis.XAxisLabelProvider.GetLabelProviderXmlNode(), true);
       node.AppendChild(labelProviderNode);
 
       return node;    
@@ -238,7 +154,7 @@ namespace HeuristicLab.Visualization{
 
       foreach (XmlNode dataRow in node.ChildNodes) {
         if (dataRow.Name.Equals("LabelProvider")) {
-          labelProvider = labelProvider.PopulateLabelProviderXmlNode(dataRow);
+          XAxis.XAxisLabelProvider = XAxis.XAxisLabelProvider.PopulateLabelProviderXmlNode(dataRow);
         } else {
           XmlAttributeCollection attrs = dataRow.Attributes;
           XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");

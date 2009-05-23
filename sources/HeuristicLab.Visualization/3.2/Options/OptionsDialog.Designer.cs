@@ -59,7 +59,7 @@
       // options
       // 
       this.options.Location = new System.Drawing.Point(2, 3);
-      chartDataRowsModel1.ShowXAxisLabel = true;
+      chartDataRowsModel1.XAxis.ShowXAxisLabel = true;
       chartDataRowsModel1.Title = "Title";
       viewSettings1.LegendColor = System.Drawing.Color.Blue;
       viewSettings1.LegendFont = new System.Drawing.Font("Arial", 8F);
@@ -69,8 +69,8 @@
       viewSettings1.XAxisColor = System.Drawing.Color.Blue;
       viewSettings1.XAxisFont = new System.Drawing.Font("Arial", 8F);
       chartDataRowsModel1.ViewSettings = viewSettings1;
-      chartDataRowsModel1.XAxisLabel = "";
-      chartDataRowsModel1.XAxisLabelProvider = continuousLabelProvider1;
+      chartDataRowsModel1.XAxis.XAxisLabel = "";
+      chartDataRowsModel1.XAxis.XAxisLabelProvider = continuousLabelProvider1;
       this.options.Model = chartDataRowsModel1;
       this.options.Name = "options";
       this.options.Size = new System.Drawing.Size(298, 232);

@@ -114,6 +114,7 @@
     <Compile Include="FloatingAvgAggregator.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
+    <Compile Include="XAxisDescriptor.cs" />
     <Compile Include="YAxisGrid.cs" />
     <Compile Include="HorizontalLineShape.cs" />
     <Compile Include="LabelProvider\ILabelProvider.cs" />

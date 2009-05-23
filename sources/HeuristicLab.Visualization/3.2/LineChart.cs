@@ -57,6 +57,8 @@ namespace HeuristicLab.Visualization {
 
       this.ResizeRedraw = true;
 
+      canvasUI.BeforePaint += delegate { UpdateLayout(); };
+
       UpdateLayout();
       ZoomToFullView();
     }
@@ -77,7 +79,7 @@ namespace HeuristicLab.Visualization {
 
       SetLegendPosition();
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     /// <summary>
@@ -88,7 +90,7 @@ namespace HeuristicLab.Visualization {
 
       titleShape.Text = model.Title;
 
-      if (model.ShowXAxisGrid) {
+      if (model.XAxis.ShowXAxisGrid) {
         canvas.AddShape(xAxisGrid);
       }
 
@@ -104,8 +106,8 @@ namespace HeuristicLab.Visualization {
         canvas.AddShape(rowEntry.LinesShape);
       }
 
-      xAxis.ShowLabel = model.ShowXAxisLabel;
-      xAxis.Label = model.XAxisLabel;
+      xAxis.ShowLabel = model.XAxis.ShowXAxisLabel;
+      xAxis.Label = model.XAxis.XAxisLabel;
 
       canvas.AddShape(xAxis);
 
@@ -245,7 +247,7 @@ namespace HeuristicLab.Visualization {
       legendShape.Row = false;
       legendShape.CreateLegend();
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     public void setLegendTop() {
@@ -286,7 +288,7 @@ namespace HeuristicLab.Visualization {
 
       rowEntry.LinesShape.UpdateStyle(row);
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     #region Add-/RemoveItemEvents
@@ -321,7 +323,7 @@ namespace HeuristicLab.Visualization {
 
       InitLineShapes(row);
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     private void OnDataRowRemoved(IDataRow row) {
@@ -332,7 +334,7 @@ namespace HeuristicLab.Visualization {
       rowToRowEntry.Remove(row);
       rowEntries.RemoveAll(delegate(RowEntry rowEntry) { return rowEntry.DataRow == row; });
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     #endregion
@@ -348,7 +350,7 @@ namespace HeuristicLab.Visualization {
                  yAxisDescriptor.MaxValue + ((yAxisDescriptor.MaxValue - yAxisDescriptor.MinValue)*0.05));
       }
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     private void SetClipX(double x1, double x2) {
@@ -483,7 +485,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void OnModelChanged() {
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     #region Begin-/EndUpdate
@@ -502,7 +504,7 @@ namespace HeuristicLab.Visualization {
       beginUpdateCount--;
 
       if (beginUpdateCount == 0) {
-        this.Invalidate(true);
+        canvasUI.Invalidate();
       }
     }
 
@@ -522,7 +524,7 @@ namespace HeuristicLab.Visualization {
         }
       }
 
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     private void PanEnd(Point startPoint, Point endPoint) {
@@ -543,12 +545,12 @@ namespace HeuristicLab.Visualization {
       }
 
       userInteractionShape.RemoveShape(rectangleShape);
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     private void DrawRectangle(Rectangle rectangle) {
       rectangleShape.Rectangle = Transform.ToWorld(rectangle, userInteractionShape.Viewport, userInteractionShape.ClippingArea);
-      this.Invalidate(true);
+      canvasUI.Invalidate();
     }
 
     private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {}
@@ -614,7 +616,7 @@ namespace HeuristicLab.Visualization {
           SetClipY(rowEntry, y1, y2);
         }
 
-        this.Invalidate(true);
+        canvasUI.Invalidate();
       }
     }
 

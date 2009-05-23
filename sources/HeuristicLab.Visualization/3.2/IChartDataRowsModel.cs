@@ -7,8 +7,8 @@ namespace HeuristicLab.Visualization {
   public interface IChartDataRowsModel : IItem {
     string Title { get; set; }
     List<IDataRow> Rows { get; }
-    ILabelProvider XAxisLabelProvider { get; set; }
 
+    XAxisDescriptor XAxis { get; }
     List<YAxisDescriptor> YAxes { get; }
 
     void AddDataRow(IDataRow row);
@@ -17,10 +17,6 @@ namespace HeuristicLab.Visualization {
     int MaxDataRowValues { get; }
 
     ViewSettings ViewSettings { get; set; }
-
-    string XAxisLabel { get; set; }
-    bool ShowXAxisLabel { get; set; }
-    bool ShowXAxisGrid { get; set; }
 
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;

@@ -65,7 +65,7 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     public void ResetSettings() {
-      model.ShowXAxisGrid = oldShowXAxisGrid;
+      model.XAxis.ShowXAxisGrid = oldShowXAxisGrid;
 
       foreach (var param in oldLineParams) {
         param.applySettings();
@@ -101,11 +101,11 @@ namespace HeuristicLab.Visualization.Options {
       ((IDataRow)LineSelectCB.SelectedValue).Color = dlg.Color;
     }
 
-    private IList<int> GetThicknesses() {
+    private static IList<int> GetThicknesses() {
       return new List<int>(new[] {1, 2, 3, 4, 5, 6, 7, 8});
     }
 
-    private IList<DrawingStyle> GetStyles() {
+    private static IList<DrawingStyle> GetStyles() {
       return new List<DrawingStyle>(new[] {DrawingStyle.Solid, DrawingStyle.Dashed});
     }
 
@@ -152,8 +152,8 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void Options_Load(object sender, EventArgs e) {
-      oldShowXAxisGrid = model.ShowXAxisGrid;
-      chkShowXAxisGrid.Checked = model.ShowXAxisGrid;
+      oldShowXAxisGrid = model.XAxis.ShowXAxisGrid;
+      chkShowXAxisGrid.Checked = model.XAxis.ShowXAxisGrid;
 
       InitTabPageLines();
       InitTabPageYAxes();
@@ -244,7 +244,7 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void chkShowXAxisGrid_CheckedChanged(object sender, EventArgs e) {
-      model.ShowXAxisGrid = chkShowXAxisGrid.Checked;
+      model.XAxis.ShowXAxisGrid = chkShowXAxisGrid.Checked;
     }
 
     private void tbxTitle_TextChanged(object sender, EventArgs e) {
