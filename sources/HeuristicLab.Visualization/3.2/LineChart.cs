@@ -259,7 +259,7 @@ namespace HeuristicLab.Visualization {
 
     public void setLegendBottom() {
       // legend bottom
-      legendShape.BoundingBox = new RectangleD(100, 10, canvasUI.Width, canvasUI.Height /*legendShape.GetHeight4Rows()*/);
+      legendShape.BoundingBox = new RectangleD(100, 2, canvasUI.Width, canvasUI.Height);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;
       legendShape.Top = false;
