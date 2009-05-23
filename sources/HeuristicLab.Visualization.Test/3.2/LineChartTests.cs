@@ -595,5 +595,26 @@ namespace HeuristicLab.Visualization.Test {
       MainForm f = new MainForm();
       f.ShowDialog();
     }
+
+
+    [Test]
+    public void TestPointLines() {
+      IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 3, Style = DrawingStyle.Dashed };
+
+      row1.LineType = DataRowType.Points;
+      model.AddDataRow(row1);
+
+      row1.AddValue(10);
+      row1.AddValue(5);
+      row1.AddValue(7);
+      row1.AddValue(3);
+      row1.AddValue(10);
+      row1.AddValue(2);
+
+      LineChartTestForm f = new LineChartTestForm(model);
+      f.ShowDialog();
+    }
+
+
   }
 }
