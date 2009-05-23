@@ -100,6 +100,7 @@ namespace HeuristicLab.Visualization {
       titleShape.Text = model.Title;
 
       if (model.XAxis.ShowGrid) {
+        xAxisGrid.Color = model.XAxis.GridColor;
         canvas.AddShape(xAxisGrid);
       }
 

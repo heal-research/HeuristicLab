@@ -1,3 +1,4 @@
+using System.Drawing;
 using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
@@ -7,6 +8,7 @@ namespace HeuristicLab.Visualization {
     private string label = "";
     private bool showLabel = true;
     private bool showGrid = true;
+    private Color gridColor = Color.LightBlue;
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     public event XAxisDescriptorChangedHandler XAxisDescriptorChanged;
@@ -39,6 +41,14 @@ namespace HeuristicLab.Visualization {
       get { return showLabel; }
       set {
         showLabel = value;
+        FireXAxisDescriptorChanged();
+      }
+    }
+
+    public Color GridColor {
+      get { return this.gridColor; }
+      set {
+        this.gridColor = value;
         FireXAxisDescriptorChanged();
       }
     }

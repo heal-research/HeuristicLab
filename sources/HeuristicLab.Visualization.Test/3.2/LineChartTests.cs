@@ -78,11 +78,13 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row2 = new DataRow();
       IDataRow row3 = new DataRow();
 
-      YAxisDescriptor yaxis1 = model.DefaultYAxis;
-      YAxisDescriptor yaxis2 = new YAxisDescriptor();
-
       model.XAxis.Label = "X Axis";
       model.XAxis.ShowLabel = true;
+      model.XAxis.ShowGrid = true;
+      model.XAxis.GridColor = Color.Blue;
+
+      YAxisDescriptor yaxis1 = model.DefaultYAxis;
+      YAxisDescriptor yaxis2 = new YAxisDescriptor();
 
       yaxis1.Label = "Y-Axis 1";
       yaxis1.ShowYAxisLabel = true;
@@ -129,21 +131,6 @@ namespace HeuristicLab.Visualization.Test {
         row3.AddValue(rand.NextDouble() * 1);
       };
 
-      f.ShowDialog();
-    }
-
-    [Test]
-    public void TestGridX() {
-      LineChartTestForm f = new LineChartTestForm(model);
-      IDataRow row1 = new DataRow();
-      model.AddDataRow(row1);
-
-      model.XAxis.ShowGrid = false;
-
-      Random rand = new Random(42);
-      for (int i = 0; i < 10; i++) {
-        row1.AddValue(rand.NextDouble() * 10);
-      }
       f.ShowDialog();
     }
 

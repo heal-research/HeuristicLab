@@ -13,6 +13,7 @@ namespace HeuristicLab.Visualization.Options {
     private string oldTitle;
     private Dictionary<CheckBox, bool> ShowYAxisBoxes;
     private bool oldShowXAxisGrid;
+    private Color oldXAxisGridColor;
     private Dictionary<CheckBox, bool> yAxisClipChangeableBoxes;
 
     internal class LineParams {
@@ -66,6 +67,10 @@ namespace HeuristicLab.Visualization.Options {
 
     public void ResetSettings() {
       model.XAxis.ShowGrid = oldShowXAxisGrid;
+      chkShowXAxisGrid.Checked = oldShowXAxisGrid;
+      
+      model.XAxis.GridColor = oldXAxisGridColor;
+      xAxisGridColorSelection.Color = oldXAxisGridColor;
 
       foreach (var param in oldLineParams) {
         param.applySettings();
@@ -92,13 +97,6 @@ namespace HeuristicLab.Visualization.Options {
       viewSettings.UpdateView();
       cbLegendPosition.SelectedItem = viewSettings.LegendPosition;
       this.LineSelectCB_SelectedIndexChanged(this, null);
-    }
-
-    private void OptionsDialogSelectColorBtn_Click(object sender, EventArgs e) {
-      ColorDialog dlg = new ColorDialog();
-      dlg.ShowDialog();
-      ColorPreviewTB.BackColor = dlg.Color;
-      ((IDataRow)LineSelectCB.SelectedValue).Color = dlg.Color;
     }
 
     private static IList<int> GetThicknesses() {
@@ -154,6 +152,9 @@ namespace HeuristicLab.Visualization.Options {
     private void Options_Load(object sender, EventArgs e) {
       oldShowXAxisGrid = model.XAxis.ShowGrid;
       chkShowXAxisGrid.Checked = model.XAxis.ShowGrid;
+
+      oldXAxisGridColor = model.XAxis.GridColor;
+      xAxisGridColorSelection.Color = model.XAxis.GridColor;
 
       InitTabPageLines();
       InitTabPageYAxes();
@@ -215,7 +216,7 @@ namespace HeuristicLab.Visualization.Options {
           LinestyleCB.SelectedIndex = index;  */
         LineThicknessCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).Thickness;
         LinestyleCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).Style;
-        ColorPreviewTB.BackColor = ((IDataRow)LineSelectCB.SelectedValue).Color;
+        selectedLineColorSelection.Color = ((IDataRow)LineSelectCB.SelectedValue).Color;
         MarkercheckBox.Checked = ((IDataRow)LineSelectCB.SelectedValue).ShowMarkers;
       }
     }
@@ -250,6 +251,14 @@ namespace HeuristicLab.Visualization.Options {
     private void tbxTitle_TextChanged(object sender, EventArgs e) {
       model.Title = tbxTitle.Text;
       model.ViewSettings.UpdateView();
+    }
+
+    private void selectedLineColorSelection_ColorChanged(ColorSelection sender) {
+      ((IDataRow)LineSelectCB.SelectedValue).Color = selectedLineColorSelection.Color;
+    }
+
+    private void xAxisGridColorSelection_ColorChanged(ColorSelection sender) {
+      model.XAxis.GridColor = xAxisGridColorSelection.Color;
     }
   }
 }
