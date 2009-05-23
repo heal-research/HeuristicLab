@@ -90,7 +90,7 @@ namespace HeuristicLab.Visualization {
 
       titleShape.Text = model.Title;
 
-      if (model.XAxis.ShowXAxisGrid) {
+      if (model.XAxis.ShowGrid) {
         canvas.AddShape(xAxisGrid);
       }
 
@@ -106,8 +106,8 @@ namespace HeuristicLab.Visualization {
         canvas.AddShape(rowEntry.LinesShape);
       }
 
-      xAxis.ShowLabel = model.XAxis.ShowXAxisLabel;
-      xAxis.Label = model.XAxis.XAxisLabel;
+      xAxis.ShowLabel = model.XAxis.ShowLabel;
+      xAxis.Label = model.XAxis.Label;
 
       canvas.AddShape(xAxis);
 

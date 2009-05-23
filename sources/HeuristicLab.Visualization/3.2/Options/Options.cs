@@ -65,7 +65,7 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     public void ResetSettings() {
-      model.XAxis.ShowXAxisGrid = oldShowXAxisGrid;
+      model.XAxis.ShowGrid = oldShowXAxisGrid;
 
       foreach (var param in oldLineParams) {
         param.applySettings();
@@ -152,8 +152,8 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void Options_Load(object sender, EventArgs e) {
-      oldShowXAxisGrid = model.XAxis.ShowXAxisGrid;
-      chkShowXAxisGrid.Checked = model.XAxis.ShowXAxisGrid;
+      oldShowXAxisGrid = model.XAxis.ShowGrid;
+      chkShowXAxisGrid.Checked = model.XAxis.ShowGrid;
 
       InitTabPageLines();
       InitTabPageYAxes();
@@ -244,7 +244,7 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void chkShowXAxisGrid_CheckedChanged(object sender, EventArgs e) {
-      model.XAxis.ShowXAxisGrid = chkShowXAxisGrid.Checked;
+      model.XAxis.ShowGrid = chkShowXAxisGrid.Checked;
     }
 
     private void tbxTitle_TextChanged(object sender, EventArgs e) {

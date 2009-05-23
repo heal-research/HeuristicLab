@@ -26,7 +26,7 @@ namespace HeuristicLab.Visualization.DataExport {
         CSVWriter writer = new CSVWriter(sw);
 
         // write headers
-        writer.AddString(model.XAxis.XAxisLabel);
+        writer.AddString(model.XAxis.Label);
         foreach (IDataRow row in model.Rows)
           writer.AddString(row.Label);
         writer.NewLine();

@@ -4,41 +4,41 @@ namespace HeuristicLab.Visualization {
   public delegate void XAxisDescriptorChangedHandler(XAxisDescriptor sender);
 
   public class XAxisDescriptor {
-    private string xAxisLabel = "";
-    private bool showXAxisLabel = true;
-    private bool showXAxisGrid = true;
-    private ILabelProvider xAxisLabelProvider = new ContinuousLabelProvider("0.##");
+    private string label = "";
+    private bool showLabel = true;
+    private bool showGrid = true;
+    private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     public event XAxisDescriptorChangedHandler XAxisDescriptorChanged;
 
-    public bool ShowXAxisGrid {
-      get { return showXAxisGrid; }
+    public bool ShowGrid {
+      get { return showGrid; }
       set {
-        this.showXAxisGrid = value;
+        this.showGrid = value;
         FireXAxisDescriptorChanged();
       }
     }
 
-    public ILabelProvider XAxisLabelProvider {
-      get { return xAxisLabelProvider; }
+    public ILabelProvider LabelProvider {
+      get { return labelProvider; }
       set {
-        this.xAxisLabelProvider = value;
+        this.labelProvider = value;
         FireXAxisDescriptorChanged();
       }
     }
 
-    public string XAxisLabel {
-      get { return xAxisLabel; }
+    public string Label {
+      get { return label; }
       set {
-        xAxisLabel = value;
+        label = value;
         FireXAxisDescriptorChanged();
       }
     }
 
-    public bool ShowXAxisLabel {
-      get { return showXAxisLabel; }
+    public bool ShowLabel {
+      get { return showLabel; }
       set {
-        showXAxisLabel = value;
+        showLabel = value;
         FireXAxisDescriptorChanged();
       }
     }

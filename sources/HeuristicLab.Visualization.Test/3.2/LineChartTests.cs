@@ -81,8 +81,8 @@ namespace HeuristicLab.Visualization.Test {
       YAxisDescriptor yaxis1 = model.DefaultYAxis;
       YAxisDescriptor yaxis2 = new YAxisDescriptor();
 
-      model.XAxis.XAxisLabel = "X Axis";
-      model.XAxis.ShowXAxisLabel = true;
+      model.XAxis.Label = "X Axis";
+      model.XAxis.ShowLabel = true;
 
       yaxis1.Label = "Y-Axis 1";
       yaxis1.ShowYAxisLabel = true;
@@ -138,7 +138,7 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row1 = new DataRow();
       model.AddDataRow(row1);
 
-      model.XAxis.ShowXAxisGrid = false;
+      model.XAxis.ShowGrid = false;
 
       Random rand = new Random(42);
       for (int i = 0; i < 10; i++) {

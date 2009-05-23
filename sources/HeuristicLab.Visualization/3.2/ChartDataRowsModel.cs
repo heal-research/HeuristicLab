@@ -143,7 +143,7 @@ namespace HeuristicLab.Visualization{
         node.AppendChild(columnElement);
       }
 
-      XmlNode labelProviderNode = document.ImportNode(XAxis.XAxisLabelProvider.GetLabelProviderXmlNode(), true);
+      XmlNode labelProviderNode = document.ImportNode(XAxis.LabelProvider.GetLabelProviderXmlNode(), true);
       node.AppendChild(labelProviderNode);
 
       return node;    
@@ -154,7 +154,7 @@ namespace HeuristicLab.Visualization{
 
       foreach (XmlNode dataRow in node.ChildNodes) {
         if (dataRow.Name.Equals("LabelProvider")) {
-          XAxis.XAxisLabelProvider = XAxis.XAxisLabelProvider.PopulateLabelProviderXmlNode(dataRow);
+          XAxis.LabelProvider = XAxis.LabelProvider.PopulateLabelProviderXmlNode(dataRow);
         } else {
           XmlAttributeCollection attrs = dataRow.Attributes;
           XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
