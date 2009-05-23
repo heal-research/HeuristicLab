@@ -133,6 +133,21 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
+    public void TestGridX() {
+      LineChartTestForm f = new LineChartTestForm(model);
+      IDataRow row1 = new DataRow();
+      model.AddDataRow(row1);
+
+      model.ShowXAxisGrid = false;
+
+      Random rand = new Random(42);
+      for (int i = 0; i < 10; i++) {
+        row1.AddValue(rand.NextDouble() * 10);
+      }
+      f.ShowDialog();
+    }
+
+    [Test]
     public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 

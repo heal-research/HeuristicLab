@@ -52,6 +52,7 @@
       this.gbxShowYAxis = new System.Windows.Forms.GroupBox();
       this.flpShowYAxis = new System.Windows.Forms.FlowLayoutPanel();
       this.fdFont = new System.Windows.Forms.FontDialog();
+      this.chkShowXAxisGrid = new System.Windows.Forms.CheckBox();
       this.Optionstabs.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox1.SuspendLayout();
@@ -285,6 +286,7 @@
       // 
       // tpXAxis
       // 
+      this.tpXAxis.Controls.Add(this.chkShowXAxisGrid);
       this.tpXAxis.Controls.Add(this.btnChangeXAxisFont);
       this.tpXAxis.Location = new System.Drawing.Point(4, 22);
       this.tpXAxis.Name = "tpXAxis";
@@ -357,6 +359,17 @@
       this.flpShowYAxis.Size = new System.Drawing.Size(275, 57);
       this.flpShowYAxis.TabIndex = 0;
       // 
+      // chkShowXAxisGrid
+      // 
+      this.chkShowXAxisGrid.AutoSize = true;
+      this.chkShowXAxisGrid.Location = new System.Drawing.Point(3, 32);
+      this.chkShowXAxisGrid.Name = "chkShowXAxisGrid";
+      this.chkShowXAxisGrid.Size = new System.Drawing.Size(107, 17);
+      this.chkShowXAxisGrid.TabIndex = 3;
+      this.chkShowXAxisGrid.Text = "Show X-Axis Grid";
+      this.chkShowXAxisGrid.UseVisualStyleBackColor = true;
+      this.chkShowXAxisGrid.CheckedChanged += new System.EventHandler(this.chkShowXAxisGrid_CheckedChanged);
+      // 
       // Options
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -375,6 +388,7 @@
       this.tpTitle.ResumeLayout(false);
       this.tpTitle.PerformLayout();
       this.tpXAxis.ResumeLayout(false);
+      this.tpXAxis.PerformLayout();
       this.tpYAxes.ResumeLayout(false);
       this.tpYAxes.PerformLayout();
       this.gbxYAxisClipChangeable.ResumeLayout(false);
@@ -414,6 +428,7 @@
     private System.Windows.Forms.GroupBox gbxShowYAxis;
     private System.Windows.Forms.FlowLayoutPanel flpShowYAxis;
     private System.Windows.Forms.FontDialog fdFont;
+    private System.Windows.Forms.CheckBox chkShowXAxisGrid;
     private System.Windows.Forms.TextBox tbxTitle;
     private System.Windows.Forms.Label label5;
   }

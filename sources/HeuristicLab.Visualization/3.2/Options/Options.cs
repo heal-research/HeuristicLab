@@ -12,6 +12,7 @@ namespace HeuristicLab.Visualization.Options {
     private LineParams[] oldLineParams;
     private string oldTitle;
     private Dictionary<CheckBox, bool> ShowYAxisBoxes;
+    private bool oldShowXAxisGrid;
     private Dictionary<CheckBox, bool> yAxisClipChangeableBoxes;
 
     internal class LineParams {
@@ -64,6 +65,8 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     public void ResetSettings() {
+      model.ShowXAxisGrid = oldShowXAxisGrid;
+
       foreach (var param in oldLineParams) {
         param.applySettings();
       }
@@ -149,6 +152,9 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void Options_Load(object sender, EventArgs e) {
+      oldShowXAxisGrid = model.ShowXAxisGrid;
+      chkShowXAxisGrid.Checked = model.ShowXAxisGrid;
+
       InitTabPageLines();
       InitTabPageYAxes();
     }
@@ -235,6 +241,10 @@ namespace HeuristicLab.Visualization.Options {
       if (LineSelectCB.SelectedValue != null) {
         ((IDataRow)LineSelectCB.SelectedValue).ShowMarkers = MarkercheckBox.Checked;
       }
+    }
+
+    private void chkShowXAxisGrid_CheckedChanged(object sender, EventArgs e) {
+      model.ShowXAxisGrid = chkShowXAxisGrid.Checked;
     }
 
     private void tbxTitle_TextChanged(object sender, EventArgs e) {

@@ -1,7 +1,7 @@
 using System.Drawing;
 
 namespace HeuristicLab.Visualization {
-  public class Grid : WorldShape {
+  public class YAxisGrid : WorldShape {
     private Color color = Color.LightBlue;
 
     public override void Draw(Graphics graphics) {
@@ -13,17 +13,6 @@ namespace HeuristicLab.Visualization {
                                               ClippingArea.Y1)) {
         LineShape line = new LineShape(ClippingArea.X1, y,
                                        ClippingArea.X2, y,
-                                       color, 1,
-                                       DrawingStyle.Dashed);
-        AddShape(line);
-      }
-
-      foreach (double x in AxisTicks.GetTicks(XAxis.PixelsPerInterval,
-                                              Parent.Viewport.Width,
-                                              ClippingArea.Width,
-                                              ClippingArea.X1)) {
-        LineShape line = new LineShape(x, ClippingArea.Y1,
-                                       x, ClippingArea.Y2,
                                        color, 1,
                                        DrawingStyle.Dashed);
         AddShape(line);

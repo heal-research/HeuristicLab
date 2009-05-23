@@ -114,7 +114,7 @@
     <Compile Include="FloatingAvgAggregator.cs" />
     <Compile Include="LabelProvider\ContinuousLabelProvider.cs" />
     <Compile Include="LabelProvider\DiscreteLabelProvider.cs" />
-    <Compile Include="Grid.cs" />
+    <Compile Include="YAxisGrid.cs" />
     <Compile Include="HorizontalLineShape.cs" />
     <Compile Include="LabelProvider\ILabelProvider.cs" />
     <Compile Include="IMouseEventListener.cs" />
@@ -163,6 +163,7 @@
     <Compile Include="Translate.cs" />
     <Compile Include="WorldShape.cs" />
     <Compile Include="XAxis.cs" />
+    <Compile Include="XAxisGrid.cs" />
     <Compile Include="YAxis.cs" />
     <Compile Include="YAxisDescriptor.cs" />
     <Compile Include="ZoomListener.cs" />

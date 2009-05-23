@@ -16,9 +16,18 @@ namespace HeuristicLab.Visualization{
     private string title = "Title";
     private string xAxisLabel = "";
     private bool showXAxisLabel = true;
+    private bool showXAxisGrid = true;
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.##");
 
     private ViewSettings viewSettings = new ViewSettings();
+
+    public bool ShowXAxisGrid {
+      get { return showXAxisGrid; }
+      set {
+        this.showXAxisGrid = value;
+        OnModelChanged();
+      }
+    }
 
     public ILabelProvider XAxisLabelProvider {
       get { return labelProvider; }

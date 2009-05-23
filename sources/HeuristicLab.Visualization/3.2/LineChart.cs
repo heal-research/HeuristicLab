@@ -17,6 +17,7 @@ namespace HeuristicLab.Visualization {
     private readonly TextShape titleShape = new TextShape("Title");
     private readonly LegendShape legendShape = new LegendShape();
     private readonly XAxis xAxis = new XAxis();
+    private readonly XAxisGrid xAxisGrid = new XAxisGrid();
     private readonly List<RowEntry> rowEntries = new List<RowEntry>();
 
     private readonly Dictionary<IDataRow, RowEntry> rowToRowEntry = new Dictionary<IDataRow, RowEntry>();
@@ -87,6 +88,10 @@ namespace HeuristicLab.Visualization {
 
       titleShape.Text = model.Title;
 
+      if (model.ShowXAxisGrid) {
+        canvas.AddShape(xAxisGrid);
+      }
+
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
         if (yAxisDescriptor.ShowGrid) {
@@ -143,6 +148,8 @@ namespace HeuristicLab.Visualization {
       foreach (RowEntry rowEntry in rowEntries) {
         rowEntry.LinesShape.BoundingBox = linesAreaBoundingBox;
       }
+
+      xAxisGrid.BoundingBox = linesAreaBoundingBox;
 
       foreach (YAxisDescriptor yAxisDescriptor in model.YAxes) {
         YAxisInfo info = GetYAxisInfo(yAxisDescriptor);
@@ -347,6 +354,11 @@ namespace HeuristicLab.Visualization {
     }
 
     private void SetClipX(double x1, double x2) {
+      xAxisGrid.ClippingArea = new RectangleD(x1,
+                                              xAxisGrid.ClippingArea.Y1,
+                                              x2,
+                                              xAxisGrid.ClippingArea.Y2);
+
       xAxis.ClippingArea = new RectangleD(x1,
                                           0,
                                           x2,
@@ -373,6 +385,11 @@ namespace HeuristicLab.Visualization {
     }
 
     private void SetClipY(RowEntry rowEntry, double y1, double y2) {
+      xAxisGrid.ClippingArea = new RectangleD(xAxisGrid.ClippingArea.X1,
+                                              y1,
+                                              xAxisGrid.ClippingArea.X2,
+                                              y2);
+
       rowEntry.LinesShape.ClippingArea = new RectangleD(rowEntry.LinesShape.ClippingArea.X1,
                                                         y1,
                                                         rowEntry.LinesShape.ClippingArea.X2,
@@ -468,6 +485,7 @@ namespace HeuristicLab.Visualization {
     }
 
     private void OnModelChanged() {
+      UpdateLayout();
       canvasUI.Invalidate();
     }
 
@@ -670,10 +688,10 @@ namespace HeuristicLab.Visualization {
     }
 
     private class YAxisInfo {
-      private readonly Grid grid = new Grid();
+      private readonly YAxisGrid grid = new YAxisGrid();
       private readonly YAxis yAxis = new YAxis();
 
-      public Grid Grid {
+      public YAxisGrid Grid {
         get { return grid; }
       }
 
