@@ -156,17 +156,24 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     public static void Serialize(object o, string filename) {
-      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
+      Serialize(o, filename, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), false, 5);
+    }
+
+    public static void Serialize(object o, string filename, int compression) {
+      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression);
     }
 
     public static void Serialize(object obj, string filename, Configuration config) {
-      Serialize(obj, filename, config, false);
+      Serialize(obj, filename, config, false, 5);
     }
 
-    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies) {
-      string tempfile = Path.GetTempFileName();
+    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, int compression) {      
       try {
-        Serialize(obj, File.Create(tempfile), config, includeAssemblies);
+        string tempfile = Path.GetTempFileName();
+        DateTime start = DateTime.Now;
+        Serialize(obj, File.Create(tempfile), config, includeAssemblies, compression);
+        Logger.Info(String.Format("serialization took {0} seconds with compression level {1}",
+          (DateTime.Now - start).TotalSeconds, compression));
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
       } catch (Exception) {
@@ -179,26 +186,27 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static void Serialize(object obj, Stream stream, Configuration config) {
       Serialize(obj, stream, config, false);
     }
-
+    
     public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {
+      Serialize(obj, stream, config, includeAssemblies, 9);
+    }
+
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, int compression) {      
       try {
         Serializer serializer = new Serializer(obj, config);
         XmlGenerator generator = new XmlGenerator();
-        ILog logger = Logger.GetDefaultLogger();
         using (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-          zipStream.SetLevel(9);
+          zipStream.SetLevel(compression);
           zipStream.PutNextEntry(new ZipEntry("data.xml"));
           StreamWriter writer = new StreamWriter(zipStream);
           foreach (ISerializationToken token in serializer) {
             string line = generator.Format(token);
             writer.Write(line);
-            logger.Debug(line.TrimEnd());
           }
           writer.Flush();
           zipStream.PutNextEntry(new ZipEntry("typecache.xml"));
           foreach (string line in generator.Format(serializer.TypeCache)) {
             writer.Write(line);
-            logger.Debug(line.TrimEnd());
           }
           writer.Flush();
           if (includeAssemblies) {
@@ -225,7 +233,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         throw;
       } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
-      }
+      }      
     }
   }
 }
