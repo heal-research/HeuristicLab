@@ -56,6 +56,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
+      evaluator.PrepareForEvaluation(functionTree);
 
       double[] backupValues = null;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array
@@ -67,7 +68,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         }
       }
 
-      Evaluate(scope, evaluator, functionTree, dataset, targetVariable, start, end, useEstimatedValues);
+      Evaluate(scope, evaluator, dataset, targetVariable, start, end, useEstimatedValues);
 
       // restore the values of the target variable from the backup array if necessary
       if (useEstimatedValues) {
@@ -81,6 +82,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       return null;
     }
 
-    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues);
+    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues);
   }
 }

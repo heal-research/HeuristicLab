@@ -42,11 +42,11 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       AddVariableInfo(new VariableInfo("MAPE", "The mean absolute percentage error of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSum = 0.0;
       int n = 0;
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(tree, sample);
+        double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
 
         if (updateTargetValues) {

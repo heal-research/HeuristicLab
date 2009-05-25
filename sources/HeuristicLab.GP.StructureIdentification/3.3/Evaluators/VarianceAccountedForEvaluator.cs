@@ -52,12 +52,12 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
 
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       int nSamples = end - start;
       double[] errors = new double[nSamples];
       double[] originalTargetVariableValues = new double[nSamples];
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(tree, sample);
+        double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);

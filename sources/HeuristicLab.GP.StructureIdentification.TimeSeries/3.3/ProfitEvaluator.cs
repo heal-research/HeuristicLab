@@ -42,7 +42,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       AddVariableInfo(new VariableInfo("TransactionCost", "Cost of a trade in percent of the transaction volume (0..1)", typeof(DoubleData), VariableKind.In));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       int exchangeRateVarIndex = GetVariableValue<IntData>("ExchangeRate", scope, true).Data;
       double transactionCost = GetVariableValue<DoubleData>("TransactionCost", scope, true).Data;
       DoubleData profit = GetVariableValue<DoubleData>("Profit", scope, false, false);
@@ -57,7 +57,7 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       for (int sample = start; sample < end; sample++) {
         exchangeRate = dataset.GetValue(sample, exchangeRateVarIndex);
         double originalPercentageChange = dataset.GetValue(sample, targetVariable);
-        double estimatedPercentageChange = evaluator.Evaluate(tree, sample);
+        double estimatedPercentageChange = evaluator.Evaluate(sample);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimatedPercentageChange);
         }

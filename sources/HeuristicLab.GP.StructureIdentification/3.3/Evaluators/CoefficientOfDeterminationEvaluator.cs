@@ -41,7 +41,7 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       AddVariableInfo(new VariableInfo("R2", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
       double errorsSquaredSum = 0.0;
       double originalDeviationTotalSumOfSquares = 0.0;
       double targetMean = dataset.GetMean(targetVariable, start, end);
@@ -49,7 +49,7 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       double originalSum = 0.0;
       int n = 0;
       for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(tree, sample);
+        double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);

@@ -36,7 +36,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.In));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
 
       ItemList<DoubleData> classes = GetVariableValue<ItemList<DoubleData>>("TargetClassValues", scope, true);
       double[] classesArr = new double[classes.Count];
@@ -47,9 +47,9 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         thresholds[i] = (classesArr[i] + classesArr[i + 1]) / 2.0;
       }
 
-      Evaluate(scope, evaluator, tree, dataset, targetVariable, classesArr, thresholds, start, end);
+      Evaluate(scope, evaluator, dataset, targetVariable, classesArr, thresholds, start, end);
     }
 
-    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end);
+    public abstract void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end);
   }
 }

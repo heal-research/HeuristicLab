@@ -40,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo("ConfusionMatrix", "The confusion matrix of the model", typeof(IntMatrixData), VariableKind.New));
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, IFunctionTree tree, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
+    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
       IntMatrixData matrix = GetVariableValue<IntMatrixData>("ConfusionMatrix", scope, false, false);
       if (matrix == null) {
         matrix = new IntMatrixData(new int[classes.Length, classes.Length]);
@@ -49,7 +49,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
       int nSamples = end - start;
       for (int sample = start; sample < end; sample++) {
-        double est = evaluator.Evaluate(tree, sample);
+        double est = evaluator.Evaluate(sample);
         double origClass = dataset.GetValue(sample, targetVariable);
         int estClassIndex = -1;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class

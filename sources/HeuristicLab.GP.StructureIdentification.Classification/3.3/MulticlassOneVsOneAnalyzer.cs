@@ -85,9 +85,9 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
         BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
         evaluator.ResetEvaluator(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0);
-
+        evaluator.PrepareForEvaluation(functionTree);
         for(int i = 0; i < (samplesEnd - samplesStart); i++) {
-          double est = evaluator.Evaluate(functionTree, i + samplesStart);
+          double est = evaluator.Evaluate(i + samplesStart);
           if(est < 0.5) {
             CastVote(votes, i, classAValue, classValues);
           } else {

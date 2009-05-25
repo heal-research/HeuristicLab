@@ -61,6 +61,18 @@ namespace HeuristicLab.GP.StructureIdentification {
       estimatedValueMax = targetMean + maximumPunishment;
     }
 
+    public void PrepareForEvaluation(IFunctionTree functionTree) {
+      BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
+      if (bakedTree == null) throw new ArgumentException("TreeEvaluators can only evaluate BakedFunctionTrees");
+
+      List<LightWeightFunction> linearRepresentation = bakedTree.LinearRepresentation;
+      codeArr = new Instr[linearRepresentation.Count];
+      int i = 0;
+      foreach (LightWeightFunction f in linearRepresentation) {
+        codeArr[i++] = TranslateToInstr(f);
+      }
+    }
+
     private Instr TranslateToInstr(LightWeightFunction f) {
       Instr instr = new Instr();
       instr.arity = f.arity;
@@ -85,17 +97,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       return instr;
     }
 
-    public double Evaluate(IFunctionTree functionTree, int sampleIndex) {
-      BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
-      if (bakedTree == null) throw new ArgumentException("TreeEvaluators can only evaluate BakedFunctionTrees");
-
-      List<LightWeightFunction> linearRepresentation = bakedTree.LinearRepresentation;
-      codeArr = new Instr[linearRepresentation.Count];
-      int i = 0;
-      foreach (LightWeightFunction f in linearRepresentation) {
-        codeArr[i++] = TranslateToInstr(f);
-      }
-
+    public double Evaluate(int sampleIndex) {
       PC = 0;
       this.sampleIndex = sampleIndex;
 
