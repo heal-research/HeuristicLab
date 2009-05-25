@@ -128,7 +128,7 @@ namespace HeuristicLab.SupportVectorMachines {
       modelCreator.GetVariableInfo("SVMNu").ActualName = "Nu";
       modelCreator.GetVariableInfo("SVMRangeTransform").ActualName = "RangeTransform";
       modelCreator.GetVariableInfo("SVMType").ActualName = "Type";
-      
+
 
       modelProcessor.AddSubOperator(modelCreator);
       CombinedOperator trainingEvaluator = (CombinedOperator)CreateEvaluator("Training");
@@ -191,7 +191,7 @@ namespace HeuristicLab.SupportVectorMachines {
       CombinedOperator op = new CombinedOperator();
       op.Name = p + "Evaluator";
       SequentialProcessor seqProc = new SequentialProcessor();
-     
+
       SupportVectorEvaluator evaluator = new SupportVectorEvaluator();
       evaluator.Name = p + "SimpleEvaluator";
       evaluator.GetVariableInfo("SVMModel").ActualName = "Model";
@@ -207,10 +207,25 @@ namespace HeuristicLab.SupportVectorMachines {
       r2Evaluator.Name = p + "R2Evaluator";
       r2Evaluator.GetVariableInfo("Values").ActualName = p + "Values";
       r2Evaluator.GetVariableInfo("R2").ActualName = p + "R2";
+      SimpleMeanAbsolutePercentageErrorEvaluator mapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
+      mapeEvaluator.Name = p + "MAPEEvaluator";
+      mapeEvaluator.GetVariableInfo("Values").ActualName = p + "Values";
+      mapeEvaluator.GetVariableInfo("MAPE").ActualName = p + "MAPE";
+      SimpleMeanAbsolutePercentageOfRangeErrorEvaluator mapreEvaluator = new SimpleMeanAbsolutePercentageOfRangeErrorEvaluator();
+      mapreEvaluator.Name = p + "MAPREEvaluator";
+      mapreEvaluator.GetVariableInfo("Values").ActualName = p + "Values";
+      mapreEvaluator.GetVariableInfo("MAPRE").ActualName = p + "MAPRE";
+      SimpleVarianceAccountedForEvaluator vafEvaluator = new SimpleVarianceAccountedForEvaluator();
+      vafEvaluator.Name = p + "VAFEvaluator";
+      vafEvaluator.GetVariableInfo("Values").ActualName = p + "Values";
+      vafEvaluator.GetVariableInfo("VAF").ActualName = p + "VAF";
 
       seqProc.AddSubOperator(evaluator);
       seqProc.AddSubOperator(mseEvaluator);
       seqProc.AddSubOperator(r2Evaluator);
+      seqProc.AddSubOperator(mapeEvaluator);
+      seqProc.AddSubOperator(mapreEvaluator);
+      seqProc.AddSubOperator(vafEvaluator);
 
       op.OperatorGraph.AddOperator(seqProc);
       op.OperatorGraph.InitialOperator = seqProc;
@@ -240,7 +255,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       progOp.Name = "Reset" + paramName;
       progOp.RemoveVariableInfo("Result");
       progOp.AddVariableInfo(new VariableInfo("Value", "Value", typeof(IntData), VariableKind.In | VariableKind.Out));
-      progOp.Code ="Value.Data = 0;";
+      progOp.Code = "Value.Data = 0;";
       progOp.GetVariableInfo("Value").ActualName = paramName;
       return progOp;
     }
