@@ -19,24 +19,39 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.NonPublic |
       BindingFlags.DeclaredOnly;
 
+    private static Dictionary<KeyValuePair<Type, bool>, IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>>> memberCache =
+      new Dictionary<KeyValuePair<Type, bool>, IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>>>();
+
     public static IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>> GetStorableMembers(Type type) {
       return GetStorableMembers(type, true);
     }
 
     public static IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>>
         GetStorableMembers(Type type, bool inherited) {
+      var query = new KeyValuePair<Type, bool>(type, inherited);
+      if (memberCache.ContainsKey(query))
+        return memberCache[query];
+      IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>> storablesMembers = GenerateStorableMembers(type, inherited);
+      memberCache[query] = storablesMembers;
+      return storablesMembers;
+    }
+
+    public static IEnumerable<KeyValuePair<StorableAttribute, MemberInfo>>
+        GenerateStorableMembers(Type type, bool inherited) {
+      List<KeyValuePair<StorableAttribute, MemberInfo>> storableMembers =
+        new List<KeyValuePair<StorableAttribute, MemberInfo>>();
       if (inherited && type.BaseType != null)
-        foreach (var pair in GetStorableMembers(type.BaseType))
-          yield return pair;
+        storableMembers.AddRange(GenerateStorableMembers(type.BaseType, true));        
       foreach (MemberInfo memberInfo in type.GetMembers(instanceMembers)) {
         foreach (object attribute in memberInfo.GetCustomAttributes(false)) {
           StorableAttribute storableAttribute =
             attribute as StorableAttribute;
           if (storableAttribute != null) {
-            yield return new KeyValuePair<StorableAttribute, MemberInfo>(storableAttribute, memberInfo);
+            storableMembers.Add(new KeyValuePair<StorableAttribute, MemberInfo>(storableAttribute, memberInfo));
           }
         }
       }
+      return storableMembers;
     }
 
     public static Dictionary<string, DataMemberAccessor> GetStorableAccessors(object obj) {

@@ -18,9 +18,10 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       return new XmlString(sb.ToString());
     }
 
+    private static Regex re = new Regex(@"<!\[CDATA\[((?:[^]]|\](?!\]>))*)\]\]>", RegexOptions.Singleline);
+
     public override string Parse(XmlString x) {
       StringBuilder sb = new StringBuilder();
-      Regex re = new Regex(@"<!\[CDATA\[((?:[^]]|\](?!\]>))*)\]\]>", RegexOptions.Singleline);
       foreach (Match m in re.Matches(x.Data)) {
         sb.Append(m.Groups[1]);
       }
