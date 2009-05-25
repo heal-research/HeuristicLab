@@ -144,6 +144,9 @@ namespace HeuristicLab.CEDMA.Server {
       StoreModelVariable(model, Ontology.TrainingCoefficientOfDetermination, bestModelScope, "TrainingR2");
       StoreModelVariable(model, Ontology.ValidationCoefficientOfDetermination, bestModelScope, "ValidationR2");
       StoreModelVariable(model, Ontology.TestCoefficientOfDetermination, bestModelScope, "TestR2");
+      StoreModelVariable(model, Ontology.TrainingCoefficientOfDetermination, bestModelScope, "TrainingVAF");
+      StoreModelVariable(model, Ontology.ValidationCoefficientOfDetermination, bestModelScope, "ValidationVAF");
+      StoreModelVariable(model, Ontology.TestCoefficientOfDetermination, bestModelScope, "TestVAF");
       StoreModelVariable(model, Ontology.TrainingTheilsInequalityCoefficient, bestModelScope, "TrainingTheilInequalityCoefficient");
       StoreModelVariable(model, Ontology.ValidationTheilsInequalityCoefficient, bestModelScope, "ValidationTheilInequalityCoefficient");
       StoreModelVariable(model, Ontology.TestTheilsInequalityCoefficient, bestModelScope, "TestTheilInequalityCoefficient");

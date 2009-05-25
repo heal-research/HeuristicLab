@@ -145,6 +145,15 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public static Entity TestCoefficientOfDetermination {
       get { return new Entity(CedmaNameSpace + "TestCoefficientOfDetermination"); }
     }
+    public static Entity TrainingVarianceAccountedFor {
+      get { return new Entity(CedmaNameSpace + "TrainingVarianceAccountedFor"); }
+    }
+    public static Entity ValidationVarianceAccountedFor {
+      get { return new Entity(CedmaNameSpace + "ValidationVarianceAccountedFor"); }
+    }
+    public static Entity TestVarianceAccountedFor {
+      get { return new Entity(CedmaNameSpace + "TestVarianceAccountedFor"); }
+    }
     public static Entity TrainingAccuracy {
       get { return new Entity(CedmaNameSpace + "TrainingAccuracy"); }
     }

@@ -239,6 +239,22 @@ namespace HeuristicLab.GP.StructureIdentification {
       testR2Evaluator.GetVariableInfo("R2").ActualName = "TestR2";
       testR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      VarianceAccountedForEvaluator trainingVAFEvaluator = new VarianceAccountedForEvaluator();
+      trainingVAFEvaluator.Name = "TrainingVAFEvaluator";
+      trainingVAFEvaluator.GetVariableInfo("VAF").ActualName = "TrainingVAF";
+      trainingVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
+      trainingVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      VarianceAccountedForEvaluator validationVAFEvaluator = new VarianceAccountedForEvaluator();
+      validationVAFEvaluator.Name = "ValidationVAFEvaluator";
+      validationVAFEvaluator.GetVariableInfo("VAF").ActualName = "ValidationVAF";
+      validationVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
+      validationVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+      VarianceAccountedForEvaluator testVAFEvaluator = new VarianceAccountedForEvaluator();
+      testVAFEvaluator.Name = "TestVAFEvaluator";
+      testVAFEvaluator.GetVariableInfo("VAF").ActualName = "TestVAF";
+      testVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
+      testVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+
       ProgrammableOperator progOperator = new ProgrammableOperator();
       progOperator.RemoveVariableInfo("Result");
       progOperator.AddVariableInfo(new HeuristicLab.Core.VariableInfo("EvaluatedSolutions", "", typeof(IntData), VariableKind.In));
@@ -256,6 +272,9 @@ scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions
       bestSolutionProcessor.AddSubOperator(trainingR2Evaluator);
       bestSolutionProcessor.AddSubOperator(validationR2Evaluator);
       bestSolutionProcessor.AddSubOperator(testR2Evaluator);
+      bestSolutionProcessor.AddSubOperator(trainingVAFEvaluator);
+      bestSolutionProcessor.AddSubOperator(validationVAFEvaluator);
+      bestSolutionProcessor.AddSubOperator(testVAFEvaluator);
       bestSolutionProcessor.AddSubOperator(progOperator);
       return bestSolutionProcessor;
     }
