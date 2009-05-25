@@ -26,10 +26,16 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Modeling;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class MeanAbsolutePercentageOfRangeErrorEvaluator : GPEvaluatorBase {
+  public class MeanAbsolutePercentageOfRangeErrorEvaluator : SimpleGPEvaluatorBase {
+    public override string OutputVariableName {
+      get {
+        return "MAPRE";
+      }
+    }
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -37,41 +43,12 @@ the mean of the absolute percentage error (scale invariant) relative to the rang
       }
     }
 
-    public MeanAbsolutePercentageOfRangeErrorEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("MAPRE", "The mean absolute percentage range error of the model", typeof(DoubleData), VariableKind.New));
-    }
-
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      double errorsSum = 0.0;
-      int n = 0;
-      double range = dataset.GetRange(targetVariable, start, end);
-      for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
-
-        if (!double.IsNaN(original) && !double.IsInfinity(original) && original != 0.0) {
-          double percent_error = Math.Abs((estimated - original) / range);
-          errorsSum += percent_error;
-          n++;
-        }
-      }
-      double quality = errorsSum / n;
+    public override double Evaluate(double[,] values) {
+      double quality = SimpleMeanAbsolutePercentageOfRangeErrorEvaluator.Calculate(values);
       if (double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
 
-      // create a variable for the MAPRE
-      DoubleData mapre = GetVariableValue<DoubleData>("MAPRE", scope, false, false);
-      if (mapre == null) {
-        mapre = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MAPRE"), mapre));
-      }
-
-      mapre.Data = quality;
+      return quality;
     }
   }
 }

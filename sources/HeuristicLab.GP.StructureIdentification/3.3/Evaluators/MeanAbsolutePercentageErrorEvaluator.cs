@@ -26,10 +26,17 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Modeling;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class MeanAbsolutePercentageErrorEvaluator : GPEvaluatorBase {
+  public class MeanAbsolutePercentageErrorEvaluator : SimpleGPEvaluatorBase {
+    public override string OutputVariableName {
+      get {
+        return "MAPE";
+      }
+    }
+
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -37,40 +44,12 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
       }
     }
 
-    public MeanAbsolutePercentageErrorEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("MAPE", "The mean absolute percentage error of the model", typeof(DoubleData), VariableKind.New));
-    }
-
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      double errorsSum = 0.0;
-      int n = 0;
-      for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
-
-        if (!double.IsNaN(original) && !double.IsInfinity(original) && original != 0.0) {
-          double percent_error = Math.Abs((estimated - original) / original);
-          errorsSum += percent_error;
-          n++;
-        }
-      }
-      double quality = errorsSum / n;
+    public override double Evaluate(double[,] values) {
+      double quality = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(values);
       if (double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
 
-      // create a variable for the MAPE
-      DoubleData mape = GetVariableValue<DoubleData>("MAPE", scope, false, false);
-      if (mape == null) {
-        mape = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MAPE"), mape));
-      }
-
-      mape.Data = quality;
+      return quality;
     }
   }
 }

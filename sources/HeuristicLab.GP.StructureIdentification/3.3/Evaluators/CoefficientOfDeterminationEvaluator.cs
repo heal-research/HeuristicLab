@@ -26,9 +26,17 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class CoefficientOfDeterminationEvaluator : GPEvaluatorBase {
+  public class CoefficientOfDeterminationEvaluator : SimpleGPEvaluatorBase {
+
+    public override string OutputVariableName {
+      get {
+        return "R2";
+      }
+    }
+    
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -36,56 +44,13 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
       }
     }
 
-    public CoefficientOfDeterminationEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("R2", "The coefficient of determination of the model", typeof(DoubleData), VariableKind.New));
-    }
+    public override double Evaluate(double[,] values) {
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      double errorsSquaredSum = 0.0;
-      double originalDeviationTotalSumOfSquares = 0.0;
-      double targetMean = dataset.GetMean(targetVariable, start, end);
-
-      double originalSum = 0.0;
-      int n = 0;
-      for (int sample = start; sample < end; sample++) {
-        double estimated = evaluator.Evaluate(sample);
-        double original = dataset.GetValue(sample, targetVariable);
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
-        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
-          double error = estimated - original;
-          errorsSquaredSum += error * error;
-
-          originalSum += original;
-          n++;
-        }
-      }
-
-      double originalMean = originalSum / n;
-      for(int sample = start; sample < end; sample++){
-        double original = dataset.GetValue(sample, targetVariable);
-        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
-          original = original - originalMean;
-          original = original * original;
-          originalDeviationTotalSumOfSquares += original;
-        }
-      }
-
-      double quality = 1 - errorsSquaredSum / originalDeviationTotalSumOfSquares;
-      if (quality > 1)
-        throw new InvalidProgramException();
+      double quality = SimpleR2Evaluator.Calculate(values);
       if (double.IsNaN(quality) || double.IsInfinity(quality))
         quality = double.MaxValue;
 
-      DoubleData r2 = GetVariableValue<DoubleData>("R2", scope, false, false);
-      if (r2 == null) {
-        r2 = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("R2"), r2));
-      }
-
-      r2.Data = quality;
+      return quality;
     }
   }
 }

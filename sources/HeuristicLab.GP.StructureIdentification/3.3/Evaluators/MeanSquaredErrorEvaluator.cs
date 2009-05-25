@@ -27,9 +27,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class MeanSquaredErrorEvaluator : GPEvaluatorBase {
+  public class MeanSquaredErrorEvaluator : SimpleGPEvaluatorBase {
+    public override string OutputVariableName {
+      get {
+        return "MSE";
+      }
+    }
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'DataSet' and calculates the mean-squared-error
@@ -37,39 +43,14 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       }
     }
 
-    public MeanSquaredErrorEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("MSE", "The mean squared error of the model", typeof(DoubleData), VariableKind.New));
-    }
+    public override double Evaluate(double[,] values) {
+      double quality = SimpleMSEEvaluator.Calculate(values);
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      double errorsSquaredSum = 0;
-      int n = 0;
-      for (int sample = start; sample < end; sample++) {
-        double original = dataset.GetValue(sample, targetVariable);
-        double estimated = evaluator.Evaluate(sample);
-        if (updateTargetValues) {
-          dataset.SetValue(sample, targetVariable, estimated);
-        }
-        if (!double.IsNaN(original) && !double.IsInfinity(original)) {
-          double error = estimated - original;
-          errorsSquaredSum += error * error;
-          n++;
-        }
+      if (double.IsNaN(quality) || double.IsInfinity(quality)) {
+        quality = double.MaxValue;
       }
 
-      errorsSquaredSum /= n;
-      if (double.IsNaN(errorsSquaredSum) || double.IsInfinity(errorsSquaredSum)) {
-        errorsSquaredSum = double.MaxValue;
-      }
-
-      DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);
-      if (mse == null) {
-        mse = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("MSE"), mse));
-      }
-
-      mse.Data = errorsSquaredSum;
+      return quality;
     }
   }
 }
