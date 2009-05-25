@@ -7,21 +7,23 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-  public class SimpleMSEEvaluator : OperatorBase {
+  public class SimpleMSEEvaluator : SimpleEvaluatorBase {
 
-    public SimpleMSEEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MSE", "Mean squarred error", typeof(DoubleData), VariableKind.New | VariableKind.Out));
+    public override string OutputVariableName {
+      get {
+        return "MSE";
+      }
+    }
+    public override double Evaluate(double[,] values) {
+      return Calculate(values);
     }
 
-    public override IOperation Apply(IScope scope) {
-      DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, true);
+    public static double Calculate(double[,] values) {
       double sse = 0;
       double cnt = 0;
-      for (int i = 0; i < values.Data.GetLength(0); i++) {
-        double estimated = values.Data[i, 0];
-        double target = values.Data[i, 1];
+      for (int i = 0; i < values.GetLength(0); i++) {
+        double estimated = values[i, 0];
+        double target = values[i, 1];
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
             !double.IsNaN(target) && !double.IsInfinity(target)) {
           double error = estimated - target;
@@ -31,8 +33,7 @@ namespace HeuristicLab.Modeling {
       }
 
       double mse = sse / cnt;
-      scope.AddVariable(new Variable(scope.TranslateName("MSE"), new DoubleData(mse)));
-      return null;
+      return mse;
     }
   }
 }

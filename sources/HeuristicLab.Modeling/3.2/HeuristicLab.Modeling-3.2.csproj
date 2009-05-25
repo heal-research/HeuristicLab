@@ -82,11 +82,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationProblemInjector.cs" />
+    <Compile Include="SimpleEvaluatorBase.cs" />
     <Compile Include="ITimeSeriesAlgorithm.cs" />
     <Compile Include="IClassificationAlgorithm.cs" />
     <Compile Include="IStochasticAlgorithm.cs" />
     <Compile Include="HeuristicLabModelingPlugin.cs" />
     <Compile Include="IAlgorithm.cs" />
+    <Compile Include="SimpleMeanAbsolutePercentageErrorEvaluator.cs" />
+    <Compile Include="SimpleMeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
     <Compile Include="ProblemInjector.cs" />
     <Compile Include="ProblemInjectorView.cs">
       <SubType>UserControl</SubType>
@@ -98,6 +101,7 @@
     <Compile Include="SimpleMSEEvaluator.cs" />
     <Compile Include="SimpleR2Evaluator.cs" />
     <Compile Include="TimeSeriesProblemInjector.cs" />
+    <Compile Include="SimpleVarianceAccountedForEvaluator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
