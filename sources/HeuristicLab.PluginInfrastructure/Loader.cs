@@ -159,7 +159,7 @@ namespace HeuristicLab.PluginInfrastructure {
 
           foreach (Type t in exported) {
             // if there is a type that implements IPlugin
-            if (Array.Exists<Type>(t.GetInterfaces(), delegate(Type iface) {
+            if (! t.IsAbstract && Array.Exists<Type>(t.GetInterfaces(), delegate(Type iface) {
               // use AssemblyQualifiedName to compare the types because we can't directly 
               // compare ReflectionOnly types and Execution types
               return iface.AssemblyQualifiedName == typeof(IPlugin).AssemblyQualifiedName;
