@@ -90,10 +90,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecuterBase.cs" />
+    <Compile Include="HiveExecuter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IExecuter.cs" />
     <Compile Include="DispatcherBase.cs" />
+    <Compile Include="GridExecuter.cs" />
     <Compile Include="IDispatcher.cs" />
     <Compile Include="Execution.cs" />
-    <Compile Include="Executer.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerApplication.cs" />
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />
@@ -134,6 +139,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Grid\3.2\HeuristicLab.Grid-3.2.csproj">
       <Project>{545CE756-98D8-423B-AC2E-6E7D70926E5C}</Project>
       <Name>HeuristicLab.Grid-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Hive.Engine\3.2\HeuristicLab.Hive.Engine-3.2.csproj">
+      <Project>{C8FEDAC1-0326-4293-B585-F0FEDDEDFC11}</Project>
+      <Name>HeuristicLab.Hive.Engine-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
       <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>

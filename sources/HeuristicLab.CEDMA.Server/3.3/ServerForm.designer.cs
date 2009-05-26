@@ -48,7 +48,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.externalAddressLabel = new System.Windows.Forms.Label();
       this.gridAddressLabel = new System.Windows.Forms.Label();
-      this.gridAddress = new System.Windows.Forms.TextBox();
+      this.address = new System.Windows.Forms.TextBox();
       this.connectButton = new System.Windows.Forms.Button();
       this.listBox = new System.Windows.Forms.ListBox();
       this.refreshTimer = new System.Windows.Forms.Timer(this.components);
@@ -85,10 +85,10 @@ namespace HeuristicLab.CEDMA.Server {
       // 
       // gridAddress
       // 
-      this.gridAddress.Location = new System.Drawing.Point(106, 32);
-      this.gridAddress.Name = "gridAddress";
-      this.gridAddress.Size = new System.Drawing.Size(160, 20);
-      this.gridAddress.TabIndex = 8;
+      this.address.Location = new System.Drawing.Point(106, 32);
+      this.address.Name = "gridAddress";
+      this.address.Size = new System.Drawing.Size(160, 20);
+      this.address.TabIndex = 8;
       // 
       // connectButton
       // 
@@ -150,7 +150,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.Controls.Add(this.listBox);
       this.Controls.Add(this.connectButton);
       this.Controls.Add(this.gridAddressLabel);
-      this.Controls.Add(this.gridAddress);
+      this.Controls.Add(this.address);
       this.Controls.Add(this.externalAddressLabel);
       this.Controls.Add(this.addressTextBox);
       this.Name = "ServerForm";
@@ -166,7 +166,7 @@ namespace HeuristicLab.CEDMA.Server {
     private System.Windows.Forms.TextBox addressTextBox;
     private System.Windows.Forms.Label externalAddressLabel;
     private System.Windows.Forms.Label gridAddressLabel;
-    private System.Windows.Forms.TextBox gridAddress;
+    private System.Windows.Forms.TextBox address;
     private System.Windows.Forms.Button connectButton;
     private System.Windows.Forms.ListBox listBox;
     private System.Windows.Forms.Timer refreshTimer;

@@ -44,7 +44,7 @@ namespace HeuristicLab.CEDMA.Server {
     private Server server;
     private Store store;
     private IDispatcher dispatcher;
-    private Executer executer;
+    private IExecuter executer;
 
     private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
     private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
@@ -63,7 +63,12 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void connectButton_Click(object sender, EventArgs e) {
       dispatcher = new SimpleDispatcher(store);
-      executer = new Executer(dispatcher, store, gridAddress.Text);
+      if (address.Text.Contains("ExecutionEngine")) {
+        executer = new HiveExecuter(dispatcher, store, address.Text);
+      } else { 
+        // default is grid backend
+        executer = new GridExecuter(dispatcher, store, address.Text);
+      }
       executer.Start();
       maxActiveJobsUpDown.Enabled = true;
       maxActiveJobsUpDown.Value = executer.MaxActiveJobs;

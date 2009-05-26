@@ -39,19 +39,12 @@ using HeuristicLab.Core;
 using System.Threading;
 
 namespace HeuristicLab.CEDMA.Server {
-  public class Executer {
+  public abstract class ExecuterBase : IExecuter {
     private IDispatcher dispatcher;
-    private JobManager jobManager;
+    protected IDispatcher Dispatcher {
+      get { return dispatcher; }
+    }
     private IStore store;
-    private Dictionary<WaitHandle, Execution> activeExecutions;
-
-    private TimeSpan StartJobInterval {
-      get { return TimeSpan.FromMilliseconds(500); }
-    }
-
-    private TimeSpan WaitForFinishedJobsTimeout {
-      get { return TimeSpan.FromMilliseconds(100); }
-    }
 
     private int maxActiveJobs;
     public int MaxActiveJobs {
@@ -62,71 +55,19 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    public Executer(IDispatcher dispatcher, IStore store, string gridUrl) {
-      activeExecutions = new Dictionary<WaitHandle, Execution>();
+    public ExecuterBase(IDispatcher dispatcher, IStore store) {
       maxActiveJobs = 10;
       this.dispatcher = dispatcher;
       this.store = store;
-      this.jobManager = new JobManager(gridUrl);
-      jobManager.Reset();
     }
 
-    internal void Start() {
+    public void Start() {
       new Thread(StartJobs).Start();
     }
 
-    private void StartJobs() {
-      List<WaitHandle> wh = new List<WaitHandle>();
-      Dictionary<WaitHandle, AtomicOperation> activeOperations = new Dictionary<WaitHandle, AtomicOperation>();
-      while (true) {
-        try {
-          // start new jobs as long as there are less than MaxActiveJobs 
-          while (wh.Count < MaxActiveJobs) {
-            Thread.Sleep(StartJobInterval);
-            // get an execution from the dispatcher and execute in grid via job-manager
-            Execution execution = dispatcher.GetNextJob();
-            if (execution != null) {
-              AtomicOperation op = new AtomicOperation(execution.Engine.OperatorGraph.InitialOperator, execution.Engine.GlobalScope);
-              WaitHandle opWh = jobManager.BeginExecuteOperation(execution.Engine.GlobalScope, op);
-              wh.Add(opWh);
-              activeOperations.Add(opWh, op);
-              lock (activeExecutions) {
-                activeExecutions.Add(opWh, execution);
-              }
-            }
-          }
-          // wait until any job is finished
-          WaitHandle[] whArr = wh.ToArray();
-          int readyHandleIndex = WaitHandle.WaitAny(whArr, WaitForFinishedJobsTimeout);
-          if (readyHandleIndex != WaitHandle.WaitTimeout) {
-            WaitHandle readyHandle = whArr[readyHandleIndex];
-            AtomicOperation finishedOp = activeOperations[readyHandle];
-            wh.Remove(readyHandle);
-            Execution finishedExecution = null;
-            lock (activeExecutions) {
-              finishedExecution = activeExecutions[readyHandle];
-              activeExecutions.Remove(readyHandle);
-            }
-            activeOperations.Remove(readyHandle);
-            ProcessingEngine finishedEngine = null;
-            try {
-              finishedEngine = jobManager.EndExecuteOperation(finishedOp);
-            }
-            catch (Exception badEx) {
-              Trace.WriteLine("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
-            }
-            if (finishedEngine != null) {
-              StoreResults(finishedExecution, finishedEngine);
-            }
-          }
-        }
-        catch (Exception ex) {
-          Trace.WriteLine("CEDMA Executer: Exception in job-management thread. " + ex.Message);
-        }
-      }
-    }
+    protected abstract void StartJobs();
 
-    private void StoreResults(Execution finishedExecution, ProcessingEngine finishedEngine) {
+    protected void StoreResults(Execution finishedExecution, IEngine finishedEngine) {
       Entity model = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
       store.Add(new Statement(finishedExecution.DataSetEntity, Ontology.PredicateHasModel, model));
       StoreModelAttribute(model, Ontology.TargetVariable, finishedExecution.TargetVariable);
@@ -170,15 +111,6 @@ namespace HeuristicLab.CEDMA.Server {
       store.Add(new Statement(model, predicate, new Literal(value)));
     }
 
-    internal string[] GetJobs() {
-      lock (activeExecutions) {
-        string[] retVal = new string[activeExecutions.Count];
-        int i = 0;
-        foreach (Execution e in activeExecutions.Values) {
-          retVal[i++] = "Target-Variable: " + e.TargetVariable + " " + e.Description;
-        }
-        return retVal;
-      }
-    }
+    public abstract string[] GetJobs();
   }
 }
