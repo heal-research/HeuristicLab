@@ -622,11 +622,15 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         }
         OnDeletePlugins();
         OnPreUpgradePlugins();
-        PluginManager.Manager.UnloadAllPlugins();
-        BackupOldFiles();
-        DeleteOldFiles();
-        InstallNewFiles();
-        PluginManager.Manager.LoadAllPlugins();
+        try {
+          PluginManager.Manager.UnloadAllPlugins();
+          BackupOldFiles();
+          DeleteOldFiles();
+          InstallNewFiles();
+        }
+        finally {
+          PluginManager.Manager.LoadAllPlugins();
+        }
         InitializePlugins();
         OnPostUpgradePlugins();
         OnInstallPlugins();
