@@ -41,7 +41,11 @@ namespace HeuristicLab.Core {
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="filename">The name of the file where the <paramref name="object"/> should be saved.</param>
     public static void Save(IStorable instance, string filename) {
-      XmlGenerator.Serialize(instance, filename);
+      XmlGenerator.Serialize(instance, filename, 0);
+    }
+
+    public static void SaveCompressed(IStorable instance, string filename) {
+      XmlGenerator.Serialize(instance, filename, 9);
     }
 
     /// <summary>
