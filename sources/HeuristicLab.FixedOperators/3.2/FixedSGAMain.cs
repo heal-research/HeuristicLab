@@ -142,39 +142,59 @@ namespace HeuristicLab.FixedOperators {
 
       IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
       IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
-      nrOfGenerations.Data = 0;
+      //nrOfGenerations.Data = 0;
 
-      IntData subscopeNr = new IntData(0);
+      IntData subscopeNr;
+      try {
+        subscopeNr = scope.GetVariableValue<IntData>("SubScopeNr", false);
+      }
+      catch (Exception) {
+        subscopeNr = new IntData(0);
+        scope.AddVariable(new Variable("SubScopeNr", subscopeNr));
+      }
+
+      EmptyOperator empty = new EmptyOperator();
 
       IScope s;
       IScope s2;
-      int tempExePointer;
-      int tempPersExePointer;
+      int tempExePointer = 0;
+      int tempPersExePointer = 0;
       // fetch variables from scope for create children
       InitializeExecuteCreateChildren(scope);
       try {
         for (int i = nrOfGenerations.Data; i < maxGenerations.Data; i++) {
+          if (executionPointer == persistedExecutionPointer.Data)
+            persistedExecutionPointer.Data = 0;
+          executionPointer = 0;
+          
           Execute(selector, scope);
 
           ////// Create Children //////
           // ChildrenInitializer
           s = scope.SubScopes[1];
           Execute(ci, s);
+          
           tempExePointer = executionPointer;
           tempPersExePointer = persistedExecutionPointer.Data;
           // UniformSequentialSubScopesProcessor
           for (int j = subscopeNr.Data; j < s.SubScopes.Count; j++ ) {
+            if (executionPointer == persistedExecutionPointer.Data)
+              persistedExecutionPointer.Data = tempExePointer;
             executionPointer = tempExePointer;
-            persistedExecutionPointer.Data = tempPersExePointer;
+            
             s2 = s.SubScopes[j];
             Execute(crossover, s2);
             // Stochastic Branch
             if (random.NextDouble() < probability.Data)
               Execute(mutator, s2);
+            else
+              Execute(empty, s2);
             Execute(evaluator, s2);
             Execute(sr, s2);
             Execute(counter, s2);
+            subscopeNr.Data++;
           } // foreach
+          
 
           Execute(sorter, s);
           ////// END Create Children //////
@@ -184,6 +204,7 @@ namespace HeuristicLab.FixedOperators {
           Execute(bawqc, scope);
           Execute(dc, scope);
           Execute(lci, scope);
+          subscopeNr.Data = 0;
           nrOfGenerations.Data++;
         } // for i
       } // try

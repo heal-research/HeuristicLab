@@ -64,7 +64,10 @@ namespace HeuristicLab.FixedOperators {
       if (!IsExecuted()) {
         ExecuteOperation(op, scope);
         persistedExecutionPointer.Data++;
+        //Console.WriteLine("Execute: {0}", executionPointer);
       } // if not executed
+      //else
+        //Console.WriteLine("Skip Execute: {0}", executionPointer);
       executionPointer++;
 
       if (Canceled)
