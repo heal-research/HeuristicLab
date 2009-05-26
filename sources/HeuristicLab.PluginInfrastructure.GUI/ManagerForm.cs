@@ -747,7 +747,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         allTags.ForEach(delegate(PluginTag tag) {
           List<PluginAction> involvingActions = GetActionsInvolving(tag);
 
-          if(tag.State == PluginState.Upgradeable || (involvingActions.Count > 0 && involvingActions[0].Action == ManagerAction.Remove)) {
+          if((tag.State == PluginState.Upgradeable) ||
+             (involvingActions.Count > 0 && involvingActions[0].Action == ManagerAction.Remove && tag.State != PluginState.Available)) {
             tag.Plugin.Files.ForEach(delegate(string filename) {
               File.Delete(filename);
             });
@@ -777,7 +778,8 @@ namespace HeuristicLab.PluginInfrastructure.GUI {
         allTags.ForEach(delegate(PluginTag tag) {
           List<PluginAction> actionsInvolving = GetActionsInvolving(tag);
 
-          if(tag.State == PluginState.Upgradeable || (actionsInvolving.Count > 0 && actionsInvolving[0].Action == ManagerAction.Remove)) {
+          if((tag.State == PluginState.Upgradeable) ||
+             (actionsInvolving.Count > 0 && actionsInvolving[0].Action == ManagerAction.Remove && tag.State != PluginState.Available)) {
             tag.Plugin.Files.ForEach(delegate(string filename) {
               File.Copy(filename, backupDir + filename.Remove(0, pluginDir.Length));
             });
