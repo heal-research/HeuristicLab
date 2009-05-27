@@ -311,6 +311,12 @@ scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions
       return loggingOperator;
     }
 
+    protected internal override Model CreateGPModel(IScope bestModelScope) {
+      Model model = base.CreateGPModel(bestModelScope);
+      model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
+      return model;
+    }
+
     public virtual IEditor CreateEditor() {
       return new StandardGpEditor(this);
     }

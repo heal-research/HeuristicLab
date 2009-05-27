@@ -40,7 +40,7 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
 
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.In));
+      // AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.In));
 
       AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
@@ -53,15 +53,15 @@ namespace HeuristicLab.SupportVectorMachines {
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
 
-      SVM.Model model = GetVariableValue<SVMModel>("SVMModel", scope, true).Data;
-      SVM.RangeTransform rangeTransform = GetVariableValue<SVMRangeTransform>("SVMRangeTransform", scope, true).Data;
+      SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
+      // SVM.RangeTransform rangeTransform = GetVariableValue<SVMRangeTransform>("SVMRangeTransform", scope, true).Data;
 
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);
+      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);
 
       double[,] values = new double[end-start, 2];
       for (int i = 0; i < end - start; i++) {
-        values[i,0] = SVM.Prediction.Predict(model, scaledProblem.X[i]);
+        values[i,0] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
         values[i,1] = dataset.Samples[(start + i) * dataset.Columns + targetVariable];
       }
 

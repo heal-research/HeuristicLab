@@ -28,15 +28,24 @@ using System.Globalization;
 using System.IO;
 
 namespace HeuristicLab.Data {
-  public class SVMModel : ObjectData {
+  public class SVMModel : ItemBase {
+    private SVM.Model model;
     /// <summary>
     /// Gets or sets the SVM model.
     /// </summary>
-    /// <remarks>Uses property <see cref="ObjectData.Data"/> of base class <see cref="ObjectData"></see>. 
-    /// No own data storage present.</remarks>
-    public new SVM.Model Data {
-      get { return (SVM.Model)base.Data; }
-      set { base.Data = value; }
+    public SVM.Model Model {
+      get { return model; }
+      set { model = value; }
+    }
+
+
+    /// <summary>
+    /// Gets or sets the range transformation for the model.
+    /// </summary>
+    private SVM.RangeTransform rangeTransform;
+    public SVM.RangeTransform RangeTransform {
+      get { return rangeTransform; }
+      set { rangeTransform = value; }
     }
 
     /// <summary>
@@ -48,7 +57,8 @@ namespace HeuristicLab.Data {
       SVMModel clone = new SVMModel();
       clonedObjects.Add(Guid, clone);
       // beware we are only using a shallow copy here! (gkronber)
-      clone.Data = Data;
+      clone.Model = Model;
+      clone.RangeTransform = RangeTransform;
       return clone;
     }
 
@@ -63,15 +73,24 @@ namespace HeuristicLab.Data {
     /// <returns>The saved <see cref="XmlNode"/>.</returns>
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlNode data = document.CreateElement("Data");
-
+      XmlNode model = document.CreateElement("Model");
       using (MemoryStream stream = new MemoryStream()) {
-        SVM.Model.Write(stream, Data);
+        SVM.Model.Write(stream, Model);
         stream.Seek(0, System.IO.SeekOrigin.Begin);
         StreamReader reader = new StreamReader(stream);
-        data.InnerText = reader.ReadToEnd();
-        node.AppendChild(data);
+        model.InnerText = reader.ReadToEnd();
+        node.AppendChild(model);
       }
+
+      XmlNode rangeTransform = document.CreateElement("RangeTransform");
+      using (MemoryStream stream = new MemoryStream()) {
+        SVM.RangeTransform.Write(stream, RangeTransform);
+        stream.Seek(0, System.IO.SeekOrigin.Begin);
+        StreamReader reader = new StreamReader(stream);
+        rangeTransform.InnerText = reader.ReadToEnd();
+        node.AppendChild(rangeTransform);
+      }
+
       return node;
     }
     /// <summary>
@@ -83,9 +102,13 @@ namespace HeuristicLab.Data {
     /// <param name="restoredObjects">A dictionary of all already restored objects. (Needed to avoid cycles.)</param>
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      XmlNode data = node.SelectSingleNode("Data");
-      using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(data.InnerText))) {
-        Data = SVM.Model.Read(stream);
+      XmlNode model = node.SelectSingleNode("Model");
+      using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(model.InnerText))) {
+        Model = SVM.Model.Read(stream);
+      }
+      XmlNode rangeTransform = node.SelectSingleNode("RangeTransform");
+      using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(rangeTransform.InnerText))) {
+        RangeTransform = SVM.RangeTransform.Read(stream);
       }
     }
   }

@@ -69,6 +69,14 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
+    public virtual IModel Model {
+      get {
+        if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
+        IScope bestModelScope = engine.GlobalScope.GetVariableValue<IScope>("BestValidationSolution", false);
+        return CreateGPModel(bestModelScope);
+      }
+    }
+
     public virtual int Elites {
       get { return GetVariableInjector().GetVariable("Elites").GetValue<IntData>().Data; }
       set { GetVariableInjector().GetVariable("Elites").GetValue<IntData>().Data = value; }
@@ -402,6 +410,17 @@ namespace HeuristicLab.GP.StructureIdentification {
       childCreater.OperatorGraph.AddOperator(seq);
       childCreater.OperatorGraph.InitialOperator = seq;
       return childCreater;
+    }
+
+    protected internal virtual Model CreateGPModel(IScope bestModelScope) {
+      Model model = new Model();
+      Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
+      model.Data = bestModelScope.GetVariableValue<IFunctionTree>("FunctionTree", false);
+      model.Dataset = ds;
+      model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+      model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
+      model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
+      return model;
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

@@ -52,7 +52,7 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMNu", "Nu parameter of nu-SVC, one-class SVM and nu-SVR", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMGamma", "Gamma parameter in kernel function", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.New | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.New | VariableKind.Out));
+//    AddVariableInfo(new VariableInfo("SVMRangeTransform", "The applied transformation during the learning the model", typeof(SVMRangeTransform), VariableKind.New | VariableKind.Out));
     }
 
     public override void Abort() {
@@ -91,11 +91,12 @@ namespace HeuristicLab.SupportVectorMachines {
       if (!abortRequested) {
         //persist variables in scope
         SVMModel modelData = new SVMModel();
-        modelData.Data = model;
+        modelData.Model = model;
+        modelData.RangeTransform = rangeTransform;
         scope.AddVariable(new Variable(scope.TranslateName("SVMModel"), modelData));
-        SVMRangeTransform rangeTransformData = new SVMRangeTransform();
-        rangeTransformData.Data = rangeTransform;
-        scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"), rangeTransformData));
+        //SVMRangeTransform rangeTransformData = new SVMRangeTransform();
+        //rangeTransformData.Data = rangeTransform;
+        //scope.AddVariable(new Variable(scope.TranslateName("SVMRangeTransform"), rangeTransformData));
         return null;
       } else {
         return new AtomicOperation(this, scope);

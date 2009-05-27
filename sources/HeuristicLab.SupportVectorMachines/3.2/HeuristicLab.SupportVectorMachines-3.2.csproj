@@ -81,7 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SupportVectorRegression.cs" />
-    <Compile Include="SVMRangeTransform.cs" />
     <Compile Include="SVMModel.cs" />
     <Compile Include="HeuristicLabSupportVectorMachinesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

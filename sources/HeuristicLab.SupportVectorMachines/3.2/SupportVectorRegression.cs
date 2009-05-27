@@ -57,6 +57,14 @@ namespace HeuristicLab.SupportVectorMachines {
       }
     }
 
+    public IModel Model {
+      get {
+        if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
+        IScope bestModelScope = engine.GlobalScope.GetVariableValue<IScope>("BestValidationSolution", false);
+        return CreateSVMModel(bestModelScope);
+      }
+    }
+
     public DoubleArrayData NuList {
       get { return GetVariableInjector().GetVariable("NuList").GetValue<DoubleArrayData>(); }
       set { GetVariableInjector().GetVariable("NuList").Value = value; }
@@ -126,9 +134,7 @@ namespace HeuristicLab.SupportVectorMachines {
       modelCreator.GetVariableInfo("SVMKernelType").ActualName = "KernelType";
       modelCreator.GetVariableInfo("SVMModel").ActualName = "Model";
       modelCreator.GetVariableInfo("SVMNu").ActualName = "Nu";
-      modelCreator.GetVariableInfo("SVMRangeTransform").ActualName = "RangeTransform";
       modelCreator.GetVariableInfo("SVMType").ActualName = "Type";
-
 
       modelProcessor.AddSubOperator(modelCreator);
       CombinedOperator trainingEvaluator = (CombinedOperator)CreateEvaluator("Training");
@@ -195,7 +201,6 @@ namespace HeuristicLab.SupportVectorMachines {
       SupportVectorEvaluator evaluator = new SupportVectorEvaluator();
       evaluator.Name = p + "SimpleEvaluator";
       evaluator.GetVariableInfo("SVMModel").ActualName = "Model";
-      evaluator.GetVariableInfo("SVMRangeTransform").ActualName = "RangeTransform";
       evaluator.GetVariableInfo("SamplesStart").ActualName = p + "SamplesStart";
       evaluator.GetVariableInfo("SamplesEnd").ActualName = p + "SamplesEnd";
       evaluator.GetVariableInfo("Values").ActualName = p + "Values";
@@ -274,6 +279,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       injector.AddVariable(new HeuristicLab.Core.Variable("Type", new StringData("NU_SVR")));
 
       return injector;
+    }
+
+    protected internal virtual Model CreateSVMModel(IScope bestModelScope) {
+      Model model = new Model();
+      model.Data = bestModelScope.GetVariableValue<SVMModel>("BestValidationModel", false);
+      return model;
     }
 
     private IOperator GetVariableInjector() {

@@ -23,14 +23,48 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-  public interface IAlgorithm {
-    string Name { get; }
-    string Description { get; }
-    IOperator ProblemInjector { get; set; }
-    IEngine Engine { get; }
+  public class Model : IModel {
+    #region IModel Members
 
-    IModel Model { get; }
+    private Dataset dataset;
+    public Dataset Dataset {
+      get { return dataset; }
+      set { dataset = value; }
+    }
+
+    private string targetVariable;
+    public string TargetVariable {
+      get { return targetVariable; }
+      set { targetVariable = value; }
+    }
+
+    private double trainingMSE;
+    public double TrainingMeanSquaredError {
+      get { return trainingMSE; }
+      set { trainingMSE = value; }
+    }
+
+    private double validationMSE;
+    public double ValidationMeanSquaredError {
+      get { return validationMSE; }
+      set { validationMSE = value; }
+    }
+
+    private double testMSE;
+    public double TestMeanSquaredError {
+      get { return testMSE; }
+      set { testMSE = value; }
+    }
+
+    private IItem data;
+    public IItem Data {
+      get { return data; }
+      set { data = value; }
+    }
+
+    #endregion
   }
 }

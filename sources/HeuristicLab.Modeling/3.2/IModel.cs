@@ -23,14 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-  public interface IAlgorithm {
-    string Name { get; }
-    string Description { get; }
-    IOperator ProblemInjector { get; set; }
-    IEngine Engine { get; }
-
-    IModel Model { get; }
+  public interface IModel {
+    Dataset Dataset { get; }
+    string TargetVariable { get; }
+    double TrainingMeanSquaredError { get; }
+    double ValidationMeanSquaredError { get; }
+    double TestMeanSquaredError { get; }
+    IItem Data { get; }
   }
 }
