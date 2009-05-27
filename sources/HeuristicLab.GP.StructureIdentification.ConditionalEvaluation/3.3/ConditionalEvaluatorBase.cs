@@ -44,14 +44,17 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
       int conditionVariable = GetVariableValue<IntData>("ConditionVariable", scope, true).Data;
 
+      int skippedSampels = 0;
       // store original and estimated values in a double array
       double[,] values = new double[end - start, 2];
       for (int sample = start; sample < end; sample++) {
         // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
         bool skip = false;
         for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip ; checkIndex++) {
-          if (dataset.GetValue(checkIndex, conditionVariable) == 0)
+          if (dataset.GetValue(checkIndex, conditionVariable) == 0) {
             skip = true;
+            skippedSampels++;
+          }
         }
         if (!skip) {
           double original = dataset.GetValue(sample, targetVariable);
@@ -64,6 +67,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
         }
       }
 
+
       // calculate quality value
       double quality = Evaluate(values);
 
@@ -73,6 +77,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OutputVariableName), qualityData));
       }
       qualityData.Data = quality;
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= skippedSampels; 
     }
 
     public abstract double Evaluate(double[,] values);
