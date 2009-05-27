@@ -34,14 +34,17 @@ copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\
 copy "%SolutionDir%\HeuristicLab.DataAccess\3.2\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\3.2\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.2\%Outdir%\HeuristicLab.DataAnalysis-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.3\%Outdir%\HeuristicLab.DataAnalysis-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DistributedEngine\3.2\%Outdir%\HeuristicLab.DistributedEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ES\3.2\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.2\%Outdir%\HeuristicLab.Evolutionary-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.3\%Outdir%\HeuristicLab.GP-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.GP\3.4\%Outdir%\HeuristicLab.GP-3.4.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Boolean\3.3\%Outdir%\HeuristicLab.GP.Boolean-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.SantaFe\3.3\%Outdir%\HeuristicLab.GP.SantaFe-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification\3.4\%Outdir%\HeuristicLab.GP.StructureIdentification-3.4.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.Classification\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification.Classification-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.ConditionalEvaluation\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification.ConditionalEvaluation-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.TimeSeries\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll" .\plugins
@@ -66,6 +69,7 @@ copy "%SolutionDir%\HeuristicLab.IntVector\3.2\%Outdir%\HeuristicLab.IntVector-3
 copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Modeling\3.3\%Outdir%\HeuristicLab.Modeling-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.2\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Metaprogramming\3.2\%Outdir%\HeuristicLab.Operators.Metaprogramming-3.2.dll" .\plugins

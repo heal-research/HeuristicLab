@@ -26,18 +26,40 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Globalization;
 using System.Text;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.DataAnalysis {
   public sealed class Dataset : ItemBase {
 
+    [Storable]
     private string name;
-    private double[] samples;
+
+    [Storable]
     private int rows;
+
+    [Storable]
     private int columns;
+
+    [Storable]
+    private string[] variableNames;
+
+    [Storable]
+    private double[] scalingFactor;
+
+    [Storable]
+    private double[] scalingOffset;
+
+    [Storable]
+    private double[] samples;
+
     private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
-    private double[] scalingFactor;
-    private double[] scalingOffset;
+
+    [Storable]
+    private object CreateDictionaries_Persistence {
+      get { return null; }
+      set { CreateDictionaries(); }
+    }
 
     public string Name {
       get { return name; }
@@ -93,8 +115,6 @@ namespace HeuristicLab.DataAnalysis {
       }
     }
 
-    private string[] variableNames;
-
     public Dataset() {
       Name = "-";
       variableNames = new string[] { "Var0" };
@@ -144,63 +164,6 @@ namespace HeuristicLab.DataAnalysis {
       return clone;
     }
 
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute problemName = document.CreateAttribute("Name");
-      problemName.Value = Name;
-      node.Attributes.Append(problemName);
-      XmlAttribute dim1 = document.CreateAttribute("Dimension1");
-      dim1.Value = rows.ToString(CultureInfo.InvariantCulture.NumberFormat);
-      node.Attributes.Append(dim1);
-      XmlAttribute dim2 = document.CreateAttribute("Dimension2");
-      dim2.Value = columns.ToString(CultureInfo.InvariantCulture.NumberFormat);
-      node.Attributes.Append(dim2);
-      XmlAttribute variableNames = document.CreateAttribute("VariableNames");
-      variableNames.Value = GetVariableNamesString();
-      node.Attributes.Append(variableNames);
-      XmlAttribute scalingFactorsAttribute = document.CreateAttribute("ScalingFactors");
-      scalingFactorsAttribute.Value = GetString(scalingFactor);
-      node.Attributes.Append(scalingFactorsAttribute);
-      XmlAttribute scalingOffsetsAttribute = document.CreateAttribute("ScalingOffsets");
-      scalingOffsetsAttribute.Value = GetString(scalingOffset);
-      node.Attributes.Append(scalingOffsetsAttribute);
-      node.InnerText = ToString(CultureInfo.InvariantCulture.NumberFormat);
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      Name = node.Attributes["Name"].Value;
-      rows = int.Parse(node.Attributes["Dimension1"].Value, CultureInfo.InvariantCulture.NumberFormat);
-      columns = int.Parse(node.Attributes["Dimension2"].Value, CultureInfo.InvariantCulture.NumberFormat);
-
-      variableNames = ParseVariableNamesString(node.Attributes["VariableNames"].Value);
-      if (node.Attributes["ScalingFactors"] != null)
-        scalingFactor = ParseDoubleString(node.Attributes["ScalingFactors"].Value);
-      else {
-        scalingFactor = new double[columns]; // compatibility with old serialization format
-        for (int i = 0; i < scalingFactor.Length; i++) scalingFactor[i] = 1.0;
-      }
-      if (node.Attributes["ScalingOffsets"] != null)
-        scalingOffset = ParseDoubleString(node.Attributes["ScalingOffsets"].Value);
-      else {
-        scalingOffset = new double[columns]; // compatibility with old serialization format
-        for (int i = 0; i < scalingOffset.Length; i++) scalingOffset[i] = 0.0;
-      }
-
-      string[] tokens = node.InnerText.Split(';');
-      if (tokens.Length != rows * columns) throw new FormatException();
-      samples = new double[rows * columns];
-      for (int row = 0; row < rows; row++) {
-        for (int column = 0; column < columns; column++) {
-          if (double.TryParse(tokens[row * columns + column], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out samples[row * columns + column]) == false) {
-            throw new FormatException("Can't parse " + tokens[row * columns + column] + " as double value.");
-          }
-        }
-      }
-      CreateDictionaries();
-    }
-
     public override string ToString() {
       return ToString(CultureInfo.CurrentCulture.NumberFormat);
     }
@@ -215,45 +178,6 @@ namespace HeuristicLab.DataAnalysis {
       }
       if (builder.Length > 0) builder.Remove(0, 1);
       return builder.ToString();
-    }
-
-    private string GetVariableNamesString() {
-      string s = "";
-      for (int i = 0; i < variableNames.Length; i++) {
-        s += variableNames[i] + "; ";
-      }
-
-      if (variableNames.Length > 0) {
-        s = s.TrimEnd(';', ' ');
-      }
-      return s;
-    }
-    private string GetString(double[] xs) {
-      string s = "";
-      for (int i = 0; i < xs.Length; i++) {
-        s += xs[i].ToString("r", CultureInfo.InvariantCulture) + "; ";
-      }
-
-      if (xs.Length > 0) {
-        s = s.TrimEnd(';', ' ');
-      }
-      return s;
-    }
-
-    private string[] ParseVariableNamesString(string p) {
-      p = p.Trim();
-      string[] tokens = p.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      for (int i = 0; i < tokens.Length; i++) tokens[i] = tokens[i].Trim();
-      return tokens;
-    }
-    private double[] ParseDoubleString(string s) {
-      s = s.Trim();
-      string[] ss = s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      double[] xs = new double[ss.Length];
-      for (int i = 0; i < xs.Length; i++) {
-        xs[i] = double.Parse(ss[i], CultureInfo.InvariantCulture);
-      }
-      return xs;
     }
 
     public double GetMean(int column) {

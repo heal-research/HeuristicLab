@@ -25,10 +25,12 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.DataAnalysis {
-  [ClassInfo(Name = "HeuristicLab.DataAnalysis-3.2")]
-  [PluginFile(Filename = "HeuristicLab.DataAnalysis-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [ClassInfo(Name = "HeuristicLab.DataAnalysis-3.3")]
+  [PluginFile(Filename = "HeuristicLab.DataAnalysis-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Operators-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Persistence-3.3")]
   public class HeuristicLabDataAnalysisPlugin : PluginBase {
   }
 }

@@ -35,10 +35,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Evolutionary;
 using HeuristicLab.Modeling;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public abstract class AlgorithmBase : ItemBase, IAlgorithm, IStochasticAlgorithm {
+
     public virtual string Name { get { return "GP"; } }
+
     public virtual string Description { get { return "TODO"; } }
 
     public virtual double MutationRate {
@@ -109,7 +112,9 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     private IOperator algorithm;
 
+    [Storable]
     private SequentialEngine.SequentialEngine engine;
+
     public IEngine Engine {
       get { return engine; }
       protected set { engine = (SequentialEngine.SequentialEngine)value; }
@@ -443,18 +448,5 @@ namespace HeuristicLab.GP.StructureIdentification {
       algorithm = (SequentialProcessor)co1.OperatorGraph.InitialOperator;
       return (RandomInjector)algorithm.SubOperators[1];
     }
-
-    #region Persistence Methods
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
-      return node;
-    }
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
-    }
-    #endregion
-
   }
 }

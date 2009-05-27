@@ -28,8 +28,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Data;
 using HeuristicLab.Random;
 using HeuristicLab.Constraints;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP {
+
+  [EmptyStorableClass]
   public class GPOperatorGroup : OperatorGroup {
     private Dictionary<IOperator, int> minTreeHeight = new Dictionary<IOperator, int>();
     private Dictionary<IOperator, int> minTreeSize = new Dictionary<IOperator, int>();

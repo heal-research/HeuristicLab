@@ -35,8 +35,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Selection.OffspringSelection;
 using HeuristicLab.Evolutionary;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP.StructureIdentification {
+
+  [EmptyStorableClass]
   public class OffspringSelectionGP : StandardGP {
     public override string Name { get { return "OffspringSelectionGP"; } }
 

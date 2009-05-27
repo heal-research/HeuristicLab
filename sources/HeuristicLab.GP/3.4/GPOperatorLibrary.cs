@@ -25,14 +25,16 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP {
-  public class GPOperatorLibrary : ItemBase, IOperatorLibrary, IEditable  {
+  public class GPOperatorLibrary : ItemBase, IOperatorLibrary, IEditable {
     // constants for variable names
     internal const string MIN_TREE_HEIGHT = "MinTreeHeight";
     internal const string MIN_TREE_SIZE = "MinTreeSize";
     internal const string TICKETS = "Tickets";
 
+    [Storable]
     private GPOperatorGroup group;
 
     public GPOperatorGroup GPOperatorGroup {
@@ -61,19 +63,6 @@ namespace HeuristicLab.GP {
       clone.group = (GPOperatorGroup)group.Clone(clonedObjects);
       return clone;
     }
-
-    #region persistence
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      node.AppendChild(PersistenceManager.Persist("Group", group, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      group = (GPOperatorGroup) PersistenceManager.Restore(node.SelectSingleNode("Group"), restoredObjects);
-    }
-    #endregion
 
     #region IEditable Members
 

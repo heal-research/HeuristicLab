@@ -26,8 +26,10 @@ using HeuristicLab.Operators;
 using System;
 using HeuristicLab.Random;
 using System.Diagnostics;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP {
+
   public class ProbabilisticTreeCreator : OperatorBase {
     private int MAX_TRIES { get { return 100; } }
 

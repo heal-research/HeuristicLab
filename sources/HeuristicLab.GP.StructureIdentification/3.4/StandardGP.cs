@@ -34,8 +34,11 @@ using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Modeling;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP.StructureIdentification {
+
+  [EmptyStorableClass]
   public class StandardGP : AlgorithmBase, IEditable {
 
     public override string Name { get { return "StandardGP"; } }

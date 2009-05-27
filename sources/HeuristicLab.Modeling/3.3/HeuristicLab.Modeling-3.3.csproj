@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</ProjectGuid>
+    <ProjectGuid>{3A5ACA94-47A7-47D6-B644-2B8A7503FCCC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.DataAnalysis</RootNamespace>
-    <AssemblyName>HeuristicLab.DataAnalysis-3.2</AssemblyName>
+    <RootNamespace>HeuristicLab.Modeling</RootNamespace>
+    <AssemblyName>HeuristicLab.Modeling-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -31,7 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\HeuristicLab.DataAnalysis-3.2.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +43,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\HeuristicLab.DataAnalysis-3.2.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -61,7 +59,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\HeuristicLab.DataAnalysis-3.2.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -84,47 +81,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataFormatException.cs" />
-    <Compile Include="Dataset.cs" />
-    <Compile Include="DatasetParser.cs" />
-    <Compile Include="DatasetShuffler.cs" />
-    <Compile Include="DatasetView.cs">
+    <Compile Include="ClassificationProblemInjector.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="IModel.cs" />
+    <Compile Include="SimpleEvaluatorBase.cs" />
+    <Compile Include="ITimeSeriesAlgorithm.cs" />
+    <Compile Include="IClassificationAlgorithm.cs" />
+    <Compile Include="IStochasticAlgorithm.cs" />
+    <Compile Include="HeuristicLabModelingPlugin.cs" />
+    <Compile Include="IAlgorithm.cs" />
+    <Compile Include="SimpleMeanAbsolutePercentageErrorEvaluator.cs" />
+    <Compile Include="SimpleMeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
+    <Compile Include="ProblemInjector.cs" />
+    <Compile Include="ProblemInjectorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DatasetView.designer.cs">
-      <DependentUpon>DatasetView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HeuristicLabDataAnalysisPlugin.cs" />
-    <Compile Include="IDatasetManipulator.cs" />
-    <Compile Include="ManualScalingControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ManualScalingControl.Designer.cs">
-      <DependentUpon>ManualScalingControl.cs</DependentUpon>
+    <Compile Include="ProblemInjectorView.Designer.cs">
+      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statistics.cs" />
+    <Compile Include="SimpleMSEEvaluator.cs" />
+    <Compile Include="SimpleR2Evaluator.cs" />
+    <Compile Include="TimeSeriesProblemInjector.cs" />
+    <Compile Include="SimpleVarianceAccountedForEvaluator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
-      <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
-      <Name>HeuristicLab.Core-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.DataAnalysis\3.3\HeuristicLab.DataAnalysis-3.3.csproj">
+      <Project>{6AD536AE-B4CC-4424-B0A2-20CECE88CE57}</Project>
+      <Name>HeuristicLab.DataAnalysis-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
-      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
-      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
-      <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -132,13 +128,8 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DatasetView.resx">
-      <DependentUpon>DatasetView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ManualScalingControl.resx">
-      <DependentUpon>ManualScalingControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="ProblemInjectorView.resx">
+      <DependentUpon>ProblemInjectorView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

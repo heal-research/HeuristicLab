@@ -27,15 +27,24 @@ using HeuristicLab.Core;
 using System.Xml;
 using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
   /// Base class for tree evaluators
   /// </summary>
   public abstract class TreeEvaluatorBase : ItemBase, ITreeEvaluator {
+
     protected const double EPSILON = 1.0e-7;
+
+    [Storable]
     protected double estimatedValueMax;
+
+    [Storable]
     protected double estimatedValueMin;
+
+    [Storable]
+    protected Dataset dataset;
 
     protected class Instr {
       public double d_arg0;
@@ -48,7 +57,6 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected Instr[] codeArr;
     protected int PC;
-    protected Dataset dataset;
     protected int sampleIndex;
 
     public void ResetEvaluator(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
@@ -133,28 +141,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       clone.estimatedValueMax = estimatedValueMax;
       clone.estimatedValueMin = estimatedValueMin;
       return clone;
-    }
-
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute minEstimatedValueAttr = document.CreateAttribute("MinEstimatedValue");
-      minEstimatedValueAttr.Value = XmlConvert.ToString(estimatedValueMin);
-      node.Attributes.Append(minEstimatedValueAttr);
-
-      XmlAttribute maxEstimatedValueAttr = document.CreateAttribute("MaxEstimatedValue");
-      maxEstimatedValueAttr.Value = XmlConvert.ToString(estimatedValueMax);
-      node.Attributes.Append(maxEstimatedValueAttr);
-
-      node.AppendChild(PersistenceManager.Persist("Dataset", dataset, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      estimatedValueMax = XmlConvert.ToDouble(node.Attributes["MaxEstimatedValue"].Value);
-      estimatedValueMin = XmlConvert.ToDouble(node.Attributes["MinEstimatedValue"].Value);
-
-      dataset = (Dataset)PersistenceManager.Restore(node.SelectSingleNode("Dataset"), restoredObjects);
     }
   }
 }

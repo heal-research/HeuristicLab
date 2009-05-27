@@ -27,13 +27,16 @@ using HeuristicLab.Core;
 using System.Xml;
 using HeuristicLab.Constraints;
 using System.Diagnostics;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP {
   /// <summary>
   /// Functions are like operators except that they do not allow sub-operators and the normal form of evaluation
   /// is to evaluate all children first.
   /// </summary>
+  [EmptyStorableClass]
   public abstract class FunctionBase : OperatorBase, IFunction {
+
     public const string INITIALIZATION = "Initialization";
     public const string MANIPULATION = "Manipulation";
     private List<IFunction>[] allowedSubFunctions;

@@ -29,8 +29,11 @@ using HeuristicLab.Constraints;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Random;
 using HeuristicLab.Operators;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.GP.StructureIdentification {
+
+  [EmptyStorableClass]
   public class Variable : FunctionBase {
 
     public const string WEIGHT = "Weight";

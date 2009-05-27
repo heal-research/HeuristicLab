@@ -25,8 +25,11 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  [ClassInfo(Name = "HeuristicLab.Modeling-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Modeling-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [ClassInfo(Name = "HeuristicLab.Modeling-3.3")]
+  [PluginFile(Filename = "HeuristicLab.Modeling-3.3.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Core-3.3")]
+  [Dependency(Dependency = "HeuristicLab.Data-3.3")]
+  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.3")]  
   public class HeuristicLabModelingPlugin : PluginBase {
   }
 }
