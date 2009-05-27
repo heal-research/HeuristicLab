@@ -49,7 +49,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       for (int sample = start; sample < end; sample++) {
         // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
         bool skip = false;
-        for (int checkIndex = sample - minTimeOffset; checkIndex <= sample - maxTimeOffset && !skip ; checkIndex++) {
+        for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip ; checkIndex++) {
           if (dataset.GetValue(checkIndex, conditionVariable) == 0)
             skip = true;
         }
