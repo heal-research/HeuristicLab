@@ -38,10 +38,11 @@ using System.Diagnostics;
 using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.Hive.Engine;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public class HiveExecuter : ExecuterBase {
-    private Dictionary<WaitHandle, Execution> activeExecutions;
+    private Dictionary<WaitHandle, IAlgorithm> activeAlgorithms;
     private Dictionary<WaitHandle, HiveEngine> activeEngines;
     private string hiveUrl;
 
@@ -56,7 +57,7 @@ namespace HeuristicLab.CEDMA.Server {
     public HiveExecuter(IDispatcher dispatcher, IStore store, string hiveUrl)
       : base(dispatcher, store) {
       this.hiveUrl = hiveUrl;
-      activeExecutions = new Dictionary<WaitHandle, Execution>();
+      activeAlgorithms = new Dictionary<WaitHandle, IAlgorithm>();
       activeEngines = new Dictionary<WaitHandle, HiveEngine>();
     }
 
@@ -67,15 +68,15 @@ namespace HeuristicLab.CEDMA.Server {
           // start new jobs as long as there are less than MaxActiveJobs 
           while (wh.Count < MaxActiveJobs) {
             Thread.Sleep(StartJobInterval);
-            // get an execution from the dispatcher and execute in grid via job-manager
-            Execution execution = Dispatcher.GetNextJob();
-            if (execution != null) {
+            // get an algo from the dispatcher and execute in grid via job-manager
+            IAlgorithm algorithm = Dispatcher.GetNextJob();
+            if (algorithm != null) {
               HiveEngine engine = new HiveEngine();
               engine.HiveServerUrl = hiveUrl;
-              IOperator initialOp = execution.Engine.OperatorGraph.InitialOperator;
+              IOperator initialOp = algorithm.Engine.OperatorGraph.InitialOperator;
               engine.OperatorGraph.AddOperator(initialOp);
               engine.OperatorGraph.InitialOperator = initialOp;
-              RegisterFinishedCallback(engine, execution, wh);
+              RegisterFinishedCallback(engine, algorithm, wh);
               engine.Reset();
               engine.Execute();
             }
@@ -89,11 +90,11 @@ namespace HeuristicLab.CEDMA.Server {
             HiveEngine finishedEngine = activeEngines[readyHandle];
             activeEngines.Remove(readyHandle);
 
-            Execution finishedExecution = activeExecutions[readyHandle];
-            lock (activeExecutions) {
-              activeExecutions.Remove(readyHandle);
+            IAlgorithm finishedAlgorithm = activeAlgorithms[readyHandle];
+            lock (activeAlgorithms) {
+              activeAlgorithms.Remove(readyHandle);
             }
-            StoreResults(finishedExecution, finishedEngine);
+            StoreResults(finishedAlgorithm);
             readyHandle.Close();
           }
         }
@@ -103,22 +104,22 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    private void RegisterFinishedCallback(HiveEngine engine, Execution execution, List<WaitHandle> wh) {
+    private void RegisterFinishedCallback(HiveEngine engine, IAlgorithm algorithm, List<WaitHandle> wh) {
       ManualResetEvent waithandle = new ManualResetEvent(false);
       wh.Add(waithandle);
       engine.Finished += (sender, args) => waithandle.Set();
-      lock (activeExecutions) {
-        activeExecutions.Add(waithandle, execution);
+      lock (activeAlgorithms) {
+        activeAlgorithms.Add(waithandle, algorithm);
       }
       activeEngines.Add(waithandle, engine);
     }
 
     public override string[] GetJobs() {
-      lock (activeExecutions) {
-        string[] retVal = new string[activeExecutions.Count];
+      lock (activeAlgorithms) {
+        string[] retVal = new string[activeAlgorithms.Count];
         int i = 0;
-        foreach (Execution e in activeExecutions.Values) {
-          retVal[i++] = "Target-Variable: " + e.TargetVariable + " " + e.Description;
+        foreach (IAlgorithm a in activeAlgorithms.Values) {
+          retVal[i++] = "Target-Variable: " + a.TargetVariable + " " + a.Description;
         }
         return retVal;
       }

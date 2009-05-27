@@ -37,11 +37,12 @@ using HeuristicLab.Grid;
 using System.Diagnostics;
 using HeuristicLab.Core;
 using System.Threading;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public class GridExecuter : ExecuterBase {
     private JobManager jobManager;
-    private Dictionary<WaitHandle, Execution> activeExecutions;
+    private Dictionary<WaitHandle, IAlgorithm> activeAlgorithms;
 
     private TimeSpan StartJobInterval {
       get { return TimeSpan.FromMilliseconds(500); }
@@ -65,14 +66,14 @@ namespace HeuristicLab.CEDMA.Server {
           while (wh.Count < MaxActiveJobs) {
             Thread.Sleep(StartJobInterval);
             // get an execution from the dispatcher and execute in grid via job-manager
-            Execution execution = Dispatcher.GetNextJob();
-            if (execution != null) {
-              AtomicOperation op = new AtomicOperation(execution.Engine.OperatorGraph.InitialOperator, execution.Engine.GlobalScope);
-              WaitHandle opWh = jobManager.BeginExecuteOperation(execution.Engine.GlobalScope, op);
+            IAlgorithm algorithm = Dispatcher.GetNextJob();
+            if (algorithm != null) {
+              AtomicOperation op = new AtomicOperation(algorithm.Engine.OperatorGraph.InitialOperator, algorithm.Engine.GlobalScope);
+              WaitHandle opWh = jobManager.BeginExecuteOperation(algorithm.Engine.GlobalScope, op);
               wh.Add(opWh);
               activeOperations.Add(opWh, op);
-              lock (activeExecutions) {
-                activeExecutions.Add(opWh, execution);
+              lock (activeAlgorithms) {
+                activeAlgorithms.Add(opWh, algorithm);
               }
             }
           }
@@ -83,10 +84,10 @@ namespace HeuristicLab.CEDMA.Server {
             WaitHandle readyHandle = whArr[readyHandleIndex];
             AtomicOperation finishedOp = activeOperations[readyHandle];
             wh.Remove(readyHandle);
-            Execution finishedExecution = null;
-            lock (activeExecutions) {
-              finishedExecution = activeExecutions[readyHandle];
-              activeExecutions.Remove(readyHandle);
+            IAlgorithm finishedAlgorithm = null;
+            lock (activeAlgorithms) {
+              finishedAlgorithm = activeAlgorithms[readyHandle];
+              activeAlgorithms.Remove(readyHandle);
             }
             activeOperations.Remove(readyHandle);
             readyHandle.Close();
@@ -98,7 +99,7 @@ namespace HeuristicLab.CEDMA.Server {
               Trace.WriteLine("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
             }
             if (finishedEngine != null) {
-              StoreResults(finishedExecution, finishedEngine);
+              StoreResults(finishedAlgorithm);
             }
           }
         }
@@ -109,11 +110,11 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     public override string[] GetJobs() {
-      lock (activeExecutions) {
-        string[] retVal = new string[activeExecutions.Count];
+      lock (activeAlgorithms) {
+        string[] retVal = new string[activeAlgorithms.Count];
         int i = 0;
-        foreach (Execution e in activeExecutions.Values) {
-          retVal[i++] = "Target-Variable: " + e.TargetVariable + " " + e.Description;
+        foreach (IAlgorithm a in activeAlgorithms.Values) {
+          retVal[i++] = "Target-Variable: " + a.TargetVariable + " " + a.Description;
         }
         return retVal;
       }

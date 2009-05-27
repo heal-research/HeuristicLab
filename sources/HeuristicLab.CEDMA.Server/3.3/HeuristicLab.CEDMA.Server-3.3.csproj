@@ -98,7 +98,6 @@
     <Compile Include="DispatcherBase.cs" />
     <Compile Include="GridExecuter.cs" />
     <Compile Include="IDispatcher.cs" />
-    <Compile Include="Execution.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerApplication.cs" />
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />

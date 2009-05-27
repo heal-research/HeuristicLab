@@ -59,6 +59,66 @@ namespace HeuristicLab.Modeling {
       set { testMSE = value; }
     }
 
+    public double TrainingMeanAbsolutePercentageError {
+      get;
+      set;
+    }
+
+    public double ValidationMeanAbsolutePercentageError {
+      get;
+      set;
+    }
+
+    public double TestMeanAbsolutePercentageError {
+      get;
+      set;
+    }
+
+    public double TrainingMeanAbsolutePercentageOfRangeError {
+      get;
+      set;
+    }
+
+    public double ValidationMeanAbsolutePercentageOfRangeError {
+      get;
+      set;
+    }
+
+    public double TestMeanAbsolutePercentageOfRangeError {
+      get;
+      set;
+    }
+
+    public double TrainingCoefficientOfDetermination {
+      get;
+      set;
+    }
+
+    public double ValidationCoefficientOfDetermination {
+      get;
+      set;
+    }
+
+    public double TestCoefficientOfDetermination {
+      get;
+      set;
+    }
+
+    public double TrainingVarianceAccountedFor {
+      get;
+      set;
+    }
+
+    public double ValidationVarianceAccountedFor {
+      get;
+      set;
+    }
+
+    public double TestVarianceAccountedFor {
+      get;
+      set;
+    }
+
     private IItem data;
     public IItem Data {
       get { return data; }

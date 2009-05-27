@@ -32,6 +32,19 @@ namespace HeuristicLab.Modeling {
     double TrainingMeanSquaredError { get; }
     double ValidationMeanSquaredError { get; }
     double TestMeanSquaredError { get; }
+    double TrainingMeanAbsolutePercentageError { get; }
+    double ValidationMeanAbsolutePercentageError { get; }
+    double TestMeanAbsolutePercentageError { get; }
+    double TrainingMeanAbsolutePercentageOfRangeError { get; }
+    double ValidationMeanAbsolutePercentageOfRangeError { get; }
+    double TestMeanAbsolutePercentageOfRangeError { get; }
+    double TrainingCoefficientOfDetermination { get; }
+    double ValidationCoefficientOfDetermination { get; }
+    double TestCoefficientOfDetermination { get; }
+    double TrainingVarianceAccountedFor { get; }
+    double ValidationVarianceAccountedFor { get; }
+    double TestVarianceAccountedFor { get; }
+
     IItem Data { get; }
   }
 }

@@ -40,6 +40,16 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public override string Name { get { return "StandardGP"; } }
 
+    public override int TargetVariable {
+      get { return ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data = value; }
+    }
+
+    public override Dataset Dataset {
+      get { return ProblemInjector.GetVariableValue<Dataset>("Dataset", null, false); }
+      set { ProblemInjector.GetVariable("Dataset").Value = value; }
+    }
+
     public virtual int MaxGenerations {
       get { return GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data; }
       set { GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data = value; }
@@ -314,6 +324,19 @@ scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions
     protected internal override Model CreateGPModel(IScope bestModelScope) {
       Model model = base.CreateGPModel(bestModelScope);
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
+      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
+      model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;
+      model.TestCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data;
+      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data;
+      model.ValidationMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data;
+      model.TestMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data;
+      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data;
+      model.ValidationMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data;
+      model.TestMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data;
+      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
+      model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
+      model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
+
       return model;
     }
 

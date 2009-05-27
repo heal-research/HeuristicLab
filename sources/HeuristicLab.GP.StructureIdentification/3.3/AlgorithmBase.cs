@@ -41,6 +41,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     public virtual string Name { get { return "GP"; } }
     public virtual string Description { get { return "TODO"; } }
 
+    public abstract Dataset Dataset { get; set; }
+    public abstract int TargetVariable { get; set; }
+
     public virtual double MutationRate {
       get { return GetVariableInjector().GetVariable("MutationRate").GetValue<DoubleData>().Data; }
       set { GetVariableInjector().GetVariable("MutationRate").GetValue<DoubleData>().Data = value; }
@@ -455,6 +458,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
     }
     #endregion
+
 
   }
 }

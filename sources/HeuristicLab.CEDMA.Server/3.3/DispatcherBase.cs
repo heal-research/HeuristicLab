@@ -43,7 +43,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.store = store;
     }
 
-    public Execution GetNextJob() {
+    public IAlgorithm GetNextJob() {
       // find and select a dataset
       var dataSetVar = new HeuristicLab.CEDMA.DB.Interfaces.Variable("DataSet");
       var dataSetQuery = new Statement[] {
@@ -66,27 +66,18 @@ namespace HeuristicLab.CEDMA.Server {
 
 
       if (selectedAlgorithm != null) {
-        Execution exec = CreateExecution(dataSet.Problem, targetVariable, selectedAlgorithm);
-        exec.DataSetEntity = dataSetEntity;
-        exec.TargetVariable = targetVariableName;
-        return exec;
-      } else return null;
+        SetProblemParameters(selectedAlgorithm, dataSet.Problem, targetVariable);
+      }
+      return selectedAlgorithm;
     }
 
     public abstract Entity SelectDataSet(Entity[] datasets);
     public abstract int SelectTargetVariable(Entity dataSet, int[] targetVariables);
     public abstract IAlgorithm SelectAlgorithm(Entity dataSet, int targetVariable, LearningTask learningTask);
 
-    private Execution CreateExecution(Problem problem, int targetVariable, IAlgorithm algorithm) {
-      SetProblemParameters(algorithm, problem, targetVariable);
-      Execution exec = new Execution(algorithm.Engine);
-      exec.Description = algorithm.Name;
-      return exec;
-    }
-
     private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable) {
-      algo.ProblemInjector.GetVariable("Dataset").Value = problem.DataSet;
-      algo.ProblemInjector.GetVariable("TargetVariable").GetValue<IntData>().Data = targetVariable;
+      algo.Dataset = problem.DataSet;
+      algo.TargetVariable = targetVariable;
       algo.ProblemInjector.GetVariable("TrainingSamplesStart").GetValue<IntData>().Data = problem.TrainingSamplesStart;
       algo.ProblemInjector.GetVariable("TrainingSamplesEnd").GetValue<IntData>().Data = problem.TrainingSamplesEnd;
       algo.ProblemInjector.GetVariable("ValidationSamplesStart").GetValue<IntData>().Data = problem.ValidationSamplesStart;

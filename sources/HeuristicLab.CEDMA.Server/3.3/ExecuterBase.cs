@@ -37,6 +37,7 @@ using HeuristicLab.Grid;
 using System.Diagnostics;
 using HeuristicLab.Core;
 using System.Threading;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public abstract class ExecuterBase : IExecuter {
@@ -67,44 +68,32 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected abstract void StartJobs();
 
-    protected void StoreResults(Execution finishedExecution, IEngine finishedEngine) {
-      Entity model = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-      store.Add(new Statement(finishedExecution.DataSetEntity, Ontology.PredicateHasModel, model));
-      StoreModelAttribute(model, Ontology.TargetVariable, finishedExecution.TargetVariable);
-      StoreModelAttribute(model, Ontology.AlgorithmName, finishedExecution.Description);
-      Scope bestModelScope = finishedEngine.GlobalScope.GetVariableValue<Scope>("BestValidationSolution", false);
-      StoreModelVariable(model, Ontology.TrainingMeanSquaredError, bestModelScope, "Quality");
-      StoreModelVariable(model, Ontology.ValidationMeanSquaredError, bestModelScope, "ValidationQuality");
-      StoreModelVariable(model, Ontology.TestMeanSquaredError, bestModelScope, "TestQuality");
-      StoreModelVariable(model, Ontology.TrainingMeanAbsolutePercentageError, bestModelScope, "TrainingMAPE");
-      StoreModelVariable(model, Ontology.ValidationMeanAbsolutePercentageError, bestModelScope, "ValidationMAPE");
-      StoreModelVariable(model, Ontology.TestMeanAbsolutePercentageError, bestModelScope, "TestMAPE");
-      StoreModelVariable(model, Ontology.TrainingMeanAbsolutePercentageOfRangeError, bestModelScope, "TrainingMAPRE");
-      StoreModelVariable(model, Ontology.ValidationMeanAbsolutePercentageOfRangeError, bestModelScope, "ValidationMAPRE");
-      StoreModelVariable(model, Ontology.TestMeanAbsolutePercentageOfRangeError, bestModelScope, "TestMAPRE");
-      StoreModelVariable(model, Ontology.TrainingCoefficientOfDetermination, bestModelScope, "TrainingR2");
-      StoreModelVariable(model, Ontology.ValidationCoefficientOfDetermination, bestModelScope, "ValidationR2");
-      StoreModelVariable(model, Ontology.TestCoefficientOfDetermination, bestModelScope, "TestR2");
-      StoreModelVariable(model, Ontology.TrainingCoefficientOfDetermination, bestModelScope, "TrainingVAF");
-      StoreModelVariable(model, Ontology.ValidationCoefficientOfDetermination, bestModelScope, "ValidationVAF");
-      StoreModelVariable(model, Ontology.TestCoefficientOfDetermination, bestModelScope, "TestVAF");
-      StoreModelVariable(model, Ontology.TrainingTheilsInequalityCoefficient, bestModelScope, "TrainingTheilInequalityCoefficient");
-      StoreModelVariable(model, Ontology.ValidationTheilsInequalityCoefficient, bestModelScope, "ValidationTheilInequalityCoefficient");
-      StoreModelVariable(model, Ontology.TestTheilsInequalityCoefficient, bestModelScope, "TestTheilInequalityCoefficient");
-      StoreModelVariable(model, Ontology.TrainingAccuracy, bestModelScope, "TrainingAccuracy");
-      StoreModelVariable(model, Ontology.ValidationAccuracy, bestModelScope, "ValidationAccuracy");
-      StoreModelVariable(model, Ontology.TestAccuracy, bestModelScope, "TestAccuracy");
-      StoreModelVariable(model, Ontology.TreeSize, bestModelScope, "TreeSize");
-      StoreModelVariable(model, Ontology.TreeHeight, bestModelScope, "TreeHeight");
-      StoreModelVariable(model, Ontology.EvaluatedSolutions, bestModelScope, "EvaluatedSolutions");
+    protected void StoreResults(IAlgorithm finishedAlgorithm) {
+      Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
+      // TODO (gkronber 27052009)
+      // store.Add(new Statement(finishedAlgorithm.DataSetEntity, Ontology.PredicateHasModel, modelEntity));
+      StoreModelAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
+      StoreModelAttribute(modelEntity, Ontology.AlgorithmName, finishedAlgorithm.Description);
+      
+      IModel model = finishedAlgorithm.Model;
+      StoreModelAttribute(modelEntity, Ontology.TrainingMeanSquaredError, model.TrainingMeanSquaredError);
+      StoreModelAttribute(modelEntity, Ontology.ValidationMeanSquaredError, model.ValidationMeanSquaredError);
+      StoreModelAttribute(modelEntity, Ontology.TestMeanSquaredError, model.TestMeanSquaredError);
+      StoreModelAttribute(modelEntity, Ontology.TrainingCoefficientOfDetermination, model.TrainingCoefficientOfDetermination);
+      StoreModelAttribute(modelEntity, Ontology.ValidationCoefficientOfDetermination, model.ValidationCoefficientOfDetermination);
+      StoreModelAttribute(modelEntity, Ontology.TestCoefficientOfDetermination, model.TestCoefficientOfDetermination);
+      StoreModelAttribute(modelEntity, Ontology.TrainingVarianceAccountedFor, model.TrainingVarianceAccountedFor);
+      StoreModelAttribute(modelEntity, Ontology.ValidationVarianceAccountedFor, model.ValidationVarianceAccountedFor);
+      StoreModelAttribute(modelEntity, Ontology.TestVarianceAccountedFor, model.TestVarianceAccountedFor);
+      StoreModelAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageError, model.TrainingMeanAbsolutePercentageError);
+      StoreModelAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageError, model.ValidationMeanAbsolutePercentageError);
+      StoreModelAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageError, model.TestMeanAbsolutePercentageError);
+      StoreModelAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageOfRangeError, model.TrainingMeanAbsolutePercentageOfRangeError);
+      StoreModelAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, model.ValidationMeanAbsolutePercentageOfRangeError);
+      StoreModelAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, model.TestMeanAbsolutePercentageOfRangeError);
 
-      byte[] serializedModel = PersistenceManager.SaveToGZip(bestModelScope.GetVariableValue("FunctionTree", false));
-      store.Add(new Statement(model, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(serializedModel))));
-    }
-
-    private void StoreModelVariable(Entity model, Entity entity, Scope scope, string variableName) {
-      if (scope.GetVariable(variableName) != null)
-        StoreModelAttribute(model, entity, scope.GetVariableValue<ObjectData>(variableName, false).Data);
+      byte[] serializedModel = PersistenceManager.SaveToGZip(model.Data);
+      store.Add(new Statement(modelEntity, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(serializedModel))));
     }
 
     private void StoreModelAttribute(Entity model, Entity predicate, object value) {

@@ -45,6 +45,16 @@ namespace HeuristicLab.SupportVectorMachines {
       get { return engine; }
     }
 
+    public Dataset Dataset {
+      get { return ProblemInjector.GetVariableValue<Dataset>("Dataset", null, false); }
+      set { ProblemInjector.GetVariable("Dataset").Value = value; }
+    }
+
+    public int TargetVariable {
+      get { return ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data = value; }
+    }
+
     public IOperator ProblemInjector {
       get {
         IOperator main = GetMainOperator();
@@ -283,7 +293,26 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
     protected internal virtual Model CreateSVMModel(IScope bestModelScope) {
       Model model = new Model();
+      model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
+      model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
+      model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
+      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
+      model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;
+      model.TestCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data;
+      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data;
+      model.ValidationMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data;
+      model.TestMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data;
+      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data;
+      model.ValidationMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data;
+      model.TestMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data;
+      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
+      model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
+      model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
+      
       model.Data = bestModelScope.GetVariableValue<SVMModel>("BestValidationModel", false);
+      HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
+      model.Dataset = ds;
+      model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
       return model;
     }
 
@@ -307,5 +336,6 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     #endregion
+
   }
 }

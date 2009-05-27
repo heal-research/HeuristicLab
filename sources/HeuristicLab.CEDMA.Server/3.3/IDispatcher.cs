@@ -34,9 +34,10 @@ using HeuristicLab.CEDMA.Core;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
+using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public interface IDispatcher {
-    Execution GetNextJob();
+    IAlgorithm GetNextJob();
   }
 }
