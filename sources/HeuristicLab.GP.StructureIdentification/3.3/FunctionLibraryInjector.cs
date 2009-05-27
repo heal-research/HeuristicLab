@@ -115,9 +115,16 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
       int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
-      int minTimeOffset = GetVariableValue<IntData>(MINTIMEOFFSET, scope, true).Data;
-      int maxTimeOffset = GetVariableValue<IntData>(MAXTIMEOFFSET, scope, true).Data;
-      bool autoregressive = GetVariableValue<BoolData>(AUTOREGRESSIVE, scope, true).Data;
+
+      // try to get minTimeOffset (use 0 as default if not available)
+      IItem minTimeOffsetItem = GetVariableValue(MINTIMEOFFSET, scope, true, false);
+      int minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
+      // try to get maxTimeOffset (use 0 as default if not available)
+      IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
+      int maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
+      // try to get flag autoregressive (use false as default if not available)
+      IItem autoRegItem = GetVariableValue(AUTOREGRESSIVE, scope, true, false);
+      bool autoregressive = autoRegItem == null ? false : ((BoolData)autoRegItem).Data;
 
       if (autoregressive) {
         // make sure the target-variable occures in list of allowed features
