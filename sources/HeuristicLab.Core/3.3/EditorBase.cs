@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core {
@@ -48,11 +49,40 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
+    /// Gets or sets, if the contained item should be compressed.
+    /// </summary>
+    public bool Compressed { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of <see cref="EditorBase"/> with the caption "Editor".
     /// </summary>
     public EditorBase() {
       InitializeComponent();
       Caption = "Editor";
+    }
+
+    /// <summary>
+    /// Asynchronously saves the contained object to a file.
+    /// </summary>
+    /// <remarks>The filename to save the contained item to is given by <see cref="Filename"/>.</remarks>
+    public void Save() {
+      Enabled = false;
+      ThreadPool.QueueUserWorkItem((o) => {
+        try {
+          if (Compressed)
+            PersistenceManager.SaveCompressed(Item, Filename);
+          else
+            PersistenceManager.Save(Item, Filename);
+        } catch (Exception e) {
+          MessageBox.Show(String.Format(
+            "Sorry couldn't save file \"{0}\".\n The following exception occurred: {1}",
+            Filename, e.ToString()),
+            "Reader Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        } finally {
+          Invoke(new Action(() => Enabled = true));
+          OnSaveFinished();
+        }
+      });
     }
 
     /// <summary>
@@ -77,6 +107,18 @@ namespace HeuristicLab.Core {
     protected virtual void OnFilenameChanged() {
       if (FilenameChanged != null)
         FilenameChanged(this, new EventArgs());
+    }
+
+    /// <summary>
+    /// Occurs after a save operation is finished.
+    /// </summary>
+    public event EventHandler SaveFinished;
+
+    /// <summary>
+    /// Fires a new <c>SaveFinished</c> event.
+    /// </summary>
+    protected virtual void OnSaveFinished() {
+      SaveFinished(this, new EventArgs());
     }
   }
 }

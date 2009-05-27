@@ -35,8 +35,24 @@ namespace HeuristicLab.Core {
     string Filename { get; set; }
 
     /// <summary>
+    /// Gets or sets, it the contained item should be compressed.
+    /// </summary>
+    bool Compressed { get; set; }
+
+    /// <summary>
+    /// Saves the contained object to a file.
+    /// </summary>
+    /// <remarks>The filename to save the contained item to is given by <see cref="Filename"/>.</remarks>
+    void Save();
+
+    /// <summary>
     /// Occurs when the filename was changed.
     /// </summary>
     event EventHandler FilenameChanged;
+
+    /// <summary>
+    /// Occurs after a save operation is finished.
+    /// </summary>
+    event EventHandler SaveFinished;
   }
 }
