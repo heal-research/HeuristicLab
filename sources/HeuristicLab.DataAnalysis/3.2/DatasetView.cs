@@ -83,6 +83,8 @@ namespace HeuristicLab.DataAnalysis {
         for (int i = 0; i < columns; i++) {
           dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable; // SortMode has to be NotSortable to allow ColumnHeaderSelect
           dataGridView.Columns[i].Name = GetColumnName(i);
+          dataGridView.Columns[i].HeaderText = GetColumnName(i) + System.Environment.NewLine + "(" + i + ")";
+          dataGridView.Columns[i].HeaderCell.Style.Alignment = DataGridViewContentAlignment.TopCenter;
         }
         dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect; // switch back to column selection
         dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
