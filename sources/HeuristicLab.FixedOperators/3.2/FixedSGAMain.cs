@@ -62,6 +62,7 @@ namespace HeuristicLab.FixedOperators {
 
     Thread executionThread;
     Thread cancelThread;
+    StringBuilder output = new StringBuilder();
 
 
     //long[] timesExecuteCreateChildren;
@@ -159,6 +160,8 @@ namespace HeuristicLab.FixedOperators {
       IScope s2;
       int tempExePointer = 0;
       int tempPersExePointer = 0;
+      double randomNumber;
+      
       // fetch variables from scope for create children
       InitializeExecuteCreateChildren(scope);
       try {
@@ -166,26 +169,29 @@ namespace HeuristicLab.FixedOperators {
           if (executionPointer == persistedExecutionPointer.Data)
             persistedExecutionPointer.Data = 0;
           executionPointer = 0;
-          
+
           Execute(selector, scope);
 
           ////// Create Children //////
           // ChildrenInitializer
           s = scope.SubScopes[1];
           Execute(ci, s);
-          
+
           tempExePointer = executionPointer;
           tempPersExePointer = persistedExecutionPointer.Data;
           // UniformSequentialSubScopesProcessor
-          for (int j = subscopeNr.Data; j < s.SubScopes.Count; j++ ) {
+          for (int j = subscopeNr.Data; j < s.SubScopes.Count; j++) {
             if (executionPointer == persistedExecutionPointer.Data)
               persistedExecutionPointer.Data = tempExePointer;
             executionPointer = tempExePointer;
-            
+
             s2 = s.SubScopes[j];
             Execute(crossover, s2);
             // Stochastic Branch
-            if (random.NextDouble() < probability.Data)
+
+            randomNumber = random.NextDouble();
+            //output.AppendLine(randomNumber.ToString());
+            if (randomNumber < probability.Data)
               Execute(mutator, s2);
             else
               Execute(empty, s2);
@@ -194,7 +200,7 @@ namespace HeuristicLab.FixedOperators {
             Execute(counter, s2);
             subscopeNr.Data++;
           } // foreach
-          
+
 
           Execute(sorter, s);
           ////// END Create Children //////
@@ -207,9 +213,15 @@ namespace HeuristicLab.FixedOperators {
           subscopeNr.Data = 0;
           nrOfGenerations.Data++;
         } // for i
+
+
+
       } // try
       catch (CancelException) {
         Console.WriteLine("Micro engine aborted by cancel flag.");
+      }
+      catch (Exception) { 
+          
       }
 
       swApply.Stop();
