@@ -153,34 +153,34 @@ namespace HeuristicLab.GP.StructureIdentification {
       StructId.Tangens tangens = new StructId.Tangens();
       StructId.Xor xor = new StructId.Xor();
 
-      IFunction[] booleanFunctions = new IFunction[] {
-        and,
-        equal,
-        greaterThan,
-        lessThan,
-        not,
-        or,
-        xor 
-      };
-      IFunction[] doubleFunctions = new IFunction[] {
-        differential,
-        variable,
-        constant,
-        addition,
-        average,
-        cosinus,
-        division,
-        exponential,
-        ifThenElse,
-        logarithm,
-        multiplication,
-        power,
-        signum,
-        sinus,
-        sqrt,
-        subtraction,
-        tangens
-      };
+
+      List<IOperator> booleanFunctions = new List<IOperator>();
+      ConditionalAddOperator(AND_ALLOWED, and, booleanFunctions);
+      ConditionalAddOperator(EQUAL_ALLOWED, equal, booleanFunctions);
+      ConditionalAddOperator(GREATERTHAN_ALLOWED, greaterThan, booleanFunctions);
+      ConditionalAddOperator(LESSTHAN_ALLOWED, lessThan, booleanFunctions);
+      ConditionalAddOperator(NOT_ALLOWED, not, booleanFunctions);
+      ConditionalAddOperator(OR_ALLOWED, or, booleanFunctions);
+      ConditionalAddOperator(XOR_ALLOWED, xor, booleanFunctions);
+
+      List<IOperator> doubleFunctions = new List<IOperator>();
+      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, differential, doubleFunctions);
+      ConditionalAddOperator(VARIABLES_ALLOWED, variable, doubleFunctions);
+      ConditionalAddOperator(CONSTANTS_ALLOWED, constant, doubleFunctions);
+      ConditionalAddOperator(ADDITION_ALLOWED, addition, doubleFunctions);
+      ConditionalAddOperator(AVERAGE_ALLOWED, average, doubleFunctions);
+      ConditionalAddOperator(COSINUS_ALLOWED, cosinus, doubleFunctions);
+      ConditionalAddOperator(DIVISION_ALLOWED, division, doubleFunctions);
+      ConditionalAddOperator(EXPONENTIAL_ALLOWED, exponential, doubleFunctions);
+      ConditionalAddOperator(IFTHENELSE_ALLOWED, ifThenElse, doubleFunctions);
+      ConditionalAddOperator(LOGARTIHM_ALLOWED, logarithm, doubleFunctions);
+      ConditionalAddOperator(MULTIPLICATION_ALLOWED, multiplication, doubleFunctions);
+      ConditionalAddOperator(POWER_ALLOWED, power, doubleFunctions);
+      ConditionalAddOperator(SIGNUM_ALLOWED, signum, doubleFunctions);
+      ConditionalAddOperator(SINUS_ALLOWED, sinus, doubleFunctions);
+      ConditionalAddOperator(SQRT_ALLOWED, sqrt, doubleFunctions);
+      ConditionalAddOperator(SUBTRACTION_ALLOWED, subtraction, doubleFunctions);
+      ConditionalAddOperator(TANGENS_ALLOWED, tangens, doubleFunctions);
 
       SetAllowedSubOperators(and, booleanFunctions);
       SetAllowedSubOperators(equal, doubleFunctions);
@@ -245,35 +245,39 @@ namespace HeuristicLab.GP.StructureIdentification {
       return null;
     }
 
+    private void ConditionalAddOperator(string condName, IOperator op, List<IOperator> list) {
+      if (GetVariableValue<BoolData>(condName, null, false).Data) list.Add(op);
+    }
+
     private void ConditionalAddOperator(string condName, GPOperatorLibrary operatorLibrary, IOperator op) {
       if (GetVariableValue<BoolData>(condName, null, false).Data) operatorLibrary.GPOperatorGroup.AddOperator(op);
     }
 
-    private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
+    private void SetAllowedSubOperators(IFunction f, List<IOperator> gs) {
       foreach (IConstraint c in f.Constraints) {
         if (c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           typeConstraint.Clear();
-          foreach (IFunction g in gs) {
+          foreach (IOperator g in gs) {
             typeConstraint.AddOperator(g);
           }
         } else if (c is AllSubOperatorsTypeConstraint) {
           AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
           typeConstraint.Clear();
-          foreach (IFunction g in gs) {
+          foreach (IOperator g in gs) {
             typeConstraint.AddOperator(g);
           }
         }
       }
     }
 
-    private void SetAllowedSubOperators(IFunction f, int p, IFunction[] gs) {
+    private void SetAllowedSubOperators(IFunction f, int p, List<IOperator> gs) {
       foreach (IConstraint c in f.Constraints) {
         if (c is SubOperatorTypeConstraint) {
           SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
           if (typeConstraint.SubOperatorIndex.Data == p) {
             typeConstraint.Clear();
-            foreach (IFunction g in gs) {
+            foreach (IOperator g in gs) {
               typeConstraint.AddOperator(g);
             }
           }
