@@ -21,7 +21,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     protected override object ParseValue(string o) {
-      return double.Parse(o);
+      return double.Parse(o, CultureInfo.InvariantCulture);
     }
 
   }
