@@ -31,19 +31,82 @@ using StructId = HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class FunctionLibraryInjector : OperatorBase {
+    private const string FUNCTIONLIBRARY = "FunctionLibrary";
     private const string TARGETVARIABLE = "TargetVariable";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
-    protected const string FUNCTIONLIBRARY = "FunctionLibrary";
+    private const string AUTOREGRESSIVE = "Autoregressive";
+    private const string MINTIMEOFFSET = "MinTimeOffset";
+    private const string MAXTIMEOFFSET = "MaxTimeOffset";
+
+    private const string DIFFERENTIALS_ALLOWED = "Differentials";
+    private const string VARIABLES_ALLOWED = "Variables";
+    private const string CONSTANTS_ALLOWED = "Constants";
+    private const string ADDITION_ALLOWED = "Addition";
+    private const string AVERAGE_ALLOWED = "Average";
+    private const string AND_ALLOWED = "And";
+    private const string COSINUS_ALLOWED = "Cosinus";
+    private const string DIVISION_ALLOWED = "Division";
+    private const string EQUAL_ALLOWED = "Equal";
+    private const string EXPONENTIAL_ALLOWED = "Exponential";
+    private const string GREATERTHAN_ALLOWED = "GreaterThan";
+    private const string IFTHENELSE_ALLOWED = "IfThenElse";
+    private const string LESSTHAN_ALLOWED = "LessThan";
+    private const string LOGARTIHM_ALLOWED = "Logarithm";
+    private const string MULTIPLICATION_ALLOWED = "Multiplication";
+    private const string NOT_ALLOWED = "Not";
+    private const string POWER_ALLOWED = "Power";
+    private const string OR_ALLOWED = "Or";
+    private const string SIGNUM_ALLOWED = "Signum";
+    private const string SINUS_ALLOWED = "Sinus";
+    private const string SQRT_ALLOWED = "SquareRoot";
+    private const string SUBTRACTION_ALLOWED = "Subtraction";
+    private const string TANGENS_ALLOWED = "Tangens";
+    private const string XOR_ALLOWED = "Xor";
+
 
     public override string Description {
-      get { return @"Injects a default function library for regression and classification problems."; }
+      get { return @"Injects a configurable function library for regression and classification problems."; }
     }
 
     public FunctionLibraryInjector()
       : base() {
       AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(AUTOREGRESSIVE, "Switch to turn on/off autoregressive modeling (wether to allow the target variable as input)", typeof(BoolData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), Core.VariableKind.In));
+      AddVariableInfo(new Core.VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), Core.VariableKind.In));
       AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
+
+      AddVariable(DIFFERENTIALS_ALLOWED, false);
+      AddVariable(VARIABLES_ALLOWED, true);
+      AddVariable(CONSTANTS_ALLOWED, true);
+      AddVariable(ADDITION_ALLOWED, true);
+      AddVariable(AVERAGE_ALLOWED, false);
+      AddVariable(AND_ALLOWED, true);
+      AddVariable(COSINUS_ALLOWED, true);
+      AddVariable(DIVISION_ALLOWED, true);
+      AddVariable(EQUAL_ALLOWED, true);
+      AddVariable(EXPONENTIAL_ALLOWED, true);
+      AddVariable(GREATERTHAN_ALLOWED, true);
+      AddVariable(IFTHENELSE_ALLOWED, true);
+      AddVariable(LESSTHAN_ALLOWED, true);
+      AddVariable(LOGARTIHM_ALLOWED, true);
+      AddVariable(MULTIPLICATION_ALLOWED, true);
+      AddVariable(NOT_ALLOWED, true);
+      AddVariable(POWER_ALLOWED, true);
+      AddVariable(OR_ALLOWED, true);
+      AddVariable(SIGNUM_ALLOWED, true);
+      AddVariable(SINUS_ALLOWED, true);
+      AddVariable(SQRT_ALLOWED, true);
+      AddVariable(SUBTRACTION_ALLOWED, true);
+      AddVariable(TANGENS_ALLOWED, true);
+      AddVariable(XOR_ALLOWED, false);
+    }
+
+    private void AddVariable(string name, bool allowed) {
+      AddVariableInfo(new VariableInfo(name, name + " allowed", typeof(BoolData), Core.VariableKind.New));
+      GetVariableInfo(name).Local = true;
+      AddVariable(new Core.Variable(name, new BoolData(allowed)));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -52,14 +115,22 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
       int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+      int minTimeOffset = GetVariableValue<IntData>(MINTIMEOFFSET, scope, true).Data;
+      int maxTimeOffset = GetVariableValue<IntData>(MAXTIMEOFFSET, scope, true).Data;
+      bool autoregressive = GetVariableValue<BoolData>(AUTOREGRESSIVE, scope, true).Data;
 
-      // remove the target-variable in case it occures in allowed features
-      List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
-      foreach (IntData t in ts) allowedFeatures.Remove(t);
+      if (autoregressive) {
+        // make sure the target-variable occures in list of allowed features
+        if (!allowedFeatures.Exists(d => d.Data == targetVariable)) allowedFeatures.Add(new IntData(targetVariable));
+      } else {
+        // remove the target-variable in case it occures in allowed features
+        List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
+        foreach (IntData t in ts) allowedFeatures.Remove(t);
+      }
 
       variable = new StructId.Variable();
       StructId.Constant constant = new StructId.Constant();
-
+      StructId.Differential differential = new Differential();
       StructId.Addition addition = new StructId.Addition();
       StructId.And and = new StructId.And();
       StructId.Average average = new StructId.Average();
@@ -92,6 +163,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         xor 
       };
       IFunction[] doubleFunctions = new IFunction[] {
+        differential,
         variable,
         constant,
         addition,
@@ -135,39 +207,46 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(tangens, doubleFunctions);
 
       operatorLibrary = new GPOperatorLibrary();
-      operatorLibrary.GPOperatorGroup.AddOperator(variable);
-      operatorLibrary.GPOperatorGroup.AddOperator(constant);
-      operatorLibrary.GPOperatorGroup.AddOperator(addition);
-      operatorLibrary.GPOperatorGroup.AddOperator(average);
-      operatorLibrary.GPOperatorGroup.AddOperator(and);
-      operatorLibrary.GPOperatorGroup.AddOperator(cosinus);
-      operatorLibrary.GPOperatorGroup.AddOperator(division);
-      operatorLibrary.GPOperatorGroup.AddOperator(equal);
-      operatorLibrary.GPOperatorGroup.AddOperator(exponential);
-      operatorLibrary.GPOperatorGroup.AddOperator(greaterThan);
-      operatorLibrary.GPOperatorGroup.AddOperator(ifThenElse);
-      operatorLibrary.GPOperatorGroup.AddOperator(lessThan);
-      operatorLibrary.GPOperatorGroup.AddOperator(logarithm);
-      operatorLibrary.GPOperatorGroup.AddOperator(multiplication);
-      operatorLibrary.GPOperatorGroup.AddOperator(not);
-      operatorLibrary.GPOperatorGroup.AddOperator(power);
-      operatorLibrary.GPOperatorGroup.AddOperator(or);
-      operatorLibrary.GPOperatorGroup.AddOperator(signum);
-      operatorLibrary.GPOperatorGroup.AddOperator(sinus);
-      operatorLibrary.GPOperatorGroup.AddOperator(sqrt);
-      operatorLibrary.GPOperatorGroup.AddOperator(subtraction);
-      operatorLibrary.GPOperatorGroup.AddOperator(tangens);
-      operatorLibrary.GPOperatorGroup.AddOperator(xor);
+      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, operatorLibrary, differential);
+      ConditionalAddOperator(VARIABLES_ALLOWED, operatorLibrary, variable);
+      ConditionalAddOperator(CONSTANTS_ALLOWED, operatorLibrary, constant);
+      ConditionalAddOperator(ADDITION_ALLOWED, operatorLibrary, addition);
+      ConditionalAddOperator(AVERAGE_ALLOWED, operatorLibrary, average);
+      ConditionalAddOperator(AND_ALLOWED, operatorLibrary, and);
+      ConditionalAddOperator(COSINUS_ALLOWED, operatorLibrary, cosinus);
+      ConditionalAddOperator(DIVISION_ALLOWED, operatorLibrary, division);
+      ConditionalAddOperator(EQUAL_ALLOWED, operatorLibrary, equal);
+      ConditionalAddOperator(EXPONENTIAL_ALLOWED, operatorLibrary, exponential);
+      ConditionalAddOperator(GREATERTHAN_ALLOWED, operatorLibrary, greaterThan);
+      ConditionalAddOperator(IFTHENELSE_ALLOWED, operatorLibrary, ifThenElse);
+      ConditionalAddOperator(LESSTHAN_ALLOWED, operatorLibrary, lessThan);
+      ConditionalAddOperator(LOGARTIHM_ALLOWED, operatorLibrary, logarithm);
+      ConditionalAddOperator(MULTIPLICATION_ALLOWED, operatorLibrary, multiplication);
+      ConditionalAddOperator(NOT_ALLOWED, operatorLibrary, not);
+      ConditionalAddOperator(POWER_ALLOWED, operatorLibrary, power);
+      ConditionalAddOperator(OR_ALLOWED, operatorLibrary, or);
+      ConditionalAddOperator(SIGNUM_ALLOWED, operatorLibrary, signum);
+      ConditionalAddOperator(SINUS_ALLOWED, operatorLibrary, sinus);
+      ConditionalAddOperator(SQRT_ALLOWED, operatorLibrary, sqrt);
+      ConditionalAddOperator(SUBTRACTION_ALLOWED, operatorLibrary, subtraction);
+      ConditionalAddOperator(TANGENS_ALLOWED, operatorLibrary, tangens);
+      ConditionalAddOperator(XOR_ALLOWED, operatorLibrary, xor);
 
       int[] allowedIndexes = new int[allowedFeatures.Count];
       for (int i = 0; i < allowedIndexes.Length; i++) {
         allowedIndexes[i] = allowedFeatures[i].Data;
       }
 
-      variable.SetConstraints(allowedIndexes, 0, 0);
+      variable.SetConstraints(allowedIndexes, minTimeOffset, maxTimeOffset);
+      differential.SetConstraints(allowedIndexes, minTimeOffset, maxTimeOffset);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
+
       return null;
+    }
+
+    private void ConditionalAddOperator(string condName, GPOperatorLibrary operatorLibrary, IOperator op) {
+      if (GetVariableValue<BoolData>(condName, null, false).Data) operatorLibrary.GPOperatorGroup.AddOperator(op);
     }
 
     private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {

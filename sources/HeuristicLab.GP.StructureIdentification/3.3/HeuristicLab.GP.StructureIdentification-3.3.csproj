@@ -85,7 +85,6 @@
     <Compile Include="And.cs" />
     <Compile Include="Average.cs" />
     <Compile Include="BakedTreeEvaluator.cs" />
-    <Compile Include="ConfigurableFunctionLibraryInjector.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="AlgorithmBase.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
