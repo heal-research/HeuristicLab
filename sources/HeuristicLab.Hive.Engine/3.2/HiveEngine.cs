@@ -79,10 +79,9 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     public void Execute() {
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-
       var jobObj = CreateJobObj();
 
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
       jobId = res.Obj.Id;
     }
@@ -106,7 +105,12 @@ namespace HeuristicLab.Hive.Engine {
 
       foreach (IStorable storeable in dictionary.Values) {
         PluginInfo pluginInfo = service.GetDeclaringPlugin(storeable.GetType());
-        if (!plugins.Contains(pluginInfo)) plugins.Add(pluginInfo);
+        if (!plugins.Contains(pluginInfo)) {
+          plugins.Add(pluginInfo);
+          foreach (var dependency in pluginInfo.Dependencies) {
+            if (!plugins.Contains(dependency)) plugins.Add(dependency);
+          }
+        }
       }
 
       List<HivePluginInfo> pluginsNeeded =
