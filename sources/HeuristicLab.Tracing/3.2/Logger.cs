@@ -11,7 +11,7 @@ namespace HeuristicLab.Tracing {
 
     protected static bool IsConfigured = false;
 
-    private static void Configure() {
+    protected static void Configure() {
       if ( IsConfigured ) return;
       IsConfigured = true;
       if (string.IsNullOrEmpty(Settings.Default.TracingLog4netConfigFile)) {

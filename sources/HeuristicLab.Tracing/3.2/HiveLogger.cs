@@ -8,7 +8,7 @@ using log4net.Config;
 
 namespace HeuristicLab.Tracing {
   public class HiveLogger: Logger {
-    private static void Configure() {
+    protected new static void Configure() {
       if (IsConfigured) return;
       IsConfigured = true;
       if (string.IsNullOrEmpty(Settings.Default.TracingLog4netConfigFile)) {
@@ -19,7 +19,7 @@ namespace HeuristicLab.Tracing {
       }
       XmlConfigurator.ConfigureAndWatch(
         new FileInfo(Settings.Default.TracingLog4netConfigFile));
-      Info("logging initialized " + DateTime.Now);
+      Info("Hive Logging initialized " + DateTime.Now);
     }
   }
 }

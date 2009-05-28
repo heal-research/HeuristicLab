@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HiveLogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="HeuristicLabTracingPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
