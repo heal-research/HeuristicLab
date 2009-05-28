@@ -30,36 +30,8 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
-  public class Job : PersistableObject {
+  public class Project : PersistableObject {
     [DataMember]
-    public State State { get; set; }
-    [DataMember]
-    public Guid UserId { get; set; }
-    [DataMember]
-    public ClientInfo Client { get; set; }
-    [DataMember]
-    public Job ParentJob { get; set; }
-    [DataMember]
-    public double Percentage { get; set; }
-    [DataMember]
-    public byte[] SerializedJob { get; set; }
-    [DataMember]
-    public DateTime DateCreated { get; set; }
-    [DataMember]
-    public DateTime DateCalculated { get; set; }
-    [DataMember]
-    public int Priority { get; set; }
-    [DataMember]
-    public int CoresNeeded { get; set; }
-    [DataMember]
-    public int MemoryNeeded { get; set; }
-    [DataMember]
-    public List<HivePluginInfo> PluginsNeeded { get; set; }
-    [DataMember]
-    public List<ClientGroup> ClientGroups { get; set; }
-
-    public Job() {
-      PluginsNeeded = new List<HivePluginInfo>();
-    }
+    public String Name { get; set; }
   }
 }

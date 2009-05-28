@@ -353,7 +353,27 @@ namespace HeuristicLab.Hive.Server.Core {
           session.EndSession();
       }
     }
-      
+
+    public ResponseList<Project> GetAllProjects() {
+      throw new NotImplementedException();
+    }
+
+    public Response CreateProject(Project project) {
+      throw new NotImplementedException();
+    }
+
+    public Response ChangeProject(Project project) {
+      throw new NotImplementedException();
+    }
+
+    public Response DeleteProject(Guid projectId) {
+      throw new NotImplementedException();
+    }
+
+    public ResponseList<Job> GetJobsByProject(Guid projectId) {
+      throw new NotImplementedException();
+    }
+
     #endregion
   }
 }

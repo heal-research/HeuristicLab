@@ -46,5 +46,15 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     Response RequestSnapshot(Guid jobId);
     [OperationContract]
     Response AbortJob(Guid jobId);
+    [OperationContract]
+    ResponseList<Project> GetAllProjects();
+    [OperationContract]
+    Response CreateProject(Project project);
+    [OperationContract]
+    Response ChangeProject(Project project);
+    [OperationContract]
+    Response DeleteProject(Guid projectId);
+    [OperationContract]
+    ResponseList<Job> GetJobsByProject(Guid projectId);
   }
 }

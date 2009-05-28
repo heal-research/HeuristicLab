@@ -191,5 +191,26 @@ namespace HeuristicLab.Hive.Server.Core {
 
 
     }
+
+    public ResponseList<Project> GetAllProjects() {
+      return jobManager.GetAllProjects();
+    }
+
+    public Response CreateProject(Project project) {
+      return jobManager.CreateProject(project);
+    }
+
+    public Response ChangeProject(Project project) {
+      return jobManager.ChangeProject(project);
+    }
+
+    public Response DeleteProject(Guid projectId) {
+      return jobManager.DeleteProject(projectId);
+    }
+
+    public ResponseList<Job> GetJobsByProject(Guid projectId) {
+      return jobManager.GetJobsByProject(projectId);
+    }
+
   }
 }
