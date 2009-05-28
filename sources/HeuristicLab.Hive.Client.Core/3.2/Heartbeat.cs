@@ -94,7 +94,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
       System.Diagnostics.Debug.WriteLine("Heartbeat received! ");
-      e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
+      e.Result.ActionRequest.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));      
     }
 
     public void StopHeartBeat() {

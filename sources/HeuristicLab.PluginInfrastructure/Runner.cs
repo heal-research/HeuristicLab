@@ -46,8 +46,9 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="plugins">bytearray of all plugins that should be loaded</param>
     public void LoadPlugins(ICollection<byte[]> plugins) {
-      foreach (byte[] plugin in plugins)
-        Assembly.Load(plugin);
+      foreach (byte[] plugin in plugins) {
+        Assembly.Load(plugin);        
+      }
     }
 
     public void Run(ApplicationInfo appInfo) {

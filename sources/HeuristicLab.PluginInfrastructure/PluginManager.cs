@@ -224,17 +224,16 @@ namespace HeuristicLab.PluginInfrastructure {
       setup.PrivateBinPath = pluginDir;
       setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;      
       AppDomain applicationDomain = AppDomain.CreateDomain(friendlyName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
-                      
       Runner remoteRunner = (Runner)applicationDomain.CreateInstanceAndUnwrap(typeof(Runner).Assembly.GetName().Name, typeof(Runner).FullName);
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
 
-      //if (assemblyFiles != null && assemblyFiles.Count > 0)
-      //  remoteRunner.LoadPlugins(assemblyFiles);
+      if (assemblyFiles != null && assemblyFiles.Count > 0)
+        remoteRunner.LoadPlugins(assemblyFiles);
       
       //if (depPlugins != null && depPlugins.Count > 0) {        
-        remoteRunner.LoadPlugins(ActivePlugins);
+        //remoteRunner.LoadPlugins(ActivePlugins);
       //}
-      NotifyListeners(PluginManagerAction.Initialized, "All plugins");
+      NotifyListeners(PluginManagerAction.Initialized, "All plugins");    
       return applicationDomain;
     }
 

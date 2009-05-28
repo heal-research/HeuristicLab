@@ -238,10 +238,10 @@ namespace HeuristicLab.Hive.Client.Core {
         //beat.StopHeartBeat();        
         //Todo: make a set & override the equals method
         List<byte[]> files = new List<byte[]>();
-        //foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
-        //  files.AddRange(plugininfo.PluginFiles);
+        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
+          files.AddRange(plugininfo.PluginFiles);
         
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);        
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
@@ -250,7 +250,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
             Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
             engine.JobId = e.Result.Job.Id;
-            engine.Queue = MessageQueue.GetInstance();
+            engine.Queue = MessageQueue.GetInstance();            
             engine.Start(e.Result.Job.SerializedJob);
             engines.Add(e.Result.Job.Id, engine);
 
@@ -332,11 +332,10 @@ namespace HeuristicLab.Hive.Client.Core {
     }
 
     void appDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-      Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());
-      
+      Logging.Instance.Error(this.ToString(), "Exception in AppDomain: " + e.ExceptionObject.ToString());      
     }
 
-    internal Dictionary<Guid, Job> GetJobs() {
+    internal Dictionary<Guid, Job> GetJobs() {           
       return jobs;
     }
   }
