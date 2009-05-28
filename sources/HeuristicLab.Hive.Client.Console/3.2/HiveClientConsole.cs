@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Client.Console
 
   #region Delegates
 
-  public delegate void UpdateTextDelegate(EventLogEntry ev);
+  public delegate void AppendTextDelegate(String message);
   public delegate void OnDialogClosedDelegate(RecurrentEvent e);
 
   #endregion
@@ -48,9 +48,10 @@ namespace HeuristicLab.Hive.Client.Console
     #region Declarations
 
     private const string ENDPOINTADRESS = "net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator";
-    private const string EVENTLOGNAME = "Hive Client";
+    //private const string EVENTLOGNAME = "Hive Client";
 
     //private EventLog HiveClientEventLog;
+    private LogFileReader logFileReader;
     private ClientConsoleCommunicatorClient cccc;
     private System.Windows.Forms.Timer refreshTimer;
     private ListViewColumnSorterDate lvwColumnSorter;
@@ -66,15 +67,39 @@ namespace HeuristicLab.Hive.Client.Console
     public HiveClientConsole()
     {
       InitializeComponent();
-      lvwColumnSorter = new ListViewColumnSorterDate();
-      lvLog.ListViewItemSorter = lvwColumnSorter;
-      lvwColumnSorter.SortColumn = 3;
-      lvwColumnSorter.Order = SortOrder.Descending;
+      //lvwColumnSorter = new ListViewColumnSorterDate();
+      //lvLog.ListViewItemSorter = lvwColumnSorter;
+      //lvwColumnSorter.SortColumn = 3;
+      //lvwColumnSorter.Order = SortOrder.Descending;
       InitTimer();
       ConnectToClient();
       RefreshGui();
       //GetEventLog();
       InitCalender();
+      InitLogFileReader();
+    }
+
+    private void InitLogFileReader() {
+      //lo = new Tail(this.tailFilenameTextbox.Text);
+      //myTail.MoreData += new Tail.MoreDataHandler(myTail_MoreData);
+      //myTail.Start();
+      //MessageBox.Show(Environment.CurrentDirectory);
+      logFileReader = new LogFileReader(Environment.CurrentDirectory + @"/HiveLog.log");
+      logFileReader.MoreData += new LogFileReader.MoreDataHandler(logFileReader_MoreData);
+      logFileReader.Start();
+    }
+
+    void logFileReader_MoreData(object sender, string newData) {
+
+      int maxChars = txtLog.MaxLength;
+      if (newData.Length > maxChars) {
+        newData = newData.Remove(0, newData.Length - maxChars);
+      }
+      int newLength = this.txtLog.Text.Length + newData.Length;
+      if (newLength > maxChars) {
+        this.txtLog.Text = this.txtLog.Text.Remove(0, newLength - (int)maxChars);
+      }
+      AppendText(newData);
     }
 
     #endregion
@@ -341,34 +366,28 @@ namespace HeuristicLab.Hive.Client.Console
       //nothing to do
     }
 
-    private void UpdateText(EventLogEntry ev)
-    {
-      if (this.lvLog.InvokeRequired)
-      {
-        this.lvLog.Invoke(new
-          UpdateTextDelegate(UpdateText), new object[] { ev });
-      }
-      else
-      {
-        ListViewItem curEventLogEntry = GenerateEventEntry(ev);
-        lvLog.Items.Add(curEventLogEntry);
-        lvJobDetail.Sort();
+    private void AppendText(string message) {
+      if (this.txtLog.InvokeRequired) {
+        this.txtLog.Invoke(new
+          AppendTextDelegate(AppendText), new object[] { message });
+      } else {
+        this.txtLog.AppendText(message);
       }
     }
 
     public void OnEntryWritten(object source, EntryWrittenEventArgs e)
     {
-      UpdateText(e.Entry);
+      //UpdateText(e.Entry);
     }
 
-    private void lvLog_DoubleClick(object sender, EventArgs e)
-    {
-      ListViewItem lvi = lvLog.SelectedItems[0];
-      HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
+    //private void lvLog_DoubleClick(object sender, EventArgs e)
+    //{
+    //  ListViewItem lvi = lvLog.SelectedItems[0];
+    //  HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
 
-      Form EventlogDetails = new EventLogEntryForm(hee);
-      EventlogDetails.Show();
-    }
+    //  Form EventlogDetails = new EventLogEntryForm(hee);
+    //  EventlogDetails.Show();
+    //}
 
     private void btConnect_Click(object sender, EventArgs e)
     {
@@ -392,31 +411,31 @@ namespace HeuristicLab.Hive.Client.Console
       cccc.DisconnectAsync();
     }
 
-    private void lvLog_ColumnClick(object sender, ColumnClickEventArgs e)
-    {
-      // Determine if clicked column is already the column that is being sorted.
-      if (e.Column == lvwColumnSorter.SortColumn)
-      {
-        // Reverse the current sort direction for this column.
-        if (lvwColumnSorter.Order == SortOrder.Ascending)
-        {
-          lvwColumnSorter.Order = SortOrder.Descending;
-        }
-        else
-        {
-          lvwColumnSorter.Order = SortOrder.Ascending;
-        }
-      }
-      else
-      {
-        // Set the column number that is to be sorted; default to ascending.
-        lvwColumnSorter.SortColumn = e.Column;
-        lvwColumnSorter.Order = SortOrder.Ascending;
-      }
+    //private void lvLog_ColumnClick(object sender, ColumnClickEventArgs e)
+    //{
+    //  // Determine if clicked column is already the column that is being sorted.
+    //  if (e.Column == lvwColumnSorter.SortColumn)
+    //  {
+    //    // Reverse the current sort direction for this column.
+    //    if (lvwColumnSorter.Order == SortOrder.Ascending)
+    //    {
+    //      lvwColumnSorter.Order = SortOrder.Descending;
+    //    }
+    //    else
+    //    {
+    //      lvwColumnSorter.Order = SortOrder.Ascending;
+    //    }
+    //  }
+    //  else
+    //  {
+    //    // Set the column number that is to be sorted; default to ascending.
+    //    lvwColumnSorter.SortColumn = e.Column;
+    //    lvwColumnSorter.Order = SortOrder.Ascending;
+    //  }
 
-      // Perform the sort with these new sort options.
-      lvLog.Sort();
-    }
+    //  // Perform the sort with these new sort options.
+    //  //lvLog.Sort();
+    //}
 
     private void btn_clientShutdown_Click(object sender, EventArgs e)
     {
@@ -629,6 +648,10 @@ namespace HeuristicLab.Hive.Client.Console
       }
 
       dvOnline.Invalidate();
+    }
+
+    private void lvLog_SelectedIndexChanged(object sender, EventArgs e) {
+
     }
   }
 }

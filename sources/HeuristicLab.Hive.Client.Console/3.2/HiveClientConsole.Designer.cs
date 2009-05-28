@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
+      Calendar.DrawTool drawTool3 = new Calendar.DrawTool();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
       this.dvOnline = new Calendar.DayView();
       this.tcClientConsole = new System.Windows.Forms.TabControl();
@@ -79,12 +79,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.lbJobsFetchedCaption = new System.Windows.Forms.Label();
       this.lbCsCaption = new System.Windows.Forms.Label();
       this.gbEventLog = new System.Windows.Forms.GroupBox();
-      this.lvLog = new System.Windows.Forms.ListView();
-      this.chType = new System.Windows.Forms.ColumnHeader();
-      this.chId = new System.Windows.Forms.ColumnHeader();
-      this.chMessage = new System.Windows.Forms.ColumnHeader();
-      this.chDate = new System.Windows.Forms.ColumnHeader();
-      this.ilEventLog = new System.Windows.Forms.ImageList(this.components);
+      this.txtLog = new System.Windows.Forms.TextBox();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -99,6 +94,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.label1 = new System.Windows.Forms.Label();
       this.btCreate = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
+      this.ilEventLog = new System.Windows.Forms.ImageList(this.components);
       this.tcClientConsole.SuspendLayout();
       this.tpConnection.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -114,8 +110,8 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // dvOnline
       // 
-      drawTool1.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool1;
+      drawTool3.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool3;
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -436,7 +432,7 @@ namespace HeuristicLab.Hive.Client.Console {
       // 
       // gbEventLog
       // 
-      this.gbEventLog.Controls.Add(this.lvLog);
+      this.gbEventLog.Controls.Add(this.txtLog);
       this.gbEventLog.Location = new System.Drawing.Point(426, 152);
       this.gbEventLog.Name = "gbEventLog";
       this.gbEventLog.Size = new System.Drawing.Size(412, 252);
@@ -444,53 +440,15 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbEventLog.TabStop = false;
       this.gbEventLog.Text = "Hive Client Log";
       // 
-      // lvLog
+      // txtLog
       // 
-      this.lvLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chType,
-            this.chId,
-            this.chMessage,
-            this.chDate});
-      this.lvLog.FullRowSelect = true;
-      this.lvLog.GridLines = true;
-      this.lvLog.LargeImageList = this.ilEventLog;
-      this.lvLog.Location = new System.Drawing.Point(8, 14);
-      this.lvLog.MultiSelect = false;
-      this.lvLog.Name = "lvLog";
-      this.lvLog.Size = new System.Drawing.Size(398, 232);
-      this.lvLog.SmallImageList = this.ilEventLog;
-      this.lvLog.TabIndex = 6;
-      this.lvLog.UseCompatibleStateImageBehavior = false;
-      this.lvLog.View = System.Windows.Forms.View.Details;
-      this.lvLog.DoubleClick += new System.EventHandler(this.lvLog_DoubleClick);
-      this.lvLog.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.lvLog_ColumnClick);
-      // 
-      // chType
-      // 
-      this.chType.Text = "Type";
-      this.chType.Width = 42;
-      // 
-      // chId
-      // 
-      this.chId.Text = "ID";
-      this.chId.Width = 50;
-      // 
-      // chMessage
-      // 
-      this.chMessage.Text = "Message";
-      this.chMessage.Width = 157;
-      // 
-      // chDate
-      // 
-      this.chDate.Text = "Date";
-      this.chDate.Width = 125;
-      // 
-      // ilEventLog
-      // 
-      this.ilEventLog.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilEventLog.ImageStream")));
-      this.ilEventLog.TransparentColor = System.Drawing.Color.Transparent;
-      this.ilEventLog.Images.SetKeyName(0, "Info.png");
-      this.ilEventLog.Images.SetKeyName(1, "Error.png");
+      this.txtLog.Location = new System.Drawing.Point(4, 14);
+      this.txtLog.Multiline = true;
+      this.txtLog.Name = "txtLog";
+      this.txtLog.ReadOnly = true;
+      this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.txtLog.Size = new System.Drawing.Size(402, 232);
+      this.txtLog.TabIndex = 0;
       // 
       // tabPage2
       // 
@@ -637,6 +595,13 @@ namespace HeuristicLab.Hive.Client.Console {
       this.mcOnline.TabIndex = 19;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
       // 
+      // ilEventLog
+      // 
+      this.ilEventLog.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilEventLog.ImageStream")));
+      this.ilEventLog.TransparentColor = System.Drawing.Color.Transparent;
+      this.ilEventLog.Images.SetKeyName(0, "Info.png");
+      this.ilEventLog.Images.SetKeyName(1, "Error.png");
+      // 
       // HiveClientConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -657,6 +622,7 @@ namespace HeuristicLab.Hive.Client.Console {
       this.gbCommon.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbGraph)).EndInit();
       this.gbEventLog.ResumeLayout(false);
+      this.gbEventLog.PerformLayout();
       this.tabPage2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.groupBox1.ResumeLayout(false);
@@ -670,10 +636,6 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.TabControl tcClientConsole;
     private System.Windows.Forms.TabPage tpConnection;
     private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.ListView lvLog;
-    private System.Windows.Forms.ColumnHeader chType;
-    private System.Windows.Forms.ColumnHeader chMessage;
-    private System.Windows.Forms.ColumnHeader chDate;
     private System.Windows.Forms.Label lbJobdoneCaption;
     private System.Windows.Forms.Label lbCsCaption;
     private System.Windows.Forms.Label lbGuidCaption;
@@ -687,7 +649,6 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.ColumnHeader chSince;
     private System.Windows.Forms.ColumnHeader chProgress;
     private System.Windows.Forms.Label lbConnectionStatusCaption;
-    private System.Windows.Forms.ColumnHeader chId;
     private System.Windows.Forms.ImageList ilEventLog;
     private System.Windows.Forms.Label lbCs;
     private System.Windows.Forms.Label lbConnectionStatus;
@@ -719,6 +680,7 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.DateTimePicker dtpFrom;
     private System.Windows.Forms.DateTimePicker txttimeTo;
     private System.Windows.Forms.DateTimePicker txttimeFrom;
+    private System.Windows.Forms.TextBox txtLog;
   }
 }
 
