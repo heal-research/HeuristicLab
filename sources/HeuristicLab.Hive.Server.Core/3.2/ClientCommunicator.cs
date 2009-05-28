@@ -284,7 +284,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientAdapter"></param>
     /// <param name="response"></param>
     private void processJobProcess(HeartBeatData hbData, IJobAdapter jobAdapter, IClientAdapter clientAdapter, ResponseHB response) {
-      if (hbData.JobProgress != null) {
+      if (hbData.JobProgress != null && hbData.JobProgress.Count > 0) {
         List<Job> jobsOfClient = new List<Job>(jobAdapter.GetActiveJobsOf(clientAdapter.GetById(hbData.ClientId)));
         if (jobsOfClient == null || jobsOfClient.Count == 0) {
           response.Success = false;
@@ -536,15 +536,12 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGOUT_CLIENT_NOT_REGISTERED;
           return response;
         }
-        List<Job> allJobs = new List<Job>(jobAdapter.GetAll());
         if (client.State == State.calculating) {
           // check wich job the client was calculating and reset it
-          foreach (Job job in allJobs) {
-            if (job.Client != null) {
-              if (job.Client.Id == client.Id) {
-                jobManager.ResetJobsDependingOnResults(job);
-              }
-            }
+          ICollection<Job> jobsOfClient = jobAdapter.GetJobsOf(client);
+          foreach (Job job in jobsOfClient) {
+            if (job.State != State.finished)
+              jobManager.ResetJobsDependingOnResults(job);
           }
         }
 
