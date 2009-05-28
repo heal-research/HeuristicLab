@@ -28,6 +28,7 @@ namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "HeuristicLab.Hive.Contracts-3.2")]
   [PluginFile(Filename = "HeuristicLab.Hive.Contracts-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.DataAccess-3.2")]
   public class HiveServerContracts : PluginBase {
   }
 }

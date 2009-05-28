@@ -34,13 +34,13 @@ namespace HeuristicLab.GP.StructureIdentification {
   [Dependency(Dependency = "HeuristicLab.Evolutionary-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators.Programmable-3.2")]
   [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   [Dependency(Dependency = "HeuristicLab.Selection-3.2")]
   [Dependency(Dependency = "HeuristicLab.Selection.OffspringSelection-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   public class HeuristicLabGPStructureIdentificationPlugin : PluginBase {
   }
 }

@@ -29,6 +29,7 @@ namespace HeuristicLab.DataAnalysis {
   [PluginFile(Filename = "HeuristicLab.DataAnalysis-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   public class HeuristicLabDataAnalysisPlugin : PluginBase {
   }
 }

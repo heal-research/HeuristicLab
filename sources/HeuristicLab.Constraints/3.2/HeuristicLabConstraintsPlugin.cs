@@ -32,7 +32,6 @@ namespace HeuristicLab.Constraints {
   [PluginFile(Filename = "HeuristicLab.Constraints-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
   public class HeuristicLabConstraintsPlugin : PluginBase {
   }
 }
