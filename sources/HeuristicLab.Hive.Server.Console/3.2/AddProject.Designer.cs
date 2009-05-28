@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Hive.Server.ServerConsole {
-  partial class AddGroup {
+  partial class AddProject {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -68,7 +68,7 @@
       this.btnAdd.UseVisualStyleBackColor = true;
       this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
       // 
-      // AddGroup
+      // AddProject
       // 
       this.AcceptButton = this.btnAdd;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -79,8 +79,8 @@
       this.Controls.Add(this.lblName);
       this.Controls.Add(this.btnClose);
       this.Controls.Add(this.btnAdd);
-      this.Name = "AddGroup";
-      this.Text = "AddGroup";
+      this.Name = "AddProject";
+      this.Text = "AddProject";
       this.ResumeLayout(false);
       this.PerformLayout();
 

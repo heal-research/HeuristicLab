@@ -31,6 +31,7 @@
       this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.groupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,13 +57,6 @@
       this.chClientCalculated = new System.Windows.Forms.ColumnHeader();
       this.chProgress = new System.Windows.Forms.ColumnHeader();
       this.chSnapshotTime = new System.Windows.Forms.ColumnHeader();
-      this.lblPriorityJob = new System.Windows.Forms.Label();
-      this.lblParentJob = new System.Windows.Forms.Label();
-      this.lblClientCalculating = new System.Windows.Forms.Label();
-      this.lblJobCalculationEnd = new System.Windows.Forms.Label();
-      this.lblJobCalculationBegin = new System.Windows.Forms.Label();
-      this.lblJobCreated = new System.Windows.Forms.Label();
-      this.lblUserCreatedJob = new System.Windows.Forms.Label();
       this.lblProgress = new System.Windows.Forms.Label();
       this.lblStatus = new System.Windows.Forms.Label();
       this.progressJob = new System.Windows.Forms.ProgressBar();
@@ -140,21 +134,23 @@
       // refreshToolStripMenuItem
       // 
       this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+      this.refreshToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+      this.refreshToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
       this.refreshToolStripMenuItem.Text = "Refresh";
       this.refreshToolStripMenuItem.Click += new System.EventHandler(this.Refresh_Click);
       // 
       // closeToolStripMenuItem
       // 
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
       this.closeToolStripMenuItem.Text = "Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.Close_Click);
       // 
       // addToolStripMenuItem
       // 
       this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jobToolStripMenuItem});
+            this.jobToolStripMenuItem,
+            this.groupToolStripMenuItem});
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
       this.addToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
       this.addToolStripMenuItem.Text = "Add";
@@ -162,9 +158,18 @@
       // jobToolStripMenuItem
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+      this.jobToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
+      // 
+      // groupToolStripMenuItem
+      // 
+      this.groupToolStripMenuItem.Name = "groupToolStripMenuItem";
+      this.groupToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+      this.groupToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.groupToolStripMenuItem.Text = "Group";
+      this.groupToolStripMenuItem.Click += new System.EventHandler(this.groupToolStripMenuItem_Click);
       // 
       // viewToolStripMenuItem
       // 
@@ -181,21 +186,24 @@
       this.largeIconsToolStripMenuItem.Checked = true;
       this.largeIconsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
       this.largeIconsToolStripMenuItem.Name = "largeIconsToolStripMenuItem";
-      this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+      this.largeIconsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
+      this.largeIconsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
       this.largeIconsToolStripMenuItem.Text = "Large Icons";
       this.largeIconsToolStripMenuItem.Click += new System.EventHandler(this.largeIconsToolStripMenuItem_Click);
       // 
       // smallIconsToolStripMenuItem
       // 
       this.smallIconsToolStripMenuItem.Name = "smallIconsToolStripMenuItem";
-      this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+      this.smallIconsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
+      this.smallIconsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
       this.smallIconsToolStripMenuItem.Text = "Small Icons";
       this.smallIconsToolStripMenuItem.Click += new System.EventHandler(this.smallIconsToolStripMenuItem_Click);
       // 
       // listToolStripMenuItem
       // 
       this.listToolStripMenuItem.Name = "listToolStripMenuItem";
-      this.listToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+      this.listToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
+      this.listToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
       this.listToolStripMenuItem.Text = "List";
       this.listToolStripMenuItem.Click += new System.EventHandler(this.listToolStripMenuItem_Click);
       // 
@@ -331,13 +339,6 @@
       this.plJobDetails.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
       this.plJobDetails.Controls.Add(this.lvJobDetails);
       this.plJobDetails.Controls.Add(this.lvSnapshots);
-      this.plJobDetails.Controls.Add(this.lblPriorityJob);
-      this.plJobDetails.Controls.Add(this.lblParentJob);
-      this.plJobDetails.Controls.Add(this.lblClientCalculating);
-      this.plJobDetails.Controls.Add(this.lblJobCalculationEnd);
-      this.plJobDetails.Controls.Add(this.lblJobCalculationBegin);
-      this.plJobDetails.Controls.Add(this.lblJobCreated);
-      this.plJobDetails.Controls.Add(this.lblUserCreatedJob);
       this.plJobDetails.Controls.Add(this.lblProgress);
       this.plJobDetails.Controls.Add(this.lblStatus);
       this.plJobDetails.Controls.Add(this.progressJob);
@@ -357,7 +358,7 @@
             this.chDetails});
       this.lvJobDetails.FullRowSelect = true;
       this.lvJobDetails.GridLines = true;
-      this.lvJobDetails.Location = new System.Drawing.Point(17, 129);
+      this.lvJobDetails.Location = new System.Drawing.Point(17, 124);
       this.lvJobDetails.Name = "lvJobDetails";
       this.lvJobDetails.Size = new System.Drawing.Size(382, 175);
       this.lvJobDetails.TabIndex = 17;
@@ -404,69 +405,6 @@
       // 
       this.chSnapshotTime.Text = "Snapshot request";
       this.chSnapshotTime.Width = 166;
-      // 
-      // lblPriorityJob
-      // 
-      this.lblPriorityJob.AutoSize = true;
-      this.lblPriorityJob.Location = new System.Drawing.Point(17, 193);
-      this.lblPriorityJob.Name = "lblPriorityJob";
-      this.lblPriorityJob.Size = new System.Drawing.Size(65, 13);
-      this.lblPriorityJob.TabIndex = 15;
-      this.lblPriorityJob.Text = "lblPriorityJob";
-      // 
-      // lblParentJob
-      // 
-      this.lblParentJob.AutoSize = true;
-      this.lblParentJob.Location = new System.Drawing.Point(17, 173);
-      this.lblParentJob.Name = "lblParentJob";
-      this.lblParentJob.Size = new System.Drawing.Size(65, 13);
-      this.lblParentJob.TabIndex = 14;
-      this.lblParentJob.Text = "lblParentJob";
-      // 
-      // lblClientCalculating
-      // 
-      this.lblClientCalculating.AutoSize = true;
-      this.lblClientCalculating.Location = new System.Drawing.Point(17, 253);
-      this.lblClientCalculating.Name = "lblClientCalculating";
-      this.lblClientCalculating.Size = new System.Drawing.Size(95, 13);
-      this.lblClientCalculating.TabIndex = 13;
-      this.lblClientCalculating.Text = "lblClientCalculating";
-      // 
-      // lblJobCalculationEnd
-      // 
-      this.lblJobCalculationEnd.AutoSize = true;
-      this.lblJobCalculationEnd.Location = new System.Drawing.Point(17, 233);
-      this.lblJobCalculationEnd.Name = "lblJobCalculationEnd";
-      this.lblJobCalculationEnd.Size = new System.Drawing.Size(105, 13);
-      this.lblJobCalculationEnd.TabIndex = 12;
-      this.lblJobCalculationEnd.Text = "lblJobCalculationEnd";
-      // 
-      // lblJobCalculationBegin
-      // 
-      this.lblJobCalculationBegin.AutoSize = true;
-      this.lblJobCalculationBegin.Location = new System.Drawing.Point(17, 213);
-      this.lblJobCalculationBegin.Name = "lblJobCalculationBegin";
-      this.lblJobCalculationBegin.Size = new System.Drawing.Size(113, 13);
-      this.lblJobCalculationBegin.TabIndex = 11;
-      this.lblJobCalculationBegin.Text = "lblJobCalculationBegin";
-      // 
-      // lblJobCreated
-      // 
-      this.lblJobCreated.AutoSize = true;
-      this.lblJobCreated.Location = new System.Drawing.Point(17, 152);
-      this.lblJobCreated.Name = "lblJobCreated";
-      this.lblJobCreated.Size = new System.Drawing.Size(71, 13);
-      this.lblJobCreated.TabIndex = 10;
-      this.lblJobCreated.Text = "lblJobCreated";
-      // 
-      // lblUserCreatedJob
-      // 
-      this.lblUserCreatedJob.AutoSize = true;
-      this.lblUserCreatedJob.Location = new System.Drawing.Point(17, 132);
-      this.lblUserCreatedJob.Name = "lblUserCreatedJob";
-      this.lblUserCreatedJob.Size = new System.Drawing.Size(93, 13);
-      this.lblUserCreatedJob.TabIndex = 9;
-      this.lblUserCreatedJob.Text = "lblUserCreatedJob";
       // 
       // lblProgress
       // 
@@ -729,7 +667,7 @@
       this.lvClientControl.MultiSelect = false;
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(299, 386);
-      this.lvClientControl.SmallImageList = this.ilLargeImgClient;
+      this.lvClientControl.SmallImageList = this.ilSmallImgClient;
       this.lvClientControl.TabIndex = 0;
       this.lvClientControl.UseCompatibleStateImageBehavior = false;
       this.lvClientControl.Click += new System.EventHandler(this.OnLVClientClicked);
@@ -825,13 +763,6 @@
     private System.IO.FileSystemWatcher fileSystemWatcher1;
     private System.Windows.Forms.Label lblStatus;
     private System.Windows.Forms.Label lblProgress;
-    private System.Windows.Forms.Label lblJobCalculationBegin;
-    private System.Windows.Forms.Label lblJobCreated;
-    private System.Windows.Forms.Label lblUserCreatedJob;
-    private System.Windows.Forms.Label lblClientCalculating;
-    private System.Windows.Forms.Label lblJobCalculationEnd;
-    private System.Windows.Forms.Label lblPriorityJob;
-    private System.Windows.Forms.Label lblParentJob;
     private System.Windows.Forms.ListView lvSnapshots;
     private System.Windows.Forms.ColumnHeader chClientCalculated;
     private System.Windows.Forms.ColumnHeader chProgress;
@@ -866,5 +797,6 @@
     private System.Windows.Forms.ContextMenuStrip contextMenuGroup;
     private System.Windows.Forms.ToolStripMenuItem menuItemAddGroup;
     private System.Windows.Forms.ToolStripMenuItem menuItemDeleteGroup;
+    private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem;
   }
 }

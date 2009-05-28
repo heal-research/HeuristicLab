@@ -44,35 +44,25 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.lblParentJob = new System.Windows.Forms.Label();
-      this.cbParJob = new System.Windows.Forms.ComboBox();
       this.btnAdd = new System.Windows.Forms.Button();
       this.btnClose = new System.Windows.Forms.Button();
       this.lblNumJobs = new System.Windows.Forms.Label();
       this.tbNumJobs = new System.Windows.Forms.TextBox();
       this.lblError = new System.Windows.Forms.Label();
+      this.lblProject = new System.Windows.Forms.Label();
+      this.cbProject = new System.Windows.Forms.ComboBox();
+      this.cbAllGroups = new System.Windows.Forms.CheckBox();
+      this.gbGroups = new System.Windows.Forms.GroupBox();
+      this.btnRemoveGroup = new System.Windows.Forms.Button();
+      this.btnAddGroup = new System.Windows.Forms.Button();
+      this.lbGroupsIn = new System.Windows.Forms.ListBox();
+      this.lbGroupsOut = new System.Windows.Forms.ListBox();
+      this.gbGroups.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // lblParentJob
-      // 
-      this.lblParentJob.AutoSize = true;
-      this.lblParentJob.Location = new System.Drawing.Point(9, 36);
-      this.lblParentJob.Name = "lblParentJob";
-      this.lblParentJob.Size = new System.Drawing.Size(58, 13);
-      this.lblParentJob.TabIndex = 1;
-      this.lblParentJob.Text = "Parent Job";
-      // 
-      // cbParJob
-      // 
-      this.cbParJob.FormattingEnabled = true;
-      this.cbParJob.Location = new System.Drawing.Point(117, 33);
-      this.cbParJob.Name = "cbParJob";
-      this.cbParJob.Size = new System.Drawing.Size(212, 21);
-      this.cbParJob.TabIndex = 2;
       // 
       // btnAdd
       // 
-      this.btnAdd.Location = new System.Drawing.Point(12, 65);
+      this.btnAdd.Location = new System.Drawing.Point(6, 224);
       this.btnAdd.Name = "btnAdd";
       this.btnAdd.Size = new System.Drawing.Size(75, 23);
       this.btnAdd.TabIndex = 3;
@@ -83,7 +73,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // btnClose
       // 
       this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnClose.Location = new System.Drawing.Point(254, 65);
+      this.btnClose.Location = new System.Drawing.Point(291, 224);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(75, 23);
       this.btnClose.TabIndex = 4;
@@ -104,17 +94,98 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       this.tbNumJobs.Location = new System.Drawing.Point(117, 6);
       this.tbNumJobs.Name = "tbNumJobs";
-      this.tbNumJobs.Size = new System.Drawing.Size(212, 20);
+      this.tbNumJobs.Size = new System.Drawing.Size(243, 20);
       this.tbNumJobs.TabIndex = 1;
       this.tbNumJobs.Text = "1";
       // 
       // lblError
       // 
       this.lblError.AutoSize = true;
-      this.lblError.Location = new System.Drawing.Point(94, 74);
+      this.lblError.Location = new System.Drawing.Point(87, 229);
       this.lblError.Name = "lblError";
       this.lblError.Size = new System.Drawing.Size(0, 13);
       this.lblError.TabIndex = 8;
+      // 
+      // lblProject
+      // 
+      this.lblProject.AutoSize = true;
+      this.lblProject.Location = new System.Drawing.Point(12, 39);
+      this.lblProject.Name = "lblProject";
+      this.lblProject.Size = new System.Drawing.Size(59, 13);
+      this.lblProject.TabIndex = 9;
+      this.lblProject.Text = "Job project";
+      // 
+      // cbProject
+      // 
+      this.cbProject.FormattingEnabled = true;
+      this.cbProject.Location = new System.Drawing.Point(117, 31);
+      this.cbProject.Name = "cbProject";
+      this.cbProject.Size = new System.Drawing.Size(245, 21);
+      this.cbProject.TabIndex = 10;
+      // 
+      // cbAllGroups
+      // 
+      this.cbAllGroups.AutoSize = true;
+      this.cbAllGroups.Checked = true;
+      this.cbAllGroups.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.cbAllGroups.Location = new System.Drawing.Point(15, 65);
+      this.cbAllGroups.Name = "cbAllGroups";
+      this.cbAllGroups.Size = new System.Drawing.Size(91, 17);
+      this.cbAllGroups.TabIndex = 15;
+      this.cbAllGroups.Text = "use all groups";
+      this.cbAllGroups.UseVisualStyleBackColor = true;
+      this.cbAllGroups.CheckedChanged += new System.EventHandler(this.cbAllGroups_CheckedChanged);
+      // 
+      // gbGroups
+      // 
+      this.gbGroups.Controls.Add(this.btnRemoveGroup);
+      this.gbGroups.Controls.Add(this.btnAddGroup);
+      this.gbGroups.Controls.Add(this.lbGroupsIn);
+      this.gbGroups.Controls.Add(this.lbGroupsOut);
+      this.gbGroups.Location = new System.Drawing.Point(10, 90);
+      this.gbGroups.Name = "gbGroups";
+      this.gbGroups.Size = new System.Drawing.Size(357, 128);
+      this.gbGroups.TabIndex = 16;
+      this.gbGroups.TabStop = false;
+      this.gbGroups.Text = "choose groups";
+      // 
+      // btnRemoveGroup
+      // 
+      this.btnRemoveGroup.Enabled = false;
+      this.btnRemoveGroup.Location = new System.Drawing.Point(143, 56);
+      this.btnRemoveGroup.Name = "btnRemoveGroup";
+      this.btnRemoveGroup.Size = new System.Drawing.Size(75, 23);
+      this.btnRemoveGroup.TabIndex = 18;
+      this.btnRemoveGroup.Text = "<< Remove";
+      this.btnRemoveGroup.UseVisualStyleBackColor = true;
+      // 
+      // btnAddGroup
+      // 
+      this.btnAddGroup.Enabled = false;
+      this.btnAddGroup.Location = new System.Drawing.Point(143, 26);
+      this.btnAddGroup.Name = "btnAddGroup";
+      this.btnAddGroup.Size = new System.Drawing.Size(75, 23);
+      this.btnAddGroup.TabIndex = 17;
+      this.btnAddGroup.Text = "Add >>";
+      this.btnAddGroup.UseVisualStyleBackColor = true;
+      // 
+      // lbGroupsIn
+      // 
+      this.lbGroupsIn.Enabled = false;
+      this.lbGroupsIn.FormattingEnabled = true;
+      this.lbGroupsIn.Location = new System.Drawing.Point(224, 15);
+      this.lbGroupsIn.Name = "lbGroupsIn";
+      this.lbGroupsIn.Size = new System.Drawing.Size(128, 108);
+      this.lbGroupsIn.TabIndex = 16;
+      // 
+      // lbGroupsOut
+      // 
+      this.lbGroupsOut.Enabled = false;
+      this.lbGroupsOut.FormattingEnabled = true;
+      this.lbGroupsOut.Location = new System.Drawing.Point(6, 15);
+      this.lbGroupsOut.Name = "lbGroupsOut";
+      this.lbGroupsOut.Size = new System.Drawing.Size(130, 108);
+      this.lbGroupsOut.TabIndex = 15;
       // 
       // AddJobForm
       // 
@@ -122,16 +193,19 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnClose;
-      this.ClientSize = new System.Drawing.Size(344, 100);
+      this.ClientSize = new System.Drawing.Size(372, 255);
+      this.Controls.Add(this.gbGroups);
+      this.Controls.Add(this.cbAllGroups);
+      this.Controls.Add(this.cbProject);
+      this.Controls.Add(this.lblProject);
       this.Controls.Add(this.lblError);
       this.Controls.Add(this.tbNumJobs);
       this.Controls.Add(this.lblNumJobs);
       this.Controls.Add(this.btnClose);
       this.Controls.Add(this.btnAdd);
-      this.Controls.Add(this.cbParJob);
-      this.Controls.Add(this.lblParentJob);
       this.Name = "AddJobForm";
       this.Text = "Add Job";
+      this.gbGroups.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -139,12 +213,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     #endregion
 
-    private System.Windows.Forms.Label lblParentJob;
-    private System.Windows.Forms.ComboBox cbParJob;
     private System.Windows.Forms.Button btnAdd;
     private System.Windows.Forms.Button btnClose;
     private System.Windows.Forms.Label lblNumJobs;
     private System.Windows.Forms.TextBox tbNumJobs;
     private System.Windows.Forms.Label lblError;
+    private System.Windows.Forms.Label lblProject;
+    private System.Windows.Forms.ComboBox cbProject;
+    private System.Windows.Forms.CheckBox cbAllGroups;
+    private System.Windows.Forms.GroupBox gbGroups;
+    private System.Windows.Forms.Button btnRemoveGroup;
+    private System.Windows.Forms.Button btnAddGroup;
+    private System.Windows.Forms.ListBox lbGroupsIn;
+    private System.Windows.Forms.ListBox lbGroupsOut;
   }
 }

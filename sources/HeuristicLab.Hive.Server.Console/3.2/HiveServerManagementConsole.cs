@@ -46,38 +46,28 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     public event closeForm closeFormEvent;
 
     #region private variables
-    private ResponseList<ClientGroup> clientGroups = null;
-    private ResponseList<ClientInfo> clients = null;
     private ResponseList<Job> jobs = null;
 
-    //TODO delete
-    private Dictionary<Guid, ListViewGroup> clientObjects;
-    private Dictionary<Guid, ListViewItem> clientInfoObjects;
-    private Dictionary<Guid, ListViewItem> jobObjects;
+    List<ListViewGroup> jobGroup;
+    private Dictionary<Guid, List<ListViewItem>> clientList = new Dictionary<Guid, List<ListViewItem>>();
+    private List<Changes> changes = new List<Changes>();
 
     private Job currentJob = null;
     private ClientInfo currentClient = null;
 
-    TreeNode currentNode = null;
-
-    //TODO delete
-    private string nameCurrentJob = "";
-    private string nameCurrentClient = "";
-    private bool flagJob = false;
-
-    private List<Changes> changes = new List<Changes>();
-
+    private TreeNode currentNode = null;
+    Guid parentgroup = Guid.Empty;
     private ToolTip tt = new ToolTip();
 
     private const string NOGROUP = "No group";
-    //private List<ListViewItem> clientList = new List<ListViewItem>();
-    private Dictionary<Guid, List<ListViewItem>> clientList = new Dictionary<Guid, List<ListViewItem>>();
 
+    #endregion
+
+    #region Properties
     private IClientManager ClientManager {
       get {
         return ServiceLocator.GetClientManager();
       }
-
     }
     #endregion
 
@@ -88,30 +78,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       AddJobs();
       timerSyncronize.Start();
     }
-
-
-    #region Backgroundworker
-    /// <summary>
-    /// event on Ticker
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="e"></param>
-    private void TickSync(object obj, EventArgs e) {
-      if (!updaterWoker.IsBusy) {
-        updaterWoker.RunWorkerAsync();
-      }
-    }
-
-    private void updaterWoker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      Refresh();
-    }
-
-    #endregion
-
-    private Guid ConvertStringToGuid(string stringGuid) {
-      return new Guid(stringGuid);
-    }
-
 
     private void Init() {
 
@@ -151,46 +117,137 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       };
     }
 
-    Guid parentgroup = Guid.Empty;
+    #region Backgroundworker
+    /// <summary>
+    /// event on Ticker
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="e"></param>
+    private void TickSync(object obj, EventArgs e) {
+      if (!updaterWoker.IsBusy) {
+        updaterWoker.RunWorkerAsync();
+      }
+    }
 
-    void addgroup_addGroupEvent(string name) {
-      IClientManager clientManager = ServiceLocator.GetClientManager();
+    private void updaterWoker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      RefreshForm();
+    }
 
-      if (parentgroup != Guid.Empty) {
-        ClientGroup cg = new ClientGroup() { Name = name };
-        ResponseObject<ClientGroup> respcg = clientManager.AddClientGroup(cg);
-        Response res = clientManager.AddResourceToGroup(parentgroup, respcg.Obj);
-        if (res != null && !res.Success) {
-          MessageBox.Show(res.StatusMessage, "Error adding Group", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      } else {
-        ClientGroup cg = new ClientGroup() { Name = name };
-        clientManager.AddClientGroup(cg);
+    private void updaterWoker_DoWork(object sender, DoWorkEventArgs e) {
+
+      changes.Clear();
+
+      //#region ClientInfo
+      //ResponseList<ClientInfo> clientInfoOld = clientInfo;
+      //clientInfo = ClientManager.GetAllClients();
+
+      //IDictionary<int, ClientInfo> clientInfoOldHelp;
+
+      //CloneList(clientInfoOld, out clientInfoOldHelp);
+
+      //GetDelta(clientInfoOld.List, clientInfoOldHelp);
+      //#endregion
+
+      #region Clients
+      //ResponseList<ClientGroup> clientsOld = clients;
+
+      // newClients = ClientManager.GetAllClientGroups();
+
+      //IDictionary<Guid, ClientGroup> clientsOldHelp;
+
+      //CloneList(clientsOld, out clientsOldHelp);
+
+      //GetDelta(clientsOld.List, clientsOldHelp);
+      //DetermineDelta();
+      #endregion
+
+      #region Job
+      ResponseList<Job> jobsOld = jobs;
+      IJobManager jobManager =
+          ServiceLocator.GetJobManager();
+
+      jobs = jobManager.GetAllJobs();
+
+      IDictionary<int, Job> jobsOldHelp;
+      CloneList(jobsOld, out jobsOldHelp);
+
+      GetDelta(jobsOld.List, jobsOldHelp);
+
+      #endregion
+
+      foreach (Changes change in changes) {
+        System.Diagnostics.Debug.WriteLine(change.ID + " " + change.ChangeType);
       }
 
     }
+    
+    #endregion
 
-    private void lvJobControl_MouseUp(object sender, MouseEventArgs e) {
-      // If the right mouse button was clicked and released,
-      // display the shortcut menu assigned to the ListView. 
-      lvJobControl.ContextMenuStrip.Items.Clear();
-      ListViewHitTestInfo hitTestInfo = lvJobControl.HitTest(e.Location);
-      if (e.Button == MouseButtons.Right && hitTestInfo.Item != null && lvJobControl.SelectedItems.Count == 1) {
-        Job selectedJob = (Job)lvJobControl.SelectedItems[0].Tag;
 
-        if (selectedJob != null && selectedJob.State == State.calculating) {
-          lvJobControl.ContextMenuStrip.Items.Add(menuItemAbortJob);
-          lvJobControl.ContextMenuStrip.Items.Add(menuItemGetSnapshot);
+    /// <summary>
+    /// Adds jobs to ListView and TreeView
+    /// </summary>
+    private void AddJobs() {
+      try {
+        List<ListViewItem> jobObjects = new List<ListViewItem>();
+        IJobManager jobManager =
+          ServiceLocator.GetJobManager();
+        jobs = jobManager.GetAllJobs();
+
+        lvJobControl.Items.Clear();
+
+        ListViewGroup lvJobCalculating = new ListViewGroup("calculating", HorizontalAlignment.Left);
+        ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
+        ListViewGroup lvJobPending = new ListViewGroup("pending", HorizontalAlignment.Left);
+
+        jobGroup = new List<ListViewGroup>();
+        jobGroup.Add(lvJobCalculating);
+        jobGroup.Add(lvJobFinished);
+        jobGroup.Add(lvJobPending);
+
+        foreach (Job job in jobs.List) {
+          if (job.State == State.calculating) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
+            lvi.Tag = job;
+            jobObjects.Add(lvi);
+
+            lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
+          } else if (job.State == State.finished) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
+            lvi.Tag = job;
+            jobObjects.Add(lvi);
+            //lvJobControl.Items.Add(lvi);
+          } else if (job.State == State.offline) {
+            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
+            lvi.Tag = job;
+            jobObjects.Add(lvi);
+          }
+        } // Jobs
+        lvJobControl.BeginUpdate();
+        foreach (ListViewItem lvi in jobObjects) {
+          lvJobControl.Items.Add(lvi);
+        }
+        // actualization
+        lvJobControl.Groups.Add(lvJobCalculating);
+        lvJobControl.Groups.Add(lvJobFinished);
+        lvJobControl.Groups.Add(lvJobPending);
+        lvJobControl.EndUpdate();
+
+        if (currentJob != null) {
+          JobClicked();
         }
       }
-      lvJobControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
+      catch (Exception ex) {
+        closeFormEvent(true, true);
+        this.Close();
+      }
     }
 
     private void AddClients() {
       clientList.Clear();
       tvClientControl.Nodes.Clear();
 
-      clientGroups = ClientManager.GetAllClientGroups();
+      ResponseList<ClientGroup> clientGroups = ClientManager.GetAllClientGroups();
 
       foreach (ClientGroup cg in clientGroups.List) {
         AddClientOrGroup(cg, null);
@@ -203,7 +260,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
       tvClientControl.ExpandAll();
     }
-
 
     private void AddClientOrGroup(ClientGroup clientGroup, TreeNode currentNode) {
       currentNode = CreateTreeNode(clientGroup, currentNode);
@@ -255,65 +311,101 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       return tn;
     }
 
-
-    List<ListViewGroup> jobGroup;
-    /// <summary>
-    /// Adds jobs to ListView and TreeView
-    /// </summary>
-    private void AddJobs() {
-      try {
-        jobObjects = new Dictionary<Guid, ListViewItem>();
-        IJobManager jobManager =
-          ServiceLocator.GetJobManager();
-        jobs = jobManager.GetAllJobs();
-
-        lvJobControl.Items.Clear();
-
-        ListViewGroup lvJobCalculating = new ListViewGroup("calculating", HorizontalAlignment.Left);
-        ListViewGroup lvJobFinished = new ListViewGroup("finished", HorizontalAlignment.Left);
-        ListViewGroup lvJobPending = new ListViewGroup("pending", HorizontalAlignment.Left);
-
-        jobGroup = new List<ListViewGroup>();
-        jobGroup.Add(lvJobCalculating);
-        jobGroup.Add(lvJobFinished);
-        jobGroup.Add(lvJobPending);
-
-        foreach (Job job in jobs.List) {
-          if (job.State == State.calculating) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
-            lvi.Tag = job;
-            jobObjects.Add(job.Id, lvi);
-
-            //lvJobControl.Items.Add(lvi);
-
-            lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
-          } else if (job.State == State.finished) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
-            lvi.Tag = job;
-            jobObjects.Add(job.Id, lvi);
-            //lvJobControl.Items.Add(lvi);
-          } else if (job.State == State.offline) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
-            lvi.Tag = job;
-            jobObjects.Add(job.Id, lvi);
-            //lvJobControl.Items.Add(lvi);
-          }
-        } // Jobs
-        lvJobControl.BeginUpdate();
-        foreach (ListViewItem lvi in jobObjects.Values) {
-          lvJobControl.Items.Add(lvi);
+    private void AddGroupsToListView(TreeNode node) {
+      if (node != null) {
+        ListViewGroup lvg = new ListViewGroup(node.Text, HorizontalAlignment.Left);
+        lvClientControl.Groups.Add(lvg);
+        foreach (ListViewItem item in clientList[((ClientGroup)node.Tag).Id]) {
+          item.Group = lvg;
+          lvClientControl.Items.Add(item);
         }
-        lvJobControl.Groups.Add(lvJobCalculating);
-        lvJobControl.Groups.Add(lvJobFinished);
-        lvJobControl.Groups.Add(lvJobPending);
-        lvJobControl.EndUpdate();
-        if (flagJob) {
-          JobClicked();
+
+        if (node.Nodes != null) {
+          foreach (TreeNode curNode in node.Nodes) {
+            AddGroupsToListView(curNode);
+          }
         }
       }
-      catch (Exception ex) {
-        closeFormEvent(true, true);
-        this.Close();
+    }
+
+    /// <summary>
+    /// if one job is clicked, the details for the clicked job are shown
+    /// in the second panel
+    /// </summary>
+    private void JobClicked() {
+      plJobDetails.Visible = true;
+      lvJobDetails.Items.Clear();
+
+      lvSnapshots.Enabled = true;
+
+      if (currentJob.State == State.offline) {
+        pbJobControl.Image = ilLargeImgJob.Images[2];
+      } else if (currentJob.State == State.calculating) {
+        pbJobControl.Image = ilLargeImgJob.Images[1];
+      } else if (currentJob.State == State.finished) {
+        pbJobControl.Image = ilLargeImgJob.Images[0];
+      }
+
+      lblJobName.Text = currentJob.Id.ToString();
+      progressJob.Value = (int)(currentJob.Percentage * 100);
+      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
+
+      ListViewItem lvi = new ListViewItem();
+      lvi.Text = "User:";
+      lvi.SubItems.Add(currentJob.UserId.ToString());
+      lvJobDetails.Items.Add(lvi);
+
+      lvi = null;
+      lvi = new ListViewItem();
+      lvi.Text = "created at:";
+      lvi.SubItems.Add(currentJob.DateCreated.ToString());
+      lvJobDetails.Items.Add(lvi);
+
+      if (currentJob.ParentJob != null) {
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Parent job:";
+        lvi.SubItems.Add(currentJob.ParentJob.ToString());
+        lvJobDetails.Items.Add(lvi);
+      }
+
+      lvi = null;
+      lvi = new ListViewItem();
+      lvi.Text = "Priority:";
+      lvi.SubItems.Add(currentJob.Priority.ToString());
+      lvJobDetails.Items.Add(lvi);
+
+      if (currentJob.Client != null) {
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Calculation begin:";
+        lvi.SubItems.Add(currentJob.DateCalculated.ToString());
+        lvJobDetails.Items.Add(lvi);
+
+
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Client calculated:";
+        lvi.SubItems.Add(currentJob.Client.Name.ToString());
+        lvJobDetails.Items.Add(lvi);
+
+        if (currentJob.State == State.finished) {
+          IJobManager jobManager =
+            ServiceLocator.GetJobManager();
+          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
+
+          lvi = null;
+          lvi = new ListViewItem();
+          lvi.Text = "Calculation ended:";
+          lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
+          lvJobDetails.Items.Add(lvi);
+        }
+      }
+      if (currentJob.State != State.offline) {
+        lvSnapshots.Items.Clear();
+        GetSnapshotList();
+      } else {
+        lvSnapshots.Visible = false;
       }
     }
 
@@ -323,13 +415,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     private void ClientClicked() {
       plClientDetails.Visible = true;
-      //int i = 0;
-      //while (clientInfo.List[i].Id.ToString() != nameCurrentClient) {
-      //  i++;
-      //}
-      if (lvClientControl.SelectedItems != null && lvClientControl.SelectedItems.Count > 0) {
-        currentClient = (ClientInfo)lvClientControl.SelectedItems[0].Tag;
-      }
+
       if (currentClient != null) {
         int percentageUsage = CapacityRam(currentClient.NrOfCores, currentClient.NrOfFreeCores);
         int usage = 3;
@@ -348,116 +434,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblState.Text = currentClient.State.ToString();
       }
     }
+   
 
-    /// <summary>
-    /// if one job is clicked, the details for the clicked job are shown
-    /// in the second panel
-    /// </summary>
-    private void JobClicked() {
-      plJobDetails.Visible = true;
-      lvJobDetails.Items.Clear();
-      int i = 0;
-      while (jobs.List[i].Id.ToString() != nameCurrentJob) {
-        i++;
-      }
-      lvSnapshots.Enabled = true;
-      currentJob = jobs.List[i];
-      if (currentJob.State == State.offline) {
-        pbJobControl.Image = ilLargeImgJob.Images[2];
-      } else if (currentJob.State == State.calculating) {
-        pbJobControl.Image = ilLargeImgJob.Images[1];
-      } else if (currentJob.State == State.finished) {
-        pbJobControl.Image = ilLargeImgJob.Images[0];
-      }
-
-
-
-      lblJobName.Text = currentJob.Id.ToString();
-      progressJob.Value = (int)(currentJob.Percentage * 100);
-      lblProgress.Text = (int)(currentJob.Percentage * 100) + "% calculated";
-      lblUserCreatedJob.Text = currentJob.UserId.ToString() + /* currentJob.User.Name + */ " created Job";
-      //lblJobCreated.Text = "Created at " + currentJob.DateCreated;
-      ListViewItem lvi = new ListViewItem();
-      lvi.Text = "User:";
-      lvi.SubItems.Add(currentJob.UserId.ToString());
-      lvJobDetails.Items.Add(lvi);
-
-      lvi = null;
-      lvi = new ListViewItem();
-      lvi.Text = "created at:";
-      lvi.SubItems.Add(currentJob.DateCreated.ToString());
-      lvJobDetails.Items.Add(lvi);
-
-      if (currentJob.ParentJob != null) {
-        lvi = null;
-        lvi = new ListViewItem();
-        lvi.Text = "Parent job:";
-        lvi.SubItems.Add(currentJob.ParentJob.ToString());
-        lvJobDetails.Items.Add(lvi);
-        // lblParentJob.Text = currentJob.ParentJob.Id + " is parent job";
-      }// else {
-      //  lblParentJob.Text = "";
-      //}
-
-      lvi = null;
-      lvi = new ListViewItem();
-      lvi.Text = "Priority:";
-      lvi.SubItems.Add(currentJob.Priority.ToString());
-      lvJobDetails.Items.Add(lvi);
-
-      // lblPriorityJob.Text = "Priority of job is " + currentJob.Priority;
-      if (currentJob.Client != null) {
-        lvi = null;
-        lvi = new ListViewItem();
-        lvi.Text = "Calculation begin:";
-        lvi.SubItems.Add(currentJob.DateCalculated.ToString());
-        lvJobDetails.Items.Add(lvi);
-
-
-        lvi = null;
-        lvi = new ListViewItem();
-        lvi.Text = "Client calculated:";
-        lvi.SubItems.Add(currentJob.Client.Name.ToString());
-        lvJobDetails.Items.Add(lvi);
-
-        //lblClientCalculating.Text = currentJob.Client.Name + " calculated Job";
-        //lblJobCalculationBegin.Text = "Startet calculation at " + currentJob.DateCalculated;
-
-        if (currentJob.State == State.finished) {
-          IJobManager jobManager =
-            ServiceLocator.GetJobManager();
-          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
-
-          lvi = null;
-          lvi = new ListViewItem();
-          lvi.Text = "Calculation ended:";
-          lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
-          lvJobDetails.Items.Add(lvi);
-          // lblJobCalculationEnd.Text = "Calculation ended at " + jobRes.Obj.DateFinished;
-        }
-      } else {
-        // lblClientCalculating.Text = "";
-        // lblJobCalculationBegin.Text = "";
-        // lblJobCalculationEnd.Text = "";
-      }
-      if (currentJob.State != State.offline) {
-        lvSnapshots.Items.Clear();
-        //if (currentJob.State == State.finished)
-        GetSnapshotList();
-        //lvSnapshots.Visible = true;
-      } else {
-        lvSnapshots.Visible = false;
-      }
-    }
-
-    private void Refresh() {
+    private void RefreshForm() {
       foreach (Changes change in changes) {
         if (change.Types == Type.Job) {
           RefreshJob(change);
-        } else if (change.Types == Type.Client) {
-          //RefreshClient(change);
-        } else if (change.Types == Type.ClientGroup) {
-          //RefreshClientGroup(change);
         }
       }
     }
@@ -466,12 +448,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (change.ChangeType == Change.Update) {
         for (int i = 0; i < lvJobControl.Items.Count; i++) {
           if (lvJobControl.Items[i].Text == change.ID.ToString()) {
-            if (nameCurrentJob == change.ID.ToString()) {
-              JobClicked();
-            }
             foreach (Job job in jobs.List) {
               if (job.Id == change.ID) {
                 lvJobControl.Items[i].Tag = job;
+                if (currentJob.Id == change.ID) {
+                  currentJob = job;
+                  JobClicked();
+                }
                 break;
               }
             }
@@ -495,13 +478,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           }
         }
       } else if (change.ChangeType == Change.Create) {
+
         ListViewItem lvi = new ListViewItem(
           change.ID.ToString(), 2, jobGroup[2]);
-        jobObjects.Add(change.ID, lvi);
+        foreach (Job job in jobs.List) {
+          if (job.Id == change.ID) {
+            lvi.Tag = job;
+            break;
+          }
+        }
         lvJobControl.Items.Add(lvi);
 
       } else if (change.ChangeType == Change.Delete) {
-        jobObjects.Remove(change.ID);
         for (int i = 0; i < lvJobControl.Items.Count; i++) {
           if (change.ID.ToString() == lvJobControl.Items[i].Text.ToString()) {
             lvJobControl.Items[i].Remove();
@@ -511,59 +499,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void RefreshClient(Changes change) {
-      if (change.ChangeType == Change.Update) {
-        for (int i = 0; i < lvClientControl.Items.Count; i++) {
-          if (lvClientControl.Items[i].Tag.ToString() == change.ID.ToString()) {
-            if (nameCurrentClient == change.ID.ToString()) {
-              ClientClicked();
-            }
-            State state = clients.List[change.Position].State;
-            System.Diagnostics.Debug.WriteLine(lvClientControl.Items[i].Text.ToString());
-
-            ClientInfo ci = null;
-
-            foreach (ClientInfo c in clients.List) {
-              if (c.Id == change.ID) {
-                ci = c;
-              }
-            }
-
-            int percentageUsage = CapacityRam(ci.NrOfCores, ci.NrOfFreeCores);
-            if ((state == State.offline) || (state == State.nullState)) {
-              lvClientControl.Items[i].ImageIndex = 3;
-            } else {
-              if ((percentageUsage >= 0) && (percentageUsage <= 25)) {
-                lvClientControl.Items[i].ImageIndex = 0;
-              } else if ((percentageUsage > 25) && (percentageUsage <= 75)) {
-                lvClientControl.Items[i].ImageIndex = 1;
-              } else if ((percentageUsage > 75) && (percentageUsage <= 100)) {
-                lvClientControl.Items[i].ImageIndex = 2;
-              }
-
-            }
-            lvClientControl.Refresh();
-          }
-        }
-
-
-      } else if (change.ChangeType == Change.Create) {
-
-      } else if (change.ChangeType == Change.Delete) {
-        clientInfoObjects.Remove(change.ID);
-        for (int i = 0; i < lvClientControl.Items.Count; i++) {
-          if (change.ID.ToString() == lvClientControl.Items[i].Text.ToString()) {
-            lvClientControl.Items[i].Remove();
-            break;
-          }
-        }
-
-      }
-    }
-
-    private void RefreshClientGroup(Changes change) {
-
-    }
 
     #region Eventhandlers
     /// <summary>
@@ -595,14 +530,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       newForm.addJobEvent += new addDelegate(updaterWoker.RunWorkerAsync);
     }
 
-    private void OnLVClientClicked(object sender, EventArgs e) {
-      nameCurrentClient = lvClientControl.SelectedItems[0].Tag.ToString();
-      ClientClicked();
-    }
-
     private void OnLVJobControlClicked(object sender, EventArgs e) {
-      nameCurrentJob = lvJobControl.SelectedItems[0].Text;
-      flagJob = true;
+      currentJob = (Job)lvJobControl.SelectedItems[0].Tag;
       JobClicked();
     }
 
@@ -613,52 +542,128 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    private void updaterWoker_DoWork(object sender, DoWorkEventArgs e) {
+    private void lvJobControl_MouseUp(object sender, MouseEventArgs e) {
+      // If the right mouse button was clicked and released,
+      // display the shortcut menu assigned to the ListView. 
+      lvJobControl.ContextMenuStrip.Items.Clear();
+      ListViewHitTestInfo hitTestInfo = lvJobControl.HitTest(e.Location);
+      if (e.Button == MouseButtons.Right && hitTestInfo.Item != null && lvJobControl.SelectedItems.Count == 1) {
+        Job selectedJob = (Job)lvJobControl.SelectedItems[0].Tag;
 
-      changes.Clear();
-
-      //#region ClientInfo
-      //ResponseList<ClientInfo> clientInfoOld = clientInfo;
-      //clientInfo = ClientManager.GetAllClients();
-
-      //IDictionary<int, ClientInfo> clientInfoOldHelp;
-
-      //CloneList(clientInfoOld, out clientInfoOldHelp);
-
-      //GetDelta(clientInfoOld.List, clientInfoOldHelp);
-      //#endregion
-
-      #region Clients
-      //ResponseList<ClientGroup> clientsOld = clients;
-
-      // newClients = ClientManager.GetAllClientGroups();
-
-      //IDictionary<Guid, ClientGroup> clientsOldHelp;
-
-      //CloneList(clientsOld, out clientsOldHelp);
-
-      //GetDelta(clientsOld.List, clientsOldHelp);
-      //DetermineDelta();
-      #endregion
-
-      #region Job
-      ResponseList<Job> jobsOld = jobs;
-      IJobManager jobManager =
-          ServiceLocator.GetJobManager();
-
-      jobs = jobManager.GetAllJobs();
-
-      IDictionary<int, Job> jobsOldHelp;
-      CloneList(jobsOld, out jobsOldHelp);
-
-      GetDelta(jobsOld.List, jobsOldHelp);
-
-      #endregion
-
-      foreach (Changes change in changes) {
-        System.Diagnostics.Debug.WriteLine(change.ID + " " + change.ChangeType);
+        if (selectedJob != null && selectedJob.State == State.calculating) {
+          lvJobControl.ContextMenuStrip.Items.Add(menuItemAbortJob);
+          lvJobControl.ContextMenuStrip.Items.Add(menuItemGetSnapshot);
+        }
       }
+      lvJobControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
+    }
 
+    private void tvClientControl_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+      lvClientControl.Items.Clear();
+      lvClientControl.Groups.Clear();
+      currentNode = e.Node;
+      AddGroupsToListView(e.Node);
+    }
+
+    private void groupToolStripMenuItem_Click(object sender, EventArgs e) {
+      AddGroup addgroup = new AddGroup();
+      parentgroup = Guid.Empty;
+      if ((tvClientControl.SelectedNode != null) && (((ClientGroup)tvClientControl.SelectedNode.Tag).Id != Guid.Empty)) {
+        parentgroup = ((ClientGroup)tvClientControl.SelectedNode.Tag).Id;
+      }
+      addgroup.addGroupEvent += new AddGroupDelegate(addgroup_addGroupEvent);
+      addgroup.Show();
+    }
+
+    private void OnLVClientClicked(object sender, EventArgs e) {
+      currentClient = (ClientInfo)lvClientControl.SelectedItems[0].Tag;
+      ClientClicked();
+    }
+
+    private void tvClientControl_MouseUp(object sender, MouseEventArgs e) {
+      // If the right mouse button was clicked and released,
+      // display the shortcut menu assigned to the ListView. 
+      contextMenuGroup.Items.Clear();
+      TreeViewHitTestInfo hitTestInfo = tvClientControl.HitTest(e.Location);
+      tvClientControl.SelectedNode = hitTestInfo.Node;
+      if (e.Button != MouseButtons.Right) return;
+        if (hitTestInfo.Node != null) {
+          Resource selectedGroup = (Resource)tvClientControl.SelectedNode.Tag;
+
+          if (selectedGroup != null) {
+            contextMenuGroup.Items.Add(menuItemAddGroup);
+            contextMenuGroup.Items.Add(menuItemDeleteGroup);
+          }
+        } else {
+          contextMenuGroup.Items.Add(menuItemAddGroup);
+        }
+        tvClientControl.ContextMenuStrip.Show(tvClientControl, new Point(e.X, e.Y));
+    }
+
+    private void addgroup_addGroupEvent(string name) {
+      IClientManager clientManager = ServiceLocator.GetClientManager();
+
+      if (parentgroup != Guid.Empty) {
+        ClientGroup cg = new ClientGroup() { Name = name };
+        ResponseObject<ClientGroup> respcg = clientManager.AddClientGroup(cg);
+        Response res = clientManager.AddResourceToGroup(parentgroup, respcg.Obj);
+        if (res != null && !res.Success) {
+          MessageBox.Show(res.StatusMessage, "Error adding Group", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      } else {
+        ClientGroup cg = new ClientGroup() { Name = name };
+        clientManager.AddClientGroup(cg);
+        AddClients();
+      }              
+    }
+
+    private void Refresh_Click(object sender, EventArgs e) {
+      Form overlayingForm = new Form();
+
+      overlayingForm.Show();
+      overlayingForm.FormBorderStyle = FormBorderStyle.None;
+      overlayingForm.BackColor = Color.Gray;
+      overlayingForm.Opacity = 0.4;
+      overlayingForm.Size = this.Size;
+      overlayingForm.Location = this.Location;
+
+      //Label lbl = new Label();
+      //overlayingForm.Controls.Add(lbl);
+      //lbl.AutoSize = true;
+      //lbl.Text = "Loading";
+      //lbl.Name = "lblName";
+      //lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      //lbl.ForeColor = Color.Black;
+      //lbl.BackColor = Color.Transparent;
+      //lbl.Location = new Point(overlayingForm.Width / 2, overlayingForm.Height / 2);
+
+      AddClients();
+
+      overlayingForm.Close();
+    }
+
+    private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.LargeIcon;
+      lvJobControl.View = View.LargeIcon;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Checked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      listToolStripMenuItem.CheckState = CheckState.Unchecked;
+    }
+
+    private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.SmallIcon;
+      lvJobControl.View = View.SmallIcon;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Checked;
+      listToolStripMenuItem.CheckState = CheckState.Unchecked;
+    }
+
+    private void listToolStripMenuItem_Click(object sender, EventArgs e) {
+      lvClientControl.View = View.List;
+      lvJobControl.View = View.List;
+      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
+      listToolStripMenuItem.CheckState = CheckState.Checked;
     }
     #endregion
 
@@ -668,20 +673,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       newList = new Dictionary<int, Job>();
       for (int i = 0; i < oldList.List.Count; i++) {
         newList.Add(i, oldList.List[i]);
-      }
-    }
-
-    //private void CloneList(ResponseList<ClientInfo> oldList, out IDictionary<int, ClientInfo> newList) {
-    //  newList = new Dictionary<int, ClientInfo>();
-    //  for (int i = 0; i < oldList.List.Count; i++) {
-    //    newList.Add(i, oldList.List[i]);
-    //  }
-    //}
-
-    private void CloneList(ResponseList<ClientGroup> oldList, out IDictionary<Guid, ClientGroup> newList) {
-      newList = new Dictionary<Guid, ClientGroup>();
-      foreach (ClientGroup clientGroup in oldList.List) {
-        newList.Add(clientGroup.Id, clientGroup);
       }
     }
 
@@ -702,83 +693,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
       return 100;
     }
-
-    //private void GetDelta(IList<ClientInfo> oldClient, IDictionary<int, ClientInfo> helpClients) {
-    //  bool found = false;
-
-    //  for (int i = 0; i < clientInfo.List.Count; i++) {
-    //    ClientInfo ci = clientInfo.List[i];
-    //    for (int j = 0; j < oldClient.Count; j++) {
-    //      ClientInfo cio = oldClient[j];
-    //      if (ci.Id.Equals(cio.Id)) {
-    //        found = true;
-    //        if ((ci.State != cio.State) || (ci.NrOfFreeCores != cio.NrOfFreeCores)) {
-    //          changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Update, Position = i });
-    //        }
-    //        int removeAt = -1;
-    //        foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
-    //          if (cio.Id.Equals(kvp.Value.Id)) {
-    //            removeAt = kvp.Key;
-    //            break;
-    //          }
-    //        }
-    //        if (removeAt >= 0) {
-    //          helpClients.Remove(removeAt);
-    //        }
-    //        break;
-    //      }
-    //    }
-    //    if (found == false) {
-    //      changes.Add(new Changes { Types = Type.Client, ID = ci.Id, ChangeType = Change.Create });
-    //    }
-    //    found = false;
-    //  }
-    //  foreach (KeyValuePair<int, ClientInfo> kvp in helpClients) {
-    //    changes.Add(new Changes { Types = Type.Client, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
-    //  }
-
-    //}
-
-    private void DetermineDelta() {
-
-    }
-
-    //private void GetDelta(IList<ClientGroup> oldClient, IDictionary<Guid, ClientGroup> helpClients) {
-
-    //  bool found = false;
-    //  for (int i = 0; i < clients.List.Count; i++) {
-    //    ClientGroup cg = clientGroups.List[i];
-    //    for (int j = 0; j < oldClient.Count; i++) {
-    //      ClientGroup cgo = oldClient[j];
-    //      if (cg.Id.Equals(cgo.Id)) {
-    //        found = true;
-    //        foreach (Resource resource in cg.Resources) {
-    //          foreach (Resource resourceold in cgo.Resources) {
-    //            if (resource.Id.Equals(resourceold.Id)) {
-    //              if (resourceold.Name != resource.Name) {
-    //                changes.Add(new Changes { Types = Type.Client, ID = cg.Id, ChangeType = Change.Update, Position = i });
-    //              }
-    //            }
-    //          }
-    //        }
-    //        for (int k = 0; k < helpClients.Count; k++) {
-    //          if (cgo.Id.Equals(helpClients[k].Id)) {
-    //            helpClients.Remove(k);
-    //            break;
-    //          }
-    //        }
-    //        break;
-    //      }
-    //    }
-    //    if (found == false) {
-    //      changes.Add(new Changes { Types = Type.ClientGroup, ID = cg.Id, ChangeType = Change.Create });
-    //    }
-    //    found = false;
-    //  }
-    //  foreach (KeyValuePair<int, ClientGroup> kvp in helpClients) {
-    //    changes.Add(new Changes { Types = Type.ClientGroup, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
-    //  }
-    //}
 
     private void GetDelta(IList<Job> oldJobs, IDictionary<int, Job> helpJobs) {
       bool found = false;
@@ -860,97 +774,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     #endregion
 
-    private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e) {
-      lvClientControl.View = View.LargeIcon;
-      lvJobControl.View = View.LargeIcon;
-      largeIconsToolStripMenuItem.CheckState = CheckState.Checked;
-      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
-      listToolStripMenuItem.CheckState = CheckState.Unchecked;
-    }
 
-    private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e) {
-      lvClientControl.View = View.SmallIcon;
-      lvJobControl.View = View.SmallIcon;
-      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
-      smallIconsToolStripMenuItem.CheckState = CheckState.Checked;
-      listToolStripMenuItem.CheckState = CheckState.Unchecked;
-    }
-
-    private void listToolStripMenuItem_Click(object sender, EventArgs e) {
-      lvClientControl.View = View.List;
-      lvJobControl.View = View.List;
-      largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
-      smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
-      listToolStripMenuItem.CheckState = CheckState.Checked;
-    }
-
-    private void tvClientControl_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-      lvClientControl.Items.Clear();
-      lvClientControl.Groups.Clear();
-      currentNode = e.Node;
-      AddGroupsToListView(e.Node);
-    }
-
-    private void AddGroupsToListView(TreeNode node) {
-      if (node != null) {
-        ListViewGroup lvg = new ListViewGroup(node.Text, HorizontalAlignment.Left);
-        lvClientControl.Groups.Add(lvg);
-        foreach (ListViewItem item in clientList[((ClientGroup)node.Tag).Id]) {
-          item.Group = lvg;
-          lvClientControl.Items.Add(item);
-        }
-
-        if (node.Nodes != null) {
-          foreach (TreeNode curNode in node.Nodes) {
-            AddGroupsToListView(curNode);
-          }
-        }
-      }
-    }
-
-    private void Refresh_Click(object sender, EventArgs e) {
-      Form overlayingForm = new Form();
-
-      overlayingForm.Show();
-      overlayingForm.FormBorderStyle = FormBorderStyle.None;
-      overlayingForm.BackColor = Color.Gray;
-      overlayingForm.Opacity = 0.4;
-      overlayingForm.Size = this.Size;
-      overlayingForm.Location = this.Location;
-
-      //Label lbl = new Label();
-      //overlayingForm.Controls.Add(lbl);
-      //lbl.AutoSize = true;
-      //lbl.Text = "Loading";
-      //lbl.Name = "lblName";
-      //lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      //lbl.ForeColor = Color.Black;
-      //lbl.BackColor = Color.Transparent;
-      //lbl.Location = new Point(overlayingForm.Width / 2, overlayingForm.Height / 2);
-
-      AddClients();
-
-      overlayingForm.Close();
-    }
-
-    private void tvClientControl_MouseUp(object sender, MouseEventArgs e) {
-      // If the right mouse button was clicked and released,
-      // display the shortcut menu assigned to the ListView. 
-      contextMenuGroup.Items.Clear();
-      TreeViewHitTestInfo hitTestInfo = tvClientControl.HitTest(e.Location);
-      tvClientControl.SelectedNode = hitTestInfo.Node;
-      if (e.Button != MouseButtons.Right) return;
-        if (hitTestInfo.Node != null) {
-          Resource selectedGroup = (Resource)tvClientControl.SelectedNode.Tag;
-
-          if (selectedGroup != null) {
-            contextMenuGroup.Items.Add(menuItemAddGroup);
-            contextMenuGroup.Items.Add(menuItemDeleteGroup);
-          }
-        } else {
-          contextMenuGroup.Items.Add(menuItemAddGroup);
-        }
-        tvClientControl.ContextMenuStrip.Show(new Point(e.X, e.Y));
-    }
   }
 }

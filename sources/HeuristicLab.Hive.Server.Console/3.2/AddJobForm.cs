@@ -41,23 +41,49 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public event addDelegate addJobEvent;
 
-    ResponseList<Job> jobGroups = null;
+    ResponseList<Project> projects = null;
     IJobManager jobManager;
+    IClientManager clientManager; 
+    ResponseList<ClientGroup> clientGroups;
+
+    Dictionary<Guid, string> clients = null;
 
     public AddJobForm() {
       InitializeComponent();
+
+      clients = new Dictionary<Guid, string>();
       AddJob();
+
     }
 
     private void AddJob() {
       jobManager =
         ServiceLocator.GetJobManager();
-      jobGroups = jobManager.GetAllJobs();
-      cbParJob.Items.Add("none");
-      cbParJob.SelectedIndex = 0; 
-      foreach (Job job in jobGroups.List) {
-        cbParJob.Items.Add(job.Id);
+      projects = jobManager.GetAllProjects();
+      cbProject.Items.Add("none");
+      cbProject.SelectedIndex = 0;
+      foreach (Project project in projects.List) {
+        cbProject.Items.Add(project.Name);
       }
+
+
+    }
+
+    private void AddClientGroups() {
+     foreach (ClientGroup cg in clientGroups.List) {
+       clients.Add(cg.Id, cg.Name);
+        AddClientOrGroup(cg);
+      }
+    }
+
+    private void AddClientOrGroup(ClientGroup clientGroup) {
+      foreach (Resource resource in clientGroup.Resources) {
+        if (resource is ClientGroup) {
+          clients.Add(resource.Id, resource.Name);
+          AddClientOrGroup(resource as ClientGroup);
+        }
+      }
+    
     }
 
     private void BtnAdd_Click(object sender, EventArgs e) {
@@ -66,18 +92,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         int numJobs = Convert.ToInt32(tbNumJobs.Text);
         if (numJobs > 0) {
           for (int i = 0; i < numJobs; i++) {
-            if (cbParJob.SelectedIndex != 0) {
-              foreach (Job pjob in jobGroups.List) {
-                if (cbParJob.SelectedItem.ToString().Equals(pjob.Id.ToString())) {
-                  Job job = new Job { ParentJob = pjob, State = State.offline, CoresNeeded = 1 };
-                  job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
-                  Response resp = jobManager.AddNewJob(job);
-                }
-              }
-            } else {
-              Job job = new Job { State = State.offline, CoresNeeded = 1 };
-              job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
-              Response resp = jobManager.AddNewJob(job);
+            if (cbProject.SelectedIndex != 0) {
+            //  foreach (Job pjob in jobGroups.List) {
+            //    if (cbParJob.SelectedItem.ToString().Equals(pjob.Id.ToString())) {
+            //      Job job = new Job { ParentJob = pjob, State = State.offline, CoresNeeded = 1 };
+            //      job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+            //      Response resp = jobManager.AddNewJob(job);
+            //    }
+            //  }
+            //} else {
+            //  Job job = new Job { State = State.offline, CoresNeeded = 1 };
+            //  job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+            //  Response resp = jobManager.AddNewJob(job);
             }
           }
           if (addJobEvent != null) {
@@ -96,6 +122,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     private void BtnClose_Click(object sender, EventArgs e) {
       this.Close();
+    }
+
+    private void cbAllGroups_CheckedChanged(object sender, EventArgs e) {
+      foreach (Control control in gbGroups.Controls) {
+        control.Enabled = !cbAllGroups.Checked;
+      }
     }
 
 
