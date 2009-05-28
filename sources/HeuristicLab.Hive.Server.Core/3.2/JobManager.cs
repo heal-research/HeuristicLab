@@ -355,7 +355,30 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseList<Project> GetAllProjects() {
-      throw new NotImplementedException();
+      IList<Project> testList = new List<Project>();
+
+      Project p1 = new Project();
+      p1.Id = Guid.NewGuid();
+      p1.Name = "TestProject1";
+      Project p2 = new Project();
+      p2.Id = Guid.NewGuid();
+      p2.Name = "TestProject2";
+      Project p3 = new Project();
+      p3.Id = Guid.NewGuid();
+      p3.Name = "TestProject3";
+      Project p4 = new Project();
+      p4.Id = Guid.NewGuid();
+      p4.Name = "TestProject4";
+      testList.Add(p1);
+      testList.Add(p2);
+      testList.Add(p3);
+      testList.Add(p4);
+
+      ResponseList<Project> response = new ResponseList<Project>();
+      response.List = testList;
+      response.Success = true;
+
+      return response;
     }
 
     public Response CreateProject(Project project) {
