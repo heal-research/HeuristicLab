@@ -63,7 +63,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Info(String source, String message) {
-      Logger.Info(source + ": " + message);
+      HiveLogger.Info(source + ": " + message);
 
       //DateTime current = DateTime.Now;
       ///Debug.WriteLine(current + " - " + source + ": " + message);
@@ -79,7 +79,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="source">string representation of the caller</param>
     /// <param name="message">the message</param>
     public void Error(String source, String message) {
-      Logger.Error(source + ": " + message);
+      HiveLogger.Error(source + ": " + message);
       
       //DateTime current = DateTime.Now;
       //Debug.WriteLine(current + " - " + source + ": " + message);
@@ -97,7 +97,7 @@ namespace HeuristicLab.Hive.Client.Common {
     /// <param name="message">the message</param>
     /// <param name="e">the exception</param>
     public void Error(String source, String message, Exception e) {
-      Logger.Error(source + ": " + message, e);
+      HiveLogger.Error(source + ": " + message, e);
       //DateTime current = DateTime.Now;
       //Debug.WriteLine(current + " - " + source + ": " + e + message);
     //  eventLogger.Source = source;

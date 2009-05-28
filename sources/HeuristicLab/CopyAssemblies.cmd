@@ -114,6 +114,7 @@ copy "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\HeuristicLab.Tracing-3.2.d
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\log4net.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\log4net licence.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\HeuristicLab.log4net.xml" .\plugins
+copy "%SolutionDir%\HeuristicLab.Tracing\3.2\HeuristicLab.Hive.log4net.xml" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization\3.2\%Outdir%\HeuristicLab.Visualization-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Visualization.Test\3.2\%Outdir%\HeuristicLab.Visualization.Test-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Security.Contracts\3.2\%Outdir%\HeuristicLab.Security.Contracts-3.2.dll" .\plugins

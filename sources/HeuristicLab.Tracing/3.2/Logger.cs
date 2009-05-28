@@ -9,7 +9,7 @@ namespace HeuristicLab.Tracing {
 
   public class Logger {
 
-    private static bool IsConfigured = false;
+    protected static bool IsConfigured = false;
 
     private static void Configure() {
       if ( IsConfigured ) return;
