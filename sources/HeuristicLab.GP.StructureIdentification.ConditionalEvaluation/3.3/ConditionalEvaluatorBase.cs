@@ -50,7 +50,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
       for (int sample = start; sample < end; sample++) {
         // check if condition variable is true between sample - minTimeOffset and sample - maxTimeOffset
         bool skip = false;
-        for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip ; checkIndex++) {
+        for (int checkIndex = sample + minTimeOffset; checkIndex <= sample + maxTimeOffset && !skip; checkIndex++) {
           if (dataset.GetValue(checkIndex, conditionVariable) == 0) {
             skip = true;
             skippedSampels++;
@@ -62,10 +62,12 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
           if (updateTargetValues) {
             dataset.SetValue(sample, targetVariable, estimated);
           }
-          values[sample - start, 0] = estimated;
-          values[sample - start, 1] = original;
+          values[sample - start - skippedSampels, 0] = estimated;
+          values[sample - start - skippedSampels, 1] = original;
         }
       }
+      //needed because otherwise the array is too larged dimension and therefore the sample count is false during calculation
+      ResizeArray(ref values, 2, end - start - skippedSampels);
 
 
       // calculate quality value
@@ -77,7 +79,14 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
         scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OutputVariableName), qualityData));
       }
       qualityData.Data = quality;
-      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= skippedSampels; 
+      scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data -= skippedSampels;
+    }
+
+
+    private void ResizeArray(ref double[,] original, int cols, int rows) {
+      double[,] newArray = new double[rows, cols];
+      Array.Copy(original, newArray, cols * rows);
+      original = newArray;
     }
 
     public abstract double Evaluate(double[,] values);
