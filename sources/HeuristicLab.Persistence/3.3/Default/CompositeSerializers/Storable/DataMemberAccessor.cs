@@ -11,10 +11,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public readonly string Name;
     public readonly object DefaultValue;
 
-    public DataMemberAccessor(
-        MemberInfo memberInfo,
-        StorableAttribute storableAttribute,
-        object obj) {
+    public DataMemberAccessor(MemberInfo memberInfo, string name, object defaultvalue, object obj) {
+      Name = name;
+      DefaultValue = defaultvalue;
       if (memberInfo.MemberType == MemberTypes.Field) {
         FieldInfo fieldInfo = (FieldInfo)memberInfo;
         Get = () => fieldInfo.GetValue(obj);
@@ -31,12 +30,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         throw new PersistenceException(
           "The Storable attribute can only be applied to fields and properties.");
       }
-      Name = storableAttribute.Name ?? memberInfo.Name;
-      DefaultValue = storableAttribute.DefaultValue;
     }
 
-    public DataMemberAccessor(
-        string name, object defaultValue,
+    public DataMemberAccessor(string name, object defaultValue,
         Func<object> getter, Action<object> setter) {
       Name = name;
       DefaultValue = defaultValue;
@@ -60,7 +56,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
 
     public override string ToString() {
-      return String.Format("DataMember({0}, {1}, {2}, {3})",
+      return String.Format("DataMemberAccessor({0}, {1}, {2}, {3})",
         Name,
         DefaultValue ?? "<null>",
         Get.Method, Set.Method);

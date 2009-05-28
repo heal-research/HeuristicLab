@@ -15,6 +15,7 @@ using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.Persistence.Auxiliary;
 using System.Text.RegularExpressions;
+using HeuristicLab.Persistence.Test;
 
 namespace HeuristicLab.Persistence.UnitTest {
 
@@ -538,6 +539,15 @@ namespace HeuristicLab.Persistence.UnitTest {
       } catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains("newer"));
       }
+    }
+
+    [TestMethod]
+    public void InheritanceTest() {
+      New n = new New();
+      XmlGenerator.Serialize(n, tempFile);
+      New nn = (New)XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(n.Name, nn.Name);
+      Assert.AreEqual(((Override)n).Name, ((Override)nn).Name);
     }
 
     [ClassInitialize]
