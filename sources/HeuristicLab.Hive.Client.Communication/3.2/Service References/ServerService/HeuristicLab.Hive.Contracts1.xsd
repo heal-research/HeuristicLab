@@ -43,6 +43,7 @@
       <xs:enumeration value="NoMessage" />
       <xs:enumeration value="SnapshotReady" />
       <xs:enumeration value="Shutdown" />
+      <xs:enumeration value="JobFailed" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="MessageContainer.MessageType" nillable="true" type="tns:MessageContainer.MessageType" />

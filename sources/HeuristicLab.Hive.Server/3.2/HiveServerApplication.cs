@@ -42,6 +42,7 @@ namespace HeuristicLab.Hive.Server {
     private DiscoveryService discService = new DiscoveryService();
     private Dictionary<string, ServiceHost> runningServices = new Dictionary<string, ServiceHost>();
     private NetTcpBinding binding = (NetTcpBinding)WcfSettings.GetBinding();
+    private NetTcpBinding streamedBinding = (NetTcpBinding)WcfSettings.GetStreamedBinding();
 
     private enum Services {
       ClientCommunicator,
@@ -75,7 +76,7 @@ namespace HeuristicLab.Hive.Server {
           if (clientCommunicatorInstances.Length > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/HiveServer/"); 
             serviceHost = new ServiceHost(clientCommunicatorInstances[0].GetType(), uriTcp);
-            serviceHost.AddServiceEndpoint(typeof(IClientCommunicator), binding, STR_ClientCommunicator);
+            serviceHost.AddServiceEndpoint(typeof(IClientFacade), streamedBinding, STR_ClientCommunicator);
             curServiceHost = STR_ClientCommunicator;
           }
           break;
@@ -91,7 +92,7 @@ namespace HeuristicLab.Hive.Server {
           if (executionEngineInstances.Length > 0) {
             uriTcp = new Uri("net.tcp://" + ipAddress + ":" + port + "/ExecutionEngine/");
             serviceHost = new ServiceHost(executionEngineInstances[0].GetType(), uriTcp);
-            serviceHost.AddServiceEndpoint(typeof(IExecutionEngineFacade), binding, STR_ExecutionEngineFacade);
+            serviceHost.AddServiceEndpoint(typeof(IExecutionEngineFacade), streamedBinding, STR_ExecutionEngineFacade);
             curServiceHost = STR_ExecutionEngineFacade;
           }
           break;

@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Engine {
     internal static IExecutionEngineFacade CreateExecutionEngineFacade(string url) {
       ChannelFactory<IExecutionEngineFacade> factory =
         new ChannelFactory<IExecutionEngineFacade>(
-          WcfSettings.GetBinding(),
+          WcfSettings.GetStreamedBinding(),
           new EndpointAddress(url));
 
       return factory.CreateChannel();

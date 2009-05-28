@@ -144,6 +144,8 @@
     <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts.BusinessObjects1.xsd" />
     <None Include="Service References\ServerService\HeuristicLab.Hive.Contracts1.xsd" />
     <None Include="Service References\ServerService\HeuristicLab.PluginInfrastructure.xsd" />
+    <None Include="Service References\ServerService\HeuristicLab.PluginInfrastructure2.xsd" />
+    <None Include="Service References\ServerService\Message.xsd" />
     <None Include="Service References\ServerService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

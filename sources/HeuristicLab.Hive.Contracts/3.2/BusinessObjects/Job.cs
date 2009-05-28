@@ -30,6 +30,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
+  [Serializable]
   public class Job : PersistableObject {
     [DataMember]
     public State State { get; set; }

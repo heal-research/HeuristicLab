@@ -29,6 +29,7 @@ using HeuristicLab.DataAccess;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
+  [Serializable]
   public class ClientConfig : PersistableObject {
     [DataMember]
     public String UpDownTimeCalendar { get; set; } // TODO define DataStructure

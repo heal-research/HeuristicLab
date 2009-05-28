@@ -756,7 +756,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       if (jobRes.List != null) {
         foreach (JobResult jobresult in jobRes.List) {
-          ListViewItem curSnapshot = new ListViewItem(jobresult.Client.Name);
+          ListViewItem curSnapshot = new ListViewItem(jobresult.ClientId.ToString());
           double percentage = jobresult.Percentage * 100;
           curSnapshot.SubItems.Add(percentage.ToString() + " %");
           curSnapshot.SubItems.Add(jobresult.Timestamp.ToString());

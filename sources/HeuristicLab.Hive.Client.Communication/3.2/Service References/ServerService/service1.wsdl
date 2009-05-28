@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://tempuri.org/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" name="ClientFacade" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
-  <wsp:Policy wsu:Id="NetTcpBinding_IClientCommunicator_policy">
+  <wsp:Policy wsu:Id="NetTcpBinding_IClientFacade_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
@@ -28,6 +28,8 @@
             </sp:Layout>
           </wsp:Policy>
         </sp:TransportBinding>
+        <msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+        </msf:Streamed>
         <wsaw:UsingAddressing>
         </wsaw:UsingAddressing>
       </wsp:All>
@@ -43,92 +45,133 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.PluginInfrastructure" />
+      <xsd:import namespace="http://schemas.microsoft.com/Message" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IClientCommunicator_Login_InputMessage">
+  <wsdl:message name="IClientFacade_Login_InputMessage">
     <wsdl:part name="parameters" element="tns:Login" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_Login_OutputMessage">
+  <wsdl:message name="IClientFacade_Login_OutputMessage">
     <wsdl:part name="parameters" element="tns:LoginResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_ProcessHeartBeat_InputMessage">
+  <wsdl:message name="IClientFacade_ProcessHeartBeat_InputMessage">
     <wsdl:part name="parameters" element="tns:ProcessHeartBeat" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_ProcessHeartBeat_OutputMessage">
+  <wsdl:message name="IClientFacade_ProcessHeartBeat_OutputMessage">
     <wsdl:part name="parameters" element="tns:ProcessHeartBeatResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendJob_InputMessage">
+  <wsdl:message name="IClientFacade_SendJob_InputMessage">
     <wsdl:part name="parameters" element="tns:SendJob" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendJob_OutputMessage">
+  <wsdl:message name="IClientFacade_SendJob_OutputMessage">
     <wsdl:part name="parameters" element="tns:SendJobResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_StoreFinishedJobResult_InputMessage">
+  <wsdl:message name="IClientFacade_StoreFinishedJobResult_InputMessage">
     <wsdl:part name="parameters" element="tns:StoreFinishedJobResult" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_StoreFinishedJobResult_OutputMessage">
+  <wsdl:message name="IClientFacade_StoreFinishedJobResult_OutputMessage">
     <wsdl:part name="parameters" element="tns:StoreFinishedJobResultResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_ProcessSnapshot_InputMessage">
+  <wsdl:message name="IClientFacade_ProcessSnapshot_InputMessage">
     <wsdl:part name="parameters" element="tns:ProcessSnapshot" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_ProcessSnapshot_OutputMessage">
+  <wsdl:message name="IClientFacade_ProcessSnapshot_OutputMessage">
     <wsdl:part name="parameters" element="tns:ProcessSnapshotResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_Logout_InputMessage">
+  <wsdl:message name="IClientFacade_Logout_InputMessage">
     <wsdl:part name="parameters" element="tns:Logout" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_Logout_OutputMessage">
+  <wsdl:message name="IClientFacade_Logout_OutputMessage">
     <wsdl:part name="parameters" element="tns:LogoutResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_IsJobStillNeeded_InputMessage">
+  <wsdl:message name="IClientFacade_IsJobStillNeeded_InputMessage">
     <wsdl:part name="parameters" element="tns:IsJobStillNeeded" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_IsJobStillNeeded_OutputMessage">
+  <wsdl:message name="IClientFacade_IsJobStillNeeded_OutputMessage">
     <wsdl:part name="parameters" element="tns:IsJobStillNeededResponse" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendPlugins_InputMessage">
+  <wsdl:message name="IClientFacade_SendPlugins_InputMessage">
     <wsdl:part name="parameters" element="tns:SendPlugins" />
   </wsdl:message>
-  <wsdl:message name="IClientCommunicator_SendPlugins_OutputMessage">
+  <wsdl:message name="IClientFacade_SendPlugins_OutputMessage">
     <wsdl:part name="parameters" element="tns:SendPluginsResponse" />
   </wsdl:message>
-  <wsdl:portType name="IClientCommunicator">
+  <wsdl:message name="IClientFacade_SendStreamedJob_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStreamedJob" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SendStreamedJob_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStreamedJobResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SendStreamedPlugins_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStreamedPlugins" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SendStreamedPlugins_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStreamedPluginsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_StoreFinishedJobResultStreamed_InputMessage">
+    <wsdl:part name="parameters" element="tns:StoreFinishedJobResultStreamed" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_StoreFinishedJobResultStreamed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StoreFinishedJobResultStreamedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_ProcessSnapshotStreamed_InputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessSnapshotStreamed" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_ProcessSnapshotStreamed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ProcessSnapshotStreamedResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IClientFacade">
     <wsdl:operation name="Login">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Login" message="tns:IClientCommunicator_Login_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/LoginResponse" message="tns:IClientCommunicator_Login_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Login" message="tns:IClientFacade_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/LoginResponse" message="tns:IClientFacade_Login_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ProcessHeartBeat">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeat" message="tns:IClientCommunicator_ProcessHeartBeat_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeatResponse" message="tns:IClientCommunicator_ProcessHeartBeat_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeat" message="tns:IClientFacade_ProcessHeartBeat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessHeartBeatResponse" message="tns:IClientFacade_ProcessHeartBeat_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="SendJob">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJob" message="tns:IClientCommunicator_SendJob_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResponse" message="tns:IClientCommunicator_SendJob_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJob" message="tns:IClientFacade_SendJob_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResponse" message="tns:IClientFacade_SendJob_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="StoreFinishedJobResult">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult" message="tns:IClientCommunicator_StoreFinishedJobResult_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse" message="tns:IClientCommunicator_StoreFinishedJobResult_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult" message="tns:IClientFacade_StoreFinishedJobResult_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse" message="tns:IClientFacade_StoreFinishedJobResult_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ProcessSnapshot">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessSnapshot" message="tns:IClientCommunicator_ProcessSnapshot_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessSnapshotResponse" message="tns:IClientCommunicator_ProcessSnapshot_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessSnapshot" message="tns:IClientFacade_ProcessSnapshot_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/ProcessSnapshotResponse" message="tns:IClientFacade_ProcessSnapshot_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="Logout">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Logout" message="tns:IClientCommunicator_Logout_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/LogoutResponse" message="tns:IClientCommunicator_Logout_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/Logout" message="tns:IClientFacade_Logout_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/LogoutResponse" message="tns:IClientFacade_Logout_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="IsJobStillNeeded">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/IsJobStillNeeded" message="tns:IClientCommunicator_IsJobStillNeeded_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/IsJobStillNeededResponse" message="tns:IClientCommunicator_IsJobStillNeeded_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/IsJobStillNeeded" message="tns:IClientFacade_IsJobStillNeeded_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/IsJobStillNeededResponse" message="tns:IClientFacade_IsJobStillNeeded_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="SendPlugins">
-      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendPlugins" message="tns:IClientCommunicator_SendPlugins_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendPluginsResponse" message="tns:IClientCommunicator_SendPlugins_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendPlugins" message="tns:IClientFacade_SendPlugins_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendPluginsResponse" message="tns:IClientFacade_SendPlugins_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStreamedJob">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientFacade/SendStreamedJob" message="tns:IClientFacade_SendStreamedJob_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientFacade/SendStreamedJobResponse" message="tns:IClientFacade_SendStreamedJob_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStreamedPlugins">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientFacade/SendStreamedPlugins" message="tns:IClientFacade_SendStreamedPlugins_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientFacade/SendStreamedPluginsResponse" message="tns:IClientFacade_SendStreamedPlugins_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StoreFinishedJobResultStreamed">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientFacade/StoreFinishedJobResultStreamed" message="tns:IClientFacade_StoreFinishedJobResultStreamed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientFacade/StoreFinishedJobResultStreamedResponse" message="tns:IClientFacade_StoreFinishedJobResultStreamed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ProcessSnapshotStreamed">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientFacade/ProcessSnapshotStreamed" message="tns:IClientFacade_ProcessSnapshotStreamed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientFacade/ProcessSnapshotStreamedResponse" message="tns:IClientFacade_ProcessSnapshotStreamed_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="NetTcpBinding_IClientCommunicator" type="tns:IClientCommunicator">
-    <wsp:PolicyReference URI="#NetTcpBinding_IClientCommunicator_policy">
+  <wsdl:binding name="NetTcpBinding_IClientFacade" type="tns:IClientFacade">
+    <wsp:PolicyReference URI="#NetTcpBinding_IClientFacade_policy">
     </wsp:PolicyReference>
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="Login">
@@ -203,14 +246,50 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="SendStreamedJob">
+      <soap12:operation soapAction="http://tempuri.org/IClientFacade/SendStreamedJob" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStreamedPlugins">
+      <soap12:operation soapAction="http://tempuri.org/IClientFacade/SendStreamedPlugins" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StoreFinishedJobResultStreamed">
+      <soap12:operation soapAction="http://tempuri.org/IClientFacade/StoreFinishedJobResultStreamed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessSnapshotStreamed">
+      <soap12:operation soapAction="http://tempuri.org/IClientFacade/ProcessSnapshotStreamed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
-    <wsdl:port name="NetTcpBinding_IClientCommunicator" binding="tns:NetTcpBinding_IClientCommunicator">
-      <soap12:address location="net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator" />
+    <wsdl:port name="NetTcpBinding_IClientFacade" binding="tns:NetTcpBinding_IClientFacade">
+      <soap12:address location="net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08023@fhs-hagenberg.ac.at</Upn>
+          <Upn>mse08026@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

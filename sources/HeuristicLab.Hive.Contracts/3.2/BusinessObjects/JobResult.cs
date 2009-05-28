@@ -29,9 +29,10 @@ using HeuristicLab.DataAccess;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
+  [Serializable]
   public class JobResult : PersistableObject {
     [DataMember]
-    public Job Job { get; set; }
+    public Guid JobId { get; set; }
     [DataMember]
     public byte[] Result { get; set; } 
     [DataMember]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public DateTime Timestamp { get; set; }
     [DataMember]
-    public ClientInfo Client { get; set; }
+    public Guid ClientId { get; set; }
     [DataMember]
     public Exception Exception { get; set; }
     [DataMember]

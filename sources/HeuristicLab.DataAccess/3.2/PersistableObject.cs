@@ -27,6 +27,7 @@ using HeuristicLab.DataAccess.Interfaces;
 
 namespace HeuristicLab.DataAccess {
   [DataContract]
+  [Serializable]
   public class PersistableObject: IPersistableObject {
     [DataMember]
     public Guid Id { get; set; }

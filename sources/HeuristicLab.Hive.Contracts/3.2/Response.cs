@@ -30,6 +30,7 @@ namespace HeuristicLab.Hive.Contracts {
   /// Server response class
   /// </summary>
   [DataContract]
+  [Serializable]
   public class Response {
     [DataMember]
     public bool Success { get; set; }

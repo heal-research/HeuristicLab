@@ -50,6 +50,7 @@
       <xs:enumeration value="finished" />
       <xs:enumeration value="abort" />
       <xs:enumeration value="requestSnapshot" />
+      <xs:enumeration value="requestSnapshotSent" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="State" nillable="true" type="tns:State" />

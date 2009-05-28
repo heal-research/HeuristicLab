@@ -23,8 +23,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ServiceModel;
+using System.IO;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
 
 namespace HeuristicLab.Hive.Contracts.Interfaces {
+  [ServiceContract]
   public interface IClientFacade: IClientCommunicator {
+    [OperationContract]
+    Stream SendStreamedJob(Guid clientId);
+
+    [OperationContract]
+    Stream SendStreamedPlugins(List<HivePluginInfo> pluginList);
+
+    [OperationContract]
+    ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream);
+
+    [OperationContract]
+    ResponseResultReceived ProcessSnapshotStreamed(Stream stream);
   }
 }

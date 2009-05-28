@@ -27,6 +27,8 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace HeuristicLab.Hive.Server.Core {
   class ClientFacade: IClientFacade {
@@ -70,6 +72,48 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseResultReceived ProcessSnapshot(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
       return clientCommunicator.ProcessSnapshot(clientId, jobId, result, percentage, exception);
+    }
+
+    #endregion
+
+    #region IClientFacade Members
+
+    public Stream SendStreamedJob(Guid clientId) {
+      return
+        new StreamedObject<ResponseJob>(
+          this.SendJob(clientId));
+    }
+
+    public Stream SendStreamedPlugins(List<HivePluginInfo> pluginList) {
+      return
+        new StreamedObject<ResponsePlugin>(
+          this.SendPlugins(pluginList));
+    }
+
+    public ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream) {
+      BinaryFormatter formatter =
+          new BinaryFormatter();
+      JobResult result = (JobResult)formatter.Deserialize(stream);
+
+      return this.StoreFinishedJobResult(
+          result.ClientId,
+          result.JobId,
+          result.Result,
+          result.Percentage,
+          result.Exception);
+    } 
+
+    public ResponseResultReceived ProcessSnapshotStreamed(Stream stream) {
+      BinaryFormatter formatter =
+          new BinaryFormatter();
+      JobResult result = (JobResult)formatter.Deserialize(stream);
+
+      return this.ProcessSnapshot(
+          result.ClientId,
+          result.JobId,
+          result.Result,
+          result.Percentage,
+          result.Exception);
     }
 
     #endregion

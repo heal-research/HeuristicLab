@@ -29,6 +29,7 @@ using HeuristicLab.DataAccess;
 namespace HeuristicLab.Hive.Contracts.BusinessObjects {
 
   [DataContract]
+  [Serializable]
   public class Resource : PersistableObject {
     [DataMember]
     public string Name { get; set; }

@@ -27,6 +27,7 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.PluginInfrastructure {
   [DataContract]
+  [Serializable]
   public class CachedHivePluginInfo : HivePluginInfo {
 
     private List<byte[]> pluginFiles = new List<byte[]>();

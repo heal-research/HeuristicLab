@@ -30,6 +30,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   public enum State { nullState, idle, calculating, offline, finished, abort, requestSnapshot, requestSnapshotSent };
 
   [DataContract]
+  [Serializable]
   public class ClientInfo : Resource {
     [DataMember]
     public int NrOfCores { get; set; }

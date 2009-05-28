@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="7tyXa/aSUNO4WyJm94sZeOTEbBk=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="s00QQcc2/XY558TAo0TIgu0l4q4=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IClientCommunicator">
+    <bindingConfiguration bindingType="netTcpBinding" name="NetTcpBinding_IClientFacade">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>NetTcpBinding_IClientCommunicator</serializedValue>
+          <serializedValue>NetTcpBinding_IClientFacade</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>00:01:00</serializedValue>
@@ -22,7 +22,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/transferMode" isComplexType="false" isExplicitlyDefined="true" clrType="System.ServiceModel.TransferMode, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>Buffered</serializedValue>
+          <serializedValue>Streamed</serializedValue>
         </property>
         <property path="/transactionProtocol" isComplexType="false" isExplicitlyDefined="true" clrType="System.ServiceModel.TransactionProtocol, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.OleTransactionsProtocol</serializedValue>
@@ -106,10 +106,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="NetTcpBinding_IClientCommunicator" contract="ServerService.IClientCommunicator" bindingType="netTcpBinding" address="net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientCommunicator">
+    <endpoint name="NetTcpBinding_IClientFacade" contract="ServerService.IClientFacade" bindingType="netTcpBinding" address="net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator" bindingConfiguration="NetTcpBinding_IClientFacade">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>net.tcp://10.20.53.1:9000/HiveServer/ClientCommunicator</serializedValue>
+          <serializedValue>net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -118,10 +118,10 @@
           <serializedValue>netTcpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>NetTcpBinding_IClientCommunicator</serializedValue>
+          <serializedValue>NetTcpBinding_IClientFacade</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>ServerService.IClientCommunicator</serializedValue>
+          <serializedValue>ServerService.IClientFacade</serializedValue>
         </property>
         <property path="/headers" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.AddressHeaderCollectionElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.AddressHeaderCollectionElement</serializedValue>
@@ -136,7 +136,7 @@
           <serializedValue>System.ServiceModel.Configuration.UserPrincipalNameElement</serializedValue>
         </property>
         <property path="/identity/userPrincipalName/value" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>mse08023@fhs-hagenberg.ac.at</serializedValue>
+          <serializedValue>mse08026@fhs-hagenberg.ac.at</serializedValue>
         </property>
         <property path="/identity/servicePrincipalName" isComplexType="true" isExplicitlyDefined="false" clrType="System.ServiceModel.Configuration.ServicePrincipalNameElement, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>System.ServiceModel.Configuration.ServicePrincipalNameElement</serializedValue>
@@ -181,7 +181,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>NetTcpBinding_IClientCommunicator</serializedValue>
+          <serializedValue>NetTcpBinding_IClientFacade</serializedValue>
         </property>
       </properties>
     </endpoint>

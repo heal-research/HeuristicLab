@@ -49,8 +49,8 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override dsHiveServer.JobResultRow ConvertObj(JobResult result,
       dsHiveServer.JobResultRow row) {
       if (row != null && result != null) {
-        if (result.Job != null)
-          row.JobId = result.Job.Id;
+        if (result.JobId != Guid.Empty)
+          row.JobId = result.JobId;
         else
           row.SetJobIdNull();
 
@@ -59,9 +59,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetJobResultNull();
 
-        if (result.Client != null)  {
+        if (result.ClientId != Guid.Empty)  {
           ClientInfo client = 
-                 ClientAdapter.GetById(result.Client.Id);
+                 ClientAdapter.GetById(result.ClientId);
 
           if (client != null)
             row.ResourceId = client.Id;
@@ -94,9 +94,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         result.Id = row.JobResultId;
 
         if (!row.IsJobIdNull())
-          result.Job = JobAdapter.GetById(row.JobId);
+          result.JobId = row.JobId;
         else
-          result.Job = null;
+          result.JobId = Guid.Empty;
 
         if (!row.IsJobResultNull())
           result.Result = row.JobResult;
@@ -104,9 +104,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           result.Result = null;
 
         if (!row.IsResourceIdNull())
-          result.Client = ClientAdapter.GetById(row.ResourceId);
+          result.ClientId = row.ResourceId;
         else
-          result.Client = null;
+          result.ClientId = Guid.Empty;
 
         if (!row.IsMessageNull())
           result.Exception = new Exception(row.Message);
@@ -127,15 +127,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IJobResultsAdapter Members
-    protected override void doUpdate(JobResult result) {
-      if (result != null) {
-        ClientAdapter.Update(result.Client);
-        JobAdapter.Update(result.Job);
-
-        base.doUpdate(result);
-      }
-    }
-
     public ICollection<JobResult> GetResultsOf(Job job) {
       if (job != null) {
         return 

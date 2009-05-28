@@ -114,6 +114,7 @@
     <Compile Include="ResponseList.cs" />
     <Compile Include="ResponsePlugin.cs" />
     <Compile Include="ResponseResultReceived.cs" />
+    <Compile Include="StreamedObject.cs" />
     <Compile Include="WcfSettings.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -450,8 +450,8 @@ namespace HeuristicLab.Hive.Server.Core {
 
         JobResult jobResult =
           new JobResult();
-        jobResult.Client = client;
-        jobResult.Job = job;
+        jobResult.ClientId = client.Id;
+        jobResult.JobId = job.Id;
         jobResult.Result = result;
         jobResult.Percentage = percentage;
         jobResult.Exception = exception;

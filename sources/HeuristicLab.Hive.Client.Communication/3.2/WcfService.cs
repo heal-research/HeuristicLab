@@ -30,6 +30,8 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Client.Communication.ServerService;
 using HeuristicLab.PluginInfrastructure;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace HeuristicLab.Hive.Client.Communication {
   /// <summary>
@@ -59,7 +61,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event EventHandler ServerChanged;
     public event EventHandler Connected;    
 
-    public ClientCommunicatorClient proxy = null;
+    public ClientFacadeClient proxy = null;
 
     /// <summary>
     /// Constructor
@@ -73,15 +75,15 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     public void Connect() {
       try {
-        proxy = new ClientCommunicatorClient(
-          WcfSettings.GetBinding(),
+        proxy = new ClientFacadeClient(
+          WcfSettings.GetStreamedBinding(),
           new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
         );
 
         proxy.LoginCompleted += new EventHandler<LoginCompletedEventArgs>(proxy_LoginCompleted);
-        proxy.SendJobCompleted += new EventHandler<SendJobCompletedEventArgs>(proxy_SendJobCompleted);
-        proxy.StoreFinishedJobResultCompleted += new EventHandler<StoreFinishedJobResultCompletedEventArgs>(proxy_StoreFinishedJobResultCompleted);
-        proxy.ProcessSnapshotCompleted += new EventHandler<ProcessSnapshotCompletedEventArgs>(proxy_ProcessSnapshotCompleted);
+        proxy.SendStreamedJobCompleted += new EventHandler<SendStreamedJobCompletedEventArgs>(proxy_SendStreamedJobCompleted);
+        proxy.StoreFinishedJobResultStreamedCompleted += new EventHandler<StoreFinishedJobResultStreamedCompletedEventArgs>(proxy_StoreFinishedJobResultStreamedCompleted);
+        proxy.ProcessSnapshotStreamedCompleted += new EventHandler<ProcessSnapshotStreamedCompletedEventArgs>(proxy_ProcessSnapshotStreamedCompleted);
         proxy.ProcessHeartBeatCompleted += new EventHandler<ProcessHeartBeatCompletedEventArgs>(proxy_ProcessHeartBeatCompleted);
         proxy.Open();
 
@@ -98,7 +100,6 @@ namespace HeuristicLab.Hive.Client.Communication {
         HandleNetworkError(ex);
       }
     }
-
 
 
     /// <summary>
@@ -173,14 +174,25 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<SendJobCompletedEventArgs> SendJobCompleted;
     public void SendJobAsync(Guid guid) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)        
-        proxy.SendJobAsync(guid);
+        proxy.SendStreamedJobAsync(guid);
     }
-    void proxy_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
-      if (e.Error == null)
-        SendJobCompleted(sender, e);
-      else
+
+    void proxy_SendStreamedJobCompleted(object sender, SendStreamedJobCompletedEventArgs e) {
+      if (e.Error == null) {
+        Stream stream =
+          (Stream)e.Result;
+                
+        BinaryFormatter formatter =
+          new BinaryFormatter();
+        ResponseJob response = (ResponseJob)formatter.Deserialize(stream);
+
+        SendJobCompletedEventArgs completedEventArgs =
+          new SendJobCompletedEventArgs(new object[] { response }, e.Error, e.Cancelled, e.UserState);
+        SendJobCompleted(sender, completedEventArgs);
+      } else
         HandleNetworkError(e.Error);
     }
+
     #endregion
 
     /// <summary>
@@ -190,12 +202,16 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<StoreFinishedJobResultCompletedEventArgs> StoreFinishedJobResultCompleted;
     public void StoreFinishedJobResultAsync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if (ConnState == NetworkEnum.WcfConnState.Loggedin)
-        proxy.StoreFinishedJobResultAsync(clientId, jobId, result, percentage, exception, finished);
+        proxy.StoreFinishedJobResultStreamedAsync(
+          GetStreamedJobResult(clientId, jobId, result, percentage, exception));
     }
-    private void proxy_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
-      if (e.Error == null)
-        StoreFinishedJobResultCompleted(sender, e);
-      else
+    private void proxy_StoreFinishedJobResultStreamedCompleted(object sender, StoreFinishedJobResultStreamedCompletedEventArgs e) {
+      if (e.Error == null) {
+        StoreFinishedJobResultCompletedEventArgs args =
+          new StoreFinishedJobResultCompletedEventArgs(
+            new object[] { e.Result }, e.Error, e.Cancelled, e.UserState);
+        StoreFinishedJobResultCompleted(sender, args);
+      } else
         HandleNetworkError(e.Error);
     }
 
@@ -205,12 +221,18 @@ namespace HeuristicLab.Hive.Client.Communication {
     public event System.EventHandler<ProcessSnapshotCompletedEventArgs> ProcessSnapshotCompleted;
     public void ProcessSnapshotAsync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
       if(ConnState == NetworkEnum.WcfConnState.Loggedin)
-        proxy.ProcessSnapshotAsync(clientId, jobId, result, percentage, exception);
+        proxy.ProcessSnapshotStreamedAsync(
+          GetStreamedJobResult(
+            clientId, jobId, result, percentage, exception));
     }
-    void proxy_ProcessSnapshotCompleted(object sender, ProcessSnapshotCompletedEventArgs e) {
-      if (e.Error == null)
-        ProcessSnapshotCompleted(sender, e);
-      else
+    void proxy_ProcessSnapshotStreamedCompleted(object sender, ProcessSnapshotStreamedCompletedEventArgs e) {
+      if (e.Error == null) {
+        ProcessSnapshotCompletedEventArgs args =
+          new ProcessSnapshotCompletedEventArgs(
+            new object[] { e.Result }, e.Error, e.Cancelled, e.UserState);
+
+        ProcessSnapshotCompleted(sender, args);
+      } else
         HandleNetworkError(e.Error);
     }    
     
@@ -248,15 +270,37 @@ namespace HeuristicLab.Hive.Client.Communication {
     }  
     #endregion  */
 
+    private Stream GetStreamedJobResult(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
+      JobResult jobResult =
+          new JobResult();
+      jobResult.ClientId = clientId;
+      jobResult.JobId = jobId;
+      jobResult.Result = result;
+      jobResult.Percentage = percentage;
+      jobResult.Exception = exception;
+
+      MemoryStream stream =
+        new MemoryStream();
+
+      BinaryFormatter formatter =
+        new BinaryFormatter();
+
+      formatter.Serialize(stream, jobResult);
+      stream.Seek(0, SeekOrigin.Begin);
+
+      return stream;
+    }
+
     public ResponseResultReceived SendStoredJobResultsSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {      
-      return proxy.StoreFinishedJobResult(clientId, jobId, result, percentage, exception);    
+      return proxy.StoreFinishedJobResultStreamed(
+        GetStreamedJobResult(clientId, jobId, result, percentage, exception));
     }
 
     public ResponseResultReceived ProcessSnapshotSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
       try {
-        ResponseResultReceived res = proxy.ProcessSnapshot(clientId, jobId, result, percentage, null);
         Logging.Instance.Info(this.ToString(), "Snapshot for Job " + jobId + " submitted");
-        return res;
+        return proxy.ProcessSnapshotStreamed(
+          GetStreamedJobResult(clientId, jobId, result, percentage, exception));
       }
       catch (Exception e) {
         HandleNetworkError(e);
@@ -266,7 +310,11 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     public List<CachedHivePluginInfo> RequestPlugins(List<HivePluginInfo> requestedPlugins) {
       try {
-        ResponsePlugin response = proxy.SendPlugins(requestedPlugins.ToArray());
+        Stream stream = proxy.SendStreamedPlugins(requestedPlugins.ToArray());
+
+        BinaryFormatter formatter =
+          new BinaryFormatter();
+        ResponsePlugin response = (ResponsePlugin)formatter.Deserialize(stream);
         return response.Plugins;        
       }
       catch (Exception e) {

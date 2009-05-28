@@ -8,6 +8,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Hive.Contracts {
 
   [DataContract]
+  [Serializable]
   public class ResponsePlugin : Response {
     public ResponsePlugin() {
       Plugins = new List<CachedHivePluginInfo>();

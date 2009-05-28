@@ -33,6 +33,7 @@ namespace HeuristicLab.Hive.Contracts {
   /// If a client pulls a Job from the server he gets a ResponseJob as answer
   /// </summary>
   [DataContract]
+  [Serializable]
   public class ResponseJob : Response {
     [DataMember]
     public Job Job { get; set; }
