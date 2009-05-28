@@ -31,6 +31,9 @@ namespace HeuristicLab.Hive.Client.Communication {
   [ClassInfo(Name = "HeuristicLab.Hive.Client.Communication-3.2")]
   [PluginFile(Filename = "HeuristicLab.Hive.Client.Communication-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.DataAccess-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Hive.Client.Common-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
   public class CommunicationsPlugin : PluginBase {
   }
 }

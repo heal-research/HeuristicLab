@@ -29,6 +29,7 @@ namespace HeuristicLab.Grid {
   [ClassInfo(Name = "HeuristicLab.Hive.Client.Console-3.2")]
   [PluginFile(Filename = "HeuristicLab.Hive.Client.Console-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
   public class HeuristicLabHiveClientConsolePlugin : PluginBase {
   }
 }
