@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -29,25 +30,12 @@ namespace HeuristicLab.Visualization {
     #endregion
 
     private Rectangle CalcRectangle(Point actualPoint) {
-      Rectangle rectangle = new Rectangle();
-
-      if (startPoint.X < actualPoint.X) {
-        rectangle.X = startPoint.X;
-        rectangle.Width = actualPoint.X - startPoint.X;
-      } else {
-        rectangle.X = actualPoint.X;
-        rectangle.Width = startPoint.X - actualPoint.X;
-      }
-
-      if (startPoint.Y < actualPoint.Y) {
-        rectangle.Y = startPoint.Y;
-        rectangle.Height = actualPoint.Y - startPoint.Y;
-      } else {
-        rectangle.Y = actualPoint.Y;
-        rectangle.Height = startPoint.Y - actualPoint.Y;
-      }
-
-      return rectangle;
+      int x = Math.Min(startPoint.X, actualPoint.X);
+      int y = Math.Min(startPoint.Y, actualPoint.Y);
+      int width = Math.Abs(actualPoint.X - startPoint.X);
+      int height = Math.Abs(actualPoint.Y - startPoint.Y);
+      
+      return new Rectangle(x, y, width, height);
     }
 
     public static RectangleD ZoomClippingArea(RectangleD clippingArea, double zoomFactor) {
