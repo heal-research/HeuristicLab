@@ -86,6 +86,7 @@
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
+      this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -150,7 +151,8 @@
       // 
       this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jobToolStripMenuItem,
-            this.groupToolStripMenuItem});
+            this.groupToolStripMenuItem,
+            this.projectToolStripMenuItem});
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
       this.addToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
       this.addToolStripMenuItem.Text = "Add";
@@ -159,7 +161,7 @@
       // 
       this.jobToolStripMenuItem.Name = "jobToolStripMenuItem";
       this.jobToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-      this.jobToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.jobToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.jobToolStripMenuItem.Text = "Job";
       this.jobToolStripMenuItem.Click += new System.EventHandler(this.AddJob_Click);
       // 
@@ -167,7 +169,7 @@
       // 
       this.groupToolStripMenuItem.Name = "groupToolStripMenuItem";
       this.groupToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-      this.groupToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+      this.groupToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.groupToolStripMenuItem.Text = "Group";
       this.groupToolStripMenuItem.Click += new System.EventHandler(this.groupToolStripMenuItem_Click);
       // 
@@ -693,6 +695,14 @@
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
       // 
+      // projectToolStripMenuItem
+      // 
+      this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
+      this.projectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+      this.projectToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+      this.projectToolStripMenuItem.Text = "Project";
+      this.projectToolStripMenuItem.Click += new System.EventHandler(this.projectToolStripMenuItem_Click);
+      // 
       // HiveServerManagementConsole
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -798,5 +808,6 @@
     private System.Windows.Forms.ToolStripMenuItem menuItemAddGroup;
     private System.Windows.Forms.ToolStripMenuItem menuItemDeleteGroup;
     private System.Windows.Forms.ToolStripMenuItem groupToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
   }
 }

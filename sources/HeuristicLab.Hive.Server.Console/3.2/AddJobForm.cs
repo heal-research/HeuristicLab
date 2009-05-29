@@ -60,17 +60,26 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       jobManager =
         ServiceLocator.GetJobManager();
       projects = jobManager.GetAllProjects();
+      clientManager =
+        ServiceLocator.GetClientManager();
+      clientGroups = clientManager.GetAllClientGroups();
       cbProject.Items.Add("none");
       cbProject.SelectedIndex = 0;
       foreach (Project project in projects.List) {
         cbProject.Items.Add(project.Name);
       }
 
+      AddClientGroups();
+
+      foreach (KeyValuePair<Guid, string> kvp in clients) {
+        lbGroupsOut.Items.Add(kvp.Value + " (" + kvp.Key + ")");
+      }
 
     }
 
     private void AddClientGroups() {
      foreach (ClientGroup cg in clientGroups.List) {
+       if (cg.Id != Guid.Empty)
        clients.Add(cg.Id, cg.Name);
         AddClientOrGroup(cg);
       }
@@ -79,6 +88,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void AddClientOrGroup(ClientGroup clientGroup) {
       foreach (Resource resource in clientGroup.Resources) {
         if (resource is ClientGroup) {
+          if (resource.Id != Guid.Empty)
           clients.Add(resource.Id, resource.Name);
           AddClientOrGroup(resource as ClientGroup);
         }
@@ -92,19 +102,26 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         int numJobs = Convert.ToInt32(tbNumJobs.Text);
         if (numJobs > 0) {
           for (int i = 0; i < numJobs; i++) {
+            Job job = new Job { State = State.offline, CoresNeeded = 1 };
+            
+            // if project selected (0 -> none)
             if (cbProject.SelectedIndex != 0) {
-            //  foreach (Job pjob in jobGroups.List) {
-            //    if (cbParJob.SelectedItem.ToString().Equals(pjob.Id.ToString())) {
-            //      Job job = new Job { ParentJob = pjob, State = State.offline, CoresNeeded = 1 };
-            //      job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
-            //      Response resp = jobManager.AddNewJob(job);
-            //    }
-            //  }
-            //} else {
-            //  Job job = new Job { State = State.offline, CoresNeeded = 1 };
-            //  job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
-            //  Response resp = jobManager.AddNewJob(job);
+              job.Project = projects.List[cbProject.SelectedIndex - 1];
             }
+
+            if (!cbAllGroups.Checked) {
+              List<Guid> groupsToCalculate = new List<Guid>();
+              foreach (string item in lbGroupsIn.Items) {
+                int start = item.IndexOf("(");
+                int end = item.IndexOf(")");
+                string substring = item.Substring(start + 1, end - start - 1);
+                Guid guid = new Guid(substring);
+                groupsToCalculate.Add(guid);
+              }
+              job.AssignedResourceIds = groupsToCalculate;
+            }
+            job.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+            Response resp = jobManager.AddNewJob(job);
           }
           if (addJobEvent != null) {
             addJobEvent();
@@ -128,6 +145,41 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       foreach (Control control in gbGroups.Controls) {
         control.Enabled = !cbAllGroups.Checked;
       }
+    }
+
+    private void btnAddGroup_Click(object sender, EventArgs e) {
+      AddGroup();
+    }
+
+    private void btnRemoveGroup_Click(object sender, EventArgs e) {
+      RemoveGroup();
+    }
+
+    private void lbGroupsOut_SelectedIndexChanged(object sender, EventArgs e) {
+      AddGroup();
+    }
+
+    private void lbGroupsIn_SelectedIndexChanged(object sender, EventArgs e) {
+      RemoveGroup();
+    }
+
+    private void AddGroup() {
+      if (lbGroupsOut.SelectedItem != null) {
+        lbGroupsIn.Items.Add(lbGroupsOut.SelectedItem);
+        lbGroupsOut.Items.RemoveAt(lbGroupsOut.SelectedIndex);
+      }
+  
+    }
+
+    private void RemoveGroup() {
+      if (lbGroupsIn.SelectedItem != null) {
+        lbGroupsOut.Items.Add(lbGroupsIn.SelectedItem);
+        lbGroupsIn.Items.RemoveAt(lbGroupsIn.SelectedIndex);
+      }
+    }
+
+    private void btnLoad_Click(object sender, EventArgs e) {
+
     }
 
 

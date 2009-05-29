@@ -375,6 +375,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       lvi.SubItems.Add(currentJob.Priority.ToString());
       lvJobDetails.Items.Add(lvi);
 
+      if (currentJob.Project != null) {
+        lvi = null;
+        lvi = new ListViewItem();
+        lvi.Text = "Project:";
+        lvi.SubItems.Add(currentJob.Project.Name.ToString());
+        lvJobDetails.Items.Add(lvi);
+      }
+
       if (currentJob.Client != null) {
         lvi = null;
         lvi = new ListViewItem();
@@ -575,6 +583,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       addgroup.Show();
     }
 
+    private void projectToolStripMenuItem_Click(object sender, EventArgs e) {
+      AddProject addproject = new AddProject();
+      addproject.AddProjectEvent += new AddProjectDelegate(addproject_AddProjectEvent);
+      addproject.Show();
+    }
+
     private void OnLVClientClicked(object sender, EventArgs e) {
       currentClient = (ClientInfo)lvClientControl.SelectedItems[0].Tag;
       ClientClicked();
@@ -600,6 +614,14 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         tvClientControl.ContextMenuStrip.Show(tvClientControl, new Point(e.X, e.Y));
     }
 
+    private void addproject_AddProjectEvent(string name) {
+      IJobManager jobManager = ServiceLocator.GetJobManager();
+
+      Project pg = new Project() { Name = name };
+      jobManager.CreateProject(pg);
+
+    }
+
     private void addgroup_addGroupEvent(string name) {
       IClientManager clientManager = ServiceLocator.GetClientManager();
 
@@ -614,8 +636,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         ClientGroup cg = new ClientGroup() { Name = name };
         clientManager.AddClientGroup(cg);
         AddClients();
-      }              
+      }
     }
+
 
     private void Refresh_Click(object sender, EventArgs e) {
       Form overlayingForm = new Form();
@@ -773,7 +796,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     #endregion
-
 
   }
 }

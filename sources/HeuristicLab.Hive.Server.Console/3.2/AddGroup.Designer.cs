@@ -70,10 +70,8 @@
       // 
       // AddGroup
       // 
-      this.AcceptButton = this.btnAdd;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.CancelButton = this.btnClose;
       this.ClientSize = new System.Drawing.Size(337, 70);
       this.Controls.Add(this.tbName);
       this.Controls.Add(this.lblName);

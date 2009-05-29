@@ -57,12 +57,15 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.btnAddGroup = new System.Windows.Forms.Button();
       this.lbGroupsIn = new System.Windows.Forms.ListBox();
       this.lbGroupsOut = new System.Windows.Forms.ListBox();
+      this.ofdLoadJob = new System.Windows.Forms.OpenFileDialog();
+      this.textBox1 = new System.Windows.Forms.TextBox();
+      this.btnLoad = new System.Windows.Forms.Button();
       this.gbGroups.SuspendLayout();
       this.SuspendLayout();
       // 
       // btnAdd
       // 
-      this.btnAdd.Location = new System.Drawing.Point(6, 224);
+      this.btnAdd.Location = new System.Drawing.Point(6, 249);
       this.btnAdd.Name = "btnAdd";
       this.btnAdd.Size = new System.Drawing.Size(75, 23);
       this.btnAdd.TabIndex = 3;
@@ -73,7 +76,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // btnClose
       // 
       this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.btnClose.Location = new System.Drawing.Point(291, 224);
+      this.btnClose.Location = new System.Drawing.Point(291, 249);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(75, 23);
       this.btnClose.TabIndex = 4;
@@ -101,7 +104,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // lblError
       // 
       this.lblError.AutoSize = true;
-      this.lblError.Location = new System.Drawing.Point(87, 229);
+      this.lblError.Location = new System.Drawing.Point(87, 254);
       this.lblError.Name = "lblError";
       this.lblError.Size = new System.Drawing.Size(0, 13);
       this.lblError.TabIndex = 8;
@@ -117,6 +120,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // cbProject
       // 
+      this.cbProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbProject.FormattingEnabled = true;
       this.cbProject.Location = new System.Drawing.Point(117, 31);
       this.cbProject.Name = "cbProject";
@@ -128,7 +132,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.cbAllGroups.AutoSize = true;
       this.cbAllGroups.Checked = true;
       this.cbAllGroups.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.cbAllGroups.Location = new System.Drawing.Point(15, 65);
+      this.cbAllGroups.Location = new System.Drawing.Point(15, 90);
       this.cbAllGroups.Name = "cbAllGroups";
       this.cbAllGroups.Size = new System.Drawing.Size(91, 17);
       this.cbAllGroups.TabIndex = 15;
@@ -142,7 +146,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.gbGroups.Controls.Add(this.btnAddGroup);
       this.gbGroups.Controls.Add(this.lbGroupsIn);
       this.gbGroups.Controls.Add(this.lbGroupsOut);
-      this.gbGroups.Location = new System.Drawing.Point(10, 90);
+      this.gbGroups.Location = new System.Drawing.Point(10, 115);
       this.gbGroups.Name = "gbGroups";
       this.gbGroups.Size = new System.Drawing.Size(357, 128);
       this.gbGroups.TabIndex = 16;
@@ -158,6 +162,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.btnRemoveGroup.TabIndex = 18;
       this.btnRemoveGroup.Text = "<< Remove";
       this.btnRemoveGroup.UseVisualStyleBackColor = true;
+      this.btnRemoveGroup.Click += new System.EventHandler(this.btnRemoveGroup_Click);
       // 
       // btnAddGroup
       // 
@@ -168,6 +173,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.btnAddGroup.TabIndex = 17;
       this.btnAddGroup.Text = "Add >>";
       this.btnAddGroup.UseVisualStyleBackColor = true;
+      this.btnAddGroup.Click += new System.EventHandler(this.btnAddGroup_Click);
       // 
       // lbGroupsIn
       // 
@@ -177,6 +183,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.lbGroupsIn.Name = "lbGroupsIn";
       this.lbGroupsIn.Size = new System.Drawing.Size(128, 108);
       this.lbGroupsIn.TabIndex = 16;
+      this.lbGroupsIn.DoubleClick += new System.EventHandler(this.lbGroupsIn_SelectedIndexChanged);
       // 
       // lbGroupsOut
       // 
@@ -186,6 +193,30 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.lbGroupsOut.Name = "lbGroupsOut";
       this.lbGroupsOut.Size = new System.Drawing.Size(130, 108);
       this.lbGroupsOut.TabIndex = 15;
+      this.lbGroupsOut.DoubleClick += new System.EventHandler(this.lbGroupsOut_SelectedIndexChanged);
+      // 
+      // ofdLoadJob
+      // 
+      this.ofdLoadJob.FileName = "openFileDialog1";
+      // 
+      // textBox1
+      // 
+      this.textBox1.BackColor = System.Drawing.SystemColors.Window;
+      this.textBox1.Enabled = false;
+      this.textBox1.Location = new System.Drawing.Point(13, 64);
+      this.textBox1.Name = "textBox1";
+      this.textBox1.Size = new System.Drawing.Size(266, 20);
+      this.textBox1.TabIndex = 17;
+      // 
+      // btnLoad
+      // 
+      this.btnLoad.Location = new System.Drawing.Point(285, 63);
+      this.btnLoad.Name = "btnLoad";
+      this.btnLoad.Size = new System.Drawing.Size(75, 23);
+      this.btnLoad.TabIndex = 18;
+      this.btnLoad.Text = "Load Job";
+      this.btnLoad.UseVisualStyleBackColor = true;
+      this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
       // 
       // AddJobForm
       // 
@@ -193,7 +224,9 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.btnClose;
-      this.ClientSize = new System.Drawing.Size(372, 255);
+      this.ClientSize = new System.Drawing.Size(372, 280);
+      this.Controls.Add(this.btnLoad);
+      this.Controls.Add(this.textBox1);
       this.Controls.Add(this.gbGroups);
       this.Controls.Add(this.cbAllGroups);
       this.Controls.Add(this.cbProject);
@@ -226,5 +259,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private System.Windows.Forms.Button btnAddGroup;
     private System.Windows.Forms.ListBox lbGroupsIn;
     private System.Windows.Forms.ListBox lbGroupsOut;
+    private System.Windows.Forms.OpenFileDialog ofdLoadJob;
+    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.Button btnLoad;
   }
 }
