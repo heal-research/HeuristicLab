@@ -9,7 +9,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
   public class DoubleList2XmlSerializer : NumberEnumeration2XmlSerializerBase<List<double>> {
 
     protected override void Add(IEnumerable enumeration, object o) {
-      ((List<double>)enumeration).Add((int)o);
+      ((List<double>)enumeration).Add((double)o);
     }
 
     protected override IEnumerable Instantiate() {
@@ -21,6 +21,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     protected override object ParseValue(string o) {
+      if (o == CultureInfo.InvariantCulture.NumberFormat.NaNSymbol)
+        return double.NaN;
       return double.Parse(o, CultureInfo.InvariantCulture);
     }
 

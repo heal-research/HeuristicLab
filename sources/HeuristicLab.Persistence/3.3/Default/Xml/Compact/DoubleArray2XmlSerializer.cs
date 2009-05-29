@@ -11,6 +11,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     protected override object ParseValue(string o) {
+      if (o == CultureInfo.InvariantCulture.NumberFormat.NaNSymbol)
+        return double.NaN;
       return double.Parse(o, CultureInfo.InvariantCulture);
     }
   }
