@@ -29,8 +29,11 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.PluginInfrastructure;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.ServiceModel;
 
 namespace HeuristicLab.Hive.Server.Core {
+  [ServiceBehavior(InstanceContextMode =
+    InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Multiple)]
   class ClientFacade: IClientFacade {
 
     private IClientCommunicator clientCommunicator =
