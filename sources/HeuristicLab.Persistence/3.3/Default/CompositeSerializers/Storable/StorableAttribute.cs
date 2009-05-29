@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -41,6 +42,16 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public sealed class StorableMemberInfo {
       public StorableAttribute Attribute { get; private set; }
       public MemberInfo MemberInfo { get; private set; }
+      public string DisentangledName { get; private set; }
+      public string FullyQualifiedMemberName {
+        get {
+          return new StringBuilder()
+            .Append(MemberInfo.ReflectedType.FullName)
+            .Append('.')
+            .Append(MemberInfo.Name)
+            .ToString();
+        }
+      }
       public StorableMemberInfo(StorableAttribute attribute, MemberInfo memberInfo) {
         this.Attribute = attribute;
         this.MemberInfo = memberInfo;
@@ -49,6 +60,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         return new StringBuilder()
           .Append('[').Append(Attribute).Append(", ")
           .Append(MemberInfo).Append('}').ToString();
+      }
+      public void SetDisentangledName(string name) {
+        DisentangledName = Attribute.Name ?? name;
+      }
+      public Type GetPropertyDeclaringBaseType() {
+        return ((PropertyInfo)MemberInfo).GetGetMethod(true).GetBaseDefinition().DeclaringType;
       }
     }
 
@@ -90,68 +107,57 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           }
         }
       }
-      return storableMembers;
+      return DisentangleNameMapping(storableMembers);
     }
 
-    public static Dictionary<string, DataMemberAccessor> GetStorableAccessors(object obj) {
-      var storableAccessors = new Dictionary<string, DataMemberAccessor>();
-      var nameMapping = createNameMapping(obj.GetType());
-      var finalNameMapping = analyzeNameMapping(nameMapping);
-      foreach (var mapping in finalNameMapping) {
-        storableAccessors.Add(mapping.Value.Attribute.Name ?? mapping.Key,
-          new DataMemberAccessor(
-            mapping.Value.MemberInfo,
-            mapping.Value.Attribute.Name ?? mapping.Key,
-            mapping.Value.Attribute.DefaultValue,
-            obj));
+    public static IEnumerable<DataMemberAccessor> GetStorableAccessors(object obj) {      
+      foreach (var memberInfo in GetStorableMembers(obj.GetType()))
+        yield return new DataMemberAccessor(
+          memberInfo.MemberInfo,
+          memberInfo.DisentangledName,
+          memberInfo.Attribute.DefaultValue,
+          obj);      
+    }
+
+    private static IEnumerable<StorableMemberInfo> DisentangleNameMapping(
+        IEnumerable<StorableMemberInfo> storableMemberInfos) {
+      var nameGrouping = new Dictionary<string, List<StorableMemberInfo>>();
+      foreach (StorableMemberInfo storable in storableMemberInfos) {
+        if (!nameGrouping.ContainsKey(storable.MemberInfo.Name))
+          nameGrouping[storable.MemberInfo.Name] = new List<StorableMemberInfo>();
+        nameGrouping[storable.MemberInfo.Name].Add(storable);
       }
-      return storableAccessors;
-    }
-
-    private static Dictionary<string, StorableMemberInfo> analyzeNameMapping(
-        Dictionary<string, List<StorableMemberInfo>> nameMapping) {
-      var finalNameMapping = new Dictionary<string, StorableMemberInfo>();
-      foreach (var attributes in nameMapping) {
-        if (attributes.Value.Count == 1) {
-          finalNameMapping[attributes.Key] = attributes.Value[0];
-        } else if (attributes.Value[0].MemberInfo.MemberType == MemberTypes.Field) {
-          foreach (var attribute in attributes.Value) {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(attribute.MemberInfo.ReflectedType.FullName).Append('.')
-              .Append(attribute.MemberInfo.Name);
-            finalNameMapping[sb.ToString()] = attribute;
+      var memberInfos = new List<StorableMemberInfo>();
+      foreach (var storableMemberInfoGroup in nameGrouping.Values) {        
+        if (storableMemberInfoGroup.Count == 1) {
+          storableMemberInfoGroup[0].SetDisentangledName(storableMemberInfoGroup[0].MemberInfo.Name);
+          memberInfos.Add(storableMemberInfoGroup[0]);
+        } else if (storableMemberInfoGroup[0].MemberInfo.MemberType == MemberTypes.Field) {
+          foreach (var storableMemberInfo in storableMemberInfoGroup) {            
+            storableMemberInfo.SetDisentangledName(storableMemberInfo.FullyQualifiedMemberName);
+            memberInfos.Add(storableMemberInfo);
           }
-        } else {
-          var uniqueAccessors = new Dictionary<Type, StorableMemberInfo>();
-          foreach (var attribute in attributes.Value) {
-            uniqueAccessors[((PropertyInfo)attribute.MemberInfo).GetGetMethod(true).GetBaseDefinition().DeclaringType] =
-              attribute;
-          }
-          if (uniqueAccessors.Count == 1) {
-            var it = uniqueAccessors.Values.GetEnumerator();
-            it.MoveNext();
-            finalNameMapping[attributes.Key] = it.Current;
-          } else {
-            foreach (var attribute in uniqueAccessors.Values) {
-              StringBuilder sb = new StringBuilder();
-              sb.Append(attribute.MemberInfo.DeclaringType.FullName).Append('.')
-                .Append(attribute.MemberInfo.Name);
-              finalNameMapping[sb.ToString()] = attribute;
-            }
-          }
+        } else {          
+          memberInfos.AddRange(MergePropertyAccessors(storableMemberInfoGroup));
         }
       }
-      return finalNameMapping;
+      return memberInfos;
     }
-
-    private static Dictionary<string, List<StorableMemberInfo>> createNameMapping(Type type) {
-      var nameMapping = new Dictionary<string, List<StorableMemberInfo>>();
-      foreach (StorableMemberInfo storable in GetStorableMembers(type)) {
-        if (!nameMapping.ContainsKey(storable.MemberInfo.Name))
-          nameMapping[storable.MemberInfo.Name] = new List<StorableMemberInfo>();
-        nameMapping[storable.MemberInfo.Name].Add(storable);
+    
+    private static IEnumerable<StorableMemberInfo> MergePropertyAccessors(List<StorableMemberInfo> members) {
+      var uniqueAccessors = new Dictionary<Type, StorableMemberInfo>();
+      foreach (var member in members)
+        uniqueAccessors[member.GetPropertyDeclaringBaseType()] = member;                  
+      if (uniqueAccessors.Count == 1) {
+        var storableMemberInfo = uniqueAccessors.Values.First();
+        storableMemberInfo.SetDisentangledName(storableMemberInfo.MemberInfo.Name);
+        yield return storableMemberInfo;
+      } else {
+        foreach (var attribute in uniqueAccessors.Values) {
+          attribute.SetDisentangledName(attribute.FullyQualifiedMemberName);
+          yield return attribute;
+        }
       }
-      return nameMapping;
-    }
+    }    
   }
 }

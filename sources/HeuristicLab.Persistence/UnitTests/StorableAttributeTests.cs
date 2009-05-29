@@ -55,7 +55,10 @@ namespace HeuristicLab.Persistence.Test {
     [TestMethod]
     public void SimpleStorableAttributeTest() {
       DemoClass t = new DemoClass();
-      Dictionary<string, DataMemberAccessor> accessors = StorableAttribute.GetStorableAccessors(t);
+      IEnumerable<DataMemberAccessor> accessorList = StorableAttribute.GetStorableAccessors(t);
+      Dictionary<string, DataMemberAccessor> accessors = new Dictionary<string, DataMemberAccessor>();
+      foreach (var a in accessorList)
+        accessors.Add(a.Name, a);
       Assert.IsTrue(accessors.ContainsKey("TestProperty"));
       Assert.IsTrue(accessors.ContainsKey("x"));
       Assert.IsFalse(accessors.ContainsKey("y"));
@@ -77,7 +80,7 @@ namespace HeuristicLab.Persistence.Test {
       var accessors = StorableAttribute.GetStorableAccessors(n);
       var accessDict = new Dictionary<string, DataMemberAccessor>();
       foreach (var accessor in accessors) // assert uniqueness
-        accessDict.Add(accessor.Key, accessor.Value);
+        accessDict.Add(accessor.Name, accessor);
       Assert.IsTrue(accessDict.ContainsKey(typeof(New).FullName + ".Name"));
       Assert.IsTrue(accessDict.ContainsKey(typeof(Override).FullName + ".Name"));
       Assert.AreEqual("New", accessDict[typeof(New).FullName + ".Name"].Get());

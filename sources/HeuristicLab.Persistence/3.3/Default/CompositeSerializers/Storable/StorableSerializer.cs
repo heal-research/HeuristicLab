@@ -32,8 +32,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     public IEnumerable<Tag> Decompose(object obj) {
-      foreach (var mapping in StorableAttribute.GetStorableAccessors(obj)) {
-        yield return new Tag(mapping.Key, mapping.Value.Get());
+      foreach (var accessor in StorableAttribute.GetStorableAccessors(obj)) {
+        yield return new Tag(accessor.Name, accessor.Get());
       }
     }
 
@@ -47,12 +47,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
-      foreach (var mapping in StorableAttribute.GetStorableAccessors(instance)) {
-        string name = mapping.Key;
-        if (memberDict.ContainsKey(name)) {
-          mapping.Value.Set(memberDict[name].Value);
-        } else if (mapping.Value.DefaultValue != null) {
-          mapping.Value.Set(mapping.Value.DefaultValue);
+      foreach (var accessor in StorableAttribute.GetStorableAccessors(instance)) {        
+        if (memberDict.ContainsKey(accessor.Name)) {
+          accessor.Set(memberDict[accessor.Name].Value);          
+        } else if (accessor.DefaultValue != null) {
+          accessor.Set(accessor.DefaultValue);          
         }
       }
     }
