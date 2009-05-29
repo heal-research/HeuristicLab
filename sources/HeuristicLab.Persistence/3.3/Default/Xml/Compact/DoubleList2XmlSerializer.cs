@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 using HeuristicLab.Persistence.Core;
-using System.Globalization;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -17,13 +17,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     }
 
     protected override string FormatValue(object o) {
-      return ((double)o).ToString("r", CultureInfo.InvariantCulture);
+      return Double2XmlSerializer.FormatG17((double)o);
     }
 
     protected override object ParseValue(string o) {
-      if (o == CultureInfo.InvariantCulture.NumberFormat.NaNSymbol)
-        return double.NaN;
-      return double.Parse(o, CultureInfo.InvariantCulture);
+      return Double2XmlSerializer.ParseG17(o);
     }
 
   }

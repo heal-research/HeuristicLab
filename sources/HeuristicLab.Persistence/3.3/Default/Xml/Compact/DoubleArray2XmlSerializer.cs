@@ -1,19 +1,17 @@
 ﻿using System;
 using HeuristicLab.Persistence.Core;
-using System.Globalization;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   public abstract class DoubleArray2XmlSerializerBase<T> : NumberArray2XmlSerializerBase<T> where T : class {
 
     protected override string FormatValue(object o) {
-      return ((double)o).ToString("r", CultureInfo.InvariantCulture);
+      return Double2XmlSerializer.FormatG17((double)o);
     }
 
     protected override object ParseValue(string o) {
-      if (o == CultureInfo.InvariantCulture.NumberFormat.NaNSymbol)
-        return double.NaN;
-      return double.Parse(o, CultureInfo.InvariantCulture);
+      return Double2XmlSerializer.ParseG17(o);
     }
   }
 

@@ -150,7 +150,6 @@
     </Compile>
     <Compile Include="Default\Xml\Primitive\DateTime2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Decimal2XmlSerializer.cs" />
-    <Compile Include="Default\Xml\Primitive\DecimalNumber2XmlSerializerBase.cs" />
     <Compile Include="Default\Xml\Primitive\Double2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Float2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Guid2XmlSerializer.cs" />
