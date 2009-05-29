@@ -156,6 +156,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override bool doDelete(ClientGroup group) {
       if (group != null) {
+        //recursively delete all subgroups
+        foreach (Resource res in group.Resources) {
+          if (res is ClientGroup) {
+            Delete(res as ClientGroup);
+          }
+        }
+
         //delete all relationships
         ManyToManyRelationHelper.UpdateRelationships(group.Id,
           new List<Guid>());
