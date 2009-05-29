@@ -586,8 +586,8 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED;
           return response;
         }
-        job.State = State.finished;
-        jobAdapter.Update(job);
+        //job.State = State.finished;
+        //jobAdapter.Update(job);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
