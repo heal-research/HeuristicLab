@@ -156,8 +156,13 @@ namespace HeuristicLab.Hive.Client.Communication {
       try {
         if (ConnState == NetworkEnum.WcfConnState.Connected) {
           Response res = proxy.Login(clientInfo);
-          ConnState = NetworkEnum.WcfConnState.Loggedin;
-          Logging.Instance.Info(this.ToString(), res.StatusMessage);
+          if (!res.Success) {
+            Logging.Instance.Error(this.ToString(), "Login Failed! " + res.StatusMessage);
+            HandleNetworkError(null);
+          } else {
+            ConnState = NetworkEnum.WcfConnState.Loggedin;
+            Logging.Instance.Info(this.ToString(), res.StatusMessage);
+          }
         }
       }
       catch (Exception e) {
@@ -294,6 +299,17 @@ namespace HeuristicLab.Hive.Client.Communication {
     public ResponseResultReceived SendStoredJobResultsSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {      
       return proxy.StoreFinishedJobResultStreamed(
         GetStreamedJobResult(clientId, jobId, result, percentage, exception));
+    }
+
+    public Response IsJobStillNeeded(Guid jobId) {
+      try {
+        return proxy.IsJobStillNeeded(jobId);
+      }
+      catch (Exception e) {
+        HandleNetworkError(e);
+        return null;
+      }
+      
     }
 
     public ResponseResultReceived ProcessSnapshotSync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {

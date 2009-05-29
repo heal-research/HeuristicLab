@@ -71,6 +71,8 @@ namespace HeuristicLab.Hive.Client.Core {
 
       ConfigManager manager = ConfigManager.Instance;
       manager.Core = this;
+
+
       
       //Register all Wcf Service references
       wcfService = WcfService.Instance;

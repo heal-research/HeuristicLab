@@ -112,6 +112,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="HeuristicLab.Hive.log4net.xml" />
     <Content Include="log4net licence.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
