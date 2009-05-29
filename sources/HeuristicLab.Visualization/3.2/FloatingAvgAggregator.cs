@@ -34,7 +34,8 @@ namespace HeuristicLab.Visualization {
           refreshValue();
           break;
         case Action.Deleted:
-          refreshLastValues(row);
+          //refreshLastValues(row);
+          refreshValue();
           break;
         default:
           throw new ArgumentOutOfRangeException("action");
@@ -50,6 +51,12 @@ namespace HeuristicLab.Visualization {
     }
 
     private int area = 5;
+
+    public int Area{
+      get { return area; }
+      set { area = value; }
+    } 
+
     private void refreshValue() {
 
       if (dataRowWatches.Count >= 1) {
@@ -80,10 +87,41 @@ namespace HeuristicLab.Visualization {
       //OnDataRowChanged(this);                                     
     }
 
-#pragma warning disable 168
+
     private void refreshLastValues(IDataRow row) {
-#pragma warning restore 168
-      refreshValue();
+      if (dataRowWatches.Count >= 1) {
+        IDataRow watchedRow = dataRowWatches[0];
+
+        dataRow.Clear();
+
+        for (int i = 0; i < watchedRow.Count; i++) {
+
+          double avgVal = 0;
+          int count = 0;
+          for (int j = Math.Max(0, i - area); j < Math.Min(watchedRow.Count, i + area); j++) {
+            avgVal += watchedRow[j];
+            count++;
+          }
+
+          if (count >= 1)
+            avgVal /= count;
+
+          dataRow.Add(avgVal);
+
+          
+        }
+      }
+      //OnValueChanged(avgVal, dataRow.Count - 1, Action.Added);
+      OnValueChanged(dataRow[dataRow.Count-1], dataRow.Count - 1, Action.Added);
+      
+      double[] changeVals = new double[Math.Min(area, dataRow.Count-1)];
+      for (int i = 0; i < Math.Min(area, dataRow.Count-1); i++)
+      {
+        changeVals[i] = dataRow[Math.Max(0, dataRow.Count - area - 1 + i)];
+      }
+      OnValuesChanged(changeVals, Math.Max(dataRow.Count-area-1, 0), Action.Modified);
+      //OnDataRowChanged(this);        
+      
     }
 
     #region IDataRow Members
