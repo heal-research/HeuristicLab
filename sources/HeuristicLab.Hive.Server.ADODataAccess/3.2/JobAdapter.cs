@@ -354,32 +354,34 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     protected override void doUpdate(Job obj) {
-      ProjectAdapter.Update(obj.Project);
-      ClientAdapter.Update(obj.Client);
-      Update(obj.ParentJob);
+      if (obj != null) {
+        ProjectAdapter.Update(obj.Project);
+        ClientAdapter.Update(obj.Client);
+        Update(obj.ParentJob);
 
-      base.doUpdate(obj);
+        base.doUpdate(obj);
 
-      //update relationships
-      List<Guid> relationships =
-        new List<Guid>();
-      foreach (HivePluginInfo pluginInfo in obj.PluginsNeeded) {
-        //first check if pluginInfo already exists in the db
-        HivePluginInfo found = PluginInfoAdapter.GetByNameVersionBuilddate(
-          pluginInfo.Name, pluginInfo.Version, pluginInfo.BuildDate);
-        if (found != null) {
-          pluginInfo.Id = found.Id;
+        //update relationships
+        List<Guid> relationships =
+          new List<Guid>();
+        foreach (HivePluginInfo pluginInfo in obj.PluginsNeeded) {
+          //first check if pluginInfo already exists in the db
+          HivePluginInfo found = PluginInfoAdapter.GetByNameVersionBuilddate(
+            pluginInfo.Name, pluginInfo.Version, pluginInfo.BuildDate);
+          if (found != null) {
+            pluginInfo.Id = found.Id;
+          }
+
+          PluginInfoAdapter.Update(pluginInfo);
+          relationships.Add(pluginInfo.Id);
         }
 
-        PluginInfoAdapter.Update(pluginInfo);
-        relationships.Add(pluginInfo.Id);
+        PluginsManyToManyRelationHelper.UpdateRelationships(
+          obj.Id, relationships);
+
+        AssignedManyToManyRelationHelper.UpdateRelationships(
+          obj.Id, obj.AssignedResourceIds);
       }
-
-      PluginsManyToManyRelationHelper.UpdateRelationships(
-        obj.Id, relationships);
-
-      AssignedManyToManyRelationHelper.UpdateRelationships(
-        obj.Id, obj.AssignedResourceIds);
     }
 
     protected override bool doDelete(Job job) {
