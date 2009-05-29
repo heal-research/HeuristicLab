@@ -58,6 +58,8 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     public List<HivePluginInfo> PluginsNeeded { get; set; }
     [DataMember]
     public List<Guid> AssignedResourceIds { get; set; }
+    [DataMember]
+    public Project Project { get; set; }
 
     public Job() {
       PluginsNeeded = new List<HivePluginInfo>();
