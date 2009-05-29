@@ -1,14 +1,21 @@
-using System.Drawing;
+using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
   public abstract class DataRowBase : IDataRow {
-    private string label = "";
-    private Color color = Color.Black;
-    private int thickness = 2;
+    //private string label = "";
+    //private Color color = Color.Black;
+    //private int thickness = 2;
     private DrawingStyle style = DrawingStyle.Solid;
     private DataRowType lineType = DataRowType.Normal;
     private YAxisDescriptor yAxis;
     private bool showMarkers = true;
+
+    private DataRowSettings rowSettings = new DataRowSettings();
+
+    public DataRowSettings RowSettings {
+      get { return rowSettings; }
+      set { rowSettings = value; }
+    }
 
     public bool ShowMarkers {
       get { return showMarkers; }
@@ -18,29 +25,29 @@ namespace HeuristicLab.Visualization {
       }
     }          
 
-    public string Label {
-      get { return label; }
-      set {
-        label = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public Color Color {
-      get { return color; }
-      set {
-        color = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public int Thickness {
-      get { return thickness; }
-      set {
-        thickness = value;
-        OnDataRowChanged(this);
-      }
-    }
+//    public string Label {
+//      get { return label; }
+//      set {
+//        label = value;
+//        OnDataRowChanged(this);
+//      }
+//    }
+//
+//    public Color Color {
+//      get { return color; }
+//      set {
+//        color = value;
+//        OnDataRowChanged(this);
+//      }
+//    }
+//
+//    public int Thickness {
+//      get { return thickness; }
+//      set {
+//        thickness = value;
+//        OnDataRowChanged(this);
+//      }
+//    }
 
     public DrawingStyle Style {
       get { return style; }

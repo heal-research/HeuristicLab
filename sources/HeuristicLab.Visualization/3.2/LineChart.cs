@@ -365,7 +365,7 @@ namespace HeuristicLab.Visualization {
       row.ValuesChanged += OnRowValuesChanged;
       row.DataRowChanged += OnDataRowChanged;
 
-      legendShape.AddLegendItem(new LegendItem(row.Label, row.Color, row.Thickness));
+      legendShape.AddLegendItem(new LegendItem(row.RowSettings.Label, row.RowSettings.Color, row.RowSettings.Thickness));
       legendShape.CreateLegend();
 
       InitLineShapes(row);
@@ -465,23 +465,23 @@ namespace HeuristicLab.Visualization {
 
       if ((row.LineType == DataRowType.SingleValue)) {
         if (row.Count > 0) {
-          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
+          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.RowSettings.Color, row.RowSettings.Thickness,
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
         }
       } else if (row.LineType == DataRowType.Points) {
         rowEntry.showMarkers(true);      //no lines, only markers are shown!!
         for (int i = 0; i < row.Count; i++)
-          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i , row[i], 8, row.Color));
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i, row[i], 8, row.RowSettings.Color));
       } else if (row.LineType == DataRowType.Normal) {
         rowEntry.showMarkers(row.ShowMarkers);
         for (int i = 1; i < row.Count; i++) {
-          LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.Color, row.Thickness, row.Style);
+          LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.RowSettings.Color, row.RowSettings.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
-          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i - 1, row[i - 1], 8, row.Color));
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i - 1, row[i - 1], 8, row.RowSettings.Color));
         }
         if (row.Count > 0) {
-          rowEntry.LinesShape.AddMarkerShape(new MarkerShape((row.Count - 1), row[(row.Count - 1)], 8, row.Color));
+          rowEntry.LinesShape.AddMarkerShape(new MarkerShape((row.Count - 1), row[(row.Count - 1)], 8, row.RowSettings.Color));
         }
       }
 
@@ -500,7 +500,7 @@ namespace HeuristicLab.Visualization {
 
       if (row.LineType == DataRowType.SingleValue) {
         if (action == Action.Added) {
-          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.Color, row.Thickness,
+          LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.RowSettings.Color, row.RowSettings.Thickness,
                                                         row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
         } else if(action==Action.Deleted) {
@@ -513,12 +513,12 @@ namespace HeuristicLab.Visualization {
       } else if (row.LineType == DataRowType.Points) {
         if (action == Action.Added) {
           if(rowEntry.LinesShape.Count==0)
-            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.Color));
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.RowSettings.Color));
           if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
-            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.Color, row.Thickness,
+            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.RowSettings.Color, row.RowSettings.Thickness,
                                                 row.Style);
             rowEntry.LinesShape.AddShape(lineShape);
-            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.RowSettings.Color));
           } else {
             throw new ArgumentException("Adding a value is only possible at the end of a row!");
           }
@@ -548,12 +548,12 @@ namespace HeuristicLab.Visualization {
 
         if (action == Action.Added) {
           if (rowEntry.LinesShape.Count == 0)
-            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.Color));
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.RowSettings.Color));
           if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
-            LineShape lineShape = new LineShape(index-1, row[index-1], index, row[index], row.Color, row.Thickness,
+            LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.RowSettings.Color, row.RowSettings.Thickness,
                                                 row.Style);
             rowEntry.LinesShape.AddShape(lineShape);
-            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.Color));
+            rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.RowSettings.Color));
           }
         } else if (action == Action.Modified) {
           // not the first value
@@ -743,9 +743,9 @@ namespace HeuristicLab.Visualization {
         foreach (IShape shape in shapes) {
           LineShape lineShape = shape as LineShape;
           if (lineShape != null) {
-            lineShape.LSColor = row.Color;
+            lineShape.LSColor = row.RowSettings.Color;
             lineShape.LSDrawingStyle = row.Style;
-            lineShape.LSThickness = row.Thickness;
+            lineShape.LSThickness = row.RowSettings.Thickness;
           }
         }
         markersShape.ShowChildShapes = row.ShowMarkers;

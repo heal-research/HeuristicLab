@@ -21,17 +21,17 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row2 = new DataRow();
       IDataRow row3 = new DataRow();
 
-      row1.Color = Color.Red;
-      row2.Color = Color.Green;
-      row3.Color = Color.Blue;
+      row1.RowSettings.Color = Color.Red;
+      row2.RowSettings.Color = Color.Green;
+      row3.RowSettings.Color = Color.Blue;
 
-      row1.Thickness = 3;
-      row2.Thickness = 4;
-      row3.Thickness = 5;
+      row1.RowSettings.Thickness = 3;
+      row2.RowSettings.Thickness = 4;
+      row3.RowSettings.Thickness = 5;
 
-      row1.Label = "Simon";
-      row2.Label = "Gertschi";
-      row3.Label = "Maxi";
+      row1.RowSettings.Label = "Simon";
+      row2.RowSettings.Label = "Gertschi";
+      row3.RowSettings.Label = "Maxi";
 
       row1.Style = DrawingStyle.Solid;
       row2.Style = DrawingStyle.Solid;
@@ -97,20 +97,20 @@ namespace HeuristicLab.Visualization.Test {
       yaxis2.Position = AxisPosition.Right;
       yaxis2.ShowGrid = false;
 
-      row1.Color = Color.Red;
-      row1.Thickness = 3;
+      row1.RowSettings.Color = Color.Red;
+      row1.RowSettings.Thickness = 3;
       row1.Style = DrawingStyle.Solid;
-      row1.Label = "Die Rote";
+      row1.RowSettings.Label = "Die Rote";
 
-      row2.Color = Color.Green;
-      row2.Thickness = 3;
+      row2.RowSettings.Color = Color.Green;
+      row2.RowSettings.Thickness = 3;
       row2.Style = DrawingStyle.Solid;
-      row2.Label = "Die Grüne";
+      row2.RowSettings.Label = "Die Grüne";
 
-      row3.Color = Color.Blue;
-      row3.Thickness = 3;
+      row3.RowSettings.Color = Color.Blue;
+      row3.RowSettings.Thickness = 3;
       row3.Style = DrawingStyle.Solid;
-      row3.Label = "Die Blaue";
+      row3.RowSettings.Label = "Die Blaue";
       row3.YAxis = yaxis2;
 
       model.AddDataRow(row1);
@@ -138,18 +138,21 @@ namespace HeuristicLab.Visualization.Test {
     public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 
-      IDataRow row1 = new DataRow { Label = "row", Color = Color.Red, Thickness = 3, Style = DrawingStyle.Solid };
+      IDataRow row1 = new DataRow();
+      row1.RowSettings.Label = "row";
+      row1.RowSettings.Color = Color.Red;
+      row1.RowSettings.Thickness = 3;
+      row1.Style = DrawingStyle.Solid;
 
       model.AddDataRow(row1);
 
 
-      MaxAggregator aggregator = new MaxAggregator {
-        Label = "MinAggregator",
-        Color = Color.Pink,
-        Thickness = 5,
-        Style = DrawingStyle.Solid,
-        LineType = DataRowType.SingleValue
-      };
+      MaxAggregator aggregator = new MaxAggregator();
+      aggregator.RowSettings.Label = "MinAggregator";
+      aggregator.RowSettings.Color = Color.Pink;
+      aggregator.RowSettings.Thickness = 5;
+      aggregator.Style = DrawingStyle.Solid;
+      aggregator.LineType = DataRowType.SingleValue;
       aggregator.AddWatch(row1);
 
       model.AddDataRow(aggregator);
@@ -174,44 +177,51 @@ namespace HeuristicLab.Visualization.Test {
       }
 
       public void DoWorkMultiLine() {
-        IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 2, Label = "Sinus", Style = DrawingStyle.Solid, ShowMarkers = false };
+        IDataRow row1 = new DataRow();
+        row1.RowSettings.Color = Color.Red;
+        row1.RowSettings.Thickness = 2;
+        row1.RowSettings.Label = "Sinus";
+        row1.Style = DrawingStyle.Solid;
+        row1.ShowMarkers = false;
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow { Color = Color.Red, Thickness = 3, Label = "Growing", Style = DrawingStyle.Solid, ShowMarkers = false };
+        IDataRow row2 = new DataRow();
+        row2.RowSettings.Color = Color.Red;
+        row2.RowSettings.Thickness = 3;
+        row2.RowSettings.Label = "Growing";
+        row2.Style = DrawingStyle.Solid;
+        row2.ShowMarkers = false;
         model.AddDataRow(row2);
 
-        AvgAggregator multiAvgAggregator = new AvgAggregator {
-          Label = "MultiAvgAggregator",
-          Color = Color.DarkOliveGreen,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue,
-          ShowMarkers = false
-        };
+        AvgAggregator multiAvgAggregator = new AvgAggregator();
+        multiAvgAggregator.RowSettings.Label = "MultiAvgAggregator";
+        multiAvgAggregator.RowSettings.Color = Color.DarkOliveGreen;
+        multiAvgAggregator.RowSettings.Thickness = 3;
+        multiAvgAggregator.Style = DrawingStyle.Solid;
+        multiAvgAggregator.LineType = DataRowType.SingleValue;
+        multiAvgAggregator.ShowMarkers = false;
         multiAvgAggregator.AddWatch(row1);
         multiAvgAggregator.AddWatch(row2);
         model.AddDataRow(multiAvgAggregator);
 
-        MaxAggregator multiMaxAggregator = new MaxAggregator {
-          Label = "MultiMaxAggregator",
-          Color = Color.DarkKhaki,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue,
-          ShowMarkers = false
-        };
+        MaxAggregator multiMaxAggregator = new MaxAggregator();
+        multiMaxAggregator.RowSettings.Label = "MultiMaxAggregator";
+        multiMaxAggregator.RowSettings.Color = Color.DarkKhaki;
+        multiMaxAggregator.RowSettings.Thickness = 3;
+        multiMaxAggregator.Style = DrawingStyle.Solid;
+        multiMaxAggregator.LineType = DataRowType.SingleValue;
+        multiMaxAggregator.ShowMarkers = false;
         multiMaxAggregator.AddWatch(row1);
         multiMaxAggregator.AddWatch(row2);
         model.AddDataRow(multiMaxAggregator);
 
-        MinAggregator multiMinAggregator = new MinAggregator {
-          Label = "MultiMinAggregator",
-          Color = Color.DarkRed,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue,
-          ShowMarkers = false
-        };
+        MinAggregator multiMinAggregator = new MinAggregator();
+        multiMinAggregator.RowSettings.Label = "MultiMinAggregator";
+        multiMinAggregator.RowSettings.Color = Color.DarkRed;
+        multiMinAggregator.RowSettings.Thickness = 3;
+        multiMinAggregator.Style = DrawingStyle.Solid;
+        multiMinAggregator.LineType = DataRowType.SingleValue;
+        multiMinAggregator.ShowMarkers = false;
         multiMinAggregator.AddWatch(row1);
         multiMinAggregator.AddWatch(row2);
         model.AddDataRow(multiMinAggregator);
@@ -245,51 +255,46 @@ namespace HeuristicLab.Visualization.Test {
       }
 
       public void DoWorkSingleLine() {
-        IDataRow row1 = new DataRow {
-          Color = Color.Red,
-          Thickness = 2,
-          Label = "Sinus",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row1 = new DataRow();
+        row1.RowSettings.Color = Color.Red;
+        row1.RowSettings.Thickness = 2;
+        row1.RowSettings.Label = "Sinus";
+        row1.Style = DrawingStyle.Solid;
+        row1.ShowMarkers = false;
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow {
-          Color = Color.Red,
-          Thickness = 3,
-          Label = "Growing",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row2 = new DataRow();
+        row2.RowSettings.Color = Color.Red;
+        row2.RowSettings.Thickness = 3;
+        row2.RowSettings.Label = "Growing";
+        row2.Style = DrawingStyle.Solid;
+        row2.ShowMarkers = false;
         model.AddDataRow(row2);
 
-        MinAggregator aggregator = new MinAggregator {
-          Label = "MinAggregator",
-          Color = Color.Pink,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue
-        };
+        MinAggregator aggregator = new MinAggregator();
+        aggregator.RowSettings.Label = "MinAggregator";
+        aggregator.RowSettings.Color = Color.Pink;
+        aggregator.RowSettings.Thickness = 3;
+        aggregator.Style = DrawingStyle.Solid;
+        aggregator.LineType = DataRowType.SingleValue;
         aggregator.AddWatch(row1);
         model.AddDataRow(aggregator);
 
-        MaxAggregator maxAggregator = new MaxAggregator {
-          Label = "MaxAggregator",
-          Color = Color.DeepSkyBlue,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue
-        };
+        MaxAggregator maxAggregator = new MaxAggregator();
+        maxAggregator.RowSettings.Label = "MaxAggregator";
+        maxAggregator.RowSettings.Color = Color.DeepSkyBlue;
+        maxAggregator.RowSettings.Thickness = 3;
+        maxAggregator.Style = DrawingStyle.Solid;
+        maxAggregator.LineType = DataRowType.SingleValue;
         maxAggregator.AddWatch(row1);
         model.AddDataRow(maxAggregator);
 
-        AvgAggregator avgAggregator = new AvgAggregator {
-          Label = "AvgAggregator",
-          Color = Color.Violet,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.SingleValue
-        };
+        AvgAggregator avgAggregator = new AvgAggregator();
+        avgAggregator.RowSettings.Label = "AvgAggregator";
+        avgAggregator.RowSettings.Color = Color.Violet;
+        avgAggregator.RowSettings.Thickness = 3;
+        avgAggregator.Style = DrawingStyle.Solid;
+        avgAggregator.LineType = DataRowType.SingleValue;
         avgAggregator.AddWatch(row1);
         model.AddDataRow(avgAggregator);
 
@@ -309,32 +314,29 @@ namespace HeuristicLab.Visualization.Test {
       }
 
       public void DoWorkAvgLine() {
-        IDataRow row1 = new DataRow {
-          Color = Color.Red,
-          Thickness = 2,
-          Label = "Sinus",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row1 = new DataRow();
+        row1.RowSettings.Color = Color.Red;
+        row1.RowSettings.Thickness = 2;
+        row1.RowSettings.Label = "Sinus";
+        row1.Style = DrawingStyle.Solid;
+        row1.ShowMarkers = false;
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow {
-          Color = Color.Red,
-          Thickness = 3,
-          Label = "Growing",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row2 = new DataRow();
+        row2.RowSettings.Color = Color.Red;
+        row2.RowSettings.Thickness = 3;
+        row2.RowSettings.Label = "Growing";
+        row2.Style = DrawingStyle.Solid;
+        row2.ShowMarkers = false;
         model.AddDataRow(row2);
 
-        AvgLineAggregator avgLineAggregator = new AvgLineAggregator {
-          Label = "AvgLineAggregator",
-          Color = Color.Violet,
-          Thickness = 3,
-          Style = DrawingStyle.Solid,
-          LineType = DataRowType.Normal,
-          ShowMarkers = false
-        };
+        AvgLineAggregator avgLineAggregator = new AvgLineAggregator();
+        avgLineAggregator.RowSettings.Label = "AvgLineAggregator";
+        avgLineAggregator.RowSettings.Color = Color.Violet;
+        avgLineAggregator.RowSettings.Thickness = 3;
+        avgLineAggregator.Style = DrawingStyle.Solid;
+        avgLineAggregator.LineType = DataRowType.Normal;
+        avgLineAggregator.ShowMarkers = false;
         avgLineAggregator.AddWatch(row1);
         avgLineAggregator.AddWatch(row2);
         model.AddDataRow(avgLineAggregator);
@@ -354,42 +356,38 @@ namespace HeuristicLab.Visualization.Test {
       }
 
       public void DoWorkFloatingAvg() {
-        IDataRow row1 = new DataRow {
-          Color = Color.Red,
-          Thickness = 2,
-          Label = "SinusHacked",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row1 = new DataRow();
+        row1.RowSettings.Color = Color.Red;
+        row1.RowSettings.Thickness = 2;
+        row1.RowSettings.Label = "SinusHacked";
+        row1.Style = DrawingStyle.Solid;
+        row1.ShowMarkers = false;
         model.AddDataRow(row1);
 
-        IDataRow row2 = new DataRow {
-          Color = Color.Red,
-          Thickness = 3,
-          Label = "GrowingHacked",
-          Style = DrawingStyle.Solid,
-          ShowMarkers = false
-        };
+        IDataRow row2 = new DataRow();
+        row2.RowSettings.Color = Color.Red;
+        row2.RowSettings.Thickness = 3;
+        row2.RowSettings.Label = "GrowingHacked";
+        row2.Style = DrawingStyle.Solid;
+        row2.ShowMarkers = false;
         model.AddDataRow(row2);
 
-        FloatingAvgAggregator avgAggregator = new FloatingAvgAggregator {
-                                                                          Thickness = 2,
-                                                                          Label = "floatingAvg",
-                                                                          Color = Color.Peru,
-                                                                          ShowMarkers = false,
-                                                                          Style = DrawingStyle.Solid
-                                                                        };
+        FloatingAvgAggregator avgAggregator = new FloatingAvgAggregator();
+        avgAggregator.RowSettings.Thickness = 2;
+        avgAggregator.RowSettings.Label = "floatingAvg";
+        avgAggregator.RowSettings.Color = Color.Peru;
+        avgAggregator.ShowMarkers = false;
+        avgAggregator.Style = DrawingStyle.Solid;
 
         avgAggregator.AddWatch(row1);
         model.AddDataRow(avgAggregator);
 
-        FloatingAvgAggregator avgAggregator2 = new FloatingAvgAggregator {
-          Thickness = 2,
-          Label = "floatingAvg",
-          Color = Color.Aqua,
-          ShowMarkers = false,
-          Style = DrawingStyle.Solid
-        };
+        FloatingAvgAggregator avgAggregator2 = new FloatingAvgAggregator();
+        avgAggregator2.RowSettings.Thickness = 2;
+        avgAggregator2.RowSettings.Label = "floatingAvg";
+        avgAggregator2.RowSettings.Color = Color.Aqua;
+        avgAggregator2.ShowMarkers = false;
+        avgAggregator2.Style = DrawingStyle.Solid;
 
         avgAggregator2.AddWatch(row2);
         model.AddDataRow(avgAggregator2);
@@ -489,7 +487,10 @@ namespace HeuristicLab.Visualization.Test {
 
     [Test]
     public void TestAutoZoomInConstructor() {
-      IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 3, Style = DrawingStyle.Solid };
+      IDataRow row1 = new DataRow();
+      row1.RowSettings.Color = Color.Red;
+      row1.RowSettings.Thickness = 3;
+      row1.Style = DrawingStyle.Solid;
 
       model.AddDataRow(row1);
 
@@ -517,29 +518,29 @@ namespace HeuristicLab.Visualization.Test {
       IDataRow row5 = new DataRow();
       IDataRow row6 = new DataRow();
 
-      row1.Color = Color.Red;
-      row2.Color = Color.Green;
-      row3.Color = Color.Blue;
+      row1.RowSettings.Color = Color.Red;
+      row2.RowSettings.Color = Color.Green;
+      row3.RowSettings.Color = Color.Blue;
 
-      row4.Color = Color.DeepPink;
-      row5.Color = Color.Firebrick;
-      row6.Color = Color.DarkSlateGray;
+      row4.RowSettings.Color = Color.DeepPink;
+      row5.RowSettings.Color = Color.Firebrick;
+      row6.RowSettings.Color = Color.DarkSlateGray;
 
-      row1.Thickness = 3;
-      row2.Thickness = 4;
-      row3.Thickness = 5;
+      row1.RowSettings.Thickness = 3;
+      row2.RowSettings.Thickness = 4;
+      row3.RowSettings.Thickness = 5;
 
-      row4.Thickness = 3;
-      row5.Thickness = 4;
-      row6.Thickness = 5;
+      row4.RowSettings.Thickness = 3;
+      row5.RowSettings.Thickness = 4;
+      row6.RowSettings.Thickness = 5;
 
-      row1.Label = "SingleValue";
-      row2.Label = "Gertschi";
-      row3.Label = "Maxi";
+      row1.RowSettings.Label = "SingleValue";
+      row2.RowSettings.Label = "Gertschi";
+      row3.RowSettings.Label = "Maxi";
 
-      row4.Label = "Simon";
-      row5.Label = "klausmuellerwesternhagenunddierasperies";
-      row6.Label = "anyways";
+      row4.RowSettings.Label = "Simon";
+      row5.RowSettings.Label = "klausmuellerwesternhagenunddierasperies";
+      row6.RowSettings.Label = "anyways";
 
       row1.Style = DrawingStyle.Solid;
       row2.Style = DrawingStyle.Solid;
@@ -586,7 +587,10 @@ namespace HeuristicLab.Visualization.Test {
 
     [Test]
     public void TestPointLines() {
-      IDataRow row1 = new DataRow { Color = Color.Red, Thickness = 3, Style = DrawingStyle.Dashed };
+      IDataRow row1 = new DataRow();
+      row1.RowSettings.Color = Color.Red;
+      row1.RowSettings.Thickness = 3;
+      row1.Style = DrawingStyle.Dashed;
 
       row1.LineType = DataRowType.Points;
       model.AddDataRow(row1);

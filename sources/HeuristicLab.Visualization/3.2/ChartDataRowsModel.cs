@@ -120,7 +120,7 @@ namespace HeuristicLab.Visualization{
         XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
 
         XmlAttribute idAttr = document.CreateAttribute("label");
-        idAttr.Value = row.Label;
+        idAttr.Value = row.RowSettings.Label;
         columnElement.Attributes.Append(idAttr);
 
         StringBuilder builder = new StringBuilder();
@@ -155,7 +155,7 @@ namespace HeuristicLab.Visualization{
           XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
           string rowLabel = rowIdAttr.Value;
           DataRow row = new DataRow();
-          row.Label = rowLabel;
+          row.RowSettings.Label = rowLabel;
 
           string[] tokens = dataRow.InnerText.Split(';');
           double[] data = new double[tokens.Length];

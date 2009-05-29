@@ -1,4 +1,4 @@
-using System.Drawing;
+using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
   public enum DataRowType {
@@ -7,12 +7,13 @@ namespace HeuristicLab.Visualization {
   }
 
   public interface IDataRow {
-    string Label { get; set; }
-    Color Color { get; set; }
-    int Thickness { get; set; }
+    //string Label { get; set; }
+    //Color Color { get; set; }
+    //int Thickness { get; set; }
     DrawingStyle Style { get; set; }
     DataRowType LineType { get; set; }
     bool ShowMarkers { get; set; }
+    DataRowSettings RowSettings { get; set; }
  
     YAxisDescriptor YAxis { get; set; }
 

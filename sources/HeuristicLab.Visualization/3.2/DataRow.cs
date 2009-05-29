@@ -17,7 +17,6 @@ namespace HeuristicLab.Visualization {
   public class DataRow : DataRowBase {
     private readonly List<double> dataRow = new List<double>();
 
-    // TODO implement calculation of min and max values
     private double minValue = double.MaxValue;
     private double maxValue = double.MinValue;
 
@@ -25,22 +24,22 @@ namespace HeuristicLab.Visualization {
     }
     
     public DataRow(string label) {
-      this.Label = label;
+      this.RowSettings.Label = label;
     }
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
-      this.Label = label;
-      this.Color = color;
-      this.Thickness = thickness;
+      this.RowSettings.Label = label;
+      this.RowSettings.Color = color;
+      this.RowSettings.Thickness = thickness;
       this.Style = style;
       this.dataRow = dataRow;
       this.ShowMarkers = true;
     }
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow, bool showMarkers) {
-      this.Label = label;
-      this.Color = color;
-      this.Thickness = thickness;
+      this.RowSettings.Label = label;
+      this.RowSettings.Color = color;
+      this.RowSettings.Thickness = thickness;
       this.Style = style;
       this.ShowMarkers = showMarkers;
       this.dataRow = dataRow;

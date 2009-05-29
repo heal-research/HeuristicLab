@@ -28,7 +28,7 @@ namespace HeuristicLab.Visualization.DataExport {
         // write headers
         writer.AddString(model.XAxis.Label);
         foreach (IDataRow row in model.Rows)
-          writer.AddString(row.Label);
+          writer.AddString(row.RowSettings.Label);
         writer.NewLine();
 
         // figure out max number of rows in all data rows

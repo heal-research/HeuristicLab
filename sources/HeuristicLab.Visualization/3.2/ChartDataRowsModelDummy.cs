@@ -14,14 +14,14 @@ namespace HeuristicLab.Visualization{
 
       // TODO change to call new DataRow("Datarow 1");
       DataRow row1 = new DataRow();
-      row1.Label = "Datarow 1";
-      row1.Color = Color.Red;
+      row1.RowSettings.Label = "Datarow 1";
+      row1.RowSettings.Color = Color.Red;
       DataRow row2 = new DataRow();
-      row2.Label = "Datarow 2";
-      row2.Color = Color.Blue;
+      row2.RowSettings.Label = "Datarow 2";
+      row2.RowSettings.Color = Color.Blue;
       DataRow row3 = new DataRow();
-      row3.Label = "Datarow 3";
-      row3.Color = Color.DeepPink;
+      row3.RowSettings.Label = "Datarow 3";
+      row3.RowSettings.Color = Color.DeepPink;
 
       AddDataRow(row1);
       AddDataRow(row2);
