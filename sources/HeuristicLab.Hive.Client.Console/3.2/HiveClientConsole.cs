@@ -38,6 +38,7 @@ namespace HeuristicLab.Hive.Client.Console
   #region Delegates
 
   public delegate void AppendTextDelegate(String message);
+  public delegate void RemoveTextDelegate(int newLength, int maxChars);
   public delegate void OnDialogClosedDelegate(RecurrentEvent e);
 
   #endregion
@@ -84,17 +85,29 @@ namespace HeuristicLab.Hive.Client.Console
       logFileReader.Start();
     }
 
-    void logFileReader_MoreData(object sender, string newData) {
-
+    private void logFileReader_MoreData(object sender, string newData) {
       int maxChars = txtLog.MaxLength;
       if (newData.Length > maxChars) {
         newData = newData.Remove(0, newData.Length - maxChars);
       }
       int newLength = this.txtLog.Text.Length + newData.Length;
       if (newLength > maxChars) {
-        this.txtLog.Text = this.txtLog.Text.Remove(0, newLength - (int)maxChars);
+          RemoveText(newLength, maxChars);
       }
       AppendText(newData);
+    }
+
+    private void RemoveText(int newLength, int maxChars)
+    {
+        if (this.txtLog.InvokeRequired)
+        {
+            this.txtLog.Invoke(new
+              RemoveTextDelegate(RemoveText), new object[] { newLength, maxChars });
+        }
+        else
+        {
+            this.txtLog.Text = this.txtLog.Text.Remove(0, newLength - (int)maxChars);
+        }
     }
 
     private void InitTimer()
@@ -360,6 +373,7 @@ namespace HeuristicLab.Hive.Client.Console
       DialogResult res = MessageBox.Show("Do you really want to shutdown the Hive Client?", "Hive Client Console", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
       if (res == DialogResult.Yes)
       {
+          logFileReader.Stop();
         cccc.ShutdownClient();
         this.Close();
       }
@@ -392,7 +406,7 @@ namespace HeuristicLab.Hive.Client.Console
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e)
     {
-      btCreate.Enabled = true;
+      //btCreate.Enabled = true;
       if (dvOnline.Selection == SelectionType.DateRange)
       {
         dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
@@ -412,7 +426,7 @@ namespace HeuristicLab.Hive.Client.Console
         txttimeTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortTimeString();
 
         if (dvOnline.SelectedAppointment.Recurring)
-          btCreate.Enabled = false;
+          //btCreate.Enabled = false;
         //also change the caption of the save button
         btCreate.Text = "Save changes";
       }
@@ -513,9 +527,11 @@ namespace HeuristicLab.Hive.Client.Console
 
     private void ChangeRecurrenceAppointment(Guid recurringId)
     {
-      List<Appointment> recurringAppointments = onlineTimes.Where(appointment => appointment.RecurringId == recurringId).ToList();
-      recurringAppointments.ForEach(appointment => appointment.StartDate = DateTime.Parse(appointment.StartDate.Date.ToString() + " " + txttimeFrom.Text));
-      recurringAppointments.ForEach(appointment => appointment.EndDate = DateTime.Parse(appointment.EndDate.Date.ToString() + " " + txttimeTo.Text));
+      int hourfrom = int.Parse(txttimeFrom.Text.Substring(0, txttimeFrom.Text.IndexOf(':')));
+      int hourTo = int.Parse(txttimeTo.Text.Substring(0, txttimeTo.Text.IndexOf(':')));
+      List<Appointment> recurringAppointments = onlineTimes.Where(appointment => appointment.RecurringId == recurringId).ToList();      
+      recurringAppointments.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0 ));
+      recurringAppointments.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
 
       DeleteRecurringAppointment(recurringId);
       onlineTimes.AddRange(recurringAppointments);
