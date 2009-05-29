@@ -29,6 +29,7 @@ using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.DataAccess.Interfaces;
+using System.Data;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
@@ -355,46 +356,119 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseList<Project> GetAllProjects() {
-      IList<Project> testList = new List<Project>();
-
-      Project p1 = new Project();
-      p1.Id = Guid.NewGuid();
-      p1.Name = "TestProject1";
-      Project p2 = new Project();
-      p2.Id = Guid.NewGuid();
-      p2.Name = "TestProject2";
-      Project p3 = new Project();
-      p3.Id = Guid.NewGuid();
-      p3.Name = "TestProject3";
-      Project p4 = new Project();
-      p4.Id = Guid.NewGuid();
-      p4.Name = "TestProject4";
-      testList.Add(p1);
-      testList.Add(p2);
-      testList.Add(p3);
-      testList.Add(p4);
-
+      ISession session = factory.GetSessionForCurrentThread();
       ResponseList<Project> response = new ResponseList<Project>();
-      response.List = testList;
-      response.Success = true;
 
+      try {
+        IProjectAdapter projectAdapter =
+          session.GetDataAdapter<Project, IProjectAdapter>();
+
+        List<Project> allProjects = new List<Project>(projectAdapter.GetAll());
+        response.List = allProjects;
+        response.Success = true;
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    private Response createUpdateProject(Project project) {
+      ISession session = factory.GetSessionForCurrentThread();
+      Response response = new Response();
+      ITransaction tx = null;
+
+      try {
+        IProjectAdapter projectAdapter =
+          session.GetDataAdapter<Project, IProjectAdapter>();
+
+        if (project.Name == null || project.Name == "") {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_NAME_EMPTY;
+          return response;
+        }
+        tx = session.BeginTransaction();
+        projectAdapter.Update(project);
+
+        tx.Commit();
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_ADDED;
+      } catch (ConstraintException ce) {
+        if (tx != null)
+          tx.Rollback();
+        response.Success = false;
+        response.StatusMessage = ce.Message;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
       return response;
     }
 
     public Response CreateProject(Project project) {
-      throw new NotImplementedException();
+      return createUpdateProject(project);
     }
 
     public Response ChangeProject(Project project) {
-      throw new NotImplementedException();
+      return createUpdateProject(project);
     }
 
     public Response DeleteProject(Guid projectId) {
-      throw new NotImplementedException();
+      ISession session = factory.GetSessionForCurrentThread();
+      Response response = new Response();
+      ITransaction tx = null;
+
+      try {
+        IProjectAdapter projectAdapter =
+          session.GetDataAdapter<Project, IProjectAdapter>();
+
+        Project project = projectAdapter.GetById(projectId);
+        if (project == null) {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_DOESNT_EXIST;
+          return response;
+        }
+        projectAdapter.Delete(project);
+        tx.Commit();
+        response.Success = true;
+        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_PROJECT_DELETED;
+      }
+      catch (Exception e) {
+        if (tx != null)
+          tx.Rollback();
+        response.Success = false;
+        response.StatusMessage = e.Message;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+      return response;
     }
 
     public ResponseList<Job> GetJobsByProject(Guid projectId) {
-      throw new NotImplementedException();
+      ISession session = factory.GetSessionForCurrentThread();
+      ResponseList<Job> response = new ResponseList<Job>();
+
+      try {
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+        List<Job> jobsByProject = new List<Job>(jobAdapter.GetJobsByProject(projectId));
+        response.List = jobsByProject;
+        response.Success = true;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+      return response;
     }
 
     #endregion

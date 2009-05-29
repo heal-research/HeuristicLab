@@ -95,5 +95,9 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_JOB_REQUEST_SET = "Job.RequestSet";
     public static string RESPONSE_JOB_ABORT_REQUEST_SET = "Job.AbortRequestSet";
     public static string RESPONSE_JOB_RESULT_NOT_YET_HERE = "Requested job result is not yet finished";
+    public static string RESPONSE_JOB_PROJECT_NAME_EMPTY = "Please specifiy a project name";
+    public static string RESPONSE_JOB_PROJECT_ADDED = "Project successfully added";
+    public static string RESPONSE_JOB_PROJECT_DOESNT_EXIST = "The specified project doesn't exist";
+    public static string RESPONSE_JOB_PROJECT_DELETED = "The project was sucessfully deleted";
   }
 }
