@@ -68,5 +68,12 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="user"></param>
     /// <returns></returns>
     ICollection<Job> GetJobsOf(Guid userId);
+
+    /// <summary>
+    /// Gets all jobs of the project
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    ICollection<Job> GetJobsByProject(Guid projectId);
   }
 }

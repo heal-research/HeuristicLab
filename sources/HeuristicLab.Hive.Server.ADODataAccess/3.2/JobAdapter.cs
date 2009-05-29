@@ -301,6 +301,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
            });
     }
 
+    public ICollection<Job> GetJobsByProject(Guid projectId) {
+      throw new NotImplementedException();
+    }
+
     protected override void doUpdate(Job obj) {
       base.doUpdate(obj);
 
@@ -354,6 +358,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       return false;
     }
+
     #endregion
   }
 }
