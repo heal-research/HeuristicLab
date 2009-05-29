@@ -227,18 +227,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         row.JobId = job.Id;
         
         if (job.Client != null) {
-          if (row.IsResourceIdNull() ||
-            row.ResourceId != job.Client.Id) {
-            ClientAdapter.Update(job.Client);
+          if (row.IsResourceIdNull()) {
             row.ResourceId = job.Client.Id;
           }
         } else
           row.SetResourceIdNull();
 
         if (job.ParentJob != null) {
-          if (row.IsParentJobIdNull() ||
-            row.ParentJobId != job.ParentJob.Id) {
-            Update(job.ParentJob);
+          if (row.IsParentJobIdNull()) {
             row.ParentJobId = job.ParentJob.Id;
           }
         } else
@@ -359,7 +355,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
     protected override void doUpdate(Job obj) {
       ProjectAdapter.Update(obj.Project);
-      
+      ClientAdapter.Update(obj.Client);
+      Update(obj.ParentJob);
+
       base.doUpdate(obj);
 
       //update relationships
