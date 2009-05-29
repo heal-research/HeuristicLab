@@ -179,12 +179,6 @@ namespace HeuristicLab.Hive.Server.Core {
         }
         heartbeatLock.ExitWriteLock();
 
-        ClientInfo client = clientAdapter.GetById(clientInfo.Id);
-        if (client != null && client.State != State.offline && client.State != State.nullState) {
-          response.Success = false;
-          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_LOGIN_USER_ALLREADY_ONLINE;
-          return response;
-        }
         clientInfo.State = State.idle;
         clientAdapter.Update(clientInfo);
         response.Success = true;
