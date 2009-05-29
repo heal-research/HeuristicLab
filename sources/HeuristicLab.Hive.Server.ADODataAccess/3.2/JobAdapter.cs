@@ -41,21 +41,41 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #region Fields
     private ManyToManyRelationHelper<
       dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
-      dsHiveServer.RequiredPluginsRow> manyToManyRelationHelper = null;
+      dsHiveServer.RequiredPluginsRow> pluginsManyToManyRelationHelper = null;
 
     private ManyToManyRelationHelper<
       dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
-      dsHiveServer.RequiredPluginsRow> ManyToManyRelationHelper {
+      dsHiveServer.RequiredPluginsRow> PluginsManyToManyRelationHelper {
       get {
-        if (manyToManyRelationHelper == null) {
-          manyToManyRelationHelper =
+        if (pluginsManyToManyRelationHelper == null) {
+          pluginsManyToManyRelationHelper =
             new ManyToManyRelationHelper<dsHiveServerTableAdapters.RequiredPluginsTableAdapter,
               dsHiveServer.RequiredPluginsRow>(new RequiredPluginsAdapterWrapper(), 1);
         }
 
-        manyToManyRelationHelper.Session = Session as Session;
+        pluginsManyToManyRelationHelper.Session = Session as Session;
 
-        return manyToManyRelationHelper;
+        return pluginsManyToManyRelationHelper;
+      }
+    }
+
+    private ManyToManyRelationHelper<
+      dsHiveServerTableAdapters.AssignedResourcesTableAdapter,
+      dsHiveServer.AssignedResourcesRow> assignedManyToManyRelationHelper = null;
+
+    private ManyToManyRelationHelper<
+      dsHiveServerTableAdapters.AssignedResourcesTableAdapter,
+      dsHiveServer.AssignedResourcesRow> AssignedManyToManyRelationHelper {
+      get {
+        if (assignedManyToManyRelationHelper == null) {
+          assignedManyToManyRelationHelper =
+            new ManyToManyRelationHelper<dsHiveServerTableAdapters.AssignedResourcesTableAdapter,
+              dsHiveServer.AssignedResourcesRow>(new AssignedResourcesAdapterWrapper(), 0);
+        }
+
+        assignedManyToManyRelationHelper.Session = Session as Session;
+
+        return assignedManyToManyRelationHelper;
       }
     }
 
@@ -94,6 +114,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
 
         return pluginInfoAdapter;
+      }
+    }
+
+    private IProjectAdapter projectAdapter = null;
+
+    private IProjectAdapter ProjectAdapter {
+      get {
+        if (projectAdapter == null) {
+          projectAdapter =
+            this.Session.GetDataAdapter<Project, IProjectAdapter>();
+        }
+
+        return projectAdapter;
       }
     }
     #endregion
@@ -162,8 +195,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.MemoryNeeded = default(int);
 
+        if (!row.IsProjectIdNull())
+          job.Project = ProjectAdapter.GetById(
+            row.ProjectId);
+        else
+          job.Project = null;
+
         ICollection<Guid> requiredPlugins =
-          ManyToManyRelationHelper.GetRelationships(job.Id);
+          PluginsManyToManyRelationHelper.GetRelationships(job.Id);
         
         job.PluginsNeeded.Clear();
         foreach (Guid requiredPlugin in requiredPlugins) {
@@ -172,6 +211,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
           job.PluginsNeeded.Add(pluginInfo);
         }
+
+        job.AssignedResourceIds =
+          new List<Guid>(
+            AssignedManyToManyRelationHelper.GetRelationships(job.Id));
 
         return job;
       } else
@@ -233,6 +276,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         row.CoresNeeded = job.CoresNeeded;
 
         row.MemoryNeeded = job.MemoryNeeded;
+
+        if (job.Project != null)
+          row.ProjectId = job.Project.Id;
+        else
+          row.SetProjectIdNull();
       }
 
       return row;
@@ -302,10 +350,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ICollection<Job> GetJobsByProject(Guid projectId) {
-      throw new NotImplementedException();
+      return
+         base.FindMultiple(
+           delegate() {
+             return Adapter.GetDataByProjectId(projectId);
+           });
     }
 
     protected override void doUpdate(Job obj) {
+      ProjectAdapter.Update(obj.Project);
+      
       base.doUpdate(obj);
 
       //update relationships
@@ -323,8 +377,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         relationships.Add(pluginInfo.Id);
       }
 
-      ManyToManyRelationHelper.UpdateRelationships(
+      PluginsManyToManyRelationHelper.UpdateRelationships(
         obj.Id, relationships);
+
+      AssignedManyToManyRelationHelper.UpdateRelationships(
+        obj.Id, obj.AssignedResourceIds);
     }
 
     protected override bool doDelete(Job job) {
@@ -342,7 +399,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           }
 
           //delete all relationships
-          ManyToManyRelationHelper.UpdateRelationships(job.Id,
+          PluginsManyToManyRelationHelper.UpdateRelationships(job.Id,
             new List<Guid>());
 
           //delete orphaned pluginInfos

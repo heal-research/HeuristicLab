@@ -41,6 +41,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         private PluginInfoDataTable tablePluginInfo;
         
+        private ProjectDataTable tableProject;
+        
+        private AssignedResourcesDataTable tableAssignedResources;
+        
         private global::System.Data.DataRelation relationClient_is_a_Resource;
         
         private global::System.Data.DataRelation relationClientGroup_is_a_Resource;
@@ -60,6 +64,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         private global::System.Data.DataRelation relationR_47;
         
         private global::System.Data.DataRelation relationR_521;
+        
+        private global::System.Data.DataRelation relationR_49;
+        
+        private global::System.Data.DataRelation relationR_55;
+        
+        private global::System.Data.DataRelation relationR_56;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -110,6 +120,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 if ((ds.Tables["PluginInfo"] != null)) {
                     base.Tables.Add(new PluginInfoDataTable(ds.Tables["PluginInfo"]));
+                }
+                if ((ds.Tables["Project"] != null)) {
+                    base.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
+                }
+                if ((ds.Tables["AssignedResources"] != null)) {
+                    base.Tables.Add(new AssignedResourcesDataTable(ds.Tables["AssignedResources"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -202,6 +218,24 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ProjectDataTable Project {
+            get {
+                return this.tableProject;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public AssignedResourcesDataTable AssignedResources {
+            get {
+                return this.tableAssignedResources;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.BrowsableAttribute(true)]
         [global::System.ComponentModel.DesignerSerializationVisibilityAttribute(global::System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public override global::System.Data.SchemaSerializationMode SchemaSerializationMode {
@@ -284,6 +318,12 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 if ((ds.Tables["PluginInfo"] != null)) {
                     base.Tables.Add(new PluginInfoDataTable(ds.Tables["PluginInfo"]));
                 }
+                if ((ds.Tables["Project"] != null)) {
+                    base.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
+                }
+                if ((ds.Tables["AssignedResources"] != null)) {
+                    base.Tables.Add(new AssignedResourcesDataTable(ds.Tables["AssignedResources"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -362,6 +402,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     this.tablePluginInfo.InitVars();
                 }
             }
+            this.tableProject = ((ProjectDataTable)(base.Tables["Project"]));
+            if ((initTable == true)) {
+                if ((this.tableProject != null)) {
+                    this.tableProject.InitVars();
+                }
+            }
+            this.tableAssignedResources = ((AssignedResourcesDataTable)(base.Tables["AssignedResources"]));
+            if ((initTable == true)) {
+                if ((this.tableAssignedResources != null)) {
+                    this.tableAssignedResources.InitVars();
+                }
+            }
             this.relationClient_is_a_Resource = this.Relations["Client_is_a_Resource"];
             this.relationClientGroup_is_a_Resource = this.Relations["ClientGroup_is_a_Resource"];
             this.relationR_21 = this.Relations["R_21"];
@@ -372,6 +424,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             this.relationR_59 = this.Relations["R_59"];
             this.relationR_47 = this.Relations["R_47"];
             this.relationR_521 = this.Relations["R_521"];
+            this.relationR_49 = this.Relations["R_49"];
+            this.relationR_55 = this.Relations["R_55"];
+            this.relationR_56 = this.Relations["R_56"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -397,6 +452,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             base.Tables.Add(this.tableRequiredPlugins);
             this.tablePluginInfo = new PluginInfoDataTable();
             base.Tables.Add(this.tablePluginInfo);
+            this.tableProject = new ProjectDataTable();
+            base.Tables.Add(this.tableProject);
+            this.tableAssignedResources = new AssignedResourcesDataTable();
+            base.Tables.Add(this.tableAssignedResources);
             this.relationClient_is_a_Resource = new global::System.Data.DataRelation("Client_is_a_Resource", new global::System.Data.DataColumn[] {
                         this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
                         this.tableClient.ResourceIdColumn}, false);
@@ -437,6 +496,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         this.tableClientGroup.ResourceIdColumn}, new global::System.Data.DataColumn[] {
                         this.tableClientGroup_Resource.ClientGroupIdColumn}, false);
             this.Relations.Add(this.relationR_521);
+            this.relationR_49 = new global::System.Data.DataRelation("R_49", new global::System.Data.DataColumn[] {
+                        this.tableProject.ProjectIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableJob.ProjectIdColumn}, false);
+            this.Relations.Add(this.relationR_49);
+            this.relationR_55 = new global::System.Data.DataRelation("R_55", new global::System.Data.DataColumn[] {
+                        this.tableResource.ResourceIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableAssignedResources.ResourceIdColumn}, false);
+            this.Relations.Add(this.relationR_55);
+            this.relationR_56 = new global::System.Data.DataRelation("R_56", new global::System.Data.DataColumn[] {
+                        this.tableJob.JobIdColumn}, new global::System.Data.DataColumn[] {
+                        this.tableAssignedResources.JobIdColumn}, false);
+            this.Relations.Add(this.relationR_56);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -476,6 +547,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private bool ShouldSerializePluginInfo() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private bool ShouldSerializeProject() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private bool ShouldSerializeAssignedResources() {
             return false;
         }
         
@@ -547,6 +628,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         public delegate void RequiredPluginsRowChangeEventHandler(object sender, RequiredPluginsRowChangeEvent e);
         
         public delegate void PluginInfoRowChangeEventHandler(object sender, PluginInfoRowChangeEvent e);
+        
+        public delegate void ProjectRowChangeEventHandler(object sender, ProjectRowChangeEvent e);
+        
+        public delegate void AssignedResourcesRowChangeEventHandler(object sender, AssignedResourcesRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -1810,7 +1895,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public JobRow AddJobRow(System.Guid JobId, System.Guid ParentJobId, string JobState, ClientRow parentClientRowByR_21, double Percentage, byte[] SerializedJob, System.DateTime DateCreated, System.DateTime DateCalculated, int Priority, System.Guid ProjectId, System.Guid UserId, int CoresNeeded, int MemoryNeeded) {
+            public JobRow AddJobRow(System.Guid JobId, System.Guid ParentJobId, string JobState, ClientRow parentClientRowByR_21, double Percentage, byte[] SerializedJob, System.DateTime DateCreated, System.DateTime DateCalculated, int Priority, ProjectRow parentProjectRowByR_49, System.Guid UserId, int CoresNeeded, int MemoryNeeded) {
                 JobRow rowJobRow = ((JobRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         JobId,
@@ -1822,12 +1907,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                         DateCreated,
                         DateCalculated,
                         Priority,
-                        ProjectId,
+                        null,
                         UserId,
                         CoresNeeded,
                         MemoryNeeded};
                 if ((parentClientRowByR_21 != null)) {
                     columnValuesArray[3] = parentClientRowByR_21[0];
+                }
+                if ((parentProjectRowByR_49 != null)) {
+                    columnValuesArray[9] = parentProjectRowByR_49[0];
                 }
                 rowJobRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowJobRow);
@@ -2866,6 +2954,507 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ProjectDataTable : global::System.Data.TypedTableBase<ProjectRow> {
+            
+            private global::System.Data.DataColumn columnProjectId;
+            
+            private global::System.Data.DataColumn columnName;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectDataTable() {
+                this.TableName = "Project";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ProjectDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected ProjectDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn ProjectIdColumn {
+                get {
+                    return this.columnProjectId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow this[int index] {
+                get {
+                    return ((ProjectRow)(this.Rows[index]));
+                }
+            }
+            
+            public event ProjectRowChangeEventHandler ProjectRowChanging;
+            
+            public event ProjectRowChangeEventHandler ProjectRowChanged;
+            
+            public event ProjectRowChangeEventHandler ProjectRowDeleting;
+            
+            public event ProjectRowChangeEventHandler ProjectRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void AddProjectRow(ProjectRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow AddProjectRow(System.Guid ProjectId, string Name) {
+                ProjectRow rowProjectRow = ((ProjectRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        ProjectId,
+                        Name};
+                rowProjectRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowProjectRow);
+                return rowProjectRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow FindByProjectId(System.Guid ProjectId) {
+                return ((ProjectRow)(this.Rows.Find(new object[] {
+                            ProjectId})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public override global::System.Data.DataTable Clone() {
+                ProjectDataTable cln = ((ProjectDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ProjectDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal void InitVars() {
+                this.columnProjectId = base.Columns["ProjectId"];
+                this.columnName = base.Columns["Name"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            private void InitClass() {
+                this.columnProjectId = new global::System.Data.DataColumn("ProjectId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProjectId);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnName);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnProjectId}, true));
+                this.columnProjectId.AllowDBNull = false;
+                this.columnProjectId.Unique = true;
+                this.columnName.MaxLength = 2147483647;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow NewProjectRow() {
+                return ((ProjectRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ProjectRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Type GetRowType() {
+                return typeof(ProjectRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ProjectRowChanged != null)) {
+                    this.ProjectRowChanged(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ProjectRowChanging != null)) {
+                    this.ProjectRowChanging(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ProjectRowDeleted != null)) {
+                    this.ProjectRowDeleted(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ProjectRowDeleting != null)) {
+                    this.ProjectRowDeleting(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void RemoveProjectRow(ProjectRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsHiveServer ds = new dsHiveServer();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ProjectDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class AssignedResourcesDataTable : global::System.Data.TypedTableBase<AssignedResourcesRow> {
+            
+            private global::System.Data.DataColumn columnResourceId;
+            
+            private global::System.Data.DataColumn columnJobId;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesDataTable() {
+                this.TableName = "AssignedResources";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal AssignedResourcesDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected AssignedResourcesDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn ResourceIdColumn {
+                get {
+                    return this.columnResourceId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataColumn JobIdColumn {
+                get {
+                    return this.columnJobId;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow this[int index] {
+                get {
+                    return ((AssignedResourcesRow)(this.Rows[index]));
+                }
+            }
+            
+            public event AssignedResourcesRowChangeEventHandler AssignedResourcesRowChanging;
+            
+            public event AssignedResourcesRowChangeEventHandler AssignedResourcesRowChanged;
+            
+            public event AssignedResourcesRowChangeEventHandler AssignedResourcesRowDeleting;
+            
+            public event AssignedResourcesRowChangeEventHandler AssignedResourcesRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void AddAssignedResourcesRow(AssignedResourcesRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow AddAssignedResourcesRow(ResourceRow parentResourceRowByR_55, JobRow parentJobRowByR_56) {
+                AssignedResourcesRow rowAssignedResourcesRow = ((AssignedResourcesRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        null,
+                        null};
+                if ((parentResourceRowByR_55 != null)) {
+                    columnValuesArray[0] = parentResourceRowByR_55[0];
+                }
+                if ((parentJobRowByR_56 != null)) {
+                    columnValuesArray[1] = parentJobRowByR_56[0];
+                }
+                rowAssignedResourcesRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowAssignedResourcesRow);
+                return rowAssignedResourcesRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow FindByResourceIdJobId(System.Guid ResourceId, System.Guid JobId) {
+                return ((AssignedResourcesRow)(this.Rows.Find(new object[] {
+                            ResourceId,
+                            JobId})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public override global::System.Data.DataTable Clone() {
+                AssignedResourcesDataTable cln = ((AssignedResourcesDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new AssignedResourcesDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal void InitVars() {
+                this.columnResourceId = base.Columns["ResourceId"];
+                this.columnJobId = base.Columns["JobId"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            private void InitClass() {
+                this.columnResourceId = new global::System.Data.DataColumn("ResourceId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnResourceId);
+                this.columnJobId = new global::System.Data.DataColumn("JobId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnJobId);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnResourceId,
+                                this.columnJobId}, true));
+                this.columnResourceId.AllowDBNull = false;
+                this.columnJobId.AllowDBNull = false;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow NewAssignedResourcesRow() {
+                return ((AssignedResourcesRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new AssignedResourcesRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override global::System.Type GetRowType() {
+                return typeof(AssignedResourcesRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.AssignedResourcesRowChanged != null)) {
+                    this.AssignedResourcesRowChanged(this, new AssignedResourcesRowChangeEvent(((AssignedResourcesRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.AssignedResourcesRowChanging != null)) {
+                    this.AssignedResourcesRowChanging(this, new AssignedResourcesRowChangeEvent(((AssignedResourcesRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.AssignedResourcesRowDeleted != null)) {
+                    this.AssignedResourcesRowDeleted(this, new AssignedResourcesRowChangeEvent(((AssignedResourcesRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.AssignedResourcesRowDeleting != null)) {
+                    this.AssignedResourcesRowDeleting(this, new AssignedResourcesRowChangeEvent(((AssignedResourcesRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void RemoveAssignedResourcesRow(AssignedResourcesRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                dsHiveServer ds = new dsHiveServer();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "AssignedResourcesDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -3208,6 +3797,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     return ((ClientGroup_ResourceRow[])(base.GetChildRows(this.Table.ChildRelations["R_59"])));
                 }
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow[] GetAssignedResourcesRows() {
+                if ((this.Table.ChildRelations["R_55"] == null)) {
+                    return new AssignedResourcesRow[0];
+                }
+                else {
+                    return ((AssignedResourcesRow[])(base.GetChildRows(this.Table.ChildRelations["R_55"])));
+                }
+            }
         }
         
         /// <summary>
@@ -3535,6 +4134,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow ProjectRow {
+                get {
+                    return ((ProjectRow)(this.GetParentRow(this.Table.ParentRelations["R_49"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_49"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public bool IsParentJobIdNull() {
                 return this.IsNull(this.tableJob.ParentJobIdColumn);
             }
@@ -3671,6 +4280,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 }
                 else {
                     return ((RequiredPluginsRow[])(base.GetChildRows(this.Table.ChildRelations["R_51"])));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow[] GetAssignedResourcesRows() {
+                if ((this.Table.ChildRelations["R_56"] == null)) {
+                    return new AssignedResourcesRow[0];
+                }
+                else {
+                    return ((AssignedResourcesRow[])(base.GetChildRows(this.Table.ChildRelations["R_56"])));
                 }
             }
         }
@@ -4036,6 +4655,121 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public partial class ProjectRow : global::System.Data.DataRow {
+            
+            private ProjectDataTable tableProject;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal ProjectRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableProject = ((ProjectDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public System.Guid ProjectId {
+                get {
+                    return ((global::System.Guid)(this[this.tableProject.ProjectIdColumn]));
+                }
+                set {
+                    this[this.tableProject.ProjectIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public string Name {
+                get {
+                    try {
+                        return ((string)(this[this.tableProject.NameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Name\' in table \'Project\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProject.NameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public bool IsNameNull() {
+                return this.IsNull(this.tableProject.NameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public void SetNameNull() {
+                this[this.tableProject.NameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public JobRow[] GetJobRows() {
+                if ((this.Table.ChildRelations["R_49"] == null)) {
+                    return new JobRow[0];
+                }
+                else {
+                    return ((JobRow[])(base.GetChildRows(this.Table.ChildRelations["R_49"])));
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public partial class AssignedResourcesRow : global::System.Data.DataRow {
+            
+            private AssignedResourcesDataTable tableAssignedResources;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            internal AssignedResourcesRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableAssignedResources = ((AssignedResourcesDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public System.Guid ResourceId {
+                get {
+                    return ((global::System.Guid)(this[this.tableAssignedResources.ResourceIdColumn]));
+                }
+                set {
+                    this[this.tableAssignedResources.ResourceIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public System.Guid JobId {
+                get {
+                    return ((global::System.Guid)(this[this.tableAssignedResources.JobIdColumn]));
+                }
+                set {
+                    this[this.tableAssignedResources.JobIdColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ResourceRow ResourceRow {
+                get {
+                    return ((ResourceRow)(this.GetParentRow(this.Table.ParentRelations["R_55"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_55"]);
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public JobRow JobRow {
+                get {
+                    return ((JobRow)(this.GetParentRow(this.Table.ParentRelations["R_56"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["R_56"]);
+                }
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -4270,6 +5004,68 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public PluginInfoRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public class ProjectRowChangeEvent : global::System.EventArgs {
+            
+            private ProjectRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRowChangeEvent(ProjectRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public ProjectRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+        public class AssignedResourcesRowChangeEvent : global::System.EventArgs {
+            
+            private AssignedResourcesRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRowChangeEvent(AssignedResourcesRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public AssignedResourcesRow Row {
                 get {
                     return this.eventRow;
                 }
@@ -6291,7 +7087,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[10];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[11];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.Job WHERE JobState = @State AND CoresNeeded <= @CoresNeeded AND" +
@@ -6347,18 +7143,23 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
             this._commandCollection[7].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ParentJobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[8] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[8].Connection = this.Connection;
-            this._commandCollection[8].CommandText = "SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, P" +
-                "arentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId F" +
-                "ROM Job WHERE (JobState = @State)";
+            this._commandCollection[8].CommandText = "SELECT * FROM dbo.Job WHERE ProjectId = @ProjectId";
             this._commandCollection[8].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[8].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[8].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ProjectId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[9] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[9].Connection = this.Connection;
             this._commandCollection[9].CommandText = "SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, P" +
                 "arentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId F" +
-                "ROM Job WHERE (UserId = @UserId)";
+                "ROM Job WHERE (JobState = @State)";
             this._commandCollection[9].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[9].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "UserId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[9].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@State", global::System.Data.SqlDbType.VarChar, 18, global::System.Data.ParameterDirection.Input, 0, 0, "JobState", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[10] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[10].Connection = this.Connection;
+            this._commandCollection[10].CommandText = "SELECT CoresNeeded, DateCalculated, DateCreated, JobId, JobState, MemoryNeeded, P" +
+                "arentJobId, Percentage, Priority, ProjectId, ResourceId, SerializedJob, UserId F" +
+                "ROM Job WHERE (UserId = @UserId)";
+            this._commandCollection[10].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[10].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "UserId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6616,8 +7417,42 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
-        public virtual int FillByState(dsHiveServer.JobDataTable dataTable, string State) {
+        public virtual int FillByProjectId(dsHiveServer.JobDataTable dataTable, global::System.Nullable<global::System.Guid> ProjectId) {
             this.Adapter.SelectCommand = this.CommandCollection[8];
+            if ((ProjectId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(ProjectId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.JobDataTable GetDataByProjectId(global::System.Nullable<global::System.Guid> ProjectId) {
+            this.Adapter.SelectCommand = this.CommandCollection[8];
+            if ((ProjectId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(ProjectId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            dsHiveServer.JobDataTable dataTable = new dsHiveServer.JobDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByState(dsHiveServer.JobDataTable dataTable, string State) {
+            this.Adapter.SelectCommand = this.CommandCollection[9];
             if ((State == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -6635,7 +7470,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataByState(string State) {
-            this.Adapter.SelectCommand = this.CommandCollection[8];
+            this.Adapter.SelectCommand = this.CommandCollection[9];
             if ((State == null)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -6651,7 +7486,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
         public virtual int FillByUser(dsHiveServer.JobDataTable dataTable, global::System.Nullable<global::System.Guid> UserId) {
-            this.Adapter.SelectCommand = this.CommandCollection[9];
+            this.Adapter.SelectCommand = this.CommandCollection[10];
             if ((UserId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(UserId.Value));
             }
@@ -6669,7 +7504,7 @@ SELECT JobId, ParentJobId, JobState, ResourceId, Percentage, SerializedJob, Date
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobDataTable GetDataByUser(global::System.Nullable<global::System.Guid> UserId) {
-            this.Adapter.SelectCommand = this.CommandCollection[9];
+            this.Adapter.SelectCommand = this.CommandCollection[10];
             if ((UserId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(UserId.Value));
             }
@@ -8472,6 +9307,633 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
     }
     
     /// <summary>
+    ///Represents the connection and commands used to retrieve and save data.
+    ///</summary>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+    [global::System.ComponentModel.DesignerCategoryAttribute("code")]
+    [global::System.ComponentModel.ToolboxItem(true)]
+    [global::System.ComponentModel.DataObjectAttribute(true)]
+    [global::System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterDesigner, Microsoft.VSDesigner" +
+        ", Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+    [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+    public partial class ProjectTableAdapter : global::System.ComponentModel.Component {
+        
+        private global::System.Data.SqlClient.SqlDataAdapter _adapter;
+        
+        private global::System.Data.SqlClient.SqlConnection _connection;
+        
+        private global::System.Data.SqlClient.SqlTransaction _transaction;
+        
+        private global::System.Data.SqlClient.SqlCommand[] _commandCollection;
+        
+        private bool _clearBeforeFill;
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public ProjectTableAdapter() {
+            this.ClearBeforeFill = true;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected internal global::System.Data.SqlClient.SqlDataAdapter Adapter {
+            get {
+                if ((this._adapter == null)) {
+                    this.InitAdapter();
+                }
+                return this._adapter;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlConnection Connection {
+            get {
+                if ((this._connection == null)) {
+                    this.InitConnection();
+                }
+                return this._connection;
+            }
+            set {
+                this._connection = value;
+                if ((this.Adapter.InsertCommand != null)) {
+                    this.Adapter.InsertCommand.Connection = value;
+                }
+                if ((this.Adapter.DeleteCommand != null)) {
+                    this.Adapter.DeleteCommand.Connection = value;
+                }
+                if ((this.Adapter.UpdateCommand != null)) {
+                    this.Adapter.UpdateCommand.Connection = value;
+                }
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    if ((this.CommandCollection[i] != null)) {
+                        ((global::System.Data.SqlClient.SqlCommand)(this.CommandCollection[i])).Connection = value;
+                    }
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlTransaction Transaction {
+            get {
+                return this._transaction;
+            }
+            set {
+                this._transaction = value;
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    this.CommandCollection[i].Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.DeleteCommand != null))) {
+                    this.Adapter.DeleteCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.InsertCommand != null))) {
+                    this.Adapter.InsertCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.UpdateCommand != null))) {
+                    this.Adapter.UpdateCommand.Transaction = this._transaction;
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected global::System.Data.SqlClient.SqlCommand[] CommandCollection {
+            get {
+                if ((this._commandCollection == null)) {
+                    this.InitCommandCollection();
+                }
+                return this._commandCollection;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool ClearBeforeFill {
+            get {
+                return this._clearBeforeFill;
+            }
+            set {
+                this._clearBeforeFill = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitAdapter() {
+            this._adapter = new global::System.Data.SqlClient.SqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "Project";
+            tableMapping.ColumnMappings.Add("ProjectId", "ProjectId");
+            tableMapping.ColumnMappings.Add("Name", "Name");
+            this._adapter.TableMappings.Add(tableMapping);
+            this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.DeleteCommand.Connection = this.Connection;
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Project] WHERE (([ProjectId] = @Original_ProjectId))";
+            this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ProjectId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.InsertCommand.Connection = this.Connection;
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[Project] ([ProjectId], [Name]) VALUES (@ProjectId, @Name);\r\nSE" +
+                "LECT ProjectId, Name FROM Project WHERE (ProjectId = @ProjectId)";
+            this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ProjectId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.UpdateCommand.Connection = this.Connection;
+            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[Project] SET [ProjectId] = @ProjectId, [Name] = @Name WHERE (([Proj" +
+                "ectId] = @Original_ProjectId));\r\nSELECT ProjectId, Name FROM Project WHERE (Proj" +
+                "ectId = @ProjectId)";
+            this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ProjectId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ProjectId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitConnection() {
+            this._connection = new global::System.Data.SqlClient.SqlConnection();
+            this._connection.ConnectionString = global::HeuristicLab.Hive.Server.ADODataAccess.Properties.Settings.Default.HiveServerConnectionString;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitCommandCollection() {
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
+            this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[0].Connection = this.Connection;
+            this._commandCollection[0].CommandText = "SELECT * FROM dbo.Project";
+            this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT Name, ProjectId FROM Project WHERE (ProjectId = @Id)";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "ProjectId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
+        public virtual int Fill(dsHiveServer.ProjectDataTable dataTable) {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
+        public virtual dsHiveServer.ProjectDataTable GetData() {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsHiveServer.ProjectDataTable dataTable = new dsHiveServer.ProjectDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillById(dsHiveServer.ProjectDataTable dataTable, System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.ProjectDataTable GetDataById(System.Guid Id) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(Id));
+            dsHiveServer.ProjectDataTable dataTable = new dsHiveServer.ProjectDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer.ProjectDataTable dataTable) {
+            return this.Adapter.Update(dataTable);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer dataSet) {
+            return this.Adapter.Update(dataSet, "Project");
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow dataRow) {
+            return this.Adapter.Update(new global::System.Data.DataRow[] {
+                        dataRow});
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow[] dataRows) {
+            return this.Adapter.Update(dataRows);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
+        public virtual int Delete(System.Guid Original_ProjectId) {
+            this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_ProjectId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
+            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.DeleteCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.DeleteCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
+        public virtual int Insert(System.Guid ProjectId, string Name) {
+            this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(ProjectId));
+            if ((Name == null)) {
+                this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(Name));
+            }
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
+            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.InsertCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(System.Guid ProjectId, string Name, System.Guid Original_ProjectId) {
+            this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(ProjectId));
+            if ((Name == null)) {
+                this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(Name));
+            }
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((System.Guid)(Original_ProjectId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
+            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.UpdateCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.UpdateCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(string Name, System.Guid Original_ProjectId) {
+            return this.Update(Original_ProjectId, Name, Original_ProjectId);
+        }
+    }
+    
+    /// <summary>
+    ///Represents the connection and commands used to retrieve and save data.
+    ///</summary>
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
+    [global::System.ComponentModel.DesignerCategoryAttribute("code")]
+    [global::System.ComponentModel.ToolboxItem(true)]
+    [global::System.ComponentModel.DataObjectAttribute(true)]
+    [global::System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterDesigner, Microsoft.VSDesigner" +
+        ", Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+    [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+    public partial class AssignedResourcesTableAdapter : global::System.ComponentModel.Component {
+        
+        private global::System.Data.SqlClient.SqlDataAdapter _adapter;
+        
+        private global::System.Data.SqlClient.SqlConnection _connection;
+        
+        private global::System.Data.SqlClient.SqlTransaction _transaction;
+        
+        private global::System.Data.SqlClient.SqlCommand[] _commandCollection;
+        
+        private bool _clearBeforeFill;
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public AssignedResourcesTableAdapter() {
+            this.ClearBeforeFill = true;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected internal global::System.Data.SqlClient.SqlDataAdapter Adapter {
+            get {
+                if ((this._adapter == null)) {
+                    this.InitAdapter();
+                }
+                return this._adapter;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlConnection Connection {
+            get {
+                if ((this._connection == null)) {
+                    this.InitConnection();
+                }
+                return this._connection;
+            }
+            set {
+                this._connection = value;
+                if ((this.Adapter.InsertCommand != null)) {
+                    this.Adapter.InsertCommand.Connection = value;
+                }
+                if ((this.Adapter.DeleteCommand != null)) {
+                    this.Adapter.DeleteCommand.Connection = value;
+                }
+                if ((this.Adapter.UpdateCommand != null)) {
+                    this.Adapter.UpdateCommand.Connection = value;
+                }
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    if ((this.CommandCollection[i] != null)) {
+                        ((global::System.Data.SqlClient.SqlCommand)(this.CommandCollection[i])).Connection = value;
+                    }
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        internal global::System.Data.SqlClient.SqlTransaction Transaction {
+            get {
+                return this._transaction;
+            }
+            set {
+                this._transaction = value;
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    this.CommandCollection[i].Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.DeleteCommand != null))) {
+                    this.Adapter.DeleteCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.InsertCommand != null))) {
+                    this.Adapter.InsertCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.UpdateCommand != null))) {
+                    this.Adapter.UpdateCommand.Transaction = this._transaction;
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        protected global::System.Data.SqlClient.SqlCommand[] CommandCollection {
+            get {
+                if ((this._commandCollection == null)) {
+                    this.InitCommandCollection();
+                }
+                return this._commandCollection;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool ClearBeforeFill {
+            get {
+                return this._clearBeforeFill;
+            }
+            set {
+                this._clearBeforeFill = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitAdapter() {
+            this._adapter = new global::System.Data.SqlClient.SqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "AssignedResources";
+            tableMapping.ColumnMappings.Add("ResourceId", "ResourceId");
+            tableMapping.ColumnMappings.Add("JobId", "JobId");
+            this._adapter.TableMappings.Add(tableMapping);
+            this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.DeleteCommand.Connection = this.Connection;
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[AssignedResources] WHERE (([ResourceId] = @Original_ResourceId" +
+                ") AND ([JobId] = @Original_JobId))";
+            this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.InsertCommand.Connection = this.Connection;
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[AssignedResources] ([ResourceId], [JobId]) VALUES (@ResourceId" +
+                ", @JobId);\r\nSELECT ResourceId, JobId FROM AssignedResources WHERE (JobId = @JobI" +
+                "d) AND (ResourceId = @ResourceId)";
+            this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.UpdateCommand.Connection = this.Connection;
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[AssignedResources] SET [ResourceId] = @ResourceId, [JobId] = @JobId WHERE (([ResourceId] = @Original_ResourceId) AND ([JobId] = @Original_JobId));
+SELECT ResourceId, JobId FROM AssignedResources WHERE (JobId = @JobId) AND (ResourceId = @ResourceId)";
+            this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitConnection() {
+            this._connection = new global::System.Data.SqlClient.SqlConnection();
+            this._connection.ConnectionString = global::HeuristicLab.Hive.Server.ADODataAccess.Properties.Settings.Default.HiveServerConnectionString;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        private void InitCommandCollection() {
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
+            this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[0].Connection = this.Connection;
+            this._commandCollection[0].CommandText = "SELECT * FROM dbo.AssignedResources";
+            this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT JobId, ResourceId FROM AssignedResources WHERE (JobId = @JobId)";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
+        public virtual int Fill(dsHiveServer.AssignedResourcesDataTable dataTable) {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
+        public virtual dsHiveServer.AssignedResourcesDataTable GetData() {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            dsHiveServer.AssignedResourcesDataTable dataTable = new dsHiveServer.AssignedResourcesDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByJobId(dsHiveServer.AssignedResourcesDataTable dataTable, System.Guid JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId));
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.AssignedResourcesDataTable GetDataByJobId(System.Guid JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId));
+            dsHiveServer.AssignedResourcesDataTable dataTable = new dsHiveServer.AssignedResourcesDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer.AssignedResourcesDataTable dataTable) {
+            return this.Adapter.Update(dataTable);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(dsHiveServer dataSet) {
+            return this.Adapter.Update(dataSet, "AssignedResources");
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow dataRow) {
+            return this.Adapter.Update(new global::System.Data.DataRow[] {
+                        dataRow});
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual int Update(global::System.Data.DataRow[] dataRows) {
+            return this.Adapter.Update(dataRows);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
+        public virtual int Delete(System.Guid Original_ResourceId, System.Guid Original_JobId) {
+            this.Adapter.DeleteCommand.Parameters[0].Value = ((System.Guid)(Original_ResourceId));
+            this.Adapter.DeleteCommand.Parameters[1].Value = ((System.Guid)(Original_JobId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
+            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.DeleteCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.DeleteCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
+        public virtual int Insert(System.Guid ResourceId, System.Guid JobId) {
+            this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(ResourceId));
+            this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(JobId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
+            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.InsertCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(System.Guid ResourceId, System.Guid JobId, System.Guid Original_ResourceId, System.Guid Original_JobId) {
+            this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(ResourceId));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((System.Guid)(JobId));
+            this.Adapter.UpdateCommand.Parameters[2].Value = ((System.Guid)(Original_ResourceId));
+            this.Adapter.UpdateCommand.Parameters[3].Value = ((System.Guid)(Original_JobId));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
+            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.UpdateCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.UpdateCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(System.Guid Original_ResourceId, System.Guid Original_JobId) {
+            return this.Update(Original_ResourceId, Original_JobId, Original_ResourceId, Original_JobId);
+        }
+    }
+    
+    /// <summary>
     ///TableAdapterManager is used to coordinate TableAdapters in the dataset to enable Hierarchical Update scenarios
     ///</summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
@@ -8499,6 +9961,10 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
         private RequiredPluginsTableAdapter _requiredPluginsTableAdapter;
         
         private PluginInfoTableAdapter _pluginInfoTableAdapter;
+        
+        private ProjectTableAdapter _projectTableAdapter;
+        
+        private AssignedResourcesTableAdapter _assignedResourcesTableAdapter;
         
         private bool _backupDataSetBeforeUpdate;
         
@@ -8619,6 +10085,32 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterManagerPropertyEditor, Microso" +
+            "ft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" +
+            "", "System.Drawing.Design.UITypeEditor")]
+        public ProjectTableAdapter ProjectTableAdapter {
+            get {
+                return this._projectTableAdapter;
+            }
+            set {
+                this._projectTableAdapter = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.EditorAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterManagerPropertyEditor, Microso" +
+            "ft.VSDesigner, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" +
+            "", "System.Drawing.Design.UITypeEditor")]
+        public AssignedResourcesTableAdapter AssignedResourcesTableAdapter {
+            get {
+                return this._assignedResourcesTableAdapter;
+            }
+            set {
+                this._assignedResourcesTableAdapter = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public bool BackupDataSetBeforeUpdate {
             get {
                 return this._backupDataSetBeforeUpdate;
@@ -8667,6 +10159,14 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                             && (this._pluginInfoTableAdapter.Connection != null))) {
                     return this._pluginInfoTableAdapter.Connection;
                 }
+                if (((this._projectTableAdapter != null) 
+                            && (this._projectTableAdapter.Connection != null))) {
+                    return this._projectTableAdapter.Connection;
+                }
+                if (((this._assignedResourcesTableAdapter != null) 
+                            && (this._assignedResourcesTableAdapter.Connection != null))) {
+                    return this._assignedResourcesTableAdapter.Connection;
+                }
                 return null;
             }
             set {
@@ -8703,6 +10203,12 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                 if ((this._pluginInfoTableAdapter != null)) {
                     count = (count + 1);
                 }
+                if ((this._projectTableAdapter != null)) {
+                    count = (count + 1);
+                }
+                if ((this._assignedResourcesTableAdapter != null)) {
+                    count = (count + 1);
+                }
                 return count;
             }
         }
@@ -8722,21 +10228,21 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(updatedRows);
                 }
             }
+            if ((this._projectTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.Project.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._projectTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
             if ((this._clientTableAdapter != null)) {
                 global::System.Data.DataRow[] updatedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
                     result = (result + this._clientTableAdapter.Update(updatedRows));
-                    allChangedRows.AddRange(updatedRows);
-                }
-            }
-            if ((this._jobTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.Job.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
-                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
-                if (((updatedRows != null) 
-                            && (0 < updatedRows.Length))) {
-                    result = (result + this._jobTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -8749,12 +10255,30 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(updatedRows);
                 }
             }
+            if ((this._jobTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.Job.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._jobTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
             if ((this._clientGroupTableAdapter != null)) {
                 global::System.Data.DataRow[] updatedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
                     result = (result + this._clientGroupTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
+            if ((this._assignedResourcesTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.AssignedResources.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._assignedResourcesTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -8767,21 +10291,21 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(updatedRows);
                 }
             }
-            if ((this._requiredPluginsTableAdapter != null)) {
-                global::System.Data.DataRow[] updatedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
-                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
-                if (((updatedRows != null) 
-                            && (0 < updatedRows.Length))) {
-                    result = (result + this._requiredPluginsTableAdapter.Update(updatedRows));
-                    allChangedRows.AddRange(updatedRows);
-                }
-            }
             if ((this._jobResultTableAdapter != null)) {
                 global::System.Data.DataRow[] updatedRows = dataSet.JobResult.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
                 updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
                 if (((updatedRows != null) 
                             && (0 < updatedRows.Length))) {
                     result = (result + this._jobResultTableAdapter.Update(updatedRows));
+                    allChangedRows.AddRange(updatedRows);
+                }
+            }
+            if ((this._requiredPluginsTableAdapter != null)) {
+                global::System.Data.DataRow[] updatedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.ModifiedCurrent);
+                updatedRows = this.GetRealUpdatedRows(updatedRows, allAddedRows);
+                if (((updatedRows != null) 
+                            && (0 < updatedRows.Length))) {
+                    result = (result + this._requiredPluginsTableAdapter.Update(updatedRows));
                     allChangedRows.AddRange(updatedRows);
                 }
             }
@@ -8802,19 +10326,19 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allAddedRows.AddRange(addedRows);
                 }
             }
+            if ((this._projectTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.Project.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._projectTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
             if ((this._clientTableAdapter != null)) {
                 global::System.Data.DataRow[] addedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
                     result = (result + this._clientTableAdapter.Update(addedRows));
-                    allAddedRows.AddRange(addedRows);
-                }
-            }
-            if ((this._jobTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.Job.Select(null, null, global::System.Data.DataViewRowState.Added);
-                if (((addedRows != null) 
-                            && (0 < addedRows.Length))) {
-                    result = (result + this._jobTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -8826,11 +10350,27 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allAddedRows.AddRange(addedRows);
                 }
             }
+            if ((this._jobTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.Job.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._jobTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
             if ((this._clientGroupTableAdapter != null)) {
                 global::System.Data.DataRow[] addedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
                     result = (result + this._clientGroupTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
+            if ((this._assignedResourcesTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.AssignedResources.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._assignedResourcesTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -8842,19 +10382,19 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allAddedRows.AddRange(addedRows);
                 }
             }
-            if ((this._requiredPluginsTableAdapter != null)) {
-                global::System.Data.DataRow[] addedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Added);
-                if (((addedRows != null) 
-                            && (0 < addedRows.Length))) {
-                    result = (result + this._requiredPluginsTableAdapter.Update(addedRows));
-                    allAddedRows.AddRange(addedRows);
-                }
-            }
             if ((this._jobResultTableAdapter != null)) {
                 global::System.Data.DataRow[] addedRows = dataSet.JobResult.Select(null, null, global::System.Data.DataViewRowState.Added);
                 if (((addedRows != null) 
                             && (0 < addedRows.Length))) {
                     result = (result + this._jobResultTableAdapter.Update(addedRows));
+                    allAddedRows.AddRange(addedRows);
+                }
+            }
+            if ((this._requiredPluginsTableAdapter != null)) {
+                global::System.Data.DataRow[] addedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Added);
+                if (((addedRows != null) 
+                            && (0 < addedRows.Length))) {
+                    result = (result + this._requiredPluginsTableAdapter.Update(addedRows));
                     allAddedRows.AddRange(addedRows);
                 }
             }
@@ -8867,19 +10407,19 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private int UpdateDeletedRows(dsHiveServer dataSet, global::System.Collections.Generic.List<global::System.Data.DataRow> allChangedRows) {
             int result = 0;
-            if ((this._jobResultTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.JobResult.Select(null, null, global::System.Data.DataViewRowState.Deleted);
-                if (((deletedRows != null) 
-                            && (0 < deletedRows.Length))) {
-                    result = (result + this._jobResultTableAdapter.Update(deletedRows));
-                    allChangedRows.AddRange(deletedRows);
-                }
-            }
             if ((this._requiredPluginsTableAdapter != null)) {
                 global::System.Data.DataRow[] deletedRows = dataSet.RequiredPlugins.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
                     result = (result + this._requiredPluginsTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
+            if ((this._jobResultTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.JobResult.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._jobResultTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -8891,19 +10431,19 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(deletedRows);
                 }
             }
+            if ((this._assignedResourcesTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.AssignedResources.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._assignedResourcesTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
             if ((this._clientGroupTableAdapter != null)) {
                 global::System.Data.DataRow[] deletedRows = dataSet.ClientGroup.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
                     result = (result + this._clientGroupTableAdapter.Update(deletedRows));
-                    allChangedRows.AddRange(deletedRows);
-                }
-            }
-            if ((this._pluginInfoTableAdapter != null)) {
-                global::System.Data.DataRow[] deletedRows = dataSet.PluginInfo.Select(null, null, global::System.Data.DataViewRowState.Deleted);
-                if (((deletedRows != null) 
-                            && (0 < deletedRows.Length))) {
-                    result = (result + this._pluginInfoTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -8915,11 +10455,27 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                     allChangedRows.AddRange(deletedRows);
                 }
             }
+            if ((this._pluginInfoTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.PluginInfo.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._pluginInfoTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
             if ((this._clientTableAdapter != null)) {
                 global::System.Data.DataRow[] deletedRows = dataSet.Client.Select(null, null, global::System.Data.DataViewRowState.Deleted);
                 if (((deletedRows != null) 
                             && (0 < deletedRows.Length))) {
                     result = (result + this._clientTableAdapter.Update(deletedRows));
+                    allChangedRows.AddRange(deletedRows);
+                }
+            }
+            if ((this._projectTableAdapter != null)) {
+                global::System.Data.DataRow[] deletedRows = dataSet.Project.Select(null, null, global::System.Data.DataViewRowState.Deleted);
+                if (((deletedRows != null) 
+                            && (0 < deletedRows.Length))) {
+                    result = (result + this._projectTableAdapter.Update(deletedRows));
                     allChangedRows.AddRange(deletedRows);
                 }
             }
@@ -9005,6 +10561,16 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
             }
             if (((this._pluginInfoTableAdapter != null) 
                         && (this.MatchTableAdapterConnection(this._pluginInfoTableAdapter.Connection) == false))) {
+                throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
+                        "tring.");
+            }
+            if (((this._projectTableAdapter != null) 
+                        && (this.MatchTableAdapterConnection(this._projectTableAdapter.Connection) == false))) {
+                throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
+                        "tring.");
+            }
+            if (((this._assignedResourcesTableAdapter != null) 
+                        && (this.MatchTableAdapterConnection(this._assignedResourcesTableAdapter.Connection) == false))) {
                 throw new global::System.ArgumentException("All TableAdapters managed by a TableAdapterManager must use the same connection s" +
                         "tring.");
             }
@@ -9112,6 +10678,24 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                         adaptersWithAcceptChangesDuringUpdate.Add(this._pluginInfoTableAdapter.Adapter);
                     }
                 }
+                if ((this._projectTableAdapter != null)) {
+                    revertConnections.Add(this._projectTableAdapter, this._projectTableAdapter.Connection);
+                    this._projectTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(workConnection));
+                    this._projectTableAdapter.Transaction = ((global::System.Data.SqlClient.SqlTransaction)(workTransaction));
+                    if (this._projectTableAdapter.Adapter.AcceptChangesDuringUpdate) {
+                        this._projectTableAdapter.Adapter.AcceptChangesDuringUpdate = false;
+                        adaptersWithAcceptChangesDuringUpdate.Add(this._projectTableAdapter.Adapter);
+                    }
+                }
+                if ((this._assignedResourcesTableAdapter != null)) {
+                    revertConnections.Add(this._assignedResourcesTableAdapter, this._assignedResourcesTableAdapter.Connection);
+                    this._assignedResourcesTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(workConnection));
+                    this._assignedResourcesTableAdapter.Transaction = ((global::System.Data.SqlClient.SqlTransaction)(workTransaction));
+                    if (this._assignedResourcesTableAdapter.Adapter.AcceptChangesDuringUpdate) {
+                        this._assignedResourcesTableAdapter.Adapter.AcceptChangesDuringUpdate = false;
+                        adaptersWithAcceptChangesDuringUpdate.Add(this._assignedResourcesTableAdapter.Adapter);
+                    }
+                }
                 // 
                 //---- Perform updates -----------
                 //
@@ -9201,6 +10785,14 @@ SELECT PluginId, Name, Version, BuildDate FROM PluginInfo WHERE (PluginId = @Plu
                 if ((this._pluginInfoTableAdapter != null)) {
                     this._pluginInfoTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._pluginInfoTableAdapter]));
                     this._pluginInfoTableAdapter.Transaction = null;
+                }
+                if ((this._projectTableAdapter != null)) {
+                    this._projectTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._projectTableAdapter]));
+                    this._projectTableAdapter.Transaction = null;
+                }
+                if ((this._assignedResourcesTableAdapter != null)) {
+                    this._assignedResourcesTableAdapter.Connection = ((global::System.Data.SqlClient.SqlConnection)(revertConnections[this._assignedResourcesTableAdapter]));
+                    this._assignedResourcesTableAdapter.Transaction = null;
                 }
                 if ((0 < adaptersWithAcceptChangesDuringUpdate.Count)) {
                     global::System.Data.Common.DataAdapter[] adapters = new System.Data.Common.DataAdapter[adaptersWithAcceptChangesDuringUpdate.Count];

@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="ClientAdapter.cs" />
     <Compile Include="ClientGroupAdapter.cs" />
+    <Compile Include="ProjectAdapter.cs" />
     <Compile Include="dsHiveServer.cs">
       <DependentUpon>dsHiveServer.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -104,6 +105,8 @@
     <Compile Include="TableAdapterWrapper\ClientAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\ClientGroupAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\ClientGroup_ResourceAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\AssignedResourcesAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\ProjectAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\RequiredPluginsAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\PluginInfoAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\ResourceAdapterWrapper.cs" />
