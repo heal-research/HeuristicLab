@@ -67,24 +67,19 @@ namespace HeuristicLab.Hive.Client.Console
     public HiveClientConsole()
     {
       InitializeComponent();
-      //lvwColumnSorter = new ListViewColumnSorterDate();
-      //lvLog.ListViewItemSorter = lvwColumnSorter;
-      //lvwColumnSorter.SortColumn = 3;
-      //lvwColumnSorter.Order = SortOrder.Descending;
       InitTimer();
       ConnectToClient();
       RefreshGui();
-      //GetEventLog();
       InitCalender();
       InitLogFileReader();
     }
 
+    #endregion
+
+    #region Methods
+
     private void InitLogFileReader() {
-      //lo = new Tail(this.tailFilenameTextbox.Text);
-      //myTail.MoreData += new Tail.MoreDataHandler(myTail_MoreData);
-      //myTail.Start();
-      //MessageBox.Show(Environment.CurrentDirectory);
-      logFileReader = new LogFileReader(Environment.CurrentDirectory + @"/HiveLog.log");
+      logFileReader = new LogFileReader(Environment.CurrentDirectory + @"/Hive.log");
       logFileReader.MoreData += new LogFileReader.MoreDataHandler(logFileReader_MoreData);
       logFileReader.Start();
     }
@@ -101,10 +96,6 @@ namespace HeuristicLab.Hive.Client.Console
       }
       AppendText(newData);
     }
-
-    #endregion
-
-    #region Methods
 
     private void InitTimer()
     {
@@ -146,39 +137,6 @@ namespace HeuristicLab.Hive.Client.Console
         if (res == DialogResult.OK)
           this.Close();
       }
-    }
-
-    //private void GetEventLog()
-    //{
-    //  HiveClientEventLog = new EventLog(EVENTLOGNAME);
-    //  HiveClientEventLog.Source = EVENTLOGNAME;
-    //  HiveClientEventLog.EntryWritten += new EntryWrittenEventHandler(OnEntryWritten);
-    //  HiveClientEventLog.EnableRaisingEvents = true;
-
-    //  ListViewItem curEventLogEntry;
-
-    //  //databinding on listview?
-    //  if (HiveClientEventLog != null && HiveClientEventLog.Entries != null)
-    //  {
-    //    foreach (EventLogEntry ele in HiveClientEventLog.Entries)
-    //    {
-    //      curEventLogEntry = GenerateEventEntry(ele);
-    //      lvLog.Items.Add(curEventLogEntry);
-    //    }
-    //    lvJobDetail.Sort();
-    //  }
-    //}
-
-    private ListViewItem GenerateEventEntry(EventLogEntry ele)
-    {
-      ListViewItem curEventLogEntry;
-      curEventLogEntry = new ListViewItem("", 0);
-      if (ele.EntryType == EventLogEntryType.Error)
-        curEventLogEntry = new ListViewItem("", 1);
-      curEventLogEntry.SubItems.Add(ele.InstanceId.ToString());
-      curEventLogEntry.SubItems.Add(ele.Message);
-      curEventLogEntry.SubItems.Add(ele.TimeGenerated.ToString());
-      return curEventLogEntry;
     }
 
     private void UpdateGraph(JobStatus[] jobs)
@@ -375,20 +333,6 @@ namespace HeuristicLab.Hive.Client.Console
       }
     }
 
-    public void OnEntryWritten(object source, EntryWrittenEventArgs e)
-    {
-      //UpdateText(e.Entry);
-    }
-
-    //private void lvLog_DoubleClick(object sender, EventArgs e)
-    //{
-    //  ListViewItem lvi = lvLog.SelectedItems[0];
-    //  HiveEventEntry hee = new HiveEventEntry(lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[1].Text);
-
-    //  Form EventlogDetails = new EventLogEntryForm(hee);
-    //  EventlogDetails.Show();
-    //}
-
     private void btConnect_Click(object sender, EventArgs e)
     {
       IPAddress ipAdress;
@@ -410,32 +354,6 @@ namespace HeuristicLab.Hive.Client.Console
     {
       cccc.DisconnectAsync();
     }
-
-    //private void lvLog_ColumnClick(object sender, ColumnClickEventArgs e)
-    //{
-    //  // Determine if clicked column is already the column that is being sorted.
-    //  if (e.Column == lvwColumnSorter.SortColumn)
-    //  {
-    //    // Reverse the current sort direction for this column.
-    //    if (lvwColumnSorter.Order == SortOrder.Ascending)
-    //    {
-    //      lvwColumnSorter.Order = SortOrder.Descending;
-    //    }
-    //    else
-    //    {
-    //      lvwColumnSorter.Order = SortOrder.Ascending;
-    //    }
-    //  }
-    //  else
-    //  {
-    //    // Set the column number that is to be sorted; default to ascending.
-    //    lvwColumnSorter.SortColumn = e.Column;
-    //    lvwColumnSorter.Order = SortOrder.Ascending;
-    //  }
-
-    //  // Perform the sort with these new sort options.
-    //  //lvLog.Sort();
-    //}
 
     private void btn_clientShutdown_Click(object sender, EventArgs e)
     {
@@ -474,6 +392,7 @@ namespace HeuristicLab.Hive.Client.Console
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e)
     {
+      btCreate.Enabled = true;
       if (dvOnline.Selection == SelectionType.DateRange)
       {
         dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
@@ -492,6 +411,8 @@ namespace HeuristicLab.Hive.Client.Console
         txttimeFrom.Text = dvOnline.SelectedAppointment.StartDate.ToShortTimeString();
         txttimeTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortTimeString();
 
+        if (dvOnline.SelectedAppointment.Recurring)
+          btCreate.Enabled = false;
         //also change the caption of the save button
         btCreate.Text = "Save changes";
       }
@@ -593,8 +514,8 @@ namespace HeuristicLab.Hive.Client.Console
     private void ChangeRecurrenceAppointment(Guid recurringId)
     {
       List<Appointment> recurringAppointments = onlineTimes.Where(appointment => appointment.RecurringId == recurringId).ToList();
-      recurringAppointments.ForEach(appointment => appointment.StartDate = DateTime.Parse(appointment.StartDate.Date + " " + txttimeFrom.Text));
-      recurringAppointments.ForEach(appointment => appointment.EndDate = DateTime.Parse(appointment.EndDate.Date + " " + txttimeTo.Text));
+      recurringAppointments.ForEach(appointment => appointment.StartDate = DateTime.Parse(appointment.StartDate.Date.ToString() + " " + txttimeFrom.Text));
+      recurringAppointments.ForEach(appointment => appointment.EndDate = DateTime.Parse(appointment.EndDate.Date.ToString() + " " + txttimeTo.Text));
 
       DeleteRecurringAppointment(recurringId);
       onlineTimes.AddRange(recurringAppointments);
@@ -633,15 +554,11 @@ namespace HeuristicLab.Hive.Client.Console
       CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.IncWeeks, e.WeekDays);
     }
 
-    #endregion
-
-    private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, int incWeek, HashSet<DayOfWeek> daysOfWeek)
-    {
+    private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, int incWeek, HashSet<DayOfWeek> daysOfWeek) {
       DateTime incDate = dateFrom;
       Guid guid = Guid.NewGuid();
 
-      while (incDate.Date <= dateTo.Date)
-      {
+      while (incDate.Date <= dateTo.Date) {
         if (daysOfWeek.Contains(incDate.Date.DayOfWeek))
           onlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid));
         incDate = incDate.AddDays(1);
@@ -650,8 +567,7 @@ namespace HeuristicLab.Hive.Client.Console
       dvOnline.Invalidate();
     }
 
-    private void lvLog_SelectedIndexChanged(object sender, EventArgs e) {
+    #endregion
 
-    }
   }
 }
