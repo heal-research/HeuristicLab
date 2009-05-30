@@ -302,7 +302,7 @@ namespace HeuristicLab.Visualization {
                                        this.rowEntries[0].LinesShape.ClippingArea);
         int ix = (int) Math.Round(dx);
         foreach (var rowEntry in rowEntries) {
-          if ((rowEntry.DataRow.Count > ix) && (ix > 0) && ((rowEntry.DataRow.LineType == DataRowType.Normal)||(rowEntry.DataRow.LineType==DataRowType.Points))) {
+          if ((rowEntry.DataRow.Count > ix) && (ix > 0) && ((rowEntry.DataRow.RowSettings.LineType == DataRowType.Normal) || (rowEntry.DataRow.RowSettings.LineType == DataRowType.Points))) {
             Point screenDataP = Transform.ToScreen(new PointD(ix, rowEntry.DataRow[ix]), rowEntry.LinesShape.Viewport,
                                                    rowEntry.LinesShape.ClippingArea);
             if ((Math.Abs(screenDataP.X - location.X) <= 6) && (Math.Abs(screenDataP.Y - location.Y) <= 6)) {
@@ -464,20 +464,20 @@ namespace HeuristicLab.Visualization {
       rowEntries.Add(rowEntry);
       rowToRowEntry[row] = rowEntry;
 
-      if ((row.LineType == DataRowType.SingleValue)) {
+      if ((row.RowSettings.LineType == DataRowType.SingleValue)) {
         if (row.Count > 0) {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.RowSettings.Color, row.RowSettings.Thickness,
-                                                        row.Style);
+                                                        row.RowSettings.Style);
           rowEntry.LinesShape.AddShape(lineShape);
         }
-      } else if (row.LineType == DataRowType.Points) {
+      } else if (row.RowSettings.LineType == DataRowType.Points) {
         rowEntry.ShowMarkers(true);      //no lines, only markers are shown!!
         for (int i = 0; i < row.Count; i++)
           rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i, row[i], 8, row.RowSettings.Color));
-      } else if (row.LineType == DataRowType.Normal) {
-        rowEntry.ShowMarkers(row.ShowMarkers);
+      } else if (row.RowSettings.LineType == DataRowType.Normal) {
+        rowEntry.ShowMarkers(row.RowSettings.ShowMarkers);
         for (int i = 1; i < row.Count; i++) {
-          LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.RowSettings.Color, row.RowSettings.Thickness, row.Style);
+          LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.RowSettings.Color, row.RowSettings.Thickness, row.RowSettings.Style);
           rowEntry.LinesShape.AddShape(lineShape);
           rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i - 1, row[i - 1], 8, row.RowSettings.Color));
         }
@@ -499,10 +499,10 @@ namespace HeuristicLab.Visualization {
     private void OnRowValueChanged(IDataRow row, double value, int index, Action action) {
       RowEntry rowEntry = rowToRowEntry[row];
 
-      if (row.LineType == DataRowType.SingleValue) {
+      if (row.RowSettings.LineType == DataRowType.SingleValue) {
         if (action == Action.Added) {
           LineShape lineShape = new HorizontalLineShape(0, row[0], double.MaxValue, row[0], row.RowSettings.Color, row.RowSettings.Thickness,
-                                                        row.Style);
+                                                        row.RowSettings.Style);
           rowEntry.LinesShape.AddShape(lineShape);
         } else if(action==Action.Deleted) {
           throw new ArgumentException("It is unwise to delete the only value of the SinglevalueRow!!");
@@ -511,13 +511,13 @@ namespace HeuristicLab.Visualization {
           lineShape.Y1 = value;
           lineShape.Y2 = value;
         }
-      } else if (row.LineType == DataRowType.Points) {
+      } else if (row.RowSettings.LineType == DataRowType.Points) {
         if (action == Action.Added) {
           if(rowEntry.LinesShape.Count==0)
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.RowSettings.Color));
           if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
             LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.RowSettings.Color, row.RowSettings.Thickness,
-                                                row.Style);
+                                                row.RowSettings.Style);
             rowEntry.LinesShape.AddShape(lineShape);
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.RowSettings.Color));
           } else {
@@ -541,8 +541,8 @@ namespace HeuristicLab.Visualization {
           else
             throw new NotSupportedException("Deleting of values other than the last one is not supported!");
         }
-        
-      } else if (row.LineType == DataRowType.Normal) {
+
+      } else if (row.RowSettings.LineType == DataRowType.Normal) {
         if (index > rowEntry.LinesShape.Count + 1) {
           throw new NotImplementedException();
         }
@@ -552,7 +552,7 @@ namespace HeuristicLab.Visualization {
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(0, row[0], 8, row.RowSettings.Color));
           if (index > 0 && index == rowEntry.LinesShape.Count + 1) {
             LineShape lineShape = new LineShape(index - 1, row[index - 1], index, row[index], row.RowSettings.Color, row.RowSettings.Thickness,
-                                                row.Style);
+                                                row.RowSettings.Style);
             rowEntry.LinesShape.AddShape(lineShape);
             rowEntry.LinesShape.AddMarkerShape(new MarkerShape(index, row[index], 8, row.RowSettings.Color));
           }
@@ -745,11 +745,11 @@ namespace HeuristicLab.Visualization {
           LineShape lineShape = shape as LineShape;
           if (lineShape != null) {
             lineShape.LSColor = row.RowSettings.Color;
-            lineShape.LSDrawingStyle = row.Style;
+            lineShape.LSDrawingStyle = row.RowSettings.Style;
             lineShape.LSThickness = row.RowSettings.Thickness;
           }
         }
-        markersShape.ShowChildShapes = row.ShowMarkers;
+        markersShape.ShowChildShapes = row.RowSettings.ShowMarkers;
       }
 
       /// <summary>
