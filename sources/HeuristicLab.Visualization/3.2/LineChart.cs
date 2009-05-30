@@ -366,7 +366,7 @@ namespace HeuristicLab.Visualization {
       row.ValuesChanged += OnRowValuesChanged;
       row.DataRowChanged += OnDataRowChanged;
 
-      legendShape.AddLegendItem(new LegendItem(row.RowSettings.Label, row.RowSettings.Color, row.RowSettings.Thickness));
+      legendShape.AddLegendItem(new LegendItem(row));
       legendShape.CreateLegend();
 
       InitLineShapes(row);
