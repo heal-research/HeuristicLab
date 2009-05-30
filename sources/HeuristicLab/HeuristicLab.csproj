@@ -135,14 +135,15 @@
     <Content Include="HeuristicLab.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="app.config" />
+    <None Include="CustomPostBuild.cmd" />
     <None Include="CopyAssemblies.cmd" />
+    <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
     <None Include="MergeConfigs.cmd" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Resources\LargeIcons.gif" />
     <None Include="Resources\Details.gif" />
     <None Include="Resources\List.gif" />
     <None Include="Resources\Logo_white.gif" />
-    <None Include="UpdateLocalInstallation.cmd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -158,13 +159,16 @@ set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 set Platform=$(PlatformName)
+set Configuration=$(ConfigurationName)
 
 call MergeConfigs.cmd
-call CopyAssemblies.cmd</PostBuildEvent>
+call CopyAssemblies.cmd
+if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
+set Configuration=$(ConfigurationName)
 
 call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>

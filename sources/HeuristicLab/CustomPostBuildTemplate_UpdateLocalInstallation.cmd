@@ -6,4 +6,5 @@ copy "HeuristicLab.PluginInfrastructure.dll" "%target%"
 copy "HeuristicLab.PluginInfrastructure.GUI.dll" "%target%"
 copy "ICSharpCode.SharpZipLib.dll" "%target%"
 copy "ICSharpCode.SharpZipLib License.txt" "%target%"
-copy "plugins\*.*" "%target%\plugins"
+rmdir /s /q "%target%\plugins"
+xcopy "plugins" "%target%\plugins" /e /i
