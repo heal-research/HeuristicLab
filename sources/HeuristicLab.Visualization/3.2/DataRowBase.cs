@@ -38,13 +38,10 @@ namespace HeuristicLab.Visualization {
 //      }
 //    }          
 
-//    public string Label {
-//      get { return label; }
-//      set {
-//        label = value;
-//        OnDataRowChanged(this);
-//      }
-//    }
+    public string Label
+    {
+        get { return RowSettings.Label; }
+    }
 //
 //    public Color Color {
 //      get { return color; }

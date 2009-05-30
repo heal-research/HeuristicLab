@@ -7,7 +7,7 @@ namespace HeuristicLab.Visualization {
   }
 
   public interface IDataRow {
-    //string Label { get; set; }
+    string Label { get; }
     //Color Color { get; set; }
     //int Thickness { get; set; }
 //    DrawingStyle Style { get; set; }
