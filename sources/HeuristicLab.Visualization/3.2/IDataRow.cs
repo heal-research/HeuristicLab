@@ -10,9 +10,9 @@ namespace HeuristicLab.Visualization {
     //string Label { get; set; }
     //Color Color { get; set; }
     //int Thickness { get; set; }
-    DrawingStyle Style { get; set; }
-    DataRowType LineType { get; set; }
-    bool ShowMarkers { get; set; }
+//    DrawingStyle Style { get; set; }
+//    DataRowType LineType { get; set; }
+//    bool ShowMarkers { get; set; }
     DataRowSettings RowSettings { get; set; }
  
     YAxisDescriptor YAxis { get; set; }

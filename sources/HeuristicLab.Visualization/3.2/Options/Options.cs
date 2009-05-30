@@ -28,17 +28,17 @@ namespace HeuristicLab.Visualization.Options {
         Label = row.RowSettings.Label;
         Color = row.RowSettings.Color;
         Thickness = row.RowSettings.Thickness;
-        Style = row.Style;
+        Style = row.RowSettings.Style;
         this.row = row;
-        this.ShowMarkers = row.ShowMarkers;
+        this.ShowMarkers = row.RowSettings.ShowMarkers;
       }
 
       public void applySettings() {
         row.RowSettings.Label = Label;
         row.RowSettings.Color = Color;
         row.RowSettings.Thickness = Thickness;
-        row.Style = Style;
-        row.ShowMarkers = this.ShowMarkers;
+        row.RowSettings.Style = Style;
+        row.RowSettings.ShowMarkers = this.ShowMarkers;
       }
     }
 
@@ -169,9 +169,9 @@ namespace HeuristicLab.Visualization.Options {
         }
         LineThicknessCB.DataSource = GetThicknesses();
         LinestyleCB.DataSource = GetStyles();
-        LinestyleCB.SelectedItem = model.Rows[0].Style;
+        LinestyleCB.SelectedItem = model.Rows[0].RowSettings.Style;
         LineThicknessCB.SelectedItem = model.Rows[0].RowSettings.Thickness;
-        MarkercheckBox.Checked = model.Rows[0].ShowMarkers;
+        MarkercheckBox.Checked = model.Rows[0].RowSettings.ShowMarkers;
 
         LineSelectCB.DataSource = model.Rows;
         LineSelectCB.DisplayMember = "Label";
@@ -215,9 +215,9 @@ namespace HeuristicLab.Visualization.Options {
           index = LinestyleCB.FindStringExact(((IDataRow)LineSelectCB.SelectedValue).Style.ToString());
           LinestyleCB.SelectedIndex = index;  */
         LineThicknessCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).RowSettings.Thickness;
-        LinestyleCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).Style;
+        LinestyleCB.SelectedItem = ((IDataRow)LineSelectCB.SelectedValue).RowSettings.Style;
         selectedLineColorSelection.Color = ((IDataRow)LineSelectCB.SelectedValue).RowSettings.Color;
-        MarkercheckBox.Checked = ((IDataRow)LineSelectCB.SelectedValue).ShowMarkers;
+        MarkercheckBox.Checked = ((IDataRow)LineSelectCB.SelectedValue).RowSettings.ShowMarkers;
       }
     }
 
@@ -228,7 +228,7 @@ namespace HeuristicLab.Visualization.Options {
 
     private void LinestyleCB_SelectedIndexChanged(object sender, EventArgs e) {
       if (LineSelectCB.SelectedValue != null) {
-        ((IDataRow)LineSelectCB.SelectedValue).Style = (DrawingStyle)LinestyleCB.SelectedItem;
+        ((IDataRow)LineSelectCB.SelectedValue).RowSettings.Style = (DrawingStyle)LinestyleCB.SelectedItem;
       }
     }
 
@@ -240,7 +240,7 @@ namespace HeuristicLab.Visualization.Options {
 
     private void MarkercheckBox_CheckedChanged(object sender, EventArgs e) {
       if (LineSelectCB.SelectedValue != null) {
-        ((IDataRow)LineSelectCB.SelectedValue).ShowMarkers = MarkercheckBox.Checked;
+        ((IDataRow)LineSelectCB.SelectedValue).RowSettings.ShowMarkers = MarkercheckBox.Checked;
       }
     }
 

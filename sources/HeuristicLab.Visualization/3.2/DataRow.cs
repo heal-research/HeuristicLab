@@ -31,17 +31,17 @@ namespace HeuristicLab.Visualization {
       this.RowSettings.Label = label;
       this.RowSettings.Color = color;
       this.RowSettings.Thickness = thickness;
-      this.Style = style;
+      this.RowSettings.Style = style;
       this.dataRow = dataRow;
-      this.ShowMarkers = true;
+      this.RowSettings.ShowMarkers = true;
     }
 
     public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow, bool showMarkers) {
       this.RowSettings.Label = label;
       this.RowSettings.Color = color;
       this.RowSettings.Thickness = thickness;
-      this.Style = style;
-      this.ShowMarkers = showMarkers;
+      this.RowSettings.Style = style;
+      this.RowSettings.ShowMarkers = showMarkers;
       this.dataRow = dataRow;
     }
 

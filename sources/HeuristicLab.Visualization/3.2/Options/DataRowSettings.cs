@@ -3,6 +3,7 @@
 namespace HeuristicLab.Visualization.Options {
   public class DataRowSettings {
     public event UpdateDataRowSettingsHandler OnUpdateDataRowSettings;
+    public event DataVisualSettingChangedHandler DataVisualSettingChanged;
 
     private string label;
     private Color color;
@@ -35,27 +36,19 @@ namespace HeuristicLab.Visualization.Options {
       }
     }
 
-//    public bool ShowMarkers {
-//      get { return showMarkers; }
-//      set {
-//        showMarkers = value;
-//        //OnDataRowChanged(this);
-//      }
-//    }
-
     public string Label {
       get { return label; }
       set {
         label = value;
-        //OnDataRowChanged(this);
+        OnDataVisualSettingChanged(this);
       }
     }
-
+    
     public Color Color {
       get { return color; }
       set {
         color = value;
-        //OnDataRowChanged(this);
+        OnDataVisualSettingChanged(this);
       }
     }
 
@@ -63,25 +56,41 @@ namespace HeuristicLab.Visualization.Options {
       get { return thickness; }
       set {
         thickness = value;
-        //OnDataRowChanged(this);
+        OnDataVisualSettingChanged(this);
       }
     }
 
-//    public DrawingStyle Style {
-//      get { return style; }
-//      set {
-//        style = value;
-//        //OnDataRowChanged(this);
-//      }
-//    }
-//
-//    public DataRowType LineType {
-//      get { return lineType; }
-//      set {
-//        lineType = value;
-//        //OnDataRowChanged(this);
-//      }
-//    }
+    public DrawingStyle Style {
+      get { return style; }
+      set {
+        style = value;
+        OnDataVisualSettingChanged(this);
+      }
+    }
+
+    public DataRowType LineType {
+      get { return lineType; }
+      set {
+        lineType = value;
+        OnDataVisualSettingChanged(this);
+      }
+    }
+
+    public bool ShowMarkers {
+      get { return showMarkers; }
+      set {
+        showMarkers = value;
+        OnDataVisualSettingChanged(this);
+      }
+    }
+    
+    protected void OnDataVisualSettingChanged(DataRowSettings row) {
+      if (DataVisualSettingChanged != null) {
+        DataVisualSettingChanged(this);
+      }
+    }
+
   }
   public delegate void UpdateDataRowSettingsHandler();
+  public delegate void DataVisualSettingChangedHandler(DataRowSettings row);
 }

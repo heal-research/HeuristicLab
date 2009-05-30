@@ -5,25 +5,38 @@ namespace HeuristicLab.Visualization {
     //private string label = "";
     //private Color color = Color.Black;
     //private int thickness = 2;
-    private DrawingStyle style = DrawingStyle.Solid;
-    private DataRowType lineType = DataRowType.Normal;
+//    private DrawingStyle style = DrawingStyle.Solid;
+//    private DataRowType lineType = DataRowType.Normal;
     private YAxisDescriptor yAxis;
-    private bool showMarkers = true;
+//    private bool showMarkers = true;
 
-    private DataRowSettings rowSettings = new DataRowSettings();
+    private DataRowSettings rowSettings ;
 
     public DataRowSettings RowSettings {
       get { return rowSettings; }
-      set { rowSettings = value; }
+      set {
+        rowSettings.DataVisualSettingChanged -= value_DataVisualSettingChanged;
+        value.DataVisualSettingChanged += value_DataVisualSettingChanged;
+        rowSettings = value;
+      }
     }
 
-    public bool ShowMarkers {
-      get { return showMarkers; }
-      set {
-        showMarkers = value;
-        OnDataRowChanged(this);
-      }
-    }          
+    public DataRowBase() {
+      rowSettings = new DataRowSettings();
+      rowSettings.DataVisualSettingChanged += value_DataVisualSettingChanged;
+    }
+
+    void value_DataVisualSettingChanged(DataRowSettings row) {
+      OnDataRowChanged(this);
+    }
+
+//    public bool ShowMarkers {
+//      get { return showMarkers; }
+//      set {
+//        showMarkers = value;
+//        OnDataRowChanged(this);
+//      }
+//    }          
 
 //    public string Label {
 //      get { return label; }
@@ -49,21 +62,21 @@ namespace HeuristicLab.Visualization {
 //      }
 //    }
 
-    public DrawingStyle Style {
-      get { return style; }
-      set {
-        style = value;
-        OnDataRowChanged(this);
-      }
-    }
-
-    public DataRowType LineType {
-      get { return lineType; }
-      set {
-        lineType = value;
-        OnDataRowChanged(this);
-      }
-    }
+//    public DrawingStyle Style {
+//      get { return style; }
+//      set {
+//        style = value;
+//        OnDataRowChanged(this);
+//      }
+//    }
+//
+//    public DataRowType LineType {
+//      get { return lineType; }
+//      set {
+//        lineType = value;
+//        OnDataRowChanged(this);
+//      }
+//    }
 
     public YAxisDescriptor YAxis {
       get { return yAxis; }
