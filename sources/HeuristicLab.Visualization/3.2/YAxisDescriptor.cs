@@ -13,7 +13,7 @@ namespace HeuristicLab.Visualization {
     private bool showYAxis = true;
     private bool showYAxisLabel = true;
     private string label = "";
-    public bool clipChangeable = true;
+    private bool clipChangeable = true;
     private AxisPosition position = AxisPosition.Left;
 
     private bool showGrid = true;
