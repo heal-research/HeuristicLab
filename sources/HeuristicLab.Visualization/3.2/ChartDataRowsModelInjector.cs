@@ -47,29 +47,29 @@ namespace HeuristicLab.Visualization {
       dataRow = new DataRow("Best Quality");
       dataRow.RowSettings.Color = Color.Green;
       dataRow.RowSettings.Thickness = 1;
-      dataRow.Style = DrawingStyle.Solid;
-      dataRow.ShowMarkers = true;
+      dataRow.RowSettings.Style = DrawingStyle.Solid;
+      dataRow.RowSettings.ShowMarkers = true;
       model.AddDataRow(dataRow);
 
       dataRow = new DataRow("Average Quality");
       dataRow.RowSettings.Color = Color.Blue;
       dataRow.RowSettings.Thickness = 2;
-      dataRow.Style = DrawingStyle.Dashed;
-      dataRow.ShowMarkers = true;
+      dataRow.RowSettings.Style = DrawingStyle.Dashed;
+      dataRow.RowSettings.ShowMarkers = true;
       model.AddDataRow(dataRow);
 
       dataRow = new DataRow("Worst Quality");
       dataRow.RowSettings.Color = Color.Red;
       dataRow.RowSettings.Thickness = 1;
-      dataRow.Style = DrawingStyle.Solid;
-      dataRow.ShowMarkers = true;
+      dataRow.RowSettings.Style = DrawingStyle.Solid;
+      dataRow.RowSettings.ShowMarkers = true;
       model.AddDataRow(dataRow);
 
       dataRow = new DataRow("Selection Pressure");
       dataRow.RowSettings.Color = Color.Gray;
       dataRow.RowSettings.Thickness = 1;
-      dataRow.Style = DrawingStyle.Solid;
-      dataRow.ShowMarkers = true;
+      dataRow.RowSettings.Style = DrawingStyle.Solid;
+      dataRow.RowSettings.ShowMarkers = true;
       YAxisDescriptor yAxisDescriptor = new YAxisDescriptor();
       yAxisDescriptor.Label = "Selection Pressure";
       dataRow.YAxis = yAxisDescriptor;
