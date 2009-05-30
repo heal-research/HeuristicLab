@@ -17,6 +17,8 @@ namespace HeuristicLab.Visualization {
 
     ViewSettings ViewSettings { get; set; }
 
+    YAxisDescriptor DefaultYAxis { get; }
+
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;
     event DataRowRemovedHandler DataRowRemoved;
