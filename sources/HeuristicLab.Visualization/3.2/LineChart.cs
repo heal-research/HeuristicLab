@@ -471,11 +471,11 @@ namespace HeuristicLab.Visualization {
           rowEntry.LinesShape.AddShape(lineShape);
         }
       } else if (row.LineType == DataRowType.Points) {
-        rowEntry.showMarkers(true);      //no lines, only markers are shown!!
+        rowEntry.ShowMarkers(true);      //no lines, only markers are shown!!
         for (int i = 0; i < row.Count; i++)
           rowEntry.LinesShape.AddMarkerShape(new MarkerShape(i, row[i], 8, row.RowSettings.Color));
       } else if (row.LineType == DataRowType.Normal) {
-        rowEntry.showMarkers(row.ShowMarkers);
+        rowEntry.ShowMarkers(row.ShowMarkers);
         for (int i = 1; i < row.Count; i++) {
           LineShape lineShape = new LineShape(i - 1, row[i - 1], i, row[i], row.RowSettings.Color, row.RowSettings.Thickness, row.Style);
           rowEntry.LinesShape.AddShape(lineShape);
@@ -805,7 +805,7 @@ namespace HeuristicLab.Visualization {
         get { return linesShape; }
       }
 
-      public void showMarkers(bool flag) {
+      public void ShowMarkers(bool flag) {
         linesShape.markersShape.ShowChildShapes = flag;
       }
     }
