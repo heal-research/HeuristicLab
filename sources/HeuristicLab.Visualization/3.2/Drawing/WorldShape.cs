@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace HeuristicLab.Visualization {
+namespace HeuristicLab.Visualization.Drawing {
   /// <summary>
   /// World shapes are composite shapes that have their own coordinate system
   /// which is independent from their parent's coordinate system.

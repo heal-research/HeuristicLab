@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Visualization.DataExport;
+using HeuristicLab.Visualization.Drawing;
 using HeuristicLab.Visualization.Legend;
 using HeuristicLab.Visualization.Options;
 using HeuristicLab.Visualization.Test;

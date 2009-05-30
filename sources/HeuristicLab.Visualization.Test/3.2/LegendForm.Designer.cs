@@ -1,4 +1,6 @@
-﻿namespace HeuristicLab.Visualization.Test {
+﻿using HeuristicLab.Visualization.Drawing;
+
+namespace HeuristicLab.Visualization.Test {
   partial class LegendForm {
     /// <summary>
     /// Required designer variable.
@@ -23,7 +25,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.canvasUI = new HeuristicLab.Visualization.CanvasUI();
+      this.canvasUI = new CanvasUI();
       this.SuspendLayout();
       // 
       // canvasUI

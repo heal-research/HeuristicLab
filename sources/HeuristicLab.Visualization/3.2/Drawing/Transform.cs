@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace HeuristicLab.Visualization {
+namespace HeuristicLab.Visualization.Drawing {
   /// <summary>
   /// GDI (or screen) coordinate system
   ///   The GDI coordinate system is specified in pixels. X goes from left to right

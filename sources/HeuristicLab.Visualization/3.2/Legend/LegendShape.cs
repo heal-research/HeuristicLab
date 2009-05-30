@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Visualization.Drawing;
 
 namespace HeuristicLab.Visualization.Legend {
   public enum LegendPosition {

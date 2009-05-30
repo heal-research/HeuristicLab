@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using HeuristicLab.Visualization.Drawing;
 using HeuristicLab.Visualization.LabelProvider;
 using HeuristicLab.Visualization.Test;
 

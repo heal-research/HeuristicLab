@@ -88,17 +88,17 @@
     <Compile Include="AvgLineAggregator.cs" />
     <Compile Include="AxisPosition.cs" />
     <Compile Include="AxisTicks.cs" />
-    <Compile Include="Canvas.cs" />
-    <Compile Include="CanvasUI.cs">
+    <Compile Include="Drawing\Canvas.cs" />
+    <Compile Include="Drawing\CanvasUI.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CanvasUI.Designer.cs">
+    <Compile Include="Drawing\CanvasUI.Designer.cs">
       <DependentUpon>CanvasUI.cs</DependentUpon>
     </Compile>
     <Compile Include="ChangeType.cs" />
     <Compile Include="ChartDataRowsModel.cs" />
     <Compile Include="ChartDataRowsModelDummy.cs" />
-    <Compile Include="CompositeShape.cs" />
+    <Compile Include="Drawing\CompositeShape.cs" />
     <Compile Include="ChartDataRowsModelDataCollector.cs" />
     <Compile Include="DataExport\CSVDataExport.cs" />
     <Compile Include="DataExport\CSVWriter.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="HeuristicLabVisualizationPlugin.cs" />
     <Compile Include="IChartDataRowsModel.cs" />
     <Compile Include="IDataRow.cs" />
-    <Compile Include="IShape.cs" />
+    <Compile Include="Drawing\IShape.cs" />
     <Compile Include="LineChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -166,9 +166,9 @@
     <Compile Include="RectangleShape.cs" />
     <Compile Include="SizeD.cs" />
     <Compile Include="TooltipListener.cs" />
-    <Compile Include="Transform.cs" />
+    <Compile Include="Drawing\Transform.cs" />
     <Compile Include="Translate.cs" />
-    <Compile Include="WorldShape.cs" />
+    <Compile Include="Drawing\WorldShape.cs" />
     <Compile Include="XAxis.cs" />
     <Compile Include="XAxisGrid.cs" />
     <Compile Include="YAxis.cs" />

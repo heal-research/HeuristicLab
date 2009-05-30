@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace HeuristicLab.Visualization {
+namespace HeuristicLab.Visualization.Drawing {
   public class CompositeShape : IShape {
     private IShape parent;
     private bool showChildShapes = true;
@@ -84,9 +84,9 @@ namespace HeuristicLab.Visualization {
         boundingBox = shapes[0].BoundingBox;
       foreach (var shape in shapes) {
         boundingBox = new RectangleD(Math.Min(boundingBox.X1, shape.BoundingBox.X1),
-                                    Math.Min(boundingBox.Y1, shape.BoundingBox.Y1),
-                                    Math.Max(boundingBox.X2, shape.BoundingBox.X2),
-                                    Math.Max(boundingBox.Y2, shape.BoundingBox.Y2));
+                                     Math.Min(boundingBox.Y1, shape.BoundingBox.Y1),
+                                     Math.Max(boundingBox.X2, shape.BoundingBox.X2),
+                                     Math.Max(boundingBox.Y2, shape.BoundingBox.Y2));
       }
     }
 

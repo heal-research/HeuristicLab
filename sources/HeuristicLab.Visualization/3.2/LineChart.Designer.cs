@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using HeuristicLab.Visualization.Drawing;
 
 namespace HeuristicLab.Visualization
 {
@@ -31,7 +32,7 @@ namespace HeuristicLab.Visualization
         private void InitializeComponent()
         {
           this.components = new System.ComponentModel.Container();
-          this.canvasUI = new HeuristicLab.Visualization.CanvasUI();
+          this.canvasUI = new CanvasUI();
           this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
           this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
           this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.Visualization.Drawing;
 
 namespace HeuristicLab.Visualization.Test {
   public partial class MainForm : Form {

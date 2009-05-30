@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Visualization.Drawing;
 
 namespace HeuristicLab.Visualization {
   class MarkerShape : IShape {

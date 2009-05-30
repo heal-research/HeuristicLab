@@ -1,4 +1,6 @@
+
 using System.Drawing;
+using HeuristicLab.Visualization.Drawing;
 using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {

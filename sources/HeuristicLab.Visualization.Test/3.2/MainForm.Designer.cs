@@ -1,4 +1,6 @@
-﻿namespace HeuristicLab.Visualization.Test {
+﻿using HeuristicLab.Visualization.Drawing;
+
+namespace HeuristicLab.Visualization.Test {
   partial class MainForm {
     /// <summary>
     /// Required designer variable.
@@ -23,7 +25,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.canvasUI = new HeuristicLab.Visualization.CanvasUI();
+      this.canvasUI = new CanvasUI();
       this.label2 = new System.Windows.Forms.Label();
       this.legendButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
@@ -72,7 +74,7 @@
 
     #endregion
 
-    private HeuristicLab.Visualization.CanvasUI canvasUI;
+    private CanvasUI canvasUI;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Button legendButton;
   }

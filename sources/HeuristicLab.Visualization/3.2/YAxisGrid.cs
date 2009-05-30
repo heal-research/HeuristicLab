@@ -1,4 +1,5 @@
 using System.Drawing;
+using HeuristicLab.Visualization.Drawing;
 
 namespace HeuristicLab.Visualization {
   public class YAxisGrid : WorldShape {

@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace HeuristicLab.Visualization {
+namespace HeuristicLab.Visualization.Drawing {
   /// <summary>
   /// This is the base interface that has to be implemented by all shapes.
   /// 

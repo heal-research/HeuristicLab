@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace HeuristicLab.Visualization {
+namespace HeuristicLab.Visualization.Drawing {
   public partial class CanvasUI : Control {
     private readonly Canvas canvas = new Canvas();
 
@@ -30,7 +30,7 @@ namespace HeuristicLab.Visualization {
 
         base.OnPaint(pe);
       } catch (Exception e) {
-       Trace.WriteLine(e);
+        Trace.WriteLine(e);
       }
     }
 
