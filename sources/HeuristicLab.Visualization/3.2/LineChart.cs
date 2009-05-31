@@ -337,7 +337,7 @@ namespace HeuristicLab.Visualization {
       IExporter exporter = exportdlg.SelectedExporter;
 
       if (exporter != null)
-        exporter.Export(model);
+        exporter.Export(model, this);
     }
 
     public void OnDataRowChanged(IDataRow row) {

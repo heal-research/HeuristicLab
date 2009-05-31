@@ -8,7 +8,7 @@ namespace HeuristicLab.Visualization.DataExport {
       get { return "CSV Export"; }
     }
 
-    public void Export(IChartDataRowsModel model) {
+    public void Export(IChartDataRowsModel model, LineChart chart) {
       SaveFileDialog sfd = new SaveFileDialog();
       sfd.Filter = "CSV Files|*.csv|All Files|*.*";
       if (sfd.ShowDialog() != DialogResult.OK) {
