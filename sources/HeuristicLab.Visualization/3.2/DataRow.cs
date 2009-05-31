@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
-using HeuristicLab.Visualization.LabelProvider;
 
 namespace HeuristicLab.Visualization {
   public enum Action {
@@ -75,13 +74,11 @@ namespace HeuristicLab.Visualization {
     }
 
     public override void AddValues(double[] values, int index) {
-      int j = index;
-
-      //check if index to start changes is valid
-      if (index >=0 && (index + values.Length) < dataRow.Count) {
-        foreach (double d in values) {
-          dataRow.Insert(j, d);
-          j++;
+      if (index >= 0 && index < dataRow.Count) {
+        for (int i = 0; i < values.Length; i++) {
+          double value = values[i];
+          UpdateMinMaxValue(value);
+          dataRow.Insert(index + i, value);
         }
         OnValuesChanged(values, index, Action.Added);
       } else {
@@ -92,6 +89,7 @@ namespace HeuristicLab.Visualization {
     public override void ModifyValue(double value, int index) {
       //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
+        UpdateMinMaxValue(value, index); // bad runtime but works
         dataRow[index] = value;
         OnValueChanged(value, index, Action.Modified);
       } else {
@@ -100,16 +98,14 @@ namespace HeuristicLab.Visualization {
     }
 
     public override void ModifyValues(double[] values, int index) {
-      int startInd = index;
-      int modInd = index;
-
       //check if index to start modification is valid
-      if (startInd >=0 && startInd + values.Length < dataRow.Count) {
-        foreach (double d in values) {
-          dataRow[modInd] = d;
-          modInd++;
+      if (index >= 0 && index + values.Length < dataRow.Count) {
+        for (int i = 0; i < values.Length; i++) {
+          double value = values[i];
+          UpdateMinMaxValue(value, index + i); // bad runtime but works
+          dataRow[index+i] = value;
         }
-        OnValuesChanged(values, startInd, Action.Modified);
+        OnValuesChanged(values, index, Action.Modified);
       } else {
         throw new IndexOutOfRangeException();
       }
@@ -166,6 +162,20 @@ namespace HeuristicLab.Visualization {
 
     public override double MaxValue {
       get { return maxValue; }
+    }
+
+    private void UpdateMinMaxValue(double newValue, int oldValueIndex) {
+      if (minValue != dataRow[oldValueIndex] && maxValue != dataRow[oldValueIndex])
+        UpdateMinMaxValue(newValue);
+      else {
+        minValue = double.MaxValue;
+        maxValue = double.MinValue;
+
+        for (int i = 0; i < dataRow.Count; i++) {
+          double value = oldValueIndex != i ? dataRow[i] : newValue;
+          UpdateMinMaxValue(value);
+        }
+      }
     }
 
     private void UpdateMinMaxValue(double value) {

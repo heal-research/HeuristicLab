@@ -218,7 +218,33 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
-    public void TestInsertValuesInDataRow() {
+    public void TestAddValueToDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(10);
+      row.AddValue(-5);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestAddValuesToDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValues(new double[] {0, 10, -5});
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestInsertValueInDataRow() {
       LineChartTestForm f = new LineChartTestForm(model);
 
       IDataRow row = new DataRow();
@@ -227,6 +253,54 @@ namespace HeuristicLab.Visualization.Test {
 
       row.AddValue(10, 1);
       row.AddValue(10, 2);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestInsertValuesInDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(5);
+
+      row.AddValues(new double[] {10, 10}, 1);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestModifyValueInDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(100);
+      row.AddValue(0);
+
+      row.ModifyValue(5, 1);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestModifyValuesInDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(100);
+      row.AddValue(100);
+      row.AddValue(0);
+
+      row.ModifyValues(new double[] {5, 5}, 1);
 
       model.AddDataRow(row);
 
