@@ -7,7 +7,7 @@ namespace HeuristicLab.Visualization.Test {
 
   public partial class LineChartTestForm : Form {
     private readonly IView view;
-    private ChartDataRowsModel model;
+    private readonly ChartDataRowsModel model;
 
     public LineChartTestForm() {
       InitializeComponent();

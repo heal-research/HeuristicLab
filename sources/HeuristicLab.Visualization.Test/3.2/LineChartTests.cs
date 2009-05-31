@@ -14,7 +14,7 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
-    public void TestLineChart() {
+    public void TestLineChartWithManyDataPoints() {
       LineChartTestForm f = new LineChartTestForm(model);
 
       IDataRow row1 = new DataRow();
@@ -71,6 +71,88 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
+    public void TestGrid() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      model.XAxis.ShowGrid = true;
+      model.XAxis.GridColor = Color.Red;
+
+      model.DefaultYAxis.ShowGrid = true;
+      model.DefaultYAxis.GridColor = Color.Blue;
+
+      IDataRow row1 = new DataRow();
+      row1.RowSettings.Label = "row1";
+
+      model.AddDataRow(row1);
+
+      row1.AddValue(0);
+      row1.AddValue(10);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestShowMarkers() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row1 = new DataRow();
+      row1.RowSettings.Label = "row1";
+      row1.RowSettings.Color = Color.Red;
+      row1.RowSettings.ShowMarkers = true;
+
+      IDataRow row2 = new DataRow();
+      row2.RowSettings.Label = "row2";
+      row2.RowSettings.Color = Color.Blue;
+      row2.RowSettings.ShowMarkers = false;
+
+      model.AddDataRow(row1);
+      model.AddDataRow(row2);
+
+      for (int i = 0; i < 10; i++) {
+        row1.AddValue(i);
+        row2.AddValue(i*2);
+      }
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestShowLabelOnAxes() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row1 = new DataRow();
+      IDataRow row2 = new DataRow();
+
+      model.XAxis.Label = "X-Axis";
+      model.XAxis.ShowLabel = true;
+
+      row1.YAxis = model.DefaultYAxis;
+      row1.YAxis.Label = "Y-Axis row1";
+      row1.RowSettings.Color = Color.Blue;
+      row1.YAxis.ShowYAxisLabel = false;
+
+      row2.YAxis = new YAxisDescriptor();
+      row2.YAxis.Label = "Y-Axis row2";
+      row2.RowSettings.Color = Color.Red;
+      row2.YAxis.ShowYAxisLabel = true;
+
+      model.AddDataRow(row1);
+      model.AddDataRow(row2);
+
+      row1.AddValue(0);
+      row1.AddValue(10);
+      row1.AddValue(15);
+      row1.AddValue(16);
+
+      row2.AddValue(0);
+      row2.AddValue(20);
+      row2.AddValue(25);
+      row2.AddValue(26);
+
+      f.ShowDialog();
+    }
+
+    [Test]
     public void TestAxes() {
       LineChartTestForm f = new LineChartTestForm(model);
 
@@ -87,29 +169,18 @@ namespace HeuristicLab.Visualization.Test {
       YAxisDescriptor yaxis2 = new YAxisDescriptor();
 
       yaxis1.Label = "Y-Axis 1";
-      yaxis1.ShowYAxisLabel = true;
       yaxis1.Position = AxisPosition.Left;
-      yaxis1.ShowGrid = true;
-      yaxis1.GridColor = Color.Gray;
 
       yaxis2.Label = "Y-Axis 2";
-      yaxis2.ShowYAxisLabel = true;
       yaxis2.Position = AxisPosition.Right;
-      yaxis2.ShowGrid = false;
 
       row1.RowSettings.Color = Color.Red;
-      row1.RowSettings.Thickness = 3;
-      row1.RowSettings.Style = DrawingStyle.Solid;
       row1.RowSettings.Label = "Die Rote";
 
       row2.RowSettings.Color = Color.Green;
-      row2.RowSettings.Thickness = 3;
-      row2.RowSettings.Style = DrawingStyle.Solid;
       row2.RowSettings.Label = "Die Grüne";
 
       row3.RowSettings.Color = Color.Blue;
-      row3.RowSettings.Thickness = 3;
-      row3.RowSettings.Style = DrawingStyle.Solid;
       row3.RowSettings.Label = "Die Blaue";
       row3.YAxis = yaxis2;
 
@@ -130,6 +201,18 @@ namespace HeuristicLab.Visualization.Test {
         row2.AddValue(rand.NextDouble() * 10);
         row3.AddValue(rand.NextDouble() * 1);
       };
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestDataRowWithOnlyOneValueShouldntCauseZoomLevelTooHighError() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row1 = new DataRow();
+      row1.AddValue(10);
+
+      model.AddDataRow(row1);
 
       f.ShowDialog();
     }
