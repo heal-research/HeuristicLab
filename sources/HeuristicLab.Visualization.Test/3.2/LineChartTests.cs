@@ -218,6 +218,22 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
+    public void TestInsertValuesInDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(5);
+
+      row.AddValue(10, 1);
+      row.AddValue(10, 2);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
     public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 

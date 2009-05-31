@@ -55,6 +55,7 @@ namespace HeuristicLab.Visualization {
     public override void AddValue(double value, int index) {
       //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
+        UpdateMinMaxValue(value);
         dataRow.Insert(index, value);
         OnValueChanged(value, index, Action.Added);
       } else {
