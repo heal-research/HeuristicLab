@@ -112,30 +112,26 @@ namespace HeuristicLab.Visualization {
     }
 
     public override void RemoveValue(int index) {
-      double remVal = dataRow[index];
-      //check if index is valid
       if (index >= 0 && index < dataRow.Count) {
+        UpdateMinMaxValueForRemovedValue(index); // bad runtime but works
+        double removedValue = dataRow[index];
         dataRow.RemoveAt(index);
-        OnValueChanged(remVal, index, Action.Deleted);
+        OnValueChanged(removedValue, index, Action.Deleted);
       } else {
         throw new IndexOutOfRangeException();
       }
     }
 
     public override void RemoveValues(int index, int count) {
-      double[] remValues = new double[count]; //removed values
-      int j = 0;
-
-      //check if count is valid
       if (count > 0) {
-        //check if index is valid
         if ((index >= 0) && (index + count <= dataRow.Count)) {
-          for (int i = index; i < (index + count); i++) {
-            remValues.SetValue(i, j);
-            dataRow.RemoveAt(i);
-            j++;
+          double[] removedValues = new double[count];
+          for (int i = 0; i < count; i++) {
+            removedValues[i] = dataRow[index + i];
+            UpdateMinMaxValueForRemovedValue(index); // bad runtime but works
+            dataRow.RemoveAt(index);
           }
-          OnValuesChanged(remValues, index, Action.Deleted);
+          OnValuesChanged(removedValues, index, Action.Deleted);
         } else {
           throw new IndexOutOfRangeException();
         }
@@ -162,6 +158,19 @@ namespace HeuristicLab.Visualization {
 
     public override double MaxValue {
       get { return maxValue; }
+    }
+
+    private void UpdateMinMaxValueForRemovedValue(int removedValueIndex) {
+      if (minValue == dataRow[removedValueIndex] || maxValue == dataRow[removedValueIndex]) {
+        minValue = double.MaxValue;
+        maxValue = double.MinValue;
+
+        for (int i = 0; i < dataRow.Count; i++) {
+          if (i != removedValueIndex) {
+            UpdateMinMaxValue(dataRow[i]);
+          }
+        }
+      }
     }
 
     private void UpdateMinMaxValue(double newValue, int oldValueIndex) {

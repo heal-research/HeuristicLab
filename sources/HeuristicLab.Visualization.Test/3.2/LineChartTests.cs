@@ -308,6 +308,40 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
+    public void TestRemoveValueFromDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(20);
+      row.AddValue(100);
+      row.AddValue(50);
+
+      row.RemoveValue(2);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestRemoveValuesFromDataRow() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row = new DataRow();
+      row.AddValue(0);
+      row.AddValue(20);
+      row.AddValue(100);
+      row.AddValue(50);
+
+      row.RemoveValues(1, 2);
+
+      model.AddDataRow(row);
+
+      f.ShowDialog();
+    }
+
+    [Test]
     public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 
