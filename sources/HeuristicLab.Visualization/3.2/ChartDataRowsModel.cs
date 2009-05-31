@@ -66,6 +66,12 @@ namespace HeuristicLab.Visualization{
       OnDataRowAdded(row);
     }
 
+    public void AddDataRows(IEnumerable<IDataRow> rows) {
+      foreach (IDataRow row in rows) {
+        AddDataRow(row);
+      }
+    }
+
     public void RemoveDataRow(IDataRow row) {
       rows.Remove(row);
       OnDataRowRemoved(row);

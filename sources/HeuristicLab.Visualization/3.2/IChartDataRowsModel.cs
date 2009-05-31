@@ -22,5 +22,6 @@ namespace HeuristicLab.Visualization {
     event ModelChangedHandler ModelChanged;
     event DataRowAddedHandler DataRowAdded;
     event DataRowRemovedHandler DataRowRemoved;
+    void AddDataRows(IEnumerable<IDataRow> rows);
   }
 }
