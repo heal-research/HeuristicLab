@@ -66,7 +66,7 @@ namespace HeuristicLab.Visualization{
       OnDataRowAdded(row);
     }
 
-    public void AddDataRows(IEnumerable<IDataRow> rows) {
+    public void AddDataRows(params IDataRow[] rows) {
       foreach (IDataRow row in rows) {
         AddDataRow(row);
       }
