@@ -73,6 +73,15 @@ namespace HeuristicLab.Visualization {
       ZoomToFullView();
     }
 
+    public Bitmap Snapshot() {
+      UpdateLayout();
+      Bitmap bmp = new Bitmap(Width, Height);
+      using (Graphics g = Graphics.FromImage(bmp)) {
+        canvas.Draw(g);
+      }
+      return bmp;
+    }
+
     /// <summary>
     /// updates the view settings
     /// </summary>
@@ -391,11 +400,19 @@ namespace HeuristicLab.Visualization {
       SetClipX(-0.1, model.MaxDataRowValues - 0.9);
 
       foreach (RowEntry rowEntry in rowEntries) {
-        YAxisDescriptor yAxisDescriptor = rowEntry.DataRow.YAxis;
+        YAxisDescriptor yAxis = rowEntry.DataRow.YAxis;
 
-        SetClipY(rowEntry,
-                 yAxisDescriptor.MinValue - ((yAxisDescriptor.MaxValue - yAxisDescriptor.MinValue)*0.05),
-                 yAxisDescriptor.MaxValue + ((yAxisDescriptor.MaxValue - yAxisDescriptor.MinValue)*0.05));
+        double padding = (yAxis.MaxValue - yAxis.MinValue)*0.05;
+
+        double ymin = yAxis.MinValue - padding;
+        double ymax = yAxis.MaxValue + padding;
+
+        if (Math.Abs(ymin-ymax) < double.Epsilon*5) {
+          ymin -= 0.1;
+          ymax += 0.1;
+        }
+
+        SetClipY(rowEntry, ymin, ymax);
       }
 
       canvasUI.Invalidate();
