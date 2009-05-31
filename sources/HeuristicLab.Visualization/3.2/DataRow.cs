@@ -63,12 +63,14 @@ namespace HeuristicLab.Visualization {
     }
 
     public override void AddValues(double[] values) {
-      int startInd = dataRow.Count;
+      int startIndex = dataRow.Count;
 
-      foreach (double d in values) {
-        dataRow.Add(d);
+      foreach (double value in values) {
+        UpdateMinMaxValue(value);
+        dataRow.Add(value);
       }
-      OnValuesChanged(values, startInd, Action.Added); 
+
+      OnValuesChanged(values, startIndex, Action.Added); 
     }
 
     public override void AddValues(double[] values, int index) {
