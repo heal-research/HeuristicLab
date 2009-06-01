@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace HeuristicLab.Visualization {
   public class MaxAggregator : DataRowBase {
@@ -112,6 +113,16 @@ namespace HeuristicLab.Visualization {
 
     public override double MaxValue {
       get { return curMaxValue; }
+    }
+
+    public override XmlNode ToXml(IDataRow row, XmlDocument document)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IDataRow FromXml(XmlNode xmlNode)
+    {
+      throw new System.NotImplementedException();
     }
 
     #endregion

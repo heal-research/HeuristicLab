@@ -1,6 +1,9 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Xml;
 
 namespace HeuristicLab.Visualization {
   public enum Action {
@@ -171,6 +174,46 @@ namespace HeuristicLab.Visualization {
           }
         }
       }
+    }
+
+    public override XmlNode ToXml(IDataRow row, XmlDocument document)
+    {
+      XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
+
+      XmlAttribute idAttr = document.CreateAttribute("label");
+      idAttr.Value = row.RowSettings.Label;
+      columnElement.Attributes.Append(idAttr);
+
+      XmlAttribute attrColor = document.CreateAttribute("color");
+      attrColor.Value = row.RowSettings.Color.Name;
+      columnElement.Attributes.Append(attrColor);
+
+      XmlAttribute attrYAxis = document.CreateAttribute("yAxis");
+      attrYAxis.Value = row.YAxis.Label;
+      columnElement.Attributes.Append(attrYAxis);
+
+      StringBuilder builder = new StringBuilder();
+
+      for (int i = 0; i < row.Count; i++)
+      {
+        if (i == 0)
+        {
+          builder.Append(row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
+          //columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+        }
+        else
+        {
+          builder.Append(";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
+          //columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
+        }
+      }
+      columnElement.InnerText += builder.ToString();
+      return columnElement;
+    }
+
+    public override IDataRow FromXml(XmlNode xmlNode)
+    {
+      throw new System.NotImplementedException();
     }
 
     private void UpdateMinMaxValue(double newValue, int oldValueIndex) {

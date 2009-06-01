@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
@@ -15,7 +16,7 @@ namespace HeuristicLab.Visualization{
     private string title = "Title";
     private ViewSettings viewSettings = new ViewSettings();
     private readonly XAxisDescriptor xAxisDescriptor = new XAxisDescriptor();
-    private readonly YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
+    private YAxisDescriptor defaultYAxisDescriptor = new YAxisDescriptor();
     private readonly List<IDataRow> rows = new List<IDataRow>();
 
     public ChartDataRowsModel() {
@@ -121,47 +122,83 @@ namespace HeuristicLab.Visualization{
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-
+      
+      List<YAxisDescriptor> yAxis = new List<YAxisDescriptor>();
+      yAxis.Add(defaultYAxisDescriptor);
       foreach (IDataRow row in rows) {
-        XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
-
-        XmlAttribute idAttr = document.CreateAttribute("label");
-        idAttr.Value = row.RowSettings.Label;
-        columnElement.Attributes.Append(idAttr);
-
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < row.Count; i++) {
-          if (i == 0) {
-            builder.Append(row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
-            //columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-          } else {
-            builder.Append(";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
-            //columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-          }
+        XmlNode rowElement = row.ToXml(row, document);
+        
+        if (!yAxis.Contains(row.YAxis)) {
+          yAxis.Add(row.YAxis);
         }
-        columnElement.InnerText += builder.ToString();
-        node.AppendChild(columnElement);
+        
+        node.AppendChild(rowElement);
+      }
+
+      foreach (YAxisDescriptor axis in yAxis) {
+        XmlNode yAxisElement = document.CreateNode(XmlNodeType.Element, "yAxis", null);
+
+        XmlAttribute attrLabel = document.CreateAttribute("label");
+        attrLabel.Value = axis.Label;
+        yAxisElement.Attributes.Append(attrLabel);
+
+        if (axis == defaultYAxisDescriptor) {
+          XmlAttribute attrDefault = document.CreateAttribute("default");
+          attrDefault.Value = "true";
+          yAxisElement.Attributes.Append(attrDefault);
+        }
+        node.AppendChild(yAxisElement);
+        
       }
 
       XmlNode labelProviderNode = document.ImportNode(XAxis.LabelProvider.GetLabelProviderXmlNode(), true);
       node.AppendChild(labelProviderNode);
 
-      return node;    
+      return node;
     }
 
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
 
+      List<YAxisDescriptor> yAxis = new List<YAxisDescriptor>();
+      foreach (XmlNode dataRow in node.ChildNodes)
+      {
+        if (dataRow.Name.Equals("yAxis"))
+        {
+          XmlAttributeCollection attrs = dataRow.Attributes;
+
+          XmlAttribute attrYAxisLabel = (XmlAttribute)attrs.GetNamedItem("label");
+          string axisLabel = attrYAxisLabel.Value;
+          YAxisDescriptor axis = new YAxisDescriptor();
+          axis.Label = axisLabel;
+          yAxis.Add(axis);
+
+          XmlAttribute attrDefault = (XmlAttribute)attrs.GetNamedItem("default");
+          if (attrDefault != null) {
+            defaultYAxisDescriptor = axis;
+          }
+        }
+      }
+
       foreach (XmlNode dataRow in node.ChildNodes) {
         if (dataRow.Name.Equals("LabelProvider")) {
           XAxis.LabelProvider = XAxis.LabelProvider.PopulateLabelProviderXmlNode(dataRow);
-        } else {
+        } else if (dataRow.Name.Equals("row")) {
           XmlAttributeCollection attrs = dataRow.Attributes;
           XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
           string rowLabel = rowIdAttr.Value;
+          string rowColor = attrs.GetNamedItem("color").Value;
+
           DataRow row = new DataRow();
           row.RowSettings.Label = rowLabel;
+          row.RowSettings.Color = Color.FromName(rowColor);
+
+          string yAxisLabel = attrs.GetNamedItem("yAxis").Value;
+          foreach (YAxisDescriptor axis in yAxis) {
+            if (axis.Label.Equals(yAxisLabel)) {
+              row.YAxis = axis;
+            }
+          }
 
           string[] tokens = dataRow.InnerText.Split(';');
           double[] data = new double[tokens.Length];

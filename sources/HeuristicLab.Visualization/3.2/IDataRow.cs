@@ -1,3 +1,4 @@
+using System.Xml;
 using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
@@ -33,6 +34,9 @@ namespace HeuristicLab.Visualization {
 
     double MinValue { get; }
     double MaxValue { get; }
+
+    XmlNode ToXml(IDataRow row, XmlDocument document);
+    IDataRow FromXml(XmlNode xmlNode);
 
     event ValuesChangedHandler ValuesChanged;
     event ValueChangedHandler ValueChanged;
