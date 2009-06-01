@@ -185,8 +185,12 @@ namespace HeuristicLab.Visualization {
       columnElement.Attributes.Append(idAttr);
 
       XmlAttribute attrColor = document.CreateAttribute("color");
-      attrColor.Value = row.RowSettings.Color.Name;
+      attrColor.Value = row.RowSettings.Color.ToArgb().ToString();
       columnElement.Attributes.Append(attrColor);
+
+      XmlAttribute attrThickness = document.CreateAttribute("thickness");
+      attrThickness.Value = row.RowSettings.Thickness.ToString();
+      columnElement.Attributes.Append(attrThickness);
 
       XmlAttribute attrYAxis = document.CreateAttribute("yAxis");
       attrYAxis.Value = row.YAxis.Label;

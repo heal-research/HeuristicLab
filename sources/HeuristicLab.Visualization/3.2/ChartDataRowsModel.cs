@@ -154,6 +154,18 @@ namespace HeuristicLab.Visualization{
       XmlNode labelProviderNode = document.ImportNode(XAxis.LabelProvider.GetLabelProviderXmlNode(), true);
       node.AppendChild(labelProviderNode);
 
+
+      
+      XmlNode modelProperties = document.CreateNode(XmlNodeType.Element, "modelProperties", null);
+
+      XmlAttribute attrTitle = document.CreateAttribute("title");
+      attrTitle.Value = Title;
+      modelProperties.Attributes.Append(attrTitle);
+      
+      
+      
+      node.AppendChild(modelProperties);
+
       return node;
     }
 
@@ -181,17 +193,30 @@ namespace HeuristicLab.Visualization{
       }
 
       foreach (XmlNode dataRow in node.ChildNodes) {
+        if (dataRow.Name.Equals("modelProperties")) {
+          XmlAttributeCollection attrs = dataRow.Attributes;
+          XmlAttribute attrYAxisLabel = (XmlAttribute)attrs.GetNamedItem("title");
+          Title = attrYAxisLabel.Value;
+        }
+      }
+
+      foreach (XmlNode dataRow in node.ChildNodes) {
         if (dataRow.Name.Equals("LabelProvider")) {
           XAxis.LabelProvider = XAxis.LabelProvider.PopulateLabelProviderXmlNode(dataRow);
         } else if (dataRow.Name.Equals("row")) {
           XmlAttributeCollection attrs = dataRow.Attributes;
           XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
           string rowLabel = rowIdAttr.Value;
-          string rowColor = attrs.GetNamedItem("color").Value;
 
+          string rowColor = attrs.GetNamedItem("color").Value;
           DataRow row = new DataRow();
           row.RowSettings.Label = rowLabel;
-          row.RowSettings.Color = Color.FromName(rowColor);
+          row.RowSettings.Color = Color.FromArgb(Int32.Parse(rowColor));
+
+          string rowThickness = attrs.GetNamedItem("thickness").Value;
+          int thick;
+          Int32.TryParse(rowThickness, out thick);
+          row.RowSettings.Thickness = thick;
 
           string yAxisLabel = attrs.GetNamedItem("yAxis").Value;
           foreach (YAxisDescriptor axis in yAxis) {
