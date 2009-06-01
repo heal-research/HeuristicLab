@@ -218,6 +218,24 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
+    public void TestDataRowWithoutValuesShouldntCauseZoomLevelTooHighError() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row1 = new DataRow();
+
+      model.AddDataRow(row1);
+
+      f.ShowDialog();
+    }
+
+    [Test]
+    public void TestModelWithoutDataRowsShouldntCauseZoomLevelTooHighError() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      f.ShowDialog();
+    }
+
+    [Test]
     public void TestAddValueToDataRow() {
       LineChartTestForm f = new LineChartTestForm(model);
 
@@ -339,6 +357,19 @@ namespace HeuristicLab.Visualization.Test {
       model.AddDataRow(row);
 
       f.ShowDialog();
+    }
+
+    [Test]
+    public void TestPersistence() {
+      LineChartTestForm f = new LineChartTestForm(model);
+
+      IDataRow row1 = new DataRow();
+      row1.AddValues(new double[] {0, 10, 5});
+
+      IDataRow row2 = new DataRow();
+      row2.AddValues(new double[] {1, 20, 7});
+
+      model.AddDataRows(row1, row2);
     }
 
     [Test]

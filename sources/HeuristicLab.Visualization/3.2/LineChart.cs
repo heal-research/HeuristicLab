@@ -397,25 +397,43 @@ namespace HeuristicLab.Visualization {
     #endregion
 
     public void ZoomToFullView() {
-      SetClipX(-0.1, model.MaxDataRowValues - 0.9);
+      double xmin, xmax;
+      GetClippingRange(0, model.MaxDataRowValues-1, out xmin, out xmax);
+      SetClipX(xmin, xmax);
 
       foreach (RowEntry rowEntry in rowEntries) {
         YAxisDescriptor yAxis = rowEntry.DataRow.YAxis;
 
-        double padding = (yAxis.MaxValue - yAxis.MinValue)*0.05;
-
-        double ymin = yAxis.MinValue - padding;
-        double ymax = yAxis.MaxValue + padding;
-
-        if (Math.Abs(ymin-ymax) < double.Epsilon*5) {
-          ymin -= 0.1;
-          ymax += 0.1;
-        }
-
+        double ymin, ymax;
+        GetClippingRange(yAxis.MinValue, yAxis.MaxValue, out ymin, out ymax);
         SetClipY(rowEntry, ymin, ymax);
       }
 
       canvasUI.Invalidate();
+    }
+
+    /// <summary>
+    /// Calculates the required clipping range such that the specified min/max values
+    /// visible including a small padding.
+    /// </summary>
+    /// <param name="minValue"></param>
+    /// <param name="maxValue"></param>
+    /// <param name="clipFrom"></param>
+    /// <param name="clipTo"></param>
+    private static void GetClippingRange(double minValue, double maxValue, out double clipFrom, out double clipTo) {
+      if (minValue == double.MaxValue || maxValue == double.MinValue) {
+        clipFrom = -0.1;
+        clipTo = 1.1;
+      } else {
+        double padding = (maxValue - minValue)*0.05;
+        clipFrom = minValue - padding;
+        clipTo = maxValue + padding;
+
+        if (Math.Abs(clipTo - clipFrom) < double.Epsilon * 5) {
+          clipFrom -= 0.1;
+          clipTo += 0.1;
+        }
+      }
     }
 
     private void SetClipX(double x1, double x2) {
