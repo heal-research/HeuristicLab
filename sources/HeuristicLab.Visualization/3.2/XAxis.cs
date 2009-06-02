@@ -1,4 +1,3 @@
-
 using System.Drawing;
 using HeuristicLab.Visualization.Drawing;
 using HeuristicLab.Visualization.LabelProvider;
@@ -6,7 +5,7 @@ using HeuristicLab.Visualization.LabelProvider;
 namespace HeuristicLab.Visualization {
   public class XAxis : WorldShape {
     public const int PixelsPerInterval = 100;
-    
+
     private ILabelProvider labelProvider = new ContinuousLabelProvider("0.####");
 
     private Color color = Color.Blue;
@@ -26,7 +25,7 @@ namespace HeuristicLab.Visualization {
                                               ClippingArea.Width,
                                               ClippingArea.X1)) {
         TextShape tickLabel = new TextShape(x, ClippingArea.Height - 3,
-                                        labelProvider.GetLabel(x), Font, Color);
+                                            labelProvider.GetLabel(x), Font, Color);
         tickLabel.AnchorPositionX = AnchorPositionX.Middle;
         tickLabel.AnchorPositionY = AnchorPositionY.Top;
         AddShape(tickLabel);

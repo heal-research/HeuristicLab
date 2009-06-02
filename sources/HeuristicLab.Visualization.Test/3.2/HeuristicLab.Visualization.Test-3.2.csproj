@@ -96,6 +96,7 @@
     <Compile Include="LegendForm.Designer.cs">
       <DependentUpon>LegendForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LineChartPersistenceTests.cs" />
     <Compile Include="LineChartTestForm.cs">
       <SubType>Form</SubType>
     </Compile>

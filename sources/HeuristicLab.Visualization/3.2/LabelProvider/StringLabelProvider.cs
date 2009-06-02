@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Visualization.LabelProvider;
 using System.Xml;
 
 namespace HeuristicLab.Visualization.LabelProvider {
@@ -27,17 +26,15 @@ namespace HeuristicLab.Visualization.LabelProvider {
         return string.Empty;
     }
 
-    public XmlNode GetLabelProviderXmlNode() {
-      XmlDocument Xdoc = new XmlDocument();
-
-      XmlNode lblProvInfo = Xdoc.CreateNode(XmlNodeType.Element, "LabelProvider", null);
+    public XmlNode GetLabelProviderXmlNode(XmlDocument document) {
+      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
       lblProvInfo.InnerText = "StringLabelProvider";
 
       foreach (KeyValuePair<int, string> pair in labels)
       {
-        XmlNode strLbl = Xdoc.CreateNode(XmlNodeType.Element, "String", null);
+        XmlNode strLbl = document.CreateNode(XmlNodeType.Element, "String", null);
 
-        XmlAttribute idStrLbl = Xdoc.CreateAttribute("id");
+        XmlAttribute idStrLbl = document.CreateAttribute("id");
         idStrLbl.Value = pair.Key.ToString();
         strLbl.Attributes.Append(idStrLbl);
 

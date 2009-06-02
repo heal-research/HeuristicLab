@@ -115,7 +115,7 @@ namespace HeuristicLab.Visualization {
       get { return curMaxValue; }
     }
 
-    public override XmlNode ToXml(IDataRow row, XmlDocument document)
+    public override XmlNode ToXml(XmlDocument document)
     {
       throw new System.NotImplementedException();
     }

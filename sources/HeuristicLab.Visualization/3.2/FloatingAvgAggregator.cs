@@ -181,7 +181,7 @@ namespace HeuristicLab.Visualization {
       get { return 0; }
     }
 
-    public override XmlNode ToXml(IDataRow row, XmlDocument document)
+    public override XmlNode ToXml(XmlDocument document)
     {
       throw new System.NotImplementedException();
     }

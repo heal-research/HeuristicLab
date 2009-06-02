@@ -66,8 +66,6 @@
       viewSettings1.LegendPosition = HeuristicLab.Visualization.Legend.LegendPosition.Bottom;
       viewSettings1.TitleColor = System.Drawing.Color.Blue;
       viewSettings1.TitleFont = new System.Drawing.Font("Arial", 8F);
-      viewSettings1.XAxisColor = System.Drawing.Color.Blue;
-      viewSettings1.XAxisFont = new System.Drawing.Font("Arial", 8F);
       chartDataRowsModel1.ViewSettings = viewSettings1;
       chartDataRowsModel1.XAxis.Label = "";
       chartDataRowsModel1.XAxis.LabelProvider = continuousLabelProvider1;

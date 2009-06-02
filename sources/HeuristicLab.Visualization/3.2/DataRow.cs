@@ -1,8 +1,6 @@
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Xml;
 
 namespace HeuristicLab.Visualization {
@@ -22,29 +20,10 @@ namespace HeuristicLab.Visualization {
     private double minValue = double.MaxValue;
     private double maxValue = double.MinValue;
 
-    public DataRow() {
-    }
+    public DataRow() {}
     
     public DataRow(string label) {
       this.RowSettings.Label = label;
-    }
-
-    public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow) {
-      this.RowSettings.Label = label;
-      this.RowSettings.Color = color;
-      this.RowSettings.Thickness = thickness;
-      this.RowSettings.Style = style;
-      this.dataRow = dataRow;
-      this.RowSettings.ShowMarkers = true;
-    }
-
-    public DataRow(string label, Color color, int thickness, DrawingStyle style, List<double> dataRow, bool showMarkers) {
-      this.RowSettings.Label = label;
-      this.RowSettings.Color = color;
-      this.RowSettings.Thickness = thickness;
-      this.RowSettings.Style = style;
-      this.RowSettings.ShowMarkers = showMarkers;
-      this.dataRow = dataRow;
     }
 
     public override void AddValue(double value) {
@@ -176,42 +155,24 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public override XmlNode ToXml(IDataRow row, XmlDocument document)
-    {
-      XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "row", null);
+    public override XmlNode ToXml(XmlDocument document) {
+      XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "Row", null);
 
-      XmlAttribute idAttr = document.CreateAttribute("label");
-      idAttr.Value = row.RowSettings.Label;
-      columnElement.Attributes.Append(idAttr);
+      XmlSupport.SetAttribute("Label", RowSettings.Label, columnElement);
+      XmlSupport.SetAttribute("Color", RowSettings.Color.ToArgb().ToString(), columnElement);
+      XmlSupport.SetAttribute("LineType", RowSettings.LineType.ToString(), columnElement);
+      XmlSupport.SetAttribute("Thickness", RowSettings.Thickness.ToString(), columnElement);
+      XmlSupport.SetAttribute("ShowMarkers", RowSettings.ShowMarkers ? "true" : "false", columnElement);
+      XmlSupport.SetAttribute("Style", RowSettings.Style.ToString(), columnElement);
 
-      XmlAttribute attrColor = document.CreateAttribute("color");
-      attrColor.Value = row.RowSettings.Color.ToArgb().ToString();
-      columnElement.Attributes.Append(attrColor);
+      XmlSupport.SetAttribute("YAxis", YAxis.Label, columnElement);
 
-      XmlAttribute attrThickness = document.CreateAttribute("thickness");
-      attrThickness.Value = row.RowSettings.Thickness.ToString();
-      columnElement.Attributes.Append(attrThickness);
-
-      XmlAttribute attrYAxis = document.CreateAttribute("yAxis");
-      attrYAxis.Value = row.YAxis.Label;
-      columnElement.Attributes.Append(attrYAxis);
-
-      StringBuilder builder = new StringBuilder();
-
-      for (int i = 0; i < row.Count; i++)
-      {
-        if (i == 0)
-        {
-          builder.Append(row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
-          //columnElement.InnerText += row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-        }
-        else
-        {
-          builder.Append(";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat));
-          //columnElement.InnerText += ";" + row[i].ToString(CultureInfo.InvariantCulture.NumberFormat);
-        }
+      List<string> strValues = new List<string>();
+      for (int i = 0; i < this.Count; i++) {
+        strValues.Add(this[i].ToString(CultureInfo.InvariantCulture));
       }
-      columnElement.InnerText += builder.ToString();
+      columnElement.InnerText = string.Join(";", strValues.ToArray());
+
       return columnElement;
     }
 

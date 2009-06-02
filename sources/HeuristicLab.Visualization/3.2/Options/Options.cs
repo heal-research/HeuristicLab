@@ -14,6 +14,8 @@ namespace HeuristicLab.Visualization.Options {
     private Dictionary<CheckBox, bool> ShowYAxisBoxes;
     private bool oldShowXAxisGrid;
     private Color oldXAxisGridColor;
+    private Font oldXAxisFont;
+    private Color oldXAxisColor;
     private Dictionary<CheckBox, bool> yAxisClipChangeableBoxes;
 
     internal class LineParams {
@@ -68,6 +70,9 @@ namespace HeuristicLab.Visualization.Options {
     public void ResetSettings() {
       model.XAxis.ShowGrid = oldShowXAxisGrid;
       chkShowXAxisGrid.Checked = oldShowXAxisGrid;
+
+      model.XAxis.Color = oldXAxisColor;
+      model.XAxis.Font = oldXAxisFont;
       
       model.XAxis.GridColor = oldXAxisGridColor;
       xAxisGridColorSelection.Color = oldXAxisGridColor;
@@ -92,8 +97,6 @@ namespace HeuristicLab.Visualization.Options {
       viewSettings.LegendFont = oldViewSettings.LegendFont;
       viewSettings.TitleColor = oldViewSettings.TitleColor;
       viewSettings.TitleFont = oldViewSettings.TitleFont;
-      viewSettings.XAxisColor = oldViewSettings.LegendColor;
-      viewSettings.XAxisFont = oldViewSettings.XAxisFont;
       viewSettings.UpdateView();
       cbLegendPosition.SelectedItem = viewSettings.LegendPosition;
       this.LineSelectCB_SelectedIndexChanged(this, null);
@@ -136,14 +139,14 @@ namespace HeuristicLab.Visualization.Options {
     }
 
     private void btnChangeXAxisFont_Click(object sender, EventArgs e) {
-      fdFont.Font = viewSettings.XAxisFont;
-      fdFont.Color = viewSettings.XAxisColor;
+      fdFont.Font = model.XAxis.Font;
+      fdFont.Color = model.XAxis.Color;
 
       DialogResult dr = fdFont.ShowDialog();
 
       if (dr == DialogResult.OK) {
-        viewSettings.XAxisFont = fdFont.Font;
-        viewSettings.XAxisColor = fdFont.Color;
+        model.XAxis.Font = fdFont.Font;
+        model.XAxis.Color = fdFont.Color;
 
         viewSettings.UpdateView();
       }
@@ -155,6 +158,9 @@ namespace HeuristicLab.Visualization.Options {
 
       oldXAxisGridColor = model.XAxis.GridColor;
       xAxisGridColorSelection.Color = model.XAxis.GridColor;
+
+      oldXAxisFont = model.XAxis.Font;
+      oldXAxisColor = model.XAxis.Color;
 
       InitTabPageLines();
       InitTabPageYAxes();

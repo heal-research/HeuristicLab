@@ -9,8 +9,6 @@ namespace HeuristicLab.Visualization.Options {
     private Color titleColor;
     private Font legendFont;
     private Color legendColor;
-    private Font xAxisFont;
-    private Color xAxisColor;
     private LegendPosition legendPosition;
 
     public ViewSettings() {
@@ -19,9 +17,6 @@ namespace HeuristicLab.Visualization.Options {
 
       legendFont = new Font("Arial", 8);
       legendColor = Color.Blue;
-
-      xAxisFont = new Font("Arial", 8);
-      xAxisColor = Color.Blue;
 
       legendPosition = LegendPosition.Right;
     }
@@ -33,9 +28,6 @@ namespace HeuristicLab.Visualization.Options {
 
       legendFont = (Font)(src.legendFont.Clone());
       legendColor = src.LegendColor;
-
-      xAxisFont = (Font) (src.xAxisFont.Clone());
-      xAxisColor = src.XAxisColor;
 
       legendPosition = src.LegendPosition;
     }
@@ -64,16 +56,6 @@ namespace HeuristicLab.Visualization.Options {
     public Color LegendColor {
       get { return legendColor; }
       set { legendColor = value; }
-    }
-
-    public Font XAxisFont {
-      get { return xAxisFont; }
-      set { xAxisFont = value; }
-    }
-
-    public Color XAxisColor {
-      get { return xAxisColor; }
-      set { xAxisColor = value; }
     }
 
     public LegendPosition LegendPosition {

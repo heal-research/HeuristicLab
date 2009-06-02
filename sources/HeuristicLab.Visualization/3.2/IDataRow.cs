@@ -8,12 +8,6 @@ namespace HeuristicLab.Visualization {
   }
 
   public interface IDataRow {
-    string Label { get; }
-    //Color Color { get; set; }
-    //int Thickness { get; set; }
-//    DrawingStyle Style { get; set; }
-//    DataRowType LineType { get; set; }
-//    bool ShowMarkers { get; set; }
     DataRowSettings RowSettings { get; set; }
  
     YAxisDescriptor YAxis { get; set; }
@@ -35,7 +29,7 @@ namespace HeuristicLab.Visualization {
     double MinValue { get; }
     double MaxValue { get; }
 
-    XmlNode ToXml(IDataRow row, XmlDocument document);
+    XmlNode ToXml(XmlDocument document);
     IDataRow FromXml(XmlNode xmlNode);
 
     event ValuesChangedHandler ValuesChanged;

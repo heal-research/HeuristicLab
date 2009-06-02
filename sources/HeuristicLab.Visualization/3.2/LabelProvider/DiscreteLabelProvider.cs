@@ -13,11 +13,9 @@ namespace HeuristicLab.Visualization.LabelProvider {
         return string.Empty;
     }
 
-    public XmlNode GetLabelProviderXmlNode()
+    public XmlNode GetLabelProviderXmlNode(XmlDocument document)
     {
-      XmlDocument Xdoc = new XmlDocument();
-
-      XmlNode lblProvInfo = Xdoc.CreateNode(XmlNodeType.Element, "LabelProvider", null);
+      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
       lblProvInfo.InnerText = "DiscreteLabelProvider";
 
       return lblProvInfo;

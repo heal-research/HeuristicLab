@@ -15,14 +15,12 @@ namespace HeuristicLab.Visualization.LabelProvider {
       return value.ToString(format, CultureInfo.InvariantCulture);
     }
 
-    public XmlNode GetLabelProviderXmlNode()
+    public XmlNode GetLabelProviderXmlNode(XmlDocument document)
     {
-      XmlDocument Xdoc = new XmlDocument();
-
-      XmlNode lblProvInfo = Xdoc.CreateNode(XmlNodeType.Element, "LabelProvider", null);
+      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
       lblProvInfo.InnerText = "ContinuousLabelProvider";
 
-      XmlAttribute idFormat = Xdoc.CreateAttribute("format");
+      XmlAttribute idFormat = document.CreateAttribute("format");
       idFormat.Value = this.format;
 
       lblProvInfo.Attributes.Append(idFormat);

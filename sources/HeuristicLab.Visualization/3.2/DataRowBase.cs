@@ -3,13 +3,7 @@ using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
   public abstract class DataRowBase : IDataRow {
-    //private string label = "";
-    //private Color color = Color.Black;
-    //private int thickness = 2;
-//    private DrawingStyle style = DrawingStyle.Solid;
-//    private DataRowType lineType = DataRowType.Normal;
     private YAxisDescriptor yAxis;
-//    private bool showMarkers = true;
 
     private DataRowSettings rowSettings ;
 
@@ -30,51 +24,6 @@ namespace HeuristicLab.Visualization {
     void value_DataVisualSettingChanged(DataRowSettings row) {
       OnDataRowChanged(this);
     }
-
-//    public bool ShowMarkers {
-//      get { return showMarkers; }
-//      set {
-//        showMarkers = value;
-//        OnDataRowChanged(this);
-//      }
-//    }          
-
-    public string Label
-    {
-        get { return RowSettings.Label; }
-    }
-//
-//    public Color Color {
-//      get { return color; }
-//      set {
-//        color = value;
-//        OnDataRowChanged(this);
-//      }
-//    }
-//
-//    public int Thickness {
-//      get { return thickness; }
-//      set {
-//        thickness = value;
-//        OnDataRowChanged(this);
-//      }
-//    }
-
-//    public DrawingStyle Style {
-//      get { return style; }
-//      set {
-//        style = value;
-//        OnDataRowChanged(this);
-//      }
-//    }
-//
-//    public DataRowType LineType {
-//      get { return lineType; }
-//      set {
-//        lineType = value;
-//        OnDataRowChanged(this);
-//      }
-//    }
 
     public YAxisDescriptor YAxis {
       get { return yAxis; }
@@ -128,7 +77,7 @@ namespace HeuristicLab.Visualization {
 
     public abstract double MaxValue { get; }
 
-    public abstract XmlNode ToXml(IDataRow row, XmlDocument document);
+    public abstract XmlNode ToXml(XmlDocument document);
     public abstract IDataRow FromXml(XmlNode xmlNode);
    
 

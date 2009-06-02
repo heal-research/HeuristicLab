@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="Options\DataRowSettings.cs" />
     <Compile Include="XAxisDescriptor.cs" />
+    <Compile Include="XmlSupport.cs" />
     <Compile Include="YAxisGrid.cs" />
     <Compile Include="HorizontalLineShape.cs" />
     <Compile Include="LabelProvider\ILabelProvider.cs" />

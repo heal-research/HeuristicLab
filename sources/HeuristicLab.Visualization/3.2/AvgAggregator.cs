@@ -147,7 +147,7 @@ namespace HeuristicLab.Visualization {
       get { return curAvgValue; }
     }
 
-    public override XmlNode ToXml(IDataRow row, XmlDocument document)
+    public override XmlNode ToXml(XmlDocument document)
     {
       throw new System.NotImplementedException();
     }

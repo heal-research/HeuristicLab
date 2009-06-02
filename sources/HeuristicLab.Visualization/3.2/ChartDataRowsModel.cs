@@ -4,8 +4,8 @@ using System.Drawing;
 using System.Globalization;
 using System.Xml;
 using HeuristicLab.Core;
-using System.Text;
 using HeuristicLab.Visualization.Options;
+using HeuristicLab.Visualization.Test;
 
 namespace HeuristicLab.Visualization{
   public delegate void DataRowAddedHandler(IDataRow row);
@@ -122,49 +122,47 @@ namespace HeuristicLab.Visualization{
 
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+
+      XmlSupport.SetAttribute("Title", title, node);
       
-      List<YAxisDescriptor> yAxis = new List<YAxisDescriptor>();
-      yAxis.Add(defaultYAxisDescriptor);
+      List<YAxisDescriptor> yAxes = new List<YAxisDescriptor>();
+      yAxes.Add(defaultYAxisDescriptor);
       foreach (IDataRow row in rows) {
-        XmlNode rowElement = row.ToXml(row, document);
-        
-        if (!yAxis.Contains(row.YAxis)) {
-          yAxis.Add(row.YAxis);
+        if (!yAxes.Contains(row.YAxis)) {
+          yAxes.Add(row.YAxis);
         }
-        
-        node.AppendChild(rowElement);
       }
 
-      foreach (YAxisDescriptor axis in yAxis) {
-        XmlNode yAxisElement = document.CreateNode(XmlNodeType.Element, "yAxis", null);
+      foreach (YAxisDescriptor yAxis in yAxes) {
+        XmlNode yAxisElement = document.CreateElement("YAxis");
 
-        XmlAttribute attrLabel = document.CreateAttribute("label");
-        attrLabel.Value = axis.Label;
-        yAxisElement.Attributes.Append(attrLabel);
+        XmlSupport.SetAttribute("Label", yAxis.Label, yAxisElement);
+        XmlSupport.SetAttribute("GridColor", yAxis.GridColor.ToArgb().ToString(), yAxisElement);
+        XmlSupport.SetAttribute("Position", yAxis.Position.ToString(), yAxisElement);
+        XmlSupport.SetAttribute("ShowGrid", yAxis.ShowGrid ? "true" : "false", yAxisElement);
+        XmlSupport.SetAttribute("ShowYAxis", yAxis.ShowYAxis ? "true" : "false", yAxisElement);
+        XmlSupport.SetAttribute("ShowYAxisLabel", yAxis.ShowYAxisLabel ? "true" : "false", yAxisElement);
+        XmlSupport.SetAttribute("ClipChangeable", yAxis.ClipChangeable ? "true" : "false", yAxisElement);
 
-        if (axis == defaultYAxisDescriptor) {
-          XmlAttribute attrDefault = document.CreateAttribute("default");
-          attrDefault.Value = "true";
-          yAxisElement.Attributes.Append(attrDefault);
-        }
+        if (yAxis == defaultYAxisDescriptor)
+          XmlSupport.SetAttribute("Default", "true", yAxisElement);
+
         node.AppendChild(yAxisElement);
-        
       }
 
-      XmlNode labelProviderNode = document.ImportNode(XAxis.LabelProvider.GetLabelProviderXmlNode(), true);
-      node.AppendChild(labelProviderNode);
+      XmlNode xAxisElement = document.CreateElement("XAxis");
+      XmlSupport.SetAttribute("Color", xAxisDescriptor.Color.ToArgb().ToString(), xAxisElement);
+      XmlSupport.SetAttribute("GridColor", xAxisDescriptor.GridColor.ToArgb().ToString(), xAxisElement);
+      XmlSupport.SetAttribute("Label", xAxisDescriptor.Label, xAxisElement);
+      XmlSupport.SetAttribute("ShowGrid", xAxisDescriptor.ShowGrid ? "true" : "false", xAxisElement);
+      XmlSupport.SetAttribute("ShowLabel", xAxisDescriptor.ShowLabel ? "true" : "false", xAxisElement);
+      node.AppendChild(xAxisElement);
 
+      foreach (IDataRow row in rows) {
+        node.AppendChild(row.ToXml(document));
+      }
 
-      
-      XmlNode modelProperties = document.CreateNode(XmlNodeType.Element, "modelProperties", null);
-
-      XmlAttribute attrTitle = document.CreateAttribute("title");
-      attrTitle.Value = Title;
-      modelProperties.Attributes.Append(attrTitle);
-      
-      
-      
-      node.AppendChild(modelProperties);
+      node.AppendChild(XAxis.LabelProvider.GetLabelProviderXmlNode(document));
 
       return node;
     }
@@ -172,73 +170,59 @@ namespace HeuristicLab.Visualization{
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
 
-      List<YAxisDescriptor> yAxis = new List<YAxisDescriptor>();
-      foreach (XmlNode dataRow in node.ChildNodes)
-      {
-        if (dataRow.Name.Equals("yAxis"))
-        {
-          XmlAttributeCollection attrs = dataRow.Attributes;
+      title = XmlSupport.GetAttribute("Title", "", node);
 
-          XmlAttribute attrYAxisLabel = (XmlAttribute)attrs.GetNamedItem("label");
-          string axisLabel = attrYAxisLabel.Value;
-          YAxisDescriptor axis = new YAxisDescriptor();
-          axis.Label = axisLabel;
-          yAxis.Add(axis);
+      List<YAxisDescriptor> yAxes = new List<YAxisDescriptor>();
+      foreach (XmlNode yAxisNode in node.SelectNodes("YAxis")) {
+        YAxisDescriptor yAxis = new YAxisDescriptor();
+        yAxis.Label = XmlSupport.GetAttribute("Label", "", yAxisNode);
+        yAxis.GridColor = Color.FromArgb(int.Parse(XmlSupport.GetAttribute("GridColor", Color.LightBlue.ToArgb().ToString(), yAxisNode)));
+        yAxis.Position = (AxisPosition)Enum.Parse(typeof(AxisPosition), XmlSupport.GetAttribute("Position", "Left", yAxisNode));
+        yAxis.ShowGrid = XmlSupport.GetAttribute("ShowGrid", "true", yAxisNode) == "true";
+        yAxis.ShowYAxis = XmlSupport.GetAttribute("ShowYAxis", "true", yAxisNode) == "true";
+        yAxis.ShowYAxisLabel = XmlSupport.GetAttribute("ShowYAxisLabel", "true", yAxisNode) == "true";
+        yAxis.ClipChangeable = XmlSupport.GetAttribute("ClipChangeable", "true", yAxisNode) == "true";
+        yAxes.Add(yAxis);
 
-          XmlAttribute attrDefault = (XmlAttribute)attrs.GetNamedItem("default");
-          if (attrDefault != null) {
-            defaultYAxisDescriptor = axis;
-          }
-        }
+        if (XmlSupport.GetAttribute("Default", null, yAxisNode) != null)
+          defaultYAxisDescriptor = yAxis;
       }
 
-      foreach (XmlNode dataRow in node.ChildNodes) {
-        if (dataRow.Name.Equals("modelProperties")) {
-          XmlAttributeCollection attrs = dataRow.Attributes;
-          XmlAttribute attrYAxisLabel = (XmlAttribute)attrs.GetNamedItem("title");
-          Title = attrYAxisLabel.Value;
-        }
+      XmlNode xAxisElement = node.SelectSingleNode("XAxis");
+      if (xAxisElement != null) {
+        xAxisDescriptor.Color = Color.FromArgb(int.Parse(XmlSupport.GetAttribute("Color", Color.Blue.ToArgb().ToString(), xAxisElement)));
+        xAxisDescriptor.GridColor = Color.FromArgb(int.Parse(XmlSupport.GetAttribute("GridColor", Color.LightBlue.ToArgb().ToString(), xAxisElement)));
+        xAxisDescriptor.Label = XmlSupport.GetAttribute("Label", "", xAxisElement);
+        xAxisDescriptor.ShowGrid = XmlSupport.GetAttribute("ShowGrid", "true", xAxisElement) == "true";
+        xAxisDescriptor.ShowLabel = XmlSupport.GetAttribute("ShowLabel", "true", xAxisElement) == "true";
       }
 
-      foreach (XmlNode dataRow in node.ChildNodes) {
-        if (dataRow.Name.Equals("LabelProvider")) {
-          XAxis.LabelProvider = XAxis.LabelProvider.PopulateLabelProviderXmlNode(dataRow);
-        } else if (dataRow.Name.Equals("row")) {
-          XmlAttributeCollection attrs = dataRow.Attributes;
-          XmlAttribute rowIdAttr = (XmlAttribute)attrs.GetNamedItem("label");
-          string rowLabel = rowIdAttr.Value;
+      XmlNode xAxisLabelProviderNode = node.SelectSingleNode("LabelProvider");
+      xAxisDescriptor.LabelProvider = xAxisDescriptor.LabelProvider.PopulateLabelProviderXmlNode(xAxisLabelProviderNode);
 
-          string rowColor = attrs.GetNamedItem("color").Value;
-          DataRow row = new DataRow();
-          row.RowSettings.Label = rowLabel;
-          row.RowSettings.Color = Color.FromArgb(Int32.Parse(rowColor));
+      foreach (XmlNode dataRow in node.SelectNodes("Row")) {
+        string rowLabel = XmlSupport.GetAttribute("Label", "", dataRow);
 
-          string rowThickness = attrs.GetNamedItem("thickness").Value;
-          int thick;
-          Int32.TryParse(rowThickness, out thick);
-          row.RowSettings.Thickness = thick;
+        DataRow row = new DataRow();
+        row.RowSettings.Label = rowLabel;
+        row.RowSettings.Color = Color.FromArgb(Int32.Parse(XmlSupport.GetAttribute("Color", Color.Black.ToArgb().ToString(), dataRow)));
+        row.RowSettings.LineType = (DataRowType)Enum.Parse(typeof(DataRowType), XmlSupport.GetAttribute("LineType", "Normal", dataRow));
+        row.RowSettings.Thickness = Int32.Parse(XmlSupport.GetAttribute("Thickness", "2", dataRow));
+        row.RowSettings.ShowMarkers = XmlSupport.GetAttribute("ShowMarkers", "true", dataRow) == "true";
+        row.RowSettings.Style = (DrawingStyle)Enum.Parse(typeof (DrawingStyle), XmlSupport.GetAttribute("Style", DrawingStyle.Solid.ToString(), dataRow));
 
-          string yAxisLabel = attrs.GetNamedItem("yAxis").Value;
-          foreach (YAxisDescriptor axis in yAxis) {
-            if (axis.Label.Equals(yAxisLabel)) {
-              row.YAxis = axis;
-            }
-          }
-
-          string[] tokens = dataRow.InnerText.Split(';');
-          double[] data = new double[tokens.Length];
-          for (int i = 0; i < data.Length; i++) {
-            if (tokens[i].Length != 0) {
-              if (
-                double.TryParse(tokens[i], NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out data[i]) ==
-                false) {
-                throw new FormatException("Can't parse " + tokens[i] + " as double value.");
-              }
-            }
-          }
-          row.AddValues(data);
-          AddDataRow(row);
+        foreach (YAxisDescriptor yAxis in yAxes) {
+          if (yAxis.Label.Equals(XmlSupport.GetAttribute("YAxis", dataRow)))
+            row.YAxis = yAxis;
         }
+
+        string[] tokens = dataRow.InnerText.Split(';');
+        foreach (string token in tokens) {
+          double value = double.Parse(token, CultureInfo.InvariantCulture);
+          row.AddValue(value);
+        }
+
+        AddDataRow(row);
       }
     }
   }

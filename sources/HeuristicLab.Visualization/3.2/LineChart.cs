@@ -23,8 +23,6 @@ namespace HeuristicLab.Visualization {
 
     private readonly Dictionary<IDataRow, RowEntry> rowToRowEntry = new Dictionary<IDataRow, RowEntry>();
 
-    private readonly ViewSettings viewSettings;
-
     private readonly WorldShape userInteractionShape = new WorldShape();
     private readonly RectangleShape rectangleShape = new RectangleShape(0, 0, 0, 0, Color.FromArgb(50, 0, 0, 255));
     private IMouseEventListener mouseEventListener;
@@ -54,8 +52,7 @@ namespace HeuristicLab.Visualization {
       canvas = canvasUI.Canvas;
 
       this.model = model;
-      viewSettings = model.ViewSettings;
-      viewSettings.OnUpdateSettings += UpdateViewSettings;
+      this.model.ViewSettings.OnUpdateSettings += UpdateViewSettings;
 
       Item = model;
 
@@ -86,15 +83,15 @@ namespace HeuristicLab.Visualization {
     /// updates the view settings
     /// </summary>
     private void UpdateViewSettings() {
-      titleShape.Font = viewSettings.TitleFont;
-      titleShape.Color = viewSettings.TitleColor;
+      titleShape.Font = model.ViewSettings.TitleFont;
+      titleShape.Color = model.ViewSettings.TitleColor;
       titleShape.Text = model.Title;
 
-      legendShape.Font = viewSettings.LegendFont;
-      legendShape.Color = viewSettings.LegendColor;
+      legendShape.Font = model.ViewSettings.LegendFont;
+      legendShape.Color = model.ViewSettings.LegendColor;
 
-      xAxis.Font = viewSettings.XAxisFont;
-      xAxis.Color = viewSettings.XAxisColor;
+      xAxis.Font = model.XAxis.Font;
+      xAxis.Color = model.XAxis.Color;
 
       SetLegendPosition();
 
@@ -241,56 +238,48 @@ namespace HeuristicLab.Visualization {
     /// sets the legend position
     /// </summary>
     private void SetLegendPosition() {
-      switch (viewSettings.LegendPosition) {
+      switch (model.ViewSettings.LegendPosition) {
         case LegendPosition.Bottom:
-          setLegendBottom();
+          SetLegendBottom();
           break;
 
         case LegendPosition.Top:
-          setLegendTop();
+          SetLegendTop();
           break;
 
         case LegendPosition.Left:
-          setLegendLeft();
+          SetLegendLeft();
           break;
 
         case LegendPosition.Right:
-          setLegendRight();
+          SetLegendRight();
           break;
       }
     }
 
-    public void setLegendRight() {
-      // legend right
-      legendShape.BoundingBox = new RectangleD(canvasUI.Width - legendShape.GetMaxLabelLength(), 10, canvasUI.Width,
-                                               canvasUI.Height - 50);
+    public void SetLegendRight() {
+      legendShape.BoundingBox = new RectangleD(canvasUI.Width - legendShape.GetMaxLabelLength(), 10, canvasUI.Width, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = false;
       legendShape.CreateLegend();
     }
 
-    public void setLegendLeft() {
-      // legend left
+    public void SetLegendLeft() {
       legendShape.BoundingBox = new RectangleD(10, 10, canvasUI.Width, canvasUI.Height - 50);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = false;
       legendShape.CreateLegend();
-
-      canvasUI.Invalidate();
     }
 
-    public void setLegendTop() {
-      // legend top
-      legendShape.BoundingBox = new RectangleD(100, canvasUI.Height - canvasUI.Height, canvasUI.Width,
-                                               canvasUI.Height - 10);
+    public void SetLegendTop() {
+      legendShape.BoundingBox = new RectangleD(100, canvasUI.Height - canvasUI.Height, canvasUI.Width, canvasUI.Height - 10);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;
       legendShape.Top = true;
       legendShape.CreateLegend();
     }
 
-    public void setLegendBottom() {
-      // legend bottom
+    public void SetLegendBottom() {
       legendShape.BoundingBox = new RectangleD(100, 2, canvasUI.Width, canvasUI.Height);
       legendShape.ClippingArea = new RectangleD(0, 0, legendShape.BoundingBox.Width, legendShape.BoundingBox.Height);
       legendShape.Row = true;

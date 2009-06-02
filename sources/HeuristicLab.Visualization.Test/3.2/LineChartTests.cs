@@ -360,19 +360,6 @@ namespace HeuristicLab.Visualization.Test {
     }
 
     [Test]
-    public void TestPersistence() {
-      LineChartTestForm f = new LineChartTestForm(model);
-
-      IDataRow row1 = new DataRow();
-      row1.AddValues(new double[] {0, 10, 5});
-
-      IDataRow row2 = new DataRow();
-      row2.AddValues(new double[] {1, 20, 7});
-
-      model.AddDataRows(row1, row2);
-    }
-
-    [Test]
     public void SimpleTestAggregator() {
       LineChartTestForm f = new LineChartTestForm(model);
 
