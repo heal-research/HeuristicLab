@@ -243,7 +243,7 @@ namespace HeuristicLab.Hive.Client.Core {
         foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
           files.AddRange(plugininfo.PluginFiles);
         
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);        
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {                    
           if (!jobs.ContainsKey(e.Result.Job.Id)) {
@@ -264,7 +264,6 @@ namespace HeuristicLab.Hive.Client.Core {
       }
       currentlyFetching = false;
     }
-    
 
     void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
       lock(engines) {

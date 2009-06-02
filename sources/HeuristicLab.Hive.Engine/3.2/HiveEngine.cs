@@ -171,8 +171,6 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Abort() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-
-      //This are just Stubs on the server right now. There won't be any effect right now...
       executionEngineFacade.AbortJob(jobId);
       OnFinished();
     }

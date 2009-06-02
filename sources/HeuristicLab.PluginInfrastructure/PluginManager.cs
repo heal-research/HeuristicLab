@@ -228,7 +228,7 @@ namespace HeuristicLab.PluginInfrastructure {
       NotifyListeners(PluginManagerAction.Initializing, "All plugins");
 
       if (assemblyFiles != null && assemblyFiles.Count > 0)
-        remoteRunner.LoadPlugins(assemblyFiles);
+        remoteRunner.LoadAssemblies(assemblyFiles);
       
       //if (depPlugins != null && depPlugins.Count > 0) {        
         //remoteRunner.LoadPlugins(ActivePlugins);

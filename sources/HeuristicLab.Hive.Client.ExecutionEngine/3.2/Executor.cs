@@ -52,7 +52,6 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
 
     public void Start(byte[] serializedJob) {
       CreationTime = DateTime.Now;
-      
       Job = (IJob)PersistenceManager.RestoreFromGZip(serializedJob);
       //debug
       //Job = new TestJob();

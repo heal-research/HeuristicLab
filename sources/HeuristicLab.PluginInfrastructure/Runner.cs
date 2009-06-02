@@ -29,6 +29,18 @@ using System.Security;
 namespace HeuristicLab.PluginInfrastructure {
   public class Runner : MarshalByRefObject {
 
+    private Dictionary<string, Assembly> loadedAssemblies;
+
+    public Runner() {
+      loadedAssemblies = new Dictionary<string, Assembly>();
+      AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => {
+        if(loadedAssemblies.ContainsKey(args.Name)) {
+          return loadedAssemblies[args.Name];
+        }
+        return null;
+      };
+    }
+
     public void LoadPlugins(ICollection<PluginInfo> plugins) {
       //FileIOPermission fileperm = new FileIOPermission(FileIOPermissionAccess.AllAccess, @"C:\Program Files\HeuristicLab 3.0\plugins\");
       //fileperm.Assert();
@@ -42,13 +54,19 @@ namespace HeuristicLab.PluginInfrastructure {
       PluginManager.Manager.LoadedPlugins = plugins;
     }
     /// <summary>
-    /// Loads plugins from a byte array
+    /// Loads assemblies from a byte array
     /// </summary>
-    /// <param name="plugins">bytearray of all plugins that should be loaded</param>
-    public void LoadPlugins(ICollection<byte[]> plugins) {
-      foreach (byte[] plugin in plugins) {
-        Assembly.Load(plugin);        
+    /// <param name="plugins">bytearray of all assemblies that should be loaded</param>
+    public void LoadAssemblies(ICollection<byte[]> assemblies) {
+      foreach (byte[] asm in assemblies) {
+        Assembly loadedAsm = Assembly.Load(asm);
+        RegisterLoadedAssembly(loadedAsm);
       }
+    }
+
+    private void RegisterLoadedAssembly(Assembly asm) {
+      loadedAssemblies.Add(asm.FullName, asm);
+      loadedAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
 
     public void Run(ApplicationInfo appInfo) {
