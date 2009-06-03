@@ -1,9 +1,10 @@
 using System.Globalization;
 using System.Xml;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization.LabelProvider {
-  public class ContinuousLabelProvider : ILabelProvider {
-    private readonly string format;
+  public class ContinuousLabelProvider : StorableBase, ILabelProvider {
+    private string format;
 
     public ContinuousLabelProvider() {}
 
@@ -15,22 +16,18 @@ namespace HeuristicLab.Visualization.LabelProvider {
       return value.ToString(format, CultureInfo.InvariantCulture);
     }
 
-    public XmlNode GetLabelProviderXmlNode(XmlDocument document)
-    {
-      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
-      lblProvInfo.InnerText = "ContinuousLabelProvider";
+    public override XmlNode GetXmlNode(string name, XmlDocument document, System.Collections.Generic.IDictionary<System.Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
-      XmlAttribute idFormat = document.CreateAttribute("format");
-      idFormat.Value = this.format;
+      XmlSupport.SetAttribute("Format", format, node);
 
-      lblProvInfo.Attributes.Append(idFormat);
-
-      return lblProvInfo;
+      return node;
     }
 
-    public ILabelProvider PopulateLabelProviderXmlNode(XmlNode node) {
-      var labelProvider = new ContinuousLabelProvider(node.SelectSingleNode("//LabelProvider").Attributes[0].Value);
-      return labelProvider;
+    public override void Populate(XmlNode node, System.Collections.Generic.IDictionary<System.Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+
+      this.format = XmlSupport.GetAttribute("Format", "0", node);
     }
   }
 }

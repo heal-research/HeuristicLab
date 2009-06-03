@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization.LabelProvider {
-  public class StringLabelProvider : ILabelProvider {
+  public class StringLabelProvider : StorableBase, ILabelProvider {
     private readonly Dictionary<int, string> labels = new Dictionary<int, string>();
 
     public void ClearLabels() {
@@ -26,32 +27,37 @@ namespace HeuristicLab.Visualization.LabelProvider {
         return string.Empty;
     }
 
-    public XmlNode GetLabelProviderXmlNode(XmlDocument document) {
-      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
-      lblProvInfo.InnerText = "StringLabelProvider";
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
 
-      foreach (KeyValuePair<int, string> pair in labels)
-      {
-        XmlNode strLbl = document.CreateNode(XmlNodeType.Element, "String", null);
+      XmlNode labelsNode = document.CreateElement("Labels");
 
-        XmlAttribute idStrLbl = document.CreateAttribute("id");
-        idStrLbl.Value = pair.Key.ToString();
-        strLbl.Attributes.Append(idStrLbl);
+      foreach (KeyValuePair<int, string> pair in labels) {
+        int index = pair.Key;
+        string label = pair.Value;
 
-        strLbl.InnerText = pair.Value;
-        lblProvInfo.AppendChild(strLbl);
+        XmlNode labelNode = document.CreateElement("Label");
+
+        XmlSupport.SetAttribute("Index", index.ToString(), labelNode);
+        XmlSupport.SetAttribute("Value", label, labelNode);
+
+        labelsNode.AppendChild(labelNode);
       }
-      return lblProvInfo;
+
+      node.AppendChild(labelsNode);
+
+      return node;
     }
 
-    public ILabelProvider PopulateLabelProviderXmlNode(XmlNode node) {
-      var labelProvider = new StringLabelProvider();
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
 
-      foreach (XmlNode strLbl in node.SelectNodes("//String"))
-      {
-        labelProvider.SetLabel(int.Parse(strLbl.Attributes[0].Value), strLbl.InnerText);
+      foreach (XmlNode labelNode in node.SelectNodes("Labels/Label")) {
+        int index = int.Parse(XmlSupport.GetAttribute("Index", labelNode));
+        string label = XmlSupport.GetAttribute("Value", labelNode);
+
+        this.SetLabel(index, label);
       }
-      return labelProvider;
     }
   }
 }

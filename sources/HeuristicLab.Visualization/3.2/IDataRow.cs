@@ -1,4 +1,4 @@
-using System.Xml;
+using HeuristicLab.Core;
 using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
@@ -7,7 +7,7 @@ namespace HeuristicLab.Visualization {
     Points
   }
 
-  public interface IDataRow {
+  public interface IDataRow : IStorable {
     DataRowSettings RowSettings { get; set; }
  
     YAxisDescriptor YAxis { get; set; }
@@ -28,9 +28,6 @@ namespace HeuristicLab.Visualization {
 
     double MinValue { get; }
     double MaxValue { get; }
-
-    XmlNode ToXml(XmlDocument document);
-    IDataRow FromXml(XmlNode xmlNode);
 
     event ValuesChangedHandler ValuesChanged;
     event ValueChangedHandler ValueChanged;

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Xml;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization {
   public enum Action {
@@ -155,32 +157,6 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public override XmlNode ToXml(XmlDocument document) {
-      XmlNode columnElement = document.CreateNode(XmlNodeType.Element, "Row", null);
-
-      XmlSupport.SetAttribute("Label", RowSettings.Label, columnElement);
-      XmlSupport.SetAttribute("Color", RowSettings.Color.ToArgb().ToString(), columnElement);
-      XmlSupport.SetAttribute("LineType", RowSettings.LineType.ToString(), columnElement);
-      XmlSupport.SetAttribute("Thickness", RowSettings.Thickness.ToString(), columnElement);
-      XmlSupport.SetAttribute("ShowMarkers", RowSettings.ShowMarkers ? "true" : "false", columnElement);
-      XmlSupport.SetAttribute("Style", RowSettings.Style.ToString(), columnElement);
-
-      XmlSupport.SetAttribute("YAxis", YAxis.Label, columnElement);
-
-      List<string> strValues = new List<string>();
-      for (int i = 0; i < this.Count; i++) {
-        strValues.Add(this[i].ToString(CultureInfo.InvariantCulture));
-      }
-      columnElement.InnerText = string.Join(";", strValues.ToArray());
-
-      return columnElement;
-    }
-
-    public override IDataRow FromXml(XmlNode xmlNode)
-    {
-      throw new System.NotImplementedException();
-    }
-
     private void UpdateMinMaxValue(double newValue, int oldValueIndex) {
       if (minValue != dataRow[oldValueIndex] && maxValue != dataRow[oldValueIndex])
         UpdateMinMaxValue(newValue);
@@ -198,6 +174,54 @@ namespace HeuristicLab.Visualization {
     private void UpdateMinMaxValue(double value) {
       maxValue = Math.Max(value, maxValue);
       minValue = Math.Min(value, minValue);
+    }
+
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+
+      XmlSupport.SetAttribute("Label", RowSettings.Label, node);
+      XmlSupport.SetAttribute("Color", RowSettings.Color.ToArgb().ToString(), node);
+      XmlSupport.SetAttribute("LineType", RowSettings.LineType.ToString(), node);
+      XmlSupport.SetAttribute("Thickness", RowSettings.Thickness.ToString(), node);
+      XmlSupport.SetAttribute("ShowMarkers", RowSettings.ShowMarkers ? "true" : "false", node);
+      XmlSupport.SetAttribute("Style", RowSettings.Style.ToString(), node);
+
+      node.AppendChild(PersistenceManager.Persist("YAxis", this.YAxis, document, persistedObjects));
+
+      List<string> strValues = new List<string>();
+      for (int i = 0; i < this.Count; i++) {
+        strValues.Add(this[i].ToString(CultureInfo.InvariantCulture));
+      }
+      XmlElement valuesElement = document.CreateElement("Values");
+      valuesElement.InnerText = string.Join(";", strValues.ToArray());
+      node.AppendChild(valuesElement);
+
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+
+      this.RowSettings.Label = XmlSupport.GetAttribute("Label", "", node);
+      this.RowSettings.Color = Color.FromArgb(Int32.Parse(XmlSupport.GetAttribute("Color", Color.Black.ToArgb().ToString(), node)));
+      this.RowSettings.LineType = (DataRowType)Enum.Parse(typeof(DataRowType), XmlSupport.GetAttribute("LineType", "Normal", node));
+      this.RowSettings.Thickness = Int32.Parse(XmlSupport.GetAttribute("Thickness", "2", node));
+      this.RowSettings.ShowMarkers = XmlSupport.GetAttribute("ShowMarkers", "true", node) == "true";
+      this.RowSettings.Style = (DrawingStyle)Enum.Parse(typeof(DrawingStyle), XmlSupport.GetAttribute("Style", DrawingStyle.Solid.ToString(), node));
+
+      XmlNode yAxisNode = node.SelectSingleNode("YAxis");
+      if (yAxisNode != null) {
+        this.YAxis = (YAxisDescriptor)PersistenceManager.Restore(yAxisNode, restoredObjects);
+      }
+
+      XmlNode valuesNode = node.SelectSingleNode("Values");
+      if (valuesNode != null) {
+        string[] strValues = valuesNode.InnerText.Split(';');
+        foreach (string strValue in strValues) {
+          double value = double.Parse(strValue, CultureInfo.InvariantCulture);
+          this.AddValue(value);
+        }
+      }
     }
   }
 }

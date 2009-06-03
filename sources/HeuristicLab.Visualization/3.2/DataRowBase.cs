@@ -1,9 +1,9 @@
-using System.Xml;
+using HeuristicLab.Core;
 using HeuristicLab.Visualization.Options;
 
 namespace HeuristicLab.Visualization {
-  public abstract class DataRowBase : IDataRow {
-    private YAxisDescriptor yAxis;
+  public abstract class DataRowBase : StorableBase, IDataRow {
+    protected YAxisDescriptor yAxis;
 
     private DataRowSettings rowSettings ;
 
@@ -16,7 +16,7 @@ namespace HeuristicLab.Visualization {
       }
     }
 
-    public DataRowBase() {
+    protected DataRowBase() {
       rowSettings = new DataRowSettings();
       rowSettings.DataVisualSettingChanged += value_DataVisualSettingChanged;
     }
@@ -54,19 +54,12 @@ namespace HeuristicLab.Visualization {
     }
 
     public abstract void AddValue(double value);
-
     public abstract void AddValue(double value, int index);
-
     public abstract void AddValues(double[] values);
-
     public abstract void AddValues(double[] values, int index);
-
     public abstract void ModifyValue(double value, int index);
-
     public abstract void ModifyValues(double[] values, int index);
-
     public abstract void RemoveValue(int index);
-
     public abstract void RemoveValues(int index, int count);
 
     public abstract int Count { get; }
@@ -74,17 +67,10 @@ namespace HeuristicLab.Visualization {
     public abstract double this[int index] { get; set; }
 
     public abstract double MinValue { get; }
-
     public abstract double MaxValue { get; }
 
-    public abstract XmlNode ToXml(XmlDocument document);
-    public abstract IDataRow FromXml(XmlNode xmlNode);
-   
-
     public event ValuesChangedHandler ValuesChanged;
-
     public event ValueChangedHandler ValueChanged;
-
     public event DataRowChangedHandler DataRowChanged;
   }
 }

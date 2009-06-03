@@ -97,6 +97,8 @@ namespace HeuristicLab.Visualization.Test {
       Assert.AreEqual(0, restoredModel.Rows[0][0]);
       Assert.AreEqual(10.3, restoredModel.Rows[0][1]);
       Assert.AreEqual(5, restoredModel.Rows[0][2]);
+      Assert.AreEqual(0, restoredModel.Rows[0].MinValue);
+      Assert.AreEqual(10.3, restoredModel.Rows[0].MaxValue);
 
       Assert.AreEqual(true, restoredModel.Rows[0].YAxis.ClipChangeable);
       Assert.AreEqual(Color.FromArgb(1, 2, 3, 4), restoredModel.Rows[0].YAxis.GridColor);
@@ -118,6 +120,8 @@ namespace HeuristicLab.Visualization.Test {
       Assert.AreEqual(1, restoredModel.Rows[1][0]);
       Assert.AreEqual(2, restoredModel.Rows[1][1]);
       Assert.AreEqual(3, restoredModel.Rows[1][2]);
+      Assert.AreEqual(1, restoredModel.Rows[1].MinValue);
+      Assert.AreEqual(3, restoredModel.Rows[1].MaxValue);
 
       Assert.AreEqual(false, restoredModel.Rows[1].YAxis.ClipChangeable);
       Assert.AreEqual(Color.FromArgb(4, 3, 2, 1), restoredModel.Rows[1].YAxis.GridColor);

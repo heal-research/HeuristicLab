@@ -1,8 +1,8 @@
 using System;
-using System.Xml;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Visualization.LabelProvider {
-  public class DiscreteLabelProvider : ILabelProvider {
+  public class DiscreteLabelProvider : StorableBase, ILabelProvider {
     public string GetLabel(double value) {
       int index = (int)Math.Round(value);
       double delta = Math.Abs(index - value);
@@ -11,19 +11,6 @@ namespace HeuristicLab.Visualization.LabelProvider {
         return index.ToString();
       else
         return string.Empty;
-    }
-
-    public XmlNode GetLabelProviderXmlNode(XmlDocument document)
-    {
-      XmlNode lblProvInfo = document.CreateNode(XmlNodeType.Element, "LabelProvider", null);
-      lblProvInfo.InnerText = "DiscreteLabelProvider";
-
-      return lblProvInfo;
-    }
-
-    public ILabelProvider PopulateLabelProviderXmlNode(XmlNode node) {
-      var labelProvider = new DiscreteLabelProvider();
-      return labelProvider;
     }
   }
 }
