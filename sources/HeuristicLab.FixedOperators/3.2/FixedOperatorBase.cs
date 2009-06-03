@@ -26,9 +26,13 @@ using HeuristicLab.Operators;
 using HeuristicLab.Data;
 using System.Threading;
 using System.Diagnostics;
+using System.Text;
 
 namespace HeuristicLab.FixedOperators {
   class FixedOperatorBase : CombinedOperator {
+    protected ItemList<IOperation> persistedOperations;
+    protected Stack<IOperation> executionStack;
+
     /// <summary>
     /// Execution pointer shows which command actually is executed
     /// </summary>
@@ -39,35 +43,36 @@ namespace HeuristicLab.FixedOperators {
     /// </summary>
     protected IntData persistedExecutionPointer;
 
+    protected int tempExePointer;
+    protected int tempPersExePointer;
+
     /// <summary>
     /// Current operator in execution.
     /// </summary>
     protected IOperator currentOperator;
 
-    public FixedOperatorBase() : base() {
-      //AddVariableInfo(new VariableInfo("ExecutionPointer", "Execution pointer for algorithm abortion", typeof(IntData), VariableKind.New));   
+    public FixedOperatorBase()
+      : base() {
+      executionStack = new Stack<IOperation>();
     } // FixedOperatorBase
 
     private bool IsExecuted() {
       return persistedExecutionPointer.Data > executionPointer;
     } // AlreadyExecuted
 
-    protected void ExecuteExitable(IOperator op, IScope scope) { 
-    
+    protected void ExecuteExitable(IOperator op, IScope scope) {
+
     } // ExecuteExitable
 
-    protected void SetRegion(string region) { 
-    
+    protected void SetRegion(string region) {
+
     } // SetRegion
 
     protected virtual void Execute(IOperator op, IScope scope) {
       if (!IsExecuted()) {
         ExecuteOperation(op, scope);
         persistedExecutionPointer.Data++;
-        //Console.WriteLine("Execute: {0}", executionPointer);
       } // if not executed
-      //else
-        //Console.WriteLine("Skip Execute: {0}", executionPointer);
       executionPointer++;
 
       if (Canceled)
@@ -76,37 +81,50 @@ namespace HeuristicLab.FixedOperators {
 
     protected void ExecuteOperation(IOperator op, IScope scope) {
       IOperation operation;
-      currentOperator = op;
-      operation = op.Execute(scope);
-      if (operation != null) {
-        //IOperator currentOperator;
-        Stack<IOperation> executionStack = new Stack<IOperation>();
-        executionStack.Push(op.Execute(scope));
+       if (persistedOperations.Count == 0) {
+        currentOperator = op;
+        operation = op.Execute(scope);
+        if (operation != null) {
+          executionStack.Push(operation);
+        }
+      } else {
+        executionStack = new Stack<IOperation>(persistedOperations);  
+      }
 
-        while (executionStack.Count > 0) {
-          operation = executionStack.Pop();
-          if (operation is AtomicOperation) {
-            AtomicOperation atomicOperation = (AtomicOperation)operation;
-            IOperation next = null;
-            try {
-              currentOperator = atomicOperation.Operator;
-              next = currentOperator.Execute(atomicOperation.Scope);
-            }
-            catch (Exception) {
-              throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute");
-            }
-            if (next != null)
-              executionStack.Push(next);
-          } else if (operation is CompositeOperation) {
-            CompositeOperation compositeOperation = (CompositeOperation)operation;
-            for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
-              executionStack.Push(compositeOperation.Operations[i]);
-          } // else if
-        } // while
-      } // if (operation != null)
+      while (executionStack.Count > 0) {
+        operation = executionStack.Pop();
+        if (operation is AtomicOperation) {
+          AtomicOperation atomicOperation = (AtomicOperation)operation;
+          IOperation next = null;
+          try {
+            currentOperator = atomicOperation.Operator;
+            next = currentOperator.Execute(atomicOperation.Scope);
+          }
+          catch (Exception) {
+            throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute");
+          }
+          if (next != null)
+            executionStack.Push(next);
+        } else if (operation is CompositeOperation) {
+          CompositeOperation compositeOperation = (CompositeOperation)operation;
+          for (int i = compositeOperation.Operations.Count - 1; i >= 0; i--)
+            executionStack.Push(compositeOperation.Operations[i]);
+        } // else if
+
+        if (Canceled && executionStack.Count > 0) {
+          SaveExecutionStack(executionStack);
+          throw new CancelException();
+        }
+      } // while
     } // ExecuteOperation
 
+    private void SaveExecutionStack(Stack<IOperation> stack) {
+      persistedOperations = new ItemList<IOperation>();
+      persistedOperations.AddRange(stack.ToArray());
+    } // SaveExecutionStack
+
     public override IOperation Apply(IScope scope) {
+      base.Apply(scope);
       try {
         persistedExecutionPointer = scope.GetVariableValue<IntData>("ExecutionPointer", false);
       }
@@ -114,20 +132,55 @@ namespace HeuristicLab.FixedOperators {
         persistedExecutionPointer = new IntData(0);
         scope.AddVariable(new Variable("ExecutionPointer", persistedExecutionPointer));
       }
-      
+
+      try {
+        persistedOperations = scope.GetVariableValue<ItemList<IOperation>>("ExecutionStack", false);
+      }
+      catch (Exception) {
+        persistedOperations = new ItemList<IOperation>();
+        scope.AddVariable(new Variable("ExecutionStack", persistedOperations));
+      }
+
       executionPointer = 0;
+
+      for (int i = 0; i < SubOperators.Count; i++) {
+        if (scope.GetVariable(SubOperators[i].Name) != null)
+          scope.RemoveVariable(SubOperators[i].Name);
+        scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
+      }
+
       return null;
     } // Apply
 
     public override void Abort() {
       base.Abort();
       currentOperator.Abort();
-      //engineThread.Abort();
-    }
+    } // Abort
 
-  } // class FixedBase
+    /// <summary>
+    /// Saves the value of the execution pointers into temp variables
+    /// </summary>
+    protected void SaveExecutionPointer() {
+      tempExePointer = executionPointer;
+      tempPersExePointer = persistedExecutionPointer.Data;
+    } // SaveExecutionPointer
 
-  class CancelException : Exception { 
-  
+    protected void SetExecutionPointerToLastSaved() {
+      if (executionPointer != persistedExecutionPointer.Data)
+        persistedExecutionPointer.Data = tempPersExePointer;
+      else
+        persistedExecutionPointer.Data = tempExePointer;
+      executionPointer = tempExePointer;
+    } // SetExecutionPointerToLastSaved
+
+
+    protected void ResetExecutionPointer() {
+      executionPointer = 0;
+      persistedExecutionPointer.Data = 0;
+    } // ResetExecutionPointer
+  } // class FixedOperatorBase
+
+  class CancelException : Exception {
+
   } // class CancelException
 } // namespace HeuristicLab.FixedOperators

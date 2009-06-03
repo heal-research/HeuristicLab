@@ -33,6 +33,8 @@ using HeuristicLab.Logging;
 using System.Diagnostics;
 using HeuristicLab.Selection;
 using System.Threading;
+using System.IO;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.FixedOperators {
   class FixedSGAMain : FixedOperatorBase {
@@ -52,6 +54,9 @@ namespace HeuristicLab.FixedOperators {
     OperatorBase mutator;
     OperatorBase evaluator;
     SubScopesRemover sr;
+    StochasticBranch sb;
+
+    OperatorBase selector;
 
     // CreateReplacement
     LeftSelector ls;
@@ -62,8 +67,13 @@ namespace HeuristicLab.FixedOperators {
 
     Thread executionThread;
     Thread cancelThread;
-    StringBuilder output = new StringBuilder();
-
+    
+    // for testing only
+    QualityLogger ql;
+    BestAverageWorstQualityCalculator bawqc;
+    DataCollector dc;
+    ItemList<StringData> names;
+    LinechartInjector lci;
 
     //long[] timesExecuteCreateChildren;
     public FixedSGAMain()
@@ -78,11 +88,14 @@ namespace HeuristicLab.FixedOperators {
       sorter.GetVariableInfo("Descending").ActualName = "Maximization";
       sorter.GetVariableInfo("Value").ActualName = "Quality";
 
-      InitVariablesForCreateChildren();
-      InitVariablesForCreateReplacement();
+      InitCreateChildren();
+      InitReplacement();
+
+      sb = new StochasticBranch();
+      sb.GetVariableInfo("Probability").ActualName = "MutationRate";
     }
 
-    private void InitVariablesForCreateReplacement() {
+    private void InitReplacement() {
       ls = new LeftSelector();
       rr = new RightReducer();
       rs = new RightSelector();
@@ -91,10 +104,9 @@ namespace HeuristicLab.FixedOperators {
 
       ls.GetVariableInfo("Selected").ActualName = "Elites";
       rs.GetVariableInfo("Selected").ActualName = "Elites";
-
     }
 
-    protected void InitVariablesForCreateChildren() {
+    protected void InitCreateChildren() {
       // variables for create children
       ci = new ChildrenInitializer();
 
@@ -116,13 +128,8 @@ namespace HeuristicLab.FixedOperators {
       base.Apply(scope);
       Stopwatch swApply = new Stopwatch();
       swApply.Start();
-      for (int i = 0; i < SubOperators.Count; i++) {
-        if (scope.GetVariable(SubOperators[i].Name) != null)
-          scope.RemoveVariable(SubOperators[i].Name);
-        scope.AddVariable(new Variable(SubOperators[i].Name, SubOperators[i]));
-      }
 
-      OperatorBase selector = (OperatorBase)GetVariableValue("Selector", scope, true);
+      #region Initialization
       QualityLogger ql = new QualityLogger();
 
       BestAverageWorstQualityCalculator bawqc = new BestAverageWorstQualityCalculator();
@@ -136,15 +143,9 @@ namespace HeuristicLab.FixedOperators {
       lci.GetVariableInfo("Linechart").ActualName = "Quality Linechart";
       lci.GetVariable("NumberOfLines").GetValue<IntData>().Data = 3;
 
-      LessThanComparator ltc = new LessThanComparator();
-      ltc.GetVariableInfo("LeftSide").ActualName = "Generations";
-      ltc.GetVariableInfo("RightSide").ActualName = "MaximumGenerations";
-      ltc.GetVariableInfo("Result").ActualName = "GenerationsCondition";
-
       IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
       IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
-      //nrOfGenerations.Data = 0;
-
+    
       IntData subscopeNr;
       try {
         subscopeNr = scope.GetVariableValue<IntData>("SubScopeNr", false);
@@ -154,22 +155,24 @@ namespace HeuristicLab.FixedOperators {
         scope.AddVariable(new Variable("SubScopeNr", subscopeNr));
       }
 
-      EmptyOperator empty = new EmptyOperator();
+      ci = new ChildrenInitializer();
+      
+
+      GetOperatorsFromScope(scope);
+
+      try {
+        sb.RemoveSubOperator(0);
+      }
+      catch (Exception) {
+      }
+      sb.AddSubOperator(mutator);
+
 
       IScope s;
       IScope s2;
-      int tempExePointer = 0;
-      int tempPersExePointer = 0;
-      double randomNumber;
-      
-      // fetch variables from scope for create children
-      InitializeExecuteCreateChildren(scope);
+      #endregion
       try {
-        for (int i = nrOfGenerations.Data; i < maxGenerations.Data; i++) {
-          if (executionPointer == persistedExecutionPointer.Data)
-            persistedExecutionPointer.Data = 0;
-          executionPointer = 0;
-
+        for (; nrOfGenerations.Data < maxGenerations.Data; nrOfGenerations.Data++) {
           Execute(selector, scope);
 
           ////// Create Children //////
@@ -177,89 +180,81 @@ namespace HeuristicLab.FixedOperators {
           s = scope.SubScopes[1];
           Execute(ci, s);
 
-          tempExePointer = executionPointer;
-          tempPersExePointer = persistedExecutionPointer.Data;
+          SaveExecutionPointer();
           // UniformSequentialSubScopesProcessor
-          for (int j = subscopeNr.Data; j < s.SubScopes.Count; j++) {
-            if (executionPointer == persistedExecutionPointer.Data)
-              persistedExecutionPointer.Data = tempExePointer;
-            executionPointer = tempExePointer;
+          for (; subscopeNr.Data < s.SubScopes.Count; subscopeNr.Data++) {
+            SetExecutionPointerToLastSaved();
 
-            s2 = s.SubScopes[j];
+            s2 = s.SubScopes[subscopeNr.Data];
             Execute(crossover, s2);
             // Stochastic Branch
+            Execute(sb, s2);
 
-            randomNumber = random.NextDouble();
+            // ganz böse!!!!!!!
+            // wird nach dem stochastic branch angehalten und später fortgesetzt,
+            // wird eine Zufallszahl erzeugt, die aber nicht verwendet wird.
+            // Dadurch kommt der GA auf ein anderes Endergebnis
+            // Lösung: Stochastic Branch Operator verwenden
+            //randomNumber = random.NextDouble();
             //output.AppendLine(randomNumber.ToString());
-            if (randomNumber < probability.Data)
-              Execute(mutator, s2);
-            else
-              Execute(empty, s2);
+            //if (randomNumber < probability.Data)
+            //  Execute(mutator, s2);
+            //else
+            //  Execute(empty, s2);
+
             Execute(evaluator, s2);
             Execute(sr, s2);
             Execute(counter, s2);
-            subscopeNr.Data++;
           } // foreach
-
 
           Execute(sorter, s);
           ////// END Create Children //////
 
-          ExecuteCreateReplacementWithFixedConstrolStructures(scope);
+          DoReplacement(scope);
           Execute(ql, scope);
           Execute(bawqc, scope);
           Execute(dc, scope);
           Execute(lci, scope);
           subscopeNr.Data = 0;
-          nrOfGenerations.Data++;
+          ResetExecutionPointer();
         } // for i
 
+        //TextWriter tw = new StreamWriter(DateTime.Now.ToFileTime() + ".txt");
+        //tw.Write(output.ToString());
+        //tw.Close();
+        //output = new StringBuilder();
 
-
+        swApply.Stop();
+        Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
       } // try
       catch (CancelException) {
         Console.WriteLine("Micro engine aborted by cancel flag.");
-      }
-      catch (Exception) { 
-          
-      }
-
-      swApply.Stop();
-      Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
-
-      if (Canceled) {
         return new AtomicOperation(this, scope);
       }
 
       return null;
     } // Apply
 
-    private void WorkerMethod(object o) {
-     
-    } // Apply
-
-
-
     /// <summary>
-    /// Initializes some variables needed before the execution of create children
+    /// Fetch main operators like selector, crossover, mutator, ... from scope
+    /// and store them in instance variables.
     /// </summary>
     /// <param name="scope"></param>
-    private void InitializeExecuteCreateChildren(IScope scope) {
+    private void GetOperatorsFromScope(IScope scope) {
+      selector = (OperatorBase)GetVariableValue("Selector", scope, true);
       crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
       mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
       evaluator = GetVariableValue<OperatorBase>("Evaluator", scope, true);
 
       random = GetVariableValue<IRandom>("Random", scope, true);
       probability = GetVariableValue<DoubleData>("MutationRate", scope, true);
-
-      ci = new ChildrenInitializer();
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="scope"></param>
-    protected void ExecuteCreateChildrenWithFixedControlStructures(IScope scope) {
+    protected void CreateChildren(IScope scope) {
       // ChildrenInitializer
       Execute(ci, scope);
       // UniformSequentialSubScopesProcessor
@@ -274,9 +269,9 @@ namespace HeuristicLab.FixedOperators {
       } // foreach
 
       Execute(sorter, scope);
-    } // ExecuteCreateChildrenHWCS
+    } // CreateChildren
 
-    private void ExecuteCreateReplacementWithFixedConstrolStructures(IScope scope) {
+    private void DoReplacement(IScope scope) {
       //// SequentialSubScopesProcessor
       Execute(ls, scope.SubScopes[0]);
       Execute(rr, scope.SubScopes[0]);
@@ -286,8 +281,6 @@ namespace HeuristicLab.FixedOperators {
 
       Execute(mr, scope);
       Execute(sorter, scope);
-    } // ExecuteCreateReplacementWithFixedConstrolStructures
-
-
+    } // DoReplacement
   } // class FixedSGAMain
 } // namespace HeuristicLab.FixedOperators
