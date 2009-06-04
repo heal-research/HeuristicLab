@@ -43,6 +43,10 @@ namespace HeuristicLab.Security.Contracts.Interfaces {
 
     [OperationContract]
     [FaultContractAttribute(typeof(CommunicationException))]
+    User GetUserByLogin(string login);
+
+    [OperationContract]
+    [FaultContractAttribute(typeof(CommunicationException))]
     UserGroup AddNewUserGroup(UserGroup group);
 
     [OperationContract]

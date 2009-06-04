@@ -119,6 +119,25 @@ namespace HeuristicLab.Security.Core {
     }
 
     /// <summary>
+    /// Gets user by his login.
+    /// </summary>
+    /// <param name="login"></param>
+    /// <returns></returns>
+    public User GetUserByLogin(string login) {
+      try {
+        session = factory.GetSessionForCurrentThread();
+        IUserAdapter userAdapter = session.GetDataAdapter<User, IUserAdapter>();
+
+        return userAdapter.GetByLogin(login);
+      }
+      catch (Exception ex) { throw new FaultException("Server: " + ex.Message); }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    /// <summary>
     /// Add new user group.
     /// </summary>
     /// <param name="group"></param>
