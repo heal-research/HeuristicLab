@@ -44,7 +44,6 @@ namespace HeuristicLab.Hive.Engine {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.snapshotButton = new System.Windows.Forms.Button();
       this.urlTextBox = new System.Windows.Forms.TextBox();
       this.urlLabel = new System.Windows.Forms.Label();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -83,18 +82,6 @@ namespace HeuristicLab.Hive.Engine {
       // 
       this.scopeView.Size = new System.Drawing.Size(178, 422);
       // 
-      // snapshotButton
-      // 
-      this.snapshotButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.snapshotButton.Enabled = false;
-      this.snapshotButton.Location = new System.Drawing.Point(294, 457);
-      this.snapshotButton.Name = "snapshotButton";
-      this.snapshotButton.Size = new System.Drawing.Size(92, 23);
-      this.snapshotButton.TabIndex = 6;
-      this.snapshotButton.Text = "Snapshot";
-      this.snapshotButton.UseVisualStyleBackColor = true;
-      this.snapshotButton.Click += new System.EventHandler(this.snapshotButton_Click);
-      // 
       // urlTextBox
       // 
       this.urlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -117,7 +104,6 @@ namespace HeuristicLab.Hive.Engine {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.snapshotButton);
       this.Controls.Add(this.urlTextBox);
       this.Controls.Add(this.urlLabel);
       this.Name = "HiveEngineEditor";
@@ -130,7 +116,6 @@ namespace HeuristicLab.Hive.Engine {
       this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
       this.Controls.SetChildIndex(this.urlLabel, 0);
       this.Controls.SetChildIndex(this.urlTextBox, 0);
-      this.Controls.SetChildIndex(this.snapshotButton, 0);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
@@ -143,7 +128,6 @@ namespace HeuristicLab.Hive.Engine {
 
     #endregion
 
-    private System.Windows.Forms.Button snapshotButton;
     private System.Windows.Forms.TextBox urlTextBox;
     private System.Windows.Forms.Label urlLabel;
   }

@@ -39,6 +39,8 @@ namespace HeuristicLab.Hive.Engine {
   /// in parallel.
   /// </summary>
   public class HiveEngine : ItemBase, IEngine, IEditable {
+    private const int SNAPSHOT_POLLING_INTERVAL_MS = 1000;
+    private const int RESULT_POLLING_INTERVAL_MS = 10000;
     private Guid jobId;
     private Job job;
     public string HiveServerUrl { get; set; }
@@ -84,6 +86,83 @@ namespace HeuristicLab.Hive.Engine {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
       jobId = res.Obj.Id;
+
+      StartResultPollingThread();
+    }
+
+    private void StartResultPollingThread() {
+      // start a backgroud thread to poll the final result of the job
+      Thread t = new Thread(() => {
+        IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+        ResponseObject<JobResult> response = null;
+        do {
+          response = executionEngineFacade.GetLastResult(jobId, true);
+          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
+            Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
+          }
+        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
+        if (response.Success) {
+          JobResult jobResult = response.Obj;
+          if (jobResult != null) {
+            job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
+            OnFinished();
+          }
+        } else {
+          Exception ex = new Exception(response.Obj.Exception.Message);
+          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
+        }
+      });
+      t.Start();
+    }
+
+    public void RequestSnapshot() {
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+
+      // poll until snapshot is ready
+      ResponseObject<JobResult> response;
+
+      // request snapshot
+      Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
+      if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
+        response = executionEngineFacade.GetLastResult(jobId, false);
+      } else {
+        do {
+          response = executionEngineFacade.GetLastResult(jobId, true);
+          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
+            Thread.Sleep(SNAPSHOT_POLLING_INTERVAL_MS);
+          }
+        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
+      }
+      if (response.Success) {
+        JobResult jobResult = response.Obj;
+        if (jobResult != null) {
+          job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
+          //PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+        }
+      } else {
+        Exception ex = new Exception(response.Obj.Exception.Message);
+        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
+      }
+    }
+
+    public void ExecuteStep() {
+      throw new NotSupportedException();
+    }
+
+    public void ExecuteSteps(int steps) {
+      throw new NotSupportedException();
+    }
+
+    public void Abort() {
+      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
+      executionEngineFacade.AbortJob(jobId);
+      OnFinished();
+    }
+
+    public void Reset() {
+      job.Engine.Reset();
+      jobId = Guid.NewGuid();
+      OnInitialized();
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.Job CreateJobObj() {
@@ -128,57 +207,6 @@ namespace HeuristicLab.Hive.Engine {
       jobObj.PluginsNeeded = pluginsNeeded;
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
       return jobObj;
-    }
-
-    public void RequestSnapshot() {
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-
-      // poll until snapshot is ready
-      ResponseObject<JobResult> response;
-
-      // request snapshot
-      Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
-      if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
-        response = executionEngineFacade.GetLastResult(jobId, false);
-      } else {
-        do {
-          response = executionEngineFacade.GetLastResult(jobId, true);
-          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
-            Thread.Sleep(1000);
-          }
-        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
-      }
-      if (response.Success) {
-        JobResult jobResult = response.Obj;
-        if (jobResult != null) {
-          job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
-          PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
-        }
-      } else {
-        Exception ex = new Exception(response.Obj.Exception.Message);
-        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
-      }
-    }
-
-
-    public void ExecuteStep() {
-      throw new NotSupportedException();
-    }
-
-    public void ExecuteSteps(int steps) {
-      throw new NotSupportedException();
-    }
-
-    public void Abort() {
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-      executionEngineFacade.AbortJob(jobId);
-      OnFinished();
-    }
-
-    public void Reset() {
-      job.Engine.Reset();
-      jobId = Guid.NewGuid();
-      OnInitialized();
     }
 
     public event EventHandler Initialized;
