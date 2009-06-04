@@ -653,7 +653,7 @@ namespace HeuristicLab.Visualization {
         } else if (ModifierKeys == Keys.Control) {
           ZoomListener zoomListener = new ZoomListener(e.Location);
           zoomListener.DrawRectangle += DrawRectangle;
-          zoomListener.SetClippingArea += SetClippingArea;
+          zoomListener.Zoom += Zoom;
 
           rectangleShape.Rectangle = RectangleD.Empty;
           userInteractionShape.AddShape(rectangleShape);
@@ -727,7 +727,7 @@ namespace HeuristicLab.Visualization {
       canvasUI.Invalidate();
     }
 
-    private void SetClippingArea(Rectangle rectangle) {
+    private void Zoom(Rectangle rectangle) {
       RectangleD clippingArea = Transform.ToWorld(rectangle, xAxis.Viewport, xAxis.ClippingArea);
 
       SetClipX(clippingArea.X1, clippingArea.X2);

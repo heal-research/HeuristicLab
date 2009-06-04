@@ -7,7 +7,7 @@ namespace HeuristicLab.Visualization {
     private readonly Point startPoint;
 
     public event RectangleHandler DrawRectangle;
-    public event RectangleHandler SetClippingArea;
+    public event RectangleHandler Zoom;
 
     public ZoomListener(Point startPoint) {
       this.startPoint = startPoint;
@@ -22,8 +22,8 @@ namespace HeuristicLab.Visualization {
     }
 
     public void MouseUp(object sender, MouseEventArgs e) {
-     if(SetClippingArea != null) {
-       SetClippingArea(CalcRectangle(e.Location));
+     if(Zoom != null) {
+       Zoom(CalcRectangle(e.Location));
      }
     }
 
@@ -36,20 +36,6 @@ namespace HeuristicLab.Visualization {
       int height = Math.Abs(actualPoint.Y - startPoint.Y);
       
       return new Rectangle(x, y, width, height);
-    }
-
-    public static RectangleD ZoomClippingArea(RectangleD clippingArea, double zoomFactor) {
-      double x1, x2, y1, y2, width, height;
-
-      width = clippingArea.Width * zoomFactor;
-      height = clippingArea.Height * zoomFactor;
-
-      x1 = clippingArea.X1 - (width - clippingArea.Width) / 2;
-      y1 = clippingArea.Y1 - (height - clippingArea.Height) / 2;
-      x2 = width + x1;
-      y2 = height + y1;
-
-      return new RectangleD(x1, y1, x2, y2);
     }
   }
 }
