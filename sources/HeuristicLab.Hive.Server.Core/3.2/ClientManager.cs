@@ -202,6 +202,7 @@ namespace HeuristicLab.Hive.Server.Core {
         foreach (Resource resource in clientGroup.Resources) {
           if (resource.Id == resourceId) {
             clientGroup.Resources.Remove(resource);
+            clientGroupAdapter.Update(clientGroup);
             response.Success = true;
             response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_REMOVED;
             return response;
