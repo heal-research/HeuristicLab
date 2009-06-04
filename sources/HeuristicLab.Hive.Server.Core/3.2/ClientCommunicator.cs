@@ -46,6 +46,8 @@ namespace HeuristicLab.Hive.Server.Core {
       new Dictionary<Guid,DateTime>();
     private static Dictionary<Guid, int> newAssignedJobs =
       new Dictionary<Guid, int>();
+    private static Dictionary<Guid, int> pendingJobs =
+      new Dictionary<Guid, int>();
 
     private static ReaderWriterLockSlim heartbeatLock =
       new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -54,6 +56,8 @@ namespace HeuristicLab.Hive.Server.Core {
     private ILifecycleManager lifecycleManager;
     private IInternalJobManager jobManager;
     private IScheduler scheduler;
+
+    private static int PENDING_TIMEOUT = 100;
 
     /// <summary>
     /// Initialization of the Adapters to the database
@@ -138,6 +142,8 @@ namespace HeuristicLab.Hive.Server.Core {
             heartbeatLock.ExitWriteLock();
           }
         }
+        CheckForPendingJobs(jobAdapter);
+
         tx.Commit();
       }
       catch (Exception ex) {
@@ -148,6 +154,23 @@ namespace HeuristicLab.Hive.Server.Core {
       finally {
         if (session != null)
           session.EndSession();
+      }
+    }
+
+    private void CheckForPendingJobs(IJobAdapter jobAdapter) {
+      IList<Job> pendingJobsInDB = new List<Job>(jobAdapter.GetJobsByState(State.pending));
+
+      foreach (Job currJob in pendingJobsInDB) {
+        lock (pendingJobs) {
+          if (pendingJobs.ContainsKey(currJob.Id)) {
+            if (pendingJobs[currJob.Id] <= 0) {
+              currJob.State = State.offline;
+              jobAdapter.Update(currJob);
+            } else {
+              pendingJobs[currJob.Id]--;
+            }
+          } 
+        }
       }
     }
 
@@ -422,7 +445,7 @@ namespace HeuristicLab.Hive.Server.Core {
         if (job.State == State.requestSnapshotSent) {
           job.State = State.calculating;
         }
-        if (job.State != State.calculating) {
+        if (job.State != State.calculating && job.State != State.pending) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
           response.JobId = jobId;
@@ -586,8 +609,12 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_ALLREADY_FINISHED;
           return response;
         }
-        //job.State = State.finished;
-        //jobAdapter.Update(job);
+        job.State = State.pending;
+        lock (pendingJobs) {
+          pendingJobs.Add(job.Id, PENDING_TIMEOUT);
+        }
+
+        jobAdapter.Update(job);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT;
