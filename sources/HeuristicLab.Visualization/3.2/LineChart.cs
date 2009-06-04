@@ -647,7 +647,6 @@ namespace HeuristicLab.Visualization {
         if (ModifierKeys == Keys.None) {
           PanListener panListener = new PanListener(e.Location);
           panListener.Pan += Pan;
-          panListener.PanEnd += PanEnd;
 
           mouseEventListener = panListener;
         } else if (ModifierKeys == Keys.Control) {
@@ -715,10 +714,6 @@ namespace HeuristicLab.Visualization {
       }
 
       canvasUI.Invalidate();
-    }
-
-    private void PanEnd(Point startPoint, Point endPoint) {
-      Pan(startPoint, endPoint);
     }
 
     private void DrawRectangle(Rectangle rectangle) {

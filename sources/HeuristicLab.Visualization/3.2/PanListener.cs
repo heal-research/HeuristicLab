@@ -6,7 +6,6 @@ namespace HeuristicLab.Visualization {
     private Point startPoint;
 
     public event MoveHandler Pan;
-    public event MoveHandler PanEnd;
 
     public PanListener(Point startPoint) {
       this.startPoint = startPoint;
@@ -22,11 +21,7 @@ namespace HeuristicLab.Visualization {
       startPoint = e.Location;  
     }
 
-    public void MouseUp(object sender, MouseEventArgs e) {
-      if(PanEnd != null) {
-        PanEnd(startPoint, e.Location);
-      }
-    }
+    public void MouseUp(object sender, MouseEventArgs e) {}
 
     #endregion
   }
