@@ -112,6 +112,10 @@ namespace HeuristicLab.Hive.Server.Core {
         throw new PermissionException();
     }
 
+    public ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetJobById(Guid jobId) {
+      return jobManager.GetJobById(jobId);
+    }
+
     public ResponseObject<Job> AddNewJob(Job job) {
       if (HasPermission(PermissiveSecurityAction.Add_Job))
         return jobManager.AddNewJob(job);

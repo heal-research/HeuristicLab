@@ -82,6 +82,7 @@ namespace HeuristicLab.Hive.Contracts {
     public static string RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED = "Job was aborted";
 
     public static string RESPONSE_JOB_ALL_JOBS = "Job.AllJobs";
+    public static string RESPONSE_JOB_GET_JOB_BY_ID = "Job.GetJobById";
     public static string RESPONSE_JOB_ID_MUST_NOT_BE_SET = "Job.IdMustNotBeSet";
     public static string RESPONSE_JOB_JOB_ADDED = "Job.JobAdded";
     public static string RESPONSE_JOB_JOB_NULL = "Job.JobNull";

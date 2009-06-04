@@ -150,6 +150,36 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     /// <summary>
+    /// returns the job with the specified id
+    /// </summary>
+    /// <returns></returns>
+    public ResponseObject<Job> GetJobById(Guid jobId) {
+      ISession session = factory.GetSessionForCurrentThread();
+
+      try {
+        IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
+
+        ResponseObject<Job> response = new ResponseObject<Job>();
+
+        response.Obj = jobAdapter.GetById(jobId);
+        if (response.Obj != null) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_GET_JOB_BY_ID;
+        } else {
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
+        }
+
+        return response;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    /// <summary>
     /// Adds a new job into the database
     /// </summary>
     /// <param name="job"></param>
