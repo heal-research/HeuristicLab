@@ -67,6 +67,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Calendar.DayView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\HeuristicLab.Hive.Client.Common\3.2\Calendar.DayView.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -159,10 +163,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Hive.Client.Common\3.2\HeuristicLab.Hive.Client.Common-3.2.csproj">
-      <Project>{89F4BC52-C174-481E-9BD2-3814171020E8}</Project>
-      <Name>HeuristicLab.Hive.Client.Common-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Hive.Contracts\3.2\HeuristicLab.Hive.Contracts-3.2.csproj">
       <Project>{134F93D7-E7C8-4ECD-9923-7F63259A60D8}</Project>
       <Name>HeuristicLab.Hive.Contracts-3.2</Name>
