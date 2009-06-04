@@ -3,10 +3,20 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Visualization {
+  /// <summary>
+  /// Supports the state zooming.
+  /// </summary>
   public class ZoomListener : IMouseEventListener {
     private readonly Point startPoint;
 
+    /// <summary>
+    /// This event will be fired every MouseMove call.
+    /// </summary>
     public event RectangleHandler DrawRectangle;
+
+    /// <summary>
+    /// This event will be fired on the MouseUp call.
+    /// </summary>
     public event RectangleHandler Zoom;
 
     public ZoomListener(Point startPoint) {
