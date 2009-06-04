@@ -47,6 +47,12 @@ namespace HeuristicLab.DataAccess.Interfaces {
     ICollection<ObjT> GetAll();
 
     /// <summary>
+    /// Get all objects (paged)
+    /// </summary>
+    /// <returns></returns>
+    ICollection<ObjT> GetAll(int from, int size);
+
+    /// <summary>
     /// Deletes the object
     /// </summary>
     /// <param name="user"></param>

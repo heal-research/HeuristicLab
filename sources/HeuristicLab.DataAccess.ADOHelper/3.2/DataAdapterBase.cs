@@ -137,7 +137,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    protected ICollection<ObjT> FindMultiple(Selector selector) {
+    private ICollection<ObjT> FindMultiple(Selector selector, 
+      int from, int size) {
       ITransaction trans =
        session.GetCurrentTransaction();
       bool transactionExists = trans != null;
@@ -148,6 +149,9 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       try {
         IEnumerable<RowT> found =
           selector();
+
+        if (from > 0 && size > 0)
+          found = found.Skip<RowT>(from).Take<RowT>(size);
 
         IList<ObjT> result =
           new List<ObjT>();
@@ -166,6 +170,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           trans.Commit();
         }
       }     
+    }
+
+    protected ICollection<ObjT> FindMultiple(Selector selector) {
+      return FindMultiple(
+        selector, 0, -1);
     }
 
     protected virtual RowT GetRowById(Guid id) {
@@ -241,6 +250,16 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       return new List<ObjT>(
         FindMultiple(
           new Selector(dataAdapter.FindAll)));
+    }
+
+    public virtual ICollection<ObjT> GetAll(int from, int size) {
+      //note - this base implementation is inefficient,
+      //consider overriding the implementation 
+      //in derived adapters (based on a query (SQL LIMIT))
+      return new List<ObjT>(
+        FindMultiple(
+          new Selector(dataAdapter.FindAll), 
+          from, size));
     }
 
     protected virtual bool doDelete(ObjT obj) {
