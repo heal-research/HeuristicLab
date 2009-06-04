@@ -31,7 +31,6 @@ namespace HeuristicLab.Visualization {
     private const int XAxisHeight = 40;
     private readonly TooltipListener toolTipListener;
     private readonly ToolTip valueToolTip;
-    private Point currentMousePos;
 
     /// <summary>
     /// This constructor shouldn't be called. Only required for the designer.
@@ -60,7 +59,6 @@ namespace HeuristicLab.Visualization {
       toolTipListener = new TooltipListener();
       toolTipListener.ShowToolTip += ShowToolTip;
       mouseEventListener = toolTipListener;
-      currentMousePos = new Point(0, 0);
 
       this.ResizeRedraw = true;
 
@@ -644,7 +642,7 @@ namespace HeuristicLab.Visualization {
       if (e.Button == MouseButtons.Right) {
         valueToolTip.Hide(this);
         mouseEventListener = null;
-        this.contextMenu.Show(PointToScreen(e.Location));
+        contextMenu.Show(PointToScreen(e.Location));
       } else if (e.Button == MouseButtons.Left) {
         if (ModifierKeys == Keys.None) {
           PanListener panListener = new PanListener(e.Location);
@@ -666,13 +664,9 @@ namespace HeuristicLab.Visualization {
     }
 
     private void canvasUI_MouseMove(object sender, MouseEventArgs e) {
-      if (currentMousePos == e.Location)
-        return;
       if (mouseEventListener != null) {
         mouseEventListener.MouseMove(sender, e);
       }
-
-      currentMousePos = e.Location;
     }
 
     private void canvasUI_MouseUp(object sender, MouseEventArgs e) {
@@ -687,9 +681,7 @@ namespace HeuristicLab.Visualization {
       if (ModifierKeys == Keys.Control) {
         double zoomFactor = (e.Delta > 0) ? 0.7 : 1.3;
 
-        PointD world;
-
-        world = Transform.ToWorld(e.Location, xAxis.Viewport, xAxis.ClippingArea);
+        PointD world = Transform.ToWorld(e.Location, xAxis.Viewport, xAxis.ClippingArea);
 
         double x1 = world.X - (world.X - xAxis.ClippingArea.X1) * zoomFactor;
         double x2 = world.X + (xAxis.ClippingArea.X2 - world.X) * zoomFactor;
