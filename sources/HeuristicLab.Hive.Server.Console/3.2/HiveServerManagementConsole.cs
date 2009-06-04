@@ -55,7 +55,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private Job currentJob = null;
     private ClientInfo currentClient = null;
 
-    private TreeNode currentNode = null;
+    private TreeNode currentGroupNode = null;
     Guid parentgroup = Guid.Empty;
     private ToolTip tt = new ToolTip();
 
@@ -79,6 +79,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       timerSyncronize.Start();
     }
 
+    private TreeNode hoverNode; // node being hovered over during DnD
     private void Init() {
 
       //adding context menu items for jobs
@@ -112,9 +113,74 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       menuItemDeleteGroup.Click += (s, e) => {
         IClientManager clientManager = ServiceLocator.GetClientManager();
         if (tvClientControl.SelectedNode != null) {
-          //  Delete Group
+          Response resp = clientManager.DeleteClientGroup(((ClientGroup)tvClientControl.SelectedNode.Tag).Id);
+          if (tvClientControl.SelectedNode == currentGroupNode) {
+            currentGroupNode = null;
+          }
+          tvClientControl.Nodes.Remove(tvClientControl.SelectedNode);
+          AddClients();
         }
       };
+
+      lvClientControl.ItemDrag += delegate(object sender, ItemDragEventArgs e) {
+        List<string> itemIDs = new List<string>((sender as ListView).SelectedItems.Count);
+        foreach (ListViewItem item in (sender as ListView).SelectedItems) {
+          itemIDs.Add(item.Name);
+        }
+        (sender as ListView).DoDragDrop(itemIDs.ToArray(), DragDropEffects.Move);
+      };
+
+      tvClientControl.DragEnter += delegate(object sender, DragEventArgs e) {
+        e.Effect = DragDropEffects.Move;
+      };
+
+      tvClientControl.DragOver += delegate(object sender, DragEventArgs e) {
+        Point mouseLocation = tvClientControl.PointToClient(new Point(e.X, e.Y));
+        TreeNode node = tvClientControl.GetNodeAt(mouseLocation);
+        if (node != null && ((ClientGroup)node.Tag).Id != Guid.Empty) {
+          e.Effect = DragDropEffects.Move;
+          if (hoverNode == null) {
+            node.BackColor = Color.LightBlue;
+            node.ForeColor = Color.White;
+            hoverNode = node;
+          } else if (hoverNode != node) {
+            hoverNode.BackColor = Color.White;
+            hoverNode.ForeColor = Color.Black;
+            node.BackColor = Color.LightBlue;
+            node.ForeColor = Color.White;
+            hoverNode = node;
+          }
+        } else {
+          e.Effect = DragDropEffects.None;
+        }
+      };
+
+      tvClientControl.DragDrop += delegate(object sender, DragEventArgs e) {
+        if (e.Data.GetDataPresent(typeof(string[]))) {
+          Point dropLocation = (sender as TreeView).PointToClient(new Point(e.X, e.Y));
+          TreeNode dropNode = (sender as TreeView).GetNodeAt(dropLocation);
+          if (((ClientGroup)dropNode.Tag).Id != Guid.Empty) {
+            List<ClientInfo> clients = new List<ClientInfo>();
+            foreach (ListViewItem lvi in lvClientControl.SelectedItems) {
+              clients.Add((ClientInfo)lvi.Tag);
+            }
+            ChangeGroup(clients, ((ClientGroup)dropNode.Tag).Id);
+          }
+          tvClientControl_DragLeave(null, EventArgs.Empty);
+          AddClients();
+        }
+      };
+    }
+
+    private void ChangeGroup(List<ClientInfo> clients, Guid clientgroupID) {
+      IClientManager clientManager = ServiceLocator.GetClientManager();
+      Guid groupId = ((ClientGroup)currentGroupNode.Tag).Id;
+      foreach (ClientInfo client in clients) {
+        if (groupId != Guid.Empty) {
+          Response resp = clientManager.DeleteResourceFromGroup(groupId, client.Id);
+        }
+        clientManager.AddResourceToGroup(clientgroupID, client);
+      }
     }
 
     #region Backgroundworker
@@ -180,7 +246,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
 
     }
-    
+
     #endregion
 
 
@@ -253,10 +319,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         AddClientOrGroup(cg, null);
       }
 
-      if (currentNode != null) {
+      if (currentGroupNode != null) {
         lvClientControl.Items.Clear();
         lvClientControl.Groups.Clear();
-        AddGroupsToListView(currentNode);
+        AddGroupsToListView(currentGroupNode);
       }
       tvClientControl.ExpandAll();
     }
@@ -442,7 +508,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblState.Text = currentClient.State.ToString();
       }
     }
-   
+
 
     private void RefreshForm() {
       foreach (Changes change in changes) {
@@ -569,7 +635,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private void tvClientControl_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
       lvClientControl.Items.Clear();
       lvClientControl.Groups.Clear();
-      currentNode = e.Node;
+      currentGroupNode = e.Node;
       AddGroupsToListView(e.Node);
     }
 
@@ -601,17 +667,17 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       TreeViewHitTestInfo hitTestInfo = tvClientControl.HitTest(e.Location);
       tvClientControl.SelectedNode = hitTestInfo.Node;
       if (e.Button != MouseButtons.Right) return;
-        if (hitTestInfo.Node != null) {
-          Resource selectedGroup = (Resource)tvClientControl.SelectedNode.Tag;
+      if (hitTestInfo.Node != null) {
+        Resource selectedGroup = (Resource)tvClientControl.SelectedNode.Tag;
 
-          if (selectedGroup != null) {
-            contextMenuGroup.Items.Add(menuItemAddGroup);
-            contextMenuGroup.Items.Add(menuItemDeleteGroup);
-          }
-        } else {
+        if (selectedGroup != null) {
           contextMenuGroup.Items.Add(menuItemAddGroup);
+          contextMenuGroup.Items.Add(menuItemDeleteGroup);
         }
-        tvClientControl.ContextMenuStrip.Show(tvClientControl, new Point(e.X, e.Y));
+      } else {
+        contextMenuGroup.Items.Add(menuItemAddGroup);
+      }
+      tvClientControl.ContextMenuStrip.Show(tvClientControl, new Point(e.X, e.Y));
     }
 
     private void addproject_AddProjectEvent(string name) {
@@ -635,8 +701,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       } else {
         ClientGroup cg = new ClientGroup() { Name = name };
         clientManager.AddClientGroup(cg);
-        AddClients();
       }
+      AddClients();
     }
 
 
@@ -687,6 +753,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       largeIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
       smallIconsToolStripMenuItem.CheckState = CheckState.Unchecked;
       listToolStripMenuItem.CheckState = CheckState.Checked;
+    }
+
+    private void tvClientControl_DragLeave(object sender, EventArgs e) {
+      foreach (TreeNode node in tvClientControl.Nodes) {
+        node.BackColor = Color.White;
+        node.ForeColor = Color.Black;
+      }
     }
     #endregion
 
@@ -796,6 +869,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     #endregion
+
+
 
   }
 }

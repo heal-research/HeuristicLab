@@ -397,6 +397,9 @@
         AQEWAAP//wACAAs=
 </value>
   </data>
+  <metadata name="updaterWoker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>388, 41</value>
+  </metadata>
   <metadata name="contextMenuJob.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>246, 40</value>
   </metadata>
@@ -451,7 +454,4 @@
         AeABAwHgAQMB4AEDAgAL
 </value>
   </data>
-  <metadata name="updaterWoker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>388, 41</value>
-  </metadata>
 </root>

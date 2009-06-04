@@ -32,6 +32,7 @@
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.jobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.groupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.largeIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.smallIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,7 +87,6 @@
       this.lvClientControl = new System.Windows.Forms.ListView();
       this.tcManagementConsole = new System.Windows.Forms.TabControl();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
-      this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.plClientDetails.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pbClientControl)).BeginInit();
@@ -172,6 +172,14 @@
       this.groupToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.groupToolStripMenuItem.Text = "Group";
       this.groupToolStripMenuItem.Click += new System.EventHandler(this.groupToolStripMenuItem_Click);
+      // 
+      // projectToolStripMenuItem
+      // 
+      this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
+      this.projectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+      this.projectToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+      this.projectToolStripMenuItem.Text = "Project";
+      this.projectToolStripMenuItem.Click += new System.EventHandler(this.projectToolStripMenuItem_Click);
       // 
       // viewToolStripMenuItem
       // 
@@ -636,6 +644,7 @@
       this.tvClientControl.Name = "tvClientControl";
       this.tvClientControl.Size = new System.Drawing.Size(151, 357);
       this.tvClientControl.TabIndex = 0;
+      this.tvClientControl.DragLeave += new System.EventHandler(this.tvClientControl_DragLeave);
       this.tvClientControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvClientControl_MouseUp);
       this.tvClientControl.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvClientControl_NodeMouseClick);
       // 
@@ -666,7 +675,6 @@
       this.lvClientControl.ImeMode = System.Windows.Forms.ImeMode.Off;
       this.lvClientControl.LargeImageList = this.ilLargeImgClient;
       this.lvClientControl.Location = new System.Drawing.Point(0, 0);
-      this.lvClientControl.MultiSelect = false;
       this.lvClientControl.Name = "lvClientControl";
       this.lvClientControl.Size = new System.Drawing.Size(299, 386);
       this.lvClientControl.SmallImageList = this.ilSmallImgClient;
@@ -694,14 +702,6 @@
       this.checkBox1.TabIndex = 0;
       this.checkBox1.Text = "checkBox1";
       this.checkBox1.UseVisualStyleBackColor = true;
-      // 
-      // projectToolStripMenuItem
-      // 
-      this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-      this.projectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-      this.projectToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-      this.projectToolStripMenuItem.Text = "Project";
-      this.projectToolStripMenuItem.Click += new System.EventHandler(this.projectToolStripMenuItem_Click);
       // 
       // HiveServerManagementConsole
       // 
