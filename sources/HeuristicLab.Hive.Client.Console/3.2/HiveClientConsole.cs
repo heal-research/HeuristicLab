@@ -31,6 +31,8 @@ using Calendar;
 using HeuristicLab.Hive.Client.Console.ClientService;
 using ZedGraph;
 using HeuristicLab.Hive.Contracts;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace HeuristicLab.Hive.Client.Console
 {
@@ -57,7 +59,9 @@ namespace HeuristicLab.Hive.Client.Console
     private System.Windows.Forms.Timer refreshTimer;
     private ListViewColumnSorterDate lvwColumnSorter;
 
-    private List<Appointment> onlineTimes = new List<Appointment>();
+    [XmlArray("Appointments")]
+    [XmlArrayItem("Appointment",typeof(Appointment))]
+    public List<Appointment> onlineTimes = new List<Appointment>();
 
     public OnDialogClosedDelegate dialogClosedDelegate;
 
@@ -73,6 +77,18 @@ namespace HeuristicLab.Hive.Client.Console
       RefreshGui();
       InitCalender();
       InitLogFileReader();
+      //InitTestCalenderEntries();
+    }
+
+    private void InitTestCalenderEntries()
+    {
+        DateTime date = DateTime.Now;
+        while (date.Year == 2009)
+        {
+            
+            onlineTimes.Add(CreateAppointment(date.AddHours(1), date.AddHours(3), false));
+            date = date.AddDays(1);
+        }
     }
 
     #endregion
@@ -583,7 +599,31 @@ namespace HeuristicLab.Hive.Client.Console
       dvOnline.Invalidate();
     }
 
+
+   private void SerializeCalender() {
+     
+       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
+       TextWriter w = new StreamWriter(@"c:\temp\apptest.xml");
+       s.Serialize(w, onlineTimes);
+       w.Close();
+   }
+
+   private void DeSerializeCalender()
+   {
+       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
+       TextReader r = new StreamReader(@"c:\temp\apptest.xml");
+       onlineTimes = (List<Appointment>)s.Deserialize(r);
+       onlineTimes.ForEach(a => a.BorderColor = Color.Red);
+       r.Close();
+
+   }
+
     #endregion
+
+   private void btnSaveCal_Click(object sender, EventArgs e)
+   {
+       DeSerializeCalender();
+   }
 
   }
 }
