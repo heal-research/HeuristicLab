@@ -638,49 +638,6 @@ namespace HeuristicLab.Visualization {
 
     #region Zooming / Panning
 
-    private void Pan(Point startPoint, Point endPoint) {
-      RectangleD clippingArea = Translate.ClippingArea(startPoint, endPoint, xAxis.ClippingArea, xAxis.Viewport);
-
-      SetClipX(clippingArea.X1, clippingArea.X2);
-
-      foreach (RowEntry rowEntry in rowEntries) {
-        if (rowEntry.DataRow.YAxis.ClipChangeable) {
-          clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea,
-                                                rowEntry.LinesShape.Viewport);
-          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
-        }
-      }
-
-      canvasUI.Invalidate();
-    }
-
-    private void PanEnd(Point startPoint, Point endPoint) {
-      Pan(startPoint, endPoint);
-    }
-
-    private void SetClippingArea(Rectangle rectangle) {
-      RectangleD clippingArea = Transform.ToWorld(rectangle, xAxis.Viewport, xAxis.ClippingArea);
-
-      SetClipX(clippingArea.X1, clippingArea.X2);
-
-      foreach (RowEntry rowEntry in rowEntries) {
-        if (rowEntry.DataRow.YAxis.ClipChangeable) {
-          clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
-
-          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
-        }
-      }
-
-      userInteractionShape.RemoveShape(rectangleShape);
-      canvasUI.Invalidate();
-    }
-
-    private void DrawRectangle(Rectangle rectangle) {
-      rectangleShape.Rectangle = Transform.ToWorld(rectangle, userInteractionShape.Viewport,
-                                                   userInteractionShape.ClippingArea);
-      canvasUI.Invalidate();
-    }
-
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
 
@@ -734,22 +691,65 @@ namespace HeuristicLab.Visualization {
 
         world = Transform.ToWorld(e.Location, xAxis.Viewport, xAxis.ClippingArea);
 
-        double x1 = world.X - (world.X - xAxis.ClippingArea.X1)*zoomFactor;
-        double x2 = world.X + (xAxis.ClippingArea.X2 - world.X)*zoomFactor;
+        double x1 = world.X - (world.X - xAxis.ClippingArea.X1) * zoomFactor;
+        double x2 = world.X + (xAxis.ClippingArea.X2 - world.X) * zoomFactor;
 
         SetClipX(x1, x2);
 
         foreach (RowEntry rowEntry in rowEntries) {
           world = Transform.ToWorld(e.Location, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
 
-          double y1 = world.Y - (world.Y - rowEntry.LinesShape.ClippingArea.Y1)*zoomFactor;
-          double y2 = world.Y + (rowEntry.LinesShape.ClippingArea.Y2 - world.Y)*zoomFactor;
+          double y1 = world.Y - (world.Y - rowEntry.LinesShape.ClippingArea.Y1) * zoomFactor;
+          double y2 = world.Y + (rowEntry.LinesShape.ClippingArea.Y2 - world.Y) * zoomFactor;
 
           SetClipY(rowEntry, y1, y2);
         }
 
         canvasUI.Invalidate();
       }
+    }
+
+    private void Pan(Point startPoint, Point endPoint) {
+      RectangleD clippingArea = Translate.ClippingArea(startPoint, endPoint, xAxis.ClippingArea, xAxis.Viewport);
+
+      SetClipX(clippingArea.X1, clippingArea.X2);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        if (rowEntry.DataRow.YAxis.ClipChangeable) {
+          clippingArea = Translate.ClippingArea(startPoint, endPoint, rowEntry.LinesShape.ClippingArea,
+                                                rowEntry.LinesShape.Viewport);
+          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        }
+      }
+
+      canvasUI.Invalidate();
+    }
+
+    private void PanEnd(Point startPoint, Point endPoint) {
+      Pan(startPoint, endPoint);
+    }
+
+    private void DrawRectangle(Rectangle rectangle) {
+      rectangleShape.Rectangle = Transform.ToWorld(rectangle, userInteractionShape.Viewport,
+                                                   userInteractionShape.ClippingArea);
+      canvasUI.Invalidate();
+    }
+
+    private void SetClippingArea(Rectangle rectangle) {
+      RectangleD clippingArea = Transform.ToWorld(rectangle, xAxis.Viewport, xAxis.ClippingArea);
+
+      SetClipX(clippingArea.X1, clippingArea.X2);
+
+      foreach (RowEntry rowEntry in rowEntries) {
+        if (rowEntry.DataRow.YAxis.ClipChangeable) {
+          clippingArea = Transform.ToWorld(rectangle, rowEntry.LinesShape.Viewport, rowEntry.LinesShape.ClippingArea);
+
+          SetClipY(rowEntry, clippingArea.Y1, clippingArea.Y2);
+        }
+      }
+
+      userInteractionShape.RemoveShape(rectangleShape);
+      canvasUI.Invalidate();
     }
 
     #endregion
