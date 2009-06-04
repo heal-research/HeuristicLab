@@ -7,6 +7,7 @@ using HeuristicLab.Hive.Client.Core.ConfigurationManager;
 using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Common;
 using HeuristicLab.Hive.Contracts;
+using Calendar;
 
 namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
   public class ClientConsoleCommunicator: IClientConsoleCommunicator {
@@ -31,6 +32,14 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService {
 
     public void ShutdownClient() {
       MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.Shutdown);
+    }    
+
+    public void SetUptimeCalendar(List<Appointment> appointments) {
+      UptimeManager.Instance.Appointments = appointments;
+    }
+
+    public List<Appointment> GetUptimeCalendar() {
+      return UptimeManager.Instance.Appointments;
     }
 
     #endregion

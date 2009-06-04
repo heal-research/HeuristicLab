@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ServiceModel;
+using Calendar;
 
 namespace HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces {
   /// <summary>
@@ -59,5 +60,12 @@ namespace HeuristicLab.Hive.Client.Core.ClientConsoleService.Interfaces {
     /// </summary>
     [OperationContract]
     void ShutdownClient();
+
+    [OperationContract]
+    void SetUptimeCalendar(List<Appointment> appointments);
+
+    [OperationContract]
+    List<Appointment> GetUptimeCalendar();
+
   }
 }

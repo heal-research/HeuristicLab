@@ -65,6 +65,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Calendar.DayView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\HeuristicLab.Hive.Client.Common\3.2\Calendar.DayView.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -93,6 +97,7 @@
     <Compile Include="ClientConsoleService\TransferObjects\StatusCommons.cs" />
     <Compile Include="ConfigurationManager\ClientStatusInfo.cs" />
     <Compile Include="ConfigurationManager\ConfigManager.cs" />
+    <Compile Include="ConfigurationManager\UptimeManager.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreApplication.cs" />
     <Compile Include="CorePlugin.cs" />
