@@ -67,14 +67,8 @@ namespace HeuristicLab.CEDMA.Core {
 
     private Dictionary<string, Dictionary<object, double>> categoricalValueIndices = new Dictionary<string, Dictionary<object, double>>();
 
-    private Entity dataSetEntity;
-
     public Results(IStore store) {
       this.store = store;
-    }
-
-    internal void FilterDataSet(Entity entity) {
-      this.dataSetEntity = entity;
     }
 
     private List<ResultsEntry> entries = null;
@@ -92,7 +86,7 @@ namespace HeuristicLab.CEDMA.Core {
       if (store == null) yield break;
       entries = new List<ResultsEntry>();
       do {
-        var allBindings = store.Query("<" + dataSetEntity + "> <" + Ontology.PredicateHasModel + "> ?Model ." + Environment.NewLine +
+        var allBindings = store.Query("?Dataset <" + Ontology.PredicateHasModel + "> ?Model ." + Environment.NewLine +
           "?Model ?Attribute ?Value .", page, PAGE_SIZE);
         var allModelBindings = allBindings.GroupBy(x => (Entity)x.Get("Model"));
         resultsReturned = allBindings.Count;

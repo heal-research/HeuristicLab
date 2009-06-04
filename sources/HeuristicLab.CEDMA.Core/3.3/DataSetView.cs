@@ -57,6 +57,19 @@ namespace HeuristicLab.CEDMA.Core {
       editorGroupBox.Controls.Add(problemControl);
       PopulateViewComboBox();
       resultsButton.Enabled = viewComboBox.SelectedItem != null;
+      if (dataSet.Activated) {
+        activateButton.Enabled = false;
+        editorGroupBox.Enabled = false;
+        viewComboBox.Enabled = true;
+        resultsButton.Enabled = true;
+        progressBar.Enabled = true;
+      } else {
+        activateButton.Enabled = true;
+        editorGroupBox.Enabled = true;
+        viewComboBox.Enabled = false;
+        resultsButton.Enabled = false;
+        progressBar.Enabled = false;
+      }
     }
 
     private void PopulateViewComboBox() {

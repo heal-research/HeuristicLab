@@ -102,13 +102,6 @@
     </Compile>
     <Compile Include="Problem.cs" />
     <Compile Include="DataSet.cs" />
-    <Compile Include="DataSetList.cs" />
-    <Compile Include="DataSetListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataSetListView.Designer.cs">
-      <DependentUpon>DataSetListView.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataSetView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -161,9 +154,6 @@
     <EmbeddedResource Include="ConsoleEditor.resx">
       <DependentUpon>ConsoleEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataSetListView.resx">
-      <DependentUpon>DataSetListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSetView.resx">
       <DependentUpon>DataSetView.cs</DependentUpon>

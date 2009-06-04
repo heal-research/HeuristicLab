@@ -44,12 +44,8 @@ namespace HeuristicLab.CEDMA.Core {
   ///  * regression, time-series or classification problem
   /// </summary>
   public class Problem : ItemBase {
-    private string name;
-    public string Name {
-      get { return name; }
-    }
     private HeuristicLab.DataAnalysis.Dataset dataset;
-    public HeuristicLab.DataAnalysis.Dataset DataSet {
+    public HeuristicLab.DataAnalysis.Dataset Dataset {
       get { return dataset; }
     }
 

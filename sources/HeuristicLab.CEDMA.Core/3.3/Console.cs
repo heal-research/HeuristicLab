@@ -36,14 +36,14 @@ namespace HeuristicLab.CEDMA.Core {
       get { return serverUri; }
     }
 
-    private DataSetList dataSetList;
-    public DataSetList DataSetList {
-      get { return dataSetList; }
+    private DataSet dataSet;
+    public DataSet DataSet {
+      get { return dataSet; }
     }
 
     public Console()
       : base() {
-      dataSetList = new DataSetList();
+      dataSet = new DataSet();
     }
 
     public IEditor CreateEditor() {
@@ -70,7 +70,13 @@ namespace HeuristicLab.CEDMA.Core {
     #endregion
 
     internal void Connect(string serverUri) {
-      DataSetList.Store = new StoreProxy(serverUri);
+      IStore store = new StoreProxy(serverUri);
+      var variableBindings = store.Query("?Dataset <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 10).ToArray();
+      if (variableBindings.Length > 0) {
+        dataSet = new DataSet(store, (Entity)variableBindings[0].Get("Dataset"));
+      } else {
+        dataSet.Store = store;
+      }
     }
   }
 }

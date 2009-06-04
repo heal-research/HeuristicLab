@@ -64,7 +64,6 @@ namespace HeuristicLab.CEDMA.Server {
       IAlgorithm selectedAlgorithm = SelectAlgorithm(dataSetEntity, targetVariable, dataSet.Problem.LearningTask);
       string targetVariableName = dataSet.Problem.GetVariableName(targetVariable);
 
-
       if (selectedAlgorithm != null) {
         SetProblemParameters(selectedAlgorithm, dataSet.Problem, targetVariable);
       }
@@ -76,7 +75,7 @@ namespace HeuristicLab.CEDMA.Server {
     public abstract IAlgorithm SelectAlgorithm(Entity dataSet, int targetVariable, LearningTask learningTask);
 
     private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable) {
-      algo.Dataset = problem.DataSet;
+      algo.Dataset = problem.Dataset;
       algo.TargetVariable = targetVariable;
       algo.ProblemInjector.GetVariable("TrainingSamplesStart").GetValue<IntData>().Data = problem.TrainingSamplesStart;
       algo.ProblemInjector.GetVariable("TrainingSamplesEnd").GetValue<IntData>().Data = problem.TrainingSamplesEnd;
@@ -93,7 +92,7 @@ namespace HeuristicLab.CEDMA.Server {
         algo.ProblemInjector.GetVariable("MaxTimeOffset").GetValue<IntData>().Data = problem.MaxTimeOffset;
       } else if (problem.LearningTask == LearningTask.Classification) {
         ItemList<DoubleData> classValues = algo.ProblemInjector.GetVariable("TargetClassValues").GetValue<ItemList<DoubleData>>();
-        foreach (double classValue in GetDifferentClassValues(problem.DataSet, targetVariable)) classValues.Add(new DoubleData(classValue));
+        foreach (double classValue in GetDifferentClassValues(problem.Dataset, targetVariable)) classValues.Add(new DoubleData(classValue));
       }
     }
 

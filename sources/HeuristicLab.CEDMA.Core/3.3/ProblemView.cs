@@ -43,7 +43,7 @@ namespace HeuristicLab.CEDMA.Core {
 
     protected override void UpdateControls() {
       base.UpdateControls();
-      datasetView.Dataset = problem.DataSet;
+      datasetView.Dataset = problem.Dataset;
       trainingSamplesStartTextBox.Text = problem.TrainingSamplesStart.ToString();
       trainingSamplesEndTextBox.Text = problem.TrainingSamplesEnd.ToString();
       validationSamplesStartTextBox.Text = problem.ValidationSamplesStart.ToString();
@@ -60,9 +60,9 @@ namespace HeuristicLab.CEDMA.Core {
       }
       targetsListBox.Items.Clear();
       inputsListBox.Items.Clear();
-      for (int i = 0; i < problem.DataSet.Columns; i++) {
-        targetsListBox.Items.Add(problem.DataSet.GetVariableName(i), problem.AllowedTargetVariables.Contains(i));
-        inputsListBox.Items.Add(problem.DataSet.GetVariableName(i), problem.AllowedInputVariables.Contains(i));
+      for (int i = 0; i < problem.Dataset.Columns; i++) {
+        targetsListBox.Items.Add(problem.Dataset.GetVariableName(i), problem.AllowedTargetVariables.Contains(i));
+        inputsListBox.Items.Add(problem.Dataset.GetVariableName(i), problem.AllowedInputVariables.Contains(i));
       }
     }
 
@@ -88,7 +88,7 @@ namespace HeuristicLab.CEDMA.Core {
           ShowErrorMessageBox(ex);
         }
         if (success) {
-          Dataset dataset = (Dataset)problem.DataSet;
+          Dataset dataset = (Dataset)problem.Dataset;
           dataset.Rows = parser.Rows;
           dataset.Columns = parser.Columns;
           for (int i = 0; i < parser.VariableNames.Length; i++) {
@@ -97,7 +97,7 @@ namespace HeuristicLab.CEDMA.Core {
           dataset.Name = parser.ProblemName;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
-          datasetView.Dataset = problem.DataSet;
+          datasetView.Dataset = problem.Dataset;
 
           problem.TrainingSamplesStart = parser.TrainingSamplesStart;
           problem.ValidationSamplesEnd = parser.TrainingSamplesStart;
@@ -115,7 +115,6 @@ namespace HeuristicLab.CEDMA.Core {
           Refresh();
         }
       }
-
     }
 
     private void targetsListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
@@ -145,7 +144,7 @@ namespace HeuristicLab.CEDMA.Core {
         int testStart = int.Parse(testSamplesStartTextBox.Text);
         int testEnd = int.Parse(testSamplesEndTextBox.Text);
         if (trainingStart < 0 || validationStart < 0 || testStart < 0 ||
-          trainingEnd >= problem.DataSet.Rows || validationEnd >= problem.DataSet.Rows || testEnd >= problem.DataSet.Rows ||
+          trainingEnd >= problem.Dataset.Rows || validationEnd >= problem.Dataset.Rows || testEnd >= problem.Dataset.Rows ||
           trainingStart >= trainingEnd ||
           validationStart >= validationEnd ||
           testStart >= testEnd ||

@@ -70,7 +70,6 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected void StoreResults(IAlgorithm finishedAlgorithm) {
       Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-      // TODO (gkronber 27052009)
       // store.Add(new Statement(finishedAlgorithm.DataSetEntity, Ontology.PredicateHasModel, modelEntity));
       StoreModelAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
       StoreModelAttribute(modelEntity, Ontology.AlgorithmName, finishedAlgorithm.Description);

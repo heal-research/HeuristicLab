@@ -60,10 +60,16 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
+    private bool activated;
+    public bool Activated {
+      get { return activated; }
+    }
+
     public DataSet()
       : base() {
       guid = Guid.NewGuid();
       name = "Data set";
+      activated = false;
     }
 
     public DataSet(IStore store, Entity dataSetEntity)
@@ -71,6 +77,7 @@ namespace HeuristicLab.CEDMA.Core {
       Store = store;
       guid = new Guid(dataSetEntity.Uri.Remove(0, Ontology.CedmaNameSpace.Length));
       name = guid.ToString();
+      activated = true;
     }
 
     public void Activate() {
@@ -78,6 +85,7 @@ namespace HeuristicLab.CEDMA.Core {
       Store.Add(new Statement(myEntity, Ontology.PredicateInstanceOf, Ontology.TypeDataSet));
       Store.Add(new Statement(myEntity, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(PersistenceManager.SaveToGZip(problem)))));
       Store.Add(new Statement(myEntity, Ontology.PredicateName, new Literal(name)));
+      activated = true;
     }
 
     public IView CreateView() {
@@ -86,7 +94,6 @@ namespace HeuristicLab.CEDMA.Core {
 
     internal Results GetResults() {
       Results results = new Results(Store);
-      results.FilterDataSet(new Entity(Ontology.CedmaNameSpace + Guid));
       return results;
     }
   }
