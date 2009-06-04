@@ -39,40 +39,31 @@ using HeuristicLab.Modeling;
 namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IStore store;
+    private DataSet dataset;
+    
     public DispatcherBase(IStore store) {
       this.store = store;
     }
 
     public IAlgorithm GetNextJob() {
-      // find and select a dataset
-      var dataSetVar = new HeuristicLab.CEDMA.DB.Interfaces.Variable("DataSet");
-      var dataSetQuery = new Statement[] {
-        new Statement(dataSetVar, Ontology.PredicateInstanceOf, Ontology.TypeDataSet)
-      };
-
-      Entity[] datasets = store.Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .", 0, 100)
-        .Select(x => (Entity)x.Get("DataSet"))
-        .ToArray();
-
-      // no datasets => do nothing
-      if (datasets.Length == 0) return null;
-
-      Entity dataSetEntity = SelectDataSet(datasets);
-      DataSet dataSet = new DataSet(store, dataSetEntity);
-
-      int targetVariable = SelectTargetVariable(dataSetEntity, dataSet.Problem.AllowedTargetVariables.ToArray());
-      IAlgorithm selectedAlgorithm = SelectAlgorithm(dataSetEntity, targetVariable, dataSet.Problem.LearningTask);
-      string targetVariableName = dataSet.Problem.GetVariableName(targetVariable);
+      if (dataset == null) {
+        var datasetEntities = store.Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .", 0, 1)
+          .Select(x => (Entity)x.Get("DataSet"));
+        if (datasetEntities.Count() == 0) return null;
+        dataset = new DataSet(store, datasetEntities.ElementAt(0));
+      }
+      int targetVariable = SelectTargetVariable(dataset.Problem.AllowedTargetVariables.ToArray());
+      IAlgorithm selectedAlgorithm = SelectAlgorithm(targetVariable, dataset.Problem.LearningTask);
+      string targetVariableName = dataset.Problem.GetVariableName(targetVariable);
 
       if (selectedAlgorithm != null) {
-        SetProblemParameters(selectedAlgorithm, dataSet.Problem, targetVariable);
+        SetProblemParameters(selectedAlgorithm, dataset.Problem, targetVariable);
       }
       return selectedAlgorithm;
     }
 
-    public abstract Entity SelectDataSet(Entity[] datasets);
-    public abstract int SelectTargetVariable(Entity dataSet, int[] targetVariables);
-    public abstract IAlgorithm SelectAlgorithm(Entity dataSet, int targetVariable, LearningTask learningTask);
+    public abstract int SelectTargetVariable(int[] targetVariables);
+    public abstract IAlgorithm SelectAlgorithm(int targetVariable, LearningTask learningTask);
 
     private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable) {
       algo.Dataset = problem.Dataset;

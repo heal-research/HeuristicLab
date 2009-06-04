@@ -119,7 +119,7 @@ namespace HeuristicLab.CEDMA.Server {
         string[] retVal = new string[activeAlgorithms.Count];
         int i = 0;
         foreach (IAlgorithm a in activeAlgorithms.Values) {
-          retVal[i++] = "Target-Variable: " + a.TargetVariable + " " + a.Description;
+          retVal[i++] = a.Name + " " + a.Dataset.GetVariableName(a.TargetVariable);
         }
         return retVal;
       }

@@ -40,47 +40,47 @@ namespace HeuristicLab.CEDMA.Server {
   public class SimpleDispatcher : DispatcherBase {
     private Random random;
     private IStore store;
-    private Dictionary<Entity, Dictionary<int, List<string>>> finishedAndDispatchedRuns;
+    private Dictionary<int, List<string>> finishedAndDispatchedRuns;
 
     public SimpleDispatcher(IStore store)
       : base(store) {
       this.store = store;
       random = new Random();
-      finishedAndDispatchedRuns = new Dictionary<Entity, Dictionary<int, List<string>>>();
+      finishedAndDispatchedRuns = new Dictionary<int, List<string>>();
       PopulateFinishedRuns();
     }
 
-    public override IAlgorithm SelectAlgorithm(Entity dataSetEntity, int targetVariable, LearningTask learningTask) {
+    public override IAlgorithm SelectAlgorithm(int targetVariable, LearningTask learningTask) {
       DiscoveryService ds = new DiscoveryService();
       IAlgorithm[] algos = ds.GetInstances<IAlgorithm>();
       IAlgorithm selectedAlgorithm = null;
       switch (learningTask) {
         case LearningTask.Regression: {
             var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
-            selectedAlgorithm = ChooseDeterministic(dataSetEntity, targetVariable, regressionAlgos) ?? ChooseStochastic(regressionAlgos);
+            selectedAlgorithm = ChooseDeterministic(targetVariable, regressionAlgos) ?? ChooseStochastic(regressionAlgos);
             break;
           }
         case LearningTask.Classification: {
             var classificationAlgos = algos.Where(a => (a as IClassificationAlgorithm) != null);
-            selectedAlgorithm = ChooseDeterministic(dataSetEntity, targetVariable, classificationAlgos) ?? ChooseStochastic(classificationAlgos);
+            selectedAlgorithm = ChooseDeterministic(targetVariable, classificationAlgos) ?? ChooseStochastic(classificationAlgos);
             break;
           }
         case LearningTask.TimeSeries: {
             var timeSeriesAlgos = algos.Where(a => (a as ITimeSeriesAlgorithm) != null);
-            selectedAlgorithm = ChooseDeterministic(dataSetEntity, targetVariable, timeSeriesAlgos) ?? ChooseStochastic(timeSeriesAlgos);
+            selectedAlgorithm = ChooseDeterministic(targetVariable, timeSeriesAlgos) ?? ChooseStochastic(timeSeriesAlgos);
             break;
           }
       }
       if (selectedAlgorithm != null) {
-        AddDispatchedRun(dataSetEntity, targetVariable, selectedAlgorithm.Name);
+        AddDispatchedRun(targetVariable, selectedAlgorithm.Name);
       }
       return selectedAlgorithm;
     }
 
-    private IAlgorithm ChooseDeterministic(Entity dataSetEntity, int targetVariable, IEnumerable<IAlgorithm> algos) {
+    private IAlgorithm ChooseDeterministic(int targetVariable, IEnumerable<IAlgorithm> algos) {
       var deterministicAlgos = algos
         .Where(a => (a as IStochasticAlgorithm) == null)
-        .Where(a => AlgorithmFinishedOrDispatched(dataSetEntity, targetVariable, a.Name) == false);
+        .Where(a => AlgorithmFinishedOrDispatched(targetVariable, a.Name) == false);
 
       if (deterministicAlgos.Count() == 0) return null;
       return deterministicAlgos.ElementAt(random.Next(deterministicAlgos.Count()));
@@ -92,47 +92,45 @@ namespace HeuristicLab.CEDMA.Server {
       return stochasticAlgos.ElementAt(random.Next(stochasticAlgos.Count()));
     }
 
-    public override Entity SelectDataSet(Entity[] datasets) {
-      return datasets[random.Next(datasets.Length)];
-    }
-
-    public override int SelectTargetVariable(Entity dataSet, int[] targetVariables) {
+    public override int SelectTargetVariable(int[] targetVariables) {
       return targetVariables[random.Next(targetVariables.Length)];
     }
 
     private void PopulateFinishedRuns() {
+      var datasetEntity = store
+        .Query(
+        "?Dataset <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
+        .Select(x => (Entity)x.Get("Dataset")).ElementAt(0);
+      DataSet ds = new DataSet(store, datasetEntity);
+
       var result = store
-        .Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> ." + Environment.NewLine +
-        "?DataSet <" + Ontology.PredicateHasModel + "> ?Model ." + Environment.NewLine +
+        .Query(
         "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
         "?Model <" + Ontology.AlgorithmName + "> ?AlgoName .",
         0, 1000)
-        .Select(x => new Resource[] { (Entity)x.Get("DataSet"), (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName") });
+        .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName") });
 
       foreach (Resource[] row in result) {
-        Entity dataset = (Entity)row[0];
-        int targetVariable = (int)((Literal)row[1]).Value;
-        string algoName = (string)((Literal)row[2]).Value;
-        if (!AlgorithmFinishedOrDispatched(dataset, targetVariable, algoName))
-          AddDispatchedRun(dataset, targetVariable, algoName);
+        string targetVariable = (string)((Literal)row[0]).Value;
+        string algoName = (string)((Literal)row[1]).Value;
+
+        int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
+        if (!AlgorithmFinishedOrDispatched(targetVariableIndex, algoName))
+          AddDispatchedRun(targetVariableIndex, algoName);
       }
     }
 
-    private void AddDispatchedRun(Entity dataSetEntity, int targetVariable, string algoName) {
-      if (!finishedAndDispatchedRuns.ContainsKey(dataSetEntity)) {
-        finishedAndDispatchedRuns[dataSetEntity] = new Dictionary<int, List<string>>();
+    private void AddDispatchedRun(int targetVariable, string algoName) {
+      if (!finishedAndDispatchedRuns.ContainsKey(targetVariable)) {
+        finishedAndDispatchedRuns[targetVariable] = new List<string>();
       }
-      if (!finishedAndDispatchedRuns[dataSetEntity].ContainsKey(targetVariable)) {
-        finishedAndDispatchedRuns[dataSetEntity][targetVariable] = new List<string>();
-      }
-      finishedAndDispatchedRuns[dataSetEntity][targetVariable].Add(algoName);
+      finishedAndDispatchedRuns[targetVariable].Add(algoName);
     }
 
-    private bool AlgorithmFinishedOrDispatched(Entity dataSetEntity, int targetVariable, string algoName) {
+    private bool AlgorithmFinishedOrDispatched(int targetVariable, string algoName) {
       return
-        finishedAndDispatchedRuns.ContainsKey(dataSetEntity) &&
-        finishedAndDispatchedRuns[dataSetEntity].ContainsKey(targetVariable) &&
-        finishedAndDispatchedRuns[dataSetEntity][targetVariable].Contains(algoName);
+        finishedAndDispatchedRuns.ContainsKey(targetVariable) &&
+        finishedAndDispatchedRuns[targetVariable].Contains(algoName);
     }
   }
 }

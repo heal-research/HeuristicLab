@@ -119,15 +119,22 @@ namespace HeuristicLab.DataAnalysis {
       return variableNames[variableIndex];
     }
 
+    public int GetVariableIndex(string variableName) {
+      for (int i = 0; i < variableNames.Length; i++) {
+        if (variableNames[i].Equals(variableName)) return i;
+      }
+      throw new ArgumentException("The variable name " + variableName + " was not found.");
+    }
+
     public void SetVariableName(int variableIndex, string name) {
       variableNames[variableIndex] = name;
     }
-
 
     public override IView CreateView() {
       return new DatasetView(this);
     }
 
+    #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       Dataset clone = new Dataset();
       clonedObjects.Add(Guid, clone);
@@ -255,6 +262,7 @@ namespace HeuristicLab.DataAnalysis {
       }
       return xs;
     }
+    #endregion
 
     public double GetMean(int column) {
       return GetMean(column, 0, Rows);
