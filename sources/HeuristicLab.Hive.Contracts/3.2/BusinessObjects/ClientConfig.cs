@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
   [Serializable]
   public class ClientConfig : PersistableObject {
     [DataMember]
-    public String UpDownTimeCalendar { get; set; } // TODO define DataStructure
+    public String UpDownTimeCalendar { get; set; }
     [DataMember]
     public int HeartBeatIntervall { get; set; }
   }

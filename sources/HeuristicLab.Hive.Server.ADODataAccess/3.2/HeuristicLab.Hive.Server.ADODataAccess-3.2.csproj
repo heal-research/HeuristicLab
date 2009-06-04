@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientAdapter.cs" />
+    <Compile Include="ClientConfigAdapter.cs" />
     <Compile Include="ClientGroupAdapter.cs" />
     <Compile Include="ProjectAdapter.cs" />
     <Compile Include="dsHiveServer.cs">
@@ -103,6 +104,7 @@
     </Compile>
     <Compile Include="ResourceAdapter.cs" />
     <Compile Include="TableAdapterWrapper\ClientAdapterWrapper.cs" />
+    <Compile Include="TableAdapterWrapper\ClientConfigAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\ClientGroupAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\ClientGroup_ResourceAdapterWrapper.cs" />
     <Compile Include="TableAdapterWrapper\AssignedResourcesAdapterWrapper.cs" />

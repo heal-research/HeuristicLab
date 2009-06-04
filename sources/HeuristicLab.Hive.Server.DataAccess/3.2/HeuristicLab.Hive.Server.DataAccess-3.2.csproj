@@ -75,6 +75,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="IClientConfigAdapter.cs" />
     <Compile Include="IPluginInfoAdapter.cs" />
     <Compile Include="IProjectAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

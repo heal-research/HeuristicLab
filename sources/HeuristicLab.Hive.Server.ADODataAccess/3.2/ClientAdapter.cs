@@ -77,6 +77,19 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         return jobAdapter;
       }
     }
+
+    private IClientConfigAdapter clientConfigAdapter = null;
+
+    private IClientConfigAdapter ClientConfigAdapter {
+      get {
+        if (clientConfigAdapter == null) {
+          clientConfigAdapter =
+            this.Session.GetDataAdapter<ClientConfig, IClientConfigAdapter>();
+        }
+
+        return clientConfigAdapter;
+      }
+    }
     #endregion
 
     public ClientAdapter(): 
@@ -127,7 +140,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           client.FreeMemory = 0;
 
-        //todo: config adapter (client.config)
+        if (!row.IsClientConfigIdNull())
+          client.Config = ClientConfigAdapter.GetById(row.ClientConfigId);
+        else
+          client.Config = null;
 
         return client;
       }
@@ -150,11 +166,10 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         row.NumberOfFreeCores = client.NrOfFreeCores;
         row.FreeMemory = client.FreeMemory;
 
-        //todo: config adapter
-        /*if (client.Config != null)
-          row.ClientConfigId = client.Config.ClientConfigId;
-         else
-          row.ClientConfigId = null;*/
+        if (client.Config != null)
+          row.ClientConfigId = client.Config.Id;
+        else
+          row.SetClientConfigIdNull();
       }
 
       return row;
@@ -166,6 +181,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     protected override void doUpdate(ClientInfo client) {
       if (client != null) {
         ResAdapter.Update(client);
+        ClientConfigAdapter.Update(client.Config);
 
         base.doUpdate(client);
       }
