@@ -681,8 +681,6 @@ namespace HeuristicLab.Visualization {
       canvasUI.Invalidate();
     }
 
-    private void canvasUI1_KeyDown(object sender, KeyEventArgs e) {}
-
     private void canvasUI1_MouseDown(object sender, MouseEventArgs e) {
       Focus();
 

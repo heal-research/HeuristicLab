@@ -54,7 +54,6 @@ namespace HeuristicLab.Visualization
           this.canvasUI.ContextMenuStripChanged += new System.EventHandler(this.optionsToolStripMenuItem_Click);
           this.canvasUI.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvasUI1_MouseDown);
           this.canvasUI.MouseUp += new System.Windows.Forms.MouseEventHandler(this.canvasUI_MouseUp);
-          this.canvasUI.KeyDown += new System.Windows.Forms.KeyEventHandler(this.canvasUI1_KeyDown);
           // 
           // contextMenu
           // 
