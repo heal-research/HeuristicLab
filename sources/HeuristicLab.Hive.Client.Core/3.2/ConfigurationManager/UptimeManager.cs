@@ -5,11 +5,23 @@ using System.Text;
 using Calendar;
 using System.Xml.Serialization;
 using System.IO;
+using HeuristicLab.Hive.Client.Common;
 
 namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
   public class UptimeManager {
 
-    public List<Appointment> Appointments { get; set; }
+    private List<Appointment> appointments = null;
+    public List<Appointment> Appointments {
+      get {
+        if (appointments == null)
+          RestoreFromHDD();
+        return appointments;
+      }
+      set {
+        appointments = value;
+        PersistToHDD();
+      }
+    }
     private static String path = System.IO.Directory.GetCurrentDirectory()+"\\plugins\\Hive.Client.Jobs\\";
 
     private static UptimeManager instance = null;
@@ -24,16 +36,39 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
 
     private void PersistToHDD() {
       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
-      using (TextWriter w = new StreamWriter(path + "calendar.xml")) {
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
+      TextWriter w = null;
+      try {
+        w = new StreamWriter(path + "calendar.xml");
         s.Serialize(w, Appointments);  
+      } catch(Exception e) {
+        Logging.Instance.Error(this.ToString(), "Persistance of the Calendar failed!", e);
+      } finally {
+        if(w!=null)
+          w.Close();
       }
     }
 
     private void RestoreFromHDD() {
       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
-      using (TextReader r = new StreamReader(path + "calendar.xml")) {
-        Appointments = (List<Appointment>)s.Deserialize(r);        
-      }           
+      if(File.Exists(Path.Combine(path, "calendar.xml"))) {
+        TextReader r = null;
+        
+        try {
+          r = new StreamReader(path + "calendar.xml");
+          Appointments = (List<Appointment>)s.Deserialize(r);        
+        } catch (Exception e) {
+          Logging.Instance.Error(this.ToString(), "Deserialization of Calendar failed", e);
+          Logging.Instance.Info(this.ToString(), "Starting with a new one");
+          appointments = new List<Appointment>();
+        } finally {
+          if(r!=null)
+            r.Close();          
+        }
+      } else {
+        Appointments = new List<Appointment>();
+      }
     }
 
     public bool isOnline(DateTime time) {
