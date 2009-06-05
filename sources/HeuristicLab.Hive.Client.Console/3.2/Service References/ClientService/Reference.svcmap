@@ -25,6 +25,8 @@
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="20c63a8d-de03-429b-88b0-36988795ef19" SourceId="1" SourceUrl="net.tcp://127.0.0.1:8000/ClientConsole/mex" />
     <MetadataFile FileName="HeuristicLab.Hive.Client.Core.ClientConsoleService.xsd" MetadataType="Schema" ID="36748734-59b6-4ba4-950d-66ca1a4fc8bb" SourceId="1" SourceUrl="net.tcp://127.0.0.1:8000/ClientConsole/mex" />
     <MetadataFile FileName="HeuristicLab.Hive.Client.Common.xsd" MetadataType="Schema" ID="0c1369fa-d4cc-4149-b202-00da9dd35972" SourceId="1" SourceUrl="net.tcp://127.0.0.1:8000/ClientConsole/mex" />
+    <MetadataFile FileName="Calendar.xsd" MetadataType="Schema" ID="09fa9f67-e082-4dcb-9c41-a7a3f0fb7aef" SourceId="1" SourceUrl="net.tcp://127.0.0.1:8000/ClientConsole/mex" />
+    <MetadataFile FileName="System.Drawing.xsd" MetadataType="Schema" ID="70cfc9bf-b4a8-419b-8c1f-379c0d78f9d2" SourceId="1" SourceUrl="net.tcp://127.0.0.1:8000/ClientConsole/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

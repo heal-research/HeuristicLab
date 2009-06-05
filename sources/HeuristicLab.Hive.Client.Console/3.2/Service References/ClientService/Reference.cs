@@ -355,6 +355,22 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         System.IAsyncResult BeginShutdownClient(System.AsyncCallback callback, object asyncState);
         
         void EndShutdownClient(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendar", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendarResponse")]
+        void SetUptimeCalendar(Calendar.Appointment[] appointments);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendar", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendarResponse")]
+        System.IAsyncResult BeginSetUptimeCalendar(Calendar.Appointment[] appointments, System.AsyncCallback callback, object asyncState);
+        
+        void EndSetUptimeCalendar(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendar", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendarResponse")]
+        Calendar.Appointment[] GetUptimeCalendar();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendar", ReplyAction="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendarResponse")]
+        System.IAsyncResult BeginGetUptimeCalendar(System.AsyncCallback callback, object asyncState);
+        
+        Calendar.Appointment[] EndGetUptimeCalendar(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
@@ -401,6 +417,25 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
+    public partial class GetUptimeCalendarCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetUptimeCalendarCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public Calendar.Appointment[] Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((Calendar.Appointment[])(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
     public partial class ClientConsoleCommunicatorClient : System.ServiceModel.ClientBase<HeuristicLab.Hive.Client.Console.ClientService.IClientConsoleCommunicator>, HeuristicLab.Hive.Client.Console.ClientService.IClientConsoleCommunicator {
         
         private BeginOperationDelegate onBeginGetStatusInfosDelegate;
@@ -433,6 +468,18 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         
         private System.Threading.SendOrPostCallback onShutdownClientCompletedDelegate;
         
+        private BeginOperationDelegate onBeginSetUptimeCalendarDelegate;
+        
+        private EndOperationDelegate onEndSetUptimeCalendarDelegate;
+        
+        private System.Threading.SendOrPostCallback onSetUptimeCalendarCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetUptimeCalendarDelegate;
+        
+        private EndOperationDelegate onEndGetUptimeCalendarDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetUptimeCalendarCompletedDelegate;
+        
         public ClientConsoleCommunicatorClient() {
         }
         
@@ -461,6 +508,10 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
         public event System.EventHandler<GetCurrentConnectionCompletedEventArgs> GetCurrentConnectionCompleted;
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> ShutdownClientCompleted;
+        
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> SetUptimeCalendarCompleted;
+        
+        public event System.EventHandler<GetUptimeCalendarCompletedEventArgs> GetUptimeCalendarCompleted;
         
         public HeuristicLab.Hive.Client.Console.ClientService.StatusCommons GetStatusInfos() {
             return base.Channel.GetStatusInfos();
@@ -699,6 +750,103 @@ namespace HeuristicLab.Hive.Client.Console.ClientService {
                 this.onShutdownClientCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnShutdownClientCompleted);
             }
             base.InvokeAsync(this.onBeginShutdownClientDelegate, null, this.onEndShutdownClientDelegate, this.onShutdownClientCompletedDelegate, userState);
+        }
+        
+        public void SetUptimeCalendar(Calendar.Appointment[] appointments) {
+            base.Channel.SetUptimeCalendar(appointments);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginSetUptimeCalendar(Calendar.Appointment[] appointments, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginSetUptimeCalendar(appointments, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndSetUptimeCalendar(System.IAsyncResult result) {
+            base.Channel.EndSetUptimeCalendar(result);
+        }
+        
+        private System.IAsyncResult OnBeginSetUptimeCalendar(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            Calendar.Appointment[] appointments = ((Calendar.Appointment[])(inValues[0]));
+            return this.BeginSetUptimeCalendar(appointments, callback, asyncState);
+        }
+        
+        private object[] OnEndSetUptimeCalendar(System.IAsyncResult result) {
+            this.EndSetUptimeCalendar(result);
+            return null;
+        }
+        
+        private void OnSetUptimeCalendarCompleted(object state) {
+            if ((this.SetUptimeCalendarCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.SetUptimeCalendarCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void SetUptimeCalendarAsync(Calendar.Appointment[] appointments) {
+            this.SetUptimeCalendarAsync(appointments, null);
+        }
+        
+        public void SetUptimeCalendarAsync(Calendar.Appointment[] appointments, object userState) {
+            if ((this.onBeginSetUptimeCalendarDelegate == null)) {
+                this.onBeginSetUptimeCalendarDelegate = new BeginOperationDelegate(this.OnBeginSetUptimeCalendar);
+            }
+            if ((this.onEndSetUptimeCalendarDelegate == null)) {
+                this.onEndSetUptimeCalendarDelegate = new EndOperationDelegate(this.OnEndSetUptimeCalendar);
+            }
+            if ((this.onSetUptimeCalendarCompletedDelegate == null)) {
+                this.onSetUptimeCalendarCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnSetUptimeCalendarCompleted);
+            }
+            base.InvokeAsync(this.onBeginSetUptimeCalendarDelegate, new object[] {
+                        appointments}, this.onEndSetUptimeCalendarDelegate, this.onSetUptimeCalendarCompletedDelegate, userState);
+        }
+        
+        public Calendar.Appointment[] GetUptimeCalendar() {
+            return base.Channel.GetUptimeCalendar();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetUptimeCalendar(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetUptimeCalendar(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public Calendar.Appointment[] EndGetUptimeCalendar(System.IAsyncResult result) {
+            return base.Channel.EndGetUptimeCalendar(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetUptimeCalendar(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetUptimeCalendar(callback, asyncState);
+        }
+        
+        private object[] OnEndGetUptimeCalendar(System.IAsyncResult result) {
+            Calendar.Appointment[] retVal = this.EndGetUptimeCalendar(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetUptimeCalendarCompleted(object state) {
+            if ((this.GetUptimeCalendarCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetUptimeCalendarCompleted(this, new GetUptimeCalendarCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetUptimeCalendarAsync() {
+            this.GetUptimeCalendarAsync(null);
+        }
+        
+        public void GetUptimeCalendarAsync(object userState) {
+            if ((this.onBeginGetUptimeCalendarDelegate == null)) {
+                this.onBeginGetUptimeCalendarDelegate = new BeginOperationDelegate(this.OnBeginGetUptimeCalendar);
+            }
+            if ((this.onEndGetUptimeCalendarDelegate == null)) {
+                this.onEndGetUptimeCalendarDelegate = new EndOperationDelegate(this.OnEndGetUptimeCalendar);
+            }
+            if ((this.onGetUptimeCalendarCompletedDelegate == null)) {
+                this.onGetUptimeCalendarCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetUptimeCalendarCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetUptimeCalendarDelegate, null, this.onEndGetUptimeCalendarDelegate, this.onGetUptimeCalendarCompletedDelegate, userState);
         }
     }
 }

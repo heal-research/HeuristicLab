@@ -57,7 +57,7 @@ namespace HeuristicLab.Hive.Client.Console
     private LogFileReader logFileReader;
     private ClientConsoleCommunicatorClient cccc;
     private System.Windows.Forms.Timer refreshTimer;
-    private ListViewColumnSorterDate lvwColumnSorter;
+    //private ListViewColumnSorterDate lvwColumnSorter;
 
     [XmlArray("Appointments")]
     [XmlArrayItem("Appointment",typeof(Appointment))]
@@ -77,7 +77,6 @@ namespace HeuristicLab.Hive.Client.Console
       RefreshGui();
       InitCalender();
       InitLogFileReader();
-      //InitTestCalenderEntries();
     }
 
     private void InitTestCalenderEntries()
@@ -158,6 +157,8 @@ namespace HeuristicLab.Hive.Client.Console
         cccc = new ClientConsoleCommunicatorClient(WcfSettings.GetBinding(), new EndpointAddress(ENDPOINTADRESS));
         cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
         cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
+        cccc.GetUptimeCalendarCompleted += new EventHandler<GetUptimeCalendarCompletedEventArgs>(cccc_GetUptimeCalendarCompleted);
+        cccc.SetUptimeCalendarCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(cccc_SetUptimeCalendarCompleted);
       }
       catch (Exception)
       {
@@ -166,6 +167,35 @@ namespace HeuristicLab.Hive.Client.Console
         if (res == DialogResult.OK)
           this.Close();
       }
+    }
+
+    void cccc_SetUptimeCalendarCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+    {
+        if (e.Error == null)
+        {
+            MessageBox.Show("Calendar successfully saved!", "Calender", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        else
+        {
+            MessageBox.Show("Error saving calender \n" + e.Error.ToString(), "Calender", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    void cccc_GetUptimeCalendarCompleted(object sender, GetUptimeCalendarCompletedEventArgs e)
+    {
+        if (e.Error == null)
+        {
+            if (e.Result != null)
+            {
+                onlineTimes = e.Result.ToList<Appointment>();
+                onlineTimes.ForEach(a => a.BorderColor = Color.Red);
+            }
+            else
+            {
+                onlineTimes = new List<Appointment>();
+            }
+        }
+        //InitTestCalenderEntries();
     }
 
     private void UpdateGraph(JobStatus[] jobs)
@@ -218,6 +248,9 @@ namespace HeuristicLab.Hive.Client.Console
       dvOnline.StartDate = DateTime.Now;
       dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(DvOnline_OnNewAppointment);
       dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(DvOnline_OnResolveAppointments);
+
+        //get calender from client
+      cccc.GetUptimeCalendarAsync();
     }
 
     private Appointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay)
@@ -600,30 +633,30 @@ namespace HeuristicLab.Hive.Client.Console
     }
 
 
-   private void SerializeCalender() {
+   //private void SerializeCalender() {
      
-       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
-       TextWriter w = new StreamWriter(@"c:\temp\apptest.xml");
-       s.Serialize(w, onlineTimes);
-       w.Close();
-   }
+   //    XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
+   //    TextWriter w = new StreamWriter(@"c:\temp\apptest.xml");
+   //    s.Serialize(w, onlineTimes);
+   //    w.Close();
+   //}
 
-   private void DeSerializeCalender()
-   {
-       XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
-       TextReader r = new StreamReader(@"c:\temp\apptest.xml");
-       onlineTimes = (List<Appointment>)s.Deserialize(r);
-       onlineTimes.ForEach(a => a.BorderColor = Color.Red);
-       r.Close();
+   //private void DeSerializeCalender()
+   //{
+   //    XmlSerializer s = new XmlSerializer(typeof(List<Appointment>));
+   //    TextReader r = new StreamReader(@"c:\temp\apptest.xml");
+   //    onlineTimes = (List<Appointment>)s.Deserialize(r);
+   //    onlineTimes.ForEach(a => a.BorderColor = Color.Red);
+   //    r.Close();
 
-   }
-
-    #endregion
+   //}
 
    private void btnSaveCal_Click(object sender, EventArgs e)
    {
-       DeSerializeCalender();
+       cccc.SetUptimeCalendarAsync(onlineTimes.ToArray());
    }
+
+    #endregion
 
   }
 }

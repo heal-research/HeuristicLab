@@ -39,6 +39,8 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Core.ClientConsoleService" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Hive.Client.Common" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Calendar" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System.Drawing" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IClientConsoleCommunicator_GetStatusInfos_InputMessage">
@@ -71,6 +73,18 @@
   <wsdl:message name="IClientConsoleCommunicator_ShutdownClient_OutputMessage">
     <wsdl:part name="parameters" element="tns:ShutdownClientResponse" />
   </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_SetUptimeCalendar_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetUptimeCalendar" />
+  </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_SetUptimeCalendar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetUptimeCalendarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_GetUptimeCalendar_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUptimeCalendar" />
+  </wsdl:message>
+  <wsdl:message name="IClientConsoleCommunicator_GetUptimeCalendar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUptimeCalendarResponse" />
+  </wsdl:message>
   <wsdl:portType name="IClientConsoleCommunicator">
     <wsdl:operation name="GetStatusInfos">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetStatusInfos" message="tns:IClientConsoleCommunicator_GetStatusInfos_InputMessage" />
@@ -91,6 +105,14 @@
     <wsdl:operation name="ShutdownClient">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/ShutdownClient" message="tns:IClientConsoleCommunicator_ShutdownClient_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/ShutdownClientResponse" message="tns:IClientConsoleCommunicator_ShutdownClient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetUptimeCalendar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendar" message="tns:IClientConsoleCommunicator_SetUptimeCalendar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendarResponse" message="tns:IClientConsoleCommunicator_SetUptimeCalendar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUptimeCalendar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendar" message="tns:IClientConsoleCommunicator_GetUptimeCalendar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendarResponse" message="tns:IClientConsoleCommunicator_GetUptimeCalendar_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IClientConsoleCommunicator" type="tns:IClientConsoleCommunicator">
@@ -142,6 +164,24 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="SetUptimeCalendar">
+      <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/SetUptimeCalendar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUptimeCalendar">
+      <soap12:operation soapAction="http://tempuri.org/IClientConsoleCommunicator/GetUptimeCalendar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ClientConsoleCommunicator">
     <wsdl:port name="NetTcpBinding_IClientConsoleCommunicator" binding="tns:NetTcpBinding_IClientConsoleCommunicator">
@@ -149,7 +189,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08026@fhs-hagenberg.ac.at</Upn>
+          <Upn>mse08004@fhs-hagenberg.ac.at</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

@@ -212,7 +212,10 @@
     <None Include="Resources\schedule.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\Calendar.Appointment.datasource" />
     <None Include="Resources\shutdown-icon.png" />
+    <None Include="Service References\ClientService\Calendar.xsd" />
+    <None Include="Service References\ClientService\System.Drawing.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
