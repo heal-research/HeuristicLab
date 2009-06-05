@@ -32,6 +32,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.JobBase;
 using HeuristicLab.Core;
+using System.ServiceModel;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
 
@@ -57,6 +58,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     }
 
     private void AddJob() {
+      try {
+
       jobManager =
         ServiceLocator.GetJobManager();
       projects = jobManager.GetAllProjects();
@@ -73,6 +76,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       foreach (KeyValuePair<Guid, string> kvp in clients) {
         lbGroupsOut.Items.Add(kvp.Value + " (" + kvp.Key + ")");
+      }
+      }
+      catch (FaultException fe) {
+        MessageBox.Show(fe.Message);
       }
 
     }

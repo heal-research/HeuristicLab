@@ -31,6 +31,7 @@ using HeuristicLab.Hive.Contracts.Interfaces;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using System.Threading;
+using System.ServiceModel;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
 
@@ -66,7 +67,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     #region Properties
     private IClientManager ClientManager {
       get {
-        return ServiceLocator.GetClientManager();
+        try {
+          return ServiceLocator.GetClientManager();
+        }
+        catch (FaultException ex) {
+          MessageBox.Show(ex.Message);
+        }
+        return null;
       }
     }
     #endregion
@@ -160,9 +167,15 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           Point dropLocation = (sender as TreeView).PointToClient(new Point(e.X, e.Y));
           TreeNode dropNode = (sender as TreeView).GetNodeAt(dropLocation);
           if (((ClientGroup)dropNode.Tag).Id != Guid.Empty) {
-            List<ClientInfo> clients = new List<ClientInfo>();
+            Dictionary<ClientInfo, Guid> clients = new Dictionary<ClientInfo, Guid>();
             foreach (ListViewItem lvi in lvClientControl.SelectedItems) {
-              clients.Add((ClientInfo)lvi.Tag);
+              Guid groupId = Guid.Empty;
+              foreach (ListViewGroup lvg in lvClientGroups) {
+                if (lvi.Group.Header == ((ClientGroup)lvg.Tag).Name) {
+                  groupId = ((ClientGroup)lvg.Tag).Id;
+                }
+              }
+              clients.Add((ClientInfo)lvi.Tag, groupId);
             }
             ChangeGroup(clients, ((ClientGroup)dropNode.Tag).Id);
           }
@@ -172,14 +185,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       };
     }
 
-    private void ChangeGroup(List<ClientInfo> clients, Guid clientgroupID) {
+    private void ChangeGroup(Dictionary<ClientInfo, Guid> clients, Guid clientgroupID) {
       IClientManager clientManager = ServiceLocator.GetClientManager();
-      Guid groupId = ((ClientGroup)currentGroupNode.Tag).Id;
-      foreach (ClientInfo client in clients) {
-        if (groupId != Guid.Empty) {
-          Response resp = clientManager.DeleteResourceFromGroup(groupId, client.Id);
+      foreach (KeyValuePair<ClientInfo, Guid> client in clients) {
+        if (client.Key.Id != Guid.Empty) {
+          Response resp = clientManager.DeleteResourceFromGroup(client.Value, client.Key.Id);
         }
-        clientManager.AddResourceToGroup(clientgroupID, client);
+        clientManager.AddResourceToGroup(clientgroupID, client.Key);
       }
     }
 
@@ -229,15 +241,21 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       #region Job
       ResponseList<Job> jobsOld = jobs;
-      IJobManager jobManager =
-          ServiceLocator.GetJobManager();
+      try {
+        IJobManager jobManager =
+                ServiceLocator.GetJobManager();
 
-      jobs = jobManager.GetAllJobs();
+        jobs = jobManager.GetAllJobs();
 
-      IDictionary<int, Job> jobsOldHelp;
-      CloneList(jobsOld, out jobsOldHelp);
+        IDictionary<int, Job> jobsOldHelp;
+        CloneList(jobsOld, out jobsOldHelp);
 
-      GetDelta(jobsOld.List, jobsOldHelp);
+        GetDelta(jobsOld.List, jobsOldHelp);
+
+      }
+      catch (FaultException fe) {
+        MessageBox.Show(fe.Message);
+      }
 
       #endregion
 
@@ -251,7 +269,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
 
     /// <summary>
-    /// Adds jobs to ListView and TreeView
+    /// Adds Exceptionobs to ListView and TreeView
     /// </summary>
     private void AddJobs() {
       try {
@@ -309,22 +327,29 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
+    List<ListViewGroup> lvClientGroups;
     private void AddClients() {
+      lvClientGroups = new List<ListViewGroup>();
       clientList.Clear();
       tvClientControl.Nodes.Clear();
+      try {
+        ResponseList<ClientGroup> clientGroups = ClientManager.GetAllClientGroups();
 
-      ResponseList<ClientGroup> clientGroups = ClientManager.GetAllClientGroups();
+        foreach (ClientGroup cg in clientGroups.List) {
+          AddClientOrGroup(cg, null);
+        }
 
-      foreach (ClientGroup cg in clientGroups.List) {
-        AddClientOrGroup(cg, null);
+        if (currentGroupNode != null) {
+          lvClientControl.Items.Clear();
+          lvClientControl.Groups.Clear();
+          AddGroupsToListView(currentGroupNode);
+        }
+        tvClientControl.ExpandAll();
+
       }
-
-      if (currentGroupNode != null) {
-        lvClientControl.Items.Clear();
-        lvClientControl.Groups.Clear();
-        AddGroupsToListView(currentGroupNode);
+      catch (FaultException fe) {
+        MessageBox.Show(fe.Message);
       }
-      tvClientControl.ExpandAll();
     }
 
     private void AddClientOrGroup(ClientGroup clientGroup, TreeNode currentNode) {
@@ -337,6 +362,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lvg = new ListViewGroup(clientGroup.Name, HorizontalAlignment.Left);
       }
       lvClientControl.Groups.Add(lvg);
+      lvg.Tag = clientGroup;
+      lvClientGroups.Add(lvg);
       foreach (Resource resource in clientGroup.Resources) {
         if (resource is ClientInfo) {
           int percentageUsage = CapacityRam(((ClientInfo)resource).NrOfCores, ((ClientInfo)resource).NrOfFreeCores);
@@ -381,6 +408,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (node != null) {
         ListViewGroup lvg = new ListViewGroup(node.Text, HorizontalAlignment.Left);
         lvClientControl.Groups.Add(lvg);
+        lvg.Tag = node.Tag;
         foreach (ListViewItem item in clientList[((ClientGroup)node.Tag).Id]) {
           item.Group = lvg;
           lvClientControl.Items.Add(item);
