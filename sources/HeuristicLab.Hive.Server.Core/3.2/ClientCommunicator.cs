@@ -457,9 +457,6 @@ namespace HeuristicLab.Hive.Server.Core {
         if (finished) {
           job.State = State.finished;
           jobAdapter.Update(job);
-
-          client.State = State.idle;
-          clientAdapter.Update(client);
         }
         List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
         foreach (JobResult currentResult in jobResults)
