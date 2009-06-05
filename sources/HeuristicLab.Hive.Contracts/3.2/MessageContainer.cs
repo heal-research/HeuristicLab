@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive.Contracts {
   [Serializable]
   public class MessageContainer {
 
-    public enum MessageType { FetchJob, AbortJob, JobAborted, RequestSnapshot, FinishedJob, NoMessage, SnapshotReady, Shutdown, JobFailed };
+    public enum MessageType { FetchJob, AbortJob, JobAborted, RequestSnapshot, FinishedJob, NoMessage, SnapshotReady, Shutdown, JobFailed, UptimeLimitDisconnect };
 
     public MessageType Message { get; set; }
     public Guid JobId { get; set; }

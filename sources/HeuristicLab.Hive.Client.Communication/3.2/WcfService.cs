@@ -75,6 +75,10 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// </summary>
     public void Connect() {
       try {
+        if (String.Empty.Equals(ServerIP) || ServerPort == 0) {
+          Logging.Instance.Info(this.ToString(), "No Server IP or Port set!");
+          return;
+        }
         proxy = new ClientFacadeClient(
           WcfSettings.GetStreamedBinding(),
           new EndpointAddress("net.tcp://" + ServerIP + ":" + ServerPort + "/HiveServer/ClientCommunicator")
@@ -117,6 +121,11 @@ namespace HeuristicLab.Hive.Client.Communication {
         if(ServerChanged != null) 
           ServerChanged(this, new EventArgs());
     }
+
+    public void SetIPAndPort(String serverIP, int serverPort) {
+      this.ServerIP = serverIP;
+      this.ServerPort = serverPort;
+    }
     
     /// <summary>
     /// Disconnects the Client from the Server
@@ -158,7 +167,7 @@ namespace HeuristicLab.Hive.Client.Communication {
           Response res = proxy.Login(clientInfo);
           if (!res.Success) {
             Logging.Instance.Error(this.ToString(), "Login Failed! " + res.StatusMessage);
-            HandleNetworkError(null);
+            HandleNetworkError(new Exception(res.StatusMessage));
           } else {
             ConnState = NetworkEnum.WcfConnState.Loggedin;
             Logging.Instance.Info(this.ToString(), res.StatusMessage);

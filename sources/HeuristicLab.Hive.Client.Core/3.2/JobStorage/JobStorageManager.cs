@@ -46,22 +46,25 @@ namespace HeuristicLab.Hive.Client.Core.JobStorage {
         if (WcfService.Instance.ConnState == NetworkEnum.WcfConnState.Loggedin && (storedJobsList[index-1].ServerIP == WcfService.Instance.ServerIP && storedJobsList[index-1].ServerPort == WcfService.Instance.ServerPort)) {
           String filename = storedJobsList[index-1].ServerIP + "." + storedJobsList[index-1].ServerPort + "." + storedJobsList[index-1].JobID.ToString();          
           Logging.Instance.Info("JobStorrageManager", "Sending stored job " + storedJobsList[index - 1].JobID + " to the server");
-          byte[] job = File.ReadAllBytes(path + filename + ".dat");
-
-          if (WcfService.Instance.IsJobStillNeeded(storedJobsList[index - 1].JobID).StatusMessage == ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT) {
-            ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().Id, storedJobsList[index - 1].JobID, job, 1.00, null, true);
-            if (!res.Success)
-              Logging.Instance.Error("JobStorageManager", "sending of job failed: " + res.StatusMessage);
-            else
-              Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");      
+          try {
+            byte[] job = File.ReadAllBytes(path + filename + ".dat");
+            if (WcfService.Instance.IsJobStillNeeded(storedJobsList[index - 1].JobID).StatusMessage == ApplicationConstants.RESPONSE_COMMUNICATOR_SEND_JOBRESULT) {
+              ResponseResultReceived res = WcfService.Instance.SendStoredJobResultsSync(ConfigManager.Instance.GetClientInfo().Id, storedJobsList[index - 1].JobID, job, 1.00, null, true);
+              if (!res.Success)
+                Logging.Instance.Error("JobStorageManager", "sending of job failed: " + res.StatusMessage);
+              else
+                Logging.Instance.Info("JobStorrageManager", "Sending of job " + storedJobsList[index - 1].JobID + " done");
+            }
+            ClientStatusInfo.JobsProcessed++;
+            storedJobsList.Remove(storedJobsList[index - 1]);
+            File.Delete(path + filename + ".dat"); 
           }
-          ClientStatusInfo.JobsProcessed++;
-                  
-          
-
-          storedJobsList.Remove(storedJobsList[index - 1]);
-          File.Delete(path + filename + ".dat");       
+          catch (Exception e) {
+            Logging.Instance.Error("JobStorrageManager", "Job not on hdd but on list - deleting job from list", e);
+            storedJobsList.Remove(storedJobsList[index - 1]);
           }
+      
+         }
         }
     }
 

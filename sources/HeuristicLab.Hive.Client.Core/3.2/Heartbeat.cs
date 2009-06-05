@@ -38,6 +38,9 @@ namespace HeuristicLab.Hive.Client.Core {
   /// Heartbeat class. It sends every x ms a heartbeat to the server and receives a Message
   /// </summary>
   public class Heartbeat {
+
+    private bool offline;
+
     public double Interval { get; set; }    
     private Timer heartbeatTimer = null;
         
@@ -71,20 +74,32 @@ namespace HeuristicLab.Hive.Client.Core {
     /// <param name="e"></param>
     void heartbeatTimer_Elapsed(object sender, ElapsedEventArgs e) {
       Console.WriteLine("tick");  
-      ClientInfo info = ConfigManager.Instance.GetClientInfo();
-      // Todo: remove tempfix for free cores.
+      ClientInfo info = ConfigManager.Instance.GetClientInfo();      
 
       PerformanceCounter counter = new PerformanceCounter("Memory", "Available Bytes", true);
       int mb = (int)(counter.NextValue() / 1024 / 1024);
-
-      
 
       HeartBeatData heartBeatData = new HeartBeatData {
         ClientId = info.Id,
         FreeCores = info.NrOfCores - ConfigManager.Instance.GetUsedCores(),
         FreeMemory = mb,
-        JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()
+        JobProgress = ConfigManager.Instance.GetProgressOfAllJobs()      
       };
+      
+      DateTime lastFullHour = DateTime.Parse(DateTime.Now.Hour.ToString() + ":00");
+      TimeSpan span = DateTime.Now - lastFullHour;
+      if (span.TotalSeconds < (Interval/1000)) {
+        if (UptimeManager.Instance.isOnline()) {
+          //That's quiet simple: Just reconnect and you're good for new jobs
+          if (wcfService.ConnState != NetworkEnum.WcfConnState.Connected) {
+            Logging.Instance.Info(this.ToString(), "Client goes online according to timetable");
+            wcfService.Connect();
+          }
+        } else {
+          //We have quit a lot of work to do here: snapshot all jobs, submit them back, then disconnect and then pray to god that nothing goes wrong
+          MessageQueue.GetInstance().AddMessage(MessageContainer.MessageType.UptimeLimitDisconnect);                  
+        }        
+      }
       if (wcfService.ConnState == NetworkEnum.WcfConnState.Failed) {
         wcfService.Connect();
       } else if (wcfService.ConnState == NetworkEnum.WcfConnState.Loggedin) {

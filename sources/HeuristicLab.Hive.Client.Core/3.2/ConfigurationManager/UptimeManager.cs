@@ -71,10 +71,10 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       }
     }
 
-    public bool isOnline(DateTime time) {
+    public bool isOnline() {
       foreach (Appointment app in Appointments)
-        if ((time >= app.StartDate) &&
-            (time <= app.EndDate))
+        if ((DateTime.Now >= app.StartDate) &&
+            (DateTime.Now <= app.EndDate))
           return true;
       return false;
     }

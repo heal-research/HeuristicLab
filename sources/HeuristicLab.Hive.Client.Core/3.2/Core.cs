@@ -85,10 +85,12 @@ namespace HeuristicLab.Hive.Client.Core {
       wcfService.Connected += new EventHandler(wcfService_Connected);
       //Recover Server IP and Port from the Settings Framework
       ConnectionContainer cc = ConfigManager.Instance.GetServerIPAndPort();     
-      if (cc.IPAdress != String.Empty && cc.Port != 0) {
-        wcfService.Connect(cc.IPAdress, cc.Port);
-      }
-   
+      if (cc.IPAdress != String.Empty && cc.Port != 0)
+        wcfService.SetIPAndPort(cc.IPAdress, cc.Port);
+
+      if (UptimeManager.Instance.isOnline())
+        wcfService.Connect();
+         
       //Initialize the heartbeat
       beat = new Heartbeat { Interval = 10000 };
       beat.StartHeartbeat();     
@@ -121,8 +123,10 @@ namespace HeuristicLab.Hive.Client.Core {
             Logging.Instance.Error(this.ToString(), "AbortJob: Engine doesn't exist");
           break;
         //Job has been successfully aborted
-        case MessageContainer.MessageType.JobAborted:
-          //todo: thread this
+
+
+        case MessageContainer.MessageType.JobAborted:          
+        //todo: thread this
           Debug.WriteLine("Job aborted, he's dead");
           lock (engines) {            
             Guid jobId = new Guid(container.JobId.ToString());
@@ -137,6 +141,8 @@ namespace HeuristicLab.Hive.Client.Core {
               Logging.Instance.Error(this.ToString(), "JobAbort: Engine doesn't exist");
           }
           break;
+        
+        
         //Request a Snapshot from the Execution Engine
         case MessageContainer.MessageType.RequestSnapshot:
           if (engines.ContainsKey(container.JobId)) 
@@ -144,10 +150,14 @@ namespace HeuristicLab.Hive.Client.Core {
           else
             Logging.Instance.Error(this.ToString(), "RequestSnapshot: Engine doesn't exist");
           break;
+        
+        
         //Snapshot is ready and can be sent back to the Server
         case MessageContainer.MessageType.SnapshotReady:
           ThreadPool.QueueUserWorkItem(new WaitCallback(GetSnapshot), container.JobId);          
           break;
+        
+        
         //Pull a Job from the Server
         case MessageContainer.MessageType.FetchJob:
           if (!currentlyFetching) {
@@ -155,10 +165,20 @@ namespace HeuristicLab.Hive.Client.Core {
             currentlyFetching = true;
           }          
           break;          
+        
+        
         //A Job has finished and can be sent back to the server
         case MessageContainer.MessageType.FinishedJob:
           ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);          
           break;     
+        
+        
+        case MessageContainer.MessageType.UptimeLimitDisconnect:
+          Logging.Instance.Info(this.ToString(), "Uptime Limit reached, storing jobs and sending them back");
+          WcfService.Instance.Disconnect();
+          break;
+        
+        
         //Hard shutdown of the client
         case MessageContainer.MessageType.Shutdown:
           lock (engines) {
