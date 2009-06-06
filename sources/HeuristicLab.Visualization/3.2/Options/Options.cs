@@ -180,8 +180,6 @@ namespace HeuristicLab.Visualization.Options {
         MarkercheckBox.Checked = model.Rows[0].RowSettings.ShowMarkers;
 
         LineSelectCB.DataSource = model.Rows;
-        LineSelectCB.DisplayMember = "Label";
-
 
         LineSelectCB.SelectedIndex = 0;
         LineSelectCB_SelectedIndexChanged(this, null);
