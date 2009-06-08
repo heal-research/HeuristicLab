@@ -27,6 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -67,21 +68,12 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     void abortButton_Click(object sender, EventArgs e) {
-      BackgroundWorker worker = new BackgroundWorker();
-      worker.DoWork += (s, args) => {
-        HiveEngine.RequestSnapshot();
-      };
-      worker.RunWorkerCompleted += (s, args) => {
-        this.Cursor = Cursors.Default;
-        abortButton.Enabled = true;
-      };
-      this.Cursor = Cursors.WaitCursor;
-      abortButton.Enabled = false;
-      worker.RunWorkerAsync();
+      snapshotButton.Enabled = false;
     }
 
     void executeButton_Click(object sender, EventArgs e) {
       abortButton.Enabled = true;
+      snapshotButton.Enabled = true;
     }
 
     private void SetDataBinding() {
@@ -101,11 +93,39 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     void Engine_Initialized(object sender, EventArgs e) {
-      abortButton.Enabled = false;
+      if (InvokeRequired) {
+        Invoke((EventHandler)Engine_Initialized, sender, e);
+      } else {
+        abortButton.Enabled = false;
+        snapshotButton.Enabled = false;
+      }
     }
 
     void Engine_Finished(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke((EventHandler)Engine_Initialized, sender, e);
+      } else {
+        abortButton.Enabled = false;
+        snapshotButton.Enabled = false;
+      }
+    }
+
+    private void snapshotButton_Click(object sender, EventArgs e) {
+      BackgroundWorker worker = new BackgroundWorker();
+      worker.DoWork += (s, args) => {
+        HiveEngine.RequestSnapshot();
+      };
+      worker.RunWorkerCompleted += (s, args) => {
+        Logger.Debug("HiveEngineEditor: RunWorkerCompleted");
+        this.Cursor = Cursors.Default;
+        abortButton.Enabled = true;
+        snapshotButton.Enabled = true;
+      };
+      this.Cursor = Cursors.WaitCursor;
       abortButton.Enabled = false;
+      snapshotButton.Enabled = false;
+      Logger.Debug("HiveEngineEditor: RunWorkerAsync");
+      worker.RunWorkerAsync();
     }
   }
 }

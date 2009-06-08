@@ -32,6 +32,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.IO;
 using System.Xml;
 using System.IO.Compression;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Hive.Engine {
   /// <summary>
@@ -43,10 +44,14 @@ namespace HeuristicLab.Hive.Engine {
     private const int RESULT_POLLING_INTERVAL_MS = 10000;
     private Guid jobId;
     private Job job;
+    private object locker = new object();
+    private volatile bool abortRequested;
+
     public string HiveServerUrl { get; set; }
 
     public HiveEngine() {
       job = new Job();
+      abortRequested = false;
     }
 
     #region IEngine Members
@@ -95,54 +100,72 @@ namespace HeuristicLab.Hive.Engine {
       Thread t = new Thread(() => {
         IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
         ResponseObject<JobResult> response = null;
+        Job restoredJob = null;
         do {
-          response = executionEngineFacade.GetLastResult(jobId, true);
-          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
-            Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
+          Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
+          lock (locker) {
+            HiveLogger.Debug("HiveEngine: Results-polling - GetLastResult");
+            response = executionEngineFacade.GetLastResult(jobId, false);
+            HiveLogger.Debug("HiveEngine: Results-polling - Server: " + response.StatusMessage + " success: " + response.Success);
+            // loop while 
+            // 1. the user doesn't request an abort 
+            // 2. there is a problem with server communication (success==false)
+            // 3. no result for the job is available yet (response.Obj==null)
+            // 4. the result that we get from the server is a snapshot and not the final result
+            if (abortRequested) return;
+            if (response.Success && response.Obj != null) {
+              HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
+              restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
+              HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + restoredJob.Engine.Canceled);
+            }
           }
-        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
-        if (response.Success) {
-          JobResult jobResult = response.Obj;
-          if (jobResult != null) {
-            job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
-            OnFinished();
-          }
-        } else {
-          Exception ex = new Exception(response.Obj.Exception.Message);
-          ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
-        }
+        } while (restoredJob == null || restoredJob.Engine.Canceled);
+
+        job = restoredJob;
+        OnChanged();
+        OnFinished();
       });
+      HiveLogger.Debug("HiveEngine: Starting results-polling thread");
       t.Start();
     }
 
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
 
-      // poll until snapshot is ready
       ResponseObject<JobResult> response;
-
-      // request snapshot
-      Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
-      if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
-        response = executionEngineFacade.GetLastResult(jobId, false);
-      } else {
-        do {
-          response = executionEngineFacade.GetLastResult(jobId, true);
-          if (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE) {
+      lock (locker) {
+        HiveLogger.Debug("HiveEngine: Abort - RequestSnapshot");
+        Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
+        if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
+          // job is finished already
+          HiveLogger.Debug("HiveEngine: Abort - GetLastResult(false)");
+          response = executionEngineFacade.GetLastResult(jobId, false);
+          HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
+        } else {
+          // server sent snapshot request to client
+          // poll until snapshot is ready
+          do {
             Thread.Sleep(SNAPSHOT_POLLING_INTERVAL_MS);
-          }
-        } while (response.Success && response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
-      }
-      if (response.Success) {
-        JobResult jobResult = response.Obj;
-        if (jobResult != null) {
-          job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
-          //PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+            HiveLogger.Debug("HiveEngine: Abort - GetLastResult(true)");
+            response = executionEngineFacade.GetLastResult(jobId, true);
+            HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
+            // loop while
+            // 1. problem with communication with server
+            // 2. job result not yet ready
+          } while (
+            !response.Success ||
+            response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
         }
-      } else {
-        Exception ex = new Exception(response.Obj.Exception.Message);
-        ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
       }
+      JobResult jobResult = response.Obj;
+      if (jobResult != null) {
+        HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
+        job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
+        //PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+      }
+      //HiveLogger.Debug("HiveEngine: Results-polling - Exception!");
+      //Exception ex = new Exception(response.Obj.Exception.Message);
+      //ThreadPool.QueueUserWorkItem(delegate(object state) { OnExceptionOccurred(ex); });
     }
 
     public void ExecuteStep() {
@@ -154,12 +177,16 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     public void Abort() {
+      abortRequested = true;
+      RequestSnapshot();
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       executionEngineFacade.AbortJob(jobId);
+      OnChanged();
       OnFinished();
     }
 
     public void Reset() {
+      abortRequested = false;
       job.Engine.Reset();
       jobId = Guid.NewGuid();
       OnInitialized();

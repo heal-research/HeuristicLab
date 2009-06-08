@@ -46,6 +46,7 @@ namespace HeuristicLab.Hive.Engine {
     private void InitializeComponent() {
       this.urlTextBox = new System.Windows.Forms.TextBox();
       this.urlLabel = new System.Windows.Forms.Label();
+      this.snapshotButton = new System.Windows.Forms.Button();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
@@ -100,10 +101,23 @@ namespace HeuristicLab.Hive.Engine {
       this.urlLabel.TabIndex = 8;
       this.urlLabel.Text = "Hive Server Url:";
       // 
+      // snapshotButton
+      // 
+      this.snapshotButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.snapshotButton.Enabled = false;
+      this.snapshotButton.Location = new System.Drawing.Point(294, 457);
+      this.snapshotButton.Name = "snapshotButton";
+      this.snapshotButton.Size = new System.Drawing.Size(75, 23);
+      this.snapshotButton.TabIndex = 9;
+      this.snapshotButton.Text = "Sna&pshot";
+      this.snapshotButton.UseVisualStyleBackColor = true;
+      this.snapshotButton.Click += new System.EventHandler(this.snapshotButton_Click);
+      // 
       // HiveEngineEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.snapshotButton);
       this.Controls.Add(this.urlTextBox);
       this.Controls.Add(this.urlLabel);
       this.Name = "HiveEngineEditor";
@@ -116,6 +130,7 @@ namespace HeuristicLab.Hive.Engine {
       this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
       this.Controls.SetChildIndex(this.urlLabel, 0);
       this.Controls.SetChildIndex(this.urlTextBox, 0);
+      this.Controls.SetChildIndex(this.snapshotButton, 0);
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
@@ -130,5 +145,6 @@ namespace HeuristicLab.Hive.Engine {
 
     private System.Windows.Forms.TextBox urlTextBox;
     private System.Windows.Forms.Label urlLabel;
+    private System.Windows.Forms.Button snapshotButton;
   }
 }

@@ -125,6 +125,10 @@
       <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
       <Name>HeuristicLab.SequentialEngine-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Tracing\3.2\HeuristicLab.Tracing-3.2.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

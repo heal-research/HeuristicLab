@@ -36,6 +36,7 @@ namespace HeuristicLab.Hive.Engine {
   [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
   [Dependency(Dependency = "HeuristicLab.Hive.JobBase-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
   public class HeuristicLabHiveEnginePlugin : PluginBase {
   }
 }
