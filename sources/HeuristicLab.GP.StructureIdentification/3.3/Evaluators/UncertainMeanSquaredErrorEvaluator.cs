@@ -50,7 +50,7 @@ This operator stops the computation as soon as an upper limit for the mean-squar
 
     // evaluates the function-tree for the given target-variable and the whole dataset and returns the MSE
     public override void Evaluate(IScope scope, ITreeEvaluator evaluator, HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, false).Data;
+      double qualityLimit = GetVariableValue<DoubleData>("QualityLimit", scope, true).Data;
       int minSamples = GetVariableValue<IntData>("MinEvaluatedSamples", scope, true).Data;
       MersenneTwister mt = GetVariableValue<MersenneTwister>("Random", scope, true);
       DoubleData mse = GetVariableValue<DoubleData>("MSE", scope, false, false);

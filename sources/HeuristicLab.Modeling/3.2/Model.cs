@@ -119,6 +119,11 @@ namespace HeuristicLab.Modeling {
       set;
     }
 
+    public double GetVariableImpact(string variableName) {
+      if (variableImpacts.ContainsKey(variableName)) return variableImpacts[variableName];
+      else return 0.0;
+    }
+
     private IItem data;
     public IItem Data {
       get { return data; }
@@ -126,5 +131,14 @@ namespace HeuristicLab.Modeling {
     }
 
     #endregion
+
+    private Dictionary<string, double> variableImpacts = new Dictionary<string, double>();
+    public void SetVariableImpact(string variableName, double impact) {
+      variableImpacts[variableName] = impact;
+    }
+
+    public void SetVariableImpact(int variableIndex, double impact) {
+      variableImpacts[dataset.GetVariableName(variableIndex)] = impact;
+    }
   }
 }

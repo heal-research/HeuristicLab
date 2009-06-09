@@ -30,7 +30,7 @@ namespace HeuristicLab.Logging {
   /// <summary>
   /// Keeps a variable in the global scope that contains the scope representing the best solution.
   /// </summary>
-  public class BestSolutionStorer : DelegatingOperator {
+  public class BestSolutionStorer : OperatorBase {
     /// <inheritdoc select="summary"/>
     public override string Description {
       get { return @"Keeps a variable in the global scope that contains the scope representing the best of run solution."; }

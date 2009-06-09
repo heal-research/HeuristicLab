@@ -34,8 +34,8 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// </summary>
   public abstract class TreeEvaluatorBase : ItemBase, ITreeEvaluator {
     protected const double EPSILON = 1.0e-7;
-    protected double estimatedValueMax;
-    protected double estimatedValueMin;
+    protected double maxValue;
+    protected double minValue;
 
     protected class Instr {
       public double d_arg0;
@@ -51,17 +51,14 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected Dataset dataset;
     protected int sampleIndex;
 
-    public void ResetEvaluator(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor) {
+    public void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor, IFunctionTree functionTree) {
       this.dataset = dataset;
-      double maximumPunishment = punishmentFactor * dataset.GetRange(targetVariable, start, end);
+      // calculate upper and lower bounds for the estimated value (mean +/- punishmentFactor * range)
+      double mean = dataset.GetMean(targetVariable, start, end);
+      double range = dataset.GetRange(targetVariable, start, end);
+      maxValue = mean + punishmentFactor * range;
+      minValue = mean - punishmentFactor * range;
 
-      // get the mean of the values of the target variable to determine the max and min bounds of the estimated value
-      double targetMean = dataset.GetMean(targetVariable, start, end);
-      estimatedValueMin = targetMean - maximumPunishment;
-      estimatedValueMax = targetMean + maximumPunishment;
-    }
-
-    public void PrepareForEvaluation(IFunctionTree functionTree) {
       BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
       if (bakedTree == null) throw new ArgumentException("TreeEvaluators can only evaluate BakedFunctionTrees");
 
@@ -102,13 +99,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.sampleIndex = sampleIndex;
 
       double estimated = EvaluateBakedCode();
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated)) {
-        estimated = estimatedValueMax;
-      } else if (estimated > estimatedValueMax) {
-        estimated = estimatedValueMax;
-      } else if (estimated < estimatedValueMin) {
-        estimated = estimatedValueMin;
-      }
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated)) estimated = maxValue;
+      else if (estimated < minValue) estimated = minValue;
+      else if (estimated > maxValue) estimated = maxValue;
       return estimated;
     }
 
@@ -122,39 +115,5 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected abstract double EvaluateBakedCode();
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      TreeEvaluatorBase clone = (TreeEvaluatorBase)base.Clone(clonedObjects);
-      if (!clonedObjects.ContainsKey(dataset.Guid)) {
-        clone.dataset = (Dataset)dataset.Clone(clonedObjects);
-      } else {
-        clone.dataset = (Dataset)clonedObjects[dataset.Guid];
-      }
-      clone.estimatedValueMax = estimatedValueMax;
-      clone.estimatedValueMin = estimatedValueMin;
-      return clone;
-    }
-
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute minEstimatedValueAttr = document.CreateAttribute("MinEstimatedValue");
-      minEstimatedValueAttr.Value = XmlConvert.ToString(estimatedValueMin);
-      node.Attributes.Append(minEstimatedValueAttr);
-
-      XmlAttribute maxEstimatedValueAttr = document.CreateAttribute("MaxEstimatedValue");
-      maxEstimatedValueAttr.Value = XmlConvert.ToString(estimatedValueMax);
-      node.Attributes.Append(maxEstimatedValueAttr);
-
-      node.AppendChild(PersistenceManager.Persist("Dataset", dataset, document, persistedObjects));
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      estimatedValueMax = XmlConvert.ToDouble(node.Attributes["MaxEstimatedValue"].Value);
-      estimatedValueMin = XmlConvert.ToDouble(node.Attributes["MinEstimatedValue"].Value);
-
-      dataset = (Dataset)PersistenceManager.Restore(node.SelectSingleNode("Dataset"), restoredObjects);
-    }
   }
 }

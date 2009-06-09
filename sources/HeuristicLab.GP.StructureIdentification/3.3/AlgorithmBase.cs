@@ -146,7 +146,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       IOperator globalInjector = CreateGlobalInjector();
       IOperator initialization = CreateInitialization();
       IOperator funLibInjector = CreateFunctionLibraryInjector();
-      IOperator treeEvaluatorInjector = new HL2TreeEvaluatorInjector();
 
       IOperator mainLoop = CreateMainLoop();
       mainLoop.Name = "Main loop";
@@ -169,7 +168,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       seq.AddSubOperator(randomInjector);
       seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(funLibInjector);
-      seq.AddSubOperator(treeEvaluatorInjector);
       seq.AddSubOperator(initialization);
       seq.AddSubOperator(mainLoop);
       seq.AddSubOperator(cleanUp);
@@ -214,6 +212,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       injector.AddVariable(new HeuristicLab.Core.Variable("Parents", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("TreeEvaluator", new HL2TreeEvaluator()));
       return injector;
     }
 

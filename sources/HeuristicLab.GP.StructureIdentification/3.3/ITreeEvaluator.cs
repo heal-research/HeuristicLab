@@ -30,8 +30,7 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public interface ITreeEvaluator : IItem {
-    void ResetEvaluator(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor);
-    void PrepareForEvaluation(IFunctionTree functionTree);
+    void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor, IFunctionTree functionTree);
     double Evaluate(int sampleIndex);
   }
 }

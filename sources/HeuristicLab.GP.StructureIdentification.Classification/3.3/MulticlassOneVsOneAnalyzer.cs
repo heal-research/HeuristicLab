@@ -84,8 +84,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         BakedFunctionTree functionTree = GetVariableValue<BakedFunctionTree>(BESTMODELL, bestScope, true);
 
         BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
-        evaluator.ResetEvaluator(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0);
-        evaluator.PrepareForEvaluation(functionTree);
+        evaluator.PrepareForEvaluation(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0, functionTree);
         for(int i = 0; i < (samplesEnd - samplesStart); i++) {
           double est = evaluator.Evaluate(i + samplesStart);
           if(est < 0.5) {

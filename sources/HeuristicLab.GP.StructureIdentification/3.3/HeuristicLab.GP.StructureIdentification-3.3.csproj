@@ -90,8 +90,6 @@
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
     <Compile Include="TreeEvaluatorBase.cs" />
     <Compile Include="HL2TreeEvaluator.cs" />
-    <Compile Include="HL2TreeEvaluatorInjector.cs" />
-    <Compile Include="TreeEvaluatorInjector.cs" />
     <Compile Include="ITreeEvaluator.cs" />
     <Compile Include="Evaluators\MeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
     <Compile Include="FunctionLibraryInjector.cs" />
