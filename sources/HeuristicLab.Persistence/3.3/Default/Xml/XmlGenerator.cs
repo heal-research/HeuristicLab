@@ -171,7 +171,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
       try {
         string tempfile = Path.GetTempFileName();
         DateTime start = DateTime.Now;
-        Serialize(obj, File.Create(tempfile), config, includeAssemblies, compression);
+        using (FileStream stream = File.Create(tempfile)) {
+          Serialize(obj, stream, config, includeAssemblies, compression);
+        }
         Logger.Info(String.Format("serialization took {0} seconds with compression level {1}",
           (DateTime.Now - start).TotalSeconds, compression));
         File.Copy(tempfile, filename, true);
@@ -196,6 +198,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         Serializer serializer = new Serializer(obj, config);
         XmlGenerator generator = new XmlGenerator();
         using (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
+          zipStream.IsStreamOwner = false;
           zipStream.SetLevel(compression);
           zipStream.PutNextEntry(new ZipEntry("data.xml"));
           StreamWriter writer = new StreamWriter(zipStream);
