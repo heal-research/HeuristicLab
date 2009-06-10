@@ -32,32 +32,32 @@ namespace HeuristicLab.GP.StructureIdentification {
   public class SimpleEvaluator : GPEvaluatorBase {
     public SimpleEvaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("Values", "The values of the target variable as predicted by the model and the original value of the target variable", typeof(ItemList), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("Values", "Target vs. predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
 
     public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, int start, int end, bool updateTargetValues) {
-      ItemList values = GetVariableValue<ItemList>("Values", scope, false, false);
+      DoubleMatrixData values = GetVariableValue<DoubleMatrixData>("Values", scope, false, false);
       if (values == null) {
-        values = new ItemList();
+        values = new DoubleMatrixData();
         IVariableInfo info = GetVariableInfo("Values");
         if (info.Local)
           AddVariable(new HeuristicLab.Core.Variable(info.ActualName, values));
         else
           scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(info.FormalName), values));
       }
-      values.Clear();
+
+      double[,] v = new double[end - start, 2];
 
       for (int sample = start; sample < end; sample++) {
-        ItemList row = new ItemList();
         double estimated = evaluator.Evaluate(sample);
         double original = dataset.GetValue(sample, targetVariable);
         if (updateTargetValues) {
           dataset.SetValue(sample, targetVariable, estimated);
         }
-        row.Add(new DoubleData(estimated));
-        row.Add(new DoubleData(original));
-        values.Add(row);
+        v[sample - start, 0] = original;
+        v[sample - start, 1] = estimated;
       }
+      values.Data = v;
     }
   }
 }

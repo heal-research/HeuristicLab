@@ -422,6 +422,25 @@ namespace HeuristicLab.GP.StructureIdentification {
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
+      // calculate and set variable impacts
+      VariableEvaluationImpactCalculator evaluationImpactCalculator = new VariableEvaluationImpactCalculator();
+      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+
+      evaluationImpactCalculator.Apply(bestModelScope);
+      qualityImpactCalculator.Apply(bestModelScope);
+
+      ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
+      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
+      foreach (ItemList row in evaluationImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[0]).Data;
+        model.SetVariableEvaluationImpact(variableName, impact);
+      }
+      foreach (ItemList row in qualityImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[0]).Data;
+        model.SetVariableQualityImpact(variableName, impact);
+      }
       return model;
     }
 

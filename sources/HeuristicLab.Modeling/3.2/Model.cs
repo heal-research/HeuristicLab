@@ -119,8 +119,13 @@ namespace HeuristicLab.Modeling {
       set;
     }
 
-    public double GetVariableImpact(string variableName) {
-      if (variableImpacts.ContainsKey(variableName)) return variableImpacts[variableName];
+    public double GetVariableQualityImpact(string variableName) {
+      if (variableQualityImpacts.ContainsKey(variableName)) return variableQualityImpacts[variableName];
+      else return 1.0;
+    }
+
+    public double GetVariableEvaluationImpact(string variableName) {
+      if (variableEvaluationImpacts.ContainsKey(variableName)) return variableEvaluationImpacts[variableName];
       else return 0.0;
     }
 
@@ -132,13 +137,22 @@ namespace HeuristicLab.Modeling {
 
     #endregion
 
-    private Dictionary<string, double> variableImpacts = new Dictionary<string, double>();
-    public void SetVariableImpact(string variableName, double impact) {
-      variableImpacts[variableName] = impact;
+    private Dictionary<string, double> variableQualityImpacts = new Dictionary<string, double>();
+    public void SetVariableQualityImpact(string variableName, double impact) {
+      variableQualityImpacts[variableName] = impact;
     }
 
-    public void SetVariableImpact(int variableIndex, double impact) {
-      variableImpacts[dataset.GetVariableName(variableIndex)] = impact;
+    public void SetVariableQualityImpact(int variableIndex, double impact) {
+      variableQualityImpacts[dataset.GetVariableName(variableIndex)] = impact;
+    }
+
+    private Dictionary<string, double> variableEvaluationImpacts = new Dictionary<string, double>();
+    public void SetVariableEvaluationImpact(string variableName, double impact) {
+      variableEvaluationImpacts[variableName] = impact;
+    }
+
+    public void SetVariableEvaluationImpact(int variableIndex, double impact) {
+      variableEvaluationImpacts[dataset.GetVariableName(variableIndex)] = impact;
     }
   }
 }

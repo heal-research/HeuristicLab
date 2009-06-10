@@ -139,6 +139,8 @@
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Tangens.cs" />
     <Compile Include="Variable.cs" />
+    <Compile Include="Evaluators\VariableEvaluationImpactCalculator.cs" />
+    <Compile Include="Evaluators\VariableQualityImpactCalculator.cs" />
     <Compile Include="Xor.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -44,7 +44,8 @@ namespace HeuristicLab.Modeling {
     double TrainingVarianceAccountedFor { get; }
     double ValidationVarianceAccountedFor { get; }
     double TestVarianceAccountedFor { get; }
-    double GetVariableImpact(string variableName);
+    double GetVariableEvaluationImpact(string variableName);
+    double GetVariableQualityImpact(string variableName);
 
     IItem Data { get; }
   }
