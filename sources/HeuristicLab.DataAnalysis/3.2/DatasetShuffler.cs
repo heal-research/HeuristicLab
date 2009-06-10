@@ -48,11 +48,14 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ExchangeRows(Dataset dataset, int i, int j) {
+      dataset.FireChangeEvents = false;
       for(int k = 0; k < dataset.Columns; k++) {
         double temp = dataset.GetValue(i, k);
         dataset.SetValue(i, k, dataset.GetValue(j, k));
         dataset.SetValue(j, k, temp);
       }
+      dataset.FireChangeEvents = true;
+      dataset.FireChanged();
     }
   }
 }
