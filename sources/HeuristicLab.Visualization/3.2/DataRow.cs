@@ -223,9 +223,5 @@ namespace HeuristicLab.Visualization {
         }
       }
     }
-
-    public override string ToString() {
-      return RowSettings.Label;
-    }
   }
 }

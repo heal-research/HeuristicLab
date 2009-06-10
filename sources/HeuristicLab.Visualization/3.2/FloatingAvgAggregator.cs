@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class FloatingAvgAggregator : DataRowBase {
+  public class FloatingAvgAggregator : DataRowBase, IAggregator {
 
     private readonly List<double> dataRow = new List<double>();
     readonly List<IDataRow> dataRowWatches = new List<IDataRow>();

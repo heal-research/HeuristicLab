@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class MinAggregator : DataRowBase {
+  public class MinAggregator : DataRowBase, IAggregator {
     #region IAggregator Members
 
     public void AddWatch(IDataRow dataRow) {
@@ -22,6 +22,10 @@ namespace HeuristicLab.Visualization {
 
 
     #endregion
+
+    public MinAggregator() {
+      this.RowSettings.LineType=DataRowType.SingleValue;
+    }
 
     readonly List<IDataRow> dataRowWatches = new List<IDataRow>();
     double curMinValue;

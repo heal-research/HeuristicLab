@@ -16,8 +16,13 @@ namespace HeuristicLab.Visualization {
       }
     }
 
+    public string Label{
+      get { return rowSettings.Label; }
+    }
+
     protected DataRowBase() {
       rowSettings = new DataRowSettings();
+      rowSettings.LineType = DataRowType.Normal; //default value for most lines and aggregators
       rowSettings.DataVisualSettingChanged += value_DataVisualSettingChanged;
     }
 

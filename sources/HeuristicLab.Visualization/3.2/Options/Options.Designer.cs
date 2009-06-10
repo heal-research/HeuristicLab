@@ -25,11 +25,13 @@
     private void InitializeComponent() {
       this.Optionstabs = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.btnAddLine = new System.Windows.Forms.Button();
       this.label2 = new System.Windows.Forms.Label();
       this.LinestyleCB = new System.Windows.Forms.ComboBox();
       this.label1 = new System.Windows.Forms.Label();
       this.LineSelectCB = new System.Windows.Forms.ComboBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
+      this.selectedLineColorSelection = new HeuristicLab.Visualization.Options.ColorSelection();
       this.MarkercheckBox = new System.Windows.Forms.CheckBox();
       this.label4 = new System.Windows.Forms.Label();
       this.LineThicknessCB = new System.Windows.Forms.ComboBox();
@@ -43,6 +45,9 @@
       this.tbxTitle = new System.Windows.Forms.TextBox();
       this.btnChangeTitleFont = new System.Windows.Forms.Button();
       this.tpXAxis = new System.Windows.Forms.TabPage();
+      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.label6 = new System.Windows.Forms.Label();
+      this.xAxisGridColorSelection = new HeuristicLab.Visualization.Options.ColorSelection();
       this.chkShowXAxisGrid = new System.Windows.Forms.CheckBox();
       this.btnChangeXAxisFont = new System.Windows.Forms.Button();
       this.tpYAxes = new System.Windows.Forms.TabPage();
@@ -51,20 +56,16 @@
       this.gbxShowYAxis = new System.Windows.Forms.GroupBox();
       this.flpShowYAxis = new System.Windows.Forms.FlowLayoutPanel();
       this.fdFont = new System.Windows.Forms.FontDialog();
-      this.label6 = new System.Windows.Forms.Label();
-      this.groupBox2 = new System.Windows.Forms.GroupBox();
-      this.selectedLineColorSelection = new HeuristicLab.Visualization.Options.ColorSelection();
-      this.xAxisGridColorSelection = new HeuristicLab.Visualization.Options.ColorSelection();
       this.Optionstabs.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tpTitle.SuspendLayout();
       this.tpXAxis.SuspendLayout();
+      this.groupBox2.SuspendLayout();
       this.tpYAxes.SuspendLayout();
       this.gbxYAxisClipChangeable.SuspendLayout();
       this.gbxShowYAxis.SuspendLayout();
-      this.groupBox2.SuspendLayout();
       this.SuspendLayout();
       // 
       // Optionstabs
@@ -83,6 +84,7 @@
       // 
       // tabPage1
       // 
+      this.tabPage1.Controls.Add(this.btnAddLine);
       this.tabPage1.Controls.Add(this.label2);
       this.tabPage1.Controls.Add(this.LinestyleCB);
       this.tabPage1.Controls.Add(this.label1);
@@ -95,6 +97,16 @@
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Linestyle";
       this.tabPage1.UseVisualStyleBackColor = true;
+      // 
+      // btnAddLine
+      // 
+      this.btnAddLine.Location = new System.Drawing.Point(192, 177);
+      this.btnAddLine.Name = "btnAddLine";
+      this.btnAddLine.Size = new System.Drawing.Size(75, 23);
+      this.btnAddLine.TabIndex = 10;
+      this.btnAddLine.Text = "Add Line";
+      this.btnAddLine.UseVisualStyleBackColor = true;
+      this.btnAddLine.Click += new System.EventHandler(this.btnAddLine_Click);
       // 
       // label2
       // 
@@ -143,15 +155,24 @@
       this.groupBox1.Controls.Add(this.label3);
       this.groupBox1.Location = new System.Drawing.Point(4, 54);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(274, 129);
+      this.groupBox1.Size = new System.Drawing.Size(274, 120);
       this.groupBox1.TabIndex = 9;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Details";
       // 
+      // selectedLineColorSelection
+      // 
+      this.selectedLineColorSelection.Color = System.Drawing.SystemColors.Control;
+      this.selectedLineColorSelection.Location = new System.Drawing.Point(142, 73);
+      this.selectedLineColorSelection.Name = "selectedLineColorSelection";
+      this.selectedLineColorSelection.Size = new System.Drawing.Size(121, 25);
+      this.selectedLineColorSelection.TabIndex = 10;
+      this.selectedLineColorSelection.ColorChanged += new HeuristicLab.Visualization.Options.ColorChangedHandler(this.selectedLineColorSelection_ColorChanged);
+      // 
       // MarkercheckBox
       // 
       this.MarkercheckBox.AutoSize = true;
-      this.MarkercheckBox.Location = new System.Drawing.Point(142, 106);
+      this.MarkercheckBox.Location = new System.Drawing.Point(204, 103);
       this.MarkercheckBox.Name = "MarkercheckBox";
       this.MarkercheckBox.Size = new System.Drawing.Size(59, 17);
       this.MarkercheckBox.TabIndex = 9;
@@ -279,6 +300,36 @@
       this.tpXAxis.Text = "X-Axis";
       this.tpXAxis.UseVisualStyleBackColor = true;
       // 
+      // groupBox2
+      // 
+      this.groupBox2.Controls.Add(this.label6);
+      this.groupBox2.Controls.Add(this.xAxisGridColorSelection);
+      this.groupBox2.Controls.Add(this.chkShowXAxisGrid);
+      this.groupBox2.Location = new System.Drawing.Point(8, 42);
+      this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Size = new System.Drawing.Size(205, 94);
+      this.groupBox2.TabIndex = 6;
+      this.groupBox2.TabStop = false;
+      this.groupBox2.Text = "Grid";
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(20, 55);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(31, 13);
+      this.label6.TabIndex = 5;
+      this.label6.Text = "Color";
+      // 
+      // xAxisGridColorSelection
+      // 
+      this.xAxisGridColorSelection.Color = System.Drawing.SystemColors.Control;
+      this.xAxisGridColorSelection.Location = new System.Drawing.Point(54, 49);
+      this.xAxisGridColorSelection.Name = "xAxisGridColorSelection";
+      this.xAxisGridColorSelection.Size = new System.Drawing.Size(126, 25);
+      this.xAxisGridColorSelection.TabIndex = 4;
+      this.xAxisGridColorSelection.ColorChanged += new HeuristicLab.Visualization.Options.ColorChangedHandler(this.xAxisGridColorSelection_ColorChanged);
+      // 
       // chkShowXAxisGrid
       // 
       this.chkShowXAxisGrid.AutoSize = true;
@@ -355,45 +406,6 @@
       this.flpShowYAxis.Size = new System.Drawing.Size(275, 57);
       this.flpShowYAxis.TabIndex = 0;
       // 
-      // label6
-      // 
-      this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(20, 55);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(31, 13);
-      this.label6.TabIndex = 5;
-      this.label6.Text = "Color";
-      // 
-      // groupBox2
-      // 
-      this.groupBox2.Controls.Add(this.label6);
-      this.groupBox2.Controls.Add(this.xAxisGridColorSelection);
-      this.groupBox2.Controls.Add(this.chkShowXAxisGrid);
-      this.groupBox2.Location = new System.Drawing.Point(8, 42);
-      this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(205, 94);
-      this.groupBox2.TabIndex = 6;
-      this.groupBox2.TabStop = false;
-      this.groupBox2.Text = "Grid";
-      // 
-      // selectedLineColorSelection
-      // 
-      this.selectedLineColorSelection.Color = System.Drawing.SystemColors.Control;
-      this.selectedLineColorSelection.Location = new System.Drawing.Point(142, 73);
-      this.selectedLineColorSelection.Name = "selectedLineColorSelection";
-      this.selectedLineColorSelection.Size = new System.Drawing.Size(121, 25);
-      this.selectedLineColorSelection.TabIndex = 10;
-      this.selectedLineColorSelection.ColorChanged += new HeuristicLab.Visualization.Options.ColorChangedHandler(this.selectedLineColorSelection_ColorChanged);
-      // 
-      // xAxisGridColorSelection
-      // 
-      this.xAxisGridColorSelection.Color = System.Drawing.SystemColors.Control;
-      this.xAxisGridColorSelection.Location = new System.Drawing.Point(54, 49);
-      this.xAxisGridColorSelection.Name = "xAxisGridColorSelection";
-      this.xAxisGridColorSelection.Size = new System.Drawing.Size(126, 25);
-      this.xAxisGridColorSelection.TabIndex = 4;
-      this.xAxisGridColorSelection.ColorChanged += new HeuristicLab.Visualization.Options.ColorChangedHandler(this.xAxisGridColorSelection_ColorChanged);
-      // 
       // Options
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -412,14 +424,14 @@
       this.tpTitle.ResumeLayout(false);
       this.tpTitle.PerformLayout();
       this.tpXAxis.ResumeLayout(false);
+      this.groupBox2.ResumeLayout(false);
+      this.groupBox2.PerformLayout();
       this.tpYAxes.ResumeLayout(false);
       this.tpYAxes.PerformLayout();
       this.gbxYAxisClipChangeable.ResumeLayout(false);
       this.gbxYAxisClipChangeable.PerformLayout();
       this.gbxShowYAxis.ResumeLayout(false);
       this.gbxShowYAxis.PerformLayout();
-      this.groupBox2.ResumeLayout(false);
-      this.groupBox2.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -458,5 +470,7 @@
     private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.Label label6;
     private ColorSelection xAxisGridColorSelection;
+    private System.Windows.Forms.Button btnAddLine;
+    private AddLineDialog addLineDialog;
   }
 }

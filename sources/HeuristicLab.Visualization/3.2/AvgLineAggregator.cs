@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class AvgLineAggregator : DataRowBase {
+  public class AvgLineAggregator : DataRowBase, IAggregator {
 
     private readonly List<double> dataRow = new List<double>();
     readonly List<IDataRow> dataRowWatches = new List<IDataRow>();

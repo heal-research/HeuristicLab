@@ -22,12 +22,14 @@ namespace HeuristicLab.Visualization {
 
     void RemoveValue(int index);
     void RemoveValues(int index, int count);
-
+    
     int Count { get; }
     double this[int index] { get; set; }
 
     double MinValue { get; }
     double MaxValue { get; }
+
+    string Label{ get;}
 
     event ValuesChangedHandler ValuesChanged;
     event ValueChangedHandler ValueChanged;

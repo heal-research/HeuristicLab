@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class MaxAggregator : DataRowBase {
+  public class MaxAggregator : DataRowBase, IAggregator {
     #region IAggregator Members
 
     public void AddWatch(IDataRow dataRow) {
@@ -22,6 +22,11 @@ namespace HeuristicLab.Visualization {
 
 
     #endregion
+
+    public MaxAggregator() {
+      this.RowSettings.LineType = DataRowType.SingleValue;
+    }
+
 
     List<IDataRow> dataRowWatches = new List<IDataRow>();
     double curMaxValue;

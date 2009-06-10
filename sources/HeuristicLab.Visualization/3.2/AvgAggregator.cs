@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Visualization {
-  public class AvgAggregator : DataRowBase {
+  public interface IAggregator {
+    void AddWatch(IDataRow dataRow);
+    void RemoveWatch(IDataRow dataRow);
+  }
+
+  public class AvgAggregator : DataRowBase, IAggregator {
     #region IAggregator Members
 
     public void AddWatch(IDataRow dataRow) {
@@ -57,6 +62,7 @@ namespace HeuristicLab.Visualization {
     public AvgAggregator() {
       curAvgValue = 0;
       count = 0;
+      this.RowSettings.LineType = DataRowType.SingleValue;
     }
 
     private void refreshValue() {
