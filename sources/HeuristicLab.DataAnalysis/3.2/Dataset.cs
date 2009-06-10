@@ -38,6 +38,13 @@ namespace HeuristicLab.DataAnalysis {
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
     private double[] scalingFactor;
     private double[] scalingOffset;
+    private bool cachedValuesInvalidated = true;
+
+    private bool fireChangeEvents = true;
+    public bool FireChangeEvents {
+      get { return fireChangeEvents; }
+      set { fireChangeEvents = value; }
+    }
 
     public string Name {
       get { return name; }
@@ -73,8 +80,8 @@ namespace HeuristicLab.DataAnalysis {
     public void SetValue(int i, int j, double v) {
       if (v != samples[columns * i + j]) {
         samples[columns * i + j] = v;
-        CreateDictionaries();
-        FireChanged();
+        cachedValuesInvalidated = true;
+        if (fireChangeEvents) FireChanged();
       }
     }
 
@@ -88,8 +95,8 @@ namespace HeuristicLab.DataAnalysis {
           scalingOffset[i] = 0.0;
         }
         samples = value;
-        CreateDictionaries();
-        FireChanged();
+        cachedValuesInvalidated = true;
+        if (fireChangeEvents) FireChanged();
       }
     }
 
@@ -103,16 +110,8 @@ namespace HeuristicLab.DataAnalysis {
       Samples = new double[1];
       scalingOffset = new double[] { 0.0 };
       scalingFactor = new double[] { 1.0 };
-    }
-
-    private void CreateDictionaries() {
-      // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
-      cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
-      cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
-      for (int i = 0; i < columns; i++) {
-        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
-        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
-      }
+      cachedValuesInvalidated = true;
+      fireChangeEvents = true;
     }
 
     public string GetVariableName(int variableIndex) {
@@ -205,7 +204,6 @@ namespace HeuristicLab.DataAnalysis {
           }
         }
       }
-      CreateDictionaries();
     }
 
     public override string ToString() {
@@ -269,6 +267,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetMean(int column, int from, int to) {
+      if (cachedValuesInvalidated) CreateDictionaries();
       if (!cachedMeans[column].ContainsKey(from) || !cachedMeans[column][from].ContainsKey(to)) {
         double[] values = new double[to - from];
         for (int sample = from; sample < to; sample++) {
@@ -288,6 +287,7 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetRange(int column, int from, int to) {
+      if (cachedValuesInvalidated) CreateDictionaries();
       if (!cachedRanges[column].ContainsKey(from) || !cachedRanges[column][from].ContainsKey(to)) {
         double[] values = new double[to - from];
         for (int sample = from; sample < to; sample++) {
@@ -328,8 +328,8 @@ namespace HeuristicLab.DataAnalysis {
         if (range == 0) ScaleVariable(column, 1.0, -min);
         else ScaleVariable(column, 1.0 / range, -min);
       }
-      CreateDictionaries();
-      FireChanged();
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
     }
 
     internal void ScaleVariable(int column, double factor, double offset) {
@@ -339,8 +339,8 @@ namespace HeuristicLab.DataAnalysis {
         double origValue = samples[i * columns + column];
         samples[i * columns + column] = (origValue + offset) * factor;
       }
-      CreateDictionaries();
-      FireChanged();
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
     }
 
     internal void UnscaleVariable(int column) {
@@ -351,6 +351,18 @@ namespace HeuristicLab.DataAnalysis {
         }
         scalingFactor[column] = 1.0;
         scalingOffset[column] = 0.0;
+      }
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
+    }
+
+    private void CreateDictionaries() {
+      // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
+      cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
+      cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
+      for (int i = 0; i < columns; i++) {
+        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
+        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
       }
     }
   }

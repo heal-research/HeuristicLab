@@ -71,6 +71,7 @@ namespace HeuristicLab.GP.StructureIdentification {
           backupValues[i - start] = dataset.GetValue(i, targetVariable);
         }
       }
+      dataset.FireChangeEvents = false;
 
       Evaluate(scope, evaluator, dataset, targetVariable, start, end, useEstimatedValues);
 
@@ -80,6 +81,8 @@ namespace HeuristicLab.GP.StructureIdentification {
           dataset.SetValue(i, targetVariable, backupValues[i - start]);
         }
       }
+      dataset.FireChangeEvents = true;
+      dataset.FireChanged();
 
       // update the value of total evaluated nodes
       scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data = totalEvaluatedNodes + treeSize * (end - start);

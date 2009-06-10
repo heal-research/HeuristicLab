@@ -29,19 +29,19 @@ using HeuristicLab.DataAnalysis;
 using System.Linq;
 
 namespace HeuristicLab.Modeling {
-  public class VariableImpactCalculator : OperatorBase {
+  public class VariableQualityImpactCalculator : OperatorBase {
     public override string Description {
       get { return @"Calculates the impact of all allowed input variables on the quality of the model using evaluator supplied as suboperator."; }
     }
 
-    public VariableImpactCalculator()
+    public VariableQualityImpactCalculator()
       : base() {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("AllowedFeatures", "Indexes of allowed input variables", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "TrainingSamplesEnd", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("VariableImpacts", "Variable impacts", typeof(ItemList), VariableKind.New));
+      AddVariableInfo(new VariableInfo("VariableQualityImpacts", "Effect on quality of model (percentage of original quality) if variable is replaced by its mean.", typeof(ItemList), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -52,10 +52,9 @@ namespace HeuristicLab.Modeling {
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
 
-      if (SubOperators.Count < 1) throw new InvalidOperationException("VariableImpactCalculator needs a suboperator to evaluate the model");
+      if (SubOperators.Count < 1) throw new InvalidOperationException("VariableQualityImpactCalculator needs a suboperator to evaluate the model");
       IOperator evaluationOperator = this.SubOperators[0];
-
-      ItemList variableImpacts = new ItemList();
+      ItemList variableQualityImpacts = new ItemList();
 
       // calculateReferenceQuality
       double referenceQuality = CalculateQuality(scope, dataset, evaluationOperator);
@@ -64,15 +63,14 @@ namespace HeuristicLab.Modeling {
         int currentVariable = allowedFeatures[i].Data;
         var oldValues = ReplaceVariableValues(dirtyDataset, currentVariable , CalculateNewValues(dirtyDataset, currentVariable, start, end), start, end);
         double newQuality = CalculateQuality(scope, dirtyDataset, evaluationOperator);
-        double ratio = referenceQuality / newQuality;
-        double impact = ratio < 1.0 ? 1.0 - ratio : 1.0 - 1.0 / ratio;
+        double ratio = newQuality / referenceQuality;
         ItemList row = new ItemList();
         row.Add(new StringData(dataset.GetVariableName(currentVariable)));
-        row.Add(new DoubleData(impact));
-        variableImpacts.Add(row);
+        row.Add(new DoubleData(ratio));
+        variableQualityImpacts.Add(row);
         ReplaceVariableValues(dirtyDataset, currentVariable, oldValues, start, end);
       }
-      scope.AddVariable(new Variable(scope.TranslateName("VariableImpacts"), variableImpacts));
+      scope.AddVariable(new Variable(scope.TranslateName("VariableQualityImpacts"), variableQualityImpacts));
       return null;
     }
 
@@ -92,9 +90,12 @@ namespace HeuristicLab.Modeling {
       if (newValues.Count() != end - start) throw new ArgumentException("The length of the new values sequence doesn't match the required length (number of replaced values)");
 
       int index = start;
+      ds.FireChangeEvents = false;
       foreach(double v in newValues) {
         ds.SetValue(index++, variableIndex, v);
       }
+      ds.FireChangeEvents = true;
+      ds.FireChanged();
       return oldValues;
     }
 

@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationProblemInjector.cs" />
-    <Compile Include="VariableImpactCalculator.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="IModel.cs" />
     <Compile Include="SimpleEvaluatorBase.cs" />
@@ -105,6 +104,7 @@
     <Compile Include="SimpleR2Evaluator.cs" />
     <Compile Include="TimeSeriesProblemInjector.cs" />
     <Compile Include="SimpleVarianceAccountedForEvaluator.cs" />
+    <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
