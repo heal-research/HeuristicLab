@@ -30,11 +30,17 @@ using System.Linq;
 
 namespace HeuristicLab.Modeling {
   public abstract class VariableImpactCalculatorBase<T> : OperatorBase {
+    private bool abortRequested = false;
+
     public override string Description {
       get { return @"Calculates the impact of all allowed input variables on the model."; }
     }
 
     public abstract string OutputVariableName { get; }
+
+    public override void Abort() {
+      abortRequested = true;
+    }
 
     public VariableImpactCalculatorBase()
       : base() {
@@ -54,33 +60,37 @@ namespace HeuristicLab.Modeling {
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
 
-      T referenceValue = CalculateValue(scope, dataset, targetVariable, start, end);
+      T referenceValue = CalculateValue(scope, dataset, targetVariable, allowedFeatures, start, end);
       double[] impacts = new double[allowedFeatures.Count];
 
-      for (int i = 0; i < allowedFeatures.Count; i++) {
+      for (int i = 0; i < allowedFeatures.Count && !abortRequested; i++) {
         int currentVariable = allowedFeatures[i].Data;
-        var oldValues = ReplaceVariableValues(dirtyDataset, currentVariable , CalculateNewValues(dirtyDataset, currentVariable, start, end), start, end);
-        T newValue = CalculateValue(scope, dirtyDataset, targetVariable, start, end);
+        var oldValues = ReplaceVariableValues(dirtyDataset, currentVariable, CalculateNewValues(dirtyDataset, currentVariable, start, end), start, end);
+        T newValue = CalculateValue(scope, dirtyDataset, targetVariable, allowedFeatures, start, end);
         impacts[i] = CalculateImpact(referenceValue, newValue);
         ReplaceVariableValues(dirtyDataset, currentVariable, oldValues, start, end);
       }
 
-      impacts = PostProcessImpacts(impacts);
+      if (!abortRequested) {
+        impacts = PostProcessImpacts(impacts);
 
-      ItemList variableImpacts = new ItemList();
-      for (int i = 0; i < allowedFeatures.Count; i++) {
-        int currentVariable = allowedFeatures[i].Data;
-        ItemList row = new ItemList();
-        row.Add(new StringData(dataset.GetVariableName(currentVariable)));
-        row.Add(new DoubleData(impacts[i]));
-        variableImpacts.Add(row);
+        ItemList variableImpacts = new ItemList();
+        for (int i = 0; i < allowedFeatures.Count; i++) {
+          int currentVariable = allowedFeatures[i].Data;
+          ItemList row = new ItemList();
+          row.Add(new StringData(dataset.GetVariableName(currentVariable)));
+          row.Add(new DoubleData(impacts[i]));
+          variableImpacts.Add(row);
+        }
+
+        scope.AddVariable(new Variable(scope.TranslateName(OutputVariableName), variableImpacts));
+        return null;
+      } else {
+        return new AtomicOperation(this, scope);
       }
-
-      scope.AddVariable(new Variable(scope.TranslateName(OutputVariableName), variableImpacts));
-      return null;
     }
 
-    protected abstract T CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end);
+    protected abstract T CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);
 
     protected abstract double CalculateImpact(T referenceValue, T newValue);
 
@@ -95,7 +105,7 @@ namespace HeuristicLab.Modeling {
 
       int index = start;
       ds.FireChangeEvents = false;
-      foreach(double v in newValues) {
+      foreach (double v in newValues) {
         ds.SetValue(index++, variableIndex, v);
       }
       ds.FireChangeEvents = true;

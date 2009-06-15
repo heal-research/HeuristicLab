@@ -87,6 +87,8 @@
     <Compile Include="SupportVectorCreator.cs" />
     <Compile Include="SupportVectorEvaluator.cs" />
     <Compile Include="SVMHelper.cs" />
+    <Compile Include="VariableEvaluationImpactCalculator.cs" />
+    <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -124,6 +126,14 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.2\HeuristicLab.Random-3.2.csproj">
+      <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
+      <Name>HeuristicLab.Random-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
+      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
+      <Name>HeuristicLab.Selection-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.2\HeuristicLab.SequentialEngine-3.2.csproj">
       <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>

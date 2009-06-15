@@ -52,8 +52,8 @@ namespace HeuristicLab.Modeling {
       return SimpleMSEEvaluator.Calculate(CombineOutputs(referenceValue, newValue));
     }
 
-    protected override double[] CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
-      return GetOutputs(scope, dataset, targetVariable, start, end);
+    protected override double[] CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
+      return GetOutputs(scope, dataset, targetVariable, allowedFeatures, start, end);
     }
 
     protected override double[] PostProcessImpacts(double[] impacts) {
@@ -65,6 +65,6 @@ namespace HeuristicLab.Modeling {
       return impacts;
     }
 
-    protected abstract double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, int start, int end);
+    protected abstract double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);
   }
 }

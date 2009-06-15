@@ -28,30 +28,26 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using System.Linq;
 
-namespace HeuristicLab.GP.StructureIdentification {
+namespace HeuristicLab.SupportVectorMachines {
   public class VariableQualityImpactCalculator : HeuristicLab.Modeling.VariableQualityImpactCalculator {
 
     public VariableQualityImpactCalculator()
       : base() {
-      AddVariableInfo(new VariableInfo("TreeEvaluator", "The evaluator that should be used to evaluate the expression tree", typeof(ITreeEvaluator), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SVMModel", "The model that should be evaluated", typeof(SVMModel), VariableKind.In));
     }
 
     protected override double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
-      ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
-      IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-      evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, punishmentFactor, tree);
+      SVMModel model = GetVariableValue<SVMModel>("SVMModel", scope, true);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
+      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, model.RangeTransform);
 
-      double[,] result = new double[end - start,2];
-      for (int i = start; i < end; i++) {
-        result[i - start, 0] = dataset.GetValue(i, targetVariable);
-        result[i - start,1] = evaluator.Evaluate(i);
+      double[,] values = new double[end - start, 2];
+      for (int i = 0; i < end - start; i++) {
+        values[i, 0] = SVM.Prediction.Predict(model.Model, scaledProblem.X[i]);
+        values[i, 1] = dataset.GetValue(start + i,targetVariable);
       }
 
-      return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(result);
+      return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(values);
     }
   }
 }

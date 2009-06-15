@@ -28,24 +28,25 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using System.Linq;
 
-namespace HeuristicLab.Modeling {
-  public abstract class VariableQualityImpactCalculator : VariableImpactCalculatorBase<double> {
-    public override string Description {
-      get { return @"Calculates the impact of all allowed input variables on the quality of the model using evaluator supplied as suboperator."; }
+namespace HeuristicLab.SupportVectorMachines {
+  public class VariableEvaluationImpactCalculator : HeuristicLab.Modeling.VariableEvaluationImpactCalculator {
+
+    public VariableEvaluationImpactCalculator()
+      : base() {
+      AddVariableInfo(new VariableInfo("SVMModel", "The model that should be evaluated", typeof(SVMModel), VariableKind.In));
     }
 
-    public override string OutputVariableName {
-      get { return "VariableQualityImpacts"; }
-    }
 
-    protected override double CalculateImpact(double referenceValue, double newValue) {
-      return newValue / referenceValue;
-    }
+    protected override double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
+      SVMModel model = GetVariableValue<SVMModel>("SVMModel", scope, true);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
+      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, model.RangeTransform);
 
-    protected override double CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
-      return CalculateQuality(scope, dataset, targetVariable, allowedFeatures, start, end);
+      double[] values = new double[end - start];
+      for (int i = 0; i < end - start; i++) {
+        values[i] = SVM.Prediction.Predict(model.Model, scaledProblem.X[i]);
+      }
+      return values;
     }
-
-    protected abstract double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);
   }
 }

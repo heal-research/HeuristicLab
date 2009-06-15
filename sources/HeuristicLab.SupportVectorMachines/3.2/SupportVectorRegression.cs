@@ -33,6 +33,8 @@ using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Logging;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Modeling;
+using HeuristicLab.Random;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SupportVectorRegression : ItemBase, IEditable, IAlgorithm {
@@ -117,22 +119,77 @@ namespace HeuristicLab.SupportVectorMachines {
       SequentialProcessor main = new SequentialProcessor();
       main.AddSubOperator(CreateGlobalInjector());
       main.AddSubOperator(new ProblemInjector());
+      main.AddSubOperator(new RandomInjector());
 
-      SequentialProcessor nuLoop = new SequentialProcessor();
-      nuLoop.Name = "NuLoop";
-      SequentialProcessor costLoop = new SequentialProcessor();
-      costLoop.Name = "CostLoop";
-      main.AddSubOperator(nuLoop);
-      nuLoop.AddSubOperator(CreateResetOperator("CostIndex"));
-      nuLoop.AddSubOperator(costLoop);
       SubScopesCreater modelScopeCreator = new SubScopesCreater();
       modelScopeCreator.GetVariableInfo("SubScopes").Local = true;
       modelScopeCreator.AddVariable(new HeuristicLab.Core.Variable("SubScopes", new IntData(1)));
+      main.AddSubOperator(modelScopeCreator);
+
+      SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
+      IOperator modelProcessor = CreateModelProcessor();
+      seqSubScopesProc.AddSubOperator(modelProcessor);
+      main.AddSubOperator(seqSubScopesProc);
+
+      SequentialProcessor nuLoop = new SequentialProcessor();
+      nuLoop.Name = "NuLoop";
+
+      IOperator costCounter = CreateCounter("Cost");
+      IOperator costComparator = CreateComparator("Cost");
+      nuLoop.AddSubOperator(costCounter);
+      nuLoop.AddSubOperator(costComparator);
+      ConditionalBranch costBranch = new ConditionalBranch();
+      costBranch.Name = "IfValidCostIndex";
+      costBranch.GetVariableInfo("Condition").ActualName = "RepeatCostLoop";
+
+      // build cost loop
+      SequentialProcessor costLoop = new SequentialProcessor();
+      costLoop.Name = "CostLoop";
       costLoop.AddSubOperator(modelScopeCreator);
       SequentialSubScopesProcessor subScopesProcessor = new SequentialSubScopesProcessor();
       costLoop.AddSubOperator(subScopesProcessor);
-      SequentialProcessor modelProcessor = new SequentialProcessor();
+      subScopesProcessor.AddSubOperator(new EmptyOperator());
       subScopesProcessor.AddSubOperator(modelProcessor);
+
+      Sorter sorter = new Sorter();
+      sorter.GetVariableInfo("Value").ActualName = "ValidationQuality";
+      sorter.GetVariableInfo("Descending").Local = true;
+      sorter.AddVariable(new Variable("Descending", new BoolData(false)));
+      costLoop.AddSubOperator(sorter);
+
+      LeftSelector selector = new LeftSelector();
+      selector.GetVariableInfo("Selected").Local = true;
+      selector.AddVariable(new Variable("Selected", new IntData(1)));
+      costLoop.AddSubOperator(selector);
+
+      RightReducer reducer = new RightReducer();
+      costLoop.AddSubOperator(reducer);
+
+      costLoop.AddSubOperator(costCounter);
+      costLoop.AddSubOperator(costComparator);
+
+      costBranch.AddSubOperator(costLoop);
+      costLoop.AddSubOperator(costBranch);
+
+      nuLoop.AddSubOperator(costBranch);
+      nuLoop.AddSubOperator(CreateResetOperator("CostIndex"));
+
+      nuLoop.AddSubOperator(CreateCounter("Nu"));
+      nuLoop.AddSubOperator(CreateComparator("Nu"));
+
+      ConditionalBranch nuBranch = new ConditionalBranch();
+      nuBranch.Name = "NuLoop";
+      nuBranch.GetVariableInfo("Condition").ActualName = "RepeatNuLoop";
+      nuBranch.AddSubOperator(nuLoop);
+      nuLoop.AddSubOperator(nuBranch);
+
+      main.AddSubOperator(nuLoop);
+      main.AddSubOperator(CreateModelAnalyser());
+      return main;
+    }
+
+    private IOperator CreateModelProcessor() {
+      SequentialProcessor modelProcessor = new SequentialProcessor();
       modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Nu"));
       modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Cost"));
 
@@ -159,32 +216,7 @@ namespace HeuristicLab.SupportVectorMachines {
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Cost"));
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("ValidationQuality"));
       modelProcessor.AddSubOperator(collector);
-
-      BestSolutionStorer solStorer = new BestSolutionStorer();
-      solStorer.GetVariableInfo("Quality").ActualName = "ValidationQuality";
-      solStorer.GetVariableInfo("Maximization").Local = true;
-      solStorer.GetVariableInfo("BestSolution").ActualName = "BestValidationSolution";
-      solStorer.AddVariable(new HeuristicLab.Core.Variable("Maximization", new BoolData(false)));
-
-      costLoop.AddSubOperator(solStorer);
-      SubScopesRemover remover = new SubScopesRemover();
-      costLoop.AddSubOperator(remover);
-      costLoop.AddSubOperator(CreateCounter("Cost"));
-      costLoop.AddSubOperator(CreateComparator("Cost"));
-      ConditionalBranch costBranch = new ConditionalBranch();
-      costBranch.Name = "CostLoop";
-      costBranch.GetVariableInfo("Condition").ActualName = "RepeatCostLoop";
-      costBranch.AddSubOperator(costLoop);
-      costLoop.AddSubOperator(costBranch);
-
-      nuLoop.AddSubOperator(CreateCounter("Nu"));
-      nuLoop.AddSubOperator(CreateComparator("Nu"));
-      ConditionalBranch nuBranch = new ConditionalBranch();
-      nuBranch.Name = "NuLoop";
-      nuBranch.GetVariableInfo("Condition").ActualName = "RepeatNuLoop";
-      nuBranch.AddSubOperator(nuLoop);
-      nuLoop.AddSubOperator(nuBranch);
-      return main;
+      return modelProcessor;
     }
 
     private IOperator CreateComparator(string p) {
@@ -270,7 +302,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       progOp.Name = "Reset" + paramName;
       progOp.RemoveVariableInfo("Result");
       progOp.AddVariableInfo(new VariableInfo("Value", "Value", typeof(IntData), VariableKind.In | VariableKind.Out));
-      progOp.Code = "Value.Data = 0;";
+      progOp.Code = "Value.Data = -1;";
       progOp.GetVariableInfo("Value").ActualName = paramName;
       return progOp;
     }
@@ -278,10 +310,10 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     private IOperator CreateGlobalInjector() {
       VariableInjector injector = new VariableInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("CostIndex", new IntData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("CostList", new DoubleArrayData(new double[] { 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0 })));
+      injector.AddVariable(new HeuristicLab.Core.Variable("CostList", new DoubleArrayData(new double[] { 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0 })));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxCostIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("NuIndex", new IntData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.01, 0.05, 0.1, 0.5, 0.9 })));
+      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.01, 0.05, 0.1, 0.5 })));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNuIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("Log", new ItemList()));
       injector.AddVariable(new HeuristicLab.Core.Variable("Gamma", new DoubleData(1)));
@@ -290,6 +322,25 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
       return injector;
     }
+
+    private IOperator CreateModelAnalyser() {
+      CombinedOperator modelAnalyser = new CombinedOperator();
+      modelAnalyser.Name = "Model Analyzer";
+      SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
+      SequentialProcessor seqProc = new SequentialProcessor();
+      VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
+      evalImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
+      VariableQualityImpactCalculator qualImpactCalc = new VariableQualityImpactCalculator();
+      qualImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
+
+      seqProc.AddSubOperator(evalImpactCalc);
+      seqProc.AddSubOperator(qualImpactCalc);
+      seqSubScopeProc.AddSubOperator(seqProc);
+      modelAnalyser.OperatorGraph.InitialOperator = seqSubScopeProc;
+      modelAnalyser.OperatorGraph.AddOperator(seqSubScopeProc);
+      return modelAnalyser;
+    }
+
 
     protected internal virtual Model CreateSVMModel(IScope bestModelScope) {
       Model model = new Model();
@@ -308,11 +359,25 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
-      
+
       model.Data = bestModelScope.GetVariableValue<SVMModel>("BestValidationModel", false);
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+
+      ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
+      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
+      foreach (ItemList row in evaluationImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[0]).Data;
+        model.SetVariableEvaluationImpact(variableName, impact);
+      }
+      foreach (ItemList row in qualityImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[0]).Data;
+        model.SetVariableQualityImpact(variableName, impact);
+      }
+
       return model;
     }
 
@@ -336,6 +401,5 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     #endregion
-
   }
 }
