@@ -91,6 +91,18 @@ namespace HeuristicLab.CEDMA.Server {
       StoreModelAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, model.ValidationMeanAbsolutePercentageOfRangeError);
       StoreModelAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, model.TestMeanAbsolutePercentageOfRangeError);
 
+      for (int i = 0; i < finishedAlgorithm.Dataset.Columns; i++) {
+        try {
+          double qualImpact = model.GetVariableQualityImpact(finishedAlgorithm.Dataset.GetVariableName(i));
+          Entity impactEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
+          store.Add(new Statement(impactEntity, Ontology.PredicateInstanceOf, Ontology.TypeVariableQualityImpact));
+          store.Add(new Statement(modelEntity, impactEntity, new Literal(qualImpact)));
+        }
+        catch (ArgumentException) {
+          // ignore
+        }
+      }
+
       byte[] serializedModel = PersistenceManager.SaveToGZip(model.Data);
       store.Add(new Statement(modelEntity, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(serializedModel))));
     }

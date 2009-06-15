@@ -121,12 +121,12 @@ namespace HeuristicLab.Modeling {
 
     public double GetVariableQualityImpact(string variableName) {
       if (variableQualityImpacts.ContainsKey(variableName)) return variableQualityImpacts[variableName];
-      else return 1.0;
+      else throw new ArgumentException("Impact of variable "+variableName+" is not available.");
     }
 
     public double GetVariableEvaluationImpact(string variableName) {
       if (variableEvaluationImpacts.ContainsKey(variableName)) return variableEvaluationImpacts[variableName];
-      else return 0.0;
+      else throw new ArgumentException("Impact of variable " + variableName + " is not available.");
     }
 
     private IItem data;

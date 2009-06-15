@@ -100,6 +100,9 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
     public static Entity TypeModel {
       get { return new Entity(CedmaNameSpace + "Model"); }
     }
+    public static Entity TypeVariableImpact {
+      get { return new Entity(CedmaNameSpace + "VariableQualityImpact"); }
+    }
     #endregion
 
     #region default attributes
