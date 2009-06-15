@@ -72,7 +72,7 @@ namespace HeuristicLab.SupportVectorMachines {
     public IModel Model {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
-        IScope bestModelScope = engine.GlobalScope.GetVariableValue<IScope>("BestValidationSolution", false);
+        IScope bestModelScope = engine.GlobalScope.SubScopes[0];
         return CreateSVMModel(bestModelScope);
       }
     }
