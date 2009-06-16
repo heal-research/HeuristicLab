@@ -32,24 +32,37 @@ using System.ServiceModel.Description;
 
 namespace HeuristicLab.CEDMA.Server {
   public class Server {
+    private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
+    private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
+
     private ServiceHost host;
-    private IStore store;
+    private Store store;
+    private IDispatcher dispatcher;
+    private IExecuter executer;
 
     private string gridServiceUrl;
-
     public string GridServiceUrl {
       get { return gridServiceUrl; }
       set { gridServiceUrl = value; }
     }
 
     private string cedmaServiceUrl;
-
     public string CedmaServiceUrl {
       get { return cedmaServiceUrl; }
       set { cedmaServiceUrl = value; }
     }
 
-    public Server(IStore store) {
+    private int maxActiveJobs;
+    public int MaxActiveJobs {
+      get { return maxActiveJobs; }
+      set {
+        if (value > 0 && value <= 64) {
+          maxActiveJobs = value;
+        }
+      }
+    }
+
+    public Server() {
       IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
       // windows XP returns the external ip on index 0 while windows vista returns the external ip as one of the last entries
       // also if IPv6 protocol is installed we want to find an entry that is IPv4
@@ -60,7 +73,8 @@ namespace HeuristicLab.CEDMA.Server {
             break;
       }
       cedmaServiceUrl = "net.tcp://" + addresses[index] + ":8002/CEDMA";
-      this.store = store;
+      store = new Store(rdfConnectionString);
+      maxActiveJobs = 10;
     }
 
     public void Start() {
@@ -81,6 +95,22 @@ namespace HeuristicLab.CEDMA.Server {
         MessageBox.Show("An exception occurred: " + ex.Message);
         host.Abort();
       }
+    }
+
+    internal string[] GetActiveJobDescriptions() {
+      if (executer != null) return executer.GetJobs();
+      else return new string[] { };
+    }
+
+    internal void Connect(string serverUrl) {
+      dispatcher = new SimpleDispatcher(store);
+      if (serverUrl.Contains("ExecutionEngine")) {
+        executer = new HiveExecuter(dispatcher, store, serverUrl);
+      } else {
+        // default is grid backend
+        executer = new GridExecuter(dispatcher, store, serverUrl);
+      }
+      executer.Start();
     }
   }
 }

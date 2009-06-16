@@ -42,42 +42,29 @@ using HeuristicLab.Core;
 namespace HeuristicLab.CEDMA.Server {
   public partial class ServerForm : Form {
     private Server server;
-    private Store store;
-    private IDispatcher dispatcher;
-    private IExecuter executer;
 
-    private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
-    private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
 
     public ServerForm() {
       InitializeComponent();
-      store = new Store(rdfConnectionString);
-      server = new Server(store);
+      server = new Server();
       server.Start();
       addressTextBox.Text = server.CedmaServiceUrl;
     }
 
     private void refreshTimer_Tick(object sender, EventArgs e) {
-      listBox.DataSource = executer.GetJobs();
+      listBox.DataSource = server.GetActiveJobDescriptions();
     }
 
     private void connectButton_Click(object sender, EventArgs e) {
-      dispatcher = new SimpleDispatcher(store);
-      if (address.Text.Contains("ExecutionEngine")) {
-        executer = new HiveExecuter(dispatcher, store, address.Text);
-      } else { 
-        // default is grid backend
-        executer = new GridExecuter(dispatcher, store, address.Text);
-      }
-      executer.Start();
+      server.Connect(address.Text);
       maxActiveJobsUpDown.Enabled = true;
-      maxActiveJobsUpDown.Value = executer.MaxActiveJobs;
+      maxActiveJobsUpDown.Value = server.MaxActiveJobs;
       connectButton.Enabled = false;
       refreshTimer.Start();
     }
 
     private void maxActiveJobsUpDown_ValueChanged(object sender, EventArgs e) {
-      executer.MaxActiveJobs = Convert.ToInt32(maxActiveJobsUpDown.Value);
+      server.MaxActiveJobs = Convert.ToInt32(maxActiveJobsUpDown.Value);
     }
   }
 }
