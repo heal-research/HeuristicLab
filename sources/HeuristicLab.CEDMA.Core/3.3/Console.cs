@@ -71,7 +71,7 @@ namespace HeuristicLab.CEDMA.Core {
 
     internal void Connect(string serverUri) {
       IStore store = new StoreProxy(serverUri);
-      var variableBindings = store.Query("?Dataset <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 10).ToArray();
+      var variableBindings = store.Query("?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 10).ToArray();
       if (variableBindings.Length > 0) {
         dataSet = new DataSet(store, (Entity)variableBindings[0].Get("Dataset"));
       } else {

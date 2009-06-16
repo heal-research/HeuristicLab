@@ -265,7 +265,7 @@ namespace HeuristicLab.CEDMA.Charting {
       if (button == MouseButtons.Left) {
         ResultsEntry entry = GetResultsEntry(point);
         if (entry != null) {
-          string serializedData = (string)entry.Get(Ontology.PredicateSerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
+          string serializedData = (string)entry.Get(Ontology.SerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
           var model = (IItem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String(serializedData));
           PluginManager.ControlManager.ShowControl(model.CreateView());
         }

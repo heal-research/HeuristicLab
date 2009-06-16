@@ -70,33 +70,39 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected void StoreResults(IAlgorithm finishedAlgorithm) {
       Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-      // store.Add(new Statement(finishedAlgorithm.DataSetEntity, Ontology.PredicateHasModel, modelEntity));
-      StoreModelAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
-      StoreModelAttribute(modelEntity, Ontology.AlgorithmName, finishedAlgorithm.Description);
+      store.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
+      StoreEntityAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
+      StoreEntityAttribute(modelEntity, Ontology.AlgorithmName, finishedAlgorithm.Description);
       
       IModel model = finishedAlgorithm.Model;
-      StoreModelAttribute(modelEntity, Ontology.TrainingMeanSquaredError, model.TrainingMeanSquaredError);
-      StoreModelAttribute(modelEntity, Ontology.ValidationMeanSquaredError, model.ValidationMeanSquaredError);
-      StoreModelAttribute(modelEntity, Ontology.TestMeanSquaredError, model.TestMeanSquaredError);
-      StoreModelAttribute(modelEntity, Ontology.TrainingCoefficientOfDetermination, model.TrainingCoefficientOfDetermination);
-      StoreModelAttribute(modelEntity, Ontology.ValidationCoefficientOfDetermination, model.ValidationCoefficientOfDetermination);
-      StoreModelAttribute(modelEntity, Ontology.TestCoefficientOfDetermination, model.TestCoefficientOfDetermination);
-      StoreModelAttribute(modelEntity, Ontology.TrainingVarianceAccountedFor, model.TrainingVarianceAccountedFor);
-      StoreModelAttribute(modelEntity, Ontology.ValidationVarianceAccountedFor, model.ValidationVarianceAccountedFor);
-      StoreModelAttribute(modelEntity, Ontology.TestVarianceAccountedFor, model.TestVarianceAccountedFor);
-      StoreModelAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageError, model.TrainingMeanAbsolutePercentageError);
-      StoreModelAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageError, model.ValidationMeanAbsolutePercentageError);
-      StoreModelAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageError, model.TestMeanAbsolutePercentageError);
-      StoreModelAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageOfRangeError, model.TrainingMeanAbsolutePercentageOfRangeError);
-      StoreModelAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, model.ValidationMeanAbsolutePercentageOfRangeError);
-      StoreModelAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, model.TestMeanAbsolutePercentageOfRangeError);
+      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanSquaredError, model.TrainingMeanSquaredError);
+      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanSquaredError, model.ValidationMeanSquaredError);
+      StoreEntityAttribute(modelEntity, Ontology.TestMeanSquaredError, model.TestMeanSquaredError);
+      StoreEntityAttribute(modelEntity, Ontology.TrainingCoefficientOfDetermination, model.TrainingCoefficientOfDetermination);
+      StoreEntityAttribute(modelEntity, Ontology.ValidationCoefficientOfDetermination, model.ValidationCoefficientOfDetermination);
+      StoreEntityAttribute(modelEntity, Ontology.TestCoefficientOfDetermination, model.TestCoefficientOfDetermination);
+      StoreEntityAttribute(modelEntity, Ontology.TrainingVarianceAccountedFor, model.TrainingVarianceAccountedFor);
+      StoreEntityAttribute(modelEntity, Ontology.ValidationVarianceAccountedFor, model.ValidationVarianceAccountedFor);
+      StoreEntityAttribute(modelEntity, Ontology.TestVarianceAccountedFor, model.TestVarianceAccountedFor);
+      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageError, model.TrainingMeanAbsolutePercentageError);
+      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageError, model.ValidationMeanAbsolutePercentageError);
+      StoreEntityAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageError, model.TestMeanAbsolutePercentageError);
+      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageOfRangeError, model.TrainingMeanAbsolutePercentageOfRangeError);
+      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, model.ValidationMeanAbsolutePercentageOfRangeError);
+      StoreEntityAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, model.TestMeanAbsolutePercentageOfRangeError);
 
       for (int i = 0; i < finishedAlgorithm.Dataset.Columns; i++) {
         try {
-          double qualImpact = model.GetVariableQualityImpact(finishedAlgorithm.Dataset.GetVariableName(i));
-          Entity impactEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-          store.Add(new Statement(impactEntity, Ontology.PredicateInstanceOf, Ontology.TypeVariableQualityImpact));
-          store.Add(new Statement(modelEntity, impactEntity, new Literal(qualImpact)));
+          string variableName = finishedAlgorithm.Dataset.GetVariableName(i);
+          double qualImpact = model.GetVariableQualityImpact(variableName);
+          double evalImpact = model.GetVariableEvaluationImpact(variableName);
+
+          Entity inputVariableEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
+          store.Add(new Statement(inputVariableEntity, Ontology.InstanceOf, Ontology.TypeVariableImpact));
+          store.Add(new Statement(modelEntity, Ontology.HasInputVariable, inputVariableEntity));
+          StoreEntityAttribute(inputVariableEntity, Ontology.EvaluationImpact, evalImpact);
+          StoreEntityAttribute(inputVariableEntity, Ontology.QualityImpact, qualImpact);
+          StoreEntityAttribute(inputVariableEntity, Ontology.Name, variableName);
         }
         catch (ArgumentException) {
           // ignore
@@ -104,11 +110,11 @@ namespace HeuristicLab.CEDMA.Server {
       }
 
       byte[] serializedModel = PersistenceManager.SaveToGZip(model.Data);
-      store.Add(new Statement(modelEntity, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(serializedModel))));
+      store.Add(new Statement(modelEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(serializedModel))));
     }
 
-    private void StoreModelAttribute(Entity model, Entity predicate, object value) {
-      store.Add(new Statement(model, predicate, new Literal(value)));
+    private void StoreEntityAttribute(Entity entity, Entity predicate, object value) {
+      store.Add(new Statement(entity, predicate, new Literal(value)));
     }
 
     public abstract string[] GetJobs();

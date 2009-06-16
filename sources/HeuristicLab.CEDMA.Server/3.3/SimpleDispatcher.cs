@@ -99,14 +99,14 @@ namespace HeuristicLab.CEDMA.Server {
     private void PopulateFinishedRuns() {
       var datasetEntity = store
         .Query(
-        "?Dataset <" + Ontology.PredicateInstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
+        "?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
         .Select(x => (Entity)x.Get("Dataset")).ElementAt(0);
       DataSet ds = new DataSet(store, datasetEntity);
 
       var result = store
         .Query(
         "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
-        "?Model <" + Ontology.AlgorithmName + "> ?AlgoName .",
+        "?Model <" + Ontology.Name + "> ?AlgoName .",
         0, 1000)
         .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName") });
 

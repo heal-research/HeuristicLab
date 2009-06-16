@@ -67,7 +67,7 @@ namespace HeuristicLab.CEDMA.Core {
       if (e.Button == MouseButtons.Left && e.Clicks == 2) {
         DataGridView.HitTestInfo hitInfo = dataGridView.HitTest(e.X, e.Y);
         ResultsEntry entry = (ResultsEntry)dataGridView.Rows[hitInfo.RowIndex].Tag;
-        string serializedData =  (string)entry.Get(Ontology.PredicateSerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
+        string serializedData =  (string)entry.Get(Ontology.SerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
         var model = (IItem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String(serializedData));
         PluginManager.ControlManager.ShowControl(model.CreateView());
       }

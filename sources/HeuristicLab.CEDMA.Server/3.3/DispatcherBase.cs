@@ -47,7 +47,7 @@ namespace HeuristicLab.CEDMA.Server {
 
     public IAlgorithm GetNextJob() {
       if (dataset == null) {
-        var datasetEntities = store.Query("?DataSet <" + Ontology.PredicateInstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .", 0, 1)
+        var datasetEntities = store.Query("?DataSet <" + Ontology.InstanceOf.Uri + "> <" + Ontology.TypeDataSet.Uri + "> .", 0, 1)
           .Select(x => (Entity)x.Get("DataSet"));
         if (datasetEntities.Count() == 0) return null;
         dataset = new DataSet(store, datasetEntities.ElementAt(0));

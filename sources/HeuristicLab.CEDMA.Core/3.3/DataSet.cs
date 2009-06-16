@@ -49,7 +49,7 @@ namespace HeuristicLab.CEDMA.Core {
         // lazy loading of problem from DB
         if (problem == null) {
           var persistedData = Store.Query(
-            "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.PredicateSerializedData.Uri + "> ?SerializedData .", 0, 10);
+            "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.SerializedData.Uri + "> ?SerializedData .", 0, 10);
           if (persistedData.Count() == 1) {
             Literal persistedLiteral = (Literal)persistedData.First().Get("SerializedData");
             this.problem = (Problem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String((string)persistedLiteral.Value));
@@ -82,9 +82,9 @@ namespace HeuristicLab.CEDMA.Core {
 
     public void Activate() {
       Entity myEntity = new Entity(Ontology.CedmaNameSpace + Guid);
-      Store.Add(new Statement(myEntity, Ontology.PredicateInstanceOf, Ontology.TypeDataSet));
-      Store.Add(new Statement(myEntity, Ontology.PredicateSerializedData, new Literal(Convert.ToBase64String(PersistenceManager.SaveToGZip(problem)))));
-      Store.Add(new Statement(myEntity, Ontology.PredicateName, new Literal(name)));
+      Store.Add(new Statement(myEntity, Ontology.InstanceOf, Ontology.TypeDataSet));
+      Store.Add(new Statement(myEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(PersistenceManager.SaveToGZip(problem)))));
+      Store.Add(new Statement(myEntity, Ontology.Name, new Literal(name)));
       activated = true;
     }
 
