@@ -72,7 +72,7 @@ namespace HeuristicLab.CEDMA.Server {
       Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
       store.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
       StoreEntityAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
-      StoreEntityAttribute(modelEntity, Ontology.AlgorithmName, finishedAlgorithm.Description);
+      StoreEntityAttribute(modelEntity, Ontology.Name, finishedAlgorithm.Description);
       
       IModel model = finishedAlgorithm.Model;
       StoreEntityAttribute(modelEntity, Ontology.TrainingMeanSquaredError, model.TrainingMeanSquaredError);
