@@ -97,26 +97,30 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void PopulateFinishedRuns() {
-      var datasetEntity = store
+      var datasetBindings = store
         .Query(
         "?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
-        .Select(x => (Entity)x.Get("Dataset")).ElementAt(0);
-      DataSet ds = new DataSet(store, datasetEntity);
+        .Select(x => (Entity)x.Get("Dataset"));
 
-      var result = store
-        .Query(
-        "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
-        "?Model <" + Ontology.Name + "> ?AlgoName .",
-        0, 1000)
-        .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName") });
+      if (datasetBindings.Count() > 0) {
+        var datasetEntity = datasetBindings.ElementAt(0);
 
-      foreach (Resource[] row in result) {
-        string targetVariable = (string)((Literal)row[0]).Value;
-        string algoName = (string)((Literal)row[1]).Value;
+        DataSet ds = new DataSet(store, datasetEntity);
+        var result = store
+          .Query(
+          "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
+          "?Model <" + Ontology.Name + "> ?AlgoName .",
+          0, 1000)
+          .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName") });
 
-        int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
-        if (!AlgorithmFinishedOrDispatched(targetVariableIndex, algoName))
-          AddDispatchedRun(targetVariableIndex, algoName);
+        foreach (Resource[] row in result) {
+          string targetVariable = (string)((Literal)row[0]).Value;
+          string algoName = (string)((Literal)row[1]).Value;
+
+          int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
+          if (!AlgorithmFinishedOrDispatched(targetVariableIndex, algoName))
+            AddDispatchedRun(targetVariableIndex, algoName);
+        }
       }
     }
 
