@@ -35,6 +35,17 @@ namespace HeuristicLab.ES {
   /// </summary>
   public partial class ESEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
+    private OperatorLibrary operatorLibrary;
+    private List<IOperator> problemInitializers;
+    private int selectedProblemInitializer;
+    private List<IOperator> solutionGenerators;
+    private int selectedSolutionGenerator;
+    private List<IOperator> mutators;
+    private int selectedMutator;
+    private List<IOperator> evaluators;
+    private int selectedEvaluator;
+    private List<IOperator> recombinators;
+    private int selectedRecombinator;
 
     /// <summary>
     /// Gets or sets the evolution strategy to display.
@@ -51,6 +62,16 @@ namespace HeuristicLab.ES {
     /// </summary>
     public ESEditor() {
       InitializeComponent();
+      problemInitializers = new List<IOperator>();
+      selectedProblemInitializer = -1;
+      solutionGenerators = new List<IOperator>();
+      selectedSolutionGenerator = -1;
+      mutators = new List<IOperator>();
+      selectedMutator = -1;
+      evaluators = new List<IOperator>();
+      selectedEvaluator = -1;
+      recombinators = new List<IOperator>();
+      selectedRecombinator = -1;
     }
     /// <summary>
     /// Initializes a new instance of <see cref="ESEditor"/> with the given <paramref name="es"/>.
@@ -59,6 +80,28 @@ namespace HeuristicLab.ES {
     public ESEditor(ES es)
       : this() {
       ES = es;
+    }
+
+    private int AddOperator(ComboBox comboBox, IOperator iOperator, List<IOperator> list) {
+      for (int i = 0; i < comboBox.Items.Count - 1; i++) {
+        if ((comboBox.Items[i] as string).CompareTo(iOperator.Name) > 0) {
+          comboBox.Items.Insert(i, iOperator.Name);
+          list.Insert(i, iOperator);
+          return i;
+        }
+      }
+      int index = comboBox.Items.Count - 1;
+      comboBox.Items.Insert(index, iOperator.Name);
+      list.Add(iOperator);
+      return index;
+    }
+    private int SetOperator(ComboBox comboBox, IOperator iOperator, List<IOperator> list) {
+      int index;
+      if ((index = list.FindIndex(op => op.Name.Equals(iOperator.Name))) >= 0) {
+        comboBox.Items.RemoveAt(index);
+        list.RemoveAt(index);
+        return AddOperator(comboBox, iOperator, list);
+      } else return -1;
     }
 
     /// <summary>
@@ -105,11 +148,32 @@ namespace HeuristicLab.ES {
         tabControl.Enabled = false;
       } else {
         tabControl.Enabled = true;
-        problemInitializationTextBox.Text = ES.ProblemInjector.GetType().Name;
-        solutionGenerationTextBox.Text = ES.SolutionGenerator.GetType().Name;
-        mutationTextBox.Text = ES.Mutator.GetType().Name;
-        evaluationTextBox.Text = ES.Evaluator.GetType().Name;
-        recombinationTextBox.Text = ES.Recombinator.GetType().Name;
+        int index;
+        if (!((index = problemInitializers.FindIndex(op => op.Name.Equals(ES.ProblemInjector.Name))) >= 0)) {
+          index = AddOperator(problemInitializationComboBox, ES.ProblemInjector, problemInitializers);
+          if (index <= selectedProblemInitializer) selectedProblemInitializer++;
+        }
+        problemInitializationComboBox.SelectedIndex = index;
+        if (!((index = solutionGenerators.FindIndex(op => op.Name.Equals(ES.SolutionGenerator.Name))) >= 0)) {
+          index = AddOperator(solutionGenerationComboBox, ES.SolutionGenerator, solutionGenerators);
+          if (index <= selectedSolutionGenerator) selectedSolutionGenerator++;
+        }
+        solutionGenerationComboBox.SelectedIndex = index;
+        if (!((index = evaluators.FindIndex(op => op.Name.Equals(ES.Evaluator.Name))) >= 0)) {
+          index = AddOperator(evaluationComboBox, ES.Evaluator, evaluators);
+          if (index <= selectedEvaluator) selectedEvaluator++;
+        }
+        evaluationComboBox.SelectedIndex = index;
+        if (!((index = mutators.FindIndex(op => op.Name.Equals(ES.Mutator.Name))) >= 0)) {
+          index = AddOperator(mutationComboBox, ES.Mutator, mutators);
+          if (index <= selectedMutator) selectedMutator++;
+        }
+        mutationComboBox.SelectedIndex = index;
+        if (!((index = recombinators.FindIndex(op => op.Name.Equals(ES.Recombinator.Name))) >= 0)) {
+          index = AddOperator(recombinationComboBox, ES.Recombinator, recombinators);
+          if (index <= selectedRecombinator) selectedRecombinator++;
+        }
+        recombinationComboBox.SelectedIndex = index;
         plusRadioButton.Checked = ES.PlusNotation;
         commaRadioButton.Checked = !ES.PlusNotation;
       }
@@ -156,39 +220,7 @@ namespace HeuristicLab.ES {
         PluginManager.ControlManager.ShowControl(view);
     }
     private void setProblemInitializationButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        ES.ProblemInjector = chooseOperatorDialog.Operator;
-        problemInitializationTextBox.Text = ES.ProblemInjector.GetType().Name;
-      }
-    }
-    private void setSolutionGenerationButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        ES.SolutionGenerator= chooseOperatorDialog.Operator;
-        solutionGenerationTextBox.Text = ES.SolutionGenerator.GetType().Name;
-      }
-    }
-    private void setMutationButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        ES.Mutator = chooseOperatorDialog.Operator;
-        mutationTextBox.Text = ES.Mutator.GetType().Name;
-      }
-    }
-    private void setEvaluationButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        ES.Evaluator = chooseOperatorDialog.Operator;
-        evaluationTextBox.Text = ES.Evaluator.GetType().Name;
-      }
-    }
-    private void setRecombinationButton_Click(object sender, EventArgs e) {
-      if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
-      if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
-        ES.Recombinator = chooseOperatorDialog.Operator;
-        recombinationTextBox.Text = ES.Recombinator.GetType().Name;
-      }
+      
     }
     private void executeButton_Click(object sender, EventArgs e) {
       executeButton.Enabled = false;
@@ -251,6 +283,193 @@ namespace HeuristicLab.ES {
         int dimension = int.Parse(problemDimensionTextBox.Text);
         ES.GeneralLearningRate = 1 / Math.Sqrt(2 * dimension);
         ES.LearningRate = 1 / Math.Sqrt(2 * Math.Sqrt(dimension));
+      }
+    }
+
+    private void openOperatorLibraryButton_Click(object sender, EventArgs e) {
+      if (openOperatorLibraryFileDialog.ShowDialog() == DialogResult.OK) {
+
+        operatorLibrary = (PersistenceManager.Load(openOperatorLibraryFileDialog.FileName) as OperatorLibrary);
+        if (operatorLibrary == null) {
+          MessageBox.Show("The selected file is not an operator library");
+          return;
+        }
+        foreach (IOperatorGroup topLevelGroup in operatorLibrary.Group.SubGroups) {
+          if (topLevelGroup.Name.Equals("Problem")) {
+            foreach (IOperatorGroup group in topLevelGroup.SubGroups) {
+              if (group.Name.Equals("Initialization")) {
+                foreach (IOperator op in group.Operators) {
+                  int index = SetOperator(problemInitializationComboBox, (IOperator)op.Clone(), problemInitializers);
+                  if (index < 0) {
+                    index = AddOperator(problemInitializationComboBox, (IOperator)op.Clone(), problemInitializers);
+                    if (index <= selectedProblemInitializer) selectedProblemInitializer++;
+                  }
+                }
+              } else if (group.Name.Equals("Solution generation")) {
+                foreach (IOperator op in group.Operators) {
+                  int index = SetOperator(solutionGenerationComboBox, (IOperator)op.Clone(), solutionGenerators);
+                  if (index < 0) {
+                    index = AddOperator(solutionGenerationComboBox, (IOperator)op.Clone(), solutionGenerators);
+                    if (index <= selectedSolutionGenerator) selectedSolutionGenerator++;
+                  }
+                }
+              } else if (group.Name.Equals("Evaluation")) {
+                foreach (IOperator op in group.Operators) {
+                  int index = SetOperator(evaluationComboBox, (IOperator)op.Clone(), evaluators);
+                  if (index < 0) {
+                    index = AddOperator(evaluationComboBox, (IOperator)op.Clone(), evaluators);
+                    if (index <= selectedEvaluator) selectedEvaluator++;
+                  }
+                }
+              }
+            }
+          } else if (topLevelGroup.Name.Equals("ES")) {
+            foreach (IOperatorGroup group in topLevelGroup.SubGroups) {
+              if (group.Name.Equals("Mutation")) {
+                foreach (IOperator op in group.Operators) {
+                  int index = SetOperator(mutationComboBox, (IOperator)op.Clone(), mutators);
+                  if (index < 0) {
+                    index = AddOperator(mutationComboBox, (IOperator)op.Clone(), mutators);
+                    if (index <= selectedMutator) selectedMutator++;
+                  }
+                }
+              } else if (group.Name.Equals("Recombination")) {
+                foreach (IOperator op in group.Operators) {
+                  int index = SetOperator(recombinationComboBox, (IOperator)op.Clone(), recombinators);
+                  if (index < 0) {
+                    index = AddOperator(recombinationComboBox, (IOperator)op.Clone(), recombinators);
+                    if (index <= selectedRecombinator) selectedRecombinator++;
+                  }
+                }
+              }
+            }
+          }
+        }
+        problemInitializationComboBox.SelectedIndexChanged -= new EventHandler(problemInitializationComboBox_SelectedIndexChanged);
+        problemInitializationComboBox.SelectedIndex = selectedProblemInitializer;
+        problemInitializationComboBox.SelectedIndexChanged += new EventHandler(problemInitializationComboBox_SelectedIndexChanged);
+        solutionGenerationComboBox.SelectedIndexChanged -= new EventHandler(solutionGenerationComboBox_SelectedIndexChanged);
+        solutionGenerationComboBox.SelectedIndex = selectedSolutionGenerator;
+        solutionGenerationComboBox.SelectedIndexChanged += new EventHandler(solutionGenerationComboBox_SelectedIndexChanged);
+        evaluationComboBox.SelectedIndexChanged -= new EventHandler(evaluationComboBox_SelectedIndexChanged);
+        evaluationComboBox.SelectedIndex = selectedEvaluator;
+        evaluationComboBox.SelectedIndexChanged += new EventHandler(evaluationComboBox_SelectedIndexChanged);
+        mutationComboBox.SelectedIndexChanged -= new EventHandler(mutationComboBox_SelectedIndexChanged);
+        mutationComboBox.SelectedIndex = selectedMutator;
+        mutationComboBox.SelectedIndexChanged += new EventHandler(mutationComboBox_SelectedIndexChanged);
+        recombinationComboBox.SelectedIndexChanged -= new EventHandler(recombinationComboBox_SelectedIndexChanged);
+        recombinationComboBox.SelectedIndex = selectedRecombinator;
+        recombinationComboBox.SelectedIndexChanged += new EventHandler(recombinationComboBox_SelectedIndexChanged);
+      }
+    }
+
+    private void problemInitializationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      int index = problemInitializationComboBox.SelectedIndex;
+      if (index != selectedProblemInitializer) {
+        if (index == problemInitializationComboBox.Items.Count - 1) {
+          if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+          if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+            selectedProblemInitializer = -1;
+            index = SetOperator(problemInitializationComboBox, chooseOperatorDialog.Operator, problemInitializers);
+            if (index < 0) index = AddOperator(problemInitializationComboBox, chooseOperatorDialog.Operator, problemInitializers);
+          } else {
+            problemInitializationComboBox.SelectedIndex = selectedProblemInitializer;
+            return;
+          }
+        }
+        if (index >= 0) {
+          ES.ProblemInjector = problemInitializers[index];
+          selectedProblemInitializer = index;
+          problemInitializationComboBox.SelectedIndex = index;
+        }
+      }
+    }
+
+    private void solutionGenerationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      int index = solutionGenerationComboBox.SelectedIndex;
+      if (index != selectedSolutionGenerator) {
+        if (index == solutionGenerationComboBox.Items.Count - 1) {
+          if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+          if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+            selectedSolutionGenerator = -1;
+            index = SetOperator(solutionGenerationComboBox, chooseOperatorDialog.Operator, solutionGenerators);
+            if (index < 0) AddOperator(solutionGenerationComboBox, chooseOperatorDialog.Operator, solutionGenerators);
+          } else {
+            solutionGenerationComboBox.SelectedIndex = selectedSolutionGenerator;
+            return;
+          }
+        }
+        if (index >= 0) {
+          ES.SolutionGenerator = solutionGenerators[index];
+          selectedSolutionGenerator = index;
+          solutionGenerationComboBox.SelectedIndex = selectedSolutionGenerator;
+        }
+      }
+    }
+
+    private void evaluationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      int index = evaluationComboBox.SelectedIndex;
+      if (index != selectedEvaluator) {
+        if (index == evaluationComboBox.Items.Count - 1) {
+          if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+          if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+            selectedEvaluator = -1;
+            index = SetOperator(evaluationComboBox, chooseOperatorDialog.Operator, evaluators);
+            if (index < 0) index = AddOperator(evaluationComboBox, chooseOperatorDialog.Operator, evaluators);
+          } else {
+            evaluationComboBox.SelectedIndex = selectedEvaluator;
+            return;
+          }
+        }
+        if (index >= 0) {
+          ES.Evaluator = evaluators[index];
+          selectedEvaluator = index;
+          evaluationComboBox.SelectedIndex = index;
+        }
+      }
+    }
+
+    private void mutationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      int index = mutationComboBox.SelectedIndex;
+      if (index != selectedMutator) {
+        if (index == mutationComboBox.Items.Count - 1) {
+          if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+          if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+            selectedMutator = -1;
+            index = SetOperator(mutationComboBox, chooseOperatorDialog.Operator, mutators);
+            if (index < 0) index = AddOperator(mutationComboBox, chooseOperatorDialog.Operator, mutators);
+          } else {
+            mutationComboBox.SelectedIndex = selectedMutator;
+            return;
+          }
+        }
+        if (index >= 0) {
+          ES.Mutator = mutators[index];
+          selectedMutator = index;
+          mutationComboBox.SelectedIndex = index;
+        }
+      }
+    }
+
+    private void recombinationComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      int index = recombinationComboBox.SelectedIndex;
+      if (index != selectedRecombinator) {
+        if (index == recombinationComboBox.Items.Count - 1) {
+          if (chooseOperatorDialog == null) chooseOperatorDialog = new ChooseOperatorDialog();
+          if (chooseOperatorDialog.ShowDialog(this) == DialogResult.OK) {
+            selectedRecombinator = -1;
+            index = SetOperator(recombinationComboBox, chooseOperatorDialog.Operator, recombinators);
+            if (index < 0) index = AddOperator(recombinationComboBox, chooseOperatorDialog.Operator, recombinators);
+          } else {
+            recombinationComboBox.SelectedIndex = selectedRecombinator;
+            return;
+          }
+        }
+        if (index >= 0) {
+          ES.Recombinator = recombinators[index];
+          selectedRecombinator = index;
+          recombinationComboBox.SelectedIndex = index;
+        }
       }
     }
   }

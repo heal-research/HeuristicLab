@@ -29,12 +29,14 @@ using HeuristicLab.Random;
 using HeuristicLab.Logging;
 using HeuristicLab.Selection;
 using HeuristicLab.RealVector;
+using HeuristicLab.Evolutionary;
 
 namespace HeuristicLab.ES {
   /// <summary>
   /// Class for the heuristic optimization technique "evolution strategy".
   /// </summary>
   public class ES : ItemBase, IEditable {
+
     #region Create Operators
     /// <summary>
     /// Creates a new evolution strategy.
@@ -63,9 +65,11 @@ namespace HeuristicLab.ES {
 
       // place holder for ProblemInjector
       EmptyOperator eo1 = new EmptyOperator();
-      eo1.Name = "ProblemInjector";
+      eo1.Name = "Empty Problem"; // was ProblemInjector
       op.OperatorGraph.AddOperator(eo1);
       co1.AddSubOperator(eo1);
+      co1.AddVariableInfo(new VariableInfo("ProblemInjector", "", typeof(IOperator), VariableKind.In));
+      co1.GetVariableInfo("ProblemInjector").ActualName = "Empty Problem";
 
       CombinedOperator co2 = CreatePopulationInitialization();
       co2.Name = "Population Initialization";
@@ -74,15 +78,19 @@ namespace HeuristicLab.ES {
 
       // place holder for SolutionGenerator
       EmptyOperator eo2 = new EmptyOperator();
-      eo2.Name = "SolutionGenerator";
+      eo2.Name = "Empty Solution"; // was SolutionGenerator
       op.OperatorGraph.AddOperator(eo2);
       co2.AddSubOperator(eo2);
+      co2.AddVariableInfo(new VariableInfo("SolutionGenerator", "", typeof(IOperator), VariableKind.In));
+      co2.GetVariableInfo("SolutionGenerator").ActualName = "Empty Solution";
 
       // place holder for Evaluator
       EmptyOperator eo3 = new EmptyOperator();
-      eo3.Name = "Evaluator";
+      eo3.Name = "Empty Evaluation"; // was Evaluator
       op.OperatorGraph.AddOperator(eo3);
       co2.AddSubOperator(eo3);
+      co2.AddVariableInfo(new VariableInfo("Evaluator", "", typeof(IOperator), VariableKind.In));
+      co2.GetVariableInfo("Evaluator").ActualName = "Empty Evaluation";
 
       CombinedOperator co3 = CreateESMain();
       co3.Name = "ES Main";
@@ -91,18 +99,24 @@ namespace HeuristicLab.ES {
 
       // place holder for Mutator
       EmptyOperator eo4 = new EmptyOperator();
-      eo4.Name = "Mutator";
+      eo4.Name = "No Mutation"; // was Mutator
       op.OperatorGraph.AddOperator(eo4);
       co3.AddSubOperator(eo4);
+      co3.AddVariableInfo(new VariableInfo("Mutator", "", typeof(IOperator), VariableKind.In));
+      co3.GetVariableInfo("Mutator").ActualName = "No Mutation";
 
       // place holder for Evaluator
       co3.AddSubOperator(eo3);
+      co3.AddVariableInfo(new VariableInfo("Evaluator", "", typeof(IOperator), VariableKind.In));
+      co3.GetVariableInfo("Evaluator").ActualName = "Empty Evaluation";
 
       // place holder for Recombinator
       EmptyOperator eo5 = new EmptyOperator();
-      eo5.Name = "Recombinator";
+      eo5.Name = "No Recombination"; // was Recombinator
       op.OperatorGraph.AddOperator(eo5);
       co3.AddSubOperator(eo5);
+      co3.AddVariableInfo(new VariableInfo("Recombinator", "", typeof(IOperator), VariableKind.In));
+      co3.GetVariableInfo("Recombinator").ActualName = "No Recombination";
 
       return op;
     }
@@ -288,36 +302,78 @@ namespace HeuristicLab.ES {
       op.OperatorGraph.AddOperator(sp1);
       op.OperatorGraph.InitialOperator = sp1;
 
+      GreaterThanComparator gtc = new GreaterThanComparator();
+      gtc.GetVariableInfo("LeftSide").ActualName = "ESrho";
+      gtc.GetVariableInfo("RightSide").Local = true;
+      gtc.AddVariable(new Variable("RightSide", new IntData(1)));
+      gtc.GetVariableInfo("Result").ActualName = "UseRecombination";
+      op.OperatorGraph.AddOperator(gtc);
+      sp1.AddSubOperator(gtc);
+
+      ConditionalBranch cb = new ConditionalBranch();
+      cb.Name = "Use recombination?";
+      cb.GetVariableInfo("Condition").ActualName = "UseRecombination";
+      op.OperatorGraph.AddOperator(cb);
+      sp1.AddSubOperator(cb);
+
+      SequentialProcessor sp2 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp2);
+      cb.AddSubOperator(sp2);
+
+      ChildrenInitializer ci = new ChildrenInitializer();
+      ci.GetVariableInfo("ParentsPerChild").Local = false;
+      ci.RemoveVariable("ParentsPerChild");
+      ci.GetVariableInfo("ParentsPerChild").ActualName = "ESrho";
+      op.OperatorGraph.AddOperator(ci);
+      sp2.AddSubOperator(ci);
+
+      UniformSequentialSubScopesProcessor ussp0 = new UniformSequentialSubScopesProcessor();
+      op.OperatorGraph.AddOperator(ussp0);
+      sp2.AddSubOperator(ussp0);
+
+      SequentialProcessor sp3 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp3);
+      ussp0.AddSubOperator(sp3);
+
       OperatorExtractor oe1 = new OperatorExtractor();
       oe1.Name = "Recombinator";
       oe1.GetVariableInfo("Operator").ActualName = "Recombinator";
       op.OperatorGraph.AddOperator(oe1);
-      sp1.AddSubOperator(oe1);
+      sp3.AddSubOperator(oe1);
 
       UniformSequentialSubScopesProcessor ussp = new UniformSequentialSubScopesProcessor();
       op.OperatorGraph.AddOperator(ussp);
-      sp1.AddSubOperator(ussp);
+      cb.AddSubOperator(ussp);
 
-      SequentialProcessor sp2 = new SequentialProcessor();
-      op.OperatorGraph.AddOperator(sp2);
-      ussp.AddSubOperator(sp2);
+      SequentialProcessor sp4 = new SequentialProcessor();
+      op.OperatorGraph.AddOperator(sp4);
+      ussp.AddSubOperator(sp4);
 
       OperatorExtractor oe2 = new OperatorExtractor();
       oe2.Name = "Mutator";
       oe2.GetVariableInfo("Operator").ActualName = "Mutator";
       op.OperatorGraph.AddOperator(oe2);
-      sp2.AddSubOperator(oe2);
+      sp4.AddSubOperator(oe2);
 
       OperatorExtractor oe3 = new OperatorExtractor();
       oe3.Name = "Evaluator";
       oe3.GetVariableInfo("Operator").ActualName = "Evaluator";
       op.OperatorGraph.AddOperator(oe3);
-      sp2.AddSubOperator(oe3);
+      sp4.AddSubOperator(oe3);
 
       Counter c = new Counter();
       c.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
       op.OperatorGraph.AddOperator(c);
-      sp2.AddSubOperator(c);
+      sp4.AddSubOperator(c);
+
+      sp3.AddSubOperator(oe2);
+      sp3.AddSubOperator(oe3);
+      sp3.AddSubOperator(c);
+
+      SubScopesRemover ssr = new SubScopesRemover();
+      ssr.GetVariableInfo("SubScopeIndex").Local = true;
+      op.OperatorGraph.AddOperator(ssr);
+      sp3.AddSubOperator(ssr);
 
       Sorter s = new Sorter();
       s.GetVariableInfo("Value").ActualName = "Quality";
@@ -541,7 +597,7 @@ namespace HeuristicLab.ES {
     public IOperator ProblemInjector {
       get { return myVariableInjection.SubOperators[0]; }
       set {
-        value.Name = "ProblemInjector";
+        myVariableInjection.GetVariableInfo("ProblemInjector").ActualName = value.Name;
         myES.OperatorGraph.RemoveOperator(ProblemInjector.Guid);
         myES.OperatorGraph.AddOperator(value);
         myVariableInjection.AddSubOperator(value, 0);
@@ -554,7 +610,7 @@ namespace HeuristicLab.ES {
     public IOperator SolutionGenerator {
       get { return myPopulationInitialization.SubOperators[0]; }
       set {
-        value.Name = "SolutionGenerator";
+        myPopulationInitialization.GetVariableInfo("SolutionGenerator").ActualName = value.Name;
         myES.OperatorGraph.RemoveOperator(SolutionGenerator.Guid);
         myES.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 0);
@@ -566,7 +622,8 @@ namespace HeuristicLab.ES {
     public IOperator Evaluator {
       get { return myPopulationInitialization.SubOperators[1]; }
       set {
-        value.Name = "Evaluator";
+        myPopulationInitialization.GetVariableInfo("Evaluator").ActualName = value.Name;
+        myESMain.GetVariableInfo("Evaluator").ActualName = value.Name;
         myES.OperatorGraph.RemoveOperator(Evaluator.Guid);
         myES.OperatorGraph.AddOperator(value);
         myPopulationInitialization.AddSubOperator(value, 1);
@@ -579,7 +636,7 @@ namespace HeuristicLab.ES {
     public IOperator Mutator {
       get { return myESMain.SubOperators[0]; }
       set {
-        value.Name = "Mutator";
+        myESMain.GetVariableInfo("Mutator").ActualName = value.Name;
         myES.OperatorGraph.RemoveOperator(Mutator.Guid);
         myES.OperatorGraph.AddOperator(value);
         myESMain.AddSubOperator(value, 0);
@@ -591,7 +648,7 @@ namespace HeuristicLab.ES {
     public IOperator Recombinator {
       get { return myESMain.SubOperators[2]; }
       set {
-        value.Name = "Recombinator";
+        myESMain.GetVariableInfo("Recombinator").ActualName = value.Name;
         myES.OperatorGraph.RemoveOperator(Recombinator.Guid);
         myES.OperatorGraph.AddOperator(value);
         myESMain.AddSubOperator(value, 2);
