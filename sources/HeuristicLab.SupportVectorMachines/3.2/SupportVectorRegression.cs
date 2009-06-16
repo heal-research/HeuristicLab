@@ -369,12 +369,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
       foreach (ItemList row in evaluationImpacts) {
         string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
       }
 
