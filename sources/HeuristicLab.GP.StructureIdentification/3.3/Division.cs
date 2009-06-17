@@ -48,10 +48,10 @@ In case one of the divisors is 0 returns 0.
     public Division()
       : base() {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
-      AddConstraint(new NumberOfSubOperatorsConstraint(2, 3));
+      //MK changed to only 2 allowed suboperators to be compliant with HL2
+      AddConstraint(new NumberOfSubOperatorsConstraint(2, 2));
       AddConstraint(new SubOperatorTypeConstraint(0));
       AddConstraint(new SubOperatorTypeConstraint(1));
-      AddConstraint(new SubOperatorTypeConstraint(2));
     }
   }
 }
