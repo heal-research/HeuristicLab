@@ -70,26 +70,27 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected void StoreResults(IAlgorithm finishedAlgorithm) {
       Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-      store.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
-      StoreEntityAttribute(modelEntity, Ontology.TargetVariable, finishedAlgorithm.Model.TargetVariable);
-      StoreEntityAttribute(modelEntity, Ontology.Name, finishedAlgorithm.Description);
+      List<Statement> statements = new List<Statement>();
+      statements.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
+      statements.Add(new Statement(modelEntity, Ontology.TargetVariable, new Literal(finishedAlgorithm.Model.TargetVariable)));
+      statements.Add(new Statement(modelEntity, Ontology.Name, new Literal(finishedAlgorithm.Description)));
       
       IModel model = finishedAlgorithm.Model;
-      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanSquaredError, model.TrainingMeanSquaredError);
-      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanSquaredError, model.ValidationMeanSquaredError);
-      StoreEntityAttribute(modelEntity, Ontology.TestMeanSquaredError, model.TestMeanSquaredError);
-      StoreEntityAttribute(modelEntity, Ontology.TrainingCoefficientOfDetermination, model.TrainingCoefficientOfDetermination);
-      StoreEntityAttribute(modelEntity, Ontology.ValidationCoefficientOfDetermination, model.ValidationCoefficientOfDetermination);
-      StoreEntityAttribute(modelEntity, Ontology.TestCoefficientOfDetermination, model.TestCoefficientOfDetermination);
-      StoreEntityAttribute(modelEntity, Ontology.TrainingVarianceAccountedFor, model.TrainingVarianceAccountedFor);
-      StoreEntityAttribute(modelEntity, Ontology.ValidationVarianceAccountedFor, model.ValidationVarianceAccountedFor);
-      StoreEntityAttribute(modelEntity, Ontology.TestVarianceAccountedFor, model.TestVarianceAccountedFor);
-      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageError, model.TrainingMeanAbsolutePercentageError);
-      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageError, model.ValidationMeanAbsolutePercentageError);
-      StoreEntityAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageError, model.TestMeanAbsolutePercentageError);
-      StoreEntityAttribute(modelEntity, Ontology.TrainingMeanAbsolutePercentageOfRangeError, model.TrainingMeanAbsolutePercentageOfRangeError);
-      StoreEntityAttribute(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, model.ValidationMeanAbsolutePercentageOfRangeError);
-      StoreEntityAttribute(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, model.TestMeanAbsolutePercentageOfRangeError);
+      statements.Add(new Statement(modelEntity, Ontology.TrainingMeanSquaredError, new Literal(model.TrainingMeanSquaredError)));
+      statements.Add(new Statement(modelEntity, Ontology.ValidationMeanSquaredError, new Literal(model.ValidationMeanSquaredError)));
+      statements.Add(new Statement(modelEntity, Ontology.TestMeanSquaredError, new Literal(model.TestMeanSquaredError)));
+      statements.Add(new Statement(modelEntity, Ontology.TrainingCoefficientOfDetermination, new Literal(model.TrainingCoefficientOfDetermination)));
+      statements.Add(new Statement(modelEntity, Ontology.ValidationCoefficientOfDetermination, new Literal(model.ValidationCoefficientOfDetermination)));
+      statements.Add(new Statement(modelEntity, Ontology.TestCoefficientOfDetermination, new Literal(model.TestCoefficientOfDetermination)));
+      statements.Add(new Statement(modelEntity, Ontology.TrainingVarianceAccountedFor, new Literal(model.TrainingVarianceAccountedFor)));
+      statements.Add(new Statement(modelEntity, Ontology.ValidationVarianceAccountedFor, new Literal(model.ValidationVarianceAccountedFor)));
+      statements.Add(new Statement(modelEntity, Ontology.TestVarianceAccountedFor, new Literal(model.TestVarianceAccountedFor)));
+      statements.Add(new Statement(modelEntity, Ontology.TrainingMeanAbsolutePercentageError, new Literal(model.TrainingMeanAbsolutePercentageError)));
+      statements.Add(new Statement(modelEntity, Ontology.ValidationMeanAbsolutePercentageError, new Literal(model.ValidationMeanAbsolutePercentageError)));
+      statements.Add(new Statement(modelEntity, Ontology.TestMeanAbsolutePercentageError, new Literal(model.TestMeanAbsolutePercentageError)));
+      statements.Add(new Statement(modelEntity, Ontology.TrainingMeanAbsolutePercentageOfRangeError, new Literal(model.TrainingMeanAbsolutePercentageOfRangeError)));
+      statements.Add(new Statement(modelEntity, Ontology.ValidationMeanAbsolutePercentageOfRangeError, new Literal(model.ValidationMeanAbsolutePercentageOfRangeError)));
+      statements.Add(new Statement(modelEntity, Ontology.TestMeanAbsolutePercentageOfRangeError, new Literal(model.TestMeanAbsolutePercentageOfRangeError)));
 
       for (int i = 0; i < finishedAlgorithm.Dataset.Columns; i++) {
         try {
@@ -98,11 +99,11 @@ namespace HeuristicLab.CEDMA.Server {
           double evalImpact = model.GetVariableEvaluationImpact(variableName);
 
           Entity inputVariableEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
-          store.Add(new Statement(inputVariableEntity, Ontology.InstanceOf, Ontology.TypeVariableImpact));
-          store.Add(new Statement(modelEntity, Ontology.HasInputVariable, inputVariableEntity));
-          StoreEntityAttribute(inputVariableEntity, Ontology.EvaluationImpact, evalImpact);
-          StoreEntityAttribute(inputVariableEntity, Ontology.QualityImpact, qualImpact);
-          StoreEntityAttribute(inputVariableEntity, Ontology.Name, variableName);
+          statements.Add(new Statement(inputVariableEntity, Ontology.InstanceOf, Ontology.TypeVariableImpact));
+          statements.Add(new Statement(modelEntity, Ontology.HasInputVariable, inputVariableEntity));
+          statements.Add(new Statement(inputVariableEntity, Ontology.EvaluationImpact, new Literal(evalImpact)));
+          statements.Add(new Statement(inputVariableEntity, Ontology.QualityImpact, new Literal(qualImpact)));
+          statements.Add(new Statement(inputVariableEntity, Ontology.Name, new Literal(variableName)));
         }
         catch (ArgumentException) {
           // ignore
@@ -110,11 +111,8 @@ namespace HeuristicLab.CEDMA.Server {
       }
 
       byte[] serializedModel = PersistenceManager.SaveToGZip(model.Data);
-      store.Add(new Statement(modelEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(serializedModel))));
-    }
-
-    private void StoreEntityAttribute(Entity entity, Entity predicate, object value) {
-      store.Add(new Statement(entity, predicate, new Literal(value)));
+      statements.Add(new Statement(modelEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(serializedModel))));
+      store.AddRange(statements);
     }
 
     public abstract string[] GetJobs();

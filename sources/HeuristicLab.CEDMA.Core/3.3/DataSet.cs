@@ -46,16 +46,6 @@ namespace HeuristicLab.CEDMA.Core {
     private Problem problem;
     public Problem Problem {
       get {
-        // lazy loading of problem from DB
-        if (problem == null) {
-          var persistedData = Store.Query(
-            "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.SerializedData.Uri + "> ?SerializedData .", 0, 10);
-          if (persistedData.Count() == 1) {
-            Literal persistedLiteral = (Literal)persistedData.First().Get("SerializedData");
-            this.problem = (Problem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String((string)persistedLiteral.Value));
-          } else
-            this.problem = new Problem(); // no entry in the DB => create a new problem
-        }
         return problem;
       }
     }
@@ -70,6 +60,7 @@ namespace HeuristicLab.CEDMA.Core {
       guid = Guid.NewGuid();
       name = "Data set";
       activated = false;
+      problem = new Problem();
     }
 
     public DataSet(IStore store, Entity dataSetEntity)
@@ -77,14 +68,23 @@ namespace HeuristicLab.CEDMA.Core {
       Store = store;
       guid = new Guid(dataSetEntity.Uri.Remove(0, Ontology.CedmaNameSpace.Length));
       name = guid.ToString();
+      var persistedData = Store.Query(
+        "<" + Ontology.CedmaNameSpace + Guid + "> <" + Ontology.SerializedData.Uri + "> ?SerializedData .", 0, 10);
+      if (persistedData.Count() == 1) {
+        Literal persistedLiteral = (Literal)persistedData.First().Get("SerializedData");
+        problem = (Problem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String((string)persistedLiteral.Value));
+      } else problem = new Problem();
       activated = true;
     }
 
     public void Activate() {
       Entity myEntity = new Entity(Ontology.CedmaNameSpace + Guid);
-      Store.Add(new Statement(myEntity, Ontology.InstanceOf, Ontology.TypeDataSet));
-      Store.Add(new Statement(myEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(PersistenceManager.SaveToGZip(problem)))));
-      Store.Add(new Statement(myEntity, Ontology.Name, new Literal(name)));
+      Store.AddRange(
+        new Statement[] { 
+          new Statement(myEntity, Ontology.InstanceOf, Ontology.TypeDataSet),
+          new Statement(myEntity, Ontology.SerializedData, new Literal(Convert.ToBase64String(PersistenceManager.SaveToGZip(problem)))),
+          new Statement(myEntity, Ontology.Name, new Literal(name))
+        });
       activated = true;
     }
 

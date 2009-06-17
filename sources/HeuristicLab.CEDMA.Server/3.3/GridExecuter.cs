@@ -93,15 +93,12 @@ namespace HeuristicLab.CEDMA.Server {
             }
             activeOperations.Remove(readyHandle);
             readyHandle.Close();
-            ProcessingEngine finishedEngine = null;
             try {
-              finishedEngine = jobManager.EndExecuteOperation(finishedOp);
+              ProcessingEngine finishedEngine = jobManager.EndExecuteOperation(finishedOp);
+              StoreResults(finishedAlgorithm);
             }
             catch (Exception badEx) {
               Trace.WriteLine("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
-            }
-            if (finishedEngine != null) {
-              StoreResults(finishedAlgorithm);
             }
           }
         }

@@ -75,6 +75,10 @@ namespace HeuristicLab.CEDMA.Core {
       ExecuteSavely(() => { store.Add(statement); return 1.0; });
     }
 
+    public void AddRange(ICollection<Statement> statements) {
+      ExecuteSavely(() => { store.AddRange(statements); return 1.0; });
+    }
+
     public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
       return ExecuteSavely(() => store.Query(query, page, pageSize));
     }

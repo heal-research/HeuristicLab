@@ -60,19 +60,31 @@ namespace HeuristicLab.CEDMA.DB {
       }
     }
 
+    public void AddRange(ICollection<Statement> statements) {
+      lock (bigLock) {
+        foreach (Statement s in statements) {
+          store.Add(Translate(s));
+        }
+      }
+    }
+
 
     public ICollection<VariableBindings> Query(string query, int page, int pageSize) {
-      MyQueryResultSink resultSink = new MyQueryResultSink();
-      SemWeb.N3Reader n3Reader = new SemWeb.N3Reader(new StringReader(query));
-      SemWeb.Query.GraphMatch matcher = new SemWeb.Query.GraphMatch(n3Reader);
-      matcher.Run(store, resultSink);
-      return resultSink.Bindings.Skip(page*pageSize).Take(pageSize).ToList();
+      lock (bigLock) {
+        MyQueryResultSink resultSink = new MyQueryResultSink();
+        SemWeb.N3Reader n3Reader = new SemWeb.N3Reader(new StringReader(query));
+        SemWeb.Query.GraphMatch matcher = new SemWeb.Query.GraphMatch(n3Reader);
+        matcher.Run(store, resultSink);
+        return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
+      }
     }
 
     public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
-      MyQueryResultSink resultSink = new MyQueryResultSink();
-      Translate(query).Run(store, resultSink);
-      return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
+      lock (bigLock) {
+        MyQueryResultSink resultSink = new MyQueryResultSink();
+        Translate(query).Run(store, resultSink);
+        return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
+      }
     }
 
     private SemWeb.Query.Query Translate(ICollection<Statement> query) {
