@@ -97,6 +97,7 @@
     <Compile Include="ClientForm.designer.cs">
       <DependentUpon>ClientForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AsyncGridResult.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EngineRunner.cs" />
     <Compile Include="EngineStore.cs" />

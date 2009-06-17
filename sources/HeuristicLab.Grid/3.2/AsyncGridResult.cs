@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,25 +21,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.ServiceModel;
+using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
+using System.Threading;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Grid {
-  public enum JobState {
-    Unknown = 0, // default value
-    Waiting,
-    Busy,
-    Finished
-  }
+  public class AsyncGridResult {
+    private ManualResetEvent waitHandle;
+    public WaitHandle WaitHandle { get { return waitHandle; } }
+    internal Guid Guid { get; set; }
+    internal ProcessingEngine Engine { get; set; }
+    internal int Restarts { get; set; }
+    internal bool Aborted { get; set; }
+    internal byte[] ZippedResult { get; set; }
 
+    internal AsyncGridResult(ProcessingEngine engine) {
+      Engine = engine;
+      Restarts = 0;
+      waitHandle = new ManualResetEvent(false);
+      Aborted = false;
+    }
 
-  [ServiceContract(Namespace = "http://HeuristicLab.Grid")]
-  public interface IGridServer {
-    [OperationContract]
-    JobState JobState(Guid guid);
-    [OperationContract]
-    Guid BeginExecuteEngine(byte[] engine);
-    [OperationContract]
-    byte[] TryEndExecuteEngine(Guid engineGuid);
+    internal void SignalFinished() {
+      waitHandle.Set();
+    }
   }
 }

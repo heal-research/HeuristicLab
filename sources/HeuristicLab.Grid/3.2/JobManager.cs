@@ -42,24 +42,13 @@ namespace HeuristicLab.Grid {
     private const int RETRY_TIMEOUT_SEC = 60;
     private const int RESULT_POLLING_TIMEOUT = 5;
 
-    private class Job {
-      public Guid guid;
-      public ProcessingEngine engine;
-      public ManualResetEvent waitHandle;
-      public int restarts;
-    }
-
     private IGridServer server;
     private string address;
     private object waitingQueueLock = new object();
-    private Queue<Job> waitingJobs = new Queue<Job>();
+    private Queue<AsyncGridResult> waitingJobs = new Queue<AsyncGridResult>();
     private object runningQueueLock = new object();
-    private Queue<Job> runningJobs = new Queue<Job>();
-    private Dictionary<AtomicOperation, byte[]> results = new Dictionary<AtomicOperation, byte[]>();
-
-    private List<IOperation> erroredOperations = new List<IOperation>();
+    private Queue<AsyncGridResult> runningJobs = new Queue<AsyncGridResult>();
     private object connectionLock = new object();
-    private object dictionaryLock = new object();
 
     private AutoResetEvent runningWaitHandle = new AutoResetEvent(false);
     private AutoResetEvent waitingWaitHandle = new AutoResetEvent(false);
@@ -76,23 +65,23 @@ namespace HeuristicLab.Grid {
 
     public void Reset() {
       ResetConnection();
-      lock(dictionaryLock) {
-        foreach(Job j in waitingJobs) {
-          j.waitHandle.Close();
+      lock (waitingQueueLock) {
+        foreach (AsyncGridResult r in waitingJobs) {
+          r.WaitHandle.Close();
         }
         waitingJobs.Clear();
-        foreach(Job j in runningJobs) {
-          j.waitHandle.Close();
+      }
+      lock (runningQueueLock) {
+        foreach (AsyncGridResult r in runningJobs) {
+          r.WaitHandle.Close();
         }
         runningJobs.Clear();
-        results.Clear();
-        erroredOperations.Clear();
       }
     }
 
     private void ResetConnection() {
       Trace.TraceInformation("Reset connection in JobManager");
-      lock(connectionLock) {
+      lock (connectionLock) {
         // open a new channel
         NetTcpBinding binding = new NetTcpBinding();
         binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
@@ -106,72 +95,69 @@ namespace HeuristicLab.Grid {
 
     public void StartEngines() {
       try {
-        while(true) {
-          Job job = null;
-          lock(waitingQueueLock) {
-            if(waitingJobs.Count > 0) job = waitingJobs.Dequeue();
+        while (true) {
+          AsyncGridResult job = null;
+          lock (waitingQueueLock) {
+            if (waitingJobs.Count > 0) job = waitingJobs.Dequeue();
           }
-          if(job==null) waitingWaitHandle.WaitOne(); // no jobs waiting
+          if (job == null) waitingWaitHandle.WaitOne(); // no jobs waiting
           else {
-            Guid currentEngineGuid = TryStartExecuteEngine(job.engine);
-            if(currentEngineGuid == Guid.Empty) {
+            Guid currentEngineGuid = TryStartExecuteEngine(job.Engine);
+            if (currentEngineGuid == Guid.Empty) {
               // couldn't start the job -> requeue
-              if(job.restarts < MAX_RESTARTS) {
-                job.restarts++;
-                lock(waitingQueueLock) waitingJobs.Enqueue(job);
+              if (job.Restarts < MAX_RESTARTS) {
+                job.Restarts++;
+                lock (waitingQueueLock) waitingJobs.Enqueue(job);
                 waitingWaitHandle.Set();
               } else {
                 // max restart count reached -> give up on this job and flag error
-                lock(dictionaryLock) {
-                  erroredOperations.Add(job.engine.InitialOperation);
-                  job.waitHandle.Set();
-                }
+                job.Aborted = true;
+                job.SignalFinished();
               }
             } else {
               // job started successfully
-              job.guid = currentEngineGuid;
-              lock(runningQueueLock) {
+              job.Guid = currentEngineGuid;
+              lock (runningQueueLock) {
                 runningJobs.Enqueue(job);
                 runningWaitHandle.Set();
               }
             }
           }
         }
-      } catch(Exception e) {
-        Trace.TraceError("Exception "+e+" in JobManager.StartEngines() killed the start-engine thread\n"+e.StackTrace);
+      }
+      catch (Exception e) {
+        Trace.TraceError("Exception " + e + " in JobManager.StartEngines() killed the start-engine thread\n" + e.StackTrace);
       }
     }
 
 
     public void GetResults() {
       try {
-        while(true) {
-          Job job = null;
-          lock(runningQueueLock) {
-            if(runningJobs.Count > 0) job = runningJobs.Dequeue();
+        while (true) {
+          AsyncGridResult job = null;
+          lock (runningQueueLock) {
+            if (runningJobs.Count > 0) job = runningJobs.Dequeue();
           }
-          if(job == null) runningWaitHandle.WaitOne(); // no jobs running
+          if (job == null) runningWaitHandle.WaitOne(); // no jobs running
           else {
-            byte[] zippedResult = TryEndExecuteEngine(server, job.guid);
-            if(zippedResult != null) { // successful
-              lock(dictionaryLock) {
-                // store result
-                results[job.engine.InitialOperation] = zippedResult;
-                // notify consumer that result is ready
-                job.waitHandle.Set();
-              }
+            byte[] zippedResult = TryEndExecuteEngine(server, job.Guid);
+            if (zippedResult != null) { 
+              // successful => store result
+              job.ZippedResult = zippedResult;
+              // notify consumer that result is ready
+              job.SignalFinished();
             } else {
               // there was a problem -> check the state of the job and restart if necessary
-              JobState jobState = TryGetJobState(server, job.guid);
-              if(jobState == JobState.Unknown) {
-                job.restarts++;
-                lock(waitingQueueLock) {
+              JobState jobState = TryGetJobState(server, job.Guid);
+              if (jobState == JobState.Unknown) {
+                job.Restarts++;
+                lock (waitingQueueLock) {
                   waitingJobs.Enqueue(job);
                   waitingWaitHandle.Set();
                 }
               } else {
                 // job still active at the server 
-                lock(runningQueueLock) {
+                lock (runningQueueLock) {
                   runningJobs.Enqueue(job);
                   runningWaitHandle.Set();
                 }
@@ -180,110 +166,71 @@ namespace HeuristicLab.Grid {
             }
           }
         }
-      } catch(Exception e) {
-        Trace.TraceError("Exception " + e + " in JobManager.GetResults() killed the results-gathering thread\n"+ e.StackTrace);
+      }
+      catch (Exception e) {
+        Trace.TraceError("Exception " + e + " in JobManager.GetResults() killed the results-gathering thread\n" + e.StackTrace);
       }
     }
 
-    public WaitHandle BeginExecuteOperation(IScope globalScope, AtomicOperation operation) {
-      return BeginExecuteEngine(new ProcessingEngine(globalScope, operation));
-    }
-
-    public WaitHandle BeginExecuteEngine(ProcessingEngine engine) {
-      Job job = new Job();
-      job.engine = engine;
-      job.waitHandle = new ManualResetEvent(false);
-      job.restarts = 0;
-      lock(waitingQueueLock) {
-        waitingJobs.Enqueue(job);
+    public AsyncGridResult BeginExecuteEngine(ProcessingEngine engine) {
+      AsyncGridResult asyncResult = new AsyncGridResult(engine);
+      asyncResult.Engine = engine;
+      lock (waitingQueueLock) {
+        waitingJobs.Enqueue(asyncResult);
       }
       waitingWaitHandle.Set();
-      return job.waitHandle;
+      return asyncResult;
     }
 
-    private byte[] ZipEngine(ProcessingEngine engine) {
+    private byte[] ZipEngine(IEngine engine) {
       return PersistenceManager.SaveToGZip(engine);
     }
 
-    public ProcessingEngine EndExecuteOperation(AtomicOperation operation) {
-      if(erroredOperations.Contains(operation)) {
-        erroredOperations.Remove(operation);
+    public IEngine EndExecuteEngine(AsyncGridResult asyncResult) {
+      if (asyncResult.Aborted) {
         throw new JobExecutionException("Maximal number of job restarts reached. There is a problem with the connection to the grid-server.");
       } else {
-        byte[] zippedResult = null;
-        lock(dictionaryLock) {
-          zippedResult = results[operation];
-          results.Remove(operation);
-        }
         // restore the engine 
-        return (ProcessingEngine)PersistenceManager.RestoreFromGZip(zippedResult);
+        return (IEngine)PersistenceManager.RestoreFromGZip(asyncResult.ZippedResult);
       }
     }
 
-    private Guid TryStartExecuteEngine(ProcessingEngine engine) {
+    private Guid TryStartExecuteEngine(IEngine engine) {
       byte[] zippedEngine = ZipEngine(engine);
-      int retries = 0;
-      Guid guid = Guid.Empty;
-      do {
-        try {
-          lock(connectionLock) {
-            guid = server.BeginExecuteEngine(zippedEngine);
-          }
-          return guid;
-        } catch(TimeoutException) {
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException) {
-          ResetConnection();
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        }
-      } while(retries < MAX_CONNECTION_RETRIES);
-      Trace.TraceWarning("Reached max connection retries in TryStartExecuteEngine");
-      return Guid.Empty;
+      return SavelyExecute(() => server.BeginExecuteEngine(zippedEngine));
     }
 
     private byte[] TryEndExecuteEngine(IGridServer server, Guid engineGuid) {
-      int retries = 0;
-      do {
-        try {
-          lock(connectionLock) {
-            byte[] zippedResult = server.TryEndExecuteEngine(engineGuid);
-            return zippedResult;
-          }
-        } catch(TimeoutException) {
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException) {
-          ResetConnection();
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        }
-      } while(retries < MAX_CONNECTION_RETRIES);
-      Trace.TraceWarning("Reached max connection retries in TryEndExecuteEngine");
-      return null;
+      return SavelyExecute(() => {
+        byte[] zippedResult = server.TryEndExecuteEngine(engineGuid);
+        return zippedResult;
+      });
     }
 
     private JobState TryGetJobState(IGridServer server, Guid engineGuid) {
-      // check if the server is still working on the job
+      return SavelyExecute(() => server.JobState(engineGuid));
+    }
+
+    private TResult SavelyExecute<TResult>(Func<TResult> a) {
       int retries = 0;
       do {
         try {
-          lock(connectionLock) {
-            JobState jobState = server.JobState(engineGuid);
-            return jobState;
+          lock (connectionLock) {
+            return a();
           }
-        } catch(TimeoutException) {
+        }
+        catch (TimeoutException) {
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        } catch(CommunicationException) {
+        }
+        catch (CommunicationException) {
           ResetConnection();
           retries++;
           Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
         }
-      } while(retries < MAX_CONNECTION_RETRIES);
-      Trace.TraceWarning("Reached max connection retries in TryGetJobState");
-      return JobState.Unknown;
+      } while (retries < MAX_CONNECTION_RETRIES);
+      Trace.TraceWarning("Reached max connection retries");
+      return default(TResult);
     }
   }
 }

@@ -360,7 +360,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
 
-      model.Data = bestModelScope.GetVariableValue<SVMModel>("BestValidationModel", false);
+      model.Data = bestModelScope.GetVariableValue<SVMModel>("Model", false);
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);

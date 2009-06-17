@@ -42,7 +42,7 @@ using HeuristicLab.Modeling;
 namespace HeuristicLab.CEDMA.Server {
   public class GridExecuter : ExecuterBase {
     private JobManager jobManager;
-    private Dictionary<WaitHandle, IAlgorithm> activeAlgorithms;
+    private Dictionary<AsyncGridResult, IAlgorithm> activeAlgorithms;
 
     private TimeSpan StartJobInterval {
       get { return TimeSpan.FromMilliseconds(500); }
@@ -55,46 +55,44 @@ namespace HeuristicLab.CEDMA.Server {
     public GridExecuter(IDispatcher dispatcher, IStore store, string gridUrl)
       : base(dispatcher, store) {
       this.jobManager = new JobManager(gridUrl);
-      activeAlgorithms = new Dictionary<WaitHandle, IAlgorithm>();
+      activeAlgorithms = new Dictionary<AsyncGridResult, IAlgorithm>();
       jobManager.Reset();
     }
 
     protected override void StartJobs() {
-      List<WaitHandle> wh = new List<WaitHandle>();
-      Dictionary<WaitHandle, AtomicOperation> activeOperations = new Dictionary<WaitHandle, AtomicOperation>();
+      Dictionary<WaitHandle, AsyncGridResult> asyncResults = new Dictionary<WaitHandle,AsyncGridResult>();
       while (true) {
         try {
           // start new jobs as long as there are less than MaxActiveJobs 
-          while (wh.Count < MaxActiveJobs) {
+          while (asyncResults.Count < MaxActiveJobs) {
             Thread.Sleep(StartJobInterval);
             // get an execution from the dispatcher and execute in grid via job-manager
             IAlgorithm algorithm = Dispatcher.GetNextJob();
             if (algorithm != null) {
               AtomicOperation op = new AtomicOperation(algorithm.Engine.OperatorGraph.InitialOperator, algorithm.Engine.GlobalScope);
-              WaitHandle opWh = jobManager.BeginExecuteOperation(algorithm.Engine.GlobalScope, op);
-              wh.Add(opWh);
-              activeOperations.Add(opWh, op);
+              AsyncGridResult asyncResult = jobManager.BeginExecuteEngine(new ProcessingEngine(algorithm.Engine.GlobalScope, op));
+              asyncResults.Add(asyncResult.WaitHandle, asyncResult);
               lock (activeAlgorithms) {
-                activeAlgorithms.Add(opWh, algorithm);
+                activeAlgorithms.Add(asyncResult, algorithm);
               }
             }
           }
           // wait until any job is finished
-          WaitHandle[] whArr = wh.ToArray();
+          WaitHandle[] whArr = asyncResults.Keys.ToArray();
           int readyHandleIndex = WaitHandle.WaitAny(whArr, WaitForFinishedJobsTimeout);
           if (readyHandleIndex != WaitHandle.WaitTimeout) {
             WaitHandle readyHandle = whArr[readyHandleIndex];
-            AtomicOperation finishedOp = activeOperations[readyHandle];
-            wh.Remove(readyHandle);
             IAlgorithm finishedAlgorithm = null;
+            AsyncGridResult finishedResult = null;
             lock (activeAlgorithms) {
-              finishedAlgorithm = activeAlgorithms[readyHandle];
-              activeAlgorithms.Remove(readyHandle);
+              finishedResult = asyncResults[readyHandle];
+              finishedAlgorithm = activeAlgorithms[finishedResult];
+              activeAlgorithms.Remove(finishedResult);
+              asyncResults.Remove(readyHandle);
             }
-            activeOperations.Remove(readyHandle);
-            readyHandle.Close();
             try {
-              ProcessingEngine finishedEngine = jobManager.EndExecuteOperation(finishedOp);
+              IEngine finishedEngine = jobManager.EndExecuteEngine(finishedResult);
+              SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
               StoreResults(finishedAlgorithm);
             }
             catch (Exception badEx) {
@@ -105,6 +103,18 @@ namespace HeuristicLab.CEDMA.Server {
         catch (Exception ex) {
           Trace.WriteLine("CEDMA Executer: Exception in job-management thread. " + ex.Message);
         }
+      }
+    }
+
+    private void SetResults(IScope src, IScope target) {
+      foreach (IVariable v in src.Variables) {
+        target.AddVariable(v);
+      }
+      foreach (IScope subScope in src.SubScopes) {
+        target.AddSubScope(subScope);
+      }
+      foreach (KeyValuePair<string, string> alias in src.Aliases) {
+        target.AddAlias(alias.Key, alias.Value);
       }
     }
 
