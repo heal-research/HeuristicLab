@@ -9,7 +9,7 @@ mkdir plugins\backup
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Charting\3.3\%Outdir%\HeuristicLab.CEDMA.Charting-3.3.dll" .\plugins
@@ -20,17 +20,17 @@ copy "%SolutionDir%\HeuristicLab.CEDMA.DB\3.3\%Outdir%\SemWeb.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.DB.Interfaces\3.3\%Outdir%\HeuristicLab.CEDMA.DB.Interfaces-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Server\3.3\%Outdir%\HeuristicLab.CEDMA.Server-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.2\%Outdir%\HeuristicLab.Charting-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting.Data\3.2\%Outdir%\HeuristicLab.Charting.Data-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Charting.Data\3.3\%Outdir%\HeuristicLab.Charting.Data-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Charting.Data\3.3\%Outdir%\HeuristicLab.Charting.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Communication.Data\3.2\%Outdir%\HeuristicLab.Communication.Data-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Communication.Operators\3.2\%Outdir%\HeuristicLab.Communication.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core\3.2\%Outdir%\HeuristicLab.Core-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Core\3.3\%Outdir%\HeuristicLab.Core-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Constraints\3.2\%Outdir%\HeuristicLab.Constraints-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Constraints\3.3\%Outdir%\HeuristicLab.Constraints-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Constraints\3.3\%Outdir%\HeuristicLab.Constraints-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Data\3.2\%Outdir%\HeuristicLab.Data-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Data\3.3\%Outdir%\HeuristicLab.Data-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess\3.2\%Outdir%\HeuristicLab.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAccess.ADOHelper\3.2\%Outdir%\HeuristicLab.DataAccess.ADOHelper-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.2\%Outdir%\HeuristicLab.DataAnalysis-3.2.dll" .\plugins
@@ -38,7 +38,7 @@ copy "%SolutionDir%\HeuristicLab.DataAnalysis\3.3\%Outdir%\HeuristicLab.DataAnal
 copy "%SolutionDir%\HeuristicLab.DistributedEngine\3.2\%Outdir%\HeuristicLab.DistributedEngine-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ES\3.2\%Outdir%\HeuristicLab.ES-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.2\%Outdir%\HeuristicLab.Evolutionary-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.3\%Outdir%\HeuristicLab.GP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.4\%Outdir%\HeuristicLab.GP-3.4.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Boolean\3.3\%Outdir%\HeuristicLab.GP.Boolean-3.3.dll" .\plugins
@@ -67,37 +67,37 @@ copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\3.2\%Outdir%\HeuristicLa
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\3.2\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.IntVector\3.2\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.3\%Outdir%\HeuristicLab.Modeling-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.2\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Metaprogramming\3.2\%Outdir%\HeuristicLab.Operators.Metaprogramming-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Programmable\3.2\%Outdir%\HeuristicLab.Operators.Programmable-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Operators.Programmable\3.3\%Outdir%\HeuristicLab.Operators.Programmable-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Operators.Programmable\3.3\%Outdir%\HeuristicLab.Operators.Programmable-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Stopwatch\3.2\%Outdir%\HeuristicLab.Operators.Stopwatch-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\3.2\%Outdir%\HeuristicLab.OptimizationFrontend-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\3.3\%Outdir%\HeuristicLab.OptimizationFrontend-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.OptimizationFrontend\3.3\%Outdir%\HeuristicLab.OptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Permutation\3.2\%Outdir%\HeuristicLab.Permutation-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Permutation\3.3\%Outdir%\HeuristicLab.Permutation-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Permutation\3.3\%Outdir%\HeuristicLab.Permutation-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Persistence\3.3\%Outdir%\HeuristicLab.Persistence-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Persistence.GUI\3.3\%Outdir%\HeuristicLab.Persistence.GUI-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Random\3.2\%Outdir%\HeuristicLab.Random-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Random\3.3\%Outdir%\HeuristicLab.Random-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Random\3.3\%Outdir%\HeuristicLab.Random-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.RealVector\3.2\%Outdir%\HeuristicLab.RealVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.2\%Outdir%\HeuristicLab.Routing.TSP-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.3\%Outdir%\HeuristicLab.Routing.TSP-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Routing.TSP\3.3\%Outdir%\HeuristicLab.Routing.TSP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SA\3.2\%Outdir%\HeuristicLab.SA-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Scheduling.JSSP\3.2\%Outdir%\HeuristicLab.Scheduling.JSSP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection\3.2\%Outdir%\HeuristicLab.Selection-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Selection\3.3\%Outdir%\HeuristicLab.Selection-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Selection\3.3\%Outdir%\HeuristicLab.Selection-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\3.2\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\3.3\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Selection.OffspringSelection\3.3\%Outdir%\HeuristicLab.Selection.OffspringSelection-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Selection.Uncertainty\3.2\%Outdir%\HeuristicLab.Selection.Uncertainty-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SequentialEngine\3.2\%Outdir%\HeuristicLab.SequentialEngine-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.SequentialEngine\3.3\%Outdir%\HeuristicLab.SequentialEngine-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.SequentialEngine\3.3\%Outdir%\HeuristicLab.SequentialEngine-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SGA\3.2\%Outdir%\HeuristicLab.SGA-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.SGA\3.3\%Outdir%\HeuristicLab.SGA-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.SGA\3.3\%Outdir%\HeuristicLab.SGA-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.FixedOperators\3.2\%Outdir%\HeuristicLab.FixedOperators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\3.2\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
@@ -107,9 +107,9 @@ copy "%SolutionDir%\HeuristicLab.StatisticalAnalysis\3.2\%Outdir%\HeuristicLab.S
 copy "%SolutionDir%\HeuristicLab.SupportVectorMachines\3.2\%Outdir%\HeuristicLab.SupportVectorMachines-3.2.dll" .\plugins
 copy "%SolutionDir%\LibSVM\%Outdir%\LibSVM.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.TestFunctions\3.2\%Outdir%\HeuristicLab.TestFunctions-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.TestFunctions\3.3\%Outdir%\HeuristicLab.TestFunctions-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.TestFunctions\3.3\%Outdir%\HeuristicLab.TestFunctions-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\3.2\%Outdir%\HeuristicLab.ThreadParallelEngine-3.2.dll" .\plugins
-rem copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\3.3\%Outdir%\HeuristicLab.ThreadParallelEngine-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.ThreadParallelEngine\3.3\%Outdir%\HeuristicLab.ThreadParallelEngine-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\HeuristicLab.Tracing-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\%Outdir%\log4net.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Tracing\3.2\log4net licence.txt" .\plugins
