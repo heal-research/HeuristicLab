@@ -24,18 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.CEDMA.Server {
-  [ClassInfo(Name = "HeuristicLab.CEDMA.Server-3.3")]
-  [PluginFile(Filename = "HeuristicLab.CEDMA.Server-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.3")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB-3.3")]
-  [Dependency(Dependency = "HeuristicLab.Grid-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Grid.HiveBridge-3.2")]
+namespace HeuristicLab.Grid.HiveBridge {
+  [ClassInfo(Name = "HeuristicLab.Grid.HiveBridge-3.2")]
+  [PluginFile(Filename = "HeuristicLab.Grid.HiveBridge-3.2.dll", Filetype = PluginFileType.Assembly)]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
-  public class HeuristicLabCedmaServerPlugin : PluginBase {
+  [Dependency(Dependency = "HeuristicLab.Grid-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Hive.Contracts-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Hive.JobBase-3.2")]
+  public class HeuristicLabGridPlugin : PluginBase {
   }
 }

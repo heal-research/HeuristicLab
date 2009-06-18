@@ -71,7 +71,7 @@ namespace HeuristicLab.DistributedEngine {
     }
 
     public override void Execute() {
-      if (jobManager == null) this.jobManager = new JobManager(serverAddress);
+      if (jobManager == null) this.jobManager = new JobManager(new GridServerProxy(serverAddress));
       jobManager.Reset();
       base.Execute();
     }

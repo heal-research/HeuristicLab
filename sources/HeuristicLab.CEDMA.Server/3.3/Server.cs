@@ -29,6 +29,8 @@ using System.ServiceModel;
 using HeuristicLab.CEDMA.DB.Interfaces;
 using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
+using HeuristicLab.Grid;
+using HeuristicLab.Grid.HiveBridge;
 
 namespace HeuristicLab.CEDMA.Server {
   public class Server {
@@ -104,12 +106,14 @@ namespace HeuristicLab.CEDMA.Server {
 
     internal void Connect(string serverUrl) {
       dispatcher = new SimpleDispatcher(store);
+      IGridServer gridServer = null;
       if (serverUrl.Contains("ExecutionEngine")) {
-        executer = new HiveExecuter(dispatcher, store, serverUrl);
+        gridServer = new HiveGridServerWrapper(serverUrl);
       } else {
         // default is grid backend
-        executer = new GridExecuter(dispatcher, store, serverUrl);
+        gridServer = new GridServerProxy(serverUrl);
       }
+      executer = new GridExecuter(dispatcher, store, gridServer);
       executer.Start();
     }
   }

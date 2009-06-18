@@ -38,8 +38,6 @@ namespace HeuristicLab.Grid {
 
   public class JobManager {
     private const int MAX_RESTARTS = 5;
-    private const int MAX_CONNECTION_RETRIES = 10;
-    private const int RETRY_TIMEOUT_SEC = 60;
     private const int RESULT_POLLING_TIMEOUT = 5;
 
     private IGridServer server;
@@ -48,15 +46,12 @@ namespace HeuristicLab.Grid {
     private Queue<AsyncGridResult> waitingJobs = new Queue<AsyncGridResult>();
     private object runningQueueLock = new object();
     private Queue<AsyncGridResult> runningJobs = new Queue<AsyncGridResult>();
-    private object connectionLock = new object();
-
     private AutoResetEvent runningWaitHandle = new AutoResetEvent(false);
     private AutoResetEvent waitingWaitHandle = new AutoResetEvent(false);
 
-    private ChannelFactory<IGridServer> factory;
 
-    public JobManager(string address) {
-      this.address = address;
+    public JobManager(IGridServer server) {
+      this.server = server;
       Thread starterThread = new Thread(StartEngines);
       Thread resultsGatheringThread = new Thread(GetResults);
       starterThread.Start();
@@ -64,7 +59,6 @@ namespace HeuristicLab.Grid {
     }
 
     public void Reset() {
-      ResetConnection();
       lock (waitingQueueLock) {
         foreach (AsyncGridResult r in waitingJobs) {
           r.WaitHandle.Close();
@@ -79,19 +73,6 @@ namespace HeuristicLab.Grid {
       }
     }
 
-    private void ResetConnection() {
-      Trace.TraceInformation("Reset connection in JobManager");
-      lock (connectionLock) {
-        // open a new channel
-        NetTcpBinding binding = new NetTcpBinding();
-        binding.MaxReceivedMessageSize = 100000000; // 100Mbytes
-        binding.ReaderQuotas.MaxStringContentLength = 100000000; // also 100M chars
-        binding.ReaderQuotas.MaxArrayLength = 100000000; // also 100M elements;
-
-        factory = new ChannelFactory<IGridServer>(binding);
-        server = factory.CreateChannel(new EndpointAddress(address));
-      }
-    }
 
     public void StartEngines() {
       try {
@@ -102,7 +83,7 @@ namespace HeuristicLab.Grid {
           }
           if (job == null) waitingWaitHandle.WaitOne(); // no jobs waiting
           else {
-            Guid currentEngineGuid = TryStartExecuteEngine(job.Engine);
+            Guid currentEngineGuid = server.BeginExecuteEngine(ZipEngine(job.Engine));
             if (currentEngineGuid == Guid.Empty) {
               // couldn't start the job -> requeue
               if (job.Restarts < MAX_RESTARTS) {
@@ -140,7 +121,7 @@ namespace HeuristicLab.Grid {
           }
           if (job == null) runningWaitHandle.WaitOne(); // no jobs running
           else {
-            byte[] zippedResult = TryEndExecuteEngine(server, job.Guid);
+            byte[] zippedResult = server.TryEndExecuteEngine(job.Guid);
             if (zippedResult != null) { 
               // successful => store result
               job.ZippedResult = zippedResult;
@@ -148,7 +129,7 @@ namespace HeuristicLab.Grid {
               job.SignalFinished();
             } else {
               // there was a problem -> check the state of the job and restart if necessary
-              JobState jobState = TryGetJobState(server, job.Guid);
+              JobState jobState = server.JobState(job.Guid);
               if (jobState == JobState.Unknown) {
                 job.Restarts++;
                 lock (waitingQueueLock) {
@@ -193,44 +174,6 @@ namespace HeuristicLab.Grid {
         // restore the engine 
         return (IEngine)PersistenceManager.RestoreFromGZip(asyncResult.ZippedResult);
       }
-    }
-
-    private Guid TryStartExecuteEngine(IEngine engine) {
-      byte[] zippedEngine = ZipEngine(engine);
-      return SavelyExecute(() => server.BeginExecuteEngine(zippedEngine));
-    }
-
-    private byte[] TryEndExecuteEngine(IGridServer server, Guid engineGuid) {
-      return SavelyExecute(() => {
-        byte[] zippedResult = server.TryEndExecuteEngine(engineGuid);
-        return zippedResult;
-      });
-    }
-
-    private JobState TryGetJobState(IGridServer server, Guid engineGuid) {
-      return SavelyExecute(() => server.JobState(engineGuid));
-    }
-
-    private TResult SavelyExecute<TResult>(Func<TResult> a) {
-      int retries = 0;
-      do {
-        try {
-          lock (connectionLock) {
-            return a();
-          }
-        }
-        catch (TimeoutException) {
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        }
-        catch (CommunicationException) {
-          ResetConnection();
-          retries++;
-          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
-        }
-      } while (retries < MAX_CONNECTION_RETRIES);
-      Trace.TraceWarning("Reached max connection retries");
-      return default(TResult);
     }
   }
 }

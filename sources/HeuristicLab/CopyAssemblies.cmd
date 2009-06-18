@@ -49,6 +49,7 @@ copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.Classification\3.3\%
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.ConditionalEvaluation\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification.ConditionalEvaluation-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.StructureIdentification.TimeSeries\3.3\%Outdir%\HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Grid\3.2\%Outdir%\HeuristicLab.Grid-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Grid.HiveBridge\3.2\%Outdir%\HeuristicLab.Grid.HiveBridge-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Common\3.2\%Outdir%\HeuristicLab.Hive.Client.Common-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Communication\3.2\%Outdir%\HeuristicLab.Hive.Client.Communication-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Client.Console\3.2\%Outdir%\HeuristicLab.Hive.Client.Console-3.2.dll" .\plugins

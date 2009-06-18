@@ -52,9 +52,9 @@ namespace HeuristicLab.CEDMA.Server {
       get { return TimeSpan.FromMilliseconds(100); }
     }
 
-    public GridExecuter(IDispatcher dispatcher, IStore store, string gridUrl)
+    public GridExecuter(IDispatcher dispatcher, IStore store, IGridServer server)
       : base(dispatcher, store) {
-      this.jobManager = new JobManager(gridUrl);
+      this.jobManager = new JobManager(server);
       activeAlgorithms = new Dictionary<AsyncGridResult, IAlgorithm>();
       jobManager.Reset();
     }
