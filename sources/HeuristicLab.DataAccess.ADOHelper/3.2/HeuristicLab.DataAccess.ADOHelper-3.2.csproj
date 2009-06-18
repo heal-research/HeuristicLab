@@ -122,4 +122,7 @@ set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="DatabaseOptions.txt" />
+  </ItemGroup>
 </Project>
