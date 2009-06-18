@@ -175,7 +175,20 @@ namespace HeuristicLab.Hive.Client.Core {
         
         case MessageContainer.MessageType.UptimeLimitDisconnect:
           Logging.Instance.Info(this.ToString(), "Uptime Limit reached, storing jobs and sending them back");
-          WcfService.Instance.Disconnect();
+
+          //check if there are running jobs
+          if (engines.Count > 0) {
+            //make sure there is no more fetching of jobs while the snapshots get processed
+            currentlyFetching = true;
+            //request a snapshot of each running job
+            foreach (KeyValuePair<Guid, Executor> kvp in engines) {
+              kvp.Value.RequestSnapshot();
+            }
+            
+          } else {
+            //Disconnect afterwards
+            WcfService.Instance.Disconnect();
+          }
           break;
         
         
@@ -238,7 +251,25 @@ namespace HeuristicLab.Hive.Client.Core {
         obj,
         engines[jId].Progress,
         null);
-      engines[jId].StartOnlyJob();
+
+      //Uptime Limit reached, now is a good time to destroy this jobs.
+      if (!UptimeManager.Instance.isOnline()) {
+        lock (engines) {
+          appDomains[jId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+          AppDomain.Unload(appDomains[jId]);
+          appDomains.Remove(jId);
+          engines.Remove(jId);
+          jobs.Remove(jId);
+        }
+        GC.Collect();
+
+        //Still anything running?
+        if (engines.Count == 0)
+          WcfService.Instance.Disconnect();
+      
+      } else {
+        engines[jId].StartOnlyJob();
+      }
     }
 
     #endregion
@@ -248,6 +279,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
+        currentlyFetching = false;
         Logging.Instance.Info(this.ToString(), "Login completed to Hive Server @ " + DateTime.Now);        
       } else
         Logging.Instance.Error(this.ToString(), e.Result.StatusMessage);

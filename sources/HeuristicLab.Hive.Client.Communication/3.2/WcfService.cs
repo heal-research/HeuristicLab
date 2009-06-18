@@ -266,8 +266,10 @@ namespace HeuristicLab.Hive.Client.Communication {
     private void proxy_ProcessHeartBeatCompleted(object sender, ProcessHeartBeatCompletedEventArgs e) {
       if (e.Error == null && e.Result.Success == true)
         SendHeartBeatCompleted(sender, e);
-      else
+      else {
+        Logging.Instance.Error(this.ToString(), "Error: " + e.Result.StatusMessage);
         HandleNetworkError(e.Error);
+      }
     }
 
     #endregion  
