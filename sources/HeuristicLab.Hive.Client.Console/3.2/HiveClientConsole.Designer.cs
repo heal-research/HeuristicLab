@@ -45,7 +45,7 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private void InitializeComponent() {
         this.components = new System.ComponentModel.Container();
-        Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
+        Calendar.DrawTool drawTool6 = new Calendar.DrawTool();
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
         this.dvOnline = new Calendar.DayView();
         this.tcClientConsole = new System.Windows.Forms.TabControl();
@@ -81,9 +81,9 @@ namespace HeuristicLab.Hive.Client.Console {
         this.gbEventLog = new System.Windows.Forms.GroupBox();
         this.txtLog = new System.Windows.Forms.TextBox();
         this.tabPage2 = new System.Windows.Forms.TabPage();
+        this.btnSaveCal = new System.Windows.Forms.Button();
         this.pictureBox1 = new System.Windows.Forms.PictureBox();
         this.groupBox1 = new System.Windows.Forms.GroupBox();
-        this.btnSaveCal = new System.Windows.Forms.Button();
         this.txttimeTo = new System.Windows.Forms.DateTimePicker();
         this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
         this.dtpTo = new System.Windows.Forms.DateTimePicker();
@@ -111,8 +111,8 @@ namespace HeuristicLab.Hive.Client.Console {
         // 
         // dvOnline
         // 
-        drawTool2.DayView = this.dvOnline;
-        this.dvOnline.ActiveTool = drawTool2;
+        drawTool6.DayView = this.dvOnline;
+        this.dvOnline.ActiveTool = drawTool6;
         this.dvOnline.AmPmDisplay = false;
         this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
         this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -136,7 +136,6 @@ namespace HeuristicLab.Hive.Client.Console {
         // 
         // tcClientConsole
         // 
-        this.tcClientConsole.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
         this.tcClientConsole.Controls.Add(this.tpConnection);
         this.tcClientConsole.Controls.Add(this.tabPage2);
         this.tcClientConsole.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -256,9 +255,9 @@ namespace HeuristicLab.Hive.Client.Console {
         // gbJobCommon
         // 
         this.gbJobCommon.Controls.Add(this.lvJobDetail);
-        this.gbJobCommon.Location = new System.Drawing.Point(8, 152);
+        this.gbJobCommon.Location = new System.Drawing.Point(8, 139);
         this.gbJobCommon.Name = "gbJobCommon";
-        this.gbJobCommon.Size = new System.Drawing.Size(412, 252);
+        this.gbJobCommon.Size = new System.Drawing.Size(269, 265);
         this.gbJobCommon.TabIndex = 13;
         this.gbJobCommon.TabStop = false;
         this.gbJobCommon.Text = "Jobs detail";
@@ -269,11 +268,12 @@ namespace HeuristicLab.Hive.Client.Console {
             this.chJobId,
             this.chSince,
             this.chProgress});
+        this.lvJobDetail.Dock = System.Windows.Forms.DockStyle.Fill;
         this.lvJobDetail.FullRowSelect = true;
         this.lvJobDetail.GridLines = true;
-        this.lvJobDetail.Location = new System.Drawing.Point(6, 14);
+        this.lvJobDetail.Location = new System.Drawing.Point(3, 16);
         this.lvJobDetail.Name = "lvJobDetail";
-        this.lvJobDetail.Size = new System.Drawing.Size(398, 232);
+        this.lvJobDetail.Size = new System.Drawing.Size(263, 246);
         this.lvJobDetail.TabIndex = 0;
         this.lvJobDetail.UseCompatibleStateImageBehavior = false;
         this.lvJobDetail.View = System.Windows.Forms.View.Details;
@@ -290,7 +290,6 @@ namespace HeuristicLab.Hive.Client.Console {
         // chProgress
         // 
         this.chProgress.Text = "Progress";
-        this.chProgress.Width = 200;
         // 
         // gbCommon
         // 
@@ -434,21 +433,21 @@ namespace HeuristicLab.Hive.Client.Console {
         // gbEventLog
         // 
         this.gbEventLog.Controls.Add(this.txtLog);
-        this.gbEventLog.Location = new System.Drawing.Point(426, 152);
+        this.gbEventLog.Location = new System.Drawing.Point(283, 139);
         this.gbEventLog.Name = "gbEventLog";
-        this.gbEventLog.Size = new System.Drawing.Size(412, 252);
+        this.gbEventLog.Size = new System.Drawing.Size(555, 265);
         this.gbEventLog.TabIndex = 7;
         this.gbEventLog.TabStop = false;
         this.gbEventLog.Text = "Hive Client Log";
         // 
         // txtLog
         // 
-        this.txtLog.Location = new System.Drawing.Point(4, 14);
+        this.txtLog.Location = new System.Drawing.Point(6, 14);
         this.txtLog.Multiline = true;
         this.txtLog.Name = "txtLog";
         this.txtLog.ReadOnly = true;
         this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-        this.txtLog.Size = new System.Drawing.Size(402, 232);
+        this.txtLog.Size = new System.Drawing.Size(543, 248);
         this.txtLog.TabIndex = 0;
         // 
         // tabPage2
@@ -465,6 +464,16 @@ namespace HeuristicLab.Hive.Client.Console {
         this.tabPage2.TabIndex = 1;
         this.tabPage2.Text = "Schedule";
         this.tabPage2.UseVisualStyleBackColor = true;
+        // 
+        // btnSaveCal
+        // 
+        this.btnSaveCal.Location = new System.Drawing.Point(633, 138);
+        this.btnSaveCal.Name = "btnSaveCal";
+        this.btnSaveCal.Size = new System.Drawing.Size(199, 23);
+        this.btnSaveCal.TabIndex = 41;
+        this.btnSaveCal.Text = "Save calender";
+        this.btnSaveCal.UseVisualStyleBackColor = true;
+        this.btnSaveCal.Click += new System.EventHandler(this.btnSaveCal_Click);
         // 
         // pictureBox1
         // 
@@ -493,16 +502,6 @@ namespace HeuristicLab.Hive.Client.Console {
         this.groupBox1.Size = new System.Drawing.Size(254, 161);
         this.groupBox1.TabIndex = 21;
         this.groupBox1.TabStop = false;
-        // 
-        // btnSaveCal
-        // 
-        this.btnSaveCal.Location = new System.Drawing.Point(633, 138);
-        this.btnSaveCal.Name = "btnSaveCal";
-        this.btnSaveCal.Size = new System.Drawing.Size(199, 23);
-        this.btnSaveCal.TabIndex = 41;
-        this.btnSaveCal.Text = "Save calender";
-        this.btnSaveCal.UseVisualStyleBackColor = true;
-        this.btnSaveCal.Click += new System.EventHandler(this.btnSaveCal_Click);
         // 
         // txttimeTo
         // 
@@ -626,7 +625,6 @@ namespace HeuristicLab.Hive.Client.Console {
         this.MinimizeBox = false;
         this.Name = "HiveClientConsole";
         this.Text = "Client Console (loading...)";
-        this.Load += new System.EventHandler(this.HiveClientConsole_Load);
         this.tcClientConsole.ResumeLayout(false);
         this.tpConnection.ResumeLayout(false);
         this.groupBox2.ResumeLayout(false);

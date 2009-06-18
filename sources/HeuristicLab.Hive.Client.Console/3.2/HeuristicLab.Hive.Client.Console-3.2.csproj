@@ -98,12 +98,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventLogEntryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EventLogEntryForm.Designer.cs">
-      <DependentUpon>EventLogEntryForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="HiveClientConsole.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,14 +106,8 @@
     </Compile>
     <Compile Include="HiveClientConsolePlugin.cs" />
     <Compile Include="HiveClientConsoleApplication.cs" />
-    <Compile Include="HiveEventEntry.cs" />
-    <Compile Include="ListViewColumnSorterDate.cs" />
     <Compile Include="LogFileReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="EventLogEntryForm.resx">
-      <DependentUpon>EventLogEntryForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="HiveClientConsole.resx">
       <DependentUpon>HiveClientConsole.cs</DependentUpon>
       <SubType>Designer</SubType>

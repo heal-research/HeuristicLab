@@ -38,9 +38,14 @@ namespace HeuristicLab.Hive.Client.Console
 {
 
     #region Delegates
-
+    
+    //delegate to write text in the textbox from another process
     public delegate void AppendTextDelegate(String message);
+
+    //delegate to remove text in the textbox from another process
     public delegate void RemoveTextDelegate(int newLength, int maxChars);
+
+    //delegate fired, if a dialog is being closed
     public delegate void OnDialogClosedDelegate(RecurrentEvent e);
 
     #endregion
@@ -51,14 +56,17 @@ namespace HeuristicLab.Hive.Client.Console
         #region Declarations
 
         private const string ENDPOINTADRESS = "net.tcp://127.0.0.1:8000/ClientConsole/ClientConsoleCommunicator";
-        //private const string EVENTLOGNAME = "Hive Client";
 
-        //private EventLog HiveClientEventLog;
+        //the logfilereader
         private LogFileReader logFileReader;
-        private ClientConsoleCommunicatorClient cccc;
-        private System.Windows.Forms.Timer refreshTimer;
-        //private ListViewColumnSorterDate lvwColumnSorter;
 
+        //communication with the client
+        private ClientConsoleCommunicatorClient clientCommunicator;
+
+        //the timer for refreshing the gui
+        private System.Windows.Forms.Timer refreshTimer;
+
+        //the list of appointments in the calender
         [XmlArray("Appointments")]
         [XmlArrayItem("Appointment", typeof(Appointment))]
         public List<Appointment> onlineTimes = new List<Appointment>();
@@ -79,20 +87,34 @@ namespace HeuristicLab.Hive.Client.Console
             InitLogFileReader();
         }
 
-        private void InitTestCalenderEntries()
-        {
-            DateTime date = DateTime.Now;
-            while (date.Year == 2009)
-            {
+        #endregion
 
-                onlineTimes.Add(CreateAppointment(date.AddHours(1), date.AddHours(3), false));
-                date = date.AddDays(1);
+        #region Methods
+
+        #region Client connection
+
+        private void ConnectToClient()
+        {
+            try
+            {
+                clientCommunicator = new ClientConsoleCommunicatorClient(WcfSettings.GetBinding(), new EndpointAddress(ENDPOINTADRESS));
+                clientCommunicator.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(clientCommunicator_GetStatusInfosCompleted);
+                clientCommunicator.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(clientCommunicator_GetCurrentConnectionCompleted);
+                clientCommunicator.GetUptimeCalendarCompleted += new EventHandler<GetUptimeCalendarCompletedEventArgs>(clientCommunicator_GetUptimeCalendarCompleted);
+                clientCommunicator.SetUptimeCalendarCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(clientCommunicator_SetUptimeCalendarCompleted);
+            }
+            catch (Exception)
+            {
+                refreshTimer.Stop();
+                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (res == DialogResult.OK)
+                    this.Close();
             }
         }
 
         #endregion
 
-        #region Methods
+        #region Logging
 
         private void InitLogFileReader()
         {
@@ -129,6 +151,23 @@ namespace HeuristicLab.Hive.Client.Console
             }
         }
 
+        private void AppendText(string message)
+        {
+            if (this.txtLog.InvokeRequired)
+            {
+                this.txtLog.Invoke(new
+                  AppendTextDelegate(AppendText), new object[] { message });
+            }
+            else
+            {
+                this.txtLog.AppendText(message);
+            }
+        }
+
+        #endregion
+
+        #region Gui Refresh
+
         private void InitTimer()
         {
             refreshTimer = new System.Windows.Forms.Timer();
@@ -141,65 +180,15 @@ namespace HeuristicLab.Hive.Client.Console
         {
             try
             {
-                cccc.GetStatusInfosAsync();
+                clientCommunicator.GetStatusInfosAsync();
             }
             catch (Exception ex)
             {
                 refreshTimer.Stop();
-                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (res == DialogResult.OK)
                     this.Close();
             }
-        }
-
-        private void ConnectToClient()
-        {
-            try
-            {
-                //changed by MB, 16.04.09
-                //cccc = new ClientConsoleCommunicatorClient(new NetTcpBinding(), new EndpointAddress(ENDPOINTADRESS));
-                cccc = new ClientConsoleCommunicatorClient(WcfSettings.GetBinding(), new EndpointAddress(ENDPOINTADRESS));
-                cccc.GetStatusInfosCompleted += new EventHandler<GetStatusInfosCompletedEventArgs>(cccc_GetStatusInfosCompleted);
-                cccc.GetCurrentConnectionCompleted += new EventHandler<GetCurrentConnectionCompletedEventArgs>(cccc_GetCurrentConnectionCompleted);
-                cccc.GetUptimeCalendarCompleted += new EventHandler<GetUptimeCalendarCompletedEventArgs>(cccc_GetUptimeCalendarCompleted);
-                cccc.SetUptimeCalendarCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(cccc_SetUptimeCalendarCompleted);
-            }
-            catch (Exception)
-            {
-                refreshTimer.Stop();
-                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running!", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                if (res == DialogResult.OK)
-                    this.Close();
-            }
-        }
-
-        void cccc_SetUptimeCalendarCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            if (e.Error == null)
-            {
-                MessageBox.Show("Calendar successfully saved!", "Calender", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("Error saving calender \n" + e.Error.ToString(), "Calender", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        void cccc_GetUptimeCalendarCompleted(object sender, GetUptimeCalendarCompletedEventArgs e)
-        {
-            if (e.Error == null)
-            {
-                if (e.Result != null)
-                {
-                    onlineTimes = e.Result.ToList<Appointment>();
-                    onlineTimes.ForEach(a => a.BorderColor = Color.Red);
-                }
-                else
-                {
-                    onlineTimes = new List<Appointment>();
-                }
-            }
-            //InitTestCalenderEntries();
         }
 
         private void UpdateGraph(JobStatus[] jobs)
@@ -247,14 +236,73 @@ namespace HeuristicLab.Hive.Client.Console
             pbGraph.Image = zgc.GetImage();
         }
 
+        #region Events
+
+        private void refreshTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshGui();
+        }
+
+        #endregion
+
+
+        #endregion
+
+        #region Calendar stuff
+
         private void InitCalender()
         {
             dvOnline.StartDate = DateTime.Now;
-            dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(DvOnline_OnNewAppointment);
-            dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(DvOnline_OnResolveAppointments);
+            dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(dvOnline_OnNewAppointment);
+            dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(dvOnline_OnResolveAppointments);
 
             //get calender from client
-            cccc.GetUptimeCalendarAsync();
+            clientCommunicator.GetUptimeCalendarAsync();
+        }
+
+        private bool CreateAppointment()
+        {
+            DateTime from, to;
+
+            if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text))
+            {
+                if (chbade.Checked)
+                {
+                    //whole day appointment, only dates are visible
+                    if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to)
+                        onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
+                    else
+                        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text))
+                {
+                    //Timeframe appointment
+                    if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to)
+                    {
+                        if (from.Date == to.Date)
+                            onlineTimes.Add(CreateAppointment(from, to, false));
+                        else
+                        {
+                            //more than 1 day selected
+                            while (from.Date != to.Date)
+                            {
+                                onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+                                from = from.AddDays(1);
+                            }
+                            onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+                        }
+                    }
+                    else
+                        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                dvOnline.Invalidate();
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Error in create appointment, please fill out all textboxes!", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         private Appointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay)
@@ -294,147 +342,39 @@ namespace HeuristicLab.Hive.Client.Console
             onlineTimes.RemoveAll(a => a.RecurringId.ToString() == dvOnline.SelectedAppointment.RecurringId.ToString());
         }
 
-        #endregion
-
-        #region Events
-
-        private void refreshTimer_Tick(object sender, EventArgs e)
+        private void ChangeRecurrenceAppointment(Guid recurringId)
         {
-            RefreshGui();
+            int hourfrom = int.Parse(txttimeFrom.Text.Substring(0, txttimeFrom.Text.IndexOf(':')));
+            int hourTo = int.Parse(txttimeTo.Text.Substring(0, txttimeTo.Text.IndexOf(':')));
+            List<Appointment> recurringAppointments = onlineTimes.Where(appointment => appointment.RecurringId == recurringId).ToList();
+            recurringAppointments.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
+            recurringAppointments.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
+
+            DeleteRecurringAppointment(recurringId);
+            onlineTimes.AddRange(recurringAppointments);
         }
 
-        private void cccc_GetCurrentConnectionCompleted(object sender, GetCurrentConnectionCompletedEventArgs e)
+        public void DialogClosed(RecurrentEvent e)
         {
-            if (e.Error == null)
-            {
-                ConnectionContainer curConnection = e.Result;
-                tbIPAdress.Text = curConnection.IPAdress;
-                tbPort.Text = curConnection.Port.ToString();
-            }
-            else
-            {
-                refreshTimer.Stop();
-                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                if (res == DialogResult.OK)
-                    this.Close();
-            }
+            CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.IncWeeks, e.WeekDays);
         }
 
-        private void cccc_GetStatusInfosCompleted(object sender, GetStatusInfosCompletedEventArgs e)
+        private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, int incWeek, HashSet<DayOfWeek> daysOfWeek)
         {
+            DateTime incDate = dateFrom;
+            Guid guid = Guid.NewGuid();
 
-            if (e.Error == null)
+            while (incDate.Date <= dateTo.Date)
             {
-                StatusCommons sc = e.Result;
-
-                lbGuid.Text = sc.ClientGuid.ToString();
-                lbConnectionStatus.Text = sc.Status.ToString();
-                lbJobdone.Text = sc.JobsDone.ToString();
-                lbJobsAborted.Text = sc.JobsAborted.ToString();
-                lbJobsFetched.Text = sc.JobsFetched.ToString();
-
-                this.Text = "Client Console (" + sc.Status.ToString() + ")";
-
-                ListViewItem curJobStatusItem;
-
-                if (sc.Jobs != null)
-                {
-                    lvJobDetail.Items.Clear();
-                    double progress;
-                    foreach (JobStatus curJob in sc.Jobs)
-                    {
-                        curJobStatusItem = new ListViewItem(curJob.JobId.ToString());
-                        curJobStatusItem.SubItems.Add(curJob.Since.ToString());
-                        progress = curJob.Progress * 100;
-                        curJobStatusItem.SubItems.Add(progress.ToString());
-                        lvJobDetail.Items.Add(curJobStatusItem);
-                    }
-                    lvJobDetail.Sort();
-                }
-
-                UpdateGraph(sc.Jobs);
-
-                if (sc.Status == NetworkEnumWcfConnState.Connected || sc.Status == NetworkEnumWcfConnState.Loggedin)
-                {
-                    btConnect.Enabled = false;
-                    btnDisconnect.Enabled = true;
-                    lbCs.Text = sc.ConnectedSince.ToString();
-                    cccc.GetCurrentConnectionAsync();
-                }
-                else if (sc.Status == NetworkEnumWcfConnState.Disconnected)
-                {
-                    btConnect.Enabled = true;
-                    btnDisconnect.Enabled = false;
-                    lbCs.Text = String.Empty;
-                }
-                else if (sc.Status == NetworkEnumWcfConnState.Failed)
-                {
-                    btConnect.Enabled = true;
-                    btnDisconnect.Enabled = false;
-                    lbCs.Text = String.Empty;
-                }
-
-                cccc.GetCurrentConnection();
+                if (daysOfWeek.Contains(incDate.Date.DayOfWeek))
+                    onlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid));
+                incDate = incDate.AddDays(1);
             }
-            else
-            {
-                refreshTimer.Stop();
-                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                if (res == DialogResult.OK)
-                    this.Close();
-            }
+
+            dvOnline.Invalidate();
         }
 
-        private void HiveClientConsole_Load(object sender, EventArgs e)
-        {
-            //nothing to do
-        }
-
-        private void AppendText(string message)
-        {
-            if (this.txtLog.InvokeRequired)
-            {
-                this.txtLog.Invoke(new
-                  AppendTextDelegate(AppendText), new object[] { message });
-            }
-            else
-            {
-                this.txtLog.AppendText(message);
-            }
-        }
-
-        private void btConnect_Click(object sender, EventArgs e)
-        {
-            IPAddress ipAdress;
-            int port;
-            ConnectionContainer cc = new ConnectionContainer();
-            if (IPAddress.TryParse(tbIPAdress.Text, out ipAdress) && int.TryParse(tbPort.Text, out port))
-            {
-                cc.IPAdress = tbIPAdress.Text;
-                cc.Port = port;
-                cccc.SetConnectionAsync(cc);
-            }
-            else
-            {
-                MessageBox.Show("IP Adress and/or Port Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnDisconnect_Click(object sender, EventArgs e)
-        {
-            cccc.DisconnectAsync();
-        }
-
-        private void btn_clientShutdown_Click(object sender, EventArgs e)
-        {
-            DialogResult res = MessageBox.Show("Do you really want to shutdown the Hive Client?", "Hive Client Console", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (res == DialogResult.Yes)
-            {
-                logFileReader.Stop();
-                cccc.ShutdownClient();
-                this.Close();
-            }
-        }
+        #region Calendar Events
 
         private void btbDelete_Click(object sender, EventArgs e)
         {
@@ -496,60 +436,9 @@ namespace HeuristicLab.Hive.Client.Console
 
         }
 
-        private void Connection_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Return)
-                btConnect_Click(null, null);
-        }
-
         private void mcOnline_DateChanged(object sender, DateRangeEventArgs e)
         {
             dvOnline.StartDate = mcOnline.SelectionStart;
-        }
-
-        private bool CreateAppointment()
-        {
-            DateTime from, to;
-
-            if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text))
-            {
-                if (chbade.Checked)
-                {
-                    //whole day appointment, only dates are visible
-                    if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to)
-                        onlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
-                    else
-                        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text))
-                {
-                    //Timeframe appointment
-                    if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to)
-                    {
-                        if (from.Date == to.Date)
-                            onlineTimes.Add(CreateAppointment(from, to, false));
-                        else
-                        {
-                            //more than 1 day selected
-                            while (from.Date != to.Date)
-                            {
-                                onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
-                                from = from.AddDays(1);
-                            }
-                            onlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
-                        }
-                    }
-                    else
-                        MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                dvOnline.Invalidate();
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Error in create appointment, please fill out all textboxes!", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
         }
 
         private void btCreate_Click(object sender, EventArgs e)
@@ -583,19 +472,19 @@ namespace HeuristicLab.Hive.Client.Console
             dvOnline.Invalidate();
         }
 
-        private void ChangeRecurrenceAppointment(Guid recurringId)
+        private void btnRecurrence_Click(object sender, EventArgs e)
         {
-            int hourfrom = int.Parse(txttimeFrom.Text.Substring(0, txttimeFrom.Text.IndexOf(':')));
-            int hourTo = int.Parse(txttimeTo.Text.Substring(0, txttimeTo.Text.IndexOf(':')));
-            List<Appointment> recurringAppointments = onlineTimes.Where(appointment => appointment.RecurringId == recurringId).ToList();
-            recurringAppointments.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
-            recurringAppointments.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
-
-            DeleteRecurringAppointment(recurringId);
-            onlineTimes.AddRange(recurringAppointments);
+            Recurrence recurrence = new Recurrence();
+            recurrence.dialogClosedDelegate = new OnDialogClosedDelegate(this.DialogClosed);
+            recurrence.Show();
         }
 
-        private void DvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e)
+        private void btnSaveCal_Click(object sender, EventArgs e)
+        {
+            clientCommunicator.SetUptimeCalendarAsync(onlineTimes.ToArray());
+        }
+
+        private void dvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e)
         {
             List<Appointment> Apps = new List<Appointment>();
 
@@ -606,7 +495,7 @@ namespace HeuristicLab.Hive.Client.Console
             e.Appointments = Apps;
         }
 
-        private void DvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e)
+        private void dvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e)
         {
             Appointment Appointment = new Appointment();
 
@@ -616,36 +505,166 @@ namespace HeuristicLab.Hive.Client.Console
             onlineTimes.Add(Appointment);
         }
 
-        private void btnRecurrence_Click(object sender, EventArgs e)
-        {
-            Recurrence recurrence = new Recurrence();
-            recurrence.dialogClosedDelegate = new OnDialogClosedDelegate(this.DialogClosed);
-            recurrence.Show();
-        }
+        #endregion
 
-        public void DialogClosed(RecurrentEvent e)
-        {
-            CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.IncWeeks, e.WeekDays);
-        }
+        #endregion
 
-        private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, int incWeek, HashSet<DayOfWeek> daysOfWeek)
-        {
-            DateTime incDate = dateFrom;
-            Guid guid = Guid.NewGuid();
+        #region Client communicator events
 
-            while (incDate.Date <= dateTo.Date)
+        void clientCommunicator_SetUptimeCalendarCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            if (e.Error == null)
             {
-                if (daysOfWeek.Contains(incDate.Date.DayOfWeek))
-                    onlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid));
-                incDate = incDate.AddDays(1);
+                MessageBox.Show("Calendar successfully saved!", "Calender", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            dvOnline.Invalidate();
+            else
+            {
+                MessageBox.Show("Error saving calender \n" + e.Error.ToString(), "Calender", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void btnSaveCal_Click(object sender, EventArgs e)
+        void clientCommunicator_GetUptimeCalendarCompleted(object sender, GetUptimeCalendarCompletedEventArgs e)
         {
-            cccc.SetUptimeCalendarAsync(onlineTimes.ToArray());
+            if (e.Error == null)
+            {
+                if (e.Result != null)
+                {
+                    onlineTimes = e.Result.ToList<Appointment>();
+                    onlineTimes.ForEach(a => a.BorderColor = Color.Red);
+                }
+                else
+                {
+                    onlineTimes = new List<Appointment>();
+                }
+            }
+            //InitTestCalenderEntries();
+        }
+
+        private void clientCommunicator_GetCurrentConnectionCompleted(object sender, GetCurrentConnectionCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                ConnectionContainer curConnection = e.Result;
+                tbIPAdress.Text = curConnection.IPAdress;
+                tbPort.Text = curConnection.Port.ToString();
+            }
+            else
+            {
+                refreshTimer.Stop();
+                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (res == DialogResult.OK)
+                    this.Close();
+            }
+        }
+
+        private void clientCommunicator_GetStatusInfosCompleted(object sender, GetStatusInfosCompletedEventArgs e)
+        {
+
+            if (e.Error == null)
+            {
+                StatusCommons sc = e.Result;
+
+                lbGuid.Text = sc.ClientGuid.ToString();
+                lbConnectionStatus.Text = sc.Status.ToString();
+                lbJobdone.Text = sc.JobsDone.ToString();
+                lbJobsAborted.Text = sc.JobsAborted.ToString();
+                lbJobsFetched.Text = sc.JobsFetched.ToString();
+
+                this.Text = "Client Console (" + sc.Status.ToString() + ")";
+
+                ListViewItem curJobStatusItem;
+
+                if (sc.Jobs != null)
+                {
+                    lvJobDetail.Items.Clear();
+                    double progress;
+                    foreach (JobStatus curJob in sc.Jobs)
+                    {
+                        curJobStatusItem = new ListViewItem(curJob.JobId.ToString());
+                        curJobStatusItem.SubItems.Add(curJob.Since.ToString());
+                        progress = curJob.Progress * 100;
+                        curJobStatusItem.SubItems.Add(progress.ToString());
+                        lvJobDetail.Items.Add(curJobStatusItem);
+                    }
+                    lvJobDetail.Sort();
+                }
+
+                UpdateGraph(sc.Jobs);
+
+                if (sc.Status == NetworkEnumWcfConnState.Connected || sc.Status == NetworkEnumWcfConnState.Loggedin)
+                {
+                    btConnect.Enabled = false;
+                    btnDisconnect.Enabled = true;
+                    lbCs.Text = sc.ConnectedSince.ToString();
+                    clientCommunicator.GetCurrentConnectionAsync();
+                }
+                else if (sc.Status == NetworkEnumWcfConnState.Disconnected)
+                {
+                    btConnect.Enabled = true;
+                    btnDisconnect.Enabled = false;
+                    lbCs.Text = String.Empty;
+                }
+                else if (sc.Status == NetworkEnumWcfConnState.Failed)
+                {
+                    btConnect.Enabled = true;
+                    btnDisconnect.Enabled = false;
+                    lbCs.Text = String.Empty;
+                }
+
+                clientCommunicator.GetCurrentConnection();
+            }
+            else
+            {
+                refreshTimer.Stop();
+                DialogResult res = MessageBox.Show("Connection Error, check if Hive Client is running! - " + e.Error.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (res == DialogResult.OK)
+                    this.Close();
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region GUI Events
+
+        private void btConnect_Click(object sender, EventArgs e)
+        {
+            IPAddress ipAdress;
+            int port;
+            ConnectionContainer cc = new ConnectionContainer();
+            if (IPAddress.TryParse(tbIPAdress.Text, out ipAdress) && int.TryParse(tbPort.Text, out port))
+            {
+                cc.IPAdress = tbIPAdress.Text;
+                cc.Port = port;
+                clientCommunicator.SetConnectionAsync(cc);
+            }
+            else
+            {
+                MessageBox.Show("IP Adress and/or Port Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDisconnect_Click(object sender, EventArgs e)
+        {
+            clientCommunicator.DisconnectAsync();
+        }
+
+        private void btn_clientShutdown_Click(object sender, EventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Do you really want to shutdown the Hive Client?", "Hive Client Console", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (res == DialogResult.Yes)
+            {
+                logFileReader.Stop();
+                clientCommunicator.ShutdownClient();
+                this.Close();
+            }
+        }
+
+        private void Connection_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+                btConnect_Click(null, null);
         }
 
         #endregion
