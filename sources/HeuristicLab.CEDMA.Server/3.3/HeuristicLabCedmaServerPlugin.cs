@@ -34,6 +34,7 @@ namespace HeuristicLab.CEDMA.Server {
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Tracing-3.2")]
   public class HeuristicLabCedmaServerPlugin : PluginBase {
   }
 }

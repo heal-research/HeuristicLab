@@ -94,12 +94,13 @@ namespace HeuristicLab.CEDMA.Server {
             lock (activeAlgorithms) {
               activeAlgorithms.Remove(readyHandle);
             }
+            SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
             StoreResults(finishedAlgorithm);
             readyHandle.Close();
           }
         }
         catch (Exception ex) {
-          Trace.WriteLine("CEDMA Executer: Exception in job-management thread. " + ex.Message);
+          HeuristicLab.Tracing.HiveLogger.Debug("CEDMA Executer: Exception in job-management thread. " + ex.Message + "\n" + ex.StackTrace);
         }
       }
     }

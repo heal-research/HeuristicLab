@@ -415,6 +415,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal virtual Model CreateGPModel(IScope bestModelScope) {
+      Engine.GlobalScope.AddSubScope(bestModelScope);
       Model model = new Model();
       Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Data = bestModelScope.GetVariableValue<IFunctionTree>("FunctionTree", false);
@@ -441,6 +442,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
       }
+      Engine.GlobalScope.RemoveSubScope(bestModelScope);
       return model;
     }
 

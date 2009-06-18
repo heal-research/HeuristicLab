@@ -68,14 +68,26 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected abstract void StartJobs();
 
+    protected void SetResults(IScope src, IScope target) {
+      foreach (IVariable v in src.Variables) {
+        target.AddVariable(v);
+      }
+      foreach (IScope subScope in src.SubScopes) {
+        target.AddSubScope(subScope);
+      }
+      foreach (KeyValuePair<string, string> alias in src.Aliases) {
+        target.AddAlias(alias.Key, alias.Value);
+      }
+    }
+
     protected void StoreResults(IAlgorithm finishedAlgorithm) {
       Entity modelEntity = new Entity(Ontology.CedmaNameSpace + Guid.NewGuid());
+      IModel model = finishedAlgorithm.Model;
       List<Statement> statements = new List<Statement>();
       statements.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
-      statements.Add(new Statement(modelEntity, Ontology.TargetVariable, new Literal(finishedAlgorithm.Model.TargetVariable)));
+      statements.Add(new Statement(modelEntity, Ontology.TargetVariable, new Literal(model.TargetVariable)));
       statements.Add(new Statement(modelEntity, Ontology.Name, new Literal(finishedAlgorithm.Description)));
       
-      IModel model = finishedAlgorithm.Model;
       statements.Add(new Statement(modelEntity, Ontology.TrainingMeanSquaredError, new Literal(model.TrainingMeanSquaredError)));
       statements.Add(new Statement(modelEntity, Ontology.ValidationMeanSquaredError, new Literal(model.ValidationMeanSquaredError)));
       statements.Add(new Statement(modelEntity, Ontology.TestMeanSquaredError, new Literal(model.TestMeanSquaredError)));

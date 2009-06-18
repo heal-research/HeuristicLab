@@ -106,18 +106,6 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    private void SetResults(IScope src, IScope target) {
-      foreach (IVariable v in src.Variables) {
-        target.AddVariable(v);
-      }
-      foreach (IScope subScope in src.SubScopes) {
-        target.AddSubScope(subScope);
-      }
-      foreach (KeyValuePair<string, string> alias in src.Aliases) {
-        target.AddAlias(alias.Key, alias.Value);
-      }
-    }
-
     public override string[] GetJobs() {
       lock (activeAlgorithms) {
         string[] retVal = new string[activeAlgorithms.Count];
