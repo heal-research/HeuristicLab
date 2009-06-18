@@ -64,23 +64,59 @@ namespace HeuristicLab.Grid.HiveBridge {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(address);
       ResponseObject<JobResult> response = executionEngineFacade.GetLastResult(guid, false);
       if (response.Success && response.Obj != null) {
-        Job restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
-        return restoredJob.SerializedJob;
+        HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
+        // Serialize the engine
+        MemoryStream memStream = new MemoryStream();
+        GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+        XmlDocument document = PersistenceManager.CreateXmlDocument();
+        Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
+        XmlNode rootNode = document.CreateElement("Root");
+        document.AppendChild(rootNode);
+        rootNode.AppendChild(PersistenceManager.Persist(restoredJob.Engine, document, dictionary));
+        document.Save(stream);
+        stream.Close();
+        return memStream.ToArray();
       } else return null;
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.Job CreateJobObj(byte[] serializedEngine) {
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
 
-      // unzip and restore to determine the list of required plugins (NB: inefficient!)
+      List<HivePluginInfo> requiredPlugins = new List<HivePluginInfo>();
+      IEngine engine = RestoreEngine(serializedEngine, requiredPlugins);
+
+      HeuristicLab.Hive.Engine.Job job = new HeuristicLab.Hive.Engine.Job();
+      job.Engine.OperatorGraph.AddOperator(engine.OperatorGraph.InitialOperator);
+      job.Engine.OperatorGraph.InitialOperator = engine.OperatorGraph.InitialOperator;
+
+      // Serialize the job
       MemoryStream memStream = new MemoryStream();
+      GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+      XmlDocument document = PersistenceManager.CreateXmlDocument();
+      Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
+      XmlNode rootNode = document.CreateElement("Root");
+      document.AppendChild(rootNode);
+      rootNode.AppendChild(PersistenceManager.Persist(job, document, dictionary));
+      document.Save(stream);
+      stream.Close();
+
+      jobObj.SerializedJob = memStream.ToArray();
+      jobObj.CoresNeeded = 1;
+      jobObj.PluginsNeeded = requiredPlugins;
+      jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
+      return jobObj;
+    }
+
+    private IEngine RestoreEngine(byte[] serializedEngine, List<HivePluginInfo> requiredPlugins) {
+      // unzip and restore to determine the list of required plugins (NB: inefficient!)
+      MemoryStream memStream = new MemoryStream(serializedEngine);
       GZipStream stream = new GZipStream(memStream, CompressionMode.Decompress, true);
       XmlDocument document = new XmlDocument();
       document.Load(stream);
 
       Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
-      XmlNode rootNode = document.ChildNodes[0].ChildNodes[0];
-      PersistenceManager.Restore(rootNode, dictionary);
+      XmlNode rootNode = document.ChildNodes[1].ChildNodes[0];
+      IEngine engine = (IEngine)PersistenceManager.Restore(rootNode, dictionary);
       stream.Close();
 
       DiscoveryService service = new DiscoveryService();
@@ -96,22 +132,15 @@ namespace HeuristicLab.Grid.HiveBridge {
         }
       }
 
-      List<HivePluginInfo> pluginsNeeded =
-        new List<HivePluginInfo>();
       foreach (PluginInfo uniquePlugin in plugins) {
         HivePluginInfo pluginInfo =
           new HivePluginInfo();
         pluginInfo.Name = uniquePlugin.Name;
         pluginInfo.Version = uniquePlugin.Version.ToString();
         pluginInfo.BuildDate = uniquePlugin.BuildDate;
-        pluginsNeeded.Add(pluginInfo);
+        requiredPlugins.Add(pluginInfo);
       }
-
-      jobObj.SerializedJob = serializedEngine;
-      jobObj.CoresNeeded = 1;
-      jobObj.PluginsNeeded = pluginsNeeded;
-      jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
-      return jobObj;
+      return engine;
     }
   }
 }

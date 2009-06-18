@@ -70,7 +70,10 @@ namespace HeuristicLab.CEDMA.Server {
             IAlgorithm algorithm = Dispatcher.GetNextJob();
             if (algorithm != null) {
               AtomicOperation op = new AtomicOperation(algorithm.Engine.OperatorGraph.InitialOperator, algorithm.Engine.GlobalScope);
-              AsyncGridResult asyncResult = jobManager.BeginExecuteEngine(new ProcessingEngine(algorithm.Engine.GlobalScope, op));
+              ProcessingEngine procEngine = new ProcessingEngine(algorithm.Engine.GlobalScope, op);
+              procEngine.OperatorGraph.AddOperator(algorithm.Engine.OperatorGraph.InitialOperator);
+              procEngine.OperatorGraph.InitialOperator = algorithm.Engine.OperatorGraph.InitialOperator;
+              AsyncGridResult asyncResult = jobManager.BeginExecuteEngine(procEngine);
               asyncResults.Add(asyncResult.WaitHandle, asyncResult);
               lock (activeAlgorithms) {
                 activeAlgorithms.Add(asyncResult, algorithm);
