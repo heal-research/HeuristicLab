@@ -53,7 +53,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.listBox = new System.Windows.Forms.ListBox();
       this.refreshTimer = new System.Windows.Forms.Timer(this.components);
       this.maxActiveJobsUpDown = new System.Windows.Forms.NumericUpDown();
-      this.label1 = new System.Windows.Forms.Label();
+      this.activeJobsLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobsUpDown)).BeginInit();
       this.SuspendLayout();
       // 
@@ -83,10 +83,10 @@ namespace HeuristicLab.CEDMA.Server {
       this.gridAddressLabel.TabIndex = 9;
       this.gridAddressLabel.Text = "&Grid address:";
       // 
-      // gridAddress
+      // address
       // 
       this.address.Location = new System.Drawing.Point(106, 32);
-      this.address.Name = "gridAddress";
+      this.address.Name = "address";
       this.address.Size = new System.Drawing.Size(160, 20);
       this.address.TabIndex = 8;
       // 
@@ -130,22 +130,22 @@ namespace HeuristicLab.CEDMA.Server {
       this.maxActiveJobsUpDown.TabIndex = 12;
       this.maxActiveJobsUpDown.ValueChanged += new System.EventHandler(this.maxActiveJobsUpDown_ValueChanged);
       // 
-      // label1
+      // activeJobsLabel
       // 
-      this.label1.AutoSize = true;
-      this.label1.Enabled = false;
-      this.label1.Location = new System.Drawing.Point(12, 61);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(84, 13);
-      this.label1.TabIndex = 13;
-      this.label1.Text = "&Max active jobs:";
+      this.activeJobsLabel.AutoSize = true;
+      this.activeJobsLabel.Enabled = false;
+      this.activeJobsLabel.Location = new System.Drawing.Point(12, 61);
+      this.activeJobsLabel.Name = "activeJobsLabel";
+      this.activeJobsLabel.Size = new System.Drawing.Size(84, 13);
+      this.activeJobsLabel.TabIndex = 13;
+      this.activeJobsLabel.Text = "&Max active jobs:";
       // 
       // ServerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(374, 342);
-      this.Controls.Add(this.label1);
+      this.Controls.Add(this.activeJobsLabel);
       this.Controls.Add(this.maxActiveJobsUpDown);
       this.Controls.Add(this.listBox);
       this.Controls.Add(this.connectButton);
@@ -171,6 +171,6 @@ namespace HeuristicLab.CEDMA.Server {
     private System.Windows.Forms.ListBox listBox;
     private System.Windows.Forms.Timer refreshTimer;
     private System.Windows.Forms.NumericUpDown maxActiveJobsUpDown;
-    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label activeJobsLabel;
   }
 }

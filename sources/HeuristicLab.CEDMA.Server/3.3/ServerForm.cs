@@ -58,6 +58,7 @@ namespace HeuristicLab.CEDMA.Server {
     private void connectButton_Click(object sender, EventArgs e) {
       server.Connect(address.Text);
       maxActiveJobsUpDown.Enabled = true;
+      activeJobsLabel.Enabled = true;
       maxActiveJobsUpDown.Value = server.MaxActiveJobs;
       connectButton.Enabled = false;
       refreshTimer.Start();

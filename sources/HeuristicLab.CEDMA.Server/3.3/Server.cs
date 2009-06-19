@@ -58,8 +58,11 @@ namespace HeuristicLab.CEDMA.Server {
     public int MaxActiveJobs {
       get { return maxActiveJobs; }
       set {
-        if (value > 0 && value <= 64) {
+        if (value > 0) {
           maxActiveJobs = value;
+          if (executer != null) {
+            executer.MaxActiveJobs = value;
+          }
         }
       }
     }
@@ -114,6 +117,7 @@ namespace HeuristicLab.CEDMA.Server {
         gridServer = new GridServerProxy(serverUrl);
       }
       executer = new GridExecuter(dispatcher, store, gridServer);
+      executer.MaxActiveJobs = MaxActiveJobs;
       executer.Start();
     }
   }
