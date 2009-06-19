@@ -277,15 +277,6 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// <summary>
     /// Send back finished and Stored Job Results
     /// </summary>
-    /*#region SendJobResults
-    public event System.EventHandler<StoreFinishedJobResultCompletedEventArgs> ProcessStoredJobResultCompleted;
-    public void ProcessStoredJobResultAsync(Guid clientId, long jobId, byte[] result, double percentage, Exception exception, bool finished) {
-      if (ConnState == NetworkEnum.WcfConnState.Loggedin)
-        //TODO: some sort of algo for the stored jobs
-        proxy.ProcessJobResultAsync(clientId, jobId, result, percentage, exception, finished);
-    }  
-    #endregion  */
-
     private Stream GetStreamedJobResult(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
       JobResult jobResult =
           new JobResult();

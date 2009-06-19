@@ -172,7 +172,8 @@ namespace HeuristicLab.Hive.Client.Core {
           ThreadPool.QueueUserWorkItem(new WaitCallback(GetFinishedJob), container.JobId);          
           break;     
         
-        
+
+        //When the timeslice is up
         case MessageContainer.MessageType.UptimeLimitDisconnect:
           Logging.Instance.Info(this.ToString(), "Uptime Limit reached, storing jobs and sending them back");
 
@@ -210,6 +211,11 @@ namespace HeuristicLab.Hive.Client.Core {
     //Asynchronous Threads for interaction with the Execution Engine
     #region Async Threads for the EE
     
+    /// <summary>
+    /// serializes the finished job and submits it to the server. If, at the time, a network connection is unavailable, the Job gets stored on the disk. 
+    /// once the connection gets reestablished, the job gets submitted
+    /// </summary>
+    /// <param name="jobId"></param>
     private void GetFinishedJob(object jobId) {
       Guid jId = (Guid)jobId;      
       try {
@@ -254,15 +260,7 @@ namespace HeuristicLab.Hive.Client.Core {
 
       //Uptime Limit reached, now is a good time to destroy this jobs.
       if (!UptimeManager.Instance.isOnline()) {
-        lock (engines) {
-          appDomains[jId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-          AppDomain.Unload(appDomains[jId]);
-          appDomains.Remove(jId);
-          engines.Remove(jId);
-          jobs.Remove(jId);
-        }
-        GC.Collect();
-
+        KillAppDomain(jId);        
         //Still anything running?
         if (engines.Count == 0)
           WcfService.Instance.Disconnect();
@@ -276,7 +274,11 @@ namespace HeuristicLab.Hive.Client.Core {
 
     //Eventhandlers for the communication with the wcf Layer 
     #region wcfService Events
-
+    /// <summary>
+    /// Login has returned
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_LoginCompleted(object sender, LoginCompletedEventArgs e) {
       if (e.Result.Success) {
         currentlyFetching = false;
@@ -285,12 +287,14 @@ namespace HeuristicLab.Hive.Client.Core {
         Logging.Instance.Error(this.ToString(), e.Result.StatusMessage);
     }    
 
+    /// <summary>
+    /// A new Job from the wcfService has been received and will be started within a AppDomain.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_SendJobCompleted(object sender, SendJobCompletedEventArgs e) {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {        
         bool sandboxed = false;
-        //todo: For testing!!!
-        //beat.StopHeartBeat();        
-        //Todo: make a set & override the equals method
         List<byte[]> files = new List<byte[]>();
         foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
           files.AddRange(plugininfo.PluginFiles);
@@ -317,25 +321,14 @@ namespace HeuristicLab.Hive.Client.Core {
       currentlyFetching = false;
     }
 
+    /// <summary>
+    /// A finished job has been stored on the server
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_StoreFinishedJobResultCompleted(object sender, StoreFinishedJobResultCompletedEventArgs e) {
-      lock(engines) {
-        try {
-          appDomains[e.Result.JobId].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-          AppDomain.Unload(appDomains[e.Result.JobId]);
-          appDomains.Remove(e.Result.JobId);
-          engines.Remove(e.Result.JobId);
-          jobs.Remove(e.Result.JobId);
-        }
-        catch (Exception ex) {
-          Logging.Instance.Error(this.ToString(), "Exception when unloading the appdomain: ", ex);
-        }
-      }
-      if (e.Result.Success) {        
-      
-        //if the engine is running again -> we sent an snapshot. Otherwise the job was finished
-        //this method has a risk concerning race conditions.
-        //better expand the sendjobresultcompltedeventargs with a boolean "snapshot?" flag
-
+      KillAppDomain(e.Result.JobId);
+      if (e.Result.Success) {            
         ClientStatusInfo.JobsProcessed++;
         Debug.WriteLine("ProcessedJobs to:" + ClientStatusInfo.JobsProcessed);                
       } else {        
@@ -343,26 +336,43 @@ namespace HeuristicLab.Hive.Client.Core {
       }
     }
 
+    /// <summary>
+    /// A snapshot has been stored on the server
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_ProcessSnapshotCompleted(object sender, ProcessSnapshotCompletedEventArgs e) {
       Logging.Instance.Info(this.ToString(), "Snapshot " + e.Result.JobId + " has been transmitted according to plan.");
     }
 
-    //Todo: First stop all threads, then terminate
+    /// <summary>
+    /// The server has been changed. All Appdomains and Jobs must be aborted!
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_ServerChanged(object sender, EventArgs e) {
       Logging.Instance.Info(this.ToString(), "ServerChanged has been called");
       lock (engines) {
-        foreach (KeyValuePair<Guid, AppDomain> entries in appDomains) {
-          appDomains[entries.Key].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
-          AppDomain.Unload(appDomains[entries.Key]);
+        foreach (KeyValuePair<Guid, Executor> entries in engines) {
+          engines[entries.Key].Abort();
+          //appDomains[entries.Key].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+          //AppDomain.Unload(appDomains[entries.Key]);
         }
-        appDomains = new Dictionary<Guid, AppDomain>();
-        engines = new Dictionary<Guid, Executor>();
+        //appDomains = new Dictionary<Guid, AppDomain>();
+        //engines = new Dictionary<Guid, Executor>();
+        //jobs = new Dictionary<Guid, Job>();
       }
     }
 
+    /// <summary>
+    /// Connnection to the server has been estabilshed => Login and Send the persistet Jobs from the harddisk.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     void wcfService_Connected(object sender, EventArgs e) {
-      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());
+      wcfService.LoginSync(ConfigManager.Instance.GetClientInfo());      
       JobStorageManager.CheckAndSubmitJobsFromDisc();
+      currentlyFetching = false;
     }
 
     //this is a little bit tricky - 
@@ -390,6 +400,26 @@ namespace HeuristicLab.Hive.Client.Core {
 
     internal Dictionary<Guid, Job> GetJobs() {           
       return jobs;
+    }
+
+    /// <summary>
+    /// Kill a appdomain with a specific id.
+    /// </summary>
+    /// <param name="id">the GUID of the job</param>
+    private void KillAppDomain(Guid id) {
+      lock (engines) {
+        try {
+          appDomains[id].UnhandledException -= new UnhandledExceptionEventHandler(appDomain_UnhandledException);
+          AppDomain.Unload(appDomains[id]);
+          appDomains.Remove(id);
+          engines.Remove(id);
+          jobs.Remove(id);
+        }        
+        catch (Exception ex) {
+          Logging.Instance.Error(this.ToString(), "Exception when unloading the appdomain: ", ex);
+        }
+      }
+      GC.Collect();
     }
   }
 }
