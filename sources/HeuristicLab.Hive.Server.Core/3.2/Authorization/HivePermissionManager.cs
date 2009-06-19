@@ -78,6 +78,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     private bool CheckPermissionHelper(Guid sessionId, Guid actionId, Guid entityId) {
+      if (entityId == Guid.Empty) return true;
       IList<ClientGroup> groups = clientManager.GetAllGroupsOfResource(entityId).Obj;
       foreach (ClientGroup group in groups)
         if (CheckPermission(sessionId, actionId, group.Id)) return true;

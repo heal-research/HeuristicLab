@@ -268,7 +268,12 @@ namespace HeuristicLab.Security.Core {
         user.Name = "HIVE Admin";
         Debug.WriteLine("Grant ALL permissions to admin...");
         foreach (Permission item in HivePermissions.GetPermissions()) {
-          manager.GrantPermission(user.Id, item.Id, Guid.Empty);
+          try {
+            manager.GrantPermission(user.Id, item.Id, Guid.Empty);
+          }
+          catch (Exception ex) {
+            Debug.WriteLine(ex.Message);
+          }
         }
         Debug.WriteLine("Adding user...");
         try {
@@ -291,7 +296,12 @@ namespace HeuristicLab.Security.Core {
         Debug.WriteLine("Adding permissions...");
         //admins allowed to do everything ;)
         foreach (Permission item in HivePermissions.GetPermissions()) {
-          manager.GrantPermission(grp.Id, item.Id, Guid.Empty);
+          try {
+            manager.GrantPermission(grp.Id, item.Id, Guid.Empty);
+          }
+          catch (Exception ex) {
+            Debug.WriteLine(ex.Message);
+          }
         }
       }
 

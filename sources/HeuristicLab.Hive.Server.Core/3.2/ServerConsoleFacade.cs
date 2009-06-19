@@ -65,7 +65,7 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseList<ClientGroup> GetAllClientGroups() {
-      secMan.Authorize("AccessClientGroup", sessionID, Guid.Empty);
+      //secMan.Authorize("AccessClientGroup", sessionID, Guid.Empty);
       return clientManager.GetAllClientGroups();
     }
 

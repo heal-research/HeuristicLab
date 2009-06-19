@@ -94,6 +94,7 @@
           // 
           // btnClose
           // 
+          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
           this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
           this.btnClose.Location = new System.Drawing.Point(279, 1);
           this.btnClose.Name = "btnClose";
@@ -116,6 +117,7 @@
           this.Controls.Add(this.label1);
           this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
           this.Name = "MainForm";
+          this.ShowInTaskbar = false;
           this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
           this.Text = "Hive Server";
           this.TopMost = true;
