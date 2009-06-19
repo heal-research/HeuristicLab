@@ -337,11 +337,16 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             });
     }
 
-    public ICollection<Job> FindJobs(State state, int cores, int memory) {
+    public ICollection<Job> FindJobs(State state, int cores, int memory,
+      Guid resourceId) {
       return
          base.FindMultiple(
            delegate() {
-             return Adapter.GetDataByStateCoresMemory(state.ToString(), cores, memory);
+             return Adapter.GetDataByStateCoresMemoryResource(
+               state.ToString(), 
+               cores,
+               memory, 
+               resourceId);
            });
     }
 

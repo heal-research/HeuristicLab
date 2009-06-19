@@ -29,7 +29,11 @@ namespace HeuristicLab.Hive.Server.Scheduler {
         IJobAdapter jobAdapter =
           session.GetDataAdapter<Job, IJobAdapter>();
 
-        List<Job> allOfflineJobsForClient = new List<Job>(jobAdapter.FindJobs(State.offline, hbData.FreeCores, hbData.FreeMemory));
+        List<Job> allOfflineJobsForClient = new List<Job>(
+          jobAdapter.FindJobs(State.offline, 
+          hbData.FreeCores,
+          hbData.FreeMemory, 
+          hbData.ClientId));
         return (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0);
       }
       finally {
@@ -52,7 +56,11 @@ namespace HeuristicLab.Hive.Server.Scheduler {
         jobLock.WaitOne();
 
         ClientInfo client = clientAdapter.GetById(clientId);
-        LinkedList<Job> allOfflineJobsForClient = new LinkedList<Job>(jobAdapter.FindJobs(State.offline, client.NrOfFreeCores, client.FreeMemory ));
+        LinkedList<Job> allOfflineJobsForClient = new LinkedList<Job>(
+          jobAdapter.FindJobs(State.offline, 
+          client.NrOfFreeCores, 
+          client.FreeMemory, 
+          client.Id));
 
         Job jobToCalculate = null;
         if (allOfflineJobsForClient != null && allOfflineJobsForClient.Count > 0) {
