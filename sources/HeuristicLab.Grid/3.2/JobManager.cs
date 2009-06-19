@@ -41,7 +41,6 @@ namespace HeuristicLab.Grid {
     private const int RESULT_POLLING_TIMEOUT = 5;
 
     private IGridServer server;
-    private string address;
     private object waitingQueueLock = new object();
     private Queue<AsyncGridResult> waitingJobs = new Queue<AsyncGridResult>();
     private object runningQueueLock = new object();
@@ -107,7 +106,7 @@ namespace HeuristicLab.Grid {
         }
       }
       catch (Exception e) {
-        Trace.TraceError("Exception " + e + " in JobManager.StartEngines() killed the start-engine thread\n" + e.StackTrace);
+        HeuristicLab.Tracing.Logger.Error("Exception " + e + " in JobManager.StartEngines() killed the start-engine thread\n" + e.StackTrace);
       }
     }
 
@@ -149,7 +148,7 @@ namespace HeuristicLab.Grid {
         }
       }
       catch (Exception e) {
-        Trace.TraceError("Exception " + e + " in JobManager.GetResults() killed the results-gathering thread\n" + e.StackTrace);
+        HeuristicLab.Tracing.Logger.Error("Exception " + e + " in JobManager.GetResults() killed the results-gathering thread\n" + e.StackTrace);
       }
     }
 

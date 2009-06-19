@@ -73,6 +73,7 @@ namespace HeuristicLab.CEDMA.Server {
               ProcessingEngine procEngine = new ProcessingEngine(algorithm.Engine.GlobalScope, op);
               procEngine.OperatorGraph.AddOperator(algorithm.Engine.OperatorGraph.InitialOperator);
               procEngine.OperatorGraph.InitialOperator = algorithm.Engine.OperatorGraph.InitialOperator;
+              procEngine.Reset();
               AsyncGridResult asyncResult = jobManager.BeginExecuteEngine(procEngine);
               asyncResults.Add(asyncResult.WaitHandle, asyncResult);
               lock (activeAlgorithms) {
@@ -99,12 +100,12 @@ namespace HeuristicLab.CEDMA.Server {
               StoreResults(finishedAlgorithm);
             }
             catch (Exception badEx) {
-              Trace.WriteLine("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
+              HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
             }
           }
         }
         catch (Exception ex) {
-          Trace.WriteLine("CEDMA Executer: Exception in job-management thread. " + ex.Message);
+          HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message);
         }
       }
     }

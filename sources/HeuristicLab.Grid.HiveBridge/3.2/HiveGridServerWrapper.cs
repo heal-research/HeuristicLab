@@ -31,39 +31,43 @@ using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.ServiceModel;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Grid.HiveBridge {
   public class HiveGridServerWrapper : IGridServer {
+    private const int MAX_CONNECTION_RETRIES = 10;
+    private const int RETRY_TIMEOUT_SEC = 60;
     private string address;
+    private IExecutionEngineFacade executionEngine;
+    private object connectionLock = new object();
 
     public HiveGridServerWrapper(string address) {
       this.address = address;
     }
 
     public JobState JobState(Guid guid) {
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(address);
-      ResponseObject<JobResult> response = executionEngineFacade.GetLastResult(guid, false);
-      if (response.Success == true &&
+      ResponseObject<JobResult> response = SavelyExecute(() => executionEngine.GetLastResult(guid, false));
+      if (response != null && response.Success == true &&
         (response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE ||
           response.StatusMessage == ApplicationConstants.RESPONSE_JOB_REQUEST_SET ||
           response.StatusMessage == ApplicationConstants.RESPONSE_JOB_REQUEST_ALLREADY_SET ||
           response.StatusMessage == ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT)) {
-          return HeuristicLab.Grid.JobState.Busy;
+        return HeuristicLab.Grid.JobState.Busy;
       } else return HeuristicLab.Grid.JobState.Unknown;
     }
 
     public Guid BeginExecuteEngine(byte[] engine) {
       var jobObj = CreateJobObj(engine);
 
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(address);
-      ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
-      return res.Obj.Id;
+      ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.Job> res = SavelyExecute(() => executionEngine.AddJob(jobObj));
+      return res == null ? Guid.Empty : res.Obj.Id;
     }
 
     public byte[] TryEndExecuteEngine(Guid guid) {
-      IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(address);
-      ResponseObject<JobResult> response = executionEngineFacade.GetLastResult(guid, false);
-      if (response.Success && response.Obj != null) {
+      ResponseObject<JobResult> response = SavelyExecute(() => executionEngine.GetLastResult(guid, false));
+      if (response != null &&
+        response.Success && response.Obj != null) {
         HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
         // Serialize the engine
         MemoryStream memStream = new MemoryStream();
@@ -88,6 +92,7 @@ namespace HeuristicLab.Grid.HiveBridge {
       HeuristicLab.Hive.Engine.Job job = new HeuristicLab.Hive.Engine.Job();
       job.Engine.OperatorGraph.AddOperator(engine.OperatorGraph.InitialOperator);
       job.Engine.OperatorGraph.InitialOperator = engine.OperatorGraph.InitialOperator;
+      job.Engine.Reset();
 
       // Serialize the job
       MemoryStream memStream = new MemoryStream();
@@ -141,6 +146,31 @@ namespace HeuristicLab.Grid.HiveBridge {
         requiredPlugins.Add(pluginInfo);
       }
       return engine;
+    }
+
+    private TResult SavelyExecute<TResult>(Func<TResult> a) where TResult : Response {
+      int retries = 0;
+      if (executionEngine == null)
+        executionEngine = ServiceLocator.CreateExecutionEngineFacade(address);
+
+      do {
+        try {
+          lock (connectionLock) {
+            return a();
+          }
+        }
+        catch (TimeoutException) {
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        }
+        catch (CommunicationException) {
+          executionEngine = ServiceLocator.CreateExecutionEngineFacade(address);
+          retries++;
+          Thread.Sleep(TimeSpan.FromSeconds(RETRY_TIMEOUT_SEC));
+        }
+      } while (retries < MAX_CONNECTION_RETRIES);
+      Logger.Warn("Reached max connection retries");
+      return null;
     }
   }
 }
