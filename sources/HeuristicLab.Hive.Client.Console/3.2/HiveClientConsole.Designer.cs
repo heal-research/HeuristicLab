@@ -45,14 +45,13 @@ namespace HeuristicLab.Hive.Client.Console {
     /// </summary>
     private void InitializeComponent() {
         this.components = new System.ComponentModel.Container();
-        Calendar.DrawTool drawTool6 = new Calendar.DrawTool();
+        Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveClientConsole));
         this.dvOnline = new Calendar.DayView();
         this.tcClientConsole = new System.Windows.Forms.TabControl();
         this.tpConnection = new System.Windows.Forms.TabPage();
-        this.groupBox2 = new System.Windows.Forms.GroupBox();
-        this.btn_clientShutdown = new System.Windows.Forms.Button();
         this.gbServerConnection = new System.Windows.Forms.GroupBox();
+        this.btn_clientShutdown = new System.Windows.Forms.Button();
         this.btnDisconnect = new System.Windows.Forms.Button();
         this.btConnect = new System.Windows.Forms.Button();
         this.tbPort = new System.Windows.Forms.TextBox();
@@ -82,7 +81,6 @@ namespace HeuristicLab.Hive.Client.Console {
         this.txtLog = new System.Windows.Forms.TextBox();
         this.tabPage2 = new System.Windows.Forms.TabPage();
         this.btnSaveCal = new System.Windows.Forms.Button();
-        this.pictureBox1 = new System.Windows.Forms.PictureBox();
         this.groupBox1 = new System.Windows.Forms.GroupBox();
         this.txttimeTo = new System.Windows.Forms.DateTimePicker();
         this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
@@ -95,24 +93,24 @@ namespace HeuristicLab.Hive.Client.Console {
         this.label1 = new System.Windows.Forms.Label();
         this.btCreate = new System.Windows.Forms.Button();
         this.mcOnline = new System.Windows.Forms.MonthCalendar();
+        this.pictureBox1 = new System.Windows.Forms.PictureBox();
         this.ilEventLog = new System.Windows.Forms.ImageList(this.components);
         this.tcClientConsole.SuspendLayout();
         this.tpConnection.SuspendLayout();
-        this.groupBox2.SuspendLayout();
         this.gbServerConnection.SuspendLayout();
         this.gbJobCommon.SuspendLayout();
         this.gbCommon.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)(this.pbGraph)).BeginInit();
         this.gbEventLog.SuspendLayout();
         this.tabPage2.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
         this.groupBox1.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
         this.SuspendLayout();
         // 
         // dvOnline
         // 
-        drawTool6.DayView = this.dvOnline;
-        this.dvOnline.ActiveTool = drawTool6;
+        drawTool1.DayView = this.dvOnline;
+        this.dvOnline.ActiveTool = drawTool1;
         this.dvOnline.AmPmDisplay = false;
         this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
         this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -149,7 +147,6 @@ namespace HeuristicLab.Hive.Client.Console {
         // 
         // tpConnection
         // 
-        this.tpConnection.Controls.Add(this.groupBox2);
         this.tpConnection.Controls.Add(this.gbServerConnection);
         this.tpConnection.Controls.Add(this.gbJobCommon);
         this.tpConnection.Controls.Add(this.gbCommon);
@@ -163,74 +160,65 @@ namespace HeuristicLab.Hive.Client.Console {
         this.tpConnection.Text = "Status";
         this.tpConnection.UseVisualStyleBackColor = true;
         // 
-        // groupBox2
-        // 
-        this.groupBox2.Controls.Add(this.btn_clientShutdown);
-        this.groupBox2.Location = new System.Drawing.Point(746, 8);
-        this.groupBox2.Name = "groupBox2";
-        this.groupBox2.Size = new System.Drawing.Size(86, 131);
-        this.groupBox2.TabIndex = 16;
-        this.groupBox2.TabStop = false;
-        this.groupBox2.Text = "Shutdown";
-        // 
-        // btn_clientShutdown
-        // 
-        this.btn_clientShutdown.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.shutdown_icon;
-        this.btn_clientShutdown.Location = new System.Drawing.Point(13, 44);
-        this.btn_clientShutdown.Name = "btn_clientShutdown";
-        this.btn_clientShutdown.Size = new System.Drawing.Size(61, 55);
-        this.btn_clientShutdown.TabIndex = 8;
-        this.btn_clientShutdown.UseVisualStyleBackColor = true;
-        this.btn_clientShutdown.Click += new System.EventHandler(this.btn_clientShutdown_Click);
-        // 
         // gbServerConnection
         // 
+        this.gbServerConnection.Controls.Add(this.btn_clientShutdown);
         this.gbServerConnection.Controls.Add(this.btnDisconnect);
         this.gbServerConnection.Controls.Add(this.btConnect);
         this.gbServerConnection.Controls.Add(this.tbPort);
         this.gbServerConnection.Controls.Add(this.tbIPAdress);
         this.gbServerConnection.Controls.Add(this.lbServerIPCaption);
         this.gbServerConnection.Controls.Add(this.lbPortCaption);
-        this.gbServerConnection.Location = new System.Drawing.Point(424, 6);
+        this.gbServerConnection.Location = new System.Drawing.Point(346, 6);
         this.gbServerConnection.Name = "gbServerConnection";
-        this.gbServerConnection.Size = new System.Drawing.Size(316, 133);
+        this.gbServerConnection.Size = new System.Drawing.Size(216, 164);
         this.gbServerConnection.TabIndex = 15;
         this.gbServerConnection.TabStop = false;
-        this.gbServerConnection.Text = "Server connection";
+        this.gbServerConnection.Text = "Connection";
+        // 
+        // btn_clientShutdown
+        // 
+        this.btn_clientShutdown.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.exit_48;
+        this.btn_clientShutdown.Location = new System.Drawing.Point(144, 101);
+        this.btn_clientShutdown.Name = "btn_clientShutdown";
+        this.btn_clientShutdown.Size = new System.Drawing.Size(57, 57);
+        this.btn_clientShutdown.TabIndex = 8;
+        this.btn_clientShutdown.UseVisualStyleBackColor = true;
+        this.btn_clientShutdown.Click += new System.EventHandler(this.btn_clientShutdown_Click);
         // 
         // btnDisconnect
         // 
-        this.btnDisconnect.Location = new System.Drawing.Point(159, 96);
+        this.btnDisconnect.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.Disaster_warning_48;
+        this.btnDisconnect.Location = new System.Drawing.Point(79, 101);
         this.btnDisconnect.Name = "btnDisconnect";
-        this.btnDisconnect.Size = new System.Drawing.Size(147, 23);
+        this.btnDisconnect.Size = new System.Drawing.Size(57, 57);
         this.btnDisconnect.TabIndex = 5;
-        this.btnDisconnect.Text = "Disconnect from server";
         this.btnDisconnect.UseVisualStyleBackColor = true;
         this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
         // 
         // btConnect
         // 
-        this.btConnect.Location = new System.Drawing.Point(6, 96);
+        this.btConnect.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.Global_network_48;
+        this.btConnect.Location = new System.Drawing.Point(14, 101);
         this.btConnect.Name = "btConnect";
-        this.btConnect.Size = new System.Drawing.Size(147, 23);
+        this.btConnect.Size = new System.Drawing.Size(57, 57);
         this.btConnect.TabIndex = 4;
-        this.btConnect.Text = "Connect to server";
         this.btConnect.UseVisualStyleBackColor = true;
         this.btConnect.Click += new System.EventHandler(this.btConnect_Click);
         // 
         // tbPort
         // 
-        this.tbPort.Location = new System.Drawing.Point(77, 51);
+        this.tbPort.Location = new System.Drawing.Point(74, 59);
         this.tbPort.Name = "tbPort";
-        this.tbPort.Size = new System.Drawing.Size(229, 20);
+        this.tbPort.Size = new System.Drawing.Size(65, 20);
         this.tbPort.TabIndex = 3;
         this.tbPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Connection_KeyPress);
         // 
         // tbIPAdress
         // 
-        this.tbIPAdress.Location = new System.Drawing.Point(77, 25);
+        this.tbIPAdress.Location = new System.Drawing.Point(74, 25);
         this.tbIPAdress.Name = "tbIPAdress";
-        this.tbIPAdress.Size = new System.Drawing.Size(229, 20);
+        this.tbIPAdress.Size = new System.Drawing.Size(93, 20);
         this.tbIPAdress.TabIndex = 2;
         this.tbIPAdress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Connection_KeyPress);
         // 
@@ -246,7 +234,7 @@ namespace HeuristicLab.Hive.Client.Console {
         // lbPortCaption
         // 
         this.lbPortCaption.AutoSize = true;
-        this.lbPortCaption.Location = new System.Drawing.Point(17, 54);
+        this.lbPortCaption.Location = new System.Drawing.Point(48, 62);
         this.lbPortCaption.Name = "lbPortCaption";
         this.lbPortCaption.Size = new System.Drawing.Size(29, 13);
         this.lbPortCaption.TabIndex = 1;
@@ -255,9 +243,9 @@ namespace HeuristicLab.Hive.Client.Console {
         // gbJobCommon
         // 
         this.gbJobCommon.Controls.Add(this.lvJobDetail);
-        this.gbJobCommon.Location = new System.Drawing.Point(8, 139);
+        this.gbJobCommon.Location = new System.Drawing.Point(568, 6);
         this.gbJobCommon.Name = "gbJobCommon";
-        this.gbJobCommon.Size = new System.Drawing.Size(269, 265);
+        this.gbJobCommon.Size = new System.Drawing.Size(269, 164);
         this.gbJobCommon.TabIndex = 13;
         this.gbJobCommon.TabStop = false;
         this.gbJobCommon.Text = "Jobs detail";
@@ -273,7 +261,7 @@ namespace HeuristicLab.Hive.Client.Console {
         this.lvJobDetail.GridLines = true;
         this.lvJobDetail.Location = new System.Drawing.Point(3, 16);
         this.lvJobDetail.Name = "lvJobDetail";
-        this.lvJobDetail.Size = new System.Drawing.Size(263, 246);
+        this.lvJobDetail.Size = new System.Drawing.Size(263, 145);
         this.lvJobDetail.TabIndex = 0;
         this.lvJobDetail.UseCompatibleStateImageBehavior = false;
         this.lvJobDetail.View = System.Windows.Forms.View.Details;
@@ -308,14 +296,14 @@ namespace HeuristicLab.Hive.Client.Console {
         this.gbCommon.Controls.Add(this.lbCsCaption);
         this.gbCommon.Location = new System.Drawing.Point(8, 6);
         this.gbCommon.Name = "gbCommon";
-        this.gbCommon.Size = new System.Drawing.Size(410, 133);
+        this.gbCommon.Size = new System.Drawing.Size(332, 164);
         this.gbCommon.TabIndex = 14;
         this.gbCommon.TabStop = false;
         this.gbCommon.Text = "Common";
         // 
         // pbGraph
         // 
-        this.pbGraph.Location = new System.Drawing.Point(292, 19);
+        this.pbGraph.Location = new System.Drawing.Point(211, 42);
         this.pbGraph.Name = "pbGraph";
         this.pbGraph.Size = new System.Drawing.Size(112, 108);
         this.pbGraph.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -325,7 +313,7 @@ namespace HeuristicLab.Hive.Client.Console {
         // lbJobsAborted
         // 
         this.lbJobsAborted.AutoSize = true;
-        this.lbJobsAborted.Location = new System.Drawing.Point(195, 114);
+        this.lbJobsAborted.Location = new System.Drawing.Point(74, 137);
         this.lbJobsAborted.Name = "lbJobsAborted";
         this.lbJobsAborted.Size = new System.Drawing.Size(50, 13);
         this.lbJobsAborted.TabIndex = 20;
@@ -397,7 +385,7 @@ namespace HeuristicLab.Hive.Client.Console {
         // lbJobsAbortedCaption
         // 
         this.lbJobsAbortedCaption.AutoSize = true;
-        this.lbJobsAbortedCaption.Location = new System.Drawing.Point(129, 114);
+        this.lbJobsAbortedCaption.Location = new System.Drawing.Point(8, 137);
         this.lbJobsAbortedCaption.Name = "lbJobsAbortedCaption";
         this.lbJobsAbortedCaption.Size = new System.Drawing.Size(71, 13);
         this.lbJobsAbortedCaption.TabIndex = 11;
@@ -433,30 +421,30 @@ namespace HeuristicLab.Hive.Client.Console {
         // gbEventLog
         // 
         this.gbEventLog.Controls.Add(this.txtLog);
-        this.gbEventLog.Location = new System.Drawing.Point(283, 139);
+        this.gbEventLog.Location = new System.Drawing.Point(7, 176);
         this.gbEventLog.Name = "gbEventLog";
-        this.gbEventLog.Size = new System.Drawing.Size(555, 265);
+        this.gbEventLog.Size = new System.Drawing.Size(830, 230);
         this.gbEventLog.TabIndex = 7;
         this.gbEventLog.TabStop = false;
-        this.gbEventLog.Text = "Hive Client Log";
+        this.gbEventLog.Text = "Log";
         // 
         // txtLog
         // 
-        this.txtLog.Location = new System.Drawing.Point(6, 14);
+        this.txtLog.Location = new System.Drawing.Point(6, 19);
         this.txtLog.Multiline = true;
         this.txtLog.Name = "txtLog";
         this.txtLog.ReadOnly = true;
         this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-        this.txtLog.Size = new System.Drawing.Size(543, 248);
+        this.txtLog.Size = new System.Drawing.Size(818, 205);
         this.txtLog.TabIndex = 0;
         // 
         // tabPage2
         // 
         this.tabPage2.Controls.Add(this.btnSaveCal);
-        this.tabPage2.Controls.Add(this.pictureBox1);
         this.tabPage2.Controls.Add(this.groupBox1);
         this.tabPage2.Controls.Add(this.mcOnline);
         this.tabPage2.Controls.Add(this.dvOnline);
+        this.tabPage2.Controls.Add(this.pictureBox1);
         this.tabPage2.Location = new System.Drawing.Point(4, 25);
         this.tabPage2.Name = "tabPage2";
         this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -474,16 +462,6 @@ namespace HeuristicLab.Hive.Client.Console {
         this.btnSaveCal.Text = "Save calender";
         this.btnSaveCal.UseVisualStyleBackColor = true;
         this.btnSaveCal.Click += new System.EventHandler(this.btnSaveCal_Click);
-        // 
-        // pictureBox1
-        // 
-        this.pictureBox1.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.schedule;
-        this.pictureBox1.Location = new System.Drawing.Point(633, 12);
-        this.pictureBox1.Name = "pictureBox1";
-        this.pictureBox1.Size = new System.Drawing.Size(199, 114);
-        this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-        this.pictureBox1.TabIndex = 22;
-        this.pictureBox1.TabStop = false;
         // 
         // groupBox1
         // 
@@ -606,6 +584,16 @@ namespace HeuristicLab.Hive.Client.Console {
         this.mcOnline.TabIndex = 19;
         this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);
         // 
+        // pictureBox1
+        // 
+        this.pictureBox1.Image = global::HeuristicLab.Hive.Client.Console.Properties.Resources.schedule;
+        this.pictureBox1.Location = new System.Drawing.Point(633, 12);
+        this.pictureBox1.Name = "pictureBox1";
+        this.pictureBox1.Size = new System.Drawing.Size(199, 114);
+        this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+        this.pictureBox1.TabIndex = 22;
+        this.pictureBox1.TabStop = false;
+        // 
         // ilEventLog
         // 
         this.ilEventLog.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilEventLog.ImageStream")));
@@ -627,7 +615,6 @@ namespace HeuristicLab.Hive.Client.Console {
         this.Text = "Client Console (loading...)";
         this.tcClientConsole.ResumeLayout(false);
         this.tpConnection.ResumeLayout(false);
-        this.groupBox2.ResumeLayout(false);
         this.gbServerConnection.ResumeLayout(false);
         this.gbServerConnection.PerformLayout();
         this.gbJobCommon.ResumeLayout(false);
@@ -637,9 +624,9 @@ namespace HeuristicLab.Hive.Client.Console {
         this.gbEventLog.ResumeLayout(false);
         this.gbEventLog.PerformLayout();
         this.tabPage2.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         this.groupBox1.ResumeLayout(false);
         this.groupBox1.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         this.ResumeLayout(false);
 
     }
@@ -686,7 +673,6 @@ namespace HeuristicLab.Hive.Client.Console {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.Button btbDelete;
-    private System.Windows.Forms.GroupBox groupBox2;
     private System.Windows.Forms.Button btnRecurrence;
     private System.Windows.Forms.CheckBox chbade;
     private System.Windows.Forms.DateTimePicker dtpTo;

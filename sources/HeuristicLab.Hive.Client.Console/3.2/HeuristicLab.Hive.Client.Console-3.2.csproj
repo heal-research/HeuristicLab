@@ -205,6 +205,15 @@
     <None Include="Service References\ClientService\Calendar.xsd" />
     <None Include="Service References\ClientService\System.Drawing.xsd" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disaster-warning-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Global-network-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit-48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
