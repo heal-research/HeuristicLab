@@ -5,12 +5,15 @@ using System.Text;
 using System.Xml.XPath;
 using HeuristicLab.Security.Contracts.BusinessObjects;
 using System.Diagnostics;
+using System.Xml;
+using System.IO;
+using System.Reflection;
 
 namespace HeuristicLab.Hive.Server.Core  {
   
   public static class HivePermissions {
-    private const string PERMISSIONFILE = "Authorization//HivePermissionSet.xml";
-    private const string POLICIESFILE = "Authorization//HivePermissionPolicy.xml";
+    private const string PERMISSIONFILE = @"plugins\HivePermissionSet.xml";
+    private const string POLICIESFILE = @"plugins\HivePermissionPolicy.xml";
 
     public static class Jobmanagement {
       [Flags]
@@ -143,6 +146,7 @@ namespace HeuristicLab.Hive.Server.Core  {
     private static void LoadFromXml(IList<Permission> perm, string filename) {
       Permission p = null;
       XPathDocument doc;
+      string assemblyName = Assembly.GetAssembly(typeof(HivePermissions)).GetName().Name;
       doc = new XPathDocument(filename);
       XPathNavigator nav = doc.CreateNavigator();
       nav.MoveToRoot();
@@ -163,7 +167,37 @@ namespace HeuristicLab.Hive.Server.Core  {
         }
       } while (nav.MoveToFollowing(XPathNodeType.Element));
     }
+    /*
+    public static XmlDocument GetEmbeddedXml(Type type, string fileName) {
+      Stream str = GetEmbeddedFile(type, fileName);
+      XmlTextReader tr = new XmlTextReader(str);
+      XmlDocument xml = new XmlDocument();
+      xml.Load(tr);
+      return xml;
+    }
+    */
 
+    /// <summary>
+    /// Extracts an embedded file out of a given assembly.
+    /// </summary>
+    /// <param name="assemblyName">The namespace of you assembly.</param>
+    /// <param name="fileName">The name of the file to extract.</param>
+    /// <returns>A stream containing the file data.</returns>
+    public static Stream GetEmbeddedFile(string assemblyName, string fileName) {
+      try {
+        Assembly a = Assembly.Load(assemblyName);
+        Stream str = a.GetManifestResourceStream(assemblyName + "." + fileName);
+
+        if (str == null)
+          throw new Exception("Could not locate embedded resource '" + fileName + "' in assembly '" + assemblyName + "'");
+        return str;
+      }
+      catch (Exception e) {
+        throw new Exception(assemblyName + ": " + e.Message);
+      }
+    }
+
+   
     /// <summary>
     /// Policy
     /// </summary>
@@ -171,6 +205,7 @@ namespace HeuristicLab.Hive.Server.Core  {
     /// <param name="filename"></param>
     private static void LoadFromXml(IList<Policy> policyList, string filename) {
       PermissionCollection permissionCollection = GetPermissions();
+      string assemblyName = Assembly.GetAssembly(typeof(HivePermissions)).GetName().Name;
       XPathDocument doc = new XPathDocument(filename);
       XPathNavigator nav = doc.CreateNavigator();
       nav.MoveToRoot();
