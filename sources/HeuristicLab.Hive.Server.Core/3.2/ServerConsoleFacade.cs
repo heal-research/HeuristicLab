@@ -28,6 +28,8 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Security.Contracts.Interfaces;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
+using System.ServiceModel;
+
 
 namespace HeuristicLab.Hive.Server.Core {
   public class ServerConsoleFacade: IServerConsoleFacade {
@@ -44,7 +46,6 @@ namespace HeuristicLab.Hive.Server.Core {
     public Response Login(string username, string password) {
       Response resp = new Response();
      
-      /*
       sessionID = secMan.Login(username, password);
       if (sessionID == Guid.Empty) {
         resp.Success = false;
@@ -54,165 +55,111 @@ namespace HeuristicLab.Hive.Server.Core {
         resp.StatusMessage =
           ApplicationConstants.RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS;
       }
-      */ 
-      sessionID = Guid.Empty;
-      resp.Success = true;
-      resp.StatusMessage = ApplicationConstants.RESPONSE_SERVERCONSOLE_LOGIN_SUCCESS;
       return resp;
     }
 
 
     public ResponseList<ClientInfo> GetAllClients() {
-      if (HasPermission(PermissiveSecurityAction.List_AllClients))
-        return clientManager.GetAllClients();
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessClients", sessionID, Guid.Empty);
+      return clientManager.GetAllClients();
     }
 
     public ResponseList<ClientGroup> GetAllClientGroups() {
-      if (HasPermission(PermissiveSecurityAction.List_AllClientGroups))
-        return clientManager.GetAllClientGroups();
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessClientGroup", sessionID, Guid.Empty);
+      return clientManager.GetAllClientGroups();
     }
 
     public ResponseList<UpTimeStatistics> GetAllUpTimeStatistics() {
-      if (HasPermission(PermissiveSecurityAction.Show_Statistics))
-        return clientManager.GetAllUpTimeStatistics();
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessStatistics", sessionID, Guid.Empty);
+      return clientManager.GetAllUpTimeStatistics();
     }
 
     public ResponseObject<ClientGroup> AddClientGroup(ClientGroup clientGroup) {
-      if (HasPermission(PermissiveSecurityAction.Add_ClientGroup))
-        return clientManager.AddClientGroup(clientGroup);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AddClientGroup", sessionID, Guid.Empty);
+      return clientManager.AddClientGroup(clientGroup);
     }
 
     public Response AddResourceToGroup(Guid clientGroupId, Resource resource) {
-      if (HasPermission(PermissiveSecurityAction.Add_Resource))
-        return clientManager.AddResourceToGroup(clientGroupId, resource);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AddResource", sessionID, Guid.Empty);                
+      return clientManager.AddResourceToGroup(clientGroupId, resource);
     }
 
     public Response DeleteResourceFromGroup(Guid clientGroupId, Guid resourceId) {
-      if (HasPermission(PermissiveSecurityAction.Delete_Resource))
         return clientManager.DeleteResourceFromGroup(clientGroupId, resourceId);
-      else
-        throw new PermissionException();
     }
 
-
-    public ResponseList<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetAllJobs() {
-      if (HasPermission(PermissiveSecurityAction.Get_AllJobs))
-        return jobManager.GetAllJobs();
-      else
-        throw new PermissionException();
+    public ResponseList<Job> GetAllJobs() {
+      secMan.Authorize("AccessJobs", sessionID, Guid.Empty);
+      return jobManager.GetAllJobs();
     }
 
-    public ResponseObject<HeuristicLab.Hive.Contracts.BusinessObjects.Job> GetJobById(Guid jobId) {
+    public ResponseObject<Job> GetJobById(Guid jobId) {
+      secMan.Authorize("AccessJobs", sessionID, jobId);
       return jobManager.GetJobById(jobId);
     }
 
     public ResponseObject<Job> AddNewJob(Job job) {
-      if (HasPermission(PermissiveSecurityAction.Add_Job))
-        return jobManager.AddNewJob(job);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AddJob", sessionID, job.Id);
+      return jobManager.AddNewJob(job);
     }
 
     public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId, bool requested) {
-      if (HasPermission(PermissiveSecurityAction.Get_LastJobResult))
-        return jobManager.GetLastJobResultOf(jobId, requested);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessJobResults", sessionID, jobId);
+      return jobManager.GetLastJobResultOf(jobId, requested);
     }
 
     public ResponseList<JobResult> GetAllJobResults(Guid jobId) {
-      if (HasPermission(PermissiveSecurityAction.Get_AllJobResults))
-        return jobManager.GetAllJobResults(jobId);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessJobResults", sessionID, jobId);  
+      return jobManager.GetAllJobResults(jobId);
     }
 
     public Response RemoveJob(Guid jobId) {
-      if (HasPermission(PermissiveSecurityAction.Remove_Job))
-        return jobManager.RemoveJob(jobId);
-      else
-        throw new PermissionException();
+      secMan.Authorize("RemoveJob", sessionID, jobId);
+      return jobManager.RemoveJob(jobId);
     }
 
     public Response RequestSnapshot(Guid jobId) {
-      if (HasPermission(PermissiveSecurityAction.Request_Snapshot))
-        return jobManager.RequestSnapshot(jobId);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AccessJobResults", sessionID, jobId);  
+      return jobManager.RequestSnapshot(jobId);
     }
 
     public Response AbortJob(Guid jobId) {
-      if (HasPermission(PermissiveSecurityAction.Abort_Job))
-        return jobManager.AbortJob(jobId);
-      else
-        throw new PermissionException();
+      secMan.Authorize("AbortJob", sessionID, Guid.Empty);
+      return jobManager.AbortJob(jobId);
     }
 
     public ResponseObject<List<ClientGroup>> GetAllGroupsOfResource(Guid resourceId) {
-      if (HasPermission(PermissiveSecurityAction.Get_AllGroupsOfResource))
-        return clientManager.GetAllGroupsOfResource(resourceId);
-      else
-        throw new PermissionException();      
+      secMan.Authorize("AccessUserGroup", sessionID, Guid.Empty);
+      return clientManager.GetAllGroupsOfResource(resourceId);
     }
 
     public Response DeleteClientGroup(Guid clientGroupId) {
+      secMan.Authorize("DeleteClientGroup", sessionID, Guid.Empty);
       return clientManager.DeleteClientGroup(clientGroupId);
     }
 
-  /*
-    private bool HasPermission(Guid action) {
-      return (sessionID == Guid.Empty) ? false : secMan.CheckPermission(sessionID, action, Guid.Empty);
-    }
-
-    private bool HasPermission(Guid action, Guid entityId) {
-      return (sessionID == Guid.Empty) ? false : secMan.CheckPermission(sessionID, action, entityId);
-    }
-   */
-
-    [Obsolete("Only for testing!")]
-    private bool HasPermission(Guid g) { return true; }
-    [Obsolete("Only for testing!")]
-    private bool HasPermission(Guid g, Guid f) { return true; }
-
-    public class PermissionException : Exception {
-      public PermissionException()
-        : base("Current user has insufficent rights for this action!") {
-      }
-
-      public PermissionException(string msg)
-        : base(msg) {
-      }
-
-
-    }
-
     public ResponseList<Project> GetAllProjects() {
+      secMan.Authorize("AccessProjects", sessionID, Guid.Empty);
       return jobManager.GetAllProjects();
     }
 
     public Response CreateProject(Project project) {
+      secMan.Authorize("CreateProjects", sessionID, Guid.Empty);
       return jobManager.CreateProject(project);
     }
 
     public Response ChangeProject(Project project) {
+      secMan.Authorize("ChangeProjects", sessionID, Guid.Empty);
       return jobManager.ChangeProject(project);
     }
 
     public Response DeleteProject(Guid projectId) {
+      secMan.Authorize("DeleteProjects", sessionID, projectId);
       return jobManager.DeleteProject(projectId);
     }
 
     public ResponseList<Job> GetJobsByProject(Guid projectId) {
+      secMan.Authorize("AccessJobs", sessionID, Guid.Empty);
       return jobManager.GetJobsByProject(projectId);
     }
 

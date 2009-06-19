@@ -5,11 +5,12 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Security.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Server.Core;
+using System.Diagnostics;
 
 namespace HeuristicLab.Security.Core {
     [ClassInfo(Name = "Security Test App",
         Description = "Test Application for the Security Service",
-        AutoRestart = true)]
+        AutoRestart = false)]
   class SecurityCoreTest : ApplicationBase {
 
       SecurityManager manager = new SecurityManager();
@@ -165,76 +166,153 @@ namespace HeuristicLab.Security.Core {
 
         manager.RemovePermission(permission.Id);
       }
-      #region TEST DATA INSERT SECTION for MB
+ 
 
-      private void InsertTestDataForPermissionCheck() {
-        int numberOfUsers = 10;
-
-        List<User> users = new List<User>();
-        for (int i = 0; i < numberOfUsers; i++) {
-          users.Add(MB_InsertTestUser());
+      public void InsertClientUser() {
+        PermissionCollection pc = HivePermissions.GetPermissions();
+        Debug.WriteLine("Revoke permissions....");
+        try {
+          UserGroup group = manager.GetUserGroupByName("Projektmitglieder");
+          manager.RevokePermission(group.Id, pc[pc.Convert(HivePermissions.Usermanagement.Client.Read)].Id, Guid.Empty);
+          manager.RevokePermission(group.Id, pc[pc.Convert(HivePermissions.Usermanagement.ClientGroup.Read)].Id, Guid.Empty);
         }
-        MB_AssignGroups(users);
-        
-      }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Remove user...");
+        try {
+          manager.RemoveUser(manager.GetUserByName("HIVE User").Id);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Remove group....");
+        try {
+          manager.RemoveUserGroup(manager.GetUserGroupByName("Projektmitglieder").Id);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
 
-      private User MB_InsertTestUser() {
-        Random rand = new Random(DateTime.Now.Millisecond);
-        int usr = rand.Next(1000);
         User user = new User();
-        user.Login = "test" + usr.ToString();
-        user.SetHashedPassword("test");
-        user.Name = "test" + usr.ToString();
-        return manager.AddNewUser(user);
-      }
-
-      /// <summary>
-      /// Splits the given users into two groups and assigns them. Some will be not assigned.
-      /// </summary>
-      /// <param name="users"></param>
-      private void MB_AssignGroups(List<User> users) {
-        UserGroup group01 = new UserGroup();
-        group01.Name = "Test Group 01";
-
-        UserGroup group02 = new UserGroup();
-        group02.Name = "Test Group 02";
-
-        //three-way split users into group1, group2 and none
-        int idx = users.Count / 3;
-        for (int i = 0; i < idx; i++) {
-          group01.Members.Add(users[i]);
+        user.Login = "hive";
+        user.SetHashedPassword("hive");
+        user.Name = "HIVE User";
+        Debug.WriteLine("Adding user...");
+        try {
+          user = manager.AddNewUser(user);
         }
-        for (int i = idx; i < users.Count / 2; i++) {
-          group02.Members.Add(users[i]);
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
         }
-        manager.AddNewUserGroup(group01);
-        manager.AddNewUserGroup(group02);
-        
-      }
 
-      private void MB_AddPermission(List<User> users) {
-        if (users.Count < 2) return;
-        /*
-        Permission permission = new Permission();
-        //permission.Id = PermissiveSecurityAction.Add_Job;
-        permission.Name = "ADD_JOB";
-        permission.Description = "Add new jobs";
-        permission.Plugin = "HeuristicLab.Hive.Server";
-        manager.AddPermission(permission);
-        */
-        //grant permission to random users
-        Random rand = new Random(DateTime.Now.Millisecond);
-        for (int i = 0; i < users.Count/2; i++) {
-          int idx = rand.Next(users.Count);
-          //manager.GrantPermission(users[i].Id, permission.Id, Guid.Empty);
-          manager.GrantPermission(users[i].Id, PermissiveSecurityAction.Add_Job, Guid.Empty);
+        UserGroup grp = new UserGroup();
+        grp.Name = "Projektmitglieder";
+        grp.Members.Add(user);
+        Debug.WriteLine("Adding group...");
+        try {
+          manager.AddNewUserGroup(grp);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Grant permissions...");
+        try {
+          manager.GrantPermission(grp.Id, pc[pc.Convert(HivePermissions.Usermanagement.Client.Read)].Id, Guid.Empty);
+          manager.GrantPermission(grp.Id, pc[pc.Convert(HivePermissions.Usermanagement.ClientGroup.Read)].Id, Guid.Empty);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
         }
       }
 
-      #endregion
+      public void InsertSuperUser() {
+        Debug.WriteLine("Revoke permissions...");
+        try {
+          UserGroup group = manager.GetUserGroupByName("Administratoren");
+          foreach (Permission item in HivePermissions.GetPermissions()) {
+            manager.RevokePermission(group.Id, item.Id, Guid.Empty);
+          }
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Revoke permissions from admin...");
+        try {
+          Guid g = manager.GetUserByName("HIVE Admin").Id;
+          foreach (Permission item in HivePermissions.GetPermissions()) {
+            manager.RevokePermission(g, item.Id, Guid.Empty);
+          }
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Removing user...");
+        try {
+          manager.RemoveUser(manager.GetUserByName("HIVE Admin").Id);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Removing group...");
+        try {
+          manager.RemoveUserGroup(manager.GetUserGroupByName("Administratoren").Id);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+
+        User user = new User();
+        user.Login = "admin";
+        user.SetHashedPassword("admin");
+        user.Name = "HIVE Admin";
+        Debug.WriteLine("Grant ALL permissions to admin...");
+        foreach (Permission item in HivePermissions.GetPermissions()) {
+          manager.GrantPermission(user.Id, item.Id, Guid.Empty);
+        }
+        Debug.WriteLine("Adding user...");
+        try {
+          user = manager.AddNewUser(user);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+
+        UserGroup grp = new UserGroup();
+        grp.Name = "Administratoren";
+        grp.Members.Add(user);
+        Debug.WriteLine("Adding group...");
+        try {
+          manager.AddNewUserGroup(grp);
+        }
+        catch (Exception ex) {
+          Debug.WriteLine(ex.Message);
+        }
+        Debug.WriteLine("Adding permissions...");
+        //admins allowed to do everything ;)
+        foreach (Permission item in HivePermissions.GetPermissions()) {
+          manager.GrantPermission(grp.Id, item.Id, Guid.Empty);
+        }
+      }
+
+      public void InsertHivePermissions() {
+        foreach (Permission item in HivePermissions.GetPermissions()) {
+          try {
+            manager.AddPermission(item);
+          }
+          catch (Exception ex) {
+            Debug.WriteLine(ex.Message);
+          }
+        }
+      }
+
       public override void Run() {
         //testPermissionsGroup();
-        InsertTestDataForPermissionCheck();
+        
+        InsertHivePermissions();
+        InsertClientUser();
+        InsertSuperUser();
+        Debug.WriteLine("Complete!");
       }
     }
 }

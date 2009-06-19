@@ -28,81 +28,98 @@
         /// </summary>
         private void InitializeComponent()
         {
+          this.components = new System.ComponentModel.Container();
           this.label1 = new System.Windows.Forms.Label();
-          this.lblAddress1 = new System.Windows.Forms.Label();
-          this.label2 = new System.Windows.Forms.Label();
-          this.lblAddress2 = new System.Windows.Forms.Label();
-          this.label3 = new System.Windows.Forms.Label();
-          this.lblAddress3 = new System.Windows.Forms.Label();
+          this.rtfServices = new System.Windows.Forms.RichTextBox();
+          this.ni = new System.Windows.Forms.NotifyIcon(this.components);
+          this.ctxNotifyMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+          this.tsShowInfo = new System.Windows.Forms.ToolStripMenuItem();
+          this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+          this.tsExit = new System.Windows.Forms.ToolStripMenuItem();
+          this.btnClose = new System.Windows.Forms.Button();
+          this.ctxNotifyMenu.SuspendLayout();
           this.SuspendLayout();
           // 
           // label1
           // 
           this.label1.AutoSize = true;
-          this.label1.Location = new System.Drawing.Point(18, 18);
+          this.label1.Location = new System.Drawing.Point(12, 9);
           this.label1.Name = "label1";
-          this.label1.Size = new System.Drawing.Size(183, 13);
+          this.label1.Size = new System.Drawing.Size(97, 13);
           this.label1.TabIndex = 0;
-          this.label1.Text = "Hive Server Client Facade running @";
+          this.label1.Text = "Available Services:";
           // 
-          // lblAddress1
+          // rtfServices
           // 
-          this.lblAddress1.AutoSize = true;
-          this.lblAddress1.Location = new System.Drawing.Point(18, 43);
-          this.lblAddress1.Name = "lblAddress1";
-          this.lblAddress1.Size = new System.Drawing.Size(44, 13);
-          this.lblAddress1.TabIndex = 1;
-          this.lblAddress1.Text = "address";
+          this.rtfServices.Location = new System.Drawing.Point(12, 25);
+          this.rtfServices.Name = "rtfServices";
+          this.rtfServices.ReadOnly = true;
+          this.rtfServices.Size = new System.Drawing.Size(280, 121);
+          this.rtfServices.TabIndex = 1;
+          this.rtfServices.Text = "";
           // 
-          // label2
+          // ni
           // 
-          this.label2.AutoSize = true;
-          this.label2.Location = new System.Drawing.Point(18, 76);
-          this.label2.Name = "label2";
-          this.label2.Size = new System.Drawing.Size(195, 13);
-          this.label2.TabIndex = 2;
-          this.label2.Text = "Hive Server Console Facade running @";
+          this.ni.ContextMenuStrip = this.ctxNotifyMenu;
+          this.ni.Text = "notifyIcon1";
+          this.ni.Visible = true;
           // 
-          // lblAddress2
+          // ctxNotifyMenu
           // 
-          this.lblAddress2.AutoSize = true;
-          this.lblAddress2.Location = new System.Drawing.Point(18, 102);
-          this.lblAddress2.Name = "lblAddress2";
-          this.lblAddress2.Size = new System.Drawing.Size(44, 13);
-          this.lblAddress2.TabIndex = 3;
-          this.lblAddress2.Text = "address";
+          this.ctxNotifyMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsShowInfo,
+            this.toolStripSeparator1,
+            this.tsExit});
+          this.ctxNotifyMenu.Name = "ctxNotifyMenu";
+          this.ctxNotifyMenu.Size = new System.Drawing.Size(106, 54);
           // 
-          // label3
+          // tsShowInfo
           // 
-          this.label3.AutoSize = true;
-          this.label3.Location = new System.Drawing.Point(18, 131);
-          this.label3.Name = "label3";
-          this.label3.Size = new System.Drawing.Size(206, 13);
-          this.label3.TabIndex = 4;
-          this.label3.Text = "Hive Execution Engine Facade running @";
+          this.tsShowInfo.Name = "tsShowInfo";
+          this.tsShowInfo.Size = new System.Drawing.Size(105, 22);
+          this.tsShowInfo.Text = "&Info";
+          this.tsShowInfo.Click += new System.EventHandler(this.ShowInfo);
           // 
-          // lblAddress3
+          // toolStripSeparator1
           // 
-          this.lblAddress3.AutoSize = true;
-          this.lblAddress3.Location = new System.Drawing.Point(18, 159);
-          this.lblAddress3.Name = "lblAddress3";
-          this.lblAddress3.Size = new System.Drawing.Size(44, 13);
-          this.lblAddress3.TabIndex = 5;
-          this.lblAddress3.Text = "address";
+          this.toolStripSeparator1.Name = "toolStripSeparator1";
+          this.toolStripSeparator1.Size = new System.Drawing.Size(102, 6);
+          // 
+          // tsExit
+          // 
+          this.tsExit.Name = "tsExit";
+          this.tsExit.Size = new System.Drawing.Size(105, 22);
+          this.tsExit.Text = "E&xit";
+          this.tsExit.Click += new System.EventHandler(this.CloseApp);
+          // 
+          // btnClose
+          // 
+          this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+          this.btnClose.Location = new System.Drawing.Point(279, 1);
+          this.btnClose.Name = "btnClose";
+          this.btnClose.Size = new System.Drawing.Size(22, 21);
+          this.btnClose.TabIndex = 2;
+          this.btnClose.Text = "X";
+          this.btnClose.UseVisualStyleBackColor = true;
+          this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
           // 
           // MainForm
           // 
+          this.AcceptButton = this.btnClose;
           this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
           this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-          this.ClientSize = new System.Drawing.Size(304, 181);
-          this.Controls.Add(this.lblAddress3);
-          this.Controls.Add(this.label3);
-          this.Controls.Add(this.lblAddress2);
-          this.Controls.Add(this.label2);
-          this.Controls.Add(this.lblAddress1);
+          this.CancelButton = this.btnClose;
+          this.ClientSize = new System.Drawing.Size(304, 166);
+          this.ControlBox = false;
+          this.Controls.Add(this.btnClose);
+          this.Controls.Add(this.rtfServices);
           this.Controls.Add(this.label1);
+          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
           this.Name = "MainForm";
+          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
           this.Text = "Hive Server";
+          this.TopMost = true;
+          this.ctxNotifyMenu.ResumeLayout(false);
           this.ResumeLayout(false);
           this.PerformLayout();
 
@@ -111,10 +128,12 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lblAddress1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblAddress2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblAddress3;
+        private System.Windows.Forms.RichTextBox rtfServices;
+        private System.Windows.Forms.NotifyIcon ni;
+        private System.Windows.Forms.ContextMenuStrip ctxNotifyMenu;
+        private System.Windows.Forms.ToolStripMenuItem tsShowInfo;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tsExit;
+        private System.Windows.Forms.Button btnClose;
     }
 }

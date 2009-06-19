@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Permissions>
+  <Permission name="HivePermissions.Jobmanagement.Create.Any">
+    <ID>A477BEA9-9C05-477f-AD9E-F76C510DDB0B</ID>
+    <Description>Add any job.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name="HivePermissions.Jobmanagement.Create.ProjectOnly">
+    <ID>95276EA1-F97F-4827-B5D0-AE326856585E</ID>
+    <Description>Add only project-related job.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Create.OwnedOnly">
+    <ID>1C47301B-4187-416f-B113-DA433448AA2E</ID>
+    <Description>Add private jobs only.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Assign.ToAnyResource">
+    <ID>48DBBEE7-53FC-4c23-B2C3-5244A5BD7385</ID>
+    <Description>Assign job to any resource.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Assign.ToProject">
+    <ID>34267865-551F-4faf-BAA8-D6821B116EBC</ID>
+    <Description>Assign job to a specific project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Abort.Any">
+    <ID>C6EB36BE-2BE2-40f2-8440-7750759DFD79</ID>
+    <Description>Abort any running job.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Abort.ProjectOnly">
+    <ID>0E4C2FB1-DFAE-4b1d-B54A-4BD64D7BF905</ID>
+    <Description>Abort only jobs belonging to a specific project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Abort.OwnedOnly">
+    <ID>D7C0C293-78E5-44cf-9785-7E2840BFF1AE</ID>
+    <Description>Abort only jobs belonging to self.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Delete.Any">
+    <ID>EBD4CF61-CD1B-4d61-BD8A-9CEC2174E50F</ID>
+    <Description>Delete any jobs.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Delete.ProjectOnly">
+    <ID>04C921A6-8F3E-4add-B6F1-E79C5E1C0724</ID>
+    <Description>Delete only jobs belonging to a specific project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Delete.OwnedOnly">
+    <ID>D4F67946-1013-4d84-8B8F-0EA2E9A3E0D4</ID>
+    <Description>Delete only own jobs.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Read.Any">
+    <ID>E9FBDB1B-C532-49ad-AE1E-BDC33576F4E5</ID>
+    <Description>Read/Get any job.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Read.ProjectOnly">
+    <ID>C778C27F-BAA6-4aed-8495-015A0923E0ED</ID>
+    <Description>Read/Get only jobs belonging to a specific project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Jobmanagement.Read.OwnedOnly">
+    <ID>022B7792-8CED-4f40-9B55-5BBB892338B4</ID>
+    <Description>Read/Get only owned jobs.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.PermissionManagement.Permission.Grant">
+    <ID>5A1A98DE-04CE-4316-9BCA-BBE833EC4E74</ID>
+    <Description>Grant a permission.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.PermissionManagement.Permission.Revoke">
+    <ID>50A3A44F-085C-47c2-AB95-DDA90CEE38B0</ID>
+    <Description>Revoke a permission.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.Client.Create">
+    <ID>90A00F60-1AC2-4928-8EC3-D7667E08D849</ID>
+    <Description>Create new client.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.Client.Read">
+    <ID>5B2AF000-920C-4955-BC27-8EA3EAA14EC6</ID>
+    <Description>Read/Get a client.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.Client.Update">
+    <ID>072CC90A-5831-4ff1-8D2E-C1084AB601DB</ID>
+    <Description>Update a client.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.Client.Delete">
+    <ID>EE39299A-D138-4ec8-89FE-55619FC3C35A</ID>
+    <Description>Delete a client.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.ClientGroup.Create">
+    <ID>134AD38F-8875-4e74-A7B9-F3366B440752</ID>
+    <Description>Create/Add a clientgroup.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.ClientGroup.Read">
+    <ID>3A43FA6F-CB4F-48fc-BB5C-631D1F09AFDA</ID>
+    <Description>Read/Get a clientgroup.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.ClientGroup.Update">
+    <ID>46128AD3-C3E9-4605-B537-45CDB8276E44</ID>
+    <Description>Update a clientgroup.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.ClientGroup.Delete">
+    <ID>6F2BB5DE-3AE9-4108-B537-362F311BAD8A</ID>
+    <Description>Update a clientgroup.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.User.Create">
+    <ID>7681347C-A7FF-4895-AE14-8454A7E05FCA</ID>
+    <Description>Create an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.User.Read">
+    <ID>48168F0B-3F76-4e2c-859F-71DDF0B4D4A4</ID>
+    <Description>Get an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.User.Update">
+    <ID>F44FEC19-5CEE-4f24-8B8C-EDE977DBA154</ID>
+    <Description>Update an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.User.Delete">
+    <ID>DA8F0ECB-97C2-485c-81D7-1A20B725EA47</ID>
+    <Description>Delete an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.UserGroup.Create">
+    <ID>D783D5E5-3DE5-465f-B6EF-A2E6BFA153DF</ID>
+    <Description>Create an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.UserGroup.Read">
+    <ID>16006FA7-C5A9-4185-8724-A2722F01A24A</ID>
+    <Description>Get an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.UserGroup.Update">
+    <ID>AA2F764A-A300-4827-B1DE-BE36CE38A546</ID>
+    <Description>Update an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.Usermanagement.UserGroup.Delete">
+    <ID>6A58925D-03C2-410a-A145-1B5BEDA7FB4A</ID>
+    <Description>Delete an user.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.ResourceManagement.Project.Create">
+    <ID>FA6C3DD1-3D51-4ed5-8C78-F52C4682009A</ID>
+    <Description>Create a project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.ResourceManagement.Project.Read">
+    <ID>BA0EBF0A-FD0E-4439-95B2-ADF74EE7D951</ID>
+    <Description>Get a project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.ResourceManagement.Project.Update">
+    <ID>963B74EF-1673-4eb6-969D-C16E6DBA68FA</ID>
+    <Description>Update a project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+  <Permission name ="HivePermissions.ResourceManagement.Project.Delete">
+    <ID>AC78B93B-66F2-42b2-860E-976C825B11B7</ID>
+    <Description>Delete a project.</Description>
+    <Plugin>HeuristicLab.Hive</Plugin>
+  </Permission>
+
+</Permissions>

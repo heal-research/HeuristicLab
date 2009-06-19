@@ -44,6 +44,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveServerConsole));
       this.gbConfiguration = new System.Windows.Forms.GroupBox();
       this.lblPort = new System.Windows.Forms.Label();
       this.lblIp = new System.Windows.Forms.Label();
@@ -56,8 +57,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.lblUsername = new System.Windows.Forms.Label();
       this.tbPwd = new System.Windows.Forms.TextBox();
       this.lblError = new System.Windows.Forms.Label();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.btnCancel = new System.Windows.Forms.Button();
       this.gbConfiguration.SuspendLayout();
       this.gpUser.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
       // 
       // gbConfiguration
@@ -66,7 +70,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.gbConfiguration.Controls.Add(this.lblIp);
       this.gbConfiguration.Controls.Add(this.tbPort);
       this.gbConfiguration.Controls.Add(this.tbIp);
-      this.gbConfiguration.Location = new System.Drawing.Point(12, 100);
+      this.gbConfiguration.Location = new System.Drawing.Point(188, 100);
       this.gbConfiguration.Name = "gbConfiguration";
       this.gbConfiguration.Size = new System.Drawing.Size(283, 82);
       this.gbConfiguration.TabIndex = 4;
@@ -109,7 +113,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       // btnLogin
       // 
-      this.btnLogin.Location = new System.Drawing.Point(179, 188);
+      this.btnLogin.Location = new System.Drawing.Point(355, 193);
       this.btnLogin.Name = "btnLogin";
       this.btnLogin.Size = new System.Drawing.Size(116, 23);
       this.btnLogin.TabIndex = 7;
@@ -124,7 +128,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       this.gpUser.Controls.Add(this.lblPwd);
       this.gpUser.Controls.Add(this.lblUsername);
       this.gpUser.Controls.Add(this.tbPwd);
-      this.gpUser.Location = new System.Drawing.Point(12, 12);
+      this.gpUser.Location = new System.Drawing.Point(188, 12);
       this.gpUser.Name = "gpUser";
       this.gpUser.Size = new System.Drawing.Size(283, 82);
       this.gpUser.TabIndex = 1;
@@ -170,28 +174,56 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       // 
       this.lblError.AutoSize = true;
       this.lblError.ForeColor = System.Drawing.Color.Red;
-      this.lblError.Location = new System.Drawing.Point(16, 238);
+      this.lblError.Location = new System.Drawing.Point(12, 193);
       this.lblError.Name = "lblError";
       this.lblError.Size = new System.Drawing.Size(0, 13);
       this.lblError.TabIndex = 5;
+      // 
+      // pictureBox1
+      // 
+      this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+      this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new System.Drawing.Size(170, 170);
+      this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.pictureBox1.TabIndex = 8;
+      this.pictureBox1.TabStop = false;
+      // 
+      // btnCancel
+      // 
+      this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.btnCancel.Location = new System.Drawing.Point(259, 193);
+      this.btnCancel.Name = "btnCancel";
+      this.btnCancel.Size = new System.Drawing.Size(90, 23);
+      this.btnCancel.TabIndex = 9;
+      this.btnCancel.Text = "&Cancel";
+      this.btnCancel.UseVisualStyleBackColor = true;
+      this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
       // 
       // HiveServerConsole
       // 
       this.AcceptButton = this.btnLogin;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(311, 225);
+      this.BackColor = System.Drawing.Color.White;
+      this.CancelButton = this.btnCancel;
+      this.ClientSize = new System.Drawing.Size(482, 226);
+      this.Controls.Add(this.btnCancel);
+      this.Controls.Add(this.pictureBox1);
       this.Controls.Add(this.lblError);
       this.Controls.Add(this.gpUser);
       this.Controls.Add(this.btnLogin);
       this.Controls.Add(this.gbConfiguration);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Name = "HiveServerConsole";
-      this.Text = "Server Console";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+      this.Text = "Server Console Logon";
       this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HiveServerConsole_KeyPress);
       this.gbConfiguration.ResumeLayout(false);
       this.gbConfiguration.PerformLayout();
       this.gpUser.ResumeLayout(false);
       this.gpUser.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -211,6 +243,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private System.Windows.Forms.Label lblUsername;
     private System.Windows.Forms.TextBox tbPwd;
     private System.Windows.Forms.Label lblError;
+    private System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.Button btnCancel;
   }
 }
 

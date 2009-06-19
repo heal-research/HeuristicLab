@@ -32,6 +32,7 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.Hive.Contracts;
 using System.Security.Cryptography;
 using System.Net;
+using System.Threading;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
 
@@ -41,10 +42,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
     public HiveServerConsole() {
       InitializeComponent();
+#if(DEBUG)
       tbIp.Text = "10.20.53.1";
       tbPort.Text = WcfSettings.GetDefaultPort().ToString();
       tbUserName.Text = "test45";
       tbPwd.Text = "test";
+#endif
     }
 
     private void tsmiExit_Click(object sender, EventArgs e) {
@@ -69,9 +72,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         information = new HiveServerManagementConsole();
         information.closeFormEvent += new closeForm(EnableForm);
         information.Show();
-      } else {
-        lblError.Text = "Problem with login";
-      }
+      } 
     }
 
     /// <summary>
@@ -80,42 +81,73 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     /// </summary>
     /// <returns></returns>
     private bool IsValid() {
-      if ((tbUserName.Text != "") &&
-          (tbPwd.Text != "") &&
-          (tbIp.Text != "") &&
-          (tbPort.Text != "")) {
+      Thread t = new Thread(new ThreadStart(ShowWaitDlg));
+      if (IsFormValidated()) {
+        IPAddress ipAdress = IPAddress.Parse(tbIp.Text);
+        int port = int.Parse(tbPort.Text);
+        IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
         try {
-          IPAddress ipAdress;
-          int port;
-          if ((IPAddress.TryParse(tbIp.Text, out ipAdress)) &&
-            int.TryParse(tbPort.Text, out port)) {
-            IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
-            Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
-            string str = resp.StatusMessage;
-            if (resp.StatusMessage != "Logged in") {
-              return false;
-            }
-          } else {
-            lblError.Text = "IP or Port not valid";
-          }
+          lblError.Text = "Trying to logon...";
+          t.Start();
+          Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
+          t.Abort();
+          if (resp.StatusMessage == "Logged in") return true;
+          lblError.Text = resp.StatusMessage;
         }
         catch (Exception ex) {
-          lblError.Text = "Server not online";
+          //login failed
+          lblError.Text = "Logon failed!";
+          t.Abort();
           return false;
         }
-        return true;
-      } else {
-        if (tbUserName.Text == "") {
-          lblError.Text = "Please type in Username";
-        } else if (tbPwd.Text == "") {
-          lblError.Text = "Please type in Password";
-        } else if (tbPort.Text == "") {
-          lblError.Text = "Please type in Port";
-        } else if (tbIp.Text == "") {
-          lblError.Text = "Please type in IP-Adress";
-        }
-        return false;
       }
+      //validation failed
+      t.Abort();
+      return false;
+    }
+
+    private void ShowWaitDlg() {
+      LogonDlg dlg = new LogonDlg();
+      dlg.ShowDialog();
+    }
+
+    /// <summary>
+    /// Validates the form.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsFormValidated() {
+      bool isValid = true;
+      if (String.IsNullOrEmpty(tbUserName.Text)) {
+        lblError.Text = "Please type in Username.";
+        isValid = false;
+      }
+      if (String.IsNullOrEmpty(tbPwd.Text)) {
+        lblError.Text = "Please type in Password.";
+        isValid = false;
+      }
+      if (String.IsNullOrEmpty(tbIp.Text)) {
+        lblError.Text = "Please type in Port.";
+        isValid = false;
+      }
+      if (String.IsNullOrEmpty(tbPort.Text)) {
+        lblError.Text = "Please type in IP-Address.";
+        isValid = false;
+      }
+      try {
+        int.Parse(tbPort.Text);
+      }
+      catch (Exception ex) {
+        isValid = false;
+        lblError.Text = "Please verify entered Port.";
+      }
+      try {
+        IPAddress.Parse(tbIp.Text);
+      }
+      catch (Exception ex) {
+        isValid = false;
+        lblError.Text = "Please verify entered IP address.";
+      }
+      return isValid;
     }
 
     private void EnableForm(bool cf, bool error) {
@@ -123,7 +155,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         this.Visible = true;
         ServiceLocator.ShutDownFacade();
         if (error == true) {
-          lblError.Text = "Something went wrong with the server";
+          lblError.Text = "Establishing server connection failed.";
         }
       }
     }
@@ -132,6 +164,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (e.KeyChar == (char)Keys.Return) {
         BtnLogin_Click(sender, e);
       }
+    }
+
+    private void btnCancel_Click(object sender, EventArgs e) {
+      Dispose();
     }
   }
 }

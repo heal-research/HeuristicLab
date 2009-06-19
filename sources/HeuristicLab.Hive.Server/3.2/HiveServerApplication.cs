@@ -29,6 +29,7 @@ using System.ServiceModel.Description;
 using System.Net;
 using HeuristicLab.Hive.Contracts;
 using HeuristicLab.Hive.Contracts.Interfaces;
+using HeuristicLab.Hive.Server.Properties;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive Server",
@@ -157,11 +158,9 @@ namespace HeuristicLab.Hive.Server {
           lifecycleManagers[0];
 
         lifecycleManager.Init();
-
         Form mainForm = new MainForm(baseAddrDict);
-
         Application.Run(mainForm);
-
+        
         lifecycleManager.Shutdown();
       }
       StopService(Services.All);

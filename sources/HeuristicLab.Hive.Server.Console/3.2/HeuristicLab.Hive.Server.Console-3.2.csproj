@@ -121,6 +121,12 @@
       <DependentUpon>HiveServerManagementConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="HiveServerConsolePlugin.cs" />
+    <Compile Include="LogonDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogonDlg.Designer.cs">
+      <DependentUpon>LogonDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AddGroup.resx">
       <DependentUpon>AddGroup.cs</DependentUpon>
@@ -139,6 +145,9 @@
     <EmbeddedResource Include="HiveServerManagementConsole.resx">
       <DependentUpon>HiveServerManagementConsole.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogonDlg.resx">
+      <DependentUpon>LogonDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
