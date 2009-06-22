@@ -68,6 +68,7 @@ namespace HeuristicLab.Grid {
 
     private TResult SavelyExecute<TResult>(Func<TResult> a) {
       int retries = 0;
+      if (server == null) ResetConnection();
       do {
         try {
           lock (connectionLock) {
