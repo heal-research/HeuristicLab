@@ -86,7 +86,7 @@ namespace HeuristicLab.CEDMA.Core {
       if (store == null) yield break;
       entries = new List<ResultsEntry>();
       do {
-        var allBindings = store.Query("?Dataset <" + Ontology.HasModel + "> ?Model ." + Environment.NewLine +
+        var allBindings = store.Query("?Model <" + Ontology.InstanceOf + "> <" + Ontology.TypeModel + "> ." + Environment.NewLine +
           "?Model ?Attribute ?Value .", page, PAGE_SIZE);
         var allModelBindings = allBindings.GroupBy(x => (Entity)x.Get("Model"));
         resultsReturned = allBindings.Count;
@@ -124,13 +124,21 @@ namespace HeuristicLab.CEDMA.Core {
 
     private void LoadModelAttributes() {
       this.ordinalVariables =
-        store.Query("?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeOrdinalAttribute + "> .", 0, 100)
-        .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
-        .ToArray();
+        store
+          .Query(
+            "?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeModelAttribute + "> ." + Environment.NewLine +
+            "?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeOrdinalAttribute + "> .", 0, 100)
+          .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
+          .Distinct()
+          .ToArray();
       this.categoricalVariables =
-        store.Query("?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeCategoricalAttribute + "> .", 0, 100)
-        .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
-        .ToArray();
+        store
+          .Query(
+            "?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeModelAttribute + "> ." + Environment.NewLine +
+            "?ModelAttribute <" + Ontology.InstanceOf + "> <" + Ontology.TypeCategoricalAttribute + "> .", 0, 100)
+          .Select(s => ((Entity)s.Get("ModelAttribute")).Uri.Replace(Ontology.CedmaNameSpace, ""))
+          .Distinct()
+          .ToArray();
     }
 
     public double IndexOfCategoricalValue(string variable, object value) {

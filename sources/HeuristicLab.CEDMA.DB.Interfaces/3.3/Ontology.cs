@@ -34,6 +34,24 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
 
     #region model attribute types
     /// <summary>
+    /// Meta attribute to indicate potential attributes of models.
+    /// </summary>
+    public static Entity TypeModelAttribute {
+      get { return new Entity(CedmaNameSpace + "TypeModelAttribute"); }
+    }
+    /// <summary>
+    /// Meta attribute to indicate potential attributes of input variables.
+    /// </summary>
+    public static Entity TypeInputVariableAttribute {
+      get { return new Entity(CedmaNameSpace + "TypeInputVariableAttribute"); }
+    }
+    /// <summary>
+    /// Meta attribute to indicate potential attributes of problems (data sets).
+    /// </summary>
+    public static Entity TypeProblemAttribute {
+      get { return new Entity(CedmaNameSpace + "TypeProblemAttribute"); }
+    }
+    /// <summary>
     /// Attribute value is ordinal, values can be sorted.
     /// Examples are quality measures or complexity measures.
     /// </summary>
@@ -202,52 +220,101 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
       get {
         return new List<Statement> {
           new Statement(TargetVariable, InstanceOf, TypeCategoricalAttribute),
+          new Statement(TargetVariable, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingMeanSquaredError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingMeanSquaredError, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingMeanSquaredError, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationMeanSquaredError, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationMeanSquaredError, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationMeanSquaredError, InstanceOf, TypeModelAttribute),
+
           new Statement(TestMeanSquaredError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestMeanSquaredError, InstanceOf, TypeQualityAttribute),
+          new Statement(TestMeanSquaredError, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingMeanAbsolutePercentageError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingMeanAbsolutePercentageError, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingMeanAbsolutePercentageError, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationMeanAbsolutePercentageError, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationMeanAbsolutePercentageError, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationMeanAbsolutePercentageError, InstanceOf, TypeModelAttribute),
+          
           new Statement(TestMeanAbsolutePercentageError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestMeanAbsolutePercentageError, InstanceOf, TypeQualityAttribute),
+          new Statement(TestMeanAbsolutePercentageError, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingMeanAbsolutePercentageOfRangeError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingMeanAbsolutePercentageOfRangeError, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingMeanAbsolutePercentageOfRangeError, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationMeanAbsolutePercentageOfRangeError, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationMeanAbsolutePercentageOfRangeError, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationMeanAbsolutePercentageOfRangeError, InstanceOf, TypeModelAttribute),
+          
           new Statement(TestMeanAbsolutePercentageOfRangeError, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestMeanAbsolutePercentageOfRangeError, InstanceOf, TypeQualityAttribute),
+          new Statement(TestMeanAbsolutePercentageOfRangeError, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingCoefficientOfDetermination, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingCoefficientOfDetermination, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingCoefficientOfDetermination, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationCoefficientOfDetermination, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationCoefficientOfDetermination, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationCoefficientOfDetermination, InstanceOf, TypeModelAttribute),
+          
           new Statement(TestCoefficientOfDetermination, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestCoefficientOfDetermination, InstanceOf, TypeQualityAttribute),
+          new Statement(TestCoefficientOfDetermination, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingAccuracy, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingAccuracy, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingAccuracy, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationAccuracy, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationAccuracy, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationAccuracy, InstanceOf, TypeModelAttribute),
+
           new Statement(TestAccuracy, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestAccuracy, InstanceOf, TypeQualityAttribute),
+          new Statement(TestAccuracy, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingTheilsInequalityCoefficient, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingTheilsInequalityCoefficient, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingTheilsInequalityCoefficient, InstanceOf, TypeModelAttribute),
+          
           new Statement(ValidationTheilsInequalityCoefficient, InstanceOf, TypeOrdinalAttribute),
           new Statement(ValidationTheilsInequalityCoefficient, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationTheilsInequalityCoefficient, InstanceOf, TypeModelAttribute),
+          
           new Statement(TestTheilsInequalityCoefficient, InstanceOf, TypeOrdinalAttribute),
           new Statement(TestTheilsInequalityCoefficient, InstanceOf, TypeQualityAttribute),
+          new Statement(TestTheilsInequalityCoefficient, InstanceOf, TypeModelAttribute),
 
           new Statement(TreeSize, InstanceOf, TypeOrdinalAttribute),
           new Statement(TreeSize, InstanceOf, TypeComplexityAttribute),
+          new Statement(TreeSize, InstanceOf, TypeModelAttribute),
+          
           new Statement(TreeHeight, InstanceOf, TypeOrdinalAttribute),
           new Statement(TreeHeight, InstanceOf, TypeComplexityAttribute),
+          new Statement(TreeHeight, InstanceOf, TypeModelAttribute),
+          
           new Statement(EvaluatedSolutions, InstanceOf, TypeOrdinalAttribute),
+          new Statement(EvaluatedSolutions, InstanceOf, TypeModelAttribute),
 
           new Statement(Name, InstanceOf, TypeCategoricalAttribute),
+          new Statement(Name, InstanceOf, TypeModelAttribute),
+          new Statement(Name, InstanceOf, TypeProblemAttribute),
+          new Statement(Name, InstanceOf, TypeInputVariableAttribute),
+          
           new Statement(QualityImpact, InstanceOf, TypeOrdinalAttribute),
-          new Statement(EvaluationImpact, InstanceOf, TypeOrdinalAttribute)
+          new Statement(QualityImpact, InstanceOf, TypeInputVariableAttribute),
+
+          new Statement(EvaluationImpact, InstanceOf, TypeOrdinalAttribute),
+          new Statement(EvaluationImpact, InstanceOf, TypeInputVariableAttribute)
         };
       }
     }
