@@ -43,37 +43,27 @@ namespace HeuristicLab.FixedOperators {
     }
 
     // Shared
-    Sorter sorter;
+    protected Sorter sorter;
 
     // CreateChildren
-    Counter counter;
-    IRandom random;
-    DoubleData probability;
-    ChildrenInitializer ci;
-    OperatorBase crossover;
-    OperatorBase mutator;
-    OperatorBase evaluator;
-    SubScopesRemover sr;
-    StochasticBranch sb;
+    protected Counter counter;
+    protected IRandom random;
+    protected DoubleData probability;
+    protected ChildrenInitializer ci;
+    protected OperatorBase crossover;
+    protected OperatorBase mutator;
+    protected OperatorBase evaluator;
+    protected SubScopesRemover sr;
+    protected StochasticBranch sb;
 
-    OperatorBase selector;
+    protected OperatorBase selector;
 
     // CreateReplacement
-    LeftSelector ls;
-    RightReducer rr;
-    RightSelector rs;
-    LeftReducer lr;
-    MergingReducer mr;
-
-    Thread executionThread;
-    Thread cancelThread;
-    
-    // for testing only
-    QualityLogger ql;
-    BestAverageWorstQualityCalculator bawqc;
-    DataCollector dc;
-    ItemList<StringData> names;
-    LinechartInjector lci;
+    protected LeftSelector ls;
+    protected RightReducer rr;
+    protected RightSelector rs;
+    protected LeftReducer lr;
+    protected MergingReducer mr;
 
     //long[] timesExecuteCreateChildren;
     public FixedSGAMain()
@@ -106,7 +96,7 @@ namespace HeuristicLab.FixedOperators {
       rs.GetVariableInfo("Selected").ActualName = "Elites";
     }
 
-    protected void InitCreateChildren() {
+    private void InitCreateChildren() {
       // variables for create children
       ci = new ChildrenInitializer();
 
@@ -145,7 +135,7 @@ namespace HeuristicLab.FixedOperators {
 
       IntData maxGenerations = GetVariableValue<IntData>("MaximumGenerations", scope, true);
       IntData nrOfGenerations = GetVariableValue<IntData>("Generations", scope, true);
-    
+
       IntData subscopeNr;
       try {
         subscopeNr = scope.GetVariableValue<IntData>("SubScopeNr", false);
@@ -156,7 +146,7 @@ namespace HeuristicLab.FixedOperators {
       }
 
       ci = new ChildrenInitializer();
-      
+
 
       GetOperatorsFromScope(scope);
 
@@ -240,7 +230,7 @@ namespace HeuristicLab.FixedOperators {
     /// and store them in instance variables.
     /// </summary>
     /// <param name="scope"></param>
-    private void GetOperatorsFromScope(IScope scope) {
+    protected void GetOperatorsFromScope(IScope scope) {
       selector = (OperatorBase)GetVariableValue("Selector", scope, true);
       crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
       mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
@@ -271,7 +261,7 @@ namespace HeuristicLab.FixedOperators {
       Execute(sorter, scope);
     } // CreateChildren
 
-    private void DoReplacement(IScope scope) {
+    protected void DoReplacement(IScope scope) {
       //// SequentialSubScopesProcessor
       Execute(ls, scope.SubScopes[0]);
       Execute(rr, scope.SubScopes[0]);
