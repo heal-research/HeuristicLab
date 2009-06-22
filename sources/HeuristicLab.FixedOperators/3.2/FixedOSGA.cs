@@ -126,7 +126,7 @@ namespace HeuristicLab.FixedOperators {
       Execute(dc, scope);
       Execute(lci, scope);
 
-
+      return null;
     } // Apply
   } // FixedOSGAMain
 } // namespace HeuristicLab.FixedOperators

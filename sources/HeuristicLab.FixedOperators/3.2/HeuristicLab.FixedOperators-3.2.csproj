@@ -99,9 +99,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Copy of FixedOperatorBase.cs" />
-    <Compile Include="Copy of FixedSGAMain.cs" />
     <Compile Include="FixedOperatorBase.cs" />
+    <Compile Include="FixedOSGA.cs" />
     <Compile Include="FixedSGAMain.cs" />
     <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -182,6 +181,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Routing.TSP\3.2\HeuristicLab.Routing.TSP-3.2.csproj">
       <Project>{9EF75B49-D507-44E0-BC5D-C200FDA53B9B}</Project>
       <Name>HeuristicLab.Routing.TSP-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection.OffspringSelection\3.2\HeuristicLab.Selection.OffspringSelection-3.2.csproj">
+      <Project>{205898D3-2717-4686-AF17-52409B7EC0C6}</Project>
+      <Name>HeuristicLab.Selection.OffspringSelection-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
       <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
