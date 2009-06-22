@@ -69,18 +69,23 @@ namespace HeuristicLab.Grid.HiveBridge {
       if (response != null &&
         response.Success && response.Obj != null) {
         HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
-        // Serialize the engine
-        MemoryStream memStream = new MemoryStream();
-        GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
-        XmlDocument document = PersistenceManager.CreateXmlDocument();
-        Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
-        XmlNode rootNode = document.CreateElement("Root");
-        document.AppendChild(rootNode);
-        rootNode.AppendChild(PersistenceManager.Persist(restoredJob.Engine, document, dictionary));
-        document.Save(stream);
-        stream.Close();
-        return memStream.ToArray();
-      } else return null;
+        // only return the engine when it wasn't canceled (result is only a snapshot)
+        if (!restoredJob.Engine.Canceled) {
+          // Serialize the engine
+          MemoryStream memStream = new MemoryStream();
+          GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
+          XmlDocument document = PersistenceManager.CreateXmlDocument();
+          Dictionary<Guid, IStorable> dictionary = new Dictionary<Guid, IStorable>();
+          XmlNode rootNode = document.CreateElement("Root");
+          document.AppendChild(rootNode);
+          rootNode.AppendChild(PersistenceManager.Persist(restoredJob.Engine, document, dictionary));
+          document.Save(stream);
+          stream.Close();
+          return memStream.ToArray();
+        }
+      }
+
+      return null;
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.Job CreateJobObj(byte[] serializedEngine) {
