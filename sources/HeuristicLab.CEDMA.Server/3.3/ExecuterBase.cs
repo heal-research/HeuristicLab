@@ -86,7 +86,7 @@ namespace HeuristicLab.CEDMA.Server {
       List<Statement> statements = new List<Statement>();
       statements.Add(new Statement(modelEntity, Ontology.InstanceOf, Ontology.TypeModel));
       statements.Add(new Statement(modelEntity, Ontology.TargetVariable, new Literal(model.TargetVariable)));
-      statements.Add(new Statement(modelEntity, Ontology.Name, new Literal(finishedAlgorithm.Description)));
+      statements.Add(new Statement(modelEntity, Ontology.Name, new Literal(finishedAlgorithm.Name)));
       
       statements.Add(new Statement(modelEntity, Ontology.TrainingMeanSquaredError, new Literal(model.TrainingMeanSquaredError)));
       statements.Add(new Statement(modelEntity, Ontology.ValidationMeanSquaredError, new Literal(model.ValidationMeanSquaredError)));
