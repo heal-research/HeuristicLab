@@ -426,14 +426,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             new ComputableJob();
 
           job.JobInfo = GetById(jobId);
-          dsHiveServer.JobRow row
-            = GetRowById(jobId);
-
-          if (job.JobInfo != null && row != null &&
-            !row.IsSerializedJobNull()) {
-
+          if (job.JobInfo != null) {
             job.SerializedJob =
-              row.SerializedJob;
+              base.Adapter.GetSerializedJobById(jobId);
 
             return job;
           } else {
@@ -456,13 +451,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
             if (row != null) {
               Update(job.JobInfo);
-              row.SerializedJob =
-                job.SerializedJob;
-
-              base.Adapter.Update(row);
+              return base.Adapter.UpdateSerializedJob(
+                job.SerializedJob, job.JobInfo.Id);
             }
 
-            return true;
+            return false;
           });
       }
       

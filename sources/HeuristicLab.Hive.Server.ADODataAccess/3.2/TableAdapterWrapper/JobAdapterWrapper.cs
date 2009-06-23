@@ -38,6 +38,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
       return TransactionalAdapter.GetData();
     }
 
+    public byte[] GetSerializedJob(Guid jobId) {
+      return TransactionalAdapter.GetSerializedJobById(jobId);
+    }
+
+    public bool UpdateSerialiedJob(byte[] serializedJob, Guid jobId) {
+      return TransactionalAdapter.UpdateSerializedJob(serializedJob, jobId) > 0;
+    }
+
     protected override void SetConnection(DbConnection connection) {
       adapter.Connection = connection as SqlConnection;
     }
