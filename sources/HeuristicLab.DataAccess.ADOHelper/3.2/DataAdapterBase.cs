@@ -173,7 +173,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
 
       try {
-        bool result = (bool)action();
+        object result = action();
 
         if (!transactionExists && trans != null) {
             trans.Commit();
