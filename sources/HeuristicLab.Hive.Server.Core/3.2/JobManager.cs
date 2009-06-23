@@ -54,15 +54,7 @@ namespace HeuristicLab.Hive.Server.Core {
         IJobResultsAdapter jobResultAdapter =
             session.GetDataAdapter<JobResult, IJobResultsAdapter>();
 
-        List<JobResult> allJobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
-        JobResult lastJobResult = null;
-        foreach (JobResult jR in allJobResults) {
-          // if lastJobResult was before the current jobResult the lastJobResult must be updated
-          if (lastJobResult == null ||
-              (jR.Timestamp > lastJobResult.Timestamp))
-            lastJobResult = jR;
-        }
-        return lastJobResult;
+        return jobResultAdapter.GetLastResultOf(job);
       }
       finally {
         if (session != null)

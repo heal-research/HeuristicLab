@@ -231,10 +231,16 @@ namespace HeuristicLab.Hive.Server.Core {
         ResponseObject<List<ClientGroup>> response = new ResponseObject<List<ClientGroup>>();
 
         ClientInfo client = clientAdapter.GetById(resourceId);
-        List<ClientGroup> groupsOfClient = new List<ClientGroup>(clientGroupAdapter.MemberOf(client));
-        response.Obj = groupsOfClient;
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_GROUPS_OF_CLIENT;
+        if (client != null) {
+          List<ClientGroup> groupsOfClient = new List<ClientGroup>(clientGroupAdapter.MemberOf(client));
+          response.Obj = groupsOfClient;
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_GET_GROUPS_OF_CLIENT;
+        } else {
+          response.Obj = new List<ClientGroup>();
+          response.Success = false;
+          response.StatusMessage = ApplicationConstants.RESPONSE_CLIENT_RESOURCE_NOT_FOUND;
+        }
 
         return response;
       }

@@ -33,5 +33,12 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="job"></param>
     /// <returns></returns>
     ICollection<JobResult> GetResultsOf(Job job);
+
+    /// <summary>
+    /// Gets the last result for the specified job
+    /// </summary>
+    /// <param name="job"></param>
+    /// <returns></returns>
+    JobResult GetLastResultOf(Job job);
   }
 }

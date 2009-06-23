@@ -138,6 +138,18 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
 
       return null;
     }
+
+    public JobResult GetLastResultOf(Job job) {
+       if (job != null) {
+        return 
+          base.FindSingle(
+            delegate() {
+              return Adapter.GetDataByLastResult(job.Id);
+            });
+      }
+
+      return null;
+    }
     #endregion
   }
 }

@@ -8584,7 +8584,7 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[3];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[4];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT * FROM dbo.JobResult";
@@ -8601,6 +8601,12 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
                 "Id FROM JobResult WHERE (JobId = @JobId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[3].Connection = this.Connection;
+            this._commandCollection[3].CommandText = "SELECT TOP 1 JobResult.*  FROM JobResult WHERE JobId = @JobId ORDER BY DateFinish" +
+                "ed DESC ";
+            this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8672,6 +8678,40 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual dsHiveServer.JobResultDataTable GetDataByJob(global::System.Nullable<global::System.Guid> JobId) {
             this.Adapter.SelectCommand = this.CommandCollection[2];
+            if ((JobId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            dsHiveServer.JobResultDataTable dataTable = new dsHiveServer.JobResultDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillByLastResult(dsHiveServer.JobResultDataTable dataTable, global::System.Nullable<global::System.Guid> JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
+            if ((JobId.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual dsHiveServer.JobResultDataTable GetDataByLastResult(global::System.Nullable<global::System.Guid> JobId) {
+            this.Adapter.SelectCommand = this.CommandCollection[3];
             if ((JobId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((System.Guid)(JobId.Value));
             }
