@@ -188,27 +188,34 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     }
 
     public ClientInfo GetByName(string name) {
-      ClientInfo client = new ClientInfo();
-      Resource res =
-        ResAdapter.GetByName(name);
+      return (ClientInfo)
+        base.doInTransaction(
+        delegate() {
+          ClientInfo client = new ClientInfo();
+          Resource res =
+            ResAdapter.GetByName(name);
 
-      return GetById(res.Id);
+          return GetById(res.Id);
+        });
     }
 
     protected override bool doDelete(ClientInfo client) {
-      bool success = false;
-      
-      if (client != null) {
-        dsHiveServer.ClientRow row =
-          GetRowById(client.Id);
+      return (bool)base.doInTransaction(
+        delegate() {
+          bool success = false;
 
-        if (row != null) {
-          success = base.doDelete(client) && 
-            ResAdapter.Delete(client);
-        }
-      }
+          if (client != null) {
+            dsHiveServer.ClientRow row =
+              GetRowById(client.Id);
 
-      return success;
+            if (row != null) {
+              success = base.doDelete(client) &&
+                ResAdapter.Delete(client);
+            }
+          }
+
+          return success;
+        });
     }
 
     public ICollection<ClientInfo> GetGrouplessClients() {

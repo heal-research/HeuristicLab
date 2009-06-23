@@ -165,11 +165,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           job.Percentage = 0.0;
 
-        if (!row.IsSerializedJobNull())
-          job.SerializedJob = row.SerializedJob;
-        else
-          job.SerializedJob = null;
-
         if (!row.IsDateCreatedNull())
           job.DateCreated = row.DateCreated;
         else
@@ -254,8 +249,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
           row.SetJobStateNull();
 
         row.Percentage = job.Percentage;
-
-        row.SerializedJob = job.SerializedJob;
 
         if (job.DateCreated != DateTime.MinValue)
           row.DateCreated = job.DateCreated;
@@ -419,6 +412,60 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
       }
 
       return false;
+    }
+
+    /// <summary>
+    /// Gets the computable job with the secified jobId
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    public ComputableJob GetComputableJob(Guid jobId) {
+      return (ComputableJob)base.doInTransaction(
+        delegate() {
+          ComputableJob job =
+            new ComputableJob();
+
+          job.JobInfo = GetById(jobId);
+          dsHiveServer.JobRow row
+            = GetRowById(jobId);
+
+          if (job.JobInfo != null && row != null &&
+            !row.IsSerializedJobNull()) {
+
+            job.SerializedJob =
+              row.SerializedJob;
+
+            return job;
+          } else {
+            return null;
+          }
+        });
+    }
+
+    /// <summary>
+    /// Saves or update the computable job
+    /// </summary>
+    /// <param name="jobId"></param>
+    public void UpdateComputableJob(ComputableJob job) {
+      if(job != null && 
+        job.JobInfo != null) {
+        base.doInTransaction(
+          delegate() {
+            dsHiveServer.JobRow row
+              = GetRowById(job.JobInfo.Id);
+
+            if (row != null) {
+              Update(job.JobInfo);
+              row.SerializedJob =
+                job.SerializedJob;
+
+              base.Adapter.Update(row);
+            }
+
+            return true;
+          });
+      }
+      
     }
 
     #endregion

@@ -37,7 +37,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseObject<Job> GetJobById(Guid jobId);
     [OperationContract]
-    ResponseObject<Job> AddNewJob(Job job);
+    ResponseObject<Job> AddNewJob(ComputableJob job);
     [OperationContract]
     Response RemoveJob(Guid jobId);
     [OperationContract]

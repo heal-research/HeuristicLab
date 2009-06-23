@@ -370,22 +370,45 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientId"></param>
     /// <returns></returns>
     public ResponseJob SendJob(Guid clientId) {
-      ResponseJob response = new ResponseJob();
+       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
-      Job job2Calculate = scheduler.GetNextJobForClient(clientId);
-      if (job2Calculate != null) {
-        response.Job = job2Calculate;
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
-        lock (newAssignedJobs) {
-          newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
+      try {
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+
+        tx = session.BeginTransaction();
+
+        ResponseJob response = new ResponseJob();
+
+        Job job2Calculate = scheduler.GetNextJobForClient(clientId);
+        if (job2Calculate != null) {
+          ComputableJob computableJob =
+            jobAdapter.GetComputableJob(job2Calculate.Id);
+
+          response.Job = computableJob;
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+          lock (newAssignedJobs) {
+            newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
+          }
+        } else {
+          response.Success = false;
+          response.Job = null;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
         }
-      } else {
-        response.Success = false;
-        response.Job = null;
-        response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
+
+        return response;
       }
-      return response;
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     private ResponseResultReceived ProcessJobResult(Guid clientId,
@@ -411,68 +434,78 @@ namespace HeuristicLab.Hive.Server.Core {
         ClientInfo client =
           clientAdapter.GetById(clientId);
 
-        Job job =
-          jobAdapter.GetById(jobId);
+        ComputableJob job =
+          new ComputableJob();
+
+        if (job != null) {
+          job.JobInfo =
+            jobAdapter.GetById(jobId);
+        }
         
-        if (job == null) {
+        if (job == null && job.JobInfo != null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
           response.JobId = jobId;
           return response;
         }
-        if (job.State == State.abort) {
+        if (job.JobInfo.State == State.abort) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED;
         }
-        if (job.Client == null) {
+        if (job.JobInfo.Client == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
           response.JobId = jobId;
           return response;
         }
-        if (job.Client.Id != clientId) {
+        if (job.JobInfo.Client.Id != clientId) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
           response.JobId = jobId;
           return response;
         }
-        if (job.State == State.finished) {
+        if (job.JobInfo.State == State.finished) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
           response.JobId = jobId;
           return response;
         }
-        if (job.State == State.requestSnapshotSent) {
-          job.State = State.calculating;
+        if (job.JobInfo.State == State.requestSnapshotSent) {
+          job.JobInfo.State = State.calculating;
         }
-        if (job.State != State.calculating && job.State != State.pending) {
+        if (job.JobInfo.State != State.calculating && 
+          job.JobInfo.State != State.pending) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
           response.JobId = jobId;
           return response;
         }
         job.SerializedJob = result;
-        job.Percentage = percentage;
+        job.JobInfo.Percentage = percentage;
 
         if (finished) {
-          job.State = State.finished;
-          jobAdapter.Update(job);
+          job.JobInfo.State = State.finished;
+          job.SerializedJob = result;
         }
-        List<JobResult> jobResults = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+
+        jobAdapter.UpdateComputableJob(job);
+
+        List<JobResult> jobResults = new List<JobResult>(
+          jobResultAdapter.GetResultsOf(job.JobInfo));
         foreach (JobResult currentResult in jobResults)
           jobResultAdapter.Delete(currentResult);
 
         JobResult jobResult =
           new JobResult();
         jobResult.ClientId = client.Id;
-        jobResult.JobId = job.Id;
+        jobResult.JobId = job.JobInfo.Id;
         jobResult.Result = result;
         jobResult.Percentage = percentage;
         jobResult.Exception = exception;
         jobResult.DateFinished = DateTime.Now;
 
         jobResultAdapter.Update(jobResult);
-        jobAdapter.Update(job);
+        jobAdapter.Update(job.JobInfo);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;

@@ -79,5 +79,18 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="user"></param>
     /// <returns></returns>
     ICollection<Job> GetJobsByProject(Guid projectId);
+
+    /// <summary>
+    /// Gets the computable job with the secified jobId
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    ComputableJob GetComputableJob(Guid jobId);
+
+    /// <summary>
+    /// Saves or update the computable job
+    /// </summary>
+    /// <param name="jobId"></param>
+    void UpdateComputableJob(ComputableJob job);
   }
 }

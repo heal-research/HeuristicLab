@@ -23,19 +23,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.ServiceModel;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Contracts.Interfaces {
-  [ServiceContract]
-  public interface IExecutionEngineFacade {
-    [OperationContract]
-    ResponseObject<Job> AddJob(ComputableJob job);
-    [OperationContract]
-    Response RequestSnapshot(Guid jobId);
-    [OperationContract]
-    ResponseObject<JobResult> GetLastResult(Guid jobId, bool requested);
-    [OperationContract]
-    Response AbortJob(Guid jobId);
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+  [DataContract]
+  [Serializable]
+  public class ComputableJob {
+    [DataMember]
+    public Job JobInfo { get; set; }
+    
+    [DataMember]
+    public byte[] SerializedJob { get; set; }
   }
 }

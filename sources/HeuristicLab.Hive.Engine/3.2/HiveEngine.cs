@@ -192,8 +192,9 @@ namespace HeuristicLab.Hive.Engine {
       OnInitialized();
     }
 
-    private HeuristicLab.Hive.Contracts.BusinessObjects.Job CreateJobObj() {
-      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
+    private HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob CreateJobObj() {
+      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = 
+        new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
 
       MemoryStream memStream = new MemoryStream();
       GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
@@ -204,7 +205,11 @@ namespace HeuristicLab.Hive.Engine {
       rootNode.AppendChild(PersistenceManager.Persist(job, document, dictionary));
       document.Save(stream);
       stream.Close();
-      jobObj.SerializedJob = memStream.ToArray();
+
+      HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob executableJobObj =
+        new HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob();
+      executableJobObj.JobInfo = jobObj;
+      executableJobObj.SerializedJob = memStream.ToArray();
 
       DiscoveryService service = new DiscoveryService();
       List<PluginInfo> plugins = new List<PluginInfo>();
@@ -233,7 +238,7 @@ namespace HeuristicLab.Hive.Engine {
       jobObj.CoresNeeded = 1;
       jobObj.PluginsNeeded = pluginsNeeded;
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;
-      return jobObj;
+      return executableJobObj;
     }
 
     public event EventHandler Initialized;

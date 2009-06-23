@@ -81,6 +81,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     #endregion
 
     protected delegate IEnumerable<RowT> Selector();
+    protected delegate object TransactionalAction();
 
     protected ObjT Convert(RowT row, ObjT obj) {
       try {
@@ -108,68 +109,47 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     protected ObjT FindSingle(Selector selector) {
-      ITransaction trans =
-       session.GetCurrentTransaction();
-      bool transactionExists = trans != null;
-      if (!transactionExists) {
-        trans = session.BeginTransaction();
-      }
+      return 
+        (ObjT)doInTransaction(
+         delegate() {
+          RowT row = FindSingleRow(selector);
 
-      try {
-        RowT row = FindSingleRow(selector);
+          ObjT result;
+          if (row != null) {
+            ObjT obj = new ObjT();
+            obj = Convert(row, obj);
 
-        ObjT result;
-        if (row != null) {
-          ObjT obj = new ObjT();
-          obj = Convert(row, obj);
+            result = obj;
+          } else {
+            result = default(ObjT);
+          }
 
-          result = obj;
-        } else {
-          result = default(ObjT);
-        }
-
-        return result;
-      }
-      finally {
-        if (!transactionExists && trans != null) {
-          trans.Commit();
-        }
-      }
+          return result;
+        });
     }
 
     private ICollection<ObjT> FindMultiple(Selector selector, 
       int from, int size) {
-      ITransaction trans =
-       session.GetCurrentTransaction();
-      bool transactionExists = trans != null;
-      if (!transactionExists) {
-        trans = session.BeginTransaction();
-      }
+      return (ICollection<ObjT>)doInTransaction(
+        delegate() {
+          IEnumerable<RowT> found =
+            selector();
 
-      try {
-        IEnumerable<RowT> found =
-          selector();
+          if (from > 0 && size > 0)
+            found = found.Skip<RowT>(from).Take<RowT>(size);
 
-        if (from > 0 && size > 0)
-          found = found.Skip<RowT>(from).Take<RowT>(size);
+          IList<ObjT> result =
+            new List<ObjT>();
 
-        IList<ObjT> result =
-          new List<ObjT>();
+          foreach (RowT row in found) {
+            ObjT obj = new ObjT();
+            obj = Convert(row, obj);
+            if (obj != null)
+              result.Add(obj);
+          }
 
-        foreach (RowT row in found) {
-          ObjT obj = new ObjT();
-          obj = Convert(row, obj);
-          if (obj != null)
-            result.Add(obj);
-        }
-
-        return result;
-      }
-      finally {
-        if (!transactionExists && trans != null) {
-          trans.Commit();
-        }
-      }     
+          return result;
+        });   
     }
 
     protected ICollection<ObjT> FindMultiple(Selector selector) {
@@ -182,6 +162,32 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         delegate() {
           return dataAdapter.FindById(id);
         });
+    }
+
+    protected object doInTransaction(TransactionalAction action) {
+      ITransaction trans =
+        session.GetCurrentTransaction();
+      bool transactionExists = trans != null;
+      if (!transactionExists) {
+        trans = session.BeginTransaction();
+      }
+
+      try {
+        bool result = (bool)action();
+
+        if (!transactionExists && trans != null) {
+            trans.Commit();
+        }
+
+        return result;
+      }
+      catch (Exception e) {
+        if (!transactionExists && trans != null) {
+          trans.Rollback();
+        }
+
+        throw e;
+      }
     }
 
     protected virtual void doUpdate(ObjT obj) {
@@ -204,15 +210,12 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void Update(ObjT obj) {
-      ITransaction trans =
-        session.GetCurrentTransaction();
-      bool transactionExists = trans != null;
-      if (!transactionExists) {
-        trans = session.BeginTransaction();
-      }
-
       try {
-        doUpdate(obj);
+        doInTransaction(
+          delegate() {
+            doUpdate(obj);
+            return true;
+          });        
       }
       catch (DBConcurrencyException ex) {
         DataRow row = ex.Row;
@@ -232,11 +235,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           Update(obj);
         }
         //otherwise: row was deleted in the meantime - nothing to do
-      }
-      finally {
-        if (!transactionExists && trans != null) {
-          trans.Commit();
-        }
       }
     }
 
@@ -281,15 +279,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public bool Delete(ObjT obj) {
-      ITransaction trans =
-        session.GetCurrentTransaction();
-      bool transactionExists = trans != null;
-      if (!transactionExists) {
-        trans = session.BeginTransaction();
-      }
-
       try {
-        return doDelete(obj);
+        return (bool)doInTransaction(
+          delegate() {
+            return doDelete(obj);
+          });
       }
       catch (DBConcurrencyException) {
         RowT current = GetRowById(obj.Id);
@@ -302,11 +296,6 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           return false;
         }
       }
-      finally {
-        if (!transactionExists && trans != null) {
-          trans.Commit();
-        }
-      }  
     }
   }
 }

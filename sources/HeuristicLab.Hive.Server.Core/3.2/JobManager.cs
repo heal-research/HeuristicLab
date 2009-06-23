@@ -72,23 +72,42 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public void ResetJobsDependingOnResults(Job job) {
       ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
 
       try {
         IJobAdapter jobAdapter =
             session.GetDataAdapter<Job, IJobAdapter>();
 
-        JobResult lastJobResult = GetLastJobResult(job);
-        if (lastJobResult != null) {
-          job.Percentage = lastJobResult.Percentage;
-          job.SerializedJob = lastJobResult.Result;
-        } else {
-          job.Percentage = 0;
+        tx = session.BeginTransaction();
+
+        if (job != null) {
+          ComputableJob computableJob =
+              new ComputableJob();
+          computableJob.JobInfo =
+            job;
+
+          JobResult lastJobResult = GetLastJobResult(job);
+          if (lastJobResult != null) {
+            computableJob.JobInfo.Percentage = lastJobResult.Percentage;
+            computableJob.SerializedJob = lastJobResult.Result;
+
+            jobAdapter.UpdateComputableJob(computableJob);
+          } else {
+            computableJob.JobInfo.Percentage = 0;
+          }
+
+          computableJob.JobInfo.Client = null;
+          computableJob.JobInfo.State = State.offline;
+
+          jobAdapter.Update(computableJob.JobInfo);
         }
 
-        job.Client = null;
-        job.State = State.offline;
-
-        jobAdapter.Update(job);
+        tx.Commit();
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
       }
       finally {
         if (session != null)
@@ -184,7 +203,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="job"></param>
     /// <returns></returns>
-    public ResponseObject<Job> AddNewJob(Job job) {
+    public ResponseObject<Job> AddNewJob(ComputableJob job) {
       ISession session = factory.GetSessionForCurrentThread();
 
       try {
@@ -193,13 +212,13 @@ namespace HeuristicLab.Hive.Server.Core {
 
         ResponseObject<Job> response = new ResponseObject<Job>();
 
-        if (job != null) {
-          if (job.State != State.offline) {
+        if (job != null && job.JobInfo != null) {
+          if (job.JobInfo.State != State.offline) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOBSTATE_MUST_BE_OFFLINE;
             return response;
           }
-          if (job.Id != Guid.Empty) {
+          if (job.JobInfo.Id != Guid.Empty) {
             response.Success = false;
             response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
             return response;
@@ -210,10 +229,10 @@ namespace HeuristicLab.Hive.Server.Core {
             return response;
           }
 
-          job.DateCreated = DateTime.Now;
-          jobAdapter.Update(job);
+          job.JobInfo.DateCreated = DateTime.Now;
+          jobAdapter.UpdateComputableJob(job);
           response.Success = true;
-          response.Obj = job;
+          response.Obj = job.JobInfo;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
         } else {
           response.Success = false;

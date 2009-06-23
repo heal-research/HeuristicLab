@@ -43,8 +43,6 @@ namespace HeuristicLab.Hive.Contracts.BusinessObjects {
     [DataMember]
     public double Percentage { get; set; }
     [DataMember]
-    public byte[] SerializedJob { get; set; }
-    [DataMember]
     public DateTime DateCreated { get; set; }
     [DataMember]
     public DateTime DateCalculated { get; set; }
