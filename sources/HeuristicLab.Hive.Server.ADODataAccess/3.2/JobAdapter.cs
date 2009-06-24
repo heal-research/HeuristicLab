@@ -446,16 +446,9 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         job.JobInfo != null) {
         base.doInTransaction(
           delegate() {
-            dsHiveServer.JobRow row
-              = GetRowById(job.JobInfo.Id);
-
-            if (row != null) {
-              Update(job.JobInfo);
-              return base.Adapter.UpdateSerializedJob(
-                job.SerializedJob, job.JobInfo.Id);
-            }
-
-            return false;
+             Update(job.JobInfo);
+             return base.Adapter.UpdateSerializedJob(
+               job.SerializedJob, job.JobInfo.Id);
           });
       }
       
