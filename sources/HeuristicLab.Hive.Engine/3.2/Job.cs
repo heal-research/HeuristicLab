@@ -102,11 +102,15 @@ namespace HeuristicLab.Hive.Engine {
 
     public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute idAttr = document.CreateAttribute("JobId");
+      idAttr.Value = XmlConvert.ToString(JobId);
+      node.Attributes.Append(idAttr);
       node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
       return node;
     }
     public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
+      JobId = XmlConvert.ToInt64(node.Attributes["JobId"].Value);
       DeregisterEvents();
       engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
       RegisterEvents();
