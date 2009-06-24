@@ -29,7 +29,12 @@ namespace HeuristicLab.CEDMA.Server {
   [ClassInfo(Name = "CEDMA Server", Description = "Server to execute CEDMA agents.", AutoRestart=true)]
   class ServerApplication : ApplicationBase {
     public override void Run() {
-      Form mainForm = new ServerForm();
+      Server server = new Server();
+      server.Start();
+      Form mainForm = new Form();
+      UserControl serverControl = (UserControl)server.CreateView();
+      serverControl.Dock = DockStyle.Fill;
+      mainForm.Controls.Add(serverControl);
       Application.Run(mainForm);
     }
   }

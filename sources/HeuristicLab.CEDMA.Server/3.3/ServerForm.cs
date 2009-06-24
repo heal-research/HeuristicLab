@@ -40,32 +40,24 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  public partial class ServerForm : Form {
+  public partial class ServerForm : ViewBase {
     private Server server;
 
-
-    public ServerForm() {
+    public ServerForm(Server server) {
+      this.server = server;
       InitializeComponent();
-      server = new Server();
-      server.Start();
       addressTextBox.Text = server.CedmaServiceUrl;
-    }
-
-    private void refreshTimer_Tick(object sender, EventArgs e) {
-      listBox.DataSource = server.GetActiveJobDescriptions();
     }
 
     private void connectButton_Click(object sender, EventArgs e) {
       server.Connect(address.Text);
-      maxActiveJobsUpDown.Enabled = true;
-      activeJobsLabel.Enabled = true;
-      maxActiveJobsUpDown.Value = server.MaxActiveJobs;
-      connectButton.Enabled = false;
-      refreshTimer.Start();
-    }
-
-    private void maxActiveJobsUpDown_ValueChanged(object sender, EventArgs e) {
-      server.MaxActiveJobs = Convert.ToInt32(maxActiveJobsUpDown.Value);
+      UserControl executerControl = (UserControl)server.Executer.CreateView();
+      executerControl.Dock = DockStyle.Fill;
+      executerTabPage.Controls.Add(executerControl);
+      UserControl dispatcherControl = (UserControl)server.Dispatcher.CreateView();
+      dispatcherControl.Dock = DockStyle.Fill;
+      dispatcherTabPage.Controls.Add(dispatcherControl);
+      connectButton.Enabled = false;      
     }
   }
 }

@@ -36,7 +36,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  public interface IExecuter {
+  public interface IExecuter : IViewable {
     int MaxActiveJobs { get; set; }
     string[] GetJobs();
     void Start();

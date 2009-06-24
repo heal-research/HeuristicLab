@@ -90,6 +90,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecuterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExecuterView.Designer.cs">
+      <DependentUpon>ExecuterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DispatcherView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DispatcherView.Designer.cs">
+      <DependentUpon>DispatcherView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExecuterBase.cs" />
     <Compile Include="IExecuter.cs" />
     <Compile Include="DispatcherBase.cs" />
@@ -100,7 +112,7 @@
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerForm.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ServerForm.designer.cs">
       <DependentUpon>ServerForm.cs</DependentUpon>
@@ -158,6 +170,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DispatcherView.resx">
+      <DependentUpon>DispatcherView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExecuterView.resx">
+      <DependentUpon>ExecuterView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
       <SubType>Designer</SubType>

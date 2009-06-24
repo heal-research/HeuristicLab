@@ -128,5 +128,14 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     public abstract string[] GetJobs();
+
+
+    #region IViewable Members
+
+    public IView CreateView() {
+      return new ExecuterView(this);
+    }
+
+    #endregion
   }
 }

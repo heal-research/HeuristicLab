@@ -40,7 +40,23 @@ namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IStore store;
     private DataSet dataset;
-    
+
+    public IEnumerable<string> AllowedTargetVariables {
+      get {
+        if (dataset != null) {
+          return dataset.Problem.AllowedTargetVariables.Select(x => dataset.Problem.Dataset.GetVariableName(x));
+        } else return new string[0];
+      }
+    }
+
+    public IEnumerable<string> AllowedInputVariables {
+      get {
+        if (dataset != null) {
+          return dataset.Problem.AllowedInputVariables.Select(x => dataset.Problem.Dataset.GetVariableName(x));
+        } else return new string[0];
+      }
+    }
+
     public DispatcherBase(IStore store) {
       this.store = store;
     }
@@ -90,5 +106,13 @@ namespace HeuristicLab.CEDMA.Server {
     private IEnumerable<double> GetDifferentClassValues(HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable) {
       return Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, targetVariable)).Distinct();
     }
+
+    #region IViewable Members
+
+    public IView CreateView() {
+      return new DispatcherView(this);
+    }
+
+    #endregion
   }
 }

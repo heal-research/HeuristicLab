@@ -31,16 +31,20 @@ using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
 using HeuristicLab.Grid;
 using HeuristicLab.Grid.HiveBridge;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  public class Server {
+  public class Server : IViewable {
     private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
     private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
 
     private ServiceHost host;
     private Store store;
+
     private IDispatcher dispatcher;
+    public IDispatcher Dispatcher { get { return dispatcher; } }
     private IExecuter executer;
+    public IExecuter Executer { get { return executer; } }
 
     private string gridServiceUrl;
     public string GridServiceUrl {
@@ -52,19 +56,6 @@ namespace HeuristicLab.CEDMA.Server {
     public string CedmaServiceUrl {
       get { return cedmaServiceUrl; }
       set { cedmaServiceUrl = value; }
-    }
-
-    private int maxActiveJobs;
-    public int MaxActiveJobs {
-      get { return maxActiveJobs; }
-      set {
-        if (value > 0) {
-          maxActiveJobs = value;
-          if (executer != null) {
-            executer.MaxActiveJobs = value;
-          }
-        }
-      }
     }
 
     public Server() {
@@ -79,7 +70,6 @@ namespace HeuristicLab.CEDMA.Server {
       }
       cedmaServiceUrl = "net.tcp://" + addresses[index] + ":8002/CEDMA";
       store = new Store(rdfConnectionString);
-      maxActiveJobs = 10;
     }
 
     public void Start() {
@@ -102,11 +92,6 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    internal string[] GetActiveJobDescriptions() {
-      if (executer != null) return executer.GetJobs();
-      else return new string[] { };
-    }
-
     internal void Connect(string serverUrl) {
       dispatcher = new SimpleDispatcher(store);
       IGridServer gridServer = null;
@@ -117,8 +102,14 @@ namespace HeuristicLab.CEDMA.Server {
         gridServer = new GridServerProxy(serverUrl);
       }
       executer = new GridExecuter(dispatcher, store, gridServer);
-      executer.MaxActiveJobs = MaxActiveJobs;
       executer.Start();
     }
+    #region IViewable Members
+
+    public IView CreateView() {
+      return new ServerForm(this);
+    }
+
+    #endregion
   }
 }

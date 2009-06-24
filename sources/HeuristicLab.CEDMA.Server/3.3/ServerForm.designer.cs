@@ -44,17 +44,15 @@ namespace HeuristicLab.CEDMA.Server {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.addressTextBox = new System.Windows.Forms.TextBox();
       this.externalAddressLabel = new System.Windows.Forms.Label();
       this.gridAddressLabel = new System.Windows.Forms.Label();
       this.address = new System.Windows.Forms.TextBox();
       this.connectButton = new System.Windows.Forms.Button();
-      this.listBox = new System.Windows.Forms.ListBox();
-      this.refreshTimer = new System.Windows.Forms.Timer(this.components);
-      this.maxActiveJobsUpDown = new System.Windows.Forms.NumericUpDown();
-      this.activeJobsLabel = new System.Windows.Forms.Label();
-      ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobsUpDown)).BeginInit();
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.executerTabPage = new System.Windows.Forms.TabPage();
+      this.dispatcherTabPage = new System.Windows.Forms.TabPage();
+      this.tabControl.SuspendLayout();
       this.SuspendLayout();
       // 
       // addressTextBox
@@ -100,62 +98,52 @@ namespace HeuristicLab.CEDMA.Server {
       this.connectButton.UseVisualStyleBackColor = true;
       this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
       // 
-      // listBox
+      // tabControl
       // 
-      this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.listBox.FormattingEnabled = true;
-      this.listBox.Location = new System.Drawing.Point(12, 84);
-      this.listBox.Name = "listBox";
-      this.listBox.Size = new System.Drawing.Size(350, 251);
-      this.listBox.TabIndex = 11;
+      this.tabControl.Controls.Add(this.executerTabPage);
+      this.tabControl.Controls.Add(this.dispatcherTabPage);
+      this.tabControl.Location = new System.Drawing.Point(3, 58);
+      this.tabControl.Name = "tabControl";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(573, 543);
+      this.tabControl.TabIndex = 14;
       // 
-      // refreshTimer
+      // executerTabPage
       // 
-      this.refreshTimer.Interval = 1000;
-      this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
+      this.executerTabPage.Location = new System.Drawing.Point(4, 22);
+      this.executerTabPage.Name = "executerTabPage";
+      this.executerTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.executerTabPage.Size = new System.Drawing.Size(565, 517);
+      this.executerTabPage.TabIndex = 0;
+      this.executerTabPage.Text = "Executer";
+      this.executerTabPage.UseVisualStyleBackColor = true;
       // 
-      // maxActiveJobsUpDown
+      // dispatcherTabPage
       // 
-      this.maxActiveJobsUpDown.Enabled = false;
-      this.maxActiveJobsUpDown.Location = new System.Drawing.Point(106, 59);
-      this.maxActiveJobsUpDown.Maximum = new decimal(new int[] {
-            64,
-            0,
-            0,
-            0});
-      this.maxActiveJobsUpDown.Name = "maxActiveJobsUpDown";
-      this.maxActiveJobsUpDown.Size = new System.Drawing.Size(120, 20);
-      this.maxActiveJobsUpDown.TabIndex = 12;
-      this.maxActiveJobsUpDown.ValueChanged += new System.EventHandler(this.maxActiveJobsUpDown_ValueChanged);
-      // 
-      // activeJobsLabel
-      // 
-      this.activeJobsLabel.AutoSize = true;
-      this.activeJobsLabel.Enabled = false;
-      this.activeJobsLabel.Location = new System.Drawing.Point(12, 61);
-      this.activeJobsLabel.Name = "activeJobsLabel";
-      this.activeJobsLabel.Size = new System.Drawing.Size(84, 13);
-      this.activeJobsLabel.TabIndex = 13;
-      this.activeJobsLabel.Text = "&Max active jobs:";
+      this.dispatcherTabPage.Location = new System.Drawing.Point(4, 22);
+      this.dispatcherTabPage.Name = "dispatcherTabPage";
+      this.dispatcherTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.dispatcherTabPage.Size = new System.Drawing.Size(565, 517);
+      this.dispatcherTabPage.TabIndex = 1;
+      this.dispatcherTabPage.Text = "Dispatcher";
+      this.dispatcherTabPage.UseVisualStyleBackColor = true;
       // 
       // ServerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(374, 342);
-      this.Controls.Add(this.activeJobsLabel);
-      this.Controls.Add(this.maxActiveJobsUpDown);
-      this.Controls.Add(this.listBox);
+      this.Controls.Add(this.tabControl);
       this.Controls.Add(this.connectButton);
       this.Controls.Add(this.gridAddressLabel);
       this.Controls.Add(this.address);
       this.Controls.Add(this.externalAddressLabel);
       this.Controls.Add(this.addressTextBox);
       this.Name = "ServerForm";
-      this.Text = "CEDMA Server";
-      ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobsUpDown)).EndInit();
+      this.Size = new System.Drawing.Size(579, 604);
+      this.tabControl.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -168,9 +156,8 @@ namespace HeuristicLab.CEDMA.Server {
     private System.Windows.Forms.Label gridAddressLabel;
     private System.Windows.Forms.TextBox address;
     private System.Windows.Forms.Button connectButton;
-    private System.Windows.Forms.ListBox listBox;
-    private System.Windows.Forms.Timer refreshTimer;
-    private System.Windows.Forms.NumericUpDown maxActiveJobsUpDown;
-    private System.Windows.Forms.Label activeJobsLabel;
+    private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TabPage executerTabPage;
+    private System.Windows.Forms.TabPage dispatcherTabPage;
   }
 }

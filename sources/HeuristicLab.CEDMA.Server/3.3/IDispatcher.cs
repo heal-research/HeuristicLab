@@ -37,7 +37,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
-  public interface IDispatcher {
+  public interface IDispatcher : IViewable {
     IAlgorithm GetNextJob();
   }
 }
