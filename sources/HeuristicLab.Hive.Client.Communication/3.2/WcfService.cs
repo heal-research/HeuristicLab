@@ -251,7 +251,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     }    
     
     #endregion
-
+                                                 
     /// <summary>
     /// Methods for sending the periodically Heartbeat
     /// </summary>
@@ -267,7 +267,11 @@ namespace HeuristicLab.Hive.Client.Communication {
       if (e.Error == null && e.Result.Success == true)
         SendHeartBeatCompleted(sender, e);
       else {
-        Logging.Instance.Error(this.ToString(), "Error: " + e.Result.StatusMessage);
+        try {
+          Logging.Instance.Error(this.ToString(), "Error: " + e.Result.StatusMessage);
+        } catch (Exception ex) {
+          Logging.Instance.Error(this.ToString(), "Error: ", ex);          
+        }
         HandleNetworkError(e.Error);
       }
     }

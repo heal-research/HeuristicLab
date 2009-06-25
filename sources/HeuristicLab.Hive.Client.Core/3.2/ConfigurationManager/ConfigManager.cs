@@ -28,6 +28,7 @@ using HeuristicLab.Hive.Client.ExecutionEngine;
 using HeuristicLab.Hive.Client.Core.ClientConsoleService;
 using HeuristicLab.Hive.Client.Communication;
 using HeuristicLab.Hive.Client.Core.Properties;
+using HeuristicLab.Hive.Contracts;
 
 namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
   /// <summary>
@@ -128,7 +129,8 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       lock (engines) {
         foreach (KeyValuePair<Guid, Executor> kvp in engines) {
           Executor e = kvp.Value;
-          prog[e.JobId] = e.Progress;
+          if (!e.Running && e.CurrentMessage == MessageContainer.MessageType.NoMessage) 
+            prog[e.JobId] = e.Progress;
         }
       }
       return prog;
