@@ -370,7 +370,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="clientId"></param>
     /// <returns></returns>
     public ResponseJob SendJob(Guid clientId) {
-       ISession session = factory.GetSessionForCurrentThread();
+      ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
       try {
@@ -397,6 +397,8 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Job = null;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
         }
+
+        tx.Commit();
 
         return response;
       }
