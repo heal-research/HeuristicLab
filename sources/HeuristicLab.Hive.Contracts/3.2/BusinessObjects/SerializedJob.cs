@@ -23,34 +23,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.Hive.Contracts.Interfaces;
-using HeuristicLab.Hive.Contracts;
-using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Hive.Server.Core {
-  class ExecutionEngineFacade: IExecutionEngineFacade {
-
-    private IJobManager jobManager =
-      ServiceLocator.GetJobManager();
-
-    #region IExecutionEngineFacade Members
-
-    public ResponseObject<Job> AddJob(SerializedJob job) {
-      return jobManager.AddNewJob(job);
-    }
-
-    public Response RequestSnapshot(Guid jobId) {
-      return jobManager.RequestSnapshot(jobId);
-    }
-
-    public ResponseObject<JobResult> GetLastResult(Guid jobId, bool requested) {
-      return jobManager.GetLastJobResultOf(jobId, requested);
-    }
-
-    public Response AbortJob(Guid jobId) {
-      return jobManager.AbortJob(jobId);
-    }
-
-    #endregion
+namespace HeuristicLab.Hive.Contracts.BusinessObjects {
+  [DataContract]
+  [Serializable]
+  public class SerializedJob {
+    [DataMember]
+    public Job JobInfo { get; set; }
+    
+    [DataMember]
+    public byte[] SerializedJobData { get; set; }
   }
 }

@@ -88,7 +88,7 @@ namespace HeuristicLab.Grid.HiveBridge {
       return null;
     }
 
-    private HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob CreateJobObj(byte[] serializedEngine) {
+    private HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob CreateJobObj(byte[] serializedEngine) {
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
 
       List<HivePluginInfo> requiredPlugins = new List<HivePluginInfo>();
@@ -110,9 +110,9 @@ namespace HeuristicLab.Grid.HiveBridge {
       document.Save(stream);
       stream.Close();
 
-      ComputableJob computableJob =
-        new ComputableJob();
-      computableJob.SerializedJob = memStream.ToArray();
+      SerializedJob computableJob =
+        new SerializedJob();
+      computableJob.SerializedJobData = memStream.ToArray();
       jobObj.CoresNeeded = 1;
       jobObj.PluginsNeeded = requiredPlugins;
       jobObj.State = HeuristicLab.Hive.Contracts.BusinessObjects.State.offline;

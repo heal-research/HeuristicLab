@@ -128,10 +128,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
               job.AssignedResourceIds = groupsToCalculate;
             }
 
-            ComputableJob computableJob =
-              new ComputableJob();
+            SerializedJob computableJob =
+              new SerializedJob();
             computableJob.JobInfo = job;
-            computableJob.SerializedJob = PersistenceManager.SaveToGZip(new TestJob());
+            computableJob.SerializedJobData = PersistenceManager.SaveToGZip(new TestJob());
             Response resp = jobManager.AddNewJob(computableJob);
           }
           if (addJobEvent != null) {

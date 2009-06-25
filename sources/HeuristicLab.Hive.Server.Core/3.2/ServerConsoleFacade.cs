@@ -98,7 +98,7 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.GetJobById(jobId);
     }
 
-    public ResponseObject<Job> AddNewJob(ComputableJob job) {
+    public ResponseObject<Job> AddNewJob(SerializedJob job) {
       secMan.Authorize("AddJob", sessionID, job.JobInfo.Id);
       return jobManager.AddNewJob(job);
     }

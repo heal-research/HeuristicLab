@@ -383,7 +383,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
         Job job2Calculate = scheduler.GetNextJobForClient(clientId);
         if (job2Calculate != null) {
-          ComputableJob computableJob =
+          SerializedJob computableJob =
             jobAdapter.GetComputableJob(job2Calculate.Id);
 
           response.Job = computableJob;
@@ -434,8 +434,8 @@ namespace HeuristicLab.Hive.Server.Core {
         ClientInfo client =
           clientAdapter.GetById(clientId);
 
-        ComputableJob job =
-          new ComputableJob();
+        SerializedJob job =
+          new SerializedJob();
 
         if (job != null) {
           job.JobInfo =
@@ -480,12 +480,12 @@ namespace HeuristicLab.Hive.Server.Core {
           response.JobId = jobId;
           return response;
         }
-        job.SerializedJob = result;
+        job.SerializedJobData = result;
         job.JobInfo.Percentage = percentage;
 
         if (finished) {
           job.JobInfo.State = State.finished;
-          job.SerializedJob = result;
+          job.SerializedJobData = result;
         }
 
         jobAdapter.UpdateComputableJob(job);

@@ -73,15 +73,15 @@ namespace HeuristicLab.Hive.Server.Core {
         tx = session.BeginTransaction();
 
         if (job != null) {
-          ComputableJob computableJob =
-              new ComputableJob();
+          SerializedJob computableJob =
+              new SerializedJob();
           computableJob.JobInfo =
             job;
 
           JobResult lastJobResult = GetLastJobResult(job);
           if (lastJobResult != null) {
             computableJob.JobInfo.Percentage = lastJobResult.Percentage;
-            computableJob.SerializedJob = lastJobResult.Result;
+            computableJob.SerializedJobData = lastJobResult.Result;
 
             jobAdapter.UpdateComputableJob(computableJob);
           } else {
@@ -195,7 +195,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="job"></param>
     /// <returns></returns>
-    public ResponseObject<Job> AddNewJob(ComputableJob job) {
+    public ResponseObject<Job> AddNewJob(SerializedJob job) {
       ISession session = factory.GetSessionForCurrentThread();
 
       try {
@@ -215,7 +215,7 @@ namespace HeuristicLab.Hive.Server.Core {
             response.StatusMessage = ApplicationConstants.RESPONSE_JOB_ID_MUST_NOT_BE_SET;
             return response;
           }
-          if (job.SerializedJob == null) {
+          if (job.SerializedJobData == null) {
             response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_NULL;
             response.Success = false;
             return response;

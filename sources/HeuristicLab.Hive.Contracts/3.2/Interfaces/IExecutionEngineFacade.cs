@@ -30,7 +30,7 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
   [ServiceContract]
   public interface IExecutionEngineFacade {
     [OperationContract]
-    ResponseObject<Job> AddJob(ComputableJob job);
+    ResponseObject<Job> AddJob(SerializedJob job);
     [OperationContract]
     Response RequestSnapshot(Guid jobId);
     [OperationContract]

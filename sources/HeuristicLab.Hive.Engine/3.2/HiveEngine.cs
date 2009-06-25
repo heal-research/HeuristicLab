@@ -192,7 +192,7 @@ namespace HeuristicLab.Hive.Engine {
       OnInitialized();
     }
 
-    private HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob CreateJobObj() {
+    private HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob CreateJobObj() {
       HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = 
         new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
 
@@ -206,10 +206,10 @@ namespace HeuristicLab.Hive.Engine {
       document.Save(stream);
       stream.Close();
 
-      HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob executableJobObj =
-        new HeuristicLab.Hive.Contracts.BusinessObjects.ComputableJob();
+      HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob executableJobObj =
+        new HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob();
       executableJobObj.JobInfo = jobObj;
-      executableJobObj.SerializedJob = memStream.ToArray();
+      executableJobObj.SerializedJobData = memStream.ToArray();
 
       DiscoveryService service = new DiscoveryService();
       List<PluginInfo> plugins = new List<PluginInfo>();

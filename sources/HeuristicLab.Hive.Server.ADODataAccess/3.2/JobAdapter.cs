@@ -419,15 +419,15 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     /// </summary>
     /// <param name="jobId"></param>
     /// <returns></returns>
-    public ComputableJob GetComputableJob(Guid jobId) {
-      return (ComputableJob)base.doInTransaction(
+    public SerializedJob GetComputableJob(Guid jobId) {
+      return (SerializedJob)base.doInTransaction(
         delegate() {
-          ComputableJob job =
-            new ComputableJob();
+          SerializedJob job =
+            new SerializedJob();
 
           job.JobInfo = GetById(jobId);
           if (job.JobInfo != null) {
-            job.SerializedJob =
+            job.SerializedJobData =
               base.Adapter.GetSerializedJobById(jobId);
 
             return job;
@@ -441,14 +441,14 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     /// Saves or update the computable job
     /// </summary>
     /// <param name="jobId"></param>
-    public void UpdateComputableJob(ComputableJob job) {
+    public void UpdateComputableJob(SerializedJob job) {
       if(job != null && 
         job.JobInfo != null) {
         base.doInTransaction(
           delegate() {
              Update(job.JobInfo);
              return base.Adapter.UpdateSerializedJob(
-               job.SerializedJob, job.JobInfo.Id);
+               job.SerializedJobData, job.JobInfo.Id);
           });
       }
       
