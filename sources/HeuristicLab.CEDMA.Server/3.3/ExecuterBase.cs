@@ -41,6 +41,8 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.CEDMA.Server {
   public abstract class ExecuterBase : IExecuter {
+    internal event EventHandler Changed;
+
     private IDispatcher dispatcher;
     protected IDispatcher Dispatcher {
       get { return dispatcher; }
@@ -53,6 +55,7 @@ namespace HeuristicLab.CEDMA.Server {
       set {
         if (value < 0) throw new ArgumentException("Only positive values are allowed for MaxActiveJobs");
         maxActiveJobs = value;
+        OnChanged();
       }
     }
 
@@ -129,6 +132,9 @@ namespace HeuristicLab.CEDMA.Server {
 
     public abstract string[] GetJobs();
 
+    protected internal void OnChanged() {
+      if (Changed != null) Changed(this, new EventArgs());
+    }
 
     #region IViewable Members
 

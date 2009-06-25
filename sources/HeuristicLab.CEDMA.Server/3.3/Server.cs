@@ -107,7 +107,7 @@ namespace HeuristicLab.CEDMA.Server {
     #region IViewable Members
 
     public IView CreateView() {
-      return new ServerForm(this);
+      return new ServerView(this);
     }
 
     #endregion

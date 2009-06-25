@@ -40,7 +40,7 @@ namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IStore store;
     private DataSet dataset;
-
+    internal event EventHandler Changed;
     public IEnumerable<string> AllowedTargetVariables {
       get {
         if (dataset != null) {
@@ -67,6 +67,7 @@ namespace HeuristicLab.CEDMA.Server {
           .Select(x => (Entity)x.Get("DataSet"));
         if (datasetEntities.Count() == 0) return null;
         dataset = new DataSet(store, datasetEntities.ElementAt(0));
+        OnChanged();
       }
       int targetVariable = SelectTargetVariable(dataset.Problem.AllowedTargetVariables.ToArray());
       IAlgorithm selectedAlgorithm = SelectAlgorithm(targetVariable, dataset.Problem.LearningTask);
@@ -105,6 +106,10 @@ namespace HeuristicLab.CEDMA.Server {
 
     private IEnumerable<double> GetDifferentClassValues(HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable) {
       return Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, targetVariable)).Distinct();
+    }
+
+    private void OnChanged() {
+      if (Changed != null) Changed(this, new EventArgs());
     }
 
     #region IViewable Members

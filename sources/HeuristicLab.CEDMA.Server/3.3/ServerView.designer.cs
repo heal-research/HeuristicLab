@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.CEDMA.Server {
-  partial class ServerForm {
+  partial class ServerView {
     /// <summary>
     /// Required designer variable.
     /// </summary>

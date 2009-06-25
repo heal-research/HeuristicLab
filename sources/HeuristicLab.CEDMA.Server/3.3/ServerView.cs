@@ -40,10 +40,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
-  public partial class ServerForm : ViewBase {
+  public partial class ServerView : ViewBase {
     private Server server;
 
-    public ServerForm(Server server) {
+    public ServerView(Server server) : base() {
       this.server = server;
       InitializeComponent();
       addressTextBox.Text = server.CedmaServiceUrl;

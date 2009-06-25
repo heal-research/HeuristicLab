@@ -11,17 +11,25 @@ using HeuristicLab.Core;
 namespace HeuristicLab.CEDMA.Server {
   public partial class ExecuterView : ViewBase {
     private ExecuterBase executer;
-    public ExecuterView(ExecuterBase executer) {
+    public ExecuterView(ExecuterBase executer)
+      : base() {
       this.executer = executer;
       InitializeComponent();
-      refreshTimer.Enabled = true;
+      maxActiveJobs.Value = executer.MaxActiveJobs;
+      executer.Changed += (sender, args) => UpdateControls();
     }
 
-    private void refreshTimer_Tick(object sender, EventArgs e) {
-      jobsList.DataSource = executer.GetJobs();
+    protected override void UpdateControls() {
+      if (InvokeRequired) Invoke((Action)UpdateControls);
+      else {
+        base.UpdateControls();
+        maxActiveJobs.Value = executer.MaxActiveJobs;
+        jobsList.DataSource = executer.GetJobs();
+        jobsList.Refresh();
+      }
     }
 
-    private void maxActiveJobsUpDown_ValueChanged(object sender, EventArgs e) {
+    private void maxActiveJobs_ValueChanged(object sender, EventArgs e) {
       executer.MaxActiveJobs = Convert.ToInt32(maxActiveJobs.Value);
     }
   }

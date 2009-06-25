@@ -111,11 +111,11 @@
     <Compile Include="ServerApplication.cs" />
     <Compile Include="HeuristicLabCedmaServerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerForm.cs">
+    <Compile Include="ServerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ServerForm.designer.cs">
-      <DependentUpon>ServerForm.cs</DependentUpon>
+    <Compile Include="ServerView.designer.cs">
+      <DependentUpon>ServerView.cs</DependentUpon>
     </Compile>
     <Compile Include="SimpleDispatcher.cs" />
   </ItemGroup>
@@ -176,9 +176,8 @@
     <EmbeddedResource Include="ExecuterView.resx">
       <DependentUpon>ExecuterView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServerForm.resx">
-      <DependentUpon>ServerForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="ServerView.resx">
+      <DependentUpon>ServerView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

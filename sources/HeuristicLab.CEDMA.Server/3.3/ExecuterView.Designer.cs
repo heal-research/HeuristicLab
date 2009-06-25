@@ -23,18 +23,11 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.refreshTimer = new System.Windows.Forms.Timer(this.components);
       this.jobsList = new System.Windows.Forms.ListBox();
       this.maxJobsLabel = new System.Windows.Forms.Label();
       this.maxActiveJobs = new System.Windows.Forms.NumericUpDown();
       ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobs)).BeginInit();
       this.SuspendLayout();
-      // 
-      // refreshTimer
-      // 
-      this.refreshTimer.Interval = 1000;
-      this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
       // 
       // jobsList
       // 
@@ -85,7 +78,6 @@
 
     #endregion
 
-    private System.Windows.Forms.Timer refreshTimer;
     private System.Windows.Forms.ListBox jobsList;
     private System.Windows.Forms.Label maxJobsLabel;
     private System.Windows.Forms.NumericUpDown maxActiveJobs;

@@ -60,7 +60,7 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     protected override void StartJobs() {
-      Dictionary<WaitHandle, AsyncGridResult> asyncResults = new Dictionary<WaitHandle,AsyncGridResult>();
+      Dictionary<WaitHandle, AsyncGridResult> asyncResults = new Dictionary<WaitHandle, AsyncGridResult>();
       while (true) {
         try {
           // start new jobs as long as there are less than MaxActiveJobs 
@@ -79,6 +79,7 @@ namespace HeuristicLab.CEDMA.Server {
               lock (activeAlgorithms) {
                 activeAlgorithms.Add(asyncResult, algorithm);
               }
+              OnChanged();
             }
           }
           // wait until any job is finished
@@ -94,6 +95,7 @@ namespace HeuristicLab.CEDMA.Server {
               activeAlgorithms.Remove(finishedResult);
               asyncResults.Remove(readyHandle);
             }
+            OnChanged();
             try {
               IEngine finishedEngine = jobManager.EndExecuteEngine(finishedResult);
               SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
