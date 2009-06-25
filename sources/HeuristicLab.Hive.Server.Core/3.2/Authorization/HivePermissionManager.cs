@@ -50,15 +50,18 @@ namespace HeuristicLab.Hive.Server.Core {
       //check if this policy has a permission with 'PROJECT' scope defined
       p = policyCollection[policyName].GetPermissionByContext("Project");
       //check if user has 'xxx.Project' permission
-      if (p != null)
-        //TODO: Test auf NULL von Project!  
-        if (CheckPermission(sessionID, p.Id, jobManager.GetJobById(entityID).Obj.Project.Id)) return;
-
+      if ((p != null) && (entityID!=Guid.Empty))
+      {
+          ResponseObject<Job> job = jobManager.GetJobById(entityID);
+          if (job.Obj.Project != null)
+              if (CheckPermission(sessionID, p.Id, jobManager.GetJobById(entityID).Obj.Project.Id)) return;
+      }
       //check if this policy has a permission with 'OWNER' scope defined
       p = policyCollection[policyName].GetPermissionByContext("User");
       //check if user has 'xxx.Owner' permission
       if (p != null)
         if (CheckPermission(sessionID, p.Id, jobManager.GetJobById(entityID).Obj.UserId)) return;
+
       //throw an exception when user access fails
       //throw new PermissionException(policyName);
     }
