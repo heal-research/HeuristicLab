@@ -295,7 +295,7 @@ namespace HeuristicLab.Hive.Client.Communication {
       BinaryFormatter formatter =
         new BinaryFormatter();
 
-      formatter.Serialize(stream, jobResult);
+      formatter.Serialize(stream, serializedJobResult);
       stream.Seek(0, SeekOrigin.Begin);
 
       return stream;
