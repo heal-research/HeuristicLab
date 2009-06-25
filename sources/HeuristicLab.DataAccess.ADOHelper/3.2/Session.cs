@@ -41,12 +41,15 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private Thread ownerThread;
 
+    private int counter;
+
     private IDictionary<Guid, object> adapters =
       new Dictionary<Guid, object>();
 
     public Session(SessionFactory factory) {
       this.factory = factory;
       this.ownerThread = Thread.CurrentThread;
+      this.counter = 0;
     }
 
     public void CheckThread() {
@@ -67,6 +70,10 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public void DetachTrasaction() {
       this.transaction = null;
+    }
+
+    public void IncrementCounter() {
+      this.counter++;
     }
 
     #region ISession Members
@@ -126,17 +133,21 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void EndSession() {
-      CheckThread();
+      this.counter--;
 
-      if (transaction != null) {
-        transaction.Rollback();
-        transaction = null;
+      if (counter <= 0) {
+        CheckThread();
+
+        if (transaction != null) {
+          transaction.Rollback();
+          transaction = null;
+        }
+        if (connection.State == System.Data.ConnectionState.Open) {
+          connection.Close();
+          connection = null;
+        }
+        factory.EndSession(this);
       }
-      if (connection.State == System.Data.ConnectionState.Open) {
-        connection.Close();
-        connection = null;
-      }
-      factory.EndSession(this);
     }
 
     #endregion

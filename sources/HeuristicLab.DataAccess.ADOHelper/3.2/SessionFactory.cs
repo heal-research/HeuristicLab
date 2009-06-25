@@ -30,8 +30,8 @@ using System.Data.Common;
 
 namespace HeuristicLab.DataAccess.ADOHelper {
   public class SessionFactory: ISessionFactory {
-    private IDictionary<Thread, ISession> sessions =
-      new Dictionary<Thread, ISession>();
+    private IDictionary<Thread, Session> sessions =
+      new Dictionary<Thread, Session>();
 
     public Type DbConnectionType { get;  set; }
     public String DbConnectionString { get;  set; }
@@ -84,6 +84,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           sessions[current] =
             new Session(this);
         }
+
+        sessions[current].IncrementCounter();
 
         return sessions[current];
       }
