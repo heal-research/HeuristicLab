@@ -33,29 +33,40 @@ namespace HeuristicLab.DataAnalysis {
       : base() {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset which should be shuffled (random row order)", typeof(Dataset), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("Random", "Randomizer", typeof(MersenneTwister), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ShuffleStart", "Start of part of dataset which should be shuffeled", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("ShuffleEnd", "End of part of dataset which should be shuffeled", typeof(IntData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       MersenneTwister tw = GetVariableValue<MersenneTwister>("Random", scope, true);
 
-      for(int i = 0; i < dataset.Rows - 1; i++) {
-        int j = tw.Next(i, dataset.Rows);
+      int start = 0;
+      int end = dataset.Rows;
+      IntData temp = GetVariableValue<IntData>("ShuffleStart", scope, true, false);
+      if (temp != null)
+        start = temp.Data;
+      temp = GetVariableValue<IntData>("ShuffleEnd", scope, true, false);
+      if (temp != null)
+        end = temp.Data;
+
+      for (int i = start; i < end - 1; i++) {
+        int j = tw.Next(i, end);
         ExchangeRows(dataset, i, j);
       }
 
+      dataset.FireChanged();
       return null;
     }
 
     private void ExchangeRows(Dataset dataset, int i, int j) {
       dataset.FireChangeEvents = false;
-      for(int k = 0; k < dataset.Columns; k++) {
+      for (int k = 0; k < dataset.Columns; k++) {
         double temp = dataset.GetValue(i, k);
         dataset.SetValue(i, k, dataset.GetValue(j, k));
         dataset.SetValue(j, k, temp);
       }
       dataset.FireChangeEvents = true;
-      dataset.FireChanged();
     }
   }
 }
