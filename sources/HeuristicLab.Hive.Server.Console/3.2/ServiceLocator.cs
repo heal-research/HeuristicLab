@@ -33,10 +33,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           new ChannelFactory<IServerConsoleFacade>(
             WcfSettings.GetBinding(),
             new EndpointAddress("net.tcp://" + Address + ":" + Port + "/HiveServerConsole/ServerConsoleFacade"));
-
+                         
         serverConsoleFacade = factory.CreateChannel();
       }
-
+      
       return serverConsoleFacade;
     }
 

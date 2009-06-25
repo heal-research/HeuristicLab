@@ -33,6 +33,7 @@ using HeuristicLab.Hive.Contracts;
 using System.Security.Cryptography;
 using System.Net;
 using System.Threading;
+using System.ServiceModel;
 
 namespace HeuristicLab.Hive.Server.ServerConsole {
 
@@ -45,8 +46,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 #if(DEBUG)
       tbIp.Text = "10.20.53.1";
       tbPort.Text = WcfSettings.GetDefaultPort().ToString();
-      tbUserName.Text = "test45";
-      tbPwd.Text = "test";
+      tbUserName.Text = "admin";
+      tbPwd.Text = "admin";
 #endif
     }
 
@@ -85,6 +86,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (IsFormValidated()) {
         IPAddress ipAdress = IPAddress.Parse(tbIp.Text);
         int port = int.Parse(tbPort.Text);
+        ServiceLocator.Address = tbIp.Text.Replace(" ", "");
+        ServiceLocator.Port = tbPort.Text;
         IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
         try {
           lblError.Text = "Trying to logon...";
@@ -94,7 +97,10 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
           if (resp.StatusMessage == "Logged in") return true;
           lblError.Text = resp.StatusMessage;
         }
-        catch (Exception ex) {
+        catch (EndpointNotFoundException ene) {
+          lblError.Text = "No Service at this address!";
+        }
+        catch (FaultException ex) {
           //login failed
           lblError.Text = "Logon failed!";
           t.Abort();
