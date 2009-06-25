@@ -215,30 +215,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       changes.Clear();
 
-      //#region ClientInfo
-      //ResponseList<ClientInfo> clientInfoOld = clientInfo;
-      //clientInfo = ClientManager.GetAllClients();
-
-      //IDictionary<int, ClientInfo> clientInfoOldHelp;
-
-      //CloneList(clientInfoOld, out clientInfoOldHelp);
-
-      //GetDelta(clientInfoOld.List, clientInfoOldHelp);
-      //#endregion
-
-      #region Clients
-      //ResponseList<ClientGroup> clientsOld = clients;
-
-      // newClients = ClientManager.GetAllClientGroups();
-
-      //IDictionary<Guid, ClientGroup> clientsOldHelp;
-
-      //CloneList(clientsOld, out clientsOldHelp);
-
-      //GetDelta(clientsOld.List, clientsOldHelp);
-      //DetermineDelta();
-      #endregion
-
       #region Job
       ResponseList<Job> jobsOld = jobs;
       try {
@@ -258,11 +234,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
 
       #endregion
-
-      foreach (Changes change in changes) {
-        System.Diagnostics.Debug.WriteLine(change.ID + " " + change.ChangeType);
-      }
-
     }
 
     #endregion
@@ -289,36 +260,39 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         jobGroup.Add(lvJobFinished);
         jobGroup.Add(lvJobPending);
 
-        foreach (Job job in jobs.List) {
-          if (job.State == State.calculating) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
-            lvi.Tag = job;
-            jobObjects.Add(lvi);
+        if (jobs != null && jobs.List != null) {
 
-            lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
-          } else if (job.State == State.finished) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
-            lvi.Tag = job;
-            jobObjects.Add(lvi);
-            //lvJobControl.Items.Add(lvi);
-          } else if (job.State == State.offline) {
-            ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
-            lvi.Tag = job;
-            jobObjects.Add(lvi);
+          foreach (Job job in jobs.List) {
+            if (job.State == State.calculating) {
+              ListViewItem lvi = new ListViewItem(job.Id.ToString(), 1, lvJobCalculating);
+              lvi.Tag = job;
+              jobObjects.Add(lvi);
+
+              lvi.ToolTipText = (job.Percentage * 100) + "% of job calculated";
+            } else if (job.State == State.finished) {
+              ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
+              lvi.Tag = job;
+              jobObjects.Add(lvi);
+              //lvJobControl.Items.Add(lvi);
+            } else if (job.State == State.offline || job.State == State.pending) {
+              ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
+              lvi.Tag = job;
+              jobObjects.Add(lvi);
+            }
+          } // Jobs
+          lvJobControl.BeginUpdate();
+          foreach (ListViewItem lvi in jobObjects) {
+            lvJobControl.Items.Add(lvi);
           }
-        } // Jobs
-        lvJobControl.BeginUpdate();
-        foreach (ListViewItem lvi in jobObjects) {
-          lvJobControl.Items.Add(lvi);
-        }
-        // actualization
-        lvJobControl.Groups.Add(lvJobCalculating);
-        lvJobControl.Groups.Add(lvJobFinished);
-        lvJobControl.Groups.Add(lvJobPending);
-        lvJobControl.EndUpdate();
+          // actualization
+          lvJobControl.Groups.Add(lvJobCalculating);
+          lvJobControl.Groups.Add(lvJobFinished);
+          lvJobControl.Groups.Add(lvJobPending);
+          lvJobControl.EndUpdate();
 
-        if (currentJob != null) {
-          JobClicked();
+          if (currentJob != null) {
+            JobClicked();
+          }
         }
       }
       catch (Exception ex) {
@@ -496,11 +470,13 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             ServiceLocator.GetJobManager();
           ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id);
 
-          lvi = null;
-          lvi = new ListViewItem();
-          lvi.Text = "Calculation ended:";
-          lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
-          lvJobDetails.Items.Add(lvi);
+          if (jobRes != null && jobRes.Obj != null) {
+            lvi = null;
+            lvi = new ListViewItem();
+            lvi.Text = "Calculation ended:";
+            lvi.SubItems.Add(jobRes.Obj.DateFinished.ToString());
+            lvJobDetails.Items.Add(lvi);
+          }
         }
       }
       if (currentJob.State != State.offline) {
@@ -553,28 +529,25 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
             foreach (Job job in jobs.List) {
               if (job.Id == change.ID) {
                 lvJobControl.Items[i].Tag = job;
-                if (currentJob.Id == change.ID) {
-                  currentJob = job;
-                  JobClicked();
+                if (currentJob != null) {
+                  if (currentJob.Id == change.ID) {
+                    currentJob = job;
+                    JobClicked();
+                  }
                 }
                 break;
               }
             }
             State state = jobs.List[change.Position].State;
-            System.Diagnostics.Debug.WriteLine(lvJobControl.Items[i].Text.ToString());
             if (state == State.finished) {
               lvJobControl.Items[i].Group = jobGroup[1];
               lvJobControl.Items[i].ImageIndex = 0;
-              System.Diagnostics.Debug.WriteLine("finished");
             } else if (state == State.calculating) {
               lvJobControl.Items[i].Group = jobGroup[0];
               lvJobControl.Items[i].ImageIndex = 1;
-              System.Diagnostics.Debug.WriteLine("calculating");
-            } else if (state == State.offline) {
+            } else if (state == State.offline || state == State.pending) {
               lvJobControl.Items[i].Group = jobGroup[2];
               lvJobControl.Items[i].ImageIndex = 2;
-              System.Diagnostics.Debug.WriteLine("offline");
-
             }
             lvJobControl.Refresh();
           }
@@ -812,7 +785,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private int CapacityRam(int noCores, int freeCores) {
       if (noCores > 0) {
         int capacity = ((noCores - freeCores) / noCores) * 100;
-        System.Diagnostics.Debug.WriteLine(capacity);
         return capacity;
       }
       return 100;
@@ -861,13 +833,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
         if (found == false) {
           changes.Add(new Changes { Types = Type.Job, ID = job.Id, ChangeType = Change.Create });
-          System.Diagnostics.Debug.WriteLine("new Job: " + job.Id);
         }
         found = false;
       }
       foreach (KeyValuePair<int, Job> kvp in helpJobs) {
         changes.Add(new Changes { Types = Type.Job, ID = kvp.Value.Id, ChangeType = Change.Delete, Position = kvp.Key });
-        System.Diagnostics.Debug.WriteLine("delete Job: " + kvp.Value.Id);
       }
     }
 

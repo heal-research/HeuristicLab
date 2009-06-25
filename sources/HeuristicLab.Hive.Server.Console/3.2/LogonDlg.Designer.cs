@@ -58,6 +58,7 @@
       this.ClientSize = new System.Drawing.Size(450, 101);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.pictureBox1);
+      this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
       this.Name = "LogonDlg";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

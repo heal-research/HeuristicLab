@@ -89,28 +89,36 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         ServiceLocator.Address = tbIp.Text.Replace(" ", "");
         ServiceLocator.Port = tbPort.Text;
         IServerConsoleFacade scf = ServiceLocator.GetServerConsoleFacade();
+        Response resp;
         try {
           lblError.Text = "Trying to logon...";
+          this.Cursor = Cursors.WaitCursor;
           t.Start();
-          Response resp = scf.Login(tbUserName.Text, tbPwd.Text);
+          resp = scf.Login(tbUserName.Text, tbPwd.Text);
           t.Abort();
-          if (resp.StatusMessage == "Logged in") return true;
+          this.Cursor = Cursors.Default;
+          if (resp.Success == true) return true;
           lblError.Text = resp.StatusMessage;
+          MessageBox.Show("Wrong username or password");
         }
         catch (EndpointNotFoundException ene) {
-          lblError.Text = "No Service at this address!";
-        }
-        catch (FaultException ex) {
-          //login failed
-          lblError.Text = "Logon failed!";
           t.Abort();
-          return false;
+          this.Cursor = Cursors.Default;
+          MessageBox.Show(ene.Message);
+          lblError.Text = "No Service at this address!";
+          scf = null;
+        }
+        catch (Exception ex) {
+          //login failed
+          t.Abort();
+          this.Cursor = Cursors.Default;
+          MessageBox.Show(ex.Message);
+          lblError.Text = "Logon failed! Please restart console";
         }
       }
-      //validation failed
-      t.Abort();
-      return false;
+        return false;
     }
+
 
     private void ShowWaitDlg() {
       LogonDlg dlg = new LogonDlg();
@@ -160,6 +168,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       if (cf) {
         this.Visible = true;
         ServiceLocator.ShutDownFacade();
+        lblError.Text = "";
         if (error == true) {
           lblError.Text = "Establishing server connection failed.";
         }
