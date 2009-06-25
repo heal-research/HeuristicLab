@@ -70,7 +70,7 @@ namespace HeuristicLab.Grid.HiveBridge {
         response.Success && response.Obj != null) {
         HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
         // only return the engine when it wasn't canceled (result is only a snapshot)
-        if (!restoredJob.Engine.Canceled) {
+        if (restoredJob.Progress < 1.0) {
           // Serialize the engine
           MemoryStream memStream = new MemoryStream();
           GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
