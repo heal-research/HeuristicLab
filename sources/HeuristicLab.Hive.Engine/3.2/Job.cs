@@ -54,6 +54,8 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     void engine_Finished(object sender, EventArgs e) {
+      if (Engine.Canceled) this.progress = 0.0;
+      else this.progress = 1.0;
       if (JobStopped != null)
         JobStopped(this, new EventArgs());
     }
@@ -68,11 +70,12 @@ namespace HeuristicLab.Hive.Engine {
       set;
     }
 
+    private double progress;
     public double Progress {
       get {
         DoubleData progress = Engine.GlobalScope.GetVariableValue<DoubleData>("Progress", false,
           false);
-        return progress == null ? 0.0 : progress.Data;
+        return progress == null ? this.progress : progress.Data;
       }
       set { throw new NotSupportedException(); }
     }
@@ -104,13 +107,17 @@ namespace HeuristicLab.Hive.Engine {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       XmlAttribute idAttr = document.CreateAttribute("JobId");
       idAttr.Value = XmlConvert.ToString(JobId);
+      XmlAttribute progressAttr = document.CreateAttribute("Progress");
+      progressAttr.Value = XmlConvert.ToString(progress);
       node.Attributes.Append(idAttr);
+      node.Attributes.Append(progressAttr);
       node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
       return node;
     }
     public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
       JobId = XmlConvert.ToInt64(node.Attributes["JobId"].Value);
+      progress = XmlConvert.ToDouble(node.Attributes["Progress"].Value);
       DeregisterEvents();
       engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
       RegisterEvents();

@@ -42,6 +42,7 @@ namespace HeuristicLab.Hive.Engine {
   public class HiveEngine : ItemBase, IEngine, IEditable {
     private const int SNAPSHOT_POLLING_INTERVAL_MS = 1000;
     private const int RESULT_POLLING_INTERVAL_MS = 10000;
+    private const int MAX_SNAPSHOT_RETRIES = 20;
     private Guid jobId;
     private Job job;
     private object locker = new object();
@@ -116,10 +117,10 @@ namespace HeuristicLab.Hive.Engine {
             if (response.Success && response.Obj != null) {
               HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
               restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
-              HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + restoredJob.Engine.Canceled);
+              HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + (restoredJob.Progress<1.0));
             }
           }
-        } while (restoredJob == null || restoredJob.Engine.Canceled);
+        } while (restoredJob == null || (restoredJob.Progress < 1.0));
 
         job = restoredJob;
         PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
@@ -132,7 +133,7 @@ namespace HeuristicLab.Hive.Engine {
 
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-
+      int retryCount = 0;
       ResponseObject<SerializedJobResult> response;
       lock (locker) {
         HiveLogger.Debug("HiveEngine: Abort - RequestSnapshot");
@@ -150,12 +151,15 @@ namespace HeuristicLab.Hive.Engine {
             HiveLogger.Debug("HiveEngine: Abort - GetLastResult(true)");
             response = executionEngineFacade.GetLastSerializedResult(jobId, true);
             HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
+            retryCount++;
             // loop while
             // 1. problem with communication with server
             // 2. job result not yet ready
           } while (
+            (retryCount < MAX_SNAPSHOT_RETRIES) && (
             !response.Success ||
-            response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
+            response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE)
+            );
         }
       }
       SerializedJobResult jobResult = response.Obj;
@@ -179,7 +183,7 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Abort() {
       abortRequested = true;
-      RequestSnapshot();
+      // RequestSnapshot();
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       executionEngineFacade.AbortJob(jobId);
       OnChanged();
@@ -194,7 +198,7 @@ namespace HeuristicLab.Hive.Engine {
     }
 
     private HeuristicLab.Hive.Contracts.BusinessObjects.SerializedJob CreateJobObj() {
-      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj = 
+      HeuristicLab.Hive.Contracts.BusinessObjects.Job jobObj =
         new HeuristicLab.Hive.Contracts.BusinessObjects.Job();
 
       MemoryStream memStream = new MemoryStream();
