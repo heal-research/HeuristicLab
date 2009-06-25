@@ -40,9 +40,9 @@ namespace HeuristicLab.Hive.Server.Core {
     /// <param name="sessionID">Session ID identifies a currently logged on user.</param>
     /// <param name="entityID">Entity ID can be some resource or emtpy.</param>
     public void Authorize(string policyName, Guid sessionID, Guid entityID) {
+      #region Use authorization method with scopes
       //check if this policy has a permission with 'ANY' scope defined
       Permission p = policyCollection[policyName].GetPermissionByContext("Any");
-      
       //check if user has 'xxx.Any' permission
       if (p != null)
         if (CheckPermission(sessionID, p.Id, entityID)) return;
@@ -58,12 +58,20 @@ namespace HeuristicLab.Hive.Server.Core {
       }
       //check if this policy has a permission with 'OWNER' scope defined
       p = policyCollection[policyName].GetPermissionByContext("User");
+      
       //check if user has 'xxx.Owner' permission
       if (p != null)
         if (CheckPermission(sessionID, p.Id, jobManager.GetJobById(entityID).Obj.UserId)) return;
-
+      #endregion
+      #region Use authorization method when no scopes are present
+      //when no permission context is available, use primary authentification
+      foreach (KeyValuePair<Permission, PermissionContext> item in policyCollection[policyName].Permissions)
+      {
+          if (CheckPermission(sessionID, item.Key.Id, Guid.Empty)) return;
+      }
+      #endregion
       //throw an exception when user access fails
-      //throw new PermissionException(policyName);
+      throw new PermissionException(policyName);
     }
 
     /// <summary>

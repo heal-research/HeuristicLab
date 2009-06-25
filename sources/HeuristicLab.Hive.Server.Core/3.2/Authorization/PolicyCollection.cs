@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace HeuristicLab.Hive.Server.Core {
   public class PolicyCollection : IEnumerable<Policy> {
@@ -23,8 +24,13 @@ namespace HeuristicLab.Hive.Server.Core {
       return this._policies.GetEnumerator();
     }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-      return this._policies.GetEnumerator();
+    #region IEnumerable Members
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return this._policies.GetEnumerator();
     }
+
+    #endregion
   }
 }
