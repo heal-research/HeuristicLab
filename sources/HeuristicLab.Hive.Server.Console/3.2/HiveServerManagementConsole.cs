@@ -215,7 +215,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
 
       changes.Clear();
 
-      #region Job
       ResponseList<Job> jobsOld = jobs;
       try {
         IJobManager jobManager =
@@ -233,7 +232,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         MessageBox.Show(fe.Message);
       }
 
-      #endregion
     }
 
     #endregion
@@ -309,16 +307,18 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       try {
         ResponseList<ClientGroup> clientGroups = ClientManager.GetAllClientGroups();
 
-        foreach (ClientGroup cg in clientGroups.List) {
-          AddClientOrGroup(cg, null);
-        }
+        if (clientGroups != null && clientGroups.List != null) {
+          foreach (ClientGroup cg in clientGroups.List) {
+            AddClientOrGroup(cg, null);
+          }
 
-        if (currentGroupNode != null) {
-          lvClientControl.Items.Clear();
-          lvClientControl.Groups.Clear();
-          AddGroupsToListView(currentGroupNode);
+          if (currentGroupNode != null) {
+            lvClientControl.Items.Clear();
+            lvClientControl.Groups.Clear();
+            AddGroupsToListView(currentGroupNode);
+          }
+          tvClientControl.ExpandAll();
         }
-        tvClientControl.ExpandAll();
 
       }
       catch (FaultException fe) {
@@ -512,7 +512,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         lblState.Text = currentClient.State.ToString();
       }
     }
-
 
     private void RefreshForm() {
       foreach (Changes change in changes) {
