@@ -37,7 +37,9 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     public IJob Job { get; set; }
     public MessageContainer.MessageType CurrentMessage { get; set; }
     public MessageQueue Queue { get; set; }
-    
+
+    public bool JobIsFinished { get; set; }
+
     public bool Running {
       get {
         return Job.Running;
@@ -76,12 +78,14 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
     }
 
     void Job_JobStopped(object sender, EventArgs e) {
-      if (CurrentMessage == MessageContainer.MessageType.NoMessage)
+      if (CurrentMessage == MessageContainer.MessageType.NoMessage) {
         Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.FinishedJob, JobId));
-      else if (CurrentMessage == MessageContainer.MessageType.RequestSnapshot)
-        Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.SnapshotReady, JobId));
-      else if (CurrentMessage == MessageContainer.MessageType.AbortJob)
-        Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobAborted, JobId));
+        JobIsFinished = true;
+      } else if (CurrentMessage == MessageContainer.MessageType.RequestSnapshot) {
+          Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.SnapshotReady, JobId));
+      } else if (CurrentMessage == MessageContainer.MessageType.AbortJob) {
+          Queue.AddMessage(new MessageContainer(MessageContainer.MessageType.JobAborted, JobId));
+      }
     }
 
     public byte[] GetSnapshot() {
@@ -124,6 +128,7 @@ namespace HeuristicLab.Hive.Client.ExecutionEngine {
 
     public Executor() {
       CurrentMessage = MessageContainer.MessageType.NoMessage;
+      JobIsFinished = false;
       Job = new TestJob();
     }    
   }

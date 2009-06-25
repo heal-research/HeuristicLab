@@ -129,7 +129,7 @@ namespace HeuristicLab.Hive.Client.Core.ConfigurationManager {
       lock (engines) {
         foreach (KeyValuePair<Guid, Executor> kvp in engines) {
           Executor e = kvp.Value;
-          if (!e.Running && e.CurrentMessage == MessageContainer.MessageType.NoMessage) 
+          if (!e.JobIsFinished) 
             prog[e.JobId] = e.Progress;
         }
       }
