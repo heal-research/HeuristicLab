@@ -390,7 +390,8 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
           lock (newAssignedJobs) {
-            newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
+            if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
+              newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
           }
         } else {
           response.Success = false;
@@ -673,8 +674,7 @@ namespace HeuristicLab.Hive.Server.Core {
         // TODO: BuildDate deleted, not needed???
         // TODO: Split version to major, minor and revision number
         foreach (PluginInfo currPlugin in allActivePlugins) {
-          if (currPlugin.Name == pluginInfo.Name
-              && currPlugin.Version.ToString() == pluginInfo.Version) {
+          if (currPlugin.Name == pluginInfo.Name) {
 
             CachedHivePluginInfo currCachedPlugin = new CachedHivePluginInfo { 
                 Name = currPlugin.Name,
