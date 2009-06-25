@@ -266,10 +266,12 @@ namespace HeuristicLab.Security.Core {
         user.Login = "admin";
         user.SetHashedPassword("admin");
         user.Name = "HIVE Admin";
+        User tmp = manager.AddNewUser(user);
+
         Debug.WriteLine("Grant ALL permissions to admin...");
         foreach (Permission item in HivePermissions.GetPermissions()) {
           try {
-            manager.GrantPermission(user.Id, item.Id, Guid.Empty);
+            manager.GrantPermission(tmp.Id, item.Id, Guid.Empty);
           }
           catch (Exception ex) {
             Debug.WriteLine(ex.Message);
