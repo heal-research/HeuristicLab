@@ -85,7 +85,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
             new Session(this);
         }
 
-        sessions[current].IncrementCounter();
+        sessions[current].IncrementUsageCounter();
 
         return sessions[current];
       }

@@ -72,7 +72,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       this.transaction = null;
     }
 
-    public void IncrementCounter() {
+    public void IncrementUsageCounter() {
       this.counter++;
     }
 
