@@ -122,6 +122,7 @@ namespace HeuristicLab.Hive.Engine {
         } while (restoredJob == null || restoredJob.Engine.Canceled);
 
         job = restoredJob;
+        PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
         OnChanged();
         OnFinished();
       });

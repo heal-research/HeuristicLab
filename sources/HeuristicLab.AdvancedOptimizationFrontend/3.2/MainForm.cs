@@ -99,17 +99,21 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     /// <exception cref="InvalidOperationException">Thrown when the given <paramref name="control"/>
     /// is neither a view nor an editor.</exception>
     /// <param name="control">The control to display.</param>
+    delegate void ShowControlDelegate(IControl control);
     public void ShowControl(IControl control) {
-      DockContent content;
-      if (control is IEditor)
-        content = new EditorForm((IEditor)control);
-      else if (control is IView)
-        content = new ViewForm((IView)control);
-      else
-        throw new InvalidOperationException("Control is neither a view nor an editor.");
+      if (InvokeRequired) Invoke((Action<IControl>)ShowControl,control);
+      else {
+        DockContent content;
+        if (control is IEditor)
+          content = new EditorForm((IEditor)control);
+        else if (control is IView)
+          content = new ViewForm((IView)control);
+        else
+          throw new InvalidOperationException("Control is neither a view nor an editor.");
 
-      content.TabText = content.Text;
-      content.Show(dockPanel);
+        content.TabText = content.Text;
+        content.Show(dockPanel);
+      }
     }
     #endregion
 
