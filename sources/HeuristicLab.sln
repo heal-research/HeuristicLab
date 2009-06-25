@@ -234,7 +234,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Grid.HiveBridg
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = HeuristicLab1.vsmdi
+		CategoryFile = HeuristicLab.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CEDMA Debug|Any CPU = CEDMA Debug|Any CPU

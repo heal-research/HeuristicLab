@@ -33,6 +33,8 @@ namespace HeuristicLab.Persistence.Core {
     private readonly Dictionary<object, int> obj2id;
     private readonly Dictionary<Type, int> typeCache;
     private readonly Configuration configuration;
+    private readonly bool isTestRun;
+    private readonly List<Exception> exceptions;
 
     public List<TypeMapping> TypeCache {
       get {
@@ -77,12 +79,18 @@ namespace HeuristicLab.Persistence.Core {
     public Serializer(object obj, Configuration configuration) :
       this(obj, configuration, "ROOT") { }
 
-    public Serializer(object obj, Configuration configuration, string rootName) {
+    public Serializer(object obj, Configuration configuration, string rootName)
+      : this(obj, configuration, rootName, false) { }
+
+    public Serializer(object obj, Configuration configuration, string rootName, bool isTestRun) {
+    
       this.obj = obj;
       this.rootName = rootName;
       this.configuration = configuration;
       obj2id = new Dictionary<object, int>(new ReferenceEqualityComparer()) { { new object(), 0 } };
       typeCache = new Dictionary<Type, int>();
+      this.isTestRun = isTestRun;
+      this.exceptions = new List<Exception>();
     }
 
     IEnumerator IEnumerable.GetEnumerator() {
@@ -90,7 +98,21 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     public IEnumerator<ISerializationToken> GetEnumerator() {
-      return Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
+      var enumerator = Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
+      if (isTestRun) {
+        return AddExceptionCompiler(enumerator);
+      } else {
+        return enumerator;
+      }
+    }
+
+    public IEnumerator<ISerializationToken> AddExceptionCompiler(IEnumerator<ISerializationToken> enumerator) {
+      while (enumerator.MoveNext())
+        yield return enumerator.Current;
+      if (exceptions.Count == 1)
+        throw exceptions[0];
+      if (exceptions.Count > 1)
+        throw new PersistenceException("Multiple exceptions during serialization", exceptions);
     }
 
     private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor) {
@@ -108,22 +130,30 @@ namespace HeuristicLab.Persistence.Core {
         id = obj2id.Count;
         obj2id.Add(value, (int)id);
       }
-      IPrimitiveSerializer primitiveSerializer = configuration.GetPrimitiveSerializer(type);
-      if (primitiveSerializer != null)
-        return PrimitiveEnumerator(accessor.Name, typeId, primitiveSerializer.Format(value), id);
-      ICompositeSerializer compositeSerializer = configuration.GetCompositeSerializer(type);
-      if (compositeSerializer != null)
-        return CompositeEnumerator(accessor.Name, compositeSerializer.Decompose(value), id, typeId, compositeSerializer.CreateMetaInfo(value));
-      throw new PersistenceException(
-          String.Format(
-          "No suitable method for serializing values of type \"{0}\" found\r\n" +
-          "primitive serializers:\r\n{1}\r\n" +
-          "composite serializers:\r\n{2}",
-          value.GetType().VersionInvariantName(),
-          string.Join("\r\n", configuration.PrimitiveSerializers.Select(f => f.GetType().VersionInvariantName()).ToArray()),
-          string.Join("\r\n", configuration.CompositeSerializers.Select(d => d.GetType().VersionInvariantName()).ToArray())
-          ));
-
+      try {
+        IPrimitiveSerializer primitiveSerializer = configuration.GetPrimitiveSerializer(type);
+        if (primitiveSerializer != null)
+          return PrimitiveEnumerator(accessor.Name, typeId, primitiveSerializer.Format(value), id);
+        ICompositeSerializer compositeSerializer = configuration.GetCompositeSerializer(type);
+        if (compositeSerializer != null)
+          return CompositeEnumerator(accessor.Name, compositeSerializer.Decompose(value), id, typeId, compositeSerializer.CreateMetaInfo(value));
+        throw new PersistenceException(
+            String.Format(
+            "No suitable method for serializing values of type \"{0}\" found\r\n" +
+            "primitive serializers:\r\n{1}\r\n" +
+            "composite serializers:\r\n{2}",
+            value.GetType().VersionInvariantName(),
+            string.Join("\r\n", configuration.PrimitiveSerializers.Select(f => f.GetType().VersionInvariantName()).ToArray()),
+            string.Join("\r\n", configuration.CompositeSerializers.Select(d => d.GetType().VersionInvariantName()).ToArray())
+            ));
+      } catch (Exception x) {
+        if (isTestRun) {
+          exceptions.Add(x);
+          return new List<ISerializationToken>().GetEnumerator();
+        } else {
+          throw x;
+        }
+      }
     }
 
     private IEnumerator<ISerializationToken> NullReferenceEnumerator(string name) {

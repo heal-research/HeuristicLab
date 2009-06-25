@@ -505,6 +505,26 @@ namespace HeuristicLab.Persistence.UnitTest {
     }
 
     [TestMethod]
+    public void TestMultipleFailure() {
+      List<NonSerializable> l = new List<NonSerializable>();
+      l.Add(new NonSerializable());
+      l.Add(new NonSerializable());
+      l.Add(new NonSerializable());
+      try {
+        Serializer s = new Serializer(l,
+          ConfigurationService.Instance.GetConfiguration(new XmlFormat()),
+          "ROOT", true);
+        StringBuilder tokens = new StringBuilder();
+        foreach (var token in s) {
+          tokens.Append(token.ToString());
+        }
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException px) {
+        Assert.AreEqual(3, px.Data.Count);
+      }
+    }
+
+    [TestMethod]
     public void TestAssemblyVersionCheck() {
       IntWrapper i = new IntWrapper(1);
       Serializer s = new Serializer(i, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
