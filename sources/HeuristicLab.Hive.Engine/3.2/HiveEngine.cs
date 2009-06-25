@@ -52,6 +52,7 @@ namespace HeuristicLab.Hive.Engine {
     public HiveEngine() {
       job = new Job();
       abortRequested = false;
+      Priority = ThreadPriority.Lowest;
     }
 
     #region IEngine Members
@@ -87,7 +88,6 @@ namespace HeuristicLab.Hive.Engine {
 
     public void Execute() {
       var jobObj = CreateJobObj();
-
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
       ResponseObject<Contracts.BusinessObjects.Job> res = executionEngineFacade.AddJob(jobObj);
       jobId = res.Obj.Id;
@@ -161,7 +161,7 @@ namespace HeuristicLab.Hive.Engine {
       if (jobResult != null) {
         HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
         job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobResultData);
-        //PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
+        PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
       }
       //HiveLogger.Debug("HiveEngine: Results-polling - Exception!");
       //Exception ex = new Exception(response.Obj.Exception.Message);
