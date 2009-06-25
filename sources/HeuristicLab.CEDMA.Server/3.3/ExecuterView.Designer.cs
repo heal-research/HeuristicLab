@@ -60,6 +60,7 @@
       this.maxActiveJobs.Name = "maxActiveJobs";
       this.maxActiveJobs.Size = new System.Drawing.Size(120, 20);
       this.maxActiveJobs.TabIndex = 2;
+      this.maxActiveJobs.ValueChanged += new System.EventHandler(this.maxActiveJobs_ValueChanged);
       // 
       // ExecuterView
       // 
