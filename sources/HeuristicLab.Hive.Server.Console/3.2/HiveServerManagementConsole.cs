@@ -494,7 +494,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         if (currentJob.State == State.finished) {
           IJobManager jobManager =
             ServiceLocator.GetJobManager();
-          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id, false);
+          ResponseObject<JobResult> jobRes = jobManager.GetLastJobResultOf(currentJob.Id);
 
           lvi = null;
           lvi = new ListViewItem();

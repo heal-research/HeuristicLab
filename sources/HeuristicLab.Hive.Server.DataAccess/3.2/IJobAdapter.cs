@@ -85,12 +85,12 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// </summary>
     /// <param name="jobId"></param>
     /// <returns></returns>
-    SerializedJob GetComputableJob(Guid jobId);
+    SerializedJob GetSerializedJob(Guid jobId);
 
     /// <summary>
     /// Saves or update the computable job
     /// </summary>
     /// <param name="jobId"></param>
-    void UpdateComputableJob(SerializedJob job);
+    void UpdateSerializedJob(SerializedJob job);
   }
 }

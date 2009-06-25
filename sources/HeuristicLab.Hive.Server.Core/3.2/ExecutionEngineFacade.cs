@@ -43,8 +43,9 @@ namespace HeuristicLab.Hive.Server.Core {
       return jobManager.RequestSnapshot(jobId);
     }
 
-    public ResponseObject<JobResult> GetLastResult(Guid jobId, bool requested) {
-      return jobManager.GetLastJobResultOf(jobId, requested);
+    public ResponseObject<SerializedJobResult> 
+      GetLastSerializedResult(Guid jobId, bool requested) {
+      return jobManager.GetLastSerializedJobResultOf(jobId, requested);
     }
 
     public Response AbortJob(Guid jobId) {

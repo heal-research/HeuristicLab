@@ -278,13 +278,16 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Send back finished and Stored Job Results
     /// </summary>
     private Stream GetStreamedJobResult(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
-      JobResult jobResult =
-          new JobResult();
+      SerializedJobResult serializedJobResult =
+          new SerializedJobResult();
+      JobResult jobResult = new JobResult();
       jobResult.ClientId = clientId;
       jobResult.JobId = jobId;
-      jobResult.Result = result;
       jobResult.Percentage = percentage;
       jobResult.Exception = exception;
+
+      serializedJobResult.JobResult = jobResult;
+      serializedJobResult.SerializedJobResultData = result;
 
       MemoryStream stream =
         new MemoryStream();

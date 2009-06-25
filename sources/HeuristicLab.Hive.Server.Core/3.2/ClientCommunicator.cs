@@ -384,7 +384,7 @@ namespace HeuristicLab.Hive.Server.Core {
         Job job2Calculate = scheduler.GetNextJobForClient(clientId);
         if (job2Calculate != null) {
           SerializedJob computableJob =
-            jobAdapter.GetComputableJob(job2Calculate.Id);
+            jobAdapter.GetSerializedJob(job2Calculate.Id);
 
           response.Job = computableJob;
           response.Success = true;
@@ -491,23 +491,26 @@ namespace HeuristicLab.Hive.Server.Core {
           job.SerializedJobData = result;
         }
 
-        jobAdapter.UpdateComputableJob(job);
+        jobAdapter.UpdateSerializedJob(job);
 
         List<JobResult> jobResults = new List<JobResult>(
-          jobResultAdapter.GetResultsOf(job.JobInfo));
+          jobResultAdapter.GetResultsOf(job.JobInfo.Id));
         foreach (JobResult currentResult in jobResults)
           jobResultAdapter.Delete(currentResult);
 
-        JobResult jobResult =
-          new JobResult();
+        SerializedJobResult serializedjobResult =
+          new SerializedJobResult();
+        JobResult jobResult = new JobResult();
         jobResult.ClientId = client.Id;
         jobResult.JobId = job.JobInfo.Id;
-        jobResult.Result = result;
         jobResult.Percentage = percentage;
         jobResult.Exception = exception;
         jobResult.DateFinished = DateTime.Now;
+        serializedjobResult.JobResult = jobResult;
+        serializedjobResult.SerializedJobResultData =
+          result;
 
-        jobResultAdapter.Update(jobResult);
+        jobResultAdapter.UpdateSerializedJobResult(serializedjobResult);
         jobAdapter.Update(job.JobInfo);
 
         response.Success = true;

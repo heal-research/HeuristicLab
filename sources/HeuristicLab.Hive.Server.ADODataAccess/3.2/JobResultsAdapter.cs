@@ -54,11 +54,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           row.SetJobIdNull();
 
-        if (result.Result != null)
-          row.JobResult = result.Result;
-        else
-          row.SetJobResultNull();
-
         if (result.ClientId != Guid.Empty)  {
           ClientInfo client = 
                  ClientAdapter.GetById(result.ClientId);
@@ -98,11 +93,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         else
           result.JobId = Guid.Empty;
 
-        if (!row.IsJobResultNull())
-          result.Result = row.JobResult;
-        else
-          result.Result = null;
-
         if (!row.IsResourceIdNull())
           result.ClientId = row.ResourceId;
         else
@@ -127,28 +117,51 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     #endregion
 
     #region IJobResultsAdapter Members
-    public ICollection<JobResult> GetResultsOf(Job job) {
-      if (job != null) {
+    public ICollection<JobResult> GetResultsOf(Guid jobId) {
         return 
           base.FindMultiple(
             delegate() {
-              return Adapter.GetDataByJob(job.Id);
+              return Adapter.GetDataByJob(jobId);
             });
-      }
-
-      return null;
     }
 
-    public JobResult GetLastResultOf(Job job) {
-       if (job != null) {
+    public JobResult GetLastResultOf(Guid jobId) {
         return 
           base.FindSingle(
             delegate() {
-              return Adapter.GetDataByLastResult(job.Id);
+              return Adapter.GetDataByLastResult(jobId);
             });
-      }
+    }
 
-      return null;
+    public SerializedJobResult GetSerializedJobResult(Guid jobResultId) {
+      return (SerializedJobResult)base.doInTransaction(
+        delegate() {
+          SerializedJobResult jobResult =
+            new SerializedJobResult();
+
+          jobResult.JobResult = GetById(jobResultId);
+          if (jobResult.JobResult != null) {
+            jobResult.SerializedJobResultData =
+              base.Adapter.GetSerializedJobResultById(jobResultId);
+
+            return jobResult;
+          } else {
+            return null;
+          }
+        });
+    }
+
+    public void UpdateSerializedJobResult(SerializedJobResult jobResult) {
+      if (jobResult != null &&
+        jobResult.JobResult != null) {
+        base.doInTransaction(
+          delegate() {
+            Update(jobResult.JobResult);
+            return base.Adapter.UpdateSerializedJobResultById(
+              jobResult.SerializedJobResultData,
+              jobResult.JobResult.Id);
+          });
+      }
     }
     #endregion
   }

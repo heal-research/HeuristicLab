@@ -32,13 +32,26 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// </summary>
     /// <param name="job"></param>
     /// <returns></returns>
-    ICollection<JobResult> GetResultsOf(Job job);
+    ICollection<JobResult> GetResultsOf(Guid jobId);
 
     /// <summary>
     /// Gets the last result for the specified job
     /// </summary>
     /// <param name="job"></param>
     /// <returns></returns>
-    JobResult GetLastResultOf(Job job);
+    JobResult GetLastResultOf(Guid jobId);
+
+    /// <summary>
+    /// Gets the computable job result with the secified jobResultId
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    SerializedJobResult GetSerializedJobResult(Guid jobResultId);
+
+    /// <summary>
+    /// Saves or update the computable job result
+    /// </summary>
+    /// <param name="jobId"></param>
+    void UpdateSerializedJobResult(SerializedJobResult jobResult);
   }
 }

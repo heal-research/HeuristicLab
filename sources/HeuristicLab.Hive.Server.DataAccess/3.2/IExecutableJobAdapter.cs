@@ -21,18 +21,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
+using HeuristicLab.Hive.Contracts.BusinessObjects;
+using HeuristicLab.DataAccess.Interfaces;
 
-namespace HeuristicLab.Hive.Contracts.BusinessObjects {
-  [DataContract]
-  [Serializable]
-  public class ComputableJob {
-    [DataMember]
-    public Job JobInfo { get; set; }
-    
-    [DataMember]
-    public byte[] SerializedJob { get; set; }
+namespace HeuristicLab.Hive.Server.DataAccess {
+  public interface IExecutableJobAdapter: IDataAdapter<ExecutableJob> {
+    /// <summary>
+    /// Finds a job with the specified criterias 
+    /// </summary>
+    /// <param name="state">all jobs with the specified state</param>
+    /// <param name="cores">all jobs which require less or equal cores</param>
+    /// <param name="memory">all jobs which require less or equal memory</param>
+    /// <param name="resourceId">all jobs that can be calculated by that resource</param>
+    /// <returns></returns>
+    ICollection<ExecutableJob> FindJobs(State state,
+      int cores,
+      int memory,
+      Guid resourceId);
   }
 }

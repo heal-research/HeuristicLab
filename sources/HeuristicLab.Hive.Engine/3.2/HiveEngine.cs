@@ -99,13 +99,13 @@ namespace HeuristicLab.Hive.Engine {
       // start a backgroud thread to poll the final result of the job
       Thread t = new Thread(() => {
         IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
-        ResponseObject<JobResult> response = null;
+        ResponseObject<SerializedJobResult> response = null;
         Job restoredJob = null;
         do {
           Thread.Sleep(RESULT_POLLING_INTERVAL_MS);
           lock (locker) {
             HiveLogger.Debug("HiveEngine: Results-polling - GetLastResult");
-            response = executionEngineFacade.GetLastResult(jobId, false);
+            response = executionEngineFacade.GetLastSerializedResult(jobId, false);
             HiveLogger.Debug("HiveEngine: Results-polling - Server: " + response.StatusMessage + " success: " + response.Success);
             // loop while 
             // 1. the user doesn't request an abort 
@@ -115,7 +115,7 @@ namespace HeuristicLab.Hive.Engine {
             if (abortRequested) return;
             if (response.Success && response.Obj != null) {
               HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
-              restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
+              restoredJob = (Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
               HiveLogger.Debug("HiveEngine: Results-polling - IsSnapshotResult: " + restoredJob.Engine.Canceled);
             }
           }
@@ -132,14 +132,14 @@ namespace HeuristicLab.Hive.Engine {
     public void RequestSnapshot() {
       IExecutionEngineFacade executionEngineFacade = ServiceLocator.CreateExecutionEngineFacade(HiveServerUrl);
 
-      ResponseObject<JobResult> response;
+      ResponseObject<SerializedJobResult> response;
       lock (locker) {
         HiveLogger.Debug("HiveEngine: Abort - RequestSnapshot");
         Response snapShotResponse = executionEngineFacade.RequestSnapshot(jobId);
         if (snapShotResponse.StatusMessage == ApplicationConstants.RESPONSE_JOB_IS_NOT_BEEING_CALCULATED) {
           // job is finished already
           HiveLogger.Debug("HiveEngine: Abort - GetLastResult(false)");
-          response = executionEngineFacade.GetLastResult(jobId, false);
+          response = executionEngineFacade.GetLastSerializedResult(jobId, false);
           HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
         } else {
           // server sent snapshot request to client
@@ -147,7 +147,7 @@ namespace HeuristicLab.Hive.Engine {
           do {
             Thread.Sleep(SNAPSHOT_POLLING_INTERVAL_MS);
             HiveLogger.Debug("HiveEngine: Abort - GetLastResult(true)");
-            response = executionEngineFacade.GetLastResult(jobId, true);
+            response = executionEngineFacade.GetLastSerializedResult(jobId, true);
             HiveLogger.Debug("HiveEngine: Abort - Server: " + response.StatusMessage + " success: " + response.Success);
             // loop while
             // 1. problem with communication with server
@@ -157,10 +157,10 @@ namespace HeuristicLab.Hive.Engine {
             response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE);
         }
       }
-      JobResult jobResult = response.Obj;
+      SerializedJobResult jobResult = response.Obj;
       if (jobResult != null) {
         HiveLogger.Debug("HiveEngine: Results-polling - Got result!");
-        job = (Job)PersistenceManager.RestoreFromGZip(jobResult.Result);
+        job = (Job)PersistenceManager.RestoreFromGZip(jobResult.SerializedJobResultData);
         //PluginManager.ControlManager.ShowControl(job.Engine.CreateView());
       }
       //HiveLogger.Debug("HiveEngine: Results-polling - Exception!");

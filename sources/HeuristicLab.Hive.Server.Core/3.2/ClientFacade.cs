@@ -96,27 +96,28 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream) {
       BinaryFormatter formatter =
           new BinaryFormatter();
-      JobResult result = (JobResult)formatter.Deserialize(stream);
+      SerializedJobResult result = 
+        (SerializedJobResult)formatter.Deserialize(stream);
 
       return this.StoreFinishedJobResult(
-          result.ClientId,
-          result.JobId,
-          result.Result,
-          result.Percentage,
-          result.Exception);
+          result.JobResult.ClientId,
+          result.JobResult.JobId,
+          result.SerializedJobResultData,
+          result.JobResult.Percentage,
+          result.JobResult.Exception);
     } 
 
     public ResponseResultReceived ProcessSnapshotStreamed(Stream stream) {
       BinaryFormatter formatter =
           new BinaryFormatter();
-      JobResult result = (JobResult)formatter.Deserialize(stream);
+      SerializedJobResult result = (SerializedJobResult)formatter.Deserialize(stream);
 
       return this.ProcessSnapshot(
-          result.ClientId,
-          result.JobId,
-          result.Result,
-          result.Percentage,
-          result.Exception);
+          result.JobResult.ClientId,
+          result.JobResult.JobId,
+          result.SerializedJobResultData,
+          result.JobResult.Percentage,
+          result.JobResult.Exception);
     }
 
     #endregion

@@ -47,14 +47,14 @@ namespace HeuristicLab.Hive.Server.Core {
       lifecycleManager.RegisterStartup(new EventHandler(lifecycleManager_OnShutdown));
     }
 
-    private JobResult GetLastJobResult(Job job) {
+    private JobResult GetLastJobResult(Guid jobId) {
       ISession session = factory.GetSessionForCurrentThread();
 
       try {
         IJobResultsAdapter jobResultAdapter =
             session.GetDataAdapter<JobResult, IJobResultsAdapter>();
 
-        return jobResultAdapter.GetLastResultOf(job);
+        return jobResultAdapter.GetLastResultOf(jobId);
       }
       finally {
         if (session != null)
@@ -70,6 +70,9 @@ namespace HeuristicLab.Hive.Server.Core {
         IJobAdapter jobAdapter =
             session.GetDataAdapter<Job, IJobAdapter>();
 
+        IJobResultsAdapter jobResultsAdapter =
+          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
         tx = session.BeginTransaction();
 
         if (job != null) {
@@ -78,12 +81,21 @@ namespace HeuristicLab.Hive.Server.Core {
           computableJob.JobInfo =
             job;
 
-          JobResult lastJobResult = GetLastJobResult(job);
-          if (lastJobResult != null) {
-            computableJob.JobInfo.Percentage = lastJobResult.Percentage;
-            computableJob.SerializedJobData = lastJobResult.Result;
+          JobResult lastResult = 
+            GetLastJobResult(job.Id);
 
-            jobAdapter.UpdateComputableJob(computableJob);
+          if (lastResult != null) {
+            SerializedJobResult lastJobResult =
+              jobResultsAdapter.GetSerializedJobResult(lastResult.Id);
+
+            if (lastJobResult != null) {
+              computableJob.JobInfo.Percentage = lastJobResult.JobResult.Percentage;
+              computableJob.SerializedJobData = lastJobResult.SerializedJobResultData;
+
+              jobAdapter.UpdateSerializedJob(computableJob);
+            } else {
+              computableJob.JobInfo.Percentage = 0;
+            }
           } else {
             computableJob.JobInfo.Percentage = 0;
           }
@@ -222,7 +234,7 @@ namespace HeuristicLab.Hive.Server.Core {
           }
 
           job.JobInfo.DateCreated = DateTime.Now;
-          jobAdapter.UpdateComputableJob(job);
+          jobAdapter.UpdateSerializedJob(job);
           response.Success = true;
           response.Obj = job.JobInfo;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_ADDED;
@@ -270,33 +282,73 @@ namespace HeuristicLab.Hive.Server.Core {
       }
     }
 
-    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId, bool requested) {
+    public ResponseObject<JobResult> GetLastJobResultOf(Guid jobId) {
+       ResponseObject<JobResult> result = 
+        new ResponseObject<JobResult>();
+
+       result.Obj =
+         GetLastJobResult(jobId);
+       result.Success =
+         result.Obj != null;
+
+       return result;
+    }
+
+    public ResponseObject<SerializedJobResult>
+      GetLastSerializedJobResultOf(Guid jobId, bool requested) {
       ISession session = factory.GetSessionForCurrentThread();
+
+      ITransaction tx = null;
 
       try {
         IJobAdapter jobAdapter =
             session.GetDataAdapter<Job, IJobAdapter>();
 
-        ResponseObject<JobResult> response = new ResponseObject<JobResult>();
+        IJobResultsAdapter jobResultsAdapter =
+          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
+        tx = session.BeginTransaction();
+
+        ResponseObject<SerializedJobResult> response =
+          new ResponseObject<SerializedJobResult>();
 
         Job job = jobAdapter.GetById(jobId);
         if (requested && (job.State == State.requestSnapshot || job.State == State.requestSnapshotSent)) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE;
+
+          tx.Commit();
+          
           return response;
         }
-          
-        response.Success = true;
-        response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
-        response.Obj = GetLastJobResult(job);
 
+        JobResult lastResult =
+          jobResultsAdapter.GetLastResultOf(job.Id);
+
+        if (lastResult != null) {
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
+          response.Obj =
+            jobResultsAdapter.GetSerializedJobResult(
+              lastResult.Id);          
+        } else {
+          response.Success = false;
+        }
+
+        tx.Commit();
         return response;
       }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
+      }
       finally {
-        if(session != null)
+        if (session != null)
           session.EndSession();
       }
     }
+
 
     public Response RequestSnapshot(Guid jobId) {
       ISession session = factory.GetSessionForCurrentThread();
@@ -384,7 +436,7 @@ namespace HeuristicLab.Hive.Server.Core {
           response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_DOESNT_EXIST;
           return response;
         }
-        response.List = new List<JobResult>(jobResultAdapter.GetResultsOf(job));
+        response.List = new List<JobResult>(jobResultAdapter.GetResultsOf(job.Id));
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT;
 

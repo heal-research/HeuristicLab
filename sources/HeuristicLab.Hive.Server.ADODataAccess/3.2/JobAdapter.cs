@@ -390,7 +390,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
         if (row != null) {
           //Referential integrity with job results
           ICollection<JobResult> results =
-            ResultsAdapter.GetResultsOf(job);
+            ResultsAdapter.GetResultsOf(job.Id);
 
           foreach (JobResult result in results) {
             ResultsAdapter.Delete(result);
@@ -419,7 +419,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     /// </summary>
     /// <param name="jobId"></param>
     /// <returns></returns>
-    public SerializedJob GetComputableJob(Guid jobId) {
+    public SerializedJob GetSerializedJob(Guid jobId) {
       return (SerializedJob)base.doInTransaction(
         delegate() {
           SerializedJob job =
@@ -441,7 +441,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
     /// Saves or update the computable job
     /// </summary>
     /// <param name="jobId"></param>
-    public void UpdateComputableJob(SerializedJob job) {
+    public void UpdateSerializedJob(SerializedJob job) {
       if(job != null && 
         job.JobInfo != null) {
         base.doInTransaction(

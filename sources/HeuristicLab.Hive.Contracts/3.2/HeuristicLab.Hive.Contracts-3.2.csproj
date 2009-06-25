@@ -95,6 +95,7 @@
     <Compile Include="BusinessObjects\Job.cs" />
     <Compile Include="BusinessObjects\JobResult.cs" />
     <Compile Include="BusinessObjects\Resource.cs" />
+    <Compile Include="BusinessObjects\SerializedJobResult.cs" />
     <Compile Include="BusinessObjects\UpTimeStatistics.cs" />
     <Compile Include="BusinessObjects\Client.cs" />
     <Compile Include="BusinessObjects\ClientConfig.cs" />

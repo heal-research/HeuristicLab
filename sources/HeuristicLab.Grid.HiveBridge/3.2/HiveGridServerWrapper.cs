@@ -47,7 +47,7 @@ namespace HeuristicLab.Grid.HiveBridge {
     }
 
     public JobState JobState(Guid guid) {
-      ResponseObject<JobResult> response = SavelyExecute(() => executionEngine.GetLastResult(guid, false));
+      ResponseObject<SerializedJobResult> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
       if (response != null && response.Success == true &&
         (response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE ||
           response.StatusMessage == ApplicationConstants.RESPONSE_JOB_REQUEST_SET ||
@@ -65,10 +65,10 @@ namespace HeuristicLab.Grid.HiveBridge {
     }
 
     public byte[] TryEndExecuteEngine(Guid guid) {
-      ResponseObject<JobResult> response = SavelyExecute(() => executionEngine.GetLastResult(guid, false));
+      ResponseObject<SerializedJobResult> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
       if (response != null &&
         response.Success && response.Obj != null) {
-        HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.Result);
+        HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
         // only return the engine when it wasn't canceled (result is only a snapshot)
         if (!restoredJob.Engine.Canceled) {
           // Serialize the engine

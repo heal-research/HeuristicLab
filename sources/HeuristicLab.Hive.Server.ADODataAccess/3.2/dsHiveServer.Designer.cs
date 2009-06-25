@@ -2158,8 +2158,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             
             private global::System.Data.DataColumn columnJobId;
             
-            private global::System.Data.DataColumn columnJobResult;
-            
             private global::System.Data.DataColumn columnMessage;
             
             private global::System.Data.DataColumn columnPercentage;
@@ -2209,13 +2207,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             public global::System.Data.DataColumn JobIdColumn {
                 get {
                     return this.columnJobId;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public global::System.Data.DataColumn JobResultColumn {
-                get {
-                    return this.columnJobResult;
                 }
             }
             
@@ -2276,12 +2267,11 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public JobResultRow AddJobResultRow(System.Guid JobResultId, JobRow parentJobRowByR_14, byte[] JobResult, string Message, double Percentage, ClientRow parentClientRowByR_47, System.DateTime DateFinished) {
+            public JobResultRow AddJobResultRow(System.Guid JobResultId, JobRow parentJobRowByR_14, string Message, double Percentage, ClientRow parentClientRowByR_47, System.DateTime DateFinished) {
                 JobResultRow rowJobResultRow = ((JobResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         JobResultId,
                         null,
-                        JobResult,
                         Message,
                         Percentage,
                         null,
@@ -2290,7 +2280,7 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                     columnValuesArray[1] = parentJobRowByR_14[0];
                 }
                 if ((parentClientRowByR_47 != null)) {
-                    columnValuesArray[5] = parentClientRowByR_47[0];
+                    columnValuesArray[4] = parentClientRowByR_47[0];
                 }
                 rowJobResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowJobResultRow);
@@ -2319,7 +2309,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             internal void InitVars() {
                 this.columnJobResultId = base.Columns["JobResultId"];
                 this.columnJobId = base.Columns["JobId"];
-                this.columnJobResult = base.Columns["JobResult"];
                 this.columnMessage = base.Columns["Message"];
                 this.columnPercentage = base.Columns["Percentage"];
                 this.columnResourceId = base.Columns["ResourceId"];
@@ -2332,8 +2321,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
                 base.Columns.Add(this.columnJobResultId);
                 this.columnJobId = new global::System.Data.DataColumn("JobId", typeof(global::System.Guid), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnJobId);
-                this.columnJobResult = new global::System.Data.DataColumn("JobResult", typeof(byte[]), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnJobResult);
                 this.columnMessage = new global::System.Data.DataColumn("Message", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMessage);
                 this.columnPercentage = new global::System.Data.DataColumn("Percentage", typeof(double), null, global::System.Data.MappingType.Element);
@@ -4638,21 +4625,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public byte[] JobResult {
-                get {
-                    try {
-                        return ((byte[])(this[this.tableJobResult.JobResultColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'JobResult\' in table \'JobResult\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableJobResult.JobResultColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public string Message {
                 get {
                     try {
@@ -4740,16 +4712,6 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public void SetJobIdNull() {
                 this[this.tableJobResult.JobIdColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public bool IsJobResultNull() {
-                return this.IsNull(this.tableJobResult.JobResultColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void SetJobResultNull() {
-                this[this.tableJobResult.JobResultColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8541,7 +8503,6 @@ AND EXISTS (SELECT ResourceId, JobId FROM AssignedResources AS AssignedResources
             tableMapping.DataSetTable = "JobResult";
             tableMapping.ColumnMappings.Add("JobResultId", "JobResultId");
             tableMapping.ColumnMappings.Add("JobId", "JobId");
-            tableMapping.ColumnMappings.Add("JobResult", "JobResult");
             tableMapping.ColumnMappings.Add("Message", "Message");
             tableMapping.ColumnMappings.Add("Percentage", "Percentage");
             tableMapping.ColumnMappings.Add("ResourceId", "ResourceId");
@@ -8549,7 +8510,7 @@ AND EXISTS (SELECT ResourceId, JobId FROM AssignedResources AS AssignedResources
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[JobResult] WHERE (([JobResultId] = @Original_JobResultId) AND ((@IsNull_JobId = 1 AND [JobId] IS NULL) OR ([JobId] = @Original_JobId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_DateFinished = 1 AND [DateFinished] IS NULL) OR ([DateFinished] = @Original_DateFinished)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [JobResult] WHERE (([JobResultId] = @Original_JobResultId) AND ((@IsNull_JobId = 1 AND [JobId] IS NULL) OR ([JobId] = @Original_JobId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_DateFinished = 1 AND [DateFinished] IS NULL) OR ([DateFinished] = @Original_DateFinished)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_JobResultId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_JobId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -8562,24 +8523,22 @@ AND EXISTS (SELECT ResourceId, JobId FROM AssignedResources AS AssignedResources
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DateFinished", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinished", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[JobResult] ([JobResultId], [JobId], [JobResult], [Message], [Percentage], [ResourceId], [DateFinished]) VALUES (@JobResultId, @JobId, @JobResult, @Message, @Percentage, @ResourceId, @DateFinished);
-SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinished FROM JobResult WHERE (JobResultId = @JobResultId)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [JobResult] ([JobResultId], [JobId], [Message], [Percentage], [ResourceId], [DateFinished]) VALUES (@JobResultId, @JobId, @Message, @Percentage, @ResourceId, @DateFinished);
+SELECT JobResultId, JobId, Message, Percentage, ResourceId, DateFinished FROM JobResult WHERE (JobResultId = @JobResultId)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobResultId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobResult", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobResult", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Message", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Message", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DateFinished", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DateFinished", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[JobResult] SET [JobResultId] = @JobResultId, [JobId] = @JobId, [JobResult] = @JobResult, [Message] = @Message, [Percentage] = @Percentage, [ResourceId] = @ResourceId, [DateFinished] = @DateFinished WHERE (([JobResultId] = @Original_JobResultId) AND ((@IsNull_JobId = 1 AND [JobId] IS NULL) OR ([JobId] = @Original_JobId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_DateFinished = 1 AND [DateFinished] IS NULL) OR ([DateFinished] = @Original_DateFinished)));
-SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinished FROM JobResult WHERE (JobResultId = @JobResultId)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [JobResult] SET [JobResultId] = @JobResultId, [JobId] = @JobId, [Message] = @Message, [Percentage] = @Percentage, [ResourceId] = @ResourceId, [DateFinished] = @DateFinished WHERE (([JobResultId] = @Original_JobResultId) AND ((@IsNull_JobId = 1 AND [JobId] IS NULL) OR ([JobId] = @Original_JobId)) AND ((@IsNull_Percentage = 1 AND [Percentage] IS NULL) OR ([Percentage] = @Original_Percentage)) AND ((@IsNull_ResourceId = 1 AND [ResourceId] IS NULL) OR ([ResourceId] = @Original_ResourceId)) AND ((@IsNull_DateFinished = 1 AND [DateFinished] IS NULL) OR ([DateFinished] = @Original_DateFinished)));
+SELECT JobResultId, JobId, Message, Percentage, ResourceId, DateFinished FROM JobResult WHERE (JobResultId = @JobResultId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobResultId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobResult", global::System.Data.SqlDbType.VarBinary, 0, global::System.Data.ParameterDirection.Input, 0, 0, "JobResult", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Message", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Message", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Percentage", global::System.Data.SqlDbType.Float, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Percentage", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ResourceId", global::System.Data.SqlDbType.UniqueIdentifier, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ResourceId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -8603,29 +8562,41 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[4];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[6];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT * FROM dbo.JobResult";
+            this._commandCollection[0].CommandText = "SELECT     JobResultId, JobId, Message, Percentage, ResourceId, DateFinished\r\nFRO" +
+                "M         JobResult";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT DateFinished, JobId, JobResult, JobResultId, Message, Percentage, Resource" +
-                "Id FROM JobResult WHERE (JobResultId = @Id)";
+            this._commandCollection[1].CommandText = "SELECT DateFinished, JobId, JobResultId, Message, Percentage, ResourceId FROM Job" +
+                "Result WHERE (JobResultId = @Id)";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
-            this._commandCollection[2].CommandText = "SELECT DateFinished, JobId, JobResult, JobResultId, Message, Percentage, Resource" +
-                "Id FROM JobResult WHERE (JobId = @JobId)";
+            this._commandCollection[2].CommandText = "SELECT DateFinished, JobId, JobResultId, Message, Percentage, ResourceId FROM Job" +
+                "Result WHERE (JobId = @JobId)";
             this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[3] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[3].Connection = this.Connection;
-            this._commandCollection[3].CommandText = "SELECT TOP 1 JobResult.*  FROM JobResult WHERE JobId = @JobId ORDER BY DateFinish" +
-                "ed DESC ";
+            this._commandCollection[3].CommandText = "SELECT TOP (1) DateFinished, JobId, JobResultId, Message, Percentage, ResourceId " +
+                "FROM JobResult WHERE (JobId = @JobId) ORDER BY DateFinished DESC";
             this._commandCollection[3].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobId", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[4].Connection = this.Connection;
+            this._commandCollection[4].CommandText = "SELECT JobResult FROM JobResult WHERE JobResultId = @Id";
+            this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[5] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[5].Connection = this.Connection;
+            this._commandCollection[5].CommandText = "UPDATE JobResult SET JobResult = @JobResult WHERE JobResultId = @Id";
+            this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@JobResult", global::System.Data.SqlDbType.VarBinary, 2147483647, global::System.Data.ParameterDirection.Input, 0, 0, "JobResult", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.UniqueIdentifier, 16, global::System.Data.ParameterDirection.Input, 0, 0, "JobResultId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8823,7 +8794,7 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.Guid JobResultId, global::System.Nullable<global::System.Guid> JobId, byte[] JobResult, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished) {
+        public virtual int Insert(System.Guid JobResultId, global::System.Nullable<global::System.Guid> JobId, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.Guid)(JobResultId));
             if ((JobId.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((System.Guid)(JobId.Value));
@@ -8831,35 +8802,29 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
             else {
                 this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
-            if ((JobResult == null)) {
+            if ((Message == null)) {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((byte[])(JobResult));
-            }
-            if ((Message == null)) {
-                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(Message));
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(Message));
             }
             if ((Percentage.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((double)(Percentage.Value));
+                this.Adapter.InsertCommand.Parameters[3].Value = ((double)(Percentage.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((ResourceId.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[4].Value = ((System.Guid)(ResourceId.Value));
             }
             else {
                 this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((ResourceId.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((System.Guid)(ResourceId.Value));
+            if ((DateFinished.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[5].Value = ((System.DateTime)(DateFinished.Value));
             }
             else {
                 this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            if ((DateFinished.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[6].Value = ((System.DateTime)(DateFinished.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[6].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8880,7 +8845,7 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.Guid JobResultId, global::System.Nullable<global::System.Guid> JobId, byte[] JobResult, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished, System.Guid Original_JobResultId, global::System.Nullable<global::System.Guid> Original_JobId, global::System.Nullable<double> Original_Percentage, global::System.Nullable<global::System.Guid> Original_ResourceId, global::System.Nullable<global::System.DateTime> Original_DateFinished) {
+        public virtual int Update(System.Guid JobResultId, global::System.Nullable<global::System.Guid> JobId, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished, System.Guid Original_JobResultId, global::System.Nullable<global::System.Guid> Original_JobId, global::System.Nullable<double> Original_Percentage, global::System.Nullable<global::System.Guid> Original_ResourceId, global::System.Nullable<global::System.DateTime> Original_DateFinished) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.Guid)(JobResultId));
             if ((JobId.HasValue == true)) {
                 this.Adapter.UpdateCommand.Parameters[1].Value = ((System.Guid)(JobId.Value));
@@ -8888,68 +8853,62 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
             else {
                 this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
-            if ((JobResult == null)) {
+            if ((Message == null)) {
                 this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((byte[])(JobResult));
-            }
-            if ((Message == null)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(Message));
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(Message));
             }
             if ((Percentage.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((double)(Percentage.Value));
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((double)(Percentage.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((ResourceId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[4].Value = ((System.Guid)(ResourceId.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
             }
-            if ((ResourceId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.Guid)(ResourceId.Value));
+            if ((DateFinished.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.DateTime)(DateFinished.Value));
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
             }
-            if ((DateFinished.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((System.DateTime)(DateFinished.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = global::System.DBNull.Value;
-            }
-            this.Adapter.UpdateCommand.Parameters[7].Value = ((System.Guid)(Original_JobResultId));
+            this.Adapter.UpdateCommand.Parameters[6].Value = ((System.Guid)(Original_JobResultId));
             if ((Original_JobId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((System.Guid)(Original_JobId.Value));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((System.Guid)(Original_JobId.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
             }
             if ((Original_Percentage.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((double)(Original_Percentage.Value));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((double)(Original_Percentage.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
             }
             if ((Original_ResourceId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((System.Guid)(Original_ResourceId.Value));
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((System.Guid)(Original_ResourceId.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
             }
             if ((Original_DateFinished.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((System.DateTime)(Original_DateFinished.Value));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[14].Value = ((System.DateTime)(Original_DateFinished.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -8970,8 +8929,65 @@ SELECT JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinis
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.Guid> JobId, byte[] JobResult, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished, System.Guid Original_JobResultId, global::System.Nullable<global::System.Guid> Original_JobId, global::System.Nullable<double> Original_Percentage, global::System.Nullable<global::System.Guid> Original_ResourceId, global::System.Nullable<global::System.DateTime> Original_DateFinished) {
-            return this.Update(Original_JobResultId, JobId, JobResult, Message, Percentage, ResourceId, DateFinished, Original_JobResultId, Original_JobId, Original_Percentage, Original_ResourceId, Original_DateFinished);
+        public virtual int Update(global::System.Nullable<global::System.Guid> JobId, string Message, global::System.Nullable<double> Percentage, global::System.Nullable<global::System.Guid> ResourceId, global::System.Nullable<global::System.DateTime> DateFinished, System.Guid Original_JobResultId, global::System.Nullable<global::System.Guid> Original_JobId, global::System.Nullable<double> Original_Percentage, global::System.Nullable<global::System.Guid> Original_ResourceId, global::System.Nullable<global::System.DateTime> Original_DateFinished) {
+            return this.Update(Original_JobResultId, JobId, Message, Percentage, ResourceId, DateFinished, Original_JobResultId, Original_JobId, Original_Percentage, Original_ResourceId, Original_DateFinished);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        public virtual byte[] GetSerializedJobResultById(System.Guid Id) {
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[4];
+            command.Parameters[0].Value = ((System.Guid)(Id));
+            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
+            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                command.Connection.Open();
+            }
+            object returnValue;
+            try {
+                returnValue = command.ExecuteScalar();
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    command.Connection.Close();
+                }
+            }
+            if (((returnValue == null) 
+                        || (returnValue.GetType() == typeof(global::System.DBNull)))) {
+                return null;
+            }
+            else {
+                return ((byte[])(returnValue));
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
+        public virtual int UpdateSerializedJobResultById(byte[] JobResult, System.Guid Id) {
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[5];
+            if ((JobResult == null)) {
+                command.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            else {
+                command.Parameters[0].Value = ((byte[])(JobResult));
+            }
+            command.Parameters[1].Value = ((System.Guid)(Id));
+            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
+            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                command.Connection.Open();
+            }
+            int returnValue;
+            try {
+                returnValue = command.ExecuteNonQuery();
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    command.Connection.Close();
+                }
+            }
+            return returnValue;
         }
     }
     
