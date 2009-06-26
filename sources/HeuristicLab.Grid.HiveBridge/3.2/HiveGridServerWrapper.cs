@@ -48,11 +48,7 @@ namespace HeuristicLab.Grid.HiveBridge {
 
     public JobState JobState(Guid guid) {
       ResponseObject<SerializedJobResult> response = SavelyExecute(() => executionEngine.GetLastSerializedResult(guid, false));
-      if (response != null && response.Success == true &&
-        (response.StatusMessage == ApplicationConstants.RESPONSE_JOB_RESULT_NOT_YET_HERE ||
-          response.StatusMessage == ApplicationConstants.RESPONSE_JOB_REQUEST_SET ||
-          response.StatusMessage == ApplicationConstants.RESPONSE_JOB_REQUEST_ALLREADY_SET ||
-          response.StatusMessage == ApplicationConstants.RESPONSE_JOB_JOB_RESULT_SENT)) {
+      if (response != null) {
         return HeuristicLab.Grid.JobState.Busy;
       } else return HeuristicLab.Grid.JobState.Unknown;
     }
@@ -70,7 +66,7 @@ namespace HeuristicLab.Grid.HiveBridge {
         response.Success && response.Obj != null) {
         HeuristicLab.Hive.Engine.Job restoredJob = (HeuristicLab.Hive.Engine.Job)PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
         // only return the engine when it wasn't canceled (result is only a snapshot)
-        if (restoredJob.Progress < 1.0) {
+        if (restoredJob.Progress == 1.0) {
           // Serialize the engine
           MemoryStream memStream = new MemoryStream();
           GZipStream stream = new GZipStream(memStream, CompressionMode.Compress, true);
