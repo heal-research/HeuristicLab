@@ -27,8 +27,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         Address != String.Empty &&
         Port != String.Empty) {
 
-        //binding.MaxReceivedMessageSize = 5000000;
-
         ChannelFactory<IServerConsoleFacade> factory =
           new ChannelFactory<IServerConsoleFacade>(
             WcfSettings.GetBinding(),

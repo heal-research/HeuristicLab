@@ -61,7 +61,8 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
     private ToolTip tt = new ToolTip();
 
     private const string NOGROUP = "No group";
-
+    private TreeNode hoverNode;
+    private List<ListViewGroup> lvClientGroups;
     #endregion
 
     #region Properties
@@ -86,9 +87,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       timerSyncronize.Start();
     }
 
-    private TreeNode hoverNode; // node being hovered over during DnD
     private void Init() {
-
       //adding context menu items for jobs
       menuItemAbortJob.Click += (s, e) => {
         IJobManager jobManager = ServiceLocator.GetJobManager();
@@ -129,6 +128,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       };
 
+      // drag item to treeview
       lvClientControl.ItemDrag += delegate(object sender, ItemDragEventArgs e) {
         List<string> itemIDs = new List<string>((sender as ListView).SelectedItems.Count);
         foreach (ListViewItem item in (sender as ListView).SelectedItems) {
@@ -137,10 +137,12 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         (sender as ListView).DoDragDrop(itemIDs.ToArray(), DragDropEffects.Move);
       };
 
+      // drag enter on treeview
       tvClientControl.DragEnter += delegate(object sender, DragEventArgs e) {
         e.Effect = DragDropEffects.Move;
       };
 
+      // drag over
       tvClientControl.DragOver += delegate(object sender, DragEventArgs e) {
         Point mouseLocation = tvClientControl.PointToClient(new Point(e.X, e.Y));
         TreeNode node = tvClientControl.GetNodeAt(mouseLocation);
@@ -162,6 +164,7 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
         }
       };
 
+      // drag drop event
       tvClientControl.DragDrop += delegate(object sender, DragEventArgs e) {
         if (e.Data.GetDataPresent(typeof(string[]))) {
           Point dropLocation = (sender as TreeView).PointToClient(new Point(e.X, e.Y));
@@ -185,6 +188,11 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       };
     }
 
+    /// <summary>
+    /// Change client to other group
+    /// </summary>
+    /// <param name="clients">list of clients</param>
+    /// <param name="clientgroupID">group of clients</param>
     private void ChangeGroup(Dictionary<ClientInfo, Guid> clients, Guid clientgroupID) {
       IClientManager clientManager = ServiceLocator.GetClientManager();
       foreach (KeyValuePair<ClientInfo, Guid> client in clients) {
@@ -271,7 +279,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
               ListViewItem lvi = new ListViewItem(job.Id.ToString(), 0, lvJobFinished);
               lvi.Tag = job;
               jobObjects.Add(lvi);
-              //lvJobControl.Items.Add(lvi);
             } else if (job.State == State.offline || job.State == State.pending) {
               ListViewItem lvi = new ListViewItem(job.Id.ToString(), 2, lvJobPending);
               lvi.Tag = job;
@@ -299,7 +306,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       }
     }
 
-    List<ListViewGroup> lvClientGroups;
     private void AddClients() {
       lvClientGroups = new List<ListViewGroup>();
       clientList.Clear();
@@ -715,16 +721,6 @@ namespace HeuristicLab.Hive.Server.ServerConsole {
       overlayingForm.Opacity = 0.4;
       overlayingForm.Size = this.Size;
       overlayingForm.Location = this.Location;
-
-      //Label lbl = new Label();
-      //overlayingForm.Controls.Add(lbl);
-      //lbl.AutoSize = true;
-      //lbl.Text = "Loading";
-      //lbl.Name = "lblName";
-      //lbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      //lbl.ForeColor = Color.Black;
-      //lbl.BackColor = Color.Transparent;
-      //lbl.Location = new Point(overlayingForm.Width / 2, overlayingForm.Height / 2);
 
       AddClients();
 
