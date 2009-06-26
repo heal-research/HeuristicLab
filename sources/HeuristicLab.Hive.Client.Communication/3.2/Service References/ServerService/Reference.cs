@@ -183,6 +183,13 @@ namespace HeuristicLab.Hive.Client.Communication.ServerService {
                 return ((HeuristicLab.Hive.Contracts.ResponseJob)(this.results[0]));
             }
         }
+
+        public byte[] Data {
+          get {
+            base.RaiseExceptionIfNecessary();
+            return ((byte[])(this.results[1]));
+          }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

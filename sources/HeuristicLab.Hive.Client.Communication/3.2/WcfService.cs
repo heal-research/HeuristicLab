@@ -193,16 +193,33 @@ namespace HeuristicLab.Hive.Client.Communication {
 
     void proxy_SendStreamedJobCompleted(object sender, SendStreamedJobCompletedEventArgs e) {
       if (e.Error == null) {
-        Stream stream =
-          (Stream)e.Result;
-                
-        BinaryFormatter formatter =
-          new BinaryFormatter();
-        ResponseJob response = (ResponseJob)formatter.Deserialize(stream);
+        Stream stream = null;
 
-        SendJobCompletedEventArgs completedEventArgs =
-          new SendJobCompletedEventArgs(new object[] { response }, e.Error, e.Cancelled, e.UserState);
-        SendJobCompleted(sender, completedEventArgs);
+        try {
+          stream = (Stream)e.Result;
+
+          //first deserialize the response
+          BinaryFormatter formatter =
+            new BinaryFormatter();
+          ResponseJob response =
+            (ResponseJob)formatter.Deserialize(stream);
+
+          //second deserialize the BLOB
+          MemoryStream memStream = new MemoryStream();
+          byte[] buffer = new byte[3024];
+          int read = 0;
+          while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+            memStream.Write(buffer, 0, read);
+          }
+
+          SendJobCompletedEventArgs completedEventArgs =
+            new SendJobCompletedEventArgs(new object[] { response, memStream.GetBuffer() }, e.Error, e.Cancelled, e.UserState);
+          SendJobCompleted(sender, completedEventArgs);
+        }
+        finally {
+          if(stream != null)
+            stream.Dispose();
+        }
       } else
         HandleNetworkError(e.Error);
     }
@@ -215,11 +232,19 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region SendJobResults
     public event System.EventHandler<StoreFinishedJobResultCompletedEventArgs> StoreFinishedJobResultCompleted;
     public void StoreFinishedJobResultAsync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
-      if (ConnState == NetworkEnum.WcfConnState.Loggedin)
-        proxy.StoreFinishedJobResultStreamedAsync(
-          GetStreamedJobResult(clientId, jobId, result, percentage, exception));
-    }
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin) {
+        Stream stream =
+          GetStreamedJobResult(clientId, jobId, result, percentage, exception);
+
+        proxy.StoreFinishedJobResultStreamedAsync(stream, stream);
+      }
+     }
     private void proxy_StoreFinishedJobResultStreamedCompleted(object sender, StoreFinishedJobResultStreamedCompletedEventArgs e) {
+      Stream stream =
+        (Stream)e.UserState;
+      if (stream != null)
+        stream.Dispose();
+      
       if (e.Error == null) {
         StoreFinishedJobResultCompletedEventArgs args =
           new StoreFinishedJobResultCompletedEventArgs(
@@ -234,12 +259,19 @@ namespace HeuristicLab.Hive.Client.Communication {
     #region Processsnapshots
     public event System.EventHandler<ProcessSnapshotCompletedEventArgs> ProcessSnapshotCompleted;
     public void ProcessSnapshotAsync(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception, bool finished) {
-      if(ConnState == NetworkEnum.WcfConnState.Loggedin)
-        proxy.ProcessSnapshotStreamedAsync(
-          GetStreamedJobResult(
-            clientId, jobId, result, percentage, exception));
+      if (ConnState == NetworkEnum.WcfConnState.Loggedin) {
+        Stream stream = GetStreamedJobResult(
+            clientId, jobId, result, percentage, exception);
+
+        proxy.ProcessSnapshotStreamedAsync(stream, stream);
+      }
     }
     void proxy_ProcessSnapshotStreamedCompleted(object sender, ProcessSnapshotStreamedCompletedEventArgs e) {
+      Stream stream =
+        (Stream)e.UserState;
+      if (stream != null)
+        stream.Dispose();
+      
       if (e.Error == null) {
         ProcessSnapshotCompletedEventArgs args =
           new ProcessSnapshotCompletedEventArgs(
@@ -282,25 +314,24 @@ namespace HeuristicLab.Hive.Client.Communication {
     /// Send back finished and Stored Job Results
     /// </summary>
     private Stream GetStreamedJobResult(Guid clientId, Guid jobId, byte[] result, double percentage, Exception exception) {
-      SerializedJobResult serializedJobResult =
-          new SerializedJobResult();
-      JobResult jobResult = new JobResult();
+      JobResult jobResult =
+          new JobResult();
       jobResult.ClientId = clientId;
       jobResult.JobId = jobId;
       jobResult.Percentage = percentage;
       jobResult.Exception = exception;
 
-      serializedJobResult.JobResult = jobResult;
-      serializedJobResult.SerializedJobResultData = result;
+      MultiStream stream =
+              new MultiStream();
 
-      MemoryStream stream =
-        new MemoryStream();
+      //first send result
+      stream.AddStream(
+        new StreamedObject<JobResult>(jobResult));
 
-      BinaryFormatter formatter =
-        new BinaryFormatter();
-
-      formatter.Serialize(stream, serializedJobResult);
-      stream.Seek(0, SeekOrigin.Begin);
+      //second stream the job binary data
+      MemoryStream memStream =
+        new MemoryStream(result, false);
+      stream.AddStream(memStream);
 
       return stream;
     }

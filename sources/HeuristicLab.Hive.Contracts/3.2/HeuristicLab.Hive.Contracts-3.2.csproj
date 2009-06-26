@@ -99,6 +99,8 @@
     <Compile Include="BusinessObjects\UpTimeStatistics.cs" />
     <Compile Include="BusinessObjects\Client.cs" />
     <Compile Include="BusinessObjects\ClientConfig.cs" />
+    <Compile Include="ResponseSerializedJob.cs" />
+    <Compile Include="MultiStream.cs" />
     <Compile Include="Interfaces\IClientFacade.cs" />
     <Compile Include="Interfaces\IExecutionEngineFacade.cs" />
     <Compile Include="ResponseObject.cs" />

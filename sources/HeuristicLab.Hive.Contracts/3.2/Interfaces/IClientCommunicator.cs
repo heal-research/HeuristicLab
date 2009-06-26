@@ -40,6 +40,8 @@ namespace HeuristicLab.Hive.Contracts.Interfaces {
     [OperationContract]
     ResponseJob SendJob(Guid clientId);
     [OperationContract]
+    ResponseSerializedJob SendSerializedJob(Guid clientId);
+    [OperationContract]
     ResponseResultReceived StoreFinishedJobResult(Guid clientId, 
       Guid jobId, 
       byte[] result, 

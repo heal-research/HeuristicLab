@@ -41,7 +41,8 @@ namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
   /// The ClientCommunicator manages the whole communication with the client
   /// </summary>
-  public class ClientCommunicator: IClientCommunicator {
+  public class ClientCommunicator: IClientCommunicator, 
+    IInternalClientCommunicator{
     private static Dictionary<Guid, DateTime> lastHeartbeats = 
       new Dictionary<Guid,DateTime>();
     private static Dictionary<Guid, int> newAssignedJobs =
@@ -369,7 +370,7 @@ namespace HeuristicLab.Hive.Server.Core {
     /// </summary>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    public ResponseJob SendJob(Guid clientId) {
+    public ResponseSerializedJob SendSerializedJob(Guid clientId) {
       ISession session = factory.GetSessionForCurrentThread();
       ITransaction tx = null;
 
@@ -379,7 +380,7 @@ namespace HeuristicLab.Hive.Server.Core {
 
         tx = session.BeginTransaction();
 
-        ResponseJob response = new ResponseJob();
+        ResponseSerializedJob response = new ResponseSerializedJob();
 
         Job job2Calculate = scheduler.GetNextJobForClient(clientId);
         if (job2Calculate != null) {
@@ -409,6 +410,120 @@ namespace HeuristicLab.Hive.Server.Core {
         throw ex;
       }
       finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    /// <summary>
+    /// if the client was told to pull a job he calls this method
+    /// the server selects a job and sends it to the client
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    public ResponseJob SendJob(Guid clientId) {
+      ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
+
+      try {
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+
+        tx = session.BeginTransaction();
+
+        ResponseJob response = new ResponseJob();
+
+        Job job2Calculate = scheduler.GetNextJobForClient(clientId);
+        if (job2Calculate != null) {
+          response.Job = job2Calculate;
+          response.Success = true;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_PULLED;
+          lock (newAssignedJobs) {
+            if (!newAssignedJobs.ContainsKey(job2Calculate.Id))
+              newAssignedJobs.Add(job2Calculate.Id, ApplicationConstants.JOB_TIME_TO_LIVE);
+          }
+        } else {
+          response.Success = false;
+          response.Job = null;
+          response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT;
+        }
+
+        tx.Commit();
+
+        return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
+    }
+
+    public ResponseResultReceived ProcessJobResult(
+      JobResult result,
+      Stream stream,
+      bool finished) {
+      ISession session = factory.GetSessionForCurrentThread();
+      ITransaction tx = null;
+      Stream jobResultStream = null;
+      Stream jobStream = null;
+
+      try {
+        tx = session.BeginTransaction();
+
+        ResponseResultReceived response =
+          ProcessJobResult(
+          result.ClientId,
+          result.JobId,
+          new byte[] {},
+          result.Percentage,
+          result.Exception,
+          finished);
+
+        //second deserialize the BLOB
+        IJobResultsAdapter jobResultsAdapter =
+          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+
+        jobResultStream =
+          jobResultsAdapter.GetSerializedJobResultStream(result.Id, true);
+
+        jobStream =
+          jobAdapter.GetSerializedJobStream(result.JobId, true);
+
+        byte[] buffer = new byte[3024];
+        int read = 0;
+        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+          jobResultStream.Write(buffer, 0, read);
+
+          if (finished)
+            jobStream.Write(buffer, 0, read);
+        }
+
+        jobStream.Close();
+
+        tx.Commit();
+
+        return response;
+      }
+      catch (Exception ex) {
+        if (tx != null)
+          tx.Rollback();
+        throw ex;
+      }
+      finally {
+        if (jobStream != null)
+          jobStream.Dispose();
+
+        if (jobResultStream != null)
+          jobResultStream.Dispose();
+
         if (session != null)
           session.EndSession();
       }
@@ -483,15 +598,13 @@ namespace HeuristicLab.Hive.Server.Core {
           response.JobId = jobId;
           return response;
         }
-        job.SerializedJobData = result;
         job.JobInfo.Percentage = percentage;
 
         if (finished) {
           job.JobInfo.State = State.finished;
           job.SerializedJobData = result;
+          jobAdapter.UpdateSerializedJob(job);
         }
-
-        jobAdapter.UpdateSerializedJob(job);
 
         List<JobResult> jobResults = new List<JobResult>(
           jobResultAdapter.GetResultsOf(job.JobInfo.Id));

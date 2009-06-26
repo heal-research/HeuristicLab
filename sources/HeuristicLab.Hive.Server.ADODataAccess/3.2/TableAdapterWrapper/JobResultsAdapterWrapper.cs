@@ -6,6 +6,7 @@ using HeuristicLab.DataAccess.ADOHelper;
 using System.Data.SqlClient;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Data.Common;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
   class JobResultsAdapterWrapper :
@@ -35,12 +36,30 @@ namespace HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper {
       return TransactionalAdapter.GetData();
     }
 
-    public byte[] GetSerializedJobResult(Guid jobResultId) {
-      return TransactionalAdapter.GetSerializedJobResultById(jobResultId);
-    }
+    public Stream GetSerializedJobResultStream(Guid jobResultId,
+      bool useExistingConnection) {
+      SqlConnection connection = null;
+      SqlTransaction transaction = null;
 
-    public bool UpdateSerialiedJobResult(byte[] serializedJobResult, Guid jobResultId) {
-      return TransactionalAdapter.UpdateSerializedJobResultById(serializedJobResult, jobResultId) > 0;
+      if (useExistingConnection) {
+        connection =
+          base.Session.Connection as SqlConnection;
+
+        transaction =
+          adapter.Transaction;
+      } else {
+        connection =
+         ((SessionFactory)
+           (base.Session.Factory)).CreateConnection()
+           as SqlConnection;
+      }
+
+      VarBinarySource source =
+        new VarBinarySource(
+          connection, transaction,
+          "JobResult", "JobResult", "JobResultId", jobResultId);
+
+      return new VarBinaryStream(source);
     }
 
     protected override void SetConnection(DbConnection connection) {

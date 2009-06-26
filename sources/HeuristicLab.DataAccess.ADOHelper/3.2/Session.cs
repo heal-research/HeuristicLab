@@ -41,7 +41,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private Thread ownerThread;
 
-    private int counter;
+    private int usageCounter = 0;
 
     private IDictionary<Guid, object> adapters =
       new Dictionary<Guid, object>();
@@ -49,7 +49,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     public Session(SessionFactory factory) {
       this.factory = factory;
       this.ownerThread = Thread.CurrentThread;
-      this.counter = 0;
+      this.usageCounter = 0;
     }
 
     public void CheckThread() {
@@ -73,10 +73,16 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void IncrementUsageCounter() {
-      this.counter++;
+      this.usageCounter++;
     }
 
     #region ISession Members
+    public ISessionFactory Factory {
+      get {
+        return this.factory;
+      }
+    }
+
     public ITransaction BeginTransaction() {
       CheckThread();
 
@@ -84,6 +90,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
          transaction = new Transaction(this);
          transaction.Connection = Connection;
       }
+
+      transaction.IncrementUsageCounter();
 
       return transaction;
     }
@@ -133,9 +141,9 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public void EndSession() {
-      this.counter--;
+      this.usageCounter--;
 
-      if (counter <= 0) {
+      if (usageCounter <= 0) {
         CheckThread();
 
         if (transaction != null) {

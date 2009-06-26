@@ -33,8 +33,14 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private Session session;
 
+    private int usageCounter = 0;
+
     public Transaction(Session session) {
       this.session = session;
+    }
+
+    public void IncrementUsageCounter() {
+      this.usageCounter++;
     }
 
     public DbConnection Connection {
@@ -55,7 +61,9 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     public void Commit() {
       this.session.CheckThread();
 
-      if (transaction != null) {
+      usageCounter--;
+
+      if (transaction != null && usageCounter <= 0) {
         DbConnection conn =
           transaction.Connection;
 
@@ -72,6 +80,8 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     public void Rollback() {
       this.session.CheckThread();
+
+      usageCounter = 0;
 
       if (transaction != null) {
         DbConnection conn =

@@ -35,7 +35,7 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     protected AdapterT adapter =
       new AdapterT();
 
-    private ISession session;
+    private Session session;
     
     #region IDataAdapterWrapper<AdapterT,ObjT,RowT> Members
 
@@ -56,6 +56,10 @@ namespace HeuristicLab.DataAccess.ADOHelper {
     }
 
     public Session Session {
+      protected get {
+        return this.session;
+      }
+
       set { 
         this.session = value;
 

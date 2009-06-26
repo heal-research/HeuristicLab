@@ -25,6 +25,8 @@ using System.Text;
 
 namespace HeuristicLab.DataAccess.Interfaces {
   public interface ISession {
+    ISessionFactory Factory { get; }
+    
     ITransaction BeginTransaction();
 
     ITransaction GetCurrentTransaction();

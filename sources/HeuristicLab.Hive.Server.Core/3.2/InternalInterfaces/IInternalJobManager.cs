@@ -24,9 +24,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces {
   interface IInternalJobManager {
     void ResetJobsDependingOnResults(Job job);
+
+    Stream GetJobStreamById(Guid jobId);
   }
 }

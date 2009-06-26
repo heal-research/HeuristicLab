@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using HeuristicLab.DataAccess.Interfaces;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.DataAccess {
   public interface IJobAdapter: IDataAdapter<Job> {
@@ -86,6 +87,13 @@ namespace HeuristicLab.Hive.Server.DataAccess {
     /// <param name="jobId"></param>
     /// <returns></returns>
     SerializedJob GetSerializedJob(Guid jobId);
+
+    /// <summary>
+    /// Gets a stream object for the large serialized job data
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    Stream GetSerializedJobStream(Guid jobId, bool useExistingConnection);
 
     /// <summary>
     /// Saves or update the computable job

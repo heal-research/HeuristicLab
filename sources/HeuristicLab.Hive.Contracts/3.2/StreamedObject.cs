@@ -55,7 +55,8 @@ namespace HeuristicLab.Hive.Contracts {
         return this.stream.Position;
       }
       set {
-        throw new NotImplementedException();
+        if(this.stream.Position != value)
+          throw new NotImplementedException();
       }
     }
 

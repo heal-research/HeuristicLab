@@ -24,18 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
-using System.Runtime.Serialization;
+using HeuristicLab.Hive.Contracts;
+using System.IO;
 
-namespace HeuristicLab.Hive.Contracts {
-
-  /// <summary>
-  /// Response Job class
-  /// If a client pulls a Job from the server he gets a ResponseJob as answer
-  /// </summary>
-  [DataContract]
-  [Serializable]
-  public class ResponseJob : Response {
-    [DataMember]
-    public Job Job { get; set; }
+namespace HeuristicLab.Hive.Server.Core.InternalInterfaces {
+  interface IInternalClientCommunicator {
+    ResponseResultReceived ProcessJobResult(
+      JobResult result,
+      Stream stream,
+      bool finished);
   }
 }

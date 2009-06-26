@@ -30,6 +30,7 @@ using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 using HeuristicLab.DataAccess.Interfaces;
 using System.Data;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.Core {
   class JobManager: IJobManager, IInternalJobManager {
@@ -170,6 +171,25 @@ namespace HeuristicLab.Hive.Server.Core {
          if (session != null)
            session.EndSession();
        }
+    }
+
+    /// <summary>
+    /// Gets the streamed job
+    /// </summary>
+    /// <param name="jobId"></param>
+    /// <returns></returns>
+    public Stream GetJobStreamById(Guid jobId) {
+      ISession session = factory.GetSessionForCurrentThread();
+      try {
+        IJobAdapter jobAdapter =
+          session.GetDataAdapter<Job, IJobAdapter>();
+
+        return jobAdapter.GetSerializedJobStream(jobId, false);
+      }
+      finally {
+        if (session != null)
+          session.EndSession();
+      }
     }
 
     /// <summary>

@@ -30,6 +30,7 @@ using HeuristicLab.PluginInfrastructure;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceModel;
+using HeuristicLab.Hive.Server.Core.InternalInterfaces;
 
 namespace HeuristicLab.Hive.Server.Core {
   [ServiceBehavior(InstanceContextMode =
@@ -51,6 +52,10 @@ namespace HeuristicLab.Hive.Server.Core {
 
     public ResponseJob SendJob(Guid clientId) {
       return clientCommunicator.SendJob(clientId);
+    }
+
+    public ResponseSerializedJob SendSerializedJob(Guid clientId) {
+      return clientCommunicator.SendSerializedJob(clientId);
     }
 
     public ResponseResultReceived StoreFinishedJobResult(Guid clientId,
@@ -82,9 +87,33 @@ namespace HeuristicLab.Hive.Server.Core {
     #region IClientFacade Members
 
     public Stream SendStreamedJob(Guid clientId) {
-      return
-        new StreamedObject<ResponseJob>(
-          this.SendJob(clientId));
+      MultiStream stream =
+        new MultiStream();
+
+      ResponseJob job = 
+        this.SendJob(clientId);
+
+      //first send response
+      stream.AddStream(
+        new StreamedObject<ResponseJob>(job));
+
+      IJobManager jobManager = 
+        ServiceLocator.GetJobManager();
+
+      //second stream the job binary data
+      stream.AddStream(
+        ((IInternalJobManager)(jobManager)).
+        GetJobStreamById(
+          job.Job.Id));
+
+      OperationContext clientContext = OperationContext.Current;
+        clientContext.OperationCompleted += new EventHandler(delegate(object sender, EventArgs args) {
+          if (stream != null) {
+            stream.Dispose();
+          }
+        });
+
+      return stream;
     }
 
     public Stream SendStreamedPlugins(List<HivePluginInfo> pluginList) {
@@ -96,28 +125,25 @@ namespace HeuristicLab.Hive.Server.Core {
     public ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream) {
       BinaryFormatter formatter =
           new BinaryFormatter();
-      SerializedJobResult result = 
-        (SerializedJobResult)formatter.Deserialize(stream);
 
-      return this.StoreFinishedJobResult(
-          result.JobResult.ClientId,
-          result.JobResult.JobId,
-          result.SerializedJobResultData,
-          result.JobResult.Percentage,
-          result.JobResult.Exception);
+      JobResult result =
+        (JobResult)formatter.Deserialize(stream);
+
+      return ((IInternalClientCommunicator)
+        clientCommunicator).ProcessJobResult(
+          result, stream, true);
     } 
 
     public ResponseResultReceived ProcessSnapshotStreamed(Stream stream) {
       BinaryFormatter formatter =
           new BinaryFormatter();
-      SerializedJobResult result = (SerializedJobResult)formatter.Deserialize(stream);
 
-      return this.ProcessSnapshot(
-          result.JobResult.ClientId,
-          result.JobResult.JobId,
-          result.SerializedJobResultData,
-          result.JobResult.Percentage,
-          result.JobResult.Exception);
+      JobResult result =
+        (JobResult)formatter.Deserialize(stream);
+
+      return ((IInternalClientCommunicator)
+        clientCommunicator).ProcessJobResult(
+          result, stream, false);
     }
 
     #endregion

@@ -296,21 +296,21 @@ namespace HeuristicLab.Hive.Client.Core {
       if (e.Result.StatusMessage != ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOBS_LEFT) {        
         bool sandboxed = false;
         List<byte[]> files = new List<byte[]>();
-        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.JobInfo.PluginsNeeded))
+        foreach (CachedHivePluginInfo plugininfo in PluginCache.Instance.GetPlugins(e.Result.Job.PluginsNeeded))
           files.AddRange(plugininfo.PluginFiles);
 
-        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.JobInfo.Id.ToString(), sandboxed, null, files);
+        AppDomain appDomain = PluginManager.Manager.CreateAndInitAppDomainWithSandbox(e.Result.Job.Id.ToString(), sandboxed, null, files);
         appDomain.UnhandledException += new UnhandledExceptionEventHandler(appDomain_UnhandledException);
         lock (engines) {
-          if (!jobs.ContainsKey(e.Result.Job.JobInfo.Id)) {
-            jobs.Add(e.Result.Job.JobInfo.Id, e.Result.Job.JobInfo);
-            appDomains.Add(e.Result.Job.JobInfo.Id, appDomain);
+          if (!jobs.ContainsKey(e.Result.Job.Id)) {
+            jobs.Add(e.Result.Job.Id, e.Result.Job);
+            appDomains.Add(e.Result.Job.Id, appDomain);
 
             Executor engine = (Executor)appDomain.CreateInstanceAndUnwrap(typeof(Executor).Assembly.GetName().Name, typeof(Executor).FullName);
-            engine.JobId = e.Result.Job.JobInfo.Id;
+            engine.JobId = e.Result.Job.Id;
             engine.Queue = MessageQueue.GetInstance();            
-            engine.Start(e.Result.Job.SerializedJobData);
-            engines.Add(e.Result.Job.JobInfo.Id, engine);
+            engine.Start(e.Data);
+            engines.Add(e.Result.Job.Id, engine);
 
             ClientStatusInfo.JobsFetched++;
 

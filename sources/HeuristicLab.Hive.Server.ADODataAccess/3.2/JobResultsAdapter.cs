@@ -9,6 +9,7 @@ using HeuristicLab.Hive.Server.ADODataAccess.dsHiveServerTableAdapters;
 using System.Data.Common;
 using System.Data.SqlClient;
 using HeuristicLab.Hive.Server.ADODataAccess.TableAdapterWrapper;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server.ADODataAccess {
   class JobResultsAdapter: 
@@ -149,6 +150,13 @@ namespace HeuristicLab.Hive.Server.ADODataAccess {
             return null;
           }
         });
+    }
+
+    public Stream GetSerializedJobResultStream(Guid jobResultId, bool useExistingConnection) {
+      return
+        ((JobResultsAdapterWrapper)
+        base.DataAdapterWrapper).
+          GetSerializedJobResultStream(jobResultId, useExistingConnection);
     }
 
     public void UpdateSerializedJobResult(SerializedJobResult jobResult) {

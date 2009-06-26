@@ -30,267 +30,293 @@ using HeuristicLab.Hive.Server.DataAccess;
 using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Diagnostics;
 using HeuristicLab.DataAccess.Interfaces;
+using System.IO;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive DB Test App",
       Description = "Test Application for the Hive DataAccess Layer",
       AutoRestart = true)]
   class HiveDbTestApplication : ApplicationBase {
-  /*  private void TestClientAdapter() {
-      IClientAdapter clientAdapter =
-        ServiceLocator.GetClientAdapter();
+    /*  private void TestClientAdapter() {
+        IClientAdapter clientAdapter =
+          ServiceLocator.GetClientAdapter();
 
-      ClientInfo client = new ClientInfo();
-      client.Login = DateTime.Now;
-      clientAdapter.Update(client);
+        ClientInfo client = new ClientInfo();
+        client.Login = DateTime.Now;
+        clientAdapter.Update(client);
 
-      ClientInfo clientRead =
-        clientAdapter.GetById(client.Id);
-      Debug.Assert(
-        clientRead != null &&
-        client.Id == clientRead.Id);
+        ClientInfo clientRead =
+          clientAdapter.GetById(client.Id);
+        Debug.Assert(
+          clientRead != null &&
+          client.Id == clientRead.Id);
 
-      client.CpuSpeedPerCore = 2000;
-      clientAdapter.Update(client);
-      clientRead =
-        clientAdapter.GetById(client.Id);
-      Debug.Assert(
-       clientRead != null &&
-       client.Id == clientRead.Id &&
-       clientRead.CpuSpeedPerCore == 2000);
+        client.CpuSpeedPerCore = 2000;
+        clientAdapter.Update(client);
+        clientRead =
+          clientAdapter.GetById(client.Id);
+        Debug.Assert(
+         clientRead != null &&
+         client.Id == clientRead.Id &&
+         clientRead.CpuSpeedPerCore == 2000);
 
-      ICollection<ClientInfo> clients = 
-        clientAdapter.GetAll();
-      int count = clients.Count;
+        ICollection<ClientInfo> clients = 
+          clientAdapter.GetAll();
+        int count = clients.Count;
 
-      clientAdapter.Delete(client);
+        clientAdapter.Delete(client);
 
-      clients = clientAdapter.GetAll();
-      Debug.Assert(count - 1 == clients.Count);
-    } */
+        clients = clientAdapter.GetAll();
+        Debug.Assert(count - 1 == clients.Count);
+      } 
 
-    private void TestClientGroupAdapter() {
-      ISessionFactory factory =
-        ServiceLocator.GetSessionFactory();
+      private void TestClientGroupAdapter() {
+        ISessionFactory factory =
+          ServiceLocator.GetSessionFactory();
 
-      ISession session =
-        factory.GetSessionForCurrentThread();
+        ISession session =
+          factory.GetSessionForCurrentThread();
 
-      ITransaction trans = null;
+        ITransaction trans = null;
 
-      try {
-        IClientGroupAdapter clientGroupAdapter =
-        session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+        try {
+          IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
 
-        trans =
-          session.BeginTransaction();
+          trans =
+            session.BeginTransaction();
 
-        ClientInfo client =
-          new ClientInfo();
-        client.Name = "Stefan";
+          ClientInfo client =
+            new ClientInfo();
+          client.Name = "Stefan";
+          client.Login = DateTime.Now;
+
+          ClientInfo client2 =
+            new ClientInfo();
+          client2.Name = "Martin";
+          client2.Login = DateTime.Now;
+
+          ClientInfo client3 =
+            new ClientInfo();
+          client3.Name = "Heinz";
+          client3.Login = DateTime.Now;
+
+          ClientGroup group =
+            new ClientGroup();
+
+          ClientGroup subGroup =
+            new ClientGroup();
+          subGroup.Resources.Add(client);
+
+          group.Resources.Add(client3);
+          group.Resources.Add(client2);
+          group.Resources.Add(subGroup);
+
+          clientGroupAdapter.Update(group);
+
+          ClientGroup read =
+            clientGroupAdapter.GetById(group.Id);
+
+          ICollection<ClientGroup> clientGroups =
+            clientGroupAdapter.GetAll();
+
+          IClientAdapter clientAdapter =
+            session.GetDataAdapter<ClientInfo, IClientAdapter>();
+
+          clientAdapter.Delete(client3);
+
+          read =
+             clientGroupAdapter.GetById(group.Id);
+
+          clientGroupAdapter.Delete(subGroup);
+
+          read =
+             clientGroupAdapter.GetById(group.Id);
+
+          clientGroups =
+            clientGroupAdapter.GetAll();
+
+          clientGroupAdapter.Delete(group);
+
+          clientGroups =
+            clientGroupAdapter.GetAll();
+
+          clientAdapter.Delete(client);
+          clientAdapter.Delete(client2);
+        }
+        finally {
+          if (trans != null)
+            trans.Rollback();
+
+          session.EndSession();
+        }
+      }
+
+      private void InsertTestClientGroups() {
+        ISessionFactory factory =
+          ServiceLocator.GetSessionFactory();
+
+        ISession session =
+          factory.GetSessionForCurrentThread();
+
+        ITransaction trans = null;
+
+        try {
+          IClientGroupAdapter clientGroupAdapter =
+          session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
+
+          trans =
+            session.BeginTransaction();
+
+          ClientInfo client =
+            new ClientInfo();
+          client.Name = "Stefan";
+          client.Login = DateTime.Now;
+
+          ClientInfo client2 =
+            new ClientInfo();
+          client2.Name = "Martin";
+          client2.Login = DateTime.Now;
+
+          ClientGroup group =
+            new ClientGroup();
+          group.Name = "Gruppe1";
+
+          ClientGroup subGroup =
+            new ClientGroup();
+          subGroup.Name = "Untergruppe1";
+          subGroup.Resources.Add(client);
+
+          group.Resources.Add(client2);
+          group.Resources.Add(subGroup);
+
+          clientGroupAdapter.Update(group);
+
+          trans.Commit();
+        }
+        finally {
+          session.EndSession();
+        }
+      }
+
+      private void TestJobAdapter() {
+        IJobAdapter jobAdapter = 
+          ServiceLocator.GetJobAdapter();
+        IClientAdapter clientAdapter =
+          ServiceLocator.GetClientAdapter();
+
+        Job job = new Job();
+
+        ClientInfo client = new ClientInfo();
         client.Login = DateTime.Now;
 
-        ClientInfo client2 =
-          new ClientInfo();
-        client2.Name = "Martin";
-        client2.Login = DateTime.Now;
+        job.Client = client;
+        jobAdapter.Update(job);
 
-        ClientInfo client3 =
-          new ClientInfo();
-        client3.Name = "Heinz";
-        client3.Login = DateTime.Now;
+        ICollection<Job> jobs = jobAdapter.GetAll();
 
-        ClientGroup group =
-          new ClientGroup();
+        jobAdapter.Delete(job);
+        clientAdapter.Delete(client);
 
-        ClientGroup subGroup =
-          new ClientGroup();
-        subGroup.Resources.Add(client);
+        jobs = jobAdapter.GetAll();
+      }
 
-        group.Resources.Add(client3);
-        group.Resources.Add(client2);
-        group.Resources.Add(subGroup);
+      private void TestJobResultsAdapter() {
+        Job job = new Job();
 
-        clientGroupAdapter.Update(group);
+        ClientInfo client = new ClientInfo();
+        client.Login = DateTime.Now;
 
-        ClientGroup read =
-          clientGroupAdapter.GetById(group.Id);
+        job.Client = client;
 
-        ICollection<ClientGroup> clientGroups =
-          clientGroupAdapter.GetAll();
+        IJobResultsAdapter resultsAdapter = 
+          ServiceLocator.GetJobResultsAdapter();
+
+        byte[] resultByte = {0x0f, 0x1f, 0x2f, 0x3f, 0x4f};
+
+        JobResult result = new JobResult();
+        result.Client = client;
+        result.Job = job;
+        result.Result = resultByte;
+
+        resultsAdapter.Update(result);
+
+        JobResult read =
+          resultsAdapter.GetById(result.Id);
+        Debug.Assert(
+          read.Id == result.Id &&
+          result.Client.Id == read.Client.Id &&
+          result.Job.Id == read.Job.Id &&
+          result.Result == result.Result);
+
+        int count =
+          resultsAdapter.GetAll().Count;
+
+        resultsAdapter.Delete(result);
+
+        ICollection<JobResult> allResults =
+          resultsAdapter.GetAll();
+
+        Debug.Assert(allResults.Count == count - 1);
+
+        IJobAdapter jboAdapter =
+          ServiceLocator.GetJobAdapter();
+        jboAdapter.Delete(job);
+        IClientAdapter clientAdapter =
+          ServiceLocator.GetClientAdapter();
+        clientAdapter.Delete(client);
+      }      
+
+      private void TestTransaction() {
+        ISessionFactory factory =
+          ServiceLocator.GetSessionFactory();
+
+        ISession session =
+          factory.GetSessionForCurrentThread();
 
         IClientAdapter clientAdapter =
           session.GetDataAdapter<ClientInfo, IClientAdapter>();
 
-        clientAdapter.Delete(client3);
-
-        read =
-           clientGroupAdapter.GetById(group.Id);
-
-        clientGroupAdapter.Delete(subGroup);
-
-        read =
-           clientGroupAdapter.GetById(group.Id);
-
-        clientGroups =
-          clientGroupAdapter.GetAll();
-
-        clientGroupAdapter.Delete(group);
-
-        clientGroups =
-          clientGroupAdapter.GetAll();
-
-        clientAdapter.Delete(client);
-        clientAdapter.Delete(client2);
-      }
-      finally {
-        if (trans != null)
-          trans.Rollback();
-
-        session.EndSession();
-      }
-    }
-
-    private void InsertTestClientGroups() {
-      ISessionFactory factory =
-        ServiceLocator.GetSessionFactory();
-
-      ISession session =
-        factory.GetSessionForCurrentThread();
-
-      ITransaction trans = null;
-
-      try {
-        IClientGroupAdapter clientGroupAdapter =
-        session.GetDataAdapter<ClientGroup, IClientGroupAdapter>();
-
-        trans =
+        ITransaction trans =
           session.BeginTransaction();
 
-        ClientInfo client =
-          new ClientInfo();
-        client.Name = "Stefan";
+        ClientInfo client = new ClientInfo();
         client.Login = DateTime.Now;
+        clientAdapter.Update(client);
 
-        ClientInfo client2 =
-          new ClientInfo();
-        client2.Name = "Martin";
-        client2.Login = DateTime.Now;
+        trans.Rollback();
 
-        ClientGroup group =
-          new ClientGroup();
-        group.Name = "Gruppe1";
-
-        ClientGroup subGroup =
-          new ClientGroup();
-        subGroup.Name = "Untergruppe1";
-        subGroup.Resources.Add(client);
-
-        group.Resources.Add(client2);
-        group.Resources.Add(subGroup);
-
-        clientGroupAdapter.Update(group);
-
-        trans.Commit();
-      }
-      finally {
         session.EndSession();
-      }
-    }
+      }  */
 
-   /* private void TestJobAdapter() {
-      IJobAdapter jobAdapter = 
-        ServiceLocator.GetJobAdapter();
-      IClientAdapter clientAdapter =
-        ServiceLocator.GetClientAdapter();
-
-      Job job = new Job();
-
-      ClientInfo client = new ClientInfo();
-      client.Login = DateTime.Now;
-
-      job.Client = client;
-      jobAdapter.Update(job);
-
-      ICollection<Job> jobs = jobAdapter.GetAll();
-
-      jobAdapter.Delete(job);
-      clientAdapter.Delete(client);
-
-      jobs = jobAdapter.GetAll();
-    }
-
-    private void TestJobResultsAdapter() {
-      Job job = new Job();
-
-      ClientInfo client = new ClientInfo();
-      client.Login = DateTime.Now;
-
-      job.Client = client;
-
-      IJobResultsAdapter resultsAdapter = 
-        ServiceLocator.GetJobResultsAdapter();
-
-      byte[] resultByte = {0x0f, 0x1f, 0x2f, 0x3f, 0x4f};
-
-      JobResult result = new JobResult();
-      result.Client = client;
-      result.Job = job;
-      result.Result = resultByte;
-
-      resultsAdapter.Update(result);
-
-      JobResult read =
-        resultsAdapter.GetById(result.Id);
-      Debug.Assert(
-        read.Id == result.Id &&
-        result.Client.Id == read.Client.Id &&
-        result.Job.Id == read.Job.Id &&
-        result.Result == result.Result);
-
-      int count =
-        resultsAdapter.GetAll().Count;
-
-      resultsAdapter.Delete(result);
-
-      ICollection<JobResult> allResults =
-        resultsAdapter.GetAll();
-
-      Debug.Assert(allResults.Count == count - 1);
-
-      IJobAdapter jboAdapter =
-        ServiceLocator.GetJobAdapter();
-      jboAdapter.Delete(job);
-      IClientAdapter clientAdapter =
-        ServiceLocator.GetClientAdapter();
-      clientAdapter.Delete(client);
-    }      */
-
-    private void TestTransaction() {
+    private void TestJobStreaming() {
       ISessionFactory factory =
-        ServiceLocator.GetSessionFactory();
+         ServiceLocator.GetSessionFactory();
 
       ISession session =
-        factory.GetSessionForCurrentThread();
+           factory.GetSessionForCurrentThread();
 
-      IClientAdapter clientAdapter =
-        session.GetDataAdapter<ClientInfo, IClientAdapter>();
+      IJobAdapter jobAdapter =
+        session.GetDataAdapter<Job, IJobAdapter>();
 
-      ITransaction trans =
-        session.BeginTransaction();
+      Stream s = jobAdapter.GetSerializedJobStream(
+        new Guid("281602a2-1a47-4101-9a75-02974292d490"), true);
 
-      ClientInfo client = new ClientInfo();
-      client.Login = DateTime.Now;
-      clientAdapter.Update(client);
+      byte[] buffer = new byte[1024];
+      while(s.Read(buffer, 0, buffer.Length)>0)
+      {
+         //do nothing
+      }
 
-      trans.Rollback();
+      s.Close();
 
       session.EndSession();
     }
 
     public override void Run() {
-      TestClientGroupAdapter();
+      //TestClientGroupAdapter();
       //InsertTestClientGroups();
+      TestJobStreaming();
     }      
   }
 }
