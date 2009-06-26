@@ -99,8 +99,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FixedGAMainBase.cs" />
     <Compile Include="FixedOperatorBase.cs" />
-    <Compile Include="FixedOSGA.cs" />
+    <Compile Include="FixedOSGAMain.cs" />
     <Compile Include="FixedSGAMain.cs" />
     <Compile Include="HeuristicLabFixedOperatorsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

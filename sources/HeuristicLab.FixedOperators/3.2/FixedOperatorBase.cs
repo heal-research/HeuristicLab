@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using System.Threading;
 using System.Diagnostics;
 using System.Text;
+using System.Collections;
 
 namespace HeuristicLab.FixedOperators {
   class FixedOperatorBase : CombinedOperator {
@@ -43,8 +44,8 @@ namespace HeuristicLab.FixedOperators {
     /// </summary>
     protected IntData persistedExecutionPointer;
 
-    protected int tempExePointer;
-    protected int tempPersExePointer;
+    protected int[] tempExePointer;
+    protected int[] tempPersExePointer;
 
     /// <summary>
     /// Current operator in execution.
@@ -100,7 +101,7 @@ namespace HeuristicLab.FixedOperators {
             currentOperator = atomicOperation.Operator;
             next = currentOperator.Execute(atomicOperation.Scope);
           }
-          catch (Exception) {
+          catch (Exception ex) {
             throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute");
           }
           if (next != null)
@@ -160,17 +161,17 @@ namespace HeuristicLab.FixedOperators {
     /// <summary>
     /// Saves the value of the execution pointers into temp variables
     /// </summary>
-    protected void SaveExecutionPointer() {
-      tempExePointer = executionPointer;
-      tempPersExePointer = persistedExecutionPointer.Data;
+    protected void SaveExecutionPointer(int level) {
+      tempExePointer[level] = executionPointer;
+      tempPersExePointer[level] = persistedExecutionPointer.Data;
     } // SaveExecutionPointer
 
-    protected void SetExecutionPointerToLastSaved() {
+    protected void SetExecutionPointerToLastSaved(int level) {
       if (executionPointer != persistedExecutionPointer.Data)
-        persistedExecutionPointer.Data = tempPersExePointer;
+        persistedExecutionPointer.Data = tempPersExePointer[level];
       else
-        persistedExecutionPointer.Data = tempExePointer;
-      executionPointer = tempExePointer;
+        persistedExecutionPointer.Data = tempExePointer[level];
+      executionPointer = tempExePointer[level];
     } // SetExecutionPointerToLastSaved
 
 
