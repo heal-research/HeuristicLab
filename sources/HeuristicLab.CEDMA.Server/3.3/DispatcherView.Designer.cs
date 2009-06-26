@@ -36,6 +36,7 @@
       this.targetVariableList.Name = "targetVariableList";
       this.targetVariableList.Size = new System.Drawing.Size(171, 409);
       this.targetVariableList.TabIndex = 0;
+      this.targetVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.targetVariableList_ItemCheck);
       // 
       // inputVariableList
       // 
@@ -44,6 +45,7 @@
       this.inputVariableList.Name = "inputVariableList";
       this.inputVariableList.Size = new System.Drawing.Size(170, 409);
       this.inputVariableList.TabIndex = 1;
+      this.inputVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.inputVariableList_ItemCheck);
       // 
       // targetVariablesLabel
       // 
@@ -72,7 +74,7 @@
       this.Controls.Add(this.inputVariableList);
       this.Controls.Add(this.targetVariableList);
       this.Name = "DispatcherView";
-      this.Size = new System.Drawing.Size(417, 427);
+      this.Size = new System.Drawing.Size(429, 482);
       this.ResumeLayout(false);
       this.PerformLayout();
 

@@ -21,12 +21,28 @@ namespace HeuristicLab.CEDMA.Server {
     protected override void UpdateControls() {
       base.UpdateControls();
 
-      foreach (string targetVar in dispatcher.AllowedTargetVariables) {
+      foreach (string targetVar in dispatcher.TargetVariables) {
         targetVariableList.Items.Add(targetVar);
       }
 
-      foreach (string inputVar in dispatcher.AllowedInputVariables) {
+      foreach (string inputVar in dispatcher.InputVariables) {
         inputVariableList.Items.Add(inputVar);
+      }
+    }
+
+    private void targetVariableList_ItemCheck(object sender, ItemCheckEventArgs e) {
+      if (e.NewValue == CheckState.Checked) {
+        dispatcher.EnableTargetVariable((string)targetVariableList.Items[e.Index]);
+      } else if (e.NewValue == CheckState.Unchecked) {
+        dispatcher.DisableTargetVariable((string)targetVariableList.Items[e.Index]);
+      }
+    }
+
+    private void inputVariableList_ItemCheck(object sender, ItemCheckEventArgs e) {
+      if (e.NewValue == CheckState.Checked) {
+        dispatcher.EnableInputVariable((string)inputVariableList.Items[e.Index]);
+      } else if (e.NewValue == CheckState.Unchecked) {
+        dispatcher.DisableInputVariable((string)inputVariableList.Items[e.Index]);
       }
     }
   }

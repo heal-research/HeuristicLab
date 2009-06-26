@@ -41,7 +41,9 @@ namespace HeuristicLab.CEDMA.Server {
     private IStore store;
     private DataSet dataset;
     internal event EventHandler Changed;
-    public IEnumerable<string> AllowedTargetVariables {
+    private object locker = new object();
+
+    public IEnumerable<string> TargetVariables {
       get {
         if (dataset != null) {
           return dataset.Problem.AllowedTargetVariables.Select(x => dataset.Problem.Dataset.GetVariableName(x));
@@ -49,7 +51,7 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    public IEnumerable<string> AllowedInputVariables {
+    public IEnumerable<string> InputVariables {
       get {
         if (dataset != null) {
           return dataset.Problem.AllowedInputVariables.Select(x => dataset.Problem.Dataset.GetVariableName(x));
@@ -57,8 +59,13 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
+    private List<int> allowedInputVariables;
+    private List<int> allowedTargetVariables;
+
     public DispatcherBase(IStore store) {
       this.store = store;
+      allowedInputVariables = new List<int>();
+      allowedTargetVariables = new List<int>();
     }
 
     public IAlgorithm GetNextJob() {
@@ -69,48 +76,20 @@ namespace HeuristicLab.CEDMA.Server {
         dataset = new DataSet(store, datasetEntities.ElementAt(0));
         OnChanged();
       }
-      int targetVariable = SelectTargetVariable(dataset.Problem.AllowedTargetVariables.ToArray());
-      IAlgorithm selectedAlgorithm = SelectAlgorithm(targetVariable, dataset.Problem.LearningTask);
-      string targetVariableName = dataset.Problem.GetVariableName(targetVariable);
+      if (allowedTargetVariables.Count > 0 && allowedInputVariables.Count > 0) {
+        int[] targetVariables, inputVariables;
+        lock (locker) {
+          targetVariables = allowedTargetVariables.ToArray();
+          inputVariables = allowedInputVariables.ToArray();
+        }
 
-      if (selectedAlgorithm != null) {
-        SetProblemParameters(selectedAlgorithm, dataset.Problem, targetVariable);
-      }
-      return selectedAlgorithm;
+        IAlgorithm selectedAlgorithm = SelectAndConfigureAlgorithm(targetVariables, inputVariables, dataset.Problem);
+        
+        return selectedAlgorithm;
+      } else return null;
     }
 
-    public abstract int SelectTargetVariable(int[] targetVariables);
-    public abstract IAlgorithm SelectAlgorithm(int targetVariable, LearningTask learningTask);
-
-    private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable) {
-      algo.Dataset = problem.Dataset;
-      algo.TargetVariable = targetVariable;
-      algo.ProblemInjector.GetVariable("TrainingSamplesStart").GetValue<IntData>().Data = problem.TrainingSamplesStart;
-      algo.ProblemInjector.GetVariable("TrainingSamplesEnd").GetValue<IntData>().Data = problem.TrainingSamplesEnd;
-      algo.ProblemInjector.GetVariable("ValidationSamplesStart").GetValue<IntData>().Data = problem.ValidationSamplesStart;
-      algo.ProblemInjector.GetVariable("ValidationSamplesEnd").GetValue<IntData>().Data = problem.ValidationSamplesEnd;
-      algo.ProblemInjector.GetVariable("TestSamplesStart").GetValue<IntData>().Data = problem.TestSamplesStart;
-      algo.ProblemInjector.GetVariable("TestSamplesEnd").GetValue<IntData>().Data = problem.TestSamplesEnd;
-      ItemList<IntData> allowedFeatures = algo.ProblemInjector.GetVariable("AllowedFeatures").GetValue<ItemList<IntData>>();
-      foreach (int allowedFeature in problem.AllowedInputVariables) allowedFeatures.Add(new IntData(allowedFeature));
-
-      if (problem.LearningTask == LearningTask.TimeSeries) {
-        algo.ProblemInjector.GetVariable("Autoregressive").GetValue<BoolData>().Data = problem.AutoRegressive;
-        algo.ProblemInjector.GetVariable("MinTimeOffset").GetValue<IntData>().Data = problem.MinTimeOffset;
-        algo.ProblemInjector.GetVariable("MaxTimeOffset").GetValue<IntData>().Data = problem.MaxTimeOffset;
-      } else if (problem.LearningTask == LearningTask.Classification) {
-        ItemList<DoubleData> classValues = algo.ProblemInjector.GetVariable("TargetClassValues").GetValue<ItemList<DoubleData>>();
-        foreach (double classValue in GetDifferentClassValues(problem.Dataset, targetVariable)) classValues.Add(new DoubleData(classValue));
-      }
-    }
-
-    private IEnumerable<double> GetDifferentClassValues(HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable) {
-      return Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, targetVariable)).Distinct();
-    }
-
-    private void OnChanged() {
-      if (Changed != null) Changed(this, new EventArgs());
-    }
+    public abstract IAlgorithm SelectAndConfigureAlgorithm(int[] targetVariables, int[] inputVariables, Problem problem);
 
     #region IViewable Members
 
@@ -119,5 +98,29 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     #endregion
+
+    internal void EnableInputVariable(string name) {
+      lock (locker)
+        allowedInputVariables.Add(dataset.Problem.Dataset.GetVariableIndex(name));
+    }
+
+    internal void EnableTargetVariable(string name) {
+      lock (locker)
+        allowedTargetVariables.Add(dataset.Problem.Dataset.GetVariableIndex(name));
+    }
+
+    internal void DisableTargetVariable(string name) {
+      lock (locker)
+        allowedTargetVariables.Remove(dataset.Problem.Dataset.GetVariableIndex(name));
+    }
+
+    internal void DisableInputVariable(string name) {
+      lock (locker)
+        allowedInputVariables.Remove(dataset.Problem.Dataset.GetVariableIndex(name));
+    }
+
+    private void OnChanged() {
+      if (Changed != null) Changed(this, new EventArgs());
+    }
   }
 }

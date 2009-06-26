@@ -35,6 +35,7 @@ namespace HeuristicLab.CEDMA.Server {
       UserControl serverControl = (UserControl)server.CreateView();
       serverControl.Dock = DockStyle.Fill;
       mainForm.Controls.Add(serverControl);
+      mainForm.Name = "CEDMA Server";
       Application.Run(mainForm);
     }
   }
