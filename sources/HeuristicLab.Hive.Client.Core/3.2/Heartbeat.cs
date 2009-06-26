@@ -91,7 +91,7 @@ namespace HeuristicLab.Hive.Client.Core {
       if (span.TotalSeconds < (Interval/1000)) {
         if (UptimeManager.Instance.isOnline()) {
           //That's quiet simple: Just reconnect and you're good for new jobs
-          if (wcfService.ConnState != NetworkEnum.WcfConnState.Connected) {
+          if (wcfService.ConnState != NetworkEnum.WcfConnState.Loggedin) {
             Logging.Instance.Info(this.ToString(), "Client goes online according to timetable");
             wcfService.Connect();
           }
