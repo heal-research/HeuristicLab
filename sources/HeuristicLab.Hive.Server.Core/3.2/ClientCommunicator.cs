@@ -479,7 +479,10 @@ namespace HeuristicLab.Hive.Server.Core {
         JobResult result =
           (JobResult)formatter.Deserialize(stream);
 
-        tx = session.BeginTransaction();
+        //important - repeatable read isolation level is required here, 
+        //otherwise race conditions could occur when writing the stream into the DB
+        tx = session.BeginTransaction(
+          TransactionIsolationLevel.RepeatableRead);
 
         ResponseResultReceived response =
           ProcessJobResult(

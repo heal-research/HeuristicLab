@@ -24,9 +24,15 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.DataAccess.Interfaces {
+  public enum TransactionIsolationLevel {
+    Default, ReadUncommitted, ReadCommitted, RepeatableRead, Serializable
+  };
+
   public interface ISession {
     ISessionFactory Factory { get; }
-    
+
+    ITransaction BeginTransaction(TransactionIsolationLevel isolationLevel);
+
     ITransaction BeginTransaction();
 
     ITransaction GetCurrentTransaction();

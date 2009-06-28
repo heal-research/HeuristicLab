@@ -35,8 +35,11 @@ namespace HeuristicLab.DataAccess.ADOHelper {
 
     private int usageCounter = 0;
 
-    public Transaction(Session session) {
+    private TransactionIsolationLevel isolationLevel;
+
+    public Transaction(Session session, TransactionIsolationLevel isolationLevel) {
       this.session = session;
+      this.isolationLevel = isolationLevel;
     }
 
     public void IncrementUsageCounter() {
@@ -52,7 +55,18 @@ namespace HeuristicLab.DataAccess.ADOHelper {
           if (value.State != System.Data.ConnectionState.Open)
             value.Open();
 
-          transaction = value.BeginTransaction(IsolationLevel.ReadCommitted);
+          if (isolationLevel == TransactionIsolationLevel.Default)
+            transaction = value.BeginTransaction(IsolationLevel.ReadCommitted);
+          else if (isolationLevel == TransactionIsolationLevel.ReadUncommitted)
+            transaction = value.BeginTransaction(IsolationLevel.ReadUncommitted);
+          else if (isolationLevel == TransactionIsolationLevel.ReadCommitted)
+            transaction = value.BeginTransaction(IsolationLevel.ReadCommitted);
+          else if (isolationLevel == TransactionIsolationLevel.RepeatableRead)
+            transaction = value.BeginTransaction(IsolationLevel.RepeatableRead);
+          else if (isolationLevel == TransactionIsolationLevel.Serializable)
+            transaction = value.BeginTransaction(IsolationLevel.Serializable);
+          else
+            transaction = value.BeginTransaction(IsolationLevel.ReadCommitted);
         }
       }
     }

@@ -167,10 +167,23 @@ namespace HeuristicLab.DataAccess.ADOHelper {
         _ownedTransaction = true;
       } else {
         _ownedConnection = false;
-        _ownedTransaction = false;
 
         if (transaction != null) {
           _transaction = transaction;
+
+          _ownedTransaction = false;
+
+          if (_transaction.IsolationLevel != IsolationLevel.RepeatableRead &&
+              _transaction.IsolationLevel != IsolationLevel.Serializable) {
+            throw new ArgumentException("Transaction level must be at least repeatable read");
+          }
+        } else {
+          _transaction =
+            _connection.BeginTransaction(
+          IsolationLevel.RepeatableRead)
+            as SqlTransaction;
+
+          _ownedTransaction = true;
         }
       }
 

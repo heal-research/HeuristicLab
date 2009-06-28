@@ -83,17 +83,21 @@ namespace HeuristicLab.DataAccess.ADOHelper {
       }
     }
 
-    public ITransaction BeginTransaction() {
+    public ITransaction BeginTransaction(TransactionIsolationLevel isolationLevel) {
       CheckThread();
 
       if (transaction == null) {
-         transaction = new Transaction(this);
-         transaction.Connection = Connection;
+        transaction = new Transaction(this, isolationLevel);
+        transaction.Connection = Connection;
       }
 
       transaction.IncrementUsageCounter();
 
       return transaction;
+    }
+
+    public ITransaction BeginTransaction() {
+      return BeginTransaction(TransactionIsolationLevel.Default);
     }
 
     public ITransaction GetCurrentTransaction() {
