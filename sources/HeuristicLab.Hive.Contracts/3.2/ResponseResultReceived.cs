@@ -32,6 +32,8 @@ namespace HeuristicLab.Hive.Contracts {
     [DataMember]
     public Guid JobId { get; set; }
     [DataMember]
+    public Guid JobResultId { get; set; }
+    [DataMember]
     public bool finished { get; set; }
   }
 }

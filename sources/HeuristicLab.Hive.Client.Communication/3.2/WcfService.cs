@@ -194,6 +194,7 @@ namespace HeuristicLab.Hive.Client.Communication {
     void proxy_SendStreamedJobCompleted(object sender, SendStreamedJobCompletedEventArgs e) {
       if (e.Error == null) {
         Stream stream = null;
+        MemoryStream memStream = null;
 
         try {
           stream = (Stream)e.Result;
@@ -205,12 +206,15 @@ namespace HeuristicLab.Hive.Client.Communication {
             (ResponseJob)formatter.Deserialize(stream);
 
           //second deserialize the BLOB
-          MemoryStream memStream = new MemoryStream();
+          memStream = new MemoryStream();
+
           byte[] buffer = new byte[3024];
           int read = 0;
           while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
             memStream.Write(buffer, 0, read);
           }
+
+          memStream.Close();
 
           SendJobCompletedEventArgs completedEventArgs =
             new SendJobCompletedEventArgs(new object[] { response, memStream.GetBuffer() }, e.Error, e.Cancelled, e.UserState);
@@ -219,6 +223,9 @@ namespace HeuristicLab.Hive.Client.Communication {
         finally {
           if(stream != null)
             stream.Dispose();
+
+          if (memStream != null)
+            memStream.Dispose();
         }
       } else
         HandleNetworkError(e.Error);

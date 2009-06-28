@@ -123,27 +123,13 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseResultReceived StoreFinishedJobResultStreamed(Stream stream) {
-      BinaryFormatter formatter =
-          new BinaryFormatter();
-
-      JobResult result =
-        (JobResult)formatter.Deserialize(stream);
-
       return ((IInternalClientCommunicator)
-        clientCommunicator).ProcessJobResult(
-          result, stream, true);
+        clientCommunicator).ProcessJobResult(stream, true);
     } 
 
     public ResponseResultReceived ProcessSnapshotStreamed(Stream stream) {
-      BinaryFormatter formatter =
-          new BinaryFormatter();
-
-      JobResult result =
-        (JobResult)formatter.Deserialize(stream);
-
       return ((IInternalClientCommunicator)
-        clientCommunicator).ProcessJobResult(
-          result, stream, false);
+        clientCommunicator).ProcessJobResult(stream, false);
     }
 
     #endregion

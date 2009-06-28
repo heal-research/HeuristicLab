@@ -36,6 +36,7 @@ using System.Threading;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.DataAccess.Interfaces;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace HeuristicLab.Hive.Server.Core {
   /// <summary>
@@ -464,7 +465,6 @@ namespace HeuristicLab.Hive.Server.Core {
     }
 
     public ResponseResultReceived ProcessJobResult(
-      JobResult result,
       Stream stream,
       bool finished) {
       ISession session = factory.GetSessionForCurrentThread();
@@ -473,6 +473,12 @@ namespace HeuristicLab.Hive.Server.Core {
       Stream jobStream = null;
 
       try {
+        BinaryFormatter formatter =
+          new BinaryFormatter();
+
+        JobResult result =
+          (JobResult)formatter.Deserialize(stream);
+
         tx = session.BeginTransaction();
 
         ResponseResultReceived response =
@@ -484,31 +490,32 @@ namespace HeuristicLab.Hive.Server.Core {
           result.Exception,
           finished);
 
-        //second deserialize the BLOB
-        IJobResultsAdapter jobResultsAdapter =
-          session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+        if (response.Success) {
+          //second deserialize the BLOB
+          IJobResultsAdapter jobResultsAdapter =
+            session.GetDataAdapter<JobResult, IJobResultsAdapter>();
 
-        IJobAdapter jobAdapter =
-          session.GetDataAdapter<Job, IJobAdapter>();
+          IJobAdapter jobAdapter =
+            session.GetDataAdapter<Job, IJobAdapter>();
 
-        jobResultStream =
-          jobResultsAdapter.GetSerializedJobResultStream(result.Id, true);
+          jobResultStream =
+            jobResultsAdapter.GetSerializedJobResultStream(response.JobResultId, true);
 
-        jobStream =
-          jobAdapter.GetSerializedJobStream(result.JobId, true);
+          jobStream =
+            jobAdapter.GetSerializedJobStream(result.JobId, true);
 
-        byte[] buffer = new byte[3024];
-        int read = 0;
-        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
-          jobResultStream.Write(buffer, 0, read);
-
-          if (finished)
+          byte[] buffer = new byte[3024];
+          int read = 0;
+          while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+            jobResultStream.Write(buffer, 0, read);
             jobStream.Write(buffer, 0, read);
+          }
+
+          jobResultStream.Close();
+          jobStream.Close();
+
+          tx.Commit();
         }
-
-        jobStream.Close();
-
-        tx.Commit();
 
         return response;
       }
@@ -564,28 +571,34 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_NO_JOB_WITH_THIS_ID;
           response.JobId = jobId;
+          tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.abort) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_WAS_ABORTED;
+          tx.Rollback();
+          return response;
         }
         if (job.JobInfo.Client == null) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOB_IS_NOT_BEEING_CALCULATED;
           response.JobId = jobId;
+          tx.Rollback();
           return response;
         }
         if (job.JobInfo.Client.Id != clientId) {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_CLIENT_FOR_JOB;
           response.JobId = jobId;
+          tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.finished) {
           response.Success = true;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
           response.JobId = jobId;
+          tx.Rollback();
           return response;
         }
         if (job.JobInfo.State == State.requestSnapshotSent) {
@@ -596,15 +609,17 @@ namespace HeuristicLab.Hive.Server.Core {
           response.Success = false;
           response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_WRONG_JOB_STATE;
           response.JobId = jobId;
+          tx.Rollback();
           return response;
         }
         job.JobInfo.Percentage = percentage;
 
         if (finished) {
-          job.JobInfo.State = State.finished;
-          job.SerializedJobData = result;
-          jobAdapter.UpdateSerializedJob(job);
+          job.JobInfo.State = State.finished; 
         }
+
+        job.SerializedJobData = result;
+        jobAdapter.UpdateSerializedJob(job);
 
         List<JobResult> jobResults = new List<JobResult>(
           jobResultAdapter.GetResultsOf(job.JobInfo.Id));
@@ -624,12 +639,12 @@ namespace HeuristicLab.Hive.Server.Core {
           result;
 
         jobResultAdapter.UpdateSerializedJobResult(serializedjobResult);
-        jobAdapter.Update(job.JobInfo);
 
         response.Success = true;
         response.StatusMessage = ApplicationConstants.RESPONSE_COMMUNICATOR_JOBRESULT_RECEIVED;
         response.JobId = jobId;
         response.finished = finished;
+        response.JobResultId = jobResult.Id;
 
         tx.Commit();
         return response;

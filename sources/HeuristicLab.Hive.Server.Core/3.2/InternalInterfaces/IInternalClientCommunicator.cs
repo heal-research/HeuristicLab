@@ -30,7 +30,6 @@ using System.IO;
 namespace HeuristicLab.Hive.Server.Core.InternalInterfaces {
   interface IInternalClientCommunicator {
     ResponseResultReceived ProcessJobResult(
-      JobResult result,
       Stream stream,
       bool finished);
   }

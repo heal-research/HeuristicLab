@@ -51,6 +51,7 @@
       <xs:enumeration value="abort" />
       <xs:enumeration value="requestSnapshot" />
       <xs:enumeration value="requestSnapshotSent" />
+      <xs:enumeration value="pending" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="State" nillable="true" type="tns:State" />
@@ -67,6 +68,7 @@
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q4:PersistableObject">
         <xs:sequence>
+          <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AssignedResourceIds" nillable="true" type="q5:ArrayOfguid" />
           <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
           <xs:element minOccurs="0" name="CoresNeeded" type="xs:int" />
           <xs:element minOccurs="0" name="DateCalculated" type="xs:dateTime" />
@@ -76,7 +78,7 @@
           <xs:element minOccurs="0" name="Percentage" type="xs:double" />
           <xs:element minOccurs="0" name="PluginsNeeded" nillable="true" type="tns:ArrayOfHivePluginInfo" />
           <xs:element minOccurs="0" name="Priority" type="xs:int" />
-          <xs:element minOccurs="0" name="SerializedJob" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="Project" nillable="true" type="tns:Project" />
           <xs:element minOccurs="0" name="State" type="tns:State" />
           <xs:element minOccurs="0" name="UserId" type="ser:guid" />
         </xs:sequence>
@@ -92,7 +94,7 @@
   <xs:element name="ArrayOfHivePluginInfo" nillable="true" type="tns:ArrayOfHivePluginInfo" />
   <xs:complexType name="HivePluginInfo">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q5:PersistableObject">
+      <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q6:PersistableObject">
         <xs:sequence>
           <xs:element minOccurs="0" name="BuildDate" type="xs:dateTime" />
           <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
@@ -102,4 +104,21 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="HivePluginInfo" nillable="true" type="tns:HivePluginInfo" />
+  <xs:complexType name="Project">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/HeuristicLab.DataAccess" base="q7:PersistableObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Project" nillable="true" type="tns:Project" />
+  <xs:complexType name="SerializedJob">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="JobInfo" nillable="true" type="tns:Job" />
+      <xs:element minOccurs="0" name="SerializedJobData" nillable="true" type="xs:base64Binary" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SerializedJob" nillable="true" type="tns:SerializedJob" />
 </xs:schema>

@@ -31,6 +31,8 @@ using HeuristicLab.Hive.Contracts.BusinessObjects;
 using System.Diagnostics;
 using HeuristicLab.DataAccess.Interfaces;
 using System.IO;
+using HeuristicLab.Hive.Server.Core;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Hive.Server {
   [ClassInfo(Name = "Hive DB Test App",
@@ -300,23 +302,72 @@ namespace HeuristicLab.Hive.Server {
         session.GetDataAdapter<Job, IJobAdapter>();
 
       Stream s = jobAdapter.GetSerializedJobStream(
-        new Guid("281602a2-1a47-4101-9a75-02974292d490"), true);
+        new Guid("1b35f32b-d880-4c76-86af-4b4e283b30e6"), true);
+
+      int length = 0;
+
+      FileStream fs =
+        new FileStream(@"W:\\result.gz", FileMode.Create);
 
       byte[] buffer = new byte[1024];
-      while(s.Read(buffer, 0, buffer.Length)>0)
+      while((length = s.Read(buffer, 0, buffer.Length)) > 0)
       {
-         //do nothing
+        fs.Write(buffer, 0, length);
       }
 
+      fs.Close();
       s.Close();
 
       session.EndSession();
     }
 
+    private void TestJobResultStreaming() {
+      ISessionFactory factory =
+         ServiceLocator.GetSessionFactory();
+
+      ISession session =
+           factory.GetSessionForCurrentThread();
+
+      IJobResultsAdapter jobResultsAdapter =
+        session.GetDataAdapter<JobResult, IJobResultsAdapter>();
+
+      Stream s = jobResultsAdapter.GetSerializedJobResultStream(
+        new Guid("c20b11a9-cde1-4d7f-8499-23dedb5a65ed"), true);
+
+      int length = 0;
+
+      FileStream fs =
+        new FileStream(@"W:\\result.gz", FileMode.Create);
+
+      byte[] buffer = new byte[1024];
+      while ((length = s.Read(buffer, 0, buffer.Length)) > 0) {
+        fs.Write(buffer, 0, length);
+      }
+
+      fs.Close();
+      s.Close();
+
+      session.EndSession();
+    }
+
+    private void TestJobResultDeserialization() {
+      ExecutionEngineFacade executionEngineFacade =
+        new ExecutionEngineFacade();
+
+     ResponseObject<SerializedJobResult> response =
+       executionEngineFacade.GetLastSerializedResult(
+       new Guid("56ce20bc-067b-424d-a7df-67aaace7c850"), false);
+
+       IStorable restoredJob =
+         PersistenceManager.RestoreFromGZip(response.Obj.SerializedJobResultData);
+    }
+
     public override void Run() {
       //TestClientGroupAdapter();
       //InsertTestClientGroups();
-      TestJobStreaming();
+      //TestJobStreaming();
+      //TestJobResultStreaming();
+      TestJobResultDeserialization();
     }      
   }
 }

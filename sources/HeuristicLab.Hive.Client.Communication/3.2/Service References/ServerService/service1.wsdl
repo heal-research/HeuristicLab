@@ -66,6 +66,12 @@
   <wsdl:message name="IClientFacade_SendJob_OutputMessage">
     <wsdl:part name="parameters" element="tns:SendJobResponse" />
   </wsdl:message>
+  <wsdl:message name="IClientFacade_SendSerializedJob_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendSerializedJob" />
+  </wsdl:message>
+  <wsdl:message name="IClientFacade_SendSerializedJob_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendSerializedJobResponse" />
+  </wsdl:message>
   <wsdl:message name="IClientFacade_StoreFinishedJobResult_InputMessage">
     <wsdl:part name="parameters" element="tns:StoreFinishedJobResult" />
   </wsdl:message>
@@ -133,6 +139,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendJob" message="tns:IClientFacade_SendJob_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendJobResponse" message="tns:IClientFacade_SendJob_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="SendSerializedJob">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/SendSerializedJob" message="tns:IClientFacade_SendSerializedJob_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/SendSerializedJobResponse" message="tns:IClientFacade_SendSerializedJob_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="StoreFinishedJobResult">
       <wsdl:input wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResult" message="tns:IClientFacade_StoreFinishedJobResult_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClientCommunicator/StoreFinishedJobResultResponse" message="tns:IClientFacade_StoreFinishedJobResult_OutputMessage" />
@@ -194,6 +204,15 @@
     </wsdl:operation>
     <wsdl:operation name="SendJob">
       <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendJob" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendSerializedJob">
+      <soap12:operation soapAction="http://tempuri.org/IClientCommunicator/SendSerializedJob" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -285,11 +304,11 @@
   </wsdl:binding>
   <wsdl:service name="ClientFacade">
     <wsdl:port name="NetTcpBinding_IClientFacade" binding="tns:NetTcpBinding_IClientFacade">
-      <soap12:address location="net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator" />
+      <soap12:address location="net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://10.20.53.7:9000/HiveServer/ClientCommunicator</wsa10:Address>
+        <wsa10:Address>net.tcp://10.0.2.15:9000/HiveServer/ClientCommunicator</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>mse08026@fhs-hagenberg.ac.at</Upn>
+          <Upn>STEFAN-4710DBDB\Stefan</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>
