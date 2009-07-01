@@ -50,6 +50,10 @@ namespace HeuristicLab.DataAnalysis {
       // format all cells with the round-trip formatter to make sure that values that are exported and imported to
       // another C# app (HL2) have the same numeric value
       dataGridView.DefaultCellStyle.Format = "r";
+
+      //events for virtual mode of datagrid
+      this.dataGridView.VirtualMode = true;
+      this.dataGridView.CellValueNeeded += new DataGridViewCellValueEventHandler(dataGridView_CellValueNeeded);
     }
 
     public DatasetView(Dataset dataset)
@@ -74,12 +78,12 @@ namespace HeuristicLab.DataAnalysis {
         columnsTextBox.Text = columns + "";
         dataGridView.ColumnCount = columns;
         dataGridView.RowCount = rows;
-        for (int i = 0; i < rows; i++) {
-          for (int j = 0; j < columns; j++) {
-            dataGridView.Rows[i].Cells[j].Value = Dataset.GetValue(i, j);
-            dataGridView.Rows[i].HeaderCell.Value = i.ToString();
-          }
-        }
+        //for (int i = 0; i < rows; i++) {
+        //  for (int j = 0; j < columns; j++) {
+        //    dataGridView.Rows[i].Cells[j].Value = Dataset.GetValue(i, j);
+        //    dataGridView.Rows[i].HeaderCell.Value = i.ToString();
+        //  }
+        //}
         for (int i = 0; i < columns; i++) {
           dataGridView.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable; // SortMode has to be NotSortable to allow ColumnHeaderSelect
           dataGridView.Columns[i].Name = GetColumnName(i);
@@ -105,6 +109,9 @@ namespace HeuristicLab.DataAnalysis {
       }
     }
 
+    private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+      e.Value = Dataset.GetValue(e.RowIndex, e.ColumnIndex);
+    }
 
     private void SetArrayElement(int row, int column, string element) {
       double result;
