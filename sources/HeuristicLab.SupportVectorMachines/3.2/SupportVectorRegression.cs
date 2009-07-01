@@ -60,7 +60,7 @@ namespace HeuristicLab.SupportVectorMachines {
     public IOperator ProblemInjector {
       get {
         IOperator main = GetMainOperator();
-        return main.SubOperators[1];
+        return main.SubOperators[0].SubOperators[1];
       }
       set {
         IOperator main = GetMainOperator();
