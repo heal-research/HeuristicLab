@@ -82,9 +82,8 @@ namespace HeuristicLab.CEDMA.Server {
               OnChanged();
             }
           }
-          // wait until any job is finished
           WaitHandle[] whArr = asyncResults.Keys.ToArray();
-          int readyHandleIndex = WaitHandle.WaitAny(whArr, WaitForFinishedJobsTimeout);
+          int readyHandleIndex = WaitAny(whArr, WaitForFinishedJobsTimeout);
           if (readyHandleIndex != WaitHandle.WaitTimeout) {
             WaitHandle readyHandle = whArr[readyHandleIndex];
             IAlgorithm finishedAlgorithm = null;
@@ -109,6 +108,20 @@ namespace HeuristicLab.CEDMA.Server {
         catch (Exception ex) {
           HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message);
         }
+      }
+    }
+
+        // wait until any job is finished
+    private int WaitAny(WaitHandle[] wh, TimeSpan WaitForFinishedJobsTimeout) {
+      if (wh.Length > 64) {
+        return WaitHandle.WaitAny(wh, WaitForFinishedJobsTimeout);
+      } else {
+        for (int i = 0; i < wh.Length; i++) {
+          if (wh[i].WaitOne(WaitForFinishedJobsTimeout)) {
+            return i;
+          }
+        }
+        return WaitHandle.WaitTimeout;
       }
     }
 

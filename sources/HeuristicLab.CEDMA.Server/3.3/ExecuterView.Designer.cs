@@ -53,7 +53,7 @@
       // 
       this.maxActiveJobs.Location = new System.Drawing.Point(98, 3);
       this.maxActiveJobs.Maximum = new decimal(new int[] {
-            64,
+            200,
             0,
             0,
             0});
