@@ -97,6 +97,16 @@ namespace HeuristicLab.SupportVectorMachines {
       set { GetVariableInjector().GetVariable("MaxCostIndex").GetValue<IntData>().Data = value; }
     }
 
+    public DoubleArrayData GammaList {
+      get { return GetVariableInjector().GetVariable("GammaList").GetValue<DoubleArrayData>(); }
+      set { GetVariableInjector().GetVariable("GammaList").Value = value; }
+    }
+
+    public int MaxGammaIndex {
+      get { return GetVariableInjector().GetVariable("MaxGammaIndex").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MaxGammaIndex").GetValue<IntData>().Data = value; }
+    }
+
     public SupportVectorRegression() {
       engine = new SequentialEngine.SequentialEngine();
       CombinedOperator algo = CreateAlgorithm();
@@ -104,40 +114,67 @@ namespace HeuristicLab.SupportVectorMachines {
       engine.OperatorGraph.InitialOperator = algo;
       MaxCostIndex = CostList.Data.Length;
       MaxNuIndex = NuList.Data.Length;
+      MaxGammaIndex = GammaList.Data.Length;
     }
 
     private CombinedOperator CreateAlgorithm() {
       CombinedOperator algo = new CombinedOperator();
+      SequentialProcessor seq = new SequentialProcessor();
       algo.Name = "SupportVectorRegression";
+      seq.Name = "SupportVectorRegression";
+
+      IOperator initialization = CreateInitialization();
       IOperator main = CreateMainLoop();
-      algo.OperatorGraph.AddOperator(main);
-      algo.OperatorGraph.InitialOperator = main;
+      IOperator postProc = CreateModelAnalyser();
+
+      seq.AddSubOperator(initialization);
+      seq.AddSubOperator(main);
+      seq.AddSubOperator(postProc);
+
+      algo.OperatorGraph.InitialOperator = seq;
+      algo.OperatorGraph.AddOperator(seq);
+
       return algo;
+    }
+
+    private IOperator CreateInitialization() {
+      SequentialProcessor seq = new SequentialProcessor();
+      seq.Name = "Initialization";
+      seq.AddSubOperator(CreateGlobalInjector());
+      seq.AddSubOperator(new ProblemInjector());
+      seq.AddSubOperator(new RandomInjector());
+      return seq;
     }
 
     private IOperator CreateMainLoop() {
       SequentialProcessor main = new SequentialProcessor();
-      main.AddSubOperator(CreateGlobalInjector());
-      main.AddSubOperator(new ProblemInjector());
-      main.AddSubOperator(new RandomInjector());
-
+      main.Name = "Main";
+      #region initial solution
       SubScopesCreater modelScopeCreator = new SubScopesCreater();
       modelScopeCreator.GetVariableInfo("SubScopes").Local = true;
       modelScopeCreator.AddVariable(new HeuristicLab.Core.Variable("SubScopes", new IntData(1)));
       main.AddSubOperator(modelScopeCreator);
-
+      
       SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
       IOperator modelProcessor = CreateModelProcessor();
+
       seqSubScopesProc.AddSubOperator(modelProcessor);
       main.AddSubOperator(seqSubScopesProc);
+      #endregion
 
       SequentialProcessor nuLoop = new SequentialProcessor();
       nuLoop.Name = "NuLoop";
 
+      SequentialProcessor gammaLoop = new SequentialProcessor();
+      gammaLoop.Name = "GammaLoop";
+
+      nuLoop.AddSubOperator(gammaLoop);
+
       IOperator costCounter = CreateCounter("Cost");
       IOperator costComparator = CreateComparator("Cost");
-      nuLoop.AddSubOperator(costCounter);
-      nuLoop.AddSubOperator(costComparator);
+      gammaLoop.AddSubOperator(costCounter);
+      gammaLoop.AddSubOperator(costComparator);
+
       ConditionalBranch costBranch = new ConditionalBranch();
       costBranch.Name = "IfValidCostIndex";
       costBranch.GetVariableInfo("Condition").ActualName = "RepeatCostLoop";
@@ -145,6 +182,8 @@ namespace HeuristicLab.SupportVectorMachines {
       // build cost loop
       SequentialProcessor costLoop = new SequentialProcessor();
       costLoop.Name = "CostLoop";
+
+      #region selection of better solution
       costLoop.AddSubOperator(modelScopeCreator);
       SequentialSubScopesProcessor subScopesProcessor = new SequentialSubScopesProcessor();
       costLoop.AddSubOperator(subScopesProcessor);
@@ -164,6 +203,7 @@ namespace HeuristicLab.SupportVectorMachines {
 
       RightReducer reducer = new RightReducer();
       costLoop.AddSubOperator(reducer);
+      #endregion
 
       costLoop.AddSubOperator(costCounter);
       costLoop.AddSubOperator(costComparator);
@@ -171,8 +211,18 @@ namespace HeuristicLab.SupportVectorMachines {
       costBranch.AddSubOperator(costLoop);
       costLoop.AddSubOperator(costBranch);
 
-      nuLoop.AddSubOperator(costBranch);
-      nuLoop.AddSubOperator(CreateResetOperator("CostIndex"));
+      gammaLoop.AddSubOperator(costBranch); // inner loop
+      gammaLoop.AddSubOperator(CreateResetOperator("CostIndex", -1));
+      gammaLoop.AddSubOperator(CreateCounter("Gamma"));
+      gammaLoop.AddSubOperator(CreateComparator("Gamma"));
+
+      ConditionalBranch gammaBranch = new ConditionalBranch();
+      gammaBranch.Name = "GammaLoop";
+      gammaBranch.GetVariableInfo("Condition").ActualName = "RepeatGammaLoop";
+      gammaBranch.AddSubOperator(gammaLoop);
+      gammaLoop.AddSubOperator(gammaBranch);
+
+      nuLoop.AddSubOperator(CreateResetOperator("GammaIndex", 0));
 
       nuLoop.AddSubOperator(CreateCounter("Nu"));
       nuLoop.AddSubOperator(CreateComparator("Nu"));
@@ -180,11 +230,11 @@ namespace HeuristicLab.SupportVectorMachines {
       ConditionalBranch nuBranch = new ConditionalBranch();
       nuBranch.Name = "NuLoop";
       nuBranch.GetVariableInfo("Condition").ActualName = "RepeatNuLoop";
+      
       nuBranch.AddSubOperator(nuLoop);
       nuLoop.AddSubOperator(nuBranch);
 
       main.AddSubOperator(nuLoop);
-      main.AddSubOperator(CreateModelAnalyser());
       return main;
     }
 
@@ -192,6 +242,7 @@ namespace HeuristicLab.SupportVectorMachines {
       SequentialProcessor modelProcessor = new SequentialProcessor();
       modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Nu"));
       modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Cost"));
+      modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Gamma"));
 
       SupportVectorCreator modelCreator = new SupportVectorCreator();
       modelCreator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
@@ -214,6 +265,7 @@ namespace HeuristicLab.SupportVectorMachines {
       collector.GetVariableInfo("Values").ActualName = "Log";
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Nu"));
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Cost"));
+      ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("Gamma"));
       ((ItemList<StringData>)collector.GetVariable("VariableNames").Value).Add(new StringData("ValidationQuality"));
       modelProcessor.AddSubOperator(collector);
       return modelProcessor;
@@ -297,12 +349,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return progOp;
     }
 
-    private IOperator CreateResetOperator(string paramName) {
+    private IOperator CreateResetOperator(string paramName, int value) {
       ProgrammableOperator progOp = new ProgrammableOperator();
       progOp.Name = "Reset" + paramName;
       progOp.RemoveVariableInfo("Result");
       progOp.AddVariableInfo(new VariableInfo("Value", "Value", typeof(IntData), VariableKind.In | VariableKind.Out));
-      progOp.Code = "Value.Data = -1;";
+      progOp.Code = "Value.Data = "+value+";";
       progOp.GetVariableInfo("Value").ActualName = paramName;
       return progOp;
     }
@@ -310,13 +362,28 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     private IOperator CreateGlobalInjector() {
       VariableInjector injector = new VariableInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("CostIndex", new IntData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("CostList", new DoubleArrayData(new double[] { 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0 })));
+      injector.AddVariable(new HeuristicLab.Core.Variable("CostList", new DoubleArrayData(new double[] { 
+        Math.Pow(2,-5),
+        Math.Pow(2,-3),
+        Math.Pow(2,-1),
+        2,
+        Math.Pow(2,3),
+        Math.Pow(2,5),
+        Math.Pow(2,7),
+        Math.Pow(2,9),
+        Math.Pow(2,11),
+        Math.Pow(2,13),
+        Math.Pow(2,15)})));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxCostIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("NuIndex", new IntData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.01, 0.05, 0.1, 0.5 })));
+      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.9, 0.8, 1 })));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNuIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("Log", new ItemList()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("Gamma", new DoubleData(1)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("GammaIndex", new IntData(0)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("GammaList", new DoubleArrayData(new double[] {
+        3.0517578125E-05, 0.0001220703125,0.00048828125,0.001953125,
+        0.0078125,0.03125,0.125,0.5,2,4,8})));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxGammaIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("KernelType", new StringData("RBF")));
       injector.AddVariable(new HeuristicLab.Core.Variable("Type", new StringData("NU_SVR")));
 
@@ -382,7 +449,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
     private IOperator GetVariableInjector() {
-      return GetMainOperator().SubOperators[0];
+      return GetMainOperator().SubOperators[0].SubOperators[0];
     }
 
     private IOperator GetMainOperator() {
