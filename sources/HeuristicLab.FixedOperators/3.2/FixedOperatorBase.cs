@@ -69,6 +69,27 @@ namespace HeuristicLab.FixedOperators {
 
     } // SetRegion
 
+    /// <summary>
+    /// Executes only the operator op, suboperator are wont be executed.
+    /// </summary>
+    /// <param name="op">Operator to execute.</param>
+    /// <param name="scope">Scope on which operator is executed.</param>
+    /// <returns>True, if operator has suboperators after execution. </returns>
+    protected virtual bool ExecuteFirstOperator(IOperator op, IScope scope){
+      bool suboperatorsExist = false;
+      
+      if (!IsExecuted()) {
+        suboperatorsExist = op.Execute(scope) != null;
+        persistedExecutionPointer.Data++;
+      } // if not executed
+      executionPointer++;
+
+      if (Canceled)
+        throw new CancelException();
+
+      return suboperatorsExist;
+    } // ExecuteFirstOperator
+
     protected virtual void Execute(IOperator op, IScope scope) {
       if (!IsExecuted()) {
         ExecuteOperation(op, scope);
@@ -89,7 +110,8 @@ namespace HeuristicLab.FixedOperators {
           executionStack.Push(operation);
         }
       } else {
-        executionStack = new Stack<IOperation>(persistedOperations);  
+        executionStack = new Stack<IOperation>(persistedOperations);
+        persistedOperations.Clear();
       }
 
       while (executionStack.Count > 0) {
@@ -120,7 +142,7 @@ namespace HeuristicLab.FixedOperators {
     } // ExecuteOperation
 
     private void SaveExecutionStack(Stack<IOperation> stack) {
-      persistedOperations = new ItemList<IOperation>();
+      persistedOperations.Clear();
       persistedOperations.AddRange(stack.ToArray());
     } // SaveExecutionStack
 

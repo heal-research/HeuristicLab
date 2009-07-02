@@ -65,6 +65,8 @@ namespace HeuristicLab.FixedOperators {
 
       IScope s;
       IScope s2;
+      bool loopSkipped = true;
+      bool running = false;
 
       DoubleData selectionPressure = null;
       DoubleData selectionPressureLimit = new DoubleData();
@@ -104,15 +106,20 @@ namespace HeuristicLab.FixedOperators {
               Execute(counter, s2);
               Execute(wofc, s2);
               Execute(sr, s2);
-
+              loopSkipped = false;
             } // foreach
-            subscopeNr.Data = 0;
+
+            // if for loop skipped, we had to add skiped operations
+            // to execution pointer.
+            if (loopSkipped)
+              executionPointer += 5;
 
             Execute(sorter, s);
             ////// END Create Children //////
-
-
-          } while (os.Execute(scope) != null);
+            
+            running = ExecuteFirstOperator(os, scope);
+            if (running) subscopeNr.Data = 0;
+          } while (running);
 
           DoReplacement(scope);
           Execute(ql, scope);
@@ -128,6 +135,7 @@ namespace HeuristicLab.FixedOperators {
           if (selectionPressure.Data > selectionPressureLimit.Data)
             break;
 
+          subscopeNr.Data = 0;
           ResetExecutionPointer();
         } // for i generations
       } // try

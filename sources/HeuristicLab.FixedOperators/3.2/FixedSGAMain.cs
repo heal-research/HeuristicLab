@@ -332,7 +332,11 @@ namespace HeuristicLab.FixedOperators {
       
       IScope s;
       IScope s2;
+      bool loopSkipped = true;
 
+      tempExePointer = new int[10];
+      tempPersExePointer = new int[10];
+      
       try {
         for (; nrOfGenerations.Data < maxGenerations.Data; nrOfGenerations.Data++) {
           Execute(selector, scope);
@@ -367,7 +371,13 @@ namespace HeuristicLab.FixedOperators {
             Execute(evaluator, s2);
             Execute(sr, s2);
             Execute(counter, s2);
+            loopSkipped = false;
           } // foreach
+
+          // if for loop skipped, we had to add skiped operations
+          // to execution pointer.
+          if (loopSkipped)
+            executionPointer += 5;
 
           Execute(sorter, s);
           ////// END Create Children //////
@@ -392,6 +402,9 @@ namespace HeuristicLab.FixedOperators {
       catch (CancelException) {
         //Console.WriteLine("Micro engine aborted by cancel flag.");
         return new AtomicOperation(this, scope);
+      }
+      catch (Exception ex) {
+        ex.ToString();
       }
 
       return null;

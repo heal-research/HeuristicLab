@@ -179,6 +179,7 @@ namespace HeuristicLab.FixedOperators {
 
       Execute(mr, scope);
       Execute(sorter, scope);
+
     } // DoReplacement
   
   } // class FixedGABase
