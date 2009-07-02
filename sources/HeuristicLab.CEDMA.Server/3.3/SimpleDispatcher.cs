@@ -166,12 +166,19 @@ namespace HeuristicLab.CEDMA.Server {
       algo.ProblemInjector.GetVariable("TestSamplesStart").GetValue<IntData>().Data = problem.TestSamplesStart;
       algo.ProblemInjector.GetVariable("TestSamplesEnd").GetValue<IntData>().Data = problem.TestSamplesEnd;
       ItemList<IntData> allowedFeatures = algo.ProblemInjector.GetVariable("AllowedFeatures").GetValue<ItemList<IntData>>();
-      foreach (int inputVariable in inputVariables) allowedFeatures.Add(new IntData(inputVariable));
+      foreach (int inputVariable in inputVariables) {
+        if (inputVariable != targetVariable) {
+          allowedFeatures.Add(new IntData(inputVariable));
+        }
+      }
 
       if (problem.LearningTask == LearningTask.TimeSeries) {
         algo.ProblemInjector.GetVariable("Autoregressive").GetValue<BoolData>().Data = problem.AutoRegressive;
         algo.ProblemInjector.GetVariable("MinTimeOffset").GetValue<IntData>().Data = problem.MinTimeOffset;
         algo.ProblemInjector.GetVariable("MaxTimeOffset").GetValue<IntData>().Data = problem.MaxTimeOffset;
+        if (problem.AutoRegressive) {
+          allowedFeatures.Add(new IntData(targetVariable));
+        }
       } else if (problem.LearningTask == LearningTask.Classification) {
         ItemList<DoubleData> classValues = algo.ProblemInjector.GetVariable("TargetClassValues").GetValue<ItemList<DoubleData>>();
         foreach (double classValue in GetDifferentClassValues(problem.Dataset, targetVariable)) classValues.Add(new DoubleData(classValue));

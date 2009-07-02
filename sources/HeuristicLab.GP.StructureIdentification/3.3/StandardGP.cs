@@ -98,7 +98,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public StandardGP()
       : base() {
       PopulationSize = 10000;
-      MaxGenerations = 100;
+      MaxGenerations = 500;
       TournamentSize = 7;
       MutationRate = 0.15;
       Elites = 1;

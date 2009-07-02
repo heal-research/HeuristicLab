@@ -38,10 +38,6 @@ namespace HeuristicLab.Modeling {
 
     public TimeSeriesProblemInjector()
       : base() {
-      AddVariableInfo(new Core.VariableInfo("Autoregressive", "Autoregressive modelling includes previous values of the target variable to predict future values.", typeof(BoolData), Core.VariableKind.New));
-      GetVariableInfo("Autoregressive").Local = true;
-      AddVariable(new Core.Variable("Autoregressive", new BoolData()));
-
       AddVariableInfo(new Core.VariableInfo("MaxTimeOffset", "MaxTimeOffset", typeof(IntData), Core.VariableKind.New));
       GetVariableInfo("MaxTimeOffset").Local = true;
       AddVariable(new Core.Variable("MaxTimeOffset", new IntData(0)));

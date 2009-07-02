@@ -34,7 +34,6 @@ namespace HeuristicLab.GP.StructureIdentification {
     private const string FUNCTIONLIBRARY = "FunctionLibrary";
     private const string TARGETVARIABLE = "TargetVariable";
     private const string ALLOWEDFEATURES = "AllowedFeatures";
-    private const string AUTOREGRESSIVE = "Autoregressive";
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
 
@@ -72,7 +71,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
-      AddVariableInfo(new Core.VariableInfo(AUTOREGRESSIVE, "Switch to turn on/off autoregressive modeling (wether to allow the target variable as input)", typeof(BoolData), Core.VariableKind.In));
       AddVariableInfo(new Core.VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), Core.VariableKind.In));
       AddVariableInfo(new Core.VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), Core.VariableKind.In));
       AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
@@ -122,18 +120,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       // try to get maxTimeOffset (use 0 as default if not available)
       IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
       int maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
-      // try to get flag autoregressive (use false as default if not available)
-      IItem autoRegItem = GetVariableValue(AUTOREGRESSIVE, scope, true, false);
-      bool autoregressive = autoRegItem == null ? false : ((BoolData)autoRegItem).Data;
-
-      if (autoregressive) {
-        // make sure the target-variable occures in list of allowed features
-        if (!allowedFeatures.Exists(d => d.Data == targetVariable)) allowedFeatures.Add(new IntData(targetVariable));
-      } else {
-        // remove the target-variable in case it occures in allowed features
-        List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
-        foreach (IntData t in ts) allowedFeatures.Remove(t);
-      }
 
       variable = new StructId.Variable();
       StructId.Constant constant = new StructId.Constant();

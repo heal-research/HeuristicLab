@@ -74,8 +74,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       PopulationSize = 1000;
       Parents = 20;
-      MaxEvaluatedSolutions = 1000000;
-      SelectionPressureLimit = 300;
+      MaxEvaluatedSolutions = 5000000;
+      SelectionPressureLimit = 400;
       ComparisonFactor = 1.0;
       SuccessRatioLimit = 1.0;
     }

@@ -34,11 +34,6 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {
-    public virtual bool Autoregressive {
-      get { return ProblemInjector.GetVariable("Autoregressive").GetValue<BoolData>().Data; }
-      set { ProblemInjector.GetVariable("Autoregressive").GetValue<BoolData>().Data = value; }
-    }
-
     protected override IOperator CreateFunctionLibraryInjector() {
       return new FunctionLibraryInjector();
     }
