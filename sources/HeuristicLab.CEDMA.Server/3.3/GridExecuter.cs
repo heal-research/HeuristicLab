@@ -113,7 +113,7 @@ namespace HeuristicLab.CEDMA.Server {
 
         // wait until any job is finished
     private int WaitAny(WaitHandle[] wh, TimeSpan WaitForFinishedJobsTimeout) {
-      if (wh.Length > 64) {
+      if (wh.Length <= 64) {
         return WaitHandle.WaitAny(wh, WaitForFinishedJobsTimeout);
       } else {
         for (int i = 0; i < wh.Length; i++) {
