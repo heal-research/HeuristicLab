@@ -63,9 +63,11 @@ namespace HeuristicLab.CEDMA.Core {
     public string GetToolTipText() {
       StringBuilder b = new StringBuilder();
       foreach (KeyValuePair<string, object> v in values) {
-        string val = v.Value.ToString();
-        if (val.Length > 40) val = val.Substring(0, 38) + "...";
-        b.Append(v.Key).Append(" = ").Append(val).AppendLine();
+        if (v.Value is string || v.Value is double || v.Value is int) {
+          string val = v.Value.ToString();
+          if (val.Length > 40) val = val.Substring(0, 38) + "...";
+          b.Append(v.Key).Append(" = ").Append(val).AppendLine();
+        }
       }
       return b.ToString();
     }

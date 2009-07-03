@@ -58,7 +58,6 @@ namespace HeuristicLab.CEDMA.Charting {
     private List<ResultsEntry> records;
     private Results results;
     private Dictionary<IPrimitive, ResultsEntry> primitiveToEntryDictionary;
-    //private Dictionary<ResultsEntry, IList<IPrimitive>> entryToPrimitivesDictionary;
     private Random random = new Random();
     private Group points;
 
@@ -66,7 +65,6 @@ namespace HeuristicLab.CEDMA.Charting {
       : base(lowerLeft, upperRight) {
       records = new List<ResultsEntry>();
       primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
-      //entryToPrimitivesDictionary = new Dictionary<ResultsEntry, IList<IPrimitive>>();
       this.results = results;
 
       foreach (var resultsEntry in results.GetEntries()) {
@@ -132,7 +130,6 @@ namespace HeuristicLab.CEDMA.Charting {
       UpdateEnabled = false;
       Group.Clear();
       primitiveToEntryDictionary.Clear();
-      //entryToPrimitivesDictionary.Clear();
       points = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
       UpdateViewSize(0, 0, 5);
@@ -212,8 +209,6 @@ namespace HeuristicLab.CEDMA.Charting {
             points.Add(c);
             if (!r.Selected) c.IntoBackground();
             primitiveToEntryDictionary[c] = r;
-            //if (!entryToPrimitivesDictionary.ContainsKey(r)) entryToPrimitivesDictionary[r] = new List<IPrimitive>();
-            //entryToPrimitivesDictionary[r].Add(c);
           }
         }
       }
