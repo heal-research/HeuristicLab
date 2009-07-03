@@ -39,8 +39,12 @@ namespace HeuristicLab.CEDMA.Charting {
       bubbleChartControl.Chart = new BubbleChart(Results, 0, 0, 100, 100);
       xAxisComboBox.Items.AddRange(Results.OrdinalVariables);
       xAxisComboBox.Items.AddRange(Results.CategoricalVariables);
+      xAxisComboBox.Items.AddRange(Results.MultiDimensionalCategoricalVariables);
+      xAxisComboBox.Items.AddRange(Results.MultiDimensionalOrdinalVariables);
       yAxisComboBox.Items.AddRange(Results.OrdinalVariables);
       yAxisComboBox.Items.AddRange(Results.CategoricalVariables);
+      yAxisComboBox.Items.AddRange(Results.MultiDimensionalCategoricalVariables);
+      yAxisComboBox.Items.AddRange(Results.MultiDimensionalOrdinalVariables);
       sizeComboBox.Items.Add(CONSTANT_SIZE);
       sizeComboBox.Items.AddRange(Results.OrdinalVariables);
       sizeComboBox.SelectedItem = sizeComboBox.Items[0];

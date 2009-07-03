@@ -30,6 +30,7 @@ using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.DB.Interfaces;
+using System.Diagnostics;
 
 namespace HeuristicLab.CEDMA.Charting {
   public class BubbleChart : Chart {
@@ -57,7 +58,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private List<ResultsEntry> records;
     private Results results;
     private Dictionary<IPrimitive, ResultsEntry> primitiveToEntryDictionary;
-    private Dictionary<ResultsEntry, IPrimitive> entryToPrimitiveDictionary;
+    //private Dictionary<ResultsEntry, IList<IPrimitive>> entryToPrimitivesDictionary;
     private Random random = new Random();
     private Group points;
 
@@ -65,7 +66,7 @@ namespace HeuristicLab.CEDMA.Charting {
       : base(lowerLeft, upperRight) {
       records = new List<ResultsEntry>();
       primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
-      entryToPrimitiveDictionary = new Dictionary<ResultsEntry, IPrimitive>();
+      // entryToPrimitivesDictionary = new Dictionary<ResultsEntry, IList<IPrimitive>>();
       this.results = results;
 
       foreach (var resultsEntry in results.GetEntries()) {
@@ -131,42 +132,73 @@ namespace HeuristicLab.CEDMA.Charting {
       UpdateEnabled = false;
       Group.Clear();
       primitiveToEntryDictionary.Clear();
-      entryToPrimitiveDictionary.Clear();
+      // entryToPrimitivesDictionary.Clear();
       points = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
       UpdateViewSize(0, 0, 5);
       foreach (ResultsEntry r in records) {
-        double x, y;
+        List<double> xs = new List<double>();
+        List<double> ys = new List<double>();
         int size;
         if (results.OrdinalVariables.Contains(xDimension)) {
-          x = Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor;
+          xs.Add(Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
         } else if (results.CategoricalVariables.Contains(xDimension)) {
-          x = results.IndexOfCategoricalValue(xDimension, r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor;
+          xs.Add(results.IndexOfCategoricalValue(xDimension, r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
+        } else if (results.MultiDimensionalCategoricalVariables.Contains(xDimension)) {
+          var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
+          IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
+          foreach (ResultsEntry subEntry in subEntries) {
+            xs.Add(results.IndexOfCategoricalValue(xDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+          }
+        } else if (results.MultiDimensionalOrdinalVariables.Contains(xDimension)) {
+          var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
+          IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
+          foreach (ResultsEntry subEntry in subEntries) {
+            xs.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+          }
         } else {
-          x = double.NaN;
+          xs.Add(double.NaN);
         }
         if (results.OrdinalVariables.Contains(yDimension)) {
-          y = Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
+          ys.Add(Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
         } else if (results.CategoricalVariables.Contains(yDimension)) {
-          y = results.IndexOfCategoricalValue(yDimension, r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor;
+          ys.Add(results.IndexOfCategoricalValue(yDimension, r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
+        } else if (results.MultiDimensionalCategoricalVariables.Contains(yDimension)) {
+          var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
+          IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
+          foreach (ResultsEntry subEntry in subEntries) {
+            ys.Add(results.IndexOfCategoricalValue(yDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+          }
+        } else if (results.MultiDimensionalOrdinalVariables.Contains(yDimension)) {
+          var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
+          IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
+          foreach (ResultsEntry subEntry in subEntries) {
+            ys.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+          }
         } else {
-          y = double.NaN;
+          ys.Add(double.NaN);
         }
         size = CalculateSize(Convert.ToDouble(r.Get(sizeDimension)), minSize, maxSize);
-
-        if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
-        if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
-        if (!double.IsNaN(x) && !double.IsNaN(y)) {
-          UpdateViewSize(x, y, size);
-          int alpha = CalculateAlpha(size);
-          Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
-          Brush brush = pen.Brush;
-          FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
-          c.ToolTipText = r.GetToolTipText();
-          points.Add(c);
-          if (!r.Selected) c.IntoBackground();
-          primitiveToEntryDictionary[c] = r;
-          entryToPrimitiveDictionary[r] = c;
+        Debug.Assert(xs.Count() == ys.Count() || xs.Count() == 1 || ys.Count() == 1);
+        int n = Math.Max(xs.Count(), ys.Count());
+        for (int i = 0; i < n; i++) {
+          double x = xs[Math.Min(i, xs.Count()-1)];
+          double y = ys[Math.Min(i, ys.Count()-1)];
+          if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
+          if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
+          if (!double.IsNaN(x) && !double.IsNaN(y)) {
+            UpdateViewSize(x, y, size);
+            int alpha = CalculateAlpha(size);
+            Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
+            Brush brush = pen.Brush;
+            FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
+            c.ToolTipText = r.GetToolTipText();
+            points.Add(c);
+            if (!r.Selected) c.IntoBackground();
+            primitiveToEntryDictionary[c] = r;
+            //if (!entryToPrimitivesDictionary.ContainsKey(r)) entryToPrimitivesDictionary[r] = new List<IPrimitive>();
+            //entryToPrimitivesDictionary[r].Add(c);
+          }
         }
       }
       Group.Add(points);

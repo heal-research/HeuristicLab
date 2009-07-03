@@ -57,6 +57,16 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
+    private string[] multiDimensionalOrdinalVariables = new string[] { "VariableImpacts: EvaluationImpact", "VariableImpacts: QualityImpact" };
+    public string[] MultiDimensionalOrdinalVariables {
+      get { return multiDimensionalOrdinalVariables; }
+    }
+
+    private string[] multiDimensionalCategoricalVariables = new string[] { "VariableImpacts: InputVariableName" };
+    public string[] MultiDimensionalCategoricalVariables {
+      get { return multiDimensionalCategoricalVariables; }
+    }
+
     private IStore store;
     public IStore Store {
       get { return store; }
@@ -86,8 +96,10 @@ namespace HeuristicLab.CEDMA.Core {
       if (store == null) yield break;
       entries = new List<ResultsEntry>();
       do {
-        var allBindings = store.Query("?Model <" + Ontology.InstanceOf + "> <" + Ontology.TypeModel + "> ." + Environment.NewLine +
-          "?Model ?Attribute ?Value .", page, PAGE_SIZE);
+        var allBindings = store.Query(
+          "?Model <" + Ontology.InstanceOf + "> <" + Ontology.TypeModel + "> ." +
+          "?Model ?Attribute ?Value .",
+          page, PAGE_SIZE);
         var allModelBindings = allBindings.GroupBy(x => (Entity)x.Get("Model"));
         resultsReturned = allBindings.Count;
 
@@ -99,6 +111,7 @@ namespace HeuristicLab.CEDMA.Core {
             entry.Uri = modelBindings.Key.Uri;
             entries.Add(entry);
             newEntry = true;
+            entry.Set("VariableImpacts", SelectVariableImpacts(entry.Uri));
           }
           foreach (var binding in modelBindings) {
             if (binding.Get("Value") is Literal) {
@@ -116,6 +129,35 @@ namespace HeuristicLab.CEDMA.Core {
 
       FireChanged();
       cached = true;
+    }
+
+    private IEnumerable<ResultsEntry> SelectVariableImpacts(string modelUri) {
+      var allBindings = store.Query(
+          "<" + modelUri + "> <" + Ontology.HasInputVariable + "> ?InputVariable ." +
+          "?InputVariable <" + Ontology.Name + "> ?InputName ." +
+          "?InputVariable <" + Ontology.QualityImpact + "> ?QualityImpact ." +
+          "?InputVariable <" + Ontology.EvaluationImpact + "> ?EvaluationImpact .",
+          0, PAGE_SIZE);
+      var allInputVariableBindings = allBindings.GroupBy(x => (Entity)x.Get("InputVariable"));
+      List<ResultsEntry> variableImpacts = new List<ResultsEntry>();
+
+      foreach (var inputVariableBinding in allInputVariableBindings) {
+        ResultsEntry entry = new ResultsEntry();
+        VariableBindings binding = inputVariableBinding.First();
+        double evaluationImpact = (double)((Literal)binding.Get("EvaluationImpact")).Value;
+        double qualityImpact = (double)((Literal)binding.Get("QualityImpact")).Value;
+        if (binding.Get("InputName") != null) entry.Set("InputVariableName", ((Literal)binding.Get("InputName")).Value);
+        if (binding.Get("QualityImpact") != null) entry.Set("QualityImpact", qualityImpact);
+        if (binding.Get("EvaluationImpact") != null) entry.Set("EvaluationImpact", evaluationImpact);
+        if (!IsAlmost(evaluationImpact, 0.0) && !IsAlmost(qualityImpact, 1.0)) {
+          variableImpacts.Add(entry);
+        }
+      }
+      return variableImpacts;
+    }
+
+    private bool IsAlmost(double x, double y) {
+      return (y + 1.0E-7 > x) && (y - 1.0E-7 < x);
     }
 
     internal IEnumerable<string> SelectModelAttributes() {

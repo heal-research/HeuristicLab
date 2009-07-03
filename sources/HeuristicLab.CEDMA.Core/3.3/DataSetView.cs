@@ -59,7 +59,7 @@ namespace HeuristicLab.CEDMA.Core {
       resultsButton.Enabled = viewComboBox.SelectedItem != null;
       if (dataSet.Activated) {
         activateButton.Enabled = false;
-        editorGroupBox.Enabled = false;
+        editorGroupBox.Enabled = true;
         viewComboBox.Enabled = true;
         resultsButton.Enabled = true;
         progressBar.Enabled = true;
