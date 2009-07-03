@@ -35,6 +35,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private bool renderingRequired;
     private Point mousePosition;
     private Point buttonDownPoint;
+    private IPrimitive primitiveUnderCursor;
 
     private BubbleChart myChart;
     public BubbleChart Chart {
@@ -106,7 +107,10 @@ namespace HeuristicLab.CEDMA.Charting {
       }
     }
     private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
-      toolTip.SetToolTip(pictureBox, Chart.GetToolTipText(e.Location));
+      if (Chart.GetPrimitive(e.Location) != primitiveUnderCursor) {
+        primitiveUnderCursor = Chart.GetPrimitive(e.Location);
+        toolTip.SetToolTip(pictureBox, Chart.GetToolTipText(e.Location));
+      }
       if(e.Button != MouseButtons.None) {
         if((Chart.Mode == ChartMode.Zoom || Chart.Mode == ChartMode.Select) && (e.Button == MouseButtons.Left)) {
           pictureBox.Refresh();

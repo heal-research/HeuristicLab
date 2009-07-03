@@ -66,7 +66,7 @@ namespace HeuristicLab.CEDMA.Charting {
       : base(lowerLeft, upperRight) {
       records = new List<ResultsEntry>();
       primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
-      // entryToPrimitivesDictionary = new Dictionary<ResultsEntry, IList<IPrimitive>>();
+      //entryToPrimitivesDictionary = new Dictionary<ResultsEntry, IList<IPrimitive>>();
       this.results = results;
 
       foreach (var resultsEntry in results.GetEntries()) {
@@ -132,58 +132,72 @@ namespace HeuristicLab.CEDMA.Charting {
       UpdateEnabled = false;
       Group.Clear();
       primitiveToEntryDictionary.Clear();
-      // entryToPrimitivesDictionary.Clear();
+      //entryToPrimitivesDictionary.Clear();
       points = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
       UpdateViewSize(0, 0, 5);
       foreach (ResultsEntry r in records) {
         List<double> xs = new List<double>();
         List<double> ys = new List<double>();
+        List<object> actualXValues = new List<object>();
+        List<object> actualYValues = new List<object>();
         int size;
         if (results.OrdinalVariables.Contains(xDimension)) {
           xs.Add(Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
+          actualXValues.Add(r.Get(xDimension));
         } else if (results.CategoricalVariables.Contains(xDimension)) {
           xs.Add(results.IndexOfCategoricalValue(xDimension, r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
+          actualXValues.Add(r.Get(xDimension));
         } else if (results.MultiDimensionalCategoricalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
             xs.Add(results.IndexOfCategoricalValue(xDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+            actualXValues.Add(subEntry.Get(path.ElementAt(1)));
           }
         } else if (results.MultiDimensionalOrdinalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
             xs.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+            actualXValues.Add(subEntry.Get(path.ElementAt(1)));
           }
         } else {
           xs.Add(double.NaN);
+          actualXValues.Add("NaN");
         }
         if (results.OrdinalVariables.Contains(yDimension)) {
           ys.Add(Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
+          actualYValues.Add(r.Get(yDimension));
         } else if (results.CategoricalVariables.Contains(yDimension)) {
           ys.Add(results.IndexOfCategoricalValue(yDimension, r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
+          actualYValues.Add(r.Get(yDimension));
         } else if (results.MultiDimensionalCategoricalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
             ys.Add(results.IndexOfCategoricalValue(yDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+            actualYValues.Add(subEntry.Get(path.ElementAt(1)));
           }
         } else if (results.MultiDimensionalOrdinalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
             ys.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+            actualYValues.Add(subEntry.Get(path.ElementAt(1)));
           }
         } else {
           ys.Add(double.NaN);
+          actualYValues.Add("NaN");
         }
         size = CalculateSize(Convert.ToDouble(r.Get(sizeDimension)), minSize, maxSize);
         Debug.Assert(xs.Count() == ys.Count() || xs.Count() == 1 || ys.Count() == 1);
         int n = Math.Max(xs.Count(), ys.Count());
         for (int i = 0; i < n; i++) {
-          double x = xs[Math.Min(i, xs.Count()-1)];
-          double y = ys[Math.Min(i, ys.Count()-1)];
+          double x = xs[Math.Min(i, xs.Count() - 1)];
+          double y = ys[Math.Min(i, ys.Count() - 1)];
+          string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
+          string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
           if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
           if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
           if (!double.IsNaN(x) && !double.IsNaN(y)) {
@@ -192,7 +206,9 @@ namespace HeuristicLab.CEDMA.Charting {
             Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
             Brush brush = pen.Brush;
             FixedSizeCircle c = new FixedSizeCircle(this, x, y, size, pen, brush);
-            c.ToolTipText = r.GetToolTipText();
+            c.ToolTipText = xDimension + " = " + actualXValue + Environment.NewLine +
+              yDimension + " = " + actualYValue + Environment.NewLine +
+              r.GetToolTipText();
             points.Add(c);
             if (!r.Selected) c.IntoBackground();
             primitiveToEntryDictionary[c] = r;
