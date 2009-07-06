@@ -42,12 +42,14 @@ namespace HeuristicLab.CEDMA.Core {
 
       var entries = Results.GetEntries();
       foreach (var entry in entries) {
-        int rowIndex = dataGridView.Rows.Add();
-        dataGridView.Rows[rowIndex].Tag = entry;
-        foreach (string attrName in attributeNames) {
-          dataGridView.Rows[rowIndex].Cells[attrName].Value = entry.Get(attrName);
+        if (entry.Visible) {
+          int rowIndex = dataGridView.Rows.Add();
+          dataGridView.Rows[rowIndex].Tag = entry;
+          foreach (string attrName in attributeNames) {
+            dataGridView.Rows[rowIndex].Cells[attrName].Value = entry.Get(attrName);
+          }
+          if (entry.Selected) dataGridView.Rows[rowIndex].Selected = true;
         }
-        if (entry.Selected) dataGridView.Rows[rowIndex].Selected = true;
       }
       dataGridView.Update();
       suppressEvents = false;

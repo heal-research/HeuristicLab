@@ -176,5 +176,23 @@ namespace HeuristicLab.CEDMA.Charting {
     private void pictureBox_MouseDoubleClick(object sender, MouseEventArgs e) {
       Chart.MouseDoubleClick(e.Location, e.Button);
     }
+
+    private void invertSelectionToolStripMenuItem_Click(object sender, EventArgs e) {
+      Chart.ToggleSelected();
+    }
+
+    private void hideSelectedToolStripMenuItem_Click(object sender, EventArgs e) {
+      showHiddenToolStripMenuItem.Enabled = true;
+      Chart.ApplyFilter(x => x.Selected == true && x.Visible==true);
+    }
+
+    private void clearSelectionMenuItem_Click(object sender, EventArgs e) {
+      Chart.ClearSelection();
+    }
+
+    private void showHiddenToolStripMenuItem_Click(object sender, EventArgs e) {
+      Chart.ClearFilter();
+      showHiddenToolStripMenuItem.Enabled = false;
+    }
   }
 }

@@ -41,6 +41,12 @@ namespace HeuristicLab.CEDMA.Core {
       set { selected = value; }
     }
 
+    private bool visible = true;
+    public bool Visible {
+      get { return visible; }
+      set { visible = value; }
+    }
+
     private string uri;
     public string Uri {
       get { return uri; }

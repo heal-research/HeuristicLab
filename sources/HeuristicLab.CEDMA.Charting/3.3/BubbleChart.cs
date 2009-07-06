@@ -55,7 +55,7 @@ namespace HeuristicLab.CEDMA.Charting {
     private double minY = double.PositiveInfinity;
     private double maxX = double.NegativeInfinity;
     private double maxY = double.NegativeInfinity;
-    private List<ResultsEntry> records;
+    private List<ResultsEntry> filteredEntries;
     private Results results;
     private Dictionary<IPrimitive, ResultsEntry> primitiveToEntryDictionary;
     private Random random = new Random();
@@ -63,16 +63,17 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public BubbleChart(Results results, PointD lowerLeft, PointD upperRight)
       : base(lowerLeft, upperRight) {
-      records = new List<ResultsEntry>();
+      //      records = new List<ResultsEntry>();
       primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
       this.results = results;
+      filteredEntries = new List<ResultsEntry>();
 
       foreach (var resultsEntry in results.GetEntries()) {
         if (resultsEntry.Get(X_JITTER) == null)
           resultsEntry.Set(X_JITTER, random.NextDouble() * 2.0 - 1.0);
         if (resultsEntry.Get(Y_JITTER) == null)
           resultsEntry.Set(Y_JITTER, random.NextDouble() * 2.0 - 1.0);
-        records.Add(resultsEntry);
+        //        records.Add(resultsEntry);
       }
 
       results.Changed += new EventHandler(results_Changed);
@@ -122,7 +123,7 @@ namespace HeuristicLab.CEDMA.Charting {
       double maxSize = 1;
       double minSize = 1;
       if (sizeDimension != null && results.OrdinalVariables.Contains(sizeDimension)) {
-        var sizes = records
+        var sizes = results.GetEntries()
           .Select(x => Convert.ToDouble(x.Get(sizeDimension)))
           .Where(size => !double.IsInfinity(size) && size != double.MaxValue && size != double.MinValue)
           .OrderBy(r => r);
@@ -138,52 +139,60 @@ namespace HeuristicLab.CEDMA.Charting {
       points = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
       UpdateViewSize(0, 0, 5);
-      foreach (ResultsEntry r in records) {
+      foreach (ResultsEntry r in results.GetEntries().Where(x => x.Visible)) {
         List<double> xs = new List<double>();
         List<double> ys = new List<double>();
         List<object> actualXValues = new List<object>();
         List<object> actualYValues = new List<object>();
         int size;
-        if (results.OrdinalVariables.Contains(xDimension)) {
+        if (results.OrdinalVariables.Contains(xDimension) && r.Get(xDimension) != null) {
           xs.Add(Convert.ToDouble(r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
           actualXValues.Add(r.Get(xDimension));
-        } else if (results.CategoricalVariables.Contains(xDimension)) {
+        } else if (results.CategoricalVariables.Contains(xDimension) && r.Get(xDimension) != null) {
           xs.Add(results.IndexOfCategoricalValue(xDimension, r.Get(xDimension)) + (double)r.Get(X_JITTER) * xJitterFactor);
           actualXValues.Add(r.Get(xDimension));
         } else if (results.MultiDimensionalCategoricalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
-            xs.Add(results.IndexOfCategoricalValue(xDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
-            actualXValues.Add(subEntry.Get(path.ElementAt(1)));
+            if (subEntry.Get(path.ElementAt(1)) != null) {
+              xs.Add(results.IndexOfCategoricalValue(xDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+              actualXValues.Add(subEntry.Get(path.ElementAt(1)));
+            }
           }
         } else if (results.MultiDimensionalOrdinalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
-            xs.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
-            actualXValues.Add(subEntry.Get(path.ElementAt(1)));
+            if (subEntry.Get(path.ElementAt(1)) != null) {
+              xs.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
+              actualXValues.Add(subEntry.Get(path.ElementAt(1)));
+            }
           }
         }
-        if (results.OrdinalVariables.Contains(yDimension)) {
+        if (results.OrdinalVariables.Contains(yDimension) && r.Get(yDimension) != null) {
           ys.Add(Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
           actualYValues.Add(r.Get(yDimension));
-        } else if (results.CategoricalVariables.Contains(yDimension)) {
+        } else if (results.CategoricalVariables.Contains(yDimension) && r.Get(yDimension) != null) {
           ys.Add(results.IndexOfCategoricalValue(yDimension, r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
           actualYValues.Add(r.Get(yDimension));
         } else if (results.MultiDimensionalCategoricalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
-            ys.Add(results.IndexOfCategoricalValue(yDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
-            actualYValues.Add(subEntry.Get(path.ElementAt(1)));
+            if (subEntry.Get(path.ElementAt(1)) != null) {
+              ys.Add(results.IndexOfCategoricalValue(yDimension, subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+              actualYValues.Add(subEntry.Get(path.ElementAt(1)));
+            }
           }
         } else if (results.MultiDimensionalOrdinalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<ResultsEntry> subEntries = (IEnumerable<ResultsEntry>)r.Get(path.ElementAt(0));
           foreach (ResultsEntry subEntry in subEntries) {
-            ys.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
-            actualYValues.Add(subEntry.Get(path.ElementAt(1)));
+            if (subEntry.Get(path.ElementAt(1)) != null) {
+              ys.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
+              actualYValues.Add(subEntry.Get(path.ElementAt(1)));
+            }
           }
         }
         if (xs.Count() == 0) {
@@ -322,6 +331,39 @@ namespace HeuristicLab.CEDMA.Charting {
       } else {
         base.MouseDoubleClick(point, button);
       }
+    }
+
+    internal void ToggleSelected() {
+      foreach (ResultsEntry entry in results.GetEntries()) {
+        entry.ToggleSelected();
+      }
+      results.FireChanged();
+    }
+
+    internal void ClearSelection() {
+      foreach (ResultsEntry entry in results.GetEntries().Where(x=>x.Selected)) {
+        entry.ToggleSelected();
+      }
+      results.FireChanged();
+    }
+
+    internal void ApplyFilter(Func<ResultsEntry, bool> filterPred) {
+      foreach (ResultsEntry r in results.GetEntries()) {
+        if (filterPred(r)) {
+          r.Visible = false;
+          r.Selected = false;
+          filteredEntries.Add(r);
+        } 
+      }
+      results.FireChanged();
+    }
+
+    internal void ClearFilter() {
+      foreach (ResultsEntry r in filteredEntries) {
+        r.Visible = true;
+      }
+      filteredEntries.Clear();
+      results.FireChanged();
     }
   }
 }

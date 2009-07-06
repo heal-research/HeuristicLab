@@ -116,6 +116,7 @@ namespace HeuristicLab.CEDMA.Core {
           resultsReturned = targetVariableBindings.Count();
           nStatements += resultsReturned;
           int nModels = Math.Max(10, resultsReturned * 10 / 100);
+          nModels = Math.Min(nModels, resultsReturned);
           foreach (var modelBindings in targetVariableBindings.Take(nModels)) {
             ResultsEntry entry = new ResultsEntry();
             entry.Uri = modelBindings.Model;
