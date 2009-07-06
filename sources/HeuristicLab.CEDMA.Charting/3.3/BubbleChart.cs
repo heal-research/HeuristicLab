@@ -135,7 +135,7 @@ namespace HeuristicLab.CEDMA.Charting {
       primitiveToEntryDictionary.Clear();
       points = new Group(this);
       Group.Add(new Axis(this, 0, 0, AxisType.Both));
-      UpdateViewSize(0, 0, 5);
+      UpdateViewSize(0, 0, TransformPixelToWorld(new Size(5, 0)).Width);
       foreach (ResultsEntry r in results.GetEntries().Where(x => x.Visible)) {
         List<double> xs = new List<double>();
         List<double> ys = new List<double>();
@@ -211,7 +211,7 @@ namespace HeuristicLab.CEDMA.Charting {
           if (!double.IsNaN(x) && !double.IsNaN(y)) {
             string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
             string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
-            UpdateViewSize(x, y, size);
+            UpdateViewSize(x, y, TransformPixelToWorld(new Size(size, 0)).Width);
             int alpha = CalculateAlpha(size);
             Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
             Brush brush = pen.Brush;
