@@ -76,7 +76,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.2.2864.18696, Culture=neutral, PublicKeyToken=d481317c817cec47, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutDialog.cs">
@@ -127,6 +126,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WinFormsUI\WinFormsUI.csproj">
+      <Project>{C75532C4-765B-418E-B09B-46D36B2ABDB1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -140,8 +143,6 @@
     <Content Include="Resources\Save.png" />
     <Content Include="Resources\SaveAll.png" />
     <Content Include="Resources\Tools.ico" />
-    <Content Include="WeifenLuo.WinFormsUI.Docking License.txt" />
-    <Content Include="WeifenLuo.WinFormsUI.Docking.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutDialog.resx">

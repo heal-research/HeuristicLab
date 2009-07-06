@@ -10,6 +10,8 @@ copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\Heuri
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
+copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
+copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Charting\3.3\%Outdir%\HeuristicLab.CEDMA.Charting-3.3.dll" .\plugins
@@ -64,6 +66,7 @@ copy "%SolutionDir%\HeuristicLab.Hive.Server.ADODataAccess\3.2\%Outdir%\Heuristi
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Console\3.2\%Outdir%\HeuristicLab.Hive.Server.Console-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\HeuristicLab.Hive.Server.Core-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\HeuristicLab.Hive.Contracts-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\Authorization\*.xml" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\3.2\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\3.2\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.IntVector\3.2\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
@@ -123,7 +126,6 @@ copy "%SolutionDir%\HeuristicLab.Security.Core\3.2\%Outdir%\HeuristicLab.Securit
 copy "%SolutionDir%\HeuristicLab.Security.DataAccess\3.2\%Outdir%\HeuristicLab.Security.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Security.ADODataAccess\3.2\%Outdir%\HeuristicLab.Security.ADODataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Security.Server\3.2\%Outdir%\HeuristicLab.Security.Server-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\Authorization\*.xml" .\plugins
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
   copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\3.2\System.Data.SQLite.dll" .\plugins
