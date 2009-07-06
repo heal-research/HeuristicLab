@@ -112,6 +112,11 @@ namespace HeuristicLab.CEDMA.Charting {
       EnforceUpdate();
     }
 
+    public override void Render(Graphics graphics, int width, int height) {
+      graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+      base.Render(graphics, width, height);
+    }
+
     private void Repaint() {
       if (xDimension == null || yDimension == null) return;
       double maxSize = 1;
@@ -159,9 +164,6 @@ namespace HeuristicLab.CEDMA.Charting {
             xs.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(X_JITTER) * xJitterFactor);
             actualXValues.Add(subEntry.Get(path.ElementAt(1)));
           }
-        } else {
-          xs.Add(double.NaN);
-          actualXValues.Add("NaN");
         }
         if (results.OrdinalVariables.Contains(yDimension)) {
           ys.Add(Convert.ToDouble(r.Get(yDimension)) + (double)r.Get(Y_JITTER) * yJitterFactor);
@@ -183,7 +185,12 @@ namespace HeuristicLab.CEDMA.Charting {
             ys.Add(Convert.ToDouble(subEntry.Get(path.ElementAt(1))) + (double)r.Get(Y_JITTER) * yJitterFactor);
             actualYValues.Add(subEntry.Get(path.ElementAt(1)));
           }
-        } else {
+        }
+        if (xs.Count() == 0) {
+          xs.Add(double.NaN);
+          actualXValues.Add("NaN");
+        }
+        if (ys.Count() == 0) {
           ys.Add(double.NaN);
           actualYValues.Add("NaN");
         }
@@ -227,7 +234,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private int CalculateAlpha(int size) {
-      return maxAlpha - (int)((double)(size - minBubbleSize) / (double)(maxBubbleSize - minBubbleSize) * (double)(maxAlpha - minAlpha));
+      return (minAlpha + maxAlpha) / 2;
     }
 
     private void ZoomToViewSize() {

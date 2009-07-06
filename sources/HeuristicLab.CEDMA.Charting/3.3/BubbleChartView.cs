@@ -12,20 +12,6 @@ using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Charting {
-  public class BubbleChartViewFactory : IResultsViewFactory {
-    #region IResultsViewFactory Members
-
-    public string Name {
-      get { return "Bubble chart"; }
-    }
-
-    public IControl CreateView(Results results) {
-      return new BubbleChartView(results);
-    }
-
-    #endregion
-  }
-
   public partial class BubbleChartView : ViewBase {
     private Results Results {
       get { return (Results)Item; }
@@ -69,8 +55,22 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void sizeComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      bubbleChartControl.Chart.SetBubbleSizeDimension((string)sizeComboBox.SelectedItem, invertCheckbox.Checked);
+      bubbleChartControl.Chart.SetBubbleSizeDimension((string)sizeComboBox.SelectedItem, false);
       UpdateChart();
     }
+  }
+
+  public class BubbleChartViewFactory : IResultsViewFactory {
+    #region IResultsViewFactory Members
+
+    public string Name {
+      get { return "Bubble chart"; }
+    }
+
+    public IControl CreateView(Results results) {
+      return new BubbleChartView(results);
+    }
+
+    #endregion
   }
 }
