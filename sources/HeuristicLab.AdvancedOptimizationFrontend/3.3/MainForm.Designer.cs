@@ -44,6 +44,21 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+      WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+      WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+      WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+      WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,14 +123,14 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // newToolStripMenuItem
       // 
       this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-      this.newToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.newToolStripMenuItem.Text = "&New";
       // 
       // openToolStripMenuItem
       // 
       this.openToolStripMenuItem.Name = "openToolStripMenuItem";
       this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-      this.openToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.openToolStripMenuItem.Text = "&Open...";
       this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
       // 
@@ -124,7 +139,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       this.saveToolStripMenuItem.Enabled = false;
       this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
       this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-      this.saveToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
       // 
@@ -132,7 +147,9 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // 
       this.saveAsToolStripMenuItem.Enabled = false;
       this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-      this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                  | System.Windows.Forms.Keys.S)));
+      this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveAsToolStripMenuItem.Text = "Save &As...";
       this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
       // 
@@ -140,9 +157,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // 
       this.saveAllToolStripMenuItem.Enabled = false;
       this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
-      this.saveAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-                  | System.Windows.Forms.Keys.S)));
-      this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveAllToolStripMenuItem.Text = "Save Al&l";
       this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.saveAllToolStripMenuItem_Click);
       // 
@@ -150,7 +165,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // 
       this.closeToolStripMenuItem.Enabled = false;
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.closeToolStripMenuItem.Text = "&Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
       // 
@@ -158,19 +173,19 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // 
       this.closeAllToolStripMenuItem.Enabled = false;
       this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-      this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.closeAllToolStripMenuItem.Text = "Clos&e All";
       this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
       // 
       // toolStripMenuItem1
       // 
       this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-      this.toolStripMenuItem1.Size = new System.Drawing.Size(184, 6);
+      this.toolStripMenuItem1.Size = new System.Drawing.Size(192, 6);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
       // 
@@ -298,6 +313,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       // 
       this.dockPanel.ActiveAutoHideContent = null;
       this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dockPanel.DockBackColor = System.Drawing.SystemColors.Control;
       this.dockPanel.DockBottomPortion = 0.33;
       this.dockPanel.DockLeftPortion = 0.33;
       this.dockPanel.DockRightPortion = 0.33;
@@ -306,6 +322,50 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       this.dockPanel.Name = "dockPanel";
       this.dockPanel.RightToLeftLayout = true;
       this.dockPanel.Size = new System.Drawing.Size(1016, 663);
+      dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
+      dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
+      autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
+      tabGradient1.EndColor = System.Drawing.SystemColors.Control;
+      tabGradient1.StartColor = System.Drawing.SystemColors.Control;
+      tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+      autoHideStripSkin1.TabGradient = tabGradient1;
+      dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
+      tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
+      tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
+      tabGradient2.TextColor = System.Drawing.SystemColors.ControlText;
+      dockPaneStripGradient1.ActiveTabGradient = tabGradient2;
+      dockPanelGradient2.EndColor = System.Drawing.SystemColors.Control;
+      dockPanelGradient2.StartColor = System.Drawing.SystemColors.Control;
+      dockPaneStripGradient1.DockStripGradient = dockPanelGradient2;
+      tabGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+      tabGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+      tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
+      dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
+      dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
+      tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
+      tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+      tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
+      tabGradient4.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
+      dockPaneStripToolWindowGradient1.ActiveCaptionGradient = tabGradient4;
+      tabGradient5.EndColor = System.Drawing.SystemColors.Control;
+      tabGradient5.StartColor = System.Drawing.SystemColors.Control;
+      tabGradient5.TextColor = System.Drawing.SystemColors.ControlText;
+      dockPaneStripToolWindowGradient1.ActiveTabGradient = tabGradient5;
+      dockPanelGradient3.EndColor = System.Drawing.SystemColors.ControlLight;
+      dockPanelGradient3.StartColor = System.Drawing.SystemColors.ControlLight;
+      dockPaneStripToolWindowGradient1.DockStripGradient = dockPanelGradient3;
+      tabGradient6.EndColor = System.Drawing.SystemColors.GradientInactiveCaption;
+      tabGradient6.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+      tabGradient6.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
+      tabGradient6.TextColor = System.Drawing.SystemColors.ControlText;
+      dockPaneStripToolWindowGradient1.InactiveCaptionGradient = tabGradient6;
+      tabGradient7.EndColor = System.Drawing.Color.Transparent;
+      tabGradient7.StartColor = System.Drawing.Color.Transparent;
+      tabGradient7.TextColor = System.Drawing.SystemColors.ControlDarkDark;
+      dockPaneStripToolWindowGradient1.InactiveTabGradient = tabGradient7;
+      dockPaneStripSkin1.ToolWindowGradient = dockPaneStripToolWindowGradient1;
+      dockPanelSkin1.DockPaneStripSkin = dockPaneStripSkin1;
+      this.dockPanel.Skin = dockPanelSkin1;
       this.dockPanel.TabIndex = 2;
       // 
       // MainForm

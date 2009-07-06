@@ -106,20 +106,20 @@ namespace HeuristicLab.OptimizationFrontend {
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
       this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-      this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+      this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
       this.fileToolStripMenuItem.Text = "&File";
       // 
       // newToolStripMenuItem
       // 
       this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-      this.newToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.newToolStripMenuItem.Text = "&New";
       // 
       // openToolStripMenuItem
       // 
       this.openToolStripMenuItem.Name = "openToolStripMenuItem";
       this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-      this.openToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.openToolStripMenuItem.Text = "&Open...";
       this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
       // 
@@ -128,7 +128,7 @@ namespace HeuristicLab.OptimizationFrontend {
       this.saveToolStripMenuItem.Enabled = false;
       this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
       this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-      this.saveToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
       // 
@@ -136,7 +136,9 @@ namespace HeuristicLab.OptimizationFrontend {
       // 
       this.saveAsToolStripMenuItem.Enabled = false;
       this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-      this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                  | System.Windows.Forms.Keys.S)));
+      this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveAsToolStripMenuItem.Text = "Save &As...";
       this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
       // 
@@ -144,9 +146,7 @@ namespace HeuristicLab.OptimizationFrontend {
       // 
       this.saveAllToolStripMenuItem.Enabled = false;
       this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
-      this.saveAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-                  | System.Windows.Forms.Keys.S)));
-      this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.saveAllToolStripMenuItem.Text = "Save Al&l";
       this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.saveAllToolStripMenuItem_Click);
       // 
@@ -154,7 +154,7 @@ namespace HeuristicLab.OptimizationFrontend {
       // 
       this.closeToolStripMenuItem.Enabled = false;
       this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-      this.closeToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.closeToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.closeToolStripMenuItem.Text = "&Close";
       this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
       // 
@@ -162,19 +162,19 @@ namespace HeuristicLab.OptimizationFrontend {
       // 
       this.closeAllToolStripMenuItem.Enabled = false;
       this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-      this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.closeAllToolStripMenuItem.Text = "Clos&e All";
       this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.closeAllToolStripMenuItem_Click);
       // 
       // toolStripMenuItem1
       // 
       this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-      this.toolStripMenuItem1.Size = new System.Drawing.Size(188, 6);
+      this.toolStripMenuItem1.Size = new System.Drawing.Size(192, 6);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
       // 
@@ -183,13 +183,13 @@ namespace HeuristicLab.OptimizationFrontend {
       this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.availableOperatorsToolStripMenuItem});
       this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-      this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+      this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
       this.viewToolStripMenuItem.Text = "&View";
       // 
       // availableOperatorsToolStripMenuItem
       // 
       this.availableOperatorsToolStripMenuItem.Name = "availableOperatorsToolStripMenuItem";
-      this.availableOperatorsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+      this.availableOperatorsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
       this.availableOperatorsToolStripMenuItem.Text = "Available &Operators...";
       this.availableOperatorsToolStripMenuItem.Click += new System.EventHandler(this.availableOperatorsToolStripMenuItem_Click);
       // 
@@ -198,13 +198,13 @@ namespace HeuristicLab.OptimizationFrontend {
       this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.collectGarbageToolStripMenuItem});
       this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-      this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+      this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
       this.toolsToolStripMenuItem.Text = "&Tools";
       // 
       // collectGarbageToolStripMenuItem
       // 
       this.collectGarbageToolStripMenuItem.Name = "collectGarbageToolStripMenuItem";
-      this.collectGarbageToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.collectGarbageToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
       this.collectGarbageToolStripMenuItem.Text = "Collect &Garbage";
       this.collectGarbageToolStripMenuItem.Click += new System.EventHandler(this.collectGarbageToolStripMenuItem_Click);
       // 
@@ -215,7 +215,7 @@ namespace HeuristicLab.OptimizationFrontend {
             this.tileHorizontallyToolStripMenuItem,
             this.tileVerticallyToolStripMenuItem});
       this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-      this.windowToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+      this.windowToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
       this.windowToolStripMenuItem.Text = "&Window";
       // 
       // cascadeToolStripMenuItem
@@ -247,13 +247,13 @@ namespace HeuristicLab.OptimizationFrontend {
       this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
       this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-      this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+      this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
       this.helpToolStripMenuItem.Text = "&Help";
       // 
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.aboutToolStripMenuItem.Text = "&About";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
       // 
