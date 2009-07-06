@@ -74,15 +74,27 @@ namespace HeuristicLab.CEDMA.DB {
         MyQueryResultSink resultSink = new MyQueryResultSink();
         SemWeb.N3Reader n3Reader = new SemWeb.N3Reader(new StringReader(query));
         SemWeb.Query.GraphMatch matcher = new SemWeb.Query.GraphMatch(n3Reader);
-        matcher.Run(store, resultSink);
+        if (memStore == null) {
+          CacheStore();
+        }
+        matcher.Run(memStore, resultSink);
         return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
       }
+    }
+
+    SemWeb.Store memStore;
+    private void CacheStore() {
+      memStore = new SemWeb.MemoryStore();
+      memStore.Import(store);
     }
 
     public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
       lock (bigLock) {
         MyQueryResultSink resultSink = new MyQueryResultSink();
-        Translate(query).Run(store, resultSink);
+        if (memStore == null) {
+          CacheStore();
+        }
+        Translate(query).Run(memStore, resultSink);
         return resultSink.Bindings.Skip(page * pageSize).Take(pageSize).ToList();
       }
     }

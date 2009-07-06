@@ -200,11 +200,11 @@ namespace HeuristicLab.CEDMA.Charting {
         for (int i = 0; i < n; i++) {
           double x = xs[Math.Min(i, xs.Count() - 1)];
           double y = ys[Math.Min(i, ys.Count() - 1)];
-          string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
-          string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
           if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
           if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
           if (!double.IsNaN(x) && !double.IsNaN(y)) {
+            string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
+            string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
             UpdateViewSize(x, y, size);
             int alpha = CalculateAlpha(size);
             Pen pen = new Pen(Color.FromArgb(alpha, r.Selected ? selectionColor : defaultColor));
