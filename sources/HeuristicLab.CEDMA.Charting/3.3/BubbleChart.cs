@@ -63,7 +63,6 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public BubbleChart(Results results, PointD lowerLeft, PointD upperRight)
       : base(lowerLeft, upperRight) {
-      //      records = new List<ResultsEntry>();
       primitiveToEntryDictionary = new Dictionary<IPrimitive, ResultsEntry>();
       this.results = results;
       filteredEntries = new List<ResultsEntry>();
@@ -73,9 +72,7 @@ namespace HeuristicLab.CEDMA.Charting {
           resultsEntry.Set(X_JITTER, random.NextDouble() * 2.0 - 1.0);
         if (resultsEntry.Get(Y_JITTER) == null)
           resultsEntry.Set(Y_JITTER, random.NextDouble() * 2.0 - 1.0);
-        //        records.Add(resultsEntry);
       }
-
       results.Changed += new EventHandler(results_Changed);
     }
 
