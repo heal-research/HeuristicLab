@@ -44,10 +44,11 @@ namespace HeuristicLab.SupportVectorMachines {
       double[,] values = new double[end - start, 2];
       for (int i = 0; i < end - start; i++) {
         values[i, 0] = SVM.Prediction.Predict(model.Model, scaledProblem.X[i]);
-        values[i, 1] = dataset.GetValue(start + i,targetVariable);
+        values[i, 1] = dataset.GetValue(start + i, targetVariable);
       }
 
-      return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(values);
+      try { return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(values); }
+      catch (ArgumentException) { return double.PositiveInfinity; }
     }
   }
 }

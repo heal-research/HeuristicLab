@@ -44,13 +44,10 @@ for the estimated values vs. the real values of 'TargetVariable'.";
     }
 
     public override double Evaluate(double[,] values) {
-      double quality = SimpleMSEEvaluator.Calculate(values);
-
-      if (double.IsNaN(quality) || double.IsInfinity(quality)) {
-        quality = double.MaxValue;
+      try { return SimpleMSEEvaluator.Calculate(values); }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
       }
-
-      return quality;
     }
   }
 }

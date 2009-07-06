@@ -37,7 +37,12 @@ namespace HeuristicLab.Modeling {
     }
 
     public override double Evaluate(double[,] values) {
-      return Calculate(values);
+      try {
+        return Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
 
     public static double Calculate(double[,] values) {
@@ -54,7 +59,9 @@ namespace HeuristicLab.Modeling {
           n++;
         }
       }
-      return errorsSum / n;
+      if (n > 0) {
+        return errorsSum / n;
+      } else throw new ArgumentException("Mean of absolute percentage error is not defined for input vectors of NaN or Inf");
     }
   }
 }

@@ -49,7 +49,12 @@ namespace HeuristicLab.Modeling {
     }
 
     protected override double CalculateImpact(double[] referenceValue, double[] newValue) {
-      return SimpleMSEEvaluator.Calculate(CombineOutputs(referenceValue, newValue));
+      try {
+        return SimpleMSEEvaluator.Calculate(CombineOutputs(referenceValue, newValue));
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
 
     protected override double[] CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
@@ -58,11 +63,15 @@ namespace HeuristicLab.Modeling {
 
     protected override double[] PostProcessImpacts(double[] impacts) {
       double mseSum = impacts.Sum();
-      if (mseSum == 0.0) mseSum = 1.0;
+      if (IsAlmost(mseSum, 0.0)) mseSum = 1.0;
       for (int i = 0; i < impacts.Length; i++) {
         impacts[i] = impacts[i] / mseSum;
       }
       return impacts;
+    }
+
+    private bool IsAlmost(double x, double y) {
+      return Math.Abs(x - y) < 1.0E-12;
     }
 
     protected abstract double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);

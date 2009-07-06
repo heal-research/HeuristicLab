@@ -44,11 +44,10 @@ the mean of the absolute percentage error (scale invariant) relative to the rang
     }
 
     public override double Evaluate(double[,] values) {
-      double quality = SimpleMeanAbsolutePercentageOfRangeErrorEvaluator.Calculate(values);
-      if (double.IsNaN(quality) || double.IsInfinity(quality))
-        quality = double.MaxValue;
-
-      return quality;
+      try { return SimpleMeanAbsolutePercentageOfRangeErrorEvaluator.Calculate(values); }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
   }
 }

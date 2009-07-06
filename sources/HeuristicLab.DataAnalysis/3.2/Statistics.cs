@@ -118,24 +118,6 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     /// <summary>
-    /// calculates the sum of all values.
-    /// </summary>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    public static double Sum(double[] values) {
-      int n = values.Length;
-      double sum = 0.0;
-      for (int i = 0; i < n; i++) {
-        if (double.IsNaN(values[i])) {
-          throw new NotFiniteNumberException();
-        } else {
-          sum += values[i];
-        }
-      }
-      return sum;
-    }
-
-    /// <summary>
     /// Calculates the mean of all values.
     /// </summary>
     /// <param name="values"></param>
@@ -157,7 +139,8 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="end">end index(exclusive)</param>
     /// <returns></returns>
     public static double Mean(double[] values, int start, int end) {
-      if (values.Length == 0) throw new InvalidOperationException();
+      if (values.Length == 0) throw new ArgumentException("Values is empty.");
+      if(end <=start) throw new ArgumentException("End is smaller or equal start");
       double sum = 0.0;
       int n = 0;
       for (int i = start; i < end; i++) {
@@ -166,8 +149,9 @@ namespace HeuristicLab.DataAnalysis {
           n++;
         }
       }
-      if (n == 0) throw new InvalidOperationException();
-      return sum / n;
+      if (n > 0)
+        return sum / n;
+      else throw new ArgumentException("Only NaN elements in values");
     }
 
     /// <summary>
@@ -222,6 +206,8 @@ namespace HeuristicLab.DataAnalysis {
     /// <param name="end">end index (exclusive)</param>
     /// <returns></returns>
     public static double Variance(double[] values, int start, int end) {
+      if (values.Length == 0) throw new ArgumentException("Values is empty.");
+      if (end <= start) throw new ArgumentException("End is smaller or equal start");
       if (end - start == 1)
         return 0.0;
 
@@ -237,7 +223,7 @@ namespace HeuristicLab.DataAnalysis {
         }
       }
       if (n < 2) {
-        throw new InvalidOperationException();
+        throw new ArgumentException("Only one non-NaN element in values");
       }
       return squaredErrorsSum / (n - 1);
     }

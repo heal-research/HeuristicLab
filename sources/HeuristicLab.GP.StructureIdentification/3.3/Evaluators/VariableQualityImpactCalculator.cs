@@ -45,13 +45,18 @@ namespace HeuristicLab.GP.StructureIdentification {
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
       evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, punishmentFactor, tree);
 
-      double[,] result = new double[end - start,2];
+      double[,] result = new double[end - start, 2];
       for (int i = start; i < end; i++) {
         result[i - start, 0] = dataset.GetValue(i, targetVariable);
-        result[i - start,1] = evaluator.Evaluate(i);
+        result[i - start, 1] = evaluator.Evaluate(i);
       }
 
-      return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(result);
+      try {
+        return HeuristicLab.Modeling.SimpleMSEEvaluator.Calculate(result);
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
   }
 }

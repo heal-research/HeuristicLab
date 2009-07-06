@@ -36,7 +36,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         return "R2";
       }
     }
-    
+
     public override string Description {
       get {
         return @"Evaluates 'FunctionTree' for all samples of 'Dataset' and calculates
@@ -45,12 +45,12 @@ the 'coefficient of determination' of estimated values vs. real values of 'Targe
     }
 
     public override double Evaluate(double[,] values) {
-
-      double quality = SimpleR2Evaluator.Calculate(values);
-      if (double.IsNaN(quality) || double.IsInfinity(quality))
-        quality = double.MaxValue;
-
-      return quality;
+      try {
+        return SimpleR2Evaluator.Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.NegativeInfinity;
+      }
     }
   }
 }

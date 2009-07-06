@@ -36,7 +36,12 @@ namespace HeuristicLab.Modeling {
     }
 
     public override double Evaluate(double[,] values) {
-      return Calculate(values);
+      try {
+        return Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
 
     public static double Calculate(double[,] values) {
@@ -46,6 +51,8 @@ namespace HeuristicLab.Modeling {
       double[] originalValues = new double[values.GetLength(0)];
       for (int i = 0; i < originalValues.Length; i++) originalValues[i] = values[i, 1];
       double range = Statistics.Range(originalValues);
+      if (double.IsInfinity(range)) throw new ArgumentException("Range of elements in values is infinity");
+      if (IsAlmost(range, 0.0)) throw new ArgumentException("Range of elements in values is zero");
 
       for (int i = 0; i < values.GetLength(0); i++) {
         double estimated = values[i, 0];
@@ -58,7 +65,11 @@ namespace HeuristicLab.Modeling {
           n++;
         }
       }
-      return errorsSum / n;
+      if (double.IsInfinity(range) || n == 0) {
+        throw new ArgumentException("Mean of absolute percentage of range error is not defined for input vectors of NaN or Inf");
+      } else {
+        return errorsSum / n;
+      }
     }
   }
 }

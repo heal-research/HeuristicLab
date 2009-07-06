@@ -16,7 +16,12 @@ namespace HeuristicLab.Modeling {
     }
 
     public override double Evaluate(double[,] values) {
-      return Calculate(values);
+      try {
+        return Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.NegativeInfinity;
+      }
     }
 
     public static double Calculate(double[,] values) {
@@ -34,22 +39,27 @@ namespace HeuristicLab.Modeling {
           cnt++;
         }
       }
-      targetMean /= cnt;
 
-      double targetDeviationTotalSumOfSquares = 0;
-      for (int i = 0; i < values.GetLength(0); i++) {
-        double target = values[i, 1];
-        if (!double.IsNaN(target) && !double.IsInfinity(target)) {
-          target = target - targetMean;
-          target = target * target;
-          targetDeviationTotalSumOfSquares += target;
+      if (cnt > 0) {
+        targetMean /= cnt;
+
+        double targetDeviationTotalSumOfSquares = 0;
+        for (int i = 0; i < values.GetLength(0); i++) {
+          double target = values[i, 1];
+          if (!double.IsNaN(target) && !double.IsInfinity(target)) {
+            target = target - targetMean;
+            target = target * target;
+            targetDeviationTotalSumOfSquares += target;
+          }
         }
-      }
-      double quality = 1 - sse / targetDeviationTotalSumOfSquares;
-      if (quality > 1)
-        throw new InvalidProgramException();
+        double quality = 1 - sse / targetDeviationTotalSumOfSquares;
+        if (quality > 1)
+          throw new InvalidProgramException();
 
-      return quality;
+        return quality;
+      } else {
+        throw new ArgumentException("Coefficient of determination is not defined for input vectors of NaN or Inf");
+      }
     }
   }
 }

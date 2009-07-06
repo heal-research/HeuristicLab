@@ -45,11 +45,12 @@ the 'mean absolute percentage error (scale invariant)' of estimated values vs. r
     }
 
     public override double Evaluate(double[,] values) {
-      double quality = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(values);
-      if (double.IsNaN(quality) || double.IsInfinity(quality))
-        quality = double.MaxValue;
-
-      return quality;
+      try {
+        return SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
   }
 }

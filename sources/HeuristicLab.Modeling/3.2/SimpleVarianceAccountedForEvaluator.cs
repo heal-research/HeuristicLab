@@ -42,7 +42,12 @@ namespace HeuristicLab.Modeling {
     }
 
     public override double Evaluate(double[,] values) {
-      return Calculate(values);
+      try {
+        return Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.NegativeInfinity;
+      }
     }
 
     public static double Calculate(double[,] values) {
@@ -63,9 +68,14 @@ namespace HeuristicLab.Modeling {
       }
       double errorsVariance = Statistics.Variance(errors);
       double originalsVariance = Statistics.Variance(originalTargetVariableValues);
-      double quality = 1 - errorsVariance / originalsVariance;
-
-      return quality;
+      if (IsAlmost(originalsVariance, 0.0))
+        if (IsAlmost(errorsVariance, 0.0)) {
+          return 1.0;
+        } else {
+          throw new ArgumentException("Variance of original values is zero");
+        } else {
+        return 1.0 - errorsVariance / originalsVariance;
+      }
     }
   }
 }

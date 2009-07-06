@@ -53,12 +53,10 @@ where y' denotes the predicted / modelled values for y and var(x) the variance o
     }
 
     public override double Evaluate(double[,] values) {
-      double quality = SimpleVarianceAccountedForEvaluator.Calculate(values);
-
-      if (double.IsNaN(quality) || double.IsInfinity(quality)) {
-        quality = double.MaxValue;
+      try { return SimpleVarianceAccountedForEvaluator.Calculate(values); }
+      catch (ArgumentException) {
+        return double.NegativeInfinity;
       }
-      return quality;
     }
   }
 }

@@ -15,7 +15,12 @@ namespace HeuristicLab.Modeling {
       }
     }
     public override double Evaluate(double[,] values) {
-      return Calculate(values);
+      try {
+        return Calculate(values);
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
 
     public static double Calculate(double[,] values) {
@@ -31,9 +36,12 @@ namespace HeuristicLab.Modeling {
           cnt++;
         }
       }
-
-      double mse = sse / cnt;
-      return mse;
+      if (cnt > 0) {
+        double mse = sse / cnt;
+        return mse;
+      } else {
+        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
+      }
     }
   }
 }
