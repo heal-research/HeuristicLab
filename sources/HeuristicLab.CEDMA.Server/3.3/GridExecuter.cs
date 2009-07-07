@@ -52,6 +52,10 @@ namespace HeuristicLab.CEDMA.Server {
       get { return TimeSpan.FromMilliseconds(100); }
     }
 
+    private TimeSpan WaitForNewJobsInterval {
+      get { return TimeSpan.FromSeconds(3); }
+    }
+
     public GridExecuter(IDispatcher dispatcher, IStore store, IGridServer server)
       : base(dispatcher, store) {
       this.jobManager = new JobManager(server);
@@ -82,36 +86,41 @@ namespace HeuristicLab.CEDMA.Server {
               OnChanged();
             }
           }
-          WaitHandle[] whArr = asyncResults.Keys.ToArray();
-          int readyHandleIndex = WaitAny(whArr, WaitForFinishedJobsTimeout);
-          if (readyHandleIndex != WaitHandle.WaitTimeout) {
-            WaitHandle readyHandle = whArr[readyHandleIndex];
-            IAlgorithm finishedAlgorithm = null;
-            AsyncGridResult finishedResult = null;
-            lock (activeAlgorithms) {
-              finishedResult = asyncResults[readyHandle];
-              finishedAlgorithm = activeAlgorithms[finishedResult];
-              activeAlgorithms.Remove(finishedResult);
-              asyncResults.Remove(readyHandle);
+          if (asyncResults.Count > 0) {
+            WaitHandle[] whArr = asyncResults.Keys.ToArray();
+            int readyHandleIndex = WaitAny(whArr, WaitForFinishedJobsTimeout);
+            if (readyHandleIndex != WaitHandle.WaitTimeout) {
+              WaitHandle readyHandle = whArr[readyHandleIndex];
+              IAlgorithm finishedAlgorithm = null;
+              AsyncGridResult finishedResult = null;
+              lock (activeAlgorithms) {
+                finishedResult = asyncResults[readyHandle];
+                finishedAlgorithm = activeAlgorithms[finishedResult];
+                activeAlgorithms.Remove(finishedResult);
+                asyncResults.Remove(readyHandle);
+              }
+              OnChanged();
+              try {
+                IEngine finishedEngine = jobManager.EndExecuteEngine(finishedResult);
+                SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
+                StoreResults(finishedAlgorithm);
+              }
+              catch (Exception badEx) {
+                HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
+              }
             }
-            OnChanged();
-            try {
-              IEngine finishedEngine = jobManager.EndExecuteEngine(finishedResult);
-              SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
-              StoreResults(finishedAlgorithm);
-            }
-            catch (Exception badEx) {
-              HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message);
-            }
+          } else {
+            Thread.Sleep(WaitForNewJobsInterval);
           }
         }
+
         catch (Exception ex) {
           HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message);
         }
       }
     }
 
-        // wait until any job is finished
+    // wait until any job is finished
     private int WaitAny(WaitHandle[] wh, TimeSpan WaitForFinishedJobsTimeout) {
       if (wh.Length <= 64) {
         return WaitHandle.WaitAny(wh, WaitForFinishedJobsTimeout);
