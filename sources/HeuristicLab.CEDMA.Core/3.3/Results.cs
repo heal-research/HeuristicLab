@@ -89,11 +89,7 @@ namespace HeuristicLab.CEDMA.Core {
       return entries.AsEnumerable();
     }
 
-    long nStatements;
-    DateTime start, stop;
     private IEnumerable<ResultsEntry> SelectRows() {
-      start = DateTime.Now;
-      nStatements = 0;
       int page = 0;
       int resultsReturned = 0;
       entries = new List<ResultsEntry>();
@@ -114,7 +110,6 @@ namespace HeuristicLab.CEDMA.Core {
           .Select(grouping => grouping.OrderBy(m => m.TestMSE));
         foreach (var targetVariableBindings in allModels) {
           resultsReturned = targetVariableBindings.Count();
-          nStatements += resultsReturned;
           int nModels = Math.Max(10, resultsReturned * 10 / 100);
           nModels = Math.Min(nModels, resultsReturned);
           foreach (var modelBindings in targetVariableBindings.Take(nModels)) {
@@ -127,7 +122,6 @@ namespace HeuristicLab.CEDMA.Core {
         }
         page++;
       } while (resultsReturned == PAGE_SIZE);
-      stop = DateTime.Now;
       FireChanged();
       cached = true;
       return entries;
@@ -137,7 +131,6 @@ namespace HeuristicLab.CEDMA.Core {
       var modelBindings = store.Query(
         "<" + modelUri + "> ?Attribute ?Value .",
         0, PAGE_SIZE);
-      nStatements += modelBindings.Count();
       foreach (var binding in modelBindings) {
         if (binding.Get("Value") is Literal) {
           string name = ((Entity)binding.Get("Attribute")).Uri.Replace(Ontology.CedmaNameSpace, "");
@@ -165,9 +158,6 @@ namespace HeuristicLab.CEDMA.Core {
            "?InputVariable <" + Ontology.EvaluationImpact + "> ?EvaluationImpact .",
            0, PAGE_SIZE);
       Dictionary<object, ResultsEntry> inputVariableAttributes = new Dictionary<object, ResultsEntry>();
-      nStatements += inputVariableNameBindings.Count();
-      nStatements += qualityImpactBindings.Count();
-      nStatements += evaluationImpactBindings.Count();
 
       foreach (var inputVariableNameBinding in inputVariableNameBindings) {
         object inputVariable = inputVariableNameBinding.Get("InputVariable");
