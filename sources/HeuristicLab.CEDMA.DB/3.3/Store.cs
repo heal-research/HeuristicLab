@@ -68,6 +68,7 @@ namespace HeuristicLab.CEDMA.DB {
         foreach (Statement s in statements) {
           store.Add(Translate(s));
         }
+        InvalidateCachedStore();
       }
     }
 
