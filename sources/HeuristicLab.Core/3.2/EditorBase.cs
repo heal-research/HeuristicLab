@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -56,6 +57,33 @@ namespace HeuristicLab.Core {
     }
 
     /// <summary>
+    /// Saves the contained item to a file.
+    /// </summary>
+    /// <remarks>
+    ///   The filename to save the contained item to is given by <see cref="Filename"/>.
+    ///   Save is an asynchronous method. After saving the contained item is finished, the
+    ///   <see cref="SaveFinished"/> event is fired.
+    /// </remarks>
+    public void Save() {
+      Enabled = false;
+      ThreadPool.QueueUserWorkItem((o) => {
+        try {
+          PersistenceManager.Save(Item, Filename);
+        }
+        catch (Exception e) {
+          MessageBox.Show(String.Format(
+            "Sorry couldn't save file \"{0}\".\n The following exception occurred: {1}",
+            Filename, e.ToString()),
+            "Writer Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        finally {
+          Invoke(new Action(() => Enabled = true));
+          OnSaveFinished();
+        }
+      });
+    }
+
+    /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
@@ -77,6 +105,17 @@ namespace HeuristicLab.Core {
     protected virtual void OnFilenameChanged() {
       if (FilenameChanged != null)
         FilenameChanged(this, new EventArgs());
+    }
+    /// <summary>
+    /// Occurs when the filename was changed.
+    /// </summary>
+    public event EventHandler SaveFinished;
+    /// <summary>
+    /// Fires the <see cref="SaveFinished"/> event.
+    /// </summary>
+    protected virtual void OnSaveFinished() {
+      if (SaveFinished != null)
+        SaveFinished(this, new EventArgs());
     }
   }
 }

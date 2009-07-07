@@ -99,7 +99,6 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
     /// <exception cref="InvalidOperationException">Thrown when the given <paramref name="control"/>
     /// is neither a view nor an editor.</exception>
     /// <param name="control">The control to display.</param>
-    delegate void ShowControlDelegate(IControl control);
     public void ShowControl(IControl control) {
       if (InvokeRequired) Invoke((Action<IControl>)ShowControl,control);
       else {
@@ -182,6 +181,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
           MessageBox.Show("Could not open item. The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         else {
           editor.Filename = task.filename;
+          editor.SaveFinished += new EventHandler(SaveFinished);
           PluginManager.ControlManager.ShowControl(editor);
         }
         lock (locker) {
@@ -197,10 +197,8 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
       else {
         lock (locker) runningTasks++;
         Cursor = Cursors.AppStarting;
-        ((Control)form.Editor).Enabled = false;
         EnableDisableItems();
-        Task task = new Task(form.Editor.Filename, form.Editor.Item, form.Editor);
-        ThreadPool.QueueUserWorkItem(new WaitCallback(AsynchronousSave), task);
+        form.Editor.Save();
       }
     }
     private void SaveAs(EditorForm form) {
@@ -209,16 +207,10 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         Save(form);
       }
     }
-    private void AsynchronousSave(object state) {
-      Task task = (Task)state;
-      PersistenceManager.Save(task.storable, task.filename);
-      SaveFinished(task);
-    }
-    private void SaveFinished(Task task) {
+    private void SaveFinished(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new TaskFinishedDelegate(SaveFinished), task);
+        Invoke(new EventHandler(SaveFinished), sender, e);
       else {
-        ((Control)task.editor).Enabled = true;
         EnableDisableItems();
         lock (locker) {
           runningTasks--;
@@ -245,6 +237,7 @@ namespace HeuristicLab.AdvancedOptimizationFrontend {
         if (editor == null) {
           MessageBox.Show("The selected item doesn't provide an editor.", "Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else {
+          editor.SaveFinished += new EventHandler(SaveFinished);
           PluginManager.ControlManager.ShowControl(editor);
           EnableDisableItems();
         }

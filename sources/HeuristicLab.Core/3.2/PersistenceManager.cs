@@ -107,10 +107,13 @@ namespace HeuristicLab.Core {
     /// <param name="instance">The object that should be saved.</param>
     /// <param name="filename">The name of the file where the <paramref name="object"/> should be saved.</param>
     public static void Save(IStorable instance, string filename) {
-      using(FileStream stream = File.Create(filename)) {
+      string tempfile = Path.GetTempFileName();
+      using (FileStream stream = File.Create(tempfile)) {
         Save(instance, stream);
         stream.Close();
       }
+      File.Copy(tempfile, filename, true);
+      File.Delete(tempfile);
     }
     /// <summary>
     /// Saves the specified <paramref name="instance"/> in the specified <paramref name="stream"/> 

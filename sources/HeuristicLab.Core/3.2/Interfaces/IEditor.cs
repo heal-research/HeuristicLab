@@ -35,8 +35,22 @@ namespace HeuristicLab.Core {
     string Filename { get; set; }
 
     /// <summary>
+    /// Saves the contained item to a file.
+    /// </summary>
+    /// <remarks>
+    ///   The filename to save the contained item to is given by <see cref="Filename"/>.
+    ///   Save is an asynchronous method. After saving the contained item is finished, the
+    ///   <see cref="SaveFinished"/> event is fired.
+    /// </remarks>
+    void Save();
+
+    /// <summary>
     /// Occurs when the filename was changed.
     /// </summary>
     event EventHandler FilenameChanged;
+    /// <summary>
+    /// Occurs after saving the contained object is finished.
+    /// </summary>
+    event EventHandler SaveFinished;
   }
 }
