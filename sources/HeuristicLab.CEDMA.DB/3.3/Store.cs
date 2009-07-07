@@ -59,6 +59,7 @@ namespace HeuristicLab.CEDMA.DB {
     public void Add(Statement statement) {
       lock (bigLock) {
         store.Add(Translate(statement));
+        InvalidateCachedStore();
       }
     }
 
@@ -88,6 +89,14 @@ namespace HeuristicLab.CEDMA.DB {
       cachedStore = new SemWeb.MemoryStore();
       cachedStore.Import(store);
     }
+
+    private void InvalidateCachedStore() {
+      if (cachedStore != null) {
+        cachedStore.Dispose();
+        cachedStore = null;
+      }
+    }
+
 
     public ICollection<VariableBindings> Query(ICollection<Statement> query, int page, int pageSize) {
       lock (bigLock) {
