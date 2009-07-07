@@ -55,8 +55,8 @@ namespace HeuristicLab.SupportVectorMachines {
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);
 
-      double[,] values = new double[end-start, 2];
-      for (int i = 0; i < end - start; i++) {
+      double[,] values = new double[scaledProblem.Count, 2];
+      for (int i = 0; i < scaledProblem.Count; i++) {
         values[i,0] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
         values[i,1] = dataset.GetValue(start + i,targetVariable);
       }
