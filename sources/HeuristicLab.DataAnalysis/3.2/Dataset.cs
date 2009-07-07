@@ -303,8 +303,12 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetMaximum(int column) {
+      return GetMaximum(column, 0, Rows);
+    }
+
+    public double GetMaximum(int column, int start, int end) {
       double max = Double.NegativeInfinity;
-      for (int i = 0; i < Rows; i++) {
+      for (int i = start; i < end; i++) {
         double val = GetValue(i, column);
         if (!double.IsNaN(val) && val > max) max = val;
       }
@@ -312,8 +316,12 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     public double GetMinimum(int column) {
+      return GetMinimum(column, 0, Rows);
+    }
+
+    public double GetMinimum(int column, int start, int end) {
       double min = Double.PositiveInfinity;
-      for (int i = 0; i < Rows; i++) {
+      for (int i = start; i < end; i++) {
         double val = GetValue(i, column);
         if (!double.IsNaN(val) && val < min) min = val;
       }
