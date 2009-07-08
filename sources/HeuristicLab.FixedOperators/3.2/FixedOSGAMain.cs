@@ -36,11 +36,11 @@ using HeuristicLab.Selection.OffspringSelection;
 namespace HeuristicLab.FixedOperators {
   class FixedOSGAMain : FixedGAMainBase {
     WeightedOffspringFitnessComparer wofc;
-    OffspringSelector os;
+    protected IOperator os;
 
     public FixedOSGAMain()
       : base() {
-      Name = "FixeOSGAMain";
+      Name = "FixedOSGAMain";
       wofc = new WeightedOffspringFitnessComparer();
       os = new OffspringSelector();
       os.AddSubOperator(new EmptyOperator());
@@ -142,9 +142,6 @@ namespace HeuristicLab.FixedOperators {
       catch (CancelException) {
         //Console.WriteLine("Micro engine aborted by cancel flag.");
         return new AtomicOperation(this, scope);
-      }
-      catch (Exception ex) {
-        ex.ToString();
       }
 
       return null;

@@ -86,7 +86,7 @@ namespace HeuristicLab.FixedOperators {
       Name = "FixeGAMain";
     } // FixedGABase
 
-    private void InitReplacement() {
+    protected virtual void InitReplacement() {
       ls = new LeftSelector();
       rr = new RightReducer();
       rs = new RightSelector();
@@ -169,7 +169,7 @@ namespace HeuristicLab.FixedOperators {
       evaluator = GetVariableValue<OperatorBase>("Evaluator", scope, true);
     } // GetOperatorsFromScope
 
-    protected void DoReplacement(IScope scope) {
+    protected virtual void DoReplacement(IScope scope) {
       //// SequentialSubScopesProcessor
       Execute(ls, scope.SubScopes[0]);
       Execute(rr, scope.SubScopes[0]);
