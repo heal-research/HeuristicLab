@@ -320,8 +320,7 @@ namespace HeuristicLab.FixedOperators {
       get { return @"Implements the functionality of SGAMain with fixed control structures. Operators like selection, crossover, mutation and evaluation are delegated."; }
     }
     //long[] timesExecuteCreateChildren;
-    public FixedSGAMain()
-      : base() {
+    public FixedSGAMain() {
       Name = "FixedSGAMain";
     }
 
@@ -400,11 +399,7 @@ namespace HeuristicLab.FixedOperators {
         Console.WriteLine("SGAMain.Apply(): {0}", swApply.Elapsed);
       } // try
       catch (CancelException) {
-        //Console.WriteLine("Micro engine aborted by cancel flag.");
         return new AtomicOperation(this, scope);
-      }
-      catch (Exception ex) {
-        ex.ToString();
       }
 
       return null;

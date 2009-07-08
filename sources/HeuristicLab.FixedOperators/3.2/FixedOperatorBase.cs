@@ -124,7 +124,7 @@ namespace HeuristicLab.FixedOperators {
             next = currentOperator.Execute(atomicOperation.Scope);
           }
           catch (Exception ex) {
-            throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute");
+            throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute " + ex.InnerException);
           }
           if (next != null)
             executionStack.Push(next);
