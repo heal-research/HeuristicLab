@@ -80,9 +80,9 @@ namespace HeuristicLab.CEDMA.Server {
           }
       }
 
-      SetProblemParameters(selectedAlgorithm, problem, targetVariable, inputVariables);
 
       if (selectedAlgorithm != null) {
+        SetProblemParameters(selectedAlgorithm, problem, targetVariable, inputVariables);
         AddDispatchedRun(targetVariable, inputVariables, selectedAlgorithm.Name);
       }
       return selectedAlgorithm;
