@@ -19,14 +19,22 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     protected override void UpdateControls() {
-      base.UpdateControls();
+      if (InvokeRequired) {
+        Invoke((Action)UpdateControls);
+      } else {
+        base.UpdateControls();
+        targetVariableList.Items.Clear();
+        inputVariableList.Items.Clear();
 
-      foreach (string targetVar in dispatcher.TargetVariables) {
-        targetVariableList.Items.Add(targetVar);
-      }
+        foreach (string targetVar in dispatcher.TargetVariables) {
+          targetVariableList.Items.Add(targetVar, false);
+        }
 
-      foreach (string inputVar in dispatcher.InputVariables) {
-        inputVariableList.Items.Add(inputVar);
+        foreach (string inputVar in dispatcher.InputVariables) {
+          inputVariableList.Items.Add(inputVar, false);
+        }
+        targetVariableList.ClearSelected();
+        inputVariableList.Enabled = false;
       }
     }
 
@@ -39,11 +47,26 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void inputVariableList_ItemCheck(object sender, ItemCheckEventArgs e) {
+      string selectedTarget = (string)targetVariableList.SelectedItem;
       if (e.NewValue == CheckState.Checked) {
-        dispatcher.EnableInputVariable((string)inputVariableList.Items[e.Index]);
+        dispatcher.EnableInputVariable(selectedTarget, (string)inputVariableList.Items[e.Index]);
       } else if (e.NewValue == CheckState.Unchecked) {
-        dispatcher.DisableInputVariable((string)inputVariableList.Items[e.Index]);
+        dispatcher.DisableInputVariable(selectedTarget, (string)inputVariableList.Items[e.Index]);
       }
+    }
+
+    private void targetVariableList_SelectedValueChanged(object sender, EventArgs e) {
+      string selectedTarget = (string)targetVariableList.SelectedItem;
+      UpdateInputVariableList(selectedTarget);
+    }
+
+    private void UpdateInputVariableList(string target) {
+      inputVariableList.Items.Clear();
+      var activatedInputVariables = dispatcher.GetInputVariables(target);
+      foreach (string inputVar in dispatcher.InputVariables) {
+        inputVariableList.Items.Add(inputVar, activatedInputVariables.Contains(inputVar));
+      }
+      inputVariableList.Enabled = true;
     }
   }
 }

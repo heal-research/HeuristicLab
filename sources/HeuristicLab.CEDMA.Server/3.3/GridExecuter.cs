@@ -115,7 +115,7 @@ namespace HeuristicLab.CEDMA.Server {
         }
 
         catch (Exception ex) {
-          HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message);
+          HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message + Environment.NewLine + ex.StackTrace);
         }
       }
     }

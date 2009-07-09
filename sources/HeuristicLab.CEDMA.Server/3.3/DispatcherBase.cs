@@ -40,6 +40,9 @@ namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IStore store;
     private DataSet dataset;
+    private List<int> allowedTargetVariables;
+    private Dictionary<int, List<int>> activeInputVariables;
+
     internal event EventHandler Changed;
     private object locker = new object();
 
@@ -59,13 +62,10 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
-    private List<int> allowedInputVariables;
-    private List<int> allowedTargetVariables;
-
     public DispatcherBase(IStore store) {
       this.store = store;
-      allowedInputVariables = new List<int>();
       allowedTargetVariables = new List<int>();
+      activeInputVariables = new Dictionary<int, List<int>>();
     }
 
     public IAlgorithm GetNextJob() {
@@ -74,22 +74,35 @@ namespace HeuristicLab.CEDMA.Server {
           .Select(x => (Entity)x.Get("DataSet"));
         if (datasetEntities.Count() == 0) return null;
         dataset = new DataSet(store, datasetEntities.ElementAt(0));
+        foreach (int targetVar in dataset.Problem.AllowedTargetVariables) {
+          activeInputVariables.Add(targetVar, new List<int>());
+          activeInputVariables[targetVar].AddRange(dataset.Problem.AllowedInputVariables);
+        }
         OnChanged();
       }
-      if (allowedTargetVariables.Count > 0 && allowedInputVariables.Count > 0) {
+      if (allowedTargetVariables.Count > 0) {
         int[] targetVariables, inputVariables;
         lock (locker) {
           targetVariables = allowedTargetVariables.ToArray();
-          inputVariables = allowedInputVariables.ToArray();
         }
 
-        IAlgorithm selectedAlgorithm = SelectAndConfigureAlgorithm(targetVariables, inputVariables, dataset.Problem);
-        
+        int targetVariable = SelectTargetVariable(targetVariables);
+
+        lock (locker) {
+          inputVariables = activeInputVariables[targetVariable].ToArray();
+        }
+
+        IAlgorithm selectedAlgorithm = SelectAndConfigureAlgorithm(targetVariable, inputVariables, dataset.Problem);
+
         return selectedAlgorithm;
       } else return null;
     }
 
-    public abstract IAlgorithm SelectAndConfigureAlgorithm(int[] targetVariables, int[] inputVariables, Problem problem);
+    public virtual int SelectTargetVariable(int[] targetVariables) {
+      Random rand = new Random();
+      return targetVariables[rand.Next(targetVariables.Length)];
+    }
+    public abstract IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem);
 
     #region IViewable Members
 
@@ -98,11 +111,6 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     #endregion
-
-    internal void EnableInputVariable(string name) {
-      lock (locker)
-        allowedInputVariables.Add(dataset.Problem.Dataset.GetVariableIndex(name));
-    }
 
     internal void EnableTargetVariable(string name) {
       lock (locker)
@@ -114,13 +122,31 @@ namespace HeuristicLab.CEDMA.Server {
         allowedTargetVariables.Remove(dataset.Problem.Dataset.GetVariableIndex(name));
     }
 
-    internal void DisableInputVariable(string name) {
-      lock (locker)
-        allowedInputVariables.Remove(dataset.Problem.Dataset.GetVariableIndex(name));
+    internal void EnableInputVariable(string target, string name) {
+      lock (locker) {
+        int targetIndex = dataset.Problem.Dataset.GetVariableIndex(target);
+        int inputIndex = dataset.Problem.Dataset.GetVariableIndex(name);
+        if (!activeInputVariables[targetIndex].Contains(inputIndex)) {
+          activeInputVariables[targetIndex].Add(inputIndex);
+        }
+      }
+    }
+
+    internal void DisableInputVariable(string target, string name) {
+      lock (locker) {
+        int targetIndex = dataset.Problem.Dataset.GetVariableIndex(target);
+        int inputIndex = dataset.Problem.Dataset.GetVariableIndex(name);
+        while (activeInputVariables[targetIndex].Remove(inputIndex)) { }
+      }
     }
 
     private void OnChanged() {
       if (Changed != null) Changed(this, new EventArgs());
+    }
+
+    internal IEnumerable<string> GetInputVariables(string target) {
+      return activeInputVariables[dataset.Problem.Dataset.GetVariableIndex(target)]
+        .Select(i => dataset.Problem.Dataset.GetVariableName(i));
     }
   }
 }

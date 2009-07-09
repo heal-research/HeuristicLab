@@ -56,9 +56,7 @@ namespace HeuristicLab.CEDMA.Server {
       PopulateFinishedRuns();
     }
 
-    public override IAlgorithm SelectAndConfigureAlgorithm(int[] targetVariables, int[] inputVariables, Problem problem) {
-      int targetVariable = SelectTargetVariable(targetVariables);
-
+    public override IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem) {
       DiscoveryService ds = new DiscoveryService();
       IAlgorithm[] algos = ds.GetInstances<IAlgorithm>();
       IAlgorithm selectedAlgorithm = null;
@@ -101,10 +99,6 @@ namespace HeuristicLab.CEDMA.Server {
       var stochasticAlgos = regressionAlgos.Where(a => (a as IStochasticAlgorithm) != null);
       if (stochasticAlgos.Count() == 0) return null;
       return stochasticAlgos.ElementAt(random.Next(stochasticAlgos.Count()));
-    }
-
-    public int SelectTargetVariable(int[] targetVariables) {
-      return targetVariables[random.Next(targetVariables.Length)];
     }
 
     private void PopulateFinishedRuns() {

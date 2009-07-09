@@ -27,23 +27,36 @@
       this.inputVariableList = new System.Windows.Forms.CheckedListBox();
       this.targetVariablesLabel = new System.Windows.Forms.Label();
       this.inputVariablesLabel = new System.Windows.Forms.Label();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // targetVariableList
       // 
+      this.targetVariableList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.targetVariableList.FormattingEnabled = true;
-      this.targetVariableList.Location = new System.Drawing.Point(3, 16);
+      this.targetVariableList.HorizontalScrollbar = true;
+      this.targetVariableList.Location = new System.Drawing.Point(6, 16);
       this.targetVariableList.Name = "targetVariableList";
-      this.targetVariableList.Size = new System.Drawing.Size(171, 409);
+      this.targetVariableList.Size = new System.Drawing.Size(193, 454);
       this.targetVariableList.TabIndex = 0;
       this.targetVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.targetVariableList_ItemCheck);
+      this.targetVariableList.SelectedValueChanged += new System.EventHandler(this.targetVariableList_SelectedValueChanged);
       // 
       // inputVariableList
       // 
+      this.inputVariableList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.inputVariableList.FormattingEnabled = true;
-      this.inputVariableList.Location = new System.Drawing.Point(194, 16);
+      this.inputVariableList.HorizontalScrollbar = true;
+      this.inputVariableList.Location = new System.Drawing.Point(2, 16);
       this.inputVariableList.Name = "inputVariableList";
-      this.inputVariableList.Size = new System.Drawing.Size(170, 409);
+      this.inputVariableList.Size = new System.Drawing.Size(221, 454);
       this.inputVariableList.TabIndex = 1;
       this.inputVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.inputVariableList_ItemCheck);
       // 
@@ -59,24 +72,45 @@
       // inputVariablesLabel
       // 
       this.inputVariablesLabel.AutoSize = true;
-      this.inputVariablesLabel.Location = new System.Drawing.Point(191, 0);
+      this.inputVariablesLabel.Location = new System.Drawing.Point(3, 0);
       this.inputVariablesLabel.Name = "inputVariablesLabel";
       this.inputVariablesLabel.Size = new System.Drawing.Size(79, 13);
       this.inputVariablesLabel.TabIndex = 3;
       this.inputVariablesLabel.Text = "Input variables:";
       // 
+      // splitContainer
+      // 
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.targetVariablesLabel);
+      this.splitContainer.Panel1.Controls.Add(this.targetVariableList);
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.inputVariablesLabel);
+      this.splitContainer.Panel2.Controls.Add(this.inputVariableList);
+      this.splitContainer.Size = new System.Drawing.Size(429, 482);
+      this.splitContainer.SplitterDistance = 202;
+      this.splitContainer.SplitterWidth = 1;
+      this.splitContainer.TabIndex = 4;
+      // 
       // DispatcherView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.inputVariablesLabel);
-      this.Controls.Add(this.targetVariablesLabel);
-      this.Controls.Add(this.inputVariableList);
-      this.Controls.Add(this.targetVariableList);
+      this.Controls.Add(this.splitContainer);
       this.Name = "DispatcherView";
       this.Size = new System.Drawing.Size(429, 482);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.Panel2.PerformLayout();
+      this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -86,5 +120,6 @@
     private System.Windows.Forms.CheckedListBox inputVariableList;
     private System.Windows.Forms.Label targetVariablesLabel;
     private System.Windows.Forms.Label inputVariablesLabel;
+    private System.Windows.Forms.SplitContainer splitContainer;
   }
 }
