@@ -70,6 +70,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -87,6 +89,12 @@
     <Compile Include="SupportVectorCreator.cs" />
     <Compile Include="SupportVectorEvaluator.cs" />
     <Compile Include="SVMHelper.cs" />
+    <Compile Include="SVMModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SVMModelView.Designer.cs">
+      <DependentUpon>SVMModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
     <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
@@ -143,6 +151,11 @@
       <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
       <Name>LibSVM</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SVMModelView.resx">
+      <DependentUpon>SVMModelView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

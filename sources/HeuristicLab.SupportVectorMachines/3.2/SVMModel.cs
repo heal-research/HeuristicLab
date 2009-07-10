@@ -48,6 +48,10 @@ namespace HeuristicLab.Data {
       set { rangeTransform = value; }
     }
 
+    public override IView CreateView() {
+      return new HeuristicLab.SupportVectorMachines.SVMModelView(this);
+    }
+
     /// <summary>
     /// Clones the current instance and adds it to the dictionary <paramref name="clonedObjects"/>.
     /// </summary>
