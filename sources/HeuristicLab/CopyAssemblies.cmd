@@ -7,8 +7,6 @@ mkdir plugins\temp
 mkdir plugins\backup
 
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plugins
 copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt" .\plugins
@@ -70,6 +68,8 @@ copy "%SolutionDir%\HeuristicLab.Hive.Server.Core\3.2\%Outdir%\Authorization\*.x
 copy "%SolutionDir%\HeuristicLab.Hive.Server.DataAccess\3.2\%Outdir%\HeuristicLab.Hive.Server.DataAccess-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Hive.Server.Scheduler\3.2\%Outdir%\HeuristicLab.Hive.Server.Scheduler-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.IntVector\3.2\%Outdir%\HeuristicLab.IntVector-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.LinearRegression\3.2\%Outdir%\HeuristicLab.LinearRegression-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.LinearRegression\3.2\%Outdir%\ALGLIB License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
