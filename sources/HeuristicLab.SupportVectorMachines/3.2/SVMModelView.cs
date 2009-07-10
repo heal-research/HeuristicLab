@@ -44,7 +44,7 @@ namespace HeuristicLab.SupportVectorMachines {
     protected override void UpdateControls() {
       base.UpdateControls();
       numberOfSupportVectors.Text = model.Model.SupportVectorCount.ToString();
-      rho.Text = model.Model.Rho.ToString();
+      rho.Text = model.Model.Rho[0].ToString();
       svmType.Text = model.Model.Parameter.SvmType.ToString();
       kernelType.Text = model.Model.Parameter.KernelType.ToString();
       gamma.Text = model.Model.Parameter.Gamma.ToString();
