@@ -32,7 +32,7 @@ namespace HeuristicLab.LinearRegression{
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
-  [Dependency(Dependency = "HeuristicLab.GP.Modeling-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]
   public class HeuristicLabLinearRegression : PluginBase {
   }
