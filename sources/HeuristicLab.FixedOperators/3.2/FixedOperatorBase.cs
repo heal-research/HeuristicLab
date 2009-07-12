@@ -119,13 +119,13 @@ namespace HeuristicLab.FixedOperators {
         if (operation is AtomicOperation) {
           AtomicOperation atomicOperation = (AtomicOperation)operation;
           IOperation next = null;
-          try {
+          //try {
             currentOperator = atomicOperation.Operator;
             next = currentOperator.Execute(atomicOperation.Scope);
-          }
-          catch (Exception ex) {
-            throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute " + ex.InnerException);
-          }
+          //}
+          //catch (Exception ex) {
+          //  throw new InvalidOperationException("Invalid Operation occured in FixedBase.Execute " + ex.InnerException);
+          //}
           if (next != null)
             executionStack.Push(next);
         } else if (operation is CompositeOperation) {

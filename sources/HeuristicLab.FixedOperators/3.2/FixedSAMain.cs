@@ -194,10 +194,19 @@ namespace HeuristicLab.FixedOperators {
           if (temperature.Data <= minTemperature.Data)
             break;
         } // for nrOfGenerations
-      
+
       } // try
       catch (CancelException) {
         return new AtomicOperation(this, scope);
+      }
+      catch (Exception ex) {
+        System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace(ex, false);
+
+        foreach (var sf in trace.GetFrames()) {
+          Console.WriteLine(sf.GetMethod().Name);
+          Console.WriteLine("Line: " + sf.GetFileLineNumber());
+          Console.WriteLine("Column: " + sf.GetFileColumnNumber());
+        }
       }
       return null;
     } // Apply

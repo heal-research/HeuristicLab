@@ -99,6 +99,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FixedESMain.cs" />
     <Compile Include="FixedGAMainBase.cs" />
     <Compile Include="FixedOperatorBase.cs" />
     <Compile Include="FixedOSGAMain.cs" />
@@ -156,6 +157,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ES\3.2\HeuristicLab.ES-3.2.csproj">
+      <Project>{2E6112A7-3A94-406D-A28C-38AC2D324DCA}</Project>
+      <Name>HeuristicLab.ES-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
       <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>

@@ -83,7 +83,7 @@ namespace HeuristicLab.FixedOperators {
 
       sb = new StochasticBranch();
       sb.GetVariableInfo("Probability").ActualName = "MutationRate";
-      Name = "FixeGAMain";
+      Name = "FixedGAMain";
     } // FixedGABase
 
     protected virtual void InitReplacement() {
@@ -162,7 +162,7 @@ namespace HeuristicLab.FixedOperators {
     /// and store them in instance variables.
     /// </summary>
     /// <param name="scope"></param>
-    protected void GetOperatorsFromScope(IScope scope) {
+    protected virtual void GetOperatorsFromScope(IScope scope) {
       selector = (OperatorBase)GetVariableValue("Selector", scope, true);
       crossover = (OperatorBase)GetVariableValue("Crossover", scope, true);
       mutator = (OperatorBase)GetVariableValue("Mutator", scope, true);
