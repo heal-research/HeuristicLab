@@ -270,6 +270,18 @@ namespace HeuristicLab.CEDMA.DB.Interfaces {
           new Statement(TestCoefficientOfDetermination, InstanceOf, TypeQualityAttribute),
           new Statement(TestCoefficientOfDetermination, InstanceOf, TypeModelAttribute),
           
+          new Statement(TrainingVarianceAccountedFor, InstanceOf, TypeOrdinalAttribute),
+          new Statement(TrainingVarianceAccountedFor, InstanceOf, TypeQualityAttribute),
+          new Statement(TrainingVarianceAccountedFor, InstanceOf, TypeModelAttribute),
+          
+          new Statement(ValidationVarianceAccountedFor, InstanceOf, TypeOrdinalAttribute),
+          new Statement(ValidationVarianceAccountedFor, InstanceOf, TypeQualityAttribute),
+          new Statement(ValidationVarianceAccountedFor, InstanceOf, TypeModelAttribute),
+          
+          new Statement(TestVarianceAccountedFor, InstanceOf, TypeOrdinalAttribute),
+          new Statement(TestVarianceAccountedFor, InstanceOf, TypeQualityAttribute),
+          new Statement(TestVarianceAccountedFor, InstanceOf, TypeModelAttribute),
+          
           new Statement(TrainingAccuracy, InstanceOf, TypeOrdinalAttribute),
           new Statement(TrainingAccuracy, InstanceOf, TypeQualityAttribute),
           new Statement(TrainingAccuracy, InstanceOf, TypeModelAttribute),
