@@ -34,6 +34,19 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, ITimeSeriesAlgorithm {
+    public override IOperator ProblemInjector {
+      get {
+        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
+        return algo.OperatorGraph.InitialOperator.SubOperators[1];
+      }
+      set {
+        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
+        algo.OperatorGraph.InitialOperator.RemoveSubOperator(1);
+        value.Name = "ProblemInjector";
+        algo.OperatorGraph.InitialOperator.AddSubOperator(value, 1);
+      }
+    }
+    
     protected override IOperator CreateFunctionLibraryInjector() {
       return new FunctionLibraryInjector();
     }
@@ -60,32 +73,32 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       get {
         SequentialProcessor seq = new SequentialProcessor();
         TheilInequalityCoefficientEvaluator trainingTheil = new TheilInequalityCoefficientEvaluator();
-        trainingTheil.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-        trainingTheil.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+        trainingTheil.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+        trainingTheil.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
         trainingTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TrainingTheilInequalityCoefficient";
         trainingTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "TrainingTheilInequalityCoefficientBias";
         trainingTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "TrainingTheilInequalityCoefficientVariance";
         trainingTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "TrainingTheilInequalityCoefficientCovariance";
 
         TheilInequalityCoefficientEvaluator validationTheil = new TheilInequalityCoefficientEvaluator();
-        validationTheil.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-        validationTheil.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+        validationTheil.GetVariableInfo("SamplesStart").ActualName = "ActualValidationSamplesStart";
+        validationTheil.GetVariableInfo("SamplesEnd").ActualName = "ActualValidationSamplesEnd";
         validationTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "ValidationTheilInequalityCoefficient";
         validationTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "ValidationTheilInequalityCoefficientBias";
         validationTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "ValidationTheilInequalityCoefficientVariance";
         validationTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "ValidationTheilInequalityCoefficientCovariance";
 
         TheilInequalityCoefficientEvaluator testTheil = new TheilInequalityCoefficientEvaluator();
-        testTheil.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-        testTheil.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+        testTheil.GetVariableInfo("SamplesStart").ActualName = "ActualTestSamplesStart";
+        testTheil.GetVariableInfo("SamplesEnd").ActualName = "ActualTestSamplesEnd";
         testTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
         testTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "TestTheilInequalityCoefficientBias";
         testTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "TestTheilInequalityCoefficientVariance";
         testTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "TestTheilInequalityCoefficientCovariance";
 
         SimpleEvaluator trainingEvaluator = new SimpleEvaluator();
-        trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-        trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+        trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+        trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
         trainingEvaluator.GetVariableInfo("Values").ActualName = "PredictedValuesTraining";
 
         SimpleEvaluator validationEvaluator = new SimpleEvaluator();

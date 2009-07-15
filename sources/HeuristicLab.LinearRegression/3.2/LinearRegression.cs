@@ -32,6 +32,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Modeling;
 using HeuristicLab.GP;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.LinearRegression {
   public class LinearRegression : ItemBase, IEditable, IAlgorithm {
@@ -87,18 +88,27 @@ namespace HeuristicLab.LinearRegression {
       algo.Name = "LinearRegression";
       seq.Name = "LinearRegression";
 
+      var randomInjector = new RandomInjector();
+      randomInjector.Name = "Random Injector";
       IOperator globalInjector = CreateGlobalInjector();
       ProblemInjector problemInjector = new ProblemInjector();
+      problemInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
+      problemInjector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
+
+      IOperator shuffler = new DatasetShuffler();
+      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
+      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
+
       LinearRegressionOperator lrOperator = new LinearRegressionOperator();
-      lrOperator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      lrOperator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      lrOperator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      lrOperator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
-
+      seq.AddSubOperator(randomInjector);
       seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(problemInjector);
+      seq.AddSubOperator(shuffler);
       seq.AddSubOperator(lrOperator);
       seq.AddSubOperator(CreateModelAnalyser());
-
 
       algo.OperatorGraph.InitialOperator = seq;
       algo.OperatorGraph.AddOperator(seq);
@@ -125,8 +135,8 @@ namespace HeuristicLab.LinearRegression {
       trainingMSE.Name = "TrainingMseEvaluator";
       trainingMSE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       trainingMSE.GetVariableInfo("MSE").ActualName = "TrainingQuality";
-      trainingMSE.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      trainingMSE.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+      trainingMSE.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingMSE.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       MeanSquaredErrorEvaluator validationMSE = new MeanSquaredErrorEvaluator();
       validationMSE.Name = "ValidationMseEvaluator";
       validationMSE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
@@ -146,8 +156,8 @@ namespace HeuristicLab.LinearRegression {
       trainingR2.Name = "TrainingR2Evaluator";
       trainingR2.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       trainingR2.GetVariableInfo("R2").ActualName = "TrainingR2";
-      trainingR2.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingR2.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingR2.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingR2.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       CoefficientOfDeterminationEvaluator validationR2 = new CoefficientOfDeterminationEvaluator();
       validationR2.Name = "ValidationR2Evaluator";
       validationR2.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
@@ -167,8 +177,8 @@ namespace HeuristicLab.LinearRegression {
       trainingMAPE.Name = "TrainingMapeEvaluator";
       trainingMAPE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       trainingMAPE.GetVariableInfo("MAPE").ActualName = "TrainingMAPE";
-      trainingMAPE.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingMAPE.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingMAPE.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingMAPE.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       MeanAbsolutePercentageErrorEvaluator validationMAPE = new MeanAbsolutePercentageErrorEvaluator();
       validationMAPE.Name = "ValidationMapeEvaluator";
       validationMAPE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
@@ -188,8 +198,8 @@ namespace HeuristicLab.LinearRegression {
       trainingMAPRE.Name = "TrainingMapreEvaluator";
       trainingMAPRE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       trainingMAPRE.GetVariableInfo("MAPRE").ActualName = "TrainingMAPRE";
-      trainingMAPRE.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingMAPRE.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingMAPRE.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingMAPRE.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       MeanAbsolutePercentageOfRangeErrorEvaluator validationMAPRE = new MeanAbsolutePercentageOfRangeErrorEvaluator();
       validationMAPRE.Name = "ValidationMapreEvaluator";
       validationMAPRE.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
@@ -209,8 +219,8 @@ namespace HeuristicLab.LinearRegression {
       trainingVAF.Name = "TrainingVafEvaluator";
       trainingVAF.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       trainingVAF.GetVariableInfo("VAF").ActualName = "TrainingVAF";
-      trainingVAF.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingVAF.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingVAF.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingVAF.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       VarianceAccountedForEvaluator validationVAF = new VarianceAccountedForEvaluator();
       validationVAF.Name = "ValidationVafEvaluator";
       validationVAF.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";

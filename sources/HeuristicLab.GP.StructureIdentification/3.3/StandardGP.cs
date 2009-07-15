@@ -95,6 +95,15 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
+    public override IOperator ProblemInjector {
+      get { return base.ProblemInjector.SubOperators[0]; }
+      set {
+        value.Name = "ProblemInjector";
+        base.ProblemInjector.RemoveSubOperator(0);
+        base.ProblemInjector.AddSubOperator(value, 0);
+      }
+    }
+
     public StandardGP()
       : base() {
       PopulationSize = 10000;
@@ -112,7 +121,18 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal override IOperator CreateProblemInjector() {
-      return new ProblemInjector();
+      SequentialProcessor seq = new SequentialProcessor();      
+      var probInject = new ProblemInjector();
+      probInject.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
+      probInject.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
+
+      var shuffler = new DatasetShuffler();
+      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
+      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
+
+      seq.AddSubOperator(probInject);
+      seq.AddSubOperator(shuffler);
+      return seq;
     }
 
     protected internal override IOperator CreateSelector() {
@@ -199,16 +219,19 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected internal override IOperator CreateBestSolutionProcessor() {
       SequentialProcessor bestSolutionProcessor = new SequentialProcessor();
+      #region MSE
       MeanSquaredErrorEvaluator testMseEvaluator = new MeanSquaredErrorEvaluator();
       testMseEvaluator.Name = "TestMeanSquaredErrorEvaluator";
       testMseEvaluator.GetVariableInfo("MSE").ActualName = "TestQuality";
       testMseEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testMseEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      #endregion
+      #region MAPE
       MeanAbsolutePercentageErrorEvaluator trainingMapeEvaluator = new MeanAbsolutePercentageErrorEvaluator();
       trainingMapeEvaluator.Name = "TrainingMapeEvaluator";
       trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TrainingMAPE";
-      trainingMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       MeanAbsolutePercentageErrorEvaluator validationMapeEvaluator = new MeanAbsolutePercentageErrorEvaluator();
       validationMapeEvaluator.Name = "ValidationMapeEvaluator";
       validationMapeEvaluator.GetVariableInfo("MAPE").ActualName = "ValidationMAPE";
@@ -219,11 +242,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       testMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TestMAPE";
       testMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      #endregion
+      #region MAPRE
       MeanAbsolutePercentageOfRangeErrorEvaluator trainingMapreEvaluator = new MeanAbsolutePercentageOfRangeErrorEvaluator();
       trainingMapreEvaluator.Name = "TrainingMapreEvaluator";
       trainingMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TrainingMAPRE";
-      trainingMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       MeanAbsolutePercentageOfRangeErrorEvaluator validationMapreEvaluator = new MeanAbsolutePercentageOfRangeErrorEvaluator();
       validationMapreEvaluator.Name = "ValidationMapreEvaluator";
       validationMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "ValidationMAPRE";
@@ -234,11 +259,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       testMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TestMAPRE";
       testMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      #endregion MAPRE
+      #region R2
       CoefficientOfDeterminationEvaluator trainingR2Evaluator = new CoefficientOfDeterminationEvaluator();
       trainingR2Evaluator.Name = "TrainingR2Evaluator";
       trainingR2Evaluator.GetVariableInfo("R2").ActualName = "TrainingR2";
-      trainingR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       CoefficientOfDeterminationEvaluator validationR2Evaluator = new CoefficientOfDeterminationEvaluator();
       validationR2Evaluator.Name = "ValidationR2Evaluator";
       validationR2Evaluator.GetVariableInfo("R2").ActualName = "ValidationR2";
@@ -249,11 +276,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       testR2Evaluator.GetVariableInfo("R2").ActualName = "TestR2";
       testR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      #endregion
+      #region VAF
       VarianceAccountedForEvaluator trainingVAFEvaluator = new VarianceAccountedForEvaluator();
       trainingVAFEvaluator.Name = "TrainingVAFEvaluator";
       trainingVAFEvaluator.GetVariableInfo("VAF").ActualName = "TrainingVAF";
-      trainingVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      trainingVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       VarianceAccountedForEvaluator validationVAFEvaluator = new VarianceAccountedForEvaluator();
       validationVAFEvaluator.Name = "ValidationVAFEvaluator";
       validationVAFEvaluator.GetVariableInfo("VAF").ActualName = "ValidationVAF";
@@ -264,7 +293,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       testVAFEvaluator.GetVariableInfo("VAF").ActualName = "TestVAF";
       testVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-
+      #endregion
       ProgrammableOperator progOperator = new ProgrammableOperator();
       progOperator.RemoveVariableInfo("Result");
       progOperator.AddVariableInfo(new HeuristicLab.Core.VariableInfo("EvaluatedSolutions", "", typeof(IntData), VariableKind.In));

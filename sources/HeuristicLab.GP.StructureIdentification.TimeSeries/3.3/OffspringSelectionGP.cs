@@ -34,6 +34,19 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {
+    public override IOperator ProblemInjector {
+      get {
+        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
+        return algo.OperatorGraph.InitialOperator.SubOperators[1];
+      }
+      set {
+        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
+        algo.OperatorGraph.InitialOperator.RemoveSubOperator(1);
+        value.Name = "ProblemInjector";
+        algo.OperatorGraph.InitialOperator.AddSubOperator(value, 1);
+      }
+    }
+
     protected override IOperator CreateFunctionLibraryInjector() {
       return new FunctionLibraryInjector();
     }

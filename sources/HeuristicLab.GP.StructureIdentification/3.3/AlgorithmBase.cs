@@ -64,11 +64,11 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public virtual IOperator ProblemInjector {
-      get { return algorithm.SubOperators[0]; }
+      get { return algorithm.SubOperators[1]; }
       set {
         value.Name = "ProblemInjector";
-        algorithm.RemoveSubOperator(0);
-        algorithm.AddSubOperator(value, 0);
+        algorithm.RemoveSubOperator(1);
+        algorithm.AddSubOperator(value, 1);
       }
     }
 
@@ -154,8 +154,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       MeanSquaredErrorEvaluator evaluator = new MeanSquaredErrorEvaluator();
       evaluator.GetVariableInfo("MSE").ActualName = "Quality";
-      evaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      evaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      evaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       evaluator.Name = "Evaluator";
 
       IOperator crossover = CreateCrossover();
@@ -164,8 +164,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       IOperator selector = CreateSelector();
       LeftReducer cleanUp = new LeftReducer();
 
-      seq.AddSubOperator(problemInjector);
       seq.AddSubOperator(randomInjector);
+      seq.AddSubOperator(problemInjector);
       seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(funLibInjector);
       seq.AddSubOperator(initialization);
@@ -464,7 +464,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       CombinedOperator co1 = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
       // SequentialProcessor in GP
       algorithm = (SequentialProcessor)co1.OperatorGraph.InitialOperator;
-      return (RandomInjector)algorithm.SubOperators[1];
+      return (RandomInjector)algorithm.SubOperators[0];
     }
 
     #region Persistence Methods

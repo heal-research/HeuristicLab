@@ -34,10 +34,6 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
-    protected override IOperator CreateProblemInjector() {
-      return new ProblemInjector();
-    }
-
     protected override IOperator CreateBestSolutionProcessor() {
       IOperator seq = base.CreateBestSolutionProcessor();
       seq.AddSubOperator(BestSolutionProcessor);
@@ -49,8 +45,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         SequentialProcessor seq = new SequentialProcessor();
         AccuracyEvaluator trainingAccuracy = new AccuracyEvaluator();
         trainingAccuracy.GetVariableInfo("Accuracy").ActualName = "TrainingAccuracy";
-        trainingAccuracy.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-        trainingAccuracy.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+        trainingAccuracy.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+        trainingAccuracy.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
         AccuracyEvaluator validationAccuracy = new AccuracyEvaluator();
         validationAccuracy.GetVariableInfo("Accuracy").ActualName = "ValidationAccuracy";
@@ -64,8 +60,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
         ConfusionMatrixEvaluator trainingConfusionMatrix = new ConfusionMatrixEvaluator();
         trainingConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "TrainingConfusionMatrix";
-        trainingConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-        trainingConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+        trainingConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+        trainingConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
         ConfusionMatrixEvaluator validationConfusionMatrix = new ConfusionMatrixEvaluator();
         validationConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "ValidationConfusionMatrix";

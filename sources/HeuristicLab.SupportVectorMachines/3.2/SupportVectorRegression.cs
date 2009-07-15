@@ -141,8 +141,16 @@ namespace HeuristicLab.SupportVectorMachines {
       SequentialProcessor seq = new SequentialProcessor();
       seq.Name = "Initialization";
       seq.AddSubOperator(CreateGlobalInjector());
-      seq.AddSubOperator(new ProblemInjector());
+      ProblemInjector probInjector = new ProblemInjector();
+      probInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
+      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
+      seq.AddSubOperator(probInjector);
       seq.AddSubOperator(new RandomInjector());
+
+      DatasetShuffler shuffler = new DatasetShuffler();
+      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
+      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
+      seq.AddSubOperator(shuffler);
       return seq;
     }
 
@@ -245,8 +253,8 @@ namespace HeuristicLab.SupportVectorMachines {
       modelProcessor.AddSubOperator(CreateSetNextParameterValueOperator("Gamma"));
 
       SupportVectorCreator modelCreator = new SupportVectorCreator();
-      modelCreator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      modelCreator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      modelCreator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      modelCreator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       modelCreator.GetVariableInfo("SVMCost").ActualName = "Cost";
       modelCreator.GetVariableInfo("SVMGamma").ActualName = "Gamma";
       modelCreator.GetVariableInfo("SVMKernelType").ActualName = "KernelType";
@@ -255,7 +263,7 @@ namespace HeuristicLab.SupportVectorMachines {
       modelCreator.GetVariableInfo("SVMType").ActualName = "Type";
 
       modelProcessor.AddSubOperator(modelCreator);
-      CombinedOperator trainingEvaluator = (CombinedOperator)CreateEvaluator("Training");
+      CombinedOperator trainingEvaluator = (CombinedOperator)CreateEvaluator("ActualTraining");
       trainingEvaluator.OperatorGraph.InitialOperator.SubOperators[1].GetVariableInfo("MSE").ActualName = "Quality";
       modelProcessor.AddSubOperator(trainingEvaluator);
       modelProcessor.AddSubOperator(CreateEvaluator("Validation"));
@@ -414,16 +422,16 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
-      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
+      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ActualTrainingR2", false).Data;
       model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;
       model.TestCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data;
-      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data;
+      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ActualTrainingMAPE", false).Data;
       model.ValidationMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data;
       model.TestMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data;
-      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data;
+      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ActualTrainingMAPRE", false).Data;
       model.ValidationMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data;
       model.TestMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data;
-      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
+      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ActualTrainingVAF", false).Data;
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
 

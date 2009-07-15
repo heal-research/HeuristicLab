@@ -55,6 +55,9 @@ namespace HeuristicLab.Modeling {
       GetVariableInfo("TrainingSamplesEnd").Local = true;
       AddVariable(new Variable("TrainingSamplesEnd", new IntData()));
 
+      AddVariableInfo(new VariableInfo("ActualTrainingSamplesStart", "ActualTrainingSamplesStart", typeof(IntData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("ActualTrainingSamplesEnd", "ActualTrainingSamplesEnd", typeof(IntData), VariableKind.New));
+
       AddVariableInfo(new VariableInfo("ValidationSamplesStart", "ValidationSamplesStart", typeof(IntData), VariableKind.New));
       GetVariableInfo("ValidationSamplesStart").Local = true;
       AddVariable(new Variable("ValidationSamplesStart", new IntData()));
@@ -70,6 +73,8 @@ namespace HeuristicLab.Modeling {
       AddVariableInfo(new VariableInfo("TestSamplesEnd", "TestSamplesEnd", typeof(IntData), VariableKind.New));
       GetVariableInfo("TestSamplesEnd").Local = true;
       AddVariable(new Variable("TestSamplesEnd", new IntData()));
+
+      AddVariableInfo(new VariableInfo("MaxNumberOfTrainingSamples", "Maximal number of training samples to use (optional)", typeof(IntData), VariableKind.In));
     }
 
     public override IView CreateView() {
@@ -77,13 +82,35 @@ namespace HeuristicLab.Modeling {
     }
 
     public override IOperation Apply(IScope scope) {
-      foreach(VariableInfo info in VariableInfos) {
-        if(info.Local) {
-          IVariable var = GetVariable(info.FormalName);
-          if(var != null) scope.AddVariable(new Variable(info.ActualName, (IItem)var.Value.Clone()));
-        }
+      AddVariableToScope("Dataset", scope);
+      AddVariableToScope("TargetVariable", scope);
+      AddVariableToScope("AllowedFeatures", scope);
+      AddVariableToScope("TrainingSamplesStart", scope);
+      AddVariableToScope("TrainingSamplesEnd", scope);
+      AddVariableToScope("ValidationSamplesStart", scope);
+      AddVariableToScope("ValidationSamplesEnd", scope);
+      AddVariableToScope("TestSamplesStart", scope);
+      AddVariableToScope("TestSamplesEnd", scope);
+
+      int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+
+      var maxTraining = GetVariableValue<IntData>("MaxNumberOfTrainingSamples", scope, true, false);
+      int nTrainingSamples;
+      if (maxTraining != null) {
+        nTrainingSamples = Math.Min(maxTraining.Data, trainingEnd - trainingStart);
+        if (nTrainingSamples <= 0)
+          throw new ArgumentException("Maximal number of training samples must be larger than 0", "MaxNumberOfTrainingSamples");
+      } else {
+        nTrainingSamples = trainingEnd - trainingStart;
       }
+      scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesStart"), new IntData(trainingStart)));
+      scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesEnd"), new IntData(trainingStart + nTrainingSamples)));
       return null;
+    }
+
+    private void AddVariableToScope(string variableName, IScope scope) {
+      scope.AddVariable(new Variable(variableName, (IItem)GetVariable(variableName).Value.Clone()));      
     }
   }
 }

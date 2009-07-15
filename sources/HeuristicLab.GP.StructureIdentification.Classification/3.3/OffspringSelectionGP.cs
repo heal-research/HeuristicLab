@@ -33,9 +33,6 @@ using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, IClassificationAlgorithm {
-    protected override IOperator CreateProblemInjector() {
-      return new ProblemInjector();
-    }
 
     protected override IOperator CreateBestSolutionProcessor() {
       IOperator seq = base.CreateBestSolutionProcessor();
