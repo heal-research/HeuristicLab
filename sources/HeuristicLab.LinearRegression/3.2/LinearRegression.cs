@@ -104,8 +104,8 @@ namespace HeuristicLab.LinearRegression {
       lrOperator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
       seq.AddSubOperator(randomInjector);
-      seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(problemInjector);
+      seq.AddSubOperator(globalInjector);
       seq.AddSubOperator(shuffler);
       seq.AddSubOperator(lrOperator);
       seq.AddSubOperator(CreateModelAnalyser());
