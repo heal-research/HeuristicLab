@@ -26,6 +26,7 @@ using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using System.Linq;
 
 namespace HeuristicLab.Modeling {
   public class ProblemInjector : OperatorBase {
@@ -82,15 +83,25 @@ namespace HeuristicLab.Modeling {
     }
 
     public override IOperation Apply(IScope scope) {
-      AddVariableToScope("Dataset", scope);
-      AddVariableToScope("TargetVariable", scope);
-      AddVariableToScope("AllowedFeatures", scope);
       AddVariableToScope("TrainingSamplesStart", scope);
       AddVariableToScope("TrainingSamplesEnd", scope);
       AddVariableToScope("ValidationSamplesStart", scope);
       AddVariableToScope("ValidationSamplesEnd", scope);
       AddVariableToScope("TestSamplesStart", scope);
       AddVariableToScope("TestSamplesEnd", scope);
+
+      Dataset operatorDataset = (Dataset)GetVariable("Dataset").Value;
+      int targetVariable = ((IntData)GetVariable("TargetVariable").Value).Data;
+      ItemList<IntData> operatorAllowedFeatures = (ItemList<IntData>)GetVariable("AllowedFeatures").Value;
+
+      Dataset scopeDataset = CreateNewDataset(operatorDataset, targetVariable, operatorAllowedFeatures);
+
+      ItemList<IntData> allowedFeatures = new ItemList<IntData>();
+      allowedFeatures.AddRange(Enumerable.Range(1, scopeDataset.Columns -1 ).Select(x=>new IntData(x)));
+
+      scope.AddVariable(new Variable("Dataset", scopeDataset));
+      scope.AddVariable(new Variable("AllowedFeatures", allowedFeatures));
+      scope.AddVariable(new Variable("TargetVariable", new IntData(0)));
 
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
@@ -107,6 +118,40 @@ namespace HeuristicLab.Modeling {
       scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesStart"), new IntData(trainingStart)));
       scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesEnd"), new IntData(trainingStart + nTrainingSamples)));
       return null;
+    }
+
+    private Dataset CreateNewDataset(Dataset operatorDataset, int targetVariable, ItemList<IntData> operatorAllowedFeatures) {
+      int columns = (operatorAllowedFeatures.Count() + 1);
+      double[] values = new double[operatorDataset.Rows * columns];
+
+      for (int i = 0; i < values.Length; i++) {
+        int row = i / columns;
+        int column = i % columns;
+        if (column == 0) {
+          values[i] = operatorDataset.GetValue(row, targetVariable);
+        } else {
+          values[i] = operatorDataset.GetValue(row, operatorAllowedFeatures[column-1].Data);
+        }
+      }
+
+      Dataset ds = new Dataset();
+      ds.Columns = columns;
+      ds.Rows = operatorDataset.Rows;
+      ds.Name = operatorDataset.Name;
+      ds.Samples = values;
+      double[] scalingFactor = new double[columns];
+      double[] scalingOffset = new double[columns];
+      ds.SetVariableName(0, operatorDataset.GetVariableName(targetVariable));
+      scalingFactor[0] = operatorDataset.ScalingFactor[targetVariable];
+      scalingOffset[0] = operatorDataset.ScalingOffset[targetVariable];
+      for (int column = 1; column < columns; column++) {
+        ds.SetVariableName(column, operatorDataset.GetVariableName(operatorAllowedFeatures[column - 1].Data));
+        scalingFactor[column] = operatorDataset.ScalingFactor[operatorAllowedFeatures[column - 1].Data];
+        scalingOffset[column] = operatorDataset.ScalingOffset[operatorAllowedFeatures[column - 1].Data];
+      }
+      ds.ScalingOffset = scalingOffset;
+      ds.ScalingFactor = scalingFactor;
+      return ds;
     }
 
     private void AddVariableToScope(string variableName, IScope scope) {

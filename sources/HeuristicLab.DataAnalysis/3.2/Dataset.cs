@@ -68,9 +68,18 @@ namespace HeuristicLab.DataAnalysis {
 
     public double[] ScalingFactor {
       get { return scalingFactor; }
+      set {
+        if (value.Length != scalingFactor.Length)
+          throw new ArgumentException("Length of scaling factor array doesn't match number of variables");
+        scalingFactor = value;
+      }
     }
     public double[] ScalingOffset {
       get { return scalingOffset; }
+      set {
+        if (value.Length != scalingOffset.Length) 
+          throw new ArgumentException("Length of scaling offset array doesn't match number of variables");
+        scalingOffset = value; }
     }
 
     public double GetValue(int i, int j) {
