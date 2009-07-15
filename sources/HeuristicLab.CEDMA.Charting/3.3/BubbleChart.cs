@@ -208,7 +208,7 @@ namespace HeuristicLab.CEDMA.Charting {
           double y = ys[Math.Min(i, ys.Count() - 1)];
           if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
           if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
-          if (!double.IsNaN(x) && !double.IsNaN(y)) {
+          if (!double.IsNaN(x) && !double.IsNaN(y) && IsReasonablePoint(new PointD(x,y))) {
             string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
             string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
             UpdateViewSize(x, y, TransformPixelToWorld(new Size(size, 0)).Width);
@@ -227,6 +227,10 @@ namespace HeuristicLab.CEDMA.Charting {
       }
       Group.Add(points);
       UpdateEnabled = true;
+    }
+
+    private bool IsReasonablePoint(PointD pointD) {
+      return pointD.X > LowerLeft.X && pointD.X < UpperRight.X && pointD.Y > LowerLeft.Y && pointD.Y < UpperRight.Y; 
     }
 
     private int CalculateSize(double size, double minSize, double maxSize) {
