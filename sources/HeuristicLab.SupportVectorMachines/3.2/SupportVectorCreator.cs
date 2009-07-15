@@ -104,13 +104,15 @@ namespace HeuristicLab.SupportVectorMachines {
       lock (locker) {
         if (!abortRequested) {
           trainingThread = new Thread(() => {
-              model = SVM.Training.Train(scaledProblem, parameter);
+            model = SVM.Training.Train(scaledProblem, parameter);
           });
           trainingThread.Start();
         }
       }
-      trainingThread.Join();
-      trainingThread = null;
+      if (!abortRequested) {
+        trainingThread.Join();
+        trainingThread = null;
+      }
       return model;
     }
   }
