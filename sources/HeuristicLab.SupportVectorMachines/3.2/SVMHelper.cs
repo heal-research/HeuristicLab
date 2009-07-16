@@ -8,19 +8,21 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SVMHelper {
-    public static SVM.Problem CreateSVMProblem(Dataset dataset, ItemList<IntData> allowedFeatures, int targetVariable, int start, int end) {
+    public static SVM.Problem CreateSVMProblem(Dataset dataset, int targetVariable, int start, int end) {
       int rowCount = end - start;
-      double[] samples = dataset.Samples;
-
       List<int> skippedFeatures = new List<int>();
-      for (int i = 0; i < allowedFeatures.Count; i++) {
-        if (dataset.GetRange(allowedFeatures[i].Data, start, end) == 0)
-          skippedFeatures.Add(i);
+      for (int i = 0; i < dataset.Columns; i++) {
+        if (i != targetVariable) {
+          if (dataset.GetRange(i, start, end) == 0)
+            skippedFeatures.Add(i);
+        }
       }
+
+      int maxColumns = dataset.Columns - skippedFeatures.Count();
 
       double[] targetVector = new double[rowCount];
       for (int i = 0; i < rowCount; i++) {
-        double value = samples[(start + i) * dataset.Columns + targetVariable];
+        double value = dataset.GetValue(start + i, targetVariable);
           targetVector[i] = value;
       }
       targetVector = targetVector.Where(x=> !double.IsNaN(x)).ToArray();
@@ -30,20 +32,20 @@ namespace HeuristicLab.SupportVectorMachines {
       int addedRows = 0;
       for (int row = 0; row < rowCount; row++) {
         tempRow = new List<SVM.Node>();
-        for (int col = 0; col < allowedFeatures.Count; col++) {
-          if (!skippedFeatures.Contains(col)) {
-            double value = samples[(start + row) * dataset.Columns + allowedFeatures[col].Data];
+        for (int col = 0; col < dataset.Columns; col++) {
+          if (!skippedFeatures.Contains(col) && col!=targetVariable) {
+            double value = dataset.GetValue(start + row, col);
             if (!double.IsNaN(value))
-              tempRow.Add(new SVM.Node(allowedFeatures[col].Data, value));
+              tempRow.Add(new SVM.Node(col, value));
           }
         }
-        if (!double.IsNaN(samples[(start + row) * dataset.Columns + targetVariable])) {
+        if (!double.IsNaN(dataset.GetValue(start + row, targetVariable))) {
           nodes[addedRows] = tempRow.ToArray();
           addedRows++;
         }
       }
 
-      return new SVM.Problem(targetVector.Length, targetVector, nodes, allowedFeatures.Max(x => x.Data));
+      return new SVM.Problem(targetVector.Length, targetVector, nodes, maxColumns);
     }
   }
 }

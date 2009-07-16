@@ -31,7 +31,6 @@ using HeuristicLab.Constraints;
 namespace HeuristicLab.GP.Boolean {
   public class FunctionLibraryInjector : OperatorBase {
     private const string TARGETVARIABLE = "TargetVariable";
-    private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string OPERATORLIBRARY = "FunctionLibrary";
 
     private GPOperatorLibrary operatorLibrary;
@@ -44,26 +43,13 @@ namespace HeuristicLab.GP.Boolean {
     public FunctionLibraryInjector()
       : base() {
       AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo(OPERATORLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
       int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
 
-      // remove the target-variable in case it occures in allowed features
-      List<IntData> ts = allowedFeatures.FindAll(d => d.Data == targetVariable);
-      foreach (IntData t in ts) allowedFeatures.Remove(t);
-
       InitDefaultOperatorLibrary();
-
-      int[] allowedIndexes = new int[allowedFeatures.Count];
-      for (int i = 0; i < allowedIndexes.Length; i++) {
-        allowedIndexes[i] = allowedFeatures[i].Data;
-      }
-
-      variable.SetConstraints(allowedIndexes);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OPERATORLIBRARY), operatorLibrary));
       return null;

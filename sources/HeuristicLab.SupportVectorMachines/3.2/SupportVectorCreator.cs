@@ -38,7 +38,6 @@ namespace HeuristicLab.SupportVectorMachines {
       : base() {
       //Dataset infos
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("AllowedFeatures", "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
@@ -66,7 +65,6 @@ namespace HeuristicLab.SupportVectorMachines {
     public override IOperation Apply(IScope scope) {
       abortRequested = false;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>("AllowedFeatures", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
@@ -82,7 +80,7 @@ namespace HeuristicLab.SupportVectorMachines {
       parameter.Nu = GetVariableValue<DoubleData>("SVMNu", scope, true).Data;
       parameter.Gamma = GetVariableValue<DoubleData>("SVMGamma", scope, true).Data;
 
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end);
       SVM.RangeTransform rangeTransform = SVM.Scaling.DetermineRange(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);
 

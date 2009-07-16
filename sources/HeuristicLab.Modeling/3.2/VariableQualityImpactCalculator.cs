@@ -42,10 +42,10 @@ namespace HeuristicLab.Modeling {
       return newValue / referenceValue;
     }
 
-    protected override double CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
-      return CalculateQuality(scope, dataset, targetVariable, allowedFeatures, start, end);
+    protected override double CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
+      return CalculateQuality(scope, dataset, targetVariable, start, end);
     }
 
-    protected abstract double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);
+    protected abstract double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, int start, int end);
   }
 }

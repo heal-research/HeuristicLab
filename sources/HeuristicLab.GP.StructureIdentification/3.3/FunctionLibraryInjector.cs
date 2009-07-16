@@ -31,9 +31,9 @@ using StructId = HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class FunctionLibraryInjector : OperatorBase {
+    private const string NUMBEROFINPUTVARIABLES = "NumberOfInputVariables";
     private const string FUNCTIONLIBRARY = "FunctionLibrary";
     private const string TARGETVARIABLE = "TargetVariable";
-    private const string ALLOWEDFEATURES = "AllowedFeatures";
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
 
@@ -69,10 +69,10 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public FunctionLibraryInjector()
       : base() {
+      AddVariableInfo(new VariableInfo(NUMBEROFINPUTVARIABLES, "The number of available input variables", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(ALLOWEDFEATURES, "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
-      AddVariableInfo(new Core.VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), Core.VariableKind.In));
-      AddVariableInfo(new Core.VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), Core.VariableKind.In));
+      AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
 
       AddVariable(DIFFERENTIALS_ALLOWED, false);
@@ -110,8 +110,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public override IOperation Apply(IScope scope) {
       StructId.Variable variable;
       GPOperatorLibrary operatorLibrary;
-
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>(ALLOWEDFEATURES, scope, true);
+      int nInputVariables = GetVariableValue<IntData>(NUMBEROFINPUTVARIABLES, scope, true).Data;
       int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
 
       // try to get minTimeOffset (use 0 as default if not available)
@@ -225,13 +224,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       ConditionalAddOperator(TANGENS_ALLOWED, operatorLibrary, tangens);
       ConditionalAddOperator(XOR_ALLOWED, operatorLibrary, xor);
 
-      int[] allowedIndexes = new int[allowedFeatures.Count];
-      for (int i = 0; i < allowedIndexes.Length; i++) {
-        allowedIndexes[i] = allowedFeatures[i].Data;
-      }
-
-      variable.SetConstraints(allowedIndexes, minTimeOffset, maxTimeOffset);
-      differential.SetConstraints(allowedIndexes, minTimeOffset, maxTimeOffset);
+      variable.SetConstraints(1, nInputVariables, minTimeOffset, maxTimeOffset);
+      differential.SetConstraints(1, nInputVariables, minTimeOffset, maxTimeOffset);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
 

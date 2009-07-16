@@ -76,6 +76,7 @@ namespace HeuristicLab.Modeling {
       AddVariable(new Variable("TestSamplesEnd", new IntData()));
 
       AddVariableInfo(new VariableInfo("MaxNumberOfTrainingSamples", "Maximal number of training samples to use (optional)", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("NumberOfInputVariables", "The number of available input variables", typeof(IntData), VariableKind.New));
     }
 
     public override IView CreateView() {
@@ -96,12 +97,9 @@ namespace HeuristicLab.Modeling {
 
       Dataset scopeDataset = CreateNewDataset(operatorDataset, targetVariable, operatorAllowedFeatures);
 
-      ItemList<IntData> allowedFeatures = new ItemList<IntData>();
-      allowedFeatures.AddRange(Enumerable.Range(1, scopeDataset.Columns -1 ).Select(x=>new IntData(x)));
-
       scope.AddVariable(new Variable("Dataset", scopeDataset));
-      scope.AddVariable(new Variable("AllowedFeatures", allowedFeatures));
       scope.AddVariable(new Variable("TargetVariable", new IntData(0)));
+      scope.AddVariable(new Variable("NumberOfInputVariables", new IntData(scopeDataset.Columns - 1)));
 
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;

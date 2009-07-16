@@ -37,7 +37,6 @@ namespace HeuristicLab.LinearRegression {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("AllowedFeatures", "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("LinearRegressionModel", "Formula that was calculated by linear regression", typeof(IFunctionTree), VariableKind.Out | VariableKind.New));
       AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
@@ -48,22 +47,13 @@ namespace HeuristicLab.LinearRegression {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>("AllowedFeatures", scope, true);
-      List<int> allowedRows = CalculateAllowedRows(dataset, allowedFeatures, targetVariable, start, end);
+      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, start, end);
+      List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariable, start, end);
 
-      List<IntData> disallowedFeatures = new List<IntData>();
-      foreach (IntData allowedFeature in allowedFeatures) {
-        if (IsAlmost(dataset.GetMinimum(allowedFeature.Data, start, end), 0.0) &&
-            IsAlmost(dataset.GetMaximum(allowedFeature.Data, start, end), 0.0)) 
-          disallowedFeatures.Add(allowedFeature);
-      }
-      foreach (IntData disallowedFeature in disallowedFeatures)
-        allowedFeatures.Remove(disallowedFeature);
-
-      double[,] inputMatrix = PrepareInputMatrix(dataset, allowedFeatures, allowedRows);
+      double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows);
       double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
       double[] coefficients = CalculateCoefficients(inputMatrix, targetVector);
-      IFunctionTree tree = CreateModel(coefficients, allowedFeatures);
+      IFunctionTree tree = CreateModel(coefficients, allowedColumns);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), tree));
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(tree.Size)));
@@ -75,7 +65,7 @@ namespace HeuristicLab.LinearRegression {
       return Math.Abs(x - y) < 1.0E-12;
     }
 
-    private IFunctionTree CreateModel(double[] coefficients, ItemList<IntData> allowedFeatures) {
+    private IFunctionTree CreateModel(double[] coefficients, List<int> allowedColumns) {
       IFunctionTree root = new Addition().GetTreeNode();
       IFunctionTree actNode = root;
 
@@ -83,13 +73,13 @@ namespace HeuristicLab.LinearRegression {
       GP.StructureIdentification.Variable v;
       for (int i = 0; i < coefficients.Length - 1; i++) {
         v = new GP.StructureIdentification.Variable();
-        v.GetVariable(GP.StructureIdentification.Variable.INDEX).Value = new ConstrainedIntData(allowedFeatures[i].Data);
+        v.GetVariable(GP.StructureIdentification.Variable.INDEX).Value = new ConstrainedIntData(allowedColumns[i]);
         v.GetVariable(GP.StructureIdentification.Variable.WEIGHT).Value = new ConstrainedDoubleData(coefficients[i]);
         v.GetVariable(GP.StructureIdentification.Variable.OFFSET).Value = new ConstrainedIntData(0);
         nodes.Enqueue(v.GetTreeNode());
       }
       GP.StructureIdentification.Constant c = new Constant();
-      c.GetVariable(GP.StructureIdentification.Constant.VALUE).Value = new ConstrainedDoubleData(coefficients[coefficients.Length - 1] * 1.0);
+      c.GetVariable(GP.StructureIdentification.Constant.VALUE).Value = new ConstrainedDoubleData(coefficients[coefficients.Length - 1]);
       nodes.Enqueue(c.GetTreeNode());
 
       IFunctionTree newTree;
@@ -106,7 +96,7 @@ namespace HeuristicLab.LinearRegression {
     private double[] CalculateCoefficients(double[,] inputMatrix, double[] targetVector) {
       double[] weights = new double[targetVector.Length];
       double[] coefficients = new double[inputMatrix.GetLength(1)];
-      for(int i=0;i<weights.Length;i++) weights[i] = 1.0;
+      for (int i = 0; i < weights.Length; i++) weights[i] = 1.0;
       // call external ALGLIB solver
       leastsquares.buildgeneralleastsquares(ref targetVector, ref weights, ref inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), ref coefficients);
 
@@ -114,13 +104,13 @@ namespace HeuristicLab.LinearRegression {
     }
 
     //returns list of valid row indexes (rows without NaN values)
-    private List<int> CalculateAllowedRows(Dataset dataset, ItemList<IntData> allowedFeatures, int targetVariable, int start, int end) {
+    private List<int> CalculateAllowedRows(Dataset dataset, int targetVariable, int start, int end) {
       List<int> allowedRows = new List<int>();
       bool add;
       for (int row = start; row < end; row++) {
         add = true;
-        for (int col = 0; col < allowedFeatures.Count && add == true; col++) {
-          if (double.IsNaN(dataset.GetValue(row, allowedFeatures[col].Data)) ||
+        for (int col = 0; col < dataset.Columns && add == true; col++) {
+          if (double.IsNaN(dataset.GetValue(row, col)) ||
               double.IsNaN(dataset.GetValue(row, targetVariable)))
             add = false;
         }
@@ -131,16 +121,28 @@ namespace HeuristicLab.LinearRegression {
       return allowedRows;
     }
 
-    private double[,] PrepareInputMatrix(Dataset dataset, ItemList<IntData> allowedFeatures, List<int> allowedRows) {
+    //returns list of valid column indexes (columns which contain at least one non-zero value)
+    private List<int> CalculateAllowedColumns(Dataset dataset, int targetVariable, int start, int end) {
+      List<int> allowedColumns = new List<int>();
+      for (int i = 0; i < dataset.Columns; i++) {
+        if (i == targetVariable) continue;
+        if (!IsAlmost(dataset.GetMinimum(i, start, end), 0.0) ||
+            !IsAlmost(dataset.GetMaximum(i, start, end), 0.0))
+          allowedColumns.Add(i);
+      }
+      return allowedColumns;
+    }
+
+    private double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows) {
       int rowCount = allowedRows.Count;
-      double[,] matrix = new double[rowCount, allowedFeatures.Count + 1];
-      for (int col = 0; col < allowedFeatures.Count; col++) {
+      double[,] matrix = new double[rowCount, allowedColumns.Count + 1];
+      for (int col = 0; col < allowedColumns.Count; col++) {
         for (int row = 0; row < allowedRows.Count; row++)
-          matrix[row, col] = dataset.GetValue(allowedRows[row], allowedFeatures[col].Data);
+          matrix[row, col] = dataset.GetValue(allowedRows[row], allowedColumns[col]);
       }
       //add constant 1.0 in last column
       for (int i = 0; i < rowCount; i++)
-        matrix[i, allowedFeatures.Count] = constant;
+        matrix[i, allowedColumns.Count] = constant;
       return matrix;
     }
 

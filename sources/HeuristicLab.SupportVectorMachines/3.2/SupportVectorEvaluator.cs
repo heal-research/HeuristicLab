@@ -34,7 +34,6 @@ namespace HeuristicLab.SupportVectorMachines {
       : base() {
       //Dataset infos
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("AllowedFeatures", "List of indexes of allowed features", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
@@ -46,13 +45,12 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>("AllowedFeatures", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
 
       SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);
 
       double[,] values = new double[scaledProblem.Count, 2];

@@ -36,9 +36,9 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMModel", "The model that should be evaluated", typeof(SVMModel), VariableKind.In));
     }
 
-    protected override double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
+    protected override double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
       SVMModel model = GetVariableValue<SVMModel>("SVMModel", scope, true);
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, allowedFeatures, targetVariable, start, end);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, model.RangeTransform);
 
       double[,] values = new double[end - start, 2];

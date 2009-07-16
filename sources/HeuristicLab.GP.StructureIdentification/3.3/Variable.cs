@@ -153,55 +153,30 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       }
     }
 
-    public void SetConstraints(int[] allowedIndexes, int minSampleOffset, int maxSampleOffset) {
+    public void SetConstraints(int minInputIndex, int maxInputIndex, int minSampleOffset, int maxSampleOffset) {
       ConstrainedIntData offset = GetVariableValue<ConstrainedIntData>(OFFSET, null, false);
-      IntBoundedConstraint rangeConstraint = new IntBoundedConstraint();
+      IntBoundedConstraint offsetConstraint = new IntBoundedConstraint();
       this.minOffset = minSampleOffset;
       this.maxOffset = maxSampleOffset;
-      rangeConstraint.LowerBound = minSampleOffset;
-      rangeConstraint.LowerBoundEnabled = true;
-      rangeConstraint.LowerBoundIncluded = true;
-      rangeConstraint.UpperBound = maxSampleOffset;
-      rangeConstraint.UpperBoundEnabled = true;
-      rangeConstraint.UpperBoundIncluded = true;
-      offset.AddConstraint(rangeConstraint);
+      offsetConstraint.LowerBound = minSampleOffset;
+      offsetConstraint.LowerBoundEnabled = true;
+      offsetConstraint.LowerBoundIncluded = true;
+      offsetConstraint.UpperBound = maxSampleOffset;
+      offsetConstraint.UpperBoundEnabled = true;
+      offsetConstraint.UpperBoundIncluded = true;
+      offset.AddConstraint(offsetConstraint);
 
       ConstrainedIntData index = GetVariableValue<ConstrainedIntData>(INDEX, null, false);
-      Array.Sort(allowedIndexes);
-      minIndex = allowedIndexes[0]; maxIndex = allowedIndexes[allowedIndexes.Length - 1];
-      List<IConstraint> constraints = new List<IConstraint>();
-      int start = allowedIndexes[0];
-      int prev = start;
-      for(int i = 1; i < allowedIndexes.Length; i++) {
-        if(allowedIndexes[i] != prev + 1) {
-          IntBoundedConstraint lastRange = new IntBoundedConstraint();
-          lastRange.LowerBound = start;
-          lastRange.LowerBoundEnabled = true;
-          lastRange.LowerBoundIncluded = true;
-          lastRange.UpperBound = prev;
-          lastRange.UpperBoundEnabled = true;
-          lastRange.UpperBoundIncluded = true;
-          constraints.Add(lastRange);
-          start = allowedIndexes[i];
-          prev = start;
-        }
-        prev = allowedIndexes[i];
-      }
-      IntBoundedConstraint range = new IntBoundedConstraint();
-      range.LowerBound = start;
-      range.LowerBoundEnabled = true;
-      range.LowerBoundIncluded = true;
-      range.UpperBound = prev;
-      range.UpperBoundEnabled = true;
-      range.UpperBoundIncluded = true;
-      constraints.Add(range);
-      if(constraints.Count > 1) {
-        OrConstraint or = new OrConstraint();
-        foreach(IConstraint c in constraints) or.Clauses.Add(c);
-        index.AddConstraint(or);
-      } else {
-        index.AddConstraint(constraints[0]);
-      }
+      IntBoundedConstraint indexConstraint = new IntBoundedConstraint();
+      minIndex = minInputIndex;
+      maxIndex = maxInputIndex;
+      indexConstraint.LowerBound = minInputIndex;
+      indexConstraint.LowerBoundEnabled = true;
+      indexConstraint.LowerBoundIncluded = true;
+      indexConstraint.UpperBound = maxInputIndex;
+      indexConstraint.UpperBoundEnabled = true;
+      indexConstraint.UpperBoundIncluded = true;
+      index.AddConstraint(indexConstraint);
 
       SetupInitialization();
       SetupManipulation();

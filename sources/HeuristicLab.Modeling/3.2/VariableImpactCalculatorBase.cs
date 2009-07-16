@@ -33,7 +33,7 @@ namespace HeuristicLab.Modeling {
     private bool abortRequested = false;
 
     public override string Description {
-      get { return @"Calculates the impact of all allowed input variables on the model."; }
+      get { return @"Calculates the impact of all input variables on the model."; }
     }
 
     public abstract string OutputVariableName { get; }
@@ -46,41 +46,43 @@ namespace HeuristicLab.Modeling {
       : base() {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("AllowedFeatures", "Indexes of allowed input variables", typeof(ItemList<IntData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "TrainingSamplesEnd", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(OutputVariableName, OutputVariableName, typeof(ItemList), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
-      ItemList<IntData> allowedFeatures = GetVariableValue<ItemList<IntData>>("AllowedFeatures", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       Dataset dirtyDataset = (Dataset)dataset.Clone();
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
 
-      T referenceValue = CalculateValue(scope, dataset, targetVariable, allowedFeatures, start, end);
-      double[] impacts = new double[allowedFeatures.Count];
+      T referenceValue = CalculateValue(scope, dataset, targetVariable, start, end);
+      double[] impacts = new double[dataset.Columns];
 
-      for (int i = 0; i < allowedFeatures.Count && !abortRequested; i++) {
-        int currentVariable = allowedFeatures[i].Data;
-        var oldValues = ReplaceVariableValues(dirtyDataset, currentVariable, CalculateNewValues(dirtyDataset, currentVariable, start, end), start, end);
-        T newValue = CalculateValue(scope, dirtyDataset, targetVariable, allowedFeatures, start, end);
-        impacts[i] = CalculateImpact(referenceValue, newValue);
-        ReplaceVariableValues(dirtyDataset, currentVariable, oldValues, start, end);
+      for (int i = 0; i < impacts.Length && !abortRequested; i++) {
+        int currentVariable = i;
+        if (currentVariable != targetVariable) {
+          var oldValues = ReplaceVariableValues(dirtyDataset, currentVariable, CalculateNewValues(dirtyDataset, currentVariable, start, end), start, end);
+          T newValue = CalculateValue(scope, dirtyDataset, targetVariable, start, end);
+          impacts[i] = CalculateImpact(referenceValue, newValue);
+          ReplaceVariableValues(dirtyDataset, currentVariable, oldValues, start, end);
+        }
       }
 
       if (!abortRequested) {
         impacts = PostProcessImpacts(impacts);
 
         ItemList variableImpacts = new ItemList();
-        for (int i = 0; i < allowedFeatures.Count; i++) {
-          int currentVariable = allowedFeatures[i].Data;
-          ItemList row = new ItemList();
-          row.Add(new StringData(dataset.GetVariableName(currentVariable)));
-          row.Add(new DoubleData(impacts[i]));
-          variableImpacts.Add(row);
+        for (int i = 0; i < impacts.Length; i++) {
+          int currentVariable = i;
+          if (currentVariable != targetVariable) {
+            ItemList row = new ItemList();
+            row.Add(new StringData(dataset.GetVariableName(currentVariable)));
+            row.Add(new DoubleData(impacts[i]));
+            variableImpacts.Add(row);
+          }
         }
 
         scope.AddVariable(new Variable(scope.TranslateName(OutputVariableName), variableImpacts));
@@ -90,7 +92,7 @@ namespace HeuristicLab.Modeling {
       }
     }
 
-    protected abstract T CalculateValue(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end);
+    protected abstract T CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end);
 
     protected abstract double CalculateImpact(T referenceValue, T newValue);
 

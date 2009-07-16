@@ -40,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
 
-    protected override double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, ItemList<IntData> allowedFeatures, int start, int end) {
+    protected override double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
       IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
