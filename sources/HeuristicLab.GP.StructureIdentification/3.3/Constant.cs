@@ -43,9 +43,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo(VALUE, "The constant value", typeof(ConstrainedDoubleData), VariableKind.None));
       GetVariableInfo(VALUE).Local = true;
 
-      ConstrainedDoubleData valueData = new ConstrainedDoubleData();
+      DoubleData valueData = new DoubleData();
       // initialize a default range for the contant value
-      valueData.AddConstraint(new DoubleBoundedConstraint(-20.0, 20.0));
       HeuristicLab.Core.Variable value = new HeuristicLab.Core.Variable(VALUE, valueData);
       AddVariable(value);
 

@@ -119,7 +119,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Constant constant, IFunctionTree tree) {
-      double value = ((ConstrainedDoubleData)tree.GetLocalVariable(Constant.VALUE).Value).Data;
+      double value = ((DoubleData)tree.GetLocalVariable(Constant.VALUE).Value).Data;
       return "[T]Constant(" + value.ToString("r") + ";0;0)";
     }
 
@@ -128,7 +128,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Differential differential, IFunctionTree tree) {
-      double weight = ((ConstrainedDoubleData)tree.GetLocalVariable(Differential.WEIGHT).Value).Data;
+      double weight = ((DoubleData)tree.GetLocalVariable(Differential.WEIGHT).Value).Data;
       double index = ((ConstrainedIntData)tree.GetLocalVariable(Differential.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)tree.GetLocalVariable(Differential.OFFSET).Value).Data;
 
@@ -176,7 +176,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Variable variable, IFunctionTree tree) {
-      double weight = ((ConstrainedDoubleData)tree.GetLocalVariable(Variable.WEIGHT).Value).Data;
+      double weight = ((DoubleData)tree.GetLocalVariable(Variable.WEIGHT).Value).Data;
       double index = ((ConstrainedIntData)tree.GetLocalVariable(Variable.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)tree.GetLocalVariable(Variable.OFFSET).Value).Data;
 

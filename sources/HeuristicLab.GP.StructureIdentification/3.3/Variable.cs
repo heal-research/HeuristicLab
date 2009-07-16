@@ -63,9 +63,7 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       AddVariableInfo(new VariableInfo(MANIPULATION, "Manipulation operator for variables", typeof(CombinedOperator), VariableKind.None));
       GetVariableInfo(MANIPULATION).Local = false;
 
-      ConstrainedDoubleData weight = new ConstrainedDoubleData();
-      // initialize a totally arbitrary range for the weight = [-1.0, 1.0]
-      weight.AddConstraint(new DoubleBoundedConstraint(-1.0, 1.0));
+      DoubleData weight = new DoubleData();
       AddVariable(new HeuristicLab.Core.Variable(WEIGHT, weight));
 
       ConstrainedIntData variable = new ConstrainedIntData();
