@@ -324,8 +324,10 @@ namespace HeuristicLab.PluginInfrastructure {
         }
       }
 
+      Queue<IPlugin> pluginsToLoad = new Queue<IPlugin>();
       DiscoveryService service = new DiscoveryService();
       // now search and instantiate an IPlugin type in each loaded assembly
+      // and prepare the queue to load all plugins
       foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
         // don't search for plugins in the PluginInfrastructure
         if (assembly == this.GetType().Assembly)
@@ -334,17 +336,31 @@ namespace HeuristicLab.PluginInfrastructure {
         foreach (Type pluginType in availablePluginTypes) {
           if (!pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
             IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
-            PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializingPlugin));
-            plugin.OnLoad();
+            pluginsToLoad.Enqueue(plugin);
             pluginsByName.Add(plugin.Name, plugin);
           }
         }
       }
 
-      foreach (IPlugin plugin in pluginsByName.Values) {
+      // load all plugins respecting their dependencies
+      while (pluginsToLoad.Count > 0) {
+        IPlugin plugin = pluginsToLoad.Dequeue();
         PluginInfo pluginInfo = GetPluginInfo(plugin);
-        allPlugins.Add(pluginInfo, plugin);
-        PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializedPlugin));
+        bool canLoad = true;
+        foreach (PluginInfo dependency in pluginInfo.Dependencies) {
+          if (!allPlugins.ContainsKey(dependency)) {
+            canLoad = false;
+            break;
+          }
+        }
+        if (canLoad) {
+          PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializingPlugin));
+          plugin.OnLoad();
+          allPlugins.Add(pluginInfo, plugin);
+          PluginAction(this, new PluginManagerActionEventArgs(plugin.Name, PluginManagerAction.InitializedPlugin));
+        } else {
+          pluginsToLoad.Enqueue(plugin);
+        }
       }
     }
     private PluginInfo GetPluginInfo(IPlugin plugin) {
