@@ -195,7 +195,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       } else {
         weight = ((DoubleData)weightItem).Data;
       }
-      double index = ((ConstrainedIntData)tree.GetLocalVariable(Variable.INDEX).Value).Data;
+      string index = ((StringData)tree.GetLocalVariable(Variable.INDEX).Value).Data;
       double offset = ((ConstrainedIntData)tree.GetLocalVariable(Variable.OFFSET).Value).Data;
 
       return "[T]Variable(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";

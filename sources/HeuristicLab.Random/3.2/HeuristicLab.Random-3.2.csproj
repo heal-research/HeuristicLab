@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UniformItemChooser.cs" />
     <Compile Include="UniformRandomAdder.cs" />
     <Compile Include="NormalRandomAdder.cs" />
     <Compile Include="HeuristicLabRandomPlugin.cs" />

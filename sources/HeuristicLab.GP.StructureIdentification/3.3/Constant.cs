@@ -40,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public Constant()
       : base() {
-      AddVariableInfo(new VariableInfo(VALUE, "The constant value", typeof(ConstrainedDoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo(VALUE, "The constant value", typeof(DoubleData), VariableKind.None));
       GetVariableInfo(VALUE).Local = true;
 
       DoubleData valueData = new DoubleData();

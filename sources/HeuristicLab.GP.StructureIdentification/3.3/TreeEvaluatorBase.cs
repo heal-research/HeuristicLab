@@ -77,13 +77,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       switch (instr.symbol) {
         case EvaluatorSymbolTable.DIFFERENTIAL:
         case EvaluatorSymbolTable.VARIABLE: {
-            instr.i_arg0 = (short)f.data[0]; // var
-            instr.d_arg0 = f.data[1]; // weight
-            instr.i_arg1 = (short)f.data[2]; // sample-offset
+            instr.i_arg0 = (short)dataset.GetVariableIndex((string)f.localData[0]); // var
+            instr.d_arg0 = (double)f.localData[1]; // weight
+            instr.i_arg1 = (short)(int)f.localData[2]; // sample-offset
             break;
           }
         case EvaluatorSymbolTable.CONSTANT: {
-            instr.d_arg0 = f.data[0]; // value
+            instr.d_arg0 = (double)f.localData[0]; // value
             break;
           }
         case EvaluatorSymbolTable.UNKNOWN: {

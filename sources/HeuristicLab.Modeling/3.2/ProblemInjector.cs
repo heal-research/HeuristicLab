@@ -77,6 +77,7 @@ namespace HeuristicLab.Modeling {
 
       AddVariableInfo(new VariableInfo("MaxNumberOfTrainingSamples", "Maximal number of training samples to use (optional)", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("NumberOfInputVariables", "The number of available input variables", typeof(IntData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("InputVariables", "List of input variable names", typeof(ItemList), VariableKind.New));
     }
 
     public override IView CreateView() {
@@ -96,10 +97,15 @@ namespace HeuristicLab.Modeling {
       ItemList<IntData> operatorAllowedFeatures = (ItemList<IntData>)GetVariable("AllowedFeatures").Value;
 
       Dataset scopeDataset = CreateNewDataset(operatorDataset, targetVariable, operatorAllowedFeatures);
+      ItemList inputVariables = new ItemList();
+      for (int i = 1; i < scopeDataset.Columns; i++) {
+        inputVariables.Add(new StringData(scopeDataset.GetVariableName(i)));
+      }
 
-      scope.AddVariable(new Variable("Dataset", scopeDataset));
-      scope.AddVariable(new Variable("TargetVariable", new IntData(0)));
-      scope.AddVariable(new Variable("NumberOfInputVariables", new IntData(scopeDataset.Columns - 1)));
+      scope.AddVariable(new Variable(scope.TranslateName("Dataset"), scopeDataset));
+      scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), new IntData(0)));
+      scope.AddVariable(new Variable(scope.TranslateName("NumberOfInputVariables"), new IntData(scopeDataset.Columns - 1)));
+      scope.AddVariable(new Variable(scope.TranslateName("InputVariables"), inputVariables));
 
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
@@ -115,6 +121,8 @@ namespace HeuristicLab.Modeling {
       }
       scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesStart"), new IntData(trainingStart)));
       scope.AddVariable(new Variable(scope.TranslateName("ActualTrainingSamplesEnd"), new IntData(trainingStart + nTrainingSamples)));
+
+
       return null;
     }
 
@@ -153,7 +161,7 @@ namespace HeuristicLab.Modeling {
     }
 
     private void AddVariableToScope(string variableName, IScope scope) {
-      scope.AddVariable(new Variable(variableName, (IItem)GetVariable(variableName).Value.Clone()));      
+      scope.AddVariable(new Variable(scope.TranslateName(variableName), (IItem)GetVariable(variableName).Value.Clone()));      
     }
   }
 }

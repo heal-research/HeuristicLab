@@ -66,7 +66,7 @@ namespace HeuristicLab.GP.Boolean {
         case SymbolTable.NAND: return !(Step() & Step());
         case SymbolTable.NOR: return !(Step() | Step());
         case SymbolTable.VARIABLE:
-          return dataset.GetValue(currentRow, (int)curFun.data[0]) != 0.0;
+          return dataset.GetValue(currentRow, (int)curFun.localData[0]) != 0.0;
         case SymbolTable.UNKNOWN:
         default:
           throw new InvalidOperationException(curFun.functionType.ToString());
