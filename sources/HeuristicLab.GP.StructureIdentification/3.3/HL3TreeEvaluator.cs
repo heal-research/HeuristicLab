@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using HeuristicLab.Modeling; // double.IsAlmost extension
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
@@ -28,14 +29,12 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// Not thread-safe!
   /// </summary>
   public class HL3TreeEvaluator : TreeEvaluatorBase {
-
-
     protected override double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
       switch (currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             int row = sampleIndex + currInstr.i_arg1;
-            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            if (row < 0 || row >= dataset.Rows) throw new InvalidOperationException("Out of range access to dataset row: " + row);
             else return currInstr.d_arg0 * dataset.GetValue(row, currInstr.i_arg0);
           }
         case EvaluatorSymbolTable.CONSTANT: {
@@ -43,7 +42,7 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.DIFFERENTIAL: {
             int row = sampleIndex + currInstr.i_arg1;
-            if (row < 0 || row >= dataset.Rows) return double.NaN;
+            if (row < 0 || row >= dataset.Rows) throw new InvalidOperationException("Out of range access to dataset row: " + row);
             else if (row < 1) return 0.0;
             else {
               double prevValue = dataset.GetValue(row - 1, currInstr.i_arg0);
@@ -116,33 +115,31 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.TANGENS: {
             return Math.Tan(EvaluateBakedCode());
           }
-        case EvaluatorSymbolTable.AND: { // only defined for inputs 1 and 0
+        case EvaluatorSymbolTable.AND: {
             double result = EvaluateBakedCode();
             for (int i = 1; i < currInstr.arity; i++) {
-              if (result == 0.0) SkipBakedCode();
+              if (result < 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
               }
-              Debug.Assert(result == 0.0 || result == 1.0);
             }
-            return result;
+            return Math.Sign(result);
           }
         case EvaluatorSymbolTable.EQU: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            if (Math.Abs(x - y) < EPSILON) return 1.0; else return 0.0;
+            if (x.IsAlmost(y)) return 1.0; else return -1.0;
           }
         case EvaluatorSymbolTable.GT: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             if (x > y) return 1.0;
-            else return 0.0;
+            else return -1.0;
           }
-        case EvaluatorSymbolTable.IFTE: { // only defined for condition 0 or 1
+        case EvaluatorSymbolTable.IFTE: {
             double condition = EvaluateBakedCode();
-            Debug.Assert(condition == 0.0 || condition == 1.0);
             double result;
-            if (condition == 0.0) {
+            if (condition < 0.0) {
               result = EvaluateBakedCode(); SkipBakedCode();
             } else {
               SkipBakedCode(); result = EvaluateBakedCode();
@@ -153,28 +150,32 @@ namespace HeuristicLab.GP.StructureIdentification {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
             if (x < y) return 1.0;
-            else return 0.0;
+            else return -1.0;
           }
-        case EvaluatorSymbolTable.NOT: { // only defined for inputs 0 or 1
-            double result = EvaluateBakedCode();
-            Debug.Assert(result == 0.0 || result == 1.0);
-            return Math.Abs(result - 1.0);
+        case EvaluatorSymbolTable.NOT: {
+            return -EvaluateBakedCode();
           }
-        case EvaluatorSymbolTable.OR: { // only defined for inputs 0 or 1
+        case EvaluatorSymbolTable.OR: {
             double result = EvaluateBakedCode();
             for (int i = 1; i < currInstr.arity; i++) {
-              if (result > 0.0) SkipBakedCode();
+              if (result >= 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
-                Debug.Assert(result == 0.0 || result == 1.0);
               }
             }
-            return result;
+            return Math.Sign(result);
           }
-        case EvaluatorSymbolTable.XOR: { // only defined for inputs 0 or 1
+        case EvaluatorSymbolTable.XOR: {
             double x = EvaluateBakedCode();
             double y = EvaluateBakedCode();
-            return Math.Abs(x - y);
+            if (x > y) {
+              double tmp = x;
+              x = y;
+              y = tmp;
+            }
+            // invariant y >= x 
+            if (y < 0.0 || x > 0.0) return -1.0;
+            else return 1.0;
           }
         default: {
             throw new NotImplementedException();

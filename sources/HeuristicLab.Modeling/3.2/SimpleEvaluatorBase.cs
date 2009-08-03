@@ -30,9 +30,5 @@ namespace HeuristicLab.Modeling {
     }
 
     public abstract double Evaluate(double[,] values);
-
-    protected static bool IsAlmost(double x, double y) {
-      return Math.Abs(x - y) < 1.0E-12;
-    }
   }
 }

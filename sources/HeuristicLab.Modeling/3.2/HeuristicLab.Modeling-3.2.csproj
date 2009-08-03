@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationProblemInjector.cs" />
+    <Compile Include="DoubleExtensions.cs" />
     <Compile Include="VariableImpactCalculatorBase.cs" />
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
     <Compile Include="Model.cs" />

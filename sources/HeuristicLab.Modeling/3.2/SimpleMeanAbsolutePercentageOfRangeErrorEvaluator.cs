@@ -52,7 +52,7 @@ namespace HeuristicLab.Modeling {
       for (int i = 0; i < originalValues.Length; i++) originalValues[i] = values[i, 1];
       double range = Statistics.Range(originalValues);
       if (double.IsInfinity(range)) throw new ArgumentException("Range of elements in values is infinity");
-      if (IsAlmost(range, 0.0)) throw new ArgumentException("Range of elements in values is zero");
+      if (range.IsAlmost(0.0)) throw new ArgumentException("Range of elements in values is zero");
 
       for (int i = 0; i < values.GetLength(0); i++) {
         double estimated = values[i, 0];

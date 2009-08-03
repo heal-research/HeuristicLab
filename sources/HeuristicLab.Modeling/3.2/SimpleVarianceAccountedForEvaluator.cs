@@ -68,8 +68,8 @@ namespace HeuristicLab.Modeling {
       }
       double errorsVariance = Statistics.Variance(errors);
       double originalsVariance = Statistics.Variance(originalTargetVariableValues);
-      if (IsAlmost(originalsVariance, 0.0))
-        if (IsAlmost(errorsVariance, 0.0)) {
+      if (originalsVariance.IsAlmost(0.0))
+        if (errorsVariance.IsAlmost(0.0)) {
           return 1.0;
         } else {
           throw new ArgumentException("Variance of original values is zero");

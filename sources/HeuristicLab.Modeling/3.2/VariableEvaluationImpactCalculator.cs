@@ -63,7 +63,7 @@ namespace HeuristicLab.Modeling {
 
     protected override double[] PostProcessImpacts(double[] impacts) {
       double mseSum = impacts.Sum();
-      if (IsAlmost(mseSum, 0.0)) mseSum = 1.0;
+      if (mseSum.IsAlmost(0.0)) mseSum = 1.0;
       for (int i = 0; i < impacts.Length; i++) {
         impacts[i] = impacts[i] / mseSum;
       }

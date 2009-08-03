@@ -25,6 +25,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Modeling;
 using HeuristicLab.GP;
 using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.GP.Interfaces;
@@ -53,13 +54,9 @@ namespace HeuristicLab.LinearRegression {
       double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
       double[] coefficients = CalculateCoefficients(inputMatrix, targetVector);
       IFunctionTree tree = CreateModel(coefficients, allowedColumns.Select(i => dataset.GetVariableName(i)).ToList());
-      
+
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), new GeneticProgrammingModel(tree)));
       return null;
-    }
-
-    private bool IsAlmost(double x, double y) {
-      return Math.Abs(x - y) < 1.0E-12;
     }
 
     private IFunctionTree CreateModel(double[] coefficients, List<string> allowedVariables) {
@@ -124,8 +121,8 @@ namespace HeuristicLab.LinearRegression {
       List<int> allowedColumns = new List<int>();
       for (int i = 0; i < dataset.Columns; i++) {
         if (i == targetVariable) continue;
-        if (!IsAlmost(dataset.GetMinimum(i, start, end), 0.0) ||
-            !IsAlmost(dataset.GetMaximum(i, start, end), 0.0))
+        if (!dataset.GetMinimum(i, start, end).IsAlmost(0.0) ||
+            !dataset.GetMaximum(i, start, end).IsAlmost(0.0))
           allowedColumns.Add(i);
       }
       return allowedColumns;
