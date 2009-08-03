@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP;
 using HeuristicLab.GP.StructureIdentification;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.LinearRegression {
   public class LinearRegressionOperator : OperatorBase {
@@ -37,9 +38,7 @@ namespace HeuristicLab.LinearRegression {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("LinearRegressionModel", "Formula that was calculated by linear regression", typeof(IFunctionTree), VariableKind.Out | VariableKind.New));
-      AddVariableInfo(new VariableInfo("TreeSize", "The size (number of nodes) of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
-      AddVariableInfo(new VariableInfo("TreeHeight", "The height of the tree", typeof(IntData), VariableKind.New | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("LinearRegressionModel", "Formula that was calculated by linear regression", typeof(IGeneticProgrammingModel), VariableKind.Out | VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -53,11 +52,9 @@ namespace HeuristicLab.LinearRegression {
       double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows);
       double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
       double[] coefficients = CalculateCoefficients(inputMatrix, targetVector);
-      IFunctionTree tree = CreateModel(coefficients, allowedColumns);
-
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), tree));
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeSize"), new IntData(tree.Size)));
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("TreeHeight"), new IntData(tree.Height)));
+      IFunctionTree tree = CreateModel(coefficients, allowedColumns.Select(i => dataset.GetVariableName(i)).ToList());
+      
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), new GeneticProgrammingModel(tree)));
       return null;
     }
 
@@ -65,22 +62,23 @@ namespace HeuristicLab.LinearRegression {
       return Math.Abs(x - y) < 1.0E-12;
     }
 
-    private IFunctionTree CreateModel(double[] coefficients, List<int> allowedColumns) {
+    private IFunctionTree CreateModel(double[] coefficients, List<string> allowedVariables) {
       IFunctionTree root = new Addition().GetTreeNode();
       IFunctionTree actNode = root;
 
       Queue<IFunctionTree> nodes = new Queue<IFunctionTree>();
       GP.StructureIdentification.Variable v;
       for (int i = 0; i < coefficients.Length - 1; i++) {
-        v = new GP.StructureIdentification.Variable();
-        v.GetVariable(GP.StructureIdentification.Variable.INDEX).Value = new ConstrainedIntData(allowedColumns[i]);
-        v.GetVariable(GP.StructureIdentification.Variable.WEIGHT).Value = new ConstrainedDoubleData(coefficients[i]);
-        v.GetVariable(GP.StructureIdentification.Variable.OFFSET).Value = new ConstrainedIntData(0);
-        nodes.Enqueue(v.GetTreeNode());
+        var vNode = (VariableFunctionTree)new GP.StructureIdentification.Variable().GetTreeNode();
+        vNode.VariableName = allowedVariables[i];
+        vNode.Weight = coefficients[i];
+        vNode.SampleOffset = 0;
+        nodes.Enqueue(vNode);
       }
-      GP.StructureIdentification.Constant c = new Constant();
-      c.GetVariable(GP.StructureIdentification.Constant.VALUE).Value = new ConstrainedDoubleData(coefficients[coefficients.Length - 1]);
-      nodes.Enqueue(c.GetTreeNode());
+      var cNode = (ConstantFunctionTree)new Constant().GetTreeNode();
+
+      cNode.Value = coefficients[coefficients.Length - 1];
+      nodes.Enqueue(cNode);
 
       IFunctionTree newTree;
       while (nodes.Count != 1) {

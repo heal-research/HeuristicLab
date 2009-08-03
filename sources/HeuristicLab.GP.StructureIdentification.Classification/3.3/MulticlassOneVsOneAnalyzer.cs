@@ -20,13 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
-using HeuristicLab.GP.StructureIdentification;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class MulticlassOneVsOneAnalyzer : OperatorBase {
@@ -44,6 +41,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     private const string BESTMODELL = "FunctionTree";
     private const string VOTES = "Votes";
     private const string ACCURACY = "Accuracy";
+    private const string TREEEVALUATOR = "TreeEvaluator";
 
     private const double EPSILON = 1E-6;
     public override string Description {
@@ -62,7 +60,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       AddVariableInfo(new VariableInfo(SAMPLESSTART, "The start of samples in the original dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(SAMPLESEND, "The end of samples in the original dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(BESTMODELLSCOPE, "The variable containing the scope of the model (incl. meta data)", typeof(IScope), VariableKind.In));
-      AddVariableInfo(new VariableInfo(BESTMODELL, "The variable in the scope of the model that contains the actual model", typeof(BakedFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo(BESTMODELL, "The variable in the scope of the model that contains the actual model", typeof(IGeneticProgrammingModel), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TREEEVALUATOR, "The evaluator to apply to the function tree", typeof(ITreeEvaluator), VariableKind.In));
       AddVariableInfo(new VariableInfo(VOTES, "Array with the votes for each instance", typeof(IntMatrixData), VariableKind.New));
       AddVariableInfo(new VariableInfo(ACCURACY, "Accuracy of the one-vs-one multi-cass classifier", typeof(DoubleData), VariableKind.New));
     }
@@ -81,10 +80,10 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         double classAValue = GetVariableValue<DoubleData>(CLASSAVALUE, childScope, true).Data;
         double classBValue = GetVariableValue<DoubleData>(CLASSBVALUE, childScope, true).Data;
         IScope bestScope = GetVariableValue<IScope>(BESTMODELLSCOPE, childScope, true);
-        BakedFunctionTree functionTree = GetVariableValue<BakedFunctionTree>(BESTMODELL, bestScope, true);
+        IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>(BESTMODELL, bestScope, true);
 
-        BakedTreeEvaluator evaluator = new BakedTreeEvaluator();
-        evaluator.PrepareForEvaluation(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0, functionTree);
+        ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>(TREEEVALUATOR, bestScope, true);
+        evaluator.PrepareForEvaluation(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0, gpModel.FunctionTree);
         for(int i = 0; i < (samplesEnd - samplesStart); i++) {
           double est = evaluator.Evaluate(i + samplesStart);
           if(est < 0.5) {

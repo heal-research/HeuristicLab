@@ -19,14 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.GP.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class ModelAnalyzerExporter : IFunctionTreeExporter, IFunctionTreeNameGenerator {
+  public class ModelAnalyzerExporter : IFunctionTreeSerializer, IFunctionTreeNameGenerator {
     #region IFunctionTreeExporter Members
 
     public string Name {
@@ -56,6 +53,21 @@ namespace HeuristicLab.GP.StructureIdentification {
       result = result.TrimEnd(';', '\n');
       if(tree.SubTrees.Count > 0) result += ")";
       return result;
+    }
+
+    public IFunctionTree Import(string tree) {
+      throw new UnknownFunctionException(tree);
+    }
+
+    public bool TryImport(string tree, out IFunctionTree importedTree) {
+      try {
+        importedTree = Import(tree);
+        return true;
+      }
+      catch (UnknownFunctionException) {
+        importedTree = null;
+        return false;
+      }
     }
 
     #endregion
@@ -107,6 +119,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     #endregion
+
+
   }
 
   internal static class HL2ExporterExtensions {
@@ -119,13 +133,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Constant constant, IFunctionTree tree) {
-      HeuristicLab.Core.IItem constantItem = tree.GetLocalVariable(Constant.VALUE).Value;
-      double value;
-      if (constantItem is ConstrainedDoubleData) {
-        value = ((ConstrainedDoubleData)constantItem).Data;
-      } else {
-        value = ((DoubleData)constantItem).Data;
-      }
+      double value = ((ConstantFunctionTree)tree).Value;
       return "[T]Constant(" + value.ToString("r") + ";0;0)";
     }
 
@@ -134,17 +142,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Differential differential, IFunctionTree tree) {
-      HeuristicLab.Core.IItem weightItem = tree.GetLocalVariable(Differential.WEIGHT).Value;
-      double weight;
-      if (weightItem is ConstrainedDoubleData) {
-        weight = ((ConstrainedDoubleData)weightItem).Data;
-      } else {
-        weight = ((DoubleData)weightItem).Data;
-      }
-      var index = tree.GetLocalVariable(Differential.INDEX).Value;
-      var offset = ((ConstrainedDoubleData)tree.GetLocalVariable(Differential.OFFSET).Value).Data;
-
-      return "[T]Differential(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
+      var varTree = (VariableFunctionTree)tree;
+      return "[T]Differential(" + varTree.Weight.ToString("r") + ";" + varTree.VariableName + ";" + -varTree.SampleOffset + ")";
     }
 
     public static string ExportToHL2(this Division division, IFunctionTree tree) {
@@ -188,17 +187,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToHL2(this Variable variable, IFunctionTree tree) {
-      HeuristicLab.Core.IItem weightItem = tree.GetLocalVariable(Differential.WEIGHT).Value;
-      double weight;
-      if (weightItem is ConstrainedDoubleData) {
-        weight = ((ConstrainedDoubleData)weightItem).Data;
-      } else {
-        weight = ((DoubleData)weightItem).Data;
-      }
-      string index = ((StringData)tree.GetLocalVariable(Variable.INDEX).Value).Data;
-      double offset = ((ConstrainedIntData)tree.GetLocalVariable(Variable.OFFSET).Value).Data;
-
-      return "[T]Variable(" + weight.ToString("r") + ";" + index + ";" + -offset + ")";
+      var varTree = (VariableFunctionTree)tree;
+      return "[T]Variable(" + varTree.Weight.ToString("r") + ";" + varTree.VariableName + ";" + -varTree.SampleOffset + ")";
     }
 
     public static string ExportToHL2(this And and, IFunctionTree tree) {

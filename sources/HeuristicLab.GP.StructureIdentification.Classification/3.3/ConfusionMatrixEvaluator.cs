@@ -19,13 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.GP.StructureIdentification;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class ConfusionMatrixEvaluator : GPClassificationEvaluatorBase {

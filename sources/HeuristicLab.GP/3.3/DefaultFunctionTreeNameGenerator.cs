@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP {
   public class DefaultFunctionTreeNameGenerator : IFunctionTreeNameGenerator {

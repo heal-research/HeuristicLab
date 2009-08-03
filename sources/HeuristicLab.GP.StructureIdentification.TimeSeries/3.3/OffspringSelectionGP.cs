@@ -19,18 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Logging;
 using HeuristicLab.Modeling;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {

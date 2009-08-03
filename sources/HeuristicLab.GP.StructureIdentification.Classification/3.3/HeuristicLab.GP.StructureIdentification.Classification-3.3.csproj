@@ -93,10 +93,6 @@
     <Compile Include="StandardGP.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
-      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
@@ -108,6 +104,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
+      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
+      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
       <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>

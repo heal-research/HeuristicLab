@@ -19,20 +19,14 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Constraints;
-using StructId = HeuristicLab.GP.StructureIdentification;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.GP.SantaFe;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class FunctionLibraryInjector : OperatorBase {
-    private const string FUNCTIONLIBRARY = "FunctionLibrary";
-    private const string TARGETVARIABLE = "TargetVariable";
+  public class FunctionLibraryInjector : FunctionLibraryInjectorBase {
     private const string MINTIMEOFFSET = "MinTimeOffset";
     private const string MAXTIMEOFFSET = "MaxTimeOffset";
 
@@ -61,6 +55,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     private const string TANGENS_ALLOWED = "Tangens";
     private const string XOR_ALLOWED = "Xor";
 
+    private int minTimeOffset;
+    private int maxTimeOffset;
 
     public override string Description {
       get { return @"Injects a configurable function library for regression and classification problems."; }
@@ -68,10 +64,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public FunctionLibraryInjector()
       : base() {
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MINTIMEOFFSET, "Minimal time offset for all features", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo(MAXTIMEOFFSET, "Maximal time offset for all feature", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(FUNCTIONLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
 
       AddVariable(DIFFERENTIALS_ALLOWED, false);
       AddVariable(VARIABLES_ALLOWED, true);
@@ -106,70 +100,72 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public override IOperation Apply(IScope scope) {
-      StructId.Variable variable;
-      GPOperatorLibrary operatorLibrary;
-      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
-
       // try to get minTimeOffset (use 0 as default if not available)
       IItem minTimeOffsetItem = GetVariableValue(MINTIMEOFFSET, scope, true, false);
-      int minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
+      minTimeOffset = minTimeOffsetItem == null ? 0 : ((IntData)minTimeOffsetItem).Data;
       // try to get maxTimeOffset (use 0 as default if not available)
       IItem maxTimeOffsetItem = GetVariableValue(MAXTIMEOFFSET, scope, true, false);
-      int maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
+      maxTimeOffset = maxTimeOffsetItem == null ? 0 : ((IntData)maxTimeOffsetItem).Data;
 
-      variable = new StructId.Variable();
-      StructId.Constant constant = new StructId.Constant();
-      StructId.Differential differential = new Differential();
-      StructId.Addition addition = new StructId.Addition();
-      StructId.And and = new StructId.And();
-      StructId.Average average = new StructId.Average();
-      StructId.Cosinus cosinus = new StructId.Cosinus();
-      StructId.Division division = new StructId.Division();
-      StructId.Equal equal = new StructId.Equal();
-      StructId.Exponential exponential = new StructId.Exponential();
-      StructId.GreaterThan greaterThan = new StructId.GreaterThan();
-      StructId.IfThenElse ifThenElse = new StructId.IfThenElse();
-      StructId.LessThan lessThan = new StructId.LessThan();
-      StructId.Logarithm logarithm = new StructId.Logarithm();
-      StructId.Multiplication multiplication = new StructId.Multiplication();
-      StructId.Not not = new StructId.Not();
-      StructId.Or or = new StructId.Or();
-      StructId.Power power = new StructId.Power();
-      StructId.Signum signum = new StructId.Signum();
-      StructId.Sinus sinus = new StructId.Sinus();
-      StructId.Sqrt sqrt = new StructId.Sqrt();
-      StructId.Subtraction subtraction = new StructId.Subtraction();
-      StructId.Tangens tangens = new StructId.Tangens();
-      StructId.Xor xor = new StructId.Xor();
+      return base.Apply(scope);
+    }
+
+    protected override FunctionLibrary CreateFunctionLibrary() {
+      FunctionLibrary functionLibrary = new FunctionLibrary();
+
+      Variable variable = new Variable();
+      Constant constant = new Constant();
+      Differential differential = new Differential();
+      Addition addition = new Addition();
+      And and = new And();
+      Average average = new Average();
+      Cosinus cosinus = new Cosinus();
+      Division division = new Division();
+      Equal equal = new Equal();
+      Exponential exponential = new Exponential();
+      GreaterThan greaterThan = new GreaterThan();
+      IfThenElse ifThenElse = new IfThenElse();
+      LessThan lessThan = new LessThan();
+      Logarithm logarithm = new Logarithm();
+      Multiplication multiplication = new Multiplication();
+      Not not = new Not();
+      Or or = new Or();
+      Power power = new Power();
+      Signum signum = new Signum();
+      Sinus sinus = new Sinus();
+      Sqrt sqrt = new Sqrt();
+      Subtraction subtraction = new Subtraction();
+      Tangens tangens = new Tangens();
+      Xor xor = new Xor();
 
 
-      List<IOperator> booleanFunctions = new List<IOperator>();
-      ConditionalAddOperator(AND_ALLOWED, and, booleanFunctions);
-      ConditionalAddOperator(EQUAL_ALLOWED, equal, booleanFunctions);
-      ConditionalAddOperator(GREATERTHAN_ALLOWED, greaterThan, booleanFunctions);
-      ConditionalAddOperator(LESSTHAN_ALLOWED, lessThan, booleanFunctions);
-      ConditionalAddOperator(NOT_ALLOWED, not, booleanFunctions);
-      ConditionalAddOperator(OR_ALLOWED, or, booleanFunctions);
-      ConditionalAddOperator(XOR_ALLOWED, xor, booleanFunctions);
+      List<IFunction> booleanFunctions = new List<IFunction>();
+      ConditionalAddFunction(AND_ALLOWED, and, booleanFunctions);
+      ConditionalAddFunction(EQUAL_ALLOWED, equal, booleanFunctions);
+      ConditionalAddFunction(GREATERTHAN_ALLOWED, greaterThan, booleanFunctions);
+      ConditionalAddFunction(LESSTHAN_ALLOWED, lessThan, booleanFunctions);
+      ConditionalAddFunction(NOT_ALLOWED, not, booleanFunctions);
+      ConditionalAddFunction(OR_ALLOWED, or, booleanFunctions);
+      ConditionalAddFunction(XOR_ALLOWED, xor, booleanFunctions);
 
-      List<IOperator> doubleFunctions = new List<IOperator>();
-      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, differential, doubleFunctions);
-      ConditionalAddOperator(VARIABLES_ALLOWED, variable, doubleFunctions);
-      ConditionalAddOperator(CONSTANTS_ALLOWED, constant, doubleFunctions);
-      ConditionalAddOperator(ADDITION_ALLOWED, addition, doubleFunctions);
-      ConditionalAddOperator(AVERAGE_ALLOWED, average, doubleFunctions);
-      ConditionalAddOperator(COSINUS_ALLOWED, cosinus, doubleFunctions);
-      ConditionalAddOperator(DIVISION_ALLOWED, division, doubleFunctions);
-      ConditionalAddOperator(EXPONENTIAL_ALLOWED, exponential, doubleFunctions);
-      ConditionalAddOperator(IFTHENELSE_ALLOWED, ifThenElse, doubleFunctions);
-      ConditionalAddOperator(LOGARTIHM_ALLOWED, logarithm, doubleFunctions);
-      ConditionalAddOperator(MULTIPLICATION_ALLOWED, multiplication, doubleFunctions);
-      ConditionalAddOperator(POWER_ALLOWED, power, doubleFunctions);
-      ConditionalAddOperator(SIGNUM_ALLOWED, signum, doubleFunctions);
-      ConditionalAddOperator(SINUS_ALLOWED, sinus, doubleFunctions);
-      ConditionalAddOperator(SQRT_ALLOWED, sqrt, doubleFunctions);
-      ConditionalAddOperator(SUBTRACTION_ALLOWED, subtraction, doubleFunctions);
-      ConditionalAddOperator(TANGENS_ALLOWED, tangens, doubleFunctions);
+      List<IFunction> doubleFunctions = new List<IFunction>();
+      ConditionalAddFunction(DIFFERENTIALS_ALLOWED, differential, doubleFunctions);
+      ConditionalAddFunction(VARIABLES_ALLOWED, variable, doubleFunctions);
+      ConditionalAddFunction(CONSTANTS_ALLOWED, constant, doubleFunctions);
+      ConditionalAddFunction(ADDITION_ALLOWED, addition, doubleFunctions);
+      ConditionalAddFunction(AVERAGE_ALLOWED, average, doubleFunctions);
+      ConditionalAddFunction(COSINUS_ALLOWED, cosinus, doubleFunctions);
+      ConditionalAddFunction(DIVISION_ALLOWED, division, doubleFunctions);
+      ConditionalAddFunction(EXPONENTIAL_ALLOWED, exponential, doubleFunctions);
+      ConditionalAddFunction(IFTHENELSE_ALLOWED, ifThenElse, doubleFunctions);
+      ConditionalAddFunction(LOGARTIHM_ALLOWED, logarithm, doubleFunctions);
+      ConditionalAddFunction(MULTIPLICATION_ALLOWED, multiplication, doubleFunctions);
+      ConditionalAddFunction(POWER_ALLOWED, power, doubleFunctions);
+      ConditionalAddFunction(SIGNUM_ALLOWED, signum, doubleFunctions);
+      ConditionalAddFunction(SINUS_ALLOWED, sinus, doubleFunctions);
+      ConditionalAddFunction(SQRT_ALLOWED, sqrt, doubleFunctions);
+      ConditionalAddFunction(SUBTRACTION_ALLOWED, subtraction, doubleFunctions);
+      ConditionalAddFunction(TANGENS_ALLOWED, tangens, doubleFunctions);
 
       SetAllowedSubOperators(and, booleanFunctions);
       SetAllowedSubOperators(equal, doubleFunctions);
@@ -195,78 +191,43 @@ namespace HeuristicLab.GP.StructureIdentification {
       SetAllowedSubOperators(subtraction, doubleFunctions);
       SetAllowedSubOperators(tangens, doubleFunctions);
 
-      operatorLibrary = new GPOperatorLibrary();
-      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, operatorLibrary, differential);
-      ConditionalAddOperator(VARIABLES_ALLOWED, operatorLibrary, variable);
-      ConditionalAddOperator(CONSTANTS_ALLOWED, operatorLibrary, constant);
-      ConditionalAddOperator(ADDITION_ALLOWED, operatorLibrary, addition);
-      ConditionalAddOperator(AVERAGE_ALLOWED, operatorLibrary, average);
-      ConditionalAddOperator(AND_ALLOWED, operatorLibrary, and);
-      ConditionalAddOperator(COSINUS_ALLOWED, operatorLibrary, cosinus);
-      ConditionalAddOperator(DIVISION_ALLOWED, operatorLibrary, division);
-      ConditionalAddOperator(EQUAL_ALLOWED, operatorLibrary, equal);
-      ConditionalAddOperator(EXPONENTIAL_ALLOWED, operatorLibrary, exponential);
-      ConditionalAddOperator(GREATERTHAN_ALLOWED, operatorLibrary, greaterThan);
-      ConditionalAddOperator(IFTHENELSE_ALLOWED, operatorLibrary, ifThenElse);
-      ConditionalAddOperator(LESSTHAN_ALLOWED, operatorLibrary, lessThan);
-      ConditionalAddOperator(LOGARTIHM_ALLOWED, operatorLibrary, logarithm);
-      ConditionalAddOperator(MULTIPLICATION_ALLOWED, operatorLibrary, multiplication);
-      ConditionalAddOperator(NOT_ALLOWED, operatorLibrary, not);
-      ConditionalAddOperator(POWER_ALLOWED, operatorLibrary, power);
-      ConditionalAddOperator(OR_ALLOWED, operatorLibrary, or);
-      ConditionalAddOperator(SIGNUM_ALLOWED, operatorLibrary, signum);
-      ConditionalAddOperator(SINUS_ALLOWED, operatorLibrary, sinus);
-      ConditionalAddOperator(SQRT_ALLOWED, operatorLibrary, sqrt);
-      ConditionalAddOperator(SUBTRACTION_ALLOWED, operatorLibrary, subtraction);
-      ConditionalAddOperator(TANGENS_ALLOWED, operatorLibrary, tangens);
-      ConditionalAddOperator(XOR_ALLOWED, operatorLibrary, xor);
+      ConditionalAddOperator(DIFFERENTIALS_ALLOWED, functionLibrary, differential);
+      ConditionalAddOperator(VARIABLES_ALLOWED, functionLibrary, variable);
+      ConditionalAddOperator(CONSTANTS_ALLOWED, functionLibrary, constant);
+      ConditionalAddOperator(ADDITION_ALLOWED, functionLibrary, addition);
+      ConditionalAddOperator(AVERAGE_ALLOWED, functionLibrary, average);
+      ConditionalAddOperator(AND_ALLOWED, functionLibrary, and);
+      ConditionalAddOperator(COSINUS_ALLOWED, functionLibrary, cosinus);
+      ConditionalAddOperator(DIVISION_ALLOWED, functionLibrary, division);
+      ConditionalAddOperator(EQUAL_ALLOWED, functionLibrary, equal);
+      ConditionalAddOperator(EXPONENTIAL_ALLOWED, functionLibrary, exponential);
+      ConditionalAddOperator(GREATERTHAN_ALLOWED, functionLibrary, greaterThan);
+      ConditionalAddOperator(IFTHENELSE_ALLOWED, functionLibrary, ifThenElse);
+      ConditionalAddOperator(LESSTHAN_ALLOWED, functionLibrary, lessThan);
+      ConditionalAddOperator(LOGARTIHM_ALLOWED, functionLibrary, logarithm);
+      ConditionalAddOperator(MULTIPLICATION_ALLOWED, functionLibrary, multiplication);
+      ConditionalAddOperator(NOT_ALLOWED, functionLibrary, not);
+      ConditionalAddOperator(POWER_ALLOWED, functionLibrary, power);
+      ConditionalAddOperator(OR_ALLOWED, functionLibrary, or);
+      ConditionalAddOperator(SIGNUM_ALLOWED, functionLibrary, signum);
+      ConditionalAddOperator(SINUS_ALLOWED, functionLibrary, sinus);
+      ConditionalAddOperator(SQRT_ALLOWED, functionLibrary, sqrt);
+      ConditionalAddOperator(SUBTRACTION_ALLOWED, functionLibrary, subtraction);
+      ConditionalAddOperator(TANGENS_ALLOWED, functionLibrary, tangens);
+      ConditionalAddOperator(XOR_ALLOWED, functionLibrary, xor);
 
       variable.SetConstraints(minTimeOffset, maxTimeOffset);
       differential.SetConstraints(minTimeOffset, maxTimeOffset);
 
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(FUNCTIONLIBRARY), operatorLibrary));
-
-      return null;
+      return functionLibrary;
     }
 
-    private void ConditionalAddOperator(string condName, IOperator op, List<IOperator> list) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) list.Add(op);
+    private void ConditionalAddFunction(string condName, IFunction fun, List<IFunction> list) {
+      if (GetVariableValue<BoolData>(condName, null, false).Data) list.Add(fun);
     }
 
-    private void ConditionalAddOperator(string condName, GPOperatorLibrary operatorLibrary, IOperator op) {
-      if (GetVariableValue<BoolData>(condName, null, false).Data) operatorLibrary.GPOperatorGroup.AddOperator(op);
-    }
-
-    private void SetAllowedSubOperators(IFunction f, List<IOperator> gs) {
-      foreach (IConstraint c in f.Constraints) {
-        if (c is SubOperatorTypeConstraint) {
-          SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
-          typeConstraint.Clear();
-          foreach (IOperator g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        } else if (c is AllSubOperatorsTypeConstraint) {
-          AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
-          typeConstraint.Clear();
-          foreach (IOperator g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        }
-      }
-    }
-
-    private void SetAllowedSubOperators(IFunction f, int p, List<IOperator> gs) {
-      foreach (IConstraint c in f.Constraints) {
-        if (c is SubOperatorTypeConstraint) {
-          SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
-          if (typeConstraint.SubOperatorIndex.Data == p) {
-            typeConstraint.Clear();
-            foreach (IOperator g in gs) {
-              typeConstraint.AddOperator(g);
-            }
-          }
-        }
-      }
+    private void ConditionalAddOperator(string condName, FunctionLibrary functionLib, IFunction op) {
+      if (GetVariableValue<BoolData>(condName, null, false).Data) functionLib.AddFunction(op);
     }
   }
 }

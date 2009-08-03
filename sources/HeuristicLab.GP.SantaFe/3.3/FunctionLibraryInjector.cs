@@ -19,20 +19,10 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Constraints;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.SantaFe {
-  public class FunctionLibraryInjector : OperatorBase {
-    private const string OPERATORLIBRARY = "FunctionLibrary";
-
-    private GPOperatorLibrary operatorLibrary;
+  public class FunctionLibraryInjector : FunctionLibraryInjectorBase {
 
     public override string Description {
       get { return @"Injects a function library for the ant problem."; }
@@ -40,16 +30,10 @@ namespace HeuristicLab.GP.SantaFe {
 
     public FunctionLibraryInjector()
       : base() {
-      AddVariableInfo(new VariableInfo(OPERATORLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      InitDefaultOperatorLibrary();
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OPERATORLIBRARY), operatorLibrary));
-      return null;
-    }
-
-    private void InitDefaultOperatorLibrary() {
+    protected override FunctionLibrary CreateFunctionLibrary() {
+      FunctionLibrary funLib = new FunctionLibrary();
       IfFoodAhead ifFoodAhead = new IfFoodAhead();
       Prog2 prog2 = new Prog2();
       Prog3 prog3 = new Prog3();
@@ -70,31 +54,13 @@ namespace HeuristicLab.GP.SantaFe {
       SetAllowedSubOperators(prog2, allFunctions);
       SetAllowedSubOperators(prog3, allFunctions);
 
-      operatorLibrary = new GPOperatorLibrary();
-      operatorLibrary.GPOperatorGroup.AddOperator(ifFoodAhead);
-      operatorLibrary.GPOperatorGroup.AddOperator(prog2);
-      operatorLibrary.GPOperatorGroup.AddOperator(prog3);
-      operatorLibrary.GPOperatorGroup.AddOperator(move);
-      operatorLibrary.GPOperatorGroup.AddOperator(left);
-      operatorLibrary.GPOperatorGroup.AddOperator(right);
-    }
-
-    private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
-      foreach(IConstraint c in f.Constraints) {
-        if(c is SubOperatorTypeConstraint) {
-          SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
-          typeConstraint.Clear();
-          foreach(IFunction g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        } else if(c is AllSubOperatorsTypeConstraint) {
-          AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
-          typeConstraint.Clear();
-          foreach(IFunction g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        }
-      }
+      funLib.AddFunction(ifFoodAhead);
+      funLib.AddFunction(prog2);
+      funLib.AddFunction(prog3);
+      funLib.AddFunction(move);
+      funLib.AddFunction(left);
+      funLib.AddFunction(right);
+      return funLib;
     }
   }
 }

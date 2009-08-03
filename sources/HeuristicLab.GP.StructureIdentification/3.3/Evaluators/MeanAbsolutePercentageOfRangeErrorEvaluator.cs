@@ -20,14 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Modeling;
-using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class MeanAbsolutePercentageOfRangeErrorEvaluator : SimpleGPEvaluatorBase {

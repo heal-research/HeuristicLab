@@ -31,7 +31,6 @@ using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
 using System.Linq;
 using HeuristicLab.CEDMA.Core;
-using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Data;
 using HeuristicLab.Grid;
 using System.Diagnostics;

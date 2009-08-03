@@ -19,21 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators;
-using HeuristicLab.Random;
 using HeuristicLab.Selection;
 using HeuristicLab.Logging;
 using HeuristicLab.Data;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Modeling;
+using HeuristicLab.GP.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class StandardGP : AlgorithmBase, IEditable {
@@ -158,14 +152,12 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected internal override IOperator CreateCrossover() {
       StandardCrossOver crossover = new StandardCrossOver();
       crossover.Name = "Crossover";
-      crossover.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       return crossover;
     }
 
     protected internal override IOperator CreateTreeCreator() {
       ProbabilisticTreeCreator treeCreator = new ProbabilisticTreeCreator();
       treeCreator.Name = "Tree generator";
-      treeCreator.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       treeCreator.GetVariableInfo("MinTreeSize").ActualName = "MinInitialTreeSize";
       return treeCreator;
     }
@@ -182,20 +174,14 @@ namespace HeuristicLab.GP.StructureIdentification {
       manipulator.Name = "Manipulator";
       StochasticMultiBranch multibranch = new StochasticMultiBranch();
       FullTreeShaker fullTreeShaker = new FullTreeShaker();
-      fullTreeShaker.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       fullTreeShaker.GetVariableInfo("ShakingFactor").ActualName = "FullTreeShakingFactor";
 
       OnePointShaker onepointShaker = new OnePointShaker();
-      onepointShaker.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       onepointShaker.GetVariableInfo("ShakingFactor").ActualName = "OnePointShakingFactor";
       ChangeNodeTypeManipulation changeNodeTypeManipulation = new ChangeNodeTypeManipulation();
-      changeNodeTypeManipulation.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       CutOutNodeManipulation cutOutNodeManipulation = new CutOutNodeManipulation();
-      cutOutNodeManipulation.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       DeleteSubTreeManipulation deleteSubTreeManipulation = new DeleteSubTreeManipulation();
-      deleteSubTreeManipulation.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
       SubstituteSubTreeManipulation substituteSubTreeManipulation = new SubstituteSubTreeManipulation();
-      substituteSubTreeManipulation.GetVariableInfo("OperatorLibrary").ActualName = "FunctionLibrary";
 
       IOperator[] manipulators = new IOperator[] {
         onepointShaker, fullTreeShaker,

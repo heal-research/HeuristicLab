@@ -26,87 +26,54 @@ using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
-using HeuristicLab.Constraints;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.GP.SantaFe;
 
 namespace HeuristicLab.GP.Boolean {
-  public class FunctionLibraryInjector : OperatorBase {
-    private const string TARGETVARIABLE = "TargetVariable";
-    private const string OPERATORLIBRARY = "FunctionLibrary";
-
-    private GPOperatorLibrary operatorLibrary;
-    private Variable variable;
-
+  public class FunctionLibraryInjector : FunctionLibraryInjectorBase {
     public override string Description {
       get { return @"Injects a function library for boolean logic."; }
     }
 
     public FunctionLibraryInjector()
       : base() {
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "The target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo(OPERATORLIBRARY, "Preconfigured default operator library", typeof(GPOperatorLibrary), VariableKind.New));
     }
 
-    public override IOperation Apply(IScope scope) {
-      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
-
-      InitDefaultOperatorLibrary();
-
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(OPERATORLIBRARY), operatorLibrary));
-      return null;
-    }
-
-    private void InitDefaultOperatorLibrary() {
+    protected override FunctionLibrary CreateFunctionLibrary() {
       And and = new And();
       Or or = new Or();
-      //Not not = new Not();
+      Not not = new Not();
       Nand nand = new Nand();
       Nor nor = new Nor();
-      //Xor xor = new Xor();
-      variable = new HeuristicLab.GP.Boolean.Variable();
+      Xor xor = new Xor();
+      Variable variable = new Variable();
 
       IFunction[] allFunctions = new IFunction[] {
         and,
         or,
-        //not,
+        not,
         nand,
         nor,
-        //xor,
+        xor,
         variable
       };
 
       SetAllowedSubOperators(and, allFunctions);
       SetAllowedSubOperators(or, allFunctions);
-      //SetAllowedSubOperators(not, allFunctions);
+      SetAllowedSubOperators(not, allFunctions);
       SetAllowedSubOperators(nand, allFunctions);
       SetAllowedSubOperators(nor, allFunctions);
-      //SetAllowedSubOperators(xor, allFunctions);
+      SetAllowedSubOperators(xor, allFunctions);
 
-      operatorLibrary = new GPOperatorLibrary();
-      operatorLibrary.GPOperatorGroup.AddOperator(and);
-      operatorLibrary.GPOperatorGroup.AddOperator(or);
-      //operatorLibrary.GPOperatorGroup.AddOperator(not);
-      operatorLibrary.GPOperatorGroup.AddOperator(nand);
-      operatorLibrary.GPOperatorGroup.AddOperator(nor);
-      //operatorLibrary.GPOperatorGroup.AddOperator(xor);
-      operatorLibrary.GPOperatorGroup.AddOperator(variable);
-    }
-
-    private void SetAllowedSubOperators(IFunction f, IFunction[] gs) {
-      foreach (IConstraint c in f.Constraints) {
-        if (c is SubOperatorTypeConstraint) {
-          SubOperatorTypeConstraint typeConstraint = c as SubOperatorTypeConstraint;
-          typeConstraint.Clear();
-          foreach (IFunction g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        } else if (c is AllSubOperatorsTypeConstraint) {
-          AllSubOperatorsTypeConstraint typeConstraint = c as AllSubOperatorsTypeConstraint;
-          typeConstraint.Clear();
-          foreach (IFunction g in gs) {
-            typeConstraint.AddOperator(g);
-          }
-        }
-      }
+      var functionLibrary = new FunctionLibrary();
+      functionLibrary.AddFunction(and);
+      functionLibrary.AddFunction(or);
+      functionLibrary.AddFunction(not);
+      functionLibrary.AddFunction(nand);
+      functionLibrary.AddFunction(nor);
+      functionLibrary.AddFunction(xor);
+      functionLibrary.AddFunction(variable);
+      return functionLibrary;
     }
   }
 }

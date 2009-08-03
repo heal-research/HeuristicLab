@@ -21,20 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Operators;
-using HeuristicLab.Random;
-using HeuristicLab.Selection;
-using HeuristicLab.Logging;
 using HeuristicLab.Data;
-using HeuristicLab.Operators.Programmable;
-using HeuristicLab.Selection.OffspringSelection;
 using HeuristicLab.Evolutionary;
+using HeuristicLab.Logging;
+using HeuristicLab.Operators;
+using HeuristicLab.Selection;
+using HeuristicLab.Selection.OffspringSelection;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class OffspringSelectionGP : StandardGP {

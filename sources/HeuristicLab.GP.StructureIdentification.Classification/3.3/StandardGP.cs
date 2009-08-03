@@ -19,18 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Random;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Modeling;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {

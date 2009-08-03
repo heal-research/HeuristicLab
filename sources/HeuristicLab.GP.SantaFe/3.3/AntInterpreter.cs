@@ -20,13 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.DataAnalysis;
-using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.SantaFe {
   internal class AntInterpreter {

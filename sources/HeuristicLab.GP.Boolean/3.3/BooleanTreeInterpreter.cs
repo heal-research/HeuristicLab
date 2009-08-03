@@ -23,55 +23,59 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.DataAnalysis;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Diagnostics;
 using HeuristicLab.Data;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.Boolean {
   internal class BooleanTreeInterpreter {
     private const double EPSILON = 0.00001;
     private Dataset dataset;
-    private List<LightWeightFunction> expression;
+    private IFunctionTree tree;
     private int targetVariable;
     private int currentRow;
-    private int pc;
 
-    public void Reset(Dataset dataset, BakedFunctionTree tree, int targetVariable) {
+    public void Reset(Dataset dataset, IFunctionTree tree, int targetVariable) {
       this.dataset = dataset;
-      this.expression = tree.LinearRepresentation;
+      this.tree = tree;
       this.targetVariable = targetVariable;
     }
 
     internal int GetNumberOfErrors(int start, int end) {
       int errors = 0;
       for (int i = start; i < end; i++) {
-        pc = 0;
         currentRow = i;
-        int result = Step() ? 1 : 0;
+        int result = Step(tree) ? 1 : 0;
         if (Math.Abs(result - dataset.GetValue(i, targetVariable)) > EPSILON) errors++;
       }
       return errors;
     }
 
-    internal bool Step() {
-      LightWeightFunction curFun = expression[pc++];
-      int symbol = SymbolTable.MapFunction(curFun.functionType);
+    internal bool Step(IFunctionTree t) {
+      int symbol = SymbolTable.MapFunction(t.Function);
       switch (symbol) {
-        case SymbolTable.AND: return Step() & Step();
-        case SymbolTable.OR: return Step() | Step();
-        case SymbolTable.NOT: return !Step();
-        case SymbolTable.XOR: return Step() ^ Step();
-        case SymbolTable.NAND: return !(Step() & Step());
-        case SymbolTable.NOR: return !(Step() | Step());
-        case SymbolTable.VARIABLE:
-          return dataset.GetValue(currentRow, (int)curFun.localData[0]) != 0.0;
+        case SymbolTable.AND: return Step(t.SubTrees[0]) && Step(t.SubTrees[1]);
+        case SymbolTable.OR: return Step(t.SubTrees[0]) || Step(t.SubTrees[1]);
+        case SymbolTable.NOT: return !Step(t.SubTrees[0]);
+        case SymbolTable.XOR: return Step(t.SubTrees[0]) ^ Step(t.SubTrees[1]);
+        case SymbolTable.NAND: return !(Step(t.SubTrees[0]) && Step(t.SubTrees[1]));
+        case SymbolTable.NOR: return !(Step(t.SubTrees[0]) || Step(t.SubTrees[1]));
+        case SymbolTable.VARIABLE: {
+            var varNode = (VariableFunctionTree)t;
+            int index = dataset.GetVariableIndex(varNode.VariableName);
+            return !IsAlmost(dataset.GetValue(currentRow, index), 0.0);
+          }
         case SymbolTable.UNKNOWN:
         default:
-          throw new InvalidOperationException(curFun.functionType.ToString());
-
+          throw new UnknownFunctionException(t.Function.Name);
       }
+    }
+
+    private bool IsAlmost(double x, double y) {
+      return Math.Abs(x - y) < EPSILON;
     }
   }
 }

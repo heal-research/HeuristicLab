@@ -19,27 +19,23 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.SantaFe {
   public class Evaluator : OperatorBase {
     public Evaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the ant", typeof(IFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the ant", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("FoodEaten", "Number of food items that the ant found", typeof(DoubleData), VariableKind.New | VariableKind.Out));
     }
 
     public override IOperation Apply(IScope scope) {
-      IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, false);
+      IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, false);
       AntInterpreter interpreter = new AntInterpreter();
       interpreter.MaxTimeSteps = 600;
-      interpreter.Run(tree);
+      interpreter.Run(gpModel.FunctionTree);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FoodEaten"), new DoubleData(interpreter.FoodEaten)));
       return null;

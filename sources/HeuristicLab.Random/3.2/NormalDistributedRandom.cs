@@ -54,7 +54,7 @@ namespace HeuristicLab.Random {
       set { sigma = value; }
     }
     private IRandom uniform;
-    private double[] w = new double[] {
+    private static readonly double[] w = new double[] {
       1.7290404664e-09,
       1.2680928529e-10,
       1.6897518107e-10,
@@ -184,7 +184,7 @@ namespace HeuristicLab.Random {
       1.5008658760e-09,
       1.6030947680e-09
     };
-    private long[] k = new long[] {
+    private static readonly long[] k = new long[] {
       1991057938,
       0,
       1611602771,
@@ -314,7 +314,7 @@ namespace HeuristicLab.Random {
       2054300022,
       2010539237
    };
-    private double[] f = new double[] {
+    private static readonly double[] f = new double[] {
       1.0000000000e+00,
       9.6359968185e-01,
       9.3628269434e-01,

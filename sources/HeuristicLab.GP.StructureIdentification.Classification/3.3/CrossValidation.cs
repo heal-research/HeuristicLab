@@ -20,56 +20,49 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification
-{
-    public class CrossValidation : OperatorBase
-    {
+namespace HeuristicLab.GP.StructureIdentification.Classification {
+  public class CrossValidation : OperatorBase {
 
-        private const string DATASET = "Dataset";
-        private const string NFOLD = "n-Fold";
-        private const string TRAININGSAMPLESSTART = "TrainingSamplesStart";
-        private const string TRAININGSAMPLESEND = "TrainingSamplesEnd";
-        private const string VALIDATIONSAMPLESSTART = "ValidationSamplesStart";
-        private const string VALIDATIONSAMPLESEND = "ValidationSamplesEnd";
-        private const string TESTSAMPLESSTART = "TestSamplesStart";
-        private const string TESTSAMPLESEND = "TestSamplesEnd";
+    private const string DATASET = "Dataset";
+    private const string NFOLD = "n-Fold";
+    private const string TRAININGSAMPLESSTART = "TrainingSamplesStart";
+    private const string TRAININGSAMPLESEND = "TrainingSamplesEnd";
+    private const string VALIDATIONSAMPLESSTART = "ValidationSamplesStart";
+    private const string VALIDATIONSAMPLESEND = "ValidationSamplesEnd";
+    private const string TESTSAMPLESSTART = "TestSamplesStart";
+    private const string TESTSAMPLESEND = "TestSamplesEnd";
 
-        public override string Description
-        {
-            get { return @"TASK"; }
-        }
+    public override string Description {
+      get { return @"TASK"; }
+    }
 
-        public CrossValidation()
-            : base()
-        {
-            AddVariableInfo(new VariableInfo(DATASET, "The original dataset and the new datasets in the newly created subscopes", typeof(Dataset), VariableKind.In));
-            AddVariableInfo(new VariableInfo(NFOLD, "Number of folds for the cross-validation", typeof(IntData), VariableKind.In));
-            AddVariableInfo(new VariableInfo(TRAININGSAMPLESSTART, "The start of training samples in the original dataset and starts of training samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
-            AddVariableInfo(new VariableInfo(TRAININGSAMPLESEND, "The end of training samples in the original dataset and ends of training samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
-            AddVariableInfo(new VariableInfo(VALIDATIONSAMPLESSTART, "The start of validation samples in the original dataset and starts of validation samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
-            AddVariableInfo(new VariableInfo(VALIDATIONSAMPLESEND, "The end of validation samples in the original dataset and ends of validation samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
-            AddVariableInfo(new VariableInfo(TESTSAMPLESSTART, "The start of the test samples in the new datasets", typeof(IntData), VariableKind.New));
-            AddVariableInfo(new VariableInfo(TESTSAMPLESEND, "The end of the test samples in the new datasets", typeof(IntData), VariableKind.New));
-        }
+    public CrossValidation()
+      : base() {
+      AddVariableInfo(new VariableInfo(DATASET, "The original dataset and the new datasets in the newly created subscopes", typeof(Dataset), VariableKind.In));
+      AddVariableInfo(new VariableInfo(NFOLD, "Number of folds for the cross-validation", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TRAININGSAMPLESSTART, "The start of training samples in the original dataset and starts of training samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
+      AddVariableInfo(new VariableInfo(TRAININGSAMPLESEND, "The end of training samples in the original dataset and ends of training samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
+      AddVariableInfo(new VariableInfo(VALIDATIONSAMPLESSTART, "The start of validation samples in the original dataset and starts of validation samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
+      AddVariableInfo(new VariableInfo(VALIDATIONSAMPLESEND, "The end of validation samples in the original dataset and ends of validation samples in the new datasets", typeof(IntData), VariableKind.In | VariableKind.New));
+      AddVariableInfo(new VariableInfo(TESTSAMPLESSTART, "The start of the test samples in the new datasets", typeof(IntData), VariableKind.New));
+      AddVariableInfo(new VariableInfo(TESTSAMPLESEND, "The end of the test samples in the new datasets", typeof(IntData), VariableKind.New));
+    }
 
-        public override IOperation Apply(IScope scope) {
+    public override IOperation Apply(IScope scope) {
       Dataset origDataset = GetVariableValue<Dataset>(DATASET, scope, true);
       int nFolds = GetVariableValue<IntData>(NFOLD, scope, true).Data;
-      if (nFolds < 2) throw new ArgumentException("The number of folds (nFolds) has to be >=2 for cross validation"); 
+      if (nFolds < 2) throw new ArgumentException("The number of folds (nFolds) has to be >=2 for cross validation");
       int origTrainingSamplesStart = GetVariableValue<IntData>(TRAININGSAMPLESSTART, scope, true).Data;
       int origTrainingSamplesEnd = GetVariableValue<IntData>(TRAININGSAMPLESEND, scope, true).Data;
       int origValidationSamplesStart = GetVariableValue<IntData>(VALIDATIONSAMPLESSTART, scope, true).Data;
       int origValidationSamplesEnd = GetVariableValue<IntData>(VALIDATIONSAMPLESEND, scope, true).Data;
-      int n=origDataset.Rows;
-      int origTrainingSamples = (origTrainingSamplesEnd-origTrainingSamplesStart);
-      int origValidationSamples = (origValidationSamplesEnd-origValidationSamplesStart);
+      int n = origDataset.Rows;
+      int origTrainingSamples = (origTrainingSamplesEnd - origTrainingSamplesStart);
+      int origValidationSamples = (origValidationSamplesEnd - origValidationSamplesStart);
 
       double percentTrainingSamples = origTrainingSamples / (double)(origValidationSamples + origTrainingSamples);
       int nTestSamples = n / nFolds;
@@ -81,7 +74,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification
       int newTestSamplesStart = n - nTestSamples;
       int newTestSamplesEnd = n;
 
-      for(int i = 0; i < nFolds; i++) {
+      for (int i = 0; i < nFolds; i++) {
         Scope childScope = new Scope(i.ToString());
         Dataset rotatedSet = new Dataset();
 
@@ -105,11 +98,10 @@ namespace HeuristicLab.GP.StructureIdentification.Classification
       return null;
     }
 
-        private void RotateArray(double[] samples, int p)
-        {
-            Array.Reverse(samples, 0, p);
-            Array.Reverse(samples, p, samples.Length - p);
-            Array.Reverse(samples);
-        }
+    private void RotateArray(double[] samples, int p) {
+      Array.Reverse(samples, 0, p);
+      Array.Reverse(samples, p, samples.Length - p);
+      Array.Reverse(samples);
     }
+  }
 }

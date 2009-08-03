@@ -20,13 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.DataAnalysis;
 using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {

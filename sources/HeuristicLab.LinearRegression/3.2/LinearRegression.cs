@@ -33,6 +33,7 @@ using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Modeling;
 using HeuristicLab.GP;
 using HeuristicLab.Random;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.LinearRegression {
   public class LinearRegression : ItemBase, IEditable, IAlgorithm {
@@ -280,7 +281,7 @@ namespace HeuristicLab.LinearRegression {
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
 
-      model.Data = bestModelScope.GetVariableValue<IFunctionTree>("LinearRegressionModel", false);
+      model.Data = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);

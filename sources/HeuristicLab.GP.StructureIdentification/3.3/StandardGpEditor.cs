@@ -20,14 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public partial class StandardGpEditor : EditorBase {

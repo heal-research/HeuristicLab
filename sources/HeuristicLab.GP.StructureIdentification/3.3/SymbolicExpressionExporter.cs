@@ -19,14 +19,13 @@
  */
 #endregion
 
+using System.Text;
+using HeuristicLab.GP.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class SymbolicExpressionExporter : IFunctionTreeExporter, IFunctionTreeNameGenerator {
+  public class SymbolicExpressionExporter : IFunctionTreeSerializer, IFunctionTreeNameGenerator {
     private StringBuilder builder;
     private string currentIndent;
 
@@ -124,7 +123,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToScheme(this Constant constant, IFunctionTree tree) {
-      return tree.GetLocalVariable(Constant.VALUE).Value.ToString();
+      return ((ConstantFunctionTree)tree).Value.ToString("r");
     }
 
     public static string ExportToScheme(this Cosinus cosinus) {
@@ -172,12 +171,14 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToScheme(this Variable variable, IFunctionTree tree) {
-      return "(variable " + tree.GetLocalVariable(Variable.WEIGHT).Value + " " +
-        tree.GetLocalVariable(Variable.INDEX).Value + " " + tree.GetLocalVariable(Variable.OFFSET).Value + ")";
+      var varTree = (VariableFunctionTree)tree;
+      return "(variable " + varTree.Weight.ToString("r") + " " +
+        varTree.VariableName + " " + varTree.SampleOffset + ")";
     }
     public static string ExportToScheme(this Differential differential, IFunctionTree tree) {
-      return "(differential " + tree.GetLocalVariable(Differential.WEIGHT).Value + " " +
-        tree.GetLocalVariable(Differential.INDEX).Value + " " + tree.GetLocalVariable(Differential.OFFSET).Value + ")";
+      var varTree = (VariableFunctionTree)tree;
+      return "(differential " + varTree.Weight.ToString("r") + " " +
+        varTree.VariableName + " " + varTree.SampleOffset + ")";
     }
 
     public static string ExportToScheme(this And and) {

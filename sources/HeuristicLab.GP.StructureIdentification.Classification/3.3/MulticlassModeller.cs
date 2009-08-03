@@ -21,8 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;

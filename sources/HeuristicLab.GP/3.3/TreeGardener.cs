@@ -21,43 +21,37 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Constraints;
-using System.Diagnostics;
-using HeuristicLab.Data;
 using System.Linq;
-using HeuristicLab.Random;
-using HeuristicLab.Operators;
 using System.Collections;
-using HeuristicLab.Selection;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP {
-  internal class TreeGardener {
+  public class TreeGardener {
     private IRandom random;
-    private GPOperatorLibrary funLibrary;
+    private FunctionLibrary funLibrary;
     private List<IFunction> functions;
 
     private List<IFunction> terminals;
-    internal IList<IFunction> Terminals {
+    public IList<IFunction> Terminals {
       get { return terminals; }
     }
 
     private List<IFunction> allFunctions;
-    internal IList<IFunction> AllFunctions {
+    public IList<IFunction> AllFunctions {
       get { return allFunctions; }
     }
 
     #region constructors
-    internal TreeGardener(IRandom random, GPOperatorLibrary funLibrary) {
+    public TreeGardener(IRandom random, FunctionLibrary funLibrary) {
       this.random = random;
       this.funLibrary = funLibrary;
       this.allFunctions = new List<IFunction>();
       terminals = new List<IFunction>();
       functions = new List<IFunction>();
       // init functions and terminals based on constraints
-      foreach(IFunction fun in funLibrary.Group.Operators) {
-        if(fun.MaxArity == 0) {
+      foreach(IFunction fun in funLibrary.Functions) {
+        if(fun.MaxSubTrees == 0) {
           terminals.Add(fun);
           allFunctions.Add(fun);
         } else {
@@ -76,7 +70,7 @@ namespace HeuristicLab.GP {
     /// <param name="maxTreeSize">Maximal size of the tree (number of nodes).</param>
     /// <param name="maxTreeHeight">Maximal height of the tree.</param>
     /// <returns></returns>
-    internal IFunctionTree CreateBalancedRandomTree(int maxTreeSize, int maxTreeHeight) {
+    public IFunctionTree CreateBalancedRandomTree(int maxTreeSize, int maxTreeHeight) {
       IFunction rootFunction = GetRandomRoot(maxTreeSize, maxTreeHeight);
       IFunctionTree tree = MakeBalancedTree(rootFunction, maxTreeHeight - 1);
       return tree;
@@ -89,72 +83,72 @@ namespace HeuristicLab.GP {
     /// <param name="maxTreeSize">Maximal size of the tree (number of nodes).</param>
     /// <param name="maxTreeHeight">Maximal height of the tree.</param>
     /// <returns></returns>
-    internal IFunctionTree CreateUnbalancedRandomTree(int maxTreeSize, int maxTreeHeight) {
+    public IFunctionTree CreateUnbalancedRandomTree(int maxTreeSize, int maxTreeHeight) {
       IFunction rootFunction = GetRandomRoot(maxTreeSize, maxTreeHeight);
       IFunctionTree tree = MakeUnbalancedTree(rootFunction, maxTreeHeight - 1);
       return tree;
     }
 
-    internal IFunctionTree PTC2(IRandom random, int size, int maxDepth) {
-      return PTC2(random, GetRandomRoot(size, maxDepth), size, maxDepth);
+    public IFunctionTree PTC2(int size, int maxDepth) {
+      return PTC2(GetRandomRoot(size, maxDepth), size, maxDepth);
     }
 
-    internal IFunctionTree PTC2(IRandom random, IFunction rootF, int size, int maxDepth) {
-      IFunctionTree root = rootF.GetTreeNode();
-      if(size <= 1 || maxDepth <= 1) return root;
+    private IFunctionTree PTC2(IFunction rootFunction, int size, int maxDepth) {
+      IFunctionTree root = rootFunction.GetTreeNode();
+      if (size <= 1 || maxDepth <= 1) return root;
       List<object[]> list = new List<object[]>();
       int currentSize = 1;
       int totalListMinSize = 0;
-      int minArity = root.Function.MinArity;
-      int maxArity = root.Function.MaxArity;
-      if(maxArity >= size) {
+      int minArity = root.Function.MinSubTrees;
+      int maxArity = root.Function.MaxSubTrees;
+      if (maxArity >= size) {
         maxArity = size;
       }
       int actualArity = random.Next(minArity, maxArity + 1);
-      totalListMinSize += GetMinimalTreeSize(root.Function) - 1;
-      for(int i = 0; i < actualArity; i++) {
+      totalListMinSize += root.Function.MinTreeSize - 1;
+      for (int i = 0; i < actualArity; i++) {
         // insert a dummy sub-tree and add the pending extension to the list
         root.AddSubTree(null);
         list.Add(new object[] { root, i, 2 });
       }
 
-      while(list.Count > 0 && totalListMinSize + currentSize < size) {
+      while (list.Count > 0 && totalListMinSize + currentSize < size) {
         int randomIndex = random.Next(list.Count);
         object[] nextExtension = list[randomIndex];
         list.RemoveAt(randomIndex);
         IFunctionTree parent = (IFunctionTree)nextExtension[0];
         int a = (int)nextExtension[1];
         int d = (int)nextExtension[2];
-        if(d == maxDepth) {
+        if (d == maxDepth) {
           parent.RemoveSubTree(a);
           IFunctionTree branch = CreateRandomTree(GetAllowedSubFunctions(parent.Function, a), 1, 1);
           parent.InsertSubTree(a, branch); // insert a smallest possible tree
-          currentSize += branch.Size;
-          totalListMinSize -= branch.Size;
+          currentSize += branch.GetSize();
+          totalListMinSize -= branch.GetSize();
         } else {
-          IFunction selectedFunction = RandomSelect(GetAllowedSubFunctions(parent.Function, a).Where(
-            f => !IsTerminal(f) && GetMinimalTreeHeight(f) + (d - 1) <= maxDepth).ToArray());
+          IFunction selectedFunction = TreeGardener.RandomSelect(random, GetAllowedSubFunctions(parent.Function, a).Where(
+            f => !TreeGardener.IsTerminal(f) && f.MinTreeHeight + (d - 1) <= maxDepth).ToArray());
           IFunctionTree newTree = selectedFunction.GetTreeNode();
           parent.RemoveSubTree(a);
           parent.InsertSubTree(a, newTree);
           currentSize++;
           totalListMinSize--;
 
-          minArity = selectedFunction.MinArity;
-          maxArity = selectedFunction.MaxArity;
-          if(maxArity >= size) {
+          minArity = selectedFunction.MinSubTrees;
+          maxArity = selectedFunction.MaxSubTrees;
+          if (maxArity >= size) {
             maxArity = size;
           }
           actualArity = random.Next(minArity, maxArity + 1);
-          for(int i = 0; i < actualArity; i++) {
+          for (int i = 0; i < actualArity; i++) {
             // insert a dummy sub-tree and add the pending extension to the list
             newTree.AddSubTree(null);
             list.Add(new object[] { newTree, i, d + 1 });
           }
-          totalListMinSize += GetMinimalTreeSize(newTree.Function) - 1;
+          totalListMinSize += newTree.Function.MinTreeSize - 1;
         }
       }
-      while(list.Count > 0) {
+      while (list.Count > 0) {
         int randomIndex = random.Next(list.Count);
         object[] nextExtension = list[randomIndex];
         list.RemoveAt(randomIndex);
@@ -167,7 +161,7 @@ namespace HeuristicLab.GP {
       }
       return root;
     }
-
+ 
     /// <summary>
     /// selects a random function from allowedFunctions and creates a random (unbalanced) tree with maximal size and height.
     /// </summary>
@@ -175,13 +169,13 @@ namespace HeuristicLab.GP {
     /// <param name="maxTreeSize">Maximal size of the tree (number of nodes).</param>
     /// <param name="maxTreeHeight">Maximal height of the tree.</param>
     /// <returns>New random unbalanced tree</returns>
-    internal IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight) {
+    public IFunctionTree CreateRandomTree(ICollection<IFunction> allowedFunctions, int maxTreeSize, int maxTreeHeight) {
       // get the minimal needed height based on allowed functions and extend the max-height if necessary
-      int minTreeHeight = allowedFunctions.Select(f => GetMinimalTreeHeight(f)).Min();
+      int minTreeHeight = allowedFunctions.Select(f => f.MinTreeHeight).Min();
       if(minTreeHeight > maxTreeHeight)
         maxTreeHeight = minTreeHeight;
       // get the minimal needed size based on allowed functions and extend the max-size if necessary
-      int minTreeSize = allowedFunctions.Select(f => GetMinimalTreeSize(f)).Min();
+      int minTreeSize = allowedFunctions.Select(f => f.MinTreeSize).Min();
       if(minTreeSize > maxTreeSize)
         maxTreeSize = minTreeSize;
 
@@ -190,47 +184,19 @@ namespace HeuristicLab.GP {
       int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
 
       // filter the set of allowed functions and select only from those that fit into the given maximal size and height limits
-      IFunction[] possibleFunctions = allowedFunctions.Where(f => GetMinimalTreeHeight(f) <= treeHeight &&
-        GetMinimalTreeSize(f) <= treeSize).ToArray();
+      IFunction[] possibleFunctions = allowedFunctions.Where(f => f.MinTreeHeight <= treeHeight &&
+        f.MinTreeSize <= treeSize).ToArray();
       IFunction selectedFunction = RandomSelect(possibleFunctions);
 
       // build the tree 
       IFunctionTree root;
-      root = PTC2(random, selectedFunction, maxTreeSize, maxTreeHeight);
+      root = PTC2(selectedFunction, maxTreeSize, maxTreeHeight);
       return root;
-    }
-
-    internal CompositeOperation CreateInitializationOperation(ICollection<IFunctionTree> trees, IScope scope) {
-      // needed for the parameter shaking operation
-      CompositeOperation initializationOperation = new CompositeOperation();
-      Scope tempScope = new Scope("Temp. initialization scope");
-
-      var parametricTrees = trees.Where(t => t.Function.GetVariable(FunctionBase.INITIALIZATION) != null);
-      foreach(IFunctionTree tree in parametricTrees) {
-        // enqueue an initialization operation for each operator with local variables 
-        IOperator initialization = (IOperator)tree.Function.GetVariable(FunctionBase.INITIALIZATION).Value;
-        Scope initScope = new Scope();
-        // copy the local variables into a temporary scope used for initialization
-        foreach(IVariable variable in tree.LocalVariables) {
-          initScope.AddVariable(variable);
-        }
-        tempScope.AddSubScope(initScope);
-        initializationOperation.AddOperation(new AtomicOperation(initialization, initScope));
-      }
-      Scope backupScope = new Scope("backup");
-      foreach(Scope subScope in scope.SubScopes) {
-        backupScope.AddSubScope(subScope);
-      }
-      scope.AddSubScope(tempScope);
-      scope.AddSubScope(backupScope);
-      // add an operation to remove the temporary scopes        
-      initializationOperation.AddOperation(new AtomicOperation(new RightReducer(), scope));
-      return initializationOperation;
     }
     #endregion
 
     #region tree information gathering
-    internal IFunctionTree GetRandomParentNode(IFunctionTree tree) {
+    public IFunctionTree GetRandomParentNode(IFunctionTree tree) {
       List<IFunctionTree> parentNodes = new List<IFunctionTree>();
 
       // add null for the parent of the root node
@@ -245,7 +211,7 @@ namespace HeuristicLab.GP {
       return parentNodes[random.Next(parentNodes.Count)];
     }
 
-    internal ICollection<IFunctionTree> GetAllSubTrees(IFunctionTree root) {
+    public static ICollection<IFunctionTree> GetAllSubTrees(IFunctionTree root) {
       List<IFunctionTree> allTrees = new List<IFunctionTree>();
       TreeForEach(root, t => { allTrees.Add(t); });
       return allTrees;
@@ -261,7 +227,7 @@ namespace HeuristicLab.GP {
     /// <param name="tree">root of the function tree to process</param>
     /// <param name="branch">branch that is searched in the tree</param>
     /// <returns></returns>
-    internal int GetBranchLevel(IFunctionTree tree, IFunctionTree branch) {
+    public int GetBranchLevel(IFunctionTree tree, IFunctionTree branch) {
       return GetBranchLevelHelper(tree, branch, 1);
     }
 
@@ -277,12 +243,12 @@ namespace HeuristicLab.GP {
       return -1;
     }
 
-    internal bool IsValidTree(IFunctionTree tree) {
+    public bool IsValidTree(IFunctionTree tree) {
       for(int i = 0; i < tree.SubTrees.Count; i++) {
-        if(!tree.Function.AllowedSubFunctions(i).Contains(tree.SubTrees[i].Function)) return false;
+        if(!tree.Function.GetAllowedSubFunctions(i).Contains(tree.SubTrees[i].Function)) return false;
       }
 
-      if(tree.SubTrees.Count < tree.Function.MinArity || tree.SubTrees.Count > tree.Function.MaxArity)
+      if(tree.SubTrees.Count < tree.Function.MinSubTrees || tree.SubTrees.Count > tree.Function.MaxSubTrees)
         return false;
       foreach(IFunctionTree subTree in tree.SubTrees) {
         if(!IsValidTree(subTree)) return false;
@@ -291,7 +257,7 @@ namespace HeuristicLab.GP {
     }
 
     // returns a random branch from the specified level in the tree
-    internal IFunctionTree GetRandomBranch(IFunctionTree tree, int level) {
+    public IFunctionTree GetRandomBranch(IFunctionTree tree, int level) {
       if(level == 0) return tree;
       List<IFunctionTree> branches = new List<IFunctionTree>();
       GetBranchesAtLevel(tree, level, branches);
@@ -311,8 +277,8 @@ namespace HeuristicLab.GP {
     }
 
     private bool IsPossibleParent(IFunction f, List<IFunction> children) {
-      int minArity = f.MinArity;
-      int maxArity = f.MaxArity;
+      int minArity = f.MinSubTrees;
+      int maxArity = f.MaxSubTrees;
       // note: we can't assume that the operators in the children list have different types!
 
       // when the maxArity of this function is smaller than the list of operators that
@@ -328,7 +294,7 @@ namespace HeuristicLab.GP {
       // allowed functions for this slot.
       // we only count those slots that can hold at least one of the children that we should combine
       for(int slot = 0; slot < nSlots; slot++) {
-        HashSet<IFunction> functionSet = new HashSet<IFunction>(f.AllowedSubFunctions(slot));
+        HashSet<IFunction> functionSet = new HashSet<IFunction>(f.GetAllowedSubFunctions(slot));
         if(functionSet.Count() > 0) {
           slotSets.Add(functionSet);
         }
@@ -364,7 +330,7 @@ namespace HeuristicLab.GP {
       if(assignments > children.Count) throw new InvalidProgramException();
       return assignments == children.Count - 1;
     }
-    internal IList<IFunction> GetAllowedParents(IFunction child, int childIndex) {
+    public IList<IFunction> GetAllowedParents(IFunction child, int childIndex) {
       List<IFunction> parents = new List<IFunction>();
       foreach(IFunction function in functions) {
         ICollection<IFunction> allowedSubFunctions = GetAllowedSubFunctions(function, childIndex);
@@ -374,26 +340,26 @@ namespace HeuristicLab.GP {
       }
       return parents;
     }
-    internal bool IsTerminal(IFunction f) {
-      return f.MinArity == 0 && f.MaxArity == 0;
+    public static bool IsTerminal(IFunction f) {
+      return f.MinSubTrees == 0 && f.MaxSubTrees == 0;
     }
-    internal IList<IFunction> GetAllowedSubFunctions(IFunction f, int index) {
+    public ICollection<IFunction> GetAllowedSubFunctions(IFunction f, int index) {
       if(f == null) {
         return allFunctions;
       } else {
-        return f.AllowedSubFunctions(index);
+        return f.GetAllowedSubFunctions(index);
       }
     }
     #endregion
 
     #region private utility methods
-    private IFunction GetRandomRoot(int maxTreeSize, int maxTreeHeight) {
+    public IFunction GetRandomRoot(int maxTreeSize, int maxTreeHeight) {
       if(maxTreeHeight == 1 || maxTreeSize == 1) {
         IFunction selectedTerminal = RandomSelect(terminals);
         return selectedTerminal;
       } else {
-        IFunction[] possibleFunctions = functions.Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
-          GetMinimalTreeSize(f) <= maxTreeSize).ToArray();
+        IFunction[] possibleFunctions = functions.Where(f => f.MinTreeHeight <= maxTreeHeight &&
+          f.MinTreeSize <= maxTreeSize).ToArray();
         IFunction selectedFunction = RandomSelect(possibleFunctions);
         return selectedFunction;
       }
@@ -402,13 +368,13 @@ namespace HeuristicLab.GP {
 
     private IFunctionTree MakeUnbalancedTree(IFunction parent, int maxTreeHeight) {
       if(maxTreeHeight == 0) return parent.GetTreeNode();
-      int minArity = parent.MinArity;
-      int maxArity = parent.MaxArity;
+      int minArity = parent.MinSubTrees;
+      int maxArity = parent.MaxSubTrees;
       int actualArity = random.Next(minArity, maxArity + 1);
       if(actualArity > 0) {
         IFunctionTree parentTree = parent.GetTreeNode();
         for(int i = 0; i < actualArity; i++) {
-          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight).ToArray();
+          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => f.MinTreeHeight <= maxTreeHeight).ToArray();
           IFunction selectedFunction = RandomSelect(possibleFunctions);
           IFunctionTree newSubTree = MakeUnbalancedTree(selectedFunction, maxTreeHeight - 1);
           parentTree.InsertSubTree(i, newSubTree);
@@ -423,14 +389,14 @@ namespace HeuristicLab.GP {
     // types of possible sub-functions which can indirectly impose a limit for the depth of a given sub-tree
     private IFunctionTree MakeBalancedTree(IFunction parent, int maxTreeHeight) {
       if(maxTreeHeight == 0) return parent.GetTreeNode();
-      int minArity = parent.MinArity;
-      int maxArity = parent.MaxArity;
+      int minArity = parent.MinSubTrees;
+      int maxArity = parent.MaxSubTrees;
       int actualArity = random.Next(minArity, maxArity + 1);
       if(actualArity > 0) {
         IFunctionTree parentTree = parent.GetTreeNode();
         for(int i = 0; i < actualArity; i++) {
           // first try to find a function that fits into the maxHeight limit
-          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => GetMinimalTreeHeight(f) <= maxTreeHeight &&
+          IFunction[] possibleFunctions = GetAllowedSubFunctions(parent, i).Where(f => f.MinTreeHeight <= maxTreeHeight &&
             !IsTerminal(f)).ToArray();
           // no possible function found => extend function set to terminals
           if(possibleFunctions.Length == 0) {
@@ -449,44 +415,40 @@ namespace HeuristicLab.GP {
       return parent.GetTreeNode();
     }
 
-    private int GetMinimalTreeHeight(IOperator op) {
-      return ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_HEIGHT).Value).Data;
-    }
-
-    private int GetMinimalTreeSize(IOperator op) {
-      return ((IntData)op.GetVariable(GPOperatorLibrary.MIN_TREE_SIZE).Value).Data;
-    }
-
-    private void TreeForEach(IFunctionTree tree, Action<IFunctionTree> action) {
+    private static void TreeForEach(IFunctionTree tree, Action<IFunctionTree> action) {
       action(tree);
       foreach(IFunctionTree subTree in tree.SubTrees) {
         TreeForEach(subTree, action);
       }
     }
 
-    private void GetBranchesAtLevel(IFunctionTree tree, int level, List<IFunctionTree> result) {
+    private static void GetBranchesAtLevel(IFunctionTree tree, int level, List<IFunctionTree> result) {
       if(level == 1) result.AddRange(tree.SubTrees);
       foreach(IFunctionTree subTree in tree.SubTrees) {
-        if(subTree.Height >= level - 1)
+        if(subTree.GetHeight() >= level - 1)
           GetBranchesAtLevel(subTree, level - 1, result);
       }
     }
 
     private IFunction RandomSelect(IList<IFunction> functionSet) {
+      return RandomSelect(random, functionSet);
+    }
+
+    public static IFunction RandomSelect(IRandom random, IList<IFunction> functionSet) {
       double[] accumulatedTickets = new double[functionSet.Count];
       double ticketAccumulator = 0;
       int i = 0;
       // precalculate the slot-sizes
-      foreach(IFunction function in functionSet) {
-        ticketAccumulator += ((DoubleData)function.GetVariable(GPOperatorLibrary.TICKETS).Value).Data;
+      foreach (IFunction function in functionSet) {
+        ticketAccumulator += function.Tickets;
         accumulatedTickets[i] = ticketAccumulator;
         i++;
       }
       // throw ball
       double r = random.NextDouble() * ticketAccumulator;
       // find the slot that has been hit
-      for(i = 0; i < accumulatedTickets.Length; i++) {
-        if(r < accumulatedTickets[i]) return functionSet[i];
+      for (i = 0; i < accumulatedTickets.Length; i++) {
+        if (r < accumulatedTickets[i]) return functionSet[i];
       }
       // sanity check
       throw new InvalidProgramException(); // should never happen

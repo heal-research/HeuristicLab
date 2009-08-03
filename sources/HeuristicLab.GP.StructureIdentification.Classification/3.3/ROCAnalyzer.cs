@@ -19,13 +19,10 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.DataAnalysis;
 
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
@@ -88,7 +85,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       }
       foreach (double key in classes.Keys)
         classes[key].Sort();
-  
+
       //calculate ROC Curve
       foreach (double key in classes.Keys) {
         CalculateBestROC(key, classes);
@@ -132,9 +129,9 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
             bestROC = actROC;
           }
         }
-          myAucValues.Add(new DoubleData(bestAUC));
-          myRocValues.Add(Convert(bestROC));
-        
+        myAucValues.Add(new DoubleData(bestAUC));
+        myRocValues.Add(Convert(bestROC));
+
       } else { //last class
         actNegatives = negatives.Where<double>(value => value > classes[positiveClassKey].Min<double>()).ToList<double>();
         actNegatives.Add(classes[positiveClassKey].Min<double>());
@@ -157,7 +154,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       roc = new List<KeyValuePair<double, double>>();
 
       actTP = positives.Count<double>(value => minThreshold <= value && value <= negatives.Max<double>());
-      actFP = negatives.Count<double>(value => minThreshold <= value );
+      actFP = negatives.Count<double>(value => minThreshold <= value);
       //add point (1,TPR) for AUC 'correct' calculation
       roc.Add(new KeyValuePair<double, double>(1, actTP / positives.Count));
       oldTP = actTP;
@@ -221,7 +218,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         roc.Add(new KeyValuePair<double, double>(actFP / negativesCount, actTP / positives.Count));
 
         //stop calculation if truePositiveRate == 0 => straight line with y=0 & save runtime
-        if (actTP == 0 || actFP==0)
+        if (actTP == 0 || actFP == 0)
           break;
       }
       auc += ((oldTP + actTP) / positives.Count) * ((oldFP - actFP) / negativesCount) / 2;

@@ -381,6 +381,7 @@ namespace HeuristicLab.DataAnalysis {
         cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
         cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
       }
+      cachedValuesInvalidated = false;
     }
   }
 }

@@ -31,6 +31,7 @@ namespace HeuristicLab.GP.StructureIdentification.ConditionalEvaluation {
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
   [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   public class HeuristicLabGPConditionalEvaluationPlugin : PluginBase {

@@ -29,7 +29,6 @@ using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
-using HeuristicLab.GP.StructureIdentification;
 using HeuristicLab.Logging;
 using HeuristicLab.Operators.Programmable;
 using HeuristicLab.Modeling;

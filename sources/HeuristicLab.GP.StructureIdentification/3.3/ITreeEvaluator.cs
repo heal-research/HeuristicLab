@@ -19,14 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public interface ITreeEvaluator : IItem {

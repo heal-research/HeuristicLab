@@ -77,13 +77,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AllSubOperatorsTypeConstraint.cs" />
-    <Compile Include="AllSubOperatorsTypeConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AllSubOperatorsTypeConstraintView.designer.cs">
-      <DependentUpon>AllSubOperatorsTypeConstraintView.cs</DependentUpon>
-    </Compile>
     <Compile Include="AndConstraint.cs" />
     <Compile Include="AndConstraintView.cs">
       <SubType>UserControl</SubType>
@@ -121,27 +114,12 @@
     <Compile Include="NotConstraintView.Designer.cs">
       <DependentUpon>NotConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="NumberOfSubOperatorsConstraint.cs" />
-    <Compile Include="NumberOfSubOperatorsConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="NumberOfSubOperatorsConstraintView.Designer.cs">
-      <DependentUpon>NumberOfSubOperatorsConstraintView.cs</DependentUpon>
-    </Compile>
     <Compile Include="OrConstraint.cs" />
     <Compile Include="OrConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OrConstraintView.Designer.cs">
       <DependentUpon>OrConstraintView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SubOperatorsConstraintAnalyser.cs" />
-    <Compile Include="SubOperatorsTypeConstraint.cs" />
-    <Compile Include="SubOperatorsTypeConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SubOperatorsTypeConstraintView.designer.cs">
-      <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabConstraintsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -172,10 +150,6 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AllSubOperatorsTypeConstraintView.resx">
-      <DependentUpon>AllSubOperatorsTypeConstraintView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="AndConstraintView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AndConstraintView.cs</DependentUpon>
@@ -196,17 +170,9 @@
       <DependentUpon>NotConstraintView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NumberOfSubOperatorsConstraintView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>NumberOfSubOperatorsConstraintView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="OrConstraintView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>OrConstraintView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SubOperatorsTypeConstraintView.resx">
-      <DependentUpon>SubOperatorsTypeConstraintView.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VariableComparisonConstraintView.resx">
       <DependentUpon>VariableComparisonConstraintView.cs</DependentUpon>

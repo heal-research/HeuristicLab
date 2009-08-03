@@ -81,71 +81,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BakedFunctionTree.cs" />
-    <Compile Include="TrainingWindowSlider.cs" />
+    <Compile Include="BaseClasses\BinaryFunction.cs" />
+    <Compile Include="BaseClasses\FunctionLibraryInjectorBase.cs" />
+    <Compile Include="BaseClasses\TerminalTreeNode.cs" />
+    <Compile Include="BaseClasses\FunctionBase.cs" />
+    <Compile Include="BaseClasses\FunctionTreeBase.cs" />
+    <Compile Include="BaseClasses\Terminal.cs" />
+    <Compile Include="BaseClasses\UnaryFunction.cs" />
+    <Compile Include="FunctionLibrary.cs" />
+    <Compile Include="FunctionLibraryEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionLibraryEditor.Designer.cs">
+      <DependentUpon>FunctionLibraryEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionTreeView.Designer.cs">
+      <DependentUpon>FunctionTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GeneticProgrammingModel.cs" />
     <Compile Include="DefaultFunctionTreeNameGenerator.cs" />
-    <Compile Include="EqualiserController.cs" />
-    <Compile Include="Logging\TreeArityAnalyser.cs" />
-    <Compile Include="OffspringEqualiser.cs" />
-    <Compile Include="Recombination\SizeConstrictedGPCrossoverBase.cs" />
-    <Compile Include="Recombination\GPCrossoverBase.cs" />
-    <Compile Include="Recombination\UniformCrossover.cs" />
     <Compile Include="UnknownFunctionException.cs" />
-    <Compile Include="IFunctionTreeNameGenerator.cs" />
-    <Compile Include="IFunctionTreeExporter.cs" />
-    <Compile Include="FunctionBase.cs" />
-    <Compile Include="FunctionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FunctionView.Designer.cs">
-      <DependentUpon>FunctionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GPOperatorGroup.cs" />
-    <Compile Include="GPOperatorLibrary.cs" />
-    <Compile Include="GPOperatorLibraryEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GPOperatorLibraryEditor.Designer.cs">
-      <DependentUpon>GPOperatorLibraryEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="HeuristicLabGPPlugin.cs" />
-    <Compile Include="IFunction.cs" />
-    <Compile Include="IFunctionTree.cs" />
-    <Compile Include="Manipulation\ChangeNodeTypeManipulation.cs" />
-    <Compile Include="Manipulation\CutOutNodeManipulation.cs" />
-    <Compile Include="Manipulation\DeleteSubTreeManipulation.cs" />
-    <Compile Include="Manipulation\FullTreeShaker.cs" />
-    <Compile Include="Manipulation\OnePointShaker.cs" />
-    <Compile Include="Manipulation\SubstituteSubTreeManipulation.cs" />
-    <Compile Include="ProbabilisticTreeCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RampedTreeCreator.cs" />
-    <Compile Include="Recombination\LangdonHomologousCrossOver.cs" />
-    <Compile Include="Recombination\OnePointCrossOver.cs" />
-    <Compile Include="Recombination\SizeFairCrossOver.cs" />
-    <Compile Include="Recombination\StandardCrossOver.cs" />
     <Compile Include="TreeGardener.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
-      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
-      <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
-      <Name>HeuristicLab.Data-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
-      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
-      <Name>HeuristicLab.Evolutionary-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
-      <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
-      <Name>HeuristicLab.Operators-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
+      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
+      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
@@ -155,19 +125,13 @@
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
       <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
-      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
-      <Name>HeuristicLab.Selection-3.2</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FunctionView.resx">
-      <DependentUpon>FunctionView.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="FunctionLibraryEditor.resx">
+      <DependentUpon>FunctionLibraryEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GPOperatorLibraryEditor.resx">
-      <DependentUpon>GPOperatorLibraryEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="FunctionTreeView.resx">
+      <DependentUpon>FunctionTreeView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

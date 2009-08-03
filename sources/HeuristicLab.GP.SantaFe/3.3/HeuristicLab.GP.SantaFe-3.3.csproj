@@ -82,33 +82,29 @@
   <ItemGroup>
     <Compile Include="AntInterpreter.cs" />
     <Compile Include="FunctionLibraryInjector.cs" />
-    <Compile Include="Prog3.cs" />
-    <Compile Include="Prog2.cs" />
-    <Compile Include="IfFoodAhead.cs" />
-    <Compile Include="Right.cs" />
-    <Compile Include="Left.cs" />
-    <Compile Include="Move.cs" />
     <Compile Include="HeuristicLabGPSantaFePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Evaluator.cs" />
-    <Compile Include="SymbolTable.cs" />
+    <Compile Include="Symbols\IfFoodAhead.cs" />
+    <Compile Include="Symbols\Left.cs" />
+    <Compile Include="Symbols\Move.cs" />
+    <Compile Include="Symbols\Prog2.cs" />
+    <Compile Include="Symbols\Prog3.cs" />
+    <Compile Include="Symbols\Right.cs" />
+    <Compile Include="Symbols\SymbolTable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Constraints\3.2\HeuristicLab.Constraints-3.2.csproj">
-      <Project>{FCD62C6F-4793-4593-AE9A-0BDCA256EE99}</Project>
-      <Name>HeuristicLab.Constraints-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.DataAnalysis\3.2\HeuristicLab.DataAnalysis-3.2.csproj">
-      <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
-      <Name>HeuristicLab.DataAnalysis-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
+      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
+      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP\3.3\HeuristicLab.GP-3.3.csproj">
       <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>

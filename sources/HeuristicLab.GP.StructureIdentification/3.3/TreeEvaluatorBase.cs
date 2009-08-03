@@ -21,12 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using System.Xml;
-using System.Diagnostics;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
@@ -43,7 +40,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       public short i_arg1;
       public byte arity;
       public byte symbol;
-      public IFunction function;
     }
 
     protected Instr[] codeArr;
@@ -59,36 +55,42 @@ namespace HeuristicLab.GP.StructureIdentification {
       maxValue = mean + punishmentFactor * range;
       minValue = mean - punishmentFactor * range;
 
-      BakedFunctionTree bakedTree = functionTree as BakedFunctionTree;
-      if (bakedTree == null) throw new ArgumentException("TreeEvaluators can only evaluate BakedFunctionTrees");
-
-      List<LightWeightFunction> linearRepresentation = bakedTree.LinearRepresentation;
-      codeArr = new Instr[linearRepresentation.Count];
+      codeArr = new Instr[functionTree.GetSize()];
       int i = 0;
-      foreach (LightWeightFunction f in linearRepresentation) {
-        codeArr[i++] = TranslateToInstr(f);
+      foreach (IFunctionTree tree in IteratePrefix(functionTree)) {
+        codeArr[i++] = TranslateToInstr(tree);
       }
     }
 
-    private Instr TranslateToInstr(LightWeightFunction f) {
+    private IEnumerable<IFunctionTree> IteratePrefix(IFunctionTree functionTree) {
+      List<IFunctionTree> prefixForm = new List<IFunctionTree>();
+      prefixForm.Add(functionTree);
+      foreach (IFunctionTree subTree in functionTree.SubTrees) {
+        prefixForm.AddRange(IteratePrefix(subTree));
+      }
+      return prefixForm;
+    }
+
+    private Instr TranslateToInstr(IFunctionTree tree) {
       Instr instr = new Instr();
-      instr.arity = f.arity;
-      instr.symbol = EvaluatorSymbolTable.MapFunction(f.functionType);
+      instr.arity = (byte)tree.SubTrees.Count;
+      instr.symbol = EvaluatorSymbolTable.MapFunction(tree.Function);
       switch (instr.symbol) {
         case EvaluatorSymbolTable.DIFFERENTIAL:
         case EvaluatorSymbolTable.VARIABLE: {
-            instr.i_arg0 = (short)dataset.GetVariableIndex((string)f.localData[0]); // var
-            instr.d_arg0 = (double)f.localData[1]; // weight
-            instr.i_arg1 = (short)(int)f.localData[2]; // sample-offset
+            VariableFunctionTree varTree = (VariableFunctionTree)tree;
+            instr.i_arg0 = (short)dataset.GetVariableIndex(varTree.VariableName);
+            instr.d_arg0 = varTree.Weight;
+            instr.i_arg1 = (short)varTree.SampleOffset;
             break;
           }
         case EvaluatorSymbolTable.CONSTANT: {
-            instr.d_arg0 = (double)f.localData[0]; // value
+            ConstantFunctionTree constTree = (ConstantFunctionTree)tree;
+            instr.d_arg0 = constTree.Value;
             break;
           }
         case EvaluatorSymbolTable.UNKNOWN: {
-            instr.function = f.functionType;
-            break;
+            throw new NotSupportedException("Unknown function symbol: " + instr.symbol);
           }
       }
       return instr;

@@ -25,13 +25,14 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.GP.Interfaces;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.Boolean {
   public class Evaluator : OperatorBase {
     public Evaluator()
       : base() {
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the ant", typeof(BakedFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the boolean expression to evaluate", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "The boolean dataset (values 0.0 = false, 1.0=true)", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
@@ -40,14 +41,14 @@ namespace HeuristicLab.GP.Boolean {
     }
 
     public override IOperation Apply(IScope scope) {
-      BakedFunctionTree tree = GetVariableValue<BakedFunctionTree>("FunctionTree", scope, true);
+      IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
 
       BooleanTreeInterpreter interpreter = new BooleanTreeInterpreter();
-      interpreter.Reset(dataset, tree, targetVariable);
+      interpreter.Reset(dataset, gpModel.FunctionTree, targetVariable);
       int errors = interpreter.GetNumberOfErrors(start, end);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Errors"), new DoubleData(errors)));

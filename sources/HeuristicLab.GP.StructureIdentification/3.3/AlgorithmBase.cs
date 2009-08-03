@@ -21,20 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
 using System.Xml;
-using System.Diagnostics;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Evolutionary;
+using HeuristicLab.GP.Interfaces;
+using HeuristicLab.Logging;
+using HeuristicLab.Modeling;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
-using HeuristicLab.Logging;
-using HeuristicLab.Data;
-using HeuristicLab.Operators.Programmable;
-using HeuristicLab.Evolutionary;
-using HeuristicLab.Modeling;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public abstract class AlgorithmBase : ItemBase, IAlgorithm, IStochasticAlgorithm {
@@ -418,7 +415,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       Engine.GlobalScope.AddSubScope(bestModelScope);
       Model model = new Model();
       Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
-      model.Data = bestModelScope.GetVariableValue<IFunctionTree>("FunctionTree", false);
+      model.Data = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;

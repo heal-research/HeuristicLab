@@ -19,20 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
-using System.Net;
-using System.ServiceModel;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.CEDMA.DB;
-using System.ServiceModel.Description;
-using System.Linq;
-using HeuristicLab.CEDMA.Core;
-using HeuristicLab.GP.StructureIdentification;
-using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {

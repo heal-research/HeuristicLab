@@ -27,11 +27,11 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   [ClassInfo(Name = "HeuristicLab.GP.StructureIdentification.Classification-3.3")]
   [PluginFile(Filename = "HeuristicLab.GP.StructureIdentification.Classification-3.3.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Constraints-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
   [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]

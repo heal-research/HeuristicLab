@@ -19,14 +19,10 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
-using System.Linq;
+using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class VariableEvaluationImpactCalculator : HeuristicLab.Modeling.VariableEvaluationImpactCalculator {
@@ -34,7 +30,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public VariableEvaluationImpactCalculator()
       : base() {
       AddVariableInfo(new VariableInfo("TreeEvaluator", "The evaluator that should be used to evaluate the expression tree", typeof(ITreeEvaluator), VariableKind.In));
-      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IFunctionTree), VariableKind.In));
+      AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
     }
@@ -42,9 +38,9 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected override double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
-      IFunctionTree tree = GetVariableValue<IFunctionTree>("FunctionTree", scope, true);
+      IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-      evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, punishmentFactor, tree);
+      evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, punishmentFactor, gpModel.FunctionTree);
 
       double[] result = new double[end - start];
       for (int i = start; i < end; i++) {
