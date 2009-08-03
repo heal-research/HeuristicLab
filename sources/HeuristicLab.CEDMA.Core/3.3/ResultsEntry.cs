@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Collections;
-using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;

@@ -30,8 +30,9 @@ namespace HeuristicLab.CEDMA.Core {
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.3")]
   [Dependency(Dependency = "HeuristicLab.Operators-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Modeling.Database-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Modeling.Database.SQLServerCompact-3.2")]
   public class HeuristicLabCedmaCorePlugin : PluginBase {
   }
 }

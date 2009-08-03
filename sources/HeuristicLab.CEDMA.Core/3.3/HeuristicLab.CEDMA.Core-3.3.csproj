@@ -87,7 +87,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StoreProxy.cs" />
     <Compile Include="IResultsViewFactory.cs" />
     <Compile Include="ResultsEntry.cs" />
     <Compile Include="TableResultsView.cs">
@@ -100,21 +99,7 @@
     <Compile Include="ConsoleEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Problem.cs" />
-    <Compile Include="DataSet.cs" />
-    <Compile Include="DataSetView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataSetView.Designer.cs">
-      <DependentUpon>DataSetView.cs</DependentUpon>
-    </Compile>
     <Compile Include="HeuristicLabCedmaCorePlugin.cs" />
-    <Compile Include="ProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ProblemView.Designer.cs">
-      <DependentUpon>ProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results.cs" />
   </ItemGroup>
@@ -122,10 +107,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.CEDMA.DB.Interfaces\3.3\HeuristicLab.CEDMA.DB.Interfaces-3.3.csproj">
-      <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
-      <Name>HeuristicLab.CEDMA.DB.Interfaces-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
@@ -137,6 +118,14 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling.Database.SQLServerCompact\3.2\HeuristicLab.Modeling.Database.SQLServerCompact-3.2.csproj">
+      <Project>{EC1AA756-D612-4FA6-AA52-25CF4F8E3836}</Project>
+      <Name>HeuristicLab.Modeling.Database.SQLServerCompact-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling.Database\3.2\HeuristicLab.Modeling.Database-3.2.csproj">
+      <Project>{E84E5717-79F8-498F-A5E0-A055C4EC086B}</Project>
+      <Name>HeuristicLab.Modeling.Database-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
@@ -154,12 +143,6 @@
     <EmbeddedResource Include="ConsoleEditor.resx">
       <DependentUpon>ConsoleEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataSetView.resx">
-      <DependentUpon>DataSetView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProblemView.resx">
-      <DependentUpon>ProblemView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

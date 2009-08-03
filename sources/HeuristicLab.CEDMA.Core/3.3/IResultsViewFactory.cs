@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
-using HeuristicLab.CEDMA.DB.Interfaces;
 using HeuristicLab.Operators;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;

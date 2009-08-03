@@ -27,23 +27,23 @@ using HeuristicLab.Core;
 using System.Xml;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using HeuristicLab.CEDMA.DB.Interfaces;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Modeling.Database.SQLServerCompact;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
-    private string serverUri;
-    public string ServerUri {
-      get { return serverUri; }
-    }
+    private static readonly string sqlServerCompactFile = AppDomain.CurrentDomain.BaseDirectory + "HeuristicLab.Modeling.database.sdf";
+    private static readonly string sqlServerCompactConnectionString = @"Data Source=" + sqlServerCompactFile;
 
-    private DataSet dataSet;
-    public DataSet DataSet {
-      get { return dataSet; }
+    private Results results;
+    public Results Results {
+      get {
+        if (results == null) ReloadResults();
+        return results;
+      }
     }
-
     public Console()
       : base() {
-      dataSet = new DataSet();
     }
 
     public IEditor CreateEditor() {
@@ -54,29 +54,8 @@ namespace HeuristicLab.CEDMA.Core {
       return new ConsoleEditor(this);
     }
 
-    #region serialization
-    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
-      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
-      XmlAttribute uriAttribute = document.CreateAttribute("ServerURI");
-      uriAttribute.Value = serverUri;
-      node.Attributes.Append(uriAttribute);
-      return node;
-    }
-
-    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
-      base.Populate(node, restoredObjects);
-      serverUri = node.Attributes["ServerURI"].Value;
-    }
-    #endregion
-
-    internal void Connect(string serverUri) {
-      IStore store = new StoreProxy(serverUri);
-      var variableBindings = store.Query("?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 10).ToArray();
-      if (variableBindings.Length > 0) {
-        dataSet = new DataSet(store, (Entity)variableBindings[0].Get("Dataset"));
-      } else {
-        dataSet.Store = store;
-      }
+    private void ReloadResults() {
+      results = new Results(new DatabaseService(sqlServerCompactConnectionString));
     }
   }
 }

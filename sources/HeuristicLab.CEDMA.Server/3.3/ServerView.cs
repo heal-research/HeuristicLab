@@ -31,8 +31,6 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
-using HeuristicLab.CEDMA.DB;
-using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Data.Common;
 using System.Threading;
 using HeuristicLab.Grid;
@@ -46,7 +44,6 @@ namespace HeuristicLab.CEDMA.Server {
     public ServerView(Server server) : base() {
       this.server = server;
       InitializeComponent();
-      addressTextBox.Text = server.CedmaServiceUrl;
     }
 
     private void connectButton_Click(object sender, EventArgs e) {
@@ -57,6 +54,9 @@ namespace HeuristicLab.CEDMA.Server {
       UserControl dispatcherControl = (UserControl)server.Dispatcher.CreateView();
       dispatcherControl.Dock = DockStyle.Fill;
       dispatcherTabPage.Controls.Add(dispatcherControl);
+      UserControl problemControl = (UserControl)server.Problem.CreateView();
+      problemControl.Dock = DockStyle.Fill;
+      problemPage.Controls.Add(problemControl);
       connectButton.Enabled = false;      
     }
   }

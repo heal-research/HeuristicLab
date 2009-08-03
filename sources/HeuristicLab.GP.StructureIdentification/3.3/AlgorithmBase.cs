@@ -69,11 +69,15 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
+    private IModel model;
     public virtual IModel Model {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
-        IScope bestModelScope = engine.GlobalScope.GetVariableValue<IScope>("BestValidationSolution", false);
-        return CreateGPModel(bestModelScope);
+        if (model == null) {
+          IScope bestModelScope = engine.GlobalScope.GetVariableValue<IScope>("BestValidationSolution", false);
+          model = CreateGPModel(bestModelScope);
+        }
+        return model;
       }
     }
 
@@ -433,11 +437,13 @@ namespace HeuristicLab.GP.StructureIdentification {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
+        model.AddInputVariables(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
+        model.AddInputVariables(variableName);
       }
       Engine.GlobalScope.RemoveSubScope(bestModelScope);
       return model;

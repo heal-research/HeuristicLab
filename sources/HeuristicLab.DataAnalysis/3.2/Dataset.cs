@@ -110,6 +110,9 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private string[] variableNames;
+    public IEnumerable<string> VariableNames {
+      get { return variableNames; }
+    }
 
     public Dataset() {
       Name = "-";
@@ -122,6 +125,8 @@ namespace HeuristicLab.DataAnalysis {
       cachedValuesInvalidated = true;
       fireChangeEvents = true;
     }
+
+    
 
     public string GetVariableName(int variableIndex) {
       return variableNames[variableIndex];

@@ -27,7 +27,7 @@ using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.SantaFe {
+namespace HeuristicLab.GP {
   public abstract class FunctionLibraryInjectorBase : OperatorBase {
     private const string FUNCTIONLIBRARY = "FunctionLibrary";
 

@@ -445,11 +445,13 @@ Value.Data = ValueList.Data[ValueIndex.Data];
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
+        model.AddInputVariables(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
+        model.AddInputVariables(variableName);
       }
 
       return model;

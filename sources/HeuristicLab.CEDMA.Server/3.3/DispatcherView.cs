@@ -11,11 +11,13 @@ using HeuristicLab.Core;
 namespace HeuristicLab.CEDMA.Server {
   public partial class DispatcherView : ViewBase {
     private DispatcherBase dispatcher;
-    public DispatcherView(DispatcherBase dispatcher) : base() {
+    public DispatcherView(DispatcherBase dispatcher)
+      : base() {
       this.dispatcher = dispatcher;
       InitializeComponent();
       UpdateControls();
       dispatcher.Changed += (sender, args) => UpdateControls();
+      this.inputVariableList.CheckOnClick = true;
     }
 
     protected override void UpdateControls() {

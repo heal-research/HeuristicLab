@@ -36,17 +36,6 @@ namespace HeuristicLab.DataAnalysis {
     public DatasetView()
       : base() {
       InitializeComponent();
-      DiscoveryService discovery = new DiscoveryService();
-      IDatasetManipulator[] manipuators = discovery.GetInstances<IDatasetManipulator>();
-      contextMenuStrip.Items.Add(new ToolStripSeparator());
-      foreach(IDatasetManipulator manipulator in manipuators) {
-        contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action,null , delegate(object source, EventArgs args) 
-          { 
-            manipulator.Execute(Dataset);
-            Refresh();
-          }));
-      }
-      
       // format all cells with the round-trip formatter to make sure that values that are exported and imported to
       // another C# app (HL2) have the same numeric value
       dataGridView.DefaultCellStyle.Format = "r";
@@ -59,6 +48,15 @@ namespace HeuristicLab.DataAnalysis {
     public DatasetView(Dataset dataset)
       : this() {
       this.Dataset = dataset;
+      DiscoveryService discovery = new DiscoveryService();
+      IDatasetManipulator[] manipuators = discovery.GetInstances<IDatasetManipulator>();
+      contextMenuStrip.Items.Add(new ToolStripSeparator());
+      foreach (IDatasetManipulator manipulator in manipuators) {
+        contextMenuStrip.Items.Add(new ToolStripButton(manipulator.Action, null, delegate(object source, EventArgs args) {
+          manipulator.Execute(Dataset);
+          Refresh();
+        }));
+      }      
     }
 
     protected override void UpdateControls() {

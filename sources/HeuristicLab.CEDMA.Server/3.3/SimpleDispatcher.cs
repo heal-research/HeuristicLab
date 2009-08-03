@@ -26,14 +26,13 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
 using System.Linq;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;
+using HeuristicLab.Modeling.Database;
 
 namespace HeuristicLab.CEDMA.Server {
   public class SimpleDispatcher : DispatcherBase {
@@ -43,22 +42,20 @@ namespace HeuristicLab.CEDMA.Server {
       public List<int> inputVariables;
     }
 
-    private Random random;
-    private IStore store;
+    private Random random;    
     private Dictionary<int, List<AlgorithmConfiguration>> finishedAndDispatchedRuns;
 
-    public SimpleDispatcher(IStore store)
-      : base(store) {
-      this.store = store;
+    public SimpleDispatcher(IModelingDatabase database, Problem problem)
+      : base(database, problem) {      
       random = new Random();
       finishedAndDispatchedRuns = new Dictionary<int, List<AlgorithmConfiguration>>();
       PopulateFinishedRuns();
     }
 
-    public override IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem) {
+    public override HeuristicLab.Modeling.IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem) {
       DiscoveryService ds = new DiscoveryService();
-      IAlgorithm[] algos = ds.GetInstances<IAlgorithm>();
-      IAlgorithm selectedAlgorithm = null;
+      HeuristicLab.Modeling.IAlgorithm[] algos = ds.GetInstances<HeuristicLab.Modeling.IAlgorithm>();
+      HeuristicLab.Modeling.IAlgorithm selectedAlgorithm = null;
       switch (problem.LearningTask) {
         case LearningTask.Regression: {
             var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
@@ -85,7 +82,7 @@ namespace HeuristicLab.CEDMA.Server {
       return selectedAlgorithm;
     }
 
-    private IAlgorithm ChooseDeterministic(int targetVariable, int[] inputVariables, IEnumerable<IAlgorithm> algos) {
+    private HeuristicLab.Modeling.IAlgorithm ChooseDeterministic(int targetVariable, int[] inputVariables, IEnumerable<HeuristicLab.Modeling.IAlgorithm> algos) {
       var deterministicAlgos = algos
         .Where(a => (a as IStochasticAlgorithm) == null)
         .Where(a => AlgorithmFinishedOrDispatched(targetVariable, inputVariables, a.Name) == false);
@@ -94,62 +91,62 @@ namespace HeuristicLab.CEDMA.Server {
       return deterministicAlgos.ElementAt(random.Next(deterministicAlgos.Count()));
     }
 
-    private IAlgorithm ChooseStochastic(IEnumerable<IAlgorithm> regressionAlgos) {
+    private HeuristicLab.Modeling.IAlgorithm ChooseStochastic(IEnumerable<HeuristicLab.Modeling.IAlgorithm> regressionAlgos) {
       var stochasticAlgos = regressionAlgos.Where(a => (a as IStochasticAlgorithm) != null);
       if (stochasticAlgos.Count() == 0) return null;
       return stochasticAlgos.ElementAt(random.Next(stochasticAlgos.Count()));
     }
 
     private void PopulateFinishedRuns() {
-      Dictionary<Entity, Entity> processedModels = new Dictionary<Entity, Entity>();
-      var datasetBindings = store
-        .Query(
-        "?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
-        .Select(x => (Entity)x.Get("Dataset"));
+      //Dictionary<Entity, Entity> processedModels = new Dictionary<Entity, Entity>();
+      //var datasetBindings = store
+      //  .Query(
+      //  "?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
+      //  .Select(x => (Entity)x.Get("Dataset"));
 
-      if (datasetBindings.Count() > 0) {
-        var datasetEntity = datasetBindings.ElementAt(0);
+      //if (datasetBindings.Count() > 0) {
+      //  var datasetEntity = datasetBindings.ElementAt(0);
 
-        DataSet ds = new DataSet(store, datasetEntity);
-        var result = store
-          .Query(
-          "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
-          "?Model <" + Ontology.Name + "> ?AlgoName .",
-          0, 1000)
-          .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName"), (Entity)x.Get("Model") });
+      //  DataSet ds = new DataSet(store, datasetEntity);
+      //  var result = store
+      //    .Query(
+      //    "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
+      //    "?Model <" + Ontology.Name + "> ?AlgoName .",
+      //    0, 1000)
+      //    .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName"), (Entity)x.Get("Model") });
 
-        foreach (Resource[] row in result) {
-          Entity model = ((Entity)row[2]);
-          if (!processedModels.ContainsKey(model)) {
-            processedModels.Add(model, model);
+      //  foreach (Resource[] row in result) {
+      //    Entity model = ((Entity)row[2]);
+      //    if (!processedModels.ContainsKey(model)) {
+      //      processedModels.Add(model, model);
 
-            string targetVariable = (string)((Literal)row[0]).Value;
-            string algoName = (string)((Literal)row[1]).Value;
-            int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
+      //      string targetVariable = (string)((Literal)row[0]).Value;
+      //      string algoName = (string)((Literal)row[1]).Value;
+      //      int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
 
-            var inputVariableLiterals = store
-              .Query(
-                "<" + model.Uri + "> <" + Ontology.HasInputVariable + "> ?InputVariable ." + Environment.NewLine +
-                "?InputVariable <" + Ontology.Name + "> ?Name .",
-                0, 1000)
-              .Select(x => (Literal)x.Get("Name"))
-              .Select(l => (string)l.Value)
-              .Distinct();
+      //      var inputVariableLiterals = store
+      //        .Query(
+      //          "<" + model.Uri + "> <" + Ontology.HasInputVariable + "> ?InputVariable ." + Environment.NewLine +
+      //          "?InputVariable <" + Ontology.Name + "> ?Name .",
+      //          0, 1000)
+      //        .Select(x => (Literal)x.Get("Name"))
+      //        .Select(l => (string)l.Value)
+      //        .Distinct();
 
-            List<int> inputVariables = new List<int>();
-            foreach (string variableName in inputVariableLiterals) {
-              int variableIndex = ds.Problem.Dataset.GetVariableIndex(variableName);
-              inputVariables.Add(variableIndex);
-            }
-            if (!AlgorithmFinishedOrDispatched(targetVariableIndex, inputVariables.ToArray(), algoName)) {
-              AddDispatchedRun(targetVariableIndex, inputVariables.ToArray(), algoName);
-            }
-          }
-        }
-      }
+      //      List<int> inputVariables = new List<int>();
+      //      foreach (string variableName in inputVariableLiterals) {
+      //        int variableIndex = ds.Problem.Dataset.GetVariableIndex(variableName);
+      //        inputVariables.Add(variableIndex);
+      //      }
+      //      if (!AlgorithmFinishedOrDispatched(targetVariableIndex, inputVariables.ToArray(), algoName)) {
+      //        AddDispatchedRun(targetVariableIndex, inputVariables.ToArray(), algoName);
+      //      }
+      //    }
+      //  }
+      //}
     }
 
-    private void SetProblemParameters(IAlgorithm algo, Problem problem, int targetVariable, int[] inputVariables) {
+    private void SetProblemParameters(HeuristicLab.Modeling.IAlgorithm algo, Problem problem, int targetVariable, int[] inputVariables) {
       algo.Dataset = problem.Dataset;
       algo.TargetVariable = targetVariable;
       algo.ProblemInjector.GetVariable("TrainingSamplesStart").GetValue<IntData>().Data = problem.TrainingSamplesStart;

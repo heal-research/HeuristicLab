@@ -29,6 +29,7 @@ namespace HeuristicLab.Modeling {
   public interface IModel {
     Dataset Dataset { get; }
     string TargetVariable { get; }
+    IEnumerable<string> InputVariables { get; }
     double TrainingMeanSquaredError { get; }
     double ValidationMeanSquaredError { get; }
     double TestMeanSquaredError { get; }

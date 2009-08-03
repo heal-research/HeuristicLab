@@ -44,33 +44,15 @@ namespace HeuristicLab.CEDMA.Server {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.addressTextBox = new System.Windows.Forms.TextBox();
-      this.externalAddressLabel = new System.Windows.Forms.Label();
       this.gridAddressLabel = new System.Windows.Forms.Label();
       this.address = new System.Windows.Forms.TextBox();
       this.connectButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.executerTabPage = new System.Windows.Forms.TabPage();
       this.dispatcherTabPage = new System.Windows.Forms.TabPage();
+      this.problemPage = new System.Windows.Forms.TabPage();
       this.tabControl.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // addressTextBox
-      // 
-      this.addressTextBox.Location = new System.Drawing.Point(106, 6);
-      this.addressTextBox.Name = "addressTextBox";
-      this.addressTextBox.ReadOnly = true;
-      this.addressTextBox.Size = new System.Drawing.Size(229, 20);
-      this.addressTextBox.TabIndex = 0;
-      // 
-      // externalAddressLabel
-      // 
-      this.externalAddressLabel.AutoSize = true;
-      this.externalAddressLabel.Location = new System.Drawing.Point(12, 9);
-      this.externalAddressLabel.Name = "externalAddressLabel";
-      this.externalAddressLabel.Size = new System.Drawing.Size(48, 13);
-      this.externalAddressLabel.TabIndex = 3;
-      this.externalAddressLabel.Text = "&Address:";
       // 
       // gridAddressLabel
       // 
@@ -105,6 +87,7 @@ namespace HeuristicLab.CEDMA.Server {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.executerTabPage);
       this.tabControl.Controls.Add(this.dispatcherTabPage);
+      this.tabControl.Controls.Add(this.problemPage);
       this.tabControl.Location = new System.Drawing.Point(3, 58);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
@@ -131,7 +114,17 @@ namespace HeuristicLab.CEDMA.Server {
       this.dispatcherTabPage.Text = "Dispatcher";
       this.dispatcherTabPage.UseVisualStyleBackColor = true;
       // 
-      // ServerForm
+      // problemPage
+      // 
+      this.problemPage.Location = new System.Drawing.Point(4, 22);
+      this.problemPage.Name = "problemPage";
+      this.problemPage.Padding = new System.Windows.Forms.Padding(3);
+      this.problemPage.Size = new System.Drawing.Size(565, 517);
+      this.problemPage.TabIndex = 2;
+      this.problemPage.Text = "Problem";
+      this.problemPage.UseVisualStyleBackColor = true;
+      // 
+      // ServerView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -139,9 +132,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.Controls.Add(this.connectButton);
       this.Controls.Add(this.gridAddressLabel);
       this.Controls.Add(this.address);
-      this.Controls.Add(this.externalAddressLabel);
-      this.Controls.Add(this.addressTextBox);
-      this.Name = "ServerForm";
+      this.Name = "ServerView";
       this.Size = new System.Drawing.Size(579, 604);
       this.tabControl.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -151,13 +142,12 @@ namespace HeuristicLab.CEDMA.Server {
 
     #endregion
 
-    private System.Windows.Forms.TextBox addressTextBox;
-    private System.Windows.Forms.Label externalAddressLabel;
     private System.Windows.Forms.Label gridAddressLabel;
     private System.Windows.Forms.TextBox address;
     private System.Windows.Forms.Button connectButton;
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage executerTabPage;
     private System.Windows.Forms.TabPage dispatcherTabPage;
+    private System.Windows.Forms.TabPage problemPage;
   }
 }

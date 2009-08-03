@@ -90,6 +90,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LearningTask.cs" />
+    <Compile Include="Problem.cs" />
+    <Compile Include="ProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemView.Designer.cs">
+      <DependentUpon>ProblemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExecuterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -124,14 +132,6 @@
       <Project>{C27DDF6C-84DF-45EF-B82F-57A28DD51166}</Project>
       <Name>HeuristicLab.CEDMA.Core-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.CEDMA.DB.Interfaces\3.3\HeuristicLab.CEDMA.DB.Interfaces-3.3.csproj">
-      <Project>{4F9BB789-D561-436B-B226-2BF44B7D0804}</Project>
-      <Name>HeuristicLab.CEDMA.DB.Interfaces-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.CEDMA.DB\3.3\HeuristicLab.CEDMA.DB-3.3.csproj">
-      <Project>{B3D6D8D9-2B1F-47EC-9C73-77FAECF87310}</Project>
-      <Name>HeuristicLab.CEDMA.DB-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
@@ -152,6 +152,14 @@
       <Project>{545CE756-98D8-423B-AC2E-6E7D70926E5C}</Project>
       <Name>HeuristicLab.Grid-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling.Database.SQLServerCompact\3.2\HeuristicLab.Modeling.Database.SQLServerCompact-3.2.csproj">
+      <Project>{EC1AA756-D612-4FA6-AA52-25CF4F8E3836}</Project>
+      <Name>HeuristicLab.Modeling.Database.SQLServerCompact-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling.Database\3.2\HeuristicLab.Modeling.Database-3.2.csproj">
+      <Project>{E84E5717-79F8-498F-A5E0-A055C4EC086B}</Project>
+      <Name>HeuristicLab.Modeling.Database-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
       <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
       <Name>HeuristicLab.Modeling-3.2</Name>
@@ -170,6 +178,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ProblemView.resx">
+      <DependentUpon>ProblemView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DispatcherView.resx">
       <DependentUpon>DispatcherView.cs</DependentUpon>
     </EmbeddedResource>

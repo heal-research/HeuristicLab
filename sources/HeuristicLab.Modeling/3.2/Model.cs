@@ -41,6 +41,16 @@ namespace HeuristicLab.Modeling {
       set { targetVariable = value; }
     }
 
+    private List<string> inputVariables = new List<string>();
+    public IEnumerable<string> InputVariables {
+      get { return inputVariables; }
+    }
+
+    public void AddInputVariables(string variableName) {
+      if (!inputVariables.Contains(variableName))
+        inputVariables.Add(variableName);
+    }
+
     private double trainingMSE;
     public double TrainingMeanSquaredError {
       get { return trainingMSE; }
@@ -121,7 +131,7 @@ namespace HeuristicLab.Modeling {
 
     public double GetVariableQualityImpact(string variableName) {
       if (variableQualityImpacts.ContainsKey(variableName)) return variableQualityImpacts[variableName];
-      else throw new ArgumentException("Impact of variable "+variableName+" is not available.");
+      else throw new ArgumentException("Impact of variable " + variableName + " is not available.");
     }
 
     public double GetVariableEvaluationImpact(string variableName) {

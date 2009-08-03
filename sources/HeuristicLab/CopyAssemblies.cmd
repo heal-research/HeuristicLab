@@ -76,6 +76,8 @@ copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.d
 copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.3\%Outdir%\HeuristicLab.Modeling-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Modeling.Database\3.2\%Outdir%\HeuristicLab.Modeling.Database-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Modeling.Database.SQLServerCompact\3.2\%Outdir%\HeuristicLab.Modeling.Database.SQLServerCompact-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.2\%Outdir%\HeuristicLab.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators\3.3\%Outdir%\HeuristicLab.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Operators.Metaprogramming\3.2\%Outdir%\HeuristicLab.Operators.Metaprogramming-3.2.dll" .\plugins
@@ -109,6 +111,8 @@ copy "%SolutionDir%\HeuristicLab.SimOpt\3.2\%Outdir%\HeuristicLab.SimOpt-3.2.dll
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite.NET.chm" .\plugins
+copy "%SolutionDir%\HeuristicLAb.SQLServerCompact\3.2\%Outdir%\HeuristicLab.SQLServerCompact-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLAb.SQLServerCompact\3.2\%Outdir%\System.Data.SqlServerCe.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.StatisticalAnalysis\3.2\%Outdir%\HeuristicLab.StatisticalAnalysis-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SupportVectorMachines\3.2\%Outdir%\HeuristicLab.SupportVectorMachines-3.2.dll" .\plugins
 copy "%SolutionDir%\LibSVM\%Outdir%\LibSVM.dll" .\plugins
@@ -131,13 +135,17 @@ copy "%SolutionDir%\HeuristicLab.Security.Server\3.2\%Outdir%\HeuristicLab.Secur
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
   copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\3.2\System.Data.SQLite.dll" .\plugins
+  xcopy "%SolutionDir%\HeuristicLab.SQLServerCompact\3.2\x86\*" .\plugins /e /i
 ) else if "%Platform%" == "x64" ( 
   copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\3.2\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+  xcopy "%SolutionDir%\HeuristicLab.SQLServerCompact\3.2\x64\*" .\plugins /e /i
 ) else if "%Platform%" == "AnyCPU" (
   if "%PROCESSOR_ARCHITECTURE%" == "x64" (
     copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\3.2\System.Data.SQLite.x64.dll" .\plugins\System.Data.SQLite.dll
+     xcopy "%SolutionDir%\HeuristicLab.SQLServerCompact\3.2\x64\*" .\plugins /e /i
   ) else if "%PROCESSOR_ARCHITECTURE%" == "x86" (
     copy /B /Y "%SolutionDir%\HeuristicLab.SQLite\3.2\System.Data.SQLite.dll" .\plugins
+    xcopy "%SolutionDir%\HeuristicLab.SQLServerCompact\3.2\x86\*" .\plugins /e /i
   ) else (
     echo "ERROR: unknown architecture: "%PROCESSOR_ARCHITECTURE%"
   ) 

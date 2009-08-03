@@ -26,8 +26,6 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
 using System.Linq;
 using HeuristicLab.CEDMA.Core;
@@ -37,11 +35,12 @@ using System.Diagnostics;
 using HeuristicLab.Core;
 using System.Threading;
 using HeuristicLab.Modeling;
+using HeuristicLab.Modeling.Database;
 
 namespace HeuristicLab.CEDMA.Server {
   public class GridExecuter : ExecuterBase {
     private JobManager jobManager;
-    private Dictionary<AsyncGridResult, IAlgorithm> activeAlgorithms;
+    private Dictionary<AsyncGridResult, HeuristicLab.Modeling.IAlgorithm> activeAlgorithms;
 
     private TimeSpan StartJobInterval {
       get { return TimeSpan.FromMilliseconds(500); }
@@ -55,10 +54,10 @@ namespace HeuristicLab.CEDMA.Server {
       get { return TimeSpan.FromSeconds(3); }
     }
 
-    public GridExecuter(IDispatcher dispatcher, IStore store, IGridServer server)
-      : base(dispatcher, store) {
+    public GridExecuter(IDispatcher dispatcher,  IGridServer server, IModelingDatabase databaseService)
+      : base(dispatcher, databaseService) {
       this.jobManager = new JobManager(server);
-      activeAlgorithms = new Dictionary<AsyncGridResult, IAlgorithm>();
+      activeAlgorithms = new Dictionary<AsyncGridResult, HeuristicLab.Modeling.IAlgorithm>();
       jobManager.Reset();
     }
 
@@ -70,7 +69,7 @@ namespace HeuristicLab.CEDMA.Server {
           while (asyncResults.Count < MaxActiveJobs) {
             Thread.Sleep(StartJobInterval);
             // get an execution from the dispatcher and execute in grid via job-manager
-            IAlgorithm algorithm = Dispatcher.GetNextJob();
+            HeuristicLab.Modeling.IAlgorithm algorithm = Dispatcher.GetNextJob();
             if (algorithm != null) {
               AtomicOperation op = new AtomicOperation(algorithm.Engine.OperatorGraph.InitialOperator, algorithm.Engine.GlobalScope);
               ProcessingEngine procEngine = new ProcessingEngine(algorithm.Engine.GlobalScope, op);
@@ -90,7 +89,7 @@ namespace HeuristicLab.CEDMA.Server {
             int readyHandleIndex = WaitAny(whArr, WaitForFinishedJobsTimeout);
             if (readyHandleIndex != WaitHandle.WaitTimeout) {
               WaitHandle readyHandle = whArr[readyHandleIndex];
-              IAlgorithm finishedAlgorithm = null;
+              HeuristicLab.Modeling.IAlgorithm finishedAlgorithm = null;
               AsyncGridResult finishedResult = null;
               lock (activeAlgorithms) {
                 finishedResult = asyncResults[readyHandle];
@@ -137,7 +136,7 @@ namespace HeuristicLab.CEDMA.Server {
       lock (activeAlgorithms) {
         string[] retVal = new string[activeAlgorithms.Count];
         int i = 0;
-        foreach (IAlgorithm a in activeAlgorithms.Values) {
+        foreach (HeuristicLab.Modeling.IAlgorithm a in activeAlgorithms.Values) {
           retVal[i++] = a.Name + " " + a.Dataset.GetVariableName(a.TargetVariable);
         }
         return retVal;

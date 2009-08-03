@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.CEDMA.DB.Interfaces;
 
 namespace HeuristicLab.CEDMA.Core {
 
@@ -68,9 +67,8 @@ namespace HeuristicLab.CEDMA.Core {
     private void dataGridView_MouseDoubleClick(object sender, MouseEventArgs e) {
       if (e.Button == MouseButtons.Left && e.Clicks == 2) {
         DataGridView.HitTestInfo hitInfo = dataGridView.HitTest(e.X, e.Y);
-        ResultsEntry entry = (ResultsEntry)dataGridView.Rows[hitInfo.RowIndex].Tag;
-        string serializedData =  (string)entry.Get(Ontology.SerializedData.Uri.Replace(Ontology.CedmaNameSpace, ""));
-        var model = (IItem)PersistenceManager.RestoreFromGZip(Convert.FromBase64String(serializedData));
+        ResultsEntry entry = (ResultsEntry)dataGridView.Rows[hitInfo.RowIndex].Tag;        
+        var model = (IItem)PersistenceManager.RestoreFromGZip((byte[])entry.Get("PersistedData"));
         PluginManager.ControlManager.ShowControl(model.CreateView());
       }
     }

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.GP.Interfaces;
-using HeuristicLab.GP.SantaFe;
+using HeuristicLab.GP;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class FunctionLibraryInjector : FunctionLibraryInjectorBase {

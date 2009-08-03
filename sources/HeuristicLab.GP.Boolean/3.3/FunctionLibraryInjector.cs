@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP.Interfaces;
-using HeuristicLab.GP.SantaFe;
+using HeuristicLab.GP;
 
 namespace HeuristicLab.GP.Boolean {
   public class FunctionLibraryInjector : FunctionLibraryInjectorBase {

@@ -26,25 +26,25 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using System.Net;
 using System.ServiceModel;
-using HeuristicLab.CEDMA.DB.Interfaces;
-using HeuristicLab.CEDMA.DB;
 using System.ServiceModel.Description;
 using HeuristicLab.Grid;
 using HeuristicLab.Grid.HiveBridge;
 using HeuristicLab.Core;
+using HeuristicLab.Modeling.Database;
+using HeuristicLab.Modeling.Database.SQLServerCompact;
 
 namespace HeuristicLab.CEDMA.Server {
   public class Server : IViewable {
-    private static readonly string rdfFile = AppDomain.CurrentDomain.BaseDirectory + "rdf_store.db3";
-    private static readonly string rdfConnectionString = "sqlite:rdf:Data Source=\"" + rdfFile + "\"";
+    private static readonly string sqlServerCompactFile = AppDomain.CurrentDomain.BaseDirectory + "HeuristicLab.Modeling.database.sdf";
+    private static readonly string sqlServerCompactConnectionString = @"Data Source=" + sqlServerCompactFile;
 
-    private ServiceHost host;
-    private Store store;
-
+    private DatabaseService database;
     private IDispatcher dispatcher;
     public IDispatcher Dispatcher { get { return dispatcher; } }
     private IExecuter executer;
     public IExecuter Executer { get { return executer; } }
+    private Problem problem;
+    public Problem Problem { get { return problem; } }
 
     private string gridServiceUrl;
     public string GridServiceUrl {
@@ -52,48 +52,18 @@ namespace HeuristicLab.CEDMA.Server {
       set { gridServiceUrl = value; }
     }
 
-    private string cedmaServiceUrl;
-    public string CedmaServiceUrl {
-      get { return cedmaServiceUrl; }
-      set { cedmaServiceUrl = value; }
-    }
-
     public Server() {
-      IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
-      // windows XP returns the external ip on index 0 while windows vista returns the external ip as one of the last entries
-      // also if IPv6 protocol is installed we want to find an entry that is IPv4
-      int index = 0;
-      if (System.Environment.OSVersion.Version.Major >= 6) {
-        for (index = addresses.Length - 1; index >= 0; index--)
-          if (addresses[index].AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-            break;
-      }
-      cedmaServiceUrl = "net.tcp://" + addresses[index] + ":8002/CEDMA";
-      store = new Store(rdfConnectionString);
-    }
-
-    public void Start() {
-      host = new ServiceHost(store, new Uri(cedmaServiceUrl));
-      ServiceThrottlingBehavior throttlingBehavior = new ServiceThrottlingBehavior();
-      throttlingBehavior.MaxConcurrentSessions = 20;
-      host.Description.Behaviors.Add(throttlingBehavior);
+      database = new DatabaseService(sqlServerCompactConnectionString);
+      problem = new Problem();
       try {
-        NetTcpBinding binding = new NetTcpBinding();
-        binding.SendTimeout = new TimeSpan(10, 0, 0);
-        binding.MaxReceivedMessageSize = int.MaxValue;
-        binding.ReaderQuotas.MaxStringContentLength = int.MaxValue;
-        binding.ReaderQuotas.MaxArrayLength = int.MaxValue;
-        host.AddServiceEndpoint(typeof(IStore), binding, cedmaServiceUrl);
-        host.Open();
+        problem.Dataset = database.GetDataset();
       }
-      catch (CommunicationException ex) {
-        MessageBox.Show("An exception occurred: " + ex.Message);
-        host.Abort();
+      catch (InvalidOperationException ex) {
       }
     }
 
     internal void Connect(string serverUrl) {
-      dispatcher = new SimpleDispatcher(store);
+      dispatcher = new SimpleDispatcher(database, problem);
       IGridServer gridServer = null;
       if (serverUrl.Contains("ExecutionEngine")) {
         gridServer = new HiveGridServerWrapper(serverUrl);
@@ -101,7 +71,7 @@ namespace HeuristicLab.CEDMA.Server {
         // default is grid backend
         gridServer = new GridServerProxy(serverUrl);
       }
-      executer = new GridExecuter(dispatcher, store, gridServer);
+      executer = new GridExecuter(dispatcher, gridServer, database);
       executer.Start();
     }
     #region IViewable Members
@@ -109,7 +79,6 @@ namespace HeuristicLab.CEDMA.Server {
     public IView CreateView() {
       return new ServerView(this);
     }
-
     #endregion
   }
 }
