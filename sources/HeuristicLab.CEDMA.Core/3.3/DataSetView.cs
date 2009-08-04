@@ -72,53 +72,12 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
-    private void PopulateViewComboBox() {
-      DiscoveryService service = new DiscoveryService();
-      IResultsViewFactory[] factories = service.GetInstances<IResultsViewFactory>();
-      viewComboBox.DataSource = factories;
-      viewComboBox.ValueMember = "Name";
-    }
 
     private void activateButton_Click(object sender, EventArgs e) {
       DataSet.Activate();
       activateButton.Enabled = false;
     }
 
-    private void resultsButton_Click(object sender, EventArgs e) {
-      if (results == null)
-        ReloadResults();
-      try {
-        IResultsViewFactory factory = (IResultsViewFactory)viewComboBox.SelectedItem;
-        BackgroundWorker worker = new BackgroundWorker();
-        worker.WorkerReportsProgress = true;
-        worker.WorkerSupportsCancellation = true;
-        worker.ProgressChanged += delegate(object progressChangedSender, ProgressChangedEventArgs progressChangedArgs) {
-          progressBar.Value = progressChangedArgs.ProgressPercentage;
-        };
-        worker.DoWork += delegate(object doWorkSender, DoWorkEventArgs doWorkArgs) {
-          int n = results.GetEntries().Count();
-          int i = 0;
-          // preload list 
-          foreach (var entry in results.GetEntries()) {
-            i++;
-            if((((i*100) / n) % 10) == 0) worker.ReportProgress((i * 100) / n);
-          }
-          worker.ReportProgress(100);
-        };
-        resultsButton.Enabled = false;
-        worker.RunWorkerAsync();
-        worker.RunWorkerCompleted += delegate(object completedSender, RunWorkerCompletedEventArgs compledArgs) {
-          resultsButton.Enabled = true;
-          progressBar.Value = 0;
-          IControl control = factory.CreateView(results);
-          PluginManager.ControlManager.ShowControl(control);
-        };
-      }
-      catch (Exception ex) {
-        string text = "Couldn't load selected view: " + viewComboBox.SelectedItem + "\n" + ex.Message;
-        MessageBox.Show(text, "Unable to create view", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-    }
 
     private void ReloadResults() {
       results = dataSet.GetResults();
