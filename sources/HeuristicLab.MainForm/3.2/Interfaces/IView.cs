@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Modeling.Database {
-  [ClassInfo(Name = "HeuristicLab.MainForm-3.2")]
-  [PluginFile(Filename = "HeuristicLab.MainForm-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "HeuristicLab.MainForm.Docking-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  public class HeuristicLabMainFormPlugin : PluginBase {
+namespace HeuristicLab.MainForm {
+  public interface IView {
+    string Caption { get; set; }
+    event EventHandler CaptionChanged;
+    IMainForm MainForm { get; set; }
   }
 }
