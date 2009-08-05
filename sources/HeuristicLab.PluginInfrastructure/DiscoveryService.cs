@@ -46,7 +46,7 @@ namespace HeuristicLab.PluginInfrastructure {
     public Type[] GetTypes(Type type) {
       Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
       List<Type> types = new List<Type>();
-      foreach(Assembly asm in assemblies) {
+      foreach (Assembly asm in assemblies) {
         Array.ForEach<Type>(GetTypes(type, asm), delegate(Type t) {
           types.Add(t);
         });
@@ -62,9 +62,25 @@ namespace HeuristicLab.PluginInfrastructure {
     public T[] GetInstances<T>() where T : class {
       Type[] types = GetTypes(typeof(T));
       List<T> instances = new List<T>();
-      foreach(Type t in types) {
-        if(!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
+      foreach (Type t in types) {
+        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
           instances.Add((T)Activator.CreateInstance(t));
+        }
+      }
+      return instances.ToArray();
+    }
+
+    /// <summary>
+    /// Creates an instance of all types that are subtypes or the same type of the specified type
+    /// </summary>
+    /// <typeparam name="type">Most general type.</typeparam>
+    /// <returns>The created instances as array.</returns>
+    public object[] GetInstances(Type type) {
+      Type[] types = GetTypes(type);
+      List<object> instances = new List<object>();
+      foreach (Type t in types) {
+        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
+          instances.Add(Activator.CreateInstance(t));
         }
       }
       return instances.ToArray();
@@ -80,8 +96,8 @@ namespace HeuristicLab.PluginInfrastructure {
     public Type[] GetTypes(Type type, PluginInfo plugin) {
       Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
       List<Type> types = new List<Type>();
-      foreach(Assembly asm in assemblies) {
-        if(plugin.Assemblies.Contains(asm.Location)) {
+      foreach (Assembly asm in assemblies) {
+        if (plugin.Assemblies.Contains(asm.Location)) {
           Array.ForEach<Type>(GetTypes(type, asm), delegate(Type t) {
             types.Add(t);
           });
@@ -100,8 +116,8 @@ namespace HeuristicLab.PluginInfrastructure {
     internal T[] GetInstances<T>(Assembly assembly) {
       Type[] types = GetTypes(typeof(T), assembly);
       List<T> instances = new List<T>();
-      foreach(Type t in types) {
-        if(!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
+      foreach (Type t in types) {
+        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
           instances.Add((T)Activator.CreateInstance(t));
         }
       }
@@ -116,8 +132,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>The found types as array.</returns>
     internal Type[] GetTypes(Type type, Assembly assembly) {
       List<Type> types = new List<Type>();
-      foreach(Type t in assembly.GetTypes()) {
-        if(type.IsAssignableFrom(t)) {
+      foreach (Type t in assembly.GetTypes()) {
+        if (type.IsAssignableFrom(t)) {
           types.Add(t);
         }
       }
@@ -130,8 +146,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type"></param>
     /// <returns>The found plugin or <c>null</c>.</returns>
     public PluginInfo GetDeclaringPlugin(Type type) {
-      foreach(PluginInfo info in PluginManager.Manager.LoadedPlugins) {
-        if(info.Assemblies.Contains(type.Assembly.Location)) return info;
+      foreach (PluginInfo info in PluginManager.Manager.LoadedPlugins) {
+        if (info.Assemblies.Contains(type.Assembly.Location)) return info;
       }
       return null;
     }
