@@ -28,7 +28,6 @@ using HeuristicLab.GP.Interfaces;
 namespace HeuristicLab.GP {
   public partial class FunctionTreeView : ViewBase {
     private IFunctionTree functionTree;
-    private IFunctionTree selectedBranch;
 
     public FunctionTreeView() {
       InitializeComponent();
