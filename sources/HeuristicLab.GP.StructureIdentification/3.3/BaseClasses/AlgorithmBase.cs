@@ -426,7 +426,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
       // calculate and set variable impacts
       VariableEvaluationImpactCalculator evaluationImpactCalculator = new VariableEvaluationImpactCalculator();
+      evaluationImpactCalculator.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evaluationImpactCalculator.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+      qualityImpactCalculator.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualityImpactCalculator.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
+        
 
       evaluationImpactCalculator.Apply(bestModelScope);
       qualityImpactCalculator.Apply(bestModelScope);

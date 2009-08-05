@@ -237,8 +237,12 @@ namespace HeuristicLab.LinearRegression {
       #endregion
 
       HeuristicLab.GP.StructureIdentification.VariableEvaluationImpactCalculator evalImpactCalc = new HeuristicLab.GP.StructureIdentification.VariableEvaluationImpactCalculator();
+      evalImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evalImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       evalImpactCalc.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       HeuristicLab.Modeling.VariableQualityImpactCalculator qualImpactCalc = new HeuristicLab.GP.StructureIdentification.VariableQualityImpactCalculator();
+      qualImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       qualImpactCalc.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
       seqProc.AddSubOperator(trainingMSE);
       seqProc.AddSubOperator(validationMSE);

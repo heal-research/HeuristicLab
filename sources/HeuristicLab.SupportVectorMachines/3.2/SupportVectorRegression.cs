@@ -403,8 +403,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
       SequentialProcessor seqProc = new SequentialProcessor();
       VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
+      evalImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evalImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       evalImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
       VariableQualityImpactCalculator qualImpactCalc = new VariableQualityImpactCalculator();
+      qualImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       qualImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
 
       seqProc.AddSubOperator(evalImpactCalc);
