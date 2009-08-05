@@ -32,9 +32,6 @@ namespace HeuristicLab.CEDMA.Charting {
   [Dependency(Dependency = "HeuristicLab.Charting.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Logging-3.2")]
-  [Dependency(Dependency = "HeuristicLab.CEDMA.DB.Interfaces-3.3")]
   public class HeuristicLabCedmaCorePlugin : PluginBase {
   }
 }

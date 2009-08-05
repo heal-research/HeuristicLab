@@ -14,10 +14,6 @@ copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assign
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Charting\3.3\%Outdir%\HeuristicLab.CEDMA.Charting-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Core\3.3\%Outdir%\HeuristicLab.CEDMA.Core-3.3.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.DB\3.3\%Outdir%\HeuristicLab.CEDMA.DB-3.3.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.DB\3.3\%Outdir%\SemWeb.SqliteStore.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.DB\3.3\%Outdir%\SemWeb.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.DB.Interfaces\3.3\%Outdir%\HeuristicLab.CEDMA.DB.Interfaces-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Server\3.3\%Outdir%\HeuristicLab.CEDMA.Server-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.2\%Outdir%\HeuristicLab.Charting-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins

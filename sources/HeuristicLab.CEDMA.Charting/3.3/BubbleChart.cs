@@ -29,7 +29,6 @@ using System.Windows.Forms;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
-using HeuristicLab.CEDMA.DB.Interfaces;
 using System.Diagnostics;
 
 namespace HeuristicLab.CEDMA.Charting {
