@@ -29,10 +29,12 @@ namespace HeuristicLab.GP.StructureIdentification {
   public class ConstantFunctionTree : TerminalTreeNode {
     public double Value { get; set; }
 
-    public ConstantFunctionTree(Constant constant) : base(constant){
+    public ConstantFunctionTree(Constant constant)
+      : base(constant) {
     }
 
-    protected ConstantFunctionTree(ConstantFunctionTree original) : base(original){
+    protected ConstantFunctionTree(ConstantFunctionTree original)
+      : base(original) {
       Value = original.Value;
     }
 
@@ -56,6 +58,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       return new AtomicOperation(Function.Initializer, myVariableScope);
     }
 
+    public override string ToString() {
+      return SymbolicExpressionExporter.GetName(this);
+    }
+
+    #region serialization
     public override object Clone() {
       return new ConstantFunctionTree(this);
     }
@@ -72,6 +79,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       base.Populate(node, restoredObjects);
       Value = XmlConvert.ToDouble(node.Attributes["Value"].Value);
     }
+    #endregion
 
     private IVariable CreateValueVariable() {
       DoubleData data = new DoubleData(Value);

@@ -66,6 +66,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       return new AtomicOperation(Function.Initializer, myVariableScope);
     }
 
+    public override string ToString() {
+      return SymbolicExpressionExporter.GetName(this);
+    }
+
+    #region serialization
     public override object Clone() {
       return new VariableFunctionTree(this);
     }
@@ -90,6 +95,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       SampleOffset = XmlConvert.ToInt32(node.Attributes["SampleOffset"].Value);
       VariableName = node.Attributes["Variable"].Value;
     }
+    #endregion
 
     private IVariable CreateSampleOffsetVariable() {
       IntData data = new IntData(SampleOffset);

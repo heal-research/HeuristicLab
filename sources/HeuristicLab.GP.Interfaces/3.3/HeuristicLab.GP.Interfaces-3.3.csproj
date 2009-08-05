@@ -79,9 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IFunctionTreeNameGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IFunctionTreeSerializer.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -36,5 +36,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       // 2 - 3 seems like an reasonable defaut (used for +,-,*,/) (discussion with swinkler and maffenze)
       MinSubTrees = 2; MaxSubTrees = 3;
     }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

@@ -29,5 +29,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     public Signum()
       : base() {
     }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

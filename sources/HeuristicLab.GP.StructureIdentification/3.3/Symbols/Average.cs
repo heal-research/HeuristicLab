@@ -32,5 +32,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       MinSubTrees = 2; MaxSubTrees = 3;
     }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

@@ -19,22 +19,23 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.GP.Interfaces;
+using System.Xml;
 
-namespace HeuristicLab.GP {
-  public class DefaultFunctionTreeNameGenerator : IFunctionTreeNameGenerator {
-    #region IFunctionTreeNameGenerator Members
-    string IFunctionTreeNameGenerator.Name {
-      get { return "Default Representation"; }
+namespace HeuristicLab.GP.StructureIdentification {
+  public class FunctionTreeBase : HeuristicLab.GP.FunctionTreeBase {
+    public FunctionTreeBase(IFunction function) : base(function) { }
+    public FunctionTreeBase(FunctionTreeBase original) : base(original) { }
+
+    public override object Clone() {
+      return new FunctionTreeBase(this);
     }
 
-    string IFunctionTreeNameGenerator.GetName(IFunctionTree tree) {
-      return tree.Function.Name;
+    public override string ToString() {
+      return SymbolicExpressionExporter.GetName(this);
     }
-    #endregion
   }
 }

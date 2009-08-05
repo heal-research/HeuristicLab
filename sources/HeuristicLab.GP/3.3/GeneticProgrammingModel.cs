@@ -46,7 +46,8 @@ namespace HeuristicLab.GP {
       : base() {
     }
 
-    public GeneticProgrammingModel(IFunctionTree tree) : base() {
+    public GeneticProgrammingModel(IFunctionTree tree)
+      : base() {
       FunctionTree = tree;
     }
 
@@ -86,7 +87,7 @@ namespace HeuristicLab.GP {
       int subTrees = XmlConvert.ToInt32(fNode.Attributes["Args"].Value);
       IFunction f = (IFunction)PersistenceManager.Restore(fNode, restoredObjects);
       IFunctionTree tree = f.GetTreeNode();
-      if(fNode.ChildNodes.Count>0) tree.Populate(fNode.ChildNodes[0], restoredObjects);
+      if (fNode.ChildNodes.Count > 0) tree.Populate(fNode.ChildNodes[0], restoredObjects);
       nodeIndex++;
       for (int i = 0; i < subTrees; i++) {
         tree.AddSubTree(RestoreTree(node, ref nodeIndex, restoredObjects));

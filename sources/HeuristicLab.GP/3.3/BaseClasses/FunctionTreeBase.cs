@@ -93,6 +93,10 @@ namespace HeuristicLab.GP {
       SubTrees.RemoveAt(index);
     }
 
+    public virtual string ToString() {
+      return Function.Name;
+    }
+
     #endregion
 
     #region IStorable Members

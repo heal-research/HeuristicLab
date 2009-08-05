@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class SymbolicExpressionExporter : IFunctionTreeSerializer, IFunctionTreeNameGenerator {
+  public class SymbolicExpressionExporter : IFunctionTreeSerializer {
     private StringBuilder builder;
     private string currentIndent;
 
@@ -65,7 +65,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       currentIndent = currentIndent.Remove(0, 2);
     }
 
-    private string ExportFunction(IFunction function, IFunctionTree tree) {
+    private static string ExportFunction(IFunction function, IFunctionTree tree) {
       // this is smelly, if there is a cleaner way to have a 'dynamic' visitor 
       // please let me know! (gkronber 14.10.2008)
       if(function is Addition) return ((Addition)function).ExportToScheme();
@@ -98,23 +98,20 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     #endregion
 
-    #region IFunctionTreeNameGenerator Members
-
-    string IFunctionTreeNameGenerator.Name {
-      get { return "Symbolic Expression"; }
-    }
-
-    public string GetName(IFunctionTree tree) {
+    public static string GetName(IFunctionTree tree) {
       string name = "";
       try {
         name = ExportFunction(tree.Function, tree);
-      } catch(UnknownFunctionException) {
+      }
+      catch (UnknownFunctionException) {
         name = "N/A";
       }
       return name;
     }
 
-    #endregion
+    //public string GetName(IFunctionTree tree) {
+    //  return SymbolicExpressionExporter.GetName(tree);
+    //}
   }
 
   internal static class SchemeExporterExtensions {

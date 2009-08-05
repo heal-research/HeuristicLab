@@ -23,7 +23,7 @@ using HeuristicLab.GP.Interfaces;
 using System;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class ModelAnalyzerExporter : IFunctionTreeSerializer, IFunctionTreeNameGenerator {
+  public class ModelAnalyzerExporter : IFunctionTreeSerializer {
     #region IFunctionTreeExporter Members
 
     public string Name {
@@ -72,7 +72,7 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     #endregion
 
-    private string ExportFunction(IFunction function, IFunctionTree tree) {
+    private static string ExportFunction(IFunction function, IFunctionTree tree) {
       // this is smelly, if there is a cleaner way to have a 'dynamic' visitor 
       // please let me know! (gkronber 14.10.2008)
       if(function is Addition) return ((Addition)function).ExportToHL2(tree);
@@ -102,13 +102,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       throw new UnknownFunctionException(function.Name);
     }
 
-    #region IFunctionTreeNameGenerator Members
-
-    string IFunctionTreeNameGenerator.Name {
-      get { return "HL2 Representation"; }
-    }
-
-    public string GetName(IFunctionTree tree) {
+    public static string GetName(IFunctionTree tree) {
       string name = "";
       try {
         name = ExportFunction(tree.Function, tree);
@@ -117,10 +111,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
       return name;
     }
-
-    #endregion
-
-
   }
 
   internal static class HL2ExporterExtensions {

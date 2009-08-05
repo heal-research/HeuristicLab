@@ -31,5 +31,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     public LessThan()
       : base() {
     }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

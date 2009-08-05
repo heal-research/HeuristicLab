@@ -36,5 +36,9 @@ In case one of the divisors is 0 returns 0.
     }
 
     public Division() : base() { }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

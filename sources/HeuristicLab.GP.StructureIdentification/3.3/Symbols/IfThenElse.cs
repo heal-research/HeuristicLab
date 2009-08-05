@@ -33,5 +33,9 @@ of the third sub-tree if the first sub-tree evaluates to >= 0.5.";
       : base() {
       MinSubTrees = 3; MaxSubTrees = 3;
     }
+    
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

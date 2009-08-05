@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlgorithmBase.cs" />
+    <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
     <Compile Include="HL3TreeEvaluator.cs" />
     <Compile Include="Symbols\Addition.cs" />

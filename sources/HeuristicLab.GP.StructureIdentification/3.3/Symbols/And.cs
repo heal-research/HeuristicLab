@@ -34,5 +34,9 @@ stopped as soon as one of the sub-trees evaluates to 0.0 (false).";
       : base() {
       MinSubTrees = 2; MaxSubTrees = 3;
     }
+
+    public override HeuristicLab.GP.Interfaces.IFunctionTree GetTreeNode() {
+      return new FunctionTreeBase(this);
+    }
   }
 }

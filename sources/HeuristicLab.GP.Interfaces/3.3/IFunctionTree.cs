@@ -36,5 +36,6 @@ namespace HeuristicLab.GP.Interfaces {
     void AddSubTree(IFunctionTree tree);
     void InsertSubTree(int index, IFunctionTree tree);
     void RemoveSubTree(int index);
+    string ToString();
   }
 }
