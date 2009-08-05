@@ -29,26 +29,9 @@ namespace HeuristicLab.GP {
   public partial class FunctionTreeView : ViewBase {
     private IFunctionTree functionTree;
     private IFunctionTree selectedBranch;
-    //private IFunctionTreeNameGenerator nameGenerator;
-    //private IFunctionTreeNameGenerator[] allNameGenerators;
-    //private MenuItem representationsMenu;
 
     public FunctionTreeView() {
-      //nameGenerator = new DefaultFunctionTreeNameGenerator();
       InitializeComponent();
-
-      DiscoveryService discoveryService = new DiscoveryService();
-      //allNameGenerators = discoveryService.GetInstances<IFunctionTreeNameGenerator>();
-      //representationsMenu = new MenuItem();
-      //representationsMenu.Text = "Tree representation";
-      //representationsMenu.Name = "Tree representation";
-      //foreach (IFunctionTreeNameGenerator generator in allNameGenerators) {
-      //  MenuItem mi = new MenuItem(generator.Name, MakeNameGeneratorDelegate(generator), Shortcut.None);
-      //  if (generator is DefaultFunctionTreeNameGenerator) mi.Checked = true;
-      //  else mi.Checked = false;
-      //  mi.Tag = generator;
-      //  representationsMenu.MenuItems.Add(mi);
-      //}
     }
 
     public FunctionTreeView(IFunctionTree functionTree)
@@ -60,11 +43,10 @@ namespace HeuristicLab.GP {
     protected override void UpdateControls() {
       funTreeView.Nodes.Clear();
       TreeNode rootNode = new TreeNode();
-      rootNode.Name = functionTree.ToString(); // functionTree.Function.Name;
-      rootNode.Text = functionTree.ToString(); // nameGenerator.GetName(functionTree);
+      rootNode.Name = functionTree.ToString();
+      rootNode.Text = functionTree.ToString();
       rootNode.Tag = functionTree;
       treeNodeContextMenu.MenuItems.Clear();
-      //treeNodeContextMenu.MenuItems.Add(representationsMenu);
       DiscoveryService discoveryService = new DiscoveryService();
       IFunctionTreeSerializer[] exporters = discoveryService.GetInstances<IFunctionTreeSerializer>();
       foreach (IFunctionTreeSerializer exporter in exporters) {
@@ -89,16 +71,6 @@ namespace HeuristicLab.GP {
       }
       funTreeView.ExpandAll();
     }
-
-    //private EventHandler MakeNameGeneratorDelegate(IFunctionTreeNameGenerator generator) {
-    //  return delegate(object source, EventArgs args) {
-    //    IFunctionTreeNameGenerator g = (IFunctionTreeNameGenerator)((MenuItem)source).Tag;
-    //    this.nameGenerator = g;
-    //    foreach (MenuItem otherMenuItem in representationsMenu.MenuItems) otherMenuItem.Checked = false;
-    //    ((MenuItem)source).Checked = true;
-    //    UpdateControls();
-    //  };
-    //}
 
     private EventHandler MakeExporterDelegate(IFunctionTreeSerializer exporter) {
       return delegate(object source, EventArgs args) {
