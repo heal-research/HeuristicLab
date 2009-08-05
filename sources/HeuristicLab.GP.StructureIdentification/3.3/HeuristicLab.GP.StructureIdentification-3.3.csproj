@@ -81,8 +81,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlgorithmBase.cs" />
+    <Compile Include="BaseClasses\AlgorithmBase.cs" />
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
+    <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
     <Compile Include="HL3TreeEvaluator.cs" />
     <Compile Include="Symbols\Addition.cs" />
@@ -112,7 +113,6 @@
     <Compile Include="Symbols\Variable.cs" />
     <Compile Include="Symbols\VariableFunctionTree.cs" />
     <Compile Include="Symbols\Xor.cs" />
-    <Compile Include="TreeEvaluatorBase.cs" />
     <Compile Include="HL2TreeEvaluator.cs" />
     <Compile Include="ITreeEvaluator.cs" />
     <Compile Include="Evaluators\MeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
