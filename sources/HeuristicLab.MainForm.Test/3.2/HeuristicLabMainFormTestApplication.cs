@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,14 +21,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Drawing;
+using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.MainForm;
 
-namespace HeuristicLab.MainForm.Interfaces {
-  public interface IUserInterfaceItem : IAction {
-    string Name { get; }
-    Image Image { get; }
-    string ImagePath { get; }
+namespace HeuristicLab.MainForm.Test {
+  [ClassInfo(Name = "MainForm Test", Description="Test application for new mainform development.")]
+  class GridClientApplication : ApplicationBase {
+    public override void Run() {
+      DockingMainForm mainForm = new DockingMainForm(typeof(ITestUserInterfaceItemProvider));
+      mainForm.Title = "Test new MAINFORM concept";
+      Application.Run(mainForm);
+    }
   }
 }

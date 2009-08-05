@@ -23,8 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public interface IMenuItem {
+  public interface IToolStripMenuItem : IToolStripItem {
+    string MenuStructure { get; }
+    char MenuStructureSeparator { get; }
+    Keys ShortCutKeys { get; }
   }
 }

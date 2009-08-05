@@ -23,18 +23,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public interface IMainForm {
-    string Title { get; set; }
-    string StatusStripText { get; set; }
-    Icon Icon { get; set; } 
+  public abstract class ToolStripMenuItemBase : ToolStripItemBase, IToolStripMenuItem {
+    public virtual Keys ShortCutKeys { 
+      get { return Keys.None; } 
+    }
+    public virtual string MenuStructure {
+      get { return string.Empty; }
+    }
 
-    IView ActiveView { get; }
-    IEnumerable<IView> OpenViews { get; }
-
-    Type UserInterfaceItemType { get; }
-    void ShowView(IView view);
+    public static readonly char StructureSeparator = '/';
+    public char MenuStructureSeparator {
+      get { return ToolStripMenuItemBase.StructureSeparator; }
+    }
   }
 }

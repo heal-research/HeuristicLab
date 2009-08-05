@@ -27,6 +27,5 @@ using System.Text;
 namespace HeuristicLab.MainForm {
   public interface IAction {
     void Execute(IMainForm mainform);
-    bool Enabled(IMainForm mainform);
   }
 }

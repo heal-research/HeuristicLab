@@ -28,23 +28,22 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using HeuristicLab.PluginInfrastructure;
+
 namespace HeuristicLab.MainForm {
-  public partial class MainFormBase : Form, IMainForm {
-    public MainFormBase()
+  public abstract partial class MainFormBase : Form, IMainForm {
+    protected MainFormBase(Type userInterfaceItemType)
       : base() {
       InitializeComponent();
       openViews = new List<IView>();
-    }
-
-    public MainFormBase(Type userInterfaceItemType)
-      : this() {
       this.userInterfaceItemType = userInterfaceItemType;
+      CreateGUI();
     }
 
     #region IMainForm Members
     public string Title {
-      get { return this.Title; }
-      set { this.Title = value; }
+      get { return this.Text; }
+      set { this.Text = value; }
     }
 
     public string StatusStripText {
@@ -55,12 +54,6 @@ namespace HeuristicLab.MainForm {
     protected Type userInterfaceItemType;
     public Type UserInterfaceItemType {
       get { return this.userInterfaceItemType; }
-    }
-
-    protected IModel model;
-    public IModel Model {
-      get { return this.model; }
-      set { this.model = value; }
     }
 
     protected IView activeView;
@@ -78,7 +71,74 @@ namespace HeuristicLab.MainForm {
       activeView = view;
       openViews.Add(view);
     }
+    #endregion
 
+    #region create menu and toolbar
+    private void CreateGUI() {
+      DiscoveryService ds = new DiscoveryService();
+      Type[] userInterfaceTypes = ds.GetTypes(userInterfaceItemType);
+
+      foreach (Type t in userInterfaceTypes.Where(t=> typeof(IToolStripMenuItem).IsAssignableFrom(t))) {
+        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
+          IToolStripMenuItem item = (IToolStripMenuItem) Activator.CreateInstance(t);
+          AddToolStripMenuItem(item);
+        }
+      }
+
+      foreach (Type t in userInterfaceTypes.Where(t => typeof(IToolStripButtonItem).IsAssignableFrom(t))) {
+        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
+          IToolStripButtonItem item = (IToolStripButtonItem)Activator.CreateInstance(t);
+          AddToolStripButtonItem(item);
+        }
+      }
+    }
+
+    private void AddToolStripMenuItem(IToolStripMenuItem menuItem) {
+      ToolStripMenuItem item = new ToolStripMenuItem();
+      SetToolStripItemProperties(item, menuItem);    
+      item.ShortcutKeys = menuItem.ShortCutKeys;
+
+      ToolStripMenuItem parent = null;
+      if (!String.IsNullOrEmpty(menuItem.MenuStructure)) {
+        ToolStripItemCollection parentItems = menuStrip.Items;
+        foreach (string structure in menuItem.MenuStructure.Split(menuItem.MenuStructureSeparator)) {
+          if (parentItems.ContainsKey(structure))
+            parent = (ToolStripMenuItem)parentItems[structure];
+          else {
+            parent = new ToolStripMenuItem(structure);
+            parent.Name = structure;
+            parentItems.Add(parent);
+          }
+          parentItems = parent.DropDownItems;
+        }
+      }
+
+      if (parent == null)
+        menuStrip.Items.Add(item);
+      else
+        parent.DropDownItems.Add(item);
+    }
+
+    private void AddToolStripButtonItem(IToolStripButtonItem buttonItem) {
+      ToolStripButton item = new ToolStripButton();
+      SetToolStripItemProperties(item, buttonItem);
+      toolStrip.Items.Add(item);
+    }
+
+    private void SetToolStripItemProperties(ToolStripItem toolStripItem, IToolStripItem iToolStripItem) {
+      toolStripItem.Text = iToolStripItem.Name;
+      toolStripItem.Name = iToolStripItem.Name;
+      toolStripItem.Tag = iToolStripItem;
+      toolStripItem.Image = iToolStripItem.Image;
+      toolStripItem.DisplayStyle = iToolStripItem.DisplayStyle;
+      toolStripItem.Click += new EventHandler(ToolStripItemClicked);
+      iToolStripItem.ToolStripItem = toolStripItem;
+    }
+
+    private void ToolStripItemClicked(object sender, EventArgs e) {
+      System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
+      ((IAction)item.Tag).Execute(this);
+    }
     #endregion
   }
 }

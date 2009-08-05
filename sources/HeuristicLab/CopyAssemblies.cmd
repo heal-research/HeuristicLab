@@ -70,6 +70,8 @@ copy "%SolutionDir%\HeuristicLab.LinearRegression\3.2\%Outdir%\HeuristicLab.Line
 copy "%SolutionDir%\HeuristicLab.LinearRegression\3.2\%Outdir%\ALGLIB License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.2\%Outdir%\HeuristicLab.Logging-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Logging\3.3\%Outdir%\HeuristicLab.Logging-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.MainForm\3.2\%Outdir%\HeuristicLab.MainForm-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.MainForm.Test\3.2\%Outdir%\HeuristicLab.MainForm.Test-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.2\%Outdir%\HeuristicLab.Modeling-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling\3.3\%Outdir%\HeuristicLab.Modeling-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Modeling.Database\3.2\%Outdir%\HeuristicLab.Modeling.Database-3.2.dll" .\plugins

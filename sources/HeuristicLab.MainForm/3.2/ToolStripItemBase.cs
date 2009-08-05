@@ -23,18 +23,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Resources;
+using System.Reflection;
+using System.Windows.Forms;
 using System.Drawing;
 
 namespace HeuristicLab.MainForm {
-  public interface IMainForm {
-    string Title { get; set; }
-    string StatusStripText { get; set; }
-    Icon Icon { get; set; } 
+  public abstract class ToolStripItemBase : UserInterfaceItemBase, IToolStripItem {
+    #region IToolStripItem Members
+    public virtual System.Drawing.Image Image {
+      get { return null; }
+    }
 
-    IView ActiveView { get; }
-    IEnumerable<IView> OpenViews { get; }
+    public virtual ToolStripItemDisplayStyle DisplayStyle {
+      get { return ToolStripItemDisplayStyle.ImageAndText; }
+    }
 
-    Type UserInterfaceItemType { get; }
-    void ShowView(IView view);
+    private ToolStripItem toolStripItem;
+    public ToolStripItem ToolStripItem {
+      get { return this.toolStripItem; }
+      set { this.toolStripItem = value; }
+    }
+    #endregion
   }
 }

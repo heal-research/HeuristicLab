@@ -23,8 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public interface IToolStripItem {
+  public interface IToolStripItem : IUserInterfaceItem {
+    Image Image { get; }
+    ToolStripItemDisplayStyle DisplayStyle { get; }
+    ToolStripItem ToolStripItem { get; set; }
   }
 }

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</ProjectGuid>
+    <ProjectGuid>{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.MainForm</RootNamespace>
-    <AssemblyName>HeuristicLab.MainForm-3.2</AssemblyName>
+    <RootNamespace>HeuristicLab.MainForm.Test</RootNamespace>
+    <AssemblyName>HeuristicLab.MainForm.Test-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -31,22 +31,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,67 +65,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IUserInterfaceItem.cs" />
-    <Compile Include="ToolStripMenuItemBase.cs" />
-    <Compile Include="ToolStripButtonItemBase.cs" />
-    <Compile Include="ToolStripItemBase.cs" />
-    <Compile Include="DockingMainForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="OpenMenuItem.cs" />
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
-    <Compile Include="DockingMainForm.Designer.cs">
-      <DependentUpon>DockingMainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainFormBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainFormBase.Designer.cs">
-      <DependentUpon>MainFormBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HeuristicLabMainFormPlugin.cs" />
-    <Compile Include="Interfaces\IAction.cs" />
-    <Compile Include="Interfaces\IMainForm.cs" />
-    <Compile Include="Interfaces\IToolStripMenuItem.cs" />
-    <Compile Include="Interfaces\IModel.cs" />
-    <Compile Include="Interfaces\IToolStripButtonItem.cs" />
-    <Compile Include="Interfaces\IToolStripItem.cs" />
-    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="SaveMenuItem.cs" />
+    <Compile Include="HeuristicLabMainFormTestApplication.cs" />
+    <Compile Include="HeuristicLabMainFormTestPlugin.cs" />
+    <Compile Include="ITestUserInterfaceItemProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserInterfaceItemBase.cs" />
-    <Compile Include="ViewBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ViewBase.Designer.cs">
-      <DependentUpon>ViewBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DockForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DockForm.Designer.cs">
-      <DependentUpon>DockForm.cs</DependentUpon>
+    <Compile Include="ViewsMenuItem.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.2\HeuristicLab.MainForm.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\WinFormsUI\WinFormsUI.csproj">
-      <Project>{C75532C4-765B-418E-B09B-46D36B2ABDB1}</Project>
-      <Name>WinFormsUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLab.snk" />
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\saveHS.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MainFormBase.resx">
-      <DependentUpon>MainFormBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DockForm.resx">
-      <DependentUpon>DockForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <None Include="Resources\openHS.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
