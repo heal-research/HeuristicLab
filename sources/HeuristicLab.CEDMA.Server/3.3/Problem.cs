@@ -85,16 +85,6 @@ namespace HeuristicLab.CEDMA.Server {
       set { testSamplesEnd = value; }
     }
 
-    //private List<int> allowedInputVariables;
-    //public List<int> AllowedInputVariables {
-    //  get { return allowedInputVariables; }
-    //}
-
-    //private List<int> allowedTargetVariables;
-    //public List<int> AllowedTargetVariables {
-    //  get { return allowedTargetVariables; }
-    //}
-
     private bool autoRegressive;
     public bool AutoRegressive {
       get { return autoRegressive; }
@@ -121,8 +111,6 @@ namespace HeuristicLab.CEDMA.Server {
 
     public Problem()
       : base() {
-      //allowedInputVariables = new List<int>();
-      //allowedTargetVariables = new List<int>();
       Dataset = new HeuristicLab.DataAnalysis.Dataset();
     }
 

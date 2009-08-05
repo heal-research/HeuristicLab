@@ -101,30 +101,11 @@ namespace HeuristicLab.CEDMA.Server {
           problem.ValidationSamplesEnd = parser.ValidationSamplesEnd;
           problem.TestSamplesStart = parser.TestSamplesStart;
           problem.TestSamplesEnd = parser.TestSamplesEnd;
-          //problem.AllowedTargetVariables.Add(parser.TargetVariable);
           problem.FireChanged();
-          //List<int> nonInputVariables = parser.NonInputVariables;
-          //for (int i = 0; i < dataset.Columns; i++) {
-          //  if (!nonInputVariables.Contains(i)) problem.AllowedInputVariables.Add(i);
-          //}
           Refresh();
         }
       }
     }
-
-    //private void targetsListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
-    //  if (e.NewValue == CheckState.Checked && !problem.AllowedTargetVariables.Contains(e.Index))
-    //    problem.AllowedTargetVariables.Add(e.Index);
-    //  else if (e.NewValue == CheckState.Unchecked && problem.AllowedTargetVariables.Contains(e.Index))
-    //    problem.AllowedTargetVariables.Remove(e.Index);
-    //}
-
-    //private void inputsListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
-    //  if (e.NewValue == CheckState.Checked && !problem.AllowedInputVariables.Contains(e.Index))
-    //    problem.AllowedInputVariables.Add(e.Index);
-    //  else if (e.NewValue == CheckState.Unchecked && problem.AllowedInputVariables.Contains(e.Index))
-    //    problem.AllowedInputVariables.Remove(e.Index);
-    //}
 
     private void autoregressiveCheckBox_CheckedChanged(object sender, EventArgs e) {
       problem.AutoRegressive = autoregressiveCheckBox.Checked;
