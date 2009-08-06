@@ -22,21 +22,21 @@ namespace HeuristicLab.Common.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        public Resources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.Common.Resources.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace HeuristicLab.Common.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -60,98 +60,105 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
-        internal static System.Drawing.Bitmap CopyIcon {
+        public static System.Drawing.Bitmap CopyIcon {
             get {
                 object obj = ResourceManager.GetObject("CopyIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap CutIcon {
+        public static System.Drawing.Bitmap CutIcon {
             get {
                 object obj = ResourceManager.GetObject("CutIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap DeleteFolderIcon {
+        public static System.Drawing.Bitmap DeleteFolderIcon {
             get {
                 object obj = ResourceManager.GetObject("DeleteFolderIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap DeleteIcon {
+        public static System.Drawing.Bitmap DeleteIcon {
             get {
                 object obj = ResourceManager.GetObject("DeleteIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap NewFolderIcon {
+        public static System.Drawing.Icon HeuristicLabIcon {
+            get {
+                object obj = ResourceManager.GetObject("HeuristicLabIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap NewFolderIcon {
             get {
                 object obj = ResourceManager.GetObject("NewFolderIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap NewIcon {
+        public static System.Drawing.Bitmap NewIcon {
             get {
                 object obj = ResourceManager.GetObject("NewIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap OpenIcon {
+        public static System.Drawing.Bitmap OpenIcon {
             get {
                 object obj = ResourceManager.GetObject("OpenIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap PasteIcon {
+        public static System.Drawing.Bitmap PasteIcon {
             get {
                 object obj = ResourceManager.GetObject("PasteIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap PrintIcon {
+        public static System.Drawing.Bitmap PrintIcon {
             get {
                 object obj = ResourceManager.GetObject("PrintIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap PrintPreviewIcon {
+        public static System.Drawing.Bitmap PrintPreviewIcon {
             get {
                 object obj = ResourceManager.GetObject("PrintPreviewIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap RedoIcon {
+        public static System.Drawing.Bitmap RedoIcon {
             get {
                 object obj = ResourceManager.GetObject("RedoIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap SaveAllIcon {
+        public static System.Drawing.Bitmap SaveAllIcon {
             get {
                 object obj = ResourceManager.GetObject("SaveAllIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap SaveIcon {
+        public static System.Drawing.Bitmap SaveIcon {
             get {
                 object obj = ResourceManager.GetObject("SaveIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap UndoIcon {
+        public static System.Drawing.Bitmap UndoIcon {
             get {
                 object obj = ResourceManager.GetObject("UndoIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
