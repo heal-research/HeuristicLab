@@ -71,6 +71,10 @@ namespace HeuristicLab.MainForm {
       activeView = view;
       openViews.Add(view);
     }
+
+    public void Close() {
+      ((Form)this).Close();
+    }
     #endregion
 
     #region create menu and toolbar
@@ -89,7 +93,7 @@ namespace HeuristicLab.MainForm {
       toolStripItems = toolStripItems.OrderBy(x => x.Position);
       foreach (IToolStripButtonItem toolStripButtonItem in toolStripItems) {
         AddToolStripButtonItem(toolStripButtonItem);
-      }
+      }      
     }
 
     private void AddToolStripMenuItem(IToolStripMenuItem menuItem) {

@@ -36,5 +36,7 @@ namespace HeuristicLab.MainForm {
 
     Type UserInterfaceItemType { get; }
     void ShowView(IView view);
+
+    void Close();
   }
 }

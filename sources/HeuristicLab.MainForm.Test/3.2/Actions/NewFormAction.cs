@@ -9,7 +9,7 @@ namespace HeuristicLab.MainForm.Test {
     #region IAction Members
 
     public void Execute(IMainForm mainform) {
-      mainform.StatusStripText = "New Form action called";
+      mainform.ShowView(new FormView());
     }
 
     #endregion

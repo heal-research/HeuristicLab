@@ -29,7 +29,7 @@ using System.Xml;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public partial class ViewBase : UserControl {
+  public partial class ViewBase : UserControl,IView {
     public ViewBase() {
       InitializeComponent();
     }

@@ -35,7 +35,7 @@ namespace HeuristicLab.MainForm {
   public partial class DockForm : DockContent {
     public DockForm(IView view) {
       InitializeComponent();
-      this.view = view;
+      this.view = view;      
       if (View != null) {
         Control control = (Control)View;
         control.Dock = DockStyle.Fill;
@@ -61,11 +61,7 @@ namespace HeuristicLab.MainForm {
       if (InvokeRequired)
         Invoke(new MethodInvoker(UpdateText));
       else
-        Text = View.Caption;
-    }
-
-    private void ViewForm_TextChanged(object sender, EventArgs e) {
-      TabText = Text;
+        TabText = View.Caption;
     }
 
     #region View Events

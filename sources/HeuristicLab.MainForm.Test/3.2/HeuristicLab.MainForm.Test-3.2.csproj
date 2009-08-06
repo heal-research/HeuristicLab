@@ -86,6 +86,19 @@
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <Compile Include="EditorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditorView.Designer.cs">
+      <DependentUpon>EditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormView.Designer.cs">
+      <DependentUpon>FormView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuItems\ExitToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewFormToolStripMenuItem.cs" />
     <Compile Include="MenuItems\NewEditorToolStripMenuItem.cs" />
     <Compile Include="MenuItems\FileToolStripMenuItem.cs" />
@@ -120,6 +133,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditorView.resx">
+      <DependentUpon>EditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormView.resx">
+      <DependentUpon>FormView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

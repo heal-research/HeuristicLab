@@ -47,9 +47,9 @@ namespace HeuristicLab.MainForm {
       else {
         DockContent content = new DockForm(view);
         content.TabText = content.Text;
-        content.Show(dockPanel);
         content.Activated += new EventHandler(DockFormActivated);
         content.FormClosing += new FormClosingEventHandler(DockFormClosing);
+        content.Show(dockPanel, DockState.Document);
       }
     }
 
@@ -90,6 +90,7 @@ namespace HeuristicLab.MainForm {
       this.dockPanel.Name = "dockPanel";
       this.dockPanel.RightToLeftLayout = true;
       this.dockPanel.Size = new Size(1016, 663);
+      this.dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
       dockPanelGradient1.EndColor = SystemColors.ControlLight;
       dockPanelGradient1.StartColor = SystemColors.ControlLight;
       autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
