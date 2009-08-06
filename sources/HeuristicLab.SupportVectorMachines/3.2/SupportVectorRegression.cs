@@ -142,7 +142,7 @@ namespace HeuristicLab.SupportVectorMachines {
       seq.AddSubOperator(CreateGlobalInjector());
       ProblemInjector probInjector = new ProblemInjector();
       probInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
-      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
+      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(1000)));
       seq.AddSubOperator(probInjector);
       seq.AddSubOperator(new RandomInjector());
 
