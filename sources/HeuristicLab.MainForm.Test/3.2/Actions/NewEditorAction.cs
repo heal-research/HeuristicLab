@@ -10,7 +10,9 @@ namespace HeuristicLab.MainForm.Test {
 
     public void Execute(IMainForm mainform) {
       mainform.StatusStripText = "New Editor action called";
-      mainform.ShowView(new EditorView());
+      EditorView x = new EditorView();
+      x.Caption = "Editor View";
+      mainform.ShowView(x);
     }
 
     #endregion

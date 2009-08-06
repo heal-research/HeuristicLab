@@ -60,24 +60,18 @@ namespace HeuristicLab.MainForm {
       this.viewPanel.Size = new System.Drawing.Size(608, 422);
       this.viewPanel.TabIndex = 0;
       // 
-      // ViewForm
+      // DockForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(632, 446);
       this.Controls.Add(this.viewPanel);
-      this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft)
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight)
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop)
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom
-            | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
+      this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "ViewForm";
+      this.Name = "DockForm";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.TabText = "View";
-      this.Text = "View";
       this.ResumeLayout(false);
     }
 

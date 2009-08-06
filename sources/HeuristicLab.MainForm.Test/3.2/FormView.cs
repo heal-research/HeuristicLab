@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.Test {
   public partial class FormView : ViewBase {
+    private int[] array;
     public FormView() {
       InitializeComponent();
     }

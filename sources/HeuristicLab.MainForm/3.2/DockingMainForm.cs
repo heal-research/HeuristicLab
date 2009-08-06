@@ -36,30 +36,35 @@ namespace HeuristicLab.MainForm {
       InitializeComponent();
       dockPanel = new DockPanel();
       InitializeDockPanel();
+      this.IsMdiContainer = true;
       this.Controls.Add(dockPanel);
+      this.Controls.SetChildIndex(dockPanel, 0);
     }
 
     private DockPanel dockPanel;
 
     public override void ShowView(IView view) {
-      base.ShowView(view);
+      
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
+        base.ShowView(view);
         DockContent content = new DockForm(view);
-        content.TabText = content.Text;
         content.Activated += new EventHandler(DockFormActivated);
         content.FormClosing += new FormClosingEventHandler(DockFormClosing);
-        content.Show(dockPanel, DockState.Document);
+        content.Show(dockPanel);
       }
     }
 
     private void DockFormClosing(object sender, FormClosingEventArgs e) {
       DockForm dockForm = (DockForm)sender;
       openViews.Remove(dockForm.View);
+      dockForm.Activated -= new EventHandler(DockFormActivated);
+      dockForm.FormClosing -= new FormClosingEventHandler(DockFormClosing);
     }
 
     private void DockFormActivated(object sender, EventArgs e) {
       base.activeView = ((DockForm)sender).View;
+      base.StatusStripText = ((DockForm)sender).View.Caption;
     }
 
     private void InitializeDockPanel() {
@@ -89,8 +94,6 @@ namespace HeuristicLab.MainForm {
       this.dockPanel.Location = new Point(0, 49);
       this.dockPanel.Name = "dockPanel";
       this.dockPanel.RightToLeftLayout = true;
-      this.dockPanel.Size = new Size(1016, 663);
-      this.dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
       dockPanelGradient1.EndColor = SystemColors.ControlLight;
       dockPanelGradient1.StartColor = SystemColors.ControlLight;
       autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
