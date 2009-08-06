@@ -45,6 +45,15 @@ namespace HeuristicLab.MainForm {
       get { return this.toolStripItem; }
       set { this.toolStripItem = value; }
     }
+
+    public virtual string Structure {
+      get { return string.Empty; }
+    }
+
+    public static readonly char structureSeparator = '/';
+    public char StructureSeparator {
+      get { return ToolStripMenuItemBase.structureSeparator; }
+    }
     #endregion
   }
 }

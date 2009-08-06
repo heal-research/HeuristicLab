@@ -3,33 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
 using HeuristicLab.MainForm;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class OpenMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
+  public class SaveToolStripMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
     public override string Name {
-      get { return "Open"; }
-    }   
+      get { return "Save"; }
+    }
 
-    public override string MenuStructure {
+    public override string Structure {
       get { return "File"; }
     }
 
     public override int Position {
-      get { return 1100; }
+      get { return 1300; }
     }
 
     public override Keys ShortCutKeys {
-      get { return Keys.Control | Keys.O; }
+      get { return Keys.Control | Keys.S; }
     }
 
     public override System.Drawing.Image Image {
-      get { return Resources.OpenIcon; }
+      get { return Resources.SaveIcon; }
     }
 
     public override void Execute(IMainForm mainform) {
-      MessageBox.Show("Open Execute called");
+      new SaveAction().Execute(mainform);
     }
   }
 }

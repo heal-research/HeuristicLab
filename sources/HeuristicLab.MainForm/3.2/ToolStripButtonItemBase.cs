@@ -26,7 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public abstract class ToolStripButtonItemBase : ToolStripItemBase, IToolStripItem {
+  public abstract class ToolStripButtonItemBase : ToolStripItemBase, IToolStripButtonItem {
     public override ToolStripItemDisplayStyle DisplayStyle {
       get {
         if (Image != null)
@@ -34,6 +34,10 @@ namespace HeuristicLab.MainForm {
         else
           return ToolStripItemDisplayStyle.ImageAndText;
       }
+    }
+
+    public virtual bool IsDropDownButton {
+      get { return false; }
     }
   }
 }

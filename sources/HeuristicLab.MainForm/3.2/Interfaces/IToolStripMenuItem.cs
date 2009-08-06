@@ -27,8 +27,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public interface IToolStripMenuItem : IToolStripItem {
-    string MenuStructure { get; }
-    char MenuStructureSeparator { get; }
     Keys ShortCutKeys { get; }
   }
 }

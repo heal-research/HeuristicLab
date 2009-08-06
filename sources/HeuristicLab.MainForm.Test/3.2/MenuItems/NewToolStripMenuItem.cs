@@ -8,29 +8,24 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.MainForm.Test {
-  public class SaveMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
+  public class NewToolStripMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
     public override string Name {
-      get { return "Save"; }
+      get { return "New"; }
     }
 
-    public override string MenuStructure {
+    public override string Structure {
       get { return "File"; }
     }
 
     public override int Position {
-      get { return 1200; }
-    }
-
-    public override Keys ShortCutKeys {
-      get { return Keys.Control | Keys.S; }
+      get { return 1100; }
     }
 
     public override System.Drawing.Image Image {
-      get { return Resources.SaveIcon; }
+      get { return Resources.NewIcon; }
     }
 
     public override void Execute(IMainForm mainform) {
-      MessageBox.Show("Save Execute called");
     }
   }
 }

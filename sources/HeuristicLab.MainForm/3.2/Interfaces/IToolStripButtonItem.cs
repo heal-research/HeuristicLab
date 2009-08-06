@@ -26,5 +26,6 @@ using System.Text;
 
 namespace HeuristicLab.MainForm {
   public interface IToolStripButtonItem : IToolStripItem {
+    bool IsDropDownButton { get; }
   }
 }

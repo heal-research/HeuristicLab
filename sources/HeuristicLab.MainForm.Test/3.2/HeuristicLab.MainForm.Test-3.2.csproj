@@ -81,15 +81,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OpenMenuItem.cs" />
-    <Compile Include="SaveMenuItem.cs" />
+    <Compile Include="Actions\NewEditorAction.cs" />
+    <Compile Include="ButtonItems\NewEditorToolStripButtonItem.cs" />
+    <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
+    <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
+    <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <Compile Include="MenuItems\NewFormToolStripMenuItem.cs" />
+    <Compile Include="MenuItems\NewEditorToolStripMenuItem.cs" />
+    <Compile Include="MenuItems\FileToolStripMenuItem.cs" />
+    <Compile Include="MenuItems\NewToolStripMenuItem.cs" />
+    <Compile Include="Actions\NewFormAction.cs" />
+    <Compile Include="Actions\OpenAction.cs" />
+    <Compile Include="MenuItems\OpenToolStripMenuItem.cs" />
+    <Compile Include="Actions\SaveAction.cs" />
+    <Compile Include="MenuItems\SaveToolStripMenuItem.cs" />
     <Compile Include="HeuristicLabMainFormTestApplication.cs" />
     <Compile Include="HeuristicLabMainFormTestPlugin.cs" />
     <Compile Include="ITestUserInterfaceItemProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewsMenuItem.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ButtonItems\NewToolStripButtonItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

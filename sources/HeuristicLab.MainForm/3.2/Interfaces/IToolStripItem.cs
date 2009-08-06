@@ -31,6 +31,10 @@ namespace HeuristicLab.MainForm {
     int Position { get; }
     Image Image { get; }
     ToolStripItemDisplayStyle DisplayStyle { get; }
+
+    string Structure { get; }
+    char StructureSeparator { get; }
+
     ToolStripItem ToolStripItem { get; set; }
   }
 }

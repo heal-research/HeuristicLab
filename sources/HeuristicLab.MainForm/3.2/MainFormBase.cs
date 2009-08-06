@@ -76,7 +76,6 @@ namespace HeuristicLab.MainForm {
     #region create menu and toolbar
     private void CreateGUI() {
       DiscoveryService ds = new DiscoveryService();
-      Type[] userInterfaceTypes = ds.GetTypes(userInterfaceItemType);
 
       object[] items = ds.GetInstances(userInterfaceItemType);
       IEnumerable<IToolStripItem> toolStripItems = items.Where(mi => mi as IToolStripMenuItem != null).Cast<IToolStripItem>();
@@ -95,24 +94,10 @@ namespace HeuristicLab.MainForm {
 
     private void AddToolStripMenuItem(IToolStripMenuItem menuItem) {
       ToolStripMenuItem item = new ToolStripMenuItem();
-      SetToolStripItemProperties(item, menuItem);    
+      SetToolStripItemProperties(item, menuItem);
       item.ShortcutKeys = menuItem.ShortCutKeys;
 
-      ToolStripMenuItem parent = null;
-      if (!String.IsNullOrEmpty(menuItem.MenuStructure)) {
-        ToolStripItemCollection parentItems = menuStrip.Items;
-        foreach (string structure in menuItem.MenuStructure.Split(menuItem.MenuStructureSeparator)) {
-          if (parentItems.ContainsKey(structure))
-            parent = (ToolStripMenuItem)parentItems[structure];
-          else {
-            parent = new ToolStripMenuItem(structure);
-            parent.Name = structure;
-            parentItems.Add(parent);
-          }
-          parentItems = parent.DropDownItems;
-        }
-      }
-
+      ToolStripDropDownItem parent = FindParent(menuItem, menuStrip.Items);
       if (parent == null)
         menuStrip.Items.Add(item);
       else
@@ -120,9 +105,30 @@ namespace HeuristicLab.MainForm {
     }
 
     private void AddToolStripButtonItem(IToolStripButtonItem buttonItem) {
-      ToolStripButton item = new ToolStripButton();
+      ToolStripItem item;
+      if (buttonItem.IsDropDownButton)
+        item = new ToolStripDropDownButton();
+      else
+        item = new ToolStripButton();
+
       SetToolStripItemProperties(item, buttonItem);
-      toolStrip.Items.Add(item);
+      ToolStripDropDownItem parent = FindParent(buttonItem,toolStrip.Items);
+      if (parent == null)
+        toolStrip.Items.Add(item);
+      else
+        parent.DropDownItems.Add(item);
+    }
+
+    private ToolStripDropDownItem FindParent(IToolStripItem item, ToolStripItemCollection parentItems) {
+      ToolStripDropDownItem parent = null;
+      foreach (string structure in item.Structure.Split(item.StructureSeparator)) {
+        if (parentItems.ContainsKey(structure))
+          parent = (ToolStripDropDownItem)parentItems[structure];
+        else
+          break;
+        parentItems = parent.DropDownItems;
+      }
+      return parent;
     }
 
     private void SetToolStripItemProperties(ToolStripItem toolStripItem, IToolStripItem iToolStripItem) {

@@ -30,17 +30,9 @@ namespace HeuristicLab.MainForm {
     public virtual Keys ShortCutKeys {
       get { return Keys.None; }
     }
-    public virtual string MenuStructure {
-      get { return string.Empty; }
-    }
 
     public override ToolStripItemDisplayStyle DisplayStyle {
       get { return ToolStripItemDisplayStyle.ImageAndText; }
-    }
-
-    public static readonly char StructureSeparator = '/';
-    public char MenuStructureSeparator {
-      get { return ToolStripMenuItemBase.StructureSeparator; }
     }
   }
 }
