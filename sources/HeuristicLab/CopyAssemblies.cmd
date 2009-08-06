@@ -19,6 +19,7 @@ copy "%SolutionDir%\HeuristicLab.Charting\3.2\%Outdir%\HeuristicLab.Charting-3.2
 copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting.Data\3.2\%Outdir%\HeuristicLab.Charting.Data-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting.Data\3.3\%Outdir%\HeuristicLab.Charting.Data-3.3.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.Common.Resources\3.2\%Outdir%\HeuristicLab.Common.Resources-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Communication.Data\3.2\%Outdir%\HeuristicLab.Communication.Data-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Communication.Operators\3.2\%Outdir%\HeuristicLab.Communication.Operators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Core\3.2\%Outdir%\HeuristicLab.Core-3.2.dll" .\plugins

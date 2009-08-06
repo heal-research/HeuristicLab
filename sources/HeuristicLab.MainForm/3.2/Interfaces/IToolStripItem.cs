@@ -28,6 +28,7 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public interface IToolStripItem : IUserInterfaceItem {
+    int Position { get; }
     Image Image { get; }
     ToolStripItemDisplayStyle DisplayStyle { get; }
     ToolStripItem ToolStripItem { get; set; }

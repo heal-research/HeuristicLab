@@ -28,6 +28,7 @@ namespace HeuristicLab.Modeling.Database {
   [ClassInfo(Name = "HeuristicLab.MainForm.Test-3.2")]
   [PluginFile(Filename = "HeuristicLab.MainForm.Test-3.2.dll", Filetype = PluginFileType.Assembly)]  
   [Dependency(Dependency = "HeuristicLab.MainForm-3.2")]
+  [Dependency(Dependency = "HeuristicLab.Common.Resources-3.2")]
   public class HeuristicLabMainFormTestPlugin : PluginBase {
   }
 }

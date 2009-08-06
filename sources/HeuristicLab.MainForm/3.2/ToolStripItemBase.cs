@@ -31,12 +31,13 @@ using System.Drawing;
 namespace HeuristicLab.MainForm {
   public abstract class ToolStripItemBase : UserInterfaceItemBase, IToolStripItem {
     #region IToolStripItem Members
-    public virtual System.Drawing.Image Image {
-      get { return null; }
-    }
-
+    public abstract int Position { get; }
     public virtual ToolStripItemDisplayStyle DisplayStyle {
       get { return ToolStripItemDisplayStyle.ImageAndText; }
+    }
+
+    public virtual System.Drawing.Image Image {
+      get { return null; }
     }
 
     private ToolStripItem toolStripItem;

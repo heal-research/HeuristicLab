@@ -27,11 +27,15 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public abstract class ToolStripMenuItemBase : ToolStripItemBase, IToolStripMenuItem {
-    public virtual Keys ShortCutKeys { 
-      get { return Keys.None; } 
+    public virtual Keys ShortCutKeys {
+      get { return Keys.None; }
     }
     public virtual string MenuStructure {
       get { return string.Empty; }
+    }
+
+    public override ToolStripItemDisplayStyle DisplayStyle {
+      get { return ToolStripItemDisplayStyle.ImageAndText; }
     }
 
     public static readonly char StructureSeparator = '/';

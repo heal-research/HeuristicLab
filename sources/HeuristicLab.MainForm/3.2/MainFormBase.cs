@@ -78,18 +78,18 @@ namespace HeuristicLab.MainForm {
       DiscoveryService ds = new DiscoveryService();
       Type[] userInterfaceTypes = ds.GetTypes(userInterfaceItemType);
 
-      foreach (Type t in userInterfaceTypes.Where(t=> typeof(IToolStripMenuItem).IsAssignableFrom(t))) {
-        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
-          IToolStripMenuItem item = (IToolStripMenuItem) Activator.CreateInstance(t);
-          AddToolStripMenuItem(item);
-        }
+      object[] items = ds.GetInstances(userInterfaceItemType);
+      IEnumerable<IToolStripItem> toolStripItems = items.Where(mi => mi as IToolStripMenuItem != null).Cast<IToolStripItem>();
+      toolStripItems = toolStripItems.OrderBy(x => x.Position);
+      foreach (IToolStripMenuItem menuItem in toolStripItems) {
+        AddToolStripMenuItem(menuItem);
       }
 
-      foreach (Type t in userInterfaceTypes.Where(t => typeof(IToolStripButtonItem).IsAssignableFrom(t))) {
-        if (!t.IsAbstract && !t.IsInterface && !t.HasElementType) {
-          IToolStripButtonItem item = (IToolStripButtonItem)Activator.CreateInstance(t);
-          AddToolStripButtonItem(item);
-        }
+      items = ds.GetInstances(userInterfaceItemType);
+      toolStripItems = items.Where(mi => mi as IToolStripButtonItem != null).Cast<IToolStripItem>();
+      toolStripItems = toolStripItems.OrderBy(x => x.Position);
+      foreach (IToolStripButtonItem toolStripButtonItem in toolStripItems) {
+        AddToolStripButtonItem(toolStripButtonItem);
       }
     }
 

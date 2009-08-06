@@ -7,21 +7,17 @@ using HeuristicLab.MainForm;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.Test {
-  public class ViewsMenuItem : ToolStripMenuItemBase, IToolStripButtonItem, ITestUserInterfaceItemProvider {
-    public override string MenuStructure {
-      get { return "File"; }
-    }
-
+  public class ViewsMenuItem : ToolStripMenuItemBase, ITestUserInterfaceItemProvider {
     public override string Name {
       get { return "Views"; }
     }
 
-    public override Keys ShortCutKeys {
-      get { return Keys.Control | Keys.V; }
+    public override int Position {
+      get { return 2000; }
     }
 
-    public override System.Drawing.Image Image {
-      get { return Resource1.openHS; }
+    public override Keys ShortCutKeys {
+      get { return Keys.Control | Keys.V; }
     }
 
     public override void Execute(IMainForm mainform) {
