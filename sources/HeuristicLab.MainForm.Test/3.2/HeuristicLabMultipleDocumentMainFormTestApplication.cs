@@ -27,10 +27,10 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.MainForm.Test {
-  [ClassInfo(Name = "MainForm Test", Description="Test application for new mainform development.")]
-  class GridClientApplication : ApplicationBase {
+  [ClassInfo(Name = "MultipleDocumentMainForm Test", Description="Test application for new mainform development.")]
+  public class HeuristicLabMultipleDocumentMainFormTestApplication : ApplicationBase {
     public override void Run() {
-      DockingMainForm mainForm = new DockingMainForm(typeof(ITestUserInterfaceItemProvider));
+      MultipleDocumentMainForm mainForm = new MultipleDocumentMainForm(typeof(ITestUserInterfaceItemProvider));
       mainForm.Title = "Test new MAINFORM concept";
       Application.Run(mainForm);
     }

@@ -86,6 +86,7 @@
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <Compile Include="HeuristicLabMultipleDocumentMainFormTestApplication.cs" />
     <Compile Include="EditorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -108,7 +109,7 @@
     <Compile Include="MenuItems\OpenToolStripMenuItem.cs" />
     <Compile Include="Actions\SaveAction.cs" />
     <Compile Include="MenuItems\SaveToolStripMenuItem.cs" />
-    <Compile Include="HeuristicLabMainFormTestApplication.cs" />
+    <Compile Include="HeuristicLabDockingMainFormTestApplication.cs" />
     <Compile Include="HeuristicLabMainFormTestPlugin.cs" />
     <Compile Include="ITestUserInterfaceItemProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

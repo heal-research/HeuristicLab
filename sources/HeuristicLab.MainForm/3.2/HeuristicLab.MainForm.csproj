@@ -82,6 +82,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IUserInterfaceItem.cs" />
+    <Compile Include="MultipleDocumentMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MultipleDocumentMainForm.Designer.cs">
+      <DependentUpon>MultipleDocumentMainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolStripMenuItemBase.cs" />
     <Compile Include="ToolStripButtonItemBase.cs" />
     <Compile Include="ToolStripItemBase.cs" />
@@ -119,6 +125,12 @@
     <Compile Include="DockForm.Designer.cs">
       <DependentUpon>DockForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultipleDocumentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MultipleDocumentForm.Designer.cs">
+      <DependentUpon>MultipleDocumentForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
@@ -140,6 +152,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DockForm.resx">
       <DependentUpon>DockForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultipleDocumentMainForm.resx">
+      <DependentUpon>MultipleDocumentMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultipleDocumentForm.resx">
+      <DependentUpon>MultipleDocumentForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
