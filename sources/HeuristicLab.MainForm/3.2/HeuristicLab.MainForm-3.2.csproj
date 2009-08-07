@@ -107,7 +107,6 @@
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\IMainForm.cs" />
     <Compile Include="Interfaces\IToolStripMenuItem.cs" />
-    <Compile Include="Interfaces\IModel.cs" />
     <Compile Include="Interfaces\IToolStripButtonItem.cs" />
     <Compile Include="Interfaces\IToolStripItem.cs" />
     <Compile Include="Interfaces\IView.cs" />

@@ -35,8 +35,8 @@ namespace HeuristicLab.MainForm {
     protected MainFormBase(Type userInterfaceItemType)
       : base() {
       InitializeComponent();
-      openViews = new List<IView>();
-      viewStateChangeToolStripItems = new List<IToolStripItem>();
+      views = new List<IView>();
+      viewChangeToolStripItems = new List<IToolStripItem>();
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
       OnActiveViewChanged();
@@ -45,17 +45,30 @@ namespace HeuristicLab.MainForm {
     #region IMainForm Members
     public string Title {
       get { return this.Text; }
-      set { this.Text = value; }
+      set {
+        if (InvokeRequired) {
+          Action<string> action = delegate(string s) { this.Title = s; };
+          Invoke(action, new object[] { value });
+        } else
+          this.Text = value;
+      }
     }
 
     public string StatusStripText {
       get { return this.statusStripLabel.Text; }
-      set { this.statusStripLabel.Text = value; }
+      set {
+        if (InvokeRequired) {
+          Action<string> action = delegate(string s) { this.statusStripLabel.Text = s; };
+          Invoke(action, new object[] { value });
+        } else
+          this.statusStripLabel.Text = value;
+      }
     }
 
-    protected Type userInterfaceItemType;
+    private Type userInterfaceItemType;
     public Type UserInterfaceItemType {
       get { return this.userInterfaceItemType; }
+      protected set { this.userInterfaceItemType = value; }
     }
 
     private IView activeView;
@@ -69,27 +82,26 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    protected List<IToolStripItem> viewStateChangeToolStripItems;
+    private List<IToolStripItem> viewChangeToolStripItems;
+    protected IEnumerable<IToolStripItem> ViewChangedToolStripItems {
+      get { return this.viewChangeToolStripItems; }
+    }
 
     public event EventHandler ActiveViewChanged;
     protected virtual void OnActiveViewChanged() {
-      if(ActiveViewChanged != null)
-        ActiveViewChanged(this,new EventArgs());
+      if (ActiveViewChanged != null)
+        ActiveViewChanged(this, new EventArgs());
     }
 
-    protected List<IView> openViews;
-    public IEnumerable<IView> OpenViews {
-      get { return openViews; }
+    protected List<IView> views;
+    public IEnumerable<IView> Views {
+      get { return views; }
     }
 
     public virtual void ShowView(IView view) {
-      view.MainForm = this;     
-      openViews.Add(view);
+      view.MainForm = this;
+      views.Add(view);
       ActiveView = view;
-    }
-
-    public void CloseForm() {
-      this.Close();
     }
     #endregion
 
@@ -159,8 +171,8 @@ namespace HeuristicLab.MainForm {
       toolStripItem.DisplayStyle = iToolStripItem.DisplayStyle;
       if (iToolStripItem.ListenActiveViewChanged)
         this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);
-      if (iToolStripItem.ListenViewStateChanged)
-        this.viewStateChangeToolStripItems.Add(iToolStripItem);
+      if (iToolStripItem.ListenViewChanged)
+        this.viewChangeToolStripItems.Add(iToolStripItem);
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
       iToolStripItem.ToolStripItem = toolStripItem;
     }

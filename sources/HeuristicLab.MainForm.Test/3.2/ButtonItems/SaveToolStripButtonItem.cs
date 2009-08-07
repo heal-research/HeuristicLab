@@ -33,11 +33,11 @@ namespace HeuristicLab.MainForm.Test {
         this.ToolStripItem.Enabled = !(mainform.ActiveView is FormView);
     }
 
-    public override bool ListenViewStateChanged {
+    public override bool ListenViewChanged {
       get { return true; }
     }
 
-    public override void ViewStateChanged(object sender, EventArgs e) {
+    public override void ViewChanged(object sender, EventArgs e) {
       this.ToolStripItem.Enabled = !this.ToolStripItem.Enabled;
     }
   }

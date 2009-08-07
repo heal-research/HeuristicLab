@@ -38,8 +38,8 @@ namespace HeuristicLab.MainForm {
     ToolStripItem ToolStripItem { get; set; }
 
     bool ListenActiveViewChanged { get; }
-    bool ListenViewStateChanged { get; }
+    bool ListenViewChanged { get; }
     void ActiveViewChanged(object sender, EventArgs e);
-    void ViewStateChanged(object sender, EventArgs e);
+    void ViewChanged(object sender, EventArgs e);
   }
 }

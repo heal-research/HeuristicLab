@@ -32,7 +32,7 @@ namespace HeuristicLab.MainForm {
     }
 
     public override ToolStripItemDisplayStyle DisplayStyle {
-      get { return ToolStripItemDisplayStyle.ImageAndText; }
+      get { return ToolStripItemDisplayStyle.Text; }
     }
   }
 }

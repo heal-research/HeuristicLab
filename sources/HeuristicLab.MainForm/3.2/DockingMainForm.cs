@@ -50,21 +50,21 @@ namespace HeuristicLab.MainForm {
         DockContent content = new DockForm(view);
         content.Activated += new EventHandler(DockFormActivated);
         content.FormClosing += new FormClosingEventHandler(DockFormClosing);
-        foreach (IToolStripItem item in viewStateChangeToolStripItems)
-          view.StateChanged += new EventHandler(item.ViewStateChanged);
+        foreach (IToolStripItem item in ViewChangedToolStripItems)
+          view.StateChanged += new EventHandler(item.ViewChanged);
         content.Show(dockPanel);
       }
     }
 
     private void DockFormClosing(object sender, FormClosingEventArgs e) {
       DockForm dockForm = (DockForm)sender;
-      openViews.Remove(dockForm.View);
-      if (openViews.Count == 0)
+      views.Remove(dockForm.View);
+      if (views.Count == 0)
         ActiveView = null;
       dockForm.Activated -= new EventHandler(DockFormActivated);
       dockForm.FormClosing -= new FormClosingEventHandler(DockFormClosing);
-      foreach (IToolStripItem item in viewStateChangeToolStripItems)
-        dockForm.View.StateChanged -= new EventHandler(item.ViewStateChanged);
+      foreach (IToolStripItem item in ViewChangedToolStripItems)
+        dockForm.View.StateChanged -= new EventHandler(item.ViewChanged);
     }
 
     private void DockFormActivated(object sender, EventArgs e) {

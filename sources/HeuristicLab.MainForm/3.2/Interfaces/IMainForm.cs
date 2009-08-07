@@ -33,10 +33,10 @@ namespace HeuristicLab.MainForm {
 
     IView ActiveView { get; }
     event EventHandler ActiveViewChanged;
-    IEnumerable<IView> OpenViews { get; }
+    IEnumerable<IView> Views { get; }
 
     Type UserInterfaceItemType { get; }
     void ShowView(IView view);
-    void CloseForm();
+    void Close();
   }
 }

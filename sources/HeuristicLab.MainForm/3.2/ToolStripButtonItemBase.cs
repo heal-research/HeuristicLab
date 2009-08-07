@@ -32,7 +32,7 @@ namespace HeuristicLab.MainForm {
         if (Image != null)
           return ToolStripItemDisplayStyle.Image;
         else
-          return ToolStripItemDisplayStyle.ImageAndText;
+          return ToolStripItemDisplayStyle.Text;
       }
     }
 

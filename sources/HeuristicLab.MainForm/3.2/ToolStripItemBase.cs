@@ -50,22 +50,22 @@ namespace HeuristicLab.MainForm {
       get { return string.Empty; }
     }
 
-    public static readonly char structureSeparator = '/';
-    public char StructureSeparator {
+    private static readonly char structureSeparator = '/';
+    public virtual char StructureSeparator {
       get { return ToolStripMenuItemBase.structureSeparator; }
     }
 
     public virtual bool ListenActiveViewChanged {
       get { return false; }
     }
-    public virtual bool ListenViewStateChanged {
+    public virtual bool ListenViewChanged {
       get { return false; }
     }
 
     public virtual void ActiveViewChanged(object sender, EventArgs e) {
     }
 
-    public virtual void ViewStateChanged(object sender, EventArgs e) {
+    public virtual void ViewChanged(object sender, EventArgs e) {
     }
     #endregion
   }

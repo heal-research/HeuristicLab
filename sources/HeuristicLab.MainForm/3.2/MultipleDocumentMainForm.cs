@@ -23,8 +23,8 @@ namespace HeuristicLab.MainForm {
         form.Activated += new EventHandler(MultipleDocumentFormActivated);
         form.FormClosing += new FormClosingEventHandler(MultipleDocumentFormClosing);
         form.MdiParent = this;
-        foreach (IToolStripItem item in viewStateChangeToolStripItems)
-          view.StateChanged += new EventHandler(item.ViewStateChanged);
+        foreach (IToolStripItem item in ViewChangedToolStripItems)
+          view.StateChanged += new EventHandler(item.ViewChanged);
         form.Show();
       }
     }
@@ -36,13 +36,13 @@ namespace HeuristicLab.MainForm {
 
     private void MultipleDocumentFormClosing(object sender, FormClosingEventArgs e) {
       MultipleDocumentForm form = (MultipleDocumentForm)sender;
-      openViews.Remove(form.View);
-      if (openViews.Count == 0)
+      views.Remove(form.View);
+      if (views.Count == 0)
         ActiveView = null;
       form.Activated -= new EventHandler(MultipleDocumentFormActivated);
       form.FormClosing -= new FormClosingEventHandler(MultipleDocumentFormClosing);
-      foreach (IToolStripItem item in viewStateChangeToolStripItems)
-        form.View.StateChanged -= new EventHandler(item.ViewStateChanged);
+      foreach (IToolStripItem item in ViewChangedToolStripItems)
+        form.View.StateChanged -= new EventHandler(item.ViewChanged);
     }
   }
 }
