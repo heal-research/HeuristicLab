@@ -28,6 +28,7 @@
       this.targetVariablesLabel = new System.Windows.Forms.Label();
       this.inputVariablesLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.setAllButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -56,7 +57,7 @@
       this.inputVariableList.HorizontalScrollbar = true;
       this.inputVariableList.Location = new System.Drawing.Point(2, 16);
       this.inputVariableList.Name = "inputVariableList";
-      this.inputVariableList.Size = new System.Drawing.Size(221, 454);
+      this.inputVariableList.Size = new System.Drawing.Size(221, 439);
       this.inputVariableList.TabIndex = 1;
       this.inputVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.inputVariableList_ItemCheck);
       // 
@@ -91,12 +92,24 @@
       // 
       // splitContainer.Panel2
       // 
+      this.splitContainer.Panel2.Controls.Add(this.setAllButton);
       this.splitContainer.Panel2.Controls.Add(this.inputVariablesLabel);
       this.splitContainer.Panel2.Controls.Add(this.inputVariableList);
       this.splitContainer.Size = new System.Drawing.Size(429, 482);
       this.splitContainer.SplitterDistance = 202;
       this.splitContainer.SplitterWidth = 1;
       this.splitContainer.TabIndex = 4;
+      // 
+      // setAllButton
+      // 
+      this.setAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.setAllButton.Location = new System.Drawing.Point(3, 456);
+      this.setAllButton.Name = "setAllButton";
+      this.setAllButton.Size = new System.Drawing.Size(91, 23);
+      this.setAllButton.TabIndex = 4;
+      this.setAllButton.Text = "Use as default";
+      this.setAllButton.UseVisualStyleBackColor = true;
+      this.setAllButton.Click += new System.EventHandler(this.setAllButton_Click);
       // 
       // DispatcherView
       // 
@@ -121,5 +134,6 @@
     private System.Windows.Forms.Label targetVariablesLabel;
     private System.Windows.Forms.Label inputVariablesLabel;
     private System.Windows.Forms.SplitContainer splitContainer;
+    private System.Windows.Forms.Button setAllButton;
   }
 }

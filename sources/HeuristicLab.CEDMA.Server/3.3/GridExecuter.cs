@@ -43,18 +43,14 @@ namespace HeuristicLab.CEDMA.Server {
     private Dictionary<AsyncGridResult, HeuristicLab.Modeling.IAlgorithm> activeAlgorithms;
 
     private TimeSpan StartJobInterval {
-      get { return TimeSpan.FromMilliseconds(500); }
+      get { return TimeSpan.FromMilliseconds(3000); }
     }
 
     private TimeSpan WaitForFinishedJobsTimeout {
       get { return TimeSpan.FromMilliseconds(100); }
     }
 
-    private TimeSpan WaitForNewJobsInterval {
-      get { return TimeSpan.FromSeconds(3); }
-    }
-
-    public GridExecuter(IDispatcher dispatcher,  IGridServer server, IModelingDatabase databaseService)
+    public GridExecuter(IDispatcher dispatcher, IGridServer server, IModelingDatabase databaseService)
       : base(dispatcher, databaseService) {
       this.jobManager = new JobManager(server);
       activeAlgorithms = new Dictionary<AsyncGridResult, HeuristicLab.Modeling.IAlgorithm>();
@@ -63,11 +59,14 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected override void StartJobs() {
       Dictionary<WaitHandle, AsyncGridResult> asyncResults = new Dictionary<WaitHandle, AsyncGridResult>();
+      // inifinite loop:
+      // 1. try to dispatch one algo
+      // 2. when at least one run is dispatched try to get the result
+      // 3. sleep
       while (true) {
         try {
-          // start new jobs as long as there are less than MaxActiveJobs 
-          while (asyncResults.Count < MaxActiveJobs) {
-            Thread.Sleep(StartJobInterval);
+          // if allowed then try to dispatch another run
+          if (asyncResults.Count < MaxActiveJobs) {
             // get an execution from the dispatcher and execute in grid via job-manager
             HeuristicLab.Modeling.IAlgorithm algorithm = Dispatcher.GetNextJob();
             if (algorithm != null) {
@@ -84,18 +83,20 @@ namespace HeuristicLab.CEDMA.Server {
               OnChanged();
             }
           }
+          // when there are active runs
           if (asyncResults.Count > 0) {
             WaitHandle[] whArr = asyncResults.Keys.ToArray();
             int readyHandleIndex = WaitAny(whArr, WaitForFinishedJobsTimeout);
+            // if the wait didn't timeout, a new result is ready
             if (readyHandleIndex != WaitHandle.WaitTimeout) {
+              // request the finished run and clean up
               WaitHandle readyHandle = whArr[readyHandleIndex];
+              AsyncGridResult finishedResult = asyncResults[readyHandle];
+              asyncResults.Remove(readyHandle);
               HeuristicLab.Modeling.IAlgorithm finishedAlgorithm = null;
-              AsyncGridResult finishedResult = null;
               lock (activeAlgorithms) {
-                finishedResult = asyncResults[readyHandle];
                 finishedAlgorithm = activeAlgorithms[finishedResult];
                 activeAlgorithms.Remove(finishedResult);
-                asyncResults.Remove(readyHandle);
               }
               OnChanged();
               try {
@@ -104,18 +105,17 @@ namespace HeuristicLab.CEDMA.Server {
                 StoreResults(finishedAlgorithm);
               }
               catch (Exception badEx) {
-                HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message+Environment.NewLine+badEx.StackTrace);
+                HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message + Environment.NewLine + badEx.StackTrace);
               }
             }
-          } else {
-            Thread.Sleep(WaitForNewJobsInterval);
           }
+          // when there are no active runs then sleep until we try to start a new run (to prevent excessive looping)
+          Thread.Sleep(StartJobInterval);
         }
-
         catch (Exception ex) {
           HeuristicLab.Tracing.Logger.Warn("CEDMA Executer: Exception in job-management thread. " + ex.Message + Environment.NewLine + ex.StackTrace);
         }
-      }
+      } // end while(true)
     }
 
     // wait until any job is finished

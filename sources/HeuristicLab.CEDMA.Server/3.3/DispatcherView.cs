@@ -70,5 +70,17 @@ namespace HeuristicLab.CEDMA.Server {
       }
       inputVariableList.Enabled = true;
     }
+
+    private void setAllButton_Click(object sender, EventArgs e) {      
+      foreach (string targetVar in dispatcher.TargetVariables) {
+        for (int i = 0; i < inputVariableList.Items.Count; i++) {
+          if (inputVariableList.GetItemChecked(i)) {
+            dispatcher.EnableInputVariable(targetVar, (string)inputVariableList.Items[i]);
+          } else {
+            dispatcher.DisableInputVariable(targetVar, (string)inputVariableList.Items[i]);
+          }
+        }
+      }
+    }
   }
 }

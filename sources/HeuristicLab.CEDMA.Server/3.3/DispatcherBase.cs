@@ -37,9 +37,19 @@ using HeuristicLab.Modeling.Database;
 namespace HeuristicLab.CEDMA.Server {
   public abstract class DispatcherBase : IDispatcher {
     private IModelingDatabase database;
+    public IModelingDatabase Database {
+      get {
+        return database;
+      }
+    }
     private List<int> allowedTargetVariables;
     private Dictionary<int, List<int>> activeInputVariables;
     private Problem problem;
+    public Problem Problem {
+      get {
+        return problem;
+      }
+    }
     internal event EventHandler Changed;
     private object locker = new object();
 

@@ -59,7 +59,7 @@ namespace HeuristicLab.CEDMA.Server {
       switch (problem.LearningTask) {
         case LearningTask.Regression: {
             var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
-            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, regressionAlgos) ?? ChooseStochastic(regressionAlgos);
+            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, regressionAlgos); //  ?? ChooseStochastic(regressionAlgos);
             break;
           }
         case LearningTask.Classification: {
@@ -98,52 +98,14 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void PopulateFinishedRuns() {
-      //Dictionary<Entity, Entity> processedModels = new Dictionary<Entity, Entity>();
-      //var datasetBindings = store
-      //  .Query(
-      //  "?Dataset <" + Ontology.InstanceOf + "> <" + Ontology.TypeDataSet + "> .", 0, 1)
-      //  .Select(x => (Entity)x.Get("Dataset"));
-
-      //if (datasetBindings.Count() > 0) {
-      //  var datasetEntity = datasetBindings.ElementAt(0);
-
-      //  DataSet ds = new DataSet(store, datasetEntity);
-      //  var result = store
-      //    .Query(
-      //    "?Model <" + Ontology.TargetVariable + "> ?TargetVariable ." + Environment.NewLine +
-      //    "?Model <" + Ontology.Name + "> ?AlgoName .",
-      //    0, 1000)
-      //    .Select(x => new Resource[] { (Literal)x.Get("TargetVariable"), (Literal)x.Get("AlgoName"), (Entity)x.Get("Model") });
-
-      //  foreach (Resource[] row in result) {
-      //    Entity model = ((Entity)row[2]);
-      //    if (!processedModels.ContainsKey(model)) {
-      //      processedModels.Add(model, model);
-
-      //      string targetVariable = (string)((Literal)row[0]).Value;
-      //      string algoName = (string)((Literal)row[1]).Value;
-      //      int targetVariableIndex = ds.Problem.Dataset.GetVariableIndex(targetVariable);
-
-      //      var inputVariableLiterals = store
-      //        .Query(
-      //          "<" + model.Uri + "> <" + Ontology.HasInputVariable + "> ?InputVariable ." + Environment.NewLine +
-      //          "?InputVariable <" + Ontology.Name + "> ?Name .",
-      //          0, 1000)
-      //        .Select(x => (Literal)x.Get("Name"))
-      //        .Select(l => (string)l.Value)
-      //        .Distinct();
-
-      //      List<int> inputVariables = new List<int>();
-      //      foreach (string variableName in inputVariableLiterals) {
-      //        int variableIndex = ds.Problem.Dataset.GetVariableIndex(variableName);
-      //        inputVariables.Add(variableIndex);
-      //      }
-      //      if (!AlgorithmFinishedOrDispatched(targetVariableIndex, inputVariables.ToArray(), algoName)) {
-      //        AddDispatchedRun(targetVariableIndex, inputVariables.ToArray(), algoName);
-      //      }
-      //    }
-      //  }
-      //}
+      var dispatchedAlgos = from model in Database.GetAllModels()
+                            select new { 
+                              TargetVariable = model.TargetVariable.Name, 
+                              Algorithm = model.Algorithm.Name, 
+                              Inputvariables = Database.GetInputVariableResults(model).Select(x => x.Variable.Name).Distinct() };
+      foreach (var algo in dispatchedAlgos) {
+        AddDispatchedRun(algo.TargetVariable, algo.Inputvariables, algo.Algorithm);
+      }
     }
 
     private void SetProblemParameters(HeuristicLab.Modeling.IAlgorithm algo, Problem problem, int targetVariable, int[] inputVariables) {
@@ -177,6 +139,13 @@ namespace HeuristicLab.CEDMA.Server {
 
     private IEnumerable<double> GetDifferentClassValues(HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable) {
       return Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, targetVariable)).Distinct();
+    }
+
+    private void AddDispatchedRun(string targetVariable, IEnumerable<string> inputVariables, string algorithm) {
+      AddDispatchedRun(
+        Problem.Dataset.GetVariableIndex(targetVariable), 
+        inputVariables.Select(x => Problem.Dataset.GetVariableIndex(x)).ToArray(), 
+        algorithm);
     }
 
     private void AddDispatchedRun(int targetVariable, int[] inputVariables, string algoName) {
