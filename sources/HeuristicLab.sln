@@ -241,7 +241,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.Interfaces-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.Operators-3.3", "HeuristicLab.GP.Operators\3.3\HeuristicLab.GP.Operators-3.3.csproj", "{45D11FBD-A71B-48D3-8A94-8EB0DFE8E06A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm", "HeuristicLab.MainForm\3.2\HeuristicLab.MainForm.csproj", "{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm-3.2", "HeuristicLab.MainForm\3.2\HeuristicLab.MainForm-3.2.csproj", "{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.Test-3.2", "HeuristicLab.MainForm.Test\3.2\HeuristicLab.MainForm.Test-3.2.csproj", "{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}"
 EndProject
