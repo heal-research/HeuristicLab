@@ -20,5 +20,25 @@ namespace HeuristicLab.MainForm.Test {
     public override void Execute(IMainForm mainform) {
       new SaveAction().Execute(mainform);
     }
+
+    public override bool ListenActiveViewChanged {
+      get { return true; }
+    }
+
+    public override void ActiveViewChanged(object sender, EventArgs e) {
+      IMainForm mainform = (IMainForm)sender;
+      if (mainform.ActiveView == null)
+        this.ToolStripItem.Enabled = false;
+      else
+        this.ToolStripItem.Enabled = !(mainform.ActiveView is FormView);
+    }
+
+    public override bool ListenViewStateChanged {
+      get { return true; }
+    }
+
+    public override void ViewStateChanged(object sender, EventArgs e) {
+      this.ToolStripItem.Enabled = !this.ToolStripItem.Enabled;
+    }
   }
 }

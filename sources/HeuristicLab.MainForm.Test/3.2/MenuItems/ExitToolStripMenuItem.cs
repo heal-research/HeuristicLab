@@ -22,7 +22,7 @@ namespace HeuristicLab.MainForm.Test {
     }
 
     public override void Execute(IMainForm mainform) {
-      mainform.Close();
+      mainform.CloseForm();
     }
   }
 }

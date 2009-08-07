@@ -56,11 +56,16 @@ namespace HeuristicLab.MainForm {
         CaptionChanged(this, new EventArgs());
     }
 
+    public event EventHandler StateChanged;
+    protected virtual void OnStateChanged() {
+      if (StateChanged != null)
+        StateChanged(this, new EventArgs());
+    }
+
     private IMainForm mainForm;
     public IMainForm MainForm {
       get { return this.mainForm; }
       set { this.mainForm = value; }
     }
-
   }
 }

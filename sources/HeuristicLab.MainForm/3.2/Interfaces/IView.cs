@@ -27,6 +27,7 @@ namespace HeuristicLab.MainForm {
   public interface IView {
     string Caption { get; set; }
     event EventHandler CaptionChanged;
+    event EventHandler StateChanged;
     IMainForm MainForm { get; set; }
   }
 }

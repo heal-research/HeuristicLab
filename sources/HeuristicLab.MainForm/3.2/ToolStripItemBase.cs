@@ -54,6 +54,19 @@ namespace HeuristicLab.MainForm {
     public char StructureSeparator {
       get { return ToolStripMenuItemBase.structureSeparator; }
     }
+
+    public virtual bool ListenActiveViewChanged {
+      get { return false; }
+    }
+    public virtual bool ListenViewStateChanged {
+      get { return false; }
+    }
+
+    public virtual void ActiveViewChanged(object sender, EventArgs e) {
+    }
+
+    public virtual void ViewStateChanged(object sender, EventArgs e) {
+    }
     #endregion
   }
 }

@@ -36,8 +36,10 @@ namespace HeuristicLab.MainForm {
       : base() {
       InitializeComponent();
       openViews = new List<IView>();
+      viewStateChangeToolStripItems = new List<IToolStripItem>();
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
+      OnActiveViewChanged();
     }
 
     #region IMainForm Members
@@ -56,9 +58,23 @@ namespace HeuristicLab.MainForm {
       get { return this.userInterfaceItemType; }
     }
 
-    protected IView activeView;
+    private IView activeView;
     public IView ActiveView {
       get { return this.activeView; }
+      protected set {
+        if (this.activeView != value) {
+          this.activeView = value;
+          OnActiveViewChanged();
+        }
+      }
+    }
+
+    protected List<IToolStripItem> viewStateChangeToolStripItems;
+
+    public event EventHandler ActiveViewChanged;
+    protected virtual void OnActiveViewChanged() {
+      if(ActiveViewChanged != null)
+        ActiveViewChanged(this,new EventArgs());
     }
 
     protected List<IView> openViews;
@@ -67,13 +83,13 @@ namespace HeuristicLab.MainForm {
     }
 
     public virtual void ShowView(IView view) {
-      view.MainForm = this;
-      activeView = view;
+      view.MainForm = this;     
       openViews.Add(view);
+      ActiveView = view;
     }
 
-    public void Close() {
-      ((Form)this).Close();
+    public void CloseForm() {
+      this.Close();
     }
     #endregion
 
@@ -93,7 +109,7 @@ namespace HeuristicLab.MainForm {
       toolStripItems = toolStripItems.OrderBy(x => x.Position);
       foreach (IToolStripButtonItem toolStripButtonItem in toolStripItems) {
         AddToolStripButtonItem(toolStripButtonItem);
-      }      
+      }
     }
 
     private void AddToolStripMenuItem(IToolStripMenuItem menuItem) {
@@ -116,7 +132,7 @@ namespace HeuristicLab.MainForm {
         item = new ToolStripButton();
 
       SetToolStripItemProperties(item, buttonItem);
-      ToolStripDropDownItem parent = FindParent(buttonItem,toolStrip.Items);
+      ToolStripDropDownItem parent = FindParent(buttonItem, toolStrip.Items);
       if (parent == null)
         toolStrip.Items.Add(item);
       else
@@ -141,6 +157,10 @@ namespace HeuristicLab.MainForm {
       toolStripItem.Tag = iToolStripItem;
       toolStripItem.Image = iToolStripItem.Image;
       toolStripItem.DisplayStyle = iToolStripItem.DisplayStyle;
+      if (iToolStripItem.ListenActiveViewChanged)
+        this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);
+      if (iToolStripItem.ListenViewStateChanged)
+        this.viewStateChangeToolStripItems.Add(iToolStripItem);
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
       iToolStripItem.ToolStripItem = toolStripItem;
     }

@@ -43,14 +43,15 @@ namespace HeuristicLab.MainForm {
 
     private DockPanel dockPanel;
 
-    public override void ShowView(IView view) {
-      
+    public override void ShowView(IView view) {      
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
         base.ShowView(view);
         DockContent content = new DockForm(view);
         content.Activated += new EventHandler(DockFormActivated);
         content.FormClosing += new FormClosingEventHandler(DockFormClosing);
+        foreach (IToolStripItem item in viewStateChangeToolStripItems)
+          view.StateChanged += new EventHandler(item.ViewStateChanged);
         content.Show(dockPanel);
       }
     }
@@ -59,13 +60,15 @@ namespace HeuristicLab.MainForm {
       DockForm dockForm = (DockForm)sender;
       openViews.Remove(dockForm.View);
       if (openViews.Count == 0)
-        activeView = null;
+        ActiveView = null;
       dockForm.Activated -= new EventHandler(DockFormActivated);
       dockForm.FormClosing -= new FormClosingEventHandler(DockFormClosing);
+      foreach (IToolStripItem item in viewStateChangeToolStripItems)
+        dockForm.View.StateChanged -= new EventHandler(item.ViewStateChanged);
     }
 
     private void DockFormActivated(object sender, EventArgs e) {
-      base.activeView = ((DockForm)sender).View;
+      base.ActiveView = ((DockForm)sender).View;
       base.StatusStripText = ((DockForm)sender).View.Caption;
     }
 

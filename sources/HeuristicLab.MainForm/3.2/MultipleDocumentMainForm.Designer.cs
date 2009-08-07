@@ -33,7 +33,6 @@
       this.ClientSize = new System.Drawing.Size(284, 264);
       this.Name = "MultipleDocumentMainForm";
       this.ResumeLayout(false);
-
     }
 
     #endregion

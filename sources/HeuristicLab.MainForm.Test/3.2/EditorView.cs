@@ -16,5 +16,9 @@ namespace HeuristicLab.MainForm.Test {
     public EditorView(IMainForm mainform)
       : base(mainform) {
     }
+
+    private void ChangeStateButton_Click(object sender, EventArgs e) {
+      this.OnStateChanged();
+    }
   }
 }

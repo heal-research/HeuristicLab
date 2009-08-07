@@ -24,6 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.label1 = new System.Windows.Forms.Label();
+      this.ChangeStateButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // label1
@@ -36,10 +37,21 @@
       this.label1.TabIndex = 0;
       this.label1.Text = "EditorForm";
       // 
+      // ChangeStateButton
+      // 
+      this.ChangeStateButton.Location = new System.Drawing.Point(34, 100);
+      this.ChangeStateButton.Name = "ChangeStateButton";
+      this.ChangeStateButton.Size = new System.Drawing.Size(75, 23);
+      this.ChangeStateButton.TabIndex = 1;
+      this.ChangeStateButton.Text = "ChangeState";
+      this.ChangeStateButton.UseVisualStyleBackColor = true;
+      this.ChangeStateButton.Click += new System.EventHandler(this.ChangeStateButton_Click);
+      // 
       // EditorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.ChangeStateButton);
       this.Controls.Add(this.label1);
       this.ForeColor = System.Drawing.SystemColors.ControlText;
       this.Name = "EditorView";
@@ -51,5 +63,6 @@
     #endregion
 
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Button ChangeStateButton;
   }
 }
