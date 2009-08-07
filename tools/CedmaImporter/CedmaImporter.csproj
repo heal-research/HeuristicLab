@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F4818BCF-A57F-413C-8DEE-C0532C7F7C7F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CedmaImporter</RootNamespace>
+    <AssemblyName>CedmaImporter</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HeuristicLab.CEDMA.Server-3.3, Version=3.3.0.2238, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.CEDMA.Server-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Core-3.2, Version=3.2.0.2143, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.Core-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.DataAnalysis-3.2, Version=3.2.0.2223, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.DataAnalysis-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.GP-3.3, Version=3.3.0.2237, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.GP-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.GP.Interfaces-3.3, Version=3.3.0.2235, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.GP.Interfaces-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.GP.StructureIdentification-3.3, Version=3.3.0.2242, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.GP.StructureIdentification-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Modeling-3.2, Version=3.2.0.2226, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.Modeling-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Modeling.Database-3.2, Version=3.2.0.2223, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.Modeling.Database-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Modeling.Database.SQLServerCompact-3.2, Version=3.2.0.2229, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.Modeling.Database.SQLServerCompact-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.PluginInfrastructure, Version=3.2.0.2234, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\HeuristicLab.PluginInfrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.SupportVectorMachines-3.2, Version=3.2.0.2251, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sources\HeuristicLab\bin\x86\Release\plugins\HeuristicLab.SupportVectorMachines-3.2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ImporterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImporterForm.Designer.cs">
+      <DependentUpon>ImporterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Importer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ImporterForm.resx">
+      <DependentUpon>ImporterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
