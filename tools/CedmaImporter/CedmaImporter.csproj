@@ -112,6 +112,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Token.cs" />
+    <Compile Include="SymbolicExpressionImporter.cs" />
     <Compile Include="ImporterForm.cs">
       <SubType>Form</SubType>
     </Compile>
