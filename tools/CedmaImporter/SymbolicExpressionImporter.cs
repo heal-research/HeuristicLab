@@ -44,6 +44,10 @@ namespace CedmaImporter {
     public SymbolicExpressionImporter() {
     }
 
+    internal IFunctionTree Import(StreamReader streamReader) {
+      return ParseSexp(new Queue<Token>(GetTokenStream(streamReader)));
+    }
+
     private IEnumerable<Token> GetTokenStream(StreamReader reader) {
       return from line in GetLineStream(reader)
              let strTokens = line.Split(new string[] { " ", "\t", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).AsEnumerable()
