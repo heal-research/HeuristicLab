@@ -119,7 +119,9 @@ namespace CedmaImporter {
       } else {
         SymbolicExpressionImporter sexpImporter = new SymbolicExpressionImporter();
         GeneticProgrammingModel model = new GeneticProgrammingModel();
-        model.FunctionTree = sexpImporter.Import(File.OpenText(Path.Combine(dirName, modelFileName) + ".gp.txt"));
+        using (StreamReader reader = File.OpenText(Path.Combine(dirName, modelFileName) + ".gp.txt")) {
+          model.FunctionTree = sexpImporter.Import(reader);
+        }
         return model;
       }
     }
