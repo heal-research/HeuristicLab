@@ -47,7 +47,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       try {
         exported = Export(tree);
         return true;
-      } catch(UnknownFunctionException) {
+      }
+      catch (UnknownFunctionException) {
         exported = "";
         return false;
       }
@@ -57,41 +58,41 @@ namespace HeuristicLab.GP.StructureIdentification {
       builder.Append(currentIndent);
       builder.Append("(" + ExportFunction(tree.Function, tree) + " ");
       currentIndent += "  ";
-      foreach(IFunctionTree subTree in tree.SubTrees) {
+      foreach (IFunctionTree subTree in tree.SubTrees) {
         builder.Append("\n");
         BuildExportString(subTree);
       }
-      if(tree.SubTrees.Count > 0) builder.Append(")");
+      builder.Append(")");
       currentIndent = currentIndent.Remove(0, 2);
     }
 
     private static string ExportFunction(IFunction function, IFunctionTree tree) {
       // this is smelly, if there is a cleaner way to have a 'dynamic' visitor 
       // please let me know! (gkronber 14.10.2008)
-      if(function is Addition) return ((Addition)function).ExportToScheme();
-      if(function is And) return ((And)function).ExportToScheme();
-      if(function is Average) return ((Average)function).ExportToScheme();
-      if(function is Constant) return ((Constant)function).ExportToScheme(tree);
-      if(function is Cosinus) return ((Cosinus)function).ExportToScheme();
-      if(function is Differential) return ((Differential)function).ExportToScheme(tree);
-      if(function is Division) return ((Division)function).ExportToScheme();
-      if(function is Equal) return ((Equal)function).ExportToScheme();
-      if(function is Exponential) return ((Exponential)function).ExportToScheme();
-      if(function is GreaterThan) return ((GreaterThan)function).ExportToScheme();
-      if(function is IfThenElse) return ((IfThenElse)function).ExportToScheme();
-      if(function is LessThan) return ((LessThan)function).ExportToScheme();
-      if(function is Logarithm) return ((Logarithm)function).ExportToScheme();
-      if(function is Multiplication) return ((Multiplication)function).ExportToScheme();
-      if(function is Not) return ((Not)function).ExportToScheme();
-      if(function is Or) return ((Or)function).ExportToScheme();
-      if(function is Power) return ((Power)function).ExportToScheme();
-      if(function is Signum) return ((Signum)function).ExportToScheme();
-      if(function is Sinus) return ((Sinus)function).ExportToScheme();
-      if(function is Sqrt) return ((Sqrt)function).ExportToScheme();
-      if(function is Subtraction) return ((Subtraction)function).ExportToScheme();
-      if(function is Tangens) return ((Tangens)function).ExportToScheme();
-      if(function is Variable) return ((Variable)function).ExportToScheme(tree);
-      if(function is Xor) return ((Xor)function).ExportToScheme();
+      if (function is Addition) return ((Addition)function).ExportToScheme();
+      if (function is And) return ((And)function).ExportToScheme();
+      if (function is Average) return ((Average)function).ExportToScheme();
+      if (function is Constant) return ((Constant)function).ExportToScheme(tree);
+      if (function is Cosinus) return ((Cosinus)function).ExportToScheme();
+      if (function is Differential) return ((Differential)function).ExportToScheme(tree);
+      if (function is Division) return ((Division)function).ExportToScheme();
+      if (function is Equal) return ((Equal)function).ExportToScheme();
+      if (function is Exponential) return ((Exponential)function).ExportToScheme();
+      if (function is GreaterThan) return ((GreaterThan)function).ExportToScheme();
+      if (function is IfThenElse) return ((IfThenElse)function).ExportToScheme();
+      if (function is LessThan) return ((LessThan)function).ExportToScheme();
+      if (function is Logarithm) return ((Logarithm)function).ExportToScheme();
+      if (function is Multiplication) return ((Multiplication)function).ExportToScheme();
+      if (function is Not) return ((Not)function).ExportToScheme();
+      if (function is Or) return ((Or)function).ExportToScheme();
+      if (function is Power) return ((Power)function).ExportToScheme();
+      if (function is Signum) return ((Signum)function).ExportToScheme();
+      if (function is Sinus) return ((Sinus)function).ExportToScheme();
+      if (function is Sqrt) return ((Sqrt)function).ExportToScheme();
+      if (function is Subtraction) return ((Subtraction)function).ExportToScheme();
+      if (function is Tangens) return ((Tangens)function).ExportToScheme();
+      if (function is Variable) return ((Variable)function).ExportToScheme(tree);
+      if (function is Xor) return ((Xor)function).ExportToScheme();
       throw new UnknownFunctionException(function.Name);
     }
 
@@ -108,10 +109,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
       return name;
     }
-
-    //public string GetName(IFunctionTree tree) {
-    //  return SymbolicExpressionExporter.GetName(tree);
-    //}
   }
 
   internal static class SchemeExporterExtensions {
@@ -169,13 +166,13 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public static string ExportToScheme(this Variable variable, IFunctionTree tree) {
       var varTree = (VariableFunctionTree)tree;
-      return "(variable " + varTree.Weight.ToString("r") + " " +
-        varTree.VariableName + " " + varTree.SampleOffset + ")";
+      return "variable " + varTree.Weight.ToString("r") + " " +
+        varTree.VariableName + " " + varTree.SampleOffset;
     }
     public static string ExportToScheme(this Differential differential, IFunctionTree tree) {
       var varTree = (VariableFunctionTree)tree;
-      return "(differential " + varTree.Weight.ToString("r") + " " +
-        varTree.VariableName + " " + varTree.SampleOffset + ")";
+      return "differential " + varTree.Weight.ToString("r") + " " +
+        varTree.VariableName + " " + varTree.SampleOffset;
     }
 
     public static string ExportToScheme(this And and) {
