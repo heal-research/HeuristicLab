@@ -21,7 +21,8 @@ namespace HeuristicLab.MainForm {
         base.ShowView(view);
         MultipleDocumentForm form = new MultipleDocumentForm(view);
         form.Activated += new EventHandler(MultipleDocumentFormActivated);
-        form.FormClosing += new FormClosingEventHandler(MultipleDocumentFormClosing);
+        form.FormClosing += new FormClosingEventHandler(view.FormClosing);
+        form.FormClosed += new FormClosedEventHandler(MultipleDocumentFormClosed);
         form.MdiParent = this;
         foreach (IToolStripItem item in ViewChangedToolStripItems)
           view.StateChanged += new EventHandler(item.ViewChanged);
@@ -34,13 +35,14 @@ namespace HeuristicLab.MainForm {
       base.StatusStripText = ((MultipleDocumentForm)sender).View.Caption;
     }
 
-    private void MultipleDocumentFormClosing(object sender, FormClosingEventArgs e) {
+    private void MultipleDocumentFormClosed(object sender, FormClosedEventArgs e) {
       MultipleDocumentForm form = (MultipleDocumentForm)sender;
       views.Remove(form.View);
       if (views.Count == 0)
         ActiveView = null;
       form.Activated -= new EventHandler(MultipleDocumentFormActivated);
-      form.FormClosing -= new FormClosingEventHandler(MultipleDocumentFormClosing);
+      form.FormClosing -= new FormClosingEventHandler(form.View.FormClosing);
+      form.FormClosed -= new FormClosedEventHandler(MultipleDocumentFormClosed);
       foreach (IToolStripItem item in ViewChangedToolStripItems)
         form.View.StateChanged -= new EventHandler(item.ViewChanged);
     }

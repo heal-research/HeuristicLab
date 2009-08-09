@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public interface IView {
@@ -29,5 +30,6 @@ namespace HeuristicLab.MainForm {
     event EventHandler CaptionChanged;
     event EventHandler StateChanged;
     IMainForm MainForm { get; set; }
+    void FormClosing(object sender, FormClosingEventArgs e);
   }
 }

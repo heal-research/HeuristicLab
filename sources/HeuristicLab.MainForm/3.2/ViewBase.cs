@@ -67,5 +67,8 @@ namespace HeuristicLab.MainForm {
       get { return this.mainForm; }
       set { this.mainForm = value; }
     }
+
+    public virtual void FormClosing(object sender, FormClosingEventArgs e) {
+    }
   }
 }
