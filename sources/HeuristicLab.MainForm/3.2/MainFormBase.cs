@@ -31,12 +31,16 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm {
-  public abstract partial class MainFormBase : Form, IMainForm {
-    protected MainFormBase(Type userInterfaceItemType)
+  public partial class MainFormBase : Form, IMainForm {
+    protected MainFormBase()
       : base() {
       InitializeComponent();
       views = new List<IView>();
       viewChangeToolStripItems = new List<IToolStripItem>();
+    }
+
+    protected MainFormBase(Type userInterfaceItemType)
+      : this() {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
       OnActiveViewChanged();
@@ -58,7 +62,7 @@ namespace HeuristicLab.MainForm {
       get { return this.statusStripLabel.Text; }
       set {
         if (InvokeRequired) {
-          Action<string> action = delegate(string s) { this.statusStripLabel.Text = s; };
+          Action<string> action = delegate(string s) { this.StatusStripText = s; };
           Invoke(action, new object[] { value });
         } else
           this.statusStripLabel.Text = value;
@@ -106,7 +110,7 @@ namespace HeuristicLab.MainForm {
     #endregion
 
     #region create menu and toolbar
-    private void CreateGUI() {
+    protected virtual void CreateGUI() {
       DiscoveryService ds = new DiscoveryService();
 
       object[] items = ds.GetInstances(userInterfaceItemType);
@@ -151,13 +155,17 @@ namespace HeuristicLab.MainForm {
         parent.DropDownItems.Add(item);
     }
 
-    private ToolStripDropDownItem FindParent(IToolStripItem item, ToolStripItemCollection parentItems) {
+    private ToolStripDropDownItem FindParent(IToolStripItem item, ToolStripItemCollection parentItems) {      
+      if (String.IsNullOrEmpty(item.Structure))
+        return null;
+
       ToolStripDropDownItem parent = null;
       foreach (string structure in item.Structure.Split(item.StructureSeparator)) {
         if (parentItems.ContainsKey(structure))
           parent = (ToolStripDropDownItem)parentItems[structure];
         else
-          break;
+          throw new ArgumentException("Structure string for item " + item.Name +
+            " is invalid. Could not find " + structure + " in toolstrip!");
         parentItems = parent.DropDownItems;
       }
       return parent;

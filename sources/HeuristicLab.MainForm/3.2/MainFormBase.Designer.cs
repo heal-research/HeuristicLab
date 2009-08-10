@@ -79,9 +79,9 @@
 
     #endregion
 
-    private System.Windows.Forms.MenuStrip menuStrip;
     private System.Windows.Forms.ToolStrip toolStrip;
     private System.Windows.Forms.StatusStrip statusStrip;
     private System.Windows.Forms.ToolStripStatusLabel statusStripLabel;
+    protected System.Windows.Forms.MenuStrip menuStrip;
   }
 }

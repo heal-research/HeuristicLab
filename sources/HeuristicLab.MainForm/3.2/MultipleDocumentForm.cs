@@ -28,16 +28,16 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
-  public partial class MultipleDocumentForm : Form {
+  public partial class DocumentForm : Form {
     private IView myView;
     public IView View {
       get { return myView; }
     }
 
-    public MultipleDocumentForm() {
+    public DocumentForm() {
       InitializeComponent();
     }
-    public MultipleDocumentForm(IView view)
+    public DocumentForm(IView view)
       : this() {
       myView = view;
       if (View != null) {

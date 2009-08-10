@@ -81,6 +81,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SingleDocumentMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SingleDocumentMainForm.Designer.cs">
+      <DependentUpon>SingleDocumentMainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\IUserInterfaceItem.cs" />
     <Compile Include="MultipleDocumentMainForm.cs">
       <SubType>Form</SubType>
@@ -146,6 +152,12 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SingleDocumentMainForm.resx">
+      <DependentUpon>SingleDocumentMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DockingMainForm.resx">
+      <DependentUpon>DockingMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainFormBase.resx">
       <DependentUpon>MainFormBase.cs</DependentUpon>
     </EmbeddedResource>

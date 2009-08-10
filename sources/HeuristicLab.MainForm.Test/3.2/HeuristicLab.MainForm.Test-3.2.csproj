@@ -86,6 +86,7 @@
     <Compile Include="ButtonItems\NewFormToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\SaveToolStripButtonItem.cs" />
     <Compile Include="ButtonItems\OpenToolStripButtonItem.cs" />
+    <Compile Include="HeuristicLabSingleDocumentMainFormTestApplication.cs" />
     <Compile Include="HeuristicLabMultipleDocumentMainFormTestApplication.cs" />
     <Compile Include="EditorView.cs">
       <SubType>UserControl</SubType>

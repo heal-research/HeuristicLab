@@ -30,13 +30,13 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm {
-  public partial class DockingMainForm : MainFormBase {
-    public DockingMainForm()
+  public partial class SingleDocumentMainForm : MainFormBase {
+    public SingleDocumentMainForm()
       : base() {
       InitializeComponent();
     }
 
-    public DockingMainForm(Type userInterfaceItemType)
+    public SingleDocumentMainForm(Type userInterfaceItemType)
       : base(userInterfaceItemType) {
       InitializeComponent();
     }
@@ -45,31 +45,31 @@ namespace HeuristicLab.MainForm {
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
         base.ShowView(view);
-        DockContent dockForm = new DockForm(view);
-        dockForm.Activated += new EventHandler(DockFormActivated);
-        dockForm.FormClosing += new FormClosingEventHandler(view.FormClosing);
-        dockForm.FormClosed += new FormClosedEventHandler(DockFormClosed);
+        DocumentForm form = new DocumentForm(view);
+        form.Activated += new EventHandler(DockFormActivated);
+        form.FormClosing += new FormClosingEventHandler(view.FormClosing);
+        form.FormClosed += new FormClosedEventHandler(DockFormClosed);
         foreach (IToolStripItem item in ViewChangedToolStripItems)
           view.StateChanged += new EventHandler(item.ViewChanged);
-        dockForm.Show(dockPanel);
+        form.Show(this);
       }
     }
 
     private void DockFormClosed(object sender, FormClosedEventArgs e) {
-      DockForm dockForm = (DockForm)sender;
-      views.Remove(dockForm.View);
+      DocumentForm form = (DocumentForm)sender;
+      views.Remove(form.View);
       if (views.Count == 0)
         ActiveView = null;
-      dockForm.Activated -= new EventHandler(DockFormActivated);
-      dockForm.FormClosing -= new FormClosingEventHandler(dockForm.View.FormClosing);
-      dockForm.FormClosed -= new FormClosedEventHandler(DockFormClosed);
+      form.Activated -= new EventHandler(DockFormActivated);
+      form.FormClosing -= new FormClosingEventHandler(form.View.FormClosing);
+      form.FormClosed -= new FormClosedEventHandler(DockFormClosed);
       foreach (IToolStripItem item in ViewChangedToolStripItems)
-        dockForm.View.StateChanged -= new EventHandler(item.ViewChanged);
+        form.View.StateChanged -= new EventHandler(item.ViewChanged);
     }
 
     private void DockFormActivated(object sender, EventArgs e) {
-      base.ActiveView = ((DockForm)sender).View;
-      base.StatusStripText = ((DockForm)sender).View.Caption;
+      base.ActiveView = ((DocumentForm)sender).View;
+      base.StatusStripText = ((DocumentForm)sender).View.Caption;
     }
   }
 }

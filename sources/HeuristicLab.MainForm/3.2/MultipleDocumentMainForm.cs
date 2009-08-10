@@ -30,17 +30,28 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public partial class MultipleDocumentMainForm : MainFormBase {
+    public MultipleDocumentMainForm()
+      : base() {
+      InitializeComponent();
+    }
+
     public MultipleDocumentMainForm(Type userInterfaceType)
       : base(userInterfaceType) {
       InitializeComponent();
-      this.IsMdiContainer = true;
+    }
+
+    protected override void CreateGUI() {
+      base.CreateGUI();
+      ToolStripMenuItem window = new ToolStripMenuItem("Windows");
+      base.menuStrip.MdiWindowListItem = window;
+      base.menuStrip.Items.Add(window);
     }
 
     public override void ShowView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
         base.ShowView(view);
-        MultipleDocumentForm form = new MultipleDocumentForm(view);
+        DocumentForm form = new DocumentForm(view);
         form.Activated += new EventHandler(MultipleDocumentFormActivated);
         form.FormClosing += new FormClosingEventHandler(view.FormClosing);
         form.FormClosed += new FormClosedEventHandler(MultipleDocumentFormClosed);
@@ -52,12 +63,12 @@ namespace HeuristicLab.MainForm {
     }
 
     private void MultipleDocumentFormActivated(object sender, EventArgs e) {
-      base.ActiveView = ((MultipleDocumentForm)sender).View;
-      base.StatusStripText = ((MultipleDocumentForm)sender).View.Caption;
+      base.ActiveView = ((DocumentForm)sender).View;
+      base.StatusStripText = ((DocumentForm)sender).View.Caption;
     }
 
     private void MultipleDocumentFormClosed(object sender, FormClosedEventArgs e) {
-      MultipleDocumentForm form = (MultipleDocumentForm)sender;
+      DocumentForm form = (DocumentForm)sender;
       views.Remove(form.View);
       if (views.Count == 0)
         ActiveView = null;

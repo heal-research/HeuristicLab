@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.MainForm {
-  partial class MultipleDocumentForm {
+  partial class DocumentForm {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -46,7 +46,7 @@ namespace HeuristicLab.MainForm {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultipleDocumentForm));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DocumentForm));
       this.viewPanel = new System.Windows.Forms.Panel();
       this.SuspendLayout();
       // 
