@@ -36,7 +36,7 @@ namespace HeuristicLab.MainForm {
       : base() {
       InitializeComponent();
       views = new List<IView>();
-      viewChangeToolStripItems = new List<IToolStripItem>();
+      toolStripItems = new List<IToolStripItem>();
     }
 
     protected MainFormBase(Type userInterfaceItemType)
@@ -86,9 +86,9 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    private List<IToolStripItem> viewChangeToolStripItems;
-    protected IEnumerable<IToolStripItem> ViewChangedToolStripItems {
-      get { return this.viewChangeToolStripItems; }
+    private List<IToolStripItem> toolStripItems;
+    protected IEnumerable<IToolStripItem> ToolStripItems {
+      get { return this.toolStripItems; }
     }
 
     public event EventHandler ActiveViewChanged;
@@ -155,7 +155,7 @@ namespace HeuristicLab.MainForm {
         parent.DropDownItems.Add(item);
     }
 
-    private ToolStripDropDownItem FindParent(IToolStripItem item, ToolStripItemCollection parentItems) {      
+    private ToolStripDropDownItem FindParent(IToolStripItem item, ToolStripItemCollection parentItems) {
       if (String.IsNullOrEmpty(item.Structure))
         return null;
 
@@ -177,11 +177,9 @@ namespace HeuristicLab.MainForm {
       toolStripItem.Tag = iToolStripItem;
       toolStripItem.Image = iToolStripItem.Image;
       toolStripItem.DisplayStyle = iToolStripItem.DisplayStyle;
-      if (iToolStripItem.ListenActiveViewChanged)
-        this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);
-      if (iToolStripItem.ListenViewChanged)
-        this.viewChangeToolStripItems.Add(iToolStripItem);
+      this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);    
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
+      this.toolStripItems.Add(iToolStripItem);
       iToolStripItem.ToolStripItem = toolStripItem;
     }
 

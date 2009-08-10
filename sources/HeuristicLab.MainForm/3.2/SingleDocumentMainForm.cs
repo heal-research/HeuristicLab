@@ -46,10 +46,11 @@ namespace HeuristicLab.MainForm {
       else {
         base.ShowView(view);
         DocumentForm form = new DocumentForm(view);
+        form.ShowInTaskbar = true;
         form.Activated += new EventHandler(DockFormActivated);
         form.FormClosing += new FormClosingEventHandler(view.FormClosing);
         form.FormClosed += new FormClosedEventHandler(DockFormClosed);
-        foreach (IToolStripItem item in ViewChangedToolStripItems)
+        foreach (IToolStripItem item in ToolStripItems)
           view.StateChanged += new EventHandler(item.ViewChanged);
         form.Show(this);
       }
@@ -63,7 +64,7 @@ namespace HeuristicLab.MainForm {
       form.Activated -= new EventHandler(DockFormActivated);
       form.FormClosing -= new FormClosingEventHandler(form.View.FormClosing);
       form.FormClosed -= new FormClosedEventHandler(DockFormClosed);
-      foreach (IToolStripItem item in ViewChangedToolStripItems)
+      foreach (IToolStripItem item in ToolStripItems)
         form.View.StateChanged -= new EventHandler(item.ViewChanged);
     }
 
