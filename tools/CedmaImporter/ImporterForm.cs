@@ -30,6 +30,7 @@ namespace CedmaImporter {
         string fileName = dialog.FileName;
         string directoryName = Path.GetDirectoryName(fileName);
         importer.Import(fileName, directoryName);
+        result = dialog.ShowDialog();
       }
     }
   }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using HeuristicLab.Modeling.Database;
-using HeuristicLab.Modeling.Database.SQLServerCompact;
 using HeuristicLab.GP;
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.GP.StructureIdentification;
@@ -18,9 +17,32 @@ namespace CedmaImporter {
     private const int TARGETVARIABLE_COLUMN = 2;
     private const int ALGORITHM_COLUMN = 3;
     private const int RESULTS_IDX = 4;
-    private Result[] results;
-    private string[] inputVariables;
+    private const int TRAINING_MSE = 4;
+    private const int VALIDATION_MSE = TRAINING_MSE + 1;
+    private const int TEST_MSE = TRAINING_MSE + 2;
 
+    private const int TRAINING_R2 = 7;
+    private const int VALIDATION_R2 = TRAINING_R2 + 1;
+    private const int TEST_R2 = TRAINING_R2 + 2;
+
+    private const int TRAINING_MAPE = 10;
+    private const int VALIDATION_MAPE = TRAINING_MAPE + 1;
+    private const int TEST_MAPE = TRAINING_MAPE + 2;
+
+    private const int TRAINING_MAPRE = 13;
+    private const int VALIDATION_MAPRE = TRAINING_MAPRE + 1;
+    private const int TEST_MAPRE = TRAINING_MAPRE + 2;
+
+    private const int TRAINING_VAF = 16;
+    private const int VALIDATION_VAF = TRAINING_VAF + 1;
+    private const int TEST_VAF = TRAINING_VAF + 2;
+
+    private const int VARIABLE_IMPACTS = 19;
+    private const string EVALUATION_IMPACT = "EvaluationImpact";
+    private const string QUALITY_IMPACT = "QualityImpact";
+
+    private string[] results;
+    private string[] inputVariables;
     private HeuristicLab.CEDMA.Server.Problem problem;
 
 
@@ -29,49 +51,47 @@ namespace CedmaImporter {
     }
 
     public void Import(string fileName, string dirName) {
-      string outputFileName = Path.GetFileNameWithoutExtension(fileName) + ".sdf";
+      string outputFileName = Path.Combine(dirName, Path.GetFileNameWithoutExtension(fileName) + ".sdf");
       string connectionString = @"Data Source=" + outputFileName;
 
-      DatabaseService database = new DatabaseService(connectionString);
-      Problem p = database.GetOrCreateProblem(problem.Dataset);
+      var database = new HeuristicLab.Modeling.Database.SQLServerCompact.DatabaseService(connectionString);
+      IProblem p = database.GetOrCreateProblem(problem.Dataset);
       using (StreamReader reader = File.OpenText(fileName)) {
-        ReadResultsAndInputVariables(reader);
+        ReadResultsAndInputVariables(reader, database);
         reader.ReadLine();
         ImportAllModels(dirName, reader, database);
       }
     }
 
-    private void ReadResultsAndInputVariables(StreamReader reader) {
-      string[] columns = reader.ReadLine().Split(';');
-      results = Enumerable.Repeat<Result>(null, columns.Length).ToArray();
-      inputVariables = Enumerable.Repeat<string>(null, columns.Length).ToArray();
+    private void ReadResultsAndInputVariables(StreamReader reader, IModelingDatabase database) {
+      string[] columns = reader.ReadLine().Split(';').Select(x=>x.Trim()).ToArray();
+      results = new string[columns.Length];
+      inputVariables = new string[columns.Length];
       for (int i = RESULTS_IDX; i < columns.Length; i++) {
         string resultColumn = columns[i].Trim();
-        if (resultColumn.Contains(":")) {
-          string[] tokens = resultColumn.Split(':');
-          string variableName = tokens[1].Trim();
+        if (resultColumn.Contains(" ")) {
+          string[] tokens = resultColumn.Split(' ');
+          string variableName = tokens[1].Trim(' ','(',')');
           string variableResultName = tokens[0].Trim();
           inputVariables[i] = variableName;
-          results[i] = new Result(variableResultName);
+          results[i] = variableResultName;
         } else {
           // normal result value
-          results[i] = new Result(resultColumn);
+          results[i] = resultColumn;
         }
       }
     }
 
-    private void ImportAllModels(string dirName, StreamReader reader, DatabaseService database) {
+    private void ImportAllModels(string dirName, StreamReader reader, IModelingDatabase database) {
       while (!reader.EndOfStream) {
-        string modelLine = reader.ReadLine();
-        string[] modelData = modelLine.Split(';');
+        string[] modelData = reader.ReadLine().Split(';').Select(x => x.Trim()).ToArray();
         int id = int.Parse(modelData[ID_COLUMN]);
         string targetVariableName = modelData[TARGETVARIABLE_COLUMN].Trim();
         string algoName = modelData[ALGORITHM_COLUMN].Trim();
         try {
-          HeuristicLab.Core.IItem modelItem = ParseModel(dirName, modelData[FILENAME_COLUMN].Trim(), algoName);
-          HeuristicLab.Modeling.Database.SQLServerCompact.Variable targetVariable = new HeuristicLab.Modeling.Database.SQLServerCompact.Variable(targetVariableName);
-          Algorithm algorithm = new Algorithm(algoName);
-          Model model = new Model(targetVariable, algorithm);
+          HeuristicLab.Modeling.Model model = new HeuristicLab.Modeling.Model();
+          model.TargetVariable = targetVariableName;
+          model.Dataset = problem.Dataset;
           model.TrainingSamplesStart = problem.TrainingSamplesStart;
           model.TrainingSamplesEnd = problem.TrainingSamplesEnd;
           model.ValidationSamplesStart = problem.ValidationSamplesStart;
@@ -79,32 +99,52 @@ namespace CedmaImporter {
           model.TestSamplesStart = problem.TestSamplesStart;
           model.TestSamplesEnd = problem.TestSamplesEnd;
 
-          IEnumerable<ModelResult> qualityModelResults = GetModelResults(model, modelData);
-          IEnumerable<InputVariableResult> inputVariableResults = GetInputVariableResults(model, modelData);
 
-          // TODO
-          //database.Persist(model);
-          //foreach (ModelResult modelResult in qualityModelResults)
-          //  database.Persist(modelResult);
-          //foreach (InputVariableResult inputVariableResult in inputVariableResults)
-          //  database.Persist(inputVariableResult);
+          model.Data = ParseModel(dirName, modelData[FILENAME_COLUMN].Trim(), algoName);
+
+          SetModelResults(model, modelData);
+          SetInputVariableResults(model, modelData);
+
+          database.Persist(model, algoName, null);
         }
         catch (Exception ex) {
         }
       }
     }
 
-    private IEnumerable<InputVariableResult> GetInputVariableResults(Model model, string[] modelData) {
-      double temp;
-      return from i in Enumerable.Range(0, inputVariables.Count())
-             where inputVariables[i] != null && results[i] != null && double.TryParse(modelData[i], out temp)
-             select new InputVariableResult(new InputVariable(model, new HeuristicLab.Modeling.Database.SQLServerCompact.Variable(inputVariables[i])), results[i], double.Parse(modelData[i]));
+    private void SetInputVariableResults(HeuristicLab.Modeling.Model model, string[] modelData) {
+      for (int i = VARIABLE_IMPACTS; i < modelData.Length; i++) {
+        if (!string.IsNullOrEmpty(modelData[i])) {
+          model.AddInputVariables(inputVariables[i]);
+          if (results[i] == EVALUATION_IMPACT) {
+            model.SetVariableEvaluationImpact(inputVariables[i], double.Parse(modelData[i]));
+          } else if (results[i] == QUALITY_IMPACT) {
+            model.SetVariableQualityImpact(inputVariables[i], double.Parse(modelData[i]));
+          } else throw new FormatException();
+        }
+      }
     }
 
-    private IEnumerable<ModelResult> GetModelResults(Model model, string[] modelData) {
-      return from i in Enumerable.Range(0, results.Count())
-             where results[i] != null
-             select new ModelResult(model, results[i], double.Parse(modelData[i]));
+    private void SetModelResults(HeuristicLab.Modeling.Model model, string[] modelData) {
+      model.TrainingMeanSquaredError = double.Parse(modelData[TRAINING_MSE]);
+      model.ValidationMeanSquaredError = double.Parse(modelData[VALIDATION_MSE]);
+      model.TestMeanSquaredError = double.Parse(modelData[TEST_MSE]);
+
+      model.TrainingCoefficientOfDetermination = double.Parse(modelData[TRAINING_R2]);
+      model.ValidationCoefficientOfDetermination = double.Parse(modelData[VALIDATION_R2]);
+      model.TestCoefficientOfDetermination = double.Parse(modelData[TEST_R2]);
+
+      model.TrainingMeanAbsolutePercentageError = double.Parse(modelData[TRAINING_MAPE]);
+      model.ValidationCoefficientOfDetermination = double.Parse(modelData[VALIDATION_MAPE]);
+      model.TestCoefficientOfDetermination = double.Parse(modelData[TEST_MAPE]);
+
+      model.TrainingMeanAbsolutePercentageOfRangeError = double.Parse(modelData[TRAINING_MAPRE]);
+      model.ValidationMeanAbsolutePercentageOfRangeError = double.Parse(modelData[VALIDATION_MAPRE]);
+      model.TestMeanAbsolutePercentageOfRangeError = double.Parse(modelData[TEST_MAPRE]);
+
+      model.TrainingVarianceAccountedFor = double.Parse(modelData[TRAINING_VAF]);
+      model.ValidationVarianceAccountedFor = double.Parse(modelData[VALIDATION_VAF]);
+      model.TestVarianceAccountedFor = double.Parse(modelData[TEST_VAF]);
     }
 
     private HeuristicLab.Core.IItem ParseModel(string dirName, string modelFileName, string algoName) {
