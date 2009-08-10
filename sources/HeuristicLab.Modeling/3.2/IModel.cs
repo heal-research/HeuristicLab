@@ -30,6 +30,12 @@ namespace HeuristicLab.Modeling {
     Dataset Dataset { get; }
     string TargetVariable { get; }
     IEnumerable<string> InputVariables { get; }
+    int TrainingSamplesStart { get; set; }
+    int TrainingSamplesEnd { get; set; }
+    int ValidationSamplesStart { get; set; }
+    int ValidationSamplesEnd { get; set; }
+    int TestSamplesStart { get; set; }
+    int TestSamplesEnd { get; set; }
     double TrainingMeanSquaredError { get; }
     double ValidationMeanSquaredError { get; }
     double TestMeanSquaredError { get; }

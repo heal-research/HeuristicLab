@@ -151,7 +151,7 @@ namespace HeuristicLab.LinearRegression {
       testMSE.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testMSE.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
       #endregion
-      
+
       #region R2
       CoefficientOfDeterminationEvaluator trainingR2 = new CoefficientOfDeterminationEvaluator();
       trainingR2.Name = "TrainingR2Evaluator";
@@ -289,6 +289,12 @@ namespace HeuristicLab.LinearRegression {
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+      model.TrainingSamplesStart = bestModelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
+      model.TrainingSamplesEnd = bestModelScope.GetVariableValue<IntData>("TrainingSamplesEnd", true).Data;
+      model.ValidationSamplesStart = bestModelScope.GetVariableValue<IntData>("ValidationSamplesStart", true).Data;
+      model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
+      model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
+      model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);

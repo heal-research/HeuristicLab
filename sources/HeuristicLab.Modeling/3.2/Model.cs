@@ -46,6 +46,13 @@ namespace HeuristicLab.Modeling {
       get { return inputVariables; }
     }
 
+    public int TrainingSamplesStart { get; set; }
+    public int TrainingSamplesEnd { get; set; }
+    public int ValidationSamplesStart { get; set; }
+    public int ValidationSamplesEnd { get; set; }
+    public int TestSamplesStart { get; set; }
+    public int TestSamplesEnd { get; set; }
+
     public void AddInputVariables(string variableName) {
       if (!inputVariables.Contains(variableName))
         inputVariables.Add(variableName);

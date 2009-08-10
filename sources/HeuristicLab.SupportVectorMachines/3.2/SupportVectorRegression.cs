@@ -161,7 +161,7 @@ namespace HeuristicLab.SupportVectorMachines {
       modelScopeCreator.GetVariableInfo("SubScopes").Local = true;
       modelScopeCreator.AddVariable(new HeuristicLab.Core.Variable("SubScopes", new IntData(1)));
       main.AddSubOperator(modelScopeCreator);
-      
+
       SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
       IOperator modelProcessor = CreateModelProcessor();
 
@@ -237,7 +237,7 @@ namespace HeuristicLab.SupportVectorMachines {
       ConditionalBranch nuBranch = new ConditionalBranch();
       nuBranch.Name = "NuLoop";
       nuBranch.GetVariableInfo("Condition").ActualName = "RepeatNuLoop";
-      
+
       nuBranch.AddSubOperator(nuLoop);
       nuLoop.AddSubOperator(nuBranch);
 
@@ -361,7 +361,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       progOp.Name = "Reset" + paramName;
       progOp.RemoveVariableInfo("Result");
       progOp.AddVariableInfo(new VariableInfo("Value", "Value", typeof(IntData), VariableKind.In | VariableKind.Out));
-      progOp.Code = "Value.Data = "+value+";";
+      progOp.Code = "Value.Data = " + value + ";";
       progOp.GetVariableInfo("Value").ActualName = paramName;
       return progOp;
     }
@@ -442,6 +442,12 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+      model.TrainingSamplesStart = bestModelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
+      model.TrainingSamplesEnd = bestModelScope.GetVariableValue<IntData>("TrainingSamplesEnd", true).Data;
+      model.ValidationSamplesStart = bestModelScope.GetVariableValue<IntData>("ValidationSamplesStart", true).Data;
+      model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
+      model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
+      model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);

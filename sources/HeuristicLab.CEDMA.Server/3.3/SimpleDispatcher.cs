@@ -42,11 +42,11 @@ namespace HeuristicLab.CEDMA.Server {
       public List<int> inputVariables;
     }
 
-    private Random random;    
+    private Random random;
     private Dictionary<int, List<AlgorithmConfiguration>> finishedAndDispatchedRuns;
 
     public SimpleDispatcher(IModelingDatabase database, Problem problem)
-      : base(database, problem) {      
+      : base(database, problem) {
       random = new Random();
       finishedAndDispatchedRuns = new Dictionary<int, List<AlgorithmConfiguration>>();
       PopulateFinishedRuns();
@@ -99,10 +99,11 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void PopulateFinishedRuns() {
       var dispatchedAlgos = from model in Database.GetAllModels()
-                            select new { 
-                              TargetVariable = model.TargetVariable.Name, 
-                              Algorithm = model.Algorithm.Name, 
-                              Inputvariables = Database.GetInputVariableResults(model).Select(x => x.Variable.Name).Distinct() };
+                            select new {
+                              TargetVariable = model.TargetVariable.Name,
+                              Algorithm = model.Algorithm.Name,
+                              Inputvariables = Database.GetInputVariableResults(model).Select(x => x.Variable.Name).Distinct()
+                            };
       foreach (var algo in dispatchedAlgos) {
         AddDispatchedRun(algo.TargetVariable, algo.Inputvariables, algo.Algorithm);
       }
@@ -143,8 +144,8 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void AddDispatchedRun(string targetVariable, IEnumerable<string> inputVariables, string algorithm) {
       AddDispatchedRun(
-        Problem.Dataset.GetVariableIndex(targetVariable), 
-        inputVariables.Select(x => Problem.Dataset.GetVariableIndex(x)).ToArray(), 
+        Problem.Dataset.GetVariableIndex(targetVariable),
+        inputVariables.Select(x => Problem.Dataset.GetVariableIndex(x)).ToArray(),
         algorithm);
     }
 

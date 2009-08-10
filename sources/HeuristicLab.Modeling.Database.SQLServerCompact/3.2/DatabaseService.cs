@@ -67,13 +67,6 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void Persist(HeuristicLab.Modeling.IAlgorithm algorithm) {
-      int trainingSamplesStart = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("TrainingSamplesStart", false)).Data;
-      int trainingSamplesEnd = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("TrainingSamplesEnd", false)).Data;
-      int validationSamplesStart = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("ValidationSamplesStart", false)).Data;
-      int validationSamplesEnd = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("ValidationSamplesEnd", false)).Data;
-      int testSamplesStart = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("TestSamplesStart", false)).Data;
-      int testSamplesEnd = ((IntData)algorithm.Engine.GlobalScope.GetVariableValue("TestSamplesEnd", false)).Data;
-
       GetOrCreateProblem(algorithm.Dataset);
       Dictionary<string, Variable> variables = GetAllVariables();
       Algorithm algo = GetOrCreateAlgorithm(algorithm.Name, algorithm.Description);
@@ -82,12 +75,12 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         model = new Model(target, algo);
-        model.TrainingSamplesStart = trainingSamplesStart;
-        model.TrainingSamplesEnd = trainingSamplesEnd;
-        model.ValidationSamplesStart = validationSamplesStart;
-        model.ValidationSamplesEnd = validationSamplesEnd;
-        model.TestSamplesStart = testSamplesStart;
-        model.TestSamplesEnd = testSamplesEnd;
+        model.TrainingSamplesStart = algorithm.Model.TrainingSamplesStart;
+        model.TrainingSamplesEnd = algorithm.Model.TrainingSamplesEnd;
+        model.ValidationSamplesStart = algorithm.Model.ValidationSamplesStart;
+        model.ValidationSamplesEnd = algorithm.Model.ValidationSamplesEnd;
+        model.TestSamplesStart = algorithm.Model.TestSamplesStart;
+        model.TestSamplesEnd = algorithm.Model.TestSamplesEnd;
 
         ctx.Models.InsertOnSubmit(model);
 
