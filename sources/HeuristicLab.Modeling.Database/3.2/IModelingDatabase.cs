@@ -26,6 +26,7 @@ using System.Text;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
+    void Persist(HeuristicLab.Modeling.IModel model, string algorithmName, string algorithmDescription);
     void Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
     IEnumerable<IModel> GetAllModels();
     IEnumerable<IResult> GetAllResults();

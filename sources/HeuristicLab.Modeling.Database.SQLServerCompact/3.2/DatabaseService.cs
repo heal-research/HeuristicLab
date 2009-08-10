@@ -68,50 +68,54 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     public void Persist(HeuristicLab.Modeling.IAlgorithm algorithm) {
       GetOrCreateProblem(algorithm.Dataset);
+      Persist(algorithm.Model, algorithm.Name, algorithm.Description);
+    }
+
+    public void Persist(HeuristicLab.Modeling.IModel model, string algorithmName, string algorithmDescription) {
       Dictionary<string, Variable> variables = GetAllVariables();
-      Algorithm algo = GetOrCreateAlgorithm(algorithm.Name, algorithm.Description);
-      Variable target = variables[algorithm.Model.TargetVariable];
-      Model model;
+      Algorithm algo = GetOrCreateAlgorithm(algorithmName, algorithmDescription);
+      Variable target = variables[model.TargetVariable];
+      Model m;
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        model = new Model(target, algo);
-        model.TrainingSamplesStart = algorithm.Model.TrainingSamplesStart;
-        model.TrainingSamplesEnd = algorithm.Model.TrainingSamplesEnd;
-        model.ValidationSamplesStart = algorithm.Model.ValidationSamplesStart;
-        model.ValidationSamplesEnd = algorithm.Model.ValidationSamplesEnd;
-        model.TestSamplesStart = algorithm.Model.TestSamplesStart;
-        model.TestSamplesEnd = algorithm.Model.TestSamplesEnd;
+        m = new Model(target, algo);
+        m.TrainingSamplesStart = model.TrainingSamplesStart;
+        m.TrainingSamplesEnd = model.TrainingSamplesEnd;
+        m.ValidationSamplesStart = model.ValidationSamplesStart;
+        m.ValidationSamplesEnd = model.ValidationSamplesEnd;
+        m.TestSamplesStart = model.TestSamplesStart;
+        m.TestSamplesEnd = model.TestSamplesEnd;
 
-        ctx.Models.InsertOnSubmit(model);
+        ctx.Models.InsertOnSubmit(m);
 
         ctx.SubmitChanges();
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        ctx.ModelData.InsertOnSubmit(new ModelData(model, PersistenceManager.SaveToGZip(algorithm.Model.Data)));
+        ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Data)));
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        foreach (string inputVariable in algorithm.Model.InputVariables) {
-          ctx.InputVariables.InsertOnSubmit(new InputVariable(model, variables[inputVariable]));
+        foreach (string inputVariable in model.InputVariables) {
+          ctx.InputVariables.InsertOnSubmit(new InputVariable(m, variables[inputVariable]));
         }
         ctx.SubmitChanges();
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         //get all double properties to save as modelResult
-        IEnumerable<PropertyInfo> modelResultInfos = algorithm.Model.GetType().GetProperties().Where(
+        IEnumerable<PropertyInfo> modelResultInfos = model.GetType().GetProperties().Where(
           info => info.PropertyType == typeof(double));
         foreach (PropertyInfo modelResultInfo in modelResultInfos) {
           Result result = GetOrCreateResult(modelResultInfo.Name);
-          double value = (double)modelResultInfo.GetValue(algorithm.Model, null);
-          ctx.ModelResults.InsertOnSubmit(new ModelResult(model, result, value));
+          double value = (double)modelResultInfo.GetValue(model, null);
+          ctx.ModelResults.InsertOnSubmit(new ModelResult(m, result, value));
         }
         ctx.SubmitChanges();
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        IEnumerable<MethodInfo> inputVariableResultInfos = algorithm.Model.GetType().GetMethods().Where(
+        IEnumerable<MethodInfo> inputVariableResultInfos = model.GetType().GetMethods().Where(
           info => info.GetParameters().Count() == 1 &&
              info.GetParameters()[0].ParameterType == typeof(string) &&
              info.GetParameters()[0].Name == "variableName" &&
@@ -120,13 +124,12 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         foreach (MethodInfo inputVariableResultInfo in inputVariableResultInfos) {
           Result result = GetOrCreateResult(inputVariableResultInfo.Name.Substring(3));
           foreach (InputVariable variable in ctx.InputVariables.Where(iv => iv.Model == model)) {
-            double value = (double)inputVariableResultInfo.Invoke(algorithm.Model, new object[] { variable.Variable.Name });
+            double value = (double)inputVariableResultInfo.Invoke(model, new object[] { variable.Variable.Name });
             ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, value));
           }
         }
         ctx.SubmitChanges();
       }
-
     }
 
     #region Problem
