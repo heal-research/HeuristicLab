@@ -135,8 +135,8 @@ namespace CedmaImporter {
       model.TestCoefficientOfDetermination = double.Parse(modelData[TEST_R2]);
 
       model.TrainingMeanAbsolutePercentageError = double.Parse(modelData[TRAINING_MAPE]);
-      model.ValidationCoefficientOfDetermination = double.Parse(modelData[VALIDATION_MAPE]);
-      model.TestCoefficientOfDetermination = double.Parse(modelData[TEST_MAPE]);
+      model.ValidationMeanAbsolutePercentageError = double.Parse(modelData[VALIDATION_MAPE]);
+      model.TestMeanAbsolutePercentageError = double.Parse(modelData[TEST_MAPE]);
 
       model.TrainingMeanAbsolutePercentageOfRangeError = double.Parse(modelData[TRAINING_MAPRE]);
       model.ValidationMeanAbsolutePercentageOfRangeError = double.Parse(modelData[VALIDATION_MAPRE]);
