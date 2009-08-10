@@ -32,8 +32,20 @@ using HeuristicLab.Modeling.Database.SQLServerCompact;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
-    private static readonly string sqlServerCompactFile = AppDomain.CurrentDomain.BaseDirectory + "HeuristicLab.Modeling.database.sdf";
-    private static readonly string sqlServerCompactConnectionString = @"Data Source=" + sqlServerCompactFile;
+    private static readonly string sqlServerCompactConnectionString = @"Data Source=";
+
+    private string database;
+    public string Database {
+      get {
+        return database;
+      }
+      set {
+        if (value != database) {
+          database = value;
+          results = null;
+        }
+      }
+    }
 
     private Results results;
     public Results Results {
@@ -55,7 +67,7 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private void ReloadResults() {
-      results = new Results(new DatabaseService(sqlServerCompactConnectionString));
+      results = new Results(new DatabaseService(sqlServerCompactConnectionString + Database));
     }
   }
 }

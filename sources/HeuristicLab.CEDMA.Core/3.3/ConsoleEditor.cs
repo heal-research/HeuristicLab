@@ -33,11 +33,14 @@ namespace HeuristicLab.CEDMA.Core {
   class ConsoleEditor : EditorBase {
     private ComboBox viewComboBox;
     private Button resultsButton;
+    private Button openButton;
     private Console console;
 
     public ConsoleEditor(Console console) {
       InitializeComponent();
       this.console = console;
+      resultsButton.Enabled = false;
+      viewComboBox.Enabled = false;
       PopulateViewComboBox();
     }
 
@@ -45,21 +48,20 @@ namespace HeuristicLab.CEDMA.Core {
     private void InitializeComponent() {
       this.viewComboBox = new System.Windows.Forms.ComboBox();
       this.resultsButton = new System.Windows.Forms.Button();
+      this.openButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // viewComboBox
       // 
-      this.viewComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.viewComboBox.FormattingEnabled = true;
-      this.viewComboBox.Location = new System.Drawing.Point(3, 3);
+      this.viewComboBox.Location = new System.Drawing.Point(0, 29);
       this.viewComboBox.Name = "viewComboBox";
       this.viewComboBox.Size = new System.Drawing.Size(121, 21);
       this.viewComboBox.TabIndex = 7;
       // 
       // resultsButton
       // 
-      this.resultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resultsButton.Location = new System.Drawing.Point(130, 1);
+      this.resultsButton.Location = new System.Drawing.Point(127, 27);
       this.resultsButton.Name = "resultsButton";
       this.resultsButton.Size = new System.Drawing.Size(86, 23);
       this.resultsButton.TabIndex = 6;
@@ -67,13 +69,24 @@ namespace HeuristicLab.CEDMA.Core {
       this.resultsButton.UseVisualStyleBackColor = true;
       this.resultsButton.Click += new System.EventHandler(this.resultsButton_Click);
       // 
+      // openButton
+      // 
+      this.openButton.Location = new System.Drawing.Point(4, 0);
+      this.openButton.Name = "openButton";
+      this.openButton.Size = new System.Drawing.Size(75, 23);
+      this.openButton.TabIndex = 8;
+      this.openButton.Text = "Open...";
+      this.openButton.UseVisualStyleBackColor = true;
+      this.openButton.Click += new System.EventHandler(this.openButton_Click);
+      // 
       // ConsoleEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Controls.Add(this.openButton);
       this.Controls.Add(this.viewComboBox);
       this.Controls.Add(this.resultsButton);
       this.Name = "ConsoleEditor";
-      this.Size = new System.Drawing.Size(445, 189);
+      this.Size = new System.Drawing.Size(224, 112);
       this.ResumeLayout(false);
 
     }
@@ -92,6 +105,16 @@ namespace HeuristicLab.CEDMA.Core {
       IResultsViewFactory factory = (IResultsViewFactory)viewComboBox.SelectedItem;
       IControl control = factory.CreateView(console.Results);
       PluginManager.ControlManager.ShowControl(control);
+    }
+
+    private void openButton_Click(object sender, EventArgs e) {
+      OpenFileDialog dialog = new OpenFileDialog();
+      DialogResult result = dialog.ShowDialog();
+      if (result == DialogResult.OK) {
+        viewComboBox.Enabled = true;
+        resultsButton.Enabled = true;
+        console.Database = dialog.FileName;
+      }
     }
   }
 }
