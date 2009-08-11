@@ -245,7 +245,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm-3.2",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MainForm.Test-3.2", "HeuristicLab.MainForm.Test\3.2\HeuristicLab.MainForm.Test-3.2.csproj", "{569E430B-B4CE-4B94-A44E-6246B6E4E3BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common.Resources", "HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources.csproj", "{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common.Resources-3.2", "HeuristicLab.Common.Resources\3.2\HeuristicLab.Common.Resources-3.2.csproj", "{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
