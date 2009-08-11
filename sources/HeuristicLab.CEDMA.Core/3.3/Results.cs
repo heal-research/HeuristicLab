@@ -93,6 +93,7 @@ namespace HeuristicLab.CEDMA.Core {
         }
         modelEntry.Set("PersistedData", database.GetModelData(model));
         modelEntry.Set("TargetVariable", model.TargetVariable.Name);
+        modelEntry.Set("Algorithm", model.Algorithm.Name);
         Dictionary<HeuristicLab.Modeling.Database.IVariable, ResultsEntry> inputVariableResultsEntries =
           new Dictionary<HeuristicLab.Modeling.Database.IVariable, ResultsEntry>();
 
@@ -122,7 +123,7 @@ namespace HeuristicLab.CEDMA.Core {
 
     private void LoadModelAttributes() {
       ordinalVariables = database.GetAllResults().Select(r => r.Name).ToArray();
-      categoricalVariables = new string[] { "TargetVariable" };
+      categoricalVariables = new string[] { "TargetVariable", "Algorithm" };
     }
 
     public double IndexOfCategoricalValue(string variable, object value) {

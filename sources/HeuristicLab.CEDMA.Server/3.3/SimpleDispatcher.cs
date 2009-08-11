@@ -59,7 +59,7 @@ namespace HeuristicLab.CEDMA.Server {
       switch (problem.LearningTask) {
         case LearningTask.Regression: {
             var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
-            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, regressionAlgos); //  ?? ChooseStochastic(regressionAlgos);
+            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, regressionAlgos) ?? ChooseStochastic(regressionAlgos);
             break;
           }
         case LearningTask.Classification: {

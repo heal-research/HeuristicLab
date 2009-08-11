@@ -93,6 +93,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Data)));
+        ctx.SubmitChanges();
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
@@ -123,7 +124,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
              info.Name.StartsWith("Get"));
         foreach (MethodInfo inputVariableResultInfo in inputVariableResultInfos) {
           Result result = GetOrCreateResult(inputVariableResultInfo.Name.Substring(3));
-          foreach (InputVariable variable in ctx.InputVariables.Where(iv => iv.Model == model)) {
+          foreach (InputVariable variable in ctx.InputVariables.Where(iv => iv.Model == m)) {
             double value = (double)inputVariableResultInfo.Invoke(model, new object[] { variable.Variable.Name });
             ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, value));
           }
