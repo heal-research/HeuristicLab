@@ -37,11 +37,27 @@ namespace HeuristicLab.MainForm {
       InitializeComponent();
       this.view = view;      
       if (View != null) {
-        Control control = (Control)View;
-        control.Dock = DockStyle.Fill;
-        viewPanel.Controls.Add(control);
-        View.CaptionChanged += new EventHandler(View_CaptionChanged);
-        UpdateText();
+        if (view is UserControl) {
+          switch (((UserControl)view).Dock) {
+            case DockStyle.Left:
+              this.ShowHint = DockState.DockLeft;
+              break;
+            case DockStyle.Right:
+              this.ShowHint = DockState.DockRight;
+              break;
+            case DockStyle.Top:
+              this.ShowHint = DockState.DockTop;
+              break;
+            case DockStyle.Bottom:
+              this.ShowHint = DockState.DockBottom;
+              break;
+          }
+          Control control = (Control)View;
+          control.Dock = DockStyle.Fill;
+          viewPanel.Controls.Add(control);
+          View.CaptionChanged += new EventHandler(View_CaptionChanged);
+          UpdateText();
+        }
       } else {
         Label errorLabel = new Label();
         errorLabel.Name = "errorLabel";
