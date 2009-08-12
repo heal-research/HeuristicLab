@@ -31,6 +31,7 @@ namespace HeuristicLab.Modeling.Database {
     IEnumerable<IModel> GetAllModels();
     IEnumerable<IResult> GetAllResults();
     IEnumerable<IResult> GetAllResultsForInputVariables();
+    IEnumerable<IAlgorithm> GetAllAlgorithms();
     IEnumerable<IModelResult> GetModelResults(IModel model);
     byte[] GetModelData(IModel model);
     IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model);

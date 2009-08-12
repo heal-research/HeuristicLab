@@ -190,6 +190,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
       return algorithm;
     }
+
+    public IEnumerable<IAlgorithm> GetAllAlgorithms() {
+      return ctx.Algorithms.ToList().Cast<IAlgorithm>();
+    }
     #endregion
 
     #region Variables
