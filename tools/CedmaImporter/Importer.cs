@@ -84,7 +84,7 @@ namespace CedmaImporter {
 
     private void ImportAllModels(string dirName, StreamReader reader, IModelingDatabase database) {
       while (!reader.EndOfStream) {
-        string[] modelData = reader.ReadLine().Split(';').Select(x => x.Trim()).ToArray();
+        string[] modelData = reader.ReadLine().Split(';','\t').Select(x => x.Trim()).ToArray();
         int id = int.Parse(modelData[ID_COLUMN]);
         string targetVariableName = modelData[TARGETVARIABLE_COLUMN].Trim();
         string algoName = modelData[ALGORITHM_COLUMN].Trim();
