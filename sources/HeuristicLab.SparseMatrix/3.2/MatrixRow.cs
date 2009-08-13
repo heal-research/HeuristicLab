@@ -20,32 +20,21 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using HeuristicLab.Core;
 
-namespace HeuristicLab.SparseMatrix {   
-  public class SparseMatrix : ItemBase {
-    public SparseMatrix() {
-      this.rows = new List<SparseMatrixRow>();
+namespace HeuristicLab.SparseMatrix {
+  public class MatrixRow {
+    private Dictionary<string, object> values;
+    public MatrixRow() {
+      values = new Dictionary<string, object>();
+    } 
+
+    public void Set(string name, object value) {
+      values.Add(name, value);
     }
 
-    public SparseMatrix(IEnumerable<SparseMatrixRow> rows)
-      : this() {
-      this.rows.AddRange(rows);
+    public object Get(string name) {
+      if (name == null || !values.ContainsKey(name)) return null;
+      return values[name];
     }
-
-    private List<SparseMatrixRow> rows;
-    public ReadOnlyCollection<SparseMatrixRow> GetRows() {
-      return rows.AsReadOnly();
-    }
-
-    public void AddRow(SparseMatrixRow row) {
-      this.rows.Add(row);
-    }
-
-    public void RemoveRow(SparseMatrixRow row) {
-      this.rows.Remove(row);
-    }
-    
   }
 }

@@ -81,8 +81,8 @@
   <ItemGroup>
     <Compile Include="HeuristicLabSparseMatrixPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SparseMatrix.cs" />
-    <Compile Include="SparseMatrixRow.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="MatrixRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
