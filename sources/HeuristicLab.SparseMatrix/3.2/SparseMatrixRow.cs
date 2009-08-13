@@ -19,16 +19,22 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SparseMatrix {
-  [ClassInfo(Name = "HeuristicLab.SparseMatrix-3.2")]
-  [PluginFile(Filename = "HeuristicLab.SparseMatrix-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]  
-  public class HeuristicLabSparseMatrixPlugin : PluginBase {
+  public class SparseMatrixRow {
+    private Dictionary<string, object> values;
+    public SparseMatrixRow() {
+      values = new Dictionary<string, object>();
+    } 
+
+    public void Set(string name, object value) {
+      values.Add(name, value);
+    }
+
+    public object Get(string name) {
+      if (name == null || !values.ContainsKey(name)) return null;
+      return values[name];
+    }
   }
 }
