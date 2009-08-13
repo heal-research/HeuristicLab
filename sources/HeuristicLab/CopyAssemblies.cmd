@@ -107,6 +107,7 @@ copy "%SolutionDir%\HeuristicLab.SGA\3.2\%Outdir%\HeuristicLab.SGA-3.2.dll" .\pl
 copy "%SolutionDir%\HeuristicLab.SGA\3.3\%Outdir%\HeuristicLab.SGA-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.FixedOperators\3.2\%Outdir%\HeuristicLab.FixedOperators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\3.2\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.SparseMatrix\3.2\%Outdir%\HeuristicLab.SparseMatrix-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite.NET.chm" .\plugins
