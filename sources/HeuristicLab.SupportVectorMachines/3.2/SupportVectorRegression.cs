@@ -68,7 +68,7 @@ namespace HeuristicLab.SupportVectorMachines {
       }
     }
 
-    public IModel Model {
+    public IAnalyzerModel Model {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
         IScope bestModelScope = engine.GlobalScope.SubScopes[0];
@@ -420,8 +420,8 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
 
-    protected internal virtual Model CreateSVMModel(IScope bestModelScope) {
-      Model model = new Model();
+    protected internal virtual IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
+      AnalyzerModel model = new AnalyzerModel();
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
@@ -438,7 +438,6 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
 
-      model.Data = bestModelScope.GetVariableValue<SVMModel>("Model", false);
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
@@ -448,6 +447,8 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
       model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
       model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
+      model.Predictor = new Predictor(bestModelScope.GetVariableValue<SVMModel>("Model", false), model.TargetVariable);
+
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
@@ -455,13 +456,13 @@ Value.Data = ValueList.Data[ValueIndex.Data];
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
 
       return model;

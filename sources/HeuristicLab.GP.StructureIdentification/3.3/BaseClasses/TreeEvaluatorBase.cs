@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.GP.Interfaces;
+using System.Xml;
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>
@@ -31,8 +32,9 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// </summary>
   public abstract class TreeEvaluatorBase : ItemBase, ITreeEvaluator {
     protected const double EPSILON = 1.0e-7;
-    protected double maxValue;
-    protected double minValue;
+    protected double maxValue = double.MaxValue;
+    protected double minValue = double.MinValue;
+    private double punishmentFactor = 10.0; // we should provide a view for treeevaluators that allows to change this value
 
     protected class Instr {
       public double d_arg0;
@@ -47,19 +49,22 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected Dataset dataset;
     protected int sampleIndex;
 
-    public void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, double punishmentFactor, IFunctionTree functionTree) {
+    public void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree) {
       this.dataset = dataset;
-      // calculate upper and lower bounds for the estimated value (mean +/- punishmentFactor * range)
-      double mean = dataset.GetMean(targetVariable, start, end);
-      double range = dataset.GetRange(targetVariable, start, end);
-      maxValue = mean + punishmentFactor * range;
-      minValue = mean - punishmentFactor * range;
-
       codeArr = new Instr[functionTree.GetSize()];
       int i = 0;
       foreach (IFunctionTree tree in IteratePrefix(functionTree)) {
         codeArr[i++] = TranslateToInstr(tree);
       }
+    }
+
+    public void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, IFunctionTree functionTree) {
+      // calculate upper and lower bounds for the estimated value (mean +/- punishmentFactor * range)
+      double mean = dataset.GetMean(targetVariable, start, end);
+      double range = dataset.GetRange(targetVariable, start, end);
+      maxValue = mean + punishmentFactor * range;
+      minValue = mean - punishmentFactor * range;
+      PrepareForEvaluation(dataset, functionTree);
     }
 
     private IEnumerable<IFunctionTree> IteratePrefix(IFunctionTree functionTree) {
@@ -117,5 +122,35 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected abstract double EvaluateBakedCode();
+
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      TreeEvaluatorBase clone = (TreeEvaluatorBase)base.Clone(clonedObjects);
+      clone.maxValue = maxValue;
+      clone.minValue = minValue;
+      clone.punishmentFactor = punishmentFactor;
+      return clone;
+    }
+
+    public override System.Xml.XmlNode GetXmlNode(string name, System.Xml.XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      XmlAttribute maxValueAttribute = document.CreateAttribute("MaxPredictionValue");
+      XmlAttribute minValueAttribute = document.CreateAttribute("MinPredictionValue");
+      XmlAttribute punishmentFactorAttribute = document.CreateAttribute("PunishmentFactor");
+      maxValueAttribute.Value = XmlConvert.ToString(maxValue);
+      minValueAttribute.Value = XmlConvert.ToString(minValue);
+      punishmentFactorAttribute.Value = XmlConvert.ToString(punishmentFactor);
+
+      node.Attributes.Append(punishmentFactorAttribute);
+      node.Attributes.Append(minValueAttribute);
+      node.Attributes.Append(maxValueAttribute);
+      return node;
+    }
+
+    public override void Populate(System.Xml.XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      minValue = XmlConvert.ToDouble(node.Attributes["MinPredictionValue"].Value);
+      maxValue = XmlConvert.ToDouble(node.Attributes["MaxPredictionValue"].Value);
+      punishmentFactor = XmlConvert.ToDouble(node.Attributes["PunishmentFactor"].Value);
+    }
   }
 }

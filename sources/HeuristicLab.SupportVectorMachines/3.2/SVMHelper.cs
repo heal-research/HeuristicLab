@@ -36,7 +36,7 @@ namespace HeuristicLab.SupportVectorMachines {
           if (!skippedFeatures.Contains(col) && col!=targetVariable) {
             double value = dataset.GetValue(start + row, col);
             if (!double.IsNaN(value))
-              tempRow.Add(new SVM.Node(col, value));
+              tempRow.Add(new SVM.Node(col + 1, value));
           }
         }
         if (!double.IsNaN(dataset.GetValue(start + row, targetVariable))) {

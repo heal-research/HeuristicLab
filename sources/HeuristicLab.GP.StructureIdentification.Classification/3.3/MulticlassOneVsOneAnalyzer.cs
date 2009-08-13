@@ -83,7 +83,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>(BESTMODELL, bestScope, true);
 
         ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>(TREEEVALUATOR, bestScope, true);
-        evaluator.PrepareForEvaluation(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, 1.0, gpModel.FunctionTree);
+        evaluator.PrepareForEvaluation(dataset, targetVariable, trainingSamplesStart, trainingSamplesEnd, gpModel.FunctionTree);
         for(int i = 0; i < (samplesEnd - samplesStart); i++) {
           double est = evaluator.Evaluate(i + samplesStart);
           if(est < 0.5) {

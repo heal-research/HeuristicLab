@@ -48,6 +48,7 @@ namespace CedmaDatabaseMerger {
       if (!string.IsNullOrEmpty(importFileName)) {
         importButton.Enabled = false;
         BackgroundWorker worker = new BackgroundWorker();
+        worker.WorkerReportsProgress = true;
         worker.DoWork += CreateDoWorkDelegate(worker, importFileName);
         worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
         worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
@@ -69,40 +70,45 @@ namespace CedmaDatabaseMerger {
         DatabaseService destiationDatabase = new DatabaseService("Data Source=" + destinationFile);
         DatabaseService sourceDatabase = new DatabaseService("Data Source=" + importFileName);
 
+        sourceDatabase.Connect();
         var models = sourceDatabase.GetAllModels();
+        var sourceDataset = sourceDatabase.GetDataset();
         int importCount = 0;
         foreach (HeuristicLab.Modeling.Database.IModel m in models) {
-          HeuristicLab.Modeling.Model model = new HeuristicLab.Modeling.Model();
+
+          HeuristicLab.Modeling.IAnalyzerModel model = new AnalyzerModel();
+          model.Predictor = (HeuristicLab.Modeling.IPredictor)PersistenceManager.RestoreFromGZip(sourceDatabase.GetModelData(m));
           model.TargetVariable = m.TargetVariable.Name;
-          model.Data = (IItem)PersistenceManager.RestoreFromGZip(sourceDatabase.GetModelData(m));
-          model.Dataset = sourceDatabase.GetDataset();
+          model.Dataset = sourceDataset;
           model.TrainingSamplesStart = m.TrainingSamplesStart;
           model.TrainingSamplesEnd = m.TrainingSamplesEnd;
           model.ValidationSamplesStart = m.ValidationSamplesStart;
           model.ValidationSamplesEnd = m.ValidationSamplesEnd;
           model.TestSamplesStart = m.TestSamplesStart;
           model.TestSamplesEnd = m.TestSamplesEnd;
+          model.Predictor.Predict(sourceDataset, 10, 20);
           //get all double properties to save as modelResult
           IEnumerable<PropertyInfo> modelResultInfos = model.GetType().GetProperties().Where(
             info => info.PropertyType == typeof(double));
           var modelResults = sourceDatabase.GetModelResults(m);
           foreach (IModelResult result in modelResults) {
-            PropertyInfo matchingPropInfo = modelResultInfos.First(x=>x.Name == result.Result.Name);
-            if(matchingPropInfo!=null) matchingPropInfo.SetValue(model, result.Value, null);
+            PropertyInfo matchingPropInfo = modelResultInfos.First(x => x.Name == result.Result.Name);
+            if (matchingPropInfo != null) matchingPropInfo.SetValue(model, result.Value, null);
           }
           var inputVariableResults = sourceDatabase.GetInputVariableResults(m);
           foreach (IInputVariableResult result in inputVariableResults) {
-            model.AddInputVariables(result.Variable.Name);
+            model.AddInputVariable(result.Variable.Name);
             if (result.Result.Name == "VariableEvaluationImpact") {
               model.SetVariableEvaluationImpact(result.Variable.Name, result.Value);
             } else if (result.Result.Name == "VariableQualityImpact") {
               model.SetVariableQualityImpact(result.Variable.Name, result.Value);
             } else throw new FormatException();
           }
-          
+
           destiationDatabase.Persist(model, m.Algorithm.Name, m.Algorithm.Description);
           worker.ReportProgress((++importCount * 100) / models.Count());
         }
+        sourceDatabase.Disconnect();
       };
     }
   }

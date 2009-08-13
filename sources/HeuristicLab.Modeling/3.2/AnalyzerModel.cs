@@ -26,7 +26,9 @@ using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-  public class Model : IModel {
+  public class AnalyzerModel : IAnalyzerModel {
+    public AnalyzerModel() { } // for persistence
+
     #region IModel Members
 
     private Dataset dataset;
@@ -53,7 +55,7 @@ namespace HeuristicLab.Modeling {
     public int TestSamplesStart { get; set; }
     public int TestSamplesEnd { get; set; }
 
-    public void AddInputVariables(string variableName) {
+    public void AddInputVariable(string variableName) {
       if (!inputVariables.Contains(variableName))
         inputVariables.Add(variableName);
     }
@@ -146,11 +148,7 @@ namespace HeuristicLab.Modeling {
       else throw new ArgumentException("Impact of variable " + variableName + " is not available.");
     }
 
-    private IItem data;
-    public IItem Data {
-      get { return data; }
-      set { data = value; }
-    }
+    public IPredictor Predictor { get; set; }
 
     #endregion
 

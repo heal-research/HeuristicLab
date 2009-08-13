@@ -109,7 +109,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       MaxTreeHeight = 10;
       FullTreeShakingFactor = 0.1;
       OnePointShakingFactor = 1.0;
-      PunishmentFactor = 10.0;
       UseEstimatedTargetValue = false;
       SetSeedRandomly = true;
     }
@@ -336,8 +335,8 @@ scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions
       return loggingOperator;
     }
 
-    protected internal override Model CreateGPModel(IScope bestModelScope) {
-      Model model = base.CreateGPModel(bestModelScope);
+    protected internal override IAnalyzerModel CreateGPModel(IScope bestModelScope) {
+      IAnalyzerModel model = base.CreateGPModel(bestModelScope);
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
       model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
       model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;

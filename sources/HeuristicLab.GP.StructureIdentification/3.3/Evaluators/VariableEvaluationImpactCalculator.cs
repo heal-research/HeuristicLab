@@ -32,7 +32,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("TreeEvaluator", "The evaluator that should be used to evaluate the expression tree", typeof(ITreeEvaluator), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
     }
 
 
@@ -40,7 +39,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
       IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
-      evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, punishmentFactor, gpModel.FunctionTree);
+      evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, gpModel.FunctionTree);
 
       double[] result = new double[end - start];
       for (int i = start; i < end; i++) {

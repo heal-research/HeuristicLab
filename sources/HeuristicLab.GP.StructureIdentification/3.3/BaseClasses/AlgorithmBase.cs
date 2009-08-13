@@ -69,8 +69,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
-    private IModel model;
-    public virtual IModel Model {
+    private IAnalyzerModel model;
+    public virtual IAnalyzerModel Model {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
         if (model == null) {
@@ -101,11 +101,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       set { GetVariableInjector().GetVariable("Parents").GetValue<IntData>().Data = value; }
     }
 
-    public virtual double PunishmentFactor {
-      get { return GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value; }
-    }
-
     public virtual bool UseEstimatedTargetValue {
       get { return GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data; }
       set { GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data = value; }
@@ -131,7 +126,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       MaxTreeSize = 100;
       MaxTreeHeight = 10;
       Parents = 2000;
-      PunishmentFactor = 10;
       UseEstimatedTargetValue = false;
     }
 
@@ -211,7 +205,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       injector.AddVariable(new HeuristicLab.Core.Variable("EvaluatedSolutions", new IntData(0)));
       injector.AddVariable(new HeuristicLab.Core.Variable("TotalEvaluatedNodes", new DoubleData(0)));
       injector.AddVariable(new HeuristicLab.Core.Variable("Parents", new IntData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("TreeEvaluator", new HL2TreeEvaluator()));
       return injector;
@@ -415,11 +408,13 @@ namespace HeuristicLab.GP.StructureIdentification {
       return childCreater;
     }
 
-    protected internal virtual Model CreateGPModel(IScope bestModelScope) {
+    protected internal virtual IAnalyzerModel CreateGPModel(IScope bestModelScope) {
       Engine.GlobalScope.AddSubScope(bestModelScope);
-      Model model = new Model();
+      IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
+      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", false);
+      IAnalyzerModel model = new AnalyzerModel();
+      model.Predictor = new Predictor(evaluator, tree);
       Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
-      model.Data = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
       model.TrainingSamplesStart = bestModelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
@@ -449,13 +444,13 @@ namespace HeuristicLab.GP.StructureIdentification {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
       Engine.GlobalScope.RemoveSubScope(bestModelScope);
       return model;

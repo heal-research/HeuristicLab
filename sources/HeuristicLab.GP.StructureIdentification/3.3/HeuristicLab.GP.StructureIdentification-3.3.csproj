@@ -84,6 +84,7 @@
     <Compile Include="BaseClasses\AlgorithmBase.cs" />
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <Compile Include="Predictor.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
     <Compile Include="HL3TreeEvaluator.cs" />
     <Compile Include="Symbols\Addition.cs" />

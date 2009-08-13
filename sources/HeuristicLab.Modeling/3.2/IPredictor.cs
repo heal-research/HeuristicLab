@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,14 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
-using HeuristicLab.GP.Interfaces;
 
-namespace HeuristicLab.GP.StructureIdentification {
-  public interface ITreeEvaluator : IItem {
-    void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, IFunctionTree functionTree);
-    void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree);
-    double Evaluate(int sampleIndex);
-  }
+namespace HeuristicLab.Modeling {
+  public interface IPredictor : IItem {
+    double[] Predict(Dataset dataset, int start, int end);
+  } 
 }

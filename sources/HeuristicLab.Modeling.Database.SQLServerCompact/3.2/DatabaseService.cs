@@ -71,7 +71,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       Persist(algorithm.Model, algorithm.Name, algorithm.Description);
     }
 
-    public void Persist(HeuristicLab.Modeling.IModel model, string algorithmName, string algorithmDescription) {
+    public void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
       Dictionary<string, Variable> variables = GetAllVariables();
       Algorithm algo = GetOrCreateAlgorithm(algorithmName, algorithmDescription);
       Variable target = variables[model.TargetVariable];
@@ -92,7 +92,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Data)));
+        ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(model.Predictor)));
         ctx.SubmitChanges();
       }
 

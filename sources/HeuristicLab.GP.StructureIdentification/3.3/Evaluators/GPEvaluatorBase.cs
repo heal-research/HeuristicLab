@@ -32,7 +32,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("PunishmentFactor", "Punishment factor for invalid estimations", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TotalEvaluatedNodes", "Number of evaluated nodes", typeof(DoubleData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training samples in dataset", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training samples in dataset", typeof(IntData), VariableKind.In));
@@ -46,7 +45,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
       double totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
       int trainingStart = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int trainingEnd = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
@@ -54,7 +52,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
-      evaluator.PrepareForEvaluation(dataset, targetVariable, trainingStart, trainingEnd, punishmentFactor, gpModel.FunctionTree);
+      evaluator.PrepareForEvaluation(dataset, targetVariable, trainingStart, trainingEnd, gpModel.FunctionTree);
 
       double[] backupValues = null;
       // prepare for autoregressive modelling by saving the original values of the target-variable to a backup array

@@ -8,6 +8,7 @@ using HeuristicLab.GP;
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.GP.StructureIdentification;
 using System.Diagnostics;
+using HeuristicLab.Modeling;
 
 namespace CedmaImporter {
   public class Importer {
@@ -61,6 +62,7 @@ namespace CedmaImporter {
         reader.ReadLine();
         ImportAllModels(dirName, reader, database);
       }
+      database.Disconnect();
     }
 
     private void ReadResultsAndInputVariables(StreamReader reader, IModelingDatabase database) {
@@ -89,7 +91,7 @@ namespace CedmaImporter {
         string targetVariableName = modelData[TARGETVARIABLE_COLUMN].Trim();
         string algoName = modelData[ALGORITHM_COLUMN].Trim();
         try {
-          HeuristicLab.Modeling.Model model = new HeuristicLab.Modeling.Model();
+          HeuristicLab.Modeling.IAnalyzerModel model = new AnalyzerModel();
           model.TargetVariable = targetVariableName;
           model.Dataset = problem.Dataset;
           model.TrainingSamplesStart = problem.TrainingSamplesStart;
@@ -99,12 +101,10 @@ namespace CedmaImporter {
           model.TestSamplesStart = problem.TestSamplesStart;
           model.TestSamplesEnd = problem.TestSamplesEnd;
 
-
-          model.Data = ParseModel(dirName, modelData[FILENAME_COLUMN].Trim(), algoName);
-
           SetModelResults(model, modelData);
           SetInputVariableResults(model, modelData);
 
+          model.Predictor = CreatePredictor(targetVariableName, dirName, modelData[FILENAME_COLUMN].Trim(), algoName);
           database.Persist(model, algoName, null);
         }
         catch (Exception ex) {
@@ -112,10 +112,10 @@ namespace CedmaImporter {
       }
     }
 
-    private void SetInputVariableResults(HeuristicLab.Modeling.Model model, string[] modelData) {
+    private void SetInputVariableResults(HeuristicLab.Modeling.IAnalyzerModel model, string[] modelData) {
       for (int i = VARIABLE_IMPACTS; i < modelData.Length; i++) {
         if (!string.IsNullOrEmpty(modelData[i])) {
-          model.AddInputVariables(inputVariables[i]);
+          model.AddInputVariable(inputVariables[i]);
           if (results[i] == EVALUATION_IMPACT) {
             model.SetVariableEvaluationImpact(inputVariables[i], double.Parse(modelData[i]));
           } else if (results[i] == QUALITY_IMPACT) {
@@ -125,7 +125,7 @@ namespace CedmaImporter {
       }
     }
 
-    private void SetModelResults(HeuristicLab.Modeling.Model model, string[] modelData) {
+    private void SetModelResults(HeuristicLab.Modeling.IAnalyzerModel model, string[] modelData) {
       model.TrainingMeanSquaredError = double.Parse(modelData[TRAINING_MSE]);
       model.ValidationMeanSquaredError = double.Parse(modelData[VALIDATION_MSE]);
       model.TestMeanSquaredError = double.Parse(modelData[TEST_MSE]);
@@ -147,22 +147,22 @@ namespace CedmaImporter {
       model.TestVarianceAccountedFor = double.Parse(modelData[TEST_VAF]);
     }
 
-    private HeuristicLab.Core.IItem ParseModel(string dirName, string modelFileName, string algoName) {
+    private HeuristicLab.Modeling.IPredictor CreatePredictor(string targetVariable, string dirName, string modelFileName, string algoName) {
       foreach (char c in Path.GetInvalidFileNameChars()) {
         modelFileName = modelFileName.Replace(c, '_');
       }
       if (algoName == "SupportVectorRegression") {
-        HeuristicLab.Data.SVMModel model = new HeuristicLab.Data.SVMModel();
+        HeuristicLab.SupportVectorMachines.SVMModel model = new HeuristicLab.SupportVectorMachines.SVMModel();
         model.Model = SVM.Model.Read(Path.Combine(dirName, modelFileName) + ".svm.model.txt");
         model.RangeTransform = SVM.RangeTransform.Read(Path.Combine(dirName, modelFileName) + ".svm.transform.txt");
-        return model;
+        return new HeuristicLab.SupportVectorMachines.Predictor(model, targetVariable);
       } else {
         SymbolicExpressionImporter sexpImporter = new SymbolicExpressionImporter();
         GeneticProgrammingModel model = new GeneticProgrammingModel();
         using (StreamReader reader = File.OpenText(Path.Combine(dirName, modelFileName) + ".gp.txt")) {
           model.FunctionTree = sexpImporter.Import(reader);
         }
-        return model;
+        return new HeuristicLab.GP.StructureIdentification.Predictor(new HL2TreeEvaluator(), model);
       }
     }
   }

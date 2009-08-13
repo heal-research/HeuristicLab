@@ -86,9 +86,6 @@ namespace HeuristicLab.CEDMA.Server {
           Dataset dataset = (Dataset)problem.Dataset;
           dataset.Rows = parser.Rows;
           dataset.Columns = parser.Columns;
-          for (int i = 0; i < parser.VariableNames.Length; i++) {
-            dataset.SetVariableName(i, parser.VariableNames[i]);
-          }
           dataset.Name = parser.ProblemName;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
@@ -101,6 +98,10 @@ namespace HeuristicLab.CEDMA.Server {
           problem.ValidationSamplesEnd = parser.ValidationSamplesEnd;
           problem.TestSamplesStart = parser.TestSamplesStart;
           problem.TestSamplesEnd = parser.TestSamplesEnd;
+          for (int i = 0; i < parser.VariableNames.Length; i++) {
+            dataset.SetVariableName(i, parser.VariableNames[i]);
+          }
+
           problem.FireChanged();
           Refresh();
         }

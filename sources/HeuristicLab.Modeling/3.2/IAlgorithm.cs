@@ -33,6 +33,6 @@ namespace HeuristicLab.Modeling {
     Dataset Dataset { get; set; }
     int TargetVariable { get; set; }
     IEngine Engine { get; }
-    IModel Model { get; }
+    IAnalyzerModel Model { get; }
   }
 }

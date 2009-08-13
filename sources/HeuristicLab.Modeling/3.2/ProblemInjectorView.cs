@@ -95,9 +95,6 @@ namespace HeuristicLab.Modeling {
           Dataset dataset = (Dataset)ProblemInjector.GetVariable("Dataset").Value;
           dataset.Rows = parser.Rows;
           dataset.Columns = parser.Columns;
-          for (int i = 0; i < parser.VariableNames.Length; i++) {
-            dataset.SetVariableName(i, parser.VariableNames[i]);
-          }
           dataset.Name = parser.ProblemName;
           dataset.Samples = new double[dataset.Rows * dataset.Columns];
           Array.Copy(parser.Samples, dataset.Samples, dataset.Columns * dataset.Rows);
@@ -109,6 +106,10 @@ namespace HeuristicLab.Modeling {
           TrySetVariable("TestSamplesStart", parser.TestSamplesStart);
           TrySetVariable("TestSamplesEnd", parser.TestSamplesEnd);
           TrySetVariable("TargetVariable", parser.TargetVariable);
+
+          for (int i = 0; i < parser.VariableNames.Length; i++) {
+            dataset.SetVariableName(i, parser.VariableNames[i]);
+          }
 
           IVariable var = ProblemInjector.GetVariable("AllowedFeatures");
           if (var != null) {

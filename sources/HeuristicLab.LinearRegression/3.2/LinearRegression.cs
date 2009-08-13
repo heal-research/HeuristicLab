@@ -68,7 +68,7 @@ namespace HeuristicLab.LinearRegression {
       }
     }
 
-    public IModel Model {
+    public IAnalyzerModel Model {
       get {
         if (!engine.Terminated) throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
         IScope bestModelScope = engine.GlobalScope;
@@ -267,8 +267,11 @@ namespace HeuristicLab.LinearRegression {
     }
 
 
-    protected internal virtual Model CreateLRModel(IScope bestModelScope) {
-      Model model = new Model();
+    protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
+      IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
+      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", false);
+      IAnalyzerModel model = new AnalyzerModel();
+      model.Predictor = new Predictor(evaluator, tree);
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TrainingQuality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
@@ -285,7 +288,6 @@ namespace HeuristicLab.LinearRegression {
       model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
       model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
 
-      model.Data = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
@@ -302,13 +304,13 @@ namespace HeuristicLab.LinearRegression {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableEvaluationImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
         model.SetVariableQualityImpact(variableName, impact);
-        model.AddInputVariables(variableName);
+        model.AddInputVariable(variableName);
       }
 
       return model;

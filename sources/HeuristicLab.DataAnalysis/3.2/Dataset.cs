@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using System.Globalization;
 using System.Text;
+using System.Linq;
 
 namespace HeuristicLab.DataAnalysis {
   public sealed class Dataset : ItemBase {
@@ -77,9 +78,10 @@ namespace HeuristicLab.DataAnalysis {
     public double[] ScalingOffset {
       get { return scalingOffset; }
       set {
-        if (value.Length != scalingOffset.Length) 
+        if (value.Length != scalingOffset.Length)
           throw new ArgumentException("Length of scaling offset array doesn't match number of variables");
-        scalingOffset = value; }
+        scalingOffset = value;
+      }
     }
 
     public double GetValue(int i, int j) {
@@ -97,6 +99,7 @@ namespace HeuristicLab.DataAnalysis {
     public double[] Samples {
       get { return samples; }
       set {
+        variableNames = Enumerable.Range(1, columns).Select(x => "Var" + x.ToString("###")).ToArray();
         scalingFactor = new double[columns];
         scalingOffset = new double[columns];
         for (int i = 0; i < scalingFactor.Length; i++) {
@@ -114,19 +117,25 @@ namespace HeuristicLab.DataAnalysis {
       get { return variableNames; }
     }
 
-    public Dataset() {
+    public Dataset()
+      : this(new double[,] { { 0.0 } }) {
+    }
+
+    public Dataset(double[,] samples) {
       Name = "-";
-      variableNames = new string[] { "Var0" };
-      Columns = 1;
-      Rows = 1;
-      Samples = new double[1];
-      scalingOffset = new double[] { 0.0 };
-      scalingFactor = new double[] { 1.0 };
-      cachedValuesInvalidated = true;
+      Rows = samples.GetLength(0);
+      Columns = samples.GetLength(1);
+      double[] values = new double[Rows * Columns];
+      int i = 0;
+      for (int row = 0; row < Rows; row++) {
+        for (int column = 0; column < columns; column++) {
+          values[i++] = samples[row, column];
+        }
+      }
+      Samples = values;
       fireChangeEvents = true;
     }
 
-    
 
     public string GetVariableName(int variableIndex) {
       return variableNames[variableIndex];
