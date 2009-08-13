@@ -31,9 +31,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.SupportVectorMachines {
   public partial class SVMModelView : ViewBase {
-    private HeuristicLab.Data.SVMModel model;
+    private SVMModel model;
     
-    public SVMModelView(HeuristicLab.Data.SVMModel model) : base() {
+    public SVMModelView(SVMModel model) : base() {
       InitializeComponent();
       this.model = model;
       model.Changed += (sender, args) => UpdateControls();

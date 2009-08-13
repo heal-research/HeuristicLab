@@ -26,8 +26,9 @@ using System.Xml;
 using HeuristicLab.Core;
 using System.Globalization;
 using System.IO;
+using HeuristicLab.Modeling;
 
-namespace HeuristicLab.Data {
+namespace HeuristicLab.SupportVectorMachines {
   public class SVMModel : ItemBase {
     private SVM.Model model;
     /// <summary>
@@ -49,7 +50,7 @@ namespace HeuristicLab.Data {
     }
 
     public override IView CreateView() {
-      return new HeuristicLab.SupportVectorMachines.SVMModelView(this);
+      return new SVMModelView(this);
     }
 
     /// <summary>
