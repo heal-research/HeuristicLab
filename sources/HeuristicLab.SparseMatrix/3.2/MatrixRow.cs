@@ -36,5 +36,9 @@ namespace HeuristicLab.SparseMatrix {
       if (name == null || !values.ContainsKey(name)) return null;
       return values[name];
     }
+
+    public IEnumerable<KeyValuePair<string, object>> Values {
+      get { return values; }
+    }
   }
 }
