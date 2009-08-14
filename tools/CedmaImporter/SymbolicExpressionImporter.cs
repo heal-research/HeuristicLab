@@ -12,7 +12,8 @@ using System.Diagnostics;
 
 namespace CedmaImporter {
   public class SymbolicExpressionImporter {
-
+    private const string DIFFSTART = "dif";
+    private const string VARSTART = "var";
     private Dictionary<string, IFunction> knownFunctions = new Dictionary<string, IFunction>() 
       {
         {"+", new Addition()},
@@ -50,7 +51,7 @@ namespace CedmaImporter {
 
     private IEnumerable<Token> GetTokenStream(StreamReader reader) {
       return from line in GetLineStream(reader)
-             let strTokens = line.Split(new string[] { " ", "\t", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).AsEnumerable()
+             let strTokens = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries).AsEnumerable()
              from strToken in strTokens
              let t = Token.Parse(strToken)
              where t != null
@@ -63,29 +64,27 @@ namespace CedmaImporter {
     }
 
     private HeuristicLab.GP.Interfaces.IFunctionTree ParseSexp(Queue<Token> tokens) {
-      Expect(Token.LPAR, tokens);
-
-      if (tokens.Peek().Symbol == TokenSymbol.SYMB) {
-        if (tokens.Peek().StringValue.Equals("variable")) {
-          return ParseVariable(tokens);
-        } else if (tokens.Peek().StringValue.Equals("differential")) {
-          return ParseDifferential(tokens);
+      if (tokens.Peek().Symbol == TokenSymbol.LPAR) {
+        IFunctionTree tree;
+        Expect(Token.LPAR, tokens);
+        if (tokens.Peek().StringValue.StartsWith(VARSTART)) {
+          tree = ParseVariable(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith(DIFFSTART)) {
+          tree = ParseDifferential(tokens);
         } else {
           Token curToken = tokens.Dequeue();
-          IFunctionTree tree = CreateTree(curToken);
+          tree = CreateTree(curToken);
           while (!tokens.Peek().Equals(Token.RPAR)) {
             tree.AddSubTree(ParseSexp(tokens));
           }
-          Expect(Token.RPAR, tokens);
-          return tree;
         }
+        Expect(Token.RPAR, tokens);
+        return tree;
       } else if (tokens.Peek().Symbol == TokenSymbol.NUMBER) {
         ConstantFunctionTree t = (ConstantFunctionTree)constant.GetTreeNode();
         t.Value = tokens.Dequeue().DoubleValue;
         return t;
-      } else {
-        throw new FormatException("Expected function or constant symbol");
-      }
+      } else throw new FormatException("Expected function or constant symbol");
     }
 
     private IFunctionTree ParseDifferential(Queue<Token> tokens) {
@@ -94,7 +93,6 @@ namespace CedmaImporter {
       t.Weight = tokens.Dequeue().DoubleValue;
       t.VariableName = tokens.Dequeue().StringValue;
       t.SampleOffset = (int)tokens.Dequeue().DoubleValue;
-      Expect(Token.RPAR, tokens);
       return t;
     }
 
@@ -104,7 +102,6 @@ namespace CedmaImporter {
       t.Weight = tokens.Dequeue().DoubleValue;
       t.VariableName = tokens.Dequeue().StringValue;
       t.SampleOffset = (int)tokens.Dequeue().DoubleValue;
-      Expect(Token.RPAR, tokens);
       return t;
     }
 
