@@ -8,31 +8,26 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.Charting;
-using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.SparseMatrix;
 
 namespace HeuristicLab.CEDMA.Charting {
   public partial class BubbleChartView : ViewBase {
-    private Results Results {
-      get { return (Results)Item; }
-      set { Item = value; }
-    }
     private const string CONSTANT_SIZE = "<constant>";
     private Label pleaseSelectAxisLabel = new Label();
-    public BubbleChartView(Results results) {
+    public BubbleChartView(VisualMatrix results) {
       InitializeComponent();
-      Results = results;
-      bubbleChartControl.Chart = new BubbleChart(Results, 0, 0, 100, 100);
-      xAxisComboBox.Items.AddRange(Results.OrdinalVariables);
-      xAxisComboBox.Items.AddRange(Results.CategoricalVariables);
-      xAxisComboBox.Items.AddRange(Results.MultiDimensionalCategoricalVariables);
-      xAxisComboBox.Items.AddRange(Results.MultiDimensionalOrdinalVariables);
-      yAxisComboBox.Items.AddRange(Results.OrdinalVariables);
-      yAxisComboBox.Items.AddRange(Results.CategoricalVariables);
-      yAxisComboBox.Items.AddRange(Results.MultiDimensionalCategoricalVariables);
-      yAxisComboBox.Items.AddRange(Results.MultiDimensionalOrdinalVariables);
+      bubbleChartControl.Chart = new ModelingBubbleChart(results, 0, 0, 100, 100);
+      xAxisComboBox.Items.AddRange(results.OrdinalVariables);
+      xAxisComboBox.Items.AddRange(results.CategoricalVariables);
+      xAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables);
+      xAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables);
+      yAxisComboBox.Items.AddRange(results.OrdinalVariables);
+      yAxisComboBox.Items.AddRange(results.CategoricalVariables);
+      yAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables);
+      yAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables);
       sizeComboBox.Items.Add(CONSTANT_SIZE);
-      sizeComboBox.Items.AddRange(Results.OrdinalVariables);
+      sizeComboBox.Items.AddRange(results.OrdinalVariables);
       sizeComboBox.SelectedItem = sizeComboBox.Items[0];
       yAxisComboBox.SelectedItem = yAxisComboBox.Items[0];
       xAxisComboBox.SelectedItem = xAxisComboBox.Items[0];
@@ -67,7 +62,7 @@ namespace HeuristicLab.CEDMA.Charting {
       get { return "Bubble chart"; }
     }
 
-    public IControl CreateView(Results results) {
+    public IControl CreateView(VisualMatrix results) {
       return new BubbleChartView(results);
     }
 

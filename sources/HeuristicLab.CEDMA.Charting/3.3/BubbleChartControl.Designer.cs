@@ -50,12 +50,12 @@ namespace HeuristicLab.CEDMA.Charting {
       this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.invertSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.clearSelectionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.invertSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.showHiddenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.pictureBoxContextMenuStrip.SuspendLayout();
       this.SuspendLayout();
@@ -94,6 +94,7 @@ namespace HeuristicLab.CEDMA.Charting {
             this.showHiddenToolStripMenuItem});
       this.pictureBoxContextMenuStrip.Name = "pictureBoxContextMenuStrip";
       this.pictureBoxContextMenuStrip.Size = new System.Drawing.Size(155, 186);
+      this.pictureBoxContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.pictureBoxContextMenuStrip_Opening);
       // 
       // moveToolStripMenuItem
       // 
@@ -116,6 +117,18 @@ namespace HeuristicLab.CEDMA.Charting {
       this.selectToolStripMenuItem.Text = "&Select";
       this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
       // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
+      // 
+      // clearSelectionMenuItem
+      // 
+      this.clearSelectionMenuItem.Name = "clearSelectionMenuItem";
+      this.clearSelectionMenuItem.Size = new System.Drawing.Size(154, 22);
+      this.clearSelectionMenuItem.Text = "Clear selection";
+      this.clearSelectionMenuItem.Click += new System.EventHandler(this.clearSelectionMenuItem_Click);
+      // 
       // invertSelectionToolStripMenuItem
       // 
       this.invertSelectionToolStripMenuItem.Name = "invertSelectionToolStripMenuItem";
@@ -130,18 +143,6 @@ namespace HeuristicLab.CEDMA.Charting {
       this.filterToolStripMenuItem.Text = "Hide selected";
       this.filterToolStripMenuItem.Click += new System.EventHandler(this.hideSelectedToolStripMenuItem_Click);
       // 
-      // toolStripSeparator1
-      // 
-      this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
-      // 
-      // clearSelectionMenuItem
-      // 
-      this.clearSelectionMenuItem.Name = "clearSelectionMenuItem";
-      this.clearSelectionMenuItem.Size = new System.Drawing.Size(154, 22);
-      this.clearSelectionMenuItem.Text = "Clear selection";
-      this.clearSelectionMenuItem.Click += new System.EventHandler(this.clearSelectionMenuItem_Click);
-      // 
       // showHiddenToolStripMenuItem
       // 
       this.showHiddenToolStripMenuItem.Enabled = false;
@@ -149,6 +150,10 @@ namespace HeuristicLab.CEDMA.Charting {
       this.showHiddenToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
       this.showHiddenToolStripMenuItem.Text = "Show hidden";
       this.showHiddenToolStripMenuItem.Click += new System.EventHandler(this.showHiddenToolStripMenuItem_Click);
+      // 
+      // toolTip
+      // 
+      this.toolTip.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip_Popup);
       // 
       // BubbleChartControl
       // 

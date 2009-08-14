@@ -194,5 +194,13 @@ namespace HeuristicLab.CEDMA.Charting {
       Chart.ClearFilter();
       showHiddenToolStripMenuItem.Enabled = false;
     }
+
+    private void pictureBoxContextMenuStrip_Opening(object sender, CancelEventArgs e) {
+
+    }
+
+    private void toolTip_Popup(object sender, PopupEventArgs e) {
+
+    }
   }
 }

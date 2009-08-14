@@ -9,23 +9,24 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.CEDMA.Core;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.CEDMA.Charting;
 
 namespace HeuristicLab.CEDMA.Core {
 
   public partial class TableResultsView : ViewBase {
-    private Results Results {
-      get { return (Results)Item; }
+    private VisualMatrix VisualMatrix {
+      get { return (VisualMatrix)Item; }
       set { Item = value; }
     }
     private bool suppressEvents;
-    public TableResultsView(Results results) {
+    public TableResultsView(VisualMatrix visualMatrix) {
       suppressEvents = false;
       InitializeComponent();
-      Results = results;
-      results.Changed += new EventHandler(results_Changed);
+      VisualMatrix = visualMatrix;
+      VisualMatrix.Changed += new EventHandler(VisualMatrixChanged);
     }
 
-    void results_Changed(object sender, EventArgs e) {
+    private void VisualMatrixChanged(object sender, EventArgs e) {
       if (suppressEvents) return;
       UpdateControls();
     }
@@ -34,20 +35,18 @@ namespace HeuristicLab.CEDMA.Core {
       suppressEvents = true;
       dataGridView.Rows.Clear();
       dataGridView.Columns.Clear();
-      List<string> attributeNames = Results.SelectModelAttributes().ToList();
-      foreach (var attribute in attributeNames) {
+      foreach (var attribute in VisualMatrix.Attributes) {
         dataGridView.Columns.Add(attribute, attribute);
       }
 
-      var entries = Results.GetEntries();
-      foreach (var entry in entries) {
-        if (entry.Visible) {
+      foreach (var row in VisualMatrix.Rows) {
+        if (row.Visible) {
           int rowIndex = dataGridView.Rows.Add();
-          dataGridView.Rows[rowIndex].Tag = entry;
-          foreach (string attrName in attributeNames) {
-            dataGridView.Rows[rowIndex].Cells[attrName].Value = entry.Get(attrName);
+          dataGridView.Rows[rowIndex].Tag = row;
+          foreach (string attrName in VisualMatrix.Attributes) {
+            dataGridView.Rows[rowIndex].Cells[attrName].Value = row.Get(attrName);
           }
-          if (entry.Selected) dataGridView.Rows[rowIndex].Selected = true;
+          if (row.Selected) dataGridView.Rows[rowIndex].Selected = true;
         }
       }
       dataGridView.Update();
@@ -57,17 +56,17 @@ namespace HeuristicLab.CEDMA.Core {
     private void dataGridView_SelectionChanged(object sender, EventArgs e) {
       if (suppressEvents) return;
       foreach (DataGridViewRow row in dataGridView.Rows) {
-        ((ResultsEntry)row.Tag).Selected = row.Selected;
+        ((VisualMatrixRow)row.Tag).Selected = row.Selected;
       }
       suppressEvents = true;
-      Results.FireChanged();
+      VisualMatrix.FireChanged();
       suppressEvents = false;
     }
 
     private void dataGridView_MouseDoubleClick(object sender, MouseEventArgs e) {
       if (e.Button == MouseButtons.Left && e.Clicks == 2) {
         DataGridView.HitTestInfo hitInfo = dataGridView.HitTest(e.X, e.Y);
-        ResultsEntry entry = (ResultsEntry)dataGridView.Rows[hitInfo.RowIndex].Tag;        
+        VisualMatrixRow entry = (VisualMatrixRow)dataGridView.Rows[hitInfo.RowIndex].Tag;        
         var model = (IItem)PersistenceManager.RestoreFromGZip((byte[])entry.Get("PersistedData"));
         PluginManager.ControlManager.ShowControl(model.CreateView());
       }
@@ -81,8 +80,8 @@ namespace HeuristicLab.CEDMA.Core {
       get { return "Table"; }
     }
 
-    public IControl CreateView(Results results) {
-      return new TableResultsView(results);
+    public IControl CreateView(VisualMatrix matrix) {
+      return new TableResultsView(matrix);
     }
 
     #endregion

@@ -29,10 +29,17 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Modeling.Database.SQLServerCompact;
+using HeuristicLab.SparseMatrix;
+using HeuristicLab.Modeling.Database;
+using HeuristicLab.CEDMA.Charting;
 
 namespace HeuristicLab.CEDMA.Core {
   public class Console : ItemBase, IEditable {
     private static readonly string sqlServerCompactConnectionString = @"Data Source=";
+
+    public Console()
+      : base() {
+    }
 
     private string database;
     public string Database {
@@ -42,20 +49,27 @@ namespace HeuristicLab.CEDMA.Core {
       set {
         if (value != database) {
           database = value;
-          results = null;
+          matrix = null;
+          visualMatrix = null;
         }
       }
     }
 
-    private Results results;
-    public Results Results {
+    private Matrix matrix;
+    public Matrix Matrix {
       get {
-        if (results == null) ReloadResults();
-        return results;
+        if (matrix == null) LoadResults();
+        return matrix;
       }
     }
-    public Console()
-      : base() {
+
+    private VisualMatrix visualMatrix;
+    public VisualMatrix VisualMatrix {
+      get {
+        if (matrix == null)
+          visualMatrix = CreateVisualMatrix();
+        return visualMatrix;
+      }
     }
 
     public IEditor CreateEditor() {
@@ -66,8 +80,46 @@ namespace HeuristicLab.CEDMA.Core {
       return new ConsoleEditor(this);
     }
 
-    private void ReloadResults() {
-      results = new Results(new DatabaseService(sqlServerCompactConnectionString + Database));
+    private void LoadResults() {
+      matrix = new Matrix();
+      DatabaseService db = new DatabaseService(sqlServerCompactConnectionString + database);
+      db.Connect();
+
+      foreach (var model in db.GetAllModels()) {
+        MatrixRow row = new MatrixRow();
+        foreach (var modelResult in db.GetModelResults(model)) {
+          row.Set(modelResult.Result.Name, modelResult.Value);
+        }
+        row.Set("PersistedData", db.GetModelData(model));
+        row.Set("TargetVariable", model.TargetVariable.Name);
+        row.Set("Algorithm", model.Algorithm.Name);
+        Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow> inputVariableResultsEntries =
+          new Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow>();
+
+        foreach (IInputVariableResult inputVariableResult in db.GetInputVariableResults(model)) {
+          if (!inputVariableResultsEntries.ContainsKey(inputVariableResult.Variable)) {
+            inputVariableResultsEntries[inputVariableResult.Variable] = new MatrixRow();
+            inputVariableResultsEntries[inputVariableResult.Variable].Set("InputVariableName", inputVariableResult.Variable.Name);
+          }
+          inputVariableResultsEntries[inputVariableResult.Variable].Set(inputVariableResult.Result.Name, inputVariableResult.Value);
+        }
+        row.Set("VariableImpacts", inputVariableResultsEntries.Values);
+        matrix.AddRow(row);
+      }
+      db.Disconnect();
+    }
+
+    private VisualMatrix CreateVisualMatrix() {      
+      DatabaseService db = new DatabaseService(sqlServerCompactConnectionString + database);
+      db.Connect();
+      string[] multiDimensionalCategoricalVariables = new string[] { "VariableImpacts: InputVariableName" };
+      string[] multiDimensionalOrdinalVariables = db.GetAllResultsForInputVariables().Select(x => "VariableImpacts: " + x.Name).ToArray();
+      string[] ordinalVariables = db.GetAllResults().Select(r => r.Name).ToArray();
+      string[] categoricalVariables = new string[] { "TargetVariable", "Algorithm" };
+
+      db.Disconnect();
+      VisualMatrix m = new VisualMatrix(Matrix, categoricalVariables, ordinalVariables, multiDimensionalCategoricalVariables, multiDimensionalOrdinalVariables);
+      return m;
     }
   }
 }

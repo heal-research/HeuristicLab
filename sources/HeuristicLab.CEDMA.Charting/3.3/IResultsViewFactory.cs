@@ -25,13 +25,12 @@ using System.Linq;
 using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
-using HeuristicLab.Operators;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.CEDMA.Core {
+namespace HeuristicLab.CEDMA.Charting {
   public interface IResultsViewFactory {
     string Name { get; }
-    IControl CreateView(Results results);
+    IControl CreateView(VisualMatrix results);
   }
 }

@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure;
 using System.Drawing;
+using HeuristicLab.CEDMA.Charting;
 
 namespace HeuristicLab.CEDMA.Core {
   class ConsoleEditor : EditorBase {
@@ -35,6 +36,7 @@ namespace HeuristicLab.CEDMA.Core {
     private Button resultsButton;
     private Button openButton;
     private Console console;
+    private VisualMatrix matrix;
 
     public ConsoleEditor(Console console) {
       InitializeComponent();
@@ -100,10 +102,9 @@ namespace HeuristicLab.CEDMA.Core {
       viewComboBox.ValueMember = "Name";
     }
 
-
     private void resultsButton_Click(object sender, EventArgs e) {
       IResultsViewFactory factory = (IResultsViewFactory)viewComboBox.SelectedItem;
-      IControl control = factory.CreateView(console.Results);
+      IControl control = factory.CreateView(console.VisualMatrix);
       PluginManager.ControlManager.ShowControl(control);
     }
 
