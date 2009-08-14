@@ -26,6 +26,8 @@
       this.jobsList = new System.Windows.Forms.ListBox();
       this.maxJobsLabel = new System.Windows.Forms.Label();
       this.maxActiveJobs = new System.Windows.Forms.NumericUpDown();
+      this.finishedLabel = new System.Windows.Forms.Label();
+      this.finishedTextBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.maxActiveJobs)).BeginInit();
       this.SuspendLayout();
       // 
@@ -35,9 +37,9 @@
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.jobsList.FormattingEnabled = true;
-      this.jobsList.Location = new System.Drawing.Point(3, 29);
+      this.jobsList.Location = new System.Drawing.Point(3, 55);
       this.jobsList.Name = "jobsList";
-      this.jobsList.Size = new System.Drawing.Size(327, 264);
+      this.jobsList.Size = new System.Drawing.Size(327, 238);
       this.jobsList.TabIndex = 0;
       // 
       // maxJobsLabel
@@ -51,7 +53,7 @@
       // 
       // maxActiveJobs
       // 
-      this.maxActiveJobs.Location = new System.Drawing.Point(98, 3);
+      this.maxActiveJobs.Location = new System.Drawing.Point(117, 3);
       this.maxActiveJobs.Maximum = new decimal(new int[] {
             200,
             0,
@@ -62,10 +64,29 @@
       this.maxActiveJobs.TabIndex = 2;
       this.maxActiveJobs.ValueChanged += new System.EventHandler(this.maxActiveJobs_ValueChanged);
       // 
+      // finishedLabel
+      // 
+      this.finishedLabel.AutoSize = true;
+      this.finishedLabel.Location = new System.Drawing.Point(5, 32);
+      this.finishedLabel.Name = "finishedLabel";
+      this.finishedLabel.Size = new System.Drawing.Size(106, 13);
+      this.finishedLabel.TabIndex = 3;
+      this.finishedLabel.Text = "Stored models (new):";
+      // 
+      // finishedTextBox
+      // 
+      this.finishedTextBox.Location = new System.Drawing.Point(117, 29);
+      this.finishedTextBox.Name = "finishedTextBox";
+      this.finishedTextBox.ReadOnly = true;
+      this.finishedTextBox.Size = new System.Drawing.Size(100, 20);
+      this.finishedTextBox.TabIndex = 4;
+      // 
       // ExecuterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.finishedTextBox);
+      this.Controls.Add(this.finishedLabel);
       this.Controls.Add(this.maxActiveJobs);
       this.Controls.Add(this.maxJobsLabel);
       this.Controls.Add(this.jobsList);
@@ -82,5 +103,7 @@
     private System.Windows.Forms.ListBox jobsList;
     private System.Windows.Forms.Label maxJobsLabel;
     private System.Windows.Forms.NumericUpDown maxActiveJobs;
+    private System.Windows.Forms.Label finishedLabel;
+    private System.Windows.Forms.TextBox finishedTextBox;
   }
 }

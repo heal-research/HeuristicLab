@@ -23,6 +23,7 @@ namespace HeuristicLab.CEDMA.Server {
       if (InvokeRequired) Invoke((Action)UpdateControls);
       else {
         base.UpdateControls();
+        finishedTextBox.Text = executer.StoredJobs+" ("+executer.CalculatedJobs+")";
         maxActiveJobs.Value = executer.MaxActiveJobs;
         jobsList.DataSource = executer.GetJobs();
         jobsList.Refresh();

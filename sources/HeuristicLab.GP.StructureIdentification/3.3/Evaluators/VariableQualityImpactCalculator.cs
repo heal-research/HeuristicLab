@@ -37,7 +37,6 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected override double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
       IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
       evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, gpModel.FunctionTree);
 
       double[,] result = new double[end - start, 2];

@@ -57,10 +57,21 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
+    public int CalculatedJobs {
+      get;
+      set;
+    }
+    public int StoredJobs {
+      get;
+      set;
+    }
+
     public ExecuterBase(IDispatcher dispatcher, IModelingDatabase databaseService) {
+      CalculatedJobs = 0;
       maxActiveJobs = 10;
       this.dispatcher = dispatcher;
       this.databaseService = databaseService;
+      StoredJobs = databaseService.GetAllModels().Count();
     }
 
     public void Start() {
@@ -82,7 +93,10 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     protected void StoreResults(HeuristicLab.Modeling.IAlgorithm finishedAlgorithm) {
+      CalculatedJobs++;
       databaseService.Persist(finishedAlgorithm);
+      StoredJobs++;
+      OnChanged();
     }
 
     public abstract string[] GetJobs();

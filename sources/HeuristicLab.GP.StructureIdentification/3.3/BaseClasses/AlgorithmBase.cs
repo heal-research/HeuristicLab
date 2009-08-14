@@ -411,7 +411,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected internal virtual IAnalyzerModel CreateGPModel(IScope bestModelScope) {
       Engine.GlobalScope.AddSubScope(bestModelScope);
       IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
-      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", false);
+      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", true);
       IAnalyzerModel model = new AnalyzerModel();
       model.Predictor = new Predictor(evaluator, tree);
       Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);

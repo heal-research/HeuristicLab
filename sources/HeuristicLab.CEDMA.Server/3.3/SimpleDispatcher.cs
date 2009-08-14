@@ -35,66 +35,126 @@ using HeuristicLab.Modeling;
 using HeuristicLab.Modeling.Database;
 
 namespace HeuristicLab.CEDMA.Server {
-  public class SimpleDispatcher : DispatcherBase {
+  public class SimpleDispatcher : IDispatcher {
     private class AlgorithmConfiguration {
       public string name;
       public int targetVariable;
       public List<int> inputVariables;
     }
 
-    private Random random;
-    private Dictionary<int, List<AlgorithmConfiguration>> finishedAndDispatchedRuns;
+    private IModelingDatabase database;
+    public IModelingDatabase Database {
+      get {
+        return database;
+      }
+    }
 
-    public SimpleDispatcher(IModelingDatabase database, Problem problem)
-      : base(database, problem) {
-      random = new Random();
-      finishedAndDispatchedRuns = new Dictionary<int, List<AlgorithmConfiguration>>();
+    private Problem problem;
+    public Problem Problem {
+      get {
+        return problem;
+      }
+    }
+    internal event EventHandler Changed;
+
+    public IEnumerable<string> TargetVariables {
+      get {
+        return Enumerable.Range(0, problem.Dataset.Columns).Select(x => problem.Dataset.GetVariableName(x));
+      }
+    }
+
+    public IEnumerable<string> InputVariables {
+      get {
+        return TargetVariables;
+      }
+    }
+
+    private HeuristicLab.Modeling.IAlgorithm[] algorithms;
+    public IEnumerable<HeuristicLab.Modeling.IAlgorithm> Algorithms {
+      get {
+        switch (Problem.LearningTask) {
+          case LearningTask.Regression: {
+              return algorithms.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
+            }
+          case LearningTask.Classification: {
+              return algorithms.Where(a => (a as IClassificationAlgorithm) != null);
+            }
+          case LearningTask.TimeSeries: {
+              return algorithms.Where(a => (a as ITimeSeriesAlgorithm) != null);
+            }
+        }
+        return new HeuristicLab.Modeling.IAlgorithm[] { };
+      }
+    }
+
+    private List<HeuristicLab.Modeling.IAlgorithm> activeAlgorithms;
+    public IEnumerable<HeuristicLab.Modeling.IAlgorithm> ActiveAlgorithms {
+      get { return activeAlgorithms; }
+    }
+
+    private Random random;
+    private List<int> allowedTargetVariables;
+    private Dictionary<int, List<int>> activeInputVariables;
+    private Dictionary<int, List<AlgorithmConfiguration>> finishedAndDispatchedRuns;
+    private object locker = new object();
+
+    public SimpleDispatcher(IModelingDatabase database, Problem problem) {
+      this.problem = problem;
+      this.database = database;
+      this.random = new Random();
+
+      this.finishedAndDispatchedRuns = new Dictionary<int, List<AlgorithmConfiguration>>();
+      this.allowedTargetVariables = new List<int>();
+      this.activeInputVariables = new Dictionary<int, List<int>>();
+      this.activeAlgorithms = new List<HeuristicLab.Modeling.IAlgorithm>();
+      DiscoveryService ds = new DiscoveryService();
+      this.algorithms = ds.GetInstances<HeuristicLab.Modeling.IAlgorithm>();
+      problem.Changed += (sender, args) => {
+        lock (locker) {
+          allowedTargetVariables.Clear();
+          activeInputVariables.Clear();
+          activeAlgorithms.Clear();
+        }
+        OnChanged();
+      };
+
       PopulateFinishedRuns();
     }
 
-    public override HeuristicLab.Modeling.IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem) {
-      DiscoveryService ds = new DiscoveryService();
-      HeuristicLab.Modeling.IAlgorithm[] algos = ds.GetInstances<HeuristicLab.Modeling.IAlgorithm>();
-      HeuristicLab.Modeling.IAlgorithm selectedAlgorithm = null;
-      switch (problem.LearningTask) {
-        case LearningTask.Regression: {
-            var regressionAlgos = algos.Where(a => (a as IClassificationAlgorithm) == null && (a as ITimeSeriesAlgorithm) == null);
-            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, regressionAlgos) ?? ChooseStochastic(regressionAlgos);
-            break;
-          }
-        case LearningTask.Classification: {
-            var classificationAlgos = algos.Where(a => (a as IClassificationAlgorithm) != null);
-            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, classificationAlgos) ?? ChooseStochastic(classificationAlgos);
-            break;
-          }
-        case LearningTask.TimeSeries: {
-            var timeSeriesAlgos = algos.Where(a => (a as ITimeSeriesAlgorithm) != null);
-            selectedAlgorithm = ChooseDeterministic(targetVariable, inputVariables, timeSeriesAlgos) ?? ChooseStochastic(timeSeriesAlgos);
-            break;
-          }
+    public HeuristicLab.Modeling.IAlgorithm GetNextJob() {
+      lock (locker) {
+        if (allowedTargetVariables.Count > 0) {
+          int[] targetVariables = allowedTargetVariables.ToArray();
+          int targetVariable = SelectTargetVariable(targetVariables);
+          int[] inputVariables = activeInputVariables[targetVariable].ToArray();
+
+          HeuristicLab.Modeling.IAlgorithm selectedAlgorithm = SelectAndConfigureAlgorithm(targetVariable, inputVariables, problem);
+
+          return selectedAlgorithm;
+        } else return null;
       }
+    }
 
+    public virtual int SelectTargetVariable(int[] targetVariables) {
+      return targetVariables[random.Next(targetVariables.Length)];
+    }
 
+    public HeuristicLab.Modeling.IAlgorithm SelectAndConfigureAlgorithm(int targetVariable, int[] inputVariables, Problem problem) {
+      HeuristicLab.Modeling.IAlgorithm selectedAlgorithm = null;
+      DiscoveryService ds = new DiscoveryService();
+      var allAlgorithms = ds.GetInstances<HeuristicLab.Modeling.IAlgorithm>();
+      var allowedAlgorithmTypes = activeAlgorithms.Select(x => x.GetType());
+      var possibleAlgos =
+        allAlgorithms
+        .Where(x => allowedAlgorithmTypes.Contains(x.GetType()) &&
+          ((x is IStochasticAlgorithm) || !AlgorithmFinishedOrDispatched(targetVariable, inputVariables, x.Name)));
+      if (possibleAlgos.Count() > 0) selectedAlgorithm = possibleAlgos.ElementAt(random.Next(possibleAlgos.Count()));
       if (selectedAlgorithm != null) {
         SetProblemParameters(selectedAlgorithm, problem, targetVariable, inputVariables);
-        AddDispatchedRun(targetVariable, inputVariables, selectedAlgorithm.Name);
+        if (!(selectedAlgorithm is IStochasticAlgorithm))
+          AddDispatchedRun(targetVariable, inputVariables, selectedAlgorithm.Name);
       }
       return selectedAlgorithm;
-    }
-
-    private HeuristicLab.Modeling.IAlgorithm ChooseDeterministic(int targetVariable, int[] inputVariables, IEnumerable<HeuristicLab.Modeling.IAlgorithm> algos) {
-      var deterministicAlgos = algos
-        .Where(a => (a as IStochasticAlgorithm) == null)
-        .Where(a => AlgorithmFinishedOrDispatched(targetVariable, inputVariables, a.Name) == false);
-
-      if (deterministicAlgos.Count() == 0) return null;
-      return deterministicAlgos.ElementAt(random.Next(deterministicAlgos.Count()));
-    }
-
-    private HeuristicLab.Modeling.IAlgorithm ChooseStochastic(IEnumerable<HeuristicLab.Modeling.IAlgorithm> regressionAlgos) {
-      var stochasticAlgos = regressionAlgos.Where(a => (a as IStochasticAlgorithm) != null);
-      if (stochasticAlgos.Count() == 0) return null;
-      return stochasticAlgos.ElementAt(random.Next(stochasticAlgos.Count()));
     }
 
     private void PopulateFinishedRuns() {
@@ -168,5 +228,73 @@ namespace HeuristicLab.CEDMA.Server {
                                                            inputVariables.Count() == x.inputVariables.Count() &&
                                                            inputVariables.All(v => x.inputVariables.Contains(v)));
     }
+
+    public void EnableAlgorithm(HeuristicLab.Modeling.IAlgorithm algo) {
+      lock (locker) {
+        if (!activeAlgorithms.Contains(algo)) activeAlgorithms.Add(algo);
+      }
+    }
+
+    public void DisableAlgorithm(HeuristicLab.Modeling.IAlgorithm algo) {
+      lock (locker) {
+        while (activeAlgorithms.Remove(algo)) ;
+      }
+    }
+
+    internal void EnableTargetVariable(string name) {
+      int varIndex = problem.Dataset.GetVariableIndex(name);
+      lock (locker)
+        if (!allowedTargetVariables.Contains(varIndex)) allowedTargetVariables.Add(varIndex);
+    }
+
+    internal void DisableTargetVariable(string name) {
+      int varIndex = problem.Dataset.GetVariableIndex(name);
+      lock (locker)
+        while (allowedTargetVariables.Remove(varIndex)) ;
+    }
+
+    internal void EnableInputVariable(string target, string name) {
+      int targetIndex = problem.Dataset.GetVariableIndex(target);
+      int inputIndex = problem.Dataset.GetVariableIndex(name);
+      lock (locker) {
+        if (!activeInputVariables.ContainsKey(targetIndex)) activeInputVariables[targetIndex] = new List<int>();
+        if (!activeInputVariables[targetIndex].Contains(inputIndex)) {
+          activeInputVariables[targetIndex].Add(inputIndex);
+        }
+      }
+    }
+
+    internal void DisableInputVariable(string target, string name) {
+      int targetIndex = problem.Dataset.GetVariableIndex(target);
+      int inputIndex = problem.Dataset.GetVariableIndex(name);
+      lock (locker) {
+        if (!activeInputVariables.ContainsKey(targetIndex)) activeInputVariables[targetIndex] = new List<int>();
+        while (activeInputVariables[targetIndex].Remove(inputIndex)) ;
+      }
+    }
+
+    public void OnChanged() {
+      if (Changed != null) Changed(this, new EventArgs());
+    }
+
+    internal IEnumerable<string> GetInputVariables(string target) {
+      int targetIndex = problem.Dataset.GetVariableIndex(target);
+      lock (locker) {
+        if (!activeInputVariables.ContainsKey(targetIndex)) activeInputVariables[targetIndex] = new List<int>();
+        return activeInputVariables[targetIndex]
+          .Select(i => problem.Dataset.GetVariableName(i));
+      }
+    }
+
+
+    #region IViewable Members
+
+    public virtual IView CreateView() {
+      return new DispatcherView(this);
+    }
+
+    #endregion
+
+
   }
 }

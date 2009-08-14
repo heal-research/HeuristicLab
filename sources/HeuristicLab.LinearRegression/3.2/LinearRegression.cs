@@ -269,7 +269,7 @@ namespace HeuristicLab.LinearRegression {
 
     protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
       IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
-      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", false);
+      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", true);
       IAnalyzerModel model = new AnalyzerModel();
       model.Predictor = new Predictor(evaluator, tree);
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TrainingQuality", false).Data;

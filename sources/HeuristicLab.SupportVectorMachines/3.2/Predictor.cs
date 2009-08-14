@@ -33,14 +33,16 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.SupportVectorMachines {
   public class Predictor : ItemBase, IPredictor {
     private SVMModel svmModel;
+    private Dictionary<string, int> variableNames = new Dictionary<string, int>();
     private string targetVariable;
 
     public Predictor() : base() { } // for persistence
 
-    public Predictor(SVMModel model, string targetVariable)
+    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames)
       : base() {
       this.svmModel = model;
       this.targetVariable = targetVariable;
+      this.variableNames = variableNames;
     }
 
     public double[] Predict(Dataset input, int start, int end) {
@@ -48,8 +50,13 @@ namespace HeuristicLab.SupportVectorMachines {
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       RangeTransform transform = svmModel.RangeTransform;
       Model model = svmModel.Model;
+      // maps columns of the current input dataset to the columns that were originally used in training
+      Dictionary<int, int> newIndex = new Dictionary<int, int>();
+      foreach (var pair in variableNames) {
+        newIndex[input.GetVariableIndex(pair.Key)] = pair.Value;
+      }
 
-      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), start, end);
+      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex, start, end);
       Problem scaledProblem = SVM.Scaling.Scale(p, transform);
 
       int rows = end - start;
@@ -69,6 +76,7 @@ namespace HeuristicLab.SupportVectorMachines {
       Predictor clone = (Predictor)base.Clone(clonedObjects);
       clone.svmModel = (SVMModel)Auxiliary.Clone(svmModel, clonedObjects);
       clone.targetVariable = targetVariable;
+      clone.variableNames = new Dictionary<string, int>(variableNames);
       return clone;
     }
 
@@ -78,6 +86,18 @@ namespace HeuristicLab.SupportVectorMachines {
       targetVarAttr.Value = targetVariable;
       node.Attributes.Append(targetVarAttr);
       node.AppendChild(PersistenceManager.Persist(svmModel, document, persistedObjects));
+      XmlNode variablesNode = document.CreateElement("Variables");
+      foreach (var pair in variableNames) {
+        XmlNode pairNode = document.CreateElement("Variable");
+        XmlAttribute nameAttr = document.CreateAttribute("Name");
+        XmlAttribute indexAttr = document.CreateAttribute("Index");
+        nameAttr.Value = pair.Key;
+        indexAttr.Value = XmlConvert.ToString(pair.Value);
+        pairNode.Attributes.Append(nameAttr);
+        pairNode.Attributes.Append(indexAttr);
+        variablesNode.AppendChild(pairNode);
+      }
+      node.AppendChild(variablesNode);
       return node;
     }
 
@@ -85,6 +105,12 @@ namespace HeuristicLab.SupportVectorMachines {
       base.Populate(node, restoredObjects);
       targetVariable = node.Attributes["TargetVariable"].Value;
       svmModel = (SVMModel)PersistenceManager.Restore(node.ChildNodes[0], restoredObjects);
+
+      variableNames = new Dictionary<string, int>();
+      XmlNode variablesNode = node.ChildNodes[1];
+      foreach (XmlNode pairNode in variablesNode.ChildNodes) {
+        variableNames[pairNode.Attributes["Name"].Value] = XmlConvert.ToInt32(pairNode.Attributes["Index"].Value);
+      }
     }
   }
 }

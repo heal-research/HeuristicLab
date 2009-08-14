@@ -10,8 +10,8 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class DispatcherView : ViewBase {
-    private DispatcherBase dispatcher;
-    public DispatcherView(DispatcherBase dispatcher)
+    private SimpleDispatcher dispatcher;
+    public DispatcherView(SimpleDispatcher dispatcher)
       : base() {
       this.dispatcher = dispatcher;
       InitializeComponent();
@@ -25,6 +25,7 @@ namespace HeuristicLab.CEDMA.Server {
         Invoke((Action)UpdateControls);
       } else {
         base.UpdateControls();
+        algorithmsListBox.Items.Clear();
         targetVariableList.Items.Clear();
         inputVariableList.Items.Clear();
 
@@ -34,6 +35,10 @@ namespace HeuristicLab.CEDMA.Server {
 
         foreach (string inputVar in dispatcher.InputVariables) {
           inputVariableList.Items.Add(inputVar, false);
+        }
+
+        foreach (HeuristicLab.Modeling.IAlgorithm algo in dispatcher.Algorithms) {
+          algorithmsListBox.Items.Add(algo, false);
         }
         targetVariableList.ClearSelected();
         inputVariableList.Enabled = false;
@@ -80,6 +85,14 @@ namespace HeuristicLab.CEDMA.Server {
             dispatcher.DisableInputVariable(targetVar, (string)inputVariableList.Items[i]);
           }
         }
+      }
+    }
+
+    private void algorithmsListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
+      if(e.NewValue == CheckState.Checked) {
+        dispatcher.EnableAlgorithm((HeuristicLab.Modeling.IAlgorithm)algorithmsListBox.Items[e.Index]);
+      } else if(e.NewValue == CheckState.Unchecked) {
+        dispatcher.DisableAlgorithm((HeuristicLab.Modeling.IAlgorithm)algorithmsListBox.Items[e.Index]);
       }
     }
   }

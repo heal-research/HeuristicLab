@@ -112,7 +112,6 @@
     </Compile>
     <Compile Include="ExecuterBase.cs" />
     <Compile Include="IExecuter.cs" />
-    <Compile Include="DispatcherBase.cs" />
     <Compile Include="GridExecuter.cs" />
     <Compile Include="IDispatcher.cs" />
     <Compile Include="Server.cs" />

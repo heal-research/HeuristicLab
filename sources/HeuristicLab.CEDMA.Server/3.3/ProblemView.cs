@@ -110,6 +110,7 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void autoregressiveCheckBox_CheckedChanged(object sender, EventArgs e) {
       problem.AutoRegressive = autoregressiveCheckBox.Checked;
+      problem.FireChanged();
     }
 
     private void samplesTextBox_Validating(object sender, CancelEventArgs e) {
@@ -144,6 +145,7 @@ namespace HeuristicLab.CEDMA.Server {
       problem.ValidationSamplesEnd = int.Parse(validationSamplesEndTextBox.Text);
       problem.TestSamplesStart = int.Parse(testSamplesStartTextBox.Text);
       problem.TestSamplesEnd = int.Parse(testSamplesEndTextBox.Text);
+      problem.FireChanged();
     }
 
     private void ColorSamplesTextBoxes(Color color) {
@@ -192,7 +194,6 @@ namespace HeuristicLab.CEDMA.Server {
       return sb.ToString();
     }
 
-    #region gui events
     private void radioButton_CheckedChanged(object sender, EventArgs e) {
       minTimeOffsetLabel.Enabled = timeSeriesRadioButton.Checked;
       minTimeOffsetTextBox.Enabled = timeSeriesRadioButton.Checked;
@@ -203,6 +204,7 @@ namespace HeuristicLab.CEDMA.Server {
       if (timeSeriesRadioButton.Checked) problem.LearningTask = LearningTask.TimeSeries;
       else if (classificationRadioButton.Checked) problem.LearningTask = LearningTask.Classification;
       else if (regressionRadioButton.Checked) problem.LearningTask = LearningTask.Regression;
+      problem.FireChanged();
     }
 
     private void timeOffsetTextBox_Validating(object sender, CancelEventArgs e) {
@@ -214,7 +216,7 @@ namespace HeuristicLab.CEDMA.Server {
     private void timeOffsetTextBox_Validated(object sender, EventArgs e) {
       problem.MinTimeOffset = int.Parse(minTimeOffsetTextBox.Text);
       problem.MaxTimeOffset = int.Parse(maxTimeOffsetTextBox.Text);
+      problem.FireChanged();
     }
-    #endregion
   }
 }

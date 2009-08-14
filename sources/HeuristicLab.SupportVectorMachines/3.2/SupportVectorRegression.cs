@@ -447,7 +447,9 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
       model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
       model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
-      model.Predictor = new Predictor(bestModelScope.GetVariableValue<SVMModel>("Model", false), model.TargetVariable);
+      Dictionary<string, int> variableNames = new Dictionary<string, int>();
+      for (int i = 0; i < ds.Columns; i++) variableNames[ds.GetVariableName(i)] = i;
+      model.Predictor = new Predictor(bestModelScope.GetVariableValue<SVMModel>("Model", false), model.TargetVariable, variableNames);
 
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);

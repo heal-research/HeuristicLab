@@ -31,14 +31,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       : base() {
       AddVariableInfo(new VariableInfo("TreeEvaluator", "The evaluator that should be used to evaluate the expression tree", typeof(ITreeEvaluator), VariableKind.In));
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree that should be evaluated", typeof(IGeneticProgrammingModel), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TreeSize", "Size (number of nodes) of the tree to evaluate", typeof(IntData), VariableKind.In));
     }
 
 
     protected override double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
       IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
-      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
       evaluator.PrepareForEvaluation(dataset, targetVariable, start, end, gpModel.FunctionTree);
 
       double[] result = new double[end - start];

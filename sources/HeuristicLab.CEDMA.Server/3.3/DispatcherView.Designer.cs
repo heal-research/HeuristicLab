@@ -28,6 +28,8 @@
       this.targetVariablesLabel = new System.Windows.Forms.Label();
       this.inputVariablesLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.algorithmsListBox = new System.Windows.Forms.CheckedListBox();
+      this.algorithmsLabel = new System.Windows.Forms.Label();
       this.setAllButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -41,9 +43,9 @@
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.targetVariableList.FormattingEnabled = true;
       this.targetVariableList.HorizontalScrollbar = true;
-      this.targetVariableList.Location = new System.Drawing.Point(6, 16);
+      this.targetVariableList.Location = new System.Drawing.Point(6, 181);
       this.targetVariableList.Name = "targetVariableList";
-      this.targetVariableList.Size = new System.Drawing.Size(193, 454);
+      this.targetVariableList.Size = new System.Drawing.Size(193, 289);
       this.targetVariableList.TabIndex = 0;
       this.targetVariableList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.targetVariableList_ItemCheck);
       this.targetVariableList.SelectedValueChanged += new System.EventHandler(this.targetVariableList_SelectedValueChanged);
@@ -64,7 +66,7 @@
       // targetVariablesLabel
       // 
       this.targetVariablesLabel.AutoSize = true;
-      this.targetVariablesLabel.Location = new System.Drawing.Point(3, 0);
+      this.targetVariablesLabel.Location = new System.Drawing.Point(3, 165);
       this.targetVariablesLabel.Name = "targetVariablesLabel";
       this.targetVariablesLabel.Size = new System.Drawing.Size(86, 13);
       this.targetVariablesLabel.TabIndex = 2;
@@ -87,6 +89,8 @@
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.algorithmsListBox);
+      this.splitContainer.Panel1.Controls.Add(this.algorithmsLabel);
       this.splitContainer.Panel1.Controls.Add(this.targetVariablesLabel);
       this.splitContainer.Panel1.Controls.Add(this.targetVariableList);
       // 
@@ -99,6 +103,27 @@
       this.splitContainer.SplitterDistance = 202;
       this.splitContainer.SplitterWidth = 1;
       this.splitContainer.TabIndex = 4;
+      // 
+      // algorithmsListBox
+      // 
+      this.algorithmsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.algorithmsListBox.FormattingEnabled = true;
+      this.algorithmsListBox.HorizontalScrollbar = true;
+      this.algorithmsListBox.Location = new System.Drawing.Point(6, 16);
+      this.algorithmsListBox.Name = "algorithmsListBox";
+      this.algorithmsListBox.Size = new System.Drawing.Size(193, 139);
+      this.algorithmsListBox.TabIndex = 4;
+      this.algorithmsListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.algorithmsListBox_ItemCheck);
+      // 
+      // algorithmsLabel
+      // 
+      this.algorithmsLabel.AutoSize = true;
+      this.algorithmsLabel.Location = new System.Drawing.Point(3, 0);
+      this.algorithmsLabel.Name = "algorithmsLabel";
+      this.algorithmsLabel.Size = new System.Drawing.Size(58, 13);
+      this.algorithmsLabel.TabIndex = 3;
+      this.algorithmsLabel.Text = "Algorithms:";
       // 
       // setAllButton
       // 
@@ -135,5 +160,7 @@
     private System.Windows.Forms.Label inputVariablesLabel;
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.Button setAllButton;
+    private System.Windows.Forms.CheckedListBox algorithmsListBox;
+    private System.Windows.Forms.Label algorithmsLabel;
   }
 }
