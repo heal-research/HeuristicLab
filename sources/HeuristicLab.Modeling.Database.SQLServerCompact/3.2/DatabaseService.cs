@@ -265,6 +265,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         return null;
       return data.Single().Data;
     }
+
+    public IPredictor GetModelPredictor(IModel model) {
+      byte[] data = GetModelData(model);
+      return (IPredictor)PersistenceManager.RestoreFromGZip(data);
+    }
     #endregion
 
   }
