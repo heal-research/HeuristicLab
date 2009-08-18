@@ -64,18 +64,6 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     [Association(Storage = "algorithm", ThisKey = "AlgorithmId", OtherKey = "Id", IsForeignKey = true)]
     public Algorithm Algorithm {
       get { return this.algorithm.Entity; }
-      //private set {
-      //  Algorithm previousValue = algorithm.Entity;
-      //  if (previousValue != value || (!algorithm.HasLoadedOrAssignedValue)) {
-      //    if (previousValue != null) {
-      //      algorithm.Entity = null;
-      //    }
-      //    algorithm.Entity = value;
-      //    if (value != null) {
-      //      algorithmId = value.Id;
-      //    }
-      //  }
-      //}
     }
 
     IAlgorithm IModel.Algorithm {
@@ -99,18 +87,6 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     [Association(Storage = "targetVariable", ThisKey = "TargetVariableId", OtherKey = "Id", IsForeignKey = true)]
     public Variable TargetVariable {
       get { return this.targetVariable.Entity; }
-      //private set {
-      //  Variable previousValue = targetVariable.Entity;
-      //  if (previousValue != value || (!targetVariable.HasLoadedOrAssignedValue)) {
-      //    if (previousValue != null) {
-      //      targetVariable.Entity = null;
-      //    }
-      //    targetVariable.Entity = value;
-      //    if (value != null) {
-      //      targetVariableId = value.Id;
-      //    }
-      //  }
-      //}
     }
 
     IVariable IModel.TargetVariable {
