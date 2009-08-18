@@ -18,16 +18,16 @@ namespace HeuristicLab.CEDMA.Charting {
     public BubbleChartView(VisualMatrix results) {
       InitializeComponent();
       bubbleChartControl.Chart = new ModelingBubbleChart(results, 0, 0, 100, 100);
-      xAxisComboBox.Items.AddRange(results.OrdinalVariables);
-      xAxisComboBox.Items.AddRange(results.CategoricalVariables);
-      xAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables);
-      xAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables);
-      yAxisComboBox.Items.AddRange(results.OrdinalVariables);
-      yAxisComboBox.Items.AddRange(results.CategoricalVariables);
-      yAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables);
-      yAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables);
+      xAxisComboBox.Items.AddRange(results.OrdinalVariables.ToArray());
+      xAxisComboBox.Items.AddRange(results.CategoricalVariables.ToArray());
+      xAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables.ToArray());
+      xAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables.ToArray());
+      yAxisComboBox.Items.AddRange(results.OrdinalVariables.ToArray());
+      yAxisComboBox.Items.AddRange(results.CategoricalVariables.ToArray());
+      yAxisComboBox.Items.AddRange(results.MultiDimensionalCategoricalVariables.ToArray());
+      yAxisComboBox.Items.AddRange(results.MultiDimensionalOrdinalVariables.ToArray());
       sizeComboBox.Items.Add(CONSTANT_SIZE);
-      sizeComboBox.Items.AddRange(results.OrdinalVariables);
+      sizeComboBox.Items.AddRange(results.OrdinalVariables.ToArray());
       sizeComboBox.SelectedItem = sizeComboBox.Items[0];
       yAxisComboBox.SelectedItem = yAxisComboBox.Items[0];
       xAxisComboBox.SelectedItem = xAxisComboBox.Items[0];

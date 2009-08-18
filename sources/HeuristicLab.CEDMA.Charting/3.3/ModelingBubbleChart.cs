@@ -45,8 +45,7 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     public void matrix_Changed(object sender, EventArgs e) {
-      Repaint();
-      EnforceUpdate();
+      Refresh();
     }
 
     public override void MouseDoubleClick(Point point, MouseButtons button) {

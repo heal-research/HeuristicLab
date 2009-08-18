@@ -6,16 +6,22 @@ using HeuristicLab.Core;
 using HeuristicLab.SparseMatrix;
 
 namespace HeuristicLab.CEDMA.Charting {
-  public class VisualMatrixRow {
-    private MatrixRow row;
+  public class VisualMatrixRow : ItemBase {
     private static Random random = new Random();
+    private Dictionary<string, object> dict;
 
-    public VisualMatrixRow(MatrixRow row) {
-      this.row = row;
+    public VisualMatrixRow() {
+      this.dict = new Dictionary<string, object>();
       this.visible = true;
       this.selected = false;
       this.xJitter = random.NextDouble() * 2.0 - 1.0;
       this.yJitter = random.NextDouble() * 2.0 - 1.0;
+    }
+
+    public VisualMatrixRow(MatrixRow row)
+      : this() {
+      foreach (KeyValuePair<string, object> value in row.Values)
+        dict[value.Key] = value.Value;
     }
 
     private bool visible;
@@ -41,7 +47,17 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     public object Get(string name) {
-      return row.Get(name);
+      if (!dict.ContainsKey(name))
+        return null;
+      return dict[name];
+    }
+
+    public void Set(string name, object value) {
+      this.dict[name] = value;
+    }
+
+    public IEnumerable<KeyValuePair<string, object>> Values {
+      get { return dict; }
     }
 
     public void ToggleSelected() {
@@ -50,7 +66,7 @@ namespace HeuristicLab.CEDMA.Charting {
 
     public string GetToolTipText() {
       StringBuilder b = new StringBuilder();
-      foreach (KeyValuePair<string, object> v in row.Values) {
+      foreach (KeyValuePair<string, object> v in dict) {
         if (v.Value is string || v.Value is double || v.Value is int) {
           string val = v.Value.ToString();
           if (val.Length > 40) val = val.Substring(0, 38) + "...";

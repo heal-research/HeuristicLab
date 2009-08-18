@@ -93,17 +93,7 @@ namespace HeuristicLab.CEDMA.Core {
         row.Set("PersistedData", db.GetModelData(model));
         row.Set("TargetVariable", model.TargetVariable.Name);
         row.Set("Algorithm", model.Algorithm.Name);
-        Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow> inputVariableResultsEntries =
-          new Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow>();
-
-        foreach (IInputVariableResult inputVariableResult in db.GetInputVariableResults(model)) {
-          if (!inputVariableResultsEntries.ContainsKey(inputVariableResult.Variable)) {
-            inputVariableResultsEntries[inputVariableResult.Variable] = new MatrixRow();
-            inputVariableResultsEntries[inputVariableResult.Variable].Set("InputVariableName", inputVariableResult.Variable.Name);
-          }
-          inputVariableResultsEntries[inputVariableResult.Variable].Set(inputVariableResult.Result.Name, inputVariableResult.Value);
-        }
-        row.Set("VariableImpacts", inputVariableResultsEntries.Values);
+       
         matrix.AddRow(row);
       }
       db.Disconnect();
@@ -112,10 +102,10 @@ namespace HeuristicLab.CEDMA.Core {
     private VisualMatrix CreateVisualMatrix() {      
       DatabaseService db = new DatabaseService(sqlServerCompactConnectionString + database);
       db.Connect();
-      string[] multiDimensionalCategoricalVariables = new string[] { "VariableImpacts: InputVariableName" };
-      string[] multiDimensionalOrdinalVariables = db.GetAllResultsForInputVariables().Select(x => "VariableImpacts: " + x.Name).ToArray();
-      string[] ordinalVariables = db.GetAllResults().Select(r => r.Name).ToArray();
-      string[] categoricalVariables = new string[] { "TargetVariable", "Algorithm" };
+      IEnumerable<string> multiDimensionalCategoricalVariables = new List<string> { "VariableImpacts: InputVariableName" };
+      IEnumerable<string> multiDimensionalOrdinalVariables = db.GetAllResultsForInputVariables().Select(x => "VariableImpacts: " + x.Name);
+      IEnumerable<string> ordinalVariables = db.GetAllResults().Select(r => r.Name);
+      IEnumerable<string> categoricalVariables = new List<string> { "TargetVariable", "Algorithm" };
 
       db.Disconnect();
       VisualMatrix m = new VisualMatrix(Matrix, categoricalVariables, ordinalVariables, multiDimensionalCategoricalVariables, multiDimensionalOrdinalVariables);
