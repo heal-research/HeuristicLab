@@ -64,7 +64,6 @@ namespace HeuristicLab.MainForm {
 
     private void MultipleDocumentFormActivated(object sender, EventArgs e) {
       base.ActiveView = ((DocumentForm)sender).View;
-      base.StatusStripText = ((DocumentForm)sender).View.Caption;
     }
 
     private void MultipleDocumentFormClosed(object sender, FormClosedEventArgs e) {

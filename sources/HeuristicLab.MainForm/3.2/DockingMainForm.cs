@@ -69,7 +69,6 @@ namespace HeuristicLab.MainForm {
 
     private void DockFormActivated(object sender, EventArgs e) {
       base.ActiveView = ((DockForm)sender).View;
-      base.StatusStripText = ((DockForm)sender).View.Caption;
     }
   }
 }
