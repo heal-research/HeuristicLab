@@ -48,8 +48,12 @@ namespace HeuristicLab.CEDMA.Charting {
       this.rows.Remove(row);
     }
 
-    public void ClearAllRows(VisualMatrixRow row) {
+    public void Clear() {
       this.rows.Clear();
+      this.categoricalVariables.Clear();
+      this.ordinalVariables.Clear();
+      this.multiDimensionalCategoricalVariables.Clear();
+      this.multiDimensionalOrdinalVariables.Clear();
     }
 
     private List<string> categoricalVariables;
