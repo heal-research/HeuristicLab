@@ -107,6 +107,9 @@ namespace HeuristicLab.MainForm {
       views.Add(view);
       ActiveView = view;
     }
+
+    public virtual void ViewClosed(IView view) {
+    }
     #endregion
 
     #region create menu and toolbar

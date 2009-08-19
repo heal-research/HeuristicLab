@@ -60,6 +60,8 @@ namespace HeuristicLab.MainForm {
       views.Remove(dockForm.View);
       if (views.Count == 0)
         ActiveView = null;
+
+      base.ViewClosed(dockForm.View);
       dockForm.Activated -= new EventHandler(DockFormActivated);
       dockForm.FormClosing -= new FormClosingEventHandler(dockForm.View.FormClosing);
       dockForm.FormClosed -= new FormClosedEventHandler(DockFormClosed);
