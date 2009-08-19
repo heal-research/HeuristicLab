@@ -18,6 +18,14 @@ namespace HeuristicLab.CEDMA.Charting {
       this.yJitter = random.NextDouble() * 2.0 - 1.0;
     }
 
+    public VisualMatrixRow(double xJitter, double yJitter) {
+      this.dict = new Dictionary<string, object>();
+      this.visible = true;
+      this.selected = false;
+      this.xJitter = xJitter;
+      this.yJitter = yJitter;
+    }
+
     public VisualMatrixRow(MatrixRow row)
       : this() {
       foreach (KeyValuePair<string, object> value in row.Values)
