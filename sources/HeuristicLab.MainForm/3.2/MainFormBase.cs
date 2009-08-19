@@ -108,7 +108,7 @@ namespace HeuristicLab.MainForm {
       ActiveView = view;
     }
 
-    public virtual void ViewClosed(IView view) {
+    protected virtual void ViewClosed(IView view) {
     }
     #endregion
 
