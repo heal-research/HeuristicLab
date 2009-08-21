@@ -272,5 +272,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
     #endregion
 
+    #region Problem
+    public IProblem GetProblem() {
+      return ctx.Problems.Single();
+    }
+    #endregion
   }
 }

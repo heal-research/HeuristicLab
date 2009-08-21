@@ -36,6 +36,7 @@ namespace HeuristicLab.Modeling.Database {
     byte[] GetModelData(IModel model);
     IPredictor GetModelPredictor(IModel model);
     IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model);
+    IProblem GetProblem();
 
     void Connect();
     void Disconnect();
