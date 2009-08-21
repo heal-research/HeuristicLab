@@ -55,6 +55,41 @@ namespace HeuristicLab.MainForm {
       }
     }
 
+    public override void CloseView(IView view) {
+      DockForm dockform = null;
+      IEnumerable<DockForm> dockforms;
+
+      if (dockPanel.Documents.Count() != 0) {
+        dockforms = dockPanel.Documents.Cast<DockForm>().Where(df => df.View == view);
+        if (dockforms.Count() == 1)
+          dockform = dockforms.Single();
+      }
+      if (dockPanel.FloatWindows.Count() != 0) {
+        foreach (FloatWindow fw in dockPanel.FloatWindows) {
+          foreach (DockContentCollection dc in fw.NestedPanes.Select(np => np.Contents)) {
+            dockforms = dc.Cast<DockForm>().Where(df => df.View == view);
+            if (dockforms.Count() == 1) {
+              dockform = dockforms.Single();
+              break;
+            }
+          }
+        }
+      }
+      if (dockPanel.DockWindows.Count != 0) {
+        foreach (DockWindow dw in dockPanel.DockWindows) {
+          foreach (DockContentCollection dc in dw.NestedPanes.Select(np => np.Contents)) {
+            dockforms = dc.Cast<DockForm>().Where(df => df.View == view);
+            if (dockforms.Count() == 1) {
+              dockform = dockforms.Single();
+              break;
+            }
+          }
+        }
+      }
+      if (dockform != null)
+        dockform.Close();
+    }
+
     private void DockFormClosed(object sender, FormClosedEventArgs e) {
       DockForm dockForm = (DockForm)sender;
       views.Remove(dockForm.View);

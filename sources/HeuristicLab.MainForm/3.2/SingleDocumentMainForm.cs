@@ -56,6 +56,11 @@ namespace HeuristicLab.MainForm {
       }
     }
 
+    public override void CloseView(IView view) {
+      DocumentForm documentForm = this.OwnedForms.Cast<DocumentForm>().Where(df => df.View == view).Single();
+      documentForm.Close();
+    }
+
     private void DockFormClosed(object sender, FormClosedEventArgs e) {
       DocumentForm form = (DocumentForm)sender;
       views.Remove(form.View);

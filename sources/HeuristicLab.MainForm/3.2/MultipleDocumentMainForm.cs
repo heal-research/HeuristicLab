@@ -62,6 +62,11 @@ namespace HeuristicLab.MainForm {
       }
     }
 
+    public override void CloseView(IView view) {
+      DocumentForm documentForm = this.MdiChildren.Cast<DocumentForm>().Where(df => df.View == view).Single();
+      documentForm.Close();
+    }
+
     private void MultipleDocumentFormActivated(object sender, EventArgs e) {
       base.ActiveView = ((DocumentForm)sender).View;
     }

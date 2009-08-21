@@ -118,6 +118,14 @@ namespace HeuristicLab.MainForm {
       ActiveView = view;
     }
 
+    public virtual void CloseView(IView view) {
+    }
+
+    public virtual void CloseAllViews() {
+      foreach (IView view in views.ToArray())
+        CloseView(view);
+    }
+
     protected virtual void ViewClosed(IView view) {
     }
     #endregion
