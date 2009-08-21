@@ -44,6 +44,7 @@ namespace HeuristicLab.MainForm {
       this.userInterfaceItemType = userInterfaceItemType;
       CreateGUI();
       OnActiveViewChanged();
+      FireMainFormChanged();
     }
 
     #region IMainForm Members
