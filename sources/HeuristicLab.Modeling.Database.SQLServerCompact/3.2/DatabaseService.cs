@@ -274,6 +274,8 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     #region Problem
     public IProblem GetProblem() {
+      if (ctx.Problems.Count() == 0)
+        return null;
       return ctx.Problems.Single();
     }
     #endregion
