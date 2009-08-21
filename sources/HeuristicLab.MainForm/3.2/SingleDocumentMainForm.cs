@@ -44,21 +44,28 @@ namespace HeuristicLab.MainForm {
     public override void ShowView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
-        base.ShowView(view);
-        DocumentForm form = new DocumentForm(view);
-        form.ShowInTaskbar = true;
-        form.Activated += new EventHandler(DockFormActivated);
-        form.FormClosing += new FormClosingEventHandler(view.FormClosing);
-        form.FormClosed += new FormClosedEventHandler(DockFormClosed);
-        foreach (IToolStripItem item in ToolStripItems)
-          view.StateChanged += new EventHandler(item.ViewChanged);
-        form.Show(this);
+        if (views.Contains(view)) {
+          DocumentForm documentForm = FindForm(view);
+          if (documentForm != null)
+            documentForm.Focus();
+        } else {
+          base.ShowView(view);
+          DocumentForm form = new DocumentForm(view);
+          form.ShowInTaskbar = true;
+          form.Activated += new EventHandler(DockFormActivated);
+          form.FormClosing += new FormClosingEventHandler(view.FormClosing);
+          form.FormClosed += new FormClosedEventHandler(DockFormClosed);
+          foreach (IToolStripItem item in ToolStripItems)
+            view.StateChanged += new EventHandler(item.ViewChanged);
+          form.Show(this);
+        }
       }
     }
 
     public override void CloseView(IView view) {
-      DocumentForm documentForm = this.OwnedForms.Cast<DocumentForm>().Where(df => df.View == view).Single();
-      documentForm.Close();
+      DocumentForm documentForm = FindForm(view);
+      if (documentForm != null)
+        documentForm.Close();
     }
 
     private void DockFormClosed(object sender, FormClosedEventArgs e) {
@@ -77,6 +84,13 @@ namespace HeuristicLab.MainForm {
 
     private void DockFormActivated(object sender, EventArgs e) {
       base.ActiveView = ((DocumentForm)sender).View;
+    }
+
+    protected DocumentForm FindForm(IView view) {
+      IEnumerable<DocumentForm> forms = this.OwnedForms.Cast<DocumentForm>().Where(df => df.View == view);
+      if (forms.Count() == 1)
+        return forms.Single();
+      return null;
     }
   }
 }

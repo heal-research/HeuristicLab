@@ -113,9 +113,11 @@ namespace HeuristicLab.MainForm {
     }
 
     public virtual void ShowView(IView view) {
-      view.MainForm = this;
-      views.Add(view);
-      ActiveView = view;
+      if (!views.Contains(view)) {
+        view.MainForm = this;
+        views.Add(view);
+        ActiveView = view;
+      }
     }
 
     public virtual void CloseView(IView view) {

@@ -50,21 +50,28 @@ namespace HeuristicLab.MainForm {
     public override void ShowView(IView view) {
       if (InvokeRequired) Invoke((Action<IView>)ShowView, view);
       else {
-        base.ShowView(view);
-        DocumentForm form = new DocumentForm(view);
-        form.Activated += new EventHandler(MultipleDocumentFormActivated);
-        form.FormClosing += new FormClosingEventHandler(view.FormClosing);
-        form.FormClosed += new FormClosedEventHandler(MultipleDocumentFormClosed);
-        form.MdiParent = this;
-        foreach (IToolStripItem item in ToolStripItems)
-          view.StateChanged += new EventHandler(item.ViewChanged);
-        form.Show();
+        if (views.Contains(view)) {
+          DocumentForm documentForm = FindForm(view);
+          if (documentForm != null)
+            documentForm.Focus();
+        } else {
+          base.ShowView(view);
+          DocumentForm form = new DocumentForm(view);
+          form.Activated += new EventHandler(MultipleDocumentFormActivated);
+          form.FormClosing += new FormClosingEventHandler(view.FormClosing);
+          form.FormClosed += new FormClosedEventHandler(MultipleDocumentFormClosed);
+          form.MdiParent = this;
+          foreach (IToolStripItem item in ToolStripItems)
+            view.StateChanged += new EventHandler(item.ViewChanged);
+          form.Show();
+        }
       }
     }
 
     public override void CloseView(IView view) {
-      DocumentForm documentForm = this.MdiChildren.Cast<DocumentForm>().Where(df => df.View == view).Single();
-      documentForm.Close();
+      DocumentForm documentForm = FindForm(view);
+      if (documentForm != null)
+        documentForm.Close();
     }
 
     private void MultipleDocumentFormActivated(object sender, EventArgs e) {
@@ -83,6 +90,13 @@ namespace HeuristicLab.MainForm {
       form.FormClosed -= new FormClosedEventHandler(MultipleDocumentFormClosed);
       foreach (IToolStripItem item in ToolStripItems)
         form.View.StateChanged -= new EventHandler(item.ViewChanged);
+    }
+
+    protected DocumentForm FindForm(IView view) {
+      IEnumerable<DocumentForm> forms = this.MdiChildren.Cast<DocumentForm>().Where(df => df.View == view);
+      if (forms.Count() == 1)
+        return forms.Single();
+      return null;
     }
   }
 }

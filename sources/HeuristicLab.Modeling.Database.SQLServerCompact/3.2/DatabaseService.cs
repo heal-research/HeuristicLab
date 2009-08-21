@@ -56,6 +56,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       dlo.LoadWith<InputVariableResult>(ir => ir.Variable);
       dlo.LoadWith<InputVariableResult>(ir => ir.Result);
       dlo.LoadWith<Model>(m => m.TargetVariable);
+      dlo.LoadWith<Model>(m => m.Algorithm);
       ctx.LoadOptions = dlo;
     }
 
