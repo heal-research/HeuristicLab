@@ -55,7 +55,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     public Dataset Dataset {
       get { return (Dataset)PersistenceManager.RestoreFromGZip(this.Data); }
-      set { this.Data = PersistenceManager.SaveToGZip(value); }
+      private set { this.Data = PersistenceManager.SaveToGZip(value); }
     }
   }
 }

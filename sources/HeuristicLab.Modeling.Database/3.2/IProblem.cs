@@ -23,9 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IProblem {
     byte[] Data { get; }
+    Dataset Dataset { get; }
   }
 }

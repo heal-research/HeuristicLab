@@ -144,10 +144,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     }
 
-    public Problem GetOrCreateProblem(Dataset dataset) {
-      Problem problem;
+    public IProblem GetOrCreateProblem(Dataset dataset) {
+      IProblem problem;
       if (ctx.Problems.Count() == 0)
-        problem = PersistProblem(dataset);
+        problem =  PersistProblem(dataset);
       else
         problem = ctx.Problems.Single();
       if (problem.Dataset.ToString() != dataset.ToString())
@@ -155,7 +155,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       return problem;
     }
 
-    private Problem PersistProblem(Dataset dataset) {
+    public IProblem PersistProblem(Dataset dataset) {
       Problem problem;
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         if (ctx.Problems.Count() != 0)
@@ -269,14 +269,6 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     public IPredictor GetModelPredictor(IModel model) {
       byte[] data = GetModelData(model);
       return (IPredictor)PersistenceManager.RestoreFromGZip(data);
-    }
-    #endregion
-
-    #region Problem
-    public IProblem GetProblem() {
-      if (ctx.Problems.Count() == 0)
-        return null;
-      return ctx.Problems.Single();
     }
     #endregion
   }

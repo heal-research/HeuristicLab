@@ -23,20 +23,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
     void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
     void Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
+    IProblem PersistProblem(Dataset dataset);
+
     IEnumerable<IModel> GetAllModels();
     IEnumerable<IResult> GetAllResults();
     IEnumerable<IResult> GetAllResultsForInputVariables();
     IEnumerable<IAlgorithm> GetAllAlgorithms();
-    IEnumerable<IModelResult> GetModelResults(IModel model);
+       
+    Dataset GetDataset();
     byte[] GetModelData(IModel model);
     IPredictor GetModelPredictor(IModel model);
+    IEnumerable<IModelResult> GetModelResults(IModel model);
     IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model);
-    IProblem GetProblem();
 
     void Connect();
     void Disconnect();
