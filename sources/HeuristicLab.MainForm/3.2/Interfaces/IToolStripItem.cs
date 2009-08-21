@@ -39,5 +39,6 @@ namespace HeuristicLab.MainForm {
 
     void ActiveViewChanged(object sender, EventArgs e);
     void ViewChanged(object sender, EventArgs e);
+    void MainFormChanged(object sender, EventArgs e);
   }
 }

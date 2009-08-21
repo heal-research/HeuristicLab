@@ -60,6 +60,9 @@ namespace HeuristicLab.MainForm {
 
     public virtual void ViewChanged(object sender, EventArgs e) {
     }
+
+    public virtual void MainFormChanged(object sender, EventArgs e) {
+    }
     #endregion
   }
 }

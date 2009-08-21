@@ -97,6 +97,15 @@ namespace HeuristicLab.MainForm {
         ActiveViewChanged(this, new EventArgs());
     }
 
+    public event EventHandler MainFormChanged;
+    public void FireMainFormChanged() {
+      OnMainFormChanged();
+    }
+    protected virtual void OnMainFormChanged() {
+      if (MainFormChanged != null)
+        MainFormChanged(this, new EventArgs());
+    }
+
     protected List<IView> views;
     public IEnumerable<IView> Views {
       get { return views; }
@@ -180,7 +189,8 @@ namespace HeuristicLab.MainForm {
       toolStripItem.Tag = iToolStripItem;
       toolStripItem.Image = iToolStripItem.Image;
       toolStripItem.DisplayStyle = iToolStripItem.DisplayStyle;
-      this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);    
+      this.ActiveViewChanged += new EventHandler(iToolStripItem.ActiveViewChanged);
+      this.MainFormChanged += new EventHandler(iToolStripItem.MainFormChanged);
       toolStripItem.Click += new EventHandler(ToolStripItemClicked);
       this.toolStripItems.Add(iToolStripItem);
       iToolStripItem.ToolStripItem = toolStripItem;
