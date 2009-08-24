@@ -88,6 +88,41 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap FlagBlueIcon {
+            get {
+                object obj = ResourceManager.GetObject("FlagBlueIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap FlagGreenIcon {
+            get {
+                object obj = ResourceManager.GetObject("FlagGreenIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap FlagRedIcon {
+            get {
+                object obj = ResourceManager.GetObject("FlagRedIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap FormulaEvaluatorIcon {
+            get {
+                object obj = ResourceManager.GetObject("FormulaEvaluatorIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap FunctionIcon {
+            get {
+                object obj = ResourceManager.GetObject("FunctionIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Icon HeuristicLabIcon {
             get {
                 object obj = ResourceManager.GetObject("HeuristicLabIcon", resourceCulture);
@@ -161,6 +196,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap UndoIcon {
             get {
                 object obj = ResourceManager.GetObject("UndoIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap WarningIcon {
+            get {
+                object obj = ResourceManager.GetObject("WarningIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

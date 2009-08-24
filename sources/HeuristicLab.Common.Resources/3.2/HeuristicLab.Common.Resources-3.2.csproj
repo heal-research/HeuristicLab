@@ -150,6 +150,24 @@
   <ItemGroup>
     <None Include="Resources\HeuristicLab.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WarningIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlagBlueIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlagGreenIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlagRedIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FormulaEvaluatorIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FunctionIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
