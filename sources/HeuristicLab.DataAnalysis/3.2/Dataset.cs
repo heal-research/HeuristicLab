@@ -152,6 +152,10 @@ namespace HeuristicLab.DataAnalysis {
       variableNames[variableIndex] = name;
     }
 
+    public bool ContainsVariableName(string variableName) {
+      return this.variableNames.Contains(variableName);
+    }
+
     public override IView CreateView() {
       return new DatasetView(this);
     }
