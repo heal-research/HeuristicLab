@@ -62,9 +62,12 @@ namespace HeuristicLab.MainForm {
     }
 
     public override void CloseView(IView view) {
-      DockForm dockform = FindForm(view);
-      if (dockform != null)
-        dockform.Close();
+      if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
+      else {
+        DockForm dockform = FindForm(view);
+        if (dockform != null)
+          dockform.Close();
+      }
     }
 
     private void DockFormClosed(object sender, FormClosedEventArgs e) {

@@ -81,8 +81,13 @@ namespace HeuristicLab.MainForm {
       get { return this.activeView; }
       protected set {
         if (this.activeView != value) {
-          this.activeView = value;
-          OnActiveViewChanged();
+          if (InvokeRequired) {
+            Action<IView> action = delegate(IView activeView) { this.ActiveView = activeView; };
+            Invoke(action, new object[] { value });
+          } else {
+            this.activeView = value;
+            OnActiveViewChanged();
+          }
         }
       }
     }

@@ -69,9 +69,12 @@ namespace HeuristicLab.MainForm {
     }
 
     public override void CloseView(IView view) {
-      DocumentForm documentForm = FindForm(view);
-      if (documentForm != null)
-        documentForm.Close();
+      if (InvokeRequired) Invoke((Action<IView>)CloseView, view);
+      else {
+        DocumentForm documentForm = FindForm(view);
+        if (documentForm != null)
+          documentForm.Close();
+      }
     }
 
     private void MultipleDocumentFormActivated(object sender, EventArgs e) {
