@@ -152,10 +152,11 @@ namespace CedmaImporter {
         modelFileName = modelFileName.Replace(c, '_');
       }
       if (algoName == "SupportVectorRegression") {
-        HeuristicLab.SupportVectorMachines.SVMModel model = new HeuristicLab.SupportVectorMachines.SVMModel();
-        model.Model = SVM.Model.Read(Path.Combine(dirName, modelFileName) + ".svm.model.txt");
-        model.RangeTransform = SVM.RangeTransform.Read(Path.Combine(dirName, modelFileName) + ".svm.transform.txt");
-        return new HeuristicLab.SupportVectorMachines.Predictor(model, targetVariable);
+        //HeuristicLab.SupportVectorMachines.SVMModel model = new HeuristicLab.SupportVectorMachines.SVMModel();
+        //model.Model = SVM.Model.Read(Path.Combine(dirName, modelFileName) + ".svm.model.txt");
+        //model.RangeTransform = SVM.RangeTransform.Read(Path.Combine(dirName, modelFileName) + ".svm.transform.txt");
+        //return new HeuristicLab.SupportVectorMachines.Predictor(model, targetVariable);
+        throw new FormatException();
       } else {
         SymbolicExpressionImporter sexpImporter = new SymbolicExpressionImporter();
         GeneticProgrammingModel model = new GeneticProgrammingModel();

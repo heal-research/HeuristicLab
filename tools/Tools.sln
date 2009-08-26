@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CedmaImporter", "CedmaImpor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CedmaDatabaseMerger", "CedmaDatabaseMerger\CedmaDatabaseMerger.csproj", "{D1D66C9C-5B65-4348-B8B5-528A513695E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CedmaExporter", "CedmaExporter\CedmaExporter.csproj", "{59334706-3386-4823-AF9B-B33CD793BA71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,14 @@ Global
 		{D1D66C9C-5B65-4348-B8B5-528A513695E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1D66C9C-5B65-4348-B8B5-528A513695E4}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1D66C9C-5B65-4348-B8B5-528A513695E4}.Release|x86.Build.0 = Release|Any CPU
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Debug|x86.ActiveCfg = Debug|x86
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Debug|x86.Build.0 = Debug|x86
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Release|x86.ActiveCfg = Release|x86
+		{59334706-3386-4823-AF9B-B33CD793BA71}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
