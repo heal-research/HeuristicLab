@@ -99,7 +99,9 @@ namespace HeuristicLab.DataAnalysis {
       this.dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
       this.dataGridView.Size = new System.Drawing.Size(554, 485);
       this.dataGridView.TabIndex = 3;
+      this.dataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView_Scroll);
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
+      this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
       // 
       // contextMenuStrip
       // 
@@ -109,33 +111,33 @@ namespace HeuristicLab.DataAnalysis {
             this.showScalingToolStripMenuItem,
             this.originalValuesToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(187, 92);
+      this.contextMenuStrip.Size = new System.Drawing.Size(198, 92);
       // 
       // scaleValuesToolStripMenuItem
       // 
       this.scaleValuesToolStripMenuItem.Name = "scaleValuesToolStripMenuItem";
-      this.scaleValuesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.scaleValuesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
       this.scaleValuesToolStripMenuItem.Text = "Scale values [0..1]";
       this.scaleValuesToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesToolStripMenuItem_Click);
       // 
       // scaleValuesmanuallyToolStripMenuItem
       // 
       this.scaleValuesmanuallyToolStripMenuItem.Name = "scaleValuesmanuallyToolStripMenuItem";
-      this.scaleValuesmanuallyToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.scaleValuesmanuallyToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
       this.scaleValuesmanuallyToolStripMenuItem.Text = "Scale values (manually)";
       this.scaleValuesmanuallyToolStripMenuItem.Click += new System.EventHandler(this.scaleValuesmanuallyToolStripMenuItem_Click);
       // 
       // showScalingToolStripMenuItem
       // 
       this.showScalingToolStripMenuItem.Name = "showScalingToolStripMenuItem";
-      this.showScalingToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.showScalingToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
       this.showScalingToolStripMenuItem.Text = "Show scaling...";
       this.showScalingToolStripMenuItem.Click += new System.EventHandler(this.showScalingToolStripMenuItem_Click);
       // 
       // originalValuesToolStripMenuItem
       // 
       this.originalValuesToolStripMenuItem.Name = "originalValuesToolStripMenuItem";
-      this.originalValuesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.originalValuesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
       this.originalValuesToolStripMenuItem.Text = "Unscale values";
       this.originalValuesToolStripMenuItem.Click += new System.EventHandler(this.originalValuesToolStripMenuItem_Click);
       // 

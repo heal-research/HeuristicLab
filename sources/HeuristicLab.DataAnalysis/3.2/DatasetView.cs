@@ -68,7 +68,7 @@ namespace HeuristicLab.DataAnalysis {
         // A solution is to set the SelectionMode to CellSelect before any changes. After the columns
         // have been updated (and their SortMode set to 'NotSortable') we switch back to SelectionMode=ColumnHeaderSelect.
         dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
-        dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+        //dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
         int rows = Dataset.Rows;
         int columns = Dataset.Columns;
         nameTextBox.Text = Dataset.Name;
@@ -89,13 +89,30 @@ namespace HeuristicLab.DataAnalysis {
           dataGridView.Columns[i].HeaderCell.Style.Alignment = DataGridViewContentAlignment.TopCenter;
         }
         dataGridView.SelectionMode = DataGridViewSelectionMode.ColumnHeaderSelect; // switch back to column selection
-        dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+        //dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
       } else {
         rowsTextBox.Text = "1";
         columnsTextBox.Text = "1";
         dataGridView.ColumnCount = 1;
         dataGridView.RowCount = 1;
       }
+      UpdateRowHeaders();
+      this.dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+    }
+
+    private void UpdateRowHeaders() {
+      for (int i = dataGridView.FirstDisplayedScrollingRowIndex; i < dataGridView.FirstDisplayedScrollingRowIndex + dataGridView.DisplayedRowCount(true); i++)
+        dataGridView.Rows[i].HeaderCell.Value = i.ToString();
+      this.dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
+      dataGridView.Invalidate();
+    }
+
+    private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
+      UpdateRowHeaders();
+    }
+
+    private void dataGridView_Resize(object sender, EventArgs e) {
+      UpdateRowHeaders();
     }
 
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
@@ -174,5 +191,7 @@ namespace HeuristicLab.DataAnalysis {
       }
       Refresh();
     }
+
+  
   }
 }

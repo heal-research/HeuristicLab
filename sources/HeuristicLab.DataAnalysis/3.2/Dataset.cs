@@ -148,6 +148,30 @@ namespace HeuristicLab.DataAnalysis {
       throw new ArgumentException("The variable name " + variableName + " was not found.");
     }
 
+    public double[] GetVariableValues(int variableIndex, int start, int end) {
+      if (start < 0 || !(start <= end))
+        throw new ArgumentException("Start must be between 0 and end (" + end + ").");
+      if (end > rows || end < start)
+        throw new ArgumentException("End must be between start (" + start + ") and dataset rows (" + rows + ").");
+
+      double[] values = new double[end - start];
+      for (int i = 0; i < end - start; i++)
+        values[i] = GetValue(i + start, variableIndex);
+      return values;
+    }
+
+    public double[] GetVariableValues(int variableIndex) {
+      return GetVariableValues(variableIndex, 0, this.rows);
+    }
+
+    public double[] GetVariableValues(string variableName, int start, int end) {
+      return GetVariableValues(GetVariableIndex(variableName), start, end);
+    }
+
+    public double[] GetVariableValues(string variableName) {
+      return GetVariableValues(variableName, 0, this.rows);
+    }
+
     public void SetVariableName(int variableIndex, string name) {
       variableNames[variableIndex] = name;
     }
