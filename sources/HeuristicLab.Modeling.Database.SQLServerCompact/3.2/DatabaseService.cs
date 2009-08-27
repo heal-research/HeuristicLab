@@ -67,12 +67,12 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       ctx = null;
     }
 
-    public void Persist(HeuristicLab.Modeling.IAlgorithm algorithm) {
+    public IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm) {
       GetOrCreateProblem(algorithm.Dataset);
-      Persist(algorithm.Model, algorithm.Name, algorithm.Description);
+      return Persist(algorithm.Model, algorithm.Name, algorithm.Description);
     }
 
-    public void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
+    public IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
       Dictionary<string, Variable> variables = GetAllVariables();
       Algorithm algo = GetOrCreateAlgorithm(algorithmName, algorithmDescription);
       Variable target = variables[model.TargetVariable];
@@ -132,6 +132,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         }
         ctx.SubmitChanges();
       }
+
+      //if connected to database return inserted model
+      if (this.ctx != null)
+        return this.ctx.Models.Where(x => x.Id == m.Id).Single();
+      return null;
     }
 
     #region Problem
@@ -148,7 +153,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     public IProblem GetOrCreateProblem(Dataset dataset) {
       IProblem problem;
       if (ctx.Problems.Count() == 0)
-        problem =  PersistProblem(dataset);
+        problem = PersistProblem(dataset);
       else
         problem = ctx.Problems.Single();
       if (problem.Dataset.ToString() != dataset.ToString())

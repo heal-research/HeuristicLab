@@ -27,8 +27,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
-    void Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
-    void Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
+    IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
+    IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
     IProblem PersistProblem(Dataset dataset);
 
     IEnumerable<IModel> GetAllModels();
