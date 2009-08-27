@@ -85,6 +85,7 @@
     <Compile Include="ClassificationProblemInjector.cs" />
     <Compile Include="DoubleExtensions.cs" />
     <Compile Include="IAnalyzerModel.cs" />
+    <Compile Include="MatrixCreator.cs" />
     <Compile Include="VariableImpactCalculatorBase.cs" />
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
     <Compile Include="IPredictor.cs" />
