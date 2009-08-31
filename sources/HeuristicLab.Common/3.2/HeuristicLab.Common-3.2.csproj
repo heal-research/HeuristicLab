@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabCommonPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
@@ -73,8 +72,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
