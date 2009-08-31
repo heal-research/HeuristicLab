@@ -32,13 +32,18 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.GP.StructureIdentification {
   public class Predictor : ItemBase, IPredictor {
     private ITreeEvaluator treeEvaluator;
-    private IGeneticProgrammingModel functionTree;
+    
 
     public Predictor() : base() { } // for persistence
     public Predictor(ITreeEvaluator evaluator, IGeneticProgrammingModel tree)
       : base() {
       this.treeEvaluator = evaluator;
       this.functionTree = tree;
+    }
+
+    private IGeneticProgrammingModel functionTree;
+    public IGeneticProgrammingModel FunctionTree {
+      get { return functionTree; }
     }
 
     public double[] Predict(Dataset input, int start, int end) {
