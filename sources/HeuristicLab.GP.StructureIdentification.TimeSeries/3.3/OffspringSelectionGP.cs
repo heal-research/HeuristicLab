@@ -47,7 +47,8 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
     }
 
     protected override IOperator CreateBestSolutionProcessor() {
-      IOperator seq = base.CreateBestSolutionProcessor();
+      SequentialProcessor seq = new SequentialProcessor();
+      seq.AddSubOperator(base.CreateBestSolutionProcessor());
       seq.AddSubOperator(StandardGP.BestSolutionProcessor);
       return seq;
     }

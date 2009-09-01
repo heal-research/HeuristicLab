@@ -202,8 +202,10 @@ namespace HeuristicLab.GP.StructureIdentification {
       return manipulator;
     }
 
-    protected internal override IOperator CreateBestSolutionProcessor() {
+    protected internal override IOperator CreateBestSolutionProcessor() {      
       SequentialProcessor bestSolutionProcessor = new SequentialProcessor();
+      bestSolutionProcessor.AddSubOperator(base.CreateBestSolutionProcessor());
+
       #region MSE
       MeanSquaredErrorEvaluator testMseEvaluator = new MeanSquaredErrorEvaluator();
       testMseEvaluator.Name = "TestMeanSquaredErrorEvaluator";

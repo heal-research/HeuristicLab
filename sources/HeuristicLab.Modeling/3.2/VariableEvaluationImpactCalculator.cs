@@ -29,51 +29,97 @@ using HeuristicLab.DataAnalysis;
 using System.Linq;
 
 namespace HeuristicLab.Modeling {
-  public abstract class VariableEvaluationImpactCalculator : VariableImpactCalculatorBase<double[]> {
-    public override string OutputVariableName {
-      get { return "VariableEvaluationImpacts"; }
+  public class VariableEvaluationImpactCalculator : OperatorBase {
+
+    public VariableEvaluationImpactCalculator()
+      : base() {
+      AddVariableInfo(new VariableInfo("Predictor", "The predictor used to evaluate the model", typeof(IPredictor), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("InputVariableNames", "Names of used variables in the model (optional)", typeof(ItemList<StringData>), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesStart", "SamplesStart", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesEnd", "SamplesEnd", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("VariableEvaluationImpacts", "VariableEvaluationImpacts", typeof(ItemList), VariableKind.New));
     }
 
     public override string Description {
       get { return @"Calculates the impact of all allowed input variables on the model outputs using evaluator supplied as suboperator."; }
     }
 
-    private double[,] CombineOutputs(double[] referenceOutputs, double[] newOutputs) {
-      if (referenceOutputs.Length != newOutputs.Length) throw new InvalidProgramException();
-      double[,] result = new double[referenceOutputs.Length, 2];
-      for (int i = 0; i < referenceOutputs.Length; i++) {
-        result[i, 0] = referenceOutputs[i];
-        result[i, 1] = newOutputs[i];
+    public override IOperation Apply(IScope scope) {
+      IPredictor predictor = GetVariableValue<IPredictor>("Predictor", scope, true);
+      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariableName = dataset.GetVariableName(targetVariable);
+      ItemList<StringData> inputVariableNames = GetVariableValue<ItemList<StringData>>("InputVariableNames", scope, true, false);
+      int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
+      int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
+
+      Dictionary<string, double> evaluationImpacts;
+      if (inputVariableNames == null)
+        evaluationImpacts = Calculate(dataset, predictor, targetVariableName, start, end);
+      else
+        evaluationImpacts = Calculate(dataset, predictor, targetVariableName, inputVariableNames.Select(iv => iv.Data), start, end);
+
+      ItemList variableImpacts = new ItemList();
+      foreach (KeyValuePair<string, double> p in evaluationImpacts) {
+        if (p.Key != targetVariableName) {
+          ItemList row = new ItemList();
+          row.Add(new StringData(p.Key));
+          row.Add(new DoubleData(p.Value));
+          variableImpacts.Add(row);
+        }
       }
-      return result;
+
+      scope.AddVariable(new Variable(scope.TranslateName("VariableEvaluationImpacts"), variableImpacts));
+      return null;
+
     }
 
-    protected override double CalculateImpact(double[] referenceValue, double[] newValue) {
+    public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, int start, int end) {
+      return Calculate(dataset, predictor, targetVariableName, null, start, end);
+    }
+
+
+    public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, IEnumerable<string> inputVariableNames, int start, int end) {
+      Dictionary<string, double> evaluationImpacts = new Dictionary<string, double>();
+      Dataset dirtyDataset = (Dataset)dataset.Clone();
+      double[] referenceValues = predictor.Predict(dataset, start, end);
+
+      double mean;
+      IEnumerable<double> oldValues;
+      double[] newValues;
+      IEnumerable<string> variables;
+      if (inputVariableNames != null)
+        variables = inputVariableNames;
+      else
+        variables = dataset.VariableNames;
+
+      foreach (string variableName in variables) {
+        if (variableName != targetVariableName) {
+          mean = dataset.GetMean(variableName, start, end);
+          oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
+          newValues = predictor.Predict(dirtyDataset, start, end);
+          evaluationImpacts[variableName] = CalculateMSE(referenceValues, newValues);
+          dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
+        }
+      }
+
+      double impactsSum = evaluationImpacts.Values.Sum();
+      if (impactsSum.IsAlmost(0.0)) impactsSum = 1.0;
+      foreach (KeyValuePair<string, double> p in evaluationImpacts.ToList())
+        evaluationImpacts[p.Key] = p.Value / impactsSum;
+
+      return evaluationImpacts;
+    }
+
+    private static double CalculateMSE(double[] referenceValues, double[] newValues) {
       try {
-        return SimpleMSEEvaluator.Calculate(CombineOutputs(referenceValue, newValue));
+        return SimpleMSEEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
       }
       catch (ArgumentException) {
         return double.PositiveInfinity;
       }
     }
-
-    protected override double[] CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
-      return GetOutputs(scope, dataset, targetVariable, start, end);
-    }
-
-    protected override double[] PostProcessImpacts(double[] impacts) {
-      double mseSum = impacts.Sum();
-      if (mseSum.IsAlmost(0.0)) mseSum = 1.0;
-      for (int i = 0; i < impacts.Length; i++) {
-        impacts[i] = impacts[i] / mseSum;
-      }
-      return impacts;
-    }
-
-    private bool IsAlmost(double x, double y) {
-      return Math.Abs(x - y) < 1.0E-12;
-    }
-
-    protected abstract double[] GetOutputs(IScope scope, Dataset dataset, int targetVariable, int start, int end);
   }
 }

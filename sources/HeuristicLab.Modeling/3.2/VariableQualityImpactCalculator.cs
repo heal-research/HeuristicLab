@@ -29,23 +29,99 @@ using HeuristicLab.DataAnalysis;
 using System.Linq;
 
 namespace HeuristicLab.Modeling {
-  public abstract class VariableQualityImpactCalculator : VariableImpactCalculatorBase<double> {
+  public class VariableQualityImpactCalculator : OperatorBase {
+
+    public VariableQualityImpactCalculator()
+      : base() {
+      AddVariableInfo(new VariableInfo("Predictor", "The predictor used to evaluate the model", typeof(IPredictor), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("InputVariableNames", "Names of used variables in the model (optional)", typeof(ItemList<StringData>), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesStart", "SamplesStart", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesEnd", "SamplesEnd", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("VariableQualityImpacts", "VariableQualityImpacts", typeof(ItemList), VariableKind.New));
+    }
+
     public override string Description {
       get { return @"Calculates the impact of all allowed input variables on the quality of the model using evaluator supplied as suboperator."; }
     }
 
-    public override string OutputVariableName {
-      get { return "VariableQualityImpacts"; }
+    public override IOperation Apply(IScope scope) {
+      IPredictor predictor = GetVariableValue<IPredictor>("Predictor", scope, true);
+      Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariableName = dataset.GetVariableName(targetVariable);
+      ItemList<StringData> inputVariableNames = GetVariableValue<ItemList<StringData>>("InputVariableNames", scope, true, false);
+      int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
+      int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
+
+      Dictionary<string, double> qualityImpacts;
+      if (inputVariableNames == null)
+        qualityImpacts = Calculate(dataset, predictor, targetVariableName, start, end);
+      else
+        qualityImpacts = Calculate(dataset, predictor, targetVariableName, inputVariableNames.Select(iv => iv.Data), start, end);
+
+      ItemList variableImpacts = new ItemList();
+      foreach (KeyValuePair<string, double> p in qualityImpacts) {
+        if (p.Key != targetVariableName) {
+          ItemList row = new ItemList();
+          row.Add(new StringData(p.Key));
+          row.Add(new DoubleData(p.Value));
+          variableImpacts.Add(row);
+        }
+      }
+
+      scope.AddVariable(new Variable(scope.TranslateName("VariableQualityImpacts"), variableImpacts));
+      return null;
     }
 
-    protected override double CalculateImpact(double referenceValue, double newValue) {
+    public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, int start, int end) {
+      return Calculate(dataset, predictor, targetVariableName, null, start, end);
+    }
+
+    public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, IEnumerable<string> inputVariableNames, int start, int end) {
+      Dictionary<string, double> evaluationImpacts = new Dictionary<string, double>();
+      Dataset dirtyDataset = (Dataset)dataset.Clone();
+
+      double[] predictedValues = predictor.Predict(dataset, start, end);
+      double[] targetValues = dataset.GetVariableValues(targetVariableName, start, end);
+
+      double oldMSE = CalculateMSE(predictedValues, targetValues);
+      double newMSE;
+
+      double mean;
+      IEnumerable<double> oldValues;
+      IEnumerable<string> variables;
+      if (inputVariableNames != null)
+        variables = inputVariableNames;
+      else
+        variables = dataset.VariableNames;
+
+      foreach (string variableName in variables) {
+        if (variableName != targetVariableName) {
+          mean = dataset.GetMean(variableName, start, end);
+          oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
+          predictedValues = predictor.Predict(dirtyDataset, start, end);
+          newMSE = CalculateMSE(predictedValues, targetValues);
+          evaluationImpacts[variableName] = newMSE / oldMSE;
+          dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
+        }
+      }
+
+      return evaluationImpacts;
+    }
+
+    private static double CalculateImpact(double referenceValue, double newValue) {
       return newValue / referenceValue;
     }
 
-    protected override double CalculateValue(IScope scope, Dataset dataset, int targetVariable, int start, int end) {
-      return CalculateQuality(scope, dataset, targetVariable, start, end);
+    private static double CalculateMSE(double[] referenceValues, double[] newValues) {
+      try {
+        return SimpleMSEEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
+      }
+      catch (ArgumentException) {
+        return double.PositiveInfinity;
+      }
     }
-
-    protected abstract double CalculateQuality(IScope scope, Dataset dataset, int targetVariable, int start, int end);
   }
 }

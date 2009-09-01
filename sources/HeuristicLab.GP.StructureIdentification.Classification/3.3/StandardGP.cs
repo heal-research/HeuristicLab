@@ -26,9 +26,9 @@ using HeuristicLab.Operators;
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
     protected override IOperator CreateBestSolutionProcessor() {
-      IOperator seq = base.CreateBestSolutionProcessor();
-      seq.AddSubOperator(BestSolutionProcessor);
-      return seq;
+      IOperator bestSolutionProcessor = BestSolutionProcessor;
+      bestSolutionProcessor.AddSubOperator(base.CreateBestSolutionProcessor());
+      return bestSolutionProcessor;
     }
 
     internal static IOperator BestSolutionProcessor {
@@ -75,3 +75,4 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     }
   }
 }
+

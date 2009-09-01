@@ -30,93 +30,10 @@ using System.Linq;
 
 namespace HeuristicLab.DataAnalysis {
   public sealed class Dataset : ItemBase {
-
-    private string name;
-    private double[] samples;
-    private int rows;
-    private int columns;
     private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
-    private double[] scalingFactor;
-    private double[] scalingOffset;
     private bool cachedValuesInvalidated = true;
-
-    private bool fireChangeEvents = true;
-    public bool FireChangeEvents {
-      get { return fireChangeEvents; }
-      set { fireChangeEvents = value; }
-    }
-
-    public string Name {
-      get { return name; }
-      set { name = value; }
-    }
-
-    public int Rows {
-      get { return rows; }
-      set { rows = value; }
-    }
-
-    public int Columns {
-      get { return columns; }
-      set {
-        columns = value;
-        if (variableNames == null || variableNames.Length != columns) {
-          variableNames = new string[columns];
-        }
-      }
-    }
-
-    public double[] ScalingFactor {
-      get { return scalingFactor; }
-      set {
-        if (value.Length != scalingFactor.Length)
-          throw new ArgumentException("Length of scaling factor array doesn't match number of variables");
-        scalingFactor = value;
-      }
-    }
-    public double[] ScalingOffset {
-      get { return scalingOffset; }
-      set {
-        if (value.Length != scalingOffset.Length)
-          throw new ArgumentException("Length of scaling offset array doesn't match number of variables");
-        scalingOffset = value;
-      }
-    }
-
-    public double GetValue(int i, int j) {
-      return samples[columns * i + j];
-    }
-
-    public void SetValue(int i, int j, double v) {
-      if (v != samples[columns * i + j]) {
-        samples[columns * i + j] = v;
-        cachedValuesInvalidated = true;
-        if (fireChangeEvents) FireChanged();
-      }
-    }
-
-    public double[] Samples {
-      get { return samples; }
-      set {
-        variableNames = Enumerable.Range(1, columns).Select(x => "Var" + x.ToString("###")).ToArray();
-        scalingFactor = new double[columns];
-        scalingOffset = new double[columns];
-        for (int i = 0; i < scalingFactor.Length; i++) {
-          scalingFactor[i] = 1.0;
-          scalingOffset[i] = 0.0;
-        }
-        samples = value;
-        cachedValuesInvalidated = true;
-        if (fireChangeEvents) FireChanged();
-      }
-    }
-
-    private string[] variableNames;
-    public IEnumerable<string> VariableNames {
-      get { return variableNames; }
-    }
-
+    
     public Dataset()
       : this(new double[,] { { 0.0 } }) {
     }
@@ -136,16 +53,82 @@ namespace HeuristicLab.DataAnalysis {
       fireChangeEvents = true;
     }
 
-
-    public string GetVariableName(int variableIndex) {
-      return variableNames[variableIndex];
+    #region Properties
+    private string name;
+    public string Name {
+      get { return name; }
+      set { name = value; }
     }
 
-    public int GetVariableIndex(string variableName) {
-      for (int i = 0; i < variableNames.Length; i++) {
-        if (variableNames[i].Equals(variableName)) return i;
+    private int rows;
+    public int Rows {
+      get { return rows; }
+      set { rows = value; }
+    }
+
+    private int columns;
+    public int Columns {
+      get { return columns; }
+      set {
+        columns = value;
+        if (variableNames == null || variableNames.Length != columns) {
+          variableNames = new string[columns];
+        }
       }
-      throw new ArgumentException("The variable name " + variableName + " was not found.");
+    }
+
+    private string[] variableNames;
+    public IEnumerable<string> VariableNames {
+      get { return variableNames; }
+    }
+
+    private double[] samples;
+    public double[] Samples {
+      get { return samples; }
+      set {
+        variableNames = Enumerable.Range(1, columns).Select(x => "Var" + x.ToString("###")).ToArray();
+        scalingFactor = new double[columns];
+        scalingOffset = new double[columns];
+        for (int i = 0; i < scalingFactor.Length; i++) {
+          scalingFactor[i] = 1.0;
+          scalingOffset[i] = 0.0;
+        }
+        samples = value;
+        cachedValuesInvalidated = true;
+        if (fireChangeEvents) FireChanged();
+      }
+    }
+
+    private bool fireChangeEvents = true;
+    public bool FireChangeEvents {
+      get { return fireChangeEvents; }
+      set { fireChangeEvents = value; }
+    }
+
+    private double[] scalingFactor;
+    public double[] ScalingFactor {
+      get { return scalingFactor; }
+      set {
+        if (value.Length != scalingFactor.Length)
+          throw new ArgumentException("Length of scaling factor array doesn't match number of variables");
+        scalingFactor = value;
+      }
+    }
+
+    private double[] scalingOffset;
+    public double[] ScalingOffset {
+      get { return scalingOffset; }
+      set {
+        if (value.Length != scalingOffset.Length)
+          throw new ArgumentException("Length of scaling offset array doesn't match number of variables");
+        scalingOffset = value;
+      }
+    }
+    #endregion
+
+    #region Modify and get values
+    public double GetValue(int i, int j) {
+      return samples[columns * i + j];
     }
 
     public double[] GetVariableValues(int variableIndex, int start, int end) {
@@ -172,6 +155,46 @@ namespace HeuristicLab.DataAnalysis {
       return GetVariableValues(variableName, 0, this.rows);
     }
 
+    public void SetValue(int i, int j, double v) {
+      if (v != samples[columns * i + j]) {
+        samples[columns * i + j] = v;
+        cachedValuesInvalidated = true;
+        if (fireChangeEvents) FireChanged();
+      }
+    }
+
+    public IEnumerable<double> ReplaceVariableValues(int variableIndex, IEnumerable<double> newValues, int start, int end) {
+      double[] oldValues = new double[end - start];
+      for (int i = 0; i < end - start; i++) oldValues[i] = this.GetValue(i + start, variableIndex);
+      if (newValues.Count() != end - start) throw new ArgumentException("The length of the new values sequence doesn't match the required length (number of replaced values)");
+
+      int index = start;
+      this.FireChangeEvents = false;
+      foreach (double v in newValues) {
+        this.SetValue(index++, variableIndex, v);
+      }
+      this.FireChangeEvents = true;
+      this.FireChanged();
+      return oldValues;
+    }
+
+    public IEnumerable<double> ReplaceVariableValues(string variableName, IEnumerable<double> newValues, int start, int end) {
+      return ReplaceVariableValues(this.GetVariableIndex(variableName), newValues, start, end);
+    }
+    #endregion
+
+    #region Variable name methods
+    public string GetVariableName(int variableIndex) {
+      return variableNames[variableIndex];
+    }
+
+    public int GetVariableIndex(string variableName) {
+      for (int i = 0; i < variableNames.Length; i++) {
+        if (variableNames[i].Equals(variableName)) return i;
+      }
+      throw new ArgumentException("The variable name " + variableName + " was not found.");
+    }
+
     public void SetVariableName(int variableIndex, string name) {
       variableNames[variableIndex] = name;
     }
@@ -179,9 +202,158 @@ namespace HeuristicLab.DataAnalysis {
     public bool ContainsVariableName(string variableName) {
       return this.variableNames.Contains(variableName);
     }
+    #endregion
 
     public override IView CreateView() {
       return new DatasetView(this);
+    }
+
+
+    #region Variable statistics
+    public double GetMean(string variableName) {
+      return GetMean(GetVariableIndex(variableName));
+    }
+
+    public double GetMean(string variableName, int start, int end) {
+      return GetMean(GetVariableIndex(variableName), start, end);
+    }
+
+    public double GetMean(int column) {
+      return GetMean(column, 0, Rows);
+    }
+
+    public double GetMean(int column, int start, int end) {
+      if (cachedValuesInvalidated) CreateDictionaries();
+      if (!cachedMeans[column].ContainsKey(start) || !cachedMeans[column][start].ContainsKey(end)) {
+        double[] values = new double[end - start];
+        for (int sample = start; sample < end; sample++) {
+          values[sample - start] = GetValue(sample, column);
+        }
+        double mean = Statistics.Mean(values);
+        if (!cachedMeans[column].ContainsKey(start)) cachedMeans[column][start] = new Dictionary<int, double>();
+        cachedMeans[column][start][end] = mean;
+        return mean;
+      } else {
+        return cachedMeans[column][start][end];
+      }
+    }
+
+    public double GetRange(string variableName) {
+      return GetRange(this.GetVariableIndex(variableName));
+    }
+
+    public double GetRange(int column) {
+      return GetRange(column, 0, Rows);
+    }
+
+    public double GetRange(string variableName, int start, int end) {
+      return GetRange(this.GetVariableIndex(variableName), start, end);
+    }
+
+    public double GetRange(int column, int start, int end) {
+      if (cachedValuesInvalidated) CreateDictionaries();
+      if (!cachedRanges[column].ContainsKey(start) || !cachedRanges[column][start].ContainsKey(end)) {
+        double[] values = new double[end - start];
+        for (int sample = start; sample < end; sample++) {
+          values[sample - start] = GetValue(sample, column);
+        }
+        double range = Statistics.Range(values);
+        if (!cachedRanges[column].ContainsKey(start)) cachedRanges[column][start]= new Dictionary<int, double>();
+        cachedRanges[column][start][end] = range;
+        return range;
+      } else {
+        return cachedRanges[column][start][end];
+      }
+    }
+
+    public double GetMaximum(string variableName) {
+      return GetMaximum(this.GetVariableIndex(variableName));
+    }
+
+    public double GetMaximum(int column) {
+      return GetMaximum(column, 0, Rows);
+    }
+
+    public double GetMaximum(string variableName, int start, int end) {
+      return GetMaximum(this.GetVariableIndex(variableName), start, end);
+    }
+
+    public double GetMaximum(int column, int start, int end) {
+      double max = Double.NegativeInfinity;
+      for (int i = start; i < end; i++) {
+        double val = GetValue(i, column);
+        if (!double.IsNaN(val) && val > max) max = val;
+      }
+      return max;
+    }
+
+    public double GetMinimum(string variableName) {
+      return GetMinimum(GetVariableIndex(variableName));
+    }
+
+    public double GetMinimum(int column) {
+      return GetMinimum(column, 0, Rows);
+    }
+
+    public double GetMinimum(string variableName, int start, int end) {
+      return GetMinimum(this.GetVariableIndex(variableName), start, end);
+    }
+
+    public double GetMinimum(int column, int start, int end) {
+      double min = Double.PositiveInfinity;
+      for (int i = start; i < end; i++) {
+        double val = GetValue(i, column);
+        if (!double.IsNaN(val) && val < min) min = val;
+      }
+      return min;
+    }
+    #endregion
+
+    internal void ScaleVariable(int column) {
+      if (scalingFactor[column] == 1.0 && scalingOffset[column] == 0.0) {
+        double min = GetMinimum(column);
+        double max = GetMaximum(column);
+        double range = max - min;
+        if (range == 0) ScaleVariable(column, 1.0, -min);
+        else ScaleVariable(column, 1.0 / range, -min);
+      }
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
+    }
+
+    internal void ScaleVariable(int column, double factor, double offset) {
+      scalingFactor[column] = factor;
+      scalingOffset[column] = offset;
+      for (int i = 0; i < Rows; i++) {
+        double origValue = samples[i * columns + column];
+        samples[i * columns + column] = (origValue + offset) * factor;
+      }
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
+    }
+
+    internal void UnscaleVariable(int column) {
+      if (scalingFactor[column] != 1.0 || scalingOffset[column] != 0.0) {
+        for (int i = 0; i < rows; i++) {
+          double scaledValue = samples[i * columns + column];
+          samples[i * columns + column] = scaledValue / scalingFactor[column] - scalingOffset[column];
+        }
+        scalingFactor[column] = 1.0;
+        scalingOffset[column] = 0.0;
+      }
+      cachedValuesInvalidated = true;
+      if (fireChangeEvents) FireChanged();
+    }
+
+    private void CreateDictionaries() {
+      // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
+      cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
+      cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
+      for (int i = 0; i < columns; i++) {
+        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
+        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
+      }
+      cachedValuesInvalidated = false;
     }
 
     #region persistence
@@ -312,118 +484,5 @@ namespace HeuristicLab.DataAnalysis {
       return xs;
     }
     #endregion
-
-    public double GetMean(int column) {
-      return GetMean(column, 0, Rows);
-    }
-
-    public double GetMean(int column, int from, int to) {
-      if (cachedValuesInvalidated) CreateDictionaries();
-      if (!cachedMeans[column].ContainsKey(from) || !cachedMeans[column][from].ContainsKey(to)) {
-        double[] values = new double[to - from];
-        for (int sample = from; sample < to; sample++) {
-          values[sample - from] = GetValue(sample, column);
-        }
-        double mean = Statistics.Mean(values);
-        if (!cachedMeans[column].ContainsKey(from)) cachedMeans[column][from] = new Dictionary<int, double>();
-        cachedMeans[column][from][to] = mean;
-        return mean;
-      } else {
-        return cachedMeans[column][from][to];
-      }
-    }
-
-    public double GetRange(int column) {
-      return GetRange(column, 0, Rows);
-    }
-
-    public double GetRange(int column, int from, int to) {
-      if (cachedValuesInvalidated) CreateDictionaries();
-      if (!cachedRanges[column].ContainsKey(from) || !cachedRanges[column][from].ContainsKey(to)) {
-        double[] values = new double[to - from];
-        for (int sample = from; sample < to; sample++) {
-          values[sample - from] = GetValue(sample, column);
-        }
-        double range = Statistics.Range(values);
-        if (!cachedRanges[column].ContainsKey(from)) cachedRanges[column][from] = new Dictionary<int, double>();
-        cachedRanges[column][from][to] = range;
-        return range;
-      } else {
-        return cachedRanges[column][from][to];
-      }
-    }
-
-    public double GetMaximum(int column) {
-      return GetMaximum(column, 0, Rows);
-    }
-
-    public double GetMaximum(int column, int start, int end) {
-      double max = Double.NegativeInfinity;
-      for (int i = start; i < end; i++) {
-        double val = GetValue(i, column);
-        if (!double.IsNaN(val) && val > max) max = val;
-      }
-      return max;
-    }
-
-    public double GetMinimum(int column) {
-      return GetMinimum(column, 0, Rows);
-    }
-
-    public double GetMinimum(int column, int start, int end) {
-      double min = Double.PositiveInfinity;
-      for (int i = start; i < end; i++) {
-        double val = GetValue(i, column);
-        if (!double.IsNaN(val) && val < min) min = val;
-      }
-      return min;
-    }
-
-    internal void ScaleVariable(int column) {
-      if (scalingFactor[column] == 1.0 && scalingOffset[column] == 0.0) {
-        double min = GetMinimum(column);
-        double max = GetMaximum(column);
-        double range = max - min;
-        if (range == 0) ScaleVariable(column, 1.0, -min);
-        else ScaleVariable(column, 1.0 / range, -min);
-      }
-      cachedValuesInvalidated = true;
-      if (fireChangeEvents) FireChanged();
-    }
-
-    internal void ScaleVariable(int column, double factor, double offset) {
-      scalingFactor[column] = factor;
-      scalingOffset[column] = offset;
-      for (int i = 0; i < Rows; i++) {
-        double origValue = samples[i * columns + column];
-        samples[i * columns + column] = (origValue + offset) * factor;
-      }
-      cachedValuesInvalidated = true;
-      if (fireChangeEvents) FireChanged();
-    }
-
-    internal void UnscaleVariable(int column) {
-      if (scalingFactor[column] != 1.0 || scalingOffset[column] != 0.0) {
-        for (int i = 0; i < rows; i++) {
-          double scaledValue = samples[i * columns + column];
-          samples[i * columns + column] = scaledValue / scalingFactor[column] - scalingOffset[column];
-        }
-        scalingFactor[column] = 1.0;
-        scalingOffset[column] = 0.0;
-      }
-      cachedValuesInvalidated = true;
-      if (fireChangeEvents) FireChanged();
-    }
-
-    private void CreateDictionaries() {
-      // keep a means and ranges dictionary for each column (possible target variable) of the dataset.
-      cachedMeans = new Dictionary<int, Dictionary<int, double>>[columns];
-      cachedRanges = new Dictionary<int, Dictionary<int, double>>[columns];
-      for (int i = 0; i < columns; i++) {
-        cachedMeans[i] = new Dictionary<int, Dictionary<int, double>>();
-        cachedRanges[i] = new Dictionary<int, Dictionary<int, double>>();
-      }
-      cachedValuesInvalidated = false;
-    }
   }
 }

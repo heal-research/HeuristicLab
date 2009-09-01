@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Predictor.cs" />
+    <Compile Include="PredictorBuilder.cs" />
     <Compile Include="SupportVectorRegression.cs" />
     <Compile Include="SVMModel.cs" />
     <Compile Include="HeuristicLabSupportVectorMachinesPlugin.cs" />
@@ -96,8 +97,6 @@
     <Compile Include="SVMModelView.Designer.cs">
       <DependentUpon>SVMModelView.cs</DependentUpon>
     </Compile>
-    <Compile Include="VariableEvaluationImpactCalculator.cs" />
-    <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

@@ -402,15 +402,16 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       modelAnalyser.Name = "Model Analyzer";
       SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
       SequentialProcessor seqProc = new SequentialProcessor();
+      PredictorBuilder predictorBuilder = new PredictorBuilder();
+      predictorBuilder.GetVariableInfo("SVMModel").ActualName = "Model";
       VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
-      evalImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      evalImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      evalImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
+      evalImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evalImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       VariableQualityImpactCalculator qualImpactCalc = new VariableQualityImpactCalculator();
-      qualImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      qualImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      qualImpactCalc.GetVariableInfo("SVMModel").ActualName = "Model";
-
+      qualImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
+      
+      seqProc.AddSubOperator(predictorBuilder);
       seqProc.AddSubOperator(evalImpactCalc);
       seqProc.AddSubOperator(qualImpactCalc);
       seqSubScopeProc.AddSubOperator(seqProc);
@@ -447,10 +448,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
       model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
       model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
-      Dictionary<string, int> variableNames = new Dictionary<string, int>();
-      for (int i = 0; i < ds.Columns; i++) variableNames[ds.GetVariableName(i)] = i;
-      model.Predictor = new Predictor(bestModelScope.GetVariableValue<SVMModel>("Model", false), model.TargetVariable, variableNames);
-
+      model.Predictor = bestModelScope.GetVariableValue<IPredictor>("Predictor", true);
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);

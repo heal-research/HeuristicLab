@@ -310,7 +310,24 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal virtual IOperator CreateBestSolutionProcessor() {
-      return new EmptyOperator();
+      SequentialProcessor seq = new SequentialProcessor();
+      // calculate and set variable impacts
+      VariableNamesExtractor namesExtractor = new VariableNamesExtractor();
+      namesExtractor.GetVariableInfo("VariableNames").ActualName = "InputVariableNames";
+      PredictorBuilder predictorBuilder = new PredictorBuilder();
+
+      VariableEvaluationImpactCalculator evaluationImpactCalculator = new VariableEvaluationImpactCalculator();
+      evaluationImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evaluationImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
+      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+      qualityImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualityImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
+
+      seq.AddSubOperator(namesExtractor);
+      seq.AddSubOperator(predictorBuilder);
+      seq.AddSubOperator(evaluationImpactCalculator);
+      seq.AddSubOperator(qualityImpactCalculator);
+      return seq;
     }
 
     protected internal virtual IOperator CreateReplacement() {
@@ -409,11 +426,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal virtual IAnalyzerModel CreateGPModel(IScope bestModelScope) {
-      Engine.GlobalScope.AddSubScope(bestModelScope);
-      IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
-      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", true);
       IAnalyzerModel model = new AnalyzerModel();
-      model.Predictor = new Predictor(evaluator, tree);
+      model.Predictor = bestModelScope.GetVariableValue<IPredictor>("Predictor", true);
       Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
@@ -426,17 +440,6 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
-      // calculate and set variable impacts
-      VariableEvaluationImpactCalculator evaluationImpactCalculator = new VariableEvaluationImpactCalculator();
-      evaluationImpactCalculator.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      evaluationImpactCalculator.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
-      qualityImpactCalculator.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      qualityImpactCalculator.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-        
-
-      evaluationImpactCalculator.Apply(bestModelScope);
-      qualityImpactCalculator.Apply(bestModelScope);
 
       ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
       ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);

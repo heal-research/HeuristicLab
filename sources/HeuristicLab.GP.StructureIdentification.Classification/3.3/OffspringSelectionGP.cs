@@ -21,12 +21,14 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;
+using HeuristicLab.Operators;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, IClassificationAlgorithm {
 
     protected override IOperator CreateBestSolutionProcessor() {
-      IOperator seq = base.CreateBestSolutionProcessor();
+      IOperator seq = new SequentialProcessor();
+      seq.AddSubOperator(base.CreateBestSolutionProcessor());
       seq.AddSubOperator(StandardGP.BestSolutionProcessor);
       return seq;
     }

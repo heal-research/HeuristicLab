@@ -236,14 +236,17 @@ namespace HeuristicLab.LinearRegression {
       testVAF.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
       #endregion
 
-      HeuristicLab.GP.StructureIdentification.VariableEvaluationImpactCalculator evalImpactCalc = new HeuristicLab.GP.StructureIdentification.VariableEvaluationImpactCalculator();
-      evalImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      evalImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      evalImpactCalc.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
-      HeuristicLab.Modeling.VariableQualityImpactCalculator qualImpactCalc = new HeuristicLab.GP.StructureIdentification.VariableQualityImpactCalculator();
-      qualImpactCalc.GetVariableInfo("TrainingSamplesStart").ActualName = "ActualTrainingSamplesStart";
-      qualImpactCalc.GetVariableInfo("TrainingSamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      qualImpactCalc.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      VariableNamesExtractor namesExtractor = new VariableNamesExtractor();
+      namesExtractor.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      namesExtractor.GetVariableInfo("VariableNames").ActualName = "InputVariableNames";
+      PredictorBuilder predictorBuilder = new PredictorBuilder();
+      predictorBuilder.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
+      evalImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      evalImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
+      VariableQualityImpactCalculator qualImpactCalc = new VariableQualityImpactCalculator();
+      qualImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
+      qualImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
       seqProc.AddSubOperator(trainingMSE);
       seqProc.AddSubOperator(validationMSE);
       seqProc.AddSubOperator(testMSE);
@@ -259,6 +262,8 @@ namespace HeuristicLab.LinearRegression {
       seqProc.AddSubOperator(trainingVAF);
       seqProc.AddSubOperator(validationVAF);
       seqProc.AddSubOperator(testVAF);
+      seqProc.AddSubOperator(namesExtractor);
+      seqProc.AddSubOperator(predictorBuilder);
       seqProc.AddSubOperator(qualImpactCalc);
       seqProc.AddSubOperator(evalImpactCalc);
       modelAnalyser.OperatorGraph.InitialOperator = seqProc;
@@ -268,10 +273,8 @@ namespace HeuristicLab.LinearRegression {
 
 
     protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
-      IGeneticProgrammingModel tree = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
-      ITreeEvaluator evaluator = bestModelScope.GetVariableValue<ITreeEvaluator>("TreeEvaluator", true);
       IAnalyzerModel model = new AnalyzerModel();
-      model.Predictor = new Predictor(evaluator, tree);
+      model.Predictor = bestModelScope.GetVariableValue<IPredictor>("Predictor", true);
       model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TrainingQuality", false).Data;
       model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
       model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
