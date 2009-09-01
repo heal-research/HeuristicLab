@@ -90,16 +90,27 @@ namespace HeuristicLab.CEDMA.Core {
         foreach (var modelResult in db.GetModelResults(model)) {
           row.Set(modelResult.Result.Name, modelResult.Value);
         }
+        Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow> inputVariableResultsEntries =
+          new Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow>();
+        foreach (IInputVariableResult inputVariableResult in db.GetInputVariableResults(model)) {
+          if (!inputVariableResultsEntries.ContainsKey(inputVariableResult.Variable)) {
+            inputVariableResultsEntries[inputVariableResult.Variable] = new MatrixRow();
+            inputVariableResultsEntries[inputVariableResult.Variable].Set("InputVariableName", inputVariableResult.Variable.Name);
+          }
+          inputVariableResultsEntries[inputVariableResult.Variable].Set(inputVariableResult.Result.Name, inputVariableResult.Value);
+        }
+        row.Set("VariableImpacts", inputVariableResultsEntries.Values);
+
         row.Set("PersistedData", db.GetModelData(model));
         row.Set("TargetVariable", model.TargetVariable.Name);
         row.Set("Algorithm", model.Algorithm.Name);
-       
+
         matrix.AddRow(row);
       }
       db.Disconnect();
     }
 
-    private VisualMatrix CreateVisualMatrix() {      
+    private VisualMatrix CreateVisualMatrix() {
       DatabaseService db = new DatabaseService(sqlServerCompactConnectionString + database);
       db.Connect();
       IEnumerable<string> multiDimensionalCategoricalVariables = new List<string> { "VariableImpacts: InputVariableName" };
