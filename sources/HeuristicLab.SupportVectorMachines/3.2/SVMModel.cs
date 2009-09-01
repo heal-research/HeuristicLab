@@ -39,7 +39,6 @@ namespace HeuristicLab.SupportVectorMachines {
       set { model = value; }
     }
 
-
     /// <summary>
     /// Gets or sets the range transformation for the model.
     /// </summary>

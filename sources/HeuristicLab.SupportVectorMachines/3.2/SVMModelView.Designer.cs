@@ -49,15 +49,11 @@ namespace HeuristicLab.SupportVectorMachines {
       this.rhoLabel = new System.Windows.Forms.Label();
       this.rho = new System.Windows.Forms.TextBox();
       this.svmTypeLabel = new System.Windows.Forms.Label();
-      this.costLabel = new System.Windows.Forms.Label();
-      this.nuLabel = new System.Windows.Forms.Label();
       this.kernelTypeLabel = new System.Windows.Forms.Label();
       this.gammaLabel = new System.Windows.Forms.Label();
       this.svmType = new System.Windows.Forms.TextBox();
       this.kernelType = new System.Windows.Forms.TextBox();
       this.gamma = new System.Windows.Forms.TextBox();
-      this.cost = new System.Windows.Forms.TextBox();
-      this.nu = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // numberSupportVectorsLabel
@@ -103,24 +99,6 @@ namespace HeuristicLab.SupportVectorMachines {
       this.svmTypeLabel.TabIndex = 4;
       this.svmTypeLabel.Text = "SVM Type:";
       // 
-      // costLabel
-      // 
-      this.costLabel.AutoSize = true;
-      this.costLabel.Location = new System.Drawing.Point(2, 137);
-      this.costLabel.Name = "costLabel";
-      this.costLabel.Size = new System.Drawing.Size(31, 13);
-      this.costLabel.TabIndex = 5;
-      this.costLabel.Text = "Cost:";
-      // 
-      // nuLabel
-      // 
-      this.nuLabel.AutoSize = true;
-      this.nuLabel.Location = new System.Drawing.Point(3, 163);
-      this.nuLabel.Name = "nuLabel";
-      this.nuLabel.Size = new System.Drawing.Size(24, 13);
-      this.nuLabel.TabIndex = 6;
-      this.nuLabel.Text = "Nu:";
-      // 
       // kernelTypeLabel
       // 
       this.kernelTypeLabel.AutoSize = true;
@@ -163,42 +141,22 @@ namespace HeuristicLab.SupportVectorMachines {
       this.gamma.Size = new System.Drawing.Size(100, 20);
       this.gamma.TabIndex = 12;
       // 
-      // cost
-      // 
-      this.cost.Location = new System.Drawing.Point(144, 134);
-      this.cost.Name = "cost";
-      this.cost.ReadOnly = true;
-      this.cost.Size = new System.Drawing.Size(100, 20);
-      this.cost.TabIndex = 14;
-      // 
-      // nu
-      // 
-      this.nu.Location = new System.Drawing.Point(144, 160);
-      this.nu.Name = "nu";
-      this.nu.ReadOnly = true;
-      this.nu.Size = new System.Drawing.Size(100, 20);
-      this.nu.TabIndex = 15;
-      // 
       // SVMModelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.nu);
-      this.Controls.Add(this.cost);
       this.Controls.Add(this.gamma);
       this.Controls.Add(this.kernelType);
       this.Controls.Add(this.svmType);
       this.Controls.Add(this.gammaLabel);
       this.Controls.Add(this.kernelTypeLabel);
-      this.Controls.Add(this.nuLabel);
-      this.Controls.Add(this.costLabel);
       this.Controls.Add(this.svmTypeLabel);
       this.Controls.Add(this.rho);
       this.Controls.Add(this.rhoLabel);
       this.Controls.Add(this.numberOfSupportVectors);
       this.Controls.Add(this.numberSupportVectorsLabel);
       this.Name = "SVMModelView";
-      this.Size = new System.Drawing.Size(253, 189);
+      this.Size = new System.Drawing.Size(253, 135);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -211,14 +169,10 @@ namespace HeuristicLab.SupportVectorMachines {
     private System.Windows.Forms.Label rhoLabel;
     private System.Windows.Forms.TextBox rho;
     private System.Windows.Forms.Label svmTypeLabel;
-    private System.Windows.Forms.Label costLabel;
-    private System.Windows.Forms.Label nuLabel;
     private System.Windows.Forms.Label kernelTypeLabel;
     private System.Windows.Forms.Label gammaLabel;
     private System.Windows.Forms.TextBox svmType;
     private System.Windows.Forms.TextBox kernelType;
     private System.Windows.Forms.TextBox gamma;
-    private System.Windows.Forms.TextBox cost;
-    private System.Windows.Forms.TextBox nu;
   }
 }

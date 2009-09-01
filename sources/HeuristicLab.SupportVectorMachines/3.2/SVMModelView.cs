@@ -48,8 +48,6 @@ namespace HeuristicLab.SupportVectorMachines {
       svmType.Text = model.Model.Parameter.SvmType.ToString();
       kernelType.Text = model.Model.Parameter.KernelType.ToString();
       gamma.Text = model.Model.Parameter.Gamma.ToString();
-      cost.Text = model.Model.Parameter.C.ToString();
-      nu.Text = model.Model.Parameter.Nu.ToString();
     }
   }
 }
