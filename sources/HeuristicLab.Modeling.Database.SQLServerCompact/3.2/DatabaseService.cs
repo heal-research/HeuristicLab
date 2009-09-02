@@ -263,6 +263,14 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       return ctx.Models.ToList().Cast<IModel>();
     }
 
+    public void UpdateModel(IModel model) {
+      Model m = (Model)model;
+      Model orginal = ctx.Models.GetOriginalEntityState(m);
+      if (orginal == null)
+        ctx.Models.Attach(m);
+      ctx.SubmitChanges();
+    }
+
     public byte[] GetModelData(IModel model) {
       var data = (from md in ctx.ModelData
                   where md.Model == model
@@ -270,6 +278,13 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       if (data.Count() == 0)
         return null;
       return data.Single().Data;
+    }
+
+    public void UpdateModelData(IModel model, byte[] modelData) {
+      Model m = (Model)model;
+      ctx.ModelData.DeleteAllOnSubmit(ctx.ModelData.Where(x => x.Model == m));
+      ctx.ModelData.InsertOnSubmit(new ModelData(m, modelData));
+      ctx.SubmitChanges();
     }
 
     public IPredictor GetModelPredictor(IModel model) {

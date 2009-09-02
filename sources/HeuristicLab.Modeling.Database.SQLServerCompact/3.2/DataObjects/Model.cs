@@ -31,7 +31,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
   public class Model : IModel {
     public Model() {
       targetVariable = default(EntityRef<Variable>);
-      algorithm = default(EntityRef<Algorithm>);
+      algorithm = default(EntityRef<Algorithm>);      
     }
 
     public Model(Variable targetVariable, Algorithm algorithm)
@@ -91,6 +91,13 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     IVariable IModel.TargetVariable {
       get { return this.TargetVariable; }
+    }
+
+    private string name;
+    [Column(Storage = "name", CanBeNull = true)]
+    public string Name {
+      get { return this.name; }
+      set { this.name = value; }
     }
 
     private int trainingSamplesStart;

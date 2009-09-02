@@ -28,6 +28,7 @@ namespace HeuristicLab.Modeling.Database {
   public interface IModel {
     IVariable TargetVariable { get; }
     IAlgorithm Algorithm { get; }
+    string Name { get; set; }
     int TrainingSamplesStart { get; }
     int TrainingSamplesEnd { get; }
     int ValidationSamplesStart { get; }

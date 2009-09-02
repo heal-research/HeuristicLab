@@ -31,6 +31,9 @@ namespace HeuristicLab.Modeling.Database {
     IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
     IProblem PersistProblem(Dataset dataset);
 
+    void UpdateModel(IModel model);
+    void UpdateModelData(IModel model, byte[] modelData);
+
     IEnumerable<IModel> GetAllModels();
     IEnumerable<IResult> GetAllResults();
     IEnumerable<IResult> GetAllResultsForInputVariables();
