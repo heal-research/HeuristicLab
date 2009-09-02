@@ -24,26 +24,26 @@ using System.Collections.ObjectModel;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.SparseMatrix {   
-  public class Matrix : ItemBase {
+  public class Matrix<KeyType,ValueType> : ItemBase {
     public Matrix() {
-      this.rows = new List<MatrixRow>();
+      this.rows = new List<MatrixRow<KeyType,ValueType>>();
     }
 
-    public Matrix(IEnumerable<MatrixRow> rows)
+    public Matrix(IEnumerable<MatrixRow<KeyType,ValueType>> rows)
       : this() {
       this.rows.AddRange(rows);
     }
 
-    private List<MatrixRow> rows;
-    public ReadOnlyCollection<MatrixRow> GetRows() {
+    private List<MatrixRow<KeyType, ValueType>> rows;
+    public ReadOnlyCollection<MatrixRow<KeyType, ValueType>> GetRows() {
       return rows.AsReadOnly();
     }
 
-    public void AddRow(MatrixRow row) {
+    public void AddRow(MatrixRow<KeyType, ValueType> row) {
       this.rows.Add(row);
     }
 
-    public void RemoveRow(MatrixRow row) {
+    public void RemoveRow(MatrixRow<KeyType, ValueType> row) {
       this.rows.Remove(row);
     }
     

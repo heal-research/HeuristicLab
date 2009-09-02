@@ -55,8 +55,8 @@ namespace HeuristicLab.CEDMA.Core {
       }
     }
 
-    private Matrix matrix;
-    public Matrix Matrix {
+    private Matrix<string,object> matrix;
+    public Matrix<string,object> Matrix {
       get {
         if (matrix == null) LoadResults();
         return matrix;
@@ -81,20 +81,20 @@ namespace HeuristicLab.CEDMA.Core {
     }
 
     private void LoadResults() {
-      matrix = new Matrix();
+      matrix = new Matrix<string,object>();
       DatabaseService db = new DatabaseService(sqlServerCompactConnectionString + database);
       db.Connect();
 
       foreach (var model in db.GetAllModels()) {
-        MatrixRow row = new MatrixRow();
+        MatrixRow<string, object> row = new MatrixRow<string, object>();
         foreach (var modelResult in db.GetModelResults(model)) {
           row.Set(modelResult.Result.Name, modelResult.Value);
         }
-        Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow> inputVariableResultsEntries =
-          new Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow>();
+        Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow<string, object>> inputVariableResultsEntries =
+          new Dictionary<HeuristicLab.Modeling.Database.IVariable, MatrixRow<string, object>>();
         foreach (IInputVariableResult inputVariableResult in db.GetInputVariableResults(model)) {
           if (!inputVariableResultsEntries.ContainsKey(inputVariableResult.Variable)) {
-            inputVariableResultsEntries[inputVariableResult.Variable] = new MatrixRow();
+            inputVariableResultsEntries[inputVariableResult.Variable] = new MatrixRow<string, object>();
             inputVariableResultsEntries[inputVariableResult.Variable].Set("InputVariableName", inputVariableResult.Variable.Name);
           }
           inputVariableResultsEntries[inputVariableResult.Variable].Set(inputVariableResult.Result.Name, inputVariableResult.Value);

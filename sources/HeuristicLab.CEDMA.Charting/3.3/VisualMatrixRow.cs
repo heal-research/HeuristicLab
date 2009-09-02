@@ -26,7 +26,7 @@ namespace HeuristicLab.CEDMA.Charting {
       this.yJitter = yJitter;
     }
 
-    public VisualMatrixRow(MatrixRow row)
+    public VisualMatrixRow(MatrixRow<string,object> row)
       : this() {
       foreach (KeyValuePair<string, object> value in row.Values)
         dict[value.Key] = value.Value;

@@ -136,8 +136,8 @@ namespace HeuristicLab.CEDMA.Charting {
           actualXValues.Add(r.Get(xDimension));
         } else if (matrix.MultiDimensionalCategoricalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow> subRows = (IEnumerable<MatrixRow>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow subRow in subRows) {
+          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string,object>>)r.Get(path.ElementAt(0));
+          foreach (MatrixRow<string, object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               xs.Add(matrix.IndexOfCategoricalValue(xDimension, subRow.Get(path.ElementAt(1))) + r.YJitter * xJitterFactor);
               actualXValues.Add(subRow.Get(path.ElementAt(1)));
@@ -145,8 +145,8 @@ namespace HeuristicLab.CEDMA.Charting {
           }
         } else if (matrix.MultiDimensionalOrdinalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow> subRows = (IEnumerable<MatrixRow>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow subRow in subRows) {
+          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
+          foreach (MatrixRow<string,object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               xs.Add(Convert.ToDouble(subRow.Get(path.ElementAt(1))) + r.XJitter * xJitterFactor);
               actualXValues.Add(subRow.Get(path.ElementAt(1)));
@@ -161,8 +161,8 @@ namespace HeuristicLab.CEDMA.Charting {
           actualYValues.Add(r.Get(yDimension));
         } else if (matrix.MultiDimensionalCategoricalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow> subRows = (IEnumerable<MatrixRow>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow subRow in subRows) {
+          IEnumerable<MatrixRow<string,object>> subRows = (IEnumerable<MatrixRow<string,object>>)r.Get(path.ElementAt(0));
+          foreach (MatrixRow<string,object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               ys.Add(matrix.IndexOfCategoricalValue(yDimension, subRow.Get(path.ElementAt(1))) + r.YJitter * yJitterFactor);
               actualYValues.Add(subRow.Get(path.ElementAt(1)));
@@ -170,8 +170,8 @@ namespace HeuristicLab.CEDMA.Charting {
           }
         } else if (matrix.MultiDimensionalOrdinalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow> subRows = (IEnumerable<MatrixRow>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow subRow in subRows) {
+          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
+          foreach (MatrixRow<string,object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               ys.Add(Convert.ToDouble(subRow.Get(path.ElementAt(1))) + r.YJitter * yJitterFactor);
               actualYValues.Add(subRow.Get(path.ElementAt(1)));

@@ -22,22 +22,26 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.SparseMatrix {
-  public class MatrixRow {
-    private Dictionary<string, object> values;
+  public class MatrixRow<KeyType, ValueType> {
+    private Dictionary<KeyType, ValueType> values;
     public MatrixRow() {
-      values = new Dictionary<string, object>();
-    } 
-
-    public void Set(string name, object value) {
-      values.Add(name, value);
+      values = new Dictionary<KeyType, ValueType>();
     }
 
-    public object Get(string name) {
-      if (name == null || !values.ContainsKey(name)) return null;
-      return values[name];
+    public void Set(KeyType key, ValueType value) {
+      values.Add(key, value);
     }
 
-    public IEnumerable<KeyValuePair<string, object>> Values {
+    public bool ContainsKey(KeyType key) {
+      return values.ContainsKey(key);
+    }
+
+    public ValueType Get(KeyType key) {
+      if (key == null || !values.ContainsKey(key)) return default(ValueType);
+      return values[key];
+    }
+
+    public IEnumerable<KeyValuePair<KeyType, ValueType>> Values {
       get { return values; }
     }
   }

@@ -8,7 +8,7 @@ using HeuristicLab.SparseMatrix;
 namespace HeuristicLab.CEDMA.Charting {
   public class VisualMatrix : ItemBase {
     private Dictionary<string, Dictionary<object, double>> categoricalValueIndices;
-    private Matrix matrix;
+    private Matrix<string,object> matrix;
 
     public VisualMatrix() {
       this.rows = new List<VisualMatrixRow>();
@@ -18,13 +18,13 @@ namespace HeuristicLab.CEDMA.Charting {
       this.multiDimensionalOrdinalVariables = new List<string>();
       this.categoricalValueIndices = new Dictionary<string, Dictionary<object, double>>();    }
 
-    public VisualMatrix(Matrix matrix, IEnumerable<string> categoricalVariables, IEnumerable<string> ordinalVariables,
+    public VisualMatrix(Matrix<string,object> matrix, IEnumerable<string> categoricalVariables, IEnumerable<string> ordinalVariables,
       IEnumerable<string> multiDimensionalCategoricalVariables, IEnumerable<string> multiDimensionalOrdinalVariables)
       : this() {
       this.matrix = matrix;
       this.matrix.Changed += new EventHandler(MatrixChanged);
 
-      foreach (MatrixRow row in matrix.GetRows())
+      foreach (MatrixRow<string,object> row in matrix.GetRows())
         rows.Add(new VisualMatrixRow(row));
 
       this.categoricalVariables.AddRange(categoricalVariables);
