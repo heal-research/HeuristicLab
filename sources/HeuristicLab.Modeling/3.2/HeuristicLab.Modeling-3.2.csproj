@@ -83,7 +83,6 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="ClassificationProblemInjector.cs" />
-    <Compile Include="DoubleExtensions.cs" />
     <Compile Include="IAnalyzerModel.cs" />
     <Compile Include="MatrixCreator.cs" />
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
@@ -111,6 +110,10 @@
     <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
+      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
+      <Name>HeuristicLab.Common-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>

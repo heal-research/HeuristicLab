@@ -21,7 +21,7 @@
 
 using System;
 using System.Diagnostics;
-using HeuristicLab.Modeling; // double.IsAlmost extension
+using HeuristicLab.Common; // double.IsAlmost extension
 
 namespace HeuristicLab.GP.StructureIdentification {
   /// <summary>

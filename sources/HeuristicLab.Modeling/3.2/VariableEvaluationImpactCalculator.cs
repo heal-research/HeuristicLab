@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using System.Linq;
@@ -37,8 +38,8 @@ namespace HeuristicLab.Modeling {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("InputVariableNames", "Names of used variables in the model (optional)", typeof(ItemList<StringData>), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SamplesStart", "SamplesStart", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("SamplesEnd", "SamplesEnd", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("SamplesEnd", "TrainingSamplesEnd", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("VariableEvaluationImpacts", "VariableEvaluationImpacts", typeof(ItemList), VariableKind.New));
     }
 
@@ -75,11 +76,9 @@ namespace HeuristicLab.Modeling {
       return null;
 
     }
-
     public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, int start, int end) {
       return Calculate(dataset, predictor, targetVariableName, null, start, end);
     }
-
 
     public static Dictionary<string, double> Calculate(Dataset dataset, IPredictor predictor, string targetVariableName, IEnumerable<string> inputVariableNames, int start, int end) {
       Dictionary<string, double> evaluationImpacts = new Dictionary<string, double>();

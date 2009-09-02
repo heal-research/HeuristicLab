@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-namespace HeuristicLab.Modeling {
+namespace HeuristicLab.Common {
   public static class DoubleExtensions {
     public static bool IsAlmost(this double x, double y) {
       return Math.Abs(x - y) < 1.0E-12;

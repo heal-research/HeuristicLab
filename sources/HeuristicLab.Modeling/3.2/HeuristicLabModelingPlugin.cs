@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Modeling {
   [ClassInfo(Name = "HeuristicLab.Modeling-3.2")]
   [PluginFile(Filename = "HeuristicLab.Modeling-3.2.dll", Filetype = PluginFileType.Assembly)]
+  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]
   [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]

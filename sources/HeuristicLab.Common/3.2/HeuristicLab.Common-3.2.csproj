@@ -63,6 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoubleExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="EnumerableEventArgs.cs" />
     <Compile Include="HeuristicLabCommonPlugin.cs" />
     <Compile Include="ObservableCollection.cs" />
