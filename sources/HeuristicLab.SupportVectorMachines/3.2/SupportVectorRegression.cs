@@ -393,6 +393,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxGammaIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("KernelType", new StringData("RBF")));
       injector.AddVariable(new HeuristicLab.Core.Variable("Type", new StringData("NU_SVR")));
+      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
 
       return injector;
     }

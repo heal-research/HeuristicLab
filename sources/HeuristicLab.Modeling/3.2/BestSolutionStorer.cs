@@ -24,9 +24,8 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 
-namespace HeuristicLab.Logging {
+namespace HeuristicLab.Modeling {
   /// <summary>
   /// Keeps a variable in the global scope that contains the scope representing the best solution.
   /// </summary>

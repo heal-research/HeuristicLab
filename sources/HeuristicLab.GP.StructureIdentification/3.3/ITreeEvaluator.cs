@@ -25,7 +25,8 @@ using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public interface ITreeEvaluator : IItem {
-    void PrepareForEvaluation(Dataset dataset, int targetVariable, int start, int end, IFunctionTree functionTree);
+    double LowerEvaluationLimit { get; set; }
+    double UpperEvaluationLimit { get; set; }
     void PrepareForEvaluation(Dataset dataset, IFunctionTree functionTree);
     double Evaluate(int sampleIndex);
   }

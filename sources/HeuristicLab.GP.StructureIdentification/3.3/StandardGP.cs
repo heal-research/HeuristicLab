@@ -114,7 +114,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected internal override IOperator CreateProblemInjector() {
-      SequentialProcessor seq = new SequentialProcessor();      
+      SequentialProcessor seq = new SequentialProcessor();
       var probInject = new ProblemInjector();
       probInject.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
       probInject.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
@@ -202,109 +202,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       return manipulator;
     }
 
-    protected internal override IOperator CreateBestSolutionProcessor() {      
-      SequentialProcessor bestSolutionProcessor = new SequentialProcessor();
-      bestSolutionProcessor.AddSubOperator(base.CreateBestSolutionProcessor());
-
-      #region MSE
-      MeanSquaredErrorEvaluator testMseEvaluator = new MeanSquaredErrorEvaluator();
-      testMseEvaluator.Name = "TestMeanSquaredErrorEvaluator";
-      testMseEvaluator.GetVariableInfo("MSE").ActualName = "TestQuality";
-      testMseEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testMseEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-      #endregion
-      #region MAPE
-      MeanAbsolutePercentageErrorEvaluator trainingMapeEvaluator = new MeanAbsolutePercentageErrorEvaluator();
-      trainingMapeEvaluator.Name = "TrainingMapeEvaluator";
-      trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TrainingMAPE";
-      trainingMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      trainingMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      MeanAbsolutePercentageErrorEvaluator validationMapeEvaluator = new MeanAbsolutePercentageErrorEvaluator();
-      validationMapeEvaluator.Name = "ValidationMapeEvaluator";
-      validationMapeEvaluator.GetVariableInfo("MAPE").ActualName = "ValidationMAPE";
-      validationMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-      MeanAbsolutePercentageErrorEvaluator testMapeEvaluator = new MeanAbsolutePercentageErrorEvaluator();
-      testMapeEvaluator.Name = "TestMapeEvaluator";
-      testMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TestMAPE";
-      testMapeEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testMapeEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-      #endregion
-      #region MAPRE
-      MeanAbsolutePercentageOfRangeErrorEvaluator trainingMapreEvaluator = new MeanAbsolutePercentageOfRangeErrorEvaluator();
-      trainingMapreEvaluator.Name = "TrainingMapreEvaluator";
-      trainingMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TrainingMAPRE";
-      trainingMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      trainingMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      MeanAbsolutePercentageOfRangeErrorEvaluator validationMapreEvaluator = new MeanAbsolutePercentageOfRangeErrorEvaluator();
-      validationMapreEvaluator.Name = "ValidationMapreEvaluator";
-      validationMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "ValidationMAPRE";
-      validationMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-      MeanAbsolutePercentageOfRangeErrorEvaluator testMapreEvaluator = new MeanAbsolutePercentageOfRangeErrorEvaluator();
-      testMapreEvaluator.Name = "TestMapreEvaluator";
-      testMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TestMAPRE";
-      testMapreEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testMapreEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-      #endregion MAPRE
-      #region R2
-      CoefficientOfDeterminationEvaluator trainingR2Evaluator = new CoefficientOfDeterminationEvaluator();
-      trainingR2Evaluator.Name = "TrainingR2Evaluator";
-      trainingR2Evaluator.GetVariableInfo("R2").ActualName = "TrainingR2";
-      trainingR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      trainingR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      CoefficientOfDeterminationEvaluator validationR2Evaluator = new CoefficientOfDeterminationEvaluator();
-      validationR2Evaluator.Name = "ValidationR2Evaluator";
-      validationR2Evaluator.GetVariableInfo("R2").ActualName = "ValidationR2";
-      validationR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-      CoefficientOfDeterminationEvaluator testR2Evaluator = new CoefficientOfDeterminationEvaluator();
-      testR2Evaluator.Name = "TestR2Evaluator";
-      testR2Evaluator.GetVariableInfo("R2").ActualName = "TestR2";
-      testR2Evaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testR2Evaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-      #endregion
-      #region VAF
-      VarianceAccountedForEvaluator trainingVAFEvaluator = new VarianceAccountedForEvaluator();
-      trainingVAFEvaluator.Name = "TrainingVAFEvaluator";
-      trainingVAFEvaluator.GetVariableInfo("VAF").ActualName = "TrainingVAF";
-      trainingVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      trainingVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      VarianceAccountedForEvaluator validationVAFEvaluator = new VarianceAccountedForEvaluator();
-      validationVAFEvaluator.Name = "ValidationVAFEvaluator";
-      validationVAFEvaluator.GetVariableInfo("VAF").ActualName = "ValidationVAF";
-      validationVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-      VarianceAccountedForEvaluator testVAFEvaluator = new VarianceAccountedForEvaluator();
-      testVAFEvaluator.Name = "TestVAFEvaluator";
-      testVAFEvaluator.GetVariableInfo("VAF").ActualName = "TestVAF";
-      testVAFEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testVAFEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-      #endregion
-      ProgrammableOperator progOperator = new ProgrammableOperator();
-      progOperator.RemoveVariableInfo("Result");
-      progOperator.AddVariableInfo(new HeuristicLab.Core.VariableInfo("EvaluatedSolutions", "", typeof(IntData), VariableKind.In));
-      progOperator.Code = @"
-int evalSolutions = EvaluatedSolutions.Data;
-scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions)));
-";
-      bestSolutionProcessor.AddSubOperator(testMseEvaluator);
-      bestSolutionProcessor.AddSubOperator(trainingMapeEvaluator);
-      bestSolutionProcessor.AddSubOperator(validationMapeEvaluator);
-      bestSolutionProcessor.AddSubOperator(testMapeEvaluator);
-      bestSolutionProcessor.AddSubOperator(trainingMapreEvaluator);
-      bestSolutionProcessor.AddSubOperator(validationMapreEvaluator);
-      bestSolutionProcessor.AddSubOperator(testMapreEvaluator);
-      bestSolutionProcessor.AddSubOperator(trainingR2Evaluator);
-      bestSolutionProcessor.AddSubOperator(validationR2Evaluator);
-      bestSolutionProcessor.AddSubOperator(testR2Evaluator);
-      bestSolutionProcessor.AddSubOperator(trainingVAFEvaluator);
-      bestSolutionProcessor.AddSubOperator(validationVAFEvaluator);
-      bestSolutionProcessor.AddSubOperator(testVAFEvaluator);
-      bestSolutionProcessor.AddSubOperator(progOperator);
-      return bestSolutionProcessor;
-    }
-
     protected internal override IOperator CreateLoggingOperator() {
       CombinedOperator loggingOperator = new CombinedOperator();
       loggingOperator.Name = "Logging";
@@ -335,25 +232,6 @@ scope.AddVariable(new Variable(""EvaluatedSolutions"", new IntData(evalSolutions
       loggingOperator.OperatorGraph.AddOperator(seq);
       loggingOperator.OperatorGraph.InitialOperator = seq;
       return loggingOperator;
-    }
-
-    protected internal override IAnalyzerModel CreateGPModel(IScope bestModelScope) {
-      IAnalyzerModel model = base.CreateGPModel(bestModelScope);
-      model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
-      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
-      model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;
-      model.TestCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data;
-      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data;
-      model.ValidationMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data;
-      model.TestMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data;
-      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data;
-      model.ValidationMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data;
-      model.TestMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data;
-      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
-      model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
-      model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
-
-      return model;
     }
 
     public virtual IEditor CreateEditor() {

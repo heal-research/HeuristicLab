@@ -96,7 +96,7 @@ namespace HeuristicLab.GP {
     }
 
     public override IView CreateView() {
-      return new FunctionTreeView(this.FunctionTree);
+      return new GeneticProgrammingModelView(this);
     }
   }
 }

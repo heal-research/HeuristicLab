@@ -27,6 +27,8 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
   public interface IPredictor : IItem {
+    double UpperPredictionLimit { get; set; }
+    double LowerPredictionLimit { get; set; }
     double[] Predict(Dataset dataset, int start, int end);
   } 
 }

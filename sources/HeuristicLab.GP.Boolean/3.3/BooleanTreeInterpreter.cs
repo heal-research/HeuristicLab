@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using System.Xml;
 using System.Diagnostics;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.DataAnalysis;
@@ -66,16 +67,12 @@ namespace HeuristicLab.GP.Boolean {
         case SymbolTable.VARIABLE: {
             var varNode = (VariableFunctionTree)t;
             int index = dataset.GetVariableIndex(varNode.VariableName);
-            return !IsAlmost(dataset.GetValue(currentRow, index), 0.0);
+            return !dataset.GetValue(currentRow, index).IsAlmost(0.0);
           }
         case SymbolTable.UNKNOWN:
         default:
           throw new UnknownFunctionException(t.Function.Name);
       }
-    }
-
-    private bool IsAlmost(double x, double y) {
-      return Math.Abs(x - y) < EPSILON;
     }
   }
 }

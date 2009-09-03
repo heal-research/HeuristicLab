@@ -32,22 +32,19 @@ using HeuristicLab.Core;
 namespace HeuristicLab.SupportVectorMachines {
   public partial class SVMModelView : ViewBase {
     private SVMModel model;
-    
+    public SVMModelView() : base() {
+      InitializeComponent();
+    }    
     public SVMModelView(SVMModel model) : base() {
       InitializeComponent();
       this.model = model;
-      model.Changed += (sender, args) => UpdateControls();
+      model.Changed += (sender, args) => Refresh();
 
-      UpdateControls();
-    }
-
-    protected override void UpdateControls() {
-      base.UpdateControls();
-      numberOfSupportVectors.Text = model.Model.SupportVectorCount.ToString();
-      rho.Text = model.Model.Rho[0].ToString();
-      svmType.Text = model.Model.Parameter.SvmType.ToString();
-      kernelType.Text = model.Model.Parameter.KernelType.ToString();
-      gamma.Text = model.Model.Parameter.Gamma.ToString();
+      numberOfSupportVectors.DataBindings.Add(new Binding("Text", model.Model, "SupportVectorCount"));
+      rho.DataBindings.Add(new Binding("Text", model.Model, "Rho"));
+      svmType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "SvmType"));
+      kernelType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "KernelType"));
+      gamma.DataBindings.Add(new Binding("Text", model.Model.Parameter, "Gamma"));
     }
   }
 }

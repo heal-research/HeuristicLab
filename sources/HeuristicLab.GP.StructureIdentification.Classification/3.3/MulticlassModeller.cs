@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
@@ -82,13 +83,13 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
           for (int k = origTrainingSamplesStart; k < origTrainingSamplesEnd; k++) {
             double[] row = new double[dataset.Columns];
             double targetValue = origDataset.GetValue(k, targetVariable);
-            if (IsEqual(targetValue, classAValue)) {
+            if (targetValue.IsAlmost(classAValue)) {
               for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 0;
               rows.Add(row);
-            } else if (IsEqual(targetValue, classBValue)) {
+            } else if (targetValue.IsAlmost(classBValue)) {
               for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
@@ -101,13 +102,13 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
           for (int k = origValidationSamplesStart; k < origValidationSamplesEnd; k++) {
             double[] row = new double[dataset.Columns];
             double targetValue = origDataset.GetValue(k, targetVariable);
-            if (IsEqual(targetValue, classAValue)) {
+            if (targetValue.IsAlmost(classAValue)) {
               for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
               row[targetVariable] = 0;
               rows.Add(row);
-            } else if (IsEqual(targetValue, classBValue)) {
+            } else if (targetValue.IsAlmost(classBValue)) {
               for (int l = 0; l < row.Length; l++) {
                 row[l] = origDataset.GetValue(k, l);
               }
@@ -139,10 +140,6 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
         }
       }
       return null;
-    }
-
-    private bool IsEqual(double x, double y) {
-      return Math.Abs(x - y) < EPSILON;
     }
   }
 }

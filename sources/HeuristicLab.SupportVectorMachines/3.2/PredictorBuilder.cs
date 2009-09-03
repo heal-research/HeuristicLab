@@ -36,6 +36,9 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("SVMModel", "The SVM model", typeof(SVMModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "The target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("InputVariables", "The input variable names", typeof(StringData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of the training set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of the training set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("PunishmentFactor", "The punishment factor limits the range of predicted values", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Predictor", "The predictor can be used to generate estimated values", typeof(IPredictor), VariableKind.New));
     }
 
@@ -47,12 +50,22 @@ namespace HeuristicLab.SupportVectorMachines {
       Dataset ds = GetVariableValue<Dataset>("Dataset", scope, true);
       SVMModel model = GetVariableValue<SVMModel>("SVMModel", scope, true);
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
+      int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
+
       string targetVariableName = ds.GetVariableName(targetVariable);
       ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true);
       Dictionary<string, int> variableNames = new Dictionary<string, int>();
       for (int i = 0; i < ds.Columns; i++) variableNames[ds.GetVariableName(i)] = i;
 
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), new Predictor(model, targetVariableName, variableNames)));
+      double mean = ds.GetMean(targetVariable, start, end);
+      double range = ds.GetRange(targetVariable, start, end);
+
+      Predictor predictor = new Predictor(model, targetVariableName, variableNames);
+      predictor.LowerPredictionLimit = mean - punishmentFactor * range;
+      predictor.UpperPredictionLimit = mean + punishmentFactor * range;
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
       return null;
     }
   }

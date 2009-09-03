@@ -51,7 +51,6 @@ namespace HeuristicLab.GP {
       // 
       // funTreeView
       // 
-      this.funTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.funTreeView.HideSelection = false;
       this.funTreeView.Location = new System.Drawing.Point(0, 0);
       this.funTreeView.Name = "funTreeView";
@@ -72,7 +71,7 @@ namespace HeuristicLab.GP {
 
     #endregion
 
-    private System.Windows.Forms.ContextMenu treeNodeContextMenu;
-    private System.Windows.Forms.TreeView funTreeView;
+    protected System.Windows.Forms.ContextMenu treeNodeContextMenu;
+    protected System.Windows.Forms.TreeView funTreeView;
   }
 }

@@ -84,10 +84,18 @@
     <Compile Include="BaseClasses\AlgorithmBase.cs" />
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <Compile Include="HL3TreeEvaluatorInjector.cs" />
+    <Compile Include="HL2TreeEvaluatorInjector.cs" />
     <Compile Include="PredictorBuilder.cs" />
     <Compile Include="Predictor.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
     <Compile Include="HL3TreeEvaluator.cs" />
+    <Compile Include="PredictorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PredictorView.Designer.cs">
+      <DependentUpon>PredictorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Symbols\Addition.cs" />
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\Average.cs" />
@@ -220,6 +228,9 @@
   <ItemGroup>
     <EmbeddedResource Include="OffSpringSelectionGpEditor.resx">
       <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PredictorView.resx">
+      <DependentUpon>PredictorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StandardGpEditor.resx">
       <DependentUpon>StandardGpEditor.cs</DependentUpon>

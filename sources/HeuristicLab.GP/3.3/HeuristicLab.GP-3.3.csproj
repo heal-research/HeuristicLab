@@ -88,6 +88,12 @@
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\Terminal.cs" />
     <Compile Include="BaseClasses\UnaryFunction.cs" />
+    <Compile Include="GeneticProgrammingModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GeneticProgrammingModelView.Designer.cs">
+      <DependentUpon>GeneticProgrammingModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="FunctionLibrary.cs" />
     <Compile Include="FunctionLibraryEditor.cs">
       <SubType>UserControl</SubType>
@@ -126,6 +132,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GeneticProgrammingModelView.resx">
+      <DependentUpon>GeneticProgrammingModelView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FunctionLibraryEditor.resx">
       <DependentUpon>FunctionLibraryEditor.cs</DependentUpon>
     </EmbeddedResource>

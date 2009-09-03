@@ -82,6 +82,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PredictorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PredictorView.Designer.cs">
+      <DependentUpon>PredictorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Predictor.cs" />
     <Compile Include="PredictorBuilder.cs" />
     <Compile Include="SupportVectorRegression.cs" />
@@ -153,6 +159,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PredictorView.resx">
+      <DependentUpon>PredictorView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SVMModelView.resx">
       <DependentUpon>SVMModelView.cs</DependentUpon>
     </EmbeddedResource>

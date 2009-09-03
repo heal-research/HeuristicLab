@@ -31,8 +31,12 @@ using SVM;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.SupportVectorMachines {
-  public class Predictor : ItemBase, IPredictor {
+  public class Predictor : PredictorBase {
     private SVMModel svmModel;
+    public SVMModel Model {
+      get { return svmModel; }
+    }
+
     private Dictionary<string, int> variableNames = new Dictionary<string, int>();
     private string targetVariable;
 
@@ -45,7 +49,7 @@ namespace HeuristicLab.SupportVectorMachines {
       this.variableNames = variableNames;
     }
 
-    public double[] Predict(Dataset input, int start, int end) {
+    public override double[] Predict(Dataset input, int start, int end) {
       if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       RangeTransform transform = svmModel.RangeTransform;
@@ -63,13 +67,13 @@ namespace HeuristicLab.SupportVectorMachines {
       int columns = input.Columns;
       double[] result = new double[rows];
       for (int row = 0; row < rows; row++) {
-        result[row] = SVM.Prediction.Predict(model, scaledProblem.X[row]);
+        result[row] = Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[row]), UpperPredictionLimit), LowerPredictionLimit);
       }
       return result;
     }
 
     public override IView CreateView() {
-      return svmModel.CreateView();
+      return new PredictorView(this);
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

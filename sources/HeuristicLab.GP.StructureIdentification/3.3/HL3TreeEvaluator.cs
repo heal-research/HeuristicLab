@@ -29,6 +29,9 @@ namespace HeuristicLab.GP.StructureIdentification {
   /// Not thread-safe!
   /// </summary>
   public class HL3TreeEvaluator : TreeEvaluatorBase {
+    public HL3TreeEvaluator() : base() { } // for persistence
+    public HL3TreeEvaluator(double minValue, double maxValue) : base(minValue, maxValue) { }
+
     protected override double EvaluateBakedCode() {
       Instr currInstr = codeArr[PC++];
       switch (currInstr.symbol) {

@@ -30,23 +30,24 @@ using System.Xml;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class Predictor : ItemBase, IPredictor {
+  public class Predictor : PredictorBase {
     private ITreeEvaluator treeEvaluator;
-    
-
-    public Predictor() : base() { } // for persistence
-    public Predictor(ITreeEvaluator evaluator, IGeneticProgrammingModel tree)
-      : base() {
-      this.treeEvaluator = evaluator;
-      this.functionTree = tree;
-    }
 
     private IGeneticProgrammingModel functionTree;
     public IGeneticProgrammingModel FunctionTree {
       get { return functionTree; }
     }
+    public Predictor() : base() { } // for persistence
+    public Predictor(ITreeEvaluator evaluator, IGeneticProgrammingModel tree, double lowerPredictionLimit, double upperPredictionLimit)
+      : base(lowerPredictionLimit, upperPredictionLimit) {
+      this.treeEvaluator = evaluator;
+      this.functionTree = tree;
+    }
 
-    public double[] Predict(Dataset input, int start, int end) {
+    public override double[] Predict(Dataset input, int start, int end) {
+      treeEvaluator.UpperEvaluationLimit = UpperPredictionLimit;
+      treeEvaluator.LowerEvaluationLimit = LowerPredictionLimit;
+
       if (start < 0 || end <= start) throw new ArgumentException("start must be larger than zero and strictly smaller than end");
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       treeEvaluator.PrepareForEvaluation(input, functionTree.FunctionTree);
@@ -58,7 +59,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public override IView CreateView() {
-      return functionTree.CreateView();
+      return new PredictorView(this);
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {

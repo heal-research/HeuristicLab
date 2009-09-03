@@ -96,6 +96,8 @@ namespace HeuristicLab.LinearRegression {
       problemInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
       problemInjector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
 
+      HL2TreeEvaluatorInjector treeEvaluatorInjector = new HL2TreeEvaluatorInjector();
+
       IOperator shuffler = new DatasetShuffler();
       shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
       shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
@@ -107,6 +109,7 @@ namespace HeuristicLab.LinearRegression {
       seq.AddSubOperator(randomInjector);
       seq.AddSubOperator(problemInjector);
       seq.AddSubOperator(globalInjector);
+      seq.AddSubOperator(treeEvaluatorInjector);
       seq.AddSubOperator(shuffler);
       seq.AddSubOperator(lrOperator);
       seq.AddSubOperator(CreateModelAnalyser());
@@ -119,9 +122,8 @@ namespace HeuristicLab.LinearRegression {
 
     private IOperator CreateGlobalInjector() {
       VariableInjector injector = new VariableInjector();
-      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(10)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000)));
       injector.AddVariable(new HeuristicLab.Core.Variable("TotalEvaluatedNodes", new DoubleData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("TreeEvaluator", new HL2TreeEvaluator()));
       injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData(false)));
 
       return injector;
@@ -270,7 +272,6 @@ namespace HeuristicLab.LinearRegression {
       modelAnalyser.OperatorGraph.AddOperator(seqProc);
       return modelAnalyser;
     }
-
 
     protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
       IAnalyzerModel model = new AnalyzerModel();

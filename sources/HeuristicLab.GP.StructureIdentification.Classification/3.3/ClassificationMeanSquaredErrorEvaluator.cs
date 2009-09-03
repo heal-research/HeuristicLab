@@ -22,6 +22,7 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class ClassificationMeanSquaredErrorEvaluator : GPClassificationEvaluatorBase {
@@ -48,8 +49,8 @@ for the estimated values vs. the real values of 'TargetVariable'.";
           // between classes use squared error
           // on the lower end and upper end only add linear error if the absolute error is larger than 1
           // the error>1.0 constraint is needed for balance because in the interval ]-1, 1[ the squared error is smaller than the absolute error
-          if ((IsEqual(original, classes[0]) && error < -1.0) ||
-            (IsEqual(original, classes[classes.Length - 1]) && error > 1.0)) {
+          if ((original.IsAlmost(classes[0]) && error < -1.0) ||
+            (original.IsAlmost(classes[classes.Length - 1]) && error > 1.0)) {
             errorsSquaredSum += Math.Abs(error); // only add linear error below the smallest class or above the largest class
           } else {
             errorsSquaredSum += error * error;
@@ -69,10 +70,6 @@ for the estimated values vs. the real values of 'TargetVariable'.";
       }
 
       mse.Data = errorsSquaredSum;
-    }
-
-    private bool IsEqual(double x, double y) {
-      return Math.Abs(x - y) < EPSILON;
     }
   }
 }

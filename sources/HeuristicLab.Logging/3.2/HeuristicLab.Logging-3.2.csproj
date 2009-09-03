@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
-    <Compile Include="BestSolutionStorer.cs" />
     <Compile Include="PointXYChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
