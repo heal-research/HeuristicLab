@@ -37,7 +37,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       this.connection = connection;
       Connect();
       if (!ctx.DatabaseExists())
-        ctx.CreateDatabase();
+        ctx.CreateDatabase();      
     }
 
     private void EmptyDatabase() {
@@ -268,6 +268,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       Model orginal = ctx.Models.GetOriginalEntityState(m);
       if (orginal == null)
         ctx.Models.Attach(m);
+      ctx.Refresh(RefreshMode.KeepCurrentValues, m);
       ctx.SubmitChanges();
     }
 
