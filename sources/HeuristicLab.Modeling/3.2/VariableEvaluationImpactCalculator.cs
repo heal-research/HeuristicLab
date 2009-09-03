@@ -99,22 +99,17 @@ namespace HeuristicLab.Modeling {
           mean = dataset.GetMean(variableName, start, end);
           oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
           newValues = predictor.Predict(dirtyDataset, start, end);
-          evaluationImpacts[variableName] = CalculateMSE(referenceValues, newValues);
+          evaluationImpacts[variableName] = 1 - CalculateVAF(referenceValues, newValues);
           dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
         }
       }
 
-      double impactsSum = evaluationImpacts.Values.Sum();
-      if (impactsSum.IsAlmost(0.0)) impactsSum = 1.0;
-      foreach (KeyValuePair<string, double> p in evaluationImpacts.ToList())
-        evaluationImpacts[p.Key] = p.Value / impactsSum;
-
       return evaluationImpacts;
     }
 
-    private static double CalculateMSE(double[] referenceValues, double[] newValues) {
+    private static double CalculateVAF(double[] referenceValues, double[] newValues) {
       try {
-        return SimpleMSEEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
+        return SimpleVarianceAccountedForEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
       }
       catch (ArgumentException) {
         return double.PositiveInfinity;
