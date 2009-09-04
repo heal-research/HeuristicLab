@@ -46,6 +46,7 @@ namespace HeuristicLab.Modeling.Database {
     IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model);
 
     void Connect();
+    void EmptyDatabase();
     void Disconnect();
   }
 }

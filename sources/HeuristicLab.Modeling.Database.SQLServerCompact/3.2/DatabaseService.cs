@@ -40,7 +40,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
         ctx.CreateDatabase();      
     }
 
-    private void EmptyDatabase() {
+    public void EmptyDatabase() {
       ctx.DeleteDatabase();
       ctx.CreateDatabase();
     }
