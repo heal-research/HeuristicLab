@@ -24,11 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm {
   public interface IMainForm {
     string Title { get; set; }
     string StatusStripText { get; set; }
+    bool StatusStripProgressBarVisible { get; set; }
+
     Icon Icon { get; set; } 
 
     IView ActiveView { get; }

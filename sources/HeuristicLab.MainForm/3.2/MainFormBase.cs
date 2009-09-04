@@ -37,6 +37,7 @@ namespace HeuristicLab.MainForm {
       InitializeComponent();
       views = new List<IView>();
       toolStripItems = new List<IToolStripItem>();
+      this.StatusStripText = "";
     }
 
     protected MainFormBase(Type userInterfaceItemType)
@@ -60,13 +61,24 @@ namespace HeuristicLab.MainForm {
     }
 
     public string StatusStripText {
-      get { return this.statusStripLabel.Text; }
+      get { return this.toolStripStatusLabel.Text; }
       set {
         if (InvokeRequired) {
           Action<string> action = delegate(string s) { this.StatusStripText = s; };
           Invoke(action, new object[] { value });
         } else
-          this.statusStripLabel.Text = value;
+          this.toolStripStatusLabel.Text = value;
+      }
+    }
+
+    public bool StatusStripProgressBarVisible  {
+      get { return this.toolStripProgressBar.Visible; }
+      set {
+        if (InvokeRequired) {
+          Action<bool> action = delegate(bool b) { this.toolStripProgressBar.Visible = b; };
+          Invoke(action, new object[] { value });
+        } else
+          this.toolStripProgressBar.Visible = value;
       }
     }
 
