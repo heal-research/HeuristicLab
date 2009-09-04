@@ -55,12 +55,23 @@ namespace HeuristicLab.GP.StructureIdentification {
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      IPredictor predictor = CreatePredictor(model, evaluator, punishmentFactor, dataset, targetVariable, start, end);
+      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
+      return null;
+    }
+
+    public static IPredictor CreatePredictor(IGeneticProgrammingModel model, ITreeEvaluator evaluator, double punishmentFactor,
+      Dataset dataset, int targetVariable, int start, int end) {
       double mean = dataset.GetMean(targetVariable, start, end);
       double range = dataset.GetRange(targetVariable, start, end);
       double minEstimatedValue = mean - punishmentFactor * range;
       double maxEstimatedValue = mean + punishmentFactor * range;
-      scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), new Predictor(evaluator, model, minEstimatedValue, maxEstimatedValue)));
-      return null;
+      return new Predictor(evaluator, model, minEstimatedValue, maxEstimatedValue);
+    }
+
+    public static IPredictor CreatePredictor(IGeneticProgrammingModel model, ITreeEvaluator evaluator, double punishmentFactor,
+      Dataset dataset, string targetVariable, int start, int end) {
+      return CreatePredictor(model, evaluator, punishmentFactor, dataset, dataset.GetVariableIndex(targetVariable), start, end);
     }
   }
 }
