@@ -71,7 +71,7 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    public bool StatusStripProgressBarVisible  {
+    public bool StatusStripProgressBarVisible {
       get { return this.toolStripProgressBar.Visible; }
       set {
         if (InvokeRequired) {
@@ -79,6 +79,28 @@ namespace HeuristicLab.MainForm {
           Invoke(action, new object[] { value });
         } else
           this.toolStripProgressBar.Visible = value;
+      }
+    }
+
+    Cursor IMainForm.Cursor {
+      get { return base.Cursor; }
+      set {
+        if (InvokeRequired) {
+          Action<Cursor> action = delegate(Cursor c) { this.Cursor = c; };
+          Invoke(action, new object[] { value });
+        } else
+          base.Cursor = value;
+      }
+    }
+
+    Icon IMainForm.Icon {
+      get { return base.Icon; }
+      set {
+        if (InvokeRequired) {
+          Action<Icon> action = delegate(Icon i) { this.Icon = i; };
+          Invoke(action, new object[] { value });
+        } else
+          base.Icon = value;
       }
     }
 
