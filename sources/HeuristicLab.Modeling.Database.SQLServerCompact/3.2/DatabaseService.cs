@@ -41,14 +41,16 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void EmptyDatabase() {
+      ctx.Connection.Dispose();
       ctx.DeleteDatabase();
+      Connect();
       ctx.CreateDatabase();
     }
 
     private ModelingDataContext ctx;
     public void Connect() {
       if (ctx != null)
-        return;
+        Disconnect();
 
       ctx = new ModelingDataContext(connection);
       DataLoadOptions dlo = new DataLoadOptions();
@@ -63,6 +65,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     public void Disconnect() {
       if (ctx == null)
         return;
+      ctx.Connection.Dispose();
       ctx.Dispose();
       ctx = null;
     }
