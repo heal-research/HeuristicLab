@@ -35,7 +35,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("TotalEvaluatedNodes", "Number of evaluated nodes", typeof(DoubleData), VariableKind.In | VariableKind.Out));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("UseEstimatedTargetValue", "Wether to use the original (measured) or the estimated (calculated) value for the target variable for autoregressive modelling", typeof(BoolData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("UseEstimatedTargetValue", "(optional) Wether to use the original (measured) or the estimated (calculated) value for the target variable for autoregressive modelling", typeof(BoolData), VariableKind.In));
     }
 
     public override IOperation Apply(IScope scope) {
@@ -46,7 +46,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       double totalEvaluatedNodes = scope.GetVariableValue<DoubleData>("TotalEvaluatedNodes", true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-      bool useEstimatedValues = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true).Data;
+      BoolData useEstimatedValuesData = GetVariableValue<BoolData>("UseEstimatedTargetValue", scope, true, false);
+      bool useEstimatedValues = useEstimatedValuesData == null ? false : useEstimatedValuesData.Data;
       ITreeEvaluator evaluator = GetVariableValue<ITreeEvaluator>("TreeEvaluator", scope, true);
       evaluator.PrepareForEvaluation(dataset, gpModel.FunctionTree);
 

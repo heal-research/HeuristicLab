@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,19 +19,14 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Modeling;
-using HeuristicLab.Operators;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
-  public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, IClassificationAlgorithm {
-
-    protected override IOperator CreateProblemInjector() {
-      return DefaultClassificationAlgorithmOperators.CreateProblemInjector();
-    }
-
-    protected override IOperator CreatePostProcessingOperator() {
-      return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
-    }
+namespace HeuristicLab.GP.Algorithms {
+  [ClassInfo(Name = "HeuristicLab.GP.Algorithms-3.2")]
+  [PluginFile(Filename = "HeuristicLab.GP.Algorithms-3.2.dll", Filetype = PluginFileType.Assembly)]
+  public class HeuristicLabGpAlgorithmsPlugin : PluginBase {
   }
 }

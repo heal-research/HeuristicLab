@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.GP.StructureIdentification {
-  partial class OffspringSelectionGpEditor {
+namespace HeuristicLab.GP.Algorithms {
+  partial class StandardGpEditor {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -48,8 +48,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.executeButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.selectionPressureTextBox = new System.Windows.Forms.TextBox();
-      this.selectionPressureLabel = new System.Windows.Forms.Label();
       this.viewProblemInitializationButton = new System.Windows.Forms.Button();
       this.setProblemInitializationButton = new System.Windows.Forms.Button();
       this.problemInitializationTextBox = new System.Windows.Forms.TextBox();
@@ -59,8 +57,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.elitesLabel = new System.Windows.Forms.Label();
       this.mutationRateTextBox = new System.Windows.Forms.TextBox();
       this.mutationRateLabel = new System.Windows.Forms.Label();
-      this.maximumEvaluatedSolutionsTextBox = new System.Windows.Forms.TextBox();
-      this.maxEvaluatedSolutionsLabel = new System.Windows.Forms.Label();
+      this.maximumGenerationsTextBox = new System.Windows.Forms.TextBox();
+      this.maximumGenerationsLabel = new System.Windows.Forms.Label();
       this.randomSeedTextBox = new System.Windows.Forms.TextBox();
       this.populationSizeTextBox = new System.Windows.Forms.TextBox();
       this.setRandomSeedRandomlyLabel = new System.Windows.Forms.Label();
@@ -102,8 +100,6 @@ namespace HeuristicLab.GP.StructureIdentification {
       // 
       // parametersTabPage
       // 
-      this.parametersTabPage.Controls.Add(this.selectionPressureTextBox);
-      this.parametersTabPage.Controls.Add(this.selectionPressureLabel);
       this.parametersTabPage.Controls.Add(this.viewProblemInitializationButton);
       this.parametersTabPage.Controls.Add(this.setProblemInitializationButton);
       this.parametersTabPage.Controls.Add(this.problemInitializationTextBox);
@@ -113,8 +109,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.parametersTabPage.Controls.Add(this.elitesLabel);
       this.parametersTabPage.Controls.Add(this.mutationRateTextBox);
       this.parametersTabPage.Controls.Add(this.mutationRateLabel);
-      this.parametersTabPage.Controls.Add(this.maximumEvaluatedSolutionsTextBox);
-      this.parametersTabPage.Controls.Add(this.maxEvaluatedSolutionsLabel);
+      this.parametersTabPage.Controls.Add(this.maximumGenerationsTextBox);
+      this.parametersTabPage.Controls.Add(this.maximumGenerationsLabel);
       this.parametersTabPage.Controls.Add(this.randomSeedTextBox);
       this.parametersTabPage.Controls.Add(this.populationSizeTextBox);
       this.parametersTabPage.Controls.Add(this.setRandomSeedRandomlyLabel);
@@ -128,28 +124,10 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
-      // selectionPressureTextBox
-      // 
-      this.selectionPressureTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.selectionPressureTextBox.Location = new System.Drawing.Point(218, 130);
-      this.selectionPressureTextBox.Name = "selectionPressureTextBox";
-      this.selectionPressureTextBox.Size = new System.Drawing.Size(186, 20);
-      this.selectionPressureTextBox.TabIndex = 17;
-      // 
-      // selectionPressureLabel
-      // 
-      this.selectionPressureLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.selectionPressureLabel.AutoSize = true;
-      this.selectionPressureLabel.Location = new System.Drawing.Point(65, 133);
-      this.selectionPressureLabel.Name = "selectionPressureLabel";
-      this.selectionPressureLabel.Size = new System.Drawing.Size(145, 13);
-      this.selectionPressureLabel.TabIndex = 16;
-      this.selectionPressureLabel.Text = "Maximum &Selection Pressure:";
-      // 
       // viewProblemInitializationButton
       // 
       this.viewProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 241);
+      this.viewProblemInitializationButton.Location = new System.Drawing.Point(410, 208);
       this.viewProblemInitializationButton.Name = "viewProblemInitializationButton";
       this.viewProblemInitializationButton.Size = new System.Drawing.Size(53, 20);
       this.viewProblemInitializationButton.TabIndex = 14;
@@ -160,7 +138,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // setProblemInitializationButton
       // 
       this.setProblemInitializationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 241);
+      this.setProblemInitializationButton.Location = new System.Drawing.Point(469, 208);
       this.setProblemInitializationButton.Name = "setProblemInitializationButton";
       this.setProblemInitializationButton.Size = new System.Drawing.Size(43, 20);
       this.setProblemInitializationButton.TabIndex = 15;
@@ -171,7 +149,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // problemInitializationTextBox
       // 
       this.problemInitializationTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 241);
+      this.problemInitializationTextBox.Location = new System.Drawing.Point(218, 208);
       this.problemInitializationTextBox.Name = "problemInitializationTextBox";
       this.problemInitializationTextBox.ReadOnly = true;
       this.problemInitializationTextBox.Size = new System.Drawing.Size(186, 20);
@@ -191,7 +169,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // elitesTextBox
       // 
       this.elitesTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.elitesTextBox.Location = new System.Drawing.Point(218, 182);
+      this.elitesTextBox.Location = new System.Drawing.Point(218, 156);
       this.elitesTextBox.Name = "elitesTextBox";
       this.elitesTextBox.Size = new System.Drawing.Size(186, 20);
       this.elitesTextBox.TabIndex = 11;
@@ -200,7 +178,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // 
       this.problemInitializationLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.problemInitializationLabel.AutoSize = true;
-      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 244);
+      this.problemInitializationLabel.Location = new System.Drawing.Point(65, 211);
       this.problemInitializationLabel.Name = "problemInitializationLabel";
       this.problemInitializationLabel.Size = new System.Drawing.Size(105, 13);
       this.problemInitializationLabel.TabIndex = 12;
@@ -210,7 +188,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // 
       this.elitesLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.elitesLabel.AutoSize = true;
-      this.elitesLabel.Location = new System.Drawing.Point(66, 185);
+      this.elitesLabel.Location = new System.Drawing.Point(65, 159);
       this.elitesLabel.Name = "elitesLabel";
       this.elitesLabel.Size = new System.Drawing.Size(35, 13);
       this.elitesLabel.TabIndex = 10;
@@ -219,7 +197,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       // mutationRateTextBox
       // 
       this.mutationRateTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.mutationRateTextBox.Location = new System.Drawing.Point(218, 156);
+      this.mutationRateTextBox.Location = new System.Drawing.Point(218, 130);
       this.mutationRateTextBox.Name = "mutationRateTextBox";
       this.mutationRateTextBox.Size = new System.Drawing.Size(186, 20);
       this.mutationRateTextBox.TabIndex = 9;
@@ -228,29 +206,29 @@ namespace HeuristicLab.GP.StructureIdentification {
       // 
       this.mutationRateLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.mutationRateLabel.AutoSize = true;
-      this.mutationRateLabel.Location = new System.Drawing.Point(66, 159);
+      this.mutationRateLabel.Location = new System.Drawing.Point(65, 133);
       this.mutationRateLabel.Name = "mutationRateLabel";
       this.mutationRateLabel.Size = new System.Drawing.Size(77, 13);
       this.mutationRateLabel.TabIndex = 8;
       this.mutationRateLabel.Text = "&Mutation Rate:";
       // 
-      // maximumEvaluatedSolutionsTextBox
+      // maximumGenerationsTextBox
       // 
-      this.maximumEvaluatedSolutionsTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maximumEvaluatedSolutionsTextBox.Location = new System.Drawing.Point(218, 104);
-      this.maximumEvaluatedSolutionsTextBox.Name = "maximumEvaluatedSolutionsTextBox";
-      this.maximumEvaluatedSolutionsTextBox.Size = new System.Drawing.Size(186, 20);
-      this.maximumEvaluatedSolutionsTextBox.TabIndex = 7;
+      this.maximumGenerationsTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.maximumGenerationsTextBox.Location = new System.Drawing.Point(218, 104);
+      this.maximumGenerationsTextBox.Name = "maximumGenerationsTextBox";
+      this.maximumGenerationsTextBox.Size = new System.Drawing.Size(186, 20);
+      this.maximumGenerationsTextBox.TabIndex = 7;
       // 
-      // maxEvaluatedSolutionsLabel
+      // maximumGenerationsLabel
       // 
-      this.maxEvaluatedSolutionsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.maxEvaluatedSolutionsLabel.AutoSize = true;
-      this.maxEvaluatedSolutionsLabel.Location = new System.Drawing.Point(65, 107);
-      this.maxEvaluatedSolutionsLabel.Name = "maxEvaluatedSolutionsLabel";
-      this.maxEvaluatedSolutionsLabel.Size = new System.Drawing.Size(130, 13);
-      this.maxEvaluatedSolutionsLabel.TabIndex = 6;
-      this.maxEvaluatedSolutionsLabel.Text = "Max. E&valuated Solutions:";
+      this.maximumGenerationsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.maximumGenerationsLabel.AutoSize = true;
+      this.maximumGenerationsLabel.Location = new System.Drawing.Point(65, 107);
+      this.maximumGenerationsLabel.Name = "maximumGenerationsLabel";
+      this.maximumGenerationsLabel.Size = new System.Drawing.Size(114, 13);
+      this.maximumGenerationsLabel.TabIndex = 6;
+      this.maximumGenerationsLabel.Text = "Maximum &Generations:";
       // 
       // randomSeedTextBox
       // 
@@ -353,7 +331,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.cloneEngineButton.UseVisualStyleBackColor = true;
       this.cloneEngineButton.Click += new System.EventHandler(this.cloneEngineButton_Click);
       // 
-      // OffspringSelectionGpEditor
+      // StandardGpEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -362,7 +340,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.Controls.Add(this.resetButton);
       this.Controls.Add(this.abortButton);
       this.Controls.Add(this.executeButton);
-      this.Name = "OffspringSelectionGpEditor";
+      this.Name = "StandardGpEditor";
       this.Size = new System.Drawing.Size(526, 419);
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
@@ -384,8 +362,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     private System.Windows.Forms.TextBox populationSizeTextBox;
     private System.Windows.Forms.Label populationSizeLabel;
     private System.Windows.Forms.TabPage scopesTabPage;
-    private System.Windows.Forms.TextBox maximumEvaluatedSolutionsTextBox;
-    private System.Windows.Forms.Label maxEvaluatedSolutionsLabel;
+    private System.Windows.Forms.TextBox maximumGenerationsTextBox;
+    private System.Windows.Forms.Label maximumGenerationsLabel;
     private System.Windows.Forms.TextBox elitesTextBox;
     private System.Windows.Forms.Label elitesLabel;
     private System.Windows.Forms.TextBox randomSeedTextBox;
@@ -398,7 +376,5 @@ namespace HeuristicLab.GP.StructureIdentification {
     private System.Windows.Forms.Button setProblemInitializationButton;
     private HeuristicLab.Core.ScopeView scopeView;
     private System.Windows.Forms.Button viewProblemInitializationButton;
-    private System.Windows.Forms.TextBox selectionPressureTextBox;
-    private System.Windows.Forms.Label selectionPressureLabel;
   }
 }

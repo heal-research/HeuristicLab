@@ -22,56 +22,12 @@
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;
 using HeuristicLab.Operators;
+using System;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
-    protected override IOperator CreateBestSolutionProcessor() {
-      IOperator bestSolutionProcessor = BestSolutionProcessor;
-      bestSolutionProcessor.AddSubOperator(base.CreateBestSolutionProcessor());
-      return bestSolutionProcessor;
-    }
-
-    internal static IOperator BestSolutionProcessor {
-      get {
-        SequentialProcessor seq = new SequentialProcessor();
-        AccuracyEvaluator trainingAccuracy = new AccuracyEvaluator();
-        trainingAccuracy.GetVariableInfo("Accuracy").ActualName = "TrainingAccuracy";
-        trainingAccuracy.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-        trainingAccuracy.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-
-        AccuracyEvaluator validationAccuracy = new AccuracyEvaluator();
-        validationAccuracy.GetVariableInfo("Accuracy").ActualName = "ValidationAccuracy";
-        validationAccuracy.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-        validationAccuracy.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-
-        AccuracyEvaluator testAccuracy = new AccuracyEvaluator();
-        testAccuracy.GetVariableInfo("Accuracy").ActualName = "TestAccuracy";
-        testAccuracy.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-        testAccuracy.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-
-        ConfusionMatrixEvaluator trainingConfusionMatrix = new ConfusionMatrixEvaluator();
-        trainingConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "TrainingConfusionMatrix";
-        trainingConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-        trainingConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-
-        ConfusionMatrixEvaluator validationConfusionMatrix = new ConfusionMatrixEvaluator();
-        validationConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "ValidationConfusionMatrix";
-        validationConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-        validationConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-
-        ConfusionMatrixEvaluator testConfusionMatrix = new ConfusionMatrixEvaluator();
-        testConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "TestConfusionMatrix";
-        testConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-        testConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-
-        seq.AddSubOperator(trainingAccuracy);
-        seq.AddSubOperator(validationAccuracy);
-        seq.AddSubOperator(testAccuracy);
-        seq.AddSubOperator(trainingConfusionMatrix);
-        seq.AddSubOperator(validationConfusionMatrix);
-        seq.AddSubOperator(testConfusionMatrix);
-        return seq;
-      }
+    protected override IOperator CreatePostProcessingOperator() {
+      return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
     }
   }
 }

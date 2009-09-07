@@ -24,7 +24,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.GP.StructureIdentification {
+namespace HeuristicLab.GP.Algorithms {
   public partial class OffspringSelectionGpEditor : EditorBase {
     private ChooseOperatorDialog chooseOperatorDialog;
 

@@ -28,200 +28,82 @@ using HeuristicLab.Logging;
 using HeuristicLab.Operators;
 using HeuristicLab.Selection;
 using HeuristicLab.Selection.OffspringSelection;
+using HeuristicLab.Modeling;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class OffspringSelectionGP : StandardGP {
-    public override string Name { get { return "OffspringSelectionGP"; } }
+  public class OffspringSelectionGP : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IAlgorithm {
+    public override string Name { get { return "OffspringSelectionGP - StructureIdentification"; } }
 
-    public virtual int MaxEvaluatedSolutions {
-      get { return GetVariableInjector().GetVariable("MaxEvaluatedSolutions").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MaxEvaluatedSolutions").GetValue<IntData>().Data = value; }
+    public virtual int TargetVariable {
+      get { return ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data = value; }
     }
 
-    public virtual double SelectionPressureLimit {
-      get { return GetVariableInjector().GetVariable("SelectionPressureLimit").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("SelectionPressureLimit").GetValue<DoubleData>().Data = value; }
+    public virtual Dataset Dataset {
+      get { return ProblemInjector.GetVariableValue<Dataset>("Dataset", null, false); }
+      set { ProblemInjector.GetVariable("Dataset").Value = value; }
     }
 
-    public virtual double ComparisonFactor {
-      get { return GetVariableInjector().GetVariable("ComparisonFactor").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("ComparisonFactor").GetValue<DoubleData>().Data = value; }
+    public virtual IAnalyzerModel Model {
+      get {
+        if (!Engine.Terminated)
+          throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
+        else
+          return CreateGPModel();
+      }
     }
 
-    public virtual double SuccessRatioLimit {
-      get { return GetVariableInjector().GetVariable("SuccessRatioLimit").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("SuccessRatioLimit").GetValue<DoubleData>().Data = value; }
+    public virtual double PunishmentFactor {
+      get { return GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data; }
+      set { GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value; }
     }
 
-    public override int MaxGenerations {
-      get { throw new NotSupportedException(); }
-      set { /* ignore */ }
-    }
-
-    public override int TournamentSize {
-      get { throw new NotSupportedException(); }
-      set { /* ignore */ }
+    public override IOperator ProblemInjector {
+      get { return GetProblemInjector().OperatorGraph.InitialOperator.SubOperators[0]; }
+      set {
+        value.Name = "ProblemInjector";
+        CombinedOperator problemInjector = GetProblemInjector();
+        problemInjector.OperatorGraph.RemoveOperator(ProblemInjector.Guid);
+        problemInjector.OperatorGraph.AddOperator(value);
+        problemInjector.OperatorGraph.InitialOperator.AddSubOperator(value, 0);
+      }
     }
 
     public OffspringSelectionGP()
       : base() {
-      PopulationSize = 1000;
-      Parents = 20;
-      MaxEvaluatedSolutions = 5000000;
-      SelectionPressureLimit = 400;
-      ComparisonFactor = 1.0;
-      SuccessRatioLimit = 1.0;
+      PunishmentFactor = 10.0;
     }
 
-    protected internal override IOperator CreateGlobalInjector() {
-      VariableInjector injector = (VariableInjector)base.CreateGlobalInjector();
-      injector.RemoveVariable("TournamentSize");
-      injector.RemoveVariable("MaxGenerations");
-      injector.AddVariable(new HeuristicLab.Core.Variable("MaxEvaluatedSolutions", new IntData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("ComparisonFactor", new DoubleData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("SelectionPressureLimit", new DoubleData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("SuccessRatioLimit", new DoubleData()));
+    protected override IOperator CreateFunctionLibraryInjector() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateFunctionLibraryInjector();
+    }
+
+    protected override IOperator CreateProblemInjector() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateProblemInjector();
+    }
+
+    protected override IOperator CreateInitialPopulationEvaluator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateInitialPopulationEvaluator();
+    }
+
+    protected override IOperator CreateEvaluationOperator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateEvaluator();
+    }
+
+
+    protected override IOperator CreateGenerationStepHook() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateGenerationStepHook();
+    }
+
+    protected override VariableInjector CreateGlobalInjector() {
+      VariableInjector injector = base.CreateGlobalInjector();
+      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
       return injector;
     }
 
-    protected internal override IOperator CreateSelector() {
-      CombinedOperator selector = new CombinedOperator();
-      selector.Name = "Selector";
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.Name = "Selector";
-      EmptyOperator emptyOp = new EmptyOperator();
-      ProportionalSelector femaleSelector = new ProportionalSelector();
-      femaleSelector.GetVariableInfo("Selected").ActualName = "Parents";
-      femaleSelector.GetVariableValue<BoolData>("CopySelected", null, false).Data = true;
 
-      RandomSelector maleSelector = new RandomSelector();
-      maleSelector.GetVariableInfo("Selected").ActualName = "Parents";
-      maleSelector.GetVariableValue<BoolData>("CopySelected", null, false).Data = true;
-      SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
-      RightChildReducer rightChildReducer = new RightChildReducer();
-      SubScopesMixer mixer = new SubScopesMixer();
-
-      seqSubScopesProc.AddSubOperator(femaleSelector);
-      seqSubScopesProc.AddSubOperator(emptyOp);
-
-      seq.AddSubOperator(maleSelector);
-      seq.AddSubOperator(seqSubScopesProc);
-      seq.AddSubOperator(rightChildReducer);
-      seq.AddSubOperator(mixer);
-
-      selector.OperatorGraph.AddOperator(seq);
-      selector.OperatorGraph.InitialOperator = seq;
-      return selector;
-    }
-
-    protected internal override IOperator CreateChildCreater() {
-      CombinedOperator childCreater = new CombinedOperator();
-      childCreater.Name = "Create children";
-      SequentialProcessor main = new SequentialProcessor();
-      SequentialProcessor seq = new SequentialProcessor();
-      SequentialProcessor offspringSelectionSeq = new SequentialProcessor();
-      OperatorExtractor selector = new OperatorExtractor();
-      selector.Name = "Selector (extr.)";
-      selector.GetVariableInfo("Operator").ActualName = "Selector";
-      SequentialSubScopesProcessor seqSubScopesProc = new SequentialSubScopesProcessor();
-      EmptyOperator emptyOp = new EmptyOperator();
-      OffspringSelector offspringSelector = new OffspringSelector();
-      ChildrenInitializer childInitializer = new ChildrenInitializer();
-      UniformSequentialSubScopesProcessor individualProc = new UniformSequentialSubScopesProcessor();
-      SequentialProcessor individualSeqProc = new SequentialProcessor();
-      OperatorExtractor crossover = new OperatorExtractor();
-      crossover.Name = "Crossover (extr.)";
-      crossover.GetVariableInfo("Operator").ActualName = "Crossover";
-      StochasticBranch cond = new StochasticBranch();
-      cond.GetVariableInfo("Probability").ActualName = "MutationRate";
-      OperatorExtractor manipulator = new OperatorExtractor();
-      manipulator.Name = "Manipulator (extr.)";
-      manipulator.GetVariableInfo("Operator").ActualName = "Manipulator";
-      OperatorExtractor evaluator = new OperatorExtractor();
-      evaluator.Name = "Evaluator (extr.)";
-      evaluator.GetVariableInfo("Operator").ActualName = "Evaluator";
-      Counter evalCounter = new Counter();
-      evalCounter.GetVariableInfo("Value").ActualName = "EvaluatedSolutions";
-      WeightedOffspringFitnessComparer offspringFitnessComparer = new WeightedOffspringFitnessComparer();
-      SubScopesRemover parentScopesRemover = new SubScopesRemover();
-
-      Sorter sorter = new Sorter();
-      sorter.GetVariableInfo("Descending").ActualName = "Maximization";
-      sorter.GetVariableInfo("Value").ActualName = "Quality";
-
-      UniformSequentialSubScopesProcessor validationEvaluator = new UniformSequentialSubScopesProcessor();
-      MeanSquaredErrorEvaluator validationQualityEvaluator = new MeanSquaredErrorEvaluator();
-      validationQualityEvaluator.Name = "ValidationMeanSquaredErrorEvaluator";
-      validationQualityEvaluator.GetVariableInfo("MSE").ActualName = "ValidationQuality";
-      validationQualityEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationQualityEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-
-      main.AddSubOperator(seq);
-      seq.AddSubOperator(selector);
-      seq.AddSubOperator(seqSubScopesProc);
-      seqSubScopesProc.AddSubOperator(emptyOp);
-      seqSubScopesProc.AddSubOperator(offspringSelectionSeq);
-      seq.AddSubOperator(offspringSelector);
-      offspringSelector.AddSubOperator(seq);
-
-      offspringSelectionSeq.AddSubOperator(childInitializer);
-      offspringSelectionSeq.AddSubOperator(individualProc);
-      offspringSelectionSeq.AddSubOperator(sorter);
-
-      individualProc.AddSubOperator(individualSeqProc);
-      individualSeqProc.AddSubOperator(crossover);
-      individualSeqProc.AddSubOperator(cond);
-      cond.AddSubOperator(manipulator);
-      individualSeqProc.AddSubOperator(evaluator);
-      individualSeqProc.AddSubOperator(evalCounter);
-      individualSeqProc.AddSubOperator(offspringFitnessComparer);
-      individualSeqProc.AddSubOperator(parentScopesRemover);
-
-      SequentialSubScopesProcessor seqSubScopesProc2 = new SequentialSubScopesProcessor();
-      main.AddSubOperator(seqSubScopesProc2);
-      seqSubScopesProc2.AddSubOperator(emptyOp);
-
-      SequentialProcessor newGenProc = new SequentialProcessor();
-      newGenProc.AddSubOperator(sorter);
-      newGenProc.AddSubOperator(validationEvaluator);
-      seqSubScopesProc2.AddSubOperator(newGenProc);
-
-      validationEvaluator.AddSubOperator(validationQualityEvaluator);
-
-      childCreater.OperatorGraph.AddOperator(main);
-      childCreater.OperatorGraph.InitialOperator = main;
-      return childCreater;
-    }
-
-    protected internal override IOperator CreateLoopCondition(IOperator loop) {
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.Name = "Loop Condition";
-      LessThanComparator generationsComparator = new LessThanComparator();
-      generationsComparator.GetVariableInfo("LeftSide").ActualName = "EvaluatedSolutions";
-      generationsComparator.GetVariableInfo("RightSide").ActualName = "MaxEvaluatedSolutions";
-      generationsComparator.GetVariableInfo("Result").ActualName = "EvaluatedSolutionsCondition";
-
-      LessThanComparator selPresComparator = new LessThanComparator();
-      selPresComparator.GetVariableInfo("LeftSide").ActualName = "SelectionPressure";
-      selPresComparator.GetVariableInfo("RightSide").ActualName = "SelectionPressureLimit";
-      selPresComparator.GetVariableInfo("Result").ActualName = "SelectionPressureCondition";
-
-      ConditionalBranch generationsCond = new ConditionalBranch();
-      generationsCond.GetVariableInfo("Condition").ActualName = "EvaluatedSolutionsCondition";
-
-      ConditionalBranch selPresCond = new ConditionalBranch();
-      selPresCond.GetVariableInfo("Condition").ActualName = "SelectionPressureCondition";
-
-      seq.AddSubOperator(generationsComparator);
-      seq.AddSubOperator(selPresComparator);
-      seq.AddSubOperator(generationsCond);
-      generationsCond.AddSubOperator(selPresCond);
-      selPresCond.AddSubOperator(loop);
-
-      return seq;
-    }
-
-    protected internal override IOperator CreateLoggingOperator() {
+    protected override IOperator CreateLoggingOperator() {
       CombinedOperator loggingOperator = new CombinedOperator();
       loggingOperator.Name = "Logging";
       SequentialProcessor seq = new SequentialProcessor();
@@ -238,10 +120,8 @@ namespace HeuristicLab.GP.StructureIdentification {
       names.Add(new StringData("SelectionPressure"));
       QualityLogger qualityLogger = new QualityLogger();
       QualityLogger validationQualityLogger = new QualityLogger();
-      validationQualityLogger.Name = "ValidationQualityLogger";
       validationQualityLogger.GetVariableInfo("Quality").ActualName = "ValidationQuality";
       validationQualityLogger.GetVariableInfo("QualityLog").ActualName = "ValidationQualityLog";
-
       seq.AddSubOperator(collector);
       seq.AddSubOperator(qualityLogger);
       seq.AddSubOperator(validationQualityLogger);
@@ -251,21 +131,23 @@ namespace HeuristicLab.GP.StructureIdentification {
       return loggingOperator;
     }
 
-
-    public override IEditor CreateEditor() {
-      return new OffspringSelectionGpEditor(this);
-    }
-
-    public override IView CreateView() {
-      return new OffspringSelectionGpEditor(this);
+    protected override IOperator CreatePostProcessingOperator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator();
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
       OffspringSelectionGP clone = (OffspringSelectionGP)base.Clone(clonedObjects);
-      clone.SelectionPressureLimit = SelectionPressureLimit;
-      clone.SuccessRatioLimit = SuccessRatioLimit;
-      clone.ComparisonFactor = ComparisonFactor;
+      clone.PunishmentFactor = PunishmentFactor;
       return clone;
+    }
+
+    protected CombinedOperator GetProblemInjector() {
+      return (CombinedOperator)GetInitializationOperator().SubOperators[0];
+    }
+
+    private IAnalyzerModel CreateGPModel() {
+      IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
+      return DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
     }
   }
 }

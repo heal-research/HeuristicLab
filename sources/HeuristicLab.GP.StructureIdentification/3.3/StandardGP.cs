@@ -20,189 +20,90 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators;
 using HeuristicLab.Selection;
 using HeuristicLab.Logging;
 using HeuristicLab.Data;
-using HeuristicLab.Operators.Programmable;
-using HeuristicLab.Modeling;
 using HeuristicLab.GP.Operators;
+using HeuristicLab.Modeling;
+using System.Collections.Generic;
+using System;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class StandardGP : AlgorithmBase, IEditable {
+  public class StandardGP : HeuristicLab.GP.Algorithms.StandardGP, IAlgorithm {
 
-    public override string Name { get { return "StandardGP"; } }
+    public override string Name { get { return "StandardGP - StructureIdentification"; } }
 
-    public override int TargetVariable {
+    public virtual int TargetVariable {
       get { return ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data; }
       set { ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data = value; }
     }
 
-    public override Dataset Dataset {
+    public virtual Dataset Dataset {
       get { return ProblemInjector.GetVariableValue<Dataset>("Dataset", null, false); }
       set { ProblemInjector.GetVariable("Dataset").Value = value; }
     }
 
-    public virtual int MaxGenerations {
-      get { return GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MaxGenerations").GetValue<IntData>().Data = value; }
-    }
-
-    public virtual int TournamentSize {
-      get { return GetVariableInjector().GetVariable("TournamentSize").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("TournamentSize").GetValue<IntData>().Data = value; }
-    }
-
-    public double FullTreeShakingFactor {
-      get { return GetVariableInjector().GetVariable("FullTreeShakingFactor").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("FullTreeShakingFactor").GetValue<DoubleData>().Data = value; }
-    }
-
-    public double OnePointShakingFactor {
-      get { return GetVariableInjector().GetVariable("OnePointShakingFactor").GetValue<DoubleData>().Data; }
-      set { GetVariableInjector().GetVariable("OnePointShakingFactor").GetValue<DoubleData>().Data = value; }
-    }
-
-    public int MinInitialTreeSize {
-      get { return GetVariableInjector().GetVariable("MinInitialTreeSize").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MinInitialTreeSize").GetValue<IntData>().Data = value; }
-    }
-
-    public override int MaxTreeSize {
+    public virtual IAnalyzerModel Model {
       get {
-        return base.MaxTreeSize;
-      }
-      set {
-        base.MaxTreeSize = value;
-        MinInitialTreeSize = value / 2;
+        if (!Engine.Terminated)
+          throw new InvalidOperationException("The algorithm is still running. Wait until the algorithm is terminated to retrieve the result.");
+        else
+          return CreateGPModel();
       }
     }
 
-    public override int PopulationSize {
-      get {
-        return base.PopulationSize;
-      }
-      set {
-        base.PopulationSize = value;
-        Parents = 2 * value;
-      }
+    public virtual double PunishmentFactor {
+      get { return GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data; }
+      set { GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value; }
     }
 
     public override IOperator ProblemInjector {
-      get { return base.ProblemInjector.SubOperators[0]; }
+      get { return GetProblemInjector().OperatorGraph.InitialOperator.SubOperators[0]; }
       set {
         value.Name = "ProblemInjector";
-        base.ProblemInjector.RemoveSubOperator(0);
-        base.ProblemInjector.AddSubOperator(value, 0);
+        CombinedOperator problemInjector = GetProblemInjector();
+        problemInjector.OperatorGraph.RemoveOperator(ProblemInjector.Guid);
+        problemInjector.OperatorGraph.AddOperator(value);
+        problemInjector.OperatorGraph.InitialOperator.AddSubOperator(value, 0);
       }
     }
 
     public StandardGP()
       : base() {
-      PopulationSize = 10000;
-      MaxGenerations = 500;
-      TournamentSize = 7;
-      MutationRate = 0.15;
-      Elites = 1;
-      MaxTreeSize = 100;
-      MaxTreeHeight = 10;
-      FullTreeShakingFactor = 0.1;
-      OnePointShakingFactor = 1.0;
-      UseEstimatedTargetValue = false;
-      SetSeedRandomly = true;
+
+      PunishmentFactor = 10.0;
     }
 
-    protected internal override IOperator CreateProblemInjector() {
-      SequentialProcessor seq = new SequentialProcessor();
-      var probInject = new ProblemInjector();
-      probInject.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
-      probInject.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
-
-      var shuffler = new DatasetShuffler();
-      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
-      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
-
-      seq.AddSubOperator(probInject);
-      seq.AddSubOperator(shuffler);
-      return seq;
+    protected override IOperator CreateFunctionLibraryInjector() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateFunctionLibraryInjector();
     }
 
-    protected internal override IOperator CreateSelector() {
-      TournamentSelector selector = new TournamentSelector();
-      selector.Name = "Selector";
-      selector.GetVariableInfo("Selected").ActualName = "Parents";
-      selector.GetVariableInfo("GroupSize").Local = false;
-      selector.RemoveVariable("GroupSize");
-      selector.GetVariableInfo("GroupSize").ActualName = "TournamentSize";
-      return selector;
+    protected override IOperator CreateProblemInjector() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateProblemInjector();
     }
 
-    protected internal override IOperator CreateGlobalInjector() {
-      VariableInjector globalInjector = (VariableInjector)base.CreateGlobalInjector();
-      globalInjector.AddVariable(new HeuristicLab.Core.Variable("TournamentSize", new IntData()));
-      globalInjector.AddVariable(new HeuristicLab.Core.Variable("MaxGenerations", new IntData()));
-      globalInjector.AddVariable(new HeuristicLab.Core.Variable("FullTreeShakingFactor", new DoubleData()));
-      globalInjector.AddVariable(new HeuristicLab.Core.Variable("OnePointShakingFactor", new DoubleData()));
-      globalInjector.AddVariable(new HeuristicLab.Core.Variable("MinInitialTreeSize", new IntData()));
-      return globalInjector;
+    protected override IOperator CreateInitialPopulationEvaluator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateInitialPopulationEvaluator();
     }
 
-    protected internal override IOperator CreateCrossover() {
-      StandardCrossOver crossover = new StandardCrossOver();
-      crossover.Name = "Crossover";
-      return crossover;
+    protected override IOperator CreateEvaluationOperator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateEvaluator();
     }
 
-    protected internal override IOperator CreateTreeCreator() {
-      ProbabilisticTreeCreator treeCreator = new ProbabilisticTreeCreator();
-      treeCreator.Name = "Tree generator";
-      treeCreator.GetVariableInfo("MinTreeSize").ActualName = "MinInitialTreeSize";
-      return treeCreator;
+
+    protected override IOperator CreateGenerationStepHook() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreateGenerationStepHook();
     }
 
-    protected internal override IOperator CreateFunctionLibraryInjector() {
-      FunctionLibraryInjector funLibInjector = new FunctionLibraryInjector();
-      funLibInjector.GetVariableValue<BoolData>("Xor", null, false).Data = false;
-      funLibInjector.GetVariableValue<BoolData>("Average", null, false).Data = false;
-      return funLibInjector;
+    protected override VariableInjector CreateGlobalInjector() {
+      VariableInjector injector = base.CreateGlobalInjector();
+      injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
+      return injector;
     }
 
-    protected internal override IOperator CreateManipulator() {
-      CombinedOperator manipulator = new CombinedOperator();
-      manipulator.Name = "Manipulator";
-      StochasticMultiBranch multibranch = new StochasticMultiBranch();
-      FullTreeShaker fullTreeShaker = new FullTreeShaker();
-      fullTreeShaker.GetVariableInfo("ShakingFactor").ActualName = "FullTreeShakingFactor";
-
-      OnePointShaker onepointShaker = new OnePointShaker();
-      onepointShaker.GetVariableInfo("ShakingFactor").ActualName = "OnePointShakingFactor";
-      ChangeNodeTypeManipulation changeNodeTypeManipulation = new ChangeNodeTypeManipulation();
-      CutOutNodeManipulation cutOutNodeManipulation = new CutOutNodeManipulation();
-      DeleteSubTreeManipulation deleteSubTreeManipulation = new DeleteSubTreeManipulation();
-      SubstituteSubTreeManipulation substituteSubTreeManipulation = new SubstituteSubTreeManipulation();
-
-      IOperator[] manipulators = new IOperator[] {
-        onepointShaker, fullTreeShaker,
-        changeNodeTypeManipulation,
-        cutOutNodeManipulation,
-        deleteSubTreeManipulation,
-        substituteSubTreeManipulation};
-
-      DoubleArrayData probabilities = new DoubleArrayData(new double[manipulators.Length]);
-      for (int i = 0; i < manipulators.Length; i++) {
-        probabilities.Data[i] = 1.0;
-        multibranch.AddSubOperator(manipulators[i]);
-      }
-      multibranch.GetVariableInfo("Probabilities").Local = true;
-      multibranch.AddVariable(new HeuristicLab.Core.Variable("Probabilities", probabilities));
-
-      manipulator.OperatorGraph.AddOperator(multibranch);
-      manipulator.OperatorGraph.InitialOperator = multibranch;
-      return manipulator;
-    }
-
-    protected internal override IOperator CreateLoggingOperator() {
+    protected override IOperator CreateLoggingOperator() {
       CombinedOperator loggingOperator = new CombinedOperator();
       loggingOperator.Name = "Logging";
       SequentialProcessor seq = new SequentialProcessor();
@@ -215,17 +116,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       names.Add(new StringData("BestValidationQuality"));
       names.Add(new StringData("AverageValidationQuality"));
       names.Add(new StringData("WorstValidationQuality"));
-      LinechartInjector lineChartInjector = new LinechartInjector();
-      lineChartInjector.GetVariableInfo("Linechart").ActualName = "Quality Linechart";
-      lineChartInjector.GetVariable("NumberOfLines").GetValue<IntData>().Data = 6;
+      names.Add(new StringData("EvaluatedSolutions"));
       QualityLogger qualityLogger = new QualityLogger();
       QualityLogger validationQualityLogger = new QualityLogger();
-      validationQualityLogger.Name = "ValidationQualityLogger";
       validationQualityLogger.GetVariableInfo("Quality").ActualName = "ValidationQuality";
       validationQualityLogger.GetVariableInfo("QualityLog").ActualName = "ValidationQualityLog";
-
       seq.AddSubOperator(collector);
-      seq.AddSubOperator(lineChartInjector);
       seq.AddSubOperator(qualityLogger);
       seq.AddSubOperator(validationQualityLogger);
 
@@ -234,12 +130,23 @@ namespace HeuristicLab.GP.StructureIdentification {
       return loggingOperator;
     }
 
-    public virtual IEditor CreateEditor() {
-      return new StandardGpEditor(this);
+    protected override IOperator CreatePostProcessingOperator() {
+      return DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator();
     }
 
-    public override IView CreateView() {
-      return new StandardGpEditor(this);
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      StandardGP clone = (StandardGP)base.Clone(clonedObjects);
+      clone.PunishmentFactor = PunishmentFactor;
+      return clone;
+    }
+
+    protected CombinedOperator GetProblemInjector() {
+      return (CombinedOperator)GetInitializationOperator().SubOperators[0];
+    }
+
+    private IAnalyzerModel CreateGPModel() {
+      IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
+      return DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
     }
   }
 }

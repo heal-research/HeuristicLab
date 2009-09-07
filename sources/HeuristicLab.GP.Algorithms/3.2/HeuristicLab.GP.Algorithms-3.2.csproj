@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7C20D100-8BEB-433A-9499-F075E2CB9297}</ProjectGuid>
+    <ProjectGuid>{3127719F-110E-4558-8845-98559DBB422D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.GP.StructureIdentification.Classification</RootNamespace>
-    <AssemblyName>HeuristicLab.GP.StructureIdentification.Classification-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.GP.Algorithms</RootNamespace>
+    <AssemblyName>HeuristicLab.GP.Algorithms-3.2</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -69,6 +69,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,57 +81,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccuracyEvaluator.cs" />
-    <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="ConfusionMatrixEvaluator.cs" />
-    <Compile Include="TargetClassesCalculator.cs" />
-    <Compile Include="DefaultClassificationAlgorithmOperators.cs" />
-    <Compile Include="GPClassificationEvaluatorBase.cs" />
-    <Compile Include="CrossValidation.cs" />
-    <Compile Include="HeuristicLabGPClassificationPlugin.cs" />
-    <Compile Include="MulticlassModeller.cs" />
-    <Compile Include="MulticlassOneVsOneAnalyzer.cs" />
-    <Compile Include="OffspringSelectionGP.cs" />
+    <Compile Include="AlgorithmBase.cs" />
+    <Compile Include="HeuristicLabGpAlgorithmsPlugin.cs" />
+    <Compile Include="OffspringSelectionGP.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OffSpringSelectionGpEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OffSpringSelectionGpEditor.Designer.cs">
+      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ROCAnalyzer.cs" />
     <Compile Include="StandardGP.cs" />
+    <Compile Include="StandardGpEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StandardGpEditor.Designer.cs">
+      <DependentUpon>StandardGpEditor.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
-      <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
-      <Name>HeuristicLab.Common-3.2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">
       <Project>{F43B59AB-2B8C-4570-BC1E-15592086517C}</Project>
       <Name>HeuristicLab.Core-3.2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.DataAnalysis\3.2\HeuristicLab.DataAnalysis-3.2.csproj">
-      <Project>{7DD3A97A-56E9-462F-90E2-A351FE7AF5C2}</Project>
-      <Name>HeuristicLab.DataAnalysis-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.Algorithms\3.2\HeuristicLab.GP.Algorithms-3.2.csproj">
-      <Project>{3127719F-110E-4558-8845-98559DBB422D}</Project>
-      <Name>HeuristicLab.GP.Algorithms-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
+      <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
+      <Name>HeuristicLab.Evolutionary-3.2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
-      <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
-      <Name>HeuristicLab.GP.Interfaces-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
-      <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
-      <Name>HeuristicLab.GP.StructureIdentification-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Operators\3.3\HeuristicLab.GP.Operators-3.3.csproj">
+      <Project>{45D11FBD-A71B-48D3-8A94-8EB0DFE8E06A}</Project>
+      <Name>HeuristicLab.GP.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP\3.3\HeuristicLab.GP-3.3.csproj">
       <Project>{1F1CF3ED-374C-4288-995B-93F6B872F571}</Project>
       <Name>HeuristicLab.GP-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
-      <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
-      <Name>HeuristicLab.Modeling-3.2</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Logging\3.2\HeuristicLab.Logging-3.2.csproj">
+      <Project>{4095C92C-5A4C-44BC-9963-5F384CF5CC3F}</Project>
+      <Name>HeuristicLab.Logging-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.2\HeuristicLab.Operators-3.2.csproj">
       <Project>{A9983BA2-B3B2-475E-8E2C-62050B71D1C5}</Project>
@@ -143,10 +138,30 @@
       <Project>{47019A74-F7F7-482E-83AA-D3F4F777E879}</Project>
       <Name>HeuristicLab.Random-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection.OffspringSelection\3.2\HeuristicLab.Selection.OffspringSelection-3.2.csproj">
+      <Project>{205898D3-2717-4686-AF17-52409B7EC0C6}</Project>
+      <Name>HeuristicLab.Selection.OffspringSelection-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.2\HeuristicLab.Selection-3.2.csproj">
+      <Project>{F7CF0571-25CB-43D5-8443-0843A1E2861A}</Project>
+      <Name>HeuristicLab.Selection-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.2\HeuristicLab.SequentialEngine-3.2.csproj">
+      <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
+      <Name>HeuristicLab.SequentialEngine-3.2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OffSpringSelectionGpEditor.resx">
+      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StandardGpEditor.resx">
+      <DependentUpon>StandardGpEditor.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

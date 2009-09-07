@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AveragePercentageChangeEvaluator.cs" />
+    <Compile Include="DefaultTimeSeriesOperators.cs" />
     <Compile Include="HeuristicLabGPTimeSeriesPlugin.cs" />
     <Compile Include="OffspringSelectionGP.cs" />
     <Compile Include="ProfitEvaluator.cs" />
@@ -101,6 +102,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.2\HeuristicLab.Data-3.2.csproj">
       <Project>{F473D9AF-3F09-4296-9F28-3C65118DAFFA}</Project>
       <Name>HeuristicLab.Data-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Algorithms\3.2\HeuristicLab.GP.Algorithms-3.2.csproj">
+      <Project>{3127719F-110E-4558-8845-98559DBB422D}</Project>
+      <Name>HeuristicLab.GP.Algorithms-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
       <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>

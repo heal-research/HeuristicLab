@@ -22,43 +22,47 @@
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;
 using HeuristicLab.Operators;
+using System;
+using HeuristicLab.Data;
+using HeuristicLab.GP.Algorithms;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {
-    public override IOperator ProblemInjector {
-      get {
-        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
-        return algo.OperatorGraph.InitialOperator.SubOperators[1];
-      }
-      set {
-        CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
-        algo.OperatorGraph.InitialOperator.RemoveSubOperator(1);
-        value.Name = "ProblemInjector";
-        algo.OperatorGraph.InitialOperator.AddSubOperator(value, 1);
-      }
+
+    public int MinTimeOffset {
+      get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
     }
 
-    protected override IOperator CreateFunctionLibraryInjector() {
-      return new FunctionLibraryInjector();
+    public int MaxTimeOffset {
+      get { return GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data = value; }
+    }
+
+    public bool UseEstimatedTargetValue {
+      get { return GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data; }
+      set { GetVariableInjector().GetVariable("UseEstimatedTargetValue").GetValue<BoolData>().Data = value; }
     }
 
     protected override IOperator CreateProblemInjector() {
-      return new ProblemInjector();
+      return DefaultTimeSeriesOperators.CreateProblemInjector();
     }
 
-    protected override IOperator CreateBestSolutionProcessor() {
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(base.CreateBestSolutionProcessor());
-      seq.AddSubOperator(StandardGP.BestSolutionProcessor);
-      return seq;
+    protected override IOperator CreateFunctionLibraryInjector() {
+      return DefaultTimeSeriesOperators.CreateFunctionLibraryInjector();
     }
 
-    public override IEditor CreateEditor() {
-      return new OffspringSelectionGpEditor(this);
+    protected override IOperator CreatePostProcessingOperator() {
+      return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
-    public override IView CreateView() {
-      return new OffspringSelectionGpEditor(this);
+    protected override VariableInjector CreateGlobalInjector() {
+      VariableInjector injector = base.CreateGlobalInjector();
+      injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData()));
+      return injector;
     }
+
   }
 }

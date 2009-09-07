@@ -81,11 +81,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseClasses\AlgorithmBase.cs" />
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
+    <Compile Include="DefaultStructureIdentificationOperators.cs" />
     <Compile Include="HL3TreeEvaluatorInjector.cs" />
     <Compile Include="HL2TreeEvaluatorInjector.cs" />
+    <Compile Include="OffspringSelectionGP.cs" />
     <Compile Include="PredictorBuilder.cs" />
     <Compile Include="Predictor.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
@@ -95,6 +96,9 @@
     </Compile>
     <Compile Include="PredictorView.Designer.cs">
       <DependentUpon>PredictorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StandardGP.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Symbols\Addition.cs" />
     <Compile Include="Symbols\And.cs" />
@@ -127,20 +131,6 @@
     <Compile Include="ITreeEvaluator.cs" />
     <Compile Include="Evaluators\MeanAbsolutePercentageOfRangeErrorEvaluator.cs" />
     <Compile Include="FunctionLibraryInjector.cs" />
-    <Compile Include="OffspringSelectionGP.cs" />
-    <Compile Include="OffSpringSelectionGpEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OffSpringSelectionGpEditor.Designer.cs">
-      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StandardGpEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StandardGpEditor.Designer.cs">
-      <DependentUpon>StandardGpEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StandardGP.cs" />
     <Compile Include="Evaluators\CoefficientOfDeterminationEvaluator.cs" />
     <Compile Include="Evaluators\UncertainMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Evaluators\EarlyStoppingMeanSquaredErrorEvaluator.cs" />
@@ -175,6 +165,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Evolutionary\3.2\HeuristicLab.Evolutionary-3.2.csproj">
       <Project>{F5614C53-153C-4A37-A608-121E1C087F07}</Project>
       <Name>HeuristicLab.Evolutionary-3.2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.Algorithms\3.2\HeuristicLab.GP.Algorithms-3.2.csproj">
+      <Project>{3127719F-110E-4558-8845-98559DBB422D}</Project>
+      <Name>HeuristicLab.GP.Algorithms-3.2</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
       <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
@@ -226,15 +220,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="OffSpringSelectionGpEditor.resx">
-      <DependentUpon>OffSpringSelectionGpEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PredictorView.resx">
       <DependentUpon>PredictorView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StandardGpEditor.resx">
-      <DependentUpon>StandardGpEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
