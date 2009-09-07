@@ -111,7 +111,9 @@ namespace HeuristicLab.MainForm {
 
     public event EventHandler ActiveViewChanged;
     protected virtual void OnActiveViewChanged() {
-      if (ActiveViewChanged != null)
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnActiveViewChanged);
+      else if (ActiveViewChanged != null)
         ActiveViewChanged(this, new EventArgs());
     }
 
@@ -120,7 +122,9 @@ namespace HeuristicLab.MainForm {
       OnMainFormChanged();
     }
     protected virtual void OnMainFormChanged() {
-      if (MainFormChanged != null)
+      if (InvokeRequired)
+        Invoke((MethodInvoker)FireMainFormChanged);
+      else if (MainFormChanged != null)
         MainFormChanged(this, new EventArgs());
     }
 
