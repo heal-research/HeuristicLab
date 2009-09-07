@@ -39,6 +39,7 @@ copy "%SolutionDir%\HeuristicLab.Evolutionary\3.2\%Outdir%\HeuristicLab.Evolutio
 copy "%SolutionDir%\HeuristicLab.Evolutionary\3.3\%Outdir%\HeuristicLab.Evolutionary-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.3\%Outdir%\HeuristicLab.GP-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP\3.4\%Outdir%\HeuristicLab.GP-3.4.dll" .\plugins
+copy "%SolutionDir%\HeuristicLab.GP.Algorithms\3.2\%Outdir%\HeuristicLab.GP.Algorithms-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Interfaces\3.3\%Outdir%\HeuristicLab.GP.Interfaces-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Operators\3.3\%Outdir%\HeuristicLab.GP.Operators-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.GP.Boolean\3.3\%Outdir%\HeuristicLab.GP.Boolean-3.3.dll" .\plugins
