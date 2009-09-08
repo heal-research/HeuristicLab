@@ -62,5 +62,11 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       injector.AddVariable(new HeuristicLab.Core.Variable("UseEstimatedTargetValue", new BoolData()));
       return injector;
     }
+
+    protected override IAnalyzerModel CreateGPModel() {
+      IAnalyzerModel model = base.CreateGPModel();
+      DefaultTimeSeriesOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      return model;
+    }
   }
 }

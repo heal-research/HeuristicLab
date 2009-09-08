@@ -93,5 +93,11 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       individualProc.AddSubOperator(testTheil);
       return seq;
     }
+
+    internal static void SetModelData(IAnalyzerModel model, IScope scope) {
+      model.SetResult("TrainingTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", true).Data);
+      model.SetResult("ValidationTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", true).Data);
+      model.SetResult("TestTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", true).Data);
+    }
   }
 }

@@ -64,5 +64,10 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       return injector;
     }
 
+    protected override IAnalyzerModel CreateGPModel() {
+      IAnalyzerModel model = base.CreateGPModel();
+      DefaultTimeSeriesOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      return model;
+    }
   }
 }

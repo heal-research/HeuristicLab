@@ -26,36 +26,27 @@ using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-   public interface IAnalyzerModel {
+  public interface IAnalyzerModel {
+    IPredictor Predictor { get; set; }
     Dataset Dataset { get; set; }
     string TargetVariable { get; set; }
     IEnumerable<string> InputVariables { get; }
+    IEnumerable<KeyValuePair<string, double>> Results { get; }
+    IEnumerable<KeyValuePair<string, object>> MetaData { get; }
     int TrainingSamplesStart { get; set; }
     int TrainingSamplesEnd { get; set; }
     int ValidationSamplesStart { get; set; }
     int ValidationSamplesEnd { get; set; }
     int TestSamplesStart { get; set; }
     int TestSamplesEnd { get; set; }
-    double TrainingMeanSquaredError { get; set; }
-    double ValidationMeanSquaredError { get; set; }
-    double TestMeanSquaredError { get; set; }
-    double TrainingMeanAbsolutePercentageError { get; set; }
-    double ValidationMeanAbsolutePercentageError { get; set; }
-    double TestMeanAbsolutePercentageError { get; set; }
-    double TrainingMeanAbsolutePercentageOfRangeError { get; set; }
-    double ValidationMeanAbsolutePercentageOfRangeError { get; set; }
-    double TestMeanAbsolutePercentageOfRangeError { get; set; }
-    double TrainingCoefficientOfDetermination { get; set; }
-    double ValidationCoefficientOfDetermination { get; set; }
-    double TestCoefficientOfDetermination { get; set; }
-    double TrainingVarianceAccountedFor { get; set; }
-    double ValidationVarianceAccountedFor { get; set; }
-    double TestVarianceAccountedFor { get; set; }
+    void SetResult(string name, double value);
+    double GetResult(string name);
+    void SetMetaData(string name, object data);
+    object GetMetaData(string name);
     double GetVariableEvaluationImpact(string variableName);
     double GetVariableQualityImpact(string variableName);
     void AddInputVariable(string variableName);
     void SetVariableEvaluationImpact(string variableName, double impact);
     void SetVariableQualityImpact(string variableName, double impact);
-    IPredictor Predictor { get; set; }
   }
 }

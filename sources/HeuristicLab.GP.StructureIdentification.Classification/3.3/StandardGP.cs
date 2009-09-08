@@ -26,8 +26,18 @@ using System;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
+    protected override IOperator CreateProblemInjector() {
+      return DefaultClassificationAlgorithmOperators.CreateProblemInjector();
+    }
+    
     protected override IOperator CreatePostProcessingOperator() {
       return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
+    }
+
+    protected override IAnalyzerModel CreateGPModel() {
+      IAnalyzerModel model = base.CreateGPModel();
+      DefaultClassificationAlgorithmOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      return model;
     }
   }
 }

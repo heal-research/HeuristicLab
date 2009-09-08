@@ -275,21 +275,25 @@ namespace HeuristicLab.LinearRegression {
     protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
       IAnalyzerModel model = new AnalyzerModel();
       model.Predictor = bestModelScope.GetVariableValue<IPredictor>("Predictor", true);
-      model.TrainingMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TrainingQuality", false).Data;
-      model.ValidationMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data;
-      model.TestMeanSquaredError = bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data;
-      model.TrainingCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data;
-      model.ValidationCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data;
-      model.TestCoefficientOfDetermination = bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data;
-      model.TrainingMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data;
-      model.ValidationMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data;
-      model.TestMeanAbsolutePercentageError = bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data;
-      model.TrainingMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data;
-      model.ValidationMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data;
-      model.TestMeanAbsolutePercentageOfRangeError = bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data;
-      model.TrainingVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data;
-      model.ValidationVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data;
-      model.TestVarianceAccountedFor = bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data;
+      model.SetResult("TrainingMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("TrainingQuality", false).Data);
+      model.SetResult("ValidationMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data);
+      model.SetResult("TestMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data);
+      model.SetResult("TrainingCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data);
+      model.SetResult("ValidationCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data);
+      model.SetResult("TestCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data);
+      model.SetResult("TrainingMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data);
+      model.SetResult("ValidationMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data);
+      model.SetResult("TestMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data);
+      model.SetResult("TrainingMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data);
+      model.SetResult("ValidationMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data);
+      model.SetResult("TestMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data);
+      model.SetResult("TrainingVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data);
+      model.SetResult("ValidationVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data);
+      model.SetResult("TestVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data);
+
+      IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("LinearRegressionModel", false);
+      model.SetMetaData("TreeSize", gpModel.Size);
+      model.SetMetaData("TreeHeight", gpModel.Height);
 
       HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;

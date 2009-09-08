@@ -37,7 +37,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       this.connection = connection;
       Connect();
       if (!ctx.DatabaseExists())
-        ctx.CreateDatabase();      
+        ctx.CreateDatabase();
     }
 
     public void EmptyDatabase() {
@@ -108,16 +108,21 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        //get all double properties to save as modelResult
-        IEnumerable<PropertyInfo> modelResultInfos = model.GetType().GetProperties().Where(
-          info => info.PropertyType == typeof(double));
-        foreach (PropertyInfo modelResultInfo in modelResultInfos) {
-          Result result = GetOrCreateResult(modelResultInfo.Name);
-          double value = (double)modelResultInfo.GetValue(model, null);
-          ctx.ModelResults.InsertOnSubmit(new ModelResult(m, result, value));
+        foreach (KeyValuePair<string, double> pair in model.Results) {
+          Result result = GetOrCreateResult(pair.Key);
+          ctx.ModelResults.InsertOnSubmit(new ModelResult(m, result, pair.Value));
         }
         ctx.SubmitChanges();
       }
+
+      // code to store meta-information for models (gkronber (8.9.09))
+      //using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
+      //  foreach (KeyValuePair<string, double> pair in model.MetaData) {
+      //    MetaData metaData = GetOrCreateMetaData(pair.Key);
+      //    ctx.ModelMetaData.InsertOnSubmit(new ModelMetaData(m, metaData, pair.Value));
+      //  }
+      //  ctx.SubmitChanges();
+      //}
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         IEnumerable<MethodInfo> inputVariableResultInfos = model.GetType().GetMethods().Where(

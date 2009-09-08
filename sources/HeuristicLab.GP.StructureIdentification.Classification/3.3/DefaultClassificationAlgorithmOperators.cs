@@ -54,30 +54,9 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       testAccuracy.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
       testAccuracy.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
 
-      ConfusionMatrixEvaluator trainingConfusionMatrix = new ConfusionMatrixEvaluator();
-      trainingConfusionMatrix.Name = "TrainingConfusionMatrixEvaluator";
-      trainingConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "TrainingConfusionMatrix";
-      trainingConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
-
-      ConfusionMatrixEvaluator validationConfusionMatrix = new ConfusionMatrixEvaluator();
-      validationConfusionMatrix.Name = "ValidationConfusionMatrixEvaluator";
-      validationConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "ValidationConfusionMatrix";
-      validationConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
-
-      ConfusionMatrixEvaluator testConfusionMatrix = new ConfusionMatrixEvaluator();
-      testConfusionMatrix.Name = "TestConfusionMatrixEvaluator";
-      testConfusionMatrix.GetVariableInfo("ConfusionMatrix").ActualName = "TestConfusionMatrix";
-      testConfusionMatrix.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testConfusionMatrix.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
-
       individualProc.AddSubOperator(trainingAccuracy);
       individualProc.AddSubOperator(validationAccuracy);
       individualProc.AddSubOperator(testAccuracy);
-      individualProc.AddSubOperator(trainingConfusionMatrix);
-      individualProc.AddSubOperator(validationConfusionMatrix);
-      individualProc.AddSubOperator(testConfusionMatrix);
       return seq;
     }
 
@@ -90,6 +69,12 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
       return op;
+    }
+
+    internal static void SetModelData(IAnalyzerModel model, IScope scope) {
+      model.SetResult("TrainingAccuracy", scope.GetVariableValue<DoubleData>("TrainingAccuracy", true).Data);
+      model.SetResult("ValidationAccuracy", scope.GetVariableValue<DoubleData>("ValidationAccuracy", true).Data);
+      model.SetResult("TestAccuracy", scope.GetVariableValue<DoubleData>("TestAccuracy", true).Data);
     }
   }
 }

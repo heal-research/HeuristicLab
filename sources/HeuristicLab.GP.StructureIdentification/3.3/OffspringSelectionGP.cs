@@ -145,9 +145,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       return (CombinedOperator)GetInitializationOperator().SubOperators[0];
     }
 
-    private IAnalyzerModel CreateGPModel() {
+    protected virtual IAnalyzerModel CreateGPModel() {
       IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
-      return DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
+      IAnalyzerModel model = DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
+      model.SetMetaData("SelectionPressure", bestModelScope.GetVariableValue<DoubleData>("SelectionPressure", true).Data);
+      return model;
     }
   }
 }

@@ -60,82 +60,30 @@ namespace HeuristicLab.Modeling {
         inputVariables.Add(variableName);
     }
 
-    private double trainingMSE;
-    public double TrainingMeanSquaredError {
-      get { return trainingMSE; }
-      set { trainingMSE = value; }
+    private Dictionary<string, double> results = new Dictionary<string, double>();
+    public IEnumerable<KeyValuePair<string, double>> Results {
+      get { return results; }
     }
 
-    private double validationMSE;
-    public double ValidationMeanSquaredError {
-      get { return validationMSE; }
-      set { validationMSE = value; }
+    public void SetResult(string name, double value) {
+      results.Add(name, value);
     }
 
-    private double testMSE;
-    public double TestMeanSquaredError {
-      get { return testMSE; }
-      set { testMSE = value; }
+    public double GetResult(string name) {
+      return results[name];
     }
 
-    public double TrainingMeanAbsolutePercentageError {
-      get;
-      set;
+    private Dictionary<string, object> metadata = new Dictionary<string, object>();
+    public IEnumerable<KeyValuePair<string, object>> MetaData {
+      get { return metadata; }
     }
 
-    public double ValidationMeanAbsolutePercentageError {
-      get;
-      set;
+    public void SetMetaData(string name, object value) {
+      metadata.Add(name, value);
     }
 
-    public double TestMeanAbsolutePercentageError {
-      get;
-      set;
-    }
-
-    public double TrainingMeanAbsolutePercentageOfRangeError {
-      get;
-      set;
-    }
-
-    public double ValidationMeanAbsolutePercentageOfRangeError {
-      get;
-      set;
-    }
-
-    public double TestMeanAbsolutePercentageOfRangeError {
-      get;
-      set;
-    }
-
-    public double TrainingCoefficientOfDetermination {
-      get;
-      set;
-    }
-
-    public double ValidationCoefficientOfDetermination {
-      get;
-      set;
-    }
-
-    public double TestCoefficientOfDetermination {
-      get;
-      set;
-    }
-
-    public double TrainingVarianceAccountedFor {
-      get;
-      set;
-    }
-
-    public double ValidationVarianceAccountedFor {
-      get;
-      set;
-    }
-
-    public double TestVarianceAccountedFor {
-      get;
-      set;
+    public object GetMetaData(string name) {
+      return metadata[name];
     }
 
     public double GetVariableQualityImpact(string variableName) {

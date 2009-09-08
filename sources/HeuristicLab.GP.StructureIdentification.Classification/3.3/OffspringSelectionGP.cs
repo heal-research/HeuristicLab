@@ -33,5 +33,11 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     protected override IOperator CreatePostProcessingOperator() {
       return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
     }
+
+    protected override IAnalyzerModel CreateGPModel() {
+      IAnalyzerModel model = base.CreateGPModel();
+      DefaultClassificationAlgorithmOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      return model;
+    }
   }
 }
