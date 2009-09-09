@@ -80,7 +80,8 @@ namespace HeuristicLab.Common {
 
     public void Add(TKey key, TValue value) {
       OnBeforeInsert(); 
-      myDictionary.Add(key, value); 
+      myDictionary.Add(key, value);
+      OnAfterInsert();
     }
 
     public bool ContainsKey(TKey key) {
