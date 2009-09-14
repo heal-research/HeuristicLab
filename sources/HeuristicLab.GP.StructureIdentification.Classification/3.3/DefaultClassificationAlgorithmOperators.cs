@@ -36,23 +36,20 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       SequentialProcessor individualProc = new SequentialProcessor();
       subScopesProc.AddSubOperator(individualProc);
       seq.AddSubOperator(subScopesProc);
-      AccuracyEvaluator trainingAccuracy = new AccuracyEvaluator();
+      SimpleAccuracyEvaluator trainingAccuracy = new SimpleAccuracyEvaluator();
       trainingAccuracy.Name = "TrainingAccuracyEvaluator";
       trainingAccuracy.GetVariableInfo("Accuracy").ActualName = "TrainingAccuracy";
-      trainingAccuracy.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingAccuracy.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingAccuracy.GetVariableInfo("Values").ActualName = "TrainingValues";
 
-      AccuracyEvaluator validationAccuracy = new AccuracyEvaluator();
+      SimpleAccuracyEvaluator validationAccuracy = new SimpleAccuracyEvaluator();
       validationAccuracy.Name = "ValidationAccuracyEvaluator";
       validationAccuracy.GetVariableInfo("Accuracy").ActualName = "ValidationAccuracy";
-      validationAccuracy.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationAccuracy.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+      validationAccuracy.GetVariableInfo("Values").ActualName = "ValidationValues";
 
-      AccuracyEvaluator testAccuracy = new AccuracyEvaluator();
+      SimpleAccuracyEvaluator testAccuracy = new SimpleAccuracyEvaluator();
       testAccuracy.Name = "TestAccuracyEvaluator";
       testAccuracy.GetVariableInfo("Accuracy").ActualName = "TestAccuracy";
-      testAccuracy.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testAccuracy.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      testAccuracy.GetVariableInfo("Values").ActualName = "TestValues";
 
       individualProc.AddSubOperator(trainingAccuracy);
       individualProc.AddSubOperator(validationAccuracy);

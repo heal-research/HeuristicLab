@@ -83,12 +83,14 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
-    <Compile Include="ClassificationProblemInjector.cs" />
+    <Compile Include="SimpleAccuracyEvaluator.cs" />
+    <Compile Include="SimpleConfusionMatrixEvaluator.cs" />
     <Compile Include="SimpleTheilInequalityCoefficientEvaluator.cs" />
     <Compile Include="SolutionExtractor.cs" />
     <Compile Include="PredictorBase.cs" />
     <Compile Include="IAnalyzerModel.cs" />
     <Compile Include="MatrixCreator.cs" />
+    <Compile Include="TargetClassesCalculator.cs" />
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
     <Compile Include="IPredictor.cs" />
     <Compile Include="SimpleEvaluatorBase.cs" />

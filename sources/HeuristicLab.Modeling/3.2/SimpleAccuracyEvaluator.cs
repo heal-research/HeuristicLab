@@ -23,33 +23,35 @@ using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using System.Linq;
+using HeuristicLab.Common;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
-  public class AccuracyEvaluator : GPClassificationEvaluatorBase {
-    private const double EPSILON = 1.0E-6;
+namespace HeuristicLab.Modeling {
+  public class SimpleAccuracyEvaluator : SimpleEvaluatorBase {
+    public override string OutputVariableName {
+      get {
+        return "Accuracy";
+      }
+    }
     public override string Description {
       get {
         return @"Calculates the total accuracy of the model (ratio of correctly classified instances to total number of instances) given a model and the list of possible target class values.";
       }
     }
 
-    public AccuracyEvaluator()
-      : base() {
-      AddVariableInfo(new VariableInfo("Accuracy", "The total accuracy of the model (ratio of correctly classified instances to total number of instances)", typeof(DoubleData), VariableKind.New));
+    public override double Evaluate(double[,] values) {
+      return Calculate(values);
     }
 
-    public override void Evaluate(IScope scope, ITreeEvaluator evaluator, Dataset dataset, int targetVariable, double[] classes, double[] thresholds, int start, int end) {
-      DoubleData accuracy = GetVariableValue<DoubleData>("Accuracy", scope, false, false);
-      if (accuracy == null) {
-        accuracy = new DoubleData();
-        scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Accuracy"), accuracy));
-      }
-
-      int nSamples = end - start;
+    public static double Calculate(double[,] values) {
+      int nSamples = values.GetLength(0);
       int nCorrect = 0;
-      for (int sample = start; sample < end; sample++) {
-        double est = evaluator.Evaluate(sample);
-        double origClass = dataset.GetValue(sample, targetVariable);
+      double[] classes = CalculateTargetClasses(values);
+      double[] thresholds = CalculateThresholds(classes);
+
+      for (int sample = 0; sample < nSamples; sample++) {
+        double est = values[sample, 0];
+        double origClass = values[sample, 1];
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
         if (est < thresholds[0]) estClass = classes[0];
@@ -64,9 +66,24 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
             }
           }
         }
-        if (Math.Abs(estClass - origClass) < EPSILON) nCorrect++;
+        if (estClass.IsAlmost(origClass)) nCorrect++;
       }
-      accuracy.Data = nCorrect / (double)nSamples;
+      return nCorrect / (double)nSamples;
+    }
+
+    public static double[] CalculateTargetClasses(double[,] values) {
+      int n = values.GetLength(0);
+      double[] original = new double[n];
+      for (int i = 0; i < n; i++) original[i] = values[i, 1];
+      return original.OrderBy(x => x).Distinct().ToArray();
+    }
+
+    public static double[] CalculateThresholds(double[] targetClasses) {
+      double[] thresholds = new double[targetClasses.Length - 1];
+      for (int i = 1; i < targetClasses.Length; i++) {
+        thresholds[i - 1] = (targetClasses[i - 1] + targetClasses[i]) / 2.0;
+      }
+      return thresholds;
     }
   }
 }

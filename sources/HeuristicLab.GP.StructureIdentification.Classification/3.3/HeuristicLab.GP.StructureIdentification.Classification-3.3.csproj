@@ -79,10 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccuracyEvaluator.cs" />
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="ConfusionMatrixEvaluator.cs" />
-    <Compile Include="TargetClassesCalculator.cs" />
     <Compile Include="DefaultClassificationAlgorithmOperators.cs" />
     <Compile Include="GPClassificationEvaluatorBase.cs" />
     <Compile Include="CrossValidation.cs" />

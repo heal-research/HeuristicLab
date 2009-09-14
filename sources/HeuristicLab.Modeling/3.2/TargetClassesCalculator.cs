@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using System.Linq;
 
-namespace HeuristicLab.GP.StructureIdentification.Classification {
+namespace HeuristicLab.Modeling {
   public class TargetClassesCalculator : OperatorBase {
 
     public TargetClassesCalculator()
@@ -40,7 +40,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
 
       ItemList<DoubleData> classes = new ItemList<DoubleData>();
-      foreach(double x in dataset.GetVariableValues(targetVariable).Distinct().OrderBy(v=>v)) {
+      foreach (double x in dataset.GetVariableValues(targetVariable).Distinct().OrderBy(v => v)) {
         classes.Add(new DoubleData(x));
       }
 

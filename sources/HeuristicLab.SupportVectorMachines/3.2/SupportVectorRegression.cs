@@ -106,6 +106,11 @@ namespace HeuristicLab.SupportVectorMachines {
       set { GetVariableInjector().GetVariable("MaxGammaIndex").GetValue<IntData>().Data = value; }
     }
 
+    public string SvmType {
+      get { return GetVariableInjector().GetVariable("Type").GetValue<StringData>().Data; }
+      set { GetVariableInjector().GetVariable("Type").GetValue<StringData>().Data = value; }
+    }
+
     public SupportVectorRegression() {
       engine = new SequentialEngine.SequentialEngine();
       CombinedOperator algo = CreateAlgorithm();
