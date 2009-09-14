@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.LinearRegression{
+namespace HeuristicLab.LinearRegression {
   [ClassInfo(Name = "HeuristicLab.LinearRegression-3.2")]
   [PluginFile(Filename = "HeuristicLab.LinearRegression-3.2.dll", Filetype = PluginFileType.Assembly)]
   [PluginFile(Filename = "ALGLIB License.txt", Filetype = PluginFileType.License)]
@@ -34,6 +34,8 @@ namespace HeuristicLab.LinearRegression{
   [Dependency(Dependency = "HeuristicLab.GP-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.Interfaces-3.3")]
   [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification.Classification-3.3")]
+  [Dependency(Dependency = "HeuristicLab.GP.StructureIdentification.TimeSeries-3.3")]
   [Dependency(Dependency = "HeuristicLab.Modeling-3.2")]
   [Dependency(Dependency = "HeuristicLab.Random-3.2")]
   [Dependency(Dependency = "HeuristicLab.SequentialEngine-3.2")]

@@ -27,8 +27,8 @@ using HeuristicLab.Modeling;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
-  internal static class DefaultClassificationAlgorithmOperators {
-    internal static IOperator CreatePostProcessingOperator() {
+  public static class DefaultClassificationAlgorithmOperators {
+    public static IOperator CreatePostProcessingOperator() {
       SequentialProcessor seq = new SequentialProcessor();
       seq.AddSubOperator(DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator());
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       return seq;
     }
 
-    internal static IOperator CreateProblemInjector() {
+    public static IOperator CreateProblemInjector() {
       CombinedOperator op = new CombinedOperator();
       op.Name = "ProblemInjector";
       SequentialProcessor seq = new SequentialProcessor();
@@ -68,7 +68,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       return op;
     }
 
-    internal static void SetModelData(IAnalyzerModel model, IScope scope) {
+    public static void SetModelData(IAnalyzerModel model, IScope scope) {
       model.SetResult("TrainingAccuracy", scope.GetVariableValue<DoubleData>("TrainingAccuracy", true).Data);
       model.SetResult("ValidationAccuracy", scope.GetVariableValue<DoubleData>("ValidationAccuracy", true).Data);
       model.SetResult("TestAccuracy", scope.GetVariableValue<DoubleData>("TestAccuracy", true).Data);

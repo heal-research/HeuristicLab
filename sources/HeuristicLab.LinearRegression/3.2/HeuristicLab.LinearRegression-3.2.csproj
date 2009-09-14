@@ -90,6 +90,7 @@
     <Compile Include="alglib\rotations.cs" />
     <Compile Include="alglib\spline3.cs" />
     <Compile Include="alglib\svd.cs" />
+    <Compile Include="LinearClassification.cs" />
     <Compile Include="HeuristicLabLinearRegressionPlugin.cs" />
     <Compile Include="LinearRegression.cs" />
     <Compile Include="LinearRegressionOperator.cs" />
@@ -119,6 +120,14 @@
     <ProjectReference Include="..\..\HeuristicLab.GP.Interfaces\3.3\HeuristicLab.GP.Interfaces-3.3.csproj">
       <Project>{924B6BEA-9A99-40FE-9334-5C01E8D540EC}</Project>
       <Name>HeuristicLab.GP.Interfaces-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification.Classification\3.3\HeuristicLab.GP.StructureIdentification.Classification-3.3.csproj">
+      <Project>{7C20D100-8BEB-433A-9499-F075E2CB9297}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification.Classification-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification.TimeSeries\3.3\HeuristicLab.GP.StructureIdentification.TimeSeries-3.3.csproj">
+      <Project>{6084CFB5-733F-449D-9F92-2E40D13F0514}</Project>
+      <Name>HeuristicLab.GP.StructureIdentification.TimeSeries-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.GP.StructureIdentification\3.3\HeuristicLab.GP.StructureIdentification-3.3.csproj">
       <Project>{74223A32-C726-4978-BE78-37113A18373C}</Project>
