@@ -37,8 +37,8 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MaxTimeOffset", "Maximal allowed time offset for input variables", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("MinTimeOffset", "Minimal allowed time offset for input variables", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) Maximal allowed time offset for input variables", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MinTimeOffset", "(optional) Minimal allowed time offset for input variables", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
@@ -49,8 +49,10 @@ namespace HeuristicLab.SupportVectorMachines {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-      int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
-      int maxTimeOffset = GetVariableValue<IntData>("MaxTimeOffset", scope, true).Data;
+      IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
+      int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
+      IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
+      int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);

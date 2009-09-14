@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TimeSeriesSupportVectorRegression.cs" />
     <Compile Include="PredictorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

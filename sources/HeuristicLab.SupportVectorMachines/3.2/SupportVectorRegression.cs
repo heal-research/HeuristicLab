@@ -38,8 +38,8 @@ using HeuristicLab.Selection;
 namespace HeuristicLab.SupportVectorMachines {
   public class SupportVectorRegression : ItemBase, IEditable, IAlgorithm {
 
-    public string Name { get { return "SupportVectorRegression"; } }
-    public string Description { get { return "TODO"; } }
+    public virtual string Name { get { return "SupportVectorRegression"; } }
+    public virtual string Description { get { return "TODO"; } }
 
     private SequentialEngine.SequentialEngine engine;
     public IEngine Engine {
@@ -106,16 +106,6 @@ namespace HeuristicLab.SupportVectorMachines {
       set { GetVariableInjector().GetVariable("MaxGammaIndex").GetValue<IntData>().Data = value; }
     }
 
-    public int MaxTimeOffset {
-      get { return GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data = value; }
-    }
-
-    public int MinTimeOffset {
-      get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
-      set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
-    }
-
     public SupportVectorRegression() {
       engine = new SequentialEngine.SequentialEngine();
       CombinedOperator algo = CreateAlgorithm();
@@ -124,8 +114,6 @@ namespace HeuristicLab.SupportVectorMachines {
       MaxCostIndex = CostList.Data.Length;
       MaxNuIndex = NuList.Data.Length;
       MaxGammaIndex = GammaList.Data.Length;
-      MaxTimeOffset = 0;
-      MinTimeOffset = 0;
     }
 
     private CombinedOperator CreateAlgorithm() {
@@ -148,7 +136,7 @@ namespace HeuristicLab.SupportVectorMachines {
       return algo;
     }
 
-    private IOperator CreateInitialization() {
+    protected virtual IOperator CreateInitialization() {
       SequentialProcessor seq = new SequentialProcessor();
       seq.Name = "Initialization";
       seq.AddSubOperator(CreateGlobalInjector());
@@ -158,10 +146,10 @@ namespace HeuristicLab.SupportVectorMachines {
       seq.AddSubOperator(probInjector);
       seq.AddSubOperator(new RandomInjector());
 
-      //DatasetShuffler shuffler = new DatasetShuffler();
-      //shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
-      //shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
-      //seq.AddSubOperator(shuffler);
+      DatasetShuffler shuffler = new DatasetShuffler();
+      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
+      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
+      seq.AddSubOperator(shuffler);
       return seq;
     }
 
@@ -278,7 +266,6 @@ namespace HeuristicLab.SupportVectorMachines {
       trainingEvaluator.OperatorGraph.InitialOperator.SubOperators[1].GetVariableInfo("MSE").ActualName = "Quality";
       modelProcessor.AddSubOperator(trainingEvaluator);
       modelProcessor.AddSubOperator(CreateEvaluator("Validation"));
-      modelProcessor.AddSubOperator(CreateEvaluator("Test"));
 
       DataCollector collector = new DataCollector();
       collector.GetVariableInfo("Values").ActualName = "Log";
@@ -306,7 +293,7 @@ namespace HeuristicLab.SupportVectorMachines {
       return c;
     }
 
-    private IOperator CreateEvaluator(string p) {
+    protected virtual IOperator CreateEvaluator(string p) {
       CombinedOperator op = new CombinedOperator();
       op.Name = p + "Evaluator";
       SequentialProcessor seqProc = new SequentialProcessor();
@@ -378,7 +365,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return progOp;
     }
 
-    private IOperator CreateGlobalInjector() {
+    protected virtual VariableInjector CreateGlobalInjector() {
       VariableInjector injector = new VariableInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("CostIndex", new IntData(0)));
       injector.AddVariable(new HeuristicLab.Core.Variable("CostList", new DoubleArrayData(new double[] { 
@@ -406,16 +393,15 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       injector.AddVariable(new HeuristicLab.Core.Variable("KernelType", new StringData("RBF")));
       injector.AddVariable(new HeuristicLab.Core.Variable("Type", new StringData("NU_SVR")));
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData()));
-      injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData()));
       return injector;
     }
 
-    private IOperator CreateModelAnalyser() {
+    protected virtual IOperator CreateModelAnalyser() {
       CombinedOperator modelAnalyser = new CombinedOperator();
       modelAnalyser.Name = "Model Analyzer";
       SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
       SequentialProcessor seqProc = new SequentialProcessor();
+
       PredictorBuilder predictorBuilder = new PredictorBuilder();
       predictorBuilder.GetVariableInfo("SVMModel").ActualName = "Model";
       VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
@@ -425,6 +411,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       qualImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
       qualImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
+      seqProc.AddSubOperator(CreateEvaluator("Test"));
       seqProc.AddSubOperator(predictorBuilder);
       seqProc.AddSubOperator(evalImpactCalc);
       seqProc.AddSubOperator(qualImpactCalc);
@@ -435,7 +422,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     }
 
 
-    protected internal virtual IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
+    protected virtual IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
       AnalyzerModel model = new AnalyzerModel();
       model.SetResult("TrainingMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data);
       model.SetResult("ValidationMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data);
@@ -485,11 +472,11 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return model;
     }
 
-    private IOperator GetVariableInjector() {
+    protected IOperator GetVariableInjector() {
       return GetMainOperator().SubOperators[0].SubOperators[0];
     }
 
-    private IOperator GetMainOperator() {
+    protected IOperator GetMainOperator() {
       CombinedOperator svm = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
       return svm.OperatorGraph.InitialOperator;
     }
