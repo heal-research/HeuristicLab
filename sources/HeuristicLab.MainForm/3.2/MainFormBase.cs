@@ -82,7 +82,7 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    Cursor IMainForm.Cursor {
+    public new Cursor Cursor {
       get { return base.Cursor; }
       set {
         if (InvokeRequired) {
@@ -93,7 +93,7 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    Icon IMainForm.Icon {
+    public new Icon Icon {
       get { return base.Icon; }
       set {
         if (InvokeRequired) {

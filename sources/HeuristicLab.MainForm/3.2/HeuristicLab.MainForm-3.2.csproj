@@ -130,11 +130,11 @@
     <Compile Include="DockForm.Designer.cs">
       <DependentUpon>DockForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MultipleDocumentForm.cs">
+    <Compile Include="DocumentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MultipleDocumentForm.Designer.cs">
-      <DependentUpon>MultipleDocumentForm.cs</DependentUpon>
+    <Compile Include="DocumentForm.Designer.cs">
+      <DependentUpon>DocumentForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -168,8 +168,8 @@
     <EmbeddedResource Include="MultipleDocumentMainForm.resx">
       <DependentUpon>MultipleDocumentMainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MultipleDocumentForm.resx">
-      <DependentUpon>MultipleDocumentForm.cs</DependentUpon>
+    <EmbeddedResource Include="DocumentForm.resx">
+      <DependentUpon>DocumentForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
