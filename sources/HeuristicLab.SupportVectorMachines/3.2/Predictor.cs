@@ -39,14 +39,22 @@ namespace HeuristicLab.SupportVectorMachines {
 
     private Dictionary<string, int> variableNames = new Dictionary<string, int>();
     private string targetVariable;
+    private int minTimeOffset;
+    private int maxTimeOffset;
 
     public Predictor() : base() { } // for persistence
 
-    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames)
+    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames) :
+      this(model, targetVariable, variableNames, 0, 0) {
+    }
+
+    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames, int minTimeOffset, int maxTimeOffset)
       : base() {
       this.svmModel = model;
       this.targetVariable = targetVariable;
       this.variableNames = variableNames;
+      this.minTimeOffset = minTimeOffset;
+      this.maxTimeOffset = maxTimeOffset;
     }
 
     public override double[] Predict(Dataset input, int start, int end) {
@@ -60,7 +68,8 @@ namespace HeuristicLab.SupportVectorMachines {
         newIndex[input.GetVariableIndex(pair.Key)] = pair.Value;
       }
 
-      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex, start, end);
+      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex,
+        start, end, minTimeOffset, maxTimeOffset);
       Problem scaledProblem = SVM.Scaling.Scale(p, transform);
 
       int rows = end - start;
@@ -81,6 +90,8 @@ namespace HeuristicLab.SupportVectorMachines {
       clone.svmModel = (SVMModel)Auxiliary.Clone(svmModel, clonedObjects);
       clone.targetVariable = targetVariable;
       clone.variableNames = new Dictionary<string, int>(variableNames);
+      clone.minTimeOffset = minTimeOffset;
+      clone.maxTimeOffset = maxTimeOffset;
       return clone;
     }
 
@@ -89,6 +100,12 @@ namespace HeuristicLab.SupportVectorMachines {
       XmlAttribute targetVarAttr = document.CreateAttribute("TargetVariable");
       targetVarAttr.Value = targetVariable;
       node.Attributes.Append(targetVarAttr);
+      XmlAttribute minTimeOffsetAttr = document.CreateAttribute("MinTimeOffset");
+      XmlAttribute maxTimeOffsetAttr = document.CreateAttribute("MaxTimeOffset");
+      minTimeOffsetAttr.Value = XmlConvert.ToString(minTimeOffset);
+      maxTimeOffsetAttr.Value = XmlConvert.ToString(maxTimeOffset);
+      node.Attributes.Append(minTimeOffsetAttr);
+      node.Attributes.Append(maxTimeOffsetAttr);
       node.AppendChild(PersistenceManager.Persist(svmModel, document, persistedObjects));
       XmlNode variablesNode = document.CreateElement("Variables");
       foreach (var pair in variableNames) {
@@ -110,6 +127,8 @@ namespace HeuristicLab.SupportVectorMachines {
       targetVariable = node.Attributes["TargetVariable"].Value;
       svmModel = (SVMModel)PersistenceManager.Restore(node.ChildNodes[0], restoredObjects);
 
+      if (node.Attributes["MinTimeOffset"] != null) minTimeOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
+      if (node.Attributes["MaxTimeOffset"] != null) maxTimeOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
       variableNames = new Dictionary<string, int>();
       XmlNode variablesNode = node.ChildNodes[1];
       foreach (XmlNode pairNode in variablesNode.ChildNodes) {

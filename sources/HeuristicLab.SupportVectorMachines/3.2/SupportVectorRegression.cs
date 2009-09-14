@@ -106,6 +106,16 @@ namespace HeuristicLab.SupportVectorMachines {
       set { GetVariableInjector().GetVariable("MaxGammaIndex").GetValue<IntData>().Data = value; }
     }
 
+    public int MaxTimeOffset {
+      get { return GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MaxTimeOffset").GetValue<IntData>().Data = value; }
+    }
+
+    public int MinTimeOffset {
+      get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
+    }
+
     public SupportVectorRegression() {
       engine = new SequentialEngine.SequentialEngine();
       CombinedOperator algo = CreateAlgorithm();
@@ -114,6 +124,8 @@ namespace HeuristicLab.SupportVectorMachines {
       MaxCostIndex = CostList.Data.Length;
       MaxNuIndex = NuList.Data.Length;
       MaxGammaIndex = GammaList.Data.Length;
+      MaxTimeOffset = 0;
+      MinTimeOffset = 0;
     }
 
     private CombinedOperator CreateAlgorithm() {
@@ -146,10 +158,10 @@ namespace HeuristicLab.SupportVectorMachines {
       seq.AddSubOperator(probInjector);
       seq.AddSubOperator(new RandomInjector());
 
-      DatasetShuffler shuffler = new DatasetShuffler();
-      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
-      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
-      seq.AddSubOperator(shuffler);
+      //DatasetShuffler shuffler = new DatasetShuffler();
+      //shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
+      //shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
+      //seq.AddSubOperator(shuffler);
       return seq;
     }
 
@@ -394,7 +406,8 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       injector.AddVariable(new HeuristicLab.Core.Variable("KernelType", new StringData("RBF")));
       injector.AddVariable(new HeuristicLab.Core.Variable("Type", new StringData("NU_SVR")));
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
-
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxTimeOffset", new IntData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MinTimeOffset", new IntData()));
       return injector;
     }
 

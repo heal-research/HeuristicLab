@@ -37,7 +37,8 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
-
+      AddVariableInfo(new VariableInfo("MaxTimeOffset", "Maximal allowed time offset for input variables", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MinTimeOffset", "Minimal allowed time offset for input variables", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SVMModel", "Represent the model learned by the SVM", typeof(SVMModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("Values", "Target vs predicted values", typeof(DoubleMatrixData), VariableKind.New | VariableKind.Out));
     }
@@ -48,15 +49,16 @@ namespace HeuristicLab.SupportVectorMachines {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-
+      int minTimeOffset = GetVariableValue<IntData>("MinTimeOffset", scope, true).Data;
+      int maxTimeOffset = GetVariableValue<IntData>("MaxTimeOffset", scope, true).Data;
       SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end);
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);
 
       double[,] values = new double[scaledProblem.Count, 2];
       for (int i = 0; i < scaledProblem.Count; i++) {
-        values[i,0] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
-        values[i,1] = dataset.GetValue(start + i,targetVariable);
+        values[i, 0] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
+        values[i, 1] = dataset.GetValue(start + i, targetVariable);
       }
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Values"), new DoubleMatrixData(values)));
