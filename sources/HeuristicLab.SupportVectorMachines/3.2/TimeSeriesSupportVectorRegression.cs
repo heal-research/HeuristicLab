@@ -36,7 +36,7 @@ using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.SupportVectorMachines {
-  public class TimeSeriesSupportVectorRegression : SupportVectorRegression {
+  public class TimeSeriesSupportVectorRegression : SupportVectorRegression, ITimeSeriesAlgorithm {
 
     public override string Name { get { return "SupportVectorRegression - Time Series Prognosis"; } }
 
@@ -62,6 +62,7 @@ namespace HeuristicLab.SupportVectorMachines {
       seq.AddSubOperator(CreateGlobalInjector());
       ProblemInjector probInjector = new ProblemInjector();
       seq.AddSubOperator(probInjector);
+      seq.AddSubOperator(new RandomInjector());
       return seq;
     }
 
@@ -81,6 +82,8 @@ namespace HeuristicLab.SupportVectorMachines {
       SequentialProcessor seqProc = new SequentialProcessor();
 
       SupportVectorEvaluator trainingEvaluator = new SupportVectorEvaluator();
+      trainingEvaluator.Name = "TrainingEvaluator";
+      trainingEvaluator.GetVariableInfo("SVMModel").ActualName = "Model";
       trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
       trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
       trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
