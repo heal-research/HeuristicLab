@@ -82,7 +82,7 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    public new Cursor Cursor {
+    public override Cursor Cursor {
       get { return base.Cursor; }
       set {
         if (InvokeRequired) {
@@ -90,17 +90,6 @@ namespace HeuristicLab.MainForm {
           Invoke(action, new object[] { value });
         } else
           base.Cursor = value;
-      }
-    }
-
-    public new Icon Icon {
-      get { return base.Icon; }
-      set {
-        if (InvokeRequired) {
-          Action<Icon> action = delegate(Icon i) { this.Icon = i; };
-          Invoke(action, new object[] { value });
-        } else
-          base.Icon = value;
       }
     }
 

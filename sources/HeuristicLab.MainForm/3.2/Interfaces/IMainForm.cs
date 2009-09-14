@@ -32,7 +32,6 @@ namespace HeuristicLab.MainForm {
     string StatusStripText { get; set; }
     bool StatusStripProgressBarVisible { get; set; }
 
-    Icon Icon { get; set; }
     Cursor Cursor { get; set; }
 
     IView ActiveView { get; }
