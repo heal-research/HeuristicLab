@@ -61,32 +61,18 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       subScopesProc.AddSubOperator(individualProc);
       seq.AddSubOperator(subScopesProc);
 
-      TheilInequalityCoefficientEvaluator trainingTheil = new TheilInequalityCoefficientEvaluator();
+      SimpleTheilInequalityCoefficientEvaluator trainingTheil = new SimpleTheilInequalityCoefficientEvaluator();
       trainingTheil.Name = "TrainingTheilInequalityEvaluator";
-      trainingTheil.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingTheil.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingTheil.GetVariableInfo("Values").ActualName = "TrainingValues";
       trainingTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TrainingTheilInequalityCoefficient";
-      trainingTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "TrainingTheilInequalityCoefficientBias";
-      trainingTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "TrainingTheilInequalityCoefficientVariance";
-      trainingTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "TrainingTheilInequalityCoefficientCovariance";
-
-      TheilInequalityCoefficientEvaluator validationTheil = new TheilInequalityCoefficientEvaluator();
+      SimpleTheilInequalityCoefficientEvaluator validationTheil = new SimpleTheilInequalityCoefficientEvaluator();
       validationTheil.Name = "ValidationTheilInequalityEvaluator";
-      validationTheil.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
-      validationTheil.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+      validationTheil.GetVariableInfo("Values").ActualName = "ValidationValues";
       validationTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "ValidationTheilInequalityCoefficient";
-      validationTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "ValidationTheilInequalityCoefficientBias";
-      validationTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "ValidationTheilInequalityCoefficientVariance";
-      validationTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "ValidationTheilInequalityCoefficientCovariance";
-
-      TheilInequalityCoefficientEvaluator testTheil = new TheilInequalityCoefficientEvaluator();
+      SimpleTheilInequalityCoefficientEvaluator testTheil = new SimpleTheilInequalityCoefficientEvaluator();
       testTheil.Name = "TestTheilInequalityEvaluator";
-      testTheil.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
-      testTheil.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      testTheil.GetVariableInfo("Values").ActualName = "TestValues";
       testTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
-      testTheil.GetVariableInfo("TheilInequalityCoefficientBias").ActualName = "TestTheilInequalityCoefficientBias";
-      testTheil.GetVariableInfo("TheilInequalityCoefficientVariance").ActualName = "TestTheilInequalityCoefficientVariance";
-      testTheil.GetVariableInfo("TheilInequalityCoefficientCovariance").ActualName = "TestTheilInequalityCoefficientCovariance";
 
       individualProc.AddSubOperator(trainingTheil);
       individualProc.AddSubOperator(validationTheil);

@@ -62,8 +62,6 @@ namespace HeuristicLab.SupportVectorMachines {
       seq.AddSubOperator(CreateGlobalInjector());
       ProblemInjector probInjector = new ProblemInjector();
       seq.AddSubOperator(probInjector);
-      seq.AddSubOperator(new RandomInjector());
-
       return seq;
     }
 
@@ -82,16 +80,25 @@ namespace HeuristicLab.SupportVectorMachines {
       SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
       SequentialProcessor seqProc = new SequentialProcessor();
 
+      SupportVectorEvaluator trainingEvaluator = new SupportVectorEvaluator();
+      trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
+      trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
+
       SimpleTheilInequalityCoefficientEvaluator trainingTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
+      trainingTheilUCalculator.Name = "TrainingTheilInequalityEvaluator";
       trainingTheilUCalculator.GetVariableInfo("Values").ActualName = "TrainingValues";
       trainingTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TrainingTheilInequalityCoefficient";
       SimpleTheilInequalityCoefficientEvaluator validationTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
+      validationTheilUCalculator.Name = "ValidationTheilInequalityEvaluator";
       validationTheilUCalculator.GetVariableInfo("Values").ActualName = "ValidationValues";
       validationTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "ValidationTheilInequalityCoefficient";
       SimpleTheilInequalityCoefficientEvaluator testTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
+      testTheilUCalculator.Name = "TestTheilInequalityEvaluator";
       testTheilUCalculator.GetVariableInfo("Values").ActualName = "TestValues";
       testTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
 
+      seqProc.AddSubOperator(trainingEvaluator);
       seqProc.AddSubOperator(trainingTheilUCalculator);
       seqProc.AddSubOperator(validationTheilUCalculator);
       seqProc.AddSubOperator(testTheilUCalculator);
