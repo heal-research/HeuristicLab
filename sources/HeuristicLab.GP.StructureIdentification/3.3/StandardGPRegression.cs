@@ -31,7 +31,7 @@ using System;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class StandardGP : HeuristicLab.GP.Algorithms.StandardGP, IAlgorithm {
+  public class StandardGPRegression : HeuristicLab.GP.Algorithms.StandardGP, IAlgorithm {
 
     public override string Name { get { return "StandardGP - StructureIdentification"; } }
 
@@ -70,7 +70,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
-    public StandardGP()
+    public StandardGPRegression()
       : base() {
 
       PunishmentFactor = 10.0;
@@ -150,12 +150,6 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected virtual IOperator CreateModelAnalyzerOperator() {
       return DefaultRegressionOperators.CreatePostProcessingOperator();
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      StandardGP clone = (StandardGP)base.Clone(clonedObjects);
-      clone.PunishmentFactor = PunishmentFactor;
-      return clone;
     }
 
     protected CombinedOperator GetProblemInjector() {

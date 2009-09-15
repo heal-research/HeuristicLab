@@ -83,10 +83,10 @@
   <ItemGroup>
     <Compile Include="AveragePercentageChangeEvaluator.cs" />
     <Compile Include="HeuristicLabGPTimeSeriesPlugin.cs" />
-    <Compile Include="OffspringSelectionGP.cs" />
+    <Compile Include="OffspringSelectionGPTimeSeriesPrognosis.cs" />
     <Compile Include="ProfitEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StandardGP.cs" />
+    <Compile Include="StandardGPTimeSeriesPrognosis.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.2\HeuristicLab.Core-3.2.csproj">

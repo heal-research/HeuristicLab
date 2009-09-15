@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SupportVectorClassification.cs" />
-    <Compile Include="TimeSeriesSupportVectorRegression.cs" />
+    <Compile Include="SupportVectorTimeSeriesPrognosis.cs" />
     <Compile Include="PredictorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

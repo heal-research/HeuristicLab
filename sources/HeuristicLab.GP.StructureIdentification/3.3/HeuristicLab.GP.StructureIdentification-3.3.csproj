@@ -86,7 +86,7 @@
     <Compile Include="DefaultStructureIdentificationOperators.cs" />
     <Compile Include="HL3TreeEvaluatorInjector.cs" />
     <Compile Include="HL2TreeEvaluatorInjector.cs" />
-    <Compile Include="OffspringSelectionGP.cs" />
+    <Compile Include="OffspringSelectionGPRegression.cs" />
     <Compile Include="PredictorBuilder.cs" />
     <Compile Include="Predictor.cs" />
     <Compile Include="Evaluators\SimpleGPEvaluatorBase.cs" />
@@ -97,9 +97,7 @@
     <Compile Include="PredictorView.Designer.cs">
       <DependentUpon>PredictorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="StandardGP.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="StandardGPRegression.cs" />
     <Compile Include="Symbols\Addition.cs" />
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\Average.cs" />

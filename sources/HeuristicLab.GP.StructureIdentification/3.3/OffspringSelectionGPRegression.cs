@@ -32,7 +32,7 @@ using HeuristicLab.Modeling;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class OffspringSelectionGP : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IAlgorithm {
+  public class OffspringSelectionGPRegression : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IAlgorithm {
     public override string Name { get { return "OffspringSelectionGP - StructureIdentification"; } }
 
     public virtual int TargetVariable {
@@ -70,7 +70,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       }
     }
 
-    public OffspringSelectionGP()
+    public OffspringSelectionGPRegression()
       : base() {
       PunishmentFactor = 10.0;
     }
@@ -151,12 +151,6 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected virtual IOperator CreateModelAnalyzerOperator() {
       return DefaultRegressionOperators.CreatePostProcessingOperator();
-    }
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      OffspringSelectionGP clone = (OffspringSelectionGP)base.Clone(clonedObjects);
-      clone.PunishmentFactor = PunishmentFactor;
-      return clone;
     }
 
     protected CombinedOperator GetProblemInjector() {

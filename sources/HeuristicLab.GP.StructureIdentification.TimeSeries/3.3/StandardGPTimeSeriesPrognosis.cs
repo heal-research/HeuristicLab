@@ -27,7 +27,7 @@ using HeuristicLab.Operators;
 using System;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
-  public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, ITimeSeriesAlgorithm {
+  public class StandardGPTimeSeriesPrognosis : HeuristicLab.GP.StructureIdentification.StandardGPRegression, ITimeSeriesAlgorithm {
     public override string Name {
       get {
         return base.Name + " - time series prognosis";

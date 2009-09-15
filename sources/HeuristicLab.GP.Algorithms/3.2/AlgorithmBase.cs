@@ -131,8 +131,9 @@ namespace HeuristicLab.GP.Algorithms {
 
     protected internal virtual CombinedOperator CreateAlgorithm() {
       CombinedOperator algo = new CombinedOperator();
-      algo.Name = "GP";
+      algo.Name = Name;
       SequentialProcessor seq = new SequentialProcessor();
+      seq.Name = Name;
       IOperator init = CreateInitializationOperator();
       init.AddSubOperator(CreateProblemInjector());
       init.AddSubOperator(CreateFunctionLibraryInjector());

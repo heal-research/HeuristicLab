@@ -36,7 +36,7 @@ using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.SupportVectorMachines {
-  public class TimeSeriesSupportVectorRegression : SupportVectorRegression, ITimeSeriesAlgorithm {
+  public class SupportVectorTimeSeriesPrognosis : SupportVectorRegression, ITimeSeriesAlgorithm {
 
     public override string Name { get { return "SupportVectorRegression - Time Series Prognosis"; } }
 
@@ -50,10 +50,10 @@ namespace HeuristicLab.SupportVectorMachines {
       set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
     }
 
-    public TimeSeriesSupportVectorRegression()
+    public SupportVectorTimeSeriesPrognosis()
       : base() {
-      MaxTimeOffset = 0;
-      MinTimeOffset = 0;
+      MaxTimeOffset = -1;
+      MinTimeOffset = -1;
     }
 
     protected override IOperator CreateProblemInjector() {

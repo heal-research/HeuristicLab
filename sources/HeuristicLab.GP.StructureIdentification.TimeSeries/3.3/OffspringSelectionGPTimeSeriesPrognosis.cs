@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.GP.Algorithms;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
-  public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {
+  public class OffspringSelectionGPTimeSeriesPrognosis : HeuristicLab.GP.StructureIdentification.OffspringSelectionGPRegression, ITimeSeriesAlgorithm {
     public override string Name {
       get {
         return base.Name + " - time series prognosis";
