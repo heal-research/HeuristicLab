@@ -99,6 +99,11 @@ namespace HeuristicLab.MainForm {
       protected set { this.userInterfaceItemType = value; }
     }
 
+    protected List<IView> views;
+    public IEnumerable<IView> Views {
+      get { return views; }
+    }
+
     private IView activeView;
     public IView ActiveView {
       get { return this.activeView; }
@@ -139,10 +144,7 @@ namespace HeuristicLab.MainForm {
         MainFormChanged(this, new EventArgs());
     }
 
-    protected List<IView> views;
-    public IEnumerable<IView> Views {
-      get { return views; }
-    }
+  
 
     public virtual void ShowView(IView view) {
       if (!views.Contains(view)) {
@@ -161,6 +163,9 @@ namespace HeuristicLab.MainForm {
     }
 
     protected virtual void ViewClosed(IView view) {
+      views.Remove(view);
+      if (ActiveView == view)
+        ActiveView = null;
     }
     #endregion
 

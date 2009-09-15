@@ -83,10 +83,6 @@ namespace HeuristicLab.MainForm {
 
     private void MultipleDocumentFormClosed(object sender, FormClosedEventArgs e) {
       DocumentForm form = (DocumentForm)sender;
-      views.Remove(form.View);
-      if (views.Count == 0)
-        ActiveView = null;
-
       ViewClosed(form.View);
       form.Activated -= new EventHandler(MultipleDocumentFormActivated);
       form.FormClosing -= new FormClosingEventHandler(form.View.FormClosing);
