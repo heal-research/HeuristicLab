@@ -28,6 +28,12 @@ using System;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, ITimeSeriesAlgorithm {
+    public override string Name {
+      get {
+        return base.Name + " - time series prognosis";
+      }
+    }
+
     public int MinTimeOffset {
       get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
       set { GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data = value; }
@@ -48,10 +54,19 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
     }
 
     protected override IOperator CreateFunctionLibraryInjector() {
-      return DefaultTimeSeriesOperators.CreateFunctionLibraryInjector();
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "FunctionLibraryInjector";
+      SequentialProcessor seq = new SequentialProcessor();
+      FunctionLibraryInjector funLibInjector = new FunctionLibraryInjector();
+      funLibInjector.GetVariable("Differentials").Value = new BoolData(true);
+      seq.AddSubOperator(funLibInjector);
+      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
     }
 
-    protected override IOperator CreatePostProcessingOperator() {
+    protected override IOperator CreateModelAnalyzerOperator() {
       return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
@@ -64,8 +79,10 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
     }
 
     protected override IAnalyzerModel CreateGPModel() {
-      IAnalyzerModel model = base.CreateGPModel();
-      DefaultTimeSeriesOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      var model = new AnalyzerModel();
+      var bestModelScope = Engine.GlobalScope.SubScopes[0];
+      DefaultStructureIdentificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -36,7 +37,7 @@ using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.SupportVectorMachines {
-  public class SupportVectorClassification : SupportVectorRegression {
+  public class SupportVectorClassification : SupportVectorRegression, IClassificationAlgorithm {
 
     public override string Name { get { return "SupportVectorClassification"; } }
 
@@ -47,70 +48,16 @@ namespace HeuristicLab.SupportVectorMachines {
       MaxCostIndex = 1;
     }
 
-    protected override IOperator CreateModelAnalyser() {
-      CombinedOperator op = new CombinedOperator();
-      op.Name = "Model Analyzer";
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(base.CreateModelAnalyser());
-      SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
-      SequentialProcessor seqProc = new SequentialProcessor();
-
-      SupportVectorEvaluator trainingEvaluator = new SupportVectorEvaluator();
-      trainingEvaluator.Name = "TrainingSimpleEvaluator";
-      trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
-      trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
-
-      SimpleAccuracyEvaluator trainingAccuracyEvaluator = new SimpleAccuracyEvaluator();
-      trainingAccuracyEvaluator.Name = "TrainingAccuracyEvaluator";
-      trainingAccuracyEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
-      trainingAccuracyEvaluator.GetVariableInfo("Accuracy").ActualName = "TrainingAccuracy";
-      SimpleAccuracyEvaluator validationAccuracyEvaluator = new SimpleAccuracyEvaluator();
-      validationAccuracyEvaluator.Name = "ValidationAccuracyEvaluator";
-      validationAccuracyEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
-      validationAccuracyEvaluator.GetVariableInfo("Accuracy").ActualName = "ValidationAccuracy";
-      SimpleAccuracyEvaluator testAccuracyEvaluator = new SimpleAccuracyEvaluator();
-      testAccuracyEvaluator.Name = "TestAccuracyEvaluator";
-      testAccuracyEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
-      testAccuracyEvaluator.GetVariableInfo("Accuracy").ActualName = "TestAccuracy";
-
-      SimpleConfusionMatrixEvaluator trainingConfusionMatrixEvaluator = new SimpleConfusionMatrixEvaluator();
-      trainingConfusionMatrixEvaluator.Name = "TrainingConfusionMatrixEvaluator";
-      trainingConfusionMatrixEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
-      trainingConfusionMatrixEvaluator.GetVariableInfo("ConfusionMatrix").ActualName = "TrainingConfusionMatrix";
-      SimpleConfusionMatrixEvaluator validationConfusionMatrixEvaluator = new SimpleConfusionMatrixEvaluator();
-      validationConfusionMatrixEvaluator.Name = "ValidationConfusionMatrixEvaluator";
-      validationConfusionMatrixEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
-      validationConfusionMatrixEvaluator.GetVariableInfo("ConfusionMatrix").ActualName = "ValidationConfusionMatrix";
-      SimpleConfusionMatrixEvaluator testConfusionMatrixEvaluator = new SimpleConfusionMatrixEvaluator();
-      testConfusionMatrixEvaluator.Name = "TestConfusionMatrixEvaluator";
-      testConfusionMatrixEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
-      testConfusionMatrixEvaluator.GetVariableInfo("ConfusionMatrix").ActualName = "TestConfusionMatrix";
-
-      seqProc.AddSubOperator(trainingEvaluator);
-      seqProc.AddSubOperator(trainingAccuracyEvaluator);
-      seqProc.AddSubOperator(validationAccuracyEvaluator);
-      seqProc.AddSubOperator(testAccuracyEvaluator);
-      seqProc.AddSubOperator(trainingConfusionMatrixEvaluator);
-      seqProc.AddSubOperator(validationConfusionMatrixEvaluator);
-      seqProc.AddSubOperator(testConfusionMatrixEvaluator);
-
-      seq.AddSubOperator(seqSubScopeProc);
-      seqSubScopeProc.AddSubOperator(seqProc);
-
-      op.OperatorGraph.AddOperator(seq);
-      op.OperatorGraph.InitialOperator = seq;
-      return op;
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
 
     protected override IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
-      IAnalyzerModel model = base.CreateSVMModel(bestModelScope);
-
-      model.SetResult("TrainingAccuracy", bestModelScope.GetVariableValue<DoubleData>("TrainingAccuracy", false).Data);
-      model.SetResult("ValidationAccuracy", bestModelScope.GetVariableValue<DoubleData>("ValidationAccuracy", false).Data);
-      model.SetResult("TestAccuracy", bestModelScope.GetVariableValue<DoubleData>("TestAccuracy", false).Data);
-
+      IAnalyzerModel model = new AnalyzerModel();
+      model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
+      model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
+      DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

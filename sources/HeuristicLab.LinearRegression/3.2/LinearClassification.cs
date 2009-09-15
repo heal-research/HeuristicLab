@@ -37,7 +37,7 @@ using HeuristicLab.GP.Interfaces;
 using HeuristicLab.GP.StructureIdentification.Classification;
 
 namespace HeuristicLab.LinearRegression {
-  public class LinearClassification : LinearRegression {
+  public class LinearClassification : LinearRegression, IClassificationAlgorithm {
 
     public override string Name { get { return "LinearClassification"; } }
 
@@ -45,13 +45,17 @@ namespace HeuristicLab.LinearRegression {
       : base() {
     }
 
-    protected override IOperator CreateModelAnalyser() {
-      return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
+    protected override IOperator CreateProblemInjector() {
+      return DefaultClassificationOperators.CreateProblemInjector();
+    }
+
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
     protected internal virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
-      IAnalyzerModel model = base.CreateLRModel(bestModelScope);
-      DefaultClassificationAlgorithmOperators.SetModelData(model, bestModelScope);
+      var model = new AnalyzerModel();
+      DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

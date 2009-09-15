@@ -86,38 +86,33 @@ namespace HeuristicLab.LinearRegression {
     protected virtual CombinedOperator CreateAlgorithm() {
       CombinedOperator algo = new CombinedOperator();
       SequentialProcessor seq = new SequentialProcessor();
-      algo.Name = "LinearRegression";
-      seq.Name = "LinearRegression";
+      algo.Name = Name;
+      seq.Name = Name;
 
-      var randomInjector = new RandomInjector();
-      randomInjector.Name = "Random Injector";
       IOperator globalInjector = CreateGlobalInjector();
-      ProblemInjector problemInjector = new ProblemInjector();
-      problemInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
-      problemInjector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(5000)));
 
-      HL2TreeEvaluatorInjector treeEvaluatorInjector = new HL2TreeEvaluatorInjector();
+      HL3TreeEvaluatorInjector treeEvaluatorInjector = new HL3TreeEvaluatorInjector();
 
-      IOperator shuffler = new DatasetShuffler();
-      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
-      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
 
       LinearRegressionOperator lrOperator = new LinearRegressionOperator();
       lrOperator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
       lrOperator.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
-      seq.AddSubOperator(randomInjector);
-      seq.AddSubOperator(problemInjector);
       seq.AddSubOperator(globalInjector);
+      seq.AddSubOperator(new RandomInjector());
+      seq.AddSubOperator(CreateProblemInjector());
       seq.AddSubOperator(treeEvaluatorInjector);
-      seq.AddSubOperator(shuffler);
       seq.AddSubOperator(lrOperator);
-      seq.AddSubOperator(CreateModelAnalyser());
+      seq.AddSubOperator(CreatePostProcessingOperator());
 
       algo.OperatorGraph.InitialOperator = seq;
       algo.OperatorGraph.AddOperator(seq);
 
       return algo;
+    }
+
+    protected virtual IOperator CreateProblemInjector() {
+      return DefaultRegressionOperators.CreateProblemInjector();
     }
 
     protected virtual VariableInjector CreateGlobalInjector() {
@@ -128,20 +123,72 @@ namespace HeuristicLab.LinearRegression {
       return injector;
     }
 
-    protected virtual IOperator CreateModelAnalyser() {
+    protected virtual IOperator CreatePostProcessingOperator() {
       CombinedOperator op = new CombinedOperator();
-      op.AddVariableInfo(new VariableInfo("FunctionTree", "The model to analyze", typeof(IGeneticProgrammingModel), VariableKind.In));
       op.Name = "Model Analyzer";
-      op.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
 
-      IOperator maOp = DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator();
-      op.OperatorGraph.AddOperator(maOp);
-      op.OperatorGraph.InitialOperator = maOp;
+      SequentialProcessor seq = new SequentialProcessor();
+      HL3TreeEvaluatorInjector evaluatorInjector = new HL3TreeEvaluatorInjector();
+      evaluatorInjector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000.0)));
+      evaluatorInjector.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+
+      #region simple evaluators
+      SimpleEvaluator trainingEvaluator = new SimpleEvaluator();
+      trainingEvaluator.Name = "TrainingEvaluator";
+      trainingEvaluator.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
+      trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+      trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
+      trainingEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+      SimpleEvaluator validationEvaluator = new SimpleEvaluator();
+      validationEvaluator.Name = "ValidationEvaluator";
+      validationEvaluator.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      validationEvaluator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
+      validationEvaluator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+      validationEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
+      validationEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+      SimpleEvaluator testEvaluator = new SimpleEvaluator();
+      testEvaluator.Name = "TestEvaluator";
+      testEvaluator.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+      testEvaluator.GetVariableInfo("SamplesStart").ActualName = "TestSamplesStart";
+      testEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TestSamplesEnd";
+      testEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
+      testEvaluator.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+      seq.AddSubOperator(evaluatorInjector);
+      seq.AddSubOperator(trainingEvaluator);
+      seq.AddSubOperator(validationEvaluator);
+      seq.AddSubOperator(testEvaluator);
+      #endregion
+
+      #region variable impacts
+      // calculate and set variable impacts
+      VariableNamesExtractor namesExtractor = new VariableNamesExtractor();
+      namesExtractor.GetVariableInfo("VariableNames").ActualName = "InputVariableNames";
+      namesExtractor.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+
+      PredictorBuilder predictorBuilder = new PredictorBuilder();
+      predictorBuilder.GetVariableInfo("TreeEvaluator").ActualName = "ModelAnalysisTreeEvaluator";
+      predictorBuilder.GetVariableInfo("FunctionTree").ActualName = "LinearRegressionModel";
+
+      seq.AddSubOperator(namesExtractor);
+      seq.AddSubOperator(predictorBuilder);
+      #endregion
+
+      seq.AddSubOperator(CreateModelAnalyzerOperator());
+
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
       return op;
     }
 
+    protected virtual IOperator CreateModelAnalyzerOperator() {
+      return DefaultRegressionOperators.CreatePostProcessingOperator();
+    }
+
     protected virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
+      var model = new AnalyzerModel();
+      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
+      return model;
     }
 
     protected virtual IOperator GetMainOperator() {

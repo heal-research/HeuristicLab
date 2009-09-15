@@ -26,17 +26,25 @@ using System;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class StandardGP : HeuristicLab.GP.StructureIdentification.StandardGP, IClassificationAlgorithm {
-    protected override IOperator CreateProblemInjector() {
-      return DefaultClassificationAlgorithmOperators.CreateProblemInjector();
+    public override string Name {
+      get {
+        return base.Name + " - Classification";
+      }
     }
-    
-    protected override IOperator CreatePostProcessingOperator() {
-      return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
+
+    protected override IOperator CreateProblemInjector() {
+      return DefaultClassificationOperators.CreateProblemInjector();
+    }
+
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
     protected override IAnalyzerModel CreateGPModel() {
-      IAnalyzerModel model = base.CreateGPModel();
-      DefaultClassificationAlgorithmOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      var model = new AnalyzerModel();
+      var bestModelScope = Engine.GlobalScope.SubScopes[0];
+      DefaultStructureIdentificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

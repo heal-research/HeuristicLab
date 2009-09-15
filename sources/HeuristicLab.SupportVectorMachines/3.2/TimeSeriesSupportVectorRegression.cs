@@ -56,14 +56,8 @@ namespace HeuristicLab.SupportVectorMachines {
       MinTimeOffset = 0;
     }
 
-    protected override IOperator CreateInitialization() {
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.Name = "Initialization";
-      seq.AddSubOperator(CreateGlobalInjector());
-      ProblemInjector probInjector = new ProblemInjector();
-      seq.AddSubOperator(probInjector);
-      seq.AddSubOperator(new RandomInjector());
-      return seq;
+    protected override IOperator CreateProblemInjector() {
+      return DefaultTimeSeriesOperators.CreateProblemInjector();
     }
 
     protected override VariableInjector CreateGlobalInjector() {
@@ -73,55 +67,15 @@ namespace HeuristicLab.SupportVectorMachines {
       return injector;
     }
 
-    protected override IOperator CreateModelAnalyser() {
-      CombinedOperator op = new CombinedOperator();
-      op.Name = "Model Analyzer";
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(base.CreateModelAnalyser());
-      SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
-      SequentialProcessor seqProc = new SequentialProcessor();
-
-      SupportVectorEvaluator trainingEvaluator = new SupportVectorEvaluator();
-      trainingEvaluator.Name = "TrainingEvaluator";
-      trainingEvaluator.GetVariableInfo("SVMModel").ActualName = "Model";
-      trainingEvaluator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      trainingEvaluator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
-      trainingEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
-
-      SimpleTheilInequalityCoefficientEvaluator trainingTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
-      trainingTheilUCalculator.Name = "TrainingTheilInequalityEvaluator";
-      trainingTheilUCalculator.GetVariableInfo("Values").ActualName = "TrainingValues";
-      trainingTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TrainingTheilInequalityCoefficient";
-      SimpleTheilInequalityCoefficientEvaluator validationTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
-      validationTheilUCalculator.Name = "ValidationTheilInequalityEvaluator";
-      validationTheilUCalculator.GetVariableInfo("Values").ActualName = "ValidationValues";
-      validationTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "ValidationTheilInequalityCoefficient";
-      SimpleTheilInequalityCoefficientEvaluator testTheilUCalculator = new SimpleTheilInequalityCoefficientEvaluator();
-      testTheilUCalculator.Name = "TestTheilInequalityEvaluator";
-      testTheilUCalculator.GetVariableInfo("Values").ActualName = "TestValues";
-      testTheilUCalculator.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
-
-      seqProc.AddSubOperator(trainingEvaluator);
-      seqProc.AddSubOperator(trainingTheilUCalculator);
-      seqProc.AddSubOperator(validationTheilUCalculator);
-      seqProc.AddSubOperator(testTheilUCalculator);
-
-      seq.AddSubOperator(seqSubScopeProc);
-      seqSubScopeProc.AddSubOperator(seqProc);
-
-      op.OperatorGraph.AddOperator(seq);
-      op.OperatorGraph.InitialOperator = seq;
-      return op;
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
-
     protected override IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
-      IAnalyzerModel model = base.CreateSVMModel(bestModelScope);
-
-      model.SetResult("TrainingTheilInequalityCoefficient", bestModelScope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", false).Data);
-      model.SetResult("ValidationTheilInequalityCoefficient", bestModelScope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", false).Data);
-      model.SetResult("TestTheilInequalityCoefficient", bestModelScope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", false).Data);
-
+      var model = new AnalyzerModel();
+      model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
+      model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
+      DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

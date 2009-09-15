@@ -76,24 +76,24 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected override IOperator CreateFunctionLibraryInjector() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateFunctionLibraryInjector();
+      return DefaultStructureIdentificationOperators.CreateFunctionLibraryInjector();
     }
 
     protected override IOperator CreateProblemInjector() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateProblemInjector();
+      return DefaultRegressionOperators.CreateProblemInjector();
     }
 
     protected override IOperator CreateInitialPopulationEvaluator() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateInitialPopulationEvaluator();
+      return DefaultStructureIdentificationOperators.CreateInitialPopulationEvaluator();
     }
 
     protected override IOperator CreateEvaluationOperator() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateEvaluator();
+      return DefaultStructureIdentificationOperators.CreateEvaluator();
     }
 
 
     protected override IOperator CreateGenerationStepHook() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreateGenerationStepHook();
+      return DefaultStructureIdentificationOperators.CreateGenerationStepHook();
     }
 
     protected override VariableInjector CreateGlobalInjector() {
@@ -132,7 +132,25 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     protected override IOperator CreatePostProcessingOperator() {
-      return DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator();
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "ModelAnalyser";
+      SequentialProcessor seq = new SequentialProcessor();
+      seq.AddSubOperator(DefaultStructureIdentificationOperators.CreatePreparationForPostProcessingOperator());
+
+      UniformSequentialSubScopesProcessor subScopesProc = new UniformSequentialSubScopesProcessor();
+      SequentialProcessor solutionProc = new SequentialProcessor();
+      solutionProc.AddSubOperator(CreateModelAnalyzerOperator());
+
+      subScopesProc.AddSubOperator(solutionProc);
+      seq.AddSubOperator(subScopesProc);
+
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
+    }
+
+    protected virtual IOperator CreateModelAnalyzerOperator() {
+      return DefaultRegressionOperators.CreatePostProcessingOperator();
     }
 
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
@@ -147,8 +165,12 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     protected virtual IAnalyzerModel CreateGPModel() {
       IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
-      IAnalyzerModel model = DefaultStructureIdentificationAlgorithmOperators.CreateGPModel(bestModelScope);
-      model.SetMetaData("SelectionPressure", bestModelScope.GetVariableValue<DoubleData>("SelectionPressure", true).Data);
+      var model = new AnalyzerModel();
+
+      model.SetMetaData("SelectionPressure", bestModelScope.GetVariableValue<DoubleData>("SelectionPressure", false).Data);
+      DefaultStructureIdentificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
+
       return model;
     }
   }

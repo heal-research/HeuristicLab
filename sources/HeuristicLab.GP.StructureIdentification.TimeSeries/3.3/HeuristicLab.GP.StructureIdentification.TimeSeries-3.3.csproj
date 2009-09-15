@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AveragePercentageChangeEvaluator.cs" />
-    <Compile Include="DefaultTimeSeriesOperators.cs" />
     <Compile Include="HeuristicLabGPTimeSeriesPlugin.cs" />
     <Compile Include="OffspringSelectionGP.cs" />
     <Compile Include="ProfitEvaluator.cs" />

@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassificationMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="DefaultClassificationAlgorithmOperators.cs" />
     <Compile Include="GPClassificationEvaluatorBase.cs" />
     <Compile Include="CrossValidation.cs" />
     <Compile Include="HeuristicLabGPClassificationPlugin.cs" />

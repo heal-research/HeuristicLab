@@ -21,28 +21,13 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
-using HeuristicLab.GP.Interfaces;
 using HeuristicLab.Operators;
 using HeuristicLab.Modeling;
-using HeuristicLab.Logging;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
-  internal static class DefaultTimeSeriesOperators {
-    internal static IOperator CreateFunctionLibraryInjector() {
-      CombinedOperator op = new CombinedOperator();
-      op.Name = "FunctionLibraryInjector";
-      SequentialProcessor seq = new SequentialProcessor();
-      FunctionLibraryInjector funLibInjector = new FunctionLibraryInjector();
-      funLibInjector.GetVariable("Differentials").Value = new BoolData(true);
-      seq.AddSubOperator(funLibInjector);
-      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
-      op.OperatorGraph.AddOperator(seq);
-      op.OperatorGraph.InitialOperator = seq;
-      return op;
-    }
-
-    internal static IOperator CreateProblemInjector() {
+namespace HeuristicLab.Modeling {
+  public static class DefaultTimeSeriesOperators {
+    public static IOperator CreateProblemInjector() {
       CombinedOperator op = new CombinedOperator();
       op.Name = "ProblemInjector";
       SequentialProcessor seq = new SequentialProcessor();
@@ -52,14 +37,12 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       return op;
     }
 
-    internal static IOperator CreatePostProcessingOperator() {
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(DefaultStructureIdentificationAlgorithmOperators.CreatePostProcessingOperator());
+    public static IOperator CreatePostProcessingOperator() {
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "Time series prognosis model analyzer";
 
-      UniformSequentialSubScopesProcessor subScopesProc = new UniformSequentialSubScopesProcessor();
-      SequentialProcessor individualProc = new SequentialProcessor();
-      subScopesProc.AddSubOperator(individualProc);
-      seq.AddSubOperator(subScopesProc);
+      SequentialProcessor seq = new SequentialProcessor();
+      seq.AddSubOperator(DefaultRegressionOperators.CreatePostProcessingOperator());
 
       SimpleTheilInequalityCoefficientEvaluator trainingTheil = new SimpleTheilInequalityCoefficientEvaluator();
       trainingTheil.Name = "TrainingTheilInequalityEvaluator";
@@ -74,16 +57,22 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       testTheil.GetVariableInfo("Values").ActualName = "TestValues";
       testTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
 
-      individualProc.AddSubOperator(trainingTheil);
-      individualProc.AddSubOperator(validationTheil);
-      individualProc.AddSubOperator(testTheil);
-      return seq;
+      seq.AddSubOperator(trainingTheil);
+      seq.AddSubOperator(validationTheil);
+      seq.AddSubOperator(testTheil);
+
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
     }
 
-    internal static void SetModelData(IAnalyzerModel model, IScope scope) {
-      model.SetResult("TrainingTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", true).Data);
-      model.SetResult("ValidationTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", true).Data);
-      model.SetResult("TestTheilInequalityCoefficient", scope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", true).Data);
+    public static IAnalyzerModel PopulateAnalyzerModel(IScope modelScope, IAnalyzerModel model) {
+      DefaultRegressionOperators.PopulateAnalyzerModel(modelScope, model);
+      model.SetResult("TrainingTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", true).Data);
+      model.SetResult("ValidationTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", true).Data);
+      model.SetResult("TestTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", true).Data);
+
+      return model;
     }
   }
 }

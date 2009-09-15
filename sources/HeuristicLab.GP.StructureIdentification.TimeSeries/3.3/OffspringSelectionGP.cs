@@ -28,6 +28,11 @@ using HeuristicLab.GP.Algorithms;
 
 namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, ITimeSeriesAlgorithm {
+    public override string Name {
+      get {
+        return base.Name + " - time series prognosis";
+      }
+    }
 
     public int MinTimeOffset {
       get { return GetVariableInjector().GetVariable("MinTimeOffset").GetValue<IntData>().Data; }
@@ -49,11 +54,16 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
     }
 
     protected override IOperator CreateFunctionLibraryInjector() {
-      return DefaultTimeSeriesOperators.CreateFunctionLibraryInjector();
-    }
-
-    protected override IOperator CreatePostProcessingOperator() {
-      return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "FunctionLibraryInjector";
+      SequentialProcessor seq = new SequentialProcessor();
+      FunctionLibraryInjector funLibInjector = new FunctionLibraryInjector();
+      funLibInjector.GetVariable("Differentials").Value = new BoolData(true);
+      seq.AddSubOperator(funLibInjector);
+      seq.AddSubOperator(new HL3TreeEvaluatorInjector());
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
     }
 
     protected override VariableInjector CreateGlobalInjector() {
@@ -64,9 +74,16 @@ namespace HeuristicLab.GP.StructureIdentification.TimeSeries {
       return injector;
     }
 
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
+    }
+
     protected override IAnalyzerModel CreateGPModel() {
-      IAnalyzerModel model = base.CreateGPModel();
-      DefaultTimeSeriesOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+      var model = new AnalyzerModel();
+      var bestModelScope = Engine.GlobalScope.SubScopes[0];
+      model.SetMetaData("SelectionPressure", bestModelScope.GetVariableValue<DoubleData>("SelectionPressure", false).Data);
+      DefaultStructureIdentificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
       return model;
     }
   }

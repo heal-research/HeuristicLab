@@ -124,12 +124,12 @@ namespace HeuristicLab.SupportVectorMachines {
     private CombinedOperator CreateAlgorithm() {
       CombinedOperator algo = new CombinedOperator();
       SequentialProcessor seq = new SequentialProcessor();
-      algo.Name = "SupportVectorRegression";
-      seq.Name = "SupportVectorRegression";
+      algo.Name = Name;
+      seq.Name = Name;
 
       IOperator initialization = CreateInitialization();
       IOperator main = CreateMainLoop();
-      IOperator postProc = CreateModelAnalyser();
+      IOperator postProc = CreatePostProcessingOperator();
 
       seq.AddSubOperator(initialization);
       seq.AddSubOperator(main);
@@ -144,18 +144,14 @@ namespace HeuristicLab.SupportVectorMachines {
     protected virtual IOperator CreateInitialization() {
       SequentialProcessor seq = new SequentialProcessor();
       seq.Name = "Initialization";
-      seq.AddSubOperator(CreateGlobalInjector());
-      ProblemInjector probInjector = new ProblemInjector();
-      probInjector.GetVariableInfo("MaxNumberOfTrainingSamples").Local = true;
-      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(1000)));
-      seq.AddSubOperator(probInjector);
       seq.AddSubOperator(new RandomInjector());
-
-      DatasetShuffler shuffler = new DatasetShuffler();
-      shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
-      shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";
-      seq.AddSubOperator(shuffler);
+      seq.AddSubOperator(CreateGlobalInjector());
+      seq.AddSubOperator(CreateProblemInjector());
       return seq;
+    }
+
+    protected virtual IOperator CreateProblemInjector() {
+      return DefaultRegressionOperators.CreateProblemInjector();
     }
 
     private IOperator CreateMainLoop() {
@@ -401,7 +397,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       return injector;
     }
 
-    protected virtual IOperator CreateModelAnalyser() {
+    protected virtual IOperator CreatePostProcessingOperator() {
       CombinedOperator modelAnalyser = new CombinedOperator();
       modelAnalyser.Name = "Model Analyzer";
       SequentialSubScopesProcessor seqSubScopeProc = new SequentialSubScopesProcessor();
@@ -409,76 +405,34 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
       PredictorBuilder predictorBuilder = new PredictorBuilder();
       predictorBuilder.GetVariableInfo("SVMModel").ActualName = "Model";
-      VariableEvaluationImpactCalculator evalImpactCalc = new VariableEvaluationImpactCalculator();
-      evalImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      evalImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
-      VariableQualityImpactCalculator qualImpactCalc = new VariableQualityImpactCalculator();
-      qualImpactCalc.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
-      qualImpactCalc.GetVariableInfo("SamplesEnd").ActualName = "ActualTrainingSamplesEnd";
 
       seqProc.AddSubOperator(CreateEvaluator("Test"));
+      seqProc.AddSubOperator(CreateEvaluator("Training"));
       seqProc.AddSubOperator(predictorBuilder);
-      seqProc.AddSubOperator(evalImpactCalc);
-      seqProc.AddSubOperator(qualImpactCalc);
+      seqProc.AddSubOperator(CreateModelAnalyzerOperator());
+
       seqSubScopeProc.AddSubOperator(seqProc);
       modelAnalyser.OperatorGraph.InitialOperator = seqSubScopeProc;
       modelAnalyser.OperatorGraph.AddOperator(seqSubScopeProc);
       return modelAnalyser;
     }
 
+    protected virtual IOperator CreateModelAnalyzerOperator() {
+      return DefaultRegressionOperators.CreatePostProcessingOperator();
+    }
+
 
     protected virtual IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
       AnalyzerModel model = new AnalyzerModel();
-      model.SetResult("TrainingMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("Quality", false).Data);
-      model.SetResult("ValidationMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("ValidationQuality", false).Data);
-      model.SetResult("TestMeanSquaredError", bestModelScope.GetVariableValue<DoubleData>("TestQuality", false).Data);
-      model.SetResult("TrainingCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("ActualTrainingR2", false).Data);
-      model.SetResult("ValidationCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data);
-      model.SetResult("TestCoefficientOfDetermination", bestModelScope.GetVariableValue<DoubleData>("TestR2", false).Data);
-      model.SetResult("TrainingMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("ActualTrainingMAPE", false).Data);
-      model.SetResult("ValidationMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data);
-      model.SetResult("TestMeanAbsolutePercentageError", bestModelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data);
-      model.SetResult("TrainingMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("ActualTrainingMAPRE", false).Data);
-      model.SetResult("ValidationMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data);
-      model.SetResult("TestMeanAbsolutePercentageOfRangeError", bestModelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data);
-      model.SetResult("TrainingVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("ActualTrainingVAF", false).Data);
-      model.SetResult("ValidationVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data);
-      model.SetResult("TestVarianceAccountedFor", bestModelScope.GetVariableValue<DoubleData>("TestVAF", false).Data);
-
       model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
       model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
-
-      HeuristicLab.DataAnalysis.Dataset ds = bestModelScope.GetVariableValue<Dataset>("Dataset", true);
-      model.Dataset = ds;
-      model.TargetVariable = ds.GetVariableName(bestModelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
-      model.TrainingSamplesStart = bestModelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
-      model.TrainingSamplesEnd = bestModelScope.GetVariableValue<IntData>("TrainingSamplesEnd", true).Data;
-      model.ValidationSamplesStart = bestModelScope.GetVariableValue<IntData>("ValidationSamplesStart", true).Data;
-      model.ValidationSamplesEnd = bestModelScope.GetVariableValue<IntData>("ValidationSamplesEnd", true).Data;
-      model.TestSamplesStart = bestModelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
-      model.TestSamplesEnd = bestModelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
-      model.Predictor = bestModelScope.GetVariableValue<IPredictor>("Predictor", true);
-
-      ItemList evaluationImpacts = bestModelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
-      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
-      foreach (ItemList row in evaluationImpacts) {
-        string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableEvaluationImpact(variableName, impact);
-        model.AddInputVariable(variableName);
-      }
-      foreach (ItemList row in qualityImpacts) {
-        string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableQualityImpact(variableName, impact);
-        model.AddInputVariable(variableName);
-      }
+      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
 
       return model;
     }
 
     protected IOperator GetVariableInjector() {
-      return GetMainOperator().SubOperators[0].SubOperators[0];
+      return GetMainOperator().SubOperators[0].SubOperators[1];
     }
 
     protected IOperator GetMainOperator() {

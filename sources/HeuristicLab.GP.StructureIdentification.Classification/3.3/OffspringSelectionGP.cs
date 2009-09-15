@@ -22,21 +22,33 @@
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;
 using HeuristicLab.Operators;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.GP.StructureIdentification.Classification {
   public class OffspringSelectionGP : HeuristicLab.GP.StructureIdentification.OffspringSelectionGP, IClassificationAlgorithm {
 
+    public override string Name {
+      get {
+        return base.Name + " - Classification";
+      }
+    }
+
     protected override IOperator CreateProblemInjector() {
-      return DefaultClassificationAlgorithmOperators.CreateProblemInjector();
+      return DefaultClassificationOperators.CreateProblemInjector();
     }
 
-    protected override IOperator CreatePostProcessingOperator() {
-      return DefaultClassificationAlgorithmOperators.CreatePostProcessingOperator();
+    protected override IOperator CreateModelAnalyzerOperator() {
+      return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
-    protected override IAnalyzerModel CreateGPModel() {
-      IAnalyzerModel model = base.CreateGPModel();
-      DefaultClassificationAlgorithmOperators.SetModelData(model, Engine.GlobalScope.SubScopes[0]);
+    protected virtual IAnalyzerModel CreateGPModel() {
+      IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
+      var model = new AnalyzerModel();
+
+      model.SetMetaData("SelectionPressure", bestModelScope.GetVariableValue<DoubleData>("SelectionPressure", false).Data);
+      DefaultStructureIdentificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+      DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
+
       return model;
     }
   }
