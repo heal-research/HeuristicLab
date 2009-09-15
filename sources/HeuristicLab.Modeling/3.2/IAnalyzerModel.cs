@@ -32,7 +32,7 @@ namespace HeuristicLab.Modeling {
     string TargetVariable { get; set; }
     IEnumerable<string> InputVariables { get; }
     IEnumerable<KeyValuePair<string, double>> Results { get; }
-    IEnumerable<KeyValuePair<string, object>> MetaData { get; }
+    IEnumerable<KeyValuePair<string, double>> MetaData { get; }
     int TrainingSamplesStart { get; set; }
     int TrainingSamplesEnd { get; set; }
     int ValidationSamplesStart { get; set; }
@@ -41,8 +41,8 @@ namespace HeuristicLab.Modeling {
     int TestSamplesEnd { get; set; }
     void SetResult(string name, double value);
     double GetResult(string name);
-    void SetMetaData(string name, object data);
-    object GetMetaData(string name);
+    void SetMetaData(string name, double data);
+    double GetMetaData(string name);
     double GetVariableEvaluationImpact(string variableName);
     double GetVariableQualityImpact(string variableName);
     void AddInputVariable(string variableName);

@@ -120,8 +120,10 @@
     <Compile Include="DataObjects\Algorithm.cs" />
     <Compile Include="DataObjects\InputVariable.cs" />
     <Compile Include="DataObjects\InputVariableResult.cs" />
+    <Compile Include="DataObjects\MetaData.cs" />
     <Compile Include="DataObjects\Model.cs" />
     <Compile Include="DataObjects\ModelData.cs" />
+    <Compile Include="DataObjects\ModelMetaData.cs" />
     <Compile Include="HeuristicLabModelingDatabaseSQLServerCompactPlugin.cs" />
     <Compile Include="ModelingDataContext.cs" />
     <Compile Include="DataObjects\ModelResult.cs" />

@@ -81,6 +81,8 @@
   <ItemGroup>
     <Compile Include="IInputVariableResult.cs" />
     <Compile Include="IAlgorithm.cs" />
+    <Compile Include="IMetaData.cs" />
+    <Compile Include="IModelMetaData.cs" />
     <Compile Include="IProblem.cs" />
     <Compile Include="IVariable.cs" />
     <Compile Include="IInputVariable.cs" />

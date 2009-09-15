@@ -65,6 +65,14 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       get { return GetTable<ModelResult>(); }
     }
 
+    public Table<ModelMetaData> ModelMetaData {
+      get { return GetTable<ModelMetaData>(); }
+    }
+
+    public Table<MetaData> MetaData {
+      get { return GetTable<MetaData>(); }
+    }
+
     public Table<InputVariable> InputVariables {
       get { return GetTable<InputVariable>(); }
     }

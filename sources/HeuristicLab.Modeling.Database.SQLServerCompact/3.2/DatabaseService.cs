@@ -55,10 +55,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       ctx = new ModelingDataContext(connection);
       DataLoadOptions dlo = new DataLoadOptions();
       dlo.LoadWith<ModelResult>(mr => mr.Result);
+      dlo.LoadWith<ModelMetaData>(mmd => mmd.MetaData);
       dlo.LoadWith<InputVariableResult>(ir => ir.Variable);
       dlo.LoadWith<InputVariableResult>(ir => ir.Result);
       dlo.LoadWith<Model>(m => m.TargetVariable);
-      dlo.LoadWith<Model>(m => m.Algorithm);
+      dlo.LoadWith<Model>(m => m.Algorithm);      
       ctx.LoadOptions = dlo;
     }
 
@@ -116,13 +117,13 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
 
       // code to store meta-information for models (gkronber (8.9.09))
-      //using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-      //  foreach (KeyValuePair<string, double> pair in model.MetaData) {
-      //    MetaData metaData = GetOrCreateMetaData(pair.Key);
-      //    ctx.ModelMetaData.InsertOnSubmit(new ModelMetaData(m, metaData, pair.Value));
-      //  }
-      //  ctx.SubmitChanges();
-      //}
+      using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
+        foreach (KeyValuePair<string, double> pair in model.MetaData) {
+          MetaData metaData = GetOrCreateMetaData(pair.Key);
+          ctx.ModelMetaData.InsertOnSubmit(new ModelMetaData(m, metaData, pair.Value));
+        }
+        ctx.SubmitChanges();
+      }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         IEnumerable<MethodInfo> inputVariableResultInfos = model.GetType().GetMethods().Where(
@@ -262,6 +263,40 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
                          where ir.Model == model
                          select ir;
       return inputResults.ToList().Cast<IInputVariableResult>();
+    }
+
+    #endregion
+
+    #region ModelMetaData
+    public IEnumerable<IModelMetaData> GetModelMetaData(IModel model) {
+      var metadata = from md in ctx.ModelMetaData
+                     where md.Model == model
+                     select md;
+      return metadata.ToList().Cast<IModelMetaData>();
+    }
+    #endregion
+
+    #region MetaData
+    public IEnumerable<IMetaData> GetAllMetaData() {
+      return ctx.MetaData.ToList().Cast<IMetaData>();
+    }
+
+    public MetaData GetOrCreateMetaData(string name) {
+      MetaData metadata;
+      using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
+        var md = from r in ctx.MetaData
+                      where r.Name == name
+                      select r;
+        if (md.Count() == 0) {
+          metadata = new MetaData(name);
+          ctx.MetaData.InsertOnSubmit(metadata);
+          ctx.SubmitChanges();
+        } else if (md.Count() == 1)
+          metadata = md.Single();
+        else
+          throw new ArgumentException("Could not get metadata. More than one metadata with the name " + name + " are saved in database.");
+      }
+      return metadata;
     }
 
     #endregion

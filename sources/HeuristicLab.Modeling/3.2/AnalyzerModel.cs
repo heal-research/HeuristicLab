@@ -73,16 +73,16 @@ namespace HeuristicLab.Modeling {
       return results[name];
     }
 
-    private Dictionary<string, object> metadata = new Dictionary<string, object>();
-    public IEnumerable<KeyValuePair<string, object>> MetaData {
+    private Dictionary<string, double> metadata = new Dictionary<string, double>();
+    public IEnumerable<KeyValuePair<string, double>> MetaData {
       get { return metadata; }
     }
 
-    public void SetMetaData(string name, object value) {
+    public void SetMetaData(string name, double value) {
       metadata.Add(name, value);
     }
 
-    public object GetMetaData(string name) {
+    public double GetMetaData(string name) {
       return metadata[name];
     }
 
