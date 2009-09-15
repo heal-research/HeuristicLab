@@ -40,6 +40,8 @@ namespace HeuristicLab.LinearRegression {
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) Maximal time offset for time-series prognosis", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MinTimeOffset", "(optional) Minimal time offset for time-series prognosis", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("LinearRegressionModel", "Formula that was calculated by linear regression", typeof(IGeneticProgrammingModel), VariableKind.Out | VariableKind.New));
     }
 
@@ -48,30 +50,37 @@ namespace HeuristicLab.LinearRegression {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
-      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, start, end);
+      IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
+      int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
+      IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
+      int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
+
+      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
       List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariable, start, end);
 
-      double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows);
+      double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows, minTimeOffset, maxTimeOffset);
       double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
       double[] coefficients = CalculateCoefficients(inputMatrix, targetVector);
-      IFunctionTree tree = CreateModel(coefficients, allowedColumns.Select(i => dataset.GetVariableName(i)).ToList());
+      IFunctionTree tree = CreateModel(coefficients, allowedColumns.Select(i => dataset.GetVariableName(i)).ToList(), minTimeOffset, maxTimeOffset);
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("LinearRegressionModel"), new GeneticProgrammingModel(tree)));
       return null;
     }
 
-    private IFunctionTree CreateModel(double[] coefficients, List<string> allowedVariables) {
+    private IFunctionTree CreateModel(double[] coefficients, List<string> allowedVariables, int minTimeOffset, int maxTimeOffset) {
       IFunctionTree root = new Addition().GetTreeNode();
       IFunctionTree actNode = root;
+      int timeOffsetRange = (maxTimeOffset - minTimeOffset + 1);
 
       Queue<IFunctionTree> nodes = new Queue<IFunctionTree>();
-      GP.StructureIdentification.Variable v;
-      for (int i = 0; i < coefficients.Length - 1; i++) {
-        var vNode = (VariableFunctionTree)new GP.StructureIdentification.Variable().GetTreeNode();
-        vNode.VariableName = allowedVariables[i];
-        vNode.Weight = coefficients[i];
-        vNode.SampleOffset = 0;
-        nodes.Enqueue(vNode);
+      for (int i = 0; i < allowedVariables.Count; i++) {
+        for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
+          var vNode = (VariableFunctionTree)new GP.StructureIdentification.Variable().GetTreeNode();
+          vNode.VariableName = allowedVariables[i];
+          vNode.Weight = coefficients[(i * timeOffsetRange) + (timeOffset - minTimeOffset)];
+          vNode.SampleOffset = timeOffset;
+          nodes.Enqueue(vNode);
+        }
       }
       var cNode = (ConstantFunctionTree)new Constant().GetTreeNode();
 
@@ -100,15 +109,21 @@ namespace HeuristicLab.LinearRegression {
     }
 
     //returns list of valid row indexes (rows without NaN values)
-    private List<int> CalculateAllowedRows(Dataset dataset, int targetVariable, int start, int end) {
+    private List<int> CalculateAllowedRows(Dataset dataset, int targetVariable, int start, int end, int minTimeOffset, int maxTimeOffset) {
       List<int> allowedRows = new List<int>();
       bool add;
       for (int row = start; row < end; row++) {
         add = true;
         for (int col = 0; col < dataset.Columns && add == true; col++) {
-          if (double.IsNaN(dataset.GetValue(row, col)) ||
-              double.IsNaN(dataset.GetValue(row, targetVariable)))
-            add = false;
+          for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
+            if (
+              row + timeOffset < 0 ||
+              row + timeOffset > dataset.Rows ||
+              double.IsNaN(dataset.GetValue(row + timeOffset, col)) ||
+              double.IsNaN(dataset.GetValue(row + timeOffset, targetVariable))) {
+              add = false;
+            }
+          }
         }
         if (add)
           allowedRows.Add(row);
@@ -129,16 +144,18 @@ namespace HeuristicLab.LinearRegression {
       return allowedColumns;
     }
 
-    private double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows) {
+    private double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows, int minTimeOffset, int maxTimeOffset) {
       int rowCount = allowedRows.Count;
-      double[,] matrix = new double[rowCount, allowedColumns.Count + 1];
-      for (int col = 0; col < allowedColumns.Count; col++) {
-        for (int row = 0; row < allowedRows.Count; row++)
-          matrix[row, col] = dataset.GetValue(allowedRows[row], allowedColumns[col]);
-      }
+      int timeOffsetRange = (maxTimeOffset - minTimeOffset + 1);
+      double[,] matrix = new double[rowCount, (allowedColumns.Count * timeOffsetRange) + 1];
+      for (int row = 0; row < allowedRows.Count; row++)
+        for (int col = 0; col < allowedColumns.Count; col++) {
+          for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++)
+            matrix[row, (col * timeOffsetRange) + (timeOffset - minTimeOffset)] = dataset.GetValue(allowedRows[row] + timeOffset, allowedColumns[col]);
+        }
       //add constant 1.0 in last column
       for (int i = 0; i < rowCount; i++)
-        matrix[i, allowedColumns.Count] = constant;
+        matrix[i, allowedColumns.Count * timeOffsetRange] = constant;
       return matrix;
     }
 

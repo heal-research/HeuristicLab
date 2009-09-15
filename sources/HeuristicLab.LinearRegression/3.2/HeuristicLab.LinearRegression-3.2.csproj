@@ -94,6 +94,7 @@
     <Compile Include="HeuristicLabLinearRegressionPlugin.cs" />
     <Compile Include="LinearRegression.cs" />
     <Compile Include="LinearRegressionOperator.cs" />
+    <Compile Include="LinearTimeSeriesPrognosis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

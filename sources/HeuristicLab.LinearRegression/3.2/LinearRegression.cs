@@ -59,12 +59,12 @@ namespace HeuristicLab.LinearRegression {
     public virtual IOperator ProblemInjector {
       get {
         IOperator main = GetMainOperator();
-        return main.SubOperators[1];
+        return main.SubOperators[2];
       }
       set {
         IOperator main = GetMainOperator();
-        main.RemoveSubOperator(1);
-        main.AddSubOperator(value, 1);
+        main.RemoveSubOperator(2);
+        main.AddSubOperator(value, 2);
       }
     }
 
@@ -194,6 +194,10 @@ namespace HeuristicLab.LinearRegression {
     protected virtual IOperator GetMainOperator() {
       CombinedOperator lr = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
       return lr.OperatorGraph.InitialOperator;
+    }
+
+    protected virtual IOperator GetVariableInjector() {
+      return GetMainOperator().SubOperators[0];
     }
 
     public override IView CreateView() {
