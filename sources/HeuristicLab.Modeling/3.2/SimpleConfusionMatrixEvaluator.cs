@@ -24,6 +24,8 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Modeling {
   public class SimpleConfusionMatrixEvaluator : OperatorBase {
+    protected const int ORIGINAL_INDEX = 0;
+    protected const int ESTIMATION_INDEX = 1;
     public override string Description {
       get {
         return @"Calculates the classifcation matrix of the model.";
@@ -54,8 +56,8 @@ namespace HeuristicLab.Modeling {
       int nSamples = values.GetLength(0);
       int[,] confusionMatrix = new int[classes.Length, classes.Length];
       for (int sample = 0; sample < nSamples; sample++) {
-        double est = values[sample, 0];
-        double origClass = values[sample, 1];
+        double est = values[sample, ESTIMATION_INDEX];
+        double origClass = values[sample, ORIGINAL_INDEX];
         int estClassIndex = -1;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
         if (est < thresholds[0]) estClassIndex = 0;

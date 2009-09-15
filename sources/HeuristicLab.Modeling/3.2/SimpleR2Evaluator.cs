@@ -29,8 +29,8 @@ namespace HeuristicLab.Modeling {
       double sse = 0;
       double cnt = 0;
       for (int i = 0; i < values.GetLength(0); i++) {
-        double estimated = values[i, 0];
-        double target = values[i, 1];
+        double estimated = values[i, ESTIMATION_INDEX];
+        double target = values[i, ORIGINAL_INDEX];
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
             !double.IsNaN(target) && !double.IsInfinity(target)) {
           targetMean += target;
@@ -45,7 +45,7 @@ namespace HeuristicLab.Modeling {
 
         double targetDeviationTotalSumOfSquares = 0;
         for (int i = 0; i < values.GetLength(0); i++) {
-          double target = values[i, 1];
+          double target = values[i, ORIGINAL_INDEX];
           if (!double.IsNaN(target) && !double.IsInfinity(target)) {
             target = target - targetMean;
             target = target * target;

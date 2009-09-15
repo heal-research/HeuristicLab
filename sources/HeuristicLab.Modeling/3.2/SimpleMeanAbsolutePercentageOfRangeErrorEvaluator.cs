@@ -50,14 +50,14 @@ namespace HeuristicLab.Modeling {
       int n = 0;
       // copy to one-dimensional array for range calculation
       double[] originalValues = new double[values.GetLength(0)];
-      for (int i = 0; i < originalValues.Length; i++) originalValues[i] = values[i, 1];
+      for (int i = 0; i < originalValues.Length; i++) originalValues[i] = values[i, ORIGINAL_INDEX];
       double range = Statistics.Range(originalValues);
       if (double.IsInfinity(range)) throw new ArgumentException("Range of elements in values is infinity");
       if (range.IsAlmost(0.0)) throw new ArgumentException("Range of elements in values is zero");
 
       for (int i = 0; i < values.GetLength(0); i++) {
-        double estimated = values[i, 0];
-        double original = values[i, 1];
+        double estimated = values[i, ESTIMATION_INDEX];
+        double original = values[i, ORIGINAL_INDEX];
 
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
           !double.IsNaN(original) && !double.IsInfinity(original) && original != 0.0) {

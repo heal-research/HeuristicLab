@@ -86,7 +86,7 @@ namespace HeuristicLab.Modeling {
       double[] predictedValues = predictor.Predict(dataset, start, end);
       double[] targetValues = dataset.GetVariableValues(targetVariableName, start, end);
 
-      double oldMSE = CalculateMSE(predictedValues, targetValues);
+      double oldMSE = CalculateMSE(targetValues, predictedValues);
       double newMSE;
 
       double mean;

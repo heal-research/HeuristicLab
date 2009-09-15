@@ -49,8 +49,8 @@ namespace HeuristicLab.Modeling {
       double errorsSum = 0.0;
       int n = 0;
       for (int i = 0; i < values.GetLength(0); i++) {
-        double estimated = values[i, 0];
-        double original = values[i, 1];
+        double estimated = values[i, ESTIMATION_INDEX];
+        double original = values[i, ORIGINAL_INDEX];
 
         if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
           !double.IsNaN(original) && !double.IsInfinity(original) && original != 0.0) {

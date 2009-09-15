@@ -56,9 +56,9 @@ model is worse than the naive model (=> model is useless).";
       double originalSquaredSum = 0.0;
       int nSamples = 0;
       for (int sample = 1; sample < n; sample++) {
-        double prevValue = values[sample - 1, 1];
-        double estimatedChange = values[sample, 0] - prevValue;
-        double originalChange = values[sample, 1] - prevValue;
+        double prevValue = values[sample - 1, ORIGINAL_INDEX];
+        double estimatedChange = values[sample, ESTIMATION_INDEX] - prevValue;
+        double originalChange = values[sample, ORIGINAL_INDEX] - prevValue;
         if (!double.IsNaN(originalChange) && !double.IsInfinity(originalChange)) {
           double error = estimatedChange - originalChange;
           errorsSquaredSum += error * error;

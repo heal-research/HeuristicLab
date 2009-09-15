@@ -59,8 +59,8 @@ namespace HeuristicLab.SupportVectorMachines {
 
       double[,] values = new double[scaledProblem.Count, 2];
       for (int i = 0; i < scaledProblem.Count; i++) {
-        values[i, 0] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
-        values[i, 1] = dataset.GetValue(start + i, targetVariable);
+        values[i, 0] = dataset.GetValue(start + i, targetVariable);
+        values[i, 1] = SVM.Prediction.Predict(modelData.Model, scaledProblem.X[i]);
       }
 
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Values"), new DoubleMatrixData(values)));

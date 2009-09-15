@@ -50,8 +50,8 @@ namespace HeuristicLab.Modeling {
       double[] thresholds = CalculateThresholds(classes);
 
       for (int sample = 0; sample < nSamples; sample++) {
-        double est = values[sample, 0];
-        double origClass = values[sample, 1];
+        double est = values[sample, ESTIMATION_INDEX];
+        double origClass = values[sample, ORIGINAL_INDEX];
         double estClass = double.NaN;
         // if estimation is lower than the smallest threshold value -> estimated class is the lower class
         if (est < thresholds[0]) estClass = classes[0];
@@ -74,7 +74,7 @@ namespace HeuristicLab.Modeling {
     public static double[] CalculateTargetClasses(double[,] values) {
       int n = values.GetLength(0);
       double[] original = new double[n];
-      for (int i = 0; i < n; i++) original[i] = values[i, 1];
+      for (int i = 0; i < n; i++) original[i] = values[i, ORIGINAL_INDEX];
       return original.OrderBy(x => x).Distinct().ToArray();
     }
 
