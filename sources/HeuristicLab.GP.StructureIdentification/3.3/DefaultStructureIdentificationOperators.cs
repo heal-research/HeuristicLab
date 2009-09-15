@@ -71,6 +71,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       solutionStorer.GetVariableInfo("BestSolution").ActualName = "BestValidationSolution";
       solutionStorer.GetVariableInfo("Quality").ActualName = "ValidationQuality";
 
+      OperatorExtractor bestSolutionProcessor = new OperatorExtractor();
+      bestSolutionProcessor.Name = "BestSolutionProcessor (extr.)";
+      bestSolutionProcessor.GetVariableInfo("Operator").ActualName = "BestSolutionProcessor";
+
+      solutionStorer.AddSubOperator(bestSolutionProcessor);
+
       BestAverageWorstQualityCalculator validationQualityCalculator = new BestAverageWorstQualityCalculator();
       validationQualityCalculator.Name = "BestAverageWorstValidationQualityCalculator";
       validationQualityCalculator.GetVariableInfo("Quality").ActualName = "ValidationQuality";

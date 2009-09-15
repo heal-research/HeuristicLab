@@ -30,6 +30,7 @@ using HeuristicLab.Selection;
 using HeuristicLab.Selection.OffspringSelection;
 using HeuristicLab.Modeling;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class OffspringSelectionGPRegression : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IAlgorithm {
@@ -93,7 +94,36 @@ namespace HeuristicLab.GP.StructureIdentification {
 
 
     protected override IOperator CreateGenerationStepHook() {
-      return DefaultStructureIdentificationOperators.CreateGenerationStepHook();
+      IOperator hook = DefaultStructureIdentificationOperators.CreateGenerationStepHook();
+      hook.AddSubOperator(CreateBestSolutionProcessor());
+      return hook;
+    }
+
+    private IOperator CreateBestSolutionProcessor() {
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "BestSolutionProcessor";
+      SequentialProcessor seq = new SequentialProcessor();
+
+      ProgrammableOperator variableStorer = new ProgrammableOperator();
+      variableStorer.RemoveVariableInfo("Result");
+      variableStorer.AddVariableInfo(new VariableInfo("Input", "Value to copy", typeof(ObjectData), VariableKind.In));
+      variableStorer.AddVariableInfo(new VariableInfo("Output", "Value to write", typeof(ObjectData), VariableKind.Out));
+      variableStorer.Code = "scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName(\"Output\"), (ObjectData)Input.Clone()));";
+
+      IOperator evaluatedSolutionsStorer = (IOperator)variableStorer.Clone();
+      evaluatedSolutionsStorer.GetVariableInfo("Input").ActualName = "EvaluatedSolutions";
+      evaluatedSolutionsStorer.GetVariableInfo("Output").ActualName = "EvaluatedSolutions";
+
+      IOperator selectionPressureStorer = (IOperator)variableStorer.Clone();
+      selectionPressureStorer.GetVariableInfo("Input").ActualName = "SelectionPressure";
+      selectionPressureStorer.GetVariableInfo("Output").ActualName = "SelectionPressure";
+
+      seq.AddSubOperator(evaluatedSolutionsStorer);
+      seq.AddSubOperator(selectionPressureStorer);
+
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
     }
 
     protected override VariableInjector CreateGlobalInjector() {

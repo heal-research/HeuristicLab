@@ -29,6 +29,7 @@ using HeuristicLab.Modeling;
 using System.Collections.Generic;
 using System;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class StandardGPRegression : HeuristicLab.GP.Algorithms.StandardGP, IAlgorithm {
@@ -147,6 +148,27 @@ namespace HeuristicLab.GP.StructureIdentification {
       op.OperatorGraph.InitialOperator = seq;
       return op;
     }
+
+    private IOperator CreateBestSolutionProcessor() {
+      CombinedOperator op = new CombinedOperator();
+      op.Name = "BestSolutionProcessor";
+      SequentialProcessor seq = new SequentialProcessor();
+
+      ProgrammableOperator evaluatedSolutionsStorer = new ProgrammableOperator();
+      evaluatedSolutionsStorer.RemoveVariableInfo("Result");
+      evaluatedSolutionsStorer.AddVariableInfo(new VariableInfo("Input", "Value to copy", typeof(IntData), VariableKind.In));
+      evaluatedSolutionsStorer.AddVariableInfo(new VariableInfo("Output", "Value to write", typeof(IntData), VariableKind.New));
+      evaluatedSolutionsStorer.GetVariableInfo("Input").ActualName = "EvaluatedSolutions";
+      evaluatedSolutionsStorer.GetVariableInfo("Output").ActualName = "EvaluatedSolutions";
+      evaluatedSolutionsStorer.Code = "Output.Data = Input.Data;";
+
+      seq.AddSubOperator(evaluatedSolutionsStorer);
+
+      op.OperatorGraph.AddOperator(seq);
+      op.OperatorGraph.InitialOperator = seq;
+      return op;
+    }
+
 
     protected virtual IOperator CreateModelAnalyzerOperator() {
       return DefaultRegressionOperators.CreatePostProcessingOperator();
