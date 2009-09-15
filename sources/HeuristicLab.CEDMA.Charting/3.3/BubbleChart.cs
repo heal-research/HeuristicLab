@@ -136,7 +136,7 @@ namespace HeuristicLab.CEDMA.Charting {
           actualXValues.Add(r.Get(xDimension));
         } else if (matrix.MultiDimensionalCategoricalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string,object>>)r.Get(path.ElementAt(0));
+          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
           foreach (MatrixRow<string, object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               xs.Add(matrix.IndexOfCategoricalValue(xDimension, subRow.Get(path.ElementAt(1))) + r.YJitter * xJitterFactor);
@@ -146,7 +146,7 @@ namespace HeuristicLab.CEDMA.Charting {
         } else if (matrix.MultiDimensionalOrdinalVariables.Contains(xDimension)) {
           var path = xDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow<string,object> subRow in subRows) {
+          foreach (MatrixRow<string, object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               xs.Add(Convert.ToDouble(subRow.Get(path.ElementAt(1))) + r.XJitter * xJitterFactor);
               actualXValues.Add(subRow.Get(path.ElementAt(1)));
@@ -161,8 +161,8 @@ namespace HeuristicLab.CEDMA.Charting {
           actualYValues.Add(r.Get(yDimension));
         } else if (matrix.MultiDimensionalCategoricalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
-          IEnumerable<MatrixRow<string,object>> subRows = (IEnumerable<MatrixRow<string,object>>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow<string,object> subRow in subRows) {
+          IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
+          foreach (MatrixRow<string, object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               ys.Add(matrix.IndexOfCategoricalValue(yDimension, subRow.Get(path.ElementAt(1))) + r.YJitter * yJitterFactor);
               actualYValues.Add(subRow.Get(path.ElementAt(1)));
@@ -171,7 +171,7 @@ namespace HeuristicLab.CEDMA.Charting {
         } else if (matrix.MultiDimensionalOrdinalVariables.Contains(yDimension)) {
           var path = yDimension.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim());
           IEnumerable<MatrixRow<string, object>> subRows = (IEnumerable<MatrixRow<string, object>>)r.Get(path.ElementAt(0));
-          foreach (MatrixRow<string,object> subRow in subRows) {
+          foreach (MatrixRow<string, object> subRow in subRows) {
             if (subRow.Get(path.ElementAt(1)) != null) {
               ys.Add(Convert.ToDouble(subRow.Get(path.ElementAt(1))) + r.YJitter * yJitterFactor);
               actualYValues.Add(subRow.Get(path.ElementAt(1)));
@@ -194,7 +194,8 @@ namespace HeuristicLab.CEDMA.Charting {
           double y = ys[Math.Min(i, ys.Count() - 1)];
           if (double.IsInfinity(x) || x == double.MaxValue || x == double.MinValue) x = double.NaN;
           if (double.IsInfinity(y) || y == double.MaxValue || y == double.MinValue) y = double.NaN;
-          if (!double.IsNaN(x) && !double.IsNaN(y) && IsReasonablePoint(new PointD(x, y))) {
+          //if (!double.IsNaN(x) && !double.IsNaN(y) && IsReasonablePoint(new PointD(x, y))) {
+            if (!double.IsNaN(x) && !double.IsNaN(y)) {
             string actualXValue = actualXValues[Math.Min(i, actualXValues.Count() - 1)].ToString();
             string actualYValue = actualYValues[Math.Min(i, actualYValues.Count() - 1)].ToString();
             UpdateViewSize(x, y, TransformPixelToWorld(new Size(size, 0)).Width);
@@ -215,9 +216,10 @@ namespace HeuristicLab.CEDMA.Charting {
       UpdateEnabled = true;
     }
 
-    private bool IsReasonablePoint(PointD pointD) {
-      return pointD.X > LowerLeft.X && pointD.X < UpperRight.X && pointD.Y > LowerLeft.Y && pointD.Y < UpperRight.Y;
-    }
+    //Mk 15.09.09 15:00 commented because it is not necessary any more and causes troubles with repainting
+    //private bool IsReasonablePoint(PointD pointD) {
+    //  return pointD.X > LowerLeft.X && pointD.X < UpperRight.X && pointD.Y > LowerLeft.Y && pointD.Y < UpperRight.Y;
+    //}
 
     private int CalculateSize(double size, double minSize, double maxSize) {
       if (double.IsNaN(size) || double.IsInfinity(size) || size == double.MaxValue || size == double.MinValue) return minBubbleSize;
@@ -234,16 +236,37 @@ namespace HeuristicLab.CEDMA.Charting {
     }
 
     private void ZoomToViewSize() {
-      if (minX < maxX && minY < maxY) {
-        // enlarge view by 5% on each side
-        double width = maxX - minX;
-        double height = maxY - minY;
-        minX = minX - width * 0.05;
-        maxX = maxX + width * 0.05;
-        minY = minY - height * 0.05;
-        maxY = maxY + height * 0.05;
-        ZoomIn(minX, minY, maxX, maxY);
-      }
+      // enlarge view by 5% on each side
+      //if (minX < maxX && minY < maxY) {
+      //  double width = maxX - minX;
+      //  minX = minX - width * 0.05;
+      //  maxX = maxX + width * 0.05;
+      //}
+
+      //if(minY < maxY)
+      //{
+      //  double height = maxY - minY;
+      //  minY = minY - height * 0.05;
+      //  maxY = maxY + height * 0.05;
+      //}
+      if (double.IsInfinity(minX) || double.IsNaN(minX) ||
+        double.IsInfinity(maxX) || double.IsNaN(maxX) ||
+        double.IsInfinity(minY) || double.IsNaN(minY) ||
+        double.IsInfinity(maxY) || double.IsNaN(maxY))
+        return;
+
+      double height = maxY - minY;
+      double width = maxX - minX;
+      if (height < 10)
+        height = 10;
+      if (width < 10)
+        width = 10;
+
+      minY = minY - height * 0.05;
+      maxY = maxY + height * 0.05;
+      minX = minX - width * 0.05;
+      maxX = maxX + width * 0.05;
+      ZoomIn(minX, minY, maxX, maxY);
     }
 
     private void UpdateViewSize(double x, double y, double size) {
