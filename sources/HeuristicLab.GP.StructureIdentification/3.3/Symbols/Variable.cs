@@ -22,9 +22,10 @@
 using HeuristicLab.GP.Interfaces;
 using HeuristicLab.Operators;
 using HeuristicLab.Random;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class Variable : Terminal {    
+  public class Variable : Terminal {
     public const string WEIGHT = "Weight";
     public const string OFFSET = "SampleOffset";
     public const string VARIABLENAME = "Variable";
@@ -98,6 +99,10 @@ The index of the row that is actually read is SampleIndex+SampleOffset).";
       offsetRandomAdder.Sigma = 1.0;
       offsetRandomAdder.GetVariableInfo("Value").ActualName = OFFSET;
       offsetRandomAdder.Name = "Offset Adder";
+      offsetRandomAdder.GetVariableInfo("MinValue").Local = true;
+      offsetRandomAdder.AddVariable(new HeuristicLab.Core.Variable("MinValue", new DoubleData(minOffset)));
+      offsetRandomAdder.GetVariableInfo("MaxValue").Local = true;
+      offsetRandomAdder.AddVariable(new HeuristicLab.Core.Variable("MaxValue", new DoubleData(maxOffset + 1)));
 
       combinedOp.OperatorGraph.AddOperator(seq);
       combinedOp.OperatorGraph.AddOperator(variableRandomizer);

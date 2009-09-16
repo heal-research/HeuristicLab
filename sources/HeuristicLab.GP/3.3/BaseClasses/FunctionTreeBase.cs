@@ -93,7 +93,7 @@ namespace HeuristicLab.GP {
       SubTrees.RemoveAt(index);
     }
 
-    public virtual string ToString() {
+    public override string ToString() {
       return Function.Name;
     }
 

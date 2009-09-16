@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Constraints;
 
 namespace HeuristicLab.Random {
   /// <summary>
@@ -68,15 +67,17 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     /// (<c>Mu</c>, <c>Sigma</c>, <c>Value</c>, <c>ShakingFactor</c> and <c>Random</c>).
     /// </summary>
     public NormalRandomAdder() {
-      AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Mu", "Parameter mu of the normal distribution", typeof(DoubleData), VariableKind.In));
       GetVariableInfo("Mu").Local = true;
       AddVariable(new Variable("Mu", new DoubleData(0.0)));
 
-      AddVariableInfo(new VariableInfo("Sigma", "Parameter sigma of the normal distribution", typeof(DoubleData), VariableKind.None));
+      AddVariableInfo(new VariableInfo("Sigma", "Parameter sigma of the normal distribution", typeof(DoubleData), VariableKind.In));
       GetVariableInfo("Sigma").Local = true;
       AddVariable(new Variable("Sigma", new DoubleData(1.0)));
 
-      AddVariableInfo(new VariableInfo("Value", "The value to manipulate (actual type is one of: IntData, DoubleData, ConstrainedIntData, ConstrainedDoubleData)", typeof(IObjectData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("Value", "The value to manipulate (actual type is one of: IntData, DoubleData", typeof(IObjectData), VariableKind.In | VariableKind.Out));
+      AddVariableInfo(new VariableInfo("MinValue", "(optional) The minimal value", typeof(DoubleData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MaxValue", "(optional) The maximal value", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("ShakingFactor", "Determines the force of the shaking factor (effective sigma = sigma * shakingFactor)", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Random", "The random generator to use", typeof(MersenneTwister), VariableKind.In));
     }
@@ -93,32 +94,24 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
       double factor = GetVariableValue<DoubleData>("ShakingFactor", scope, true).Data;
       double mu = GetVariableValue<DoubleData>("Mu", scope, true).Data;
       double sigma = GetVariableValue<DoubleData>("Sigma", scope, true).Data;
+      DoubleData minValueData = GetVariableValue<DoubleData>("MinValue", scope, true, false);
+      double minValue = minValueData == null ? double.MinValue : minValueData.Data;
+      DoubleData maxValueData = GetVariableValue<DoubleData>("MaxValue", scope, true, false);
+      double maxValue = maxValueData == null ? double.MaxValue : maxValueData.Data;
+
       NormalDistributedRandom normal = new NormalDistributedRandom(mt, mu, sigma * factor);
 
-      AddNormal(value, normal);
+      AddNormal(value, normal, minValue, maxValue);
       return null;
     }
 
-    private void AddNormal(IObjectData value, NormalDistributedRandom normal) {
+    private void AddNormal(IObjectData value, NormalDistributedRandom normal, double minValue, double maxValue) {
       // dispatch manually based on dynamic type
       if (value is IntData)
-        AddNormal((IntData)value, normal);
-      else if (value is ConstrainedIntData)
-        AddNormal((ConstrainedIntData)value, normal);
-      else if (value is ConstrainedDoubleData)
-        AddNormal((ConstrainedDoubleData)value, normal);
+        AddNormal((IntData)value, normal, minValue, maxValue);
       else if (value is DoubleData)
-        AddNormal((DoubleData)value, normal);
+        AddNormal((DoubleData)value, normal, minValue, maxValue);
       else throw new InvalidOperationException("Can't handle type " + value.GetType().Name);
-    }
-    /// <summary>
-    /// Generates a new double random number and adds it to the value of 
-    /// the given <paramref name="data"/>.
-    /// </summary>
-    /// <param name="data">The double object where to add the random number.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(DoubleData data, NormalDistributedRandom normal) {
-      data.Data += normal.NextDouble();
     }
 
     /// <summary>
@@ -127,29 +120,19 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     /// </summary>
     /// <exception cref="InvalidProgramException">Thrown when with the current settings no valid value
     /// could be found.</exception>
-    /// <param name="data">The double object where to add the random number and whose constraints
-    /// to fulfill.</param>
+    /// <param name="data">The double object where to add the random number</param>
     /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(ConstrainedDoubleData data, NormalDistributedRandom normal) {
+    /// <param name="minValue">The minimal value allowed for the double object.</param>
+    /// <param name="maxValue">The maximal value allowed for the double object.</param>
+    public void AddNormal(DoubleData data, NormalDistributedRandom normal, double minValue, double maxValue) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
         double newValue = data.Data + normal.NextDouble();
-        if (IsIntegerConstrained(data)) {
-          newValue = Math.Round(newValue);
-        }
-        if (data.TrySetData(newValue)) {
+        if (newValue >= minValue && newValue < maxValue) {
+          data.Data = newValue;
           return;
         }
       }
       throw new InvalidProgramException("Coudn't find a valid value");
-    }
-
-    /// <summary>
-    /// Generates a new int random number and adds it to value of the given <paramref name="data"/>.
-    /// </summary>
-    /// <param name="data">The int object where to add the random number.</param>
-    /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(IntData data, NormalDistributedRandom normal) {
-      data.Data = (int)Math.Round(data.Data + normal.NextDouble());
     }
 
     /// <summary>
@@ -158,23 +141,19 @@ the smallest allowed value then 'Value' is set to the lower bound and vice versa
     /// </summary>
     /// <exception cref="InvalidProgramException">Thrown when with the current settings no valid value 
     /// could be found.</exception>
-    /// <param name="data">The int object where to add the generated value and whose contraints to check.</param>
+    /// <param name="data">The int object where to add the generated value.</param>
     /// <param name="normal">The continuous, normally distributed random variable.</param>
-    public void AddNormal(ConstrainedIntData data, NormalDistributedRandom normal) {
+    /// <param name="minValue">The minimal value allowed for the double object.</param>
+    /// <param name="maxValue">The maximal value allowed for the double object.</param>
+    public void AddNormal(IntData data, NormalDistributedRandom normal, double minValue, double maxValue) {
       for (int tries = MAX_NUMBER_OF_TRIES; tries >= 0; tries--) {
-        if (data.TrySetData((int)Math.Round(data.Data + normal.NextDouble())))
+        int newValue = (int)Math.Round(data.Data + normal.NextDouble());
+        if (newValue >= minValue && newValue < maxValue) {
+          data.Data = newValue;
           return;
-      }
-      throw new InvalidProgramException("Couldn't find a valid value.");
-    }
-
-    private bool IsIntegerConstrained(ConstrainedDoubleData data) {
-      foreach (IConstraint constraint in data.Constraints) {
-        if (constraint is IsIntegerConstraint) {
-          return true;
         }
       }
-      return false;
+      throw new InvalidProgramException("Couldn't find a valid value.");
     }
   }
 }
