@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionTreeIterator.cs" />
     <Compile Include="IFunctionTreeSerializer.cs">
       <SubType>Code</SubType>
     </Compile>

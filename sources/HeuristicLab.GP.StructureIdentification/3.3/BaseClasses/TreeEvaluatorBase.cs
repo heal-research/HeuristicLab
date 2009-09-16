@@ -63,18 +63,9 @@ namespace HeuristicLab.GP.StructureIdentification {
       this.dataset = dataset;
       codeArr = new Instr[functionTree.GetSize()];
       int i = 0;
-      foreach (IFunctionTree tree in IteratePrefix(functionTree)) {
+      foreach (IFunctionTree tree in FunctionTreeIterator.IteratePrefix(functionTree)) {
         codeArr[i++] = TranslateToInstr(tree);
       }
-    }
-
-    private IEnumerable<IFunctionTree> IteratePrefix(IFunctionTree functionTree) {
-      List<IFunctionTree> prefixForm = new List<IFunctionTree>();
-      prefixForm.Add(functionTree);
-      foreach (IFunctionTree subTree in functionTree.SubTrees) {
-        prefixForm.AddRange(IteratePrefix(subTree));
-      }
-      return prefixForm;
     }
 
     private Instr TranslateToInstr(IFunctionTree tree) {
