@@ -155,7 +155,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static void PopulateAnalyzerModel(IScope bestModelScope, IAnalyzerModel model) {
-      model.SetMetaData("EvaluatedSolutions", bestModelScope.GetVariableValue<DoubleData>("EvaluatedSolutions", false).Data);
+      model.SetMetaData("EvaluatedSolutions", bestModelScope.GetVariableValue<IntData>("EvaluatedSolutions", false).Data);
       IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
       model.SetMetaData("TreeSize", gpModel.Size);
       model.SetMetaData("TreeHeight", gpModel.Height);

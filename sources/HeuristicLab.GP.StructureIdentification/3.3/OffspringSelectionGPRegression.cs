@@ -33,7 +33,7 @@ using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators.Programmable;
 
 namespace HeuristicLab.GP.StructureIdentification {
-  public class OffspringSelectionGPRegression : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IAlgorithm {
+  public class OffspringSelectionGPRegression : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IStochasticAlgorithm {
     public override string Name { get { return "OffspringSelectionGP - StructureIdentification"; } }
 
     public virtual int TargetVariable {

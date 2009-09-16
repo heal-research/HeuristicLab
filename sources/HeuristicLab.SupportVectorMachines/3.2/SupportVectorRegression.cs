@@ -59,12 +59,14 @@ namespace HeuristicLab.SupportVectorMachines {
     public IOperator ProblemInjector {
       get {
         IOperator main = GetMainOperator();
-        return main.SubOperators[0].SubOperators[1];
+        CombinedOperator probInject = (CombinedOperator)main.SubOperators[0].SubOperators[2];
+        return probInject.OperatorGraph.InitialOperator.SubOperators[0];
       }
       set {
         IOperator main = GetMainOperator();
-        main.RemoveSubOperator(1);
-        main.AddSubOperator(value, 1);
+        CombinedOperator probInject = (CombinedOperator)main.SubOperators[0].SubOperators[2];
+        probInject.OperatorGraph.InitialOperator.RemoveSubOperator(0);
+        probInject.OperatorGraph.InitialOperator.AddSubOperator(value, 0);
       }
     }
 

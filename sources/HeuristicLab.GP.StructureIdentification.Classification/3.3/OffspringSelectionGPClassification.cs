@@ -41,7 +41,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
       return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
-    protected virtual IAnalyzerModel CreateGPModel() {
+    protected override IAnalyzerModel CreateGPModel() {
       IScope bestModelScope = Engine.GlobalScope.SubScopes[0];
       var model = new AnalyzerModel();
 

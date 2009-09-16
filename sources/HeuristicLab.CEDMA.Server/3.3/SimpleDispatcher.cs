@@ -192,15 +192,9 @@ namespace HeuristicLab.CEDMA.Server {
         if (problem.AutoRegressive) {
           allowedFeatures.Add(new IntData(targetVariable));
         }
-      } else if (problem.LearningTask == LearningTask.Classification) {
-        ItemList<DoubleData> classValues = algo.ProblemInjector.GetVariable("TargetClassValues").GetValue<ItemList<DoubleData>>();
-        foreach (double classValue in GetDifferentClassValues(problem.Dataset, targetVariable)) classValues.Add(new DoubleData(classValue));
       }
     }
 
-    private IEnumerable<double> GetDifferentClassValues(HeuristicLab.DataAnalysis.Dataset dataset, int targetVariable) {
-      return Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, targetVariable)).Distinct();
-    }
 
     private void AddDispatchedRun(string targetVariable, IEnumerable<string> inputVariables, string algorithm) {
       AddDispatchedRun(

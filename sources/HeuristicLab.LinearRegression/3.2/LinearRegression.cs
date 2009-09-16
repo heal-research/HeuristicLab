@@ -59,12 +59,14 @@ namespace HeuristicLab.LinearRegression {
     public virtual IOperator ProblemInjector {
       get {
         IOperator main = GetMainOperator();
-        return main.SubOperators[2];
+        CombinedOperator probInjector = (CombinedOperator)main.SubOperators[2];
+        return probInjector.OperatorGraph.InitialOperator.SubOperators[0];
       }
       set {
         IOperator main = GetMainOperator();
-        main.RemoveSubOperator(2);
-        main.AddSubOperator(value, 2);
+        CombinedOperator probInjector = (CombinedOperator)main.SubOperators[2];
+        probInjector.OperatorGraph.InitialOperator.RemoveSubOperator(0);
+        probInjector.OperatorGraph.InitialOperator.AddSubOperator(value, 0);
       }
     }
 
