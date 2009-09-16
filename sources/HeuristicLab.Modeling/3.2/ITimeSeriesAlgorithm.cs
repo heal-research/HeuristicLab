@@ -26,5 +26,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Modeling {
   public interface ITimeSeriesAlgorithm : IAlgorithm {
+    int MinTimeOffset { get; set; }
+    int MaxTimeOffset { get; set; }
   }
 }

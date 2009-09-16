@@ -186,9 +186,9 @@ namespace HeuristicLab.CEDMA.Server {
       }
 
       if (problem.LearningTask == LearningTask.TimeSeries) {
-        algo.ProblemInjector.GetVariable("Autoregressive").GetValue<BoolData>().Data = problem.AutoRegressive;
-        algo.ProblemInjector.GetVariable("MinTimeOffset").GetValue<IntData>().Data = problem.MinTimeOffset;
-        algo.ProblemInjector.GetVariable("MaxTimeOffset").GetValue<IntData>().Data = problem.MaxTimeOffset;
+        ITimeSeriesAlgorithm timeSeriesAlgo = (ITimeSeriesAlgorithm)algo;
+        timeSeriesAlgo.MinTimeOffset = problem.MinTimeOffset;
+        timeSeriesAlgo.MaxTimeOffset = problem.MaxTimeOffset;
         if (problem.AutoRegressive) {
           allowedFeatures.Add(new IntData(targetVariable));
         }
