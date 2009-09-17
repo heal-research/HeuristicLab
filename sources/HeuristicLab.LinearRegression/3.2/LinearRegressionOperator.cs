@@ -55,8 +55,8 @@ namespace HeuristicLab.LinearRegression {
       IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
 
-      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
       List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariable, start, end);
+      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, allowedColumns, start, end, minTimeOffset, maxTimeOffset);
 
       double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows, minTimeOffset, maxTimeOffset);
       double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
@@ -109,17 +109,18 @@ namespace HeuristicLab.LinearRegression {
     }
 
     //returns list of valid row indexes (rows without NaN values)
-    private List<int> CalculateAllowedRows(Dataset dataset, int targetVariable, int start, int end, int minTimeOffset, int maxTimeOffset) {
+    private List<int> CalculateAllowedRows(Dataset dataset, int targetVariable, IList<int> allowedColumns, int start, int end, int minTimeOffset, int maxTimeOffset) {
       List<int> allowedRows = new List<int>();
       bool add;
       for (int row = start; row < end; row++) {
         add = true;
-        for (int col = 0; col < dataset.Columns && add == true; col++) {
+        for (int colIndex = 0; colIndex < allowedColumns.Count && add == true; colIndex++) {
           for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
             if (
               row + timeOffset < 0 ||
               row + timeOffset > dataset.Rows ||
-              double.IsNaN(dataset.GetValue(row + timeOffset, col)) ||
+              double.IsNaN(dataset.GetValue(row + timeOffset, allowedColumns[colIndex])) ||
+              double.IsInfinity(dataset.GetValue(row + timeOffset, allowedColumns[colIndex])) ||
               double.IsNaN(dataset.GetValue(row + timeOffset, targetVariable))) {
               add = false;
             }
@@ -132,17 +133,28 @@ namespace HeuristicLab.LinearRegression {
       return allowedRows;
     }
 
-    //returns list of valid column indexes (columns which contain at least one non-zero value)
+    //returns list of valid column indexes (columns which contain max. 10% NaN (or infinity) and contain at least two different values)
     private List<int> CalculateAllowedColumns(Dataset dataset, int targetVariable, int start, int end) {
       List<int> allowedColumns = new List<int>();
+      double n = end - start;
       for (int i = 0; i < dataset.Columns; i++) {
-        if (i == targetVariable) continue;
-        if (!dataset.GetMinimum(i, start, end).IsAlmost(0.0) ||
-            !dataset.GetMaximum(i, start, end).IsAlmost(0.0))
+        double nanRatio = CountNaN(dataset, i, start, end) / n;
+        if (i != targetVariable && nanRatio < 0.1 && dataset.GetRange(i, start, end) > 0.0) {
           allowedColumns.Add(i);
+        }
       }
       return allowedColumns;
     }
+
+    private double CountNaN(Dataset dataset, int column, int start, int end) {
+      double n = 0;
+      for (int i = start; i < end; i++) {
+        if (double.IsNaN(dataset.GetValue(i, column)) || double.IsInfinity(dataset.GetValue(i, column)))
+          n++;
+      }
+      return n;
+    }
+
 
     private double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows, int minTimeOffset, int maxTimeOffset) {
       int rowCount = allowedRows.Count;

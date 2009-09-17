@@ -33,7 +33,7 @@ namespace HeuristicLab.DataAnalysis {
     private Dictionary<int, Dictionary<int, double>>[] cachedMeans;
     private Dictionary<int, Dictionary<int, double>>[] cachedRanges;
     private bool cachedValuesInvalidated = true;
-    
+
     public Dataset()
       : this(new double[,] { { 0.0 } }) {
     }
@@ -127,8 +127,8 @@ namespace HeuristicLab.DataAnalysis {
     #endregion
 
     #region Modify and get values
-    public double GetValue(int i, int j) {
-      return samples[columns * i + j];
+    public double GetValue(int row, int column) {
+      return samples[columns * row + column];
     }
 
     public double[] GetVariableValues(int variableIndex, int start, int end) {
@@ -258,7 +258,7 @@ namespace HeuristicLab.DataAnalysis {
           values[sample - start] = GetValue(sample, column);
         }
         double range = Statistics.Range(values);
-        if (!cachedRanges[column].ContainsKey(start)) cachedRanges[column][start]= new Dictionary<int, double>();
+        if (!cachedRanges[column].ContainsKey(start)) cachedRanges[column][start] = new Dictionary<int, double>();
         cachedRanges[column][start][end] = range;
         return range;
       } else {
