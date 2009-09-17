@@ -138,23 +138,13 @@ namespace HeuristicLab.LinearRegression {
       List<int> allowedColumns = new List<int>();
       double n = end - start;
       for (int i = 0; i < dataset.Columns; i++) {
-        double nanRatio = CountNaN(dataset, i, start, end) / n;
+        double nanRatio = dataset.CountMissingValues(i, start, end) / n;
         if (i != targetVariable && nanRatio < 0.1 && dataset.GetRange(i, start, end) > 0.0) {
           allowedColumns.Add(i);
         }
       }
       return allowedColumns;
     }
-
-    private double CountNaN(Dataset dataset, int column, int start, int end) {
-      double n = 0;
-      for (int i = start; i < end; i++) {
-        if (double.IsNaN(dataset.GetValue(i, column)) || double.IsInfinity(dataset.GetValue(i, column)))
-          n++;
-      }
-      return n;
-    }
-
 
     private double[,] PrepareInputMatrix(Dataset dataset, List<int> allowedColumns, List<int> allowedRows, int minTimeOffset, int maxTimeOffset) {
       int rowCount = allowedRows.Count;

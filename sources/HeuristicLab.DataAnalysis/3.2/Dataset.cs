@@ -307,6 +307,27 @@ namespace HeuristicLab.DataAnalysis {
       }
       return min;
     }
+
+    public int CountMissingValues(string variableName) {
+      return CountMissingValues(this.GetVariableIndex(variableName));
+    }
+    public int CountMissingValues(int column) {
+      return CountMissingValues(column, 0, Rows);
+    }
+
+    public int CountMissingValues(string variableName, int start, int end) {
+      return CountMissingValues(this.GetVariableIndex(variableName), start, end);
+    }
+
+    public int CountMissingValues(int column, int start, int end) {
+      int n = 0;
+      for (int i = start; i < end; i++) {
+        double val = GetValue(i, column);
+        if (double.IsNaN(val)) n++;
+      }
+      return n;
+    }
+
     #endregion
 
     internal void ScaleVariable(int column) {

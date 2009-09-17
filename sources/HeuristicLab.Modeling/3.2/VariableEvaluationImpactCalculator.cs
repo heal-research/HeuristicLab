@@ -96,11 +96,15 @@ namespace HeuristicLab.Modeling {
 
       foreach (string variableName in variables) {
         if (variableName != targetVariableName) {
-          mean = dataset.GetMean(variableName, start, end);
-          oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
-          newValues = predictor.Predict(dirtyDataset, start, end);
-          evaluationImpacts[variableName] = 1 - CalculateVAF(referenceValues, newValues);
-          dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
+          if (dataset.CountMissingValues(variableName, start, end) < (end - start) && dataset.GetRange(variableName, start, end) > 0.0) {
+            mean = dataset.GetMean(variableName, start, end);
+            oldValues = dirtyDataset.ReplaceVariableValues(variableName, Enumerable.Repeat(mean, end - start), start, end);
+            newValues = predictor.Predict(dirtyDataset, start, end);
+            evaluationImpacts[variableName] = 1 - CalculateVAF(referenceValues, newValues);
+            dirtyDataset.ReplaceVariableValues(variableName, oldValues, start, end);
+          } else {
+            evaluationImpacts[variableName] = 0.0;
+          }
         }
       }
 
