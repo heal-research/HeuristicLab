@@ -36,17 +36,17 @@ namespace HeuristicLab.Modeling {
 
       SimpleAccuracyEvaluator trainingAccuracy = new SimpleAccuracyEvaluator();
       trainingAccuracy.Name = "TrainingAccuracyEvaluator";
-      trainingAccuracy.GetVariableInfo("Accuracy").ActualName = "TrainingAccuracy";
+      trainingAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.TrainingAccuracy.ToString();
       trainingAccuracy.GetVariableInfo("Values").ActualName = "TrainingValues";
 
       SimpleAccuracyEvaluator validationAccuracy = new SimpleAccuracyEvaluator();
       validationAccuracy.Name = "ValidationAccuracyEvaluator";
-      validationAccuracy.GetVariableInfo("Accuracy").ActualName = "ValidationAccuracy";
+      validationAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.ValidationAccuracy.ToString();
       validationAccuracy.GetVariableInfo("Values").ActualName = "ValidationValues";
 
       SimpleAccuracyEvaluator testAccuracy = new SimpleAccuracyEvaluator();
       testAccuracy.Name = "TestAccuracyEvaluator";
-      testAccuracy.GetVariableInfo("Accuracy").ActualName = "TestAccuracy";
+      testAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.TestAccuracy.ToString();
       testAccuracy.GetVariableInfo("Values").ActualName = "TestValues";
 
       SimpleConfusionMatrixEvaluator trainingConfusionMatrixEvaluator = new SimpleConfusionMatrixEvaluator();
@@ -81,9 +81,9 @@ namespace HeuristicLab.Modeling {
 
     public static IAnalyzerModel PopulateAnalyzerModel(IScope modelScope, IAnalyzerModel model) {
       DefaultRegressionOperators.PopulateAnalyzerModel(modelScope, model);
-      model.SetResult("TrainingAccuracy", modelScope.GetVariableValue<DoubleData>("TrainingAccuracy", false).Data);
-      model.SetResult("ValidationAccuracy", modelScope.GetVariableValue<DoubleData>("ValidationAccuracy", false).Data);
-      model.SetResult("TestAccuracy", modelScope.GetVariableValue<DoubleData>("TestAccuracy", false).Data);
+      model.ExtractResult(modelScope, ModelingResult.TrainingAccuracy);
+      model.ExtractResult(modelScope, ModelingResult.ValidationAccuracy);
+      model.ExtractResult(modelScope, ModelingResult.TestAccuracy);
       model.Type = ModelType.Classification;
       return model;
     }

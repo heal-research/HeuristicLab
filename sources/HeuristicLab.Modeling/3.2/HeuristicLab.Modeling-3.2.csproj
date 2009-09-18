@@ -83,6 +83,8 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
+    <Compile Include="ModelingResult.cs" />
+    <Compile Include="ModelType.cs" />
     <Compile Include="DefaultClassificationOperators.cs" />
     <Compile Include="DefaultRegressionOperators.cs" />
     <Compile Include="DefaultTimeSeriesOperators.cs" />

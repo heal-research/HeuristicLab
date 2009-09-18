@@ -47,15 +47,15 @@ namespace HeuristicLab.Modeling {
       SimpleTheilInequalityCoefficientEvaluator trainingTheil = new SimpleTheilInequalityCoefficientEvaluator();
       trainingTheil.Name = "TrainingTheilInequalityEvaluator";
       trainingTheil.GetVariableInfo("Values").ActualName = "TrainingValues";
-      trainingTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TrainingTheilInequalityCoefficient";
+      trainingTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = ModelingResult.TrainingTheilInequality.ToString();
       SimpleTheilInequalityCoefficientEvaluator validationTheil = new SimpleTheilInequalityCoefficientEvaluator();
       validationTheil.Name = "ValidationTheilInequalityEvaluator";
       validationTheil.GetVariableInfo("Values").ActualName = "ValidationValues";
-      validationTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "ValidationTheilInequalityCoefficient";
+      validationTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = ModelingResult.ValidationTheilInequality.ToString();
       SimpleTheilInequalityCoefficientEvaluator testTheil = new SimpleTheilInequalityCoefficientEvaluator();
       testTheil.Name = "TestTheilInequalityEvaluator";
       testTheil.GetVariableInfo("Values").ActualName = "TestValues";
-      testTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = "TestTheilInequalityCoefficient";
+      testTheil.GetVariableInfo("TheilInequalityCoefficient").ActualName = ModelingResult.TestTheilInequality.ToString();
 
       seq.AddSubOperator(trainingTheil);
       seq.AddSubOperator(validationTheil);
@@ -68,9 +68,9 @@ namespace HeuristicLab.Modeling {
 
     public static IAnalyzerModel PopulateAnalyzerModel(IScope modelScope, IAnalyzerModel model) {
       DefaultRegressionOperators.PopulateAnalyzerModel(modelScope, model);
-      model.SetResult("TrainingTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", true).Data);
-      model.SetResult("ValidationTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", true).Data);
-      model.SetResult("TestTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", true).Data);
+      model.ExtractResult(modelScope, ModelingResult.TrainingTheilInequality);
+      model.ExtractResult(modelScope, ModelingResult.ValidationTheilInequality);
+      model.ExtractResult(modelScope, ModelingResult.TestTheilInequality);
       model.Type = ModelType.TimeSeriesPrognosis;
       return model;
     }

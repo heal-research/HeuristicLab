@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Modeling {
   public class AnalyzerModel : IAnalyzerModel {
@@ -62,17 +63,22 @@ namespace HeuristicLab.Modeling {
         inputVariables.Add(variableName);
     }
 
-    private Dictionary<string, double> results = new Dictionary<string, double>();
-    public IEnumerable<KeyValuePair<string, double>> Results {
+    private Dictionary<ModelingResult, double> results = new Dictionary<ModelingResult, double>();
+    public IEnumerable<KeyValuePair<ModelingResult, double>> Results {
       get { return results; }
     }
 
-    public void SetResult(string name, double value) {
-      results.Add(name, value);
+    public void ExtractResult(IScope scope, ModelingResult result) {
+      SetResult(result, scope.GetVariableValue<DoubleData>(result.ToString(), false).Data);
     }
 
-    public double GetResult(string name) {
-      return results[name];
+
+    public void SetResult(ModelingResult result, double value) {
+      results.Add(result, value);
+    }
+
+    public double GetResult(ModelingResult result) {
+      return results[result];
     }
 
     private Dictionary<string, double> metadata = new Dictionary<string, double>();
@@ -88,36 +94,29 @@ namespace HeuristicLab.Modeling {
       return metadata[name];
     }
 
-    public double GetVariableQualityImpact(string variableName) {
-      if (variableQualityImpacts.ContainsKey(variableName)) return variableQualityImpacts[variableName];
-      else throw new ArgumentException("Impact of variable " + variableName + " is not available.");
+    private Dictionary<string, Dictionary<ModelingResult, double>> variableResults = new Dictionary<string, Dictionary<ModelingResult, double>>();
+    public double GetVariableResult(ModelingResult result, string variableName) {
+      if (variableResults.ContainsKey(variableName)) {
+        if (variableResults[variableName].ContainsKey(result)) {
+          return variableResults[variableName][result];
+        } else throw new ArgumentException("No value for modeling result: " + result + ".");
+      } else throw new ArgumentException("No variable result for variable " + variableName + ".");
     }
 
-    public double GetVariableEvaluationImpact(string variableName) {
-      if (variableEvaluationImpacts.ContainsKey(variableName)) return variableEvaluationImpacts[variableName];
-      else throw new ArgumentException("Impact of variable " + variableName + " is not available.");
+    public void SetVariableResult(ModelingResult result, string variableName, double value) {
+      if (!variableResults.ContainsKey(variableName)) {
+        variableResults.Add(variableName, new Dictionary<ModelingResult, double>());
+      }
+      variableResults[variableName][result] = value;
+    }
+
+    public IEnumerable<KeyValuePair<ModelingResult, double>> GetVariableResults(string variableName) {
+      return variableResults[variableName];
     }
 
     public IPredictor Predictor { get; set; }
 
     #endregion
 
-    private Dictionary<string, double> variableQualityImpacts = new Dictionary<string, double>();
-    public void SetVariableQualityImpact(string variableName, double impact) {
-      variableQualityImpacts[variableName] = impact;
-    }
-
-    public void SetVariableQualityImpact(int variableIndex, double impact) {
-      variableQualityImpacts[dataset.GetVariableName(variableIndex)] = impact;
-    }
-
-    private Dictionary<string, double> variableEvaluationImpacts = new Dictionary<string, double>();
-    public void SetVariableEvaluationImpact(string variableName, double impact) {
-      variableEvaluationImpacts[variableName] = impact;
-    }
-
-    public void SetVariableEvaluationImpact(int variableIndex, double impact) {
-      variableEvaluationImpacts[dataset.GetVariableName(variableIndex)] = impact;
-    }
   }
 }

@@ -49,71 +49,71 @@ namespace HeuristicLab.Modeling {
       #region MSE
       SimpleMSEEvaluator trainingMseEvaluator = new SimpleMSEEvaluator();
       trainingMseEvaluator.Name = "TrainingMseEvaluator";
-      trainingMseEvaluator.GetVariableInfo("MSE").ActualName = "TrainingMSE";
+      trainingMseEvaluator.GetVariableInfo("MSE").ActualName = ModelingResult.TrainingMeanSquaredError.ToString();
       trainingMseEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleMSEEvaluator validationMseEvaluator = new SimpleMSEEvaluator();
       validationMseEvaluator.Name = "ValidationMseEvaluator";
-      validationMseEvaluator.GetVariableInfo("MSE").ActualName = "ValidationMSE";
+      validationMseEvaluator.GetVariableInfo("MSE").ActualName = ModelingResult.ValidationMeanSquaredError.ToString();
       validationMseEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       SimpleMSEEvaluator testMseEvaluator = new SimpleMSEEvaluator();
       testMseEvaluator.Name = "TestMseEvaluator";
-      testMseEvaluator.GetVariableInfo("MSE").ActualName = "TestMSE";
+      testMseEvaluator.GetVariableInfo("MSE").ActualName = ModelingResult.TestMeanSquaredError.ToString();
       testMseEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion
       #region MAPE
       SimpleMeanAbsolutePercentageErrorEvaluator trainingMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       trainingMapeEvaluator.Name = "TrainingMapeEvaluator";
-      trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TrainingMAPE";
+      trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = ModelingResult.ValidationMeanAbsolutePercentageError.ToString();
       trainingMapeEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleMeanAbsolutePercentageErrorEvaluator validationMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       validationMapeEvaluator.Name = "ValidationMapeEvaluator";
-      validationMapeEvaluator.GetVariableInfo("MAPE").ActualName = "ValidationMAPE";
+      validationMapeEvaluator.GetVariableInfo("MAPE").ActualName = ModelingResult.ValidationMeanAbsolutePercentageError.ToString();
       validationMapeEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       SimpleMeanAbsolutePercentageErrorEvaluator testMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       testMapeEvaluator.Name = "TestMapeEvaluator";
-      testMapeEvaluator.GetVariableInfo("MAPE").ActualName = "TestMAPE";
+      testMapeEvaluator.GetVariableInfo("MAPE").ActualName = ModelingResult.TestMeanAbsolutePercentageError.ToString();
       testMapeEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion
       #region MAPRE
       SimpleMeanAbsolutePercentageOfRangeErrorEvaluator trainingMapreEvaluator = new SimpleMeanAbsolutePercentageOfRangeErrorEvaluator();
       trainingMapreEvaluator.Name = "TrainingMapreEvaluator";
-      trainingMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TrainingMAPRE";
+      trainingMapreEvaluator.GetVariableInfo("MAPRE").ActualName = ModelingResult.TrainingMeanAbsolutePercentageOfRangeError.ToString();
       trainingMapreEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleMeanAbsolutePercentageOfRangeErrorEvaluator validationMapreEvaluator = new SimpleMeanAbsolutePercentageOfRangeErrorEvaluator();
       validationMapreEvaluator.Name = "ValidationMapreEvaluator";
-      validationMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "ValidationMAPRE";
+      validationMapreEvaluator.GetVariableInfo("MAPRE").ActualName = ModelingResult.ValidationMeanAbsolutePercentageOfRangeError.ToString();
       validationMapreEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       SimpleMeanAbsolutePercentageOfRangeErrorEvaluator testMapreEvaluator = new SimpleMeanAbsolutePercentageOfRangeErrorEvaluator();
       testMapreEvaluator.Name = "TestMapreEvaluator";
-      testMapreEvaluator.GetVariableInfo("MAPRE").ActualName = "TestMAPRE";
+      testMapreEvaluator.GetVariableInfo("MAPRE").ActualName = ModelingResult.TestMeanAbsolutePercentageOfRangeError.ToString();
       testMapreEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion MAPRE
       #region R2
       SimpleR2Evaluator trainingR2Evaluator = new SimpleR2Evaluator();
       trainingR2Evaluator.Name = "TrainingR2Evaluator";
-      trainingR2Evaluator.GetVariableInfo("R2").ActualName = "TrainingR2";
+      trainingR2Evaluator.GetVariableInfo("R2").ActualName = ModelingResult.TrainingCoefficientOfDetermination.ToString();
       trainingR2Evaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleR2Evaluator validationR2Evaluator = new SimpleR2Evaluator();
       validationR2Evaluator.Name = "ValidationR2Evaluator";
-      validationR2Evaluator.GetVariableInfo("R2").ActualName = "ValidationR2";
+      validationR2Evaluator.GetVariableInfo("R2").ActualName = ModelingResult.ValidationCoefficientOfDetermination.ToString();
       validationR2Evaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       SimpleR2Evaluator testR2Evaluator = new SimpleR2Evaluator();
       testR2Evaluator.Name = "TestR2Evaluator";
-      testR2Evaluator.GetVariableInfo("R2").ActualName = "TestR2";
+      testR2Evaluator.GetVariableInfo("R2").ActualName = ModelingResult.TestCoefficientOfDetermination.ToString();
       testR2Evaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion
       #region VAF
       SimpleVarianceAccountedForEvaluator trainingVAFEvaluator = new SimpleVarianceAccountedForEvaluator();
       trainingVAFEvaluator.Name = "TrainingVAFEvaluator";
-      trainingVAFEvaluator.GetVariableInfo("VAF").ActualName = "TrainingVAF";
+      trainingVAFEvaluator.GetVariableInfo("VAF").ActualName = ModelingResult.TrainingVarianceAccountedFor.ToString();
       trainingVAFEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleVarianceAccountedForEvaluator validationVAFEvaluator = new SimpleVarianceAccountedForEvaluator();
       validationVAFEvaluator.Name = "ValidationVAFEvaluator";
-      validationVAFEvaluator.GetVariableInfo("VAF").ActualName = "ValidationVAF";
+      validationVAFEvaluator.GetVariableInfo("VAF").ActualName = ModelingResult.ValidationVarianceAccountedFor.ToString();
       validationVAFEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
       SimpleVarianceAccountedForEvaluator testVAFEvaluator = new SimpleVarianceAccountedForEvaluator();
       testVAFEvaluator.Name = "TestVAFEvaluator";
-      testVAFEvaluator.GetVariableInfo("VAF").ActualName = "TestVAF";
+      testVAFEvaluator.GetVariableInfo("VAF").ActualName = ModelingResult.TestVarianceAccountedFor.ToString();
       testVAFEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion
 
@@ -163,34 +163,34 @@ namespace HeuristicLab.Modeling {
       model.TestSamplesStart = modelScope.GetVariableValue<IntData>("TestSamplesStart", true).Data;
       model.TestSamplesEnd = modelScope.GetVariableValue<IntData>("TestSamplesEnd", true).Data;
 
-      model.SetResult("TrainingMeanSquaredError", modelScope.GetVariableValue<DoubleData>("TrainingMSE", false).Data);
-      model.SetResult("ValidationMeanSquaredError", modelScope.GetVariableValue<DoubleData>("ValidationMSE", false).Data);
-      model.SetResult("TestMeanSquaredError", modelScope.GetVariableValue<DoubleData>("TestMSE", false).Data);
-      model.SetResult("TrainingCoefficientOfDetermination", modelScope.GetVariableValue<DoubleData>("TrainingR2", false).Data);
-      model.SetResult("ValidationCoefficientOfDetermination", modelScope.GetVariableValue<DoubleData>("ValidationR2", false).Data);
-      model.SetResult("TestCoefficientOfDetermination", modelScope.GetVariableValue<DoubleData>("TestR2", false).Data);
-      model.SetResult("TrainingMeanAbsolutePercentageError", modelScope.GetVariableValue<DoubleData>("TrainingMAPE", false).Data);
-      model.SetResult("ValidationMeanAbsolutePercentageError", modelScope.GetVariableValue<DoubleData>("ValidationMAPE", false).Data);
-      model.SetResult("TestMeanAbsolutePercentageError", modelScope.GetVariableValue<DoubleData>("TestMAPE", false).Data);
-      model.SetResult("TrainingMeanAbsolutePercentageOfRangeError", modelScope.GetVariableValue<DoubleData>("TrainingMAPRE", false).Data);
-      model.SetResult("ValidationMeanAbsolutePercentageOfRangeError", modelScope.GetVariableValue<DoubleData>("ValidationMAPRE", false).Data);
-      model.SetResult("TestMeanAbsolutePercentageOfRangeError", modelScope.GetVariableValue<DoubleData>("TestMAPRE", false).Data);
-      model.SetResult("TrainingVarianceAccountedFor", modelScope.GetVariableValue<DoubleData>("TrainingVAF", false).Data);
-      model.SetResult("ValidationVarianceAccountedFor", modelScope.GetVariableValue<DoubleData>("ValidationVAF", false).Data);
-      model.SetResult("TestVarianceAccountedFor", modelScope.GetVariableValue<DoubleData>("TestVAF", false).Data);
+      model.ExtractResult(modelScope, ModelingResult.TrainingMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.ValidationMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.TestMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.TrainingMeanAbsolutePercentageError);
+      model.ExtractResult(modelScope, ModelingResult.ValidationMeanAbsolutePercentageError);
+      model.ExtractResult(modelScope, ModelingResult.TestMeanAbsolutePercentageError);
+      model.ExtractResult(modelScope, ModelingResult.TrainingMeanAbsolutePercentageOfRangeError);
+      model.ExtractResult(modelScope, ModelingResult.ValidationMeanAbsolutePercentageOfRangeError);
+      model.ExtractResult(modelScope, ModelingResult.TestMeanAbsolutePercentageOfRangeError);
+      model.ExtractResult(modelScope, ModelingResult.TrainingCoefficientOfDetermination);
+      model.ExtractResult(modelScope, ModelingResult.ValidationCoefficientOfDetermination);
+      model.ExtractResult(modelScope, ModelingResult.TestCoefficientOfDetermination);
+      model.ExtractResult(modelScope, ModelingResult.TrainingVarianceAccountedFor);
+      model.ExtractResult(modelScope, ModelingResult.ValidationVarianceAccountedFor);
+      model.ExtractResult(modelScope, ModelingResult.TestVarianceAccountedFor);
 
-      ItemList evaluationImpacts = modelScope.GetVariableValue<ItemList>("VariableEvaluationImpacts", false);
-      ItemList qualityImpacts = modelScope.GetVariableValue<ItemList>("VariableQualityImpacts", false);
+      ItemList evaluationImpacts = modelScope.GetVariableValue<ItemList>(ModelingResult.VariableEvaluationImpact.ToString(), false);
+      ItemList qualityImpacts = modelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
       foreach (ItemList row in evaluationImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableEvaluationImpact(variableName, impact);
+        model.SetVariableResult(ModelingResult.VariableEvaluationImpact, variableName, impact);
         model.AddInputVariable(variableName);
       }
       foreach (ItemList row in qualityImpacts) {
         string variableName = ((StringData)row[0]).Data;
         double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableQualityImpact(variableName, impact);
+        model.SetVariableResult(ModelingResult.VariableQualityImpact, variableName, impact);
         model.AddInputVariable(variableName);
       }
 

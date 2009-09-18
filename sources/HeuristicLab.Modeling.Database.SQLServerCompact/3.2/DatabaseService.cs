@@ -59,7 +59,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       dlo.LoadWith<InputVariableResult>(ir => ir.Variable);
       dlo.LoadWith<InputVariableResult>(ir => ir.Result);
       dlo.LoadWith<Model>(m => m.TargetVariable);
-      dlo.LoadWith<Model>(m => m.Algorithm);      
+      dlo.LoadWith<Model>(m => m.Algorithm);
       ctx.LoadOptions = dlo;
     }
 
@@ -109,8 +109,8 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        foreach (KeyValuePair<string, double> pair in model.Results) {
-          Result result = GetOrCreateResult(pair.Key);
+        foreach (KeyValuePair<ModelingResult, double> pair in model.Results) {
+          Result result = GetOrCreateResult(pair.Key.ToString());
           ctx.ModelResults.InsertOnSubmit(new ModelResult(m, result, pair.Value));
         }
         ctx.SubmitChanges();
@@ -126,17 +126,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       }
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        IEnumerable<MethodInfo> inputVariableResultInfos = model.GetType().GetMethods().Where(
-          info => info.GetParameters().Count() == 1 &&
-             info.GetParameters()[0].ParameterType == typeof(string) &&
-             info.GetParameters()[0].Name == "variableName" &&
-             info.ReturnParameter.ParameterType == typeof(double) &&
-             info.Name.StartsWith("Get"));
-        foreach (MethodInfo inputVariableResultInfo in inputVariableResultInfos) {
-          Result result = GetOrCreateResult(inputVariableResultInfo.Name.Substring(3));
-          foreach (InputVariable variable in ctx.InputVariables.Where(iv => iv.Model == m)) {
-            double value = (double)inputVariableResultInfo.Invoke(model, new object[] { variable.Variable.Name });
-            ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, value));
+        foreach (InputVariable variable in ctx.InputVariables.Where(iv => iv.Model == m)) {
+          foreach (KeyValuePair<ModelingResult, double> variableResult in model.GetVariableResults(variable.Variable.Name)) {
+            Result result = GetOrCreateResult(variableResult.Key.ToString());
+            ctx.InputVariableResults.InsertOnSubmit(new InputVariableResult(variable, result, variableResult.Value));
           }
         }
         ctx.SubmitChanges();
@@ -285,8 +278,8 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       MetaData metadata;
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         var md = from r in ctx.MetaData
-                      where r.Name == name
-                      select r;
+                 where r.Name == name
+                 select r;
         if (md.Count() == 0) {
           metadata = new MetaData(name);
           ctx.MetaData.InsertOnSubmit(metadata);
