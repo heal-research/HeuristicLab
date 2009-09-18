@@ -71,7 +71,7 @@ namespace HeuristicLab.Modeling {
       model.SetResult("TrainingTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TrainingTheilInequalityCoefficient", true).Data);
       model.SetResult("ValidationTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("ValidationTheilInequalityCoefficient", true).Data);
       model.SetResult("TestTheilInequalityCoefficient", modelScope.GetVariableValue<DoubleData>("TestTheilInequalityCoefficient", true).Data);
-
+      model.Type = ModelType.TimeSeriesPrognosis;
       return model;
     }
   }

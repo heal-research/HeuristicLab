@@ -155,6 +155,7 @@ namespace HeuristicLab.Modeling {
       Dataset ds = modelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
       model.TargetVariable = ds.GetVariableName(modelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+      model.Type = ModelType.Regression;
       model.TrainingSamplesStart = modelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
       model.TrainingSamplesEnd = modelScope.GetVariableValue<IntData>("TrainingSamplesEnd", true).Data;
       model.ValidationSamplesStart = modelScope.GetVariableValue<IntData>("ValidationSamplesStart", true).Data;

@@ -30,6 +30,7 @@ namespace HeuristicLab.Modeling {
     IPredictor Predictor { get; set; }
     Dataset Dataset { get; set; }
     string TargetVariable { get; set; }
+    ModelType Type { get; set; }
     IEnumerable<string> InputVariables { get; }
     IEnumerable<KeyValuePair<string, double>> Results { get; }
     IEnumerable<KeyValuePair<string, double>> MetaData { get; }

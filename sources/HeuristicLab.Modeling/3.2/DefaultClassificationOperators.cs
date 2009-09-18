@@ -84,6 +84,7 @@ namespace HeuristicLab.Modeling {
       model.SetResult("TrainingAccuracy", modelScope.GetVariableValue<DoubleData>("TrainingAccuracy", false).Data);
       model.SetResult("ValidationAccuracy", modelScope.GetVariableValue<DoubleData>("ValidationAccuracy", false).Data);
       model.SetResult("TestAccuracy", modelScope.GetVariableValue<DoubleData>("TestAccuracy", false).Data);
+      model.Type = ModelType.Classification;
       return model;
     }
   }

@@ -43,6 +43,8 @@ namespace HeuristicLab.Modeling {
       set { targetVariable = value; }
     }
 
+    public ModelType Type { get; set; }
+
     private List<string> inputVariables = new List<string>();
     public IEnumerable<string> InputVariables {
       get { return inputVariables; }
