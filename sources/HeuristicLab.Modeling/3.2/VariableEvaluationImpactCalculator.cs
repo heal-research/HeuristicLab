@@ -40,7 +40,7 @@ namespace HeuristicLab.Modeling {
       AddVariableInfo(new VariableInfo("InputVariableNames", "Names of used variables in the model (optional)", typeof(ItemList<StringData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "TrainingSamplesEnd", typeof(IntData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("VariableEvaluationImpacts", "VariableEvaluationImpacts", typeof(ItemList), VariableKind.New));
+      AddVariableInfo(new VariableInfo(ModelingResult.VariableEvaluationImpact.ToString(), "VariableEvaluationImpacts", typeof(ItemList), VariableKind.New));
     }
 
     public override string Description {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Modeling {
         }
       }
 
-      scope.AddVariable(new Variable(scope.TranslateName("VariableEvaluationImpacts"), variableImpacts));
+      scope.AddVariable(new Variable(scope.TranslateName(ModelingResult.VariableEvaluationImpact.ToString()), variableImpacts));
       return null;
 
     }
