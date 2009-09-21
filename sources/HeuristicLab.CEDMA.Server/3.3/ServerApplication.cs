@@ -26,7 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CEDMA.Server {
-  [ClassInfo(Name = "CEDMA", Description = "Cooperative Evolutionary Data Mining.", AutoRestart=true)]
+  [ClassInfo(Name = "CEDMA", Description = "Cooperative Evolutionary Data Mining.", AutoRestart = true)]
   class ServerApplication : ApplicationBase {
     public override void Run() {
       Server server = new Server();
@@ -34,7 +34,7 @@ namespace HeuristicLab.CEDMA.Server {
       UserControl serverControl = (UserControl)server.CreateView();
       serverControl.Dock = DockStyle.Fill;
       mainForm.Controls.Add(serverControl);
-      mainForm.Name = "CEDMA";
+      mainForm.Text = "CEDMA";
       Application.Run(mainForm);
     }
   }

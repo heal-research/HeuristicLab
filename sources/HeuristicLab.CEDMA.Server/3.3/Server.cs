@@ -32,6 +32,7 @@ using HeuristicLab.Grid.HiveBridge;
 using HeuristicLab.Core;
 using HeuristicLab.Modeling.Database;
 using HeuristicLab.Modeling.Database.SQLServerCompact;
+using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.CEDMA.Server {
   public class Server : IViewable {
@@ -43,8 +44,10 @@ namespace HeuristicLab.CEDMA.Server {
     public IDispatcher Dispatcher { get { return dispatcher; } }
     private IExecuter executer;
     public IExecuter Executer { get { return executer; } }
-    private Problem problem;
-    public Problem Problem { get { return problem; } }
+    //private Problem problem;
+    //public Problem Problem { get { return problem; } }
+    private Dataset dataset;
+    public Dataset Dataset { get { return dataset; } }
 
     private string gridServiceUrl;
     public string GridServiceUrl {
@@ -54,16 +57,16 @@ namespace HeuristicLab.CEDMA.Server {
 
     public Server() {
       database = new DatabaseService(sqlServerCompactConnectionString);
-      problem = new Problem();
+      dataset = new Dataset();
       try {
-        problem.Dataset = database.GetDataset();
+        dataset = database.GetDataset();
       }
-      catch (InvalidOperationException ex) {
+      catch (InvalidOperationException) {
       }
     }
 
     internal void Connect(string serverUrl) {
-      dispatcher = new SimpleDispatcher(database, problem);
+      dispatcher = new SimpleDispatcher(database, dataset);
       IGridServer gridServer = null;
       if (serverUrl.Contains("ExecutionEngine")) {
         gridServer = new HiveGridServerWrapper(serverUrl);

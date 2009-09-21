@@ -90,8 +90,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProblemSpecification.cs" />
     <Compile Include="LearningTask.cs" />
-    <Compile Include="Problem.cs" />
     <Compile Include="ProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>

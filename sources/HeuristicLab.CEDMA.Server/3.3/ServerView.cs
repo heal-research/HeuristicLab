@@ -41,7 +41,8 @@ namespace HeuristicLab.CEDMA.Server {
   public partial class ServerView : ViewBase {
     private Server server;
 
-    public ServerView(Server server) : base() {
+    public ServerView(Server server)
+      : base() {
       this.server = server;
       InitializeComponent();
     }
@@ -51,13 +52,13 @@ namespace HeuristicLab.CEDMA.Server {
       UserControl executerControl = (UserControl)server.Executer.CreateView();
       executerControl.Dock = DockStyle.Fill;
       executerTabPage.Controls.Add(executerControl);
-      UserControl dispatcherControl = (UserControl)server.Dispatcher.CreateView();
+      UserControl dispatcherControl = (UserControl)((IViewable)server.Dispatcher).CreateView();
       dispatcherControl.Dock = DockStyle.Fill;
       dispatcherTabPage.Controls.Add(dispatcherControl);
-      UserControl problemControl = (UserControl)server.Problem.CreateView();
+      UserControl problemControl = new ProblemView(server.Dataset);
       problemControl.Dock = DockStyle.Fill;
       problemPage.Controls.Add(problemControl);
-      connectButton.Enabled = false;      
+      connectButton.Enabled = false;
     }
   }
 }

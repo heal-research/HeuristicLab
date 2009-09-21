@@ -29,8 +29,15 @@ namespace HeuristicLab.Modeling {
   public interface IAlgorithm {
     string Name { get; }
     string Description { get; }
-    IOperator ProblemInjector { get; set; }
+
     Dataset Dataset { get; set; }
+    IEnumerable<int> AllowedVariables { get; set; }
+    int TrainingSamplesStart { get; set; }
+    int TrainingSamplesEnd { get; set; }
+    int ValidationSamplesStart { get; set; }
+    int ValidationSamplesEnd { get; set; }
+    int TestSamplesStart { get; set; }
+    int TestSamplesEnd { get; set; }
     int TargetVariable { get; set; }
     IEngine Engine { get; }
     IAnalyzerModel Model { get; }

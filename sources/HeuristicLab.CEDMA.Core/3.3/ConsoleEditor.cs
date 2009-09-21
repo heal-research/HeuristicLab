@@ -36,7 +36,6 @@ namespace HeuristicLab.CEDMA.Core {
     private Button resultsButton;
     private Button openButton;
     private Console console;
-    private VisualMatrix matrix;
 
     public ConsoleEditor(Console console) {
       InitializeComponent();

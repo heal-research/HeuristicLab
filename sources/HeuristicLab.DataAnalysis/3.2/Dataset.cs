@@ -197,6 +197,7 @@ namespace HeuristicLab.DataAnalysis {
 
     public void SetVariableName(int variableIndex, string name) {
       variableNames[variableIndex] = name;
+      if (fireChangeEvents) FireChanged();
     }
 
     public bool ContainsVariableName(string variableName) {

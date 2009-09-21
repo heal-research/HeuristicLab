@@ -57,7 +57,7 @@ namespace HeuristicLab.CEDMA.Server {
       // gridAddressLabel
       // 
       this.gridAddressLabel.AutoSize = true;
-      this.gridAddressLabel.Location = new System.Drawing.Point(12, 35);
+      this.gridAddressLabel.Location = new System.Drawing.Point(2, 8);
       this.gridAddressLabel.Name = "gridAddressLabel";
       this.gridAddressLabel.Size = new System.Drawing.Size(69, 13);
       this.gridAddressLabel.TabIndex = 9;
@@ -65,14 +65,14 @@ namespace HeuristicLab.CEDMA.Server {
       // 
       // address
       // 
-      this.address.Location = new System.Drawing.Point(106, 32);
+      this.address.Location = new System.Drawing.Point(96, 5);
       this.address.Name = "address";
       this.address.Size = new System.Drawing.Size(160, 20);
       this.address.TabIndex = 8;
       // 
       // connectButton
       // 
-      this.connectButton.Location = new System.Drawing.Point(272, 30);
+      this.connectButton.Location = new System.Drawing.Point(262, 3);
       this.connectButton.Name = "connectButton";
       this.connectButton.Size = new System.Drawing.Size(75, 23);
       this.connectButton.TabIndex = 10;
@@ -88,10 +88,10 @@ namespace HeuristicLab.CEDMA.Server {
       this.tabControl.Controls.Add(this.executerTabPage);
       this.tabControl.Controls.Add(this.dispatcherTabPage);
       this.tabControl.Controls.Add(this.problemPage);
-      this.tabControl.Location = new System.Drawing.Point(3, 58);
+      this.tabControl.Location = new System.Drawing.Point(3, 31);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(573, 543);
+      this.tabControl.Size = new System.Drawing.Size(573, 570);
       this.tabControl.TabIndex = 14;
       // 
       // executerTabPage
@@ -99,7 +99,7 @@ namespace HeuristicLab.CEDMA.Server {
       this.executerTabPage.Location = new System.Drawing.Point(4, 22);
       this.executerTabPage.Name = "executerTabPage";
       this.executerTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.executerTabPage.Size = new System.Drawing.Size(565, 517);
+      this.executerTabPage.Size = new System.Drawing.Size(565, 544);
       this.executerTabPage.TabIndex = 0;
       this.executerTabPage.Text = "Executer";
       this.executerTabPage.UseVisualStyleBackColor = true;

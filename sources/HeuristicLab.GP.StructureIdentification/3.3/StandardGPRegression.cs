@@ -28,6 +28,7 @@ using HeuristicLab.GP.Operators;
 using HeuristicLab.Modeling;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators.Programmable;
 
@@ -53,6 +54,47 @@ namespace HeuristicLab.GP.StructureIdentification {
         else
           return CreateGPModel();
       }
+    }
+
+    public IEnumerable<int> AllowedVariables {
+      get {
+        ItemList<IntData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<IntData>>("AllowedFeatures", null, false);
+        return allowedVariables.Select(x => x.Data);
+      }
+      set {
+        ItemList<IntData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<IntData>>("AllowedFeatures", null, false);
+        foreach (int x in value) allowedVariables.Add(new IntData(x));
+      }
+    }
+
+    public int TrainingSamplesStart {
+      get { return ProblemInjector.GetVariableValue<IntData>("TrainingSamplesStart", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TrainingSamplesStart", null, false).Data = value; }
+    }
+
+    public int TrainingSamplesEnd {
+      get { return ProblemInjector.GetVariableValue<IntData>("TrainingSamplesEnd", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TrainingSamplesEnd", null, false).Data = value; }
+    }
+
+    public int ValidationSamplesStart {
+      get { return ProblemInjector.GetVariableValue<IntData>("ValidationSamplesStart", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("ValidationSamplesStart", null, false).Data = value; }
+    }
+
+    public int ValidationSamplesEnd {
+      get { return ProblemInjector.GetVariableValue<IntData>("ValidationSamplesEnd", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("ValidationSamplesEnd", null, false).Data = value; }
+    }
+
+    public int TestSamplesStart {
+      get { return ProblemInjector.GetVariableValue<IntData>("TestSamplesStart", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TestSamplesStart", null, false).Data = value; }
+    }
+
+    public int TestSamplesEnd {
+      get { return ProblemInjector.GetVariableValue<IntData>("TestSamplesEnd", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<IntData>("TestSamplesEnd", null, false).Data = value; }
     }
 
     public virtual double PunishmentFactor {
