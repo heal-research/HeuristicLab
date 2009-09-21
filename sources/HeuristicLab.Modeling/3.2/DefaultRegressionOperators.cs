@@ -63,7 +63,7 @@ namespace HeuristicLab.Modeling {
       #region MAPE
       SimpleMeanAbsolutePercentageErrorEvaluator trainingMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       trainingMapeEvaluator.Name = "TrainingMapeEvaluator";
-      trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = ModelingResult.ValidationMeanAbsolutePercentageError.ToString();
+      trainingMapeEvaluator.GetVariableInfo("MAPE").ActualName = ModelingResult.TrainingMeanAbsolutePercentageError.ToString();
       trainingMapeEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
       SimpleMeanAbsolutePercentageErrorEvaluator validationMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       validationMapeEvaluator.Name = "ValidationMapeEvaluator";
