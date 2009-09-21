@@ -38,6 +38,8 @@ namespace HeuristicLab.SupportVectorMachines {
       AddVariableInfo(new VariableInfo("InputVariables", "The input variable names", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of the training set", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of the training set", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) highest allowed time offset value", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("MinTimeOffset", "(optional) lowest allowed time offset value", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "The punishment factor limits the range of predicted values", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Predictor", "The predictor can be used to generate estimated values", typeof(IPredictor), VariableKind.New));
     }
@@ -52,6 +54,10 @@ namespace HeuristicLab.SupportVectorMachines {
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
+      IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
+      int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
+      IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
+      int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
 
       string targetVariableName = ds.GetVariableName(targetVariable);
@@ -62,7 +68,7 @@ namespace HeuristicLab.SupportVectorMachines {
       double mean = ds.GetMean(targetVariable, start, end);
       double range = ds.GetRange(targetVariable, start, end);
 
-      Predictor predictor = new Predictor(model, targetVariableName, variableNames);
+      Predictor predictor = new Predictor(model, targetVariableName, variableNames, minTimeOffset, maxTimeOffset);
       predictor.LowerPredictionLimit = mean - punishmentFactor * range;
       predictor.UpperPredictionLimit = mean + punishmentFactor * range;
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));

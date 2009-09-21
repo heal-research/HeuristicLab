@@ -40,7 +40,13 @@ namespace HeuristicLab.SupportVectorMachines {
     private Dictionary<string, int> variableNames = new Dictionary<string, int>();
     private string targetVariable;
     private int minTimeOffset;
+    public int MinTimeOffset {
+      get { return minTimeOffset; }
+    }
     private int maxTimeOffset;
+    public int MaxTimeOffset {
+      get { return maxTimeOffset; }
+    }
 
     public Predictor() : base() { } // for persistence
 

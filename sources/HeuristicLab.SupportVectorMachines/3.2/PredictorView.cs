@@ -33,21 +33,20 @@ namespace HeuristicLab.SupportVectorMachines {
   public partial class PredictorView : SVMModelView {
     private Predictor predictor;
 
-    public PredictorView() : base() {
+    public PredictorView()
+      : base() {
       InitializeComponent();
-    }    
+    }
 
     public PredictorView(Predictor predictor)
       : base(predictor.Model) {
       InitializeComponent();
       this.predictor = predictor;
       UpdateControls();
-    }
-
-    protected override void UpdateControls() {
-      base.UpdateControls();
-      lowerLimitTextbox.Text = predictor.LowerPredictionLimit.ToString();
-      upperLimitTextbox.Text = predictor.UpperPredictionLimit.ToString();
+      lowerLimitTextbox.DataBindings.Add(new Binding("Text", predictor, "LowerPredictionLimit"));
+      upperLimitTextbox.DataBindings.Add(new Binding("Text", predictor, "UpperPredictionLimit"));
+      maxTimeOffsetTextBox.DataBindings.Add(new Binding("Text", predictor, "MaxTimeOffset"));
+      minTimeOffsetTextBox.DataBindings.Add(new Binding("Text", predictor, "MinTimeOffset"));
     }
   }
 }
