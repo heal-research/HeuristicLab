@@ -80,7 +80,7 @@ namespace HeuristicLab.CEDMA.Server {
             break;
           }
         case LearningTask.TimeSeries: {
-            regressionRadioButton.Checked = true;
+            timeSeriesRadioButton.Checked = true;
             break;
           }
         default: { break; }
