@@ -83,7 +83,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       Model m;
 
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
-        m = new Model(target, algo);
+        m = new Model(target, algo,model.Type);
         m.TrainingSamplesStart = model.TrainingSamplesStart;
         m.TrainingSamplesEnd = model.TrainingSamplesEnd;
         m.ValidationSamplesStart = model.ValidationSamplesStart;

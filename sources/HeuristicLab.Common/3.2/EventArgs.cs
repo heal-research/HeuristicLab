@@ -24,17 +24,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HeuristicLab.Modeling.Database {
-  public interface IModel {
-    IVariable TargetVariable { get; }
-    IAlgorithm Algorithm { get; }
-    ModelType ModelType { get; }
-    string Name { get; set; }
-    int TrainingSamplesStart { get; }
-    int TrainingSamplesEnd { get; }
-    int ValidationSamplesStart { get; }
-    int ValidationSamplesEnd { get; }
-    int TestSamplesStart { get; }
-    int TestSamplesEnd { get; }
+namespace HeuristicLab.Common {
+  public class EventArgs<T> : EventArgs {
+    public EventArgs() {
+    }
+
+    public EventArgs(T data) {
+      this.data = data;
+    }
+
+    private T data;
+    public T Data {
+      get { return data; }
+      set { this.data = value; }
+    }
   }
 }

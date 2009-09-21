@@ -30,7 +30,7 @@ namespace HeuristicLab.Modeling {
   public class AnalyzerModel : IAnalyzerModel {
     public AnalyzerModel() { } // for persistence
 
-    #region IModel Members
+    #region IAnalyzerModel Members
 
     private Dataset dataset;
     public Dataset Dataset {

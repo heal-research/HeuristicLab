@@ -83,6 +83,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EnumerableEventArgs.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="HeuristicLabCommonPlugin.cs" />
     <Compile Include="NotificationDictionary.cs" />
     <Compile Include="ObservableCollection.cs" />

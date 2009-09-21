@@ -31,13 +31,14 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
   public class Model : IModel {
     public Model() {
       targetVariable = default(EntityRef<Variable>);
-      algorithm = default(EntityRef<Algorithm>);      
+      algorithm = default(EntityRef<Algorithm>);
     }
 
-    public Model(Variable targetVariable, Algorithm algorithm)
+    public Model(Variable targetVariable, Algorithm algorithm, ModelType modelType)
       : this() {
       this.targetVariableId = targetVariable.Id;
       this.algorithmId = algorithm.Id;
+      ModelType = modelType.ToString();
     }
 
     private int id;
@@ -91,6 +92,21 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     IVariable IModel.TargetVariable {
       get { return this.TargetVariable; }
+    }
+
+    private string modelType;
+    [Column(Storage = "modelType", CanBeNull = false)]
+    public string ModelType {
+      get { return this.modelType; }
+      private set { this.modelType = value; }
+    }
+
+    ModelType IModel.ModelType {
+      get {
+        if (!Enum.IsDefined(typeof(ModelType), this.modelType))
+          throw new ArgumentException("ModelType " + modelType + " not declared.");
+        return (ModelType)Enum.Parse(typeof(ModelType), this.modelType);
+      }
     }
 
     private string name;
