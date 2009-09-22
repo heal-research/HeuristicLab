@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling {
-  public interface IAlgorithm {
+  public interface IAlgorithm : ICloneable {
     string Name { get; }
     string Description { get; }
 

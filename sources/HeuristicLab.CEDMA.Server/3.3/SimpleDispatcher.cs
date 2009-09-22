@@ -144,6 +144,8 @@ namespace HeuristicLab.CEDMA.Server {
           ((x is IStochasticAlgorithm) || !AlgorithmFinishedOrDispatched(problemSpecifications[targetVariable], x.Name)));
       if (possibleAlgos.Count() > 0) selectedAlgorithm = possibleAlgos.ElementAt(random.Next(possibleAlgos.Count()));
       if (selectedAlgorithm != null) {
+        // create a clone of the algorithm template before setting the parameters
+        selectedAlgorithm = (HeuristicLab.Modeling.IAlgorithm)selectedAlgorithm.Clone(); 
         SetProblemParameters(selectedAlgorithm, problemSpecifications[targetVariable]);
         if (!(selectedAlgorithm is IStochasticAlgorithm))
           AddDispatchedRun(problemSpecifications[targetVariable], selectedAlgorithm.Name);

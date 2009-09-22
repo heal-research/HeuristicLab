@@ -100,6 +100,9 @@ namespace HeuristicLab.CEDMA.Server {
       validationSamplesEndTextBox.Text = selectedSpec.ValidationSamplesEnd.ToString();
       testSamplesStartTextBox.Text = selectedSpec.TestSamplesStart.ToString();
       testSamplesEndTextBox.Text = selectedSpec.TestSamplesEnd.ToString();
+      minTimeOffsetTextBox.Text = selectedSpec.MinTimeOffset.ToString();
+      maxTimeOffsetTextBox.Text = selectedSpec.MaxTimeOffset.ToString();
+      autoregressiveCheckBox.Checked = selectedSpec.AutoRegressive;
     }
 
     private void UpdateInputVariableList() {
@@ -133,7 +136,6 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     private void radioButton_CheckedChanged(object sender, EventArgs e) {
-      string selectedTarget = (string)targetVariableList.SelectedItem;
       minTimeOffsetLabel.Enabled = timeSeriesRadioButton.Checked;
       minTimeOffsetTextBox.Enabled = timeSeriesRadioButton.Checked;
       maxTimeOffsetLabel.Enabled = timeSeriesRadioButton.Checked;
@@ -143,6 +145,10 @@ namespace HeuristicLab.CEDMA.Server {
       if (timeSeriesRadioButton.Checked) selectedSpec.LearningTask = LearningTask.TimeSeries;
       else if (classificationRadioButton.Checked) selectedSpec.LearningTask = LearningTask.Classification;
       else if (regressionRadioButton.Checked) selectedSpec.LearningTask = LearningTask.Regression;
+      var allowedAlgorithms = dispatcher.GetAllowedAlgorithms(selectedSpec.TargetVariable);
+      foreach (var algo in allowedAlgorithms) {
+        dispatcher.DisableAlgorithm(selectedSpec.TargetVariable, algo);
+      }
       UpdateAlgorithms();
     }
 

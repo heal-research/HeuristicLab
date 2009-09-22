@@ -41,7 +41,7 @@ namespace HeuristicLab.LinearRegression {
     public virtual string Name { get { return "LinearRegression"; } }
     public virtual string Description { get { return "TODO"; } }
 
-    private SequentialEngine.SequentialEngine engine;
+    private IEngine engine;
     public virtual IEngine Engine {
       get { return engine; }
     }
@@ -134,7 +134,6 @@ namespace HeuristicLab.LinearRegression {
       IOperator globalInjector = CreateGlobalInjector();
 
       HL3TreeEvaluatorInjector treeEvaluatorInjector = new HL3TreeEvaluatorInjector();
-
 
       LinearRegressionOperator lrOperator = new LinearRegressionOperator();
       lrOperator.GetVariableInfo("SamplesStart").ActualName = "ActualTrainingSamplesStart";
@@ -249,9 +248,28 @@ namespace HeuristicLab.LinearRegression {
     #region IEditable Members
 
     public virtual IEditor CreateEditor() {
-      return engine.CreateEditor();
+      return ((SequentialEngine.SequentialEngine)engine).CreateEditor();
     }
 
+    #endregion
+
+    #region persistence
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      LinearRegression clone = (LinearRegression) base.Clone(clonedObjects);
+      clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
+      return clone;
+    }
+
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      node.AppendChild(PersistenceManager.Persist("Engine", engine, document, persistedObjects));
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      engine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
+    }
     #endregion
   }
 }

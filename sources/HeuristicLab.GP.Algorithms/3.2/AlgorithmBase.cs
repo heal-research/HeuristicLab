@@ -105,12 +105,10 @@ namespace HeuristicLab.GP.Algorithms {
       }
     }
 
-    private IOperator algorithm;
-
-    private SequentialEngine.SequentialEngine engine;
+    private IEngine engine;
     public IEngine Engine {
       get { return engine; }
-      protected set { engine = (SequentialEngine.SequentialEngine)value; }
+      protected set { engine = value; }
     }
 
     public AlgorithmBase() {
@@ -157,7 +155,6 @@ namespace HeuristicLab.GP.Algorithms {
 
       algo.OperatorGraph.AddOperator(seq);
       algo.OperatorGraph.InitialOperator = seq;
-      this.algorithm = seq;
       return algo;
     }
 
@@ -465,14 +462,6 @@ namespace HeuristicLab.GP.Algorithms {
       return new EmptyOperator();
     }
 
-
-    public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      AlgorithmBase clone = (AlgorithmBase)base.Clone(clonedObjects);
-      clonedObjects.Add(Guid, clone);
-      clone.engine = (SequentialEngine.SequentialEngine)Auxiliary.Clone(Engine, clonedObjects);
-      return clone;
-    }
-
     protected virtual IOperator GetVariableInjector() {
       CombinedOperator init = (CombinedOperator)GetInitializationOperator();
       return init.OperatorGraph.InitialOperator.SubOperators[1];
@@ -484,10 +473,17 @@ namespace HeuristicLab.GP.Algorithms {
     }
 
     protected virtual IOperator GetInitializationOperator() {
-      return algorithm.SubOperators[0];
+      CombinedOperator algo = (CombinedOperator)Engine.OperatorGraph.InitialOperator;
+      return algo.OperatorGraph.InitialOperator.SubOperators[0];
     }
 
     #region Persistence Methods
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      AlgorithmBase clone = (AlgorithmBase)base.Clone(clonedObjects);
+      clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
+      return clone;
+    }
+
     public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
       XmlNode node = base.GetXmlNode(name, document, persistedObjects);
       node.AppendChild(PersistenceManager.Persist("Engine", Engine, document, persistedObjects));
@@ -495,10 +491,8 @@ namespace HeuristicLab.GP.Algorithms {
     }
     public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
       base.Populate(node, restoredObjects);
-      engine = (SequentialEngine.SequentialEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
+      engine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
     }
     #endregion
-
-
   }
 }

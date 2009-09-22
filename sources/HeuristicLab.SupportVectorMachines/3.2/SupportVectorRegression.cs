@@ -41,7 +41,7 @@ namespace HeuristicLab.SupportVectorMachines {
     public virtual string Name { get { return "SupportVectorRegression"; } }
     public virtual string Description { get { return "TODO"; } }
 
-    private SequentialEngine.SequentialEngine engine;
+    private IEngine engine;
     public IEngine Engine {
       get { return engine; }
     }
@@ -489,9 +489,28 @@ Value.Data = ValueList.Data[ValueIndex.Data];
     #region IEditable Members
 
     public IEditor CreateEditor() {
-      return engine.CreateEditor();
+      return ((SequentialEngine.SequentialEngine)engine).CreateEditor();
     }
 
+    #endregion
+
+    #region persistence
+    public override object Clone(IDictionary<Guid, object> clonedObjects) {
+      SupportVectorRegression clone = (SupportVectorRegression) base.Clone(clonedObjects);
+      clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
+      return clone;
+    }
+
+    public override XmlNode GetXmlNode(string name, XmlDocument document, IDictionary<Guid, IStorable> persistedObjects) {
+      XmlNode node = base.GetXmlNode(name, document, persistedObjects);
+      node.AppendChild(PersistenceManager.Persist("Engine", engine, document, persistedObjects));
+      return node;
+    }
+
+    public override void Populate(XmlNode node, IDictionary<Guid, IStorable> restoredObjects) {
+      base.Populate(node, restoredObjects);
+      engine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
+    }
     #endregion
   }
 }
