@@ -127,6 +127,20 @@ namespace HeuristicLab.CEDMA.Server {
       }
     }
 
+    
+    private void setAlgorithmDefault_Click(object sender, EventArgs e) {
+      foreach (string targetVar in dispatcher.TargetVariables) {
+        ProblemSpecification spec = dispatcher.GetProblemSpecification(targetVar);
+        spec.LearningTask = selectedSpec.LearningTask;
+        spec.MinTimeOffset = selectedSpec.MinTimeOffset;
+        spec.MaxTimeOffset = selectedSpec.MaxTimeOffset;
+        spec.AutoRegressive = selectedSpec.AutoRegressive;
+        var allowedAlgos = dispatcher.GetAllowedAlgorithms(selectedSpec.TargetVariable);
+        foreach(var algo in allowedAlgos)
+          dispatcher.EnableAlgorithm(spec.TargetVariable, algo);
+      }
+    }
+
     private void algorithmsListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
       if (e.NewValue == CheckState.Checked) {
         dispatcher.EnableAlgorithm(selectedSpec.TargetVariable, (HeuristicLab.Modeling.IAlgorithm)algorithmsListBox.Items[e.Index]);
@@ -225,5 +239,6 @@ namespace HeuristicLab.CEDMA.Server {
       }
       return y0 > x1;
     }
+
   }
 }
