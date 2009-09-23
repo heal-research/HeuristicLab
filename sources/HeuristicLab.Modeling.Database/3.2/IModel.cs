@@ -35,6 +35,6 @@ namespace HeuristicLab.Modeling.Database {
     int ValidationSamplesStart { get; }
     int ValidationSamplesEnd { get; }
     int TestSamplesStart { get; }
-    int TestSamplesEnd { get; }
+    int TestSamplesEnd { get; }    
   }
 }

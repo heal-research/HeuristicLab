@@ -28,6 +28,6 @@ namespace HeuristicLab.Modeling.Database {
   public interface IModelMetaData {
     IMetaData MetaData { get; }
     IModel Model { get; }
-    double Value { get; }
+    double Value { get; set; }
   }
 }

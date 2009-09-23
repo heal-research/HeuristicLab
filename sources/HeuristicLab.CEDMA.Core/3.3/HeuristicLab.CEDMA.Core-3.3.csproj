@@ -114,6 +114,10 @@
       <Project>{E84E5717-79F8-498F-A5E0-A055C4EC086B}</Project>
       <Name>HeuristicLab.Modeling.Database-3.2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Modeling\3.2\HeuristicLab.Modeling-3.2.csproj">
+      <Project>{80F7FADA-549D-4151-8856-79B620A50DBA}</Project>
+      <Name>HeuristicLab.Modeling-3.2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>

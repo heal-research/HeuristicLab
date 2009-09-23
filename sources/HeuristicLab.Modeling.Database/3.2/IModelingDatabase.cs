@@ -27,28 +27,48 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
-    IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
-    IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
-    IProblem PersistProblem(Dataset dataset);
-
-    void UpdateModel(IModel model);
-    void UpdateModelData(IModel model, byte[] modelData);
+    void Connect();
+    void EmptyDatabase();
+    void Disconnect();
 
     IEnumerable<IModel> GetAllModels();
-    IEnumerable<IResult> GetAllResults();    
+    IEnumerable<IVariable> GetAllVariables();
+    IEnumerable<IResult> GetAllResults();
     IEnumerable<IResult> GetAllResultsForInputVariables();
     IEnumerable<IMetaData> GetAllMetaData();
     IEnumerable<IAlgorithm> GetAllAlgorithms();
-       
+
+    IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
+    IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
+
+    IModel CreateModel(ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
+     int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
+    IModel CreateModel(string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
+      int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
+    void PersistModel(IModel model);
+    void DeleteModel(IModel model);
+
     Dataset GetDataset();
-    byte[] GetModelData(IModel model);
+    void PersistProblem(Dataset dataset);
+    IVariable GetVariable(string variableName);
+
     IPredictor GetModelPredictor(IModel model);
+    void PersistPredictor(IModel model, IPredictor predictor);
+
+    IAlgorithm GetOrPersistAlgorithm(string algorithmName);
+
+    IResult GetOrPersistResult(string resultName);
+    IMetaData GetOrPersistMetaData(string metaDataName);
+
     IEnumerable<IModelResult> GetModelResults(IModel model);
     IEnumerable<IInputVariableResult> GetInputVariableResults(IModel model);
     IEnumerable<IModelMetaData> GetModelMetaData(IModel model);
 
-    void Connect();
-    void EmptyDatabase();
-    void Disconnect();
+    IModelResult CreateModelResult(IModel model, IResult result, double value);
+    void PersistModelResults(IModel model, IEnumerable<IModelResult> modelResults);
+    IInputVariableResult CreateInputVariableResult(IInputVariable inputVariable, IResult result, double value);
+    void PersistInputVariableResults(IModel model, IEnumerable<IInputVariableResult> inputVariableResults);
+    IModelMetaData CreateModelMetaData(IModel model, IMetaData metadata, double value);
+    void PersistModelMetaData(IModel model, IEnumerable<IModelMetaData> modelMetaData);
   }
 }

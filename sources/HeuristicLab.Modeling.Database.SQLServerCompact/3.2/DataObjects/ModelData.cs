@@ -60,7 +60,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     private byte[] data;
-    [Column(Storage = "data", DbType = "image", CanBeNull = false)]
+    [Column(Storage = "data", DbType = "image", CanBeNull = false, UpdateCheck = UpdateCheck.Never)]
     public byte[] Data {
       get { return this.data; }
       private set { this.data = value; }

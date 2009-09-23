@@ -29,6 +29,6 @@ namespace HeuristicLab.Modeling.Database {
     IModel Model { get; }
     IVariable Variable { get; }
     IResult Result { get; }
-    double Value { get; }
+    double Value { get; set; }
   }
 }

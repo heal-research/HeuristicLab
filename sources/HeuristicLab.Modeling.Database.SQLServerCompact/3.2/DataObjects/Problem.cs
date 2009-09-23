@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Modeling.Database.SQLServerCompact {
   [Table(Name = "Problem")]
-  public class Problem : IProblem {
+  public class Problem {
     public Problem() {
     }
 

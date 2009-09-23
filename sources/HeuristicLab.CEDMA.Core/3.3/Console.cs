@@ -100,8 +100,7 @@ namespace HeuristicLab.CEDMA.Core {
           inputVariableResultsEntries[inputVariableResult.Variable].Set(inputVariableResult.Result.Name, inputVariableResult.Value);
         }
         row.Set("VariableImpacts", inputVariableResultsEntries.Values);
-
-        row.Set("PersistedData", db.GetModelData(model));
+        row.Set("PersistedData", db.GetModelPredictor(model));
         row.Set("TargetVariable", model.TargetVariable.Name);
         row.Set("Algorithm", model.Algorithm.Name);
 
