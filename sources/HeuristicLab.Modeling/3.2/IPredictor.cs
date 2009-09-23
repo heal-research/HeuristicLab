@@ -30,5 +30,6 @@ namespace HeuristicLab.Modeling {
     double UpperPredictionLimit { get; set; }
     double LowerPredictionLimit { get; set; }
     double[] Predict(Dataset dataset, int start, int end);
+    IEnumerable<string> GetInputVariables();
   } 
 }

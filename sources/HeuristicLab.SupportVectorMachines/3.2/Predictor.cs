@@ -87,6 +87,10 @@ namespace HeuristicLab.SupportVectorMachines {
       return result;
     }
 
+    public override IEnumerable<string> GetInputVariables() {
+      return variableNames.Keys;
+    }
+
     public override IView CreateView() {
       return new PredictorView(this);
     }

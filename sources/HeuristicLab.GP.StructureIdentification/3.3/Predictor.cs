@@ -58,6 +58,17 @@ namespace HeuristicLab.GP.StructureIdentification {
       return result;
     }
 
+    public override IEnumerable<string> GetInputVariables() {
+      HashSet<string> inputVariables = new HashSet<string>();
+      foreach (IFunctionTree ft in FunctionTreeIterator.IteratePrefix(functionTree.FunctionTree)) {
+        if (ft is VariableFunctionTree) {
+          VariableFunctionTree variable = (VariableFunctionTree) ft;
+          inputVariables.Add(variable.VariableName);
+        }
+      }
+      return inputVariables;
+    }
+
     public override IView CreateView() {
       return new PredictorView(this);
     }
