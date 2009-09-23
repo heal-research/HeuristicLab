@@ -121,7 +121,7 @@ namespace HeuristicLab.Modeling {
 
     private static double CalculateMSE(double[] referenceValues, double[] newValues) {
       try {
-        return SimpleMSEEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
+        return SimpleMSEEvaluator.Calculate(Matrix<double>.Create(referenceValues, newValues));
       }
       catch (ArgumentException) {
         return double.PositiveInfinity;

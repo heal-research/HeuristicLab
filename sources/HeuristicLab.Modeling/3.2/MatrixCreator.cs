@@ -24,16 +24,25 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Modeling {
-  public class MatrixCreator<T> {
-    public static T[,] CreateMatrix(T[] first, T[] second) {
+  public class Matrix<T> {
+    public static T[,] Create(T[] first, T[] second) {
       if (first.Length != second.Length)
         throw new ArgumentException("Both arrays must be of same length.");
-      T[,] array = new T[first.Length,2];
+      T[,] array = new T[first.Length, 2];
       for (int i = 0; i < first.Length; i++) {
         array[i, 0] = first[i];
         array[i, 1] = second[i];
       }
       return array;
+    }
+
+    public static T[] GetColumn(T[,] matrix, int column) {
+      if (column >= matrix.GetLength(1)) throw new ArgumentException("Invalid column index: " + column + ". Matrix has only " + matrix.GetLength(1) + " columns.");
+      T[] result = new T[matrix.GetLength(0)];
+      for (int i = 0; i < result.Length; i++) {
+        result[i] = matrix[i, column];
+      }
+      return result;
     }
   }
 }

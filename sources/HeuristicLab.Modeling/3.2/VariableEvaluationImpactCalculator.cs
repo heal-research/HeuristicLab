@@ -113,7 +113,7 @@ namespace HeuristicLab.Modeling {
 
     private static double CalculateVAF(double[] referenceValues, double[] newValues) {
       try {
-        return SimpleVarianceAccountedForEvaluator.Calculate(MatrixCreator<double>.CreateMatrix(referenceValues, newValues));
+        return SimpleVarianceAccountedForEvaluator.Calculate(Matrix<double>.Create(referenceValues, newValues));
       }
       catch (ArgumentException) {
         return double.PositiveInfinity;

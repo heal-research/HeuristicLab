@@ -26,6 +26,10 @@ namespace HeuristicLab.Modeling {
     ValidationMeanSquaredError,
     TestMeanSquaredError,
 
+    TrainingNormalizedMeanSquaredError,
+    ValidationNormalizedMeanSquaredError,
+    TestNormalizedMeanSquaredError,
+
     TrainingMeanAbsolutePercentageError,
     ValidationMeanAbsolutePercentageError,
     TestMeanAbsolutePercentageError,
@@ -49,6 +53,14 @@ namespace HeuristicLab.Modeling {
     TrainingTheilInequality,
     ValidationTheilInequality,
     TestTheilInequality,
+
+    TrainingDirectionalSymmetry,
+    ValidationDirectionalSymmetry,
+    TestDirectionalSymmetry,
+
+    TrainingWeightedDirectionalSymmetry,
+    ValidationWeightedDirectionalSymmetry,
+    TestWeightedDirectionalSymmetry,
 
     VariableQualityImpact,
     VariableEvaluationImpact

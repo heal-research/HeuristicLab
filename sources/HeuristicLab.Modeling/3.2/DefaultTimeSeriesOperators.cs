@@ -44,6 +44,7 @@ namespace HeuristicLab.Modeling {
       SequentialProcessor seq = new SequentialProcessor();
       seq.AddSubOperator(DefaultRegressionOperators.CreatePostProcessingOperator());
 
+      #region theil inequality
       SimpleTheilInequalityCoefficientEvaluator trainingTheil = new SimpleTheilInequalityCoefficientEvaluator();
       trainingTheil.Name = "TrainingTheilInequalityEvaluator";
       trainingTheil.GetVariableInfo("Values").ActualName = "TrainingValues";
@@ -60,6 +61,45 @@ namespace HeuristicLab.Modeling {
       seq.AddSubOperator(trainingTheil);
       seq.AddSubOperator(validationTheil);
       seq.AddSubOperator(testTheil);
+      #endregion
+
+      #region directional symmetry
+      SimpleDirectionalSymmetryEvaluator trainingDS = new SimpleDirectionalSymmetryEvaluator();
+      trainingDS.Name = "TrainingDirectionalSymmetryEvaluator";
+      trainingDS.GetVariableInfo("Values").ActualName = "TrainingValues";
+      trainingDS.GetVariableInfo("DirectionalSymmetry").ActualName = ModelingResult.TrainingDirectionalSymmetry.ToString();
+      SimpleDirectionalSymmetryEvaluator validationDS = new SimpleDirectionalSymmetryEvaluator();
+      validationDS.Name = "ValidationDirectionalSymmetryEvaluator";
+      validationDS.GetVariableInfo("Values").ActualName = "ValidationValues";
+      validationDS.GetVariableInfo("DirectionalSymmetry").ActualName = ModelingResult.ValidationDirectionalSymmetry.ToString();
+      SimpleDirectionalSymmetryEvaluator testDS = new SimpleDirectionalSymmetryEvaluator();
+      testDS.Name = "TestDirectionalSymmetryEvaluator";
+      testDS.GetVariableInfo("Values").ActualName = "TestValues";
+      testDS.GetVariableInfo("DirectionalSymmetry").ActualName = ModelingResult.TestDirectionalSymmetry.ToString();
+
+      seq.AddSubOperator(trainingDS);
+      seq.AddSubOperator(validationDS);
+      seq.AddSubOperator(testDS);
+      #endregion
+
+      #region weighted directional symmetry
+      SimpleWeightedDirectionalSymmetryEvaluator trainingWDS = new SimpleWeightedDirectionalSymmetryEvaluator();
+      trainingWDS.Name = "TrainingWeightedDirectionalSymmetryEvaluator";
+      trainingWDS.GetVariableInfo("Values").ActualName = "TrainingValues";
+      trainingWDS.GetVariableInfo("WeightedDirectionalSymmetry").ActualName = ModelingResult.TrainingWeightedDirectionalSymmetry.ToString();
+      SimpleWeightedDirectionalSymmetryEvaluator validationWDS = new SimpleWeightedDirectionalSymmetryEvaluator();
+      validationWDS.Name = "ValidationWeightedDirectionalSymmetryEvaluator";
+      validationWDS.GetVariableInfo("Values").ActualName = "ValidationValues";
+      validationWDS.GetVariableInfo("WeightedDirectionalSymmetry").ActualName = ModelingResult.ValidationWeightedDirectionalSymmetry.ToString();
+      SimpleWeightedDirectionalSymmetryEvaluator testWDS = new SimpleWeightedDirectionalSymmetryEvaluator();
+      testWDS.Name = "TestWeightedDirectionalSymmetryEvaluator";
+      testWDS.GetVariableInfo("Values").ActualName = "TestValues";
+      testWDS.GetVariableInfo("WeightedDirectionalSymmetry").ActualName = ModelingResult.TestWeightedDirectionalSymmetry.ToString();
+
+      seq.AddSubOperator(trainingWDS);
+      seq.AddSubOperator(validationWDS);
+      seq.AddSubOperator(testWDS);
+      #endregion
 
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
@@ -71,6 +111,12 @@ namespace HeuristicLab.Modeling {
       model.ExtractResult(modelScope, ModelingResult.TrainingTheilInequality);
       model.ExtractResult(modelScope, ModelingResult.ValidationTheilInequality);
       model.ExtractResult(modelScope, ModelingResult.TestTheilInequality);
+      model.ExtractResult(modelScope, ModelingResult.TrainingDirectionalSymmetry);
+      model.ExtractResult(modelScope, ModelingResult.ValidationDirectionalSymmetry);
+      model.ExtractResult(modelScope, ModelingResult.TestDirectionalSymmetry);
+      model.ExtractResult(modelScope, ModelingResult.TrainingWeightedDirectionalSymmetry);
+      model.ExtractResult(modelScope, ModelingResult.ValidationWeightedDirectionalSymmetry);
+      model.ExtractResult(modelScope, ModelingResult.TestWeightedDirectionalSymmetry);
       model.Type = ModelType.TimeSeriesPrognosis;
       return model;
     }

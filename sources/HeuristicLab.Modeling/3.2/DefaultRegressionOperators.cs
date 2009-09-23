@@ -60,6 +60,20 @@ namespace HeuristicLab.Modeling {
       testMseEvaluator.GetVariableInfo("MSE").ActualName = ModelingResult.TestMeanSquaredError.ToString();
       testMseEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       #endregion
+      #region NMSE
+      SimpleNMSEEvaluator trainingNmseEvaluator = new SimpleNMSEEvaluator();
+      trainingNmseEvaluator.Name = "TrainingNmseEvaluator";
+      trainingNmseEvaluator.GetVariableInfo("NMSE").ActualName = ModelingResult.TrainingNormalizedMeanSquaredError.ToString();
+      trainingNmseEvaluator.GetVariableInfo("Values").ActualName = "TrainingValues";
+      SimpleNMSEEvaluator validationNmseEvaluator = new SimpleNMSEEvaluator();
+      validationNmseEvaluator.Name = "ValidationMseEvaluator";
+      validationNmseEvaluator.GetVariableInfo("NMSE").ActualName = ModelingResult.ValidationNormalizedMeanSquaredError.ToString();
+      validationNmseEvaluator.GetVariableInfo("Values").ActualName = "ValidationValues";
+      SimpleNMSEEvaluator testNmseEvaluator = new SimpleNMSEEvaluator();
+      testNmseEvaluator.Name = "TestNmseEvaluator";
+      testNmseEvaluator.GetVariableInfo("NMSE").ActualName = ModelingResult.TestNormalizedMeanSquaredError.ToString();
+      testNmseEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
+      #endregion
       #region MAPE
       SimpleMeanAbsolutePercentageErrorEvaluator trainingMapeEvaluator = new SimpleMeanAbsolutePercentageErrorEvaluator();
       trainingMapeEvaluator.Name = "TrainingMapeEvaluator";
@@ -120,6 +134,9 @@ namespace HeuristicLab.Modeling {
       seq.AddSubOperator(trainingMseEvaluator);
       seq.AddSubOperator(validationMseEvaluator);
       seq.AddSubOperator(testMseEvaluator);
+      seq.AddSubOperator(trainingNmseEvaluator);
+      seq.AddSubOperator(validationNmseEvaluator);
+      seq.AddSubOperator(testNmseEvaluator);
       seq.AddSubOperator(trainingMapeEvaluator);
       seq.AddSubOperator(validationMapeEvaluator);
       seq.AddSubOperator(testMapeEvaluator);
@@ -166,6 +183,9 @@ namespace HeuristicLab.Modeling {
       model.ExtractResult(modelScope, ModelingResult.TrainingMeanSquaredError);
       model.ExtractResult(modelScope, ModelingResult.ValidationMeanSquaredError);
       model.ExtractResult(modelScope, ModelingResult.TestMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.TrainingNormalizedMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.ValidationNormalizedMeanSquaredError);
+      model.ExtractResult(modelScope, ModelingResult.TestNormalizedMeanSquaredError);
       model.ExtractResult(modelScope, ModelingResult.TrainingMeanAbsolutePercentageError);
       model.ExtractResult(modelScope, ModelingResult.ValidationMeanAbsolutePercentageError);
       model.ExtractResult(modelScope, ModelingResult.TestMeanAbsolutePercentageError);

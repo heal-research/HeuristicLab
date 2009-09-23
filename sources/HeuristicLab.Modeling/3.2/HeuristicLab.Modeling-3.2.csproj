@@ -83,6 +83,9 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
+    <Compile Include="SimpleWeightedDirectionalSymmetryEvaluator.cs" />
+    <Compile Include="SimpleDirectionalSymmetryEvaluator.cs" />
+    <Compile Include="SimpleNMSEEvaluator.cs" />
     <Compile Include="ModelingResult.cs" />
     <Compile Include="ModelType.cs" />
     <Compile Include="DefaultClassificationOperators.cs" />
