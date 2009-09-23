@@ -70,5 +70,6 @@ namespace HeuristicLab.Modeling.Database {
     void PersistInputVariableResults(IModel model, IEnumerable<IInputVariableResult> inputVariableResults);
     IModelMetaData CreateModelMetaData(IModel model, IMetaData metadata, double value);
     void PersistModelMetaData(IModel model, IEnumerable<IModelMetaData> modelMetaData);
+    IInputVariable CreateInputVariable(IModel model, IVariable variable);
   }
 }

@@ -265,6 +265,11 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
       }
     }
 
+    public IInputVariable CreateInputVariable(IModel model, IVariable variable) {
+      InputVariable inputVariable = new InputVariable((Model)model, (Variable)variable);
+      return inputVariable;
+    }
+
     public IInputVariableResult CreateInputVariableResult(IInputVariable inputVariable, IResult result, double value) {
       InputVariable i = (InputVariable)inputVariable;
       Result r = (Result)result;
