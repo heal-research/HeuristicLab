@@ -84,6 +84,7 @@
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="ModelingResultCalculators.cs" />
     <Compile Include="SimpleWeightedDirectionalSymmetryEvaluator.cs" />
     <Compile Include="SimpleDirectionalSymmetryEvaluator.cs" />
     <Compile Include="SimpleNMSEEvaluator.cs" />
