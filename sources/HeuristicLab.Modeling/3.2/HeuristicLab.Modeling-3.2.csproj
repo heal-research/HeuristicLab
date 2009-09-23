@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
+    <Compile Include="Matrix.cs" />
     <Compile Include="SimpleWeightedDirectionalSymmetryEvaluator.cs" />
     <Compile Include="SimpleDirectionalSymmetryEvaluator.cs" />
     <Compile Include="SimpleNMSEEvaluator.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="SolutionExtractor.cs" />
     <Compile Include="PredictorBase.cs" />
     <Compile Include="IAnalyzerModel.cs" />
-    <Compile Include="MatrixCreator.cs" />
     <Compile Include="TargetClassesCalculator.cs" />
     <Compile Include="VariableEvaluationImpactCalculator.cs" />
     <Compile Include="IPredictor.cs" />
