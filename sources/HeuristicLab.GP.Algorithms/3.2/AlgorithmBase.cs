@@ -494,5 +494,19 @@ namespace HeuristicLab.GP.Algorithms {
       engine = (IEngine)PersistenceManager.Restore(node.SelectSingleNode("Engine"), restoredObjects);
     }
     #endregion
+
+
+    public static IOperator CombineTerminationCriterions(IOperator criterion1, IOperator criterion2) {
+      ConditionalBranch branch = new ConditionalBranch();
+      branch.GetVariableInfo("Condition").ActualName = "TerminationCriterion";
+      branch.AddSubOperator(new EmptyOperator());
+      branch.AddSubOperator(criterion2);
+
+      SequentialProcessor seq = new SequentialProcessor();
+      seq.AddSubOperator(criterion1);
+      seq.AddSubOperator(branch);
+
+      return seq;
+    }
   }
 }

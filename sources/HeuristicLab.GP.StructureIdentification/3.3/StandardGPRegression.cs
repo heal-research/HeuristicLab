@@ -31,6 +31,7 @@ using System;
 using System.Linq;
 using HeuristicLab.DataAnalysis;
 using HeuristicLab.Operators.Programmable;
+using HeuristicLab.GP.Algorithms;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class StandardGPRegression : HeuristicLab.GP.Algorithms.StandardGP, IStochasticAlgorithm {
@@ -102,6 +103,11 @@ namespace HeuristicLab.GP.StructureIdentification {
       set { GetVariableInjector().GetVariable("PunishmentFactor").GetValue<DoubleData>().Data = value; }
     }
 
+    public virtual int MaxBestValidationSolutionAge {
+      get { return GetVariableInjector().GetVariable("MaxBestValidationSolutionAge").GetValue<IntData>().Data; }
+      set { GetVariableInjector().GetVariable("MaxBestValidationSolutionAge").GetValue<IntData>().Data = value; }
+    }
+
     public override IOperator ProblemInjector {
       get { return GetProblemInjector().OperatorGraph.InitialOperator.SubOperators[0]; }
       set {
@@ -115,8 +121,8 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public StandardGPRegression()
       : base() {
-
       PunishmentFactor = 10.0;
+      MaxBestValidationSolutionAge = 15;
     }
 
     protected override IOperator CreateFunctionLibraryInjector() {
@@ -155,7 +161,14 @@ namespace HeuristicLab.GP.StructureIdentification {
       evaluatedSolutionsStorer.GetVariableInfo("Output").ActualName = "EvaluatedSolutions";
       evaluatedSolutionsStorer.Code = "Output.Data = Input.Data;";
 
+      ProgrammableOperator resetBestSolutionAge = new ProgrammableOperator();
+      resetBestSolutionAge.RemoveVariable("Result");
+      resetBestSolutionAge.AddVariableInfo(
+        new VariableInfo("BestValidationSolutionAge", "Age of best validation solution", typeof(IntData), VariableKind.In | VariableKind.Out));
+      resetBestSolutionAge.Code = "BestValidationSolutionAge.Data = 0;";
+
       seq.AddSubOperator(evaluatedSolutionsStorer);
+      seq.AddSubOperator(resetBestSolutionAge);
 
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
@@ -166,6 +179,8 @@ namespace HeuristicLab.GP.StructureIdentification {
     protected override VariableInjector CreateGlobalInjector() {
       VariableInjector injector = base.CreateGlobalInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("BestValidationSolutionAge", new IntData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxBestValidationSolutionAge", new IntData()));
       return injector;
     }
 
@@ -195,6 +210,22 @@ namespace HeuristicLab.GP.StructureIdentification {
       loggingOperator.OperatorGraph.InitialOperator = seq;
       return loggingOperator;
     }
+
+    protected override IOperator CreateTerminationCondition() {
+      CombinedOperator terminationCritertion = new CombinedOperator();
+      terminationCritertion.Name = "TerminationCondition";
+      GreaterThanComparator bestSolutionAge = new GreaterThanComparator();
+      bestSolutionAge.GetVariableInfo("LeftSide").ActualName = "BestValidationSolutionAge";
+      bestSolutionAge.GetVariableInfo("RightSide").ActualName = "MaxBestValidationSolutionAge";
+      bestSolutionAge.GetVariableInfo("Result").ActualName = "TerminationCriterion";
+
+      IOperator combinedTerminationCriterion = AlgorithmBase.CombineTerminationCriterions(base.CreateTerminationCondition(), bestSolutionAge);
+      
+      terminationCritertion.OperatorGraph.AddOperator(combinedTerminationCriterion);
+      terminationCritertion.OperatorGraph.InitialOperator = combinedTerminationCriterion;
+      return terminationCritertion;
+    }
+
 
     protected override IOperator CreatePostProcessingOperator() {
       CombinedOperator op = new CombinedOperator();

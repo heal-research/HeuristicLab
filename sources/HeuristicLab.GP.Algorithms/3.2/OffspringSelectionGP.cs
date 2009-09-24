@@ -177,31 +177,18 @@ namespace HeuristicLab.GP.Algorithms {
       selPresComparator.GetVariableInfo("RightSide").ActualName = "SelectionPressureLimit";
       selPresComparator.GetVariableInfo("Result").ActualName = "TerminationCriterion";
 
-      IOperator baseAndSelPresTerminationCriterion = CombineTerminationCriterions(base.CreateTerminationCondition(), selPresComparator);
+      IOperator baseAndSelPresTerminationCriterion = AlgorithmBase.CombineTerminationCriterions(base.CreateTerminationCondition(), selPresComparator);
 
       GreaterThanComparator evalSolutionsComparer = new GreaterThanComparator();
       evalSolutionsComparer.GetVariableInfo("LeftSide").ActualName = "EvaluatedSolutions";
       evalSolutionsComparer.GetVariableInfo("RightSide").ActualName = "MaxEvaluatedSolutions";
       evalSolutionsComparer.GetVariableInfo("Result").ActualName = "TerminationCriterion";
 
-      IOperator combinedTerminationCritertion = CombineTerminationCriterions(baseAndSelPresTerminationCriterion, evalSolutionsComparer);
+      IOperator combinedTerminationCritertion = AlgorithmBase.CombineTerminationCriterions(baseAndSelPresTerminationCriterion, evalSolutionsComparer);
 
       terminationCritertion.OperatorGraph.AddOperator(combinedTerminationCritertion);
       terminationCritertion.OperatorGraph.InitialOperator = combinedTerminationCritertion;
       return terminationCritertion;
-    }
-
-    private IOperator CombineTerminationCriterions(IOperator criterion1, IOperator criterion2) {
-      ConditionalBranch branch = new ConditionalBranch();
-      branch.GetVariableInfo("Condition").ActualName = "TerminationCriterion";
-      branch.AddSubOperator(new EmptyOperator());
-      branch.AddSubOperator(criterion2);
-
-      SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(criterion1);
-      seq.AddSubOperator(branch);
-
-      return seq;
     }
 
     protected override IOperator CreateLoggingOperator() {

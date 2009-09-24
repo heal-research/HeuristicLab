@@ -67,6 +67,10 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       individualProc.AddSubOperator(validationEvaluator);
 
+      Counter bestValidationSolutionAgeCounter = new Counter();
+      bestValidationSolutionAgeCounter.Name = "BestSolutionAgeCounter";
+      bestValidationSolutionAgeCounter.GetVariableInfo("Value").ActualName = "BestValidationSolutionAge";
+
       BestSolutionStorer solutionStorer = new BestSolutionStorer();
       solutionStorer.GetVariableInfo("BestSolution").ActualName = "BestValidationSolution";
       solutionStorer.GetVariableInfo("Quality").ActualName = "ValidationQuality";
@@ -87,6 +91,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       subScopesProc.AddSubOperator(individualProc);
 
       seq.AddSubOperator(subScopesProc);
+      seq.AddSubOperator(bestValidationSolutionAgeCounter);
       seq.AddSubOperator(solutionStorer);
       seq.AddSubOperator(validationQualityCalculator);
 
