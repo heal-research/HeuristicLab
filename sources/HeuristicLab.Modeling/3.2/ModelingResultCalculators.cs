@@ -103,5 +103,16 @@ namespace HeuristicLab.Modeling {
       }
       return ret.ToDictionary<KeyValuePair<ModelingResult, Func<double[,], double>>, ModelingResult, Func<double[,], double>>(x => x.Key, x => x.Value);
     }
+
+    public static Func<double[,], double> GetModelingResultCalculator(ModelingResult modelingResult) {
+      if (RegressionModelingResults.ContainsKey(modelingResult))
+        return RegressionModelingResults[modelingResult];
+      else if (ClassificationModelingResults.ContainsKey(modelingResult))
+        return ClassificationModelingResults[modelingResult];
+      else if (TimeSeriesPrognosisModelingResults.ContainsKey(modelingResult))
+        return TimeSeriesPrognosisModelingResults[modelingResult];
+      else
+        throw new ArgumentException("Calculator for modeling reuslt " + modelingResult + " not defined.");
+    }
   }
 }
