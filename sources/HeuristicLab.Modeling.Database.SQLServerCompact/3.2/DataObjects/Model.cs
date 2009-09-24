@@ -45,7 +45,7 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     [Column(Storage = "id", IsPrimaryKey = true, IsDbGenerated = true)]
     public int Id {
       get { return this.id; }
-      private set { this.id = value; }
+      set { this.id = value; }
     }
 
     private int algorithmId;

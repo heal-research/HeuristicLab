@@ -26,6 +26,7 @@ using System.Text;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModel {
+    int Id { get; }
     IVariable TargetVariable { get; }
     IAlgorithm Algorithm { get; }
     ModelType ModelType { get; }

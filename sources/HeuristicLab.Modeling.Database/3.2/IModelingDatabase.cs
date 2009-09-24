@@ -41,10 +41,10 @@ namespace HeuristicLab.Modeling.Database {
     IModel Persist(HeuristicLab.Modeling.IAlgorithm algorithm);
     IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription);
 
-    IModel CreateModel(ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
-     int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
     IModel CreateModel(string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
       int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
+    IModel CreateModel(int id,string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
+    int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd);
     void PersistModel(IModel model);
     void DeleteModel(IModel model);
 
@@ -54,6 +54,7 @@ namespace HeuristicLab.Modeling.Database {
 
     IPredictor GetModelPredictor(IModel model);
     void PersistPredictor(IModel model, IPredictor predictor);
+    IInputVariable GetInputVariable(IModel model, string inputVariableName);
 
     IAlgorithm GetOrPersistAlgorithm(string algorithmName);
 

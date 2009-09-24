@@ -94,9 +94,11 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
       return ctx.Algorithms.ToList().Cast<IAlgorithm>();
     }
 
-    public IModel CreateModel(ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
-int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd) {
-      return CreateModel(null, modelType, algorithm, targetVariable, trainingSamplesStart, trainingSamplesEnd, validationSamplesStart, validationSamplesEnd, testSamplesStart, testSamplesEnd);
+    public IModel CreateModel(int id, string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
+        int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, int validationSamplesEnd, int testSamplesStart, int testSamplesEnd) {
+      Model m = (Model)CreateModel(modelName, modelType, algorithm, targetVariable, trainingSamplesStart, trainingSamplesEnd, validationSamplesStart, validationSamplesEnd, testSamplesStart, testSamplesEnd);
+      m.Id = id;
+      return m;
     }
 
     public IModel CreateModel(string modelName, ModelType modelType, IAlgorithm algorithm, IVariable targetVariable,
@@ -141,10 +143,11 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
     }
 
     public Dataset GetDataset() {
-      if (ctx.Problems.Count() != 1)
-        throw new InvalidOperationException("Could not get dataset. No or more than one problems are persisted in the database.");
-      Problem problem = ctx.Problems.Single();
-      return problem.Dataset;
+      if (ctx.Problems.Count() > 1)
+        throw new InvalidOperationException("Could not get dataset. More than one problems are persisted in the database.");
+      if (ctx.Problems.Count() == 1)
+        return ctx.Problems.Single().Dataset;
+      return null;
     }
 
     public void PersistProblem(Dataset dataset) {
@@ -191,6 +194,17 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
 
         ctx.SubmitChanges();
       }
+    }
+
+    public IInputVariable GetInputVariable(IModel model, string inputVariableName) {
+      var inputVariables = ctx.InputVariables.Where(i => i.Model == model && i.Variable.Name == inputVariableName);
+      if (inputVariables.Count() == 1)
+        return inputVariables.Single();
+
+      if (inputVariables.Count() > 1)
+        throw new ArgumentException("More than one input variable with the same name are for the given model persisted.");
+
+      return null;
     }
 
     public IAlgorithm GetOrPersistAlgorithm(string algorithmName) {
@@ -257,7 +271,7 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
       return new ModelResult(m, r, value);
     }
 
-    public void PersistModelResults(IModel model,IEnumerable<IModelResult> modelResults) {
+    public void PersistModelResults(IModel model, IEnumerable<IModelResult> modelResults) {
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         ctx.ModelResults.DeleteAllOnSubmit(GetModelResults(model).Cast<ModelResult>());
         ctx.ModelResults.InsertAllOnSubmit(modelResults.Cast<ModelResult>());
@@ -276,7 +290,7 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
       return new InputVariableResult(i, r, value);
     }
 
-    public void PersistInputVariableResults(IModel model,IEnumerable<IInputVariableResult> inputVariableResults) {
+    public void PersistInputVariableResults(IModel model, IEnumerable<IInputVariableResult> inputVariableResults) {
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         ctx.InputVariableResults.DeleteAllOnSubmit(GetInputVariableResults(model).Cast<InputVariableResult>());
         ctx.InputVariableResults.InsertAllOnSubmit(inputVariableResults.Cast<InputVariableResult>());
@@ -305,10 +319,10 @@ int trainingSamplesStart, int trainingSamplesEnd, int validationSamplesStart, in
     }
 
     public IModel Persist(HeuristicLab.Modeling.IAnalyzerModel model, string algorithmName, string algorithmDescription) {
-      Algorithm algorithm = (Algorithm) GetOrPersistAlgorithm(algorithmName);
-      Variable targetVariable  = (Variable)GetVariable (model.TargetVariable);
+      Algorithm algorithm = (Algorithm)GetOrPersistAlgorithm(algorithmName);
+      Variable targetVariable = (Variable)GetVariable(model.TargetVariable);
 
-      Model m = (Model)CreateModel(model.Type, algorithm, targetVariable, model.TrainingSamplesStart, model.TrainingSamplesEnd,
+      Model m = (Model)CreateModel(null, model.Type, algorithm, targetVariable, model.TrainingSamplesStart, model.TrainingSamplesEnd,
         model.ValidationSamplesStart, model.ValidationSamplesEnd, model.TestSamplesStart, model.TestSamplesEnd);
       PersistModel(m);
       PersistPredictor(m, model.Predictor);
