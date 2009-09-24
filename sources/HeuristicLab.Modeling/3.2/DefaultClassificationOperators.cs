@@ -32,22 +32,7 @@ namespace HeuristicLab.Modeling {
       op.Name = "Classification model analyzer";
 
       SequentialProcessor seq = new SequentialProcessor();
-      seq.AddSubOperator(DefaultRegressionOperators.CreatePostProcessingOperator());
-
-      SimpleAccuracyEvaluator trainingAccuracy = new SimpleAccuracyEvaluator();
-      trainingAccuracy.Name = "TrainingAccuracyEvaluator";
-      trainingAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.TrainingAccuracy.ToString();
-      trainingAccuracy.GetVariableInfo("Values").ActualName = "TrainingValues";
-
-      SimpleAccuracyEvaluator validationAccuracy = new SimpleAccuracyEvaluator();
-      validationAccuracy.Name = "ValidationAccuracyEvaluator";
-      validationAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.ValidationAccuracy.ToString();
-      validationAccuracy.GetVariableInfo("Values").ActualName = "ValidationValues";
-
-      SimpleAccuracyEvaluator testAccuracy = new SimpleAccuracyEvaluator();
-      testAccuracy.Name = "TestAccuracyEvaluator";
-      testAccuracy.GetVariableInfo("Accuracy").ActualName = ModelingResult.TestAccuracy.ToString();
-      testAccuracy.GetVariableInfo("Values").ActualName = "TestValues";
+      seq.AddSubOperator(DefaultModelAnalyzerOperators.CreatePostProcessingOperator(ModelType.Classification));
 
       SimpleConfusionMatrixEvaluator trainingConfusionMatrixEvaluator = new SimpleConfusionMatrixEvaluator();
       trainingConfusionMatrixEvaluator.Name = "TrainingConfusionMatrixEvaluator";
@@ -62,9 +47,6 @@ namespace HeuristicLab.Modeling {
       testConfusionMatrixEvaluator.GetVariableInfo("Values").ActualName = "TestValues";
       testConfusionMatrixEvaluator.GetVariableInfo("ConfusionMatrix").ActualName = "TestConfusionMatrix";
 
-      seq.AddSubOperator(trainingAccuracy);
-      seq.AddSubOperator(validationAccuracy);
-      seq.AddSubOperator(testAccuracy);
       seq.AddSubOperator(trainingConfusionMatrixEvaluator);
       seq.AddSubOperator(validationConfusionMatrixEvaluator);
       seq.AddSubOperator(testConfusionMatrixEvaluator);
@@ -80,12 +62,7 @@ namespace HeuristicLab.Modeling {
     }
 
     public static IAnalyzerModel PopulateAnalyzerModel(IScope modelScope, IAnalyzerModel model) {
-      DefaultRegressionOperators.PopulateAnalyzerModel(modelScope, model);
-      model.ExtractResult(modelScope, ModelingResult.TrainingAccuracy);
-      model.ExtractResult(modelScope, ModelingResult.ValidationAccuracy);
-      model.ExtractResult(modelScope, ModelingResult.TestAccuracy);
-      model.Type = ModelType.Classification;
-      return model;
+      return DefaultModelAnalyzerOperators.PopulateAnalyzerModel(modelScope, model, ModelType.Classification);
     }
   }
 }
