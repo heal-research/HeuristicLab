@@ -120,10 +120,14 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     public void PersistModel(IModel model) {
       using (ModelingDataContext ctx = new ModelingDataContext(connection)) {
         Model m = (Model)model;
-        Model orginal = ctx.Models.GetOriginalEntityState(m);
-        if (orginal == null)
-          ctx.Models.Attach(m);
-        ctx.Refresh(RefreshMode.KeepCurrentValues, m);
+        //check if model has to be updated or inserted
+        if (ctx.Models.Any(x => x.Id == model.Id)) {
+          Model orginal = ctx.Models.GetOriginalEntityState(m);
+          if (orginal == null)
+            ctx.Models.Attach(m);
+          ctx.Refresh(RefreshMode.KeepCurrentValues, m);
+        } else
+          ctx.Models.InsertOnSubmit(m);
         ctx.SubmitChanges();
       }
     }
