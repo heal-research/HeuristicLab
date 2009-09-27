@@ -53,7 +53,12 @@ namespace HeuristicLab.GP.StructureIdentification {
       treeEvaluator.PrepareForEvaluation(input, functionTree.FunctionTree);
       double[] result = new double[end - start];
       for (int i = 0; i < result.Length; i++) {
-        result[i] = treeEvaluator.Evaluate(i + start);
+        try {
+          result[i] = treeEvaluator.Evaluate(i + start);
+        }
+        catch (ArgumentException) {
+          result[i] = double.NaN;
+        }
       }
       return result;
     }
@@ -62,7 +67,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       HashSet<string> inputVariables = new HashSet<string>();
       foreach (IFunctionTree ft in FunctionTreeIterator.IteratePrefix(functionTree.FunctionTree)) {
         if (ft is VariableFunctionTree) {
-          VariableFunctionTree variable = (VariableFunctionTree) ft;
+          VariableFunctionTree variable = (VariableFunctionTree)ft;
           inputVariables.Add(variable.VariableName);
         }
       }

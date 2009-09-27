@@ -37,7 +37,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       switch (currInstr.symbol) {
         case EvaluatorSymbolTable.VARIABLE: {
             int row = sampleIndex + currInstr.i_arg1;
-            if (row < 0 || row >= dataset.Rows) throw new InvalidOperationException("Out of range access to dataset row: " + row);
+            if (row < 0 || row >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
             else return currInstr.d_arg0 * dataset.GetValue(row, currInstr.i_arg0);
           }
         case EvaluatorSymbolTable.CONSTANT: {
@@ -45,7 +45,7 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.DIFFERENTIAL: {
             int row = sampleIndex + currInstr.i_arg1;
-            if (row < 0 || row >= dataset.Rows) throw new InvalidOperationException("Out of range access to dataset row: " + row);
+            if (row < 0 || row >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
             else if (row < 1) return 0.0;
             else {
               double prevValue = dataset.GetValue(row - 1, currInstr.i_arg0);
