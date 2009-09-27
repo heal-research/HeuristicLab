@@ -28,7 +28,6 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Linq;
-using HeuristicLab.CEDMA.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
 using HeuristicLab.Modeling;

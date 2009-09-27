@@ -30,7 +30,6 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.DataAnalysis;
 using System.Diagnostics;
-using HeuristicLab.CEDMA.Core;
 
 namespace HeuristicLab.CEDMA.Server {
   public partial class ProblemView : ViewBase {
