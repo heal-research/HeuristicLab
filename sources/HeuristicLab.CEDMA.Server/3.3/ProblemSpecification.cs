@@ -130,6 +130,9 @@ namespace HeuristicLab.CEDMA.Server {
       if (other == null) return false;
       return
         other.LearningTask == LearningTask &&
+        other.MinTimeOffset == MinTimeOffset &&
+        other.MaxTimeOffset == MaxTimeOffset &&
+        other.AutoRegressive == AutoRegressive &&
         other.TargetVariable == TargetVariable &&
         other.trainingSamplesStart == trainingSamplesStart &&
         other.trainingSamplesEnd == trainingSamplesEnd &&
