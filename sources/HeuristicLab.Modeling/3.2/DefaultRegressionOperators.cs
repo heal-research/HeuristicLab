@@ -31,8 +31,10 @@ namespace HeuristicLab.Modeling {
       CombinedOperator op = new CombinedOperator();
       op.Name = "ProblemInjector";
       SequentialProcessor seq = new SequentialProcessor();
+      ProblemInjector probInjector = new ProblemInjector();
+      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(2000)));
 
-      seq.AddSubOperator(new ProblemInjector());
+      seq.AddSubOperator(probInjector);
       DatasetShuffler shuffler = new DatasetShuffler();
       shuffler.GetVariableInfo("ShuffleStart").ActualName = "TrainingSamplesStart";
       shuffler.GetVariableInfo("ShuffleEnd").ActualName = "TrainingSamplesEnd";

@@ -425,7 +425,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
         Math.Pow(2,15)})));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxCostIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("NuIndex", new IntData(0)));
-      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.9, 0.8, 1 })));
+      injector.AddVariable(new HeuristicLab.Core.Variable("NuList", new DoubleArrayData(new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 })));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxNuIndex", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("Log", new ItemList()));
       injector.AddVariable(new HeuristicLab.Core.Variable("GammaIndex", new IntData(0)));
