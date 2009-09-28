@@ -57,12 +57,9 @@ namespace HeuristicLab.CEDMA.Server {
 
     public Server() {
       database = new DatabaseService(sqlServerCompactConnectionString);
-      dataset = new Dataset();
-      try {
-        dataset = database.GetDataset();
-      }
-      catch (InvalidOperationException) {
-      }
+      dataset = database.GetDataset();
+      if (dataset == null)
+        dataset = new Dataset();      
     }
 
     internal void Connect(string serverUrl) {
