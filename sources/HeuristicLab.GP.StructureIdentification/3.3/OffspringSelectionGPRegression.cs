@@ -121,7 +121,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     public OffspringSelectionGPRegression()
       : base() {
       PunishmentFactor = 10.0;
-      MaxBestValidationSolutionAge = 10;
+      MaxBestValidationSolutionAge = 20;
     }
 
     protected override IOperator CreateFunctionLibraryInjector() {
