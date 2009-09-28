@@ -208,7 +208,7 @@ namespace HeuristicLab.Modeling {
         case ModelType.Classification:
           return CombineDictionaries(RegressionModelingResults, ClassificationModelingResults);
         case ModelType.TimeSeriesPrognosis:
-          return CombineDictionaries(RegressionModelingResults, ClassificationModelingResults);
+          return CombineDictionaries(RegressionModelingResults, TimeSeriesPrognosisModelingResults);
         default:
           throw new ArgumentException("Modeling result mapping for ModelType " + modelType + " not defined.");
       }
