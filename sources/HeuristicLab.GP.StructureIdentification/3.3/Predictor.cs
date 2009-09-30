@@ -36,7 +36,9 @@ namespace HeuristicLab.GP.StructureIdentification {
     private IGeneticProgrammingModel functionTree;
     public IGeneticProgrammingModel FunctionTree {
       get { return functionTree; }
+      set { this.functionTree = value; }
     }
+
     public Predictor() : base() { } // for persistence
     public Predictor(ITreeEvaluator evaluator, IGeneticProgrammingModel tree, double lowerPredictionLimit, double upperPredictionLimit)
       : base(lowerPredictionLimit, upperPredictionLimit) {
