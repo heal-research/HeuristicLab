@@ -27,7 +27,6 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Modeling.Database {
   [ClassInfo(Name = "HeuristicLab.MainForm-3.2")]
   [PluginFile(Filename = "HeuristicLab.MainForm-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   public class HeuristicLabMainFormPlugin : PluginBase {
   }
 }
