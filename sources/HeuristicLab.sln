@@ -251,7 +251,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Common-3.2", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.GP.Algorithms-3.2", "HeuristicLab.GP.Algorithms\3.2\HeuristicLab.GP.Algorithms-3.2.csproj", "{3127719F-110E-4558-8845-98559DBB422D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.BackgroundProcessing-3.2", "HeuristicLab.BackgroundProcessing\HeuristicLab.BackgroundProcessing-3.2.csproj", "{589BECAE-69B0-4EB1-8C06-C073531762B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.BackgroundProcessing-3.2", "HeuristicLab.BackgroundProcessing\3.2\HeuristicLab.BackgroundProcessing-3.2.csproj", "{589BECAE-69B0-4EB1-8C06-C073531762B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -4028,8 +4028,10 @@ Global
 		{3127719F-110E-4558-8845-98559DBB422D}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|Any CPU.Build.0 = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x64.ActiveCfg = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x86.ActiveCfg = Debug|Any CPU
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x64.ActiveCfg = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x64.Build.0 = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x86.ActiveCfg = Debug|x86
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.CEDMA Debug|x86.Build.0 = Debug|x86
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Debug|x64.ActiveCfg = Debug|x64
@@ -4038,8 +4040,10 @@ Global
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Debug|x86.Build.0 = Debug|x86
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|Any CPU.Build.0 = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x64.ActiveCfg = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x86.ActiveCfg = Debug|Any CPU
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x64.ActiveCfg = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x64.Build.0 = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x86.ActiveCfg = Debug|x86
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Modeling Debug|x86.Build.0 = Debug|x86
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Release|x64.ActiveCfg = Release|x64
@@ -4048,12 +4052,16 @@ Global
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Release|x86.Build.0 = Release|x86
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|Any CPU.Build.0 = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x64.ActiveCfg = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x86.ActiveCfg = Debug|Any CPU
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x64.ActiveCfg = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x64.Build.0 = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x86.ActiveCfg = Debug|x86
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.v3.2 Debug|x86.Build.0 = Debug|x86
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|Any CPU.Build.0 = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x64.ActiveCfg = Debug|Any CPU
-		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x86.ActiveCfg = Debug|Any CPU
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x64.ActiveCfg = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x64.Build.0 = Debug|x64
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x86.ActiveCfg = Debug|x86
+		{589BECAE-69B0-4EB1-8C06-C073531762B7}.Visualization Debug|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
