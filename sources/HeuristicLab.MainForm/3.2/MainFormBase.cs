@@ -54,7 +54,7 @@ namespace HeuristicLab.MainForm {
       set {
         if (InvokeRequired) {
           Action<string> action = delegate(string s) { this.Title = s; };
-          Invoke(action, new object[] { value });
+          Invoke(action, value);
         } else
           this.Text = value;
       }
@@ -65,7 +65,7 @@ namespace HeuristicLab.MainForm {
       set {
         if (InvokeRequired) {
           Action<string> action = delegate(string s) { this.StatusStripText = s; };
-          Invoke(action, new object[] { value });
+          Invoke(action, value);
         } else
           this.toolStripStatusLabel.Text = value;
       }
@@ -75,8 +75,8 @@ namespace HeuristicLab.MainForm {
       get { return this.toolStripProgressBar.Visible; }
       set {
         if (InvokeRequired) {
-          Action<bool> action = delegate(bool b) { this.toolStripProgressBar.Visible = b; };
-          Invoke(action, new object[] { value });
+          Action<bool> action = delegate(bool b) { this.StatusStripProgressBarVisible = b; };
+          Invoke(action, value);
         } else
           this.toolStripProgressBar.Visible = value;
       }
@@ -87,7 +87,7 @@ namespace HeuristicLab.MainForm {
       set {
         if (InvokeRequired) {
           Action<Cursor> action = delegate(Cursor c) { this.Cursor = c; };
-          Invoke(action, new object[] { value });
+          Invoke(action, value);
         } else
           base.Cursor = value;
       }
@@ -111,7 +111,7 @@ namespace HeuristicLab.MainForm {
         if (this.activeView != value) {
           if (InvokeRequired) {
             Action<IView> action = delegate(IView activeView) { this.ActiveView = activeView; };
-            Invoke(action, new object[] { value });
+            Invoke(action, value);
           } else {
             this.activeView = value;
             OnActiveViewChanged();
@@ -144,8 +144,6 @@ namespace HeuristicLab.MainForm {
         MainFormChanged(this, new EventArgs());
     }
 
-  
-
     public virtual void ShowView(IView view) {
       if (!views.Contains(view)) {
         view.MainForm = this;
@@ -174,18 +172,22 @@ namespace HeuristicLab.MainForm {
       DiscoveryService ds = new DiscoveryService();
 
       object[] items = ds.GetInstances(userInterfaceItemType);
-      IEnumerable<IToolStripItem> toolStripItems = items.Where(mi => mi as IToolStripMenuItem != null).Cast<IToolStripItem>();
-      toolStripItems = toolStripItems.OrderBy(x => x.Position);
-      foreach (IToolStripMenuItem menuItem in toolStripItems) {
+      IEnumerable<IToolStripMenuItem> toolStripMenuItems =
+        from mi in items
+        where mi is IToolStripMenuItem
+        orderby ((IToolStripMenuItem)mi).Position
+        select (IToolStripMenuItem)mi;
+      foreach (IToolStripMenuItem menuItem in toolStripMenuItems)
         AddToolStripMenuItem(menuItem);
-      }
 
       items = ds.GetInstances(userInterfaceItemType);
-      toolStripItems = items.Where(mi => mi as IToolStripButtonItem != null).Cast<IToolStripItem>();
-      toolStripItems = toolStripItems.OrderBy(x => x.Position);
-      foreach (IToolStripButtonItem toolStripButtonItem in toolStripItems) {
+      IEnumerable<IToolStripButtonItem> toolStripButtonItems =
+        from bi in items
+        where bi is IToolStripButtonItem
+        orderby ((IToolStripButtonItem)bi).Position
+        select (IToolStripButtonItem)bi;
+      foreach (IToolStripButtonItem toolStripButtonItem in toolStripButtonItems)
         AddToolStripButtonItem(toolStripButtonItem);
-      }
     }
 
     private void AddToolStripMenuItem(IToolStripMenuItem menuItem) {

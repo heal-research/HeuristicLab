@@ -52,9 +52,9 @@ namespace HeuristicLab.MainForm {
           base.ShowView(view);
           DocumentForm form = new DocumentForm(view);
           form.ShowInTaskbar = true;
-          form.Activated += new EventHandler(DockFormActivated);
+          form.Activated += new EventHandler(DocumentFormActivated);
           form.FormClosing += new FormClosingEventHandler(view.FormClosing);
-          form.FormClosed += new FormClosedEventHandler(DockFormClosed);
+          form.FormClosed += new FormClosedEventHandler(DocumentFormClosed);
           foreach (IToolStripItem item in ToolStripItems)
             view.StateChanged += new EventHandler(item.ViewChanged);
           form.Show(this);
@@ -71,22 +71,25 @@ namespace HeuristicLab.MainForm {
       }
     }
 
-    private void DockFormClosed(object sender, FormClosedEventArgs e) {
+    private void DocumentFormClosed(object sender, FormClosedEventArgs e) {
       DocumentForm form = (DocumentForm)sender;
       ViewClosed(form.View);
-      form.Activated -= new EventHandler(DockFormActivated);
+      form.Activated -= new EventHandler(DocumentFormActivated);
       form.FormClosing -= new FormClosingEventHandler(form.View.FormClosing);
-      form.FormClosed -= new FormClosedEventHandler(DockFormClosed);
+      form.FormClosed -= new FormClosedEventHandler(DocumentFormClosed);
       foreach (IToolStripItem item in ToolStripItems)
         form.View.StateChanged -= new EventHandler(item.ViewChanged);
     }
 
-    private void DockFormActivated(object sender, EventArgs e) {
+    private void DocumentFormActivated(object sender, EventArgs e) {
       base.ActiveView = ((DocumentForm)sender).View;
     }
 
     protected DocumentForm FindForm(IView view) {
-      IEnumerable<DocumentForm> forms = this.OwnedForms.Cast<DocumentForm>().Where(df => df.View == view);
+      IEnumerable<DocumentForm> forms =
+        from df in OwnedForms
+        where ((DocumentForm)df).View == view
+        select (DocumentForm)df;
       if (forms.Count() == 1)
         return forms.Single();
       return null;

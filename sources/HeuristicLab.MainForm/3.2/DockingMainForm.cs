@@ -87,29 +87,28 @@ namespace HeuristicLab.MainForm {
     protected DockForm FindForm(IView view) {
       IEnumerable<DockForm> dockforms;
 
-      if (dockPanel.Documents.Count() != 0) {
-        dockforms = dockPanel.Documents.Cast<DockForm>().Where(df => df.View == view);
-        if (dockforms.Count() == 1)
-          return dockforms.Single();
-      }
-      if (dockPanel.FloatWindows.Count() != 0) {
-        foreach (FloatWindow fw in dockPanel.FloatWindows) {
-          foreach (DockContentCollection dc in fw.NestedPanes.Select(np => np.Contents)) {
-            dockforms = dc.Cast<DockForm>().Where(df => df.View == view);
-            if (dockforms.Count() == 1)
-              return dockforms.Single();
-          }
-        }
-      }
-      if (dockPanel.DockWindows.Count != 0) {
-        foreach (DockWindow dw in dockPanel.DockWindows) {
-          foreach (DockContentCollection dc in dw.NestedPanes.Select(np => np.Contents)) {
-            dockforms = dc.Cast<DockForm>().Where(df => df.View == view);
-            if (dockforms.Count() == 1)
-              return dockforms.Single();
-          }
-        }
-      }
+      dockforms = from df in dockPanel.Documents
+                  where ((DockForm)df).View == view
+                  select (DockForm)df;
+      if (dockforms.Count() == 1)
+        return dockforms.Single();
+
+      dockforms = from fw in dockPanel.FloatWindows
+                  from np in fw.NestedPanes
+                  from dc in np.Contents
+                  where ((DockForm)dc).View == view
+                  select (DockForm)dc;
+      if (dockforms.Count() == 1)
+        return dockforms.Single();
+
+      dockforms = from dw in dockPanel.DockWindows
+                  from np in dw.NestedPanes
+                  from dc in np.Contents
+                  where ((DockForm)dc).View == view
+                  select (DockForm)dc;
+      if (dockforms.Count() == 1)
+        return dockforms.Single();
+
       return null;
     }
   }

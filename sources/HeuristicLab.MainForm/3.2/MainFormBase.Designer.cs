@@ -23,6 +23,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFormBase));
       this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -78,6 +79,7 @@
       this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.toolStrip);
       this.Controls.Add(this.menuStrip);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip;
       this.Name = "MainFormBase";
       this.statusStrip.ResumeLayout(false);

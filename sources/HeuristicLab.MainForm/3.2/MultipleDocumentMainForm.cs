@@ -92,7 +92,10 @@ namespace HeuristicLab.MainForm {
     }
 
     protected DocumentForm FindForm(IView view) {
-      IEnumerable<DocumentForm> forms = this.MdiChildren.Cast<DocumentForm>().Where(df => df.View == view);
+      IEnumerable<DocumentForm> forms =
+        from df in MdiChildren
+        where ((DocumentForm)df).View == view
+        select (DocumentForm)df;
       if (forms.Count() == 1)
         return forms.Single();
       return null;
