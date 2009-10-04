@@ -7,13 +7,11 @@ using System.Threading;
 using System.Collections.ObjectModel;
 
 namespace HeuristicLab.BackgroundProcessing {
-
   /// <summary>
   /// Extends the BackgroundWorker to make it easier to follow progress and automatically
   /// registers with the WorkerMonitor.
   /// </summary>
   public class ObservableBackgroundWorker : BackgroundWorker, INotifyPropertyChanged {
-
     public string Name { get; private set; }
     public int Progress { get; private set; }
 
@@ -62,7 +60,7 @@ namespace HeuristicLab.BackgroundProcessing {
         OnPropertyChanged("IsRunning");
       }
     }
-    
+
     protected void OnWorkerStarted() {
       if (WorkerStarted != null)
         WorkerStarted(this, new EventArgs());

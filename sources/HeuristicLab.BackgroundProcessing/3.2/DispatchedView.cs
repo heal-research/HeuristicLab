@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Windows.Threading;
 
 namespace HeuristicLab.BackgroundProcessing {
-
   /// <summary>
   /// Takes an <code>ObservableEnumerable</code> and transfers all events to the
   /// specified Dispatcher. It also keeps a cache of the collection to ensure
@@ -18,7 +17,6 @@ namespace HeuristicLab.BackgroundProcessing {
   /// </summary>
   /// <typeparam name="T"></typeparam>
   public class DispatchedView<T> : ObservableEnumerable<T> where T : class {
-
     private List<T> cache;
     private ObservableEnumerable<T> source;
     private Dispatcher Dispatcher;
@@ -50,7 +48,7 @@ namespace HeuristicLab.BackgroundProcessing {
     protected void OnCollectionChanged(NotifyCollectionChangedEventArgs args) {
       if (CollectionChanged != null)
         CollectionChanged(this, args);
-    }    
+    }
 
     public IEnumerator<T> GetEnumerator() {
       return cache.GetEnumerator();

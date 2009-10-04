@@ -9,13 +9,10 @@ using System.Collections.Specialized;
 using System.Collections;
 
 namespace HeuristicLab.BackgroundProcessing {
-
-
   /// <summary>
   /// Provides a list of all currently running or pending ObservableBackgroundWorkers.
   /// </summary>
   public class WorkerMonitor : ObservableEnumerable<ObservableBackgroundWorker> {
-
     public static WorkerMonitor Default = new WorkerMonitor();
 
     public event ThreadExceptionEventHandler ThreadException;
