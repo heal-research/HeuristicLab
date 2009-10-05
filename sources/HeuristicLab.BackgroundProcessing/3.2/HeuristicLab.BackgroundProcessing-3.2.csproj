@@ -84,7 +84,6 @@
   <ItemGroup>
     <Compile Include="HeuristicLabBackgroundProcessingPlugin.cs" />
     <Compile Include="ObservableEnumerable.cs" />
-    <Compile Include="DispatchedView.cs" />
     <Compile Include="ObservableBackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>
