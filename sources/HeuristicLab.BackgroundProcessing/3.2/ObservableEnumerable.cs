@@ -9,5 +9,5 @@ namespace HeuristicLab.BackgroundProcessing {
   /// a single interface.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public interface ObservableEnumerable<T> : IEnumerable<T>, INotifyCollectionChanged where T : class { }
+  public interface IObservableEnumerable<T> : IEnumerable<T>, INotifyCollectionChanged { }
 }

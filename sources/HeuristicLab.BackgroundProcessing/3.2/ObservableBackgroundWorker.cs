@@ -36,11 +36,13 @@ namespace HeuristicLab.BackgroundProcessing {
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public ObservableBackgroundWorker(string name) {
+    public ObservableBackgroundWorker(string name, WorkerMonitor monitor) {
       Name = name;
-      WorkerMonitor.Default.RegisterWorker(this);
+      monitor.RegisterWorker(this);
       IsRunning = false;
     }
+
+    public ObservableBackgroundWorker(string name) : this(name, WorkerMonitor.Default) { }
 
     protected override void OnProgressChanged(ProgressChangedEventArgs e) {
       Progress = e.ProgressPercentage;

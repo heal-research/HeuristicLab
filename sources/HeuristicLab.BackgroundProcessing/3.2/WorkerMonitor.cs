@@ -12,10 +12,17 @@ namespace HeuristicLab.BackgroundProcessing {
   /// <summary>
   /// Provides a list of all currently running or pending ObservableBackgroundWorkers.
   /// </summary>
-  public class WorkerMonitor : ObservableEnumerable<ObservableBackgroundWorker> {
+  public class WorkerMonitor : IObservableEnumerable<ObservableBackgroundWorker> {
+
     public static WorkerMonitor Default = new WorkerMonitor();
 
-    public event ThreadExceptionEventHandler ThreadException;
+    /// <summary>
+    /// Report all unhandled exceptions during background worker execution.
+    /// These exceptions are the same as reported by the RunWorkerCompleted but wrapped
+    /// in an additional exception containing the worker name as message and the original
+    /// exception as inner exception.
+    /// </summary>
+    public event ThreadExceptionEventHandler BackgroundWorkerException;
     public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     private List<ObservableBackgroundWorker> BackgroundWorkers;
@@ -71,8 +78,8 @@ namespace HeuristicLab.BackgroundProcessing {
     }
 
     protected void OnThreadException(Exception x) {
-      if (ThreadException != null)
-        ThreadException(this, new ThreadExceptionEventArgs(x));
+      if (BackgroundWorkerException != null)
+        BackgroundWorkerException(this, new ThreadExceptionEventArgs(x));
     }
 
     public IEnumerator<ObservableBackgroundWorker> GetEnumerator() {
@@ -94,23 +101,31 @@ namespace HeuristicLab.BackgroundProcessing {
         CollectionChanged(this, args);
     }
 
-    public void CancelAll() {
-      List<ObservableBackgroundWorker> cancelableWorkers = GetCancelableWorkers();
-      lock (cancelableWorkers) {
-        foreach (var worker in cancelableWorkers.ToList()) {
-          worker.WorkerStopped += (sender, args) => {
-            lock (cancelableWorkers) {
-              cancelableWorkers.Remove((ObservableBackgroundWorker)sender);
-              Monitor.Pulse(cancelableWorkers);
-            }
-          };
-          worker.CancelAsync();
-          if (!worker.IsRunning)
-            cancelableWorkers.Remove(worker);
+    public void CancelAllAsync() {
+      CancelAllAsync(null, null);
+    }
+
+    public void CancelAllAsync(WaitCallback callback, object state) {
+      ThreadPool.QueueUserWorkItem(_ => {
+        List<ObservableBackgroundWorker> cancelableWorkers = GetCancelableWorkers();
+        lock (cancelableWorkers) {
+          foreach (var worker in cancelableWorkers.ToList()) {
+            worker.WorkerStopped += (sender, args) => {
+              lock (cancelableWorkers) {
+                cancelableWorkers.Remove((ObservableBackgroundWorker)sender);
+                Monitor.Pulse(cancelableWorkers);
+              }
+            };
+            worker.CancelAsync();
+            if (!worker.IsRunning)
+              cancelableWorkers.Remove(worker);
+          }
+          while (cancelableWorkers.Count > 0)
+            Monitor.Wait(cancelableWorkers);
         }
-        while (cancelableWorkers.Count > 0)
-          Monitor.Wait(cancelableWorkers);
-      }
+        if (callback != null)
+          callback(state);
+      });
     }
 
     private List<ObservableBackgroundWorker> GetCancelableWorkers() {
