@@ -23,7 +23,7 @@ namespace HeuristicLab.SupportVectorMachines {
         }
       }
 
-      int maxColumns = (dataset.Columns - skippedFeatures.Count()) * (maxTimeOffset - minTimeOffset + 1);
+      int maxColumns = 0;
 
       double[] targetVector = new double[rowCount];
       for (int i = 0; i < rowCount; i++) {
@@ -43,8 +43,10 @@ namespace HeuristicLab.SupportVectorMachines {
             for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
               int actualColumn = columnMapping[col] * (maxTimeOffset - minTimeOffset + 1) + (timeOffset - minTimeOffset);
               double value = dataset.GetValue(start + row + timeOffset, col);
-              if (!double.IsNaN(value))
+              if (!double.IsNaN(value)) {
                 tempRow.Add(new SVM.Node(actualColumn, value));
+                if (actualColumn > maxColumns) maxColumns = actualColumn;
+              }
             }
           }
         }

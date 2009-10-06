@@ -74,15 +74,20 @@ namespace HeuristicLab.SupportVectorMachines {
         newIndex[input.GetVariableIndex(pair.Key)] = pair.Value;
       }
 
+
       Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex,
         start, end, minTimeOffset, maxTimeOffset);
       Problem scaledProblem = SVM.Scaling.Scale(p, transform);
 
+      int targetVariableIndex = input.GetVariableIndex(targetVariable);
       int rows = end - start;
-      int columns = input.Columns;
       double[] result = new double[rows];
-      for (int row = 0; row < rows; row++) {
-        result[row] = Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[row]), UpperPredictionLimit), LowerPredictionLimit);
+      int problemRow = 0;
+      for (int resultRow = 0; resultRow < rows; resultRow++) {
+        if (double.IsNaN(input.GetValue(resultRow, targetVariableIndex)))
+          result[resultRow] = UpperPredictionLimit;
+        else
+          result[resultRow] = Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[problemRow++]), UpperPredictionLimit), LowerPredictionLimit);
       }
       return result;
     }
