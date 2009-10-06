@@ -40,13 +40,29 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public PredictorView(Predictor predictor)
       : base(predictor.Model) {
-      InitializeComponent();
       this.predictor = predictor;
-      UpdateControls();
+      InitializeComponent();
       lowerLimitTextbox.DataBindings.Add(new Binding("Text", predictor, "LowerPredictionLimit"));
       upperLimitTextbox.DataBindings.Add(new Binding("Text", predictor, "UpperPredictionLimit"));
       maxTimeOffsetTextBox.DataBindings.Add(new Binding("Text", predictor, "MaxTimeOffset"));
       minTimeOffsetTextBox.DataBindings.Add(new Binding("Text", predictor, "MinTimeOffset"));
+      UpdateControls();
+    }
+
+    protected override string GetModelString() {
+      StringBuilder builder = new StringBuilder();
+      builder.Append("LowerPredictionLimit: ").AppendLine(predictor.LowerPredictionLimit.ToString());
+      builder.Append("UpperPredictionLimit: ").AppendLine(predictor.UpperPredictionLimit.ToString());
+      builder.Append("MaxTimeOffset: ").AppendLine(predictor.MaxTimeOffset.ToString());
+      builder.Append("MinTimeOffset: ").AppendLine(predictor.MinTimeOffset.ToString());
+      builder.Append("InputVariables :");
+      builder.Append(predictor.GetInputVariables().First());
+      foreach (string variable in predictor.GetInputVariables().Skip(1)) {
+        builder.Append("; ").Append(variable);
+      }
+      builder.AppendLine();
+      builder.Append(base.GetModelString());
+      return builder.ToString();
     }
   }
 }

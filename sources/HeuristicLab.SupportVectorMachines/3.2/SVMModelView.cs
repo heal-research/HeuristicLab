@@ -48,6 +48,14 @@ namespace HeuristicLab.SupportVectorMachines {
       svmType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "SvmType"));
       kernelType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "KernelType"));
       gamma.DataBindings.Add(new Binding("Text", model.Model.Parameter, "Gamma"));
+    }
+
+    protected override void UpdateControls() {
+      base.UpdateControls();
+      textBox.Text = GetModelString();
+    }
+
+    protected virtual string GetModelString() {
       StringBuilder builder = new StringBuilder();
       builder.AppendLine("RangeTransform:");
       using (MemoryStream stream = new MemoryStream()) {
@@ -63,8 +71,7 @@ namespace HeuristicLab.SupportVectorMachines {
         StreamReader reader = new StreamReader(stream);
         builder.AppendLine(reader.ReadToEnd());
       }
-
-      textBox.Text = builder.ToString();
+      return builder.ToString();
     }
   }
 }

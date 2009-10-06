@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Linq;
 using HeuristicLab.Core;
 using System.Globalization;
 using System.IO;
@@ -93,7 +94,9 @@ namespace HeuristicLab.SupportVectorMachines {
     }
 
     public override IEnumerable<string> GetInputVariables() {
-      return variableNames.Keys;
+      return from pair in variableNames
+             orderby pair.Value
+             select pair.Key;
     }
 
     public override IView CreateView() {
