@@ -95,6 +95,7 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public override IEnumerable<string> GetInputVariables() {
       return from pair in variableNames
+             where pair.Key != targetVariable
              orderby pair.Value
              select pair.Key;
     }
