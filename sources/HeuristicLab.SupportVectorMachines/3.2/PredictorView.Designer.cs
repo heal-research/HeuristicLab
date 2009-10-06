@@ -54,6 +54,11 @@ namespace HeuristicLab.SupportVectorMachines {
       this.minTimeOffsetLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
+      // textBox
+      // 
+      this.textBox.Location = new System.Drawing.Point(0, 238);
+      this.textBox.Size = new System.Drawing.Size(324, 130);
+      // 
       // lowerPredictionLimit
       // 
       this.lowerPredictionLimit.AutoSize = true;
@@ -135,7 +140,8 @@ namespace HeuristicLab.SupportVectorMachines {
       this.Controls.Add(this.lowerLimitTextbox);
       this.Controls.Add(this.lowerPredictionLimit);
       this.Name = "PredictorView";
-      this.Size = new System.Drawing.Size(252, 240);
+      this.Size = new System.Drawing.Size(324, 371);
+      this.Controls.SetChildIndex(this.textBox, 0);
       this.Controls.SetChildIndex(this.lowerPredictionLimit, 0);
       this.Controls.SetChildIndex(this.lowerLimitTextbox, 0);
       this.Controls.SetChildIndex(this.upperPredictionLimit, 0);

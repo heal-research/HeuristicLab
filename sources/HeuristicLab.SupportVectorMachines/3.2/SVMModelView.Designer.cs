@@ -54,6 +54,7 @@ namespace HeuristicLab.SupportVectorMachines {
       this.svmType = new System.Windows.Forms.TextBox();
       this.kernelType = new System.Windows.Forms.TextBox();
       this.gamma = new System.Windows.Forms.TextBox();
+      this.textBox = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // numberSupportVectorsLabel
@@ -141,10 +142,25 @@ namespace HeuristicLab.SupportVectorMachines {
       this.gamma.Size = new System.Drawing.Size(100, 20);
       this.gamma.TabIndex = 12;
       // 
+      // textBox
+      // 
+      this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.textBox.Location = new System.Drawing.Point(0, 134);
+      this.textBox.Multiline = true;
+      this.textBox.Name = "textBox";
+      this.textBox.ReadOnly = true;
+      this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      this.textBox.Size = new System.Drawing.Size(283, 171);
+      this.textBox.TabIndex = 13;
+      this.textBox.WordWrap = false;
+      // 
       // SVMModelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.textBox);
       this.Controls.Add(this.gamma);
       this.Controls.Add(this.kernelType);
       this.Controls.Add(this.svmType);
@@ -156,7 +172,7 @@ namespace HeuristicLab.SupportVectorMachines {
       this.Controls.Add(this.numberOfSupportVectors);
       this.Controls.Add(this.numberSupportVectorsLabel);
       this.Name = "SVMModelView";
-      this.Size = new System.Drawing.Size(253, 135);
+      this.Size = new System.Drawing.Size(283, 308);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -174,5 +190,6 @@ namespace HeuristicLab.SupportVectorMachines {
     private System.Windows.Forms.TextBox svmType;
     private System.Windows.Forms.TextBox kernelType;
     private System.Windows.Forms.TextBox gamma;
+    protected System.Windows.Forms.TextBox textBox;
   }
 }
