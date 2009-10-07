@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
 using System.Threading;
+using SVM;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SupportVectorCreator : OperatorBase {
@@ -84,10 +85,12 @@ namespace HeuristicLab.SupportVectorMachines {
       parameter.C = GetVariableValue<DoubleData>("SVMCost", scope, true).Data;
       parameter.Nu = GetVariableValue<DoubleData>("SVMNu", scope, true).Data;
       parameter.Gamma = GetVariableValue<DoubleData>("SVMGamma", scope, true).Data;
+      parameter.CacheSize = 500;
+      parameter.Probability = false;
 
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
-      SVM.RangeTransform rangeTransform = SVM.Scaling.DetermineRange(problem);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, rangeTransform);
+      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
+      SVM.Problem scaledProblem = rangeTransform.Scale(problem);
 
       SVM.Model model = StartTraining(scaledProblem, parameter);
       if (!abortRequested) {

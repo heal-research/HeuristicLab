@@ -20,84 +20,73 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
+using System.Threading;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// A transform which learns the mean and variance of a sample set and uses these to transform new data
     /// so that it has zero mean and unit variance.
-    /// </remarks>
+    /// </summary>
     public class GaussianTransform : IRangeTransform
     {
-        private List<Node[]> _samples;
-        private int _maxIndex;
-
         private double[] _means;
         private double[] _stddevs;
 
         /// <summary>
-        /// Constructor.
+        /// Determines the Gaussian transform for the provided problem.
         /// </summary>
-        /// <param name="maxIndex">The maximum index of the vectors to be transformed</param>
-        public GaussianTransform(int maxIndex)
+        /// <param name="prob">The Problem to analyze</param>
+        /// <returns>The Gaussian transform for the problem</returns>
+        public static GaussianTransform Compute(Problem prob)
         {
-            _samples = new List<Node[]>();
-        }
-        private GaussianTransform(double[] means, double[] stddevs, int maxIndex)
-        {
-            _means = means;
-            _stddevs = stddevs;
-            _maxIndex = maxIndex;
-        }
-
-        /// <summary>
-        /// Adds a sample to the data.  No computation is performed.  The maximum index of the
-        /// sample must be less than MaxIndex.
-        /// </summary>
-        /// <param name="sample">The sample to add</param>
-        public void Add(Node[] sample)
-        {
-            _samples.Add(sample);
-        }
-
-        /// <summary>
-        /// Computes the statistics for the samples which have been obtained so far.
-        /// </summary>
-        public void ComputeStatistics()
-        {
-            int[] counts = new int[_maxIndex];
-            _means = new double[_maxIndex];
-            foreach(Node[] sample in _samples)
+            int[] counts = new int[prob.MaxIndex];
+            double[] means = new double[prob.MaxIndex];
+            foreach (Node[] sample in prob.X)
             {
                 for (int i = 0; i < sample.Length; i++)
                 {
-                    _means[sample[i].Index] += sample[i].Value;
-                    counts[sample[i].Index]++;
+                    means[sample[i].Index-1] += sample[i].Value;
+                    counts[sample[i].Index-1]++;
                 }
             }
-            for (int i = 0; i < _maxIndex; i++)
+            for (int i = 0; i < prob.MaxIndex; i++)
             {
                 if (counts[i] == 0)
                     counts[i] = 2;
-                _means[i] /= counts[i];
+                means[i] /= counts[i];
             }
 
-            _stddevs = new double[_maxIndex];
-            foreach(Node[] sample in _samples)
+            double[] stddevs = new double[prob.MaxIndex];
+            foreach (Node[] sample in prob.X)
             {
                 for (int i = 0; i < sample.Length; i++)
                 {
-                    double diff = sample[i].Value - _means[sample[i].Index];
-                    _stddevs[sample[i].Index] += diff * diff;
+                    double diff = sample[i].Value - means[sample[i].Index - 1];
+                    stddevs[sample[i].Index - 1] += diff * diff;
                 }
             }
-            for (int i = 0; i < _maxIndex; i++)
+            for (int i = 0; i < prob.MaxIndex; i++)
             {
-                if (_stddevs[i] == 0)
+                if (stddevs[i] == 0)
                     continue;
-                _stddevs[i] /= (counts[i]-1);
-                _stddevs[i] = Math.Sqrt(_stddevs[i]);
+                stddevs[i] /= (counts[i] - 1);
+                stddevs[i] = Math.Sqrt(stddevs[i]);
             }
+
+            return new GaussianTransform(means, stddevs);
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="means">Means in each dimension</param>
+        /// <param name="stddevs">Standard deviation in each dimension</param>
+        public GaussianTransform(double[] means, double[] stddevs)
+        {
+            _means = means;
+            _stddevs = stddevs;
         }
 
         /// <summary>
@@ -108,11 +97,15 @@ namespace SVM
         /// <param name="transform">The transform</param>
         public static void Write(Stream stream, GaussianTransform transform)
         {
+            TemporaryCulture.Start();
+
             StreamWriter output = new StreamWriter(stream);
-            output.WriteLine(transform._maxIndex);
-            for (int i = 0; i < transform._maxIndex; i++)
+            output.WriteLine(transform._means.Length);
+            for (int i = 0; i < transform._means.Length; i++)
                 output.WriteLine("{0} {1}", transform._means[i], transform._stddevs[i]);
             output.Flush();
+
+            TemporaryCulture.Stop();
         }
 
         /// <summary>
@@ -122,17 +115,22 @@ namespace SVM
         /// <returns>The transform</returns>
         public static GaussianTransform Read(Stream stream)
         {
+            TemporaryCulture.Start();
+
             StreamReader input = new StreamReader(stream);
-            int length = int.Parse(input.ReadLine());
+            int length = int.Parse(input.ReadLine(), CultureInfo.InvariantCulture);
             double[] means = new double[length];
             double[] stddevs = new double[length];
             for (int i = 0; i < length; i++)
             {
                 string[] parts = input.ReadLine().Split();
-                means[i] = double.Parse(parts[0]);
-                stddevs[i] = double.Parse(parts[1]);
+                means[i] = double.Parse(parts[0], CultureInfo.InvariantCulture);
+                stddevs[i] = double.Parse(parts[1], CultureInfo.InvariantCulture);
             }
-            return new GaussianTransform(means, stddevs, length);
+
+            TemporaryCulture.Stop();
+
+            return new GaussianTransform(means, stddevs);
         }
 
         /// <summary>
@@ -176,14 +174,13 @@ namespace SVM
 
         /// <summary>
         /// Transform the input value using the transform stored for the provided index.
-        /// <see cref="ComputeStatistics"/> must be called first, or the transform must
-        /// have been read from the disk.
         /// </summary>
         /// <param name="input">Input value</param>
         /// <param name="index">Index of the transform to use</param>
         /// <returns>The transformed value</returns>
         public double Transform(double input, int index)
         {
+            index--;
             if (_stddevs[index] == 0)
                 return 0;
             double diff = input - _means[index];
@@ -191,8 +188,7 @@ namespace SVM
             return diff;
         }
         /// <summary>
-        /// Transforms the input array.  <see cref="ComputeStatistics"/> must be called 
-        /// first, or the transform must have been read from the disk.
+        /// Transforms the input array.
         /// </summary>
         /// <param name="input">The array to transform</param>
         /// <returns>The transformed array</returns>

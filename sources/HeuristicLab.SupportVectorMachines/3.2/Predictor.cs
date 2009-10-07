@@ -78,7 +78,7 @@ namespace HeuristicLab.SupportVectorMachines {
 
       Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex,
         start, end, minTimeOffset, maxTimeOffset);
-      Problem scaledProblem = SVM.Scaling.Scale(p, transform);
+      Problem scaledProblem = transform.Scale(p);
 
       int targetVariableIndex = input.GetVariableIndex(targetVariable);
       int rows = end - start;
@@ -153,6 +153,49 @@ namespace HeuristicLab.SupportVectorMachines {
       foreach (XmlNode pairNode in variablesNode.ChildNodes) {
         variableNames[pairNode.Attributes["Name"].Value] = XmlConvert.ToInt32(pairNode.Attributes["Index"].Value);
       }
+    }
+
+    public static void Export(Predictor p, Stream s) {
+      StreamWriter writer = new StreamWriter(s);
+      writer.Write("Targetvariable: "); writer.WriteLine(p.targetVariable);
+      writer.Write("LowerPredictionLimit: "); writer.WriteLine(p.LowerPredictionLimit.ToString());
+      writer.Write("UpperPredictionLimit: "); writer.WriteLine(p.UpperPredictionLimit.ToString());
+      writer.Write("MaxTimeOffset: "); writer.WriteLine(p.MaxTimeOffset.ToString());
+      writer.Write("MinTimeOffset: "); writer.WriteLine(p.MinTimeOffset.ToString());
+      writer.Write("InputVariables :");
+      writer.Write(p.GetInputVariables().First());
+      foreach (string variable in p.GetInputVariables().Skip(1)) {
+        writer.Write("; "); writer.Write(variable);
+      }
+      writer.WriteLine();
+      writer.Flush();
+      using (MemoryStream memStream = new MemoryStream()) {
+        SVMModel.Export(p.Model, memStream);
+        memStream.WriteTo(s);
+      }
+    }
+
+    public static Predictor Import(Stream s) {
+      Predictor p = new Predictor();
+      StreamReader reader = new StreamReader(s);
+      string[] targetVariableLine = reader.ReadLine().Split(':');
+      string[] lowerPredictionLimitLine = reader.ReadLine().Split(':');
+      string[] upperPredictionLimitLine = reader.ReadLine().Split(':');
+      string[] maxTimeOffsetLine = reader.ReadLine().Split(':');
+      string[] minTimeOffsetLine = reader.ReadLine().Split(':');
+      string[] inputVariableLine = reader.ReadLine().Split(':', ';');
+
+      p.targetVariable = targetVariableLine[1].Trim();
+      p.LowerPredictionLimit = double.Parse(lowerPredictionLimitLine[1]);
+      p.UpperPredictionLimit = double.Parse(upperPredictionLimitLine[1]);
+      p.maxTimeOffset = int.Parse(maxTimeOffsetLine[1]);
+      p.minTimeOffset = int.Parse(minTimeOffsetLine[1]);
+      int i = 1;
+      foreach (string inputVariable in inputVariableLine.Skip(1)) {
+        p.variableNames[inputVariable.Trim()] = i++;
+      }
+      p.svmModel = SVMModel.Import(s);
+      return p;
     }
   }
 }

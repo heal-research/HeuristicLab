@@ -18,181 +18,18 @@
 
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace SVM
 {
-    //
-    // Kernel evaluation
-    //
-    // the static method k_function is for doing single kernel evaluation
-    // the constructor of Kernel prepares to calculate the l*l kernel matrix
-    // the member function get_Q is for getting one column from the Q Matrix
-    //
-    internal abstract class QMatrix
-    {
-        public abstract float[] get_Q(int column, int len);
-        public abstract float[] get_QD();
-        public abstract void swap_index(int i, int j);
-    }
-
-    internal abstract class Kernel : QMatrix
-    {
-        private Node[][] _x;
-        private double[] _x_square;
-
-        // Parameter
-        private KernelType kernel_type;
-        private int degree;
-        private double gamma;
-        private double coef0;
-
-        public override void swap_index(int i, int j)
-        {
-            do { Node[] _ = _x[i]; _x[i] = _x[j]; _x[j] = _; } while (false);
-            if (_x_square != null) do { double _ = _x_square[i]; _x_square[i] = _x_square[j]; _x_square[j] = _; } while (false);
-        }
-
-        private static double powi(double baseValue, int times)
-        {
-            double tmp = baseValue, ret = 1.0;
-
-            for (int t = times; t > 0; t /= 2)
-            {
-                if (t % 2 == 1) ret *= tmp;
-                tmp = tmp * tmp;
-            }
-            return ret;
-        }
-
-        private static double tanh(double x)
-        {
-            double e = Math.Exp(x);
-            return 1.0 - 2.0 / (e * e + 1);
-        }
-
-        public double kernel_function(int i, int j)
-        {
-            switch (kernel_type)
-            {
-                case KernelType.LINEAR:
-                    return dot(_x[i], _x[j]);
-                case KernelType.POLY:
-                    return powi(gamma * dot(_x[i], _x[j]) + coef0, degree);
-                case KernelType.RBF:
-                    return Math.Exp(-gamma * (_x_square[i] + _x_square[j] - 2 * dot(_x[i], _x[j])));
-                case KernelType.SIGMOID:
-                    return tanh(gamma * dot(_x[i], _x[j]) + coef0);
-                case KernelType.PRECOMPUTED:
-                    return _x[i][(int)(_x[j][0].Value)].Value;
-                default:
-                    return 0;
-            }
-        }
-
-        public Kernel(int l, Node[][] x_, Parameter param)
-        {
-            this.kernel_type = param.KernelType;
-            this.degree = param.Degree;
-            this.gamma = param.Gamma;
-            this.coef0 = param.Coefficient0;
-
-            _x = (Node[][])x_.Clone();
-
-            if (kernel_type == KernelType.RBF)
-            {
-                _x_square = new double[l];
-                for (int i = 0; i < l; i++)
-                    _x_square[i] = dot(_x[i], _x[i]);
-            }
-            else _x_square = null;
-        }
-
-        public static double dot(Node[] x, Node[] y)
-        {
-            double sum = 0;
-            int xlen = x.Length;
-            int ylen = y.Length;
-            int i = 0;
-            int j = 0;
-            while (i < xlen && j < ylen)
-            {
-                if (x[i].Index == y[j].Index)
-                    sum += x[i++].Value * y[j++].Value;
-                else
-                {
-                    if (x[i].Index > y[j].Index)
-                        ++j;
-                    else
-                        ++i;
-                }
-            }
-            return sum;
-        }
-
-        public static double k_function(Node[] x, Node[] y, Parameter param)
-        {
-            switch (param.KernelType)
-            {
-                case KernelType.LINEAR:
-                    return dot(x, y);
-                case KernelType.POLY:
-                    return powi(param.Gamma * dot(x, y) + param.Coefficient0, param.Degree);
-                case KernelType.RBF:
-                    {
-                        double sum = 0;
-                        int xlen = x.Length;
-                        int ylen = y.Length;
-                        int i = 0;
-                        int j = 0;
-                        while (i < xlen && j < ylen)
-                        {
-                            if (x[i].Index == y[j].Index)
-                            {
-                                double d = x[i++].Value - y[j++].Value;
-                                sum += d * d;
-                            }
-                            else if (x[i].Index > y[j].Index)
-                            {
-                                sum += y[j].Value * y[j].Value;
-                                ++j;
-                            }
-                            else
-                            {
-                                sum += x[i].Value * x[i].Value;
-                                ++i;
-                            }
-                        }
-
-                        while (i < xlen)
-                        {
-                            sum += x[i].Value * x[i].Value;
-                            ++i;
-                        }
-
-                        while (j < ylen)
-                        {
-                            sum += y[j].Value * y[j].Value;
-                            ++j;
-                        }
-
-                        return Math.Exp(-param.Gamma * sum);
-                    }
-                case KernelType.SIGMOID:
-                    return tanh(param.Gamma * dot(x, y) + param.Coefficient0);
-                case KernelType.PRECOMPUTED:
-                    return x[(int)(y[0].Value)].Value;
-                default:
-                    return 0;
-            }
-        }
-    }
 
     // An SMO algorithm in Fan et al., JMLR 6(2005), p. 1889--1918
     // Solves:
     //
-    //	min 0.5(\alpha^T Q \alpha) + p^T \alpha
+    //	Min 0.5(\alpha^T Q \alpha) + p^T \alpha
     //
     //		y^T \alpha = \delta
     //		y_i = +1 or -1
@@ -210,30 +47,31 @@ namespace SVM
     internal class Solver
     {
         protected int active_size;
-        protected short[] y;
+        protected sbyte[] y;
         protected double[] G;		// gradient of objective function
-        protected const byte LOWER_BOUND = 0;
-        protected const byte UPPER_BOUND = 1;
-        protected const byte FREE = 2;
-        protected byte[] alpha_status;	// LOWER_BOUND, UPPER_BOUND, FREE
-        protected double[] alpha;
-        protected QMatrix Q;
+        private const byte LOWER_BOUND = 0;
+        private const byte UPPER_BOUND = 1;
+        private const byte FREE = 2;
+        private byte[] alpha_status;	// LOWER_BOUND, UPPER_BOUND, FREE
+        private double[] alpha;
+        protected IQMatrix Q;
         protected float[] QD;
-        protected double eps;
-        protected double Cp, Cn;
-        protected double[] p;
-        protected int[] active_set;
-        protected double[] G_bar;		// gradient, if we treat free variables as 0
+        protected double EPS;
+        private double Cp, Cn;
+        private double[] p;
+        private int[] active_set;
+        private double[] G_bar;		// gradient, if we treat free variables as 0
         protected int l;
-        protected bool unshrinked;	// XXX
+        protected bool unshrink;	// XXX
 
         protected const double INF = double.PositiveInfinity;
 
-        protected double get_C(int i)
+        private double get_C(int i)
         {
             return (y[i] > 0) ? Cp : Cn;
         }
-        protected void update_alpha_status(int i)
+
+        private void update_alpha_status(int i)
         {
             if (alpha[i] >= get_C(i))
                 alpha_status[i] = UPPER_BOUND;
@@ -241,13 +79,13 @@ namespace SVM
                 alpha_status[i] = LOWER_BOUND;
             else alpha_status[i] = FREE;
         }
+
         protected bool is_upper_bound(int i) { return alpha_status[i] == UPPER_BOUND; }
         protected bool is_lower_bound(int i) { return alpha_status[i] == LOWER_BOUND; }
-        protected bool is_free(int i) { return alpha_status[i] == FREE; }
 
-        // java: information about solution except alpha,
-        // because we cannot return multiple values otherwise...
-        internal class SolutionInfo
+        private bool is_free(int i) { return alpha_status[i] == FREE; }
+
+        public class SolutionInfo
         {
             public double obj;
             public double rho;
@@ -258,14 +96,14 @@ namespace SVM
 
         protected void swap_index(int i, int j)
         {
-            Q.swap_index(i, j);
-            do { short _ = y[i]; y[i] = y[j]; y[j] = _; } while (false);
-            do { double _ = G[i]; G[i] = G[j]; G[j] = _; } while (false);
-            do { byte _ = alpha_status[i]; alpha_status[i] = alpha_status[j]; alpha_status[j] = _; } while (false);
-            do { double _ = alpha[i]; alpha[i] = alpha[j]; alpha[j] = _; } while (false);
-            do { double _ = p[i]; p[i] = p[j]; p[j] = _; } while (false);
-            do { int _ = active_set[i]; active_set[i] = active_set[j]; active_set[j] = _; } while (false);
-            do { double _ = G_bar[i]; G_bar[i] = G_bar[j]; G_bar[j] = _; } while (false);
+            Q.SwapIndex(i, j);
+            y.SwapIndex(i, j);
+            G.SwapIndex(i, j);
+            alpha_status.SwapIndex(i, j);
+            alpha.SwapIndex(i, j);
+            p.SwapIndex(i, j);
+            active_set.SwapIndex(i, j);
+            G_bar.SwapIndex(i, j);
         }
 
         protected void reconstruct_gradient()
@@ -274,33 +112,54 @@ namespace SVM
 
             if (active_size == l) return;
 
-            int i;
-            for (i = active_size; i < l; i++)
-                G[i] = G_bar[i] + p[i];
+            int i, j;
+            int nr_free = 0;
 
-            for (i = 0; i < active_size; i++)
-                if (is_free(i))
+            for (j = active_size; j < l; j++)
+                G[j] = G_bar[j] + p[j];
+
+            for (j = 0; j < active_size; j++)
+                if (is_free(j))
+                    nr_free++;
+
+            if (2 * nr_free < active_size)
+                Procedures.info("\nWarning: using -h 0 may be faster\n");
+
+            if (nr_free * l > 2 * active_size * (l - active_size))
+            {
+                for (i = active_size; i < l; i++)
                 {
-                    float[] Q_i = Q.get_Q(i, l);
-                    double alpha_i = alpha[i];
-                    for (int j = active_size; j < l; j++)
-                        G[j] += alpha_i * Q_i[j];
+                    float[] Q_i = Q.GetQ(i, active_size);
+                    for (j = 0; j < active_size; j++)
+                        if (is_free(j))
+                            G[i] += alpha[j] * Q_i[j];
                 }
+            }
+            else
+            {
+                for (i = 0; i < active_size; i++)
+                    if (is_free(i))
+                    {
+                        float[] Q_i = Q.GetQ(i, l);
+                        double alpha_i = alpha[i];
+                        for (j = active_size; j < l; j++)
+                            G[j] += alpha_i * Q_i[j];
+                    }
+            }
         }
 
-        public virtual void Solve(int l, QMatrix Q, double[] p_, short[] y_,
-               double[] alpha_, double Cp, double Cn, double eps, SolutionInfo si, bool shrinking)
+        public virtual void Solve(int l, IQMatrix Q, double[] p_, sbyte[] y_, double[] alpha_, double Cp, double Cn, double eps, SolutionInfo si, bool shrinking)
         {
             this.l = l;
             this.Q = Q;
-            QD = Q.get_QD();
+            QD = Q.GetQD();
             p = (double[])p_.Clone();
-            y = (short[])y_.Clone();
+            y = (sbyte[])y_.Clone();
             alpha = (double[])alpha_.Clone();
             this.Cp = Cp;
             this.Cn = Cn;
-            this.eps = eps;
-            this.unshrinked = false;
+            this.EPS = eps;
+            this.unshrink = false;
 
             // initialize alpha_status
             {
@@ -330,7 +189,7 @@ namespace SVM
                 for (i = 0; i < l; i++)
                     if (!is_lower_bound(i))
                     {
-                        float[] Q_i = Q.get_Q(i, l);
+                        float[] Q_i = Q.GetQ(i, l);
                         double alpha_i = alpha[i];
                         int j;
                         for (j = 0; j < l; j++)
@@ -355,7 +214,7 @@ namespace SVM
                 {
                     counter = Math.Min(l, 1000);
                     if (shrinking) do_shrinking();
-                    Debug.Write(".");
+                    Procedures.info(".");
                 }
 
                 if (select_working_set(working_set) != 0)
@@ -364,7 +223,7 @@ namespace SVM
                     reconstruct_gradient();
                     // reset active set size and check
                     active_size = l;
-                    Debug.Write("*");
+                    Procedures.info("*");
                     if (select_working_set(working_set) != 0)
                         break;
                     else
@@ -378,8 +237,8 @@ namespace SVM
 
                 // update alpha[i] and alpha[j], handle bounds carefully
 
-                float[] Q_i = Q.get_Q(i, active_size);
-                float[] Q_j = Q.get_Q(j, active_size);
+                float[] Q_i = Q.GetQ(i, active_size);
+                float[] Q_j = Q.GetQ(j, active_size);
 
                 double C_i = get_C(i);
                 double C_j = get_C(j);
@@ -494,7 +353,7 @@ namespace SVM
                     int k;
                     if (ui != is_upper_bound(i))
                     {
-                        Q_i = Q.get_Q(i, l);
+                        Q_i = Q.GetQ(i, l);
                         if (ui)
                             for (k = 0; k < l; k++)
                                 G_bar[k] -= C_i * Q_i[k];
@@ -505,7 +364,7 @@ namespace SVM
 
                     if (uj != is_upper_bound(j))
                     {
-                        Q_j = Q.get_Q(j, l);
+                        Q_j = Q.GetQ(j, l);
                         if (uj)
                             for (k = 0; k < l; k++)
                                 G_bar[k] -= C_j * Q_j[k];
@@ -540,48 +399,48 @@ namespace SVM
             si.upper_bound_p = Cp;
             si.upper_bound_n = Cn;
 
-            Debug.Write("\noptimization finished, #iter = " + iter + "\n");
+            Procedures.info("\noptimization finished, #iter = " + iter + "\n");
         }
 
         // return 1 if already optimal, return 0 otherwise
-        protected virtual int select_working_set(int[] working_set)
+        int select_working_set(int[] working_set)
         {
             // return i,j such that
-            // i: maximizes -y_i * grad(f)_i, i in I_up(\alpha)
+            // i: Maximizes -y_i * grad(f)_i, i in I_up(\alpha)
             // j: mimimizes the decrease of obj value
             //    (if quadratic coefficeint <= 0, replace it with tau)
             //    -y_j*grad(f)_j < -y_i*grad(f)_i, j in I_low(\alpha)
 
-            double Gmax = -INF;
-            double Gmax2 = -INF;
-            int Gmax_idx = -1;
-            int Gmin_idx = -1;
-            double obj_diff_min = INF;
+            double GMax = -INF;
+            double GMax2 = -INF;
+            int GMax_idx = -1;
+            int GMin_idx = -1;
+            double obj_diff_Min = INF;
 
             for (int t = 0; t < active_size; t++)
                 if (y[t] == +1)
                 {
                     if (!is_upper_bound(t))
-                        if (-G[t] >= Gmax)
+                        if (-G[t] >= GMax)
                         {
-                            Gmax = -G[t];
-                            Gmax_idx = t;
+                            GMax = -G[t];
+                            GMax_idx = t;
                         }
                 }
                 else
                 {
                     if (!is_lower_bound(t))
-                        if (G[t] >= Gmax)
+                        if (G[t] >= GMax)
                         {
-                            Gmax = G[t];
-                            Gmax_idx = t;
+                            GMax = G[t];
+                            GMax_idx = t;
                         }
                 }
 
-            int i = Gmax_idx;
+            int i = GMax_idx;
             float[] Q_i = null;
-            if (i != -1) // null Q_i not accessed: Gmax=-INF if i=-1
-                Q_i = Q.get_Q(i, active_size);
+            if (i != -1) // null Q_i not accessed: GMax=-INF if i=-1
+                Q_i = Q.GetQ(i, active_size);
 
             for (int j = 0; j < active_size; j++)
             {
@@ -589,22 +448,22 @@ namespace SVM
                 {
                     if (!is_lower_bound(j))
                     {
-                        double grad_diff = Gmax + G[j];
-                        if (G[j] >= Gmax2)
-                            Gmax2 = G[j];
+                        double grad_diff = GMax + G[j];
+                        if (G[j] >= GMax2)
+                            GMax2 = G[j];
                         if (grad_diff > 0)
                         {
                             double obj_diff;
-                            double quad_coef = Q_i[i] + QD[j] - 2 * y[i] * Q_i[j];
+                            double quad_coef = Q_i[i] + QD[j] - 2.0 * y[i] * Q_i[j];
                             if (quad_coef > 0)
                                 obj_diff = -(grad_diff * grad_diff) / quad_coef;
                             else
                                 obj_diff = -(grad_diff * grad_diff) / 1e-12;
 
-                            if (obj_diff <= obj_diff_min)
+                            if (obj_diff <= obj_diff_Min)
                             {
-                                Gmin_idx = j;
-                                obj_diff_min = obj_diff;
+                                GMin_idx = j;
+                                obj_diff_Min = obj_diff;
                             }
                         }
                     }
@@ -613,102 +472,107 @@ namespace SVM
                 {
                     if (!is_upper_bound(j))
                     {
-                        double grad_diff = Gmax - G[j];
-                        if (-G[j] >= Gmax2)
-                            Gmax2 = -G[j];
+                        double grad_diff = GMax - G[j];
+                        if (-G[j] >= GMax2)
+                            GMax2 = -G[j];
                         if (grad_diff > 0)
                         {
                             double obj_diff;
-                            double quad_coef = Q_i[i] + QD[j] + 2 * y[i] * Q_i[j];
+                            double quad_coef = Q_i[i] + QD[j] + 2.0 * y[i] * Q_i[j];
                             if (quad_coef > 0)
                                 obj_diff = -(grad_diff * grad_diff) / quad_coef;
                             else
                                 obj_diff = -(grad_diff * grad_diff) / 1e-12;
 
-                            if (obj_diff <= obj_diff_min)
+                            if (obj_diff <= obj_diff_Min)
                             {
-                                Gmin_idx = j;
-                                obj_diff_min = obj_diff;
+                                GMin_idx = j;
+                                obj_diff_Min = obj_diff;
                             }
                         }
                     }
                 }
             }
 
-            if (Gmax + Gmax2 < eps)
+            if (GMax + GMax2 < EPS)
                 return 1;
 
-            working_set[0] = Gmax_idx;
-            working_set[1] = Gmin_idx;
+            working_set[0] = GMax_idx;
+            working_set[1] = GMin_idx;
             return 0;
         }
 
-        private bool be_shrunken(int i, double Gmax1, double Gmax2)
+        private bool be_shrunk(int i, double GMax1, double GMax2)
         {
             if (is_upper_bound(i))
             {
                 if (y[i] == +1)
-                    return (-G[i] > Gmax1);
+                    return (-G[i] > GMax1);
                 else
-                    return (-G[i] > Gmax2);
+                    return (-G[i] > GMax2);
             }
             else if (is_lower_bound(i))
             {
                 if (y[i] == +1)
-                    return (G[i] > Gmax2);
+                    return (G[i] > GMax2);
                 else
-                    return (G[i] > Gmax1);
+                    return (G[i] > GMax1);
             }
             else
                 return (false);
         }
 
-        protected virtual void do_shrinking()
+        void do_shrinking()
         {
             int i;
-            double Gmax1 = -INF;		// max { -y_i * grad(f)_i | i in I_up(\alpha) }
-            double Gmax2 = -INF;		// max { y_i * grad(f)_i | i in I_low(\alpha) }
+            double GMax1 = -INF;		// Max { -y_i * grad(f)_i | i in I_up(\alpha) }
+            double GMax2 = -INF;		// Max { y_i * grad(f)_i | i in I_low(\alpha) }
 
-            // find maximal violating pair first
+            // find Maximal violating pair first
             for (i = 0; i < active_size; i++)
             {
                 if (y[i] == +1)
                 {
                     if (!is_upper_bound(i))
                     {
-                        if (-G[i] >= Gmax1)
-                            Gmax1 = -G[i];
+                        if (-G[i] >= GMax1)
+                            GMax1 = -G[i];
                     }
                     if (!is_lower_bound(i))
                     {
-                        if (G[i] >= Gmax2)
-                            Gmax2 = G[i];
+                        if (G[i] >= GMax2)
+                            GMax2 = G[i];
                     }
                 }
                 else
                 {
                     if (!is_upper_bound(i))
                     {
-                        if (-G[i] >= Gmax2)
-                            Gmax2 = -G[i];
+                        if (-G[i] >= GMax2)
+                            GMax2 = -G[i];
                     }
                     if (!is_lower_bound(i))
                     {
-                        if (G[i] >= Gmax1)
-                            Gmax1 = G[i];
+                        if (G[i] >= GMax1)
+                            GMax1 = G[i];
                     }
                 }
             }
 
-            // shrink
+            if (unshrink == false && GMax1 + GMax2 <= EPS * 10)
+            {
+                unshrink = true;
+                reconstruct_gradient();
+                active_size = l;
+            }
 
             for (i = 0; i < active_size; i++)
-                if (be_shrunken(i, Gmax1, Gmax2))
+                if (be_shrunk(i, GMax1, GMax2))
                 {
                     active_size--;
                     while (active_size > i)
                     {
-                        if (!be_shrunken(active_size, Gmax1, Gmax2))
+                        if (!be_shrunk(active_size, GMax1, GMax2))
                         {
                             swap_index(i, active_size);
                             break;
@@ -716,31 +580,9 @@ namespace SVM
                         active_size--;
                     }
                 }
-
-            // unshrink, check all variables again before sealed iterations
-
-            if (unshrinked || Gmax1 + Gmax2 > eps * 10) return;
-
-            unshrinked = true;
-            reconstruct_gradient();
-
-            for (i = l - 1; i >= active_size; i--)
-                if (!be_shrunken(i, Gmax1, Gmax2))
-                {
-                    while (active_size < i)
-                    {
-                        if (be_shrunken(active_size, Gmax1, Gmax2))
-                        {
-                            swap_index(i, active_size);
-                            break;
-                        }
-                        active_size++;
-                    }
-                    active_size++;
-                }
         }
 
-        protected virtual double calculate_rho()
+        double calculate_rho()
         {
             double r;
             int nr_free = 0;
@@ -785,11 +627,11 @@ namespace SVM
     //
     // additional constraint: e^T \alpha = constant
     //
-    sealed class Solver_NU : Solver
+    class Solver_NU : Solver
     {
         private SolutionInfo si;
 
-        public override void Solve(int l, QMatrix Q, double[] p, short[] y,
+        public sealed override void Solve(int l, IQMatrix Q, double[] p, sbyte[] y,
                double[] alpha, double Cp, double Cn, double eps,
                SolutionInfo si, bool shrinking)
         {
@@ -798,53 +640,53 @@ namespace SVM
         }
 
         // return 1 if already optimal, return 0 otherwise
-        protected override int select_working_set(int[] working_set)
+        private int select_working_set(int[] working_set)
         {
             // return i,j such that y_i = y_j and
-            // i: maximizes -y_i * grad(f)_i, i in I_up(\alpha)
-            // j: minimizes the decrease of obj value
+            // i: Maximizes -y_i * grad(f)_i, i in I_up(\alpha)
+            // j: Minimizes the decrease of obj value
             //    (if quadratic coefficeint <= 0, replace it with tau)
             //    -y_j*grad(f)_j < -y_i*grad(f)_i, j in I_low(\alpha)
 
-            double Gmaxp = -INF;
-            double Gmaxp2 = -INF;
-            int Gmaxp_idx = -1;
+            double GMaxp = -INF;
+            double GMaxp2 = -INF;
+            int GMaxp_idx = -1;
 
-            double Gmaxn = -INF;
-            double Gmaxn2 = -INF;
-            int Gmaxn_idx = -1;
+            double GMaxn = -INF;
+            double GMaxn2 = -INF;
+            int GMaxn_idx = -1;
 
-            int Gmin_idx = -1;
-            double obj_diff_min = INF;
+            int GMin_idx = -1;
+            double obj_diff_Min = INF;
 
             for (int t = 0; t < active_size; t++)
                 if (y[t] == +1)
                 {
                     if (!is_upper_bound(t))
-                        if (-G[t] >= Gmaxp)
+                        if (-G[t] >= GMaxp)
                         {
-                            Gmaxp = -G[t];
-                            Gmaxp_idx = t;
+                            GMaxp = -G[t];
+                            GMaxp_idx = t;
                         }
                 }
                 else
                 {
                     if (!is_lower_bound(t))
-                        if (G[t] >= Gmaxn)
+                        if (G[t] >= GMaxn)
                         {
-                            Gmaxn = G[t];
-                            Gmaxn_idx = t;
+                            GMaxn = G[t];
+                            GMaxn_idx = t;
                         }
                 }
 
-            int ip = Gmaxp_idx;
-            int iN = Gmaxn_idx;
+            int ip = GMaxp_idx;
+            int iN = GMaxn_idx;
             float[] Q_ip = null;
             float[] Q_in = null;
-            if (ip != -1) // null Q_ip not accessed: Gmaxp=-INF if ip=-1
-                Q_ip = Q.get_Q(ip, active_size);
+            if (ip != -1) // null Q_ip not accessed: GMaxp=-INF if ip=-1
+                Q_ip = Q.GetQ(ip, active_size);
             if (iN != -1)
-                Q_in = Q.get_Q(iN, active_size);
+                Q_in = Q.GetQ(iN, active_size);
 
             for (int j = 0; j < active_size; j++)
             {
@@ -852,9 +694,9 @@ namespace SVM
                 {
                     if (!is_lower_bound(j))
                     {
-                        double grad_diff = Gmaxp + G[j];
-                        if (G[j] >= Gmaxp2)
-                            Gmaxp2 = G[j];
+                        double grad_diff = GMaxp + G[j];
+                        if (G[j] >= GMaxp2)
+                            GMaxp2 = G[j];
                         if (grad_diff > 0)
                         {
                             double obj_diff;
@@ -864,10 +706,10 @@ namespace SVM
                             else
                                 obj_diff = -(grad_diff * grad_diff) / 1e-12;
 
-                            if (obj_diff <= obj_diff_min)
+                            if (obj_diff <= obj_diff_Min)
                             {
-                                Gmin_idx = j;
-                                obj_diff_min = obj_diff;
+                                GMin_idx = j;
+                                obj_diff_Min = obj_diff;
                             }
                         }
                     }
@@ -876,9 +718,9 @@ namespace SVM
                 {
                     if (!is_upper_bound(j))
                     {
-                        double grad_diff = Gmaxn - G[j];
-                        if (-G[j] >= Gmaxn2)
-                            Gmaxn2 = -G[j];
+                        double grad_diff = GMaxn - G[j];
+                        if (-G[j] >= GMaxn2)
+                            GMaxn2 = -G[j];
                         if (grad_diff > 0)
                         {
                             double obj_diff;
@@ -888,56 +730,56 @@ namespace SVM
                             else
                                 obj_diff = -(grad_diff * grad_diff) / 1e-12;
 
-                            if (obj_diff <= obj_diff_min)
+                            if (obj_diff <= obj_diff_Min)
                             {
-                                Gmin_idx = j;
-                                obj_diff_min = obj_diff;
+                                GMin_idx = j;
+                                obj_diff_Min = obj_diff;
                             }
                         }
                     }
                 }
             }
 
-            if (Math.Max(Gmaxp + Gmaxp2, Gmaxn + Gmaxn2) < eps)
+            if (Math.Max(GMaxp + GMaxp2, GMaxn + GMaxn2) < EPS)
                 return 1;
 
-            if (y[Gmin_idx] == +1)
-                working_set[0] = Gmaxp_idx;
+            if (y[GMin_idx] == +1)
+                working_set[0] = GMaxp_idx;
             else
-                working_set[0] = Gmaxn_idx;
-            working_set[1] = Gmin_idx;
+                working_set[0] = GMaxn_idx;
+            working_set[1] = GMin_idx;
 
             return 0;
         }
 
-        private bool be_shrunken(int i, double Gmax1, double Gmax2, double Gmax3, double Gmax4)
+        private bool be_shrunk(int i, double GMax1, double GMax2, double GMax3, double GMax4)
         {
             if (is_upper_bound(i))
             {
                 if (y[i] == +1)
-                    return (-G[i] > Gmax1);
+                    return (-G[i] > GMax1);
                 else
-                    return (-G[i] > Gmax4);
+                    return (-G[i] > GMax4);
             }
             else if (is_lower_bound(i))
             {
                 if (y[i] == +1)
-                    return (G[i] > Gmax2);
+                    return (G[i] > GMax2);
                 else
-                    return (G[i] > Gmax3);
+                    return (G[i] > GMax3);
             }
             else
                 return (false);
         }
 
-        protected override void do_shrinking()
+        private void do_shrinking()
         {
-            double Gmax1 = -INF;	// max { -y_i * grad(f)_i | y_i = +1, i in I_up(\alpha) }
-            double Gmax2 = -INF;	// max { y_i * grad(f)_i | y_i = +1, i in I_low(\alpha) }
-            double Gmax3 = -INF;	// max { -y_i * grad(f)_i | y_i = -1, i in I_up(\alpha) }
-            double Gmax4 = -INF;	// max { y_i * grad(f)_i | y_i = -1, i in I_low(\alpha) }
+            double GMax1 = -INF;	// Max { -y_i * grad(f)_i | y_i = +1, i in I_up(\alpha) }
+            double GMax2 = -INF;	// Max { y_i * grad(f)_i | y_i = +1, i in I_low(\alpha) }
+            double GMax3 = -INF;	// Max { -y_i * grad(f)_i | y_i = -1, i in I_up(\alpha) }
+            double GMax4 = -INF;	// Max { y_i * grad(f)_i | y_i = -1, i in I_low(\alpha) }
 
-            // find maximal violating pair first
+            // find Maximal violating pair first
             int i;
             for (i = 0; i < active_size; i++)
             {
@@ -945,29 +787,34 @@ namespace SVM
                 {
                     if (y[i] == +1)
                     {
-                        if (-G[i] > Gmax1) Gmax1 = -G[i];
+                        if (-G[i] > GMax1) GMax1 = -G[i];
                     }
-                    else if (-G[i] > Gmax4) Gmax4 = -G[i];
+                    else if (-G[i] > GMax4) GMax4 = -G[i];
                 }
                 if (!is_lower_bound(i))
                 {
                     if (y[i] == +1)
                     {
-                        if (G[i] > Gmax2) Gmax2 = G[i];
+                        if (G[i] > GMax2) GMax2 = G[i];
                     }
-                    else if (G[i] > Gmax3) Gmax3 = G[i];
+                    else if (G[i] > GMax3) GMax3 = G[i];
                 }
             }
 
-            // shrinking
+            if (unshrink == false && Math.Max(GMax1 + GMax2, GMax3 + GMax4) <= EPS * 10)
+            {
+                unshrink = true;
+                reconstruct_gradient();
+                active_size = l;
+            }
 
             for (i = 0; i < active_size; i++)
-                if (be_shrunken(i, Gmax1, Gmax2, Gmax3, Gmax4))
+                if (be_shrunk(i, GMax1, GMax2, GMax3, GMax4))
                 {
                     active_size--;
                     while (active_size > i)
                     {
-                        if (!be_shrunken(active_size, Gmax1, Gmax2, Gmax3, Gmax4))
+                        if (!be_shrunk(active_size, GMax1, GMax2, GMax3, GMax4))
                         {
                             swap_index(i, active_size);
                             break;
@@ -975,29 +822,9 @@ namespace SVM
                         active_size--;
                     }
                 }
-
-            if (unshrinked || Math.Max(Gmax1 + Gmax2, Gmax3 + Gmax4) > eps * 10) return;
-
-            unshrinked = true;
-            reconstruct_gradient();
-
-            for (i = l - 1; i >= active_size; i--)
-                if (!be_shrunken(i, Gmax1, Gmax2, Gmax3, Gmax4))
-                {
-                    while (active_size < i)
-                    {
-                        if (be_shrunken(active_size, Gmax1, Gmax2, Gmax3, Gmax4))
-                        {
-                            swap_index(i, active_size);
-                            break;
-                        }
-                        active_size++;
-                    }
-                    active_size++;
-                }
         }
 
-        protected override double calculate_rho()
+        private double calculate_rho()
         {
             int nr_free1 = 0, nr_free2 = 0;
             double ub1 = INF, ub2 = INF;
@@ -1053,42 +880,42 @@ namespace SVM
     //
     class SVC_Q : Kernel
     {
-        private short[] y;
+        private sbyte[] y;
         private Cache cache;
         private float[] QD;
 
-        public SVC_Q(Problem prob, Parameter param, short[] y_) : base(prob.Count, prob.X, param)
+        public SVC_Q(Problem prob, Parameter param, sbyte[] y_) : base(prob.Count, prob.X, param)
         {
-            y = (short[])y_.Clone();
+            y = (sbyte[])y_.Clone();
             cache = new Cache(prob.Count, (long)(param.CacheSize * (1 << 20)));
             QD = new float[prob.Count];
             for (int i = 0; i < prob.Count; i++)
-                QD[i] = (float)kernel_function(i, i);
+                QD[i] = (float)KernelFunction(i, i);
         }
 
-        public override float[] get_Q(int i, int len)
+        public override sealed float[] GetQ(int i, int len)
         {
-            float[][] data = new float[1][];
-            int start;
-            if ((start = cache.get_data(i, data, len)) < len)
+            float[] data = null;
+            int start, j;
+            if ((start = cache.GetData(i, ref data, len)) < len)
             {
-                for (int j = start; j < len; j++)
-                    data[0][j] = (float)(y[i] * y[j] * kernel_function(i, j));
+                for (j = start; j < len; j++)
+                    data[j] = (float)(y[i] * y[j] * KernelFunction(i, j));
             }
-            return data[0];
+            return data;
         }
 
-        public override float[] get_QD()
+        public override sealed float[] GetQD()
         {
             return QD;
         }
 
-        public override void swap_index(int i, int j)
+        public override sealed void SwapIndex(int i, int j)
         {
-            cache.swap_index(i, j);
-            base.swap_index(i, j);
-            do { short _ = y[i]; y[i] = y[j]; y[j] = _; } while (false);
-            do { float _ = QD[i]; QD[i] = QD[j]; QD[j] = _; } while (false);
+            cache.SwapIndex(i, j);
+            base.SwapIndex(i, j);
+            y.SwapIndex(i, j);
+            QD.SwapIndex(i, j);
         }
     }
 
@@ -1097,36 +924,36 @@ namespace SVM
         private Cache cache;
         private float[] QD;
 
-        public ONE_CLASS_Q(Problem prob, Parameter param) : base(prob.Count, prob.X, param)
+        public ONE_CLASS_Q(Problem prob, Parameter param) :  base(prob.Count, prob.X, param)
         {
             cache = new Cache(prob.Count, (long)(param.CacheSize * (1 << 20)));
             QD = new float[prob.Count];
             for (int i = 0; i < prob.Count; i++)
-                QD[i] = (float)kernel_function(i, i);
+                QD[i] = (float)KernelFunction(i, i);
         }
 
-        public override float[] get_Q(int i, int len)
+        public override sealed float[] GetQ(int i, int len)
         {
-            float[][] data = new float[1][];
-            int start;
-            if ((start = cache.get_data(i, data, len)) < len)
+            float[] data = null;
+            int start, j;
+            if ((start = cache.GetData(i, ref data, len)) < len)
             {
-                for (int j = start; j < len; j++)
-                    data[0][j] = (float)kernel_function(i, j);
+                for (j = start; j < len; j++)
+                    data[j] = (float)KernelFunction(i, j);
             }
-            return data[0];
+            return data;
         }
 
-        public override float[] get_QD()
+        public override sealed float[] GetQD()
         {
             return QD;
         }
 
-        public override void swap_index(int i, int j)
+        public override sealed void SwapIndex(int i, int j)
         {
-            cache.swap_index(i, j);
-            base.swap_index(i, j);
-            do { float _ = QD[i]; QD[i] = QD[j]; QD[j] = _; } while (false);
+            cache.SwapIndex(i, j);
+            base.SwapIndex(i, j);
+            QD.SwapIndex(i, j);
         }
     }
 
@@ -1134,19 +961,18 @@ namespace SVM
     {
         private int l;
         private Cache cache;
-        private short[] sign;
+        private sbyte[] sign;
         private int[] index;
         private int next_buffer;
         private float[][] buffer;
         private float[] QD;
 
-        public SVR_Q(Problem prob, Parameter param)
-            : base(prob.Count, prob.X, param)
+        public SVR_Q(Problem prob, Parameter param) : base(prob.Count, prob.X, param)
         {
             l = prob.Count;
             cache = new Cache(l, (long)(param.CacheSize * (1 << 20)));
             QD = new float[2 * l];
-            sign = new short[2 * l];
+            sign = new sbyte[2 * l];
             index = new int[2 * l];
             for (int k = 0; k < l; k++)
             {
@@ -1154,7 +980,7 @@ namespace SVM
                 sign[k + l] = -1;
                 index[k] = k;
                 index[k + l] = k;
-                QD[k] = (float)kernel_function(k, k);
+                QD[k] = (float)KernelFunction(k, k);
                 QD[k + l] = QD[k];
             }
             buffer = new float[2][];
@@ -1163,62 +989,84 @@ namespace SVM
             next_buffer = 0;
         }
 
-        public override void swap_index(int i, int j)
+        public override sealed void SwapIndex(int i, int j)
         {
-            do { short _ = sign[i]; sign[i] = sign[j]; sign[j] = _; } while (false);
-            do { int _ = index[i]; index[i] = index[j]; index[j] = _; } while (false);
-            do { float _ = QD[i]; QD[i] = QD[j]; QD[j] = _; } while (false);
+            sign.SwapIndex(i, j);
+            index.SwapIndex(i, j);
+            QD.SwapIndex(i, j);
         }
 
-        public override float[] get_Q(int i, int len)
+        public override sealed float[] GetQ(int i, int len)
         {
-            float[][] data = new float[1][];
-            int real_i = index[i];
-            if (cache.get_data(real_i, data, l) < l)
+            float[] data = null;
+            int j, real_i = index[i];
+            if (cache.GetData(real_i, ref data, l) < l)
             {
-                for (int j = 0; j < l; j++)
-                    data[0][j] = (float)kernel_function(real_i, j);
+                for (j = 0; j < l; j++)
+                    data[j] = (float)KernelFunction(real_i, j);
             }
 
             // reorder and copy
             float[] buf = buffer[next_buffer];
             next_buffer = 1 - next_buffer;
-            short si = sign[i];
-            for (int j = 0; j < len; j++)
-                buf[j] = si * sign[j] * data[0][index[j]];
+            sbyte si = sign[i];
+            for (j = 0; j < len; j++)
+                buf[j] = (float)si * sign[j] * data[index[j]];
             return buf;
         }
 
-        public override float[] get_QD()
+        public override sealed float[] GetQD()
         {
             return QD;
         }
     }
 
-    internal static class Procedures
+    internal class Procedures
     {
+        private static bool _verbose;
+        public static bool IsVerbose
+        {
+            get
+            {
+                return _verbose;
+            }
+            set
+            {
+                _verbose = value;
+            }
+        }
         //
         // construct and solve various formulations
         //
+        public const int LIBSVM_VERSION = 289;
+
+        public static TextWriter svm_print_string = Console.Out;
+
+        public static void info(string s)
+        {
+            if(_verbose)
+                svm_print_string.Write(s);
+        }
+
         private static void solve_c_svc(Problem prob, Parameter param,
                         double[] alpha, Solver.SolutionInfo si,
                         double Cp, double Cn)
         {
             int l = prob.Count;
-            double[] minus_ones = new double[l];
-            short[] y = new short[l];
+            double[] Minus_ones = new double[l];
+            sbyte[] y = new sbyte[l];
 
             int i;
 
             for (i = 0; i < l; i++)
             {
                 alpha[i] = 0;
-                minus_ones[i] = -1;
+                Minus_ones[i] = -1;
                 if (prob.Y[i] > 0) y[i] = +1; else y[i] = -1;
             }
 
             Solver s = new Solver();
-            s.Solve(l, new SVC_Q(prob, param, y), minus_ones, y,
+            s.Solve(l, new SVC_Q(prob, param, y), Minus_ones, y,
                 alpha, Cp, Cn, param.EPS, si, param.Shrinking);
 
             double sum_alpha = 0;
@@ -1226,7 +1074,7 @@ namespace SVM
                 sum_alpha += alpha[i];
 
             if (Cp == Cn)
-                Debug.Write("nu = " + sum_alpha / (Cp * prob.Count) + "\n");
+                Procedures.info("nu = " + sum_alpha / (Cp * prob.Count) + "\n");
 
             for (i = 0; i < l; i++)
                 alpha[i] *= y[i];
@@ -1239,7 +1087,7 @@ namespace SVM
             int l = prob.Count;
             double nu = param.Nu;
 
-            short[] y = new short[l];
+            sbyte[] y = new sbyte[l];
 
             for (i = 0; i < l; i++)
                 if (prob.Y[i] > 0)
@@ -1268,11 +1116,10 @@ namespace SVM
                 zeros[i] = 0;
 
             Solver_NU s = new Solver_NU();
-            s.Solve(l, new SVC_Q(prob, param, y), zeros, y,
-                alpha, 1.0, 1.0, param.EPS, si, param.Shrinking);
+            s.Solve(l, new SVC_Q(prob, param, y), zeros, y, alpha, 1.0, 1.0, param.EPS, si, param.Shrinking);
             double r = si.r;
 
-            Debug.Write("C = " + 1 / r + "\n");
+            Procedures.info("C = " + 1 / r + "\n");
 
             for (i = 0; i < l; i++)
                 alpha[i] *= y[i] / r;
@@ -1284,11 +1131,11 @@ namespace SVM
         }
 
         private static void solve_one_class(Problem prob, Parameter param,
-                            double[] alpha, Solver.SolutionInfo si)
+                        double[] alpha, Solver.SolutionInfo si)
         {
             int l = prob.Count;
             double[] zeros = new double[l];
-            short[] ones = new short[l];
+            sbyte[] ones = new sbyte[l];
             int i;
 
             int n = (int)(param.Nu * prob.Count);	// # of alpha's at upper bound
@@ -1307,17 +1154,15 @@ namespace SVM
             }
 
             Solver s = new Solver();
-            s.Solve(l, new ONE_CLASS_Q(prob, param), zeros, ones,
-                alpha, 1.0, 1.0, param.EPS, si, param.Shrinking);
+            s.Solve(l, new ONE_CLASS_Q(prob, param), zeros, ones, alpha, 1.0, 1.0, param.EPS, si, param.Shrinking);
         }
 
-        private static void solve_epsilon_svr(Problem prob, Parameter param,
-                        double[] alpha, Solver.SolutionInfo si)
+        private static void solve_epsilon_svr(Problem prob, Parameter param, double[] alpha, Solver.SolutionInfo si)
         {
             int l = prob.Count;
             double[] alpha2 = new double[2 * l];
             double[] linear_term = new double[2 * l];
-            short[] y = new short[2 * l];
+            sbyte[] y = new sbyte[2 * l];
             int i;
 
             for (i = 0; i < l; i++)
@@ -1332,8 +1177,7 @@ namespace SVM
             }
 
             Solver s = new Solver();
-            s.Solve(2 * l, new SVR_Q(prob, param), linear_term, y,
-                alpha2, param.C, param.C, param.EPS, si, param.Shrinking);
+            s.Solve(2 * l, new SVR_Q(prob, param), linear_term, y, alpha2, param.C, param.C, param.EPS, si, param.Shrinking);
 
             double sum_alpha = 0;
             for (i = 0; i < l; i++)
@@ -1341,7 +1185,7 @@ namespace SVM
                 alpha[i] = alpha2[i] - alpha2[i + l];
                 sum_alpha += Math.Abs(alpha[i]);
             }
-            Debug.Write("nu = " + sum_alpha / (param.C * l) + "\n");
+            Procedures.info("nu = " + sum_alpha / (param.C * l) + "\n");
         }
 
         private static void solve_nu_svr(Problem prob, Parameter param,
@@ -1351,7 +1195,7 @@ namespace SVM
             double C = param.C;
             double[] alpha2 = new double[2 * l];
             double[] linear_term = new double[2 * l];
-            short[] y = new short[2 * l];
+            sbyte[] y = new sbyte[2 * l];
             int i;
 
             double sum = C * param.Nu * l / 2;
@@ -1370,7 +1214,7 @@ namespace SVM
             Solver_NU s = new Solver_NU();
             s.Solve(2 * l, new SVR_Q(prob, param), linear_term, y, alpha2, C, C, param.EPS, si, param.Shrinking);
 
-            Debug.Write("epsilon = " + (-si.r) + "\n");
+            Procedures.info("epsilon = " + (-si.r) + "\n");
 
             for (i = 0; i < l; i++)
                 alpha[i] = alpha2[i] - alpha2[i + l];
@@ -1379,15 +1223,13 @@ namespace SVM
         //
         // decision_function
         //
-        private class decision_function
+        internal class decision_function
         {
             public double[] alpha;
             public double rho;
         };
 
-        static decision_function svm_train_one(
-            Problem prob, Parameter param,
-            double Cp, double Cn)
+        static decision_function svm_train_one(Problem prob, Parameter param, double Cp, double Cn)
         {
             double[] alpha = new double[prob.Count];
             Solver.SolutionInfo si = new Solver.SolutionInfo();
@@ -1410,7 +1252,7 @@ namespace SVM
                     break;
             }
 
-            Debug.Write("obj = " + si.obj + ", rho = " + si.rho + "\n");
+            Procedures.info("obj = " + si.obj + ", rho = " + si.rho + "\n");
 
             // output SVs
 
@@ -1434,7 +1276,7 @@ namespace SVM
                 }
             }
 
-            Debug.Write("nSV = " + nSV + ", nBSV = " + nBSV + "\n");
+            Procedures.info("nSV = " + nSV + ", nBSV = " + nBSV + "\n");
 
             decision_function f = new decision_function();
             f.alpha = alpha;
@@ -1454,9 +1296,9 @@ namespace SVM
                 if (labels[i] > 0) prior1 += 1;
                 else prior0 += 1;
 
-            int max_iter = 100; 	// Maximal number of iterations
-            double min_step = 1e-10;	// Minimal step taken in line search
-            double sigma = 1e-3;	// For numerically strict PD of Hessian
+            int Max_iter = 100;	// Maximal number of iterations
+            double Min_step = 1e-10;	// Minimal step taken in line search
+            double sigma = 1e-12;	// For numerically strict PD of Hessian
             double eps = 1e-5;
             double hiTarget = (prior1 + 1.0) / (prior1 + 2.0);
             double loTarget = 1 / (prior0 + 2.0);
@@ -1479,7 +1321,7 @@ namespace SVM
                 else
                     fval += (t[i] - 1) * fApB + Math.Log(1 + Math.Exp(fApB));
             }
-            for (iter = 0; iter < max_iter; iter++)
+            for (iter = 0; iter < Max_iter; iter++)
             {
                 // Update Gradient and Hessian (use H' = H + sigma I)
                 h11 = sigma; // numerically ensures strict PD
@@ -1518,8 +1360,8 @@ namespace SVM
                 gd = g1 * dA + g2 * dB;
 
 
-                stepsize = 1; 		// Line Search
-                while (stepsize >= min_step)
+                stepsize = 1;		// Line Search
+                while (stepsize >= Min_step)
                 {
                     newA = A + stepsize * dA;
                     newB = B + stepsize * dB;
@@ -1544,15 +1386,15 @@ namespace SVM
                         stepsize = stepsize / 2.0;
                 }
 
-                if (stepsize < min_step)
+                if (stepsize < Min_step)
                 {
-                    Debug.Write("Line search fails in two-class probability estimates\n");
+                    Procedures.info("Line search fails in two-class probability estimates\n");
                     break;
                 }
             }
 
-            if (iter >= max_iter)
-                Debug.Write("Reaching maximal iterations in two-class probability estimates\n");
+            if (iter >= Max_iter)
+                Procedures.info("Reaching Maximal iterations in two-class probability estimates\n");
             probAB[0] = A; probAB[1] = B;
         }
 
@@ -1567,74 +1409,74 @@ namespace SVM
 
         // Method 2 from the multiclass_prob paper by Wu, Lin, and Weng
         private static void multiclass_probability(int k, double[,] r, double[] p)
-	{
-		int t,j;
-		int iter = 0, max_iter=Math.Max(100,k);
-		double[,] Q=new double[k,k];
-		double[] Qp= new double[k];
-		double pQp, eps=0.005/k;
-	
-		for (t=0;t<k;t++)
-		{
-			p[t]=1.0/k;  // Valid if k = 1
-			Q[t,t]=0;
-			for (j=0;j<t;j++)
-			{
-				Q[t,t]+=r[j,t]*r[j,t];
-				Q[t,j]=Q[j,t];
-			}
-			for (j=t+1;j<k;j++)
-			{
-				Q[t,t]+=r[j,t]*r[j,t];
-				Q[t,j]=-r[j,t]*r[t,j];
-			}
-		}
-		for (iter=0;iter<max_iter;iter++)
-		{
-			// stopping condition, recalculate QP,pQP for numerical accuracy
-			pQp=0;
-			for (t=0;t<k;t++)
-			{
-				Qp[t]=0;
-				for (j=0;j<k;j++)
-					Qp[t]+=Q[t,j]*p[j];
-				pQp+=p[t]*Qp[t];
-			}
-			double max_error=0;
-			for (t=0;t<k;t++)
-			{
-				double error=Math.Abs(Qp[t]-pQp);
-				if (error>max_error)
-					max_error=error;
-			}
-			if (max_error<eps) break;
-		
-			for (t=0;t<k;t++)
-			{
-				double diff=(-Qp[t]+pQp)/Q[t,t];
-				p[t]+=diff;
-				pQp=(pQp+diff*(diff*Q[t,t]+2*Qp[t]))/(1+diff)/(1+diff);
-				for (j=0;j<k;j++)
-				{
-					Qp[j]=(Qp[j]+diff*Q[t,j])/(1+diff);
-					p[j]/=(1+diff);
-				}
-			}
-		}
-		if (iter>=max_iter)
-			Debug.Write("Exceeds max_iter in multiclass_prob\n");
-	}
+        {
+            int t, j;
+            int iter = 0, Max_iter = Math.Max(100, k);
+            double[,] Q = new double[k,k];
+            double[] Qp = new double[k];
+            double pQp, eps = 0.005 / k;
+
+            for (t = 0; t < k; t++)
+            {
+                p[t] = 1.0 / k;  // Valid if k = 1
+                Q[t,t] = 0;
+                for (j = 0; j < t; j++)
+                {
+                    Q[t,t] += r[j,t] * r[j,t];
+                    Q[t,j] = Q[j,t];
+                }
+                for (j = t + 1; j < k; j++)
+                {
+                    Q[t,t] += r[j,t] * r[j,t];
+                    Q[t,j] = -r[j,t] * r[t,j];
+                }
+            }
+            for (iter = 0; iter < Max_iter; iter++)
+            {
+                // stopping condition, recalculate QP,pQP for numerical accuracy
+                pQp = 0;
+                for (t = 0; t < k; t++)
+                {
+                    Qp[t] = 0;
+                    for (j = 0; j < k; j++)
+                        Qp[t] += Q[t,j] * p[j];
+                    pQp += p[t] * Qp[t];
+                }
+                double Max_error = 0;
+                for (t = 0; t < k; t++)
+                {
+                    double error = Math.Abs(Qp[t] - pQp);
+                    if (error > Max_error)
+                        Max_error = error;
+                }
+                if (Max_error < eps) break;
+
+                for (t = 0; t < k; t++)
+                {
+                    double diff = (-Qp[t] + pQp) / Q[t,t];
+                    p[t] += diff;
+                    pQp = (pQp + diff * (diff * Q[t,t] + 2 * Qp[t])) / (1 + diff) / (1 + diff);
+                    for (j = 0; j < k; j++)
+                    {
+                        Qp[j] = (Qp[j] + diff * Q[t,j]) / (1 + diff);
+                        p[j] /= (1 + diff);
+                    }
+                }
+            }
+            if (iter >= Max_iter)
+                Procedures.info("Exceeds Max_iter in multiclass_prob\n");
+        }
 
         // Cross-validation decision values for probability estimates
         private static void svm_binary_svc_probability(Problem prob, Parameter param, double Cp, double Cn, double[] probAB)
         {
-            Random rand = new Random();
             int i;
             int nr_fold = 5;
             int[] perm = new int[prob.Count];
             double[] dec_values = new double[prob.Count];
 
             // random shuffle
+            Random rand = new Random();
             for (i = 0; i < prob.Count; i++) perm[i] = i;
             for (i = 0; i < prob.Count; i++)
             {
@@ -1686,13 +1528,8 @@ namespace SVM
                     Parameter subparam = (Parameter)param.Clone();
                     subparam.Probability = false;
                     subparam.C = 1.0;
-                    subparam.WeightCount = 2;
-                    subparam.WeightLabels = new int[2];
-                    subparam.Weights = new double[2];
-                    subparam.WeightLabels[0] = +1;
-                    subparam.WeightLabels[1] = -1;
-                    subparam.Weights[0] = Cp;
-                    subparam.Weights[1] = Cn;
+                    subparam.Weights[1] = Cp;
+                    subparam.Weights[-1] = Cn;
                     Model submodel = svm_train(subprob, subparam);
                     for (j = begin; j < end; j++)
                     {
@@ -1717,7 +1554,7 @@ namespace SVM
 
             Parameter newparam = (Parameter)param.Clone();
             newparam.Probability = false;
-            svm_cross_validation(prob, newparam, nr_fold, ymv, null);
+            svm_cross_validation(prob, newparam, nr_fold, ymv);
             for (i = 0; i < prob.Count; i++)
             {
                 ymv[i] = prob.Y[i] - ymv[i];
@@ -1733,7 +1570,7 @@ namespace SVM
                 else
                     mae += Math.Abs(ymv[i]);
             mae /= (prob.Count - count);
-            Debug.Write("Prob. model for test data: target value = predicted value + z,\nz: Laplace distribution e^(-|z|/sigma)/(2sigma),sigma=" + mae + "\n");
+            Procedures.info("Prob. model for test data: target value = predicted value + z,\nz: Laplace distribution e^(-|z|/sigma)/(2sigma),sigma=" + mae + "\n");
             return mae;
         }
 
@@ -1742,10 +1579,10 @@ namespace SVM
         private static void svm_group_classes(Problem prob, int[] nr_class_ret, int[][] label_ret, int[][] start_ret, int[][] count_ret, int[] perm)
         {
             int l = prob.Count;
-            int max_nr_class = 16;
+            int Max_nr_class = 16;
             int nr_class = 0;
-            int[] label = new int[max_nr_class];
-            int[] count = new int[max_nr_class];
+            int[] label = new int[Max_nr_class];
+            int[] count = new int[Max_nr_class];
             int[] data_label = new int[l];
             int i;
 
@@ -1764,13 +1601,13 @@ namespace SVM
                 data_label[i] = j;
                 if (j == nr_class)
                 {
-                    if (nr_class == max_nr_class)
+                    if (nr_class == Max_nr_class)
                     {
-                        max_nr_class *= 2;
-                        int[] new_data = new int[max_nr_class];
+                        Max_nr_class *= 2;
+                        int[] new_data = new int[Max_nr_class];
                         Array.Copy(label, 0, new_data, 0, label.Length);
                         label = new_data;
-                        new_data = new int[max_nr_class];
+                        new_data = new int[Max_nr_class];
                         Array.Copy(count, 0, new_data, 0, count.Length);
                         count = new_data;
                     }
@@ -1807,17 +1644,17 @@ namespace SVM
             Model model = new Model();
             model.Parameter = param;
 
-            if (param.SvmType == SvmType.ONE_CLASS ||
+            if (param.SvmType == SvmType.ONE_CLASS || 
                param.SvmType == SvmType.EPSILON_SVR ||
                param.SvmType == SvmType.NU_SVR)
             {
                 // regression or one-class-svm
-                model.NumberOfClasses = 2;
+                model.NumberOfClasses = 2;                
                 model.ClassLabels = null;
                 model.NumberOfSVPerClass = null;
                 model.PairwiseProbabilityA = null; model.PairwiseProbabilityB = null;
                 model.SupportVectorCoefficients = new double[1][];
-
+                
                 if (param.Probability &&
                    (param.SvmType == SvmType.EPSILON_SVR ||
                     param.SvmType == SvmType.NU_SVR))
@@ -1833,7 +1670,7 @@ namespace SVM
                 int nSV = 0;
                 int i;
                 for (i = 0; i < prob.Count; i++)
-                    if (Math.Abs(f.alpha[i]) > 0) ++nSV;
+                    if (Math.Abs(f.alpha[i]) > 0) ++nSV;                
                 model.SupportVectorCount = nSV;
                 model.SupportVectors = new Node[nSV][];
                 model.SupportVectorCoefficients[0] = new double[nSV];
@@ -1872,16 +1709,12 @@ namespace SVM
                 double[] weighted_C = new double[nr_class];
                 for (i = 0; i < nr_class; i++)
                     weighted_C[i] = param.C;
-                for (i = 0; i < param.WeightCount; i++)
+                foreach (int weightedLabel in param.Weights.Keys)
                 {
-                    int j;
-                    for (j = 0; j < nr_class; j++)
-                        if (param.WeightLabels[i] == label[j])
-                            break;
-                    if (j == nr_class)
-                        Debug.Write("warning: class label " + param.WeightLabels[i] + " specified in weight is not found\n");
-                    else
-                        weighted_C[j] *= param.Weights[i];
+                    int index = Array.IndexOf<int>(label, weightedLabel);
+                    if (index < 0)
+                        Console.Error.WriteLine("warning: class label " + weightedLabel + " specified in weight is not found");
+                    else weighted_C[index] *= param.Weights[weightedLabel];
                 }
 
                 // train k*(k-1)/2 models
@@ -1982,7 +1815,7 @@ namespace SVM
                     nz_count[i] = nSV;
                 }
 
-                Debug.Write("Total nSV = " + nnz + "\n");
+                Procedures.info("Total nSV = " + nnz + "\n");
 
                 model.SupportVectorCount = nnz;
                 model.SupportVectors = new Node[nnz][];
@@ -2028,7 +1861,7 @@ namespace SVM
         }
 
         // Stratified cross validation
-        public static void svm_cross_validation(Problem prob, Parameter param, int nr_fold, double[] target, Dictionary<int,double>[] confidence)
+        public static void svm_cross_validation(Problem prob, Parameter param, int nr_fold, double[] target)
         {
             Random rand = new Random();
             int i;
@@ -2130,15 +1963,9 @@ namespace SVM
                    (param.SvmType == SvmType.C_SVC ||
                     param.SvmType == SvmType.NU_SVC))
                 {
+                    double[] prob_estimates = new double[svm_get_nr_class(submodel)];
                     for (j = begin; j < end; j++)
-                    {
-                        double[] prob_estimates = new double[svm_get_nr_class(submodel)];
                         target[perm[j]] = svm_predict_probability(submodel, prob.X[perm[j]], prob_estimates);
-                        confidence[perm[j]] = new Dictionary<int, double>();
-                        for (int label = 0; label < prob_estimates.Length; label++)
-                            confidence[perm[j]][submodel.ClassLabels[label]] = prob_estimates[label];
-
-                    }
                 }
                 else
                     for (j = begin; j < end; j++)
@@ -2170,7 +1997,7 @@ namespace SVM
                 return model.PairwiseProbabilityA[0];
             else
             {
-                Debug.Write("Model doesn't contain information for SVR probability inference\n");
+                Console.Error.WriteLine("Model doesn't contain information for SVR probability inference");
                 return 0;
             }
         }
@@ -2184,7 +2011,7 @@ namespace SVM
                 double[] sv_coef = model.SupportVectorCoefficients[0];
                 double sum = 0;
                 for (int i = 0; i < model.SupportVectorCount; i++)
-                    sum += sv_coef[i] * Kernel.k_function(x, model.SupportVectors[i], model.Parameter);
+                    sum += sv_coef[i] * Kernel.KernelFunction(x, model.SupportVectors[i], model.Parameter);
                 sum -= model.Rho[0];
                 dec_values[0] = sum;
             }
@@ -2196,7 +2023,7 @@ namespace SVM
 
                 double[] kvalue = new double[l];
                 for (i = 0; i < l; i++)
-                    kvalue[i] = Kernel.k_function(x, model.SupportVectors[i], model.Parameter);
+                    kvalue[i] = Kernel.KernelFunction(x, model.SupportVectors[i], model.Parameter);
 
                 int[] start = new int[nr_class];
                 start[0] = 0;
@@ -2261,55 +2088,47 @@ namespace SVM
                             ++vote[j];
                     }
 
-                int vote_max_idx = 0;
+                int vote_Max_idx = 0;
                 for (i = 1; i < nr_class; i++)
-                    if (vote[i] > vote[vote_max_idx])
-                        vote_max_idx = i;
-                return model.ClassLabels[vote_max_idx];
+                    if (vote[i] > vote[vote_Max_idx])
+                        vote_Max_idx = i;
+                return model.ClassLabels[vote_Max_idx];
             }
         }
 
         public static double svm_predict_probability(Model model, Node[] x, double[] prob_estimates)
-	{
-        if ((model.Parameter.SvmType == SvmType.C_SVC || model.Parameter.SvmType == SvmType.NU_SVC) &&
-		    model.PairwiseProbabilityA!=null && model.PairwiseProbabilityB!=null)
-		{
-			int i;
-			int nr_class = model.NumberOfClasses;
-			double[] dec_values = new double[nr_class*(nr_class-1)/2];
-			svm_predict_values(model, x, dec_values);
-
-			double min_prob=1e-7;
-			double[,] pairwise_prob=new double[nr_class,nr_class];
-			
-			int k=0;
-			for(i=0;i<nr_class;i++)
-				for(int j=i+1;j<nr_class;j++)
-				{
-					pairwise_prob[i,j]=Math.Min(Math.Max(sigmoid_predict(dec_values[k],model.PairwiseProbabilityA[k],model.PairwiseProbabilityB[k]),min_prob),1-min_prob);
-					pairwise_prob[j,i]=1-pairwise_prob[i,j];
-					k++;
-				}
-			multiclass_probability(nr_class,pairwise_prob,prob_estimates);
-
-			int prob_max_idx = 0;
-			for(i=1;i<nr_class;i++)
-				if(prob_estimates[i] > prob_estimates[prob_max_idx])
-					prob_max_idx = i;
-			return model.ClassLabels[prob_max_idx];
-		}
-		else 
-			return svm_predict(model, x);
-	}
-
-        private static double atof(string s)
         {
-            return double.Parse(s);
-        }
+            if ((model.Parameter.SvmType == SvmType.C_SVC || model.Parameter.SvmType == SvmType.NU_SVC) &&
+                model.PairwiseProbabilityA != null && model.PairwiseProbabilityB != null)
+            {
+                int i;
+                int nr_class = model.NumberOfClasses;
+                double[] dec_values = new double[nr_class * (nr_class - 1) / 2];
+                svm_predict_values(model, x, dec_values);
 
-        private static int atoi(string s)
-        {
-            return int.Parse(s);
+                double Min_prob = 1e-7;
+                double[,] pairwise_prob = new double[nr_class, nr_class];
+
+                int k = 0;
+                for (i = 0; i < nr_class; i++)
+                {
+                    for (int j = i + 1; j < nr_class; j++)
+                    {
+                        pairwise_prob[i, j] = Math.Min(Math.Max(sigmoid_predict(dec_values[k], model.PairwiseProbabilityA[k], model.PairwiseProbabilityB[k]), Min_prob), 1 - Min_prob);
+                        pairwise_prob[j, i] = 1 - pairwise_prob[i, j];
+                        k++;
+                    }
+                }
+                multiclass_probability(nr_class, pairwise_prob, prob_estimates);
+
+                int prob_Max_idx = 0;
+                for (i = 1; i < nr_class; i++)
+                    if (prob_estimates[i] > prob_estimates[prob_Max_idx])
+                        prob_Max_idx = i;
+                return model.ClassLabels[prob_Max_idx];
+            }
+            else
+                return svm_predict(model, x);
         }
 
         public static string svm_check_parameter(Problem prob, Parameter param)
@@ -2317,22 +2136,10 @@ namespace SVM
             // svm_type
 
             SvmType svm_type = param.SvmType;
-            if (svm_type != SvmType.C_SVC &&
-               svm_type != SvmType.NU_SVC &&
-               svm_type != SvmType.ONE_CLASS &&
-               svm_type != SvmType.EPSILON_SVR &&
-               svm_type != SvmType.NU_SVR)
-                return "unknown svm type";
 
             // kernel_type, degree
 
             KernelType kernel_type = param.KernelType;
-            if (kernel_type != KernelType.LINEAR &&
-               kernel_type != KernelType.POLY &&
-               kernel_type != KernelType.RBF &&
-               kernel_type != KernelType.SIGMOID &&
-               kernel_type != KernelType.PRECOMPUTED)
-                return "unknown kernel type";
 
             if (param.Degree < 0)
                 return "degree of polynomial kernel < 0";
@@ -2344,6 +2151,9 @@ namespace SVM
 
             if (param.EPS <= 0)
                 return "eps <= 0";
+
+            if (param.Gamma == 0)
+                param.Gamma = 1.0 / prob.MaxIndex;
 
             if (svm_type == SvmType.C_SVC ||
                svm_type == SvmType.EPSILON_SVR ||
@@ -2361,7 +2171,8 @@ namespace SVM
                 if (param.P < 0)
                     return "p < 0";
 
-            if (param.Probability && svm_type == SvmType.ONE_CLASS)
+            if (param.Probability &&
+               svm_type == SvmType.ONE_CLASS)
                 return "one-class SVM probability output not supported yet";
 
             // check whether nu-svc is feasible
@@ -2369,10 +2180,10 @@ namespace SVM
             if (svm_type == SvmType.NU_SVC)
             {
                 int l = prob.Count;
-                int max_nr_class = 16;
+                int Max_nr_class = 16;
                 int nr_class = 0;
-                int[] label = new int[max_nr_class];
-                int[] count = new int[max_nr_class];
+                int[] label = new int[Max_nr_class];
+                int[] count = new int[Max_nr_class];
 
                 int i;
                 for (i = 0; i < l; i++)
@@ -2388,14 +2199,14 @@ namespace SVM
 
                     if (j == nr_class)
                     {
-                        if (nr_class == max_nr_class)
+                        if (nr_class == Max_nr_class)
                         {
-                            max_nr_class *= 2;
-                            int[] new_data = new int[max_nr_class];
+                            Max_nr_class *= 2;
+                            int[] new_data = new int[Max_nr_class];
                             Array.Copy(label, 0, new_data, 0, label.Length);
                             label = new_data;
 
-                            new_data = new int[max_nr_class];
+                            new_data = new int[Max_nr_class];
                             Array.Copy(count, 0, new_data, 0, count.Length);
                             count = new_data;
                         }
@@ -2431,5 +2242,4 @@ namespace SVM
                 return 0;
         }
     }
-
 }

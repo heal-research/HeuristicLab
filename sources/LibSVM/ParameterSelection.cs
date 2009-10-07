@@ -23,10 +23,10 @@ using System.IO;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// This class contains routines which perform parameter selection for a model which uses C-SVC and
     /// an RBF kernel.
-    /// </remarks>
+    /// </summary>
     public static class ParameterSelection
     {
         /// <summary>
@@ -141,7 +141,9 @@ namespace SVM
             C = 0;
             Gamma = 0;
             double crossValidation = double.MinValue;
-            StreamWriter output = new StreamWriter("graph.txt");
+            StreamWriter output = null;
+            if(outputFile != null)
+                output = new StreamWriter(outputFile);
             for(int i=0; i<CValues.Count; i++)
                 for (int j = 0; j < GammaValues.Count; j++)
                 {
@@ -149,7 +151,8 @@ namespace SVM
                     parameters.Gamma = GammaValues[j];
                     double test = Training.PerformCrossValidation(problem, parameters, nrfold);
                     Console.Write("{0} {1} {2}", parameters.C, parameters.Gamma, test);
-                    output.WriteLine("{0} {1} {2}", parameters.C, parameters.Gamma, test);
+                    if(output != null)
+                        output.WriteLine("{0} {1} {2}", parameters.C, parameters.Gamma, test);
                     if (test > crossValidation)
                     {
                         C = parameters.C;
@@ -159,7 +162,8 @@ namespace SVM
                     }
                     else Console.WriteLine();
                 }
-            output.Close();
+            if(output != null)
+                output.Close();
         }
         /// <summary>
         /// Performs a Grid parameter selection, trying all possible combinations of the two lists and returning the
@@ -206,7 +210,9 @@ namespace SVM
             C = 0;
             Gamma = 0;
             double maxScore = double.MinValue;
-            StreamWriter output = new StreamWriter(outputFile);
+            StreamWriter output = null;
+            if(outputFile != null)
+                output = new StreamWriter(outputFile);
             for (int i = 0; i < CValues.Count; i++)
                 for (int j = 0; j < GammaValues.Count; j++)
                 {
@@ -215,7 +221,8 @@ namespace SVM
                     Model model = Training.Train(problem, parameters);
                     double test = Prediction.Predict(validation, "tmp.txt", model, false);
                     Console.Write("{0} {1} {2}", parameters.C, parameters.Gamma, test);
-                    output.WriteLine("{0} {1} {2}", parameters.C, parameters.Gamma, test);
+                    if(output != null)
+                        output.WriteLine("{0} {1} {2}", parameters.C, parameters.Gamma, test);
                     if (test > maxScore)
                     {
                         C = parameters.C;
@@ -225,7 +232,8 @@ namespace SVM
                     }
                     else Console.WriteLine();
                 }
-            output.Close();
+            if(output != null)
+                output.Close();
         }
     }
 }

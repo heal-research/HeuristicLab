@@ -48,6 +48,7 @@ namespace HeuristicLab.SupportVectorMachines {
       svmType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "SvmType"));
       kernelType.DataBindings.Add(new Binding("Text", model.Model.Parameter, "KernelType"));
       gamma.DataBindings.Add(new Binding("Text", model.Model.Parameter, "Gamma"));
+      UpdateControls();
     }
 
     protected override void UpdateControls() {
@@ -55,23 +56,14 @@ namespace HeuristicLab.SupportVectorMachines {
       textBox.Text = GetModelString();
     }
 
-    protected virtual string GetModelString() {
-      StringBuilder builder = new StringBuilder();
-      builder.AppendLine("RangeTransform:");
-      using (MemoryStream stream = new MemoryStream()) {
-        SVM.RangeTransform.Write(stream, model.RangeTransform);
-        stream.Seek(0, System.IO.SeekOrigin.Begin);
-        StreamReader reader = new StreamReader(stream);
-        builder.AppendLine(reader.ReadToEnd());
+    private string GetModelString() {
+      using (MemoryStream s = new MemoryStream()) {
+        SVMModel.Export(model, s);
+        s.Flush();
+        s.Seek(0, System.IO.SeekOrigin.Begin);
+        StreamReader reader = new StreamReader(s);
+        return reader.ReadToEnd();
       }
-      builder.AppendLine("Model:");
-      using (MemoryStream stream = new MemoryStream()) {
-        SVM.Model.Write(stream, model.Model);
-        stream.Seek(0, System.IO.SeekOrigin.Begin);
-        StreamReader reader = new StreamReader(stream);
-        builder.AppendLine(reader.ReadToEnd());
-      }
-      return builder.ToString();
     }
   }
 }

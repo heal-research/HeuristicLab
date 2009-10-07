@@ -23,9 +23,9 @@ using System.Diagnostics;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Class containing the routines to perform class membership prediction using a trained SVM.
-    /// </remarks>
+    /// </summary>
     public static class Prediction
     {
         /// <summary>

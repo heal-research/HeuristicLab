@@ -18,12 +18,14 @@
 
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Contains all of the types of SVM this library can model.
-    /// </remarks>
+    /// </summary>
     public enum SvmType { 
         /// <summary>
         /// C-SVC.
@@ -46,9 +48,9 @@ namespace SVM
         /// </summary>
         NU_SVR 
     };
-    /// <remarks>
+    /// <summary>
     /// Contains the various kernel types this library can use.
-    /// </remarks>
+    /// </summary>
     public enum KernelType { 
         /// <summary>
         /// Linear: u'*v
@@ -72,11 +74,11 @@ namespace SVM
         PRECOMPUTED,
     };
 
-    /// <remarks>
+    /// <summary>
     /// This class contains the various parameters which can affect the way in which an SVM
     /// is learned.  Unless you know what you are doing, chances are you are best off using
     /// the default values.
-    /// </remarks>
+    /// </summary>
 	[Serializable]
 	public class Parameter : ICloneable
 	{
@@ -90,9 +92,7 @@ namespace SVM
         private double _C;
         private double _eps;
 
-        private int _weightCount;
-        private int[] _weightLabels;
-        private double[] _weights;
+        private Dictionary<int, double> _weights;
         private double _nu;
         private double _p;
         private bool _shrinking;
@@ -115,9 +115,7 @@ namespace SVM
             _p = 0.1;
             _shrinking = true;
             _probability = false;
-            _weightCount = 0;
-            _weightLabels = new int[0];
-            _weights = new double[0];
+            _weights = new Dictionary<int, double>();
         }
 
         /// <summary>
@@ -233,48 +231,17 @@ namespace SVM
                 _C = value;
             }
         }
+
         /// <summary>
-        /// Number of weights.
+        /// Contains custom weights for class labels.  Default weight value is 1.
         /// </summary>
-        public int WeightCount
+        public Dictionary<int,double> Weights
         {
-            get
-            {
-                return _weightCount;
-            }
-            set
-            {
-                _weightCount = value;
-            }
-        }
-        /// <summary>
-        /// Array of indicies corresponding to the Weights array (for C-SVC)
-        /// </summary>
-        public int[] WeightLabels
-        {
-            get
-            {
-                return _weightLabels;
-            }
-            set
-            {
-                _weightLabels = value;
-            }
-        }
-        /// <summary>
-        /// The parameter C of class i to weight*C in C-SVC (default 1)
-        /// </summary>
-        public double[] Weights
-        {
-            get
-            {
+            get{
                 return _weights;
             }
-            set
-            {
-                _weights = value;
-            }
         }
+
         /// <summary>
         /// The parameter nu of nu-SVC, one-class SVM, and nu-SVR (default 0.5)
         /// </summary>

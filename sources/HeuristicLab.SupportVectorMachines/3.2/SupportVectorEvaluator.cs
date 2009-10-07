@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using SVM;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SupportVectorEvaluator : OperatorBase {
@@ -55,7 +56,7 @@ namespace HeuristicLab.SupportVectorMachines {
       int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
       SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(problem, modelData.RangeTransform);
+      SVM.Problem scaledProblem = modelData.RangeTransform.Scale(problem);
 
       double[,] values = new double[scaledProblem.Count, 2];
       for (int i = 0; i < scaledProblem.Count; i++) {

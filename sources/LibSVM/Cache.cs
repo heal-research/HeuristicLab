@@ -48,7 +48,7 @@ namespace SVM
         private head_t[] head;
         private head_t lru_head;
 
-        internal Cache(int count, long size)
+        public Cache(int count, long size)
         {
             _count = count;
             _size = size;
@@ -77,11 +77,18 @@ namespace SVM
             h.next.prev = h;
         }
 
+        private static void swap<T>(ref T lhs, ref T rhs)
+        {
+            T tmp = lhs;
+            lhs = rhs;
+            rhs = tmp;
+        }
+
         // request data [0,len)
         // return some position p where [p,len) need to be filled
         // (p >= len if nothing needs to be filled)
         // java: simulate pointer using single-element array
-        internal virtual int get_data(int index, float[][] data, int len)
+        public int GetData(int index, ref float[] data, int len)
         {
             head_t h = head[index];
             if (h.len > 0)
@@ -106,19 +113,15 @@ namespace SVM
                     Array.Copy(h.data, 0, new_data, 0, h.len);
                 h.data = new_data;
                 _size -= more;
-                do
-                {
-                    int _ = h.len; h.len = len; len = _;
-                }
-                while (false);
+                swap(ref h.len, ref len);
             }
 
             lru_insert(h);
-            data[0] = h.data;
+            data = h.data;
             return len;
         }
 
-        internal virtual void swap_index(int i, int j)
+        public void SwapIndex(int i, int j)
         {
             if (i == j)
                 return;
@@ -127,37 +130,22 @@ namespace SVM
                 lru_delete(head[i]);
             if (head[j].len > 0)
                 lru_delete(head[j]);
-            do
-            {
-                float[] _ = head[i].data; head[i].data = head[j].data; head[j].data = _;
-            }
-            while (false);
-            do
-            {
-                int _ = head[i].len; head[i].len = head[j].len; head[j].len = _;
-            }
-            while (false);
+            swap(ref head[i].data, ref head[j].data);
+            swap(ref head[i].len, ref head[j].len);
             if (head[i].len > 0)
                 lru_insert(head[i]);
             if (head[j].len > 0)
                 lru_insert(head[j]);
 
             if (i > j)
-                do
-                {
-                    int _ = i; i = j; j = _;
-                }
-                while (false);
+                swap(ref i, ref j);
+
             for (head_t h = lru_head.next; h != lru_head; h = h.next)
             {
                 if (h.len > i)
                 {
                     if (h.len > j)
-                        do
-                        {
-                            float _ = h.data[i]; h.data[i] = h.data[j]; h.data[j] = _;
-                        }
-                        while (false);
+                        swap(ref h.data[i], ref h.data[j]);
                     else
                     {
                         // give up

@@ -20,12 +20,14 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading;
+using System.Globalization;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Encapsulates a problem, or set of vectors which must be classified.
-    /// </remarks>
+    /// </summary>
 	[Serializable]
 	public class Problem
 	{
@@ -118,6 +120,8 @@ namespace SVM
         /// <returns>The problem</returns>
         public static Problem Read(Stream stream)
         {
+            TemporaryCulture.Start();
+
             StreamReader input = new StreamReader(stream);
             List<double> vy = new List<double>();
             List<Node[]> vx = new List<Node[]>();
@@ -142,6 +146,8 @@ namespace SVM
                 vx.Add(x);
             }
 
+            TemporaryCulture.Stop();
+
             return new Problem(vy.Count, vy.ToArray(), vx.ToArray(), max_index);
         }
 
@@ -152,6 +158,8 @@ namespace SVM
         /// <param name="problem">The problem to write.</param>
         public static void Write(Stream stream, Problem problem)
         {
+            TemporaryCulture.Start();
+
             StreamWriter output = new StreamWriter(stream);
             for (int i = 0; i < problem.Count; i++)
             {
@@ -161,6 +169,8 @@ namespace SVM
                 output.WriteLine();
             }
             output.Flush();
+
+            TemporaryCulture.Stop();
         }
 
         /// <summary>

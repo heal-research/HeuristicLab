@@ -28,6 +28,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using System.IO;
 
 namespace HeuristicLab.SupportVectorMachines {
   public partial class PredictorView : SVMModelView {
@@ -49,20 +50,20 @@ namespace HeuristicLab.SupportVectorMachines {
       UpdateControls();
     }
 
-    protected override string GetModelString() {
-      StringBuilder builder = new StringBuilder();
-      builder.Append("LowerPredictionLimit: ").AppendLine(predictor.LowerPredictionLimit.ToString());
-      builder.Append("UpperPredictionLimit: ").AppendLine(predictor.UpperPredictionLimit.ToString());
-      builder.Append("MaxTimeOffset: ").AppendLine(predictor.MaxTimeOffset.ToString());
-      builder.Append("MinTimeOffset: ").AppendLine(predictor.MinTimeOffset.ToString());
-      builder.Append("InputVariables :");
-      builder.Append(predictor.GetInputVariables().First());
-      foreach (string variable in predictor.GetInputVariables().Skip(1)) {
-        builder.Append("; ").Append(variable);
+    protected override void UpdateControls() {
+      base.UpdateControls();
+      textBox.Text = GetModelString();
+    }
+
+    private string GetModelString() {
+      if (predictor == null) return "";
+      using (MemoryStream s = new MemoryStream()) {
+        Predictor.Export(predictor, s);
+        s.Flush();
+        s.Seek(0, System.IO.SeekOrigin.Begin);
+        StreamReader reader = new StreamReader(s);
+        return reader.ReadToEnd();
       }
-      builder.AppendLine();
-      builder.Append(base.GetModelString());
-      return builder.ToString();
     }
   }
 }

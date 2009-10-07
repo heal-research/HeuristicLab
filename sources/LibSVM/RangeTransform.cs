@@ -19,14 +19,71 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Globalization;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Class which encapsulates a range transformation.
-    /// </remarks>
+    /// </summary>
     public class RangeTransform : IRangeTransform
     {
+        /// <summary>
+        /// Default lower bound for scaling (-1).
+        /// </summary>
+        public const int DEFAULT_LOWER_BOUND = -1;
+        /// <summary>
+        /// Default upper bound for scaling (1).
+        /// </summary>
+        public const int DEFAULT_UPPER_BOUND = 1;
+
+        /// <summary>
+        /// Determines the Range transform for the provided problem.  Uses the default lower and upper bounds.
+        /// </summary>
+        /// <param name="prob">The Problem to analyze</param>
+        /// <returns>The Range transform for the problem</returns>
+        public static RangeTransform Compute(Problem prob)
+        {
+            return Compute(prob, DEFAULT_LOWER_BOUND, DEFAULT_UPPER_BOUND);
+        }
+        /// <summary>
+        /// Determines the Range transform for the provided problem.
+        /// </summary>
+        /// <param name="prob">The Problem to analyze</param>
+        /// <param name="lowerBound">The lower bound for scaling</param>
+        /// <param name="upperBound">The upper bound for scaling</param>
+        /// <returns>The Range transform for the problem</returns>
+        public static RangeTransform Compute(Problem prob, double lowerBound, double upperBound)
+        {
+            double[] minVals = new double[prob.MaxIndex];
+            double[] maxVals = new double[prob.MaxIndex];
+            for (int i = 0; i < prob.MaxIndex; i++)
+            {
+                minVals[i] = double.MaxValue;
+                maxVals[i] = double.MinValue;
+            }
+            for (int i = 0; i < prob.Count; i++)
+            {
+                for (int j = 0; j < prob.X[i].Length; j++)
+                {
+                    int index = prob.X[i][j].Index - 1;
+                    double value = prob.X[i][j].Value;
+                    minVals[index] = Math.Min(minVals[index], value);
+                    maxVals[index] = Math.Max(maxVals[index], value);
+                }
+            }
+            for (int i = 0; i < prob.MaxIndex; i++)
+            {
+                if (minVals[i] == double.MaxValue || maxVals[i] == double.MinValue)
+                {
+                    minVals[i] = 0;
+                    maxVals[i] = 0;
+                }
+            }
+            return new RangeTransform(minVals, maxVals, lowerBound, upperBound);
+        }
+
         private double[] _inputStart;
         private double[] _inputScale;
         private double _outputStart;
@@ -71,7 +128,7 @@ namespace SVM
         public Node[] Transform(Node[] input)
         {
             Node[] output = new Node[input.Length];
-            for (int i = 0; i < _length; i++)
+            for (int i = 0; i < output.Length; i++)
             {
                 int index = input[i].Index;
                 double value = input[i].Value;
@@ -103,6 +160,8 @@ namespace SVM
         /// <param name="r">The range to write</param>
         public static void Write(Stream stream, RangeTransform r)
         {
+            TemporaryCulture.Start();
+
             StreamWriter output = new StreamWriter(stream);
             output.WriteLine(r._length);
             output.Write(r._inputStart[0]);
@@ -115,6 +174,8 @@ namespace SVM
             output.WriteLine();
             output.WriteLine("{0} {1}", r._outputStart, r._outputScale);
             output.Flush();
+
+            TemporaryCulture.Stop();
         }
 
         /// <summary>
@@ -160,6 +221,8 @@ namespace SVM
         /// <returns>The Range transform</returns>
         public static RangeTransform Read(Stream stream)
         {
+            TemporaryCulture.Start();
+
             StreamReader input = new StreamReader(stream);
             int length = int.Parse(input.ReadLine());
             double[] inputStart = new double[length];
@@ -173,6 +236,9 @@ namespace SVM
             parts = input.ReadLine().Split();
             double outputStart = double.Parse(parts[0]);
             double outputScale = double.Parse(parts[1]);
+
+            TemporaryCulture.Stop();
+
             return new RangeTransform(inputStart, inputScale, outputStart, outputScale, length);
         }
     }

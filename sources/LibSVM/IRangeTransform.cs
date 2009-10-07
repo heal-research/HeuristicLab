@@ -19,9 +19,9 @@
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Interface implemented by range transforms.
-    /// </remarks>
+    /// </summary>
     public interface IRangeTransform
     {
         /// <summary>

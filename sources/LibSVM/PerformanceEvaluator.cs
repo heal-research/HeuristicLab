@@ -20,12 +20,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Class encoding a member of a ranked set of labels.
-    /// </remarks>
+    /// </summary>
     public class RankPair : IComparable<RankPair>
     {
         private double _score, _label;
@@ -137,9 +138,9 @@ namespace SVM
         }
     }
 
-    /// <remarks>
+    /// <summary>
     /// Class which evaluates an SVM model using several standard techniques.
-    /// </remarks>
+    /// </summary>
     public class PerformanceEvaluator
     {
         private class ChangePoint
@@ -184,8 +185,8 @@ namespace SVM
         /// </summary>
         /// <param name="model">Model to evaluate</param>
         /// <param name="problem">Problem to evaluate</param>
-        /// <param name="label">Label to be evaluate for</param>
-        public PerformanceEvaluator(Model model, Problem problem, double label) : this(model, problem, label, "tmp.results") { }
+        /// <param name="category">Label to be evaluate for</param>
+        public PerformanceEvaluator(Model model, Problem problem, double category) : this(model, problem, category, "tmp.results") { }
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -219,7 +220,7 @@ namespace SVM
             string[] parts = input.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             int confidenceIndex = -1;
             for (int i = 1; i < parts.Length; i++)
-                if (double.Parse(parts[i]) == category)
+                if (double.Parse(parts[i], CultureInfo.InvariantCulture) == category)
                 {
                     confidenceIndex = i;
                     break;
@@ -228,8 +229,8 @@ namespace SVM
             for (int i = 0; i < labels.Length; i++)
             {
                 parts = input.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                double confidence = double.Parse(parts[confidenceIndex]);
-                _data.Add(new RankPair(confidence, labels[i]));
+                double confidence = double.Parse(parts[confidenceIndex], CultureInfo.InvariantCulture);
+                _data.Add(new RankPair(confidence, labels[i] == category ? 1 : 0));
             }
             input.Close();
         }

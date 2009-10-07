@@ -21,15 +21,15 @@ using System;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Encapsulates a node in a Problem vector, with an index and a value (for more efficient representation
     /// of sparse data.
-    /// </remarks>
+    /// </summary>
 	[Serializable]
 	public class Node : IComparable<Node>
 	{
-        private int _index;
-        private double _value;
+        internal int _index;
+        internal double _value;
 
         /// <summary>
         /// Default Constructor.

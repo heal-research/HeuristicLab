@@ -22,51 +22,54 @@ using System.Collections.Generic;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Class containing the routines to train SVM models.
-    /// </remarks>
+    /// </summary>
     public static class Training
     {
+        /// <summary>
+        /// Whether the system will output information to the console during the training process.
+        /// </summary>
+        public static bool IsVerbose
+        {
+            get
+            {
+                return Procedures.IsVerbose;
+            }
+            set
+            {
+                Procedures.IsVerbose = value;
+            }
+        }
+
         private static double doCrossValidation(Problem problem, Parameter parameters, int nr_fold)
         {
             int i;
             double[] target = new double[problem.Count];
-            Dictionary<int, double>[] confidence = new Dictionary<int, double>[problem.Count];
-            Procedures.svm_cross_validation(problem, parameters, nr_fold, target, confidence);
-            if (parameters.Probability)
+            Procedures.svm_cross_validation(problem, parameters, nr_fold, target);
+            int total_correct = 0;
+            double total_error = 0;
+            double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
+            if (parameters.SvmType == SvmType.EPSILON_SVR || parameters.SvmType == SvmType.NU_SVR)
             {
-                List<RankPair> ranks = new List<RankPair>();
-                for (i = 0; i < target.Length; i++)
-                    ranks.Add(new RankPair(confidence[i][1], problem.Y[i]));
-                PerformanceEvaluator eval = new PerformanceEvaluator(ranks);
-                return eval.AuC*eval.AP;
+                for (i = 0; i < problem.Count; i++)
+                {
+                    double y = problem.Y[i];
+                    double v = target[i];
+                    total_error += (v - y) * (v - y);
+                    sumv += v;
+                    sumy += y;
+                    sumvv += v * v;
+                    sumyy += y * y;
+                    sumvy += v * y;
+                }
+                return(problem.Count * sumvy - sumv * sumy) / (Math.Sqrt(problem.Count * sumvv - sumv * sumv) * Math.Sqrt(problem.Count * sumyy - sumy * sumy));
             }
             else
-            {
-                int total_correct = 0;
-                double total_error = 0;
-                double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
-                if (parameters.SvmType == SvmType.EPSILON_SVR || parameters.SvmType == SvmType.NU_SVR)
-                {
-                    for (i = 0; i < problem.Count; i++)
-                    {
-                        double y = problem.Y[i];
-                        double v = target[i];
-                        total_error += (v - y) * (v - y);
-                        sumv += v;
-                        sumy += y;
-                        sumvv += v * v;
-                        sumyy += y * y;
-                        sumvy += v * y;
-                    }
-                }
-                else
-                    for (i = 0; i < problem.Count; i++)
-                        if (target[i] == problem.Y[i])
-                            ++total_correct;
-                return (double)total_correct / problem.Count;
-            }
-
+                for (i = 0; i < problem.Count; i++)
+                    if (target[i] == problem.Y[i])
+                        ++total_correct;
+            return (double)total_correct / problem.Count;
         }
         /// <summary>
         /// Legacy.  Allows use as if this was svm_train.  See libsvm documentation for details on which arguments to pass.
@@ -95,8 +98,10 @@ namespace SVM
         /// <returns>The cross validation score</returns>
         public static double PerformCrossValidation(Problem problem, Parameter parameters, int nrfold)
         {
-            Procedures.svm_check_parameter(problem, parameters);
-            return doCrossValidation(problem, parameters, nrfold);
+            string error = Procedures.svm_check_parameter(problem, parameters);
+            if (error == null)
+                return doCrossValidation(problem, parameters, nrfold);
+            else throw new Exception(error);
         }
 
         /// <summary>
@@ -107,9 +112,11 @@ namespace SVM
         /// <returns>A trained SVM Model</returns>
         public static Model Train(Problem problem, Parameter parameters)
         {
-            Procedures.svm_check_parameter(problem, parameters);
+            string error = Procedures.svm_check_parameter(problem, parameters);
 
-            return Procedures.svm_train(problem, parameters);
+            if (error == null)
+                return Procedures.svm_train(problem, parameters);
+            else throw new Exception(error);
         }
 
         private static void parseCommandLine(string[] args, out Parameter parameters, out Problem problem, out bool crossValidation, out int nrfold, out string modelFilename)
@@ -189,20 +196,7 @@ namespace SVM
                         break;
 
                     case 'w':
-                        ++parameters.WeightCount;
-                        {
-                            int[] old = parameters.WeightLabels;
-                            parameters.WeightLabels = new int[parameters.WeightCount];
-                            Array.Copy(old, 0, parameters.WeightLabels, 0, parameters.WeightCount - 1);
-                        }
-                        {
-                            double[] old = parameters.Weights;
-                            parameters.Weights = new double[parameters.WeightCount];
-                            Array.Copy(old, 0, parameters.Weights, 0, parameters.WeightCount - 1);
-                        }
-
-                        parameters.WeightLabels[parameters.WeightCount - 1] = int.Parse(args[i - 1].Substring(2));
-                        parameters.Weights[parameters.WeightCount - 1] = double.Parse(args[i]);
+                        parameters.Weights[int.Parse(args[i - 1].Substring(2))] = double.Parse(args[1]);
                         break;
 
                     default:

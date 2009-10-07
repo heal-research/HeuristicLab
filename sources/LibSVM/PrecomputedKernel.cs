@@ -22,9 +22,9 @@ using System.Collections.Generic;
 
 namespace SVM
 {
-    /// <remarks>
+    /// <summary>
     /// Class encapsulating a precomputed kernel, where each position indicates the similarity score for two items in the training data.
-    /// </remarks>
+    /// </summary>
     [Serializable]
     public class PrecomputedKernel
     {
@@ -41,6 +41,42 @@ namespace SVM
             _similarities = similarities;
             _rows = _similarities.GetLength(0);
             _columns = _similarities.GetLength(1);
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="nodes">Nodes for self-similarity analysis</param>
+        /// <param name="param">Parameters to use when computing similarities</param>
+        public PrecomputedKernel(List<Node[]> nodes, Parameter param)
+        {
+            _rows = nodes.Count;
+            _columns = _rows;
+            _similarities = new float[_rows, _columns];
+            for (int r = 0; r < _rows; r++)
+            {
+                for (int c = 0; c < r; c++)
+                    _similarities[r, c] = _similarities[c, r];
+                _similarities[r, r] = 1;
+                for (int c = r + 1; c < _columns; c++)
+                    _similarities[r, c] = (float)Kernel.KernelFunction(nodes[r], nodes[c], param);
+            }
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="rows">Nodes to use as the rows of the matrix</param>
+        /// <param name="columns">Nodes to use as the columns of the matrix</param>
+        /// <param name="param">Parameters to use when compute similarities</param>
+        public PrecomputedKernel(List<Node[]> rows, List<Node[]> columns, Parameter param)
+        {
+            _rows = rows.Count;
+            _columns = columns.Count;
+            _similarities = new float[_rows, _columns];
+            for (int r = 0; r < _rows; r++)
+                for (int c = 0; c < _columns; c++)
+                    _similarities[r, c] = (float)Kernel.KernelFunction(rows[r], columns[c], param);
         }
 
         /// <summary>
