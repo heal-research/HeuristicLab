@@ -51,7 +51,7 @@ namespace HeuristicLab.SupportVectorMachines {
           }
         }
         if (!double.IsNaN(dataset.GetValue(start + row, targetVariable))) {
-          nodes[addedRows] = tempRow.ToArray();
+          nodes[addedRows] = tempRow.OrderBy(x => x.Index).ToArray();
           addedRows++;
         }
       }
