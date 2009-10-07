@@ -255,7 +255,7 @@ namespace SVM
                     cmd = line;
                     arg = "";
                 }
-                arg = arg.ToLower();
+                // arg = arg.ToLower(); (transforms double NaN or Infinity values to incorrect format [gkronber])
 
                 int i,n;
                 switch(cmd){
@@ -400,28 +400,28 @@ namespace SVM
 
             Parameter param = model.Parameter;
 
-            output.Write("svm_type " + param.SvmType + "\n");
-            output.Write("kernel_type " + param.KernelType + "\n");
+            output.Write("svm_type " + param.SvmType + Environment.NewLine);
+            output.Write("kernel_type " + param.KernelType + Environment.NewLine);
 
             if (param.KernelType == KernelType.POLY)
-                output.Write("degree " + param.Degree + "\n");
+                output.Write("degree " + param.Degree.ToString("r") + Environment.NewLine);
 
             if (param.KernelType == KernelType.POLY || param.KernelType == KernelType.RBF || param.KernelType == KernelType.SIGMOID)
-                output.Write("gamma " + param.Gamma + "\n");
+              output.Write("gamma " + param.Gamma.ToString("r") + Environment.NewLine);
 
             if (param.KernelType == KernelType.POLY || param.KernelType == KernelType.SIGMOID)
-                output.Write("coef0 " + param.Coefficient0 + "\n");
+              output.Write("coef0 " + param.Coefficient0.ToString("r") + Environment.NewLine);
 
             int nr_class = model.NumberOfClasses;
             int l = model.SupportVectorCount;
-            output.Write("nr_class " + nr_class + "\n");
-            output.Write("total_sv " + l + "\n");
+            output.Write("nr_class " + nr_class + Environment.NewLine);
+            output.Write("total_sv " + l + Environment.NewLine);
 
             {
                 output.Write("rho");
                 for (int i = 0; i < nr_class * (nr_class - 1) / 2; i++)
-                    output.Write(" " + model.Rho[i]);
-                output.Write("\n");
+                  output.Write(" " + model.Rho[i].ToString("r"));
+                output.Write(Environment.NewLine);
             }
 
             if (model.ClassLabels != null)
@@ -429,7 +429,7 @@ namespace SVM
                 output.Write("label");
                 for (int i = 0; i < nr_class; i++)
                     output.Write(" " + model.ClassLabels[i]);
-                output.Write("\n");
+                output.Write(Environment.NewLine);
             }
 
             if (model.PairwiseProbabilityA != null)
@@ -437,23 +437,23 @@ namespace SVM
             {
                 output.Write("probA");
                 for (int i = 0; i < nr_class * (nr_class - 1) / 2; i++)
-                    output.Write(" " + model.PairwiseProbabilityA[i]);
-                output.Write("\n");
+                  output.Write(" " + model.PairwiseProbabilityA[i].ToString("r"));
+                output.Write(Environment.NewLine);
             }
             if (model.PairwiseProbabilityB != null)
             {
                 output.Write("probB");
                 for (int i = 0; i < nr_class * (nr_class - 1) / 2; i++)
-                    output.Write(" " + model.PairwiseProbabilityB[i]);
-                output.Write("\n");
+                  output.Write(" " + model.PairwiseProbabilityB[i].ToString("r"));
+                output.Write(Environment.NewLine);
             }
 
             if (model.NumberOfSVPerClass != null)
             {
                 output.Write("nr_sv");
                 for (int i = 0; i < nr_class; i++)
-                    output.Write(" " + model.NumberOfSVPerClass[i]);
-                output.Write("\n");
+                  output.Write(" " + model.NumberOfSVPerClass[i].ToString("r"));
+                output.Write(Environment.NewLine);
             }
 
             output.Write("SV\n");
@@ -463,7 +463,7 @@ namespace SVM
             for (int i = 0; i < l; i++)
             {
                 for (int j = 0; j < nr_class - 1; j++)
-                    output.Write(sv_coef[j][i] + " ");
+                  output.Write(sv_coef[j][i].ToString("r") + " ");
 
                 Node[] p = SV[i];
                 if (p.Length == 0)
@@ -475,9 +475,9 @@ namespace SVM
                     output.Write("0:{0}", (int)p[0].Value);
                 else
                 {
-                    output.Write("{0}:{1}", p[0].Index, p[0].Value);
+                  output.Write("{0}:{1}", p[0].Index, p[0].Value.ToString("r"));
                     for (int j = 1; j < p.Length; j++)
-                        output.Write(" {0}:{1}", p[j].Index, p[j].Value);
+                      output.Write(" {0}:{1}", p[j].Index, p[j].Value.ToString("r"));
                 }
                 output.WriteLine();
             }

@@ -158,8 +158,8 @@ namespace HeuristicLab.SupportVectorMachines {
     public static void Export(Predictor p, Stream s) {
       StreamWriter writer = new StreamWriter(s);
       writer.Write("Targetvariable: "); writer.WriteLine(p.targetVariable);
-      writer.Write("LowerPredictionLimit: "); writer.WriteLine(p.LowerPredictionLimit.ToString());
-      writer.Write("UpperPredictionLimit: "); writer.WriteLine(p.UpperPredictionLimit.ToString());
+      writer.Write("LowerPredictionLimit: "); writer.WriteLine(p.LowerPredictionLimit.ToString("r"));
+      writer.Write("UpperPredictionLimit: "); writer.WriteLine(p.UpperPredictionLimit.ToString("r"));
       writer.Write("MaxTimeOffset: "); writer.WriteLine(p.MaxTimeOffset.ToString());
       writer.Write("MinTimeOffset: "); writer.WriteLine(p.MinTimeOffset.ToString());
       writer.Write("InputVariables :");
