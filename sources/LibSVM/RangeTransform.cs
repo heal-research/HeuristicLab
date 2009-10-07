@@ -198,9 +198,12 @@ namespace SVM {
     /// <param name="stream">The stream to read from</param>
     /// <returns>The Range transform</returns>
     public static RangeTransform Read(Stream stream) {
+      return Read(new StreamReader(stream));
+    }
+
+    public static RangeTransform Read(TextReader input) {
       TemporaryCulture.Start();
 
-      StreamReader input = new StreamReader(stream);
       int length = int.Parse(input.ReadLine());
       double[] inputStart = new double[length];
       double[] inputScale = new double[length];

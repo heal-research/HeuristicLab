@@ -119,13 +119,14 @@ namespace HeuristicLab.SupportVectorMachines {
     public static void Export(SVMModel model, Stream s) {
       StreamWriter writer = new StreamWriter(s);
       writer.WriteLine("RangeTransform:");
+      writer.Flush();
       using (MemoryStream memStream = new MemoryStream()) {
         SVM.RangeTransform.Write(memStream, model.RangeTransform);
         memStream.Seek(0, SeekOrigin.Begin);
         memStream.WriteTo(s);
       }
       writer.WriteLine("Model:");
-
+      writer.Flush();
       using (MemoryStream memStream = new MemoryStream()) {
         SVM.Model.Write(memStream, model.Model);
         memStream.Seek(0, SeekOrigin.Begin);
@@ -134,15 +135,13 @@ namespace HeuristicLab.SupportVectorMachines {
       s.Flush();
     }
 
-    public static SVMModel Import(Stream s) {
+    public static SVMModel Import(TextReader reader) {
       SVMModel model = new SVMModel();
-      StreamReader reader = new StreamReader(s);
       while (reader.ReadLine().Trim() != "RangeTransform:") ; // read until line "RangeTransform";
-      model.RangeTransform = SVM.RangeTransform.Read(s);
-
+      model.RangeTransform = SVM.RangeTransform.Read(reader);
       // read until "Model:"
       while (reader.ReadLine().Trim() != "Model:") ;
-      model.Model = SVM.Model.Read(s);
+      model.Model = SVM.Model.Read(reader);
       return model;
     }
   }
