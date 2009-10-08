@@ -29,6 +29,7 @@
       this.inputVariablesLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.learningTaskGroupBox = new System.Windows.Forms.GroupBox();
+      this.setAlgorithmDefault = new System.Windows.Forms.Button();
       this.autoregressiveLabel = new System.Windows.Forms.Label();
       this.classificationRadioButton = new System.Windows.Forms.RadioButton();
       this.algorithmsListBox = new System.Windows.Forms.CheckedListBox();
@@ -50,7 +51,6 @@
       this.testSamplesStartTextBox = new System.Windows.Forms.TextBox();
       this.testLabel = new System.Windows.Forms.Label();
       this.setAllButton = new System.Windows.Forms.Button();
-      this.setAlgorithmDefault = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -147,6 +147,17 @@
       this.learningTaskGroupBox.TabIndex = 36;
       this.learningTaskGroupBox.TabStop = false;
       this.learningTaskGroupBox.Text = "Learning task";
+      // 
+      // setAlgorithmDefault
+      // 
+      this.setAlgorithmDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.setAlgorithmDefault.Location = new System.Drawing.Point(6, 292);
+      this.setAlgorithmDefault.Name = "setAlgorithmDefault";
+      this.setAlgorithmDefault.Size = new System.Drawing.Size(96, 23);
+      this.setAlgorithmDefault.TabIndex = 36;
+      this.setAlgorithmDefault.Text = "Use as default";
+      this.setAlgorithmDefault.UseVisualStyleBackColor = true;
+      this.setAlgorithmDefault.Click += new System.EventHandler(this.setAlgorithmDefault_Click);
       // 
       // autoregressiveLabel
       // 
@@ -368,17 +379,6 @@
       this.setAllButton.Text = "Use as default";
       this.setAllButton.UseVisualStyleBackColor = true;
       this.setAllButton.Click += new System.EventHandler(this.setAllButton_Click);
-      // 
-      // setAlgorithmDefault
-      // 
-      this.setAlgorithmDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.setAlgorithmDefault.Location = new System.Drawing.Point(6, 292);
-      this.setAlgorithmDefault.Name = "setAlgorithmDefault";
-      this.setAlgorithmDefault.Size = new System.Drawing.Size(96, 23);
-      this.setAlgorithmDefault.TabIndex = 36;
-      this.setAlgorithmDefault.Text = "Use as default";
-      this.setAlgorithmDefault.UseVisualStyleBackColor = true;
-      this.setAlgorithmDefault.Click += new System.EventHandler(this.setAlgorithmDefault_Click);
       // 
       // DispatcherView
       // 

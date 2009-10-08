@@ -121,8 +121,10 @@ namespace HeuristicLab.CEDMA.Server {
 
     public HeuristicLab.Modeling.IAlgorithm GetNextJob() {
       lock (locker) {
-        if (activeVariables.Count > 0) {
-          string[] targetVariables = activeVariables.Keys.ToArray();
+        if (activeVariables.Where(x => x.Value == true).Count() > 0) {
+          string[] targetVariables = (from pair in activeVariables
+                                      where pair.Value == true
+                                      select pair.Key).ToArray();
           string targetVariable = SelectTargetVariable(targetVariables);
           HeuristicLab.Modeling.IAlgorithm selectedAlgorithm = SelectAndConfigureAlgorithm(targetVariable);
 
@@ -144,7 +146,7 @@ namespace HeuristicLab.CEDMA.Server {
       if (possibleAlgos.Count() > 0) selectedAlgorithm = possibleAlgos.ElementAt(random.Next(possibleAlgos.Count()));
       if (selectedAlgorithm != null) {
         // create a clone of the algorithm template before setting the parameters
-        selectedAlgorithm = (HeuristicLab.Modeling.IAlgorithm)selectedAlgorithm.Clone(); 
+        selectedAlgorithm = (HeuristicLab.Modeling.IAlgorithm)selectedAlgorithm.Clone();
         SetProblemParameters(selectedAlgorithm, problemSpecifications[targetVariable]);
         if (!(selectedAlgorithm is IStochasticAlgorithm))
           AddDispatchedRun(problemSpecifications[targetVariable], selectedAlgorithm.Name);
@@ -187,7 +189,7 @@ namespace HeuristicLab.CEDMA.Server {
         ITimeSeriesAlgorithm timeSeriesAlgo = (ITimeSeriesAlgorithm)algo;
         timeSeriesAlgo.MinTimeOffset = spec.MinTimeOffset;
         timeSeriesAlgo.MaxTimeOffset = spec.MaxTimeOffset;
-        timeSeriesAlgo.TrainingSamplesStart = spec.TrainingSamplesStart - spec.MinTimeOffset +1 ; // first possible index is 1 because of differential symbol
+        timeSeriesAlgo.TrainingSamplesStart = spec.TrainingSamplesStart - spec.MinTimeOffset + 1; // first possible index is 1 because of differential symbol
         if (spec.AutoRegressive) {
           allowedFeatures.Add(spec.Dataset.GetVariableIndex(spec.TargetVariable));
         }
@@ -223,8 +225,8 @@ namespace HeuristicLab.CEDMA.Server {
 
     public void EnableAlgorithm(string targetVariable, HeuristicLab.Modeling.IAlgorithm algo) {
       if (!algorithms.ContainsKey(targetVariable)) algorithms.Add(targetVariable, new List<HeuristicLab.Modeling.IAlgorithm>());
-      if(!algorithms[targetVariable].Contains(algo))
-      algorithms[targetVariable].Add(algo);
+      if (!algorithms[targetVariable].Contains(algo))
+        algorithms[targetVariable].Add(algo);
     }
 
     public void DisableAlgorithm(string targetVariable, HeuristicLab.Modeling.IAlgorithm algo) {

@@ -107,6 +107,9 @@ namespace HeuristicLab.CEDMA.Server {
     public ProblemSpecification(ProblemSpecification original) {
       LearningTask = original.LearningTask;
       TargetVariable = original.TargetVariable;
+      MinTimeOffset = original.MinTimeOffset;
+      MaxTimeOffset = original.MaxTimeOffset;
+      AutoRegressive = original.AutoRegressive;
       TrainingSamplesStart = original.TrainingSamplesStart;
       TrainingSamplesEnd = original.TrainingSamplesEnd;
       ValidationSamplesStart = original.ValidationSamplesStart;
@@ -152,6 +155,9 @@ namespace HeuristicLab.CEDMA.Server {
       return
         LearningTask.GetHashCode() |
         TargetVariable.GetHashCode() |
+        MinTimeOffset.GetHashCode() |
+        MaxTimeOffset.GetHashCode() |
+        AutoRegressive.GetHashCode() |
         TrainingSamplesStart.GetHashCode() |
         TrainingSamplesEnd.GetHashCode() |
         ValidationSamplesStart.GetHashCode() |

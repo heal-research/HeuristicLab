@@ -100,8 +100,8 @@ namespace HeuristicLab.CEDMA.Server {
               OnChanged();
               try {
                 IEngine finishedEngine = jobManager.EndExecuteEngine(finishedResult);
-                SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
-                StoreResults(finishedAlgorithm);
+                 SetResults(finishedEngine.GlobalScope, finishedAlgorithm.Engine.GlobalScope);
+                 StoreResults(finishedAlgorithm);
               }
               catch (Exception badEx) {
                 HeuristicLab.Tracing.Logger.Error("CEDMA Executer: Exception in job execution thread. " + badEx.Message + Environment.NewLine + badEx.StackTrace);
