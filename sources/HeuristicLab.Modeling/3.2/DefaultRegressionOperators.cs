@@ -32,7 +32,7 @@ namespace HeuristicLab.Modeling {
       op.Name = "ProblemInjector";
       SequentialProcessor seq = new SequentialProcessor();
       ProblemInjector probInjector = new ProblemInjector();
-      probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(2000)));
+      //probInjector.AddVariable(new Variable("MaxNumberOfTrainingSamples", new IntData(2000)));
 
       seq.AddSubOperator(probInjector);
       DatasetShuffler shuffler = new DatasetShuffler();

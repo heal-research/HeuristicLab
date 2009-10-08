@@ -181,6 +181,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("BestValidationSolutionAge", new IntData()));
       injector.AddVariable(new HeuristicLab.Core.Variable("MaxBestValidationSolutionAge", new IntData()));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(4000)));
       return injector;
     }
 

@@ -160,6 +160,7 @@ namespace HeuristicLab.LinearRegression {
       VariableInjector injector = new VariableInjector();
       injector.AddVariable(new HeuristicLab.Core.Variable("PunishmentFactor", new DoubleData(1000)));
       injector.AddVariable(new HeuristicLab.Core.Variable("TotalEvaluatedNodes", new DoubleData(0)));
+      injector.AddVariable(new HeuristicLab.Core.Variable("MaxNumberOfTrainingSamples", new IntData(4000)));
 
       return injector;
     }
