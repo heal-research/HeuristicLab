@@ -36,6 +36,7 @@ namespace HeuristicLab.SupportVectorMachines {
       //Dataset infos
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("InputVariables", "List of allowed input variable names", typeof(ItemList), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("MaxTimeOffset", "(optional) Maximal allowed time offset for input variables", typeof(IntData), VariableKind.In));
@@ -47,6 +48,9 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true);
+      var inputVariableNames = from x in inputVariables
+                               select ((StringData)x).Data;
       int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
@@ -55,7 +59,8 @@ namespace HeuristicLab.SupportVectorMachines {
       IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
       int maxTimeOffset = maxTimeOffsetData == null ? 0 : maxTimeOffsetData.Data;
       SVMModel modelData = GetVariableValue<SVMModel>("SVMModel", scope, true);
-      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, start, end, minTimeOffset, maxTimeOffset);
+
+      SVM.Problem problem = SVMHelper.CreateSVMProblem(dataset, targetVariable, inputVariableNames, start, end, minTimeOffset, maxTimeOffset);
       SVM.Problem scaledProblem = modelData.RangeTransform.Scale(problem);
 
       double[,] values = new double[scaledProblem.Count, 2];

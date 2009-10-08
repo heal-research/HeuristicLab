@@ -38,7 +38,7 @@ namespace HeuristicLab.SupportVectorMachines {
       get { return svmModel; }
     }
 
-    private Dictionary<string, int> variableNames = new Dictionary<string, int>();
+    private List<string> variableNames;
     private string targetVariable;
     private int minTimeOffset;
     public int MinTimeOffset {
@@ -51,15 +51,15 @@ namespace HeuristicLab.SupportVectorMachines {
 
     public Predictor() : base() { } // for persistence
 
-    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames) :
+    public Predictor(SVMModel model, string targetVariable, IEnumerable<string> variableNames) :
       this(model, targetVariable, variableNames, 0, 0) {
     }
 
-    public Predictor(SVMModel model, string targetVariable, Dictionary<string, int> variableNames, int minTimeOffset, int maxTimeOffset)
+    public Predictor(SVMModel model, string targetVariable, IEnumerable<string> variableNames, int minTimeOffset, int maxTimeOffset)
       : base() {
       this.svmModel = model;
       this.targetVariable = targetVariable;
-      this.variableNames = variableNames;
+      this.variableNames = new List<string>(variableNames);
       this.minTimeOffset = minTimeOffset;
       this.maxTimeOffset = maxTimeOffset;
     }
@@ -69,14 +69,8 @@ namespace HeuristicLab.SupportVectorMachines {
       if (end > input.Rows) throw new ArgumentOutOfRangeException("number of rows in input is smaller then end");
       RangeTransform transform = svmModel.RangeTransform;
       Model model = svmModel.Model;
-      // maps columns of the current input dataset to the columns that were originally used in training
-      Dictionary<int, int> newIndex = new Dictionary<int, int>();
-      foreach (var pair in variableNames) {
-        newIndex[input.GetVariableIndex(pair.Key)] = pair.Value;
-      }
 
-
-      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), newIndex,
+      Problem p = SVMHelper.CreateSVMProblem(input, input.GetVariableIndex(targetVariable), variableNames,
         start, end, minTimeOffset, maxTimeOffset);
       Problem scaledProblem = transform.Scale(p);
 
@@ -87,17 +81,18 @@ namespace HeuristicLab.SupportVectorMachines {
       for (int resultRow = 0; resultRow < rows; resultRow++) {
         if (double.IsNaN(input.GetValue(resultRow, targetVariableIndex)))
           result[resultRow] = UpperPredictionLimit;
-        else
+        else if (resultRow + maxTimeOffset < 0) {
+          result[resultRow] = UpperPredictionLimit;
+          problemRow++;
+        } else {
           result[resultRow] = Math.Max(Math.Min(SVM.Prediction.Predict(model, scaledProblem.X[problemRow++]), UpperPredictionLimit), LowerPredictionLimit);
+        }
       }
       return result;
     }
 
     public override IEnumerable<string> GetInputVariables() {
-      return from pair in variableNames
-             where pair.Key != targetVariable
-             orderby pair.Value
-             select pair.Key;
+      return variableNames;
     }
 
     public override IView CreateView() {
@@ -108,7 +103,7 @@ namespace HeuristicLab.SupportVectorMachines {
       Predictor clone = (Predictor)base.Clone(clonedObjects);
       clone.svmModel = (SVMModel)Auxiliary.Clone(svmModel, clonedObjects);
       clone.targetVariable = targetVariable;
-      clone.variableNames = new Dictionary<string, int>(variableNames);
+      clone.variableNames = new List<string>(variableNames);
       clone.minTimeOffset = minTimeOffset;
       clone.maxTimeOffset = maxTimeOffset;
       return clone;
@@ -127,15 +122,12 @@ namespace HeuristicLab.SupportVectorMachines {
       node.Attributes.Append(maxTimeOffsetAttr);
       node.AppendChild(PersistenceManager.Persist(svmModel, document, persistedObjects));
       XmlNode variablesNode = document.CreateElement("Variables");
-      foreach (var pair in variableNames) {
-        XmlNode pairNode = document.CreateElement("Variable");
+      foreach (var variableName in variableNames) {
+        XmlNode variableNameNode = document.CreateElement("Variable");
         XmlAttribute nameAttr = document.CreateAttribute("Name");
-        XmlAttribute indexAttr = document.CreateAttribute("Index");
-        nameAttr.Value = pair.Key;
-        indexAttr.Value = XmlConvert.ToString(pair.Value);
-        pairNode.Attributes.Append(nameAttr);
-        pairNode.Attributes.Append(indexAttr);
-        variablesNode.AppendChild(pairNode);
+        nameAttr.Value = variableName;
+        variableNameNode.Attributes.Append(nameAttr);
+        variablesNode.AppendChild(variableNameNode);
       }
       node.AppendChild(variablesNode);
       return node;
@@ -148,10 +140,10 @@ namespace HeuristicLab.SupportVectorMachines {
 
       if (node.Attributes["MinTimeOffset"] != null) minTimeOffset = XmlConvert.ToInt32(node.Attributes["MinTimeOffset"].Value);
       if (node.Attributes["MaxTimeOffset"] != null) maxTimeOffset = XmlConvert.ToInt32(node.Attributes["MaxTimeOffset"].Value);
-      variableNames = new Dictionary<string, int>();
+      variableNames = new List<string>();
       XmlNode variablesNode = node.ChildNodes[1];
-      foreach (XmlNode pairNode in variablesNode.ChildNodes) {
-        variableNames[pairNode.Attributes["Name"].Value] = XmlConvert.ToInt32(pairNode.Attributes["Index"].Value);
+      foreach (XmlNode variableNameNode in variablesNode.ChildNodes) {
+        variableNames.Add(variableNameNode.Attributes["Name"].Value);
       }
     }
 
@@ -189,9 +181,8 @@ namespace HeuristicLab.SupportVectorMachines {
       p.UpperPredictionLimit = double.Parse(upperPredictionLimitLine[1], CultureInfo.InvariantCulture.NumberFormat);
       p.maxTimeOffset = int.Parse(maxTimeOffsetLine[1]);
       p.minTimeOffset = int.Parse(minTimeOffsetLine[1]);
-      int i = 1;
       foreach (string inputVariable in inputVariableLine.Skip(1)) {
-        p.variableNames[inputVariable.Trim()] = i++;
+        p.variableNames.Add(inputVariable.Trim());
       }
       p.svmModel = SVMModel.Import(reader);
       return p;

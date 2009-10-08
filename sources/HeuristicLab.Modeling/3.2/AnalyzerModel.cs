@@ -111,7 +111,9 @@ namespace HeuristicLab.Modeling {
     }
 
     public IEnumerable<KeyValuePair<ModelingResult, double>> GetVariableResults(string variableName) {
-      return variableResults[variableName];
+      if (variableResults.ContainsKey(variableName))
+        return variableResults[variableName];
+      else return new KeyValuePair<ModelingResult, double>[] { };
     }
 
     public IPredictor Predictor { get; set; }

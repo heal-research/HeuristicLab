@@ -5,58 +5,64 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.DataAnalysis;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.SupportVectorMachines {
   public class SVMHelper {
-
-    public static SVM.Problem CreateSVMProblem(Dataset dataset, int targetVariable, int start, int end, int minTimeOffset, int maxTimeOffset) {
-      return CreateSVMProblem(dataset, targetVariable, Enumerable.Range(0, dataset.Columns).ToDictionary<int, int>(x => x), start, end, minTimeOffset, maxTimeOffset);
-    }
-
-    public static SVM.Problem CreateSVMProblem(Dataset dataset, int targetVariable, Dictionary<int, int> columnMapping, int start, int end, int minTimeOffset, int maxTimeOffset) {
+    public static SVM.Problem CreateSVMProblem(Dataset dataset, int targetVariableIndex, IEnumerable<string> inputVariables, int start, int end, int minTimeOffset, int maxTimeOffset) {
       int rowCount = end - start;
-      List<int> skippedFeatures = new List<int>();
-      for (int i = 0; i < dataset.Columns; i++) {
-        if (i != targetVariable) {
-          if (dataset.GetRange(i, start, end) == 0)
-            skippedFeatures.Add(i);
-        }
-      }
 
-      int maxColumns = 0;
+      var targetVector = (from row in Enumerable.Range(start, rowCount)
+                          let val = dataset.GetValue(row, targetVariableIndex)
+                          where !double.IsNaN(val)
+                          select val).ToArray();
 
-      double[] targetVector = new double[rowCount];
-      for (int i = 0; i < rowCount; i++) {
-        double value = dataset.GetValue(start + i, targetVariable);
-        targetVector[i] = value;
-      }
-      targetVector = targetVector.Where(x => !double.IsNaN(x)).ToArray();
 
       SVM.Node[][] nodes = new SVM.Node[targetVector.Length][];
       List<SVM.Node> tempRow;
       int addedRows = 0;
-      int timeOffsetBase = columnMapping.Count;
+      int maxColumns = 0;
       for (int row = 0; row < rowCount; row++) {
         tempRow = new List<SVM.Node>();
-        for (int col = 0; col < dataset.Columns; col++) {
-          if (!skippedFeatures.Contains(col) && col != targetVariable && columnMapping.ContainsKey(col)) {
+        int nodeIndex = 0;
+        foreach (var inputVariable in inputVariables) {
+          ++nodeIndex;
+          int col = dataset.GetVariableIndex(inputVariable);
+          if (IsUsefulColumn(dataset, col, start, end)) {
             for (int timeOffset = minTimeOffset; timeOffset <= maxTimeOffset; timeOffset++) {
-              int actualColumn = columnMapping[col] * (maxTimeOffset - minTimeOffset + 1) + (timeOffset - minTimeOffset);
-              double value = dataset.GetValue(start + row + timeOffset, col);
-              if (!double.IsNaN(value)) {
-                tempRow.Add(new SVM.Node(actualColumn, value));
-                if (actualColumn > maxColumns) maxColumns = actualColumn;
+              int actualColumn = nodeIndex * (maxTimeOffset - minTimeOffset + 1) + (timeOffset - minTimeOffset);
+              if (start + row + timeOffset >= 0 && start + row + timeOffset < dataset.Rows) {
+                double value = dataset.GetValue(start + row + timeOffset, col);
+                if (!double.IsNaN(value)) {
+                  tempRow.Add(new SVM.Node(actualColumn, value));
+                  if (actualColumn > maxColumns) maxColumns = actualColumn;
+                }
               }
             }
           }
         }
-        if (!double.IsNaN(dataset.GetValue(start + row, targetVariable))) {
-          nodes[addedRows] = tempRow.OrderBy(x => x.Index).ToArray();
+        if (!double.IsNaN(dataset.GetValue(start + row, targetVariableIndex))) {
+          nodes[addedRows] = tempRow.ToArray();
           addedRows++;
         }
       }
 
       return new SVM.Problem(targetVector.Length, targetVector, nodes, maxColumns);
+    }
+
+    // checks if the column has at least two different non-NaN and non-Infinity values
+    private static bool IsUsefulColumn(Dataset dataset, int col, int start, int end) {
+      double min = double.PositiveInfinity;
+      double max = double.NegativeInfinity;
+      for (int i = start; i < end; i++) {
+        double x = dataset.GetValue(i, col);
+        if (!double.IsNaN(x) && !double.IsInfinity(x)) {
+          min = Math.Min(min, x);
+          max = Math.Max(max, x);
+        }
+        if (min != max) return true;
+      }
+      return false;
     }
   }
 }
