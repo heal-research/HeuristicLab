@@ -23,6 +23,7 @@ using System.Text;
 using HeuristicLab.GP.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace HeuristicLab.GP.StructureIdentification {
   public class SymbolicExpressionExporter : IFunctionTreeSerializer {
@@ -117,7 +118,7 @@ namespace HeuristicLab.GP.StructureIdentification {
     }
 
     public static string ExportToScheme(this Constant constant, IFunctionTree tree) {
-      return ((ConstantFunctionTree)tree).Value.ToString("r");
+      return ((ConstantFunctionTree)tree).Value.ToString("r", CultureInfo.InvariantCulture.NumberFormat);
     }
 
     public static string ExportToScheme(this Cosinus cosinus) {
@@ -166,12 +167,12 @@ namespace HeuristicLab.GP.StructureIdentification {
 
     public static string ExportToScheme(this Variable variable, IFunctionTree tree) {
       var varTree = (VariableFunctionTree)tree;
-      return "variable " + varTree.Weight.ToString("r") + " " +
+      return "variable " + varTree.Weight.ToString("r", CultureInfo.InvariantCulture.NumberFormat) + " " +
         varTree.VariableName + " " + varTree.SampleOffset;
     }
     public static string ExportToScheme(this Differential differential, IFunctionTree tree) {
       var varTree = (VariableFunctionTree)tree;
-      return "differential " + varTree.Weight.ToString("r") + " " +
+      return "differential " + varTree.Weight.ToString("r", CultureInfo.InvariantCulture.NumberFormat) + " " +
         varTree.VariableName + " " + varTree.SampleOffset;
     }
 
