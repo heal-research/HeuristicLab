@@ -403,7 +403,7 @@ namespace SVM
         }
 
         // return 1 if already optimal, return 0 otherwise
-        int select_working_set(int[] working_set)
+        protected virtual int select_working_set(int[] working_set)
         {
             // return i,j such that
             // i: Maximizes -y_i * grad(f)_i, i in I_up(\alpha)
@@ -522,7 +522,7 @@ namespace SVM
                 return (false);
         }
 
-        void do_shrinking()
+        protected virtual void do_shrinking()
         {
             int i;
             double GMax1 = -INF;		// Max { -y_i * grad(f)_i | i in I_up(\alpha) }
@@ -582,7 +582,7 @@ namespace SVM
                 }
         }
 
-        double calculate_rho()
+        protected virtual double calculate_rho()
         {
             double r;
             int nr_free = 0;
@@ -640,7 +640,7 @@ namespace SVM
         }
 
         // return 1 if already optimal, return 0 otherwise
-        private int select_working_set(int[] working_set)
+        protected override sealed int select_working_set(int[] working_set)
         {
             // return i,j such that y_i = y_j and
             // i: Maximizes -y_i * grad(f)_i, i in I_up(\alpha)
@@ -772,7 +772,7 @@ namespace SVM
                 return (false);
         }
 
-        private void do_shrinking()
+        protected override sealed void do_shrinking()
         {
             double GMax1 = -INF;	// Max { -y_i * grad(f)_i | y_i = +1, i in I_up(\alpha) }
             double GMax2 = -INF;	// Max { y_i * grad(f)_i | y_i = +1, i in I_low(\alpha) }
@@ -824,7 +824,7 @@ namespace SVM
                 }
         }
 
-        private double calculate_rho()
+        protected override sealed double calculate_rho()
         {
             int nr_free1 = 0, nr_free2 = 0;
             double ub1 = INF, ub2 = INF;
