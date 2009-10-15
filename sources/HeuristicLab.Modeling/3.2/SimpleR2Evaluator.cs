@@ -47,9 +47,8 @@ namespace HeuristicLab.Modeling {
         for (int i = 0; i < values.GetLength(0); i++) {
           double target = values[i, ORIGINAL_INDEX];
           if (!double.IsNaN(target) && !double.IsInfinity(target)) {
-            target = target - targetMean;
-            target = target * target;
-            targetDeviationTotalSumOfSquares += target;
+            double targetDiff = target - targetMean;
+            targetDeviationTotalSumOfSquares += targetDiff * targetDiff;
           }
         }
         double quality = 1 - sse / targetDeviationTotalSumOfSquares;

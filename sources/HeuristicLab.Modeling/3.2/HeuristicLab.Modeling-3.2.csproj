@@ -81,8 +81,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="alglib\ap.cs" />
+    <Compile Include="alglib\correlation.cs" />
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
+    <Compile Include="SimpleStableCorrelationCoefficientEvaluator.cs" />
+    <Compile Include="SimplePearsonCorrelationCoefficientEvaluator.cs" />
+    <Compile Include="SimpleSpearmansRankCorrelationCoefficientEvaluator.cs" />
     <Compile Include="DefaultModelAnalyzerOperators.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="ModelingResultCalculators.cs" />

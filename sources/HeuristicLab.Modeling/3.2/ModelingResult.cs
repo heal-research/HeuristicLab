@@ -42,6 +42,18 @@ namespace HeuristicLab.Modeling {
     ValidationCoefficientOfDetermination,
     TestCoefficientOfDetermination,
 
+    TrainingPearsonsCorrelationCoefficient,
+    ValidationPearsonCorrelationCoefficient,
+    TestPearsonCorrelationCoefficient,
+
+    TrainingStablePearsonsCorrelationCoefficient,
+    ValidationStablePearsonCorrelationCoefficient,
+    TestStablePearsonCorrelationCoefficient,
+
+    TrainingSpearmansRankCorrelationCoefficient,
+    ValidationSpearmansRankCorrelationCoefficient,
+    TestSpearmansRankCorrelationCoefficient,
+
     TrainingVarianceAccountedFor,
     ValidationVarianceAccountedFor,
     TestVarianceAccountedFor,

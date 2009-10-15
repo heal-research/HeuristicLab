@@ -58,6 +58,20 @@ namespace HeuristicLab.Modeling {
             ModelingResult.TestCoefficientOfDetermination
           }
         },
+        { typeof(SimplePearsonCorrelationCoefficientEvaluator),
+          new ModelingResult[] {
+            ModelingResult.TrainingPearsonsCorrelationCoefficient,
+            ModelingResult.ValidationPearsonCorrlationCoefficent,
+            ModelingResult.TestPearsonCorrelationCoefficient
+          }
+        },
+        { typeof(SimpleSpearmansRankCorrelationCoefficientEvaluator),
+          new ModelingResult[] {
+            ModelingResult.TrainingSpearmansRankCorrelationCoefficient,
+            ModelingResult.ValidationSpearmansRankCorrelationCoefficient,
+            ModelingResult.TestSpearmansRankCorrelationCoefficient
+          }
+        },
         { typeof(SimpleVarianceAccountedForEvaluator),
           new ModelingResult[] {
             ModelingResult.TrainingVarianceAccountedFor,
@@ -147,6 +161,21 @@ namespace HeuristicLab.Modeling {
       RegressionModelingResults[ModelingResult.TrainingCoefficientOfDetermination] = SimpleR2Evaluator.Calculate;
       RegressionModelingResults[ModelingResult.ValidationCoefficientOfDetermination] = SimpleR2Evaluator.Calculate;
       RegressionModelingResults[ModelingResult.TestCoefficientOfDetermination] = SimpleR2Evaluator.Calculate;
+
+      //Pearson Correlation Coefficient
+      RegressionModelingResults[ModelingResult.TrainingPearsonsCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.ValidationPearsonCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.TestPearsonCorrelationCoefficient] = SimplePearsonCorrelationCoefficientEvaluator.Calculate;
+
+      //Stable Pearson Correlation Coefficient
+      RegressionModelingResults[ModelingResult.TrainingStablePearsonsCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.ValidationStablePearsonCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.TestStablePearsonCorrelationCoefficient] = SimpleStableCorrelationCoefficientEvaluator.Calculate;
+
+      //Spearman's rank correlation coefficient
+      RegressionModelingResults[ModelingResult.TrainingSpearmansRankCorrelationCoefficient] = SimpleSpearmansRankCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.ValidationSpearmansRankCorrelationCoefficient] = SimpleSpearmansRankCorrelationCoefficientEvaluator.Calculate;
+      RegressionModelingResults[ModelingResult.TestSpearmansRankCorrelationCoefficient] = SimpleSpearmansRankCorrelationCoefficientEvaluator.Calculate;
 
       //Variance accounted for
       RegressionModelingResults[ModelingResult.TrainingVarianceAccountedFor] = SimpleVarianceAccountedForEvaluator.Calculate;
