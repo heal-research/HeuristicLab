@@ -1,0 +1,100 @@
+<html>
+<head>
+
+<title>AP Library adapted for C#</title>
+<style type="text/css">
+<!--
+h1 { font-family: Tahoma,sans-serif; font-size : larger; }
+h2 { font-family: Arial,sans-serif; font-size : 11pt; }
+h3 { font-family: Arial,sans-serif; font-size : 9pt; }
+.cond  { color:blue; }
+.const { color:#222222; }
+.func  { color:#111111; }
+-->
+</style>
+</head>
+<body>
+
+<h1>AP Library adapted for C#</h1>
+
+<p align=justify>
+The document describes an AP library adapted for C#. The AP library for C# contains a basic set of mathematical functions and collection classes needed to run the programs from the <a href="http://www.alglib.net/">ALGLIB</a> website.
+</p>
+
+<h1>Compatibility</h1>
+
+<p align=justify>
+This library must be compatible with any C# compiler.
+</p>
+
+<h1>Structure and Use</h1>
+
+<p align=justify>
+The library includes the only file <code>ap.cs</code>
+</p>
+
+<h1>AP Library Description</h1>
+
+<font size=-1>
+<a href="#constants">Constants</a><br>
+<a href="#functions">Functions</a><br>
+<a href="#complex">Complex numbers</a><br>
+</font>
+
+<a name="constants"><h1>Constants</h1></a>
+
+<p align=justify>
+<span class=const>AP.Math.MachineEpsilon</span><br>
+The constant represents the accuracy of machine operations, that is the minimum number for <code>1+machineepsilon&ne;1</code> in the given bit grid. The constant may be taken &quot;oversized&quot;, that is real accuracy can be even higher.
+</p>
+
+<p align=justify>
+<span class=const>AP.Math.MaxRealNumber</span><br>
+The constant represents the highest value of the positive real number, which could be represented on this machine. The constant may be taken &quot;oversized&quot;, that is real boundary can be even higher.
+</p>
+
+<p align=justify>
+<span class=const>AP.Math.MinRealNumber</span><br>
+The constant represents the lowest value of positive real number, which could be represented on this machine. The constant may be taken &quot;oversized&quot;, that is real boundary can be even lower.
+</p>
+
+<a name="functions"><h1>Functions</h1></a>
+
+<p align=justify>
+<span class=func><b>public static double</b> AP.Math.RandomReal()</span><br>
+Returns a random real number from half-interval [0,1).
+</p>
+
+<p align=justify>
+<span class=func><b>public static int</b> AP.Math.RandomInteger(<b>int</b> N)</span><br>
+Returns a random integer between 0 and maxv-1.
+</p>
+
+<p align=justify>
+<span class=func><b>public static double</b> AP.Math.Sqr(<b>double</b> x)</span><br>
+Returns x<sup>2</sup>.
+</p>
+
+<a name="complex"><h1>Class of complex numbers</h1></a>
+
+<p align=justify>
+AP library includes the <code>AP.Complex</code> structure that supports operations with compex numbers. Access to real and imaginary parts of complex number is implemented through the public fields <code>x</code> and <code>y</code>. Arithmetical operations are supported, the same as with embedded data types, by overloading of operations: addition, subtraction, multiplication and division. Addition, subtraction and multiplication are performed by a usual way (i.e., according to their definition which can be found in any textdook in algebra), division is performed using so called &quot;safe&quot; algorithm that could never cause overflow when calculating intermediate results. The library also includes several functions performing elementary operations with complex numbers.
+</p>
+
+<p align=justify>
+<span class=func><b>double</b> AP.Math.AbsComplex(AP.Complex z)</span><br>
+Returns the modulus of complex number z. It should be noted that the modulus calculation is performed using so called &quot;safe&quot; algorithm, that could never cause overflow when calculating intermediate results.
+</p>
+
+<p align=justify>
+<span class=func>AP.Complex AP.Math.Conj(AP.Complex z)</span><br>
+Returns complex conjugate to z.
+</p>
+
+<p align=justify>
+<span class=func>AP.Complex AP.Math.CSqr(AP.Complex z)</span><br>
+Returns the square of z.
+</p>
+
+</body>
+</html>

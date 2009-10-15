@@ -1,3 +1,23 @@
+/*************************************************************************
+AP library
+Copyright (c) 2003-2009 Sergey Bochkanov (ALGLIB project).
+
+>>> LICENSE >>>
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation (www.fsf.org); either version 2 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+A copy of the GNU General Public License is available at
+http://www.fsf.org/licensing/licenses
+
+>>> END OF LICENSE >>>
+*************************************************************************/
 namespace AP
 {
     /********************************************************************
@@ -90,7 +110,8 @@ namespace AP
     ********************************************************************/
     public class Math
     {
-        public static System.Random RndObject = new System.Random(System.DateTime.Now.Millisecond);
+        //public static System.Random RndObject = new System.Random(System.DateTime.Now.Millisecond);
+        public static System.Random RndObject = new System.Random(System.DateTime.Now.Millisecond + 1000*System.DateTime.Now.Second + 60*1000*System.DateTime.Now.Minute);
 
         public const double MachineEpsilon = 5E-16;
         public const double MaxRealNumber = 1E300;

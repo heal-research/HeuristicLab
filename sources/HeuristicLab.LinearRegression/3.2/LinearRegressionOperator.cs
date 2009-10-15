@@ -103,7 +103,7 @@ namespace HeuristicLab.LinearRegression {
       double[] coefficients = new double[inputMatrix.GetLength(1)];
       for (int i = 0; i < weights.Length; i++) weights[i] = 1.0;
       // call external ALGLIB solver
-      leastsquares.buildgeneralleastsquares(ref targetVector, ref weights, ref inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), ref coefficients);
+      alglib.leastsquares.buildgeneralleastsquares(ref targetVector, ref weights, ref inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), ref coefficients);
 
       return coefficients;
     }

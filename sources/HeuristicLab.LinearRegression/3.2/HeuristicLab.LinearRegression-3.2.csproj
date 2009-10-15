@@ -79,17 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="alglib\ap.cs" />
-    <Compile Include="alglib\bdsvd.cs" />
-    <Compile Include="alglib\bidiagonal.cs" />
-    <Compile Include="alglib\blas.cs" />
-    <Compile Include="alglib\leastsquares.cs" />
-    <Compile Include="alglib\lq.cs" />
-    <Compile Include="alglib\qr.cs" />
-    <Compile Include="alglib\reflections.cs" />
-    <Compile Include="alglib\rotations.cs" />
-    <Compile Include="alglib\spline3.cs" />
-    <Compile Include="alglib\svd.cs" />
     <Compile Include="LinearClassification.cs" />
     <Compile Include="HeuristicLabLinearRegressionPlugin.cs" />
     <Compile Include="LinearRegression.cs" />
@@ -102,6 +91,10 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ALGLIB\ALGLIB.csproj">
+      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
+      <Name>ALGLIB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>
@@ -158,11 +151,6 @@
       <Project>{B4BE8E53-BA06-4237-9A01-24255F880201}</Project>
       <Name>HeuristicLab.SequentialEngine-3.2</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ALGLIB License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

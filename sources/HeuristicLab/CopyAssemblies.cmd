@@ -6,6 +6,8 @@ mkdir plugins\cache
 mkdir plugins\temp
 mkdir plugins\backup
 
+copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB.dll" .\plugins
+copy "%SolutionDir%\ALGLIB\%Outdir%\ALGLIB License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.2\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.AdvancedOptimizationFrontend\3.3\%Outdir%\HeuristicLab.AdvancedOptimizationFrontend-3.3.dll" .\plugins
 copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking.dll" .\plugins

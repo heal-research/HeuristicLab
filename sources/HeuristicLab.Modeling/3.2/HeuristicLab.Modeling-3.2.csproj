@@ -81,8 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="alglib\ap.cs" />
-    <Compile Include="alglib\correlation.cs" />
     <Compile Include="AnalyzerModel.cs" />
     <Compile Include="BestSolutionStorer.cs" />
     <Compile Include="SimpleStableCorrelationCoefficientEvaluator.cs" />
@@ -131,6 +129,10 @@
     <Compile Include="VariableQualityImpactCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ALGLIB\ALGLIB.csproj">
+      <Project>{44456535-5DB5-454A-BE2B-7426DA6700B6}</Project>
+      <Name>ALGLIB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.2\HeuristicLab.Common-3.2.csproj">
       <Project>{1FC004FC-59AF-4249-B1B6-FF25873A20E4}</Project>
       <Name>HeuristicLab.Common-3.2</Name>

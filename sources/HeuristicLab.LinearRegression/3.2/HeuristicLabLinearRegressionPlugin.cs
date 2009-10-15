@@ -26,7 +26,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.LinearRegression {
   [ClassInfo(Name = "HeuristicLab.LinearRegression-3.2")]
   [PluginFile(Filename = "HeuristicLab.LinearRegression-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [PluginFile(Filename = "ALGLIB License.txt", Filetype = PluginFileType.License)]
+  [Dependency(Dependency = "ALGLIB")]
   [Dependency(Dependency = "HeuristicLab.Common-3.2")]
   [Dependency(Dependency = "HeuristicLab.Core-3.2")]
   [Dependency(Dependency = "HeuristicLab.Data-3.2")]

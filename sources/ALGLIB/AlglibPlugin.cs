@@ -1,6 +1,6 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2008 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2009 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,17 +21,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Modeling {
-  [ClassInfo(Name = "HeuristicLab.Modeling-3.2")]
-  [PluginFile(Filename = "HeuristicLab.Modeling-3.2.dll", Filetype = PluginFileType.Assembly)]
-  [Dependency(Dependency = "ALGLIB")]
-  [Dependency(Dependency = "HeuristicLab.Common-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Core-3.2")]
-  [Dependency(Dependency = "HeuristicLab.Data-3.2")]
-  [Dependency(Dependency = "HeuristicLab.DataAnalysis-3.2")]
-  public class HeuristicLabModelingPlugin : PluginBase {
+namespace ALGLIB {
+  [ClassInfo(Name = "ALGLIB")]
+  [PluginFile(Filename = "ALGLIB.dll", Filetype = PluginFileType.Assembly)]
+  [PluginFile(Filename = "ALGLIB License.txt", Filetype = PluginFileType.License)]
+  public class AlgLibPlugin : PluginBase {
   }
 }
