@@ -49,19 +49,20 @@ namespace HeuristicLab.SupportVectorMachines {
       get { return maxTimeOffset; }
     }
 
-    public Predictor() : base() { } // for persistence
+    // for persistence
+    public Predictor() : base() { }
 
     public Predictor(SVMModel model, string targetVariable, IEnumerable<string> variableNames) :
       this(model, targetVariable, variableNames, 0, 0) {
     }
 
     public Predictor(SVMModel model, string targetVariable, IEnumerable<string> variableNames, int minTimeOffset, int maxTimeOffset)
-      : base() {
+      : this() {
       this.svmModel = model;
       this.targetVariable = targetVariable;
-      this.variableNames = new List<string>(variableNames);
       this.minTimeOffset = minTimeOffset;
       this.maxTimeOffset = maxTimeOffset;
+      this.variableNames = new List<string>(variableNames);
     }
 
     public override double[] Predict(Dataset input, int start, int end) {
@@ -168,7 +169,6 @@ namespace HeuristicLab.SupportVectorMachines {
     }
 
     public static Predictor Import(TextReader reader) {
-      Predictor p = new Predictor();
       string[] targetVariableLine = reader.ReadLine().Split(':');
       string[] lowerPredictionLimitLine = reader.ReadLine().Split(':');
       string[] upperPredictionLimitLine = reader.ReadLine().Split(':');
@@ -176,15 +176,19 @@ namespace HeuristicLab.SupportVectorMachines {
       string[] minTimeOffsetLine = reader.ReadLine().Split(':');
       string[] inputVariableLine = reader.ReadLine().Split(':', ';');
 
-      p.targetVariable = targetVariableLine[1].Trim();
-      p.LowerPredictionLimit = double.Parse(lowerPredictionLimitLine[1], CultureInfo.InvariantCulture.NumberFormat);
-      p.UpperPredictionLimit = double.Parse(upperPredictionLimitLine[1], CultureInfo.InvariantCulture.NumberFormat);
-      p.maxTimeOffset = int.Parse(maxTimeOffsetLine[1]);
-      p.minTimeOffset = int.Parse(minTimeOffsetLine[1]);
+      string targetVariable = targetVariableLine[1].Trim();
+      double lowerPredictionLimit = double.Parse(lowerPredictionLimitLine[1], CultureInfo.InvariantCulture.NumberFormat);
+      double upperPredictionLimit = double.Parse(upperPredictionLimitLine[1], CultureInfo.InvariantCulture.NumberFormat);
+      int maxTimeOffset = int.Parse(maxTimeOffsetLine[1]);
+      int minTimeOffset = int.Parse(minTimeOffsetLine[1]);
+      List<string> variableNames = new List<string>();
       foreach (string inputVariable in inputVariableLine.Skip(1)) {
-        p.variableNames.Add(inputVariable.Trim());
+        variableNames.Add(inputVariable.Trim());
       }
-      p.svmModel = SVMModel.Import(reader);
+      SVMModel model = SVMModel.Import(reader);
+      Predictor p = new Predictor(model, targetVariable, variableNames, minTimeOffset, maxTimeOffset);
+      p.UpperPredictionLimit = upperPredictionLimit;
+      p.LowerPredictionLimit = lowerPredictionLimit;
       return p;
     }
   }
