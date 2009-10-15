@@ -61,8 +61,15 @@ namespace HeuristicLab.Modeling {
         { typeof(SimplePearsonCorrelationCoefficientEvaluator),
           new ModelingResult[] {
             ModelingResult.TrainingPearsonsCorrelationCoefficient,
-            ModelingResult.ValidationPearsonCorrlationCoefficent,
+            ModelingResult.ValidationPearsonCorrelationCoefficient,
             ModelingResult.TestPearsonCorrelationCoefficient
+          }
+        },
+        { typeof(SimpleStableCorrelationCoefficientEvaluator),
+          new ModelingResult[] {
+            ModelingResult.TrainingStablePearsonsCorrelationCoefficient,
+            ModelingResult.ValidationStablePearsonCorrelationCoefficient,
+            ModelingResult.TestStablePearsonCorrelationCoefficient
           }
         },
         { typeof(SimpleSpearmansRankCorrelationCoefficientEvaluator),
