@@ -97,7 +97,9 @@
     <Compile Include="svd.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ALGLIB License.txt" />
+    <Content Include="ALGLIB License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\HeuristicLab.PluginInfrastructure.csproj">
