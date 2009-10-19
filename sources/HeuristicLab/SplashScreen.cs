@@ -101,7 +101,6 @@ namespace HeuristicLab {
         else info = e.Action.ToString();
       }
       SetInfoText(info);
-      Application.DoEvents();
     }
 
     private void fadeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
@@ -125,20 +124,24 @@ namespace HeuristicLab {
           fadeTimer.Start();
         } else {
           Opacity = 0;
-          Close();
+          CloseSplashScreen();
         }
       }
     }
 
-    private void SplashScreen_FormClosing(object sender, FormClosingEventArgs e) {
-      PluginManager.Manager.Action -= new PluginManagerActionEventHandler(this.Manager_Action);
-    }
-
     private void closeButton_Click(object sender, EventArgs e) {
       lock(bigLock) {
-        closing = true;
         if(fadeTimer != null) fadeTimer.Stop();
-        Close();
+        CloseSplashScreen();
+      }
+    }
+
+    private void CloseSplashScreen() {
+      if (!closing) { // just close once
+        closing = true;
+        PluginManager.Manager.Action -= new PluginManagerActionEventHandler(this.Manager_Action); // remove event before calling close
+        Application.DoEvents(); // work up all existing events
+        Close(); // close
       }
     }
   }
