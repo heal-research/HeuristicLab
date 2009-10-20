@@ -39,7 +39,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("Dataset", "The dataset", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training set", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training set", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Predictor", "The predictor combines the function tree and the evaluator and can be used to generate estimated values", typeof(IPredictor), VariableKind.New));
     }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
       IPredictor predictor = CreatePredictor(model, evaluator, punishmentFactor, dataset, targetVariable, start, end);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
       return null;

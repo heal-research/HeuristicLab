@@ -51,7 +51,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     public MulticlassOneVsOneAnalyzer()
       : base() {
       AddVariableInfo(new VariableInfo(DATASET, "The dataset to use", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "Target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "Target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo(TARGETCLASSVALUES, "Class values of the target variable in the original dataset", typeof(ItemList<DoubleData>), VariableKind.In));
       AddVariableInfo(new VariableInfo(CLASSAVALUE, "The original class value of the class A in the subscope", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo(CLASSBVALUE, "The original class value of the class B in the subscope", typeof(DoubleData), VariableKind.In));
@@ -66,7 +66,8 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>(DATASET, scope, true);
-      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+      string targetVariable = GetVariableValue<StringData>(TARGETVARIABLE, scope, true).Data;
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       int trainingSamplesStart = GetVariableValue<IntData>(TRAININGSAMPLESSTART, scope, true).Data;
       int trainingSamplesEnd = GetVariableValue<IntData>(TRAININGSAMPLESEND, scope, true).Data;
       int samplesStart = GetVariableValue<IntData>(SAMPLESSTART, scope, true).Data;
@@ -94,7 +95,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
       int correctlyClassified = 0;
       for(int i = 0; i < (samplesEnd - samplesStart); i++) {
-        double originalClassValue = dataset.GetValue(i + samplesStart, targetVariable);
+        double originalClassValue = dataset.GetValue(i + samplesStart, targetVariableIndex);
         double estimatedClassValue = classValues[0].Data;
         int maxVotes = votes[i, 0];
         int sameVotes = 0;

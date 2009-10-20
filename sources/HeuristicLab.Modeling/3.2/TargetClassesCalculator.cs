@@ -31,13 +31,13 @@ namespace HeuristicLab.Modeling {
     public TargetClassesCalculator()
       : base() {
       AddVariableInfo(new VariableInfo("Dataset", "The dataset", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TargetClassValues", "The original class values of target variable (for instance negative=0 and positive=1).", typeof(ItemList<DoubleData>), VariableKind.New));
     }
 
     public override IOperation Apply(IScope scope) {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
 
       ItemList<DoubleData> classes = new ItemList<DoubleData>();
       foreach (double x in dataset.GetVariableValues(targetVariable).Distinct().OrderBy(v => v)) {

@@ -105,19 +105,21 @@ namespace HeuristicLab.Modeling {
           TrySetVariable("ValidationSamplesEnd", parser.ValidationSamplesEnd);
           TrySetVariable("TestSamplesStart", parser.TestSamplesStart);
           TrySetVariable("TestSamplesEnd", parser.TestSamplesEnd);
-          TrySetVariable("TargetVariable", parser.TargetVariable);
-
+          
           for (int i = 0; i < parser.VariableNames.Length; i++) {
             dataset.SetVariableName(i, parser.VariableNames[i]);
           }
 
+          ((StringData)(ProblemInjector.GetVariable("TargetVariable").Value)).Data = 
+            dataset.GetVariableName(parser.TargetVariable);
+
           IVariable var = ProblemInjector.GetVariable("AllowedFeatures");
           if (var != null) {
-            ItemList<IntData> allowedFeatures = (ItemList<IntData>)var.Value;
+            ItemList<StringData> allowedFeatures = (ItemList<StringData>)var.Value;
             allowedFeatures.Clear();
             List<int> nonInputVariables = parser.NonInputVariables;
             for (int i = 0; i < dataset.Columns; i++) {
-              if (!nonInputVariables.Contains(i)) allowedFeatures.Add(new IntData(i));
+              if (!nonInputVariables.Contains(i)) allowedFeatures.Add(new StringData(dataset.GetVariableName(i)));
             }
           }
           Refresh();

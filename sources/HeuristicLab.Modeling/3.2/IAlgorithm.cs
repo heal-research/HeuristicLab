@@ -31,14 +31,14 @@ namespace HeuristicLab.Modeling {
     string Description { get; }
 
     Dataset Dataset { get; set; }
-    IEnumerable<int> AllowedVariables { get; set; }
+    IEnumerable<string> AllowedVariables { get; set; }
     int TrainingSamplesStart { get; set; }
     int TrainingSamplesEnd { get; set; }
     int ValidationSamplesStart { get; set; }
     int ValidationSamplesEnd { get; set; }
     int TestSamplesStart { get; set; }
     int TestSamplesEnd { get; set; }
-    int TargetVariable { get; set; }
+    string TargetVariable { get; set; }
     IEngine Engine { get; }
     IAnalyzerModel Model { get; }
   }

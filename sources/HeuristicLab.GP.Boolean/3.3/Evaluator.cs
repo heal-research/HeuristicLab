@@ -34,7 +34,7 @@ namespace HeuristicLab.GP.Boolean {
       : base() {
       AddVariableInfo(new VariableInfo("FunctionTree", "The function tree representing the boolean expression to evaluate", typeof(IGeneticProgrammingModel), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "The boolean dataset (values 0.0 = false, 1.0=true)", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Errors", "", typeof(DoubleData), VariableKind.New | VariableKind.Out));
@@ -43,7 +43,7 @@ namespace HeuristicLab.GP.Boolean {
     public override IOperation Apply(IScope scope) {
       IGeneticProgrammingModel gpModel = GetVariableValue<IGeneticProgrammingModel>("FunctionTree", scope, true);
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      int targetVariable = dataset.GetVariableIndex(GetVariableValue<StringData>("TargetVariable", scope, true).Data);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
 

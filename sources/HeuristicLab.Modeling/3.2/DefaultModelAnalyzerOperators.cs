@@ -57,7 +57,7 @@ namespace HeuristicLab.Modeling {
       model.Predictor = modelScope.GetVariableValue<IPredictor>("Predictor", false);
       Dataset ds = modelScope.GetVariableValue<Dataset>("Dataset", true);
       model.Dataset = ds;
-      model.TargetVariable = ds.GetVariableName(modelScope.GetVariableValue<IntData>("TargetVariable", true).Data);
+      model.TargetVariable = modelScope.GetVariableValue<StringData>("TargetVariable", true).Data;
       model.Type = ModelType.Regression;
       model.TrainingSamplesStart = modelScope.GetVariableValue<IntData>("TrainingSamplesStart", true).Data;
       model.TrainingSamplesEnd = modelScope.GetVariableValue<IntData>("TrainingSamplesEnd", true).Data;

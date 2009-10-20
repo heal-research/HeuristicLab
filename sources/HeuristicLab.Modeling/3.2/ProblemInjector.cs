@@ -40,13 +40,13 @@ namespace HeuristicLab.Modeling {
       GetVariableInfo("Dataset").Local = true;
       AddVariable(new Variable("Dataset", new Dataset()));
 
-      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.New));
+      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(StringData), VariableKind.New));
       GetVariableInfo("TargetVariable").Local = true;
-      AddVariable(new Variable("TargetVariable", new IntData()));
+      AddVariable(new Variable("TargetVariable", new StringData()));
 
-      AddVariableInfo(new VariableInfo("AllowedFeatures", "Indexes of allowed input variables", typeof(ItemList<IntData>), VariableKind.New));
+      AddVariableInfo(new VariableInfo("AllowedFeatures", "Indexes of allowed input variables", typeof(ItemList<StringData>), VariableKind.In));
       GetVariableInfo("AllowedFeatures").Local = true;
-      AddVariable(new Variable("AllowedFeatures", new ItemList<IntData>()));
+      AddVariable(new Variable("AllowedFeatures", new ItemList<StringData>()));
 
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "TrainingSamplesStart", typeof(IntData), VariableKind.New));
       GetVariableInfo("TrainingSamplesStart").Local = true;
@@ -93,8 +93,8 @@ namespace HeuristicLab.Modeling {
       AddVariableToScope("TestSamplesEnd", scope);
 
       Dataset operatorDataset = (Dataset)GetVariable("Dataset").Value;
-      int targetVariable = ((IntData)GetVariable("TargetVariable").Value).Data;
-      ItemList<IntData> operatorAllowedFeatures = (ItemList<IntData>)GetVariable("AllowedFeatures").Value;
+      string targetVariable = ((StringData)GetVariable("TargetVariable").Value).Data;
+      ItemList<StringData> operatorAllowedFeatures = (ItemList<StringData>)GetVariable("AllowedFeatures").Value;
 
       Dataset scopeDataset = CreateNewDataset(operatorDataset, targetVariable, operatorAllowedFeatures);
       ItemList inputVariables = new ItemList();
@@ -103,7 +103,7 @@ namespace HeuristicLab.Modeling {
       }
 
       scope.AddVariable(new Variable(scope.TranslateName("Dataset"), scopeDataset));
-      scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), new IntData(0)));
+      scope.AddVariable(new Variable(scope.TranslateName("TargetVariable"), new StringData(targetVariable)));
       scope.AddVariable(new Variable(scope.TranslateName("NumberOfInputVariables"), new IntData(scopeDataset.Columns - 1)));
       scope.AddVariable(new Variable(scope.TranslateName("InputVariables"), inputVariables));
 
@@ -126,17 +126,19 @@ namespace HeuristicLab.Modeling {
       return null;
     }
 
-    private Dataset CreateNewDataset(Dataset operatorDataset, int targetVariable, ItemList<IntData> operatorAllowedFeatures) {
-      int columns = (operatorAllowedFeatures.Count() + 1);
-      double[] values = new double[operatorDataset.Rows * columns];
-
-      for (int i = 0; i < values.Length; i++) {
-        int row = i / columns;
-        int column = i % columns;
-        if (column == 0) {
-          values[i] = operatorDataset.GetValue(row, targetVariable);
-        } else {
-          values[i] = operatorDataset.GetValue(row, operatorAllowedFeatures[column-1].Data);
+    private Dataset CreateNewDataset(Dataset operatorDataset, string targetVariable, ItemList<StringData> operatorAllowedVariables) {
+      int columns = (operatorAllowedVariables.Count() + 1);
+      int rows = operatorDataset.Rows;
+      double[] values = new double[rows * columns];
+      int targetVariableIndex = operatorDataset.GetVariableIndex(targetVariable);
+      for (int row = 0; row < rows; row++) {
+        int column = 0;
+        values[row*columns + column] = operatorDataset.GetValue(row, targetVariableIndex); // set target variable value to column index 0
+        column++; // start input variables at column index 1
+        foreach (var inputVariable in operatorAllowedVariables) {
+          int variableColumnIndex = operatorDataset.GetVariableIndex(inputVariable.Data);
+          values[row * columns + column] = operatorDataset.GetValue(row, variableColumnIndex);
+          column++;
         }
       }
 
@@ -147,13 +149,14 @@ namespace HeuristicLab.Modeling {
       ds.Samples = values;
       double[] scalingFactor = new double[columns];
       double[] scalingOffset = new double[columns];
-      ds.SetVariableName(0, operatorDataset.GetVariableName(targetVariable));
-      scalingFactor[0] = operatorDataset.ScalingFactor[targetVariable];
-      scalingOffset[0] = operatorDataset.ScalingOffset[targetVariable];
+      ds.SetVariableName(0, targetVariable);
+      scalingFactor[0] = operatorDataset.ScalingFactor[targetVariableIndex];
+      scalingOffset[0] = operatorDataset.ScalingOffset[targetVariableIndex];
       for (int column = 1; column < columns; column++) {
-        ds.SetVariableName(column, operatorDataset.GetVariableName(operatorAllowedFeatures[column - 1].Data));
-        scalingFactor[column] = operatorDataset.ScalingFactor[operatorAllowedFeatures[column - 1].Data];
-        scalingOffset[column] = operatorDataset.ScalingOffset[operatorAllowedFeatures[column - 1].Data];
+        int variableColumnIndex = operatorDataset.GetVariableIndex(operatorAllowedVariables[column - 1].Data);
+        ds.SetVariableName(column, operatorAllowedVariables[column - 1].Data);
+        scalingFactor[column] = operatorDataset.ScalingFactor[variableColumnIndex];
+        scalingOffset[column] = operatorDataset.ScalingOffset[variableColumnIndex];
       }
       ds.ScalingOffset = scalingOffset;
       ds.ScalingFactor = scalingFactor;

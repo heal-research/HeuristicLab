@@ -46,7 +46,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
     public MulticlassModeller()
       : base() {
       AddVariableInfo(new VariableInfo(DATASET, "The original dataset and the new dataset parts in the newly created subscopes", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "TargetVariable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo(TARGETVARIABLE, "TargetVariable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo(TARGETCLASSVALUES, "Class values of the target variable in the original dataset and in the new dataset parts", typeof(ItemList<DoubleData>), VariableKind.In | VariableKind.New));
       AddVariableInfo(new VariableInfo(CLASSAVALUE, "The original class value of the new class A", typeof(DoubleData), VariableKind.New));
       AddVariableInfo(new VariableInfo(CLASSBVALUE, "The original class value of the new class B", typeof(DoubleData), VariableKind.New));
@@ -58,7 +58,7 @@ namespace HeuristicLab.GP.StructureIdentification.Classification {
 
     public override IOperation Apply(IScope scope) {
       Dataset origDataset = GetVariableValue<Dataset>(DATASET, scope, true);
-      int targetVariable = GetVariableValue<IntData>(TARGETVARIABLE, scope, true).Data;
+      int targetVariable = origDataset.GetVariableIndex(GetVariableValue<StringData>(TARGETVARIABLE, scope, true).Data);
       ItemList<DoubleData> classValues = GetVariableValue<ItemList<DoubleData>>(TARGETCLASSVALUES, scope, true);
       int origTrainingSamplesStart = GetVariableValue<IntData>(TRAININGSAMPLESSTART, scope, true).Data;
       int origTrainingSamplesEnd = GetVariableValue<IntData>(TRAININGSAMPLESEND, scope, true).Data;

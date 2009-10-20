@@ -35,7 +35,7 @@ namespace HeuristicLab.Modeling {
       : base() {
       AddVariableInfo(new VariableInfo("Predictor", "The predictor used to evaluate the model", typeof(IPredictor), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset", typeof(Dataset), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "TargetVariable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("InputVariableNames", "Names of used variables in the model (optional)", typeof(ItemList<StringData>), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "SamplesStart", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "SamplesEnd", typeof(IntData), VariableKind.In));
@@ -49,8 +49,8 @@ namespace HeuristicLab.Modeling {
     public override IOperation Apply(IScope scope) {
       IPredictor predictor = GetVariableValue<IPredictor>("Predictor", scope, true);
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
-      string targetVariableName = dataset.GetVariableName(targetVariable);
+      string targetVariableName = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
+      int targetVariable = dataset.GetVariableIndex(targetVariableName);
       ItemList<StringData> inputVariableNames = GetVariableValue<ItemList<StringData>>("InputVariableNames", scope, true, false);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;

@@ -36,7 +36,7 @@ namespace HeuristicLab.LinearRegression {
     private static double constant = 1.0;
 
     public LinearRegressionOperator() {
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the column of the dataset that holds the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("Dataset", "Dataset with all samples on which to apply the function", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesStart", "Start index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
       AddVariableInfo(new VariableInfo("SamplesEnd", "End index of samples in dataset to evaluate", typeof(IntData), VariableKind.In));
@@ -46,8 +46,9 @@ namespace HeuristicLab.LinearRegression {
     }
 
     public override IOperation Apply(IScope scope) {
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
+      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
+      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       int start = GetVariableValue<IntData>("SamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("SamplesEnd", scope, true).Data;
       IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
@@ -55,11 +56,11 @@ namespace HeuristicLab.LinearRegression {
       IntData minTimeOffsetData = GetVariableValue<IntData>("MinTimeOffset", scope, true, false);
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
 
-      List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariable, start, end);
-      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, allowedColumns, start, end, minTimeOffset, maxTimeOffset);
+      List<int> allowedColumns = CalculateAllowedColumns(dataset, targetVariableIndex, start, end);
+      List<int> allowedRows = CalculateAllowedRows(dataset, targetVariableIndex, allowedColumns, start, end, minTimeOffset, maxTimeOffset);
 
       double[,] inputMatrix = PrepareInputMatrix(dataset, allowedColumns, allowedRows, minTimeOffset, maxTimeOffset);
-      double[] targetVector = PrepareTargetVector(dataset, targetVariable, allowedRows);
+      double[] targetVector = PrepareTargetVector(dataset, targetVariableIndex, allowedRows);
       double[] coefficients = CalculateCoefficients(inputMatrix, targetVector);
       IFunctionTree tree = CreateModel(coefficients, allowedColumns.Select(i => dataset.GetVariableName(i)).ToList(), minTimeOffset, maxTimeOffset);
 

@@ -171,17 +171,17 @@ namespace HeuristicLab.CEDMA.Server {
 
     private void SetProblemParameters(HeuristicLab.Modeling.IAlgorithm algo, ProblemSpecification spec) {
       algo.Dataset = spec.Dataset;
-      algo.TargetVariable = spec.Dataset.GetVariableIndex(spec.TargetVariable);
+      algo.TargetVariable = spec.TargetVariable;
       algo.TrainingSamplesStart = spec.TrainingSamplesStart;
       algo.TrainingSamplesEnd = spec.TrainingSamplesEnd;
       algo.ValidationSamplesStart = spec.ValidationSamplesStart;
       algo.ValidationSamplesEnd = spec.ValidationSamplesEnd;
       algo.TestSamplesStart = spec.TestSamplesStart;
       algo.TestSamplesEnd = spec.TestSamplesEnd;
-      List<int> allowedFeatures = new List<int>();
+      List<string> allowedFeatures = new List<string>();
       foreach (string inputVariable in spec.InputVariables) {
         if (inputVariable != spec.TargetVariable) {
-          allowedFeatures.Add(spec.Dataset.GetVariableIndex(inputVariable));
+          allowedFeatures.Add(inputVariable);
         }
       }
 
@@ -191,7 +191,7 @@ namespace HeuristicLab.CEDMA.Server {
         timeSeriesAlgo.MaxTimeOffset = spec.MaxTimeOffset;
         timeSeriesAlgo.TrainingSamplesStart = spec.TrainingSamplesStart - spec.MinTimeOffset + 1; // first possible index is 1 because of differential symbol
         if (spec.AutoRegressive) {
-          allowedFeatures.Add(spec.Dataset.GetVariableIndex(spec.TargetVariable));
+          allowedFeatures.Add(spec.TargetVariable);
         }
       }
       algo.AllowedVariables = allowedFeatures;
@@ -239,31 +239,6 @@ namespace HeuristicLab.CEDMA.Server {
 
       return problemSpecifications[targetVariable];
     }
-
-    //internal void EnableInputVariable(string target, string name) {
-    //  problemSpecifications[target].AddInputVariable(name);
-    //}
-
-    //internal void DisableInputVariable(string target, string name) {
-    //  problemSpecifications[target].RemoveInputVariable(name);
-    //}
-
-    //internal void SetLearningTask(string target, LearningTask task) {
-    //  problemSpecifications[target].LearningTask = task;
-    //}
-
-    //internal void SetDatasetBoundaries(
-    //  string target,
-    //  int trainingStart, int trainingEnd,
-    //  int validationStart, int validationEnd,
-    //  int testStart, int testEnd) {
-    //  problemSpecifications[target].TrainingSamplesStart = trainingStart;
-    //  problemSpecifications[target].TrainingSamplesEnd = trainingEnd;
-    //  problemSpecifications[target].ValidationSamplesStart = validationStart;
-    //  problemSpecifications[target].ValidationSamplesEnd = validationEnd;
-    //  problemSpecifications[target].TestSamplesStart = testStart;
-    //  problemSpecifications[target].TestSamplesEnd = testEnd;
-    //}
 
     private ProblemSpecification CreateDefaultProblemSpecification(string targetVariable) {
       ProblemSpecification spec = new ProblemSpecification();

@@ -36,7 +36,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       AddVariableInfo(new VariableInfo("Dataset", "The dataset", typeof(Dataset), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesStart", "Start index of training set", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TrainingSamplesEnd", "End index of training set", typeof(DoubleData), VariableKind.In));
-      AddVariableInfo(new VariableInfo("TargetVariable", "Index of the target variable", typeof(IntData), VariableKind.In));
+      AddVariableInfo(new VariableInfo("TargetVariable", "Name of the target variable", typeof(StringData), VariableKind.In));
       AddVariableInfo(new VariableInfo("PunishmentFactor", "The punishment factor limits the estimated values to a certain range", typeof(DoubleData), VariableKind.In));
       AddVariableInfo(new VariableInfo("TreeEvaluator", "The tree evaluator to evaluate models", typeof(ITreeEvaluator), VariableKind.New));
     }
@@ -50,7 +50,7 @@ namespace HeuristicLab.GP.StructureIdentification {
       Dataset dataset = GetVariableValue<Dataset>("Dataset", scope, true);
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
       double mean = dataset.GetMean(targetVariable, start, end);
       double range = dataset.GetRange(targetVariable, start, end);
       double minEstimatedValue = mean - punishmentFactor * range;

@@ -38,9 +38,9 @@ namespace HeuristicLab.GP.StructureIdentification {
   public class OffspringSelectionGPRegression : HeuristicLab.GP.Algorithms.OffspringSelectionGP, IStochasticAlgorithm {
     public override string Name { get { return "OffspringSelectionGP - StructureIdentification"; } }
 
-    public virtual int TargetVariable {
-      get { return ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data; }
-      set { ProblemInjector.GetVariableValue<IntData>("TargetVariable", null, false).Data = value; }
+    public virtual string TargetVariable {
+      get { return ProblemInjector.GetVariableValue<StringData>("TargetVariable", null, false).Data; }
+      set { ProblemInjector.GetVariableValue<StringData>("TargetVariable", null, false).Data = value; }
     }
 
     public virtual Dataset Dataset {
@@ -56,14 +56,14 @@ namespace HeuristicLab.GP.StructureIdentification {
           return CreateGPModel();
       }
     }
-    public IEnumerable<int> AllowedVariables {
+    public IEnumerable<string> AllowedVariables {
       get {
-        ItemList<IntData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<IntData>>("AllowedFeatures", null, false);
+        ItemList<StringData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<StringData>>("AllowedFeatures", null, false);
         return allowedVariables.Select(x => x.Data);
       }
       set {
-        ItemList<IntData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<IntData>>("AllowedFeatures", null, false);
-        foreach (int x in value) allowedVariables.Add(new IntData(x));
+        ItemList<StringData> allowedVariables = ProblemInjector.GetVariableValue<ItemList<StringData>>("AllowedFeatures", null, false);
+        foreach (string x in value) allowedVariables.Add(new StringData(x));
       }
     }
 

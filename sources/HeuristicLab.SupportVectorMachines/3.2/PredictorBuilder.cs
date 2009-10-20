@@ -51,7 +51,7 @@ namespace HeuristicLab.SupportVectorMachines {
     public override IOperation Apply(IScope scope) {
       Dataset ds = GetVariableValue<Dataset>("Dataset", scope, true);
       SVMModel model = GetVariableValue<SVMModel>("SVMModel", scope, true);
-      int targetVariable = GetVariableValue<IntData>("TargetVariable", scope, true).Data;
+      string targetVariable = GetVariableValue<StringData>("TargetVariable", scope, true).Data;
       int start = GetVariableValue<IntData>("TrainingSamplesStart", scope, true).Data;
       int end = GetVariableValue<IntData>("TrainingSamplesEnd", scope, true).Data;
       IntData maxTimeOffsetData = GetVariableValue<IntData>("MaxTimeOffset", scope, true, false);
@@ -60,7 +60,7 @@ namespace HeuristicLab.SupportVectorMachines {
       int minTimeOffset = minTimeOffsetData == null ? 0 : minTimeOffsetData.Data;
       double punishmentFactor = GetVariableValue<DoubleData>("PunishmentFactor", scope, true).Data;
 
-      string targetVariableName = ds.GetVariableName(targetVariable);
+      
       ItemList inputVariables = GetVariableValue<ItemList>("InputVariables", scope, true);
       var inputVariableNames = from x in inputVariables
                                select ((StringData)x).Data;
@@ -68,7 +68,7 @@ namespace HeuristicLab.SupportVectorMachines {
       double mean = ds.GetMean(targetVariable, start, end);
       double range = ds.GetRange(targetVariable, start, end);
 
-      Predictor predictor = new Predictor(model, targetVariableName, inputVariableNames, minTimeOffset, maxTimeOffset);
+      Predictor predictor = new Predictor(model, targetVariable, inputVariableNames, minTimeOffset, maxTimeOffset);
       predictor.LowerPredictionLimit = mean - punishmentFactor * range;
       predictor.UpperPredictionLimit = mean + punishmentFactor * range;
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("Predictor"), predictor));
