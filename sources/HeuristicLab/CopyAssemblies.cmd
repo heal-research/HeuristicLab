@@ -15,7 +15,6 @@ copy "%SolutionDir%\WinFormsUI\%Outdir%\WeifenLuo.WinFormsUI.Docking License.txt
 copy "%SolutionDir%\HeuristicLab.Assignment.QAP\3.2\%Outdir%\HeuristicLab.Assignment.QAP-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BitVector\3.2\%Outdir%\HeuristicLab.BitVector-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.BackgroundProcessing\3.2\%Outdir%\HeuristicLab.BackgroundProcessing-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.CEDMA.Charting\3.3\%Outdir%\HeuristicLab.CEDMA.Charting-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.CEDMA.Server\3.3\%Outdir%\HeuristicLab.CEDMA.Server-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.2\%Outdir%\HeuristicLab.Charting-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.Charting\3.3\%Outdir%\HeuristicLab.Charting-3.3.dll" .\plugins
@@ -111,7 +110,6 @@ copy "%SolutionDir%\HeuristicLab.SGA\3.2\%Outdir%\HeuristicLab.SGA-3.2.dll" .\pl
 copy "%SolutionDir%\HeuristicLab.SGA\3.3\%Outdir%\HeuristicLab.SGA-3.3.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.FixedOperators\3.2\%Outdir%\HeuristicLab.FixedOperators-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SimOpt\3.2\%Outdir%\HeuristicLab.SimOpt-3.2.dll" .\plugins
-copy "%SolutionDir%\HeuristicLab.SparseMatrix\3.2\%Outdir%\HeuristicLab.SparseMatrix-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\%Outdir%\HeuristicLab.SQLite-3.2.dll" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite License.txt" .\plugins
 copy "%SolutionDir%\HeuristicLab.SQLite\3.2\SQLite.NET.chm" .\plugins
