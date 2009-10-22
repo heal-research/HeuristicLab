@@ -23,7 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using HeuristicLab.Data;
+using System.Text;
 
 namespace HeuristicLab.DataAnalysis {
   public class DatasetParser {
@@ -222,7 +224,7 @@ namespace HeuristicLab.DataAnalysis {
 
     #region tokenizer
     internal enum TokenTypeEnum {
-      At, Assign, NewLine, String, Double, Int, WhiteSpace
+      At, Assign, NewLine, SemiColon, String, Double, Int
     }
 
     internal class Token {
@@ -247,7 +249,6 @@ namespace HeuristicLab.DataAnalysis {
     class Tokenizer {
       private StreamReader reader;
       private List<Token> tokens;
-      private string[] separators = new string[] { "@", "=", ";", "\t" };
       private NumberFormatInfo numberFormatInfo;
 
       public int CurrentLineNumber = 0;
@@ -256,12 +257,7 @@ namespace HeuristicLab.DataAnalysis {
       public static Token NewlineToken = new Token(TokenTypeEnum.NewLine, "\n");
       public static Token AtToken = new Token(TokenTypeEnum.At, "@");
       public static Token AssignmentToken = new Token(TokenTypeEnum.Assign, "=");
-      public static Token SeparatorToken = new Token(TokenTypeEnum.WhiteSpace, "");
-      public string[] Separators {
-        get { return separators; }
-        set { separators = value; }
-      }
-
+      public static Token SeparatorToken = new Token(TokenTypeEnum.SemiColon, ";");
 
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo) {
         this.reader = reader;
@@ -273,32 +269,47 @@ namespace HeuristicLab.DataAnalysis {
       private void ReadNextTokens() {
         if (!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
-          Token[] newTokens = Array.ConvertAll(CurrentLine.Split(separators, StringSplitOptions.None), delegate(string str) {
-            return MakeToken(str.Trim());
-          });
+          var newTokens = from str in Split(CurrentLine)
+                          let trimmedStr = str.Trim()
+                          where !string.IsNullOrEmpty(trimmedStr)
+                          select MakeToken(trimmedStr.Trim());
 
-          foreach (Token tok in newTokens) {
-            if (tok != SeparatorToken) tokens.Add(tok);
-          }
+          tokens.AddRange(newTokens);
           tokens.Add(NewlineToken);
           CurrentLineNumber++;
         }
       }
 
+      private IEnumerable<string> Split(string line) {
+        StringBuilder subStr = new StringBuilder();
+        foreach (char c in line) {
+          if (c == '@' || c == '=' || c == ';') {
+            yield return subStr.ToString();
+            subStr = new StringBuilder();
+            yield return c.ToString();
+          } else {
+            subStr.Append(c);
+          }
+        }
+        yield return subStr.ToString();
+      }
+
       private Token MakeToken(string strToken) {
         Token token = new Token(TokenTypeEnum.String, strToken);
-
-        // try to parse as a number first
-        if (int.TryParse(strToken, NumberStyles.Integer, numberFormatInfo, out token.intValue)) {
+        if (strToken.Equals(AtToken.stringValue)) {
+          return AtToken;
+        } else if (strToken.Equals(AssignmentToken.stringValue)) {
+          return AssignmentToken;
+        } else if (strToken.Equals(SeparatorToken.stringValue)) {
+          return SeparatorToken;
+        } else if (int.TryParse(strToken, NumberStyles.Integer, numberFormatInfo, out token.intValue)) {
           token.type = TokenTypeEnum.Int;
           return token;
         } else if (double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
           token.type = TokenTypeEnum.Double;
           return token;
-        } else if (String.IsNullOrEmpty(strToken)) {
-          token.type = TokenTypeEnum.WhiteSpace;
-          return token;
         }
+
         // couldn't parse the token as an int or float number so return a string token
         return token;
       }
@@ -331,70 +342,84 @@ namespace HeuristicLab.DataAnalysis {
     }
 
     private void ParseSampleData(bool strict) {
-      List<double> row = new List<double>();
       while (tokenizer.HasNext()) {
-        Token current = tokenizer.Next();
-        if (current.type == TokenTypeEnum.WhiteSpace) {
-          row.Add(double.NaN);
-        } else if (current.type == TokenTypeEnum.Double) {
-          // just take the value
-          row.Add(current.doubleValue);
-        } else if (current.type == TokenTypeEnum.Int) {
-          // translate the int value to double
-          row.Add((double)current.intValue);
-        } else if (current == Tokenizer.NewlineToken) {
-          // when parsing strictly all rows have to have the same number of values            
-          if (strict) {
-            // the first row defines how many samples are needed
-            if (samplesList.Count > 0 && samplesList[0].Count != row.Count) {
-              Error("The first row of the dataset has " + samplesList[0].Count + " columns." +
-                "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "", tokenizer.CurrentLineNumber);
-            }
-          } else if (samplesList.Count > 0) {
-            // when we are not strict then fill or drop elements as needed
-            if (samplesList[0].Count > row.Count) {
-              // fill with NAN
-              for (int i = row.Count; i < samplesList[0].Count; i++) {
-                row.Add(double.NaN);
-              }
-            } else if (samplesList[0].Count < row.Count) {
-              // drop last k elements where k = n - length of first row
-              row.RemoveRange(samplesList[0].Count - 1, row.Count - samplesList[0].Count);
-            }
+        List<double> row = new List<double>();
+        row.Add(NextValue(tokenizer, strict));
+        while (tokenizer.HasNext() && tokenizer.Peek() == Tokenizer.SeparatorToken) {
+          Expect(Tokenizer.SeparatorToken);
+          row.Add(NextValue(tokenizer, strict));
+        }
+        Expect(Tokenizer.NewlineToken);
+        // when parsing strictly all rows have to have the same number of values            
+        if (strict) {
+          // the first row defines how many samples are needed
+          if (samplesList.Count > 0 && samplesList[0].Count != row.Count) {
+            Error("The first row of the dataset has " + samplesList[0].Count + " columns." +
+              "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "", tokenizer.CurrentLineNumber);
           }
-
-          // add the current row to the collection of rows and start a new row
-          samplesList.Add(row);
-          row = new List<double>();
-        } else {
-          // found an unexpected token => return false when parsing strictly
-          // when we are parsing non-strictly we also allow unreadable values inserting NAN instead
-          if (strict) {
-            Error("Unexpected token.", current.stringValue, tokenizer.CurrentLineNumber);
-          } else {
-            row.Add(double.NaN);
+        } else if (samplesList.Count > 0) {
+          // when we are not strict then fill or drop elements as needed
+          if (samplesList[0].Count > row.Count) {
+            // fill with NAN
+            for (int i = row.Count; i < samplesList[0].Count; i++) {
+              row.Add(double.NaN);
+            }
+          } else if (samplesList[0].Count < row.Count) {
+            // drop last k elements where k = n - length of first row
+            row.RemoveRange(samplesList[0].Count - 1, row.Count - samplesList[0].Count);
           }
         }
+
+        // add the current row to the collection of rows and start a new row
+        samplesList.Add(row);
+        row = new List<double>();
       }
     }
 
+    private double NextValue(Tokenizer tokenizer, bool strict) {
+      if (tokenizer.Peek() == Tokenizer.SeparatorToken || tokenizer.Peek() == Tokenizer.NewlineToken) return double.NaN;
+      Token current = tokenizer.Next();
+      if (current.type == TokenTypeEnum.SemiColon || current.type == TokenTypeEnum.String) {
+        return double.NaN;
+      } else if (current.type == TokenTypeEnum.Double) {
+        // just take the value
+        return current.doubleValue;
+      } else if (current.type == TokenTypeEnum.Int) {
+        // translate the int value to double
+        return (double)current.intValue;
+      } else {
+        // found an unexpected token => throw error when parsing strictly
+        // when we are parsing non-strictly we also allow unreadable values inserting NAN instead
+        if (strict) {
+          Error("Unexpected token.", current.stringValue, tokenizer.CurrentLineNumber);
+        } else {
+          return double.NaN;
+        }
+      }
+      return double.NaN;
+    }
+
     private void ParseMetaData(bool strict) {
-      while (tokenizer.HasNext() && (tokenizer.Peek().type == TokenTypeEnum.WhiteSpace || tokenizer.Peek().type == TokenTypeEnum.String)) {
-        while (tokenizer.HasNext() && tokenizer.Peek().type == TokenTypeEnum.WhiteSpace) tokenizer.Next();
+      while (tokenizer.HasNext() && tokenizer.Peek() == Tokenizer.AtToken) {
+        Expect(Tokenizer.AtToken);
+
         Token nameToken = tokenizer.Next();
-        if (nameToken.type != TokenTypeEnum.String)
-          Error("Expected a variable name.", nameToken.stringValue, tokenizer.CurrentLineNumber);
+        Expect(Tokenizer.AssignmentToken);
 
         List<Token> tokens = new List<Token>();
         Token valueToken;
-        while (tokenizer.HasNext() && tokenizer.Peek().type == TokenTypeEnum.WhiteSpace) valueToken = tokenizer.Next();
         valueToken = tokenizer.Next();
-        while (valueToken != Tokenizer.NewlineToken) {
-          tokens.Add(valueToken);
-          while (tokenizer.HasNext() && tokenizer.Peek().type == TokenTypeEnum.WhiteSpace) tokenizer.Next();
+        tokens.Add(valueToken);
+        while (tokenizer.HasNext() && tokenizer.Peek() == Tokenizer.SeparatorToken) {
+          Expect(Tokenizer.SeparatorToken);
           valueToken = tokenizer.Next();
+          if (valueToken != Tokenizer.NewlineToken) {
+            tokens.Add(valueToken);
+          }
         }
-
+        if (valueToken != Tokenizer.NewlineToken) {
+          Expect(Tokenizer.NewlineToken);
+        }
         metadata[nameToken.stringValue] = tokens;
       }
     }
