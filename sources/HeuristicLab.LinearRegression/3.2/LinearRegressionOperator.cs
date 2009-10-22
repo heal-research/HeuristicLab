@@ -100,12 +100,26 @@ namespace HeuristicLab.LinearRegression {
     }
 
     private double[] CalculateCoefficients(double[,] inputMatrix, double[] targetVector) {
-      double[] weights = new double[targetVector.Length];
-      double[] coefficients = new double[inputMatrix.GetLength(1)];
-      for (int i = 0; i < weights.Length; i++) weights[i] = 1.0;
-      // call external ALGLIB solver
-      alglib.leastsquares.buildgeneralleastsquares(ref targetVector, ref weights, ref inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), ref coefficients);
+      int retVal = 0;
+      alglib.linreg.linearmodel lm = new alglib.linreg.linearmodel();
+      alglib.linreg.lrreport ar = new alglib.linreg.lrreport();
+      int n = targetVector.Length;
+      int p = inputMatrix.GetLength(1);
+      double[,] dataset = new double[n, p];
+      for (int row = 0; row < n; row++) {
+        for (int column = 0; column < p-1; column++) {
+          dataset[row, column] = inputMatrix[row, column];
+        }
+        dataset[row, p-1] = targetVector[row];
+      }
+      alglib.linreg.lrbuild(ref dataset, n, p-1, ref retVal, ref lm, ref ar);
+      if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression model");
+      Console.Out.WriteLine("ALGLIB Linear Regression: Estimated generalization RMS = {0}", ar.cvrmserror);
 
+      double[] coefficients = new double[p];
+      for (int i = 0; i < p; i++) {
+        coefficients[i] = lm.w[i+4];
+      }
       return coefficients;
     }
 

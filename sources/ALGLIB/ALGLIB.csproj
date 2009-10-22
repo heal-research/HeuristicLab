@@ -87,8 +87,13 @@
     <Compile Include="AlglibPlugin.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="descriptivestatistics.cs" />
+    <Compile Include="gammaf.cs" />
+    <Compile Include="igammaf.cs" />
     <Compile Include="leastsquares.cs" />
+    <Compile Include="linreg.cs" />
     <Compile Include="lq.cs" />
+    <Compile Include="normaldistr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="qr.cs" />
     <Compile Include="reflections.cs" />
