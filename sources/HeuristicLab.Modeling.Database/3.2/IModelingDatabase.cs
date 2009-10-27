@@ -27,11 +27,13 @@ using HeuristicLab.DataAnalysis;
 
 namespace HeuristicLab.Modeling.Database {
   public interface IModelingDatabase {
+    bool ReadOnly { get; set; }
     void Connect();
     void EmptyDatabase();
     void Disconnect();
 
     IEnumerable<IModel> GetAllModels();
+    IEnumerable<int> GetAllModelIds();
     IEnumerable<IVariable> GetAllVariables();
     IEnumerable<IResult> GetAllResults();
     IEnumerable<IResult> GetAllResultsForInputVariables();
@@ -52,6 +54,7 @@ namespace HeuristicLab.Modeling.Database {
     void PersistProblem(Dataset dataset);
     IVariable GetVariable(string variableName);
 
+    IModel GetModel(int id);
     IPredictor GetModelPredictor(IModel model);
     void PersistPredictor(IModel model, IPredictor predictor);
     IInputVariable GetInputVariable(IModel model, string inputVariableName);

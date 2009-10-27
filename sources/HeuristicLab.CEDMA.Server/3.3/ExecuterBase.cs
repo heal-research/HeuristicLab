@@ -70,7 +70,9 @@ namespace HeuristicLab.CEDMA.Server {
       maxActiveJobs = 10;
       this.dispatcher = dispatcher;
       this.databaseService = databaseService;
+      this.databaseService.Connect();
       StoredJobs = databaseService.GetAllModels().Count();
+      this.databaseService.Disconnect();
     }
 
     public void Start() {
@@ -93,7 +95,9 @@ namespace HeuristicLab.CEDMA.Server {
 
     protected void StoreResults(HeuristicLab.Modeling.IAlgorithm finishedAlgorithm) {
       CalculatedJobs++;
+      databaseService.Connect();
       databaseService.Persist(finishedAlgorithm);
+      databaseService.Disconnect();
       StoredJobs++;
       OnChanged();
     }

@@ -35,7 +35,10 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
 
     public ModelData(Model model, byte[] data)
       : base() {
-      this.modelId = model.Id;
+      if (model.Id == -1)
+        this.model.Entity = model;
+      else
+        this.modelId = model.Id;
       this.data = data;
     }
 

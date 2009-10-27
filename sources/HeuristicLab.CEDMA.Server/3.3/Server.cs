@@ -37,7 +37,6 @@ using HeuristicLab.DataAnalysis;
 namespace HeuristicLab.CEDMA.Server {
   public class Server : IViewable {
     private static readonly string sqlServerCompactFile = AppDomain.CurrentDomain.BaseDirectory + "HeuristicLab.Modeling.database.sdf";
-    private static readonly string sqlServerCompactConnectionString = @"Data Source=" + sqlServerCompactFile;
 
     private DatabaseService database;
     private IDispatcher dispatcher;
@@ -56,10 +55,12 @@ namespace HeuristicLab.CEDMA.Server {
     }
 
     public Server() {
-      database = new DatabaseService(sqlServerCompactConnectionString);
+      database = new DatabaseService(sqlServerCompactFile);
+      database.Connect();
       dataset = database.GetDataset();
       if (dataset == null)
-        dataset = new Dataset();      
+        dataset = new Dataset();
+      database.Disconnect();
     }
 
     internal void Connect(string serverUrl) {
