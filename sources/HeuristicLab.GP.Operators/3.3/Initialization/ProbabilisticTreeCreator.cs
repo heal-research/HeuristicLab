@@ -26,7 +26,7 @@ using HeuristicLab.GP.Interfaces;
 
 namespace HeuristicLab.GP.Operators {
   public class ProbabilisticTreeCreator : OperatorBase {
-    private int MAX_TRIES { get { return 100; } }
+    private static int MAX_TRIES { get { return 100; } }
 
     public override string Description {
       get { return @"Generates a new random operator tree."; }
@@ -49,22 +49,26 @@ namespace HeuristicLab.GP.Operators {
       int maxTreeSize = GetVariableValue<IntData>("MaxTreeSize", scope, true).Data;
       int maxTreeHeight = GetVariableValue<IntData>("MaxTreeHeight", scope, true).Data;
 
-      int treeSize = random.Next(minTreeSize, maxTreeSize + 1);
-      IFunctionTree root;
-      int tries = 0;
-      TreeGardener gardener = new TreeGardener(random, funLibrary);
-      do {
-        root = gardener.PTC2(treeSize, maxTreeHeight);
-        if (tries++ >= MAX_TRIES) {
-          // try a different size
-          treeSize = random.Next(minTreeSize, maxTreeSize + 1);
-          tries = 0;
-        }
-      } while (root.GetSize() > maxTreeSize || root.GetHeight() > maxTreeHeight);
-
+      IFunctionTree root = Create(random, funLibrary, minTreeSize, maxTreeSize, maxTreeHeight);
       scope.AddVariable(new HeuristicLab.Core.Variable(scope.TranslateName("FunctionTree"), new GeneticProgrammingModel(root)));
       return Util.CreateInitializationOperation(TreeGardener.GetAllSubTrees(root), scope);
     }
 
- }
+
+    public static IFunctionTree Create(IRandom random, FunctionLibrary funLib, int minSize, int maxSize, int maxHeight) {
+      int treeSize = random.Next(minSize, maxSize + 1);
+      IFunctionTree root;
+      int tries = 0;
+      TreeGardener gardener = new TreeGardener(random, funLib);
+      do {
+        root = gardener.PTC2(treeSize, maxHeight);
+        if (tries++ >= MAX_TRIES) {
+          // try a different size
+          treeSize = random.Next(minSize, maxSize + 1);
+          tries = 0;
+        }
+      } while (root.GetSize() > maxHeight || root.GetHeight() > maxHeight);
+      return root;
+    }
+  }
 }
