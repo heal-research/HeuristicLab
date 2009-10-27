@@ -69,6 +69,7 @@ namespace HeuristicLab.GP.StructureIdentification {
           }
         case EvaluatorSymbolTable.SUBTRACTION: {
             double result = EvaluateBakedCode();
+            if (currInstr.arity == 1) return -result;
             for (int i = 1; i < currInstr.arity; i++) {
               result -= EvaluateBakedCode();
             }
@@ -77,11 +78,14 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.DIVISION: {
             double result;
             result = EvaluateBakedCode();
-            for (int i = 1; i < currInstr.arity; i++) {
-              result /= EvaluateBakedCode();
+            if (currInstr.arity == 1) {
+              return result.IsAlmost(0.0) ? 0.0 : 1.0 / result;
             }
-            if (double.IsInfinity(result)) return 0.0;
-            else return result;
+            for (int i = 1; i < currInstr.arity; i++) {
+              double tmp = EvaluateBakedCode();
+              result = tmp.IsAlmost(0.0) ? 0.0 : result /= tmp;
+            }
+            return result;
           }
         case EvaluatorSymbolTable.AVERAGE: {
             double sum = EvaluateBakedCode();
@@ -121,12 +125,12 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.AND: {
             double result = EvaluateBakedCode();
             for (int i = 1; i < currInstr.arity; i++) {
-              if (result < 0.0) SkipBakedCode();
+              if (result <= 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
               }
             }
-            return Math.Sign(result);
+            return result <= 0.0 ? -1.0 : 1.0;
           }
         case EvaluatorSymbolTable.EQU: {
             double x = EvaluateBakedCode();
@@ -142,7 +146,7 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.IFTE: {
             double condition = EvaluateBakedCode();
             double result;
-            if (condition < 0.0) {
+            if (condition > 0.0) {
               result = EvaluateBakedCode(); SkipBakedCode();
             } else {
               SkipBakedCode(); result = EvaluateBakedCode();
@@ -161,12 +165,12 @@ namespace HeuristicLab.GP.StructureIdentification {
         case EvaluatorSymbolTable.OR: {
             double result = EvaluateBakedCode();
             for (int i = 1; i < currInstr.arity; i++) {
-              if (result >= 0.0) SkipBakedCode();
+              if (result > 0.0) SkipBakedCode();
               else {
                 result = EvaluateBakedCode();
               }
             }
-            return Math.Sign(result);
+            return result > 0.0 ? 1.0 : -1.0;
           }
         case EvaluatorSymbolTable.XOR: {
             double x = EvaluateBakedCode();
@@ -177,7 +181,7 @@ namespace HeuristicLab.GP.StructureIdentification {
               y = tmp;
             }
             // invariant y >= x 
-            if (y < 0.0 || x > 0.0) return -1.0;
+            if (y <= 0.0 || x > 0.0) return -1.0;
             else return 1.0;
           }
         default: {
