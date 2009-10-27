@@ -159,16 +159,18 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistModel(IModel model) {
-      Model m = (Model)model;
-      //check if model has to be updated or inserted
-      if (ctx.Models.Any(x => x.Id == model.Id)) {
-        Model orginal = ctx.Models.GetOriginalEntityState(m);
-        if (orginal == null)
-          ctx.Models.Attach(m);
-        ctx.Refresh(RefreshMode.KeepCurrentValues, m);
-      } else
-        ctx.Models.InsertOnSubmit(m);
-      ctx.SubmitChanges();
+      using (ModelingDataContext ctx = new ModelingDataContext(this.ConnectionString)) {
+        Model m = (Model)model;
+        //check if model has to be updated or inserted
+        if (ctx.Models.Any(x => x.Id == model.Id)) {
+          Model orginal = ctx.Models.GetOriginalEntityState(m);
+          if (orginal == null)
+            ctx.Models.Attach(m);
+          ctx.Refresh(RefreshMode.KeepCurrentValues, m);
+        } else
+          ctx.Models.InsertOnSubmit(m);
+        ctx.SubmitChanges();
+      }
     }
 
     public void DeleteModel(IModel model) {
@@ -224,17 +226,19 @@ namespace HeuristicLab.Modeling.Database.SQLServerCompact {
     }
 
     public void PersistPredictor(IModel model, IPredictor predictor) {
-      Model m = (Model)model;
-      ctx.ModelData.DeleteAllOnSubmit(ctx.ModelData.Where(x => x.Model == m));
-      ctx.ModelResults.DeleteAllOnSubmit(ctx.ModelResults.Where(x => x.Model == m));
-      ctx.InputVariableResults.DeleteAllOnSubmit(ctx.InputVariableResults.Where(x => x.Model == m));
-      ctx.InputVariables.DeleteAllOnSubmit(ctx.InputVariables.Where(x => x.Model == m));
+      using (ModelingDataContext ctx = new ModelingDataContext(this.ConnectionString)) {
+        Model m = (Model)model;
+        ctx.ModelData.DeleteAllOnSubmit(ctx.ModelData.Where(x => x.Model == m));
+        ctx.ModelResults.DeleteAllOnSubmit(ctx.ModelResults.Where(x => x.Model == m));
+        ctx.InputVariableResults.DeleteAllOnSubmit(ctx.InputVariableResults.Where(x => x.Model == m));
+        ctx.InputVariables.DeleteAllOnSubmit(ctx.InputVariables.Where(x => x.Model == m));
 
-      ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(predictor)));
-      foreach (string variableName in predictor.GetInputVariables())
-        ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
+        ctx.ModelData.InsertOnSubmit(new ModelData(m, PersistenceManager.SaveToGZip(predictor)));
+        foreach (string variableName in predictor.GetInputVariables())
+          ctx.InputVariables.InsertOnSubmit(new InputVariable(m, (Variable)GetVariable(variableName)));
 
-      ctx.SubmitChanges();
+        ctx.SubmitChanges();
+      }
     }
 
     public IInputVariable GetInputVariable(IModel model, string inputVariableName) {
