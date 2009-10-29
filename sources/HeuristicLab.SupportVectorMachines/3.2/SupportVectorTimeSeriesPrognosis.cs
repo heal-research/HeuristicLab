@@ -71,12 +71,8 @@ namespace HeuristicLab.SupportVectorMachines {
       return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
-    protected override IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
-      var model = new AnalyzerModel();
-      model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
-      model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
+    protected override void CreateSpecificSVMModel(IScope bestModelScope, IAnalyzerModel model) {
       DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
-      return model;
     }
   }
 }

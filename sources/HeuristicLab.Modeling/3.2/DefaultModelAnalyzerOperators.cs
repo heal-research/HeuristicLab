@@ -36,18 +36,6 @@ namespace HeuristicLab.Modeling {
         seq.AddSubOperator(ModelingResultCalculators.CreateModelingResultEvaluator(r));
       }
 
-      #region variable impacts
-      VariableEvaluationImpactCalculator evaluationImpactCalculator = new VariableEvaluationImpactCalculator();
-      evaluationImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      evaluationImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
-      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
-      qualityImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
-      qualityImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
-
-      seq.AddSubOperator(evaluationImpactCalculator);
-      seq.AddSubOperator(qualityImpactCalculator);
-      #endregion
-
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
       return op;
@@ -69,21 +57,6 @@ namespace HeuristicLab.Modeling {
       var modelingResults = ModelingResultCalculators.GetModelingResult(modelType);
       foreach (var r in modelingResults.Keys) {
         model.ExtractResult(modelScope, r);
-      }
-
-      ItemList evaluationImpacts = modelScope.GetVariableValue<ItemList>(ModelingResult.VariableEvaluationImpact.ToString(), false);
-      ItemList qualityImpacts = modelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
-      foreach (ItemList row in evaluationImpacts) {
-        string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableResult(ModelingResult.VariableEvaluationImpact, variableName, impact);
-        model.AddInputVariable(variableName);
-      }
-      foreach (ItemList row in qualityImpacts) {
-        string variableName = ((StringData)row[0]).Data;
-        double impact = ((DoubleData)row[1]).Data;
-        model.SetVariableResult(ModelingResult.VariableQualityImpact, variableName, impact);
-        model.AddInputVariable(variableName);
       }
 
       return model;

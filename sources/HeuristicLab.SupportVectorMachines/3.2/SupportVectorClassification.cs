@@ -53,12 +53,8 @@ namespace HeuristicLab.SupportVectorMachines {
     }
 
 
-    protected override IAnalyzerModel CreateSVMModel(IScope bestModelScope) {
-      IAnalyzerModel model = new AnalyzerModel();
-      model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
-      model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
+    protected override void CreateSpecificSVMModel(IScope bestModelScope, IAnalyzerModel model) {
       DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
-      return model;
     }
   }
 }

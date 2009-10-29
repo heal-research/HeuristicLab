@@ -53,10 +53,8 @@ namespace HeuristicLab.LinearRegression {
       return DefaultClassificationOperators.CreatePostProcessingOperator();
     }
 
-    protected override IAnalyzerModel CreateLRModel(IScope bestModelScope) {
-      var model = new AnalyzerModel();
+    protected override void CreateSpecificLRModel(IScope bestModelScope, IAnalyzerModel model) {
       DefaultClassificationOperators.PopulateAnalyzerModel(bestModelScope, model);
-      return model;
     }
   }
 }

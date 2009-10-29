@@ -75,6 +75,7 @@ namespace HeuristicLab.Modeling {
     TestWeightedDirectionalSymmetry,
 
     VariableQualityImpact,
-    VariableEvaluationImpact
+    VariableEvaluationImpact,
+    VariableNodeImpact
   }
 }

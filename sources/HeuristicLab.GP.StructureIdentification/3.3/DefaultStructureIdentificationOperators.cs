@@ -154,6 +154,18 @@ namespace HeuristicLab.GP.StructureIdentification {
 
       solutionProc.AddSubOperator(namesExtractor);
       solutionProc.AddSubOperator(predictorBuilder);
+      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+      qualityImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
+      qualityImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+
+      solutionProc.AddSubOperator(qualityImpactCalculator);
+
+      NodeBasedVariableImpactCalculator nodeImpactCalculator = new NodeBasedVariableImpactCalculator();
+      nodeImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
+      nodeImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+
+      solutionProc.AddSubOperator(nodeImpactCalculator);
+
       #endregion
 
       return seq;
@@ -164,6 +176,23 @@ namespace HeuristicLab.GP.StructureIdentification {
       IGeneticProgrammingModel gpModel = bestModelScope.GetVariableValue<IGeneticProgrammingModel>("FunctionTree", false);
       model.SetMetaData("TreeSize", gpModel.Size);
       model.SetMetaData("TreeHeight", gpModel.Height);
+      #region variable impacts
+      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
+      foreach (ItemList row in qualityImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
+        model.SetVariableResult(ModelingResult.VariableQualityImpact, variableName, impact);
+        model.AddInputVariable(variableName);
+      }
+      ItemList nodeImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableNodeImpact.ToString(), false);
+      foreach (ItemList row in nodeImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
+        model.SetVariableResult(ModelingResult.VariableNodeImpact, variableName, impact);
+        model.AddInputVariable(variableName);
+      }
+      #endregion
+
     }
   }
 }

@@ -452,6 +452,16 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       seqProc.AddSubOperator(CreateEvaluator("Test"));
       seqProc.AddSubOperator(CreateEvaluator("Training"));
       seqProc.AddSubOperator(predictorBuilder);
+
+      #region variable impacts
+      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+      qualityImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "ValidationSamplesStart";
+      qualityImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "ValidationSamplesEnd";
+
+      seqProc.AddSubOperator(qualityImpactCalculator);
+      #endregion
+
+
       seqProc.AddSubOperator(CreateModelAnalyzerOperator());
 
       seqSubScopeProc.AddSubOperator(seqProc);
@@ -469,9 +479,23 @@ Value.Data = ValueList.Data[ValueIndex.Data];
       AnalyzerModel model = new AnalyzerModel();
       model.SetMetaData("Cost", bestModelScope.GetVariableValue<DoubleData>("Cost", false).Data);
       model.SetMetaData("Nu", bestModelScope.GetVariableValue<DoubleData>("Nu", false).Data);
-      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
+      #region variable impacts
+      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
+      foreach (ItemList row in qualityImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
+        model.SetVariableResult(ModelingResult.VariableQualityImpact, variableName, impact);
+        model.AddInputVariable(variableName);
+      }
+      #endregion
+
+      CreateSpecificSVMModel(bestModelScope, model);
 
       return model;
+    }
+
+    protected virtual void CreateSpecificSVMModel(IScope bestModelScope, IAnalyzerModel model) {
+      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
     }
 
     protected IOperator GetVariableInjector() {
@@ -497,7 +521,7 @@ Value.Data = ValueList.Data[ValueIndex.Data];
 
     #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      SupportVectorRegression clone = (SupportVectorRegression) base.Clone(clonedObjects);
+      SupportVectorRegression clone = (SupportVectorRegression)base.Clone(clonedObjects);
       clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
       return clone;
     }

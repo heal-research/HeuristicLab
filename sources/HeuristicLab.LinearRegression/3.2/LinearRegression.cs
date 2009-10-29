@@ -214,9 +214,17 @@ namespace HeuristicLab.LinearRegression {
 
       seq.AddSubOperator(namesExtractor);
       seq.AddSubOperator(predictorBuilder);
+      VariableQualityImpactCalculator qualityImpactCalculator = new VariableQualityImpactCalculator();
+      qualityImpactCalculator.GetVariableInfo("SamplesStart").ActualName = "TrainingSamplesStart";
+      qualityImpactCalculator.GetVariableInfo("SamplesEnd").ActualName = "TrainingSamplesEnd";
+
+      seq.AddSubOperator(qualityImpactCalculator);
       #endregion
 
       seq.AddSubOperator(CreateModelAnalyzerOperator());
+
+
+
 
       op.OperatorGraph.AddOperator(seq);
       op.OperatorGraph.InitialOperator = seq;
@@ -229,8 +237,21 @@ namespace HeuristicLab.LinearRegression {
 
     protected virtual IAnalyzerModel CreateLRModel(IScope bestModelScope) {
       var model = new AnalyzerModel();
-      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
+      CreateSpecificLRModel(bestModelScope, model);
+      #region variable impacts
+      ItemList qualityImpacts = bestModelScope.GetVariableValue<ItemList>(ModelingResult.VariableQualityImpact.ToString(), false);
+      foreach (ItemList row in qualityImpacts) {
+        string variableName = ((StringData)row[0]).Data;
+        double impact = ((DoubleData)row[1]).Data;
+        model.SetVariableResult(ModelingResult.VariableQualityImpact, variableName, impact);
+        model.AddInputVariable(variableName);
+      }
+      #endregion
       return model;
+    }
+
+    protected virtual void CreateSpecificLRModel(IScope bestModelScope, IAnalyzerModel model) {
+      DefaultRegressionOperators.PopulateAnalyzerModel(bestModelScope, model);
     }
 
     protected virtual IOperator GetMainOperator() {
@@ -256,7 +277,7 @@ namespace HeuristicLab.LinearRegression {
 
     #region persistence
     public override object Clone(IDictionary<Guid, object> clonedObjects) {
-      LinearRegression clone = (LinearRegression) base.Clone(clonedObjects);
+      LinearRegression clone = (LinearRegression)base.Clone(clonedObjects);
       clone.engine = (IEngine)Auxiliary.Clone(Engine, clonedObjects);
       return clone;
     }

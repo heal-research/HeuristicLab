@@ -35,7 +35,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -47,6 +47,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,6 +85,7 @@
     <Compile Include="BaseClasses\FunctionTreeBase.cs" />
     <Compile Include="BaseClasses\TreeEvaluatorBase.cs" />
     <Compile Include="DefaultStructureIdentificationOperators.cs" />
+    <Compile Include="Evaluators\NodeBasedVariableImpactCalculator.cs" />
     <Compile Include="HL3TreeEvaluatorInjector.cs" />
     <Compile Include="HL2TreeEvaluatorInjector.cs" />
     <Compile Include="OffspringSelectionGPRegression.cs" />

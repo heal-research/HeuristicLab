@@ -72,10 +72,8 @@ namespace HeuristicLab.LinearRegression {
       return DefaultTimeSeriesOperators.CreatePostProcessingOperator();
     }
 
-    protected override IAnalyzerModel CreateLRModel(IScope bestModelScope) {
-      var model = new AnalyzerModel();
+    protected override void CreateSpecificLRModel(IScope bestModelScope, IAnalyzerModel model) {
       DefaultTimeSeriesOperators.PopulateAnalyzerModel(bestModelScope, model);
-      return model;
     }
   }
 }
