@@ -89,7 +89,7 @@ namespace HeuristicLab.GP.Test {
       doubleFunctions.Add(variable);
       doubleFunctions.Add(constant);
       doubleFunctions.Add(addition);
-      //doubleFunctions.Add(average);
+      // doubleFunctions.Add(average);
       doubleFunctions.Add(cosinus);
       doubleFunctions.Add(division);
       doubleFunctions.Add(exponential);
@@ -131,7 +131,7 @@ namespace HeuristicLab.GP.Test {
       functionLibrary.AddFunction(variable);
       functionLibrary.AddFunction(constant);
       functionLibrary.AddFunction(addition);
-      //functionLibrary.AddFunction(average);
+      // functionLibrary.AddFunction(average);
       functionLibrary.AddFunction(and);
       functionLibrary.AddFunction(cosinus);
       functionLibrary.AddFunction(division);

@@ -67,7 +67,7 @@ namespace HeuristicLab.GP.Test {
       for (int i = 0; i < histogram.Length; i++) {
         strBuilder.Append(Environment.NewLine);
         strBuilder.Append("< "); strBuilder.Append((i + 1) * 5);
-        strBuilder.Append(": "); strBuilder.Append(histogram[i]);
+        strBuilder.Append(": "); strBuilder.AppendFormat("{0:#0.00%}", histogram[i] / (double)randomTrees.Length);
       }
       Assert.Inconclusive("Size distribution of ProbabilisticTreeCreator: " + strBuilder);
     }
@@ -75,12 +75,14 @@ namespace HeuristicLab.GP.Test {
     [TestMethod()]
     public void FunctionDistributionTest() {
       Dictionary<IFunction, int> occurances = new Dictionary<IFunction, int>();
+      double n = 0.0;
       for (int i = 0; i < randomTrees.Length; i++) {
         foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
           if (node.SubTrees.Count > 0) {
             if (!occurances.ContainsKey(node.Function))
               occurances[node.Function] = 0;
             occurances[node.Function]++;
+            n++;
           }
         }
       }
@@ -88,20 +90,44 @@ namespace HeuristicLab.GP.Test {
       foreach (var function in occurances.Keys) {
         strBuilder.Append(Environment.NewLine);
         strBuilder.Append(function.Name); strBuilder.Append(": ");
-        strBuilder.Append(occurances[function]);
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[function] / n);
       }
       Assert.Inconclusive("Function distribution of ProbabilisticTreeCreator: " + strBuilder);
     }
 
     [TestMethod()]
+    public void NumberOfSubTreesDistributionTest() {
+      Dictionary<int, int> occurances = new Dictionary<int, int>();
+      double n = 0.0;
+      for (int i = 0; i < randomTrees.Length; i++) {
+        foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
+          if (!occurances.ContainsKey(node.SubTrees.Count))
+            occurances[node.SubTrees.Count] = 0;
+          occurances[node.SubTrees.Count]++;
+          n++;
+        }
+      }
+      StringBuilder strBuilder = new StringBuilder();
+      foreach (var arity in occurances.Keys) {
+        strBuilder.Append(Environment.NewLine);
+        strBuilder.Append(arity); strBuilder.Append(": ");
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[arity] / n);
+      }
+      Assert.Inconclusive("Distribution of function arities of ProbabilisticTreeCreator: " + strBuilder);
+    }
+
+
+    [TestMethod()]
     public void TerminalDistributionTest() {
       Dictionary<IFunction, int> occurances = new Dictionary<IFunction, int>();
+      double n = 0.0;
       for (int i = 0; i < randomTrees.Length; i++) {
         foreach (var node in FunctionTreeIterator.IteratePrefix(randomTrees[i])) {
           if (node.SubTrees.Count == 0) {
             if (!occurances.ContainsKey(node.Function))
               occurances[node.Function] = 0;
             occurances[node.Function]++;
+            n++;
           }
         }
       }
@@ -109,7 +135,7 @@ namespace HeuristicLab.GP.Test {
       foreach (var function in occurances.Keys) {
         strBuilder.Append(Environment.NewLine);
         strBuilder.Append(function.Name); strBuilder.Append(": ");
-        strBuilder.Append(occurances[function]);
+        strBuilder.AppendFormat("{0:#0.00%}", occurances[function] / n);
       }
       Assert.Inconclusive("Terminal distribution of ProbabilisticTreeCreator: " + strBuilder);
     }
